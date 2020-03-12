@@ -55,7 +55,6 @@ public class MultiUserDatabaseManager {
     private final DatabaseCopy databaseCopy;
     private final DatabaseConfigurationMigration migration;
     private final DatabaseAdapterFactory databaseAdapterFactory;
-    private final DatabaseEncryptionPasswordManager passwordManager;
 
     private final int MAX_SERVER_USER_PAIRS = 1;
 
@@ -67,8 +66,7 @@ public class MultiUserDatabaseManager {
             @NonNull Context context,
             @NonNull DatabaseCopy databaseCopy,
             @NonNull DatabaseConfigurationMigration migration,
-            @NonNull DatabaseAdapterFactory databaseAdapterFactory,
-            @NonNull DatabaseEncryptionPasswordManager passwordManager) {
+            @NonNull DatabaseAdapterFactory databaseAdapterFactory) {
         this.databaseAdapter = databaseAdapter;
         this.databaseConfigurationSecureStore = databaseConfigurationSecureStore;
         this.configurationHelper = configurationHelper;
@@ -76,7 +74,6 @@ public class MultiUserDatabaseManager {
         this.databaseCopy = databaseCopy;
         this.migration = migration;
         this.databaseAdapterFactory = databaseAdapterFactory;
-        this.passwordManager = passwordManager;
     }
 
     public static MultiUserDatabaseManager create(DatabaseAdapter databaseAdapter, Context context,
@@ -87,8 +84,7 @@ public class MultiUserDatabaseManager {
                 DatabaseConfigurationInsecureStore.get(insecureStore),
                 DatabaseConfigurationHelper.create(), context,
                 new DatabaseCopy(), DatabaseConfigurationMigration.create(context, secureStore,
-                insecureStore, databaseAdapterFactory), databaseAdapterFactory,
-                DatabaseEncryptionPasswordManager.create(secureStore));
+                insecureStore, databaseAdapterFactory), databaseAdapterFactory);
     }
 
     public void loadIfLogged(Credentials credentials) {
@@ -110,14 +106,11 @@ public class MultiUserDatabaseManager {
             DatabasesConfiguration configuration = databaseConfigurationSecureStore.get();
             int pairsCount = configurationHelper.countServerUserPairs(configuration);
             if (pairsCount == MAX_SERVER_USER_PAIRS) {
-                DatabaseUserConfiguration userConfiguration = configurationHelper.getOldestServerUser(configuration);
+                DatabaseUserConfiguration oldestUserConfig = configurationHelper.getOldestServerUser(configuration);
                 DatabasesConfiguration updatedConfigurations =
-                        configurationHelper.removeServerUserConfiguration(configuration, userConfiguration);
+                        configurationHelper.removeServerUserConfiguration(configuration, oldestUserConfig);
                 databaseConfigurationSecureStore.set(updatedConfigurations);
-                if (userConfiguration.encrypted()) {
-                    passwordManager.deletePassword(userConfiguration.databaseName());
-                }
-                context.deleteDatabase(userConfiguration.databaseName());
+                databaseAdapterFactory.deleteDatabase(oldestUserConfig);
             }
             DatabaseUserConfiguration userConfiguration = addNewConfigurationInternal(serverUrl, username, encrypt);
             databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, userConfiguration);

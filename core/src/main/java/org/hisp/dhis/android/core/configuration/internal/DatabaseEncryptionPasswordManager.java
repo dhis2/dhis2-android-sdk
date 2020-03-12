@@ -55,7 +55,7 @@ public class DatabaseEncryptionPasswordManager {
         return secureStore.getData(key);
     }
 
-    void deletePassword(String databaseName) {
+    public void deletePassword(String databaseName) {
         secureStore.removeData(getKey(databaseName));
     }
 

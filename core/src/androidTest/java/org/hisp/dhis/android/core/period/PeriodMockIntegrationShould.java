@@ -46,8 +46,8 @@ public class PeriodMockIntegrationShould extends BaseMockIntegrationTestFullDisp
 
     @Test
     public void get_period_passing_period_type_and_a_date() throws ParseException {
-        Period period = d2.periodModule().periodHelper().getPeriod(PeriodType.BiWeekly,
-                BaseIdentifiableObject.DATE_FORMAT.parse("2019-07-08T12:24:25.319"));
+        Period period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodTypeAndDate(
+                PeriodType.BiWeekly, BaseIdentifiableObject.DATE_FORMAT.parse("2019-07-08T12:24:25.319"));
         assertThat(period.periodId()).isEqualTo("2019BiW14");
     }
 
@@ -60,7 +60,8 @@ public class PeriodMockIntegrationShould extends BaseMockIntegrationTestFullDisp
         Period periodInDb = periodStore.selectPeriodByTypeAndDate(PeriodType.Monthly, date);
         assertThat(periodInDb).isNull();
 
-        Period period = d2.periodModule().periodHelper().getPeriod(PeriodType.Monthly, date);
+        Period period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodTypeAndDate(
+                PeriodType.Monthly, date);
         assertThat(period).isNotNull();
         assertThat(period.periodId()).isEqualTo("201012");
 
@@ -80,5 +81,66 @@ public class PeriodMockIntegrationShould extends BaseMockIntegrationTestFullDisp
         int MONTHLY_PERIODS = 11; // Copy from ParentPeriodGeneratorImpl to keep it private
         assertThat(d2.periodModule().periods().byPeriodType().eq(PeriodType.Monthly).blockingCount())
                 .isEqualTo(MONTHLY_PERIODS + 3);
+    }
+
+    @Test
+    public void get_period_passing_period_id() {
+        Period period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId("20200315");
+        assertThat(period.periodId()).isEqualTo("20200315");
+
+        period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId("2020W10");
+        assertThat(period.periodId()).isEqualTo("2020W10");
+
+        period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId("2020W53");
+        assertThat(period.periodId()).isEqualTo("2020W53");
+
+        period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId("2019W53");
+        assertThat(period.periodId()).isEqualTo("2020W1");
+
+        period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId("2015WedW5");
+        assertThat(period.periodId()).isEqualTo("2015WedW5");
+
+        period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId("2015ThuW6");
+        assertThat(period.periodId()).isEqualTo("2015ThuW6");
+
+        period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId("2015SatW7");
+        assertThat(period.periodId()).isEqualTo("2015SatW7");
+
+        period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId("2015SunW8");
+        assertThat(period.periodId()).isEqualTo("2015SunW8");
+
+        period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId("2015BiW1");
+        assertThat(period.periodId()).isEqualTo("2015BiW1");
+
+        period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId("202003");
+        assertThat(period.periodId()).isEqualTo("202003");
+
+        period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId("202001B");
+        assertThat(period.periodId()).isEqualTo("202001B");
+
+        period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId("2020Q1");
+        assertThat(period.periodId()).isEqualTo("2020Q1");
+
+        period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId("2020S1");
+        assertThat(period.periodId()).isEqualTo("2020S1");
+
+        period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId("2020AprilS1");
+        assertThat(period.periodId()).isEqualTo("2020AprilS1");
+
+        period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId("2020");
+        assertThat(period.periodId()).isEqualTo("2020");
+
+        period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId("2020April");
+        assertThat(period.periodId()).isEqualTo("2020April");
+
+        period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId("2020July");
+        assertThat(period.periodId()).isEqualTo("2020July");
+
+        period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId("2020Oct");
+        assertThat(period.periodId()).isEqualTo("2020Oct");
+
+        /* TODO discuss if financial november periods start in the same year or in the previous year
+        period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId("2020Nov");
+        assertThat(period.periodId()).isEqualTo("2020Nov");*/
     }
 }

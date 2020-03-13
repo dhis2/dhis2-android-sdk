@@ -28,18 +28,14 @@
 
 package org.hisp.dhis.android.core.configuration.internal;
 
-import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
-import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 
 import javax.inject.Inject;
 
@@ -51,9 +47,7 @@ public class MultiUserDatabaseManager {
     private final DatabaseAdapter databaseAdapter;
     private final ObjectKeyValueStore<DatabasesConfiguration> databaseConfigurationSecureStore;
     private final DatabaseConfigurationHelper configurationHelper;
-    private final Context context;
     private final DatabaseCopy databaseCopy;
-    private final DatabaseConfigurationMigration migration;
     private final DatabaseAdapterFactory databaseAdapterFactory;
 
     private static int maxServerUserPairs = 1;
@@ -63,43 +57,17 @@ public class MultiUserDatabaseManager {
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull ObjectKeyValueStore<DatabasesConfiguration> databaseConfigurationSecureStore,
             @NonNull DatabaseConfigurationHelper configurationHelper,
-            @NonNull Context context,
             @NonNull DatabaseCopy databaseCopy,
-            @NonNull DatabaseConfigurationMigration migration,
             @NonNull DatabaseAdapterFactory databaseAdapterFactory) {
         this.databaseAdapter = databaseAdapter;
         this.databaseConfigurationSecureStore = databaseConfigurationSecureStore;
         this.configurationHelper = configurationHelper;
-        this.context = context;
         this.databaseCopy = databaseCopy;
-        this.migration = migration;
         this.databaseAdapterFactory = databaseAdapterFactory;
     }
 
     public static void setMaxServerUserPairs(int pairs) {
         maxServerUserPairs = pairs;
-    }
-
-    public static MultiUserDatabaseManager create(DatabaseAdapter databaseAdapter, Context context,
-                                                  SecureStore secureStore,
-                                                  InsecureStore insecureStore,
-                                                  DatabaseAdapterFactory databaseAdapterFactory) {
-        return new MultiUserDatabaseManager(databaseAdapter,
-                DatabaseConfigurationInsecureStore.get(insecureStore),
-                DatabaseConfigurationHelper.create(), context,
-                new DatabaseCopy(), DatabaseConfigurationMigration.create(context, secureStore,
-                insecureStore, databaseAdapterFactory), databaseAdapterFactory);
-    }
-
-    public void loadIfLogged(Credentials credentials) {
-        DatabasesConfiguration databaseConfiguration = migration.apply();
-
-        if (databaseConfiguration != null && credentials != null) {
-            ServerURLWrapper.setServerUrl(databaseConfiguration.loggedServerUrl());
-            DatabaseUserConfiguration userConfiguration = configurationHelper.getLoggedUserConfiguration(
-                    databaseConfiguration, credentials.username());
-            databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, userConfiguration);
-        }
     }
 
     public void loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(String serverUrl, String username,
@@ -161,8 +129,8 @@ public class MultiUserDatabaseManager {
                     "Encryption value changed for " + existingUserConfiguration.username() +  ": " + encrypt);
             DatabaseAdapter auxOldParentDatabaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter();
             databaseAdapterFactory.createOrOpenDatabase(auxOldParentDatabaseAdapter, existingUserConfiguration);
-            databaseCopy.copy(auxOldParentDatabaseAdapter, databaseAdapter);
-            context.deleteDatabase(existingUserConfiguration.databaseName());
+            databaseCopy.copyDatabase(auxOldParentDatabaseAdapter, databaseAdapter);
+            databaseAdapterFactory.deleteDatabase(existingUserConfiguration);
         }
     }
 

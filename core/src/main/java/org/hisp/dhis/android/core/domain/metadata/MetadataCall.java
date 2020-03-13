@@ -63,6 +63,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 
 @Reusable
@@ -119,51 +120,57 @@ public class MetadataCall {
     public Observable<D2Progress> download() {
         D2ProgressManager progressManager = new D2ProgressManager(9);
 
-        return generalSettingCall.isDatabaseEncrypted().flatMapObservable(encrypt -> {
-            multiUserDatabaseManager.changeEncryptionIfRequired(credentialsSecureStore.get(), encrypt);
-            return rxCallExecutor.wrapObservableTransactionally(
-                    systemInfoDownloader.downloadMetadata().andThen(Observable.create(emitter -> {
+        return changeEncryptionIfRequired().andThen(
+                rxCallExecutor.wrapObservableTransactionally(
+                        systemInfoDownloader.downloadMetadata().andThen(Observable.create(emitter -> {
 
-                        databaseAdapter.delete(ForeignKeyViolationTableInfo.TABLE_INFO.name());
+                            databaseAdapter.delete(ForeignKeyViolationTableInfo.TABLE_INFO.name());
 
-                        emitter.onNext(progressManager.increaseProgress(SystemInfo.class, false));
+                            emitter.onNext(progressManager.increaseProgress(SystemInfo.class, false));
 
-                        systemSettingDownloader.downloadMetadata().call();
-                        emitter.onNext(progressManager.increaseProgress(SystemSetting.class, false));
-
-
-                        User user = userModuleDownloader.downloadMetadata().call();
-                        emitter.onNext(progressManager.increaseProgress(User.class, false));
+                            systemSettingDownloader.downloadMetadata().call();
+                            emitter.onNext(progressManager.increaseProgress(SystemSetting.class, false));
 
 
-                        List<OrganisationUnit> orgUnits = organisationUnitModuleDownloader.downloadMetadata(user)
-                                .call();
-                        emitter.onNext(progressManager.increaseProgress(OrganisationUnit.class, false));
+                            User user = userModuleDownloader.downloadMetadata().call();
+                            emitter.onNext(progressManager.increaseProgress(User.class, false));
 
 
-                        programDownloader.downloadMetadata(MetadataHelper.getOrgUnitsProgramUids(orgUnits)).call();
-                        emitter.onNext(progressManager.increaseProgress(Program.class, false));
+                            List<OrganisationUnit> orgUnits = organisationUnitModuleDownloader.downloadMetadata(user)
+                                    .call();
+                            emitter.onNext(progressManager.increaseProgress(OrganisationUnit.class, false));
 
 
-                        dataSetDownloader.downloadMetadata(MetadataHelper.getOrgUnitsDataSetUids(orgUnits)).call();
-                        emitter.onNext(progressManager.increaseProgress(DataSet.class, false));
+                            programDownloader.downloadMetadata(MetadataHelper.getOrgUnitsProgramUids(orgUnits)).call();
+                            emitter.onNext(progressManager.increaseProgress(Program.class, false));
 
 
-                        categoryDownloader.downloadMetadata().call();
-                        emitter.onNext(progressManager.increaseProgress(Category.class, false));
+                            dataSetDownloader.downloadMetadata(MetadataHelper.getOrgUnitsDataSetUids(orgUnits)).call();
+                            emitter.onNext(progressManager.increaseProgress(DataSet.class, false));
 
 
-                        constantModuleDownloader.downloadMetadata().call();
-                        emitter.onNext(progressManager.increaseProgress(Constant.class, false));
+                            categoryDownloader.downloadMetadata().call();
+                            emitter.onNext(progressManager.increaseProgress(Category.class, false));
 
 
-                        smsModule.configCase().refreshMetadataIdsCallable().call();
-                        emitter.onNext(progressManager.increaseProgress(SmsModule.class, false));
+                            constantModuleDownloader.downloadMetadata().call();
+                            emitter.onNext(progressManager.increaseProgress(Constant.class, false));
 
-                        emitter.onComplete();
 
-                    })), true);
-        });
+                            smsModule.configCase().refreshMetadataIdsCallable().call();
+                            emitter.onNext(progressManager.increaseProgress(SmsModule.class, false));
+
+                            emitter.onComplete();
+
+                        })), true));
+    }
+
+    private Completable changeEncryptionIfRequired() {
+        return generalSettingCall.isDatabaseEncrypted()
+                .doOnSuccess(encrypt ->
+                        multiUserDatabaseManager.changeEncryptionIfRequired(credentialsSecureStore.get(), encrypt))
+                .ignoreElement()
+                .onErrorComplete();
     }
 
     public void blockingDownload() {

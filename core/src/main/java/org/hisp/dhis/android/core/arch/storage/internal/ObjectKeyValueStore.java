@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.storage.internal;
 
-public interface ObjectSecureStore<O> {
+public interface ObjectKeyValueStore<O> {
 
     void set(O o);
 

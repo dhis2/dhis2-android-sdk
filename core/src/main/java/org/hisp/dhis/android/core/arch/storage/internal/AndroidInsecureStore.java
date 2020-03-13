@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -25,25 +26,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.arch.storage.internal;
 
-import java.security.SecureRandom;
-import java.util.Random;
+import android.content.Context;
+import android.content.SharedPreferences;
 
-class DatabaseEncryptionPasswordGenerator {
+import androidx.annotation.NonNull;
 
-    private final Random random = new SecureRandom();
+public final class AndroidInsecureStore implements InsecureStore {
 
-    private static final String ALLOWED_CHARS = "0123456789" + "abcdefghijklmnopqrstuvwxyz"
-            + "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    private static final int CODESIZE = 32;
+    private static final String PREFERENCES_FILE = "preferences";
 
-    public String generate() {
-        char[] randomChars = new char[CODESIZE];
-        for (int i = 0; i < CODESIZE; ++i) {
-            randomChars[i] = ALLOWED_CHARS.charAt(random.nextInt(ALLOWED_CHARS.length()));
-        }
+    private final SharedPreferences preferences;
 
-        return new String(randomChars);
+    public AndroidInsecureStore(Context context) {
+        preferences = context.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE);
+    }
+
+    public void setData(@NonNull String key, @NonNull String data) {
+        preferences.edit()
+                .putString(key, data)
+                .apply();
+    }
+
+    public String getData(@NonNull String key) {
+        return preferences.getString(key, null);
+
+    }
+
+    public void removeData(String key) {
+        preferences.edit()
+                .remove(key)
+                .apply();
     }
 }

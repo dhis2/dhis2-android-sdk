@@ -28,57 +28,24 @@
 
 package org.hisp.dhis.android.core.arch.storage.internal;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import androidx.annotation.NonNull;
 
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory;
+import java.util.HashMap;
+import java.util.Map;
 
-import java.io.IOException;
+public final class InMemoryUnsecureStore implements InsecureStore {
 
-@SuppressWarnings({"PMD.PreserveStackTrace"})
-public class  JsonSecureStoreImpl<O> implements ObjectSecureStore<O> {
+    private final Map<String, String> dataMap = new HashMap<>();
 
-    private final SecureStore secureStore;
-    private final String key;
-    private final Class<O> clazz;
-
-    private O object;
-
-    public JsonSecureStoreImpl(SecureStore secureStore, String key, Class<O> clazz) {
-        this.secureStore = secureStore;
-        this.key = key;
-        this.clazz = clazz;
+    public void setData(@NonNull String key, @NonNull String data) {
+        dataMap.put(key, data);
     }
 
-    public void set(O o) {
-        try {
-            String strObject = ObjectMapperFactory.objectMapper().writeValueAsString(o);
-            this.secureStore.setData(key, strObject);
-            this.object = o;
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Couldn't persist object in secure store");
-        }
+    public String getData(@NonNull String key) {
+        return dataMap.get(key);
     }
 
-    public O get() {
-        if (this.object == null) {
-            String strObject = this.secureStore.getData(key);
-            if (strObject == null) {
-                return null;
-            } else {
-                try {
-                    return ObjectMapperFactory.objectMapper().readValue(strObject, clazz);
-                } catch (IOException e) {
-                    throw new RuntimeException("Couldn't read object from secure store");
-                }
-            }
-
-        } else {
-            return this.object;
-        }
-    }
-
-    public void remove() {
-        this.object = null;
-        this.secureStore.removeData(key);
+    public void removeData(String key) {
+        dataMap.remove(key);
     }
 }

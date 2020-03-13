@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.arch.api.authentication.internal;
 
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,7 +55,7 @@ import static org.mockito.Mockito.when;
 public class BasicAuthenticatorShould {
 
     @Mock
-    private ObjectSecureStore<Credentials> credentialsSecureStore;
+    private ObjectKeyValueStore<Credentials> credentialsSecureStore;
 
     private MockWebServer mockWebServer;
     private OkHttpClient okHttpClient;

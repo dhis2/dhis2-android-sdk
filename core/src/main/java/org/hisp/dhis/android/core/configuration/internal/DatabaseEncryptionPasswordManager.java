@@ -28,17 +28,30 @@
 
 package org.hisp.dhis.android.core.configuration.internal;
 
-import org.hisp.dhis.android.core.arch.storage.internal.JsonSecureStoreImpl;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 
-public final class DatabaseConfigurationSecureStore {
+public final class DatabaseEncryptionPasswordManager {
 
-    public static ObjectSecureStore<DatabasesConfiguration> get(SecureStore secureStore) {
-        return new JsonSecureStoreImpl<>(secureStore, "DB_CONFIGS", DatabasesConfiguration.class);
+    private final SecureStore secureStore;
+    private final DatabaseEncryptionPasswordGenerator passwordGenerator;
+
+    private DatabaseEncryptionPasswordManager(SecureStore secureStore,
+                                              DatabaseEncryptionPasswordGenerator passwordGenerator) {
+        this.secureStore = secureStore;
+        this.passwordGenerator = passwordGenerator;
     }
 
-    private DatabaseConfigurationSecureStore() {
+    public String getEncryptionPassword(String databaseName) {
+        String key = "DBPW_<>_" + databaseName;
+        String existingPassword = secureStore.getData(key);
+        if (existingPassword == null) {
+            secureStore.setData(key, passwordGenerator.generate());
+        }
 
+        return secureStore.getData(key);
+    }
+
+    public static DatabaseEncryptionPasswordManager create(SecureStore secureStore) {
+        return new DatabaseEncryptionPasswordManager(secureStore, new DatabaseEncryptionPasswordGenerator());
     }
 }

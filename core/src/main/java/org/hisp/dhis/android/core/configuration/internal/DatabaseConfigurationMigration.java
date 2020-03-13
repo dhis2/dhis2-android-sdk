@@ -32,7 +32,8 @@ import android.content.Context;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.internal.UserCredentialsStore;
@@ -43,16 +44,16 @@ class DatabaseConfigurationMigration {
     static final String OLD_DBNAME = "dhis.db";
 
     private final Context context;
-    private final ObjectSecureStore<Configuration> oldConfigurationStore;
-    private final ObjectSecureStore<DatabasesConfiguration> newConfigurationStore;
+    private final ObjectKeyValueStore<Configuration> oldConfigurationStore;
+    private final ObjectKeyValueStore<DatabasesConfiguration> newConfigurationStore;
     private final DatabaseConfigurationTransformer transformer;
     private final DatabaseNameGenerator nameGenerator;
     private final DatabaseRenamer renamer;
     private final DatabaseAdapterFactory databaseAdapterFactory;
 
     DatabaseConfigurationMigration(Context context,
-                                   ObjectSecureStore<Configuration> oldConfigurationStore,
-                                   ObjectSecureStore<DatabasesConfiguration> newConfigurationStore,
+                                   ObjectKeyValueStore<Configuration> oldConfigurationStore,
+                                   ObjectKeyValueStore<DatabasesConfiguration> newConfigurationStore,
                                    DatabaseConfigurationTransformer transformer,
                                    DatabaseNameGenerator nameGenerator,
                                    DatabaseRenamer renamer,
@@ -94,12 +95,14 @@ class DatabaseConfigurationMigration {
         }
     }
 
-    static DatabaseConfigurationMigration create(Context context, SecureStore secureStore,
+    static DatabaseConfigurationMigration create(Context context,
+                                                 SecureStore secureStore,
+                                                 InsecureStore insecureStore,
                                                  DatabaseAdapterFactory databaseAdapterFactory) {
         return new DatabaseConfigurationMigration(
                 context,
                 new ConfigurationSecureStoreImpl(secureStore),
-                DatabaseConfigurationSecureStore.get(secureStore),
+                DatabaseConfigurationInsecureStore.get(insecureStore),
                 new DatabaseConfigurationTransformer(),
                 new DatabaseNameGenerator(),
                 new DatabaseRenamer(context),

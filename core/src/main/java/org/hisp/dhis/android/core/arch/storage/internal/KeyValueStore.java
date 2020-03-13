@@ -26,42 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration.internal;
+package org.hisp.dhis.android.core.arch.storage.internal;
 
-import androidx.annotation.NonNull;
+public interface KeyValueStore {
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
+    void setData(String key, String data);
 
-import java.util.HashMap;
-import java.util.Map;
+    String getData(String key);
 
-@AutoValue
-@JsonDeserialize(builder = AutoValue_DatabasesEncryptionPasswords.Builder.class)
-public abstract class DatabasesEncryptionPasswords {
-
-    @JsonProperty()
-    @NonNull
-    public abstract Map<String, String> passwords();
-
-    public static Builder builder() {
-        return new AutoValue_DatabasesEncryptionPasswords.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    public static DatabasesEncryptionPasswords empty() {
-        return DatabasesEncryptionPasswords.builder().passwords(new HashMap<>()).build();
-    }
-
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-
-        public abstract Builder passwords(Map<String, String> passwords);
-
-        public abstract DatabasesEncryptionPasswords build();
-    }
+    void removeData(String key);
 }

@@ -28,16 +28,17 @@
 
 package org.hisp.dhis.android.core.configuration.internal;
 
-import org.hisp.dhis.android.core.arch.storage.internal.JsonSecureStoreImpl;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
-import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.JsonKeyValueStoreImpl;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 
-public final class DatabaseEncryptionPasswordsSecureStore {
+public final class DatabaseConfigurationInsecureStore {
 
-    public static ObjectSecureStore<DatabasesEncryptionPasswords> get(SecureStore secureStore) {
-        return new JsonSecureStoreImpl<>(secureStore, "DB_ENCRYPTION_PWS", DatabasesEncryptionPasswords.class);
+    public static ObjectKeyValueStore<DatabasesConfiguration> get(InsecureStore insecureStore) {
+        return new JsonKeyValueStoreImpl<>(insecureStore, "DB_CONFIGS", DatabasesConfiguration.class);
     }
 
-    private DatabaseEncryptionPasswordsSecureStore() {
+    private DatabaseConfigurationInsecureStore() {
+
     }
 }

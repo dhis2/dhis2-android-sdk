@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.note.internal;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.note.Note;
@@ -46,10 +46,10 @@ import dagger.Reusable;
 @Reusable
 final class NoteProjectionTransformer implements Transformer<NoteCreateProjection, Note> {
 
-    private final ObjectSecureStore<Credentials> credentialsSecureStore;
+    private final ObjectKeyValueStore<Credentials> credentialsSecureStore;
 
     @Inject
-    NoteProjectionTransformer(ObjectSecureStore<Credentials> credentialsSecureStore) {
+    NoteProjectionTransformer(ObjectKeyValueStore<Credentials> credentialsSecureStore) {
         this.credentialsSecureStore = credentialsSecureStore;
     }
 

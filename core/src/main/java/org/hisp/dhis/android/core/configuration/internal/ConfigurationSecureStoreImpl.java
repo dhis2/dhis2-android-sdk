@@ -31,12 +31,12 @@ package org.hisp.dhis.android.core.configuration.internal;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 
 import okhttp3.HttpUrl;
 
-public final class ConfigurationSecureStoreImpl implements ObjectSecureStore<Configuration> {
+public final class ConfigurationSecureStoreImpl implements ObjectKeyValueStore<Configuration> {
 
     private static final String SERVER_URL = "server_url";
 

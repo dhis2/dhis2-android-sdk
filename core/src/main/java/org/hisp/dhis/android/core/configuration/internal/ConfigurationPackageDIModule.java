@@ -31,7 +31,8 @@ package org.hisp.dhis.android.core.configuration.internal;
 import android.content.Context;
 
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 import org.hisp.dhis.android.core.constant.ConstantModule;
 import org.hisp.dhis.android.core.constant.internal.ConstantModuleImpl;
@@ -45,14 +46,8 @@ public final class ConfigurationPackageDIModule {
 
     @Provides
     @Reusable
-    ObjectSecureStore<DatabasesConfiguration> configurationSecureStore(SecureStore secureStore) {
-        return DatabaseConfigurationSecureStore.get(secureStore);
-    }
-
-    @Provides
-    @Reusable
-    ObjectSecureStore<DatabasesEncryptionPasswords> passwordsSecureStore(SecureStore secureStore) {
-        return DatabaseEncryptionPasswordsSecureStore.get(secureStore);
+    ObjectKeyValueStore<DatabasesConfiguration> configurationSecureStore(InsecureStore secureStore) {
+        return DatabaseConfigurationInsecureStore.get(secureStore);
     }
 
     @Provides
@@ -63,9 +58,16 @@ public final class ConfigurationPackageDIModule {
 
     @Provides
     @Reusable
+    DatabaseEncryptionPasswordManager passwordManager(SecureStore secureStore) {
+        return DatabaseEncryptionPasswordManager.create(secureStore);
+    }
+
+    @Provides
+    @Reusable
     DatabaseConfigurationMigration configurationMigration(Context context, SecureStore secureStore,
+                                                          InsecureStore insecureStore,
                                                           DatabaseAdapterFactory adapterFactory) {
-        return DatabaseConfigurationMigration.create(context, secureStore, adapterFactory);
+        return DatabaseConfigurationMigration.create(context, secureStore, insecureStore, adapterFactory);
     }
 
     @Provides

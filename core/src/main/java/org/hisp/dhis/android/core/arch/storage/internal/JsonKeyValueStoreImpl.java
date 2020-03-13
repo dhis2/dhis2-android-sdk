@@ -28,30 +28,57 @@
 
 package org.hisp.dhis.android.core.arch.storage.internal;
 
-import javax.inject.Singleton;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
-import dagger.Module;
-import dagger.Provides;
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory;
 
-@Module
-public class SecureStorageDIModule {
-    private final SecureStore secureStore;
-    private final ObjectSecureStore<Credentials> credentialsSecureStore;
+import java.io.IOException;
 
-    public SecureStorageDIModule(SecureStore secureStore, ObjectSecureStore<Credentials> credentialsSecureStore) {
+@SuppressWarnings({"PMD.PreserveStackTrace"})
+public class JsonKeyValueStoreImpl<O> implements ObjectKeyValueStore<O> {
+
+    private final KeyValueStore secureStore;
+    private final String key;
+    private final Class<O> clazz;
+
+    private O object;
+
+    public JsonKeyValueStoreImpl(KeyValueStore secureStore, String key, Class<O> clazz) {
         this.secureStore = secureStore;
-        this.credentialsSecureStore = credentialsSecureStore;
+        this.key = key;
+        this.clazz = clazz;
     }
 
-    @Provides
-    @Singleton
-    SecureStore secureStore() {
-        return secureStore;
+    public void set(O o) {
+        try {
+            String strObject = ObjectMapperFactory.objectMapper().writeValueAsString(o);
+            this.secureStore.setData(key, strObject);
+            this.object = o;
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Couldn't persist object in key value store");
+        }
     }
 
-    @Provides
-    @Singleton
-    ObjectSecureStore<Credentials> credentialsSecureStore() {
-        return credentialsSecureStore;
+    public O get() {
+        if (this.object == null) {
+            String strObject = this.secureStore.getData(key);
+            if (strObject == null) {
+                return null;
+            } else {
+                try {
+                    return ObjectMapperFactory.objectMapper().readValue(strObject, clazz);
+                } catch (IOException e) {
+                    throw new RuntimeException("Couldn't read object from key value store");
+                }
+            }
+
+        } else {
+            return this.object;
+        }
+    }
+
+    public void remove() {
+        this.object = null;
+        this.secureStore.removeData(key);
     }
 }

@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
- *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,24 +25,25 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.wipe.internal;
+package org.hisp.dhis.android.core.configuration.internal;
 
-import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
-import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
+import java.security.SecureRandom;
+import java.util.Random;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+class DatabaseEncryptionPasswordGenerator {
 
-@Module()
-public final class WipeDIModule {
+    private final Random random = new SecureRandom();
 
-    @Provides
-    @Reusable
-    WipeModule wipeModule(D2CallExecutor d2CallExecutor,
-                          D2ModuleWipers moduleWipers,
-                          ObjectKeyValueStore<Credentials> credentialsSecureStore) {
-        return new WipeModuleImpl(d2CallExecutor, moduleWipers.wipers, credentialsSecureStore);
+    private static final String ALLOWED_CHARS = "0123456789" + "abcdefghijklmnopqrstuvwxyz"
+            + "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private static final int CODESIZE = 32;
+
+    public String generate() {
+        char[] randomChars = new char[CODESIZE];
+        for (int i = 0; i < CODESIZE; ++i) {
+            randomChars[i] = ALLOWED_CHARS.charAt(random.nextInt(ALLOWED_CHARS.length()));
+        }
+
+        return new String(randomChars);
     }
 }

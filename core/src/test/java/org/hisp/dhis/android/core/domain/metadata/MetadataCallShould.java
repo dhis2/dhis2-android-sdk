@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.category.internal.CategoryModuleDownloader;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.common.Unit;
@@ -160,7 +160,7 @@ public class MetadataCallShould extends BaseCallShould {
     private MultiUserDatabaseManager multiUserDatabaseManager;
 
     @Mock
-    private ObjectSecureStore<Credentials> credentialsSecureStore;
+    private ObjectKeyValueStore<Credentials> credentialsSecureStore;
 
     // object to test
     private MetadataCall metadataCall;

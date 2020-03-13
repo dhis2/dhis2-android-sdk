@@ -44,7 +44,7 @@ class DatabaseMigrationParser {
         this.assetManager = assetManager;
     }
 
-    List<List<String>>parseMigrations(int oldVersion, int newVersion) throws IOException {
+    List<List<String>> parseMigrations(int oldVersion, int newVersion) throws IOException {
         List<List<String>> scripts = new ArrayList<>();
 
         int startVersion = oldVersion + 1;
@@ -66,10 +66,10 @@ class DatabaseMigrationParser {
     private List<String> parseFile(String directory, int newVersion) throws IOException {
         String fileName = directory + "/" + newVersion + ".sql";
         InputStream inputStream = assetManager.open(fileName);
-        Scanner sc = new Scanner(inputStream);
+        Scanner sc = new Scanner(inputStream, "UTF-8");
         List<String> lines = new ArrayList<>();
 
-        while(sc.hasNextLine()) {
+        while (sc.hasNextLine()) {
             String line = sc.nextLine();
             if (line.length() > 1 && !line.contains("#")) {
                 lines.add(line);

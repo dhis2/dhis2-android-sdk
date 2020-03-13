@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.configuration.internal;
 
 import android.database.Cursor;
 
+import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
@@ -48,6 +49,7 @@ import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo;
 import org.hisp.dhis.android.core.category.CategoryOptionTableInfo;
 import org.hisp.dhis.android.core.category.CategoryTableInfo;
 import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering;
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRenderingTableInfo;
 import org.hisp.dhis.android.core.constant.Constant;
@@ -199,15 +201,34 @@ import org.hisp.dhis.android.core.user.UserRole;
 import org.hisp.dhis.android.core.user.UserRoleTableInfo;
 import org.hisp.dhis.android.core.user.UserTableInfo;
 
+import java.util.concurrent.Callable;
+
+import javax.inject.Inject;
+
+import dagger.Reusable;
+import io.reactivex.Observable;
+
+@Reusable
 class DatabaseCopy {
+
+    private final RxAPICallExecutor executor;
 
     private DatabaseAdapter adapterFrom;
     private DatabaseAdapter adapterTo;
 
-    DatabaseCopy() {
+    @Inject
+    DatabaseCopy(RxAPICallExecutor executor) {
+        this.executor = executor;
     }
 
     void copyDatabase(DatabaseAdapter adapterFrom, DatabaseAdapter adapterTo) {
+        executor.wrapObservableTransactionally(Observable.fromCallable((Callable<Unit>) () -> {
+            copyDatabaseInternal(adapterFrom, adapterTo);
+            return new Unit();
+        }), true).blockingSubscribe();
+    }
+
+    private void copyDatabaseInternal(DatabaseAdapter adapterFrom, DatabaseAdapter adapterTo) {
         this.adapterFrom = adapterFrom;
         this.adapterTo = adapterTo;
         copyTable(UserTableInfo.TABLE_INFO, User::create);

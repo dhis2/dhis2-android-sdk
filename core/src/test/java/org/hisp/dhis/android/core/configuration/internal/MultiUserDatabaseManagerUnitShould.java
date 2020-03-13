@@ -64,9 +64,6 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
     @Mock
     private DatabaseAdapterFactory databaseAdapterFactory;
 
-    @Mock
-    private DatabaseConfigurationMigration migration;
-
     private final String USERNAME = "username";
     private final String SERVER_URL = "https://dhis2.org";
 
@@ -101,30 +98,7 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
     public void setUp() throws Exception {
         super.setUp();
         manager = new MultiUserDatabaseManager(databaseAdapter, databaseConfigurationSecureStore, configurationHelper,
-                databaseCopy, migration, databaseAdapterFactory);
-    }
-
-    @Test
-    public void call_migration_when_calling_loadIfLogged() {
-        manager.loadIfLogged(credentials);
-        verify(migration).apply();
-    }
-
-    @Test
-    public void not_try_to_load_db_if_not_logged_when_calling_loadIfLogged() {
-        manager.loadIfLogged(null);
-        verifyNoMoreInteractions(databaseAdapterFactory);
-    }
-
-    @Test
-    public void load_db_if_logged_when_calling_loadIfLogged() {
-        when(migration.apply()).thenReturn(databasesConfiguration);
-        when(databasesConfiguration.loggedServerUrl()).thenReturn(SERVER_URL);
-        when(configurationHelper.getLoggedUserConfiguration(databasesConfiguration, USERNAME)).thenReturn(userConfigurationUnencrypted);
-
-        manager.loadIfLogged(credentials);
-
-        verify(databaseAdapterFactory).createOrOpenDatabase(databaseAdapter, userConfigurationUnencrypted);
+                databaseCopy, databaseAdapterFactory);
     }
 
     @Test

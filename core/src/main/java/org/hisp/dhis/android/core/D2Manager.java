@@ -42,7 +42,7 @@ import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreIm
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
-import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager;
+import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManagerForD2Manager;
 
 import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
@@ -113,7 +113,7 @@ public final class D2Manager {
             }
 
             ObjectKeyValueStore<Credentials> credentialsSecureStore = new CredentialsSecureStoreImpl(secureStore);
-            MultiUserDatabaseManager.create(databaseAdapter, d2Config.context(), secureStore, insecureStore,
+            MultiUserDatabaseManagerForD2Manager.create(databaseAdapter, d2Config.context(), secureStore, insecureStore,
                     databaseAdapterFactory)
                     .loadIfLogged(credentialsSecureStore.get());
 

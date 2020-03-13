@@ -72,12 +72,6 @@ public final class ConfigurationPackageDIModule {
 
     @Provides
     @Reusable
-    DatabaseCopy databaseCopy() {
-        return new DatabaseCopy();
-    }
-
-    @Provides
-    @Reusable
     ConstantModule module(ConstantModuleImpl impl) {
         return impl;
     }

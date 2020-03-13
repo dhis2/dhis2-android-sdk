@@ -208,6 +208,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 import io.reactivex.Observable;
 
+@SuppressWarnings("PMD.ExcessiveImports")
 @Reusable
 class DatabaseCopy {
 

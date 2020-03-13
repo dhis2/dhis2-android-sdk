@@ -89,12 +89,22 @@ public class DatabaseAdapterFactory {
                 BaseDatabaseOpenHelper.VERSION);
     }
 
+    public void deleteDatabase(DatabaseUserConfiguration userConfiguration) {
+        context.deleteDatabase(userConfiguration.databaseName());
+        if (userConfiguration.encrypted()) {
+            encryptedOpenHelpers.remove(userConfiguration.databaseName());
+            passwordManager.deletePassword(userConfiguration.databaseName());
+        } else {
+            unencryptedOpenHelpers.remove(userConfiguration.databaseName());
+        }
+    }
+
     private DatabaseAdapter newInternalAdapter(String databaseName, Context context,
                                                       boolean encrypt, int version) {
         if (encrypt) {
             EncryptedDatabaseOpenHelper openHelper = instantiateOpenHelper(databaseName, encryptedOpenHelpers,
                     v -> new EncryptedDatabaseOpenHelper(context, databaseName, version));
-            String password = passwordManager.getEncryptionPassword(databaseName);
+            String password = passwordManager.getPassword(databaseName);
             return new EncryptedDatabaseAdapter(openHelper.getWritableDatabase(password));
         } else {
             UnencryptedDatabaseOpenHelper openHelper = instantiateOpenHelper(databaseName, unencryptedOpenHelpers,

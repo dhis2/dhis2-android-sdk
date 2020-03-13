@@ -56,6 +56,8 @@ public class MultiUserDatabaseManager {
     private final DatabaseConfigurationMigration migration;
     private final DatabaseAdapterFactory databaseAdapterFactory;
 
+    private static int maxServerUserPairs = 1;
+
     @Inject
     MultiUserDatabaseManager(
             @NonNull DatabaseAdapter databaseAdapter,
@@ -74,13 +76,17 @@ public class MultiUserDatabaseManager {
         this.databaseAdapterFactory = databaseAdapterFactory;
     }
 
+    public static void setMaxServerUserPairs(int pairs) {
+        maxServerUserPairs = pairs;
+    }
+
     public static MultiUserDatabaseManager create(DatabaseAdapter databaseAdapter, Context context,
                                                   SecureStore secureStore,
                                                   InsecureStore insecureStore,
                                                   DatabaseAdapterFactory databaseAdapterFactory) {
-        DatabaseConfigurationHelper configHelper = new DatabaseConfigurationHelper(new DatabaseNameGenerator());
         return new MultiUserDatabaseManager(databaseAdapter,
-                DatabaseConfigurationInsecureStore.get(insecureStore), configHelper, context,
+                DatabaseConfigurationInsecureStore.get(insecureStore),
+                DatabaseConfigurationHelper.create(), context,
                 new DatabaseCopy(), DatabaseConfigurationMigration.create(context, secureStore,
                 insecureStore, databaseAdapterFactory), databaseAdapterFactory);
     }
@@ -101,6 +107,15 @@ public class MultiUserDatabaseManager {
         boolean existing = loadExistingChangingEncryptionIfRequired(serverUrl, username, userConfiguration -> encrypt,
                 true);
         if (!existing) {
+            DatabasesConfiguration configuration = databaseConfigurationSecureStore.get();
+            int pairsCount = configurationHelper.countServerUserPairs(configuration);
+            if (pairsCount == maxServerUserPairs) {
+                DatabaseUserConfiguration oldestUserConfig = configurationHelper.getOldestServerUser(configuration);
+                DatabasesConfiguration updatedConfigurations =
+                        configurationHelper.removeServerUserConfiguration(configuration, oldestUserConfig);
+                databaseConfigurationSecureStore.set(updatedConfigurations);
+                databaseAdapterFactory.deleteDatabase(oldestUserConfig);
+            }
             DatabaseUserConfiguration userConfiguration = addNewConfigurationInternal(serverUrl, username, encrypt);
             databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, userConfiguration);
         }

@@ -127,7 +127,8 @@ public class DatabaseConfigurationMigrationIntegrationShould {
 
     @Test
     public void return_existing_new_configuration_if_old_configuration_null() {
-        DatabasesConfiguration newConfiguration = new DatabaseConfigurationHelper(nameGenerator)
+        DatabasesConfiguration newConfiguration = new DatabaseConfigurationHelper(nameGenerator,
+                () -> "2014-06-06T20:44:21.375")
                 .setConfiguration(null, URL_STR, USERNAME, false);
         newConfigurationStore.set(newConfiguration);
         assertThat(migration.apply()).isSameAs(newConfiguration);

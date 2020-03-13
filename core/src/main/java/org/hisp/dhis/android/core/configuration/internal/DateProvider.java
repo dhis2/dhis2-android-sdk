@@ -28,38 +28,6 @@
 
 package org.hisp.dhis.android.core.configuration.internal;
 
-import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
-
-public class DatabaseEncryptionPasswordManager {
-
-    private final SecureStore secureStore;
-    private final DatabaseEncryptionPasswordGenerator passwordGenerator;
-
-    DatabaseEncryptionPasswordManager(SecureStore secureStore,
-                                              DatabaseEncryptionPasswordGenerator passwordGenerator) {
-        this.secureStore = secureStore;
-        this.passwordGenerator = passwordGenerator;
-    }
-
-    private String getKey(String databaseName) {
-        return "DBPW_<>_" + databaseName;
-    }
-
-    public String getPassword(String databaseName) {
-        String key = getKey(databaseName);
-        String existingPassword = secureStore.getData(key);
-        if (existingPassword == null) {
-            secureStore.setData(key, passwordGenerator.generate());
-        }
-
-        return secureStore.getData(key);
-    }
-
-    public void deletePassword(String databaseName) {
-        secureStore.removeData(getKey(databaseName));
-    }
-
-    public static DatabaseEncryptionPasswordManager create(SecureStore secureStore) {
-        return new DatabaseEncryptionPasswordManager(secureStore, new DatabaseEncryptionPasswordGenerator());
-    }
+interface DateProvider {
+   String getDateStr();
 }

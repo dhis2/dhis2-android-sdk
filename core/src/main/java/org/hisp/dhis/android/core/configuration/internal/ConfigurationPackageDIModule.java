@@ -53,7 +53,7 @@ public final class ConfigurationPackageDIModule {
     @Provides
     @Reusable
     DatabaseConfigurationHelper configurationHelper() {
-        return new DatabaseConfigurationHelper(new DatabaseNameGenerator());
+        return DatabaseConfigurationHelper.create();
     }
 
     @Provides

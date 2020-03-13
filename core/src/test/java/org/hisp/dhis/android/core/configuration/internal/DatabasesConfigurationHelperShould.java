@@ -46,23 +46,27 @@ public class DatabasesConfigurationHelperShould {
     private String DB_NAME_11 = nameGenerator.getDatabaseName(URL_1, USERNAME_1, false);
     private String DB_NAME_12 = nameGenerator.getDatabaseName(URL_1, USERNAME_2, false);
     private String DB_NAME_22 = nameGenerator.getDatabaseName(URL_2, USERNAME_2, false);
+    private static final String DATE = "2014-06-06T20:44:21.375";
 
     private DatabaseUserConfiguration USER_CONFIG_11 = DatabaseUserConfiguration.builder()
             .username(USERNAME_1)
             .databaseName(DB_NAME_11)
             .encrypted(false)
+            .databaseCreationDate(DATE)
             .build();
 
     private DatabaseUserConfiguration USER_CONFIG_12 = DatabaseUserConfiguration.builder()
             .username(USERNAME_2)
             .databaseName(DB_NAME_12)
             .encrypted(false)
+            .databaseCreationDate(DATE)
             .build();
 
     private DatabaseUserConfiguration USER_CONFIG_22 = DatabaseUserConfiguration.builder()
             .username(USERNAME_2)
             .databaseName(DB_NAME_22)
             .encrypted(false)
+            .databaseCreationDate(DATE)
             .build();
 
     private DatabasesConfiguration SINGLE_SERVER_SINGLE_USER_CONFIG = DatabasesConfiguration.builder()
@@ -105,7 +109,7 @@ public class DatabasesConfigurationHelperShould {
                             .build()
             )).build();
 
-    private DatabaseConfigurationHelper helper = new DatabaseConfigurationHelper(nameGenerator);
+    private DatabaseConfigurationHelper helper = new DatabaseConfigurationHelper(nameGenerator, () -> DATE);
 
     @Test
     public void get_logged_configuration_when_one_server_user() {

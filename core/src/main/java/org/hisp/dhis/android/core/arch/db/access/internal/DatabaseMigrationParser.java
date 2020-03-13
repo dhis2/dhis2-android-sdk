@@ -64,7 +64,7 @@ class DatabaseMigrationParser {
     }
 
     private List<String> parseFile(String directory, int newVersion) throws IOException {
-        String fileName = directory + "/" + newVersion + ".yaml";
+        String fileName = directory + "/" + newVersion + ".sql";
         InputStream inputStream = assetManager.open(fileName);
         Scanner sc = new Scanner(inputStream);
         List<String> lines = new ArrayList<>();

@@ -1,2 +1,1 @@
-up:
-- ALTER TABLE SystemInfo ADD COLUMN systemName TEXT;
+ALTER TABLE SystemInfo ADD COLUMN systemName TEXT;

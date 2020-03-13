@@ -1,2 +1,1 @@
-up:
-- ALTER TABLE CategoryCategoryOptionLink ADD COLUMN sortOrder INTEGER;
+ALTER TABLE CategoryCategoryOptionLink ADD COLUMN sortOrder INTEGER;

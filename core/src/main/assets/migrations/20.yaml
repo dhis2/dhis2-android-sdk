@@ -1,2 +1,1 @@
-up:
-- ALTER TABLE DataValue ADD COLUMN state TEXT;
+ALTER TABLE DataValue ADD COLUMN state TEXT;

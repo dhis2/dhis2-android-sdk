@@ -1,2 +1,1 @@
-up:
-- ALTER TABLE SectionDataElementLink ADD COLUMN sortOrder INTEGER;
+ALTER TABLE SectionDataElementLink ADD COLUMN sortOrder INTEGER;

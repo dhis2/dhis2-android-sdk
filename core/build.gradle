@@ -75,9 +75,6 @@ ext {
             // plugins
             errorpronecore  : "2.0.15",
 
-            //migrations
-            snakeyaml  : "1.25",
-
             // google
             safetynet  : "16.0.0",
     ]
@@ -152,8 +149,6 @@ dependencies {
 
     api "io.reactivex.rxjava2:rxjava:${libraries.rxjava}"
     api "io.reactivex.rxjava2:rxandroid:${libraries.rxandroid}"
-
-    api "org.yaml:snakeyaml:${libraries.snakeyaml}"
 
     // Support libraries
     api "androidx.annotation:annotation:${libraries.support}"

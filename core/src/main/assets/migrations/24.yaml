@@ -1,2 +1,1 @@
-up:
-- ALTER TABLE CategoryCategoryComboLink ADD COLUMN sortOrder INTEGER;
+ALTER TABLE CategoryCategoryComboLink ADD COLUMN sortOrder INTEGER;

@@ -30,13 +30,11 @@ package org.hisp.dhis.android.core.arch.db.access.internal;
 
 import android.content.res.AssetManager;
 
-import org.yaml.snakeyaml.Yaml;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Scanner;
 
 class DatabaseMigrationParser {
 
@@ -46,29 +44,38 @@ class DatabaseMigrationParser {
         this.assetManager = assetManager;
     }
 
-    List<Map<String, List<String>>> parseMigrations(int oldVersion, int newVersion) throws IOException {
-        List<Map<String, List<String>>> scripts = new ArrayList<>();
+    List<List<String>>parseMigrations(int oldVersion, int newVersion) throws IOException {
+        List<List<String>> scripts = new ArrayList<>();
 
         int startVersion = oldVersion + 1;
         for (int i = startVersion; i <= newVersion; i++) {
-            Map<String, List<String>> script = this.parseMigration(i);
-            scripts.add(script);
+            scripts.add(this.parseMigration(i));
         }
 
         return scripts;
     }
 
-    Map<String, List<String>> parseSnapshot(int version) throws IOException {
+    List<String> parseSnapshot(int version) throws IOException {
         return parseFile("snapshots", version);
     }
 
-    private Map<String, List<String>> parseMigration(int version) throws IOException {
+    private List<String> parseMigration(int version) throws IOException {
         return parseFile("migrations", version);
     }
 
-    private Map<String, List<String>> parseFile(String directory, int newVersion) throws IOException {
+    private List<String> parseFile(String directory, int newVersion) throws IOException {
         String fileName = directory + "/" + newVersion + ".yaml";
         InputStream inputStream = assetManager.open(fileName);
-        return new Yaml().load(inputStream);
+        Scanner sc = new Scanner(inputStream);
+        List<String> lines = new ArrayList<>();
+
+        while(sc.hasNextLine()) {
+            String line = sc.nextLine();
+            if (line.length() > 1 && !line.contains("#")) {
+                lines.add(line);
+            }
+        }
+        sc.close();
+        return lines;
     }
 }

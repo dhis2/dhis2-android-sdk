@@ -1,2 +1,1 @@
-up:
-- ALTER TABLE ProgramStageSectionProgramIndicatorLinkTable RENAME TO ProgramStageSectionProgramIndicatorLink;
+ALTER TABLE ProgramStageSectionProgramIndicatorLinkTable RENAME TO ProgramStageSectionProgramIndicatorLink;

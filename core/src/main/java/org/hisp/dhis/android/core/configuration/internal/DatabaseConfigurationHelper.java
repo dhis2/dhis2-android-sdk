@@ -103,11 +103,19 @@ class DatabaseConfigurationHelper {
 
     private DatabaseServerConfiguration getServerConfiguration(DatabasesConfiguration configuration, String serverUrl) {
         for (DatabaseServerConfiguration server: configuration.servers()) {
-            if (server.serverUrl().equals(serverUrl)) {
+            if (equalsIgnoreProtocol(server.serverUrl(), serverUrl)) {
                 return server;
             }
         }
         return null;
+    }
+
+    private String removeProtocol(String s) {
+        return s.replace("https://", "").replace("http://", "");
+    }
+
+    private boolean equalsIgnoreProtocol(String s1, String s2) {
+        return removeProtocol(s1).equals(removeProtocol(s2));
     }
 
     DatabasesConfiguration setConfiguration(DatabasesConfiguration configuration, String serverUrl,

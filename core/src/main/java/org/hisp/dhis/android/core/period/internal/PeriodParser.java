@@ -136,7 +136,7 @@ public class PeriodParser {
             case FinancialOct:
                 return getDateTimeFromMonth(year, Calendar.OCTOBER, calendar);
             case FinancialNov:
-                return getDateTimeFromMonth(year, Calendar.NOVEMBER, calendar);
+                return getDateTimeFromMonth(year - 1, Calendar.NOVEMBER, calendar);
             default:
                 return null;
         }

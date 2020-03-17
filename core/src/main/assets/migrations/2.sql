@@ -1,0 +1,1 @@
+CREATE TABLE TrackedEntityAttributeReservedValue (_id INTEGER PRIMARY KEY AUTOINCREMENT, ownerObject TEXT, ownerUid TEXT, key TEXT, value TEXT, created TEXT, expiryDate TEXT, organisationUnit TEXT);

@@ -1,0 +1,1 @@
+ALTER TABLE DataValue ADD COLUMN state TEXT;

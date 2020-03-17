@@ -1,0 +1,1 @@
+ALTER TABLE CategoryCategoryOptionLink ADD COLUMN sortOrder INTEGER;

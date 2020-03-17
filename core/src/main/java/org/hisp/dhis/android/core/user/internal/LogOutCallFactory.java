@@ -33,7 +33,7 @@ import androidx.annotation.NonNull;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
@@ -48,12 +48,12 @@ public final class LogOutCallFactory {
     private final DatabaseAdapterFactory databaseAdapterFactory;
 
     @NonNull
-    private final ObjectSecureStore<Credentials> credentialsSecureStore;
+    private final ObjectKeyValueStore<Credentials> credentialsSecureStore;
 
     @Inject
     LogOutCallFactory(@NonNull DatabaseAdapter databaseAdapter,
                       @NonNull DatabaseAdapterFactory databaseAdapterFactory,
-                      @NonNull ObjectSecureStore<Credentials> credentialsSecureStore) {
+                      @NonNull ObjectKeyValueStore<Credentials> credentialsSecureStore) {
         this.databaseAdapter = databaseAdapter;
         this.databaseAdapterFactory = databaseAdapterFactory;
         this.credentialsSecureStore = credentialsSecureStore;

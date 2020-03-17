@@ -1,0 +1,3 @@
+CREATE TABLE CategoryOptionComboCategoryOptionLink (_id INTEGER PRIMARY KEY AUTOINCREMENT, categoryOptionCombo TEXT NOT NULL, categoryOption TEXT NOT NULL, FOREIGN KEY (categoryOptionCombo) REFERENCES CategoryOptionCombo (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (categoryOption) REFERENCES CategoryOption (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, UNIQUE (categoryOptionCombo, categoryOption));
+INSERT INTO CategoryOptionComboCategoryOptionLink (_id, categoryOptionCombo, categoryOption) SELECT _id, categoryOptionCombo, category FROM CategoryOptionComboCategoryLink;
+DROP TABLE IF EXISTS CategoryOptionComboCategoryLink;

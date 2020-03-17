@@ -33,7 +33,7 @@ import android.content.Context;
 import androidx.test.InstrumentationRegistry;
 
 import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.data.configuration.ConfigurationSamples;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Before;
@@ -50,7 +50,7 @@ import static com.google.common.truth.Truth.assertThat;
 public class ConfigurationSecureStoreIntegrationShould {
 
     private final Configuration configuration;
-    private final ObjectSecureStore<Configuration> configurationSecureStore;
+    private final ObjectKeyValueStore<Configuration> configurationSecureStore;
 
     public ConfigurationSecureStoreIntegrationShould() {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();

@@ -40,8 +40,9 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.di.internal.RepositoriesDIModule;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
-import org.hisp.dhis.android.core.arch.storage.internal.SecureStorageDIModule;
+import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.KeyValueStorageDIModule;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.category.internal.CategoryPackageDIModule;
@@ -95,7 +96,7 @@ import retrofit2.Retrofit;
         AppContextDIModule.class,
         APIClientDIModule.class,
         DatabaseDIModule.class,
-        SecureStorageDIModule.class,
+        KeyValueStorageDIModule.class,
         WipeDIModule.class,
         RepositoriesDIModule.class,
 
@@ -157,14 +158,14 @@ public interface D2DIComponent {
     @VisibleForTesting
     IdentifiableObjectStore<CategoryOption> categoryOptionStore();
     @VisibleForTesting
-    ObjectSecureStore<Credentials> credentialsSecureStore();
+    ObjectKeyValueStore<Credentials> credentialsSecureStore();
 
     @Component.Builder
     interface Builder {
         Builder appContextDIModule(AppContextDIModule appContextDIModule);
         Builder apiClientDIModule(APIClientDIModule apiClientDIModule);
         Builder databaseDIModule(DatabaseDIModule databaseDIModule);
-        Builder secureStorageDIModule(SecureStorageDIModule secureStoregeDIModule);
+        Builder secureStorageDIModule(KeyValueStorageDIModule secureStoregeDIModule);
         Builder wipeDIModule(WipeDIModule wipeDIModule);
         Builder repositoriesDIModule(RepositoriesDIModule repositoriesDIModule);
 
@@ -197,12 +198,13 @@ public interface D2DIComponent {
     }
 
     static D2DIComponent create(Context context, Retrofit retrofit, DatabaseAdapter databaseAdapter,
-                                SecureStore secureStore, ObjectSecureStore<Credentials> credentialsSecureStore) {
+                                SecureStore secureStore, InsecureStore insecureStore,
+                                ObjectKeyValueStore<Credentials> credentialsSecureStore) {
         return DaggerD2DIComponent.builder()
                 .appContextDIModule(new AppContextDIModule(context))
                 .databaseDIModule(new DatabaseDIModule(databaseAdapter))
                 .apiClientDIModule(new APIClientDIModule(retrofit))
-                .secureStorageDIModule(new SecureStorageDIModule(secureStore, credentialsSecureStore))
+                .secureStorageDIModule(new KeyValueStorageDIModule(secureStore, insecureStore, credentialsSecureStore))
                 .build();
     }
 }

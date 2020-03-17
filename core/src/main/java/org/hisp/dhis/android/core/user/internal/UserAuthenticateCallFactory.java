@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager;
 import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -56,6 +56,7 @@ import org.hisp.dhis.android.core.wipe.internal.WipeModule;
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Completable;
 import io.reactivex.Single;
 import okhttp3.HttpUrl;
 import retrofit2.Call;
@@ -72,7 +73,7 @@ public final class UserAuthenticateCallFactory {
 
     private final UserService userService;
 
-    private final ObjectSecureStore<Credentials> credentialsSecureStore;
+    private final ObjectKeyValueStore<Credentials> credentialsSecureStore;
 
     private final Handler<User> userHandler;
     private final ResourceHandler resourceHandler;
@@ -88,7 +89,7 @@ public final class UserAuthenticateCallFactory {
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull APICallExecutor apiCallExecutor,
             @NonNull UserService userService,
-            @NonNull ObjectSecureStore<Credentials> credentialsSecureStore,
+            @NonNull ObjectKeyValueStore<Credentials> credentialsSecureStore,
             @NonNull Handler<User> userHandler,
             @NonNull ResourceHandler resourceHandler,
             @NonNull ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore,
@@ -152,12 +153,10 @@ public final class UserAuthenticateCallFactory {
     }
 
     private User loginOnline(HttpUrl serverUrl, User authenticatedUser, String username, String password) {
-
         credentialsSecureStore.set(Credentials.create(username, password));
-        boolean encrypt = generalSettingCall.isDatabaseEncrypted().blockingGet();
 
-        multiUserDatabaseManager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(serverUrl.toString(),
-                username, encrypt);
+        loadDatabaseOnline(serverUrl, username).blockingAwait();
+
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
             AuthenticatedUser authenticatedUserToStore = buildAuthenticatedUser(authenticatedUser.uid(),
@@ -171,6 +170,18 @@ public final class UserAuthenticateCallFactory {
         } finally {
             transaction.end();
         }
+    }
+
+    private Completable loadDatabaseOnline(HttpUrl serverUrl, String username) {
+        return generalSettingCall.isDatabaseEncrypted()
+                .doOnSuccess(encrypt ->
+                        multiUserDatabaseManager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(
+                                serverUrl.toString(), username, encrypt))
+                .doOnError(error ->
+                        multiUserDatabaseManager.loadExistingKeepingEncryptionOtherwiseCreateNew(
+                                serverUrl.toString(), username, false))
+                .ignoreElement()
+                .onErrorComplete();
     }
 
     private D2Error noUserOfflineError() {

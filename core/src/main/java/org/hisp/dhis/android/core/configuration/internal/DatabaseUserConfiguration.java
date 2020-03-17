@@ -49,6 +49,10 @@ public abstract class DatabaseUserConfiguration {
 
     @JsonProperty()
     @NonNull
+    public abstract String databaseCreationDate();
+
+    @JsonProperty()
+    @NonNull
     public abstract boolean encrypted();
 
     public abstract Builder toBuilder();
@@ -66,6 +70,8 @@ public abstract class DatabaseUserConfiguration {
         public abstract Builder databaseName(String databaseName);
 
         public abstract Builder encrypted(boolean encrypted);
+
+        public abstract Builder databaseCreationDate(String databaseCreationDate);
 
         public abstract DatabaseUserConfiguration build();
     }

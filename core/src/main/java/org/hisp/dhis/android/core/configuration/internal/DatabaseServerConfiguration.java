@@ -53,6 +53,8 @@ public abstract class DatabaseServerConfiguration {
         return new AutoValue_DatabaseServerConfiguration.Builder();
     }
 
+    public abstract Builder toBuilder();
+
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {

@@ -40,7 +40,7 @@ import static com.google.common.truth.Truth.assertThat;
 @RunWith(D2JunitRunner.class)
 public class CredentialsSecureStorageMockIntegrationShould {
 
-    private ObjectSecureStore<Credentials> credentialsSecureStore;
+    private ObjectKeyValueStore<Credentials> credentialsSecureStore;
 
     @Before
     public void setUp() {

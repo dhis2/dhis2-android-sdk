@@ -26,46 +26,35 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.period.internal;
+package org.hisp.dhis.android.core.period;
 
-import org.hisp.dhis.android.core.period.PeriodType;
+import com.google.common.collect.Lists;
 
-import java.util.Calendar;
-import java.util.Date;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher;
+import org.junit.AfterClass;
 
-final class YearlyPeriodGenerator extends AbstractPeriodGenerator {
-    private final int firstMonth;
-    private final String suffix;
+import java.util.List;
 
-    YearlyPeriodGenerator(Calendar calendar, PeriodType periodType, int firstMonth, String suffix) {
-        super(calendar, "yyyy", periodType);
-        this.firstMonth = firstMonth;
-        this.suffix = suffix;
+import static com.google.common.truth.Truth.assertThat;
+
+public class PeriodParserMockIntegrationShould extends BaseMockIntegrationTestEmptyDispatcher {
+
+    private final List<String> PERIOD_ID_LIST = Lists.newArrayList(
+            "20200315", "2020W10", "2020W53", "2020WedW5",
+            "2020ThuW6", "2020SatW7", "2020SunW8", "2020BiW1", "202003","202012",
+            "202001B", "2020Q1","2020Q4", "2020S1", "2020AprilS1", "2020NovS1", "2020NovS2", "2020",
+            "2020April", "2020July", "2020Oct", "2020Nov");
+
+    @AfterClass
+    public static void tearDown() {
+        d2.databaseAdapter().delete(PeriodTableInfo.TABLE_INFO.name());
     }
 
-    @Override
-    protected void moveToStartOfCurrentPeriod() {
-        calendar.set(Calendar.DATE, 1);
-        if (calendar.get(Calendar.MONTH) < firstMonth) {
-            calendar.add(Calendar.YEAR, -1);
+    //@Test
+    public void get_period_passing_period_id() {
+        for (String periodId : PERIOD_ID_LIST) {
+            Period period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId(periodId);
+            assertThat(period.periodId()).isEqualTo(periodId);
         }
-        calendar.set(Calendar.MONTH, firstMonth);
-    }
-
-    @Override
-    protected String generateId() {
-        if (periodType == PeriodType.FinancialNov) {
-            calendar.add(Calendar.YEAR, +1);
-            Date date = calendar.getTime();
-            calendar.add(Calendar.YEAR, -1);
-            return idFormatter.format(date) + suffix;
-        } else {
-            return idFormatter.format(calendar.getTime())+ suffix;
-        }
-    }
-
-    @Override
-    protected void movePeriods(int number) {
-        calendar.add(Calendar.YEAR, number);
     }
 }

@@ -28,33 +28,38 @@
 
 package org.hisp.dhis.android.core.period;
 
+import java.util.Calendar;
+
 public enum PeriodType {
-    Daily(59, 1),
-    Weekly(12, 1),
-    WeeklyWednesday(12, 1),
-    WeeklyThursday(12, 1),
-    WeeklySaturday(12, 1),
-    WeeklySunday(12, 1),
-    BiWeekly(12, 1),
-    Monthly(11, 1),
-    BiMonthly(5, 1),
-    Quarterly(4, 1),
-    SixMonthly(4, 1),
-    SixMonthlyApril(4, 1),
-    SixMonthlyNov(4, 1),
-    Yearly(4, 1),
-    FinancialApril(4, 1),
-    FinancialJuly(4, 1),
-    FinancialOct(4, 1),
-    FinancialNov(4, 1);
+    Daily(59, 1, "\\b(\\d{4})(\\d{2})(\\d{2})\\b"),
+    Weekly(12, 1, "\\b(\\d{4})W(\\d[\\d]?)\\b"),
+    WeeklyWednesday(12, 1, "\\b(\\d{4})WedW(\\d[\\d]?)\\b"),
+    WeeklyThursday(12, 1, "\\b(\\d{4})ThuW(\\d[\\d]?)\\b"),
+    WeeklySaturday(12, 1, "\\b(\\d{4})SatW(\\d[\\d]?)\\b"),
+    WeeklySunday(12, 1, "\\b(\\d{4})SunW(\\d[\\d]?)\\b"),
+    BiWeekly(12, 1, "\\b(\\d{4})BiW(\\d[\\d]?)\\b"),
+    Monthly(11, 1, "\\b(\\d{4})[-]?(\\d{2})\\b"),
+    BiMonthly(5, 1, "\\b(\\d{4})(\\d{2})B\\b"),
+    Quarterly(4, 1, "\\b(\\d{4})Q(\\d)\\b"),
+    SixMonthly(4, 1, "\\b(\\d{4})S(\\d)\\b"),
+    SixMonthlyApril(4, 1, "\\b(\\d{4})AprilS(\\d)\\b"),
+    SixMonthlyNov(4, 1, "\\b(\\d{4})NovS(\\d)\\b"),
+    Yearly(4, 1, "\\b(\\d{4})\\b"),
+    FinancialApril(4, 1, "\\b(\\d{4})April\\b"),
+    FinancialJuly(4, 1, "\\b(\\d{4})July\\b"),
+    FinancialOct(4, 1, "\\b(\\d{4})Oct\\b"),
+    FinancialNov(4, 1, "\\b(\\d{4})Nov\\b");
 
     private Integer defaultPastPeriods;
 
     private Integer defaultFuturePeriods;
 
-    PeriodType(Integer defaultPastPeriods, Integer defaultFuturePeriods) {
+    private String pattern;
+
+    PeriodType(Integer defaultPastPeriods, Integer defaultFuturePeriods, String pattern) {
         this.defaultPastPeriods = defaultPastPeriods;
         this.defaultFuturePeriods = defaultFuturePeriods;
+        this.pattern = pattern;
     }
 
     public Integer getDefaultPastPeriods() {
@@ -63,5 +68,34 @@ public enum PeriodType {
 
     public Integer getDefaultFuturePeriods() {
         return this.defaultFuturePeriods;
+    }
+
+    public String getPattern() {
+        return this.pattern;
+    }
+
+    public static PeriodType periodTypeFromPeriodId(String periodId) throws IllegalArgumentException {
+        for (PeriodType type : PeriodType.values()) {
+            if (periodId.matches(type.pattern)) {
+                return type;
+            }
+        }
+
+        throw new IllegalArgumentException("The period id does not match any period type");
+    }
+
+    public static Integer firstDayOfTheWeek(PeriodType periodType) {
+        switch (periodType) {
+            case WeeklySunday:
+                return Calendar.SUNDAY;
+            case WeeklyWednesday:
+                return Calendar.WEDNESDAY;
+            case WeeklyThursday:
+                return Calendar.THURSDAY;
+            case WeeklySaturday:
+                return Calendar.SATURDAY;
+            default:
+                return Calendar.MONDAY;
+        }
     }
 }

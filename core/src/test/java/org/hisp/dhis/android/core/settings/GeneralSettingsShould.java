@@ -52,7 +52,7 @@ public class GeneralSettingsShould extends BaseObjectShould implements ObjectSho
         assertThat(generalSettings.dataSync()).isEqualByComparingTo(DataSyncPeriod.EVERY_24_HOURS);
         assertThat(generalSettings.encryptDB()).isFalse();
         assertThat(generalSettings.lastUpdated()).isEqualTo(BaseIdentifiableObject.parseDate("2020-01-13T16:52:05.144Z"));
-        assertThat(generalSettings.metadataSync()).isEqualByComparingTo(MetadataSyncPeriod.EVERY_DAY);
+        assertThat(generalSettings.metadataSync()).isEqualByComparingTo(MetadataSyncPeriod.EVERY_24_HOURS);
         assertThat(generalSettings.reservedValues()).isEqualTo(100);
         assertThat(generalSettings.numberSmsToSend()).isEqualTo("98456123");
         assertThat(generalSettings.numberSmsConfirmation()).isEqualTo("98456122");

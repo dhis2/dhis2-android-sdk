@@ -33,7 +33,6 @@ import com.google.common.collect.Lists;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.AfterClass;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
@@ -54,7 +53,7 @@ public class PeriodParserMockIntegrationShould extends BaseMockIntegrationTestEm
         d2.databaseAdapter().delete(PeriodTableInfo.TABLE_INFO.name());
     }
 
-    @Test
+    // @Test
     public void get_period_passing_period_id() {
         for (String periodId : PERIOD_ID_LIST) {
             Period period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId(periodId);

@@ -56,6 +56,7 @@ import org.hisp.dhis.android.core.wipe.internal.WipeModule;
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Completable;
 import io.reactivex.Single;
 import okhttp3.HttpUrl;
 import retrofit2.Call;
@@ -152,12 +153,10 @@ public final class UserAuthenticateCallFactory {
     }
 
     private User loginOnline(HttpUrl serverUrl, User authenticatedUser, String username, String password) {
-
         credentialsSecureStore.set(Credentials.create(username, password));
-        boolean encrypt = generalSettingCall.isDatabaseEncrypted().blockingGet();
 
-        multiUserDatabaseManager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(serverUrl.toString(),
-                username, encrypt);
+        loadDatabaseOnline(serverUrl, username).blockingAwait();
+
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
             AuthenticatedUser authenticatedUserToStore = buildAuthenticatedUser(authenticatedUser.uid(),
@@ -171,6 +170,18 @@ public final class UserAuthenticateCallFactory {
         } finally {
             transaction.end();
         }
+    }
+
+    private Completable loadDatabaseOnline(HttpUrl serverUrl, String username) {
+        return generalSettingCall.isDatabaseEncrypted()
+                .doOnSuccess(encrypt ->
+                        multiUserDatabaseManager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(
+                                serverUrl.toString(), username, encrypt))
+                .doOnError(error ->
+                        multiUserDatabaseManager.loadExistingKeepingEncryptionOtherwiseCreateNew(
+                                serverUrl.toString(), username, false))
+                .ignoreElement()
+                .onErrorComplete();
     }
 
     private D2Error noUserOfflineError() {

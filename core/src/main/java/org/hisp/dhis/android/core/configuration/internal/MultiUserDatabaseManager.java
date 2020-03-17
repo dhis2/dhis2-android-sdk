@@ -75,18 +75,30 @@ public class MultiUserDatabaseManager {
         boolean existing = loadExistingChangingEncryptionIfRequired(serverUrl, username, userConfiguration -> encrypt,
                 true);
         if (!existing) {
-            DatabasesConfiguration configuration = databaseConfigurationSecureStore.get();
-            int pairsCount = configurationHelper.countServerUserPairs(configuration);
-            if (pairsCount == maxServerUserPairs) {
-                DatabaseUserConfiguration oldestUserConfig = configurationHelper.getOldestServerUser(configuration);
-                DatabasesConfiguration updatedConfigurations =
-                        configurationHelper.removeServerUserConfiguration(configuration, oldestUserConfig);
-                databaseConfigurationSecureStore.set(updatedConfigurations);
-                databaseAdapterFactory.deleteDatabase(oldestUserConfig);
-            }
-            DatabaseUserConfiguration userConfiguration = addNewConfigurationInternal(serverUrl, username, encrypt);
-            databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, userConfiguration);
+            createNew(serverUrl, username, encrypt);
         }
+    }
+
+    public void loadExistingKeepingEncryptionOtherwiseCreateNew(String serverUrl, String username, boolean encrypt) {
+        boolean existing = loadExistingChangingEncryptionIfRequired(serverUrl, username,
+                DatabaseUserConfiguration::encrypted, true);
+        if (!existing) {
+            createNew(serverUrl, username, encrypt);
+        }
+    }
+
+    private void createNew(String serverUrl, String username, boolean encrypt) {
+        DatabasesConfiguration configuration = databaseConfigurationSecureStore.get();
+        int pairsCount = configurationHelper.countServerUserPairs(configuration);
+        if (pairsCount == maxServerUserPairs) {
+            DatabaseUserConfiguration oldestUserConfig = configurationHelper.getOldestServerUser(configuration);
+            DatabasesConfiguration updatedConfigurations =
+                    configurationHelper.removeServerUserConfiguration(configuration, oldestUserConfig);
+            databaseConfigurationSecureStore.set(updatedConfigurations);
+            databaseAdapterFactory.deleteDatabase(oldestUserConfig);
+        }
+        DatabaseUserConfiguration userConfiguration = addNewConfigurationInternal(serverUrl, username, encrypt);
+        databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, userConfiguration);
     }
 
     public void changeEncryptionIfRequired(Credentials credentials, boolean encrypt) {

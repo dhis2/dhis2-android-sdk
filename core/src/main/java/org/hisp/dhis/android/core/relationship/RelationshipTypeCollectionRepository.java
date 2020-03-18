@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.relationship;
 
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
@@ -35,7 +36,6 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeFields;
 
-import java.util.Collections;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -54,28 +54,20 @@ public final class RelationshipTypeCollectionRepository
                 s -> new RelationshipTypeCollectionRepository(store, childrenAppenders, s)));
     }
 
-    public RelationshipTypeCollectionRepository byFromTrackedEntityType(String trackedEntityTypeUid) {
-        return cf.subQuery(IdentifiableColumns.UID).inLinkTable(
+    public RelationshipTypeCollectionRepository byConstraint(
+            RelationshipEntityType relationshipEntityType,
+            RelationshipConstraintType relationshipConstraintType,
+            String objectUid) {
+        return cf.subQuery(IdentifiableColumns.UID).inTableWhere(
                 RelationshipConstraintTableInfo.TABLE_INFO.name(),
                 RelationshipConstraintTableInfo.Columns.RELATIONSHIP_TYPE,
-                RelationshipConstraintTableInfo.Columns.TRACKED_ENTITY_TYPE,
-                Collections.singletonList(trackedEntityTypeUid));
-    }
-
-    public RelationshipTypeCollectionRepository byFromProgram(String programUid) {
-        return cf.subQuery(IdentifiableColumns.UID).inLinkTable(
-                RelationshipConstraintTableInfo.TABLE_INFO.name(),
-                RelationshipConstraintTableInfo.Columns.RELATIONSHIP_TYPE,
-                RelationshipConstraintTableInfo.Columns.PROGRAM,
-                Collections.singletonList(programUid));
-    }
-
-    public RelationshipTypeCollectionRepository byFromProgramStage(String programStageUid) {
-        return cf.subQuery(IdentifiableColumns.UID).inLinkTable(
-                RelationshipConstraintTableInfo.TABLE_INFO.name(),
-                RelationshipConstraintTableInfo.Columns.RELATIONSHIP_TYPE,
-                RelationshipConstraintTableInfo.Columns.PROGRAM_STAGE,
-                Collections.singletonList(programStageUid));
+                new WhereClauseBuilder()
+                        .appendKeyStringValue(
+                                RelationshipConstraintTableInfo.Columns.RELATIONSHIP_ENTITY, relationshipEntityType)
+                        .appendKeyStringValue(
+                                RelationshipConstraintTableInfo.Columns.CONSTRAINT_TYPE, relationshipConstraintType)
+                        .appendKeyStringValue(
+                                RelationshipConstraintTableInfo.Columns.TRACKED_ENTITY_TYPE, objectUid));
     }
 
     public RelationshipTypeCollectionRepository withConstraints() {

@@ -32,8 +32,10 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeFields;
 
+import java.util.Collections;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -50,6 +52,30 @@ public final class RelationshipTypeCollectionRepository
                                          final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 s -> new RelationshipTypeCollectionRepository(store, childrenAppenders, s)));
+    }
+
+    public RelationshipTypeCollectionRepository byFromTrackedEntityType(String trackedEntityTypeUid) {
+        return cf.subQuery(IdentifiableColumns.UID).inLinkTable(
+                RelationshipConstraintTableInfo.TABLE_INFO.name(),
+                RelationshipConstraintTableInfo.Columns.RELATIONSHIP_TYPE,
+                RelationshipConstraintTableInfo.Columns.TRACKED_ENTITY_TYPE,
+                Collections.singletonList(trackedEntityTypeUid));
+    }
+
+    public RelationshipTypeCollectionRepository byFromProgram(String programUid) {
+        return cf.subQuery(IdentifiableColumns.UID).inLinkTable(
+                RelationshipConstraintTableInfo.TABLE_INFO.name(),
+                RelationshipConstraintTableInfo.Columns.RELATIONSHIP_TYPE,
+                RelationshipConstraintTableInfo.Columns.PROGRAM,
+                Collections.singletonList(programUid));
+    }
+
+    public RelationshipTypeCollectionRepository byFromProgramStage(String programStageUid) {
+        return cf.subQuery(IdentifiableColumns.UID).inLinkTable(
+                RelationshipConstraintTableInfo.TABLE_INFO.name(),
+                RelationshipConstraintTableInfo.Columns.RELATIONSHIP_TYPE,
+                RelationshipConstraintTableInfo.Columns.PROGRAM_STAGE,
+                Collections.singletonList(programStageUid));
     }
 
     public RelationshipTypeCollectionRepository withConstraints() {

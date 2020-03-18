@@ -30,8 +30,10 @@ package org.hisp.dhis.android.core.arch.repositories.collection;
 
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryFinalImpl;
+import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityTypeSamples;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeCollectionRepository;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.BeforeClass;
@@ -42,8 +44,10 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.arch.repositories.collection.RelationshipTypeAsserts.assertTypesWithoutConstraints;
 import static org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples.RELATIONSHIP_TYPE_1;
 import static org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples.RELATIONSHIP_TYPE_2;
+import static org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples.RELATIONSHIP_TYPE_3;
 import static org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples.RELATIONSHIP_TYPE_UID_1;
 import static org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples.RELATIONSHIP_TYPE_UID_2;
+import static org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples.TET_FOR_RELATIONSHIP_3_UID;
 
 @RunWith(D2JunitRunner.class)
 public class ReadOnlyIdentifiableCollectionRepositoryImplIntegrationShould extends BaseMockIntegrationTestEmptyDispatcher {
@@ -55,9 +59,12 @@ public class ReadOnlyIdentifiableCollectionRepositoryImplIntegrationShould exten
         BaseMockIntegrationTestEmptyDispatcher.setUpClass();
 
         Handler<RelationshipType> handler = objects.d2DIComponent.relationshipTypeHandler();
+        Handler<TrackedEntityType> tetHandler = objects.d2DIComponent.trackedEntityTypeHandler();
 
+        tetHandler.handle(TrackedEntityTypeSamples.get());
         handler.handle(RELATIONSHIP_TYPE_1);
         handler.handle(RELATIONSHIP_TYPE_2);
+        handler.handle(RELATIONSHIP_TYPE_3);
 
         relationshipTypeCollectionRepository = d2.relationshipModule().relationshipTypes();
     }
@@ -68,6 +75,18 @@ public class ReadOnlyIdentifiableCollectionRepositoryImplIntegrationShould exten
                 = relationshipTypeCollectionRepository.uid(RELATIONSHIP_TYPE_UID_1);
         RelationshipType typeFromRepository = type1Repository.blockingGet();
         assertTypesWithoutConstraints(typeFromRepository, RELATIONSHIP_TYPE_1);
+    }
+
+    @Test
+    public void get_relationship_by_from_tracked_entity_type() {
+        RelationshipType typeFromRepository = relationshipTypeCollectionRepository
+                .byFromTrackedEntityType(TET_FOR_RELATIONSHIP_3_UID)
+                .withConstraints()
+                .one().blockingGet();
+
+        assertThat(typeFromRepository.uid()).isEqualTo(RELATIONSHIP_TYPE_3.uid());
+        assertThat(typeFromRepository.fromConstraint().trackedEntityType().uid())
+                .isEqualTo(TET_FOR_RELATIONSHIP_3_UID);
     }
 
     @Test

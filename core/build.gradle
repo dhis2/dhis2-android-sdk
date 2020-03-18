@@ -27,6 +27,8 @@
  */
 
 apply plugin: "com.android.library"
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
 apply from: project.file("plugins/android-checkstyle.gradle")
 apply from: project.file("plugins/android-findbugs.gradle")
 apply from: project.file("plugins/android-pmd.gradle")
@@ -226,6 +228,11 @@ dependencies {
         exclude module: 'okhttp'
         exclude module: 'jsr305'
     }
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
 apply from: project.file("plugins/gradle-mvn-push.gradle")
+
+repositories {
+    mavenCentral()
+}

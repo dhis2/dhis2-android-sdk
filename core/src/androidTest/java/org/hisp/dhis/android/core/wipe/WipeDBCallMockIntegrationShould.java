@@ -28,42 +28,37 @@
 
 package org.hisp.dhis.android.core.wipe;
 
+import android.content.Context;
+
+import androidx.test.InstrumentationRegistry;
+
+import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.D2Factory;
+import org.hisp.dhis.android.core.D2Manager;
 import org.hisp.dhis.android.core.data.database.DatabaseAssert;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher;
+import org.junit.AfterClass;
 import org.junit.Test;
 
-public class WipeDBCallMockIntegrationShould extends BaseMockIntegrationTestEmptyDispatcher {
+public class WipeDBCallMockIntegrationShould {
+
+    private static Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
+    private static String dbName = "wipe-db.db";
+
+    @AfterClass
+    public static void tearDownClass() {
+        context.deleteDatabase(dbName);
+    }
 
     @Test
     public void have_empty_database_when_wipe_db_after_sync_data() throws Exception {
-        givenAFreshLoginInDatabase();
+        new DBTestLoader(context).copyDatabaseFromAssetsIfNeeded(dbName);
+        D2Manager.setTestingDatabase(dbName, "android");
+        D2 d2 = D2Manager.blockingInstantiateD2(D2Factory.d2Configuration(context));
 
-        givenAMetadataInDatabase();
-
-        givenAEventInDatabase();
-
-        DatabaseAssert.assertThatDatabase(databaseAdapter).isNotEmpty();
+        DatabaseAssert.assertThatDatabase(d2.databaseAdapter()).isNotEmpty();
 
         d2.wipeModule().wipeEverything();
 
-        DatabaseAssert.assertThatDatabase(databaseAdapter).isEmpty();
-    }
-
-    private void givenAFreshLoginInDatabase() {
-        try {
-            d2.userModule().logOut().blockingAwait();
-        } catch (RuntimeException e) {
-            // Do nothing
-        } finally {
-            d2.userModule().blockingLogIn("android", "Android123", dhis2MockServer.getBaseEndpoint());
-        }
-    }
-
-    private void givenAMetadataInDatabase() {
-        d2.metadataModule().blockingDownload();
-    }
-
-    private void givenAEventInDatabase() {
-        d2.eventModule().eventDownloader().limit(1).blockingDownload();
+        DatabaseAssert.assertThatDatabase(d2.databaseAdapter()).isEmpty();
     }
 }

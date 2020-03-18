@@ -31,6 +31,8 @@ package org.hisp.dhis.android.core.arch.repositories.collection;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryFinalImpl;
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityTypeSamples;
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintType;
+import org.hisp.dhis.android.core.relationship.RelationshipEntityType;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeCollectionRepository;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
@@ -80,7 +82,10 @@ public class ReadOnlyIdentifiableCollectionRepositoryImplIntegrationShould exten
     @Test
     public void get_relationship_by_from_tracked_entity_type() {
         RelationshipType typeFromRepository = relationshipTypeCollectionRepository
-                .byFromTrackedEntityType(TET_FOR_RELATIONSHIP_3_UID)
+                .byConstraint(
+                        RelationshipEntityType.TRACKED_ENTITY_INSTANCE,
+                        RelationshipConstraintType.FROM,
+                        TET_FOR_RELATIONSHIP_3_UID)
                 .withConstraints()
                 .one().blockingGet();
 

@@ -95,6 +95,7 @@ public final class D2Manager {
     public static Single<D2> instantiateD2(@NonNull D2Configuration d2Config) {
         return Single.fromCallable(() -> {
             long startTime = System.currentTimeMillis();
+
             SecureStore secureStore = testingSecureStore == null ? new AndroidSecureStore(d2Config.context())
                     : testingSecureStore;
             InsecureStore insecureStore = testingInsecureStore == null ? new AndroidInsecureStore(d2Config.context())
@@ -113,17 +114,14 @@ public final class D2Manager {
                 SSLContextInitializer.initializeSSLContext(d2Configuration.context());
             }
 
-            SecureStore secureStore = testingSecureStore == null ? new AndroidSecureStore(d2Config.context())
-                    : testingSecureStore;
-            ObjectSecureStore<Credentials> credentialsSecureStore = new CredentialsSecureStoreImpl(secureStore);
+            ObjectKeyValueStore<Credentials> credentialsSecureStore = new CredentialsSecureStoreImpl(secureStore);
 
-            if (wantToImportDBForExternalTesting()){
-                MultiUserDatabaseManager.create(databaseAdapter, d2Config.context(), secureStore)
-                        .loadDbForTesting(testingDbName, false, testingUser);
+            MultiUserDatabaseManagerForD2Manager multiUserDatabaseManager = MultiUserDatabaseManagerForD2Manager
+                    .create(databaseAdapter, d2Config.context(), secureStore, insecureStore, databaseAdapterFactory);
+            if (wantToImportDBForExternalTesting()) {
+                multiUserDatabaseManager.loadDbForTesting(testingDbName, false, testingUser);
             } else {
-                MultiUserDatabaseManagerForD2Manager.create(databaseAdapter, d2Config.context(), secureStore, insecureStore,
-                        databaseAdapterFactory)
-                        .loadIfLogged(credentialsSecureStore.get());
+                multiUserDatabaseManager.loadIfLogged(credentialsSecureStore.get());
             }
 
             d2 = new D2(

@@ -35,6 +35,7 @@ import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueTableInfo;
 import org.hisp.dhis.android.core.user.UserTableInfo;
 import org.junit.After;
@@ -90,8 +91,9 @@ public class DataBaseMigrationShould {
 
     public DatabaseAdapter initCoreDataBase(int databaseVersion) {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        databaseAdapter = DatabaseAdapterFactory.newParentDatabaseAdapter();
-        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, dbName, context, false, databaseVersion);
+        DatabaseAdapterFactory databaseAdapterFactory = DatabaseAdapterFactory.create(context, new InMemorySecureStore());
+        databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter();
+        databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, dbName, false, databaseVersion);
         return databaseAdapter;
     }
 }

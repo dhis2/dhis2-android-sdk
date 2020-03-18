@@ -55,9 +55,11 @@ final class TrackedEntityInstancesEndpointCallFactory {
         String ouStr = query.orgUnits().isEmpty() ? null :
                 CollectionsHelper.joinCollectionWithSeparator(query.orgUnits(), ";");
 
+        String programStatus = query.programStatus() == null ? null : query.programStatus().toString();
+
         return trackedEntityInstanceService.getTrackedEntityInstances(uidStr, ouStr,
-                query.ouMode().name(), query.program(), TrackedEntityInstanceFields.allFields, Boolean.TRUE,
-                query.page(), query.pageSize(), query.lastUpdatedStartDate(), true,
-                true);
+                query.ouMode().name(), query.program(), programStatus, query.programStartDate(),
+                TrackedEntityInstanceFields.allFields, Boolean.TRUE, query.page(), query.pageSize(),
+                query.lastUpdatedStartDate(), true, true);
     }
 }

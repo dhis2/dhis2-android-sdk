@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams;
+import org.hisp.dhis.android.core.settings.EnrollmentScope;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -64,6 +65,7 @@ public class TrackedEntityInstanceDownloaderShould {
                 .limitByOrgunit(true)
                 .limitByProgram(true)
                 .limit(500)
+                .byProgramStatus(EnrollmentScope.ONLY_ACTIVE)
                 .overwrite(true)
                 .download();
 
@@ -74,6 +76,7 @@ public class TrackedEntityInstanceDownloaderShould {
         assertThat(params.limitByOrgunit()).isTrue();
         assertThat(params.limitByProgram()).isTrue();
         assertThat(params.limit()).isEqualTo(500);
+        assertThat(params.programStatus()).isEqualByComparingTo(EnrollmentScope.ONLY_ACTIVE);
         assertThat(params.overwrite()).isTrue();
     }
 

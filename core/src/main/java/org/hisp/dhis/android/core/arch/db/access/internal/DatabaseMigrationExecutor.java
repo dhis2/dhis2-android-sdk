@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.arch.db.access.Transaction;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 class DatabaseMigrationExecutor {
 
@@ -72,17 +71,16 @@ class DatabaseMigrationExecutor {
         }
     }
 
-    private void executeFilesSQL(List<Map<String, List<String>>> scripts) {
-        for (Map<String, List<String>> script : scripts) {
+    private void executeFilesSQL(List<List<String>> scripts) {
+        for (List<String> script : scripts) {
             executeFileSQL(script);
         }
     }
 
-    private void executeFileSQL(Map<String, List<String>> scripts) {
-        List<String> ups = scripts.get("up");
-        if (ups != null) {
-            for (String script : ups) {
-                databaseAdapter.execSQL(script);
+    private void executeFileSQL(List<String> script) {
+        if (script != null) {
+            for (String line : script) {
+                databaseAdapter.execSQL(line);
             }
         }
     }

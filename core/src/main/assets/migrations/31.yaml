@@ -1,3 +1,0 @@
-up:
-- ALTER TABLE Note ADD COLUMN uid TEXT;
-- ALTER TABLE Note ADD COLUMN state TEXT;

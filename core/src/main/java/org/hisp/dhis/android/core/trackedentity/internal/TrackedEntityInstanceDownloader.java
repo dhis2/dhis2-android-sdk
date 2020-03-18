@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.UnwrappedEqInFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams;
+import org.hisp.dhis.android.core.settings.EnrollmentScope;
 
 import javax.inject.Inject;
 
@@ -96,6 +97,10 @@ public final class TrackedEntityInstanceDownloader extends BaseRepositoryImpl<Tr
 
     public TrackedEntityInstanceDownloader limit(Integer limit) {
         return cf.integer(QueryParams.LIMIT).eq(limit);
+    }
+
+    public TrackedEntityInstanceDownloader byProgramStatus(EnrollmentScope status) {
+        return cf.baseString(QueryParams.PROGRAM_STATUS).eq(status.toString());
     }
 
     /**

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.configuration.internal;
 
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,7 +50,7 @@ public class ConfigurationSecureStoreShould {
     @Mock
     private SecureStore store;
 
-    private ObjectSecureStore<Configuration> configurationSecureStore;
+    private ObjectKeyValueStore<Configuration> configurationSecureStore;
 
     private final static String KEY = "server_url";
 

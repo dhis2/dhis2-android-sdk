@@ -1,2 +1,0 @@
-up:
-  - DROP TABLE IF EXISTS Configuration;

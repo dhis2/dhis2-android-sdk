@@ -37,8 +37,8 @@ public enum MetadataSyncPeriod {
     @JsonProperty("12h")
     EVERY_12_HOURS,
 
-    @JsonProperty("1d")
-    EVERY_DAY,
+    @JsonProperty("24h")
+    EVERY_24_HOURS,
 
     @JsonProperty("7d")
     EVERY_7_DAYS;

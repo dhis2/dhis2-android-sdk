@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
 import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.junit.After;
@@ -62,8 +63,9 @@ public abstract class BaseRealIntegrationTest {
     public void setUp() throws IOException {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
 
-        databaseAdapter = DatabaseAdapterFactory.newParentDatabaseAdapter();
-        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, null, context, false);
+        DatabaseAdapterFactory databaseAdapterFactory = DatabaseAdapterFactory.create(context, new InMemorySecureStore());
+        databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter();
+        databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, null, false);
         resourceHandler = ResourceHandler.create(databaseAdapter);
         resourceHandler.setServerDate(serverDate);
         Stetho.initializeWithDefaults(context);

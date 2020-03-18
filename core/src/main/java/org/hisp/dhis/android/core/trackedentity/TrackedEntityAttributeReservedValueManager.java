@@ -27,14 +27,21 @@
  */
 package org.hisp.dhis.android.core.trackedentity;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.helpers.internal.BooleanWrapper;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeOrderByItem;
+import org.hisp.dhis.android.core.common.CoreColumns;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
@@ -44,19 +51,20 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo;
+import org.hisp.dhis.android.core.settings.GeneralSettingObjectRepository;
+import org.hisp.dhis.android.core.settings.GeneralSettings;
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoCall;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueQuery;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueStoreInterface;
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import dagger.Reusable;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
@@ -66,8 +74,9 @@ import io.reactivex.Single;
 @SuppressWarnings("PMD.ExcessiveImports")
 public final class TrackedEntityAttributeReservedValueManager {
 
-    private static final Integer MIN_TO_TRY_FILL = 50;
     private static final Integer FILL_UP_TO = 100;
+    private static final Double FACTOR_TO_REFILL = 0.5;
+
 
     private final TrackedEntityAttributeReservedValueStoreInterface store;
     private final IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
@@ -75,6 +84,7 @@ public final class TrackedEntityAttributeReservedValueManager {
     private final IdentifiableObjectStore<ProgramTrackedEntityAttribute> programTrackedEntityAttributeStore;
     private final LinkStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore;
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
+    private final GeneralSettingObjectRepository generalSettingObjectRepository;
     private final D2CallExecutor executor;
     private final SystemInfoCall systemInfoCall;
     private final QueryCallFactory<TrackedEntityAttributeReservedValue,
@@ -84,24 +94,26 @@ public final class TrackedEntityAttributeReservedValueManager {
 
     @Inject
     TrackedEntityAttributeReservedValueManager(
-            D2CallExecutor executor,
-            SystemInfoCall systemInfoCall,
             TrackedEntityAttributeReservedValueStoreInterface store,
             IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
             IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore,
             IdentifiableObjectStore<ProgramTrackedEntityAttribute> programTrackedEntityAttributeStore,
             LinkStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore,
             UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
+            GeneralSettingObjectRepository generalSettingObjectRepository,
+            D2CallExecutor executor,
+            SystemInfoCall systemInfoCall,
             QueryCallFactory<TrackedEntityAttributeReservedValue,
                     TrackedEntityAttributeReservedValueQuery> reservedValueQueryCallFactory) {
-        this.executor = executor;
-        this.systemInfoCall = systemInfoCall;
         this.store = store;
         this.organisationUnitStore = organisationUnitStore;
         this.trackedEntityAttributeStore = trackedEntityAttributeStore;
         this.programTrackedEntityAttributeStore = programTrackedEntityAttributeStore;
         this.organisationUnitProgramLinkStore = organisationUnitProgramLinkStore;
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
+        this.generalSettingObjectRepository = generalSettingObjectRepository;
+        this.executor = executor;
+        this.systemInfoCall = systemInfoCall;
         this.reservedValueQueryCallFactory = reservedValueQueryCallFactory;
     }
 
@@ -118,7 +130,7 @@ public final class TrackedEntityAttributeReservedValueManager {
 
     /**
      * Get a reserved value and remove it from database. If the number of available values is below a threshold
-     * (default {@link #MIN_TO_TRY_FILL}) it tries to download before returning a value.
+     * (default {@link #FILL_UP_TO} * {@link #FACTOR_TO_REFILL}) it tries to download before returning a value.
      *
      * @param attributeUid          Attribute uid
      * @param organisationUnitUid   Organisation unit uid
@@ -231,6 +243,52 @@ public final class TrackedEntityAttributeReservedValueManager {
         return organisationUnitUid == null ? store.count(attributeUid) : store.count(attributeUid, organisationUnitUid);
     }
 
+    /**
+     * Generate a list of reserved value summaries from the existing tracked entity attribute reserved values in the DB.
+     *
+     * @return Single with a list of the reserved value summaries
+     */
+    public Single<List<ReservedValueSummary>> getReservedValueSummaries() {
+        return Single.just(blockingGetReservedValueSummaries());
+    }
+
+    /**
+     * @see #getReservedValueSummaries()
+     *
+     * @return List of the reserved value summaries
+     */
+    public List<ReservedValueSummary> blockingGetReservedValueSummaries() {
+        String whereClause = new WhereClauseBuilder()
+                .appendKeyNumberValue(TrackedEntityAttributeTableInfo.Columns.GENERATED, 1).build();
+        String orderByClause = OrderByClauseBuilder.orderByFromItems(
+                Collections.singletonList(RepositoryScopeOrderByItem.builder()
+                        .column(IdentifiableColumns.DISPLAY_NAME)
+                        .direction(RepositoryScope.OrderByDirection.ASC).build()),
+                CoreColumns.ID);
+        List<TrackedEntityAttribute> trackedEntityAttributes =
+                trackedEntityAttributeStore.selectWhere(whereClause, orderByClause);
+
+        List<ReservedValueSummary> reservedValueSummaries = new ArrayList<>();
+
+        for (TrackedEntityAttribute trackedEntityAttribute : trackedEntityAttributes) {
+            ReservedValueSummary.Builder builder = ReservedValueSummary.builder()
+                    .trackedEntityAttribute(trackedEntityAttribute);
+            if (isOrgunitDependent(trackedEntityAttribute.pattern())) {
+                List<OrganisationUnit> organisationUnits = getOrgUnitsLinkedToAttribute(trackedEntityAttribute.uid());
+                for (OrganisationUnit organisationUnit : organisationUnits) {
+                    builder.organisationUnit(organisationUnit)
+                            .count(blockingCount(trackedEntityAttribute.uid(), organisationUnit.uid()));
+                }
+            } else {
+                builder.count(blockingCount(trackedEntityAttribute.uid(), null));
+            }
+
+            reservedValueSummaries.add(builder.build());
+        }
+
+        return reservedValueSummaries;
+    }
+
     private D2Progress increaseProgress() {
         return d2ProgressManager.increaseProgress(TrackedEntityAttributeReservedValue.class, false);
     }
@@ -266,15 +324,17 @@ public final class TrackedEntityAttributeReservedValueManager {
             // TODO use server date
             store.deleteExpired(new Date());
 
+            Integer fillUpTo = getFillUpToValue(minNumberOfValuesToHave);
+
             Integer remainingValues = organisationUnit == null ?
                     store.count(attribute) : store.count(attribute, organisationUnit.uid());
 
+            // If number of values is explicitly specified, we use that value as threshold.
             Integer minNumberToTryFill = minNumberOfValuesToHave == null ?
-                    MIN_TO_TRY_FILL : minNumberOfValuesToHave;
+                    (int) (fillUpTo * FACTOR_TO_REFILL) : minNumberOfValuesToHave;
 
             if (remainingValues < minNumberToTryFill) {
-                Integer numberToReserve =
-                        (minNumberOfValuesToHave == null ? FILL_UP_TO : minNumberOfValuesToHave) - remainingValues;
+                Integer numberToReserve = fillUpTo - remainingValues;
 
                 return downloadValues(attribute, organisationUnit, numberToReserve, systemInfoDownloaded, storeError);
             } else {
@@ -346,5 +406,18 @@ public final class TrackedEntityAttributeReservedValueManager {
 
     private boolean isOrgunitDependent(String pattern) {
         return pattern != null && pattern.contains("ORG_UNIT_CODE");
+    }
+
+    private Integer getFillUpToValue(Integer minNumberOfValuesToHave) {
+        if (minNumberOfValuesToHave == null) {
+            GeneralSettings generalSettings = generalSettingObjectRepository.blockingGet();
+            if (generalSettings == null || generalSettings.reservedValues() == null) {
+                return FILL_UP_TO;
+            } else {
+                return generalSettings.reservedValues();
+            }
+        } else {
+            return minNumberOfValuesToHave;
+        }
     }
 }

@@ -36,8 +36,8 @@ ext {
             buildToolsVersion: "28.0.3",
             minSdkVersion    : 19,
             targetSdkVersion : 28,
-            versionCode      : 200,
-            versionName      : "1.0.0"
+            versionCode      : 202,
+            versionName      : "1.0.2"
     ]
 
     libraries = [
@@ -74,9 +74,6 @@ ext {
 
             // plugins
             errorpronecore  : "2.0.15",
-
-            //migrations
-            snakeyaml  : "1.25",
 
             // google
             safetynet  : "16.0.0",
@@ -152,8 +149,6 @@ dependencies {
 
     api "io.reactivex.rxjava2:rxjava:${libraries.rxjava}"
     api "io.reactivex.rxjava2:rxandroid:${libraries.rxandroid}"
-
-    api "org.yaml:snakeyaml:${libraries.snakeyaml}"
 
     // Support libraries
     api "androidx.annotation:annotation:${libraries.support}"

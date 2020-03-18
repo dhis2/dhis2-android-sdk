@@ -61,6 +61,7 @@ public interface TrackedEntityInstanceService {
     String PROGRAM = "program";
     String PROGRAM_START_DATE = "programStartDate";
     String PROGRAM_END_DATE = "programEndDate";
+    String PROGRAM_STATUS = "programStatus";
     String TRACKED_ENTITY_TYPE = "trackedEntityType";
     String INCLUDE_ALL_ATTRIBUTES = "includeAllAttributes";
     String FILTER = "filter";
@@ -103,6 +104,8 @@ public interface TrackedEntityInstanceService {
             @Query(OU) String orgUnits,
             @Query(OU_MODE) String orgUnitMode,
             @Query(PROGRAM) String program,
+            @Query(PROGRAM_STATUS) String programStatus,
+            @Query(PROGRAM_START_DATE) String programStartDate,
             @Query(FIELDS) @Which Fields<TrackedEntityInstance> fields,
             @Query(PAGING) Boolean paging,
             @Query(PAGE) int page,

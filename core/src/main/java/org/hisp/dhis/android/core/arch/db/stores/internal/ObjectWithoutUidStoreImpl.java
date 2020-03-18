@@ -102,6 +102,17 @@ public class ObjectWithoutUidStoreImpl<M extends CoreObject>
     }
 
     @Override
+    public void deleteWhereIfExists(@NonNull M m) throws RuntimeException {
+        try {
+            deleteWhere(m);
+        } catch(RuntimeException e) {
+            if (!e.getMessage().equals("No rows affected")) {
+                throw e;
+            }
+        }
+    }
+
+    @Override
     public HandleAction updateOrInsertWhere(@NonNull M m) throws RuntimeException {
         try {
             updateWhere(m);

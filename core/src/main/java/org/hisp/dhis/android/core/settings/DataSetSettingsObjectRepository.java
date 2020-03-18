@@ -41,7 +41,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-public final class DataSetSettingsObjectRepository
+public class DataSetSettingsObjectRepository
         extends ReadOnlyAnyObjectWithDownloadRepositoryImpl<DataSetSettings>
         implements ReadOnlyWithDownloadObjectRepository<DataSetSettings> {
 

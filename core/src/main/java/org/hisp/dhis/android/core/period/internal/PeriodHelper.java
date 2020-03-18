@@ -46,13 +46,32 @@ public class PeriodHelper {
     private final PeriodStore periodStore;
     private final PeriodForDataSetManager periodForDataSetManager;
     private final ParentPeriodGenerator parentPeriodGenerator;
+    private final PeriodParser periodParser;
 
     @Inject
-    PeriodHelper(PeriodStore periodStore, PeriodForDataSetManager periodForDataSetManager,
-                 ParentPeriodGenerator parentPeriodGenerator) {
+    PeriodHelper(PeriodStore periodStore,
+                 PeriodForDataSetManager periodForDataSetManager,
+                 ParentPeriodGenerator parentPeriodGenerator,
+                 PeriodParser periodParser) {
         this.periodStore = periodStore;
         this.periodForDataSetManager = periodForDataSetManager;
         this.parentPeriodGenerator = parentPeriodGenerator;
+        this.periodParser = periodParser;
+    }
+
+    /**
+     * Get a period object specifying a periodType and a date in the period.
+     * If the period does not exist in the database, it is inserted.
+     *
+     * @param periodType Period type
+     * @param date Date contained in the period
+     * @return Period
+     *
+     * @deprecated Use {@link #getPeriodForPeriodTypeAndDate(PeriodType, Date)} instead.
+     */
+    @Deprecated
+    public Period getPeriod(@NonNull PeriodType periodType, @NonNull Date date) {
+        return blockingGetPeriodForPeriodTypeAndDate(periodType, date);
     }
 
     /**
@@ -63,7 +82,7 @@ public class PeriodHelper {
      * @param date Date contained in the period
      * @return Period
      */
-    public Period getPeriod(@NonNull PeriodType periodType, @NonNull Date date) {
+    public Period blockingGetPeriodForPeriodTypeAndDate(@NonNull PeriodType periodType, @NonNull Date date) {
         Period period = periodStore.selectPeriodByTypeAndDate(periodType, date);
 
         if (period == null) {
@@ -73,6 +92,47 @@ public class PeriodHelper {
         } else {
             return period;
         }
+    }
+
+    /**
+     * Get a period object specifying a periodType and a date in the period.
+     * If the period does not exist in the database, it is inserted.
+     *
+     * @param periodType Period type
+     * @param date Date contained in the period
+     *
+     * @return {@code Single} with the generated period.
+     * */
+    public Single<Period> getPeriodForPeriodTypeAndDate(@NonNull PeriodType periodType, @NonNull Date date) {
+        return Single.just(blockingGetPeriodForPeriodTypeAndDate(periodType, date));
+    }
+
+    /**
+     * Get a period object specifying a periodId.
+     * If the periodId does not exist in the database, it is inserted.
+     *
+     * @param periodId Period id.
+     * @throws IllegalArgumentException if the periodId does not match any period
+     * @return Period
+     */
+    public Period blockingGetPeriodForPeriodId(@NonNull String periodId) throws IllegalArgumentException {
+        PeriodType periodType = PeriodType.periodTypeFromPeriodId(periodId);
+        Date date = periodParser.parse(periodId, periodType);
+
+        return blockingGetPeriodForPeriodTypeAndDate(periodType, date);
+    }
+
+    /**
+     * Get a period object specifying a periodId.
+     * If the periodId does not exist in the database, it is inserted.
+     *
+     * @param periodId Period id.
+     * @throws IllegalArgumentException if the periodId does not match any period
+     *
+     * @return {@code Single} with the generated period.
+     */
+    public Single<Period> getPeriodForPeriodId(@NonNull String periodId) throws IllegalArgumentException {
+        return Single.just(blockingGetPeriodForPeriodId(periodId));
     }
 
     public Single<List<Period>> getPeriodsForDataSet(String dataSetUid) {

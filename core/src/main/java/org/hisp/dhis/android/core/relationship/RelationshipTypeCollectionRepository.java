@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.relationship;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
@@ -54,23 +56,35 @@ public final class RelationshipTypeCollectionRepository
                 s -> new RelationshipTypeCollectionRepository(store, childrenAppenders, s)));
     }
 
-    public RelationshipTypeCollectionRepository byConstraint(
-            RelationshipEntityType relationshipEntityType,
-            RelationshipConstraintType relationshipConstraintType,
-            String objectUid) {
+    public RelationshipTypeCollectionRepository byConstraint(@NonNull RelationshipEntityType relationshipEntityType,
+                                                             @NonNull String relationshipEntityUid) {
         return cf.subQuery(IdentifiableColumns.UID).inTableWhere(
                 RelationshipConstraintTableInfo.TABLE_INFO.name(),
                 RelationshipConstraintTableInfo.Columns.RELATIONSHIP_TYPE,
-                new WhereClauseBuilder()
-                        .appendKeyStringValue(
-                                RelationshipConstraintTableInfo.Columns.RELATIONSHIP_ENTITY, relationshipEntityType)
-                        .appendKeyStringValue(
-                                RelationshipConstraintTableInfo.Columns.CONSTRAINT_TYPE, relationshipConstraintType)
-                        .appendKeyStringValue(
-                                RelationshipConstraintTableInfo.Columns.TRACKED_ENTITY_TYPE, objectUid));
+                constraintClauseBuilder(relationshipEntityType, relationshipEntityUid));
+    }
+
+    public RelationshipTypeCollectionRepository byConstraint(
+            @NonNull RelationshipEntityType relationshipEntityType,
+            @NonNull String relationshipEntityUid,
+            @NonNull RelationshipConstraintType relationshipConstraintType) {
+        return cf.subQuery(IdentifiableColumns.UID).inTableWhere(
+                RelationshipConstraintTableInfo.TABLE_INFO.name(),
+                RelationshipConstraintTableInfo.Columns.RELATIONSHIP_TYPE,
+                constraintClauseBuilder(relationshipEntityType, relationshipEntityUid).appendKeyStringValue(
+                        RelationshipConstraintTableInfo.Columns.CONSTRAINT_TYPE, relationshipConstraintType));
     }
 
     public RelationshipTypeCollectionRepository withConstraints() {
         return cf.withChild(RelationshipTypeFields.CONSTRAINTS);
+    }
+
+    private WhereClauseBuilder constraintClauseBuilder(RelationshipEntityType relationshipEntityType,
+                                                       String relationshipEntityUid) {
+        return new WhereClauseBuilder()
+                .appendKeyStringValue(
+                        RelationshipConstraintTableInfo.Columns.RELATIONSHIP_ENTITY, relationshipEntityType)
+                .appendKeyStringValue(
+                        RelationshipConstraintTableInfo.Columns.TRACKED_ENTITY_TYPE, relationshipEntityUid);
     }
 }

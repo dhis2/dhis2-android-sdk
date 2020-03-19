@@ -38,5 +38,7 @@ public interface ObjectWithoutUidStore<M> extends ObjectStore<M> {
 
     void deleteWhere(@NonNull M m) throws RuntimeException;
 
+    void deleteWhereIfExists(@NonNull M m) throws RuntimeException;
+
     HandleAction updateOrInsertWhere(@NonNull M m) throws RuntimeException;
 }

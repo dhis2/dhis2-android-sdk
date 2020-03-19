@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.period.internal;
 import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.Calendar;
+import java.util.Date;
 
 class NMonthlyPeriodGenerator extends AbstractPeriodGenerator {
 
@@ -70,6 +71,17 @@ class NMonthlyPeriodGenerator extends AbstractPeriodGenerator {
             calendarCopy.add(Calendar.YEAR, -1);
         }
         int periodNumber = ((calendarCopy.get(Calendar.MONTH) - startMonth + 12) % 12) / durationInMonths + 1;
-        return idFormatter.format(calendarCopy.getTime()) + idAdditionalString + periodNumber;
+
+        String year;
+        if (periodType == PeriodType.SixMonthlyNov) {
+            calendarCopy.add(Calendar.YEAR, +1);
+            Date date = calendarCopy.getTime();
+            calendarCopy.add(Calendar.YEAR, -1);
+            year = idFormatter.format(date);
+        } else {
+            year = idFormatter.format(calendarCopy.getTime());
+        }
+
+        return year + idAdditionalString + periodNumber;
     }
 }

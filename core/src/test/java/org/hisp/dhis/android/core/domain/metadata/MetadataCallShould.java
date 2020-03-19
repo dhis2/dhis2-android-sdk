@@ -32,19 +32,24 @@ import org.assertj.core.util.Lists;
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
+import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.category.internal.CategoryModuleDownloader;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.common.Unit;
+import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager;
 import org.hisp.dhis.android.core.constant.Constant;
 import org.hisp.dhis.android.core.constant.internal.ConstantModuleDownloader;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.internal.DataSetModuleDownloader;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationTableInfo;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.internal.ProgramModuleDownloader;
-import org.hisp.dhis.android.core.settings.internal.SystemSettingModuleDownloader;
+import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall;
+import org.hisp.dhis.android.core.settings.internal.SettingModuleDownloader;
 import org.hisp.dhis.android.core.sms.SmsModule;
 import org.hisp.dhis.android.core.sms.domain.interactor.ConfigCase;
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader;
@@ -62,11 +67,12 @@ import java.util.concurrent.Callable;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import io.reactivex.observers.TestObserver;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyCollection;
+import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.verify;
@@ -82,10 +88,10 @@ public class MetadataCallShould extends BaseCallShould {
     private RxAPICallExecutor rxAPICallExecutor;
 
     @Mock
-    private Program program;
+    private DataSet dataSet;
 
     @Mock
-    private DataSet dataSet;
+    private OrganisationUnit organisationUnit;
 
     @Mock
     private Constant constant;
@@ -109,13 +115,13 @@ public class MetadataCallShould extends BaseCallShould {
     private Callable<List<Constant>> constantCall;
 
     @Mock
-    private Callable<Unit> organisationUnitDownloadCall;
+    private Callable<List<OrganisationUnit>> organisationUnitDownloadCall;
 
     @Mock
     private SystemInfoModuleDownloader systemInfoDownloader;
 
     @Mock
-    private SystemSettingModuleDownloader systemSettingDownloader;
+    private SettingModuleDownloader systemSettingDownloader;
 
     @Mock
     private UserModuleDownloader userDownloader;
@@ -147,6 +153,15 @@ public class MetadataCallShould extends BaseCallShould {
     @Mock
     private Callable<Void> refreshMetadataIdsCallable;
 
+    @Mock
+    private GeneralSettingCall generalSettingCall;
+
+    @Mock
+    private MultiUserDatabaseManager multiUserDatabaseManager;
+
+    @Mock
+    private ObjectKeyValueStore<Credentials> credentialsSecureStore;
+
     // object to test
     private MetadataCall metadataCall;
 
@@ -159,11 +174,10 @@ public class MetadataCallShould extends BaseCallShould {
         when(systemInfoDownloader.downloadMetadata()).thenReturn(Completable.complete());
         when(systemSettingDownloader.downloadMetadata()).thenReturn(systemSettingDownloadCall);
         when(userDownloader.downloadMetadata()).thenReturn(userCall);
-        when(programDownloader.downloadMetadata()).thenReturn(programDownloadCall);
+        when(programDownloader.downloadMetadata(anySet())).thenReturn(programDownloadCall);
         when(categoryDownloader.downloadMetadata()).thenReturn(categoryDownloadCall);
-        when(organisationUnitDownloader.downloadMetadata(same(user), anyCollection(),
-                anyCollection())).thenReturn(organisationUnitDownloadCall);
-        when(dataSetDownloader.downloadMetadata()).thenReturn(dataSetDownloadCall);
+        when(organisationUnitDownloader.downloadMetadata(same(user))).thenReturn(organisationUnitDownloadCall);
+        when(dataSetDownloader.downloadMetadata(anySet())).thenReturn(dataSetDownloadCall);
         when(constantDownloader.downloadMetadata()).thenReturn(constantCall);
         when(smsModule.configCase()).thenReturn(configCase);
         when(configCase.refreshMetadataIdsCallable()).thenReturn(refreshMetadataIdsCallable);
@@ -172,14 +186,15 @@ public class MetadataCallShould extends BaseCallShould {
         when(systemSettingDownloadCall.call()).thenReturn(new Unit());
         when(userCall.call()).thenReturn(user);
         when(categoryDownloadCall.call()).thenReturn(new Unit());
-        when(programDownloadCall.call()).thenReturn(Lists.newArrayList(program));
         when(dataSetDownloadCall.call()).thenReturn(Lists.newArrayList(dataSet));
-        when(organisationUnitDownloadCall.call()).thenReturn(new Unit());
+        when(organisationUnitDownloadCall.call()).thenReturn(Lists.newArrayList(organisationUnit));
         when(constantCall.call()).thenReturn(Lists.newArrayList(constant));
+        when(generalSettingCall.isDatabaseEncrypted()).thenReturn(Single.just(false));
 
         when(d2ErrorStore.insert(any(D2Error.class))).thenReturn(0L);
 
-        when(rxAPICallExecutor.wrapObservableTransactionally(any(Observable.class), anyBoolean())).then(AdditionalAnswers.returnsFirstArg());
+        when(rxAPICallExecutor.wrapObservableTransactionally(any(Observable.class), anyBoolean()))
+                .then(AdditionalAnswers.returnsFirstArg());
 
         // Metadata call
         metadataCall = new MetadataCall(
@@ -193,7 +208,10 @@ public class MetadataCallShould extends BaseCallShould {
                 dataSetDownloader,
                 constantDownloader,
                 smsModule,
-                databaseAdapter);
+                databaseAdapter,
+                generalSettingCall,
+                multiUserDatabaseManager,
+                credentialsSecureStore);
     }
 
     @Test
@@ -256,8 +274,8 @@ public class MetadataCallShould extends BaseCallShould {
     }
 
     @Test
-    public void call_foreign_key_cleaner() {
-        metadataCall.download();
+    public void call_wrapObservableTransactionally() {
+        metadataCall.blockingDownload();
         verify(rxAPICallExecutor).wrapObservableTransactionally(any(), eq(true));
     }
 

@@ -28,7 +28,11 @@
 
 package org.hisp.dhis.android.core.configuration.internal;
 
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
+import android.content.Context;
+
+import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 import org.hisp.dhis.android.core.constant.ConstantModule;
 import org.hisp.dhis.android.core.constant.internal.ConstantModuleImpl;
@@ -42,8 +46,28 @@ public final class ConfigurationPackageDIModule {
 
     @Provides
     @Reusable
-    ObjectSecureStore<Configuration> configurationSecureStore(SecureStore secureStore) {
-        return new ConfigurationSecureStoreImpl(secureStore);
+    ObjectKeyValueStore<DatabasesConfiguration> configurationSecureStore(InsecureStore secureStore) {
+        return DatabaseConfigurationInsecureStore.get(secureStore);
+    }
+
+    @Provides
+    @Reusable
+    DatabaseConfigurationHelper configurationHelper() {
+        return DatabaseConfigurationHelper.create();
+    }
+
+    @Provides
+    @Reusable
+    DatabaseEncryptionPasswordManager passwordManager(SecureStore secureStore) {
+        return DatabaseEncryptionPasswordManager.create(secureStore);
+    }
+
+    @Provides
+    @Reusable
+    DatabaseConfigurationMigration configurationMigration(Context context, SecureStore secureStore,
+                                                          InsecureStore insecureStore,
+                                                          DatabaseAdapterFactory adapterFactory) {
+        return DatabaseConfigurationMigration.create(context, secureStore, insecureStore, adapterFactory);
     }
 
     @Provides

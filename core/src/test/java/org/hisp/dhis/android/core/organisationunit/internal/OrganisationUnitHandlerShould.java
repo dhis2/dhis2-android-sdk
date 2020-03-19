@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.organisationunit.internal;
 
 import org.assertj.core.util.Lists;
-import org.assertj.core.util.Sets;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
@@ -52,7 +51,6 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
@@ -97,10 +95,6 @@ public class OrganisationUnitHandlerShould {
 
     private OrganisationUnitDisplayPathTransformer pathTransformer;
 
-    private Set<String> programUids;
-
-    private Set<String> dataSetUids;
-
     @Mock
     private ObjectWithUid program;
 
@@ -112,9 +106,6 @@ public class OrganisationUnitHandlerShould {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         String programUid = "test_program_uid";
-        programUids = Sets.newHashSet(Lists.newArrayList(programUid));
-        String dataSetUid = "test_data_set_uid";
-        dataSetUids = Sets.newHashSet(Lists.newArrayList(dataSetUid));
 
         pathTransformer = new OrganisationUnitDisplayPathTransformer();
 
@@ -145,13 +136,13 @@ public class OrganisationUnitHandlerShould {
 
     @Test
     public void persist_user_organisation_unit_link() {
-        organisationUnitHandler.setData(programUids, dataSetUids, user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
+        organisationUnitHandler.setData(user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
         organisationUnitHandler.handleMany(organisationUnits, pathTransformer);
     }
 
     @Test
     public void persist_program_organisation_unit_link_when_programs_uids() {
-        organisationUnitHandler.setData(programUids, dataSetUids, user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
+        organisationUnitHandler.setData(user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
         organisationUnitHandler.handleMany(organisationUnits, pathTransformer);
         verify(organisationUnitProgramLinkHandler).handleMany(anyString(), anyListOf(ObjectWithUid.class),
                 any(Transformer.class));
@@ -159,8 +150,7 @@ public class OrganisationUnitHandlerShould {
 
     @Test
     public void persist_program_organisation_unit_link_when_no_programs_uids() {
-        organisationUnitHandler.setData(null, null, user,
-                OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
+        organisationUnitHandler.setData(user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
         organisationUnitHandler.handleMany(organisationUnits, pathTransformer);
 
         verifyNoMoreInteractions(organisationUnitProgramLinkStore);
@@ -168,7 +158,7 @@ public class OrganisationUnitHandlerShould {
 
     @Test
     public void persist_organisation_unit_groups() {
-        organisationUnitHandler.setData(programUids, dataSetUids, user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
+        organisationUnitHandler.setData(user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
         organisationUnitHandler.handleMany(organisationUnits, pathTransformer);
 
         verify(organisationUnitGroupHandler).handleMany(anyListOf(OrganisationUnitGroup.class));
@@ -176,7 +166,7 @@ public class OrganisationUnitHandlerShould {
 
     @Test
     public void persist_organisation_unit_organisation_unit_group_link() {
-        organisationUnitHandler.setData(programUids, dataSetUids, user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
+        organisationUnitHandler.setData(user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
         organisationUnitHandler.handleMany(organisationUnits, pathTransformer);
 
         verify(organisationUnitGroupLinkHandler).handleMany(anyString(), anyListOf(OrganisationUnitGroup.class),
@@ -185,7 +175,7 @@ public class OrganisationUnitHandlerShould {
 
     @Test
     public void dont_persist_organisation_unit_organisation_unit_group_link_when_no_organisation_unit_groups() {
-        organisationUnitHandler.setData(programUids, dataSetUids, user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
+        organisationUnitHandler.setData(user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
 
         organisationUnitHandler.handleMany(Lists.newArrayList(organisationUnitWithoutGroups), pathTransformer);
 

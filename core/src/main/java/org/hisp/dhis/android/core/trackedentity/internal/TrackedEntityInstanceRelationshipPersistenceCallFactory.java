@@ -73,7 +73,7 @@ final class TrackedEntityInstanceRelationshipPersistenceCallFactory {
     Callable<Void> getCall(final Collection<TrackedEntityInstance> trackedEntityInstances) {
 
         return () -> {
-            trackedEntityInstanceHandler.handleMany(trackedEntityInstances, true, false);
+            trackedEntityInstanceHandler.handleMany(trackedEntityInstances, true, false, false);
 
             Set<String> searchOrgUnitUids = uidsHelper.getMissingOrganisationUnitUids(trackedEntityInstances);
 

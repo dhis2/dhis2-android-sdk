@@ -28,6 +28,11 @@
 package org.hisp.dhis.android.core.configuration.internal;
 
 import androidx.annotation.NonNull;
+
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
+
 import okhttp3.HttpUrl;
 
 public final class ServerUrlParser {
@@ -43,14 +48,22 @@ public final class ServerUrlParser {
         return withSlash.endsWith("api/") ? withSlash : withSlash + "api/";
     }
 
-    public static HttpUrl parse(@NonNull String url) {
+    public static HttpUrl parse(@NonNull String url) throws D2Error {
         if (url == null) {
-            throw new IllegalArgumentException("URL is null");
+            throw D2Error.builder()
+                    .errorCode(D2ErrorCode.SERVER_URL_NULL)
+                    .errorDescription("Server URL is null")
+                    .errorComponent(D2ErrorComponent.SDK)
+                    .build();
         }
         String urlWithSlashAndAPI = appendSlashAndAPI(url);
         HttpUrl httpUrl = HttpUrl.parse(ServerUrlParser.appendSlashAndAPI(urlWithSlashAndAPI));
         if (httpUrl == null) {
-            throw new IllegalArgumentException("Malformed HTTP or HTTPS URL");
+            throw D2Error.builder()
+                    .errorCode(D2ErrorCode.SERVER_URL_MALFORMED)
+                    .errorDescription("Server URL is malformed")
+                    .errorComponent(D2ErrorComponent.SDK)
+                    .build();
         } else {
             return httpUrl;
         }

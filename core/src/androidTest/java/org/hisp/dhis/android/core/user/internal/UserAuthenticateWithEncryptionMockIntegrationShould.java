@@ -28,18 +28,12 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
-import android.content.Context;
-
-import androidx.test.InstrumentationRegistry;
-
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2Factory;
-import org.hisp.dhis.android.core.D2Manager;
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
-import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
-import org.hisp.dhis.android.core.user.User;
+import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import java.io.IOException;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -51,9 +45,8 @@ public class UserAuthenticateWithEncryptionMockIntegrationShould {
 
     @BeforeClass
     public static void setUpClass() throws IOException {
-        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        d2 = D2Manager.blockingInstantiateD2(D2Factory.d2Configuration(context));
-        dhis2MockServer = new Dhis2MockServer();
+        d2 = D2Factory.forNewDatabase();
+        dhis2MockServer = new Dhis2MockServer(0);
         dhis2MockServer.setRequestDispatcher();
     }
 
@@ -88,6 +81,7 @@ public class UserAuthenticateWithEncryptionMockIntegrationShould {
         logOut();
     }
 
+    /* TODO this has to be configured in json
     @Test
     public void encrypted_login_logout_login_succeeds() {
         DatabaseAdapterFactory.setExperimentalEncryption(true);
@@ -106,10 +100,10 @@ public class UserAuthenticateWithEncryptionMockIntegrationShould {
         logIn();
         logOut();
         DatabaseAdapterFactory.setExperimentalEncryption(false);
-    }
+    }*/
 
-    private User logIn() {
-        return d2.userModule().blockingLogIn("test_user", "test_password", dhis2MockServer.getBaseEndpoint());
+    private void logIn() {
+        d2.userModule().blockingLogIn("test_user", "test_password", dhis2MockServer.getBaseEndpoint());
     }
 
     private void logOut() {

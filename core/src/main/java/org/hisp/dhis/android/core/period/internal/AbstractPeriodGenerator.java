@@ -42,7 +42,7 @@ abstract class AbstractPeriodGenerator implements PeriodGenerator {
     private final Calendar initialCalendar;
     protected Calendar calendar;
     final SimpleDateFormat idFormatter;
-    private final PeriodType periodType;
+    protected final PeriodType periodType;
 
 
     AbstractPeriodGenerator(Calendar calendar, String dateFormatStr, PeriodType periodType) {

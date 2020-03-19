@@ -30,8 +30,7 @@ package org.hisp.dhis.android.core.note.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
 import org.hisp.dhis.android.core.note.Note;
@@ -40,35 +39,27 @@ import org.hisp.dhis.android.core.note.NoteTableInfo;
 public final class NoteStore {
 
     private static final StatementBinder<Note> BINDER = (o, w) -> {
-        w.bind(1, o.enrollment());
-        w.bind(2, o.value());
-        w.bind(3, o.storedBy());
-        w.bind(4, o.storedDate());
-        w.bind(5, o.uid());
-        w.bind(6, o.state());
+        w.bind(1, o.noteType());
+        w.bind(2, o.event());
+        w.bind(3, o.enrollment());
+        w.bind(4, o.value());
+        w.bind(5, o.storedBy());
+        w.bind(6, o.storedDate());
+        w.bind(7, o.uid());
+        w.bind(8, o.state());
+        w.bind(9, o.deleted());
     };
 
-    private static final WhereStatementBinder<Note> WHERE_UPDATE_BINDER = (o, w) -> {
-        w.bind(7, o.enrollment());
-        w.bind(8, o.value());
-        w.bind(9, o.storedBy());
-        w.bind(10, o.storedDate());
-    };
-
-    private static final WhereStatementBinder<Note> WHERE_DELETE_BINDER = (o, w) -> {
-        w.bind(1, o.enrollment());
-        w.bind(2, o.value());
-        w.bind(3, o.storedBy());
-        w.bind(4, o.storedDate());
-    };
-
-    static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
+    static final SingleParentChildProjection ENROLLMENT_CHILD_PROJECTION = new SingleParentChildProjection(
             NoteTableInfo.TABLE_INFO, NoteTableInfo.Columns.ENROLLMENT);
+
+    static final SingleParentChildProjection EVENT_CHILD_PROJECTION = new SingleParentChildProjection(
+            NoteTableInfo.TABLE_INFO, NoteTableInfo.Columns.EVENT);
 
     private NoteStore() {}
 
-    public static ObjectWithoutUidStore<Note> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, NoteTableInfo.TABLE_INFO,
-                BINDER, WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER, Note::create);
+    public static IdentifiableObjectStore<Note> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithUidStore(databaseAdapter, NoteTableInfo.TABLE_INFO,
+                BINDER, Note::create);
     }
 }

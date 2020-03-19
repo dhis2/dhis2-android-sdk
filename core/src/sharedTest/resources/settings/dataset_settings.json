@@ -1,0 +1,23 @@
+{
+  "globalSettings": {
+    "lastUpdated": "2020-01-31T22:42:57.763Z",
+    "periodDSDownload": 30,
+    "periodDSDBTrimming": 40
+  },
+  "specificSettings": {
+    "BfMAe6Itzgt": {
+      "id": "BfMAe6Itzgt",
+      "name": "Child Health",
+      "lastUpdated": "2020-01-31T22:38:20.210Z",
+      "periodDSDownload": 10,
+      "periodDSDBTrimming": 15
+    },
+    "EKWVBc5C0ms": {
+      "id": "lyLU2wR22tC",
+      "name": "ART monthly summary",
+      "lastUpdated": "2020-01-23T20:01:53.667Z",
+      "periodDSDownload": 10,
+      "periodDSDBTrimming": 2
+    }
+  }
+}

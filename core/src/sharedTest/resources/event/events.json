@@ -67,6 +67,20 @@
           "value": "Replacement",
           "providedElsewhere": false
         }
+      ],
+      "notes": [
+        {
+          "note": "note1",
+          "storedDate": "2018-03-19T15:20:55.058",
+          "storedBy": "android",
+          "value": "Event note 1"
+        },
+        {
+          "note": "note2",
+          "storedDate": "2018-03-19T15:20:55.058",
+          "storedBy": "android",
+          "value": "Event note 2"
+        }
       ]
     },
     {
@@ -131,6 +145,14 @@
           "dataElement": "ciWE5jde1ax",
           "value": "Replacement",
           "providedElsewhere": false
+        }
+      ],
+      "notes": [
+        {
+          "note": "note3",
+          "storedDate": "2016-03-19T15:20:55.058",
+          "storedBy": "android",
+          "value": "Event note 3"
         }
       ]
     }

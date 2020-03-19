@@ -31,8 +31,9 @@ package org.hisp.dhis.android.core.utils.runner;
 import android.util.Log;
 
 import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.DatabaseRemover;
 import org.hisp.dhis.android.core.utils.integration.mock.MockIntegrationTestObjectsFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.junit.runner.Description;
 import org.junit.runner.Result;
 import org.junit.runner.notification.RunListener;
@@ -44,7 +45,6 @@ public class D2JunitTestListener extends RunListener {
     public void testRunStarted(Description description) {
         Log.e("D2JunitTestListener", "Test run started");
         CalendarProviderFactory.setFixed();
-        TestDatabaseAdapterFactory.setUp();
     }
 
     @Override
@@ -53,5 +53,6 @@ public class D2JunitTestListener extends RunListener {
         TestDatabaseAdapterFactory.tearDown();
         CalendarProviderFactory.setRegular();
         MockIntegrationTestObjectsFactory.tearDown();
+        DatabaseRemover.removeAllDatabases();
     }
 }

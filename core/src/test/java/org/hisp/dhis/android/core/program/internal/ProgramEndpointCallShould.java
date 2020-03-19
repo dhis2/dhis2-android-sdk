@@ -30,8 +30,9 @@ package org.hisp.dhis.android.core.program.internal;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.PayloadNoResourceCallFetcher;
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.UidsNoResourceCallFetcher;
 import org.hisp.dhis.android.core.arch.call.internal.EndpointCall;
 import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
@@ -44,6 +45,7 @@ import org.junit.runners.JUnit4;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.internal.util.collections.Sets;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -69,6 +71,9 @@ public class ProgramEndpointCallShould extends BaseCallShould {
     private ArgumentCaptor<Fields<Program>> fieldsCaptor;
 
     @Captor
+    private ArgumentCaptor<Filter<Program, String>> filterCaptor;
+
+    @Captor
     private ArgumentCaptor<String> accessDataReadFilter;
 
     @Mock
@@ -87,10 +92,10 @@ public class ProgramEndpointCallShould extends BaseCallShould {
 
         APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter);
         endpointCall = new ProgramEndpointCallFactory(genericCallData, apiCallExecutor,
-                programService, programHandler).create();
+                programService, programHandler).create(Sets.newSet("programUid"));
         when(retrofitCall.execute()).thenReturn(Response.success(payload));
 
-        when(programService.getPrograms(any(Fields.class), anyString(), anyBoolean())
+        when(programService.getPrograms(any(Fields.class), any(Filter.class), anyString(), anyBoolean())
         ).thenReturn(retrofitCall);
     }
 
@@ -101,12 +106,13 @@ public class ProgramEndpointCallShould extends BaseCallShould {
     @Test
     public void return_correct_fields_when_invoke_server() throws Exception {
         when(programService.getPrograms(
-                fieldsCaptor.capture(), accessDataReadFilter.capture(), anyBoolean())
+                fieldsCaptor.capture(), filterCaptor.capture(), accessDataReadFilter.capture(), anyBoolean())
         ).thenReturn(retrofitCall);
 
         endpointCall.call();
 
         assertThat(fieldsCaptor.getValue()).isEqualTo(ProgramFields.allFields);
+        assertThat(filterCaptor.getValue().values().iterator().next()).isEqualTo("programUid");
         assertThat(accessDataReadFilter.getValue()).isEqualTo("access.data.read:eq:true");
     }
 
@@ -117,7 +123,7 @@ public class ProgramEndpointCallShould extends BaseCallShould {
 
     @Test
     public void have_payload_no_resource_fetcher() {
-        assertThat(castedEndpointCall().getFetcher() instanceof PayloadNoResourceCallFetcher).isTrue();
+        assertThat(castedEndpointCall().getFetcher() instanceof UidsNoResourceCallFetcher).isTrue();
     }
 
     @Test

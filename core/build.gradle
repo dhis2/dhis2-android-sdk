@@ -36,8 +36,8 @@ ext {
             buildToolsVersion: "28.0.3",
             minSdkVersion    : 19,
             targetSdkVersion : 28,
-            versionCode      : 200,
-            versionName      : "1.0.0"
+            versionCode      : 202,
+            versionName      : "1.0.2"
     ]
 
     libraries = [
@@ -74,9 +74,6 @@ ext {
 
             // plugins
             errorpronecore  : "2.0.15",
-
-            //migrations
-            snakeyaml  : "1.25",
 
             // google
             safetynet  : "16.0.0",
@@ -153,8 +150,6 @@ dependencies {
     api "io.reactivex.rxjava2:rxjava:${libraries.rxjava}"
     api "io.reactivex.rxjava2:rxandroid:${libraries.rxandroid}"
 
-    api "org.yaml:snakeyaml:${libraries.snakeyaml}"
-
     // Support libraries
     api "androidx.annotation:annotation:${libraries.support}"
 
@@ -205,6 +200,8 @@ dependencies {
 
     api "org.antlr:antlr4-runtime:4.7.2"
 
+    api "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
+
     // Java test dependencies
     testImplementation "junit:junit:${libraries.junit}"
     testImplementation "org.mockito:mockito-core:${libraries.mockito}"
@@ -217,7 +214,6 @@ dependencies {
     // Android test dependencies
     androidTestImplementation "commons-logging:commons-logging:1.2"
     androidTestImplementation "org.mockito:mockito-core:${libraries.mockito}"
-    androidTestImplementation "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
     androidTestImplementation "android.arch.core:core-testing:${libraries.coretesting}"
     androidTestImplementation "com.jraska.livedata:testing:${libraries.livedatatesting}"
     androidTestImplementation "androidx.test:runner:${libraries.testrunner}"

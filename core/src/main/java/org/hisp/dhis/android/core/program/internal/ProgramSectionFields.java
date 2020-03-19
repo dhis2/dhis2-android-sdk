@@ -37,7 +37,11 @@ import org.hisp.dhis.android.core.program.ProgramSectionTableInfo.Columns;
 
 public final class ProgramSectionFields {
 
+    /**
+     * @deprecated In version 2.33 and later, use {@link #TRACKED_ENTITY_ATTRIBUTES} instead.
+     */
     public static final String ATTRIBUTES = "programTrackedEntityAttribute";
+    public static final String TRACKED_ENTITY_ATTRIBUTES = "trackedEntityAttributes";
     private static final String STYLE = "style";
 
     private static FieldsHelper<ProgramSection> fh = new FieldsHelper<>();
@@ -48,6 +52,7 @@ public final class ProgramSectionFields {
                     fh.<String>field(Columns.DESCRIPTION),
                     fh.nestedFieldWithUid(Columns.PROGRAM),
                     fh.nestedFieldWithUid(ATTRIBUTES),
+                    fh.nestedFieldWithUid(TRACKED_ENTITY_ATTRIBUTES),
                     fh.<String>field(Columns.SORT_ORDER),
                     fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyleFields.allFields),
                     fh.<String>field(Columns.FORM_NAME)

@@ -28,11 +28,12 @@
 
 package org.hisp.dhis.android.core.dataset.internal;
 
+import org.hisp.dhis.android.core.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
+import org.mockito.internal.util.collections.Sets;
 
 import java.io.IOException;
 import java.util.List;
@@ -55,7 +56,7 @@ public class DataSetEndpointCallRealIntegrationShould extends BaseRealIntegratio
     }
 
     private Callable<List<DataSet>> createCall() {
-        return getD2DIComponent(d2).dataSetCallFactory().create();
+        return getD2DIComponent(d2).dataSetCallFactory().create(Sets.newSet("lyLU2wR22tC", "BfMAe6Itzgt"));
     }
 
     // @Test

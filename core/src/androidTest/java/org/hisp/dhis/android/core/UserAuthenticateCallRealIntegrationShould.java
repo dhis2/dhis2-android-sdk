@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core;
 
 import org.hisp.dhis.android.core.data.server.RealServerMother;
-import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 
 import java.io.IOException;

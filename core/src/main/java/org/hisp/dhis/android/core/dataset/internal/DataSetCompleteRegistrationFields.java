@@ -35,6 +35,8 @@ import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationTableInfo;
 
 final class DataSetCompleteRegistrationFields {
 
+    private static final String COMPLETED = "completed";
+
     private static FieldsHelper<DataSetCompleteRegistration> fieldsHelper = new FieldsHelper<>();
 
     static final Fields<DataSetCompleteRegistration> allFields = Fields.<DataSetCompleteRegistration>builder().fields(
@@ -43,7 +45,8 @@ final class DataSetCompleteRegistrationFields {
             fieldsHelper.<String>field(DataSetCompleteRegistrationTableInfo.Columns.ORGANISATION_UNIT),
             fieldsHelper.<String>field(DataSetCompleteRegistrationTableInfo.Columns.ATTRIBUTE_OPTION_COMBO),
             fieldsHelper.<String>field(DataSetCompleteRegistrationTableInfo.Columns.DATE),
-            fieldsHelper.<String>field(DataSetCompleteRegistrationTableInfo.Columns.STORED_BY)
+            fieldsHelper.<String>field(DataSetCompleteRegistrationTableInfo.Columns.STORED_BY),
+            fieldsHelper.<String>field(COMPLETED)
     ).build();
 
     private DataSetCompleteRegistrationFields() {}

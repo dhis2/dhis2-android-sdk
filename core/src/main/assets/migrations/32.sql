@@ -1,0 +1,1 @@
+CREATE TABLE ForeignKeyViolation (_id INTEGER PRIMARY KEY AUTOINCREMENT, fromTable TEXT, fromColumn TEXT, toTable TEXT, toColumn TEXT, notFoundValue TEXT, fromObjectUid TEXT, fromObjectRow TEXT, created TEXT);

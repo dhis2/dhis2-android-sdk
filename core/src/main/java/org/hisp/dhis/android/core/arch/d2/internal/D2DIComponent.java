@@ -33,7 +33,6 @@ import android.content.Context;
 import androidx.annotation.VisibleForTesting;
 
 import org.hisp.dhis.android.core.arch.api.internal.APIClientDIModule;
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactory;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseDIModule;
@@ -41,8 +40,10 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.di.internal.RepositoriesDIModule;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
-import org.hisp.dhis.android.core.arch.storage.internal.SecureStorageDIModule;
+import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.KeyValueStorageDIModule;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
+import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.category.internal.CategoryPackageDIModule;
 import org.hisp.dhis.android.core.common.internal.CommonPackageDIModule;
@@ -75,7 +76,7 @@ import org.hisp.dhis.android.core.program.internal.ProgramPackageDIModule;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipPackageDIModule;
 import org.hisp.dhis.android.core.resource.internal.ResourcePackageDIModule;
-import org.hisp.dhis.android.core.settings.internal.SystemSettingPackageDIModule;
+import org.hisp.dhis.android.core.settings.internal.SettingPackageDIModule;
 import org.hisp.dhis.android.core.sms.internal.SmsDIModule;
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoPackageDIModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityPackageDIModule;
@@ -95,7 +96,7 @@ import retrofit2.Retrofit;
         AppContextDIModule.class,
         APIClientDIModule.class,
         DatabaseDIModule.class,
-        SecureStorageDIModule.class,
+        KeyValueStorageDIModule.class,
         WipeDIModule.class,
         RepositoriesDIModule.class,
 
@@ -123,7 +124,7 @@ import retrofit2.Retrofit;
         RelationshipPackageDIModule.class,
         ResourcePackageDIModule.class,
         SystemInfoPackageDIModule.class,
-        SystemSettingPackageDIModule.class,
+        SettingPackageDIModule.class,
         TrackedEntityPackageDIModule.class,
         SmsDIModule.class,
         UserPackageDIModule.class}
@@ -139,7 +140,7 @@ public interface D2DIComponent {
     @VisibleForTesting
     D2InternalModules internalModules();
     @VisibleForTesting
-    ListCallFactory<Program> programCallFactory();
+    UidsCallFactory<Program> programCallFactory();
     @VisibleForTesting
     UidsCallFactory<OptionSet> optionSetCallFactory();
     @VisibleForTesting
@@ -147,7 +148,7 @@ public interface D2DIComponent {
     @VisibleForTesting
     UidsCallFactory<DataElement> dataElementCallFactory();
     @VisibleForTesting
-    ListCallFactory<DataSet> dataSetCallFactory();
+    UidsCallFactory<DataSet> dataSetCallFactory();
     @VisibleForTesting
     Handler<RelationshipType> relationshipTypeHandler();
     @VisibleForTesting
@@ -156,13 +157,15 @@ public interface D2DIComponent {
     EventPostCall eventPostCall();
     @VisibleForTesting
     IdentifiableObjectStore<CategoryOption> categoryOptionStore();
+    @VisibleForTesting
+    ObjectKeyValueStore<Credentials> credentialsSecureStore();
 
     @Component.Builder
     interface Builder {
         Builder appContextDIModule(AppContextDIModule appContextDIModule);
         Builder apiClientDIModule(APIClientDIModule apiClientDIModule);
         Builder databaseDIModule(DatabaseDIModule databaseDIModule);
-        Builder secureStorageDIModule(SecureStorageDIModule secureStoregeDIModule);
+        Builder secureStorageDIModule(KeyValueStorageDIModule secureStoregeDIModule);
         Builder wipeDIModule(WipeDIModule wipeDIModule);
         Builder repositoriesDIModule(RepositoriesDIModule repositoriesDIModule);
 
@@ -188,19 +191,20 @@ public interface D2DIComponent {
         Builder relationshipDIModule(RelationshipPackageDIModule relationshipPackageDIModule);
         Builder resourcePackageDIModule(ResourcePackageDIModule resourcePackageDIModule);
         Builder systemInfoPackageDIModule(SystemInfoPackageDIModule systemInfoPackageDIModule);
-        Builder systemSettingPackageDIModule(SystemSettingPackageDIModule systemSettingPackageDIModule);
+        Builder systemSettingPackageDIModule(SettingPackageDIModule settingPackageDIModule);
         Builder trackedEntityPackageDIModule(TrackedEntityPackageDIModule trackedEntityPackageDIModule);
         Builder userPackageDIModule(UserPackageDIModule userPackageDIModule);
         D2DIComponent build();
     }
 
     static D2DIComponent create(Context context, Retrofit retrofit, DatabaseAdapter databaseAdapter,
-                                ObjectSecureStore<Credentials> credentialsSecureStore) {
+                                SecureStore secureStore, InsecureStore insecureStore,
+                                ObjectKeyValueStore<Credentials> credentialsSecureStore) {
         return DaggerD2DIComponent.builder()
                 .appContextDIModule(new AppContextDIModule(context))
                 .databaseDIModule(new DatabaseDIModule(databaseAdapter))
                 .apiClientDIModule(new APIClientDIModule(retrofit))
-                .secureStorageDIModule(new SecureStorageDIModule(context, credentialsSecureStore))
+                .secureStorageDIModule(new KeyValueStorageDIModule(secureStore, insecureStore, credentialsSecureStore))
                 .build();
     }
 }

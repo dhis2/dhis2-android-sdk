@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.UnwrappedEqInFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams;
+import org.hisp.dhis.android.core.settings.EnrollmentScope;
 
 import javax.inject.Inject;
 
@@ -96,6 +97,21 @@ public final class TrackedEntityInstanceDownloader extends BaseRepositoryImpl<Tr
 
     public TrackedEntityInstanceDownloader limit(Integer limit) {
         return cf.integer(QueryParams.LIMIT).eq(limit);
+    }
+
+    public TrackedEntityInstanceDownloader byProgramStatus(EnrollmentScope status) {
+        return cf.baseString(QueryParams.PROGRAM_STATUS).eq(status.toString());
+    }
+
+    /**
+     * If true, it overwrites existing TEIs in the device with the TEIs returned from the server. It does not modify
+     * TEIs that are not returned from the server.
+     *
+     * @param overwrite True to overwrite
+     * @return the new repository
+     */
+    public TrackedEntityInstanceDownloader overwrite(Boolean overwrite) {
+        return cf.bool(QueryParams.OVERWRITE).eq(overwrite);
     }
 
 }

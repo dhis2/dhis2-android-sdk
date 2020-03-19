@@ -29,9 +29,9 @@
 package org.hisp.dhis.android.core.note.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.note.Note;
@@ -49,14 +49,14 @@ public final class NoteEntityDIModule {
 
     @Provides
     @Reusable
-    public ObjectWithoutUidStore<Note> store(DatabaseAdapter databaseAdapter) {
+    public IdentifiableObjectStore<Note> store(DatabaseAdapter databaseAdapter) {
         return NoteStore.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    public Handler<Note> handler(ObjectWithoutUidStore<Note> store) {
-        return new ObjectWithoutUidHandlerImpl<>(store);
+    public Handler<Note> handler(IdentifiableObjectStore<Note> store) {
+        return new IdentifiableHandlerImpl<>(store);
     }
 
     @Provides

@@ -1,2 +1,0 @@
-up:
-- CREATE TABLE ProgramOrganisationUnitLastUpdated (_id INTEGER PRIMARY KEY AUTOINCREMENT, program TEXT NOT NULL, organisationUnit TEXT NOT NULL, lastSynced TEXT, FOREIGN KEY (program) REFERENCES Program (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (organisationUnit) REFERENCES OrganisationUnit (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, UNIQUE (organisationUnit, program));

@@ -57,7 +57,7 @@ final class EventEndpointCallFactory {
         return () -> {
 
             Call<Payload<Event>> call = service.getEvents(eventQuery.orgUnit(), eventQuery.ouMode().name(),
-                    eventQuery.program(), eventQuery.trackedEntityInstance(), EventFields.allFields, Boolean.TRUE,
+                    eventQuery.program(), EventFields.allFields, Boolean.TRUE,
                     eventQuery.page(), eventQuery.pageSize(), eventQuery.lastUpdatedStartDate(), true);
 
             return apiCallExecutor.executePayloadCall(call);

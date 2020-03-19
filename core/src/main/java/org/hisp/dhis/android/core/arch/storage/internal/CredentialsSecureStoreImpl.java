@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.storage.internal;
 
-public class CredentialsSecureStoreImpl implements ObjectSecureStore<Credentials> {
+public class CredentialsSecureStoreImpl implements ObjectKeyValueStore<Credentials> {
 
     private static final String USERNAME_KEY = "username";
     private static final String PASSWORD_KEY = "password";

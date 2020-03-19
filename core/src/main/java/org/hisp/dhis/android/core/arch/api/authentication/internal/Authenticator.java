@@ -30,5 +30,5 @@ package org.hisp.dhis.android.core.arch.api.authentication.internal;
 
 import okhttp3.Interceptor;
 
-public interface Authenticator extends Interceptor {
+interface Authenticator extends Interceptor {
 }

@@ -32,6 +32,7 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -65,7 +66,8 @@ public abstract class ProgramSection extends BaseIdentifiableObject
     public abstract ObjectWithUid program();
 
     @Nullable
-    @JsonProperty(ProgramSectionFields.ATTRIBUTES)
+    @JsonProperty(ProgramSectionFields.TRACKED_ENTITY_ATTRIBUTES)
+    @JsonAlias({ProgramSectionFields.ATTRIBUTES})
     @ColumnAdapter(IgnoreTrackedEntityAttributeListColumnAdapter.class)
     public abstract List<TrackedEntityAttribute> attributes();
 
@@ -98,7 +100,8 @@ public abstract class ProgramSection extends BaseIdentifiableObject
 
         public abstract Builder program(ObjectWithUid program);
 
-        @JsonProperty(ProgramSectionFields.ATTRIBUTES)
+        @JsonProperty(ProgramSectionFields.TRACKED_ENTITY_ATTRIBUTES)
+        @JsonAlias({ProgramSectionFields.ATTRIBUTES})
         public abstract Builder attributes(List<TrackedEntityAttribute> attributes);
 
         public abstract Builder sortOrder(Integer sortOrder);

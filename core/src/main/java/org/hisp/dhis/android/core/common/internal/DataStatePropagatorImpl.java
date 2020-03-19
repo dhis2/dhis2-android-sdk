@@ -91,9 +91,15 @@ public final class DataStatePropagatorImpl implements DataStatePropagator {
 
     @Override
     public void propagateNoteCreation(Note note) {
-        Enrollment enrollment = enrollmentStore.selectByUid(note.enrollment());
-        enrollmentStore.setStateForUpdate(enrollment.uid());
-        setTeiStateForUpdate(enrollment.trackedEntityInstance());
+        if (note.noteType() == Note.NoteType.ENROLLMENT_NOTE) {
+            Enrollment enrollment = enrollmentStore.selectByUid(note.enrollment());
+            enrollmentStore.setStateForUpdate(enrollment.uid());
+            setTeiStateForUpdate(enrollment.trackedEntityInstance());
+        } else if (note.noteType() == Note.NoteType.EVENT_NOTE) {
+            Event event = eventStore.selectByUid(note.event());
+            eventStore.setStateForUpdate(event.uid());
+            propagateEventUpdate(event);
+        }
     }
 
     private void setTeiStateForUpdate(String trackedEntityInstanceUid) {

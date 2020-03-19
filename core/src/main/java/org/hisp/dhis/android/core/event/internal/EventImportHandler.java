@@ -28,9 +28,13 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
+import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
 import org.hisp.dhis.android.core.event.EventTableInfo;
@@ -38,6 +42,8 @@ import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 import org.hisp.dhis.android.core.imports.TrackerImportConflictTableInfo;
 import org.hisp.dhis.android.core.imports.internal.EventImportSummary;
 import org.hisp.dhis.android.core.imports.internal.ImportConflict;
+import org.hisp.dhis.android.core.note.Note;
+import org.hisp.dhis.android.core.note.NoteTableInfo;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
 
 import java.util.ArrayList;
@@ -46,7 +52,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getState;
@@ -55,16 +60,19 @@ import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getS
 public class EventImportHandler {
     private final EventStore eventStore;
     private final EnrollmentStore enrollmentStore;
+    private final IdentifiableObjectStore<Note> noteStore;
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
     private final ObjectStore<TrackerImportConflict> trackerImportConflictStore;
 
     @Inject
     public EventImportHandler(@NonNull EventStore eventStore,
                               @NonNull EnrollmentStore enrollmentStore,
+                              @NonNull IdentifiableObjectStore<Note> noteStore,
                               @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
                               @NonNull ObjectStore<TrackerImportConflict> trackerImportConflictStore) {
         this.eventStore = eventStore;
         this.enrollmentStore = enrollmentStore;
+        this.noteStore = noteStore;
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
         this.trackerImportConflictStore = trackerImportConflictStore;
     }
@@ -83,10 +91,11 @@ public class EventImportHandler {
                 break;
             }
 
+            State state = getState(eventImportSummary.status());
+
             HandleAction handleAction = null;
 
             if (eventImportSummary.reference() != null) {
-                State state = getState(eventImportSummary.status());
                 handleAction = eventStore.setStateOrDelete(eventImportSummary.reference(), state);
                 if (state == State.ERROR || state == State.WARNING) {
                     parentState = parentState == State.ERROR ? State.ERROR : state;
@@ -96,6 +105,8 @@ public class EventImportHandler {
             }
 
             if (handleAction != HandleAction.Delete) {
+                handleNoteImportSummary(eventImportSummary.reference(), state);
+
                 storeEventImportConflicts(eventImportSummary, trackerImportConflictBuilder);
             }
         }
@@ -153,5 +164,15 @@ public class EventImportHandler {
                         EventTableInfo.TABLE_INFO.name())
                 .build();
         trackerImportConflictStore.deleteWhereIfExists(whereClause);
+    }
+
+    private void handleNoteImportSummary(String eventUid, State state) {
+        String whereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(DataColumns.STATE, State.TO_POST)
+                .appendKeyStringValue(NoteTableInfo.Columns.EVENT, eventUid).build();
+        List<Note> notes = noteStore.selectWhere(whereClause);
+        for (Note note : notes) {
+            noteStore.update(note.toBuilder().state(state).build());
+        }
     }
 }

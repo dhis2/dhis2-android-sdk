@@ -1,0 +1,1 @@
+ALTER TABLE Option ADD COLUMN sortOrder INTEGER;

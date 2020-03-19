@@ -10,8 +10,19 @@ Include dependency in build.gradle.
 
 ```gradle
 dependencies {
-    implementation "org.hisp.dhis:android-core:1.0.0"
+    implementation "org.hisp.dhis:android-core:1.0.2"
     ...
+}
+```
+
+Addiotionally, you need to include this repository in your root gradle file if it is not already there:
+
+```gradle
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
 }
 ```
 

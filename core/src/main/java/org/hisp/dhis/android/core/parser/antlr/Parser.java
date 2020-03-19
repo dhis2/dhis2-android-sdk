@@ -33,10 +33,10 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
-import org.hisp.dhis.android.core.parser.expression.antlr.ExpressionBaseListener;
-import org.hisp.dhis.android.core.parser.expression.antlr.ExpressionBaseVisitor;
-import org.hisp.dhis.android.core.parser.expression.antlr.ExpressionLexer;
-import org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser;
+import org.hisp.dhis.parser.expression.antlr.ExpressionBaseListener;
+import org.hisp.dhis.parser.expression.antlr.ExpressionBaseVisitor;
+import org.hisp.dhis.parser.expression.antlr.ExpressionLexer;
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
 
 /**
  * Parses an expression parser using the ANTLR4 parser, and traverses the

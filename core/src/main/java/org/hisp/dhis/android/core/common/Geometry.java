@@ -48,7 +48,7 @@ import org.hisp.dhis.android.core.arch.json.internal.StringJsonElementSerializer
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Geometry.Builder.class)
-public abstract class Geometry extends BaseObject {
+public abstract class Geometry {
 
     @Nullable
     @JsonProperty()
@@ -74,7 +74,7 @@ public abstract class Geometry extends BaseObject {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
+    public abstract static class Builder {
 
         @JsonDeserialize(using = GeometryTypeDeserializer.class)
         public abstract Builder type(FeatureType type);

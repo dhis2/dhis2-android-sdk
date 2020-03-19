@@ -40,8 +40,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.hisp.dhis.android.core.parser.expression.ParserUtils.COMMON_EXPRESSION_ITEMS;
-import static org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.DAYS;
-import static org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.HASH_BRACE;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.DAYS;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.HASH_BRACE;
 
 public class ExpressionService {
 

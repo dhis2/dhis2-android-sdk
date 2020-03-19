@@ -35,7 +35,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.hisp.dhis.android.core.parser.antlr.DateUtils.parseDate;
-import static org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.*;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.*;
 
 /**
  * Utilities for ANTLR parsing

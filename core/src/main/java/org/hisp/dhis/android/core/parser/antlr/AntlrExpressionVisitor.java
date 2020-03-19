@@ -31,16 +31,16 @@ package org.hisp.dhis.android.core.parser.antlr;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.hisp.dhis.android.core.parser.antlr.literal.DefaultLiteral;
-import org.hisp.dhis.android.core.parser.expression.antlr.ExpressionBaseVisitor;
-import org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser;
+import org.hisp.dhis.parser.expression.antlr.ExpressionBaseVisitor;
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
 
 import static org.hisp.dhis.android.core.parser.antlr.AntlrParserUtils.castBoolean;
 import static org.hisp.dhis.android.core.parser.antlr.AntlrParserUtils.castDouble;
 import static org.hisp.dhis.android.core.parser.antlr.AntlrParserUtils.castString;
-import static org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.BooleanLiteralContext;
-import static org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.ExpressionContext;
-import static org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.NumericLiteralContext;
-import static org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.StringLiteralContext;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.BooleanLiteralContext;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExpressionContext;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.NumericLiteralContext;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.StringLiteralContext;
 
 /**
  * Generic traversal of the ANTLR4 expression parse tree using the

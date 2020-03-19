@@ -28,7 +28,7 @@ package org.hisp.dhis.android.core.parser.antlr;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import static org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.ExprContext;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
 
 /**
  * Visits a parsed expression function.

@@ -29,12 +29,12 @@ package org.hisp.dhis.android.core.parser.antlr.literal;
  */
 
 import org.hisp.dhis.android.core.parser.antlr.AntlrExprLiteral;
-import org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser;
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
 
 import static org.apache.commons.lang3.StringEscapeUtils.unescapeJava;
 import static org.hisp.dhis.android.core.parser.antlr.AntlrParserUtils.trimQuotes;
-import static org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.BooleanLiteralContext;
-import static org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.StringLiteralContext;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.BooleanLiteralContext;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.StringLiteralContext;
 
 /**
  * Gets typed literal values from an ANTLR parse tree for use internally.

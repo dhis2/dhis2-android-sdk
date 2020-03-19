@@ -48,25 +48,25 @@ import org.hisp.dhis.android.core.parser.expression.operator.OperatorMathPower;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.AMPERSAND_2;
-import static org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.AND;
-import static org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.DIV;
-import static org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.EQ;
-import static org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.EXCLAMATION_POINT;
-import static org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.GEQ;
-import static org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.GT;
-import static org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.LEQ;
-import static org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.LT;
-import static org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.MINUS;
-import static org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.MOD;
-import static org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.MUL;
-import static org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.NE;
-import static org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.NOT;
-import static org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.OR;
-import static org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.PAREN;
-import static org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.PLUS;
-import static org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.POWER;
-import static org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.VERTICAL_BAR_2;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.AMPERSAND_2;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.AND;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.DIV;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.EQ;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.EXCLAMATION_POINT;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.GEQ;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.GT;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.LEQ;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.LT;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.MINUS;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.MOD;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.MUL;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.NE;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.NOT;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.OR;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.PAREN;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.PLUS;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.POWER;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.VERTICAL_BAR_2;
 /**
  * Utilities for ANTLR parsing
  *

@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.parser.antlr.AntlrExpressionVisitor;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.ExprContext;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
 
 /**
  * A function that computes the result from the arguments, where if any

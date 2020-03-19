@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.parser.expression;
 import org.apache.commons.lang3.Validate;
 import org.hisp.dhis.android.core.parser.antlr.AntlrExpressionVisitor;
 import org.hisp.dhis.android.core.parser.antlr.ParserExceptionWithoutContext;
-import org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.ExprContext;
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
 
 import java.util.HashMap;
 import java.util.List;

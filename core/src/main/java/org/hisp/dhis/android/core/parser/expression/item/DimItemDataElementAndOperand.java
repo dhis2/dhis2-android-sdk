@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.parser.expression.item;
 
-import org.hisp.dhis.android.core.parser.expression.antlr.ExpressionParser.ExprContext;
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
 
 import static org.apache.commons.lang3.ObjectUtils.anyNotNull;
 

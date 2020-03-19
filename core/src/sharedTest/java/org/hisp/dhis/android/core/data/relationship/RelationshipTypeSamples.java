@@ -71,6 +71,8 @@ public class RelationshipTypeSamples {
             .id(4L)
             .constraintType(RelationshipConstraintType.TO)
             .relationshipType(ObjectWithUid.create(RELATIONSHIP_TYPE_UID_2))
+            .relationshipEntity(RelationshipEntityType.TRACKED_ENTITY_INSTANCE)
+            .trackedEntityType(ObjectWithUid.create(TET_FOR_RELATIONSHIP_3_UID))
             .build();
 
     public static RelationshipConstraint FROM_CONSTRAINT_3 = RelationshipConstraint

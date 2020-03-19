@@ -42,6 +42,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.List;
+
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.arch.repositories.collection.RelationshipTypeAsserts.assertTypesWithoutConstraints;
 import static org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples.RELATIONSHIP_TYPE_1;
@@ -81,16 +83,27 @@ public class ReadOnlyIdentifiableCollectionRepositoryImplIntegrationShould exten
 
     @Test
     public void get_relationship_by_from_tracked_entity_type() {
-        RelationshipType typeFromRepository = relationshipTypeCollectionRepository
+        List<RelationshipType> typesFromRepository = relationshipTypeCollectionRepository
+                .byConstraint(RelationshipEntityType.TRACKED_ENTITY_INSTANCE, TET_FOR_RELATIONSHIP_3_UID)
+                .withConstraints()
+                .blockingGet();
+
+        assertThat(typesFromRepository.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void get_relationship_by_from_tracked_entity_type_and_constraint_type() {
+        List<RelationshipType> typesFromRepository = relationshipTypeCollectionRepository
                 .byConstraint(
                         RelationshipEntityType.TRACKED_ENTITY_INSTANCE,
-                        RelationshipConstraintType.FROM,
-                        TET_FOR_RELATIONSHIP_3_UID)
+                        TET_FOR_RELATIONSHIP_3_UID,
+                        RelationshipConstraintType.FROM)
                 .withConstraints()
-                .one().blockingGet();
+                .blockingGet();
 
-        assertThat(typeFromRepository.uid()).isEqualTo(RELATIONSHIP_TYPE_3.uid());
-        assertThat(typeFromRepository.fromConstraint().trackedEntityType().uid())
+        assertThat(typesFromRepository.size()).isEqualTo(1);
+        assertThat(typesFromRepository.get(0).uid()).isEqualTo(RELATIONSHIP_TYPE_3.uid());
+        assertThat(typesFromRepository.get(0).fromConstraint().trackedEntityType().uid())
                 .isEqualTo(TET_FOR_RELATIONSHIP_3_UID);
     }
 

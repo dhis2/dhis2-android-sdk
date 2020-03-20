@@ -111,21 +111,33 @@ public final class EventStoreImpl extends IdentifiableDeletableDataObjectStoreIm
     }
 
     @Override
-    public List<Event> queryOrderedForEnrollmentAndProgramStage(String enrollmentUid, String programStageUid) {
-        String byEnrollmentAndProgramStageQuery = "SELECT Event.* FROM Event " +
-                "WHERE Event.enrollment = '" + enrollmentUid + "' " +
-                "AND Event.programStage = '" + programStageUid + "' " +
+    public List<Event> queryOrderedForEnrollmentAndProgramStage(String enrollmentUid, String programStageUid,
+                                                                Boolean includeDeleted) {
+        WhereClauseBuilder whereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(Columns.ENROLLMENT, enrollmentUid)
+                .appendKeyStringValue(Columns.PROGRAM_STAGE, programStageUid);
+
+        if (!includeDeleted) {
+            whereClause.appendKeyOperatorValue(Columns.DELETED, "!=", "1");
+        }
+
+        String query = "SELECT Event.* FROM " + EventTableInfo.TABLE_INFO.name() + " " +
+                whereClause.build() +
                 "ORDER BY Event." + Columns.EVENT_DATE + ", Event." + Columns.LAST_UPDATED;
 
-        return eventListFromQuery(byEnrollmentAndProgramStageQuery);
+        return eventListFromQuery(query);
     }
 
     @Override
-    public Integer countEventsForEnrollment(String enrollmentUid) {
-        String countByEnrollment = "SELECT Event.* FROM Event " +
-                "WHERE Event.enrollment = '" + enrollmentUid + "'";
+    public Integer countEventsForEnrollment(String enrollmentUid, Boolean includeDeleted) {
+        WhereClauseBuilder whereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(Columns.ENROLLMENT, enrollmentUid);
 
-        List<Event> events = eventListFromQuery(countByEnrollment);
+        if (!includeDeleted) {
+            whereClause.appendKeyOperatorValue(Columns.DELETED, "!=", "1");
+        }
+
+        List<Event> events = eventListFromQuery(whereClause.build());
         return events.size();
     }
 

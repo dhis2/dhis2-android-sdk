@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.enrollment;
 
+import androidx.annotation.RestrictTo;
+
 import org.hisp.dhis.android.core.event.Event;
 
 import java.util.List;
@@ -37,6 +39,7 @@ public final class EnrollmentInternalAccessor {
     private EnrollmentInternalAccessor() {
     }
 
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
     public static List<Event> accessEvents(Enrollment enrollment) {
         return enrollment.events();
     }

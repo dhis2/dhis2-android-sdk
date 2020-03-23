@@ -28,8 +28,11 @@
 
 package org.hisp.dhis.android.core.category;
 
+import androidx.annotation.RestrictTo;
+
 import java.util.List;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public final class CategoryComboInternalAccessor {
 
     private CategoryComboInternalAccessor() {

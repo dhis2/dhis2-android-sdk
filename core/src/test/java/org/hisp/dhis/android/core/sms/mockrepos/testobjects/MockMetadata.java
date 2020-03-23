@@ -1,5 +1,6 @@
 package org.hisp.dhis.android.core.sms.mockrepos.testobjects;
 
+import org.assertj.core.util.Lists;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.smscompression.models.SMSMetadata;
@@ -16,7 +17,9 @@ public class MockMetadata extends SMSMetadata {
         trackedEntityAttributes = getTrackedEntityAttributes();
         programs = Collections.singletonList(new ID(MockObjects.program));
         organisationUnits = Collections.singletonList(new ID(MockObjects.orgUnit));
-        categoryOptionCombos = Collections.singletonList(new ID(MockObjects.categoryOptionCombo));
+        categoryOptionCombos = Lists.newArrayList(
+                new ID(MockObjects.categoryOptionCombo),
+                new ID(MockObjects.attributeOptionCombo));
         dataElements = getDataElements();
     }
 

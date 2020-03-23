@@ -118,12 +118,12 @@ public final class EventStoreImpl extends IdentifiableDeletableDataObjectStoreIm
                 .appendKeyStringValue(Columns.PROGRAM_STAGE, programStageUid);
 
         if (!includeDeleted) {
-            whereClause.appendKeyOperatorValue(Columns.DELETED, "!=", "1");
+            whereClause.appendIsNullOrValue(Columns.DELETED, "0");
         }
 
-        String query = "SELECT Event.* FROM " + EventTableInfo.TABLE_INFO.name() + " " +
-                whereClause.build() +
-                "ORDER BY Event." + Columns.EVENT_DATE + ", Event." + Columns.LAST_UPDATED;
+        String query = "SELECT * FROM " + EventTableInfo.TABLE_INFO.name() + " " +
+                "WHERE " + whereClause.build() +
+                "ORDER BY " + Columns.EVENT_DATE + ", " + Columns.LAST_UPDATED;
 
         return eventListFromQuery(query);
     }
@@ -134,10 +134,13 @@ public final class EventStoreImpl extends IdentifiableDeletableDataObjectStoreIm
                 .appendKeyStringValue(Columns.ENROLLMENT, enrollmentUid);
 
         if (!includeDeleted) {
-            whereClause.appendKeyOperatorValue(Columns.DELETED, "!=", "1");
+            whereClause.appendIsNullOrValue(Columns.DELETED, "0");
         }
 
-        List<Event> events = eventListFromQuery(whereClause.build());
+        String query = "SELECT * FROM " + EventTableInfo.TABLE_INFO.name() + " " +
+                "WHERE " + whereClause.build();
+
+        List<Event> events = eventListFromQuery(query);
         return events.size();
     }
 

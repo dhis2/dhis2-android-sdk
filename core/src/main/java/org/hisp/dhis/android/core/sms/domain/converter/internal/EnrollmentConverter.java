@@ -2,6 +2,7 @@ package org.hisp.dhis.android.core.sms.domain.converter.internal;
 
 import androidx.annotation.NonNull;
 
+import org.hisp.dhis.android.core.arch.helpers.GeometryHelper;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor;
@@ -17,7 +18,6 @@ import org.hisp.dhis.smscompression.models.SMSEvent;
 import org.hisp.dhis.smscompression.models.SMSSubmission;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import io.reactivex.Completable;
@@ -55,14 +55,23 @@ public class EnrollmentConverter extends Converter<TrackedEntityInstance> {
         return Single.fromCallable(() -> {
             Enrollment enrollment = enrollments.get(0);
             EnrollmentSMSSubmission subm = new EnrollmentSMSSubmission();
+
             subm.setSubmissionID(submissionId);
             subm.setUserID(user);
+
+            subm.setEnrollment(enrollment.uid());
+            subm.setEnrollmentDate(enrollment.enrollmentDate());
+            subm.setEnrollmentStatus(ConverterUtils.convertEnrollmentStatus(enrollment.status()));
+            subm.setIncidentDate(enrollment.incidentDate());
             subm.setOrgUnit(enrollment.organisationUnit());
             subm.setTrackerProgram(enrollment.program());
             subm.setTrackedEntityType(tei.trackedEntityType());
             subm.setTrackedEntityInstance(enrollment.trackedEntityInstance());
-            subm.setEnrollment(enrollment.uid());
-            subm.setTimestamp(new Date());
+
+            if (GeometryHelper.containsAPoint(enrollment.geometry())) {
+                subm.setCoordinates(ConverterUtils.convertGeometryPoint(enrollment.geometry()));
+            }
+
             ArrayList<SMSAttributeValue> values = new ArrayList<>();
             for (TrackedEntityAttributeValue attr : attributeValues) {
                 values.add(createAttributeValue(attr.trackedEntityAttribute(), attr.value()));
@@ -96,12 +105,20 @@ public class EnrollmentConverter extends Converter<TrackedEntityInstance> {
 
     private SMSEvent createSMSEvent(Event e) {
         SMSEvent smsEvent = new SMSEvent();
+
         smsEvent.setAttributeOptionCombo(e.attributeOptionCombo());
+        smsEvent.setProgramStage(e.programStage());
         smsEvent.setEvent(e.uid());
         smsEvent.setEventStatus(ConverterUtils.convertEventStatus(e.status()));
-        smsEvent.setProgramStage(e.programStage());
-        smsEvent.setTimestamp(e.lastUpdated());
+        smsEvent.setEventDate(e.eventDate());
+        smsEvent.setDueDate(e.dueDate());
+        smsEvent.setOrgUnit(e.organisationUnit());
         smsEvent.setValues(ConverterUtils.convertDataValues(e.attributeOptionCombo(), e.trackedEntityDataValues()));
+
+        if (GeometryHelper.containsAPoint(e.geometry())) {
+            smsEvent.setCoordinates(ConverterUtils.convertGeometryPoint(e.geometry()));
+        }
+
         return smsEvent;
     }
 }

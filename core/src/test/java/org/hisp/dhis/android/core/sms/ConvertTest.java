@@ -19,6 +19,7 @@ import org.hisp.dhis.smscompression.models.EnrollmentSMSSubmission;
 import org.hisp.dhis.smscompression.models.RelationshipSMSSubmission;
 import org.hisp.dhis.smscompression.models.SMSAttributeValue;
 import org.hisp.dhis.smscompression.models.SMSDataValue;
+import org.hisp.dhis.smscompression.models.SMSEvent;
 import org.hisp.dhis.smscompression.models.SMSSubmission;
 import org.hisp.dhis.smscompression.models.SimpleEventSMSSubmission;
 import org.hisp.dhis.smscompression.models.TrackerEventSMSSubmission;
@@ -37,6 +38,7 @@ import io.reactivex.Single;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(JUnit4.class)
@@ -56,17 +58,30 @@ public class ConvertTest {
                 .generateEnrollmentCode(MockObjects.enrollmentUid));
         assertEquals(s.getUserID().uid, MockObjects.user);
         assertEquals(s.getEnrollment().uid, MockObjects.enrollmentUid);
-        assertEquals(s.getTrackedEntityInstance().uid, MockObjects.teiUid);
-        assertEquals(s.getTrackedEntityType().uid, MockObjects.trackedEntityType);
+        assertEquals(s.getEnrollmentDate(), MockObjects.enrollmentDate);
+        assertEquals(s.getEnrollmentStatus().name(), MockObjects.enrollmentStatus.name());
+        assertEquals(s.getIncidentDate(), MockObjects.incidentDate);
         assertEquals(s.getOrgUnit().uid, MockObjects.orgUnit);
         assertEquals(s.getTrackerProgram().uid, MockObjects.program);
-        assertEquals(s.getEvents().size(), 1);
-        assertEquals(s.getEvents().get(0).getEvent().uid, MockObjects.eventUid);
-        for (SMSDataValue item : s.getEvents().get(0).getValues()) {
-            assertTrue(containsTeiDataValue(MockObjects.getTeiDataValues(), item));
-        }
+        assertEquals(s.getTrackedEntityType().uid, MockObjects.trackedEntityType);
+        assertEquals(s.getTrackedEntityInstance().uid, MockObjects.teiUid);
+        assertEquals(s.getCoordinates().getLatitude(), MockObjects.latitude, 0.0001);
+        assertEquals(s.getCoordinates().getLongitude(), MockObjects.longitude, 0.0001);
+
         for (SMSAttributeValue item : s.getValues()) {
             assertTrue(containsAttributeValue(MockObjects.getTestAttributeValues(), item));
+        }
+
+        assertEquals(s.getEvents().size(), 1);
+        SMSEvent event = s.getEvents().get(0);
+        assertEquals(event.getEvent().uid, MockObjects.eventUid);
+        assertEquals(event.getAttributeOptionCombo().uid, MockObjects.attributeOptionCombo);
+        assertEquals(event.getEventDate(), MockObjects.eventDate);
+        assertEquals(event.getDueDate(), MockObjects.dueDate);
+        assertEquals(event.getEventStatus().name(), MockObjects.eventStatus.name());
+        assertEquals(event.getOrgUnit().uid, MockObjects.orgUnit);
+        for (SMSDataValue item : event.getValues()) {
+            assertTrue(containsTeiDataValue(MockObjects.getTeiDataValues(), item));
         }
     }
 
@@ -82,6 +97,13 @@ public class ConvertTest {
         EnrollmentSMSSubmission s = (EnrollmentSMSSubmission) convert(new QrCodeCase(testLocalDb, smsVersionRepository)
                 .generateEnrollmentCode(MockObjects.enrollmentUidWithoutEvents));
         assertTrue(s.getEvents().isEmpty());
+    }
+
+    @Test
+    public void convertEnrollmentWithoutGeometry() throws Exception {
+        EnrollmentSMSSubmission s = (EnrollmentSMSSubmission) convert(new QrCodeCase(testLocalDb, smsVersionRepository)
+                .generateEnrollmentCode(MockObjects.enrollmentUidWithoutGeometry));
+        assertNull(s.getCoordinates());
     }
 
     @Test

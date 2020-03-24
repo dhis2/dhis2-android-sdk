@@ -28,9 +28,17 @@
 
 package org.hisp.dhis.android.core.sms.domain.converter.internal;
 
+import android.util.Log;
+
+import org.hisp.dhis.android.core.arch.helpers.GeometryHelper;
+import org.hisp.dhis.android.core.common.FeatureType;
+import org.hisp.dhis.android.core.common.Geometry;
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.event.EventStatus;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.smscompression.SMSConsts;
+import org.hisp.dhis.smscompression.models.GeoPoint;
 import org.hisp.dhis.smscompression.models.SMSDataValue;
 
 import java.text.SimpleDateFormat;
@@ -39,6 +47,8 @@ import java.util.Date;
 import java.util.List;
 
 final class ConverterUtils {
+
+    private final static String TAG = ConverterUtils.class.getSimpleName();
 
     private ConverterUtils() {
         // no instances
@@ -63,6 +73,36 @@ final class ConverterUtils {
                 return SMSConsts.SMSEventStatus.OVERDUE;
             default:
                 return null;
+        }
+    }
+
+    static SMSConsts.SMSEnrollmentStatus convertEnrollmentStatus(EnrollmentStatus status) {
+        if (status == null) {
+            return null;
+        }
+        switch (status) {
+            case ACTIVE:
+                return SMSConsts.SMSEnrollmentStatus.ACTIVE;
+            case CANCELLED:
+                return SMSConsts.SMSEnrollmentStatus.CANCELLED;
+            case COMPLETED:
+                return SMSConsts.SMSEnrollmentStatus.COMPLETED;
+            default:
+                return null;
+        }
+    }
+
+    static GeoPoint convertGeometryPoint(Geometry geometry) {
+        if (!GeometryHelper.containsAPoint(geometry)) {
+            return null;
+        }
+
+        try {
+            List<Double> point = GeometryHelper.getPoint(geometry);
+            return new GeoPoint(point.get(1).floatValue(), point.get(0).floatValue());
+        } catch (D2Error d2Error) {
+            Log.d(TAG, d2Error.errorDescription());
+            return null;
         }
     }
 

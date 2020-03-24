@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.sms.domain.converter.internal;
 import android.util.Log;
 
 import org.hisp.dhis.android.core.arch.helpers.GeometryHelper;
-import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.event.EventStatus;
@@ -41,9 +40,7 @@ import org.hisp.dhis.smscompression.SMSConsts;
 import org.hisp.dhis.smscompression.models.GeoPoint;
 import org.hisp.dhis.smscompression.models.SMSDataValue;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 final class ConverterUtils {

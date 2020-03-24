@@ -33,7 +33,7 @@ public class TrackerEventConverter extends Converter<Event> {
 
             subm.setEvent(e.uid());
             subm.setEventDate(e.eventDate());
-            subm.setEventStatus(ConverterUtils.convertEventStatus(e.status()));;
+            subm.setEventStatus(ConverterUtils.convertEventStatus(e.status()));
             subm.setProgramStage(e.programStage());
             subm.setDueDate(e.dueDate());
             subm.setAttributeOptionCombo(e.attributeOptionCombo());

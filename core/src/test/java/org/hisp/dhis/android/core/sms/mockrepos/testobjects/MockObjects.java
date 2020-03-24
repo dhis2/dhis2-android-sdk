@@ -128,32 +128,30 @@ public class MockObjects {
                 .build();
     }
 
-    public static Event getSimpleEvent() {
-        return Event.builder()
-                .attributeOptionCombo(attributeOptionCombo)
-                .program(program)
-                .uid(eventUid)
-                .lastUpdated(new Date())
-                .trackedEntityDataValues(getTeiDataValues())
-                .organisationUnit(orgUnit)
-                .status(EventStatus.COMPLETED)
-                .build();
-    }
-
-    public static Event getTrackerEvent() {
+    private static Event getBaseEvent() {
         return Event.builder()
                 .attributeOptionCombo(attributeOptionCombo)
                 .uid(eventUid)
                 .lastUpdated(new Date())
                 .trackedEntityDataValues(getTeiDataValues())
                 .organisationUnit(orgUnit)
-                .enrollment(enrollmentUid)
-                .programStage(programStage)
-                .status(EventStatus.COMPLETED)
                 .eventDate(eventDate)
                 .dueDate(dueDate)
                 .status(eventStatus)
                 .geometry(GeometryHelper.createPointGeometry((double) longitude, (double) latitude))
+                .build();
+    }
+
+    public static Event getSimpleEvent() {
+        return getBaseEvent().toBuilder()
+                .program(program)
+                .build();
+    }
+
+    public static Event getTrackerEvent() {
+        return getBaseEvent().toBuilder()
+                .programStage(programStage)
+                .enrollment(enrollmentUid)
                 .build();
     }
 

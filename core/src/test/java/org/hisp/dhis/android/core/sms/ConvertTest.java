@@ -111,11 +111,15 @@ public class ConvertTest {
         SimpleEventSMSSubmission s = (SimpleEventSMSSubmission) convert(new QrCodeCase(testLocalDb, smsVersionRepository)
                 .generateSimpleEventCode(MockObjects.eventUid));
         assertEquals(s.getUserID().uid, MockObjects.user);
-        assertEquals(s.getOrgUnit().uid, MockObjects.orgUnit);
-        assertEquals(s.getEventProgram().uid, MockObjects.program);
-        assertEquals(s.getAttributeOptionCombo().uid, MockObjects.attributeOptionCombo);
         assertEquals(s.getEvent().uid, MockObjects.eventUid);
-        assertEquals(s.getEventStatus(), SMSConsts.SMSEventStatus.COMPLETED);
+        assertEquals(s.getEventDate(), MockObjects.eventDate);
+        assertEquals(s.getEventStatus().name(), MockObjects.eventStatus.name());
+        assertEquals(s.getEventProgram().uid, MockObjects.program);
+        assertEquals(s.getDueDate(), MockObjects.dueDate);
+        assertEquals(s.getAttributeOptionCombo().uid, MockObjects.attributeOptionCombo);
+        assertEquals(s.getOrgUnit().uid, MockObjects.orgUnit);
+        assertEquals(s.getCoordinates().getLatitude(), MockObjects.latitude, 0.0001);
+        assertEquals(s.getCoordinates().getLongitude(), MockObjects.longitude, 0.0001);
         for (SMSDataValue item : s.getValues()) {
             assertTrue(containsTeiDataValue(MockObjects.getTeiDataValues(), item));
         }

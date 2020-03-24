@@ -16,6 +16,7 @@ applicable_txt: 'Applicable to version 1.0.2'
 !INCLUDE "content/developer/overview.md"
 !INCLUDE "content/developer/getting-started.md"
 !INCLUDE "content/developer/modules-and-repositories.md"
+!INCLUDE "content/developer/database.md"
 !INCLUDE "content/developer/workflow.md"
 !INCLUDE "content/developer/error-management.md"
 !INCLUDE "content/developer/sms.md"

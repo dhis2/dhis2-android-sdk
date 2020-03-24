@@ -1,7 +1,6 @@
 package org.hisp.dhis.android.core.sms.mockrepos.testobjects;
 
 import org.hisp.dhis.android.core.arch.helpers.GeometryHelper;
-import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor;
@@ -22,14 +21,16 @@ import java.util.Collections;
 import java.util.Date;
 
 public class MockObjects {
+    private static Date sampleDate = new Date(1585041172000L);
+
     public static String user = "AIK2aQOJIbj";
 
     public static String enrollmentUid = "jQK0XnMVFIK";
     public static String enrollmentUidWithNullEvents = "aQr0XnMVyIq";
     public static String enrollmentUidWithoutEvents = "hQKhXnMVLIm";
     public static String enrollmentUidWithoutGeometry = "e5xQ7RriVpK";
-    public static Date enrollmentDate = new Date();
-    public static Date incidentDate = new Date();
+    public static Date enrollmentDate = sampleDate;
+    public static Date incidentDate = sampleDate;
     public static EnrollmentStatus enrollmentStatus = EnrollmentStatus.ACTIVE;
     public static float latitude = 1.234F;
     public static float longitude = -0.123F;
@@ -44,8 +45,8 @@ public class MockObjects {
     public static String categoryOptionCombo = "HllvX50cXC0";
     public static String eventUid = "gqmgkrLT3XH";
     public static String programStage = "bUzhUa4QWbQ";
-    public static Date eventDate = new Date();
-    public static Date dueDate = new Date();
+    public static Date eventDate = sampleDate;
+    public static Date dueDate = sampleDate;
     public static EventStatus eventStatus = EventStatus.COMPLETED;
 
     public static String period = "2019";
@@ -61,8 +62,8 @@ public class MockObjects {
                 .lastUpdated(new Date())
                 .organisationUnit(orgUnit)
                 .program(program)
-                .enrollmentDate(new Date())
-                .incidentDate(new Date())
+                .enrollmentDate(enrollmentDate)
+                .incidentDate(incidentDate)
                 .status(enrollmentStatus)
                 .trackedEntityInstance(teiUid)
                 .id(341L);

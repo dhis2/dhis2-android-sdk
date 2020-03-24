@@ -88,14 +88,14 @@ public class ConvertTest {
     public void convertEnrollmentWitNullEvent() throws Exception {
         EnrollmentSMSSubmission s = (EnrollmentSMSSubmission) convert(new QrCodeCase(testLocalDb, smsVersionRepository)
                 .generateEnrollmentCode(MockObjects.enrollmentUidWithNullEvents));
-        assertTrue(s.getEvents().isEmpty());
+        assertNull(s.getEvents());
     }
 
     @Test
     public void convertEnrollmentWithEmptyEventList() throws Exception {
         EnrollmentSMSSubmission s = (EnrollmentSMSSubmission) convert(new QrCodeCase(testLocalDb, smsVersionRepository)
                 .generateEnrollmentCode(MockObjects.enrollmentUidWithoutEvents));
-        assertTrue(s.getEvents().isEmpty());
+        assertNull(s.getEvents());
     }
 
     @Test
@@ -165,7 +165,7 @@ public class ConvertTest {
     // TODO Enable this test when the compression supports empty lists
     //@Test
     public void convertDataSetWithEmptyDataValueList() throws Exception {
-        AggregateDatasetSMSSubmission s = (AggregateDatasetSMSSubmission) convert(new QrCodeCase(testLocalDb)
+        AggregateDatasetSMSSubmission s = (AggregateDatasetSMSSubmission) convert(new QrCodeCase(testLocalDb, smsVersionRepository)
                 .generateDataSetCode(MockObjects.dataSetEmptyListUid, MockObjects.orgUnit,
                         MockObjects.period, MockObjects.attributeOptionCombo));
         assertEquals(s.getUserID().uid, MockObjects.user);

@@ -11,6 +11,7 @@ import org.hisp.dhis.android.core.sms.mockrepos.testobjects.MockMetadata;
 import org.hisp.dhis.android.core.sms.mockrepos.testobjects.MockObjects;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.smscompression.models.SMSMetadata;
+import org.mockito.Mock;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -95,6 +96,9 @@ public class MockLocalDbRepository implements LocalDbRepository {
         }
         else if (enrollmentUid.equals(MockObjects.enrollmentUidWithoutEvents)) {
             return Single.fromCallable(MockObjects::getTEIEnrollmentWithEventEmpty);
+        }
+        else if (enrollmentUid.equals(MockObjects.enrollmentUidWithoutGeometry)) {
+            return Single.fromCallable(MockObjects::getTEIEnrollmentWithoutGeometry);
         }
         else {
             return Single.fromCallable(MockObjects::getTEIEnrollment);

@@ -2,6 +2,7 @@ package org.hisp.dhis.android.core.sms.domain.converter.internal;
 
 import androidx.annotation.NonNull;
 
+import org.hisp.dhis.android.core.arch.helpers.GeometryHelper;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
@@ -26,16 +27,24 @@ public class TrackerEventConverter extends Converter<Event> {
     public Single<? extends SMSSubmission> convert(@NonNull Event e, String user, int submissionId) {
         return Single.fromCallable(() -> {
             TrackerEventSMSSubmission subm = new TrackerEventSMSSubmission();
+
             subm.setSubmissionID(submissionId);
-            subm.setAttributeOptionCombo(e.attributeOptionCombo());
+            subm.setUserID(user);
+
             subm.setEvent(e.uid());
+            subm.setEventDate(e.eventDate());
+            subm.setEventStatus(ConverterUtils.convertEventStatus(e.status()));;
             subm.setProgramStage(e.programStage());
-            subm.setTimestamp(e.lastUpdated());
+            subm.setDueDate(e.dueDate());
+            subm.setAttributeOptionCombo(e.attributeOptionCombo());
+            subm.setOrgUnit(e.organisationUnit());
             subm.setEnrollment(e.enrollment());
             subm.setValues(ConverterUtils.convertDataValues(e.attributeOptionCombo(), e.trackedEntityDataValues()));
-            subm.setOrgUnit(e.organisationUnit());
-            subm.setUserID(user);
-            subm.setEventStatus(ConverterUtils.convertEventStatus(e.status()));
+
+            if (GeometryHelper.containsAPoint(e.geometry())) {
+                subm.setCoordinates(ConverterUtils.convertGeometryPoint(e.geometry()));
+            }
+
             return subm;
         });
     }

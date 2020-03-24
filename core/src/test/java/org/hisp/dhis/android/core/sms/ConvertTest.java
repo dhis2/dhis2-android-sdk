@@ -11,7 +11,6 @@ import org.hisp.dhis.android.core.sms.mockrepos.testobjects.MockMetadata;
 import org.hisp.dhis.android.core.sms.mockrepos.testobjects.MockObjects;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
-import org.hisp.dhis.smscompression.SMSConsts;
 import org.hisp.dhis.smscompression.SMSSubmissionReader;
 import org.hisp.dhis.smscompression.models.AggregateDatasetSMSSubmission;
 import org.hisp.dhis.smscompression.models.DeleteSMSSubmission;
@@ -130,12 +129,16 @@ public class ConvertTest {
         TrackerEventSMSSubmission s = (TrackerEventSMSSubmission) convert(new QrCodeCase(testLocalDb, smsVersionRepository)
                 .generateTrackerEventCode(MockObjects.eventUid));
         assertEquals(s.getUserID().uid, MockObjects.user);
-        assertEquals(s.getOrgUnit().uid, MockObjects.orgUnit);
-        assertEquals(s.getAttributeOptionCombo().uid, MockObjects.attributeOptionCombo);
         assertEquals(s.getEvent().uid, MockObjects.eventUid);
+        assertEquals(s.getEventDate(), MockObjects.eventDate);
+        assertEquals(s.getEventStatus().name(), MockObjects.eventStatus.name());
         assertEquals(s.getProgramStage().uid, MockObjects.programStage);
+        assertEquals(s.getDueDate(), MockObjects.dueDate);
+        assertEquals(s.getAttributeOptionCombo().uid, MockObjects.attributeOptionCombo);
+        assertEquals(s.getOrgUnit().uid, MockObjects.orgUnit);
         assertEquals(s.getEnrollment().uid, MockObjects.enrollmentUid);
-        assertEquals(s.getEventStatus(), SMSConsts.SMSEventStatus.COMPLETED);
+        assertEquals(s.getCoordinates().getLatitude(), MockObjects.latitude, 0.0001);
+        assertEquals(s.getCoordinates().getLongitude(), MockObjects.longitude, 0.0001);
         for (SMSDataValue item : s.getValues()) {
             assertTrue(containsTeiDataValue(MockObjects.getTeiDataValues(), item));
         }

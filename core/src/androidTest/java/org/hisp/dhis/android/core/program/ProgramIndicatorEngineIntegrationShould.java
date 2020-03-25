@@ -274,6 +274,7 @@ public class ProgramIndicatorEngineIntegrationShould extends BaseMockIntegration
         createEnrollment(null, null);
         createEvent(event1, programStage1, null);
         createEvent(event2, programStage2, null);
+        createDeletedEvent(event3, programStage2);
 
         setProgramIndicatorExpressionAsAverage(var("event_count"));
 
@@ -329,6 +330,14 @@ public class ProgramIndicatorEngineIntegrationShould extends BaseMockIntegration
 
     private void createEvent(String eventUid, String programStageUid, Date eventDate) {
         createEvent(eventUid, programStageUid, eventDate, null);
+    }
+
+    private void createDeletedEvent(String eventUid, String programStageUid) {
+        Event event = Event.builder().uid(eventUid).enrollment(enrollmentUid).lastUpdated(null)
+                .program(programUid).programStage(programStageUid).organisationUnit(orgunitUid)
+                .eventDate(null).deleted(true).build();
+
+        EventStoreImpl.create(databaseAdapter).insert(event);
     }
 
     private void setProgramIndicatorExpressionAsAverage(String expression) {

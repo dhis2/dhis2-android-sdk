@@ -1,0 +1,1 @@
+ALTER TABLE ProgramStageSectionProgramIndicatorLinkTable RENAME TO ProgramStageSectionProgramIndicatorLink;

@@ -28,7 +28,10 @@
 
 package org.hisp.dhis.android.core.configuration.internal;
 
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+
 import java.util.Collections;
+import java.util.Date;
 
 final class DatabaseConfigurationTransformer {
 
@@ -41,6 +44,7 @@ final class DatabaseConfigurationTransformer {
                                 DatabaseUserConfiguration.builder()
                                         .username(username)
                                         .databaseName(databaseName)
+                                        .databaseCreationDate(BaseIdentifiableObject.dateToDateStr(new Date()))
                                         .encrypted(false)
                                         .build()
                         ))

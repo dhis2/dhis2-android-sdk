@@ -1,0 +1,1 @@
+ALTER TABLE CategoryCategoryComboLink ADD COLUMN sortOrder INTEGER;

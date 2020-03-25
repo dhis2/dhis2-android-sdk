@@ -28,16 +28,17 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 
 import java.util.Collection;
 import java.util.Collections;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 @AutoValue
 abstract class TeiQuery extends BaseQuery {
@@ -56,6 +57,15 @@ abstract class TeiQuery extends BaseQuery {
 
     @NonNull
     abstract Collection<String> uids();
+
+    @Nullable
+    abstract EnrollmentStatus programStatus();
+
+    @Nullable
+    abstract String programStartDate();
+
+    @NonNull
+    abstract Integer limit();
 
     static Builder builder() {
         return new AutoValue_TeiQuery.Builder()
@@ -79,6 +89,22 @@ abstract class TeiQuery extends BaseQuery {
 
         abstract Builder uids(Collection<String> uIds);
 
-        abstract TeiQuery build();
+        abstract Builder programStatus(EnrollmentStatus programStatus);
+
+        abstract Builder programStartDate(String programStartDate);
+
+        abstract Builder limit(Integer limit);
+
+        abstract TeiQuery autoBuild();
+
+        //Auxiliary fields
+        abstract String program();
+
+        public TeiQuery build() {
+            if (program() == null) {
+                programStatus(null);
+            }
+            return autoBuild();
+        }
     }
 }

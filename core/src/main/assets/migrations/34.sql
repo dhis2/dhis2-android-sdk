@@ -1,0 +1,1 @@
+ALTER TABLE D2Error ADD COLUMN created TEXT;

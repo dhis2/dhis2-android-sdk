@@ -28,18 +28,14 @@
 
 package org.hisp.dhis.android.core.configuration.internal;
 
-import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseCreator;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
-import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 
 import javax.inject.Inject;
 
@@ -49,74 +45,87 @@ import dagger.Reusable;
 public class MultiUserDatabaseManager {
 
     private final DatabaseAdapter databaseAdapter;
-    private final ObjectSecureStore<DatabasesConfiguration> databaseConfigurationSecureStore;
+    private final ObjectKeyValueStore<DatabasesConfiguration> databaseConfigurationSecureStore;
     private final DatabaseConfigurationHelper configurationHelper;
-    private final Context context;
     private final DatabaseCopy databaseCopy;
-    private final DatabaseConfigurationMigration migration;
-    private final DatabaseCreator databaseCreator;
+    private final DatabaseAdapterFactory databaseAdapterFactory;
+
+    private static int maxServerUserPairs = 1;
 
     @Inject
     MultiUserDatabaseManager(
             @NonNull DatabaseAdapter databaseAdapter,
-            @NonNull ObjectSecureStore<DatabasesConfiguration> databaseConfigurationSecureStore,
+            @NonNull ObjectKeyValueStore<DatabasesConfiguration> databaseConfigurationSecureStore,
             @NonNull DatabaseConfigurationHelper configurationHelper,
-            @NonNull Context context,
             @NonNull DatabaseCopy databaseCopy,
-            @NonNull DatabaseConfigurationMigration migration,
-            @NonNull DatabaseCreator databaseCreator) {
+            @NonNull DatabaseAdapterFactory databaseAdapterFactory) {
         this.databaseAdapter = databaseAdapter;
         this.databaseConfigurationSecureStore = databaseConfigurationSecureStore;
         this.configurationHelper = configurationHelper;
-        this.context = context;
         this.databaseCopy = databaseCopy;
-        this.migration = migration;
-        this.databaseCreator = databaseCreator;
+        this.databaseAdapterFactory = databaseAdapterFactory;
     }
 
-    public static MultiUserDatabaseManager create(DatabaseAdapter databaseAdapter, Context context,
-                                                  SecureStore secureStore) {
-        DatabaseConfigurationHelper configHelper = new DatabaseConfigurationHelper(new DatabaseNameGenerator());
-        return new MultiUserDatabaseManager(databaseAdapter,
-                DatabaseConfigurationSecureStore.get(secureStore), configHelper, context,
-                new DatabaseCopy(), DatabaseConfigurationMigration.create(context, secureStore),
-                new DatabaseCreator(context));
-    }
-
-    public void loadIfLogged(Credentials credentials) {
-        DatabasesConfiguration databaseConfiguration = migration.apply();
-
-        if (databaseConfiguration != null && credentials != null) {
-            ServerURLWrapper.setServerUrl(databaseConfiguration.loggedServerUrl());
-            DatabaseUserConfiguration userConfiguration = configurationHelper.getLoggedUserConfiguration(
-                    databaseConfiguration, credentials.username());
-            databaseCreator.createOrOpenDatabase(databaseAdapter, userConfiguration);
-        }
+    public static void setMaxServerUserPairs(int pairs) {
+        maxServerUserPairs = pairs;
     }
 
     public void loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(String serverUrl, String username,
                                                                            boolean encrypt) {
-        boolean existing = loadExistingChangingEncryptionIfRequired(serverUrl, username, userConfiguration -> encrypt);
+        boolean existing = loadExistingChangingEncryptionIfRequired(serverUrl, username, userConfiguration -> encrypt,
+                true);
         if (!existing) {
-            DatabaseUserConfiguration userConfiguration = addNewConfigurationInternal(serverUrl, username, encrypt);
-            databaseCreator.createOrOpenDatabase(databaseAdapter, userConfiguration);
+            createNew(serverUrl, username, encrypt);
         }
     }
 
+    public void loadExistingKeepingEncryptionOtherwiseCreateNew(String serverUrl, String username, boolean encrypt) {
+        boolean existing = loadExistingChangingEncryptionIfRequired(serverUrl, username,
+                DatabaseUserConfiguration::encrypted, true);
+        if (!existing) {
+            createNew(serverUrl, username, encrypt);
+        }
+    }
+
+    private void createNew(String serverUrl, String username, boolean encrypt) {
+        DatabasesConfiguration configuration = databaseConfigurationSecureStore.get();
+        int pairsCount = configurationHelper.countServerUserPairs(configuration);
+        if (pairsCount == maxServerUserPairs) {
+            DatabaseUserConfiguration oldestUserConfig = configurationHelper.getOldestServerUser(configuration);
+            DatabasesConfiguration updatedConfigurations =
+                    configurationHelper.removeServerUserConfiguration(configuration, oldestUserConfig);
+            databaseConfigurationSecureStore.set(updatedConfigurations);
+            databaseAdapterFactory.deleteDatabase(oldestUserConfig);
+        }
+        DatabaseUserConfiguration userConfiguration = addNewConfigurationInternal(serverUrl, username, encrypt);
+        databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, userConfiguration);
+    }
+
+    public void changeEncryptionIfRequired(Credentials credentials, boolean encrypt) {
+        DatabasesConfiguration databasesConfiguration = databaseConfigurationSecureStore.get();
+        loadExistingChangingEncryptionIfRequired(databasesConfiguration.loggedServerUrl(),
+                credentials.username(), userConfiguration -> encrypt, false);
+    }
+
     public boolean loadExistingKeepingEncryption(String serverUrl, String username) {
-        return loadExistingChangingEncryptionIfRequired(serverUrl, username, DatabaseUserConfiguration::encrypted);
+        return loadExistingChangingEncryptionIfRequired(serverUrl, username, DatabaseUserConfiguration::encrypted,
+                true);
     }
 
     private boolean loadExistingChangingEncryptionIfRequired(String serverUrl, String username,
-                                                             EncryptionExtractor encryptionExtractor) {
+                                                             EncryptionExtractor encryptionExtractor,
+                                                             boolean alsoOpenWhenEncryptionDoesntChange) {
         DatabaseUserConfiguration existingUserConfiguration = getUserConfiguration(serverUrl, username);
         if (existingUserConfiguration == null) {
             return false;
         }
 
         boolean encrypt = encryptionExtractor.extract(existingUserConfiguration);
-        DatabaseUserConfiguration updatedUserConfiguration = addNewConfigurationInternal(serverUrl, username, encrypt);
-        databaseCreator.createOrOpenDatabase(databaseAdapter, updatedUserConfiguration);
+        if (encrypt != existingUserConfiguration.encrypted() || alsoOpenWhenEncryptionDoesntChange) {
+            DatabaseUserConfiguration updatedUserConfiguration = addNewConfigurationInternal(serverUrl, username,
+                    encrypt);
+            databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, updatedUserConfiguration);
+        }
 
         changeEncryptionIfRequired(existingUserConfiguration, encrypt);
         return true;
@@ -130,10 +139,10 @@ public class MultiUserDatabaseManager {
         if (encrypt != existingUserConfiguration.encrypted()) {
             Log.w(MultiUserDatabaseManager.class.getName(),
                     "Encryption value changed for " + existingUserConfiguration.username() +  ": " + encrypt);
-            DatabaseAdapter auxOldParentDatabaseAdapter = DatabaseAdapterFactory.newParentDatabaseAdapter();
-            databaseCreator.createOrOpenDatabase(auxOldParentDatabaseAdapter, existingUserConfiguration);
-            databaseCopy.copy(auxOldParentDatabaseAdapter, databaseAdapter);
-            context.deleteDatabase(existingUserConfiguration.databaseName());
+            DatabaseAdapter auxOldParentDatabaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter();
+            databaseAdapterFactory.createOrOpenDatabase(auxOldParentDatabaseAdapter, existingUserConfiguration);
+            databaseCopy.copyDatabase(auxOldParentDatabaseAdapter, databaseAdapter);
+            databaseAdapterFactory.deleteDatabase(existingUserConfiguration);
         }
     }
 

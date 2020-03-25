@@ -28,61 +28,52 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 
-import java.util.Collection;
-import java.util.Collections;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 @AutoValue
-public abstract class EventQuery extends BaseQuery {
+abstract class EventQuery extends BaseQuery {
 
     @Nullable
-    public abstract String orgUnit();
+    abstract String orgUnit();
 
     @Nullable
-    public abstract String program();
-
-    @Nullable
-    public abstract String trackedEntityInstance();
+    abstract String program();
 
     @NonNull
-    public abstract OrganisationUnitMode ouMode();
+    abstract OrganisationUnitMode ouMode();
 
     @Nullable
-    public abstract String lastUpdatedStartDate();
+    abstract String lastUpdatedStartDate();
 
     @Nullable
-    public abstract Collection<String> uids();
+    abstract String eventStartDate();
 
-    public static Builder builder() {
+    static Builder builder() {
         return new AutoValue_EventQuery.Builder()
                 .page(1)
                 .pageSize(DEFAULT_PAGE_SIZE)
                 .paging(true)
-                .ouMode(OrganisationUnitMode.SELECTED)
-                .uids(Collections.emptyList());
+                .ouMode(OrganisationUnitMode.SELECTED);
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseQuery.Builder<Builder> {
-        public abstract Builder orgUnit(String orgUnit);
+    abstract static class Builder extends BaseQuery.Builder<Builder> {
+        abstract Builder orgUnit(String orgUnit);
 
-        public abstract Builder program(String program);
+        abstract Builder program(String program);
 
-        public abstract Builder trackedEntityInstance(String trackedEntityInstance);
+        abstract Builder ouMode(OrganisationUnitMode ouMode);
 
-        public abstract Builder ouMode(OrganisationUnitMode ouMode);
+        abstract Builder lastUpdatedStartDate(String lastUpdatedStartDate);
 
-        public abstract Builder lastUpdatedStartDate(String lastUpdatedStartDate);
+        abstract Builder eventStartDate(String eventStartDate);
 
-        public abstract Builder uids(Collection<String> uIds);
-
-        public abstract EventQuery build();
+        abstract EventQuery build();
     }
 }

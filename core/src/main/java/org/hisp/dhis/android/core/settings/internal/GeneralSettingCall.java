@@ -86,7 +86,6 @@ public class GeneralSettingCall implements CompletableProvider {
 
     public Single<Boolean> isDatabaseEncrypted() {
         return apiCallExecutor.wrapSingle(androidSettingService.getGeneralSettings(), false)
-                .map(GeneralSettings::encryptDB)
-                .onErrorReturn(throwable -> false);
+                .map(GeneralSettings::encryptDB);
     }
 }

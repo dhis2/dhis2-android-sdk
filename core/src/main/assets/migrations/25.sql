@@ -1,0 +1,1 @@
+ALTER TABLE SectionDataElementLink ADD COLUMN sortOrder INTEGER;

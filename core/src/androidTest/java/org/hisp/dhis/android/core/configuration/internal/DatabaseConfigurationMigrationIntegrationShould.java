@@ -35,7 +35,9 @@ import androidx.test.InstrumentationRegistry;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.InMemoryUnsecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.user.UserCredentials;
@@ -61,6 +63,8 @@ public class DatabaseConfigurationMigrationIntegrationShould {
     private final DatabaseConfigurationTransformer transformer = new DatabaseConfigurationTransformer();
     private final DatabaseNameGenerator nameGenerator = new DatabaseNameGenerator();
     private final DatabaseRenamer renamer = new DatabaseRenamer(context);
+    private final DatabaseAdapterFactory databaseAdapterFactory = DatabaseAdapterFactory.create(context,
+            new InMemorySecureStore());
 
     private final String URL_STR = "https://server.org/";
     private final String USERNAME = "usnm";
@@ -75,22 +79,23 @@ public class DatabaseConfigurationMigrationIntegrationShould {
             .user(ObjectWithUid.create("user"))
             .build();
 
-    private ObjectSecureStore<Configuration> oldConfigurationStore;
-    private ObjectSecureStore<DatabasesConfiguration> newConfigurationStore;
+    private ObjectKeyValueStore<Configuration> oldConfigurationStore;
+    private ObjectKeyValueStore<DatabasesConfiguration> newConfigurationStore;
 
     @Before
     public void setUp() throws IOException {
         SecureStore secureStore = new InMemorySecureStore();
+        InsecureStore insecureStore = new InMemoryUnsecureStore();
         oldConfigurationStore = new ConfigurationSecureStoreImpl(secureStore);
-        newConfigurationStore = DatabaseConfigurationSecureStore.get(secureStore);
+        newConfigurationStore = DatabaseConfigurationInsecureStore.get(insecureStore);
         migration = new DatabaseConfigurationMigration(context, oldConfigurationStore, newConfigurationStore,
-                transformer, nameGenerator, renamer);
+                transformer, nameGenerator, renamer, databaseAdapterFactory);
     }
 
     @Test
     public void delete_empty_database() {
-        DatabaseAdapter databaseAdapter = DatabaseAdapterFactory.newParentDatabaseAdapter();
-        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, OLD_DBNAME, context, false);
+        DatabaseAdapter databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter();
+        databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, OLD_DBNAME, false);
         oldConfigurationStore.set(Configuration.forServerUrl(HttpUrl.parse(URL_STR)));
 
         assertThat(Arrays.asList(context.databaseList()).contains(OLD_DBNAME)).isTrue();
@@ -100,8 +105,8 @@ public class DatabaseConfigurationMigrationIntegrationShould {
 
     @Test
     public void rename_database_with_credentials() {
-        DatabaseAdapter databaseAdapter = DatabaseAdapterFactory.newParentDatabaseAdapter();
-        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, OLD_DBNAME, context, false);
+        DatabaseAdapter databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter();
+        databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, OLD_DBNAME, false);
         oldConfigurationStore.set(Configuration.forServerUrl(HttpUrl.parse(URL_STR)));
         setCredentials(databaseAdapter);
 
@@ -110,7 +115,7 @@ public class DatabaseConfigurationMigrationIntegrationShould {
         assertThat(Arrays.asList(context.databaseList()).contains(OLD_DBNAME)).isFalse();
         assertThat(Arrays.asList(context.databaseList()).contains(newName)).isTrue();
 
-        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, newName, context, false);
+        databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, newName, false);
         UserCredentialsStore credentialsStore = UserCredentialsStoreImpl.create(databaseAdapter);
         assertThat(credentialsStore.selectFirst()).isEqualTo(credentials);
     }
@@ -122,7 +127,8 @@ public class DatabaseConfigurationMigrationIntegrationShould {
 
     @Test
     public void return_existing_new_configuration_if_old_configuration_null() {
-        DatabasesConfiguration newConfiguration = new DatabaseConfigurationHelper(nameGenerator)
+        DatabasesConfiguration newConfiguration = new DatabaseConfigurationHelper(nameGenerator,
+                () -> "2014-06-06T20:44:21.375")
                 .setConfiguration(null, URL_STR, USERNAME, false);
         newConfigurationStore.set(newConfiguration);
         assertThat(migration.apply()).isSameAs(newConfiguration);
@@ -130,8 +136,8 @@ public class DatabaseConfigurationMigrationIntegrationShould {
 
     @Test
     public void return_empty_new_configuration_if_existing_empty_database() {
-        DatabaseAdapter databaseAdapter = DatabaseAdapterFactory.newParentDatabaseAdapter();
-        DatabaseAdapterFactory.createOrOpenDatabase(databaseAdapter, OLD_DBNAME, context, false);
+        DatabaseAdapter databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter();
+        databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, OLD_DBNAME, false);
         oldConfigurationStore.set(Configuration.forServerUrl(HttpUrl.parse(URL_STR)));
         assertThat(migration.apply()).isNull();
     }

@@ -29,9 +29,12 @@
 package org.hisp.dhis.android.core;
 
 import org.hisp.dhis.android.core.category.CategoryOptionTableInfo;
+import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager;
 import org.hisp.dhis.android.core.data.category.CategoryOptionSamples;
-import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -40,10 +43,22 @@ import static com.google.common.truth.Truth.assertThat;
 
 public class MultiUserMockIntegrationShould extends BaseMockIntegrationTestEmptyEnqueable {
 
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        BaseMockIntegrationTestEmptyEnqueable.setUpClass();
+        MultiUserDatabaseManager.setMaxServerUserPairs(5);
+    }
+
+    @AfterClass
+    public static void tearDownClass() {
+        MultiUserDatabaseManager.setMaxServerUserPairs(1);
+    }
 
     @Test
     public void connect_to_server_with_2_different_users() {
-        d2.userModule().blockingLogOut();
+        if (d2.userModule().blockingIsLogged()) {
+            d2.userModule().blockingLogOut();
+        }
 
         dhis2MockServer.enqueueLoginResponses();
         d2.userModule().blockingLogIn("u1", "p1", dhis2MockServer.getBaseEndpoint());
@@ -66,7 +81,9 @@ public class MultiUserMockIntegrationShould extends BaseMockIntegrationTestEmpty
 
     @Test
     public void connect_to_two_servers() throws IOException {
-        d2.userModule().blockingLogOut();
+        if (d2.userModule().blockingIsLogged()) {
+            d2.userModule().blockingLogOut();
+        }
 
         dhis2MockServer.enqueueLoginResponses();
         d2.userModule().blockingLogIn("u1", "p1", dhis2MockServer.getBaseEndpoint());
@@ -76,7 +93,7 @@ public class MultiUserMockIntegrationShould extends BaseMockIntegrationTestEmpty
 
         d2.userModule().blockingLogOut();
 
-        Dhis2MockServer server2 = new Dhis2MockServer();
+        Dhis2MockServer server2 = new Dhis2MockServer(0);
         server2.enqueueLoginResponses();
         d2.userModule().blockingLogIn("u2", "p2", server2.getBaseEndpoint());
         assertThat(d2.categoryModule().categoryOptions().blockingCount()).isEqualTo(0);

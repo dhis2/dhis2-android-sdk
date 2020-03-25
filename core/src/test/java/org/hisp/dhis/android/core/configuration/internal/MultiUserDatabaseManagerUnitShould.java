@@ -28,12 +28,10 @@
 
 package org.hisp.dhis.android.core.configuration.internal;
 
-import android.content.Context;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseCreator;
+import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,22 +53,16 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
     private DatabaseAdapter databaseAdapter;
 
     @Mock
-    private ObjectSecureStore<DatabasesConfiguration> databaseConfigurationSecureStore;
+    private ObjectKeyValueStore<DatabasesConfiguration> databaseConfigurationSecureStore;
 
     @Mock
     private DatabaseConfigurationHelper configurationHelper;
 
     @Mock
-    private Context context;
-
-    @Mock
     private DatabaseCopy databaseCopy;
 
     @Mock
-    private DatabaseCreator databaseCreator;
-
-    @Mock
-    private DatabaseConfigurationMigration migration;
+    private DatabaseAdapterFactory databaseAdapterFactory;
 
     private final String USERNAME = "username";
     private final String SERVER_URL = "https://dhis2.org";
@@ -80,16 +72,20 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
     private final String UNENCRYPTED_DB_NAME = "un.db";
     private final String ENCRYPTED_DB_NAME = "un.db";
 
+    private static final String DATE = "2014-06-06T20:44:21.375";
+
     private DatabaseUserConfiguration userConfigurationUnencrypted = DatabaseUserConfiguration.builder()
             .databaseName(UNENCRYPTED_DB_NAME)
             .username(USERNAME)
             .encrypted(false)
+            .databaseCreationDate(DATE)
             .build();
 
     private DatabaseUserConfiguration userConfigurationEncrypted = DatabaseUserConfiguration.builder()
             .databaseName(ENCRYPTED_DB_NAME)
             .username(USERNAME)
             .encrypted(false)
+            .databaseCreationDate(DATE)
             .build();
 
     @Mock
@@ -102,30 +98,7 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
     public void setUp() throws Exception {
         super.setUp();
         manager = new MultiUserDatabaseManager(databaseAdapter, databaseConfigurationSecureStore, configurationHelper,
-                context, databaseCopy, migration, databaseCreator);
-    }
-
-    @Test
-    public void call_migration_when_calling_loadIfLogged() {
-        manager.loadIfLogged(credentials);
-        verify(migration).apply();
-    }
-
-    @Test
-    public void not_try_to_load_db_if_not_logged_when_calling_loadIfLogged() {
-        manager.loadIfLogged(null);
-        verifyNoMoreInteractions(databaseCreator);
-    }
-
-    @Test
-    public void load_db_if_logged_when_calling_loadIfLogged() {
-        when(migration.apply()).thenReturn(databasesConfiguration);
-        when(databasesConfiguration.loggedServerUrl()).thenReturn(SERVER_URL);
-        when(configurationHelper.getLoggedUserConfiguration(databasesConfiguration, USERNAME)).thenReturn(userConfigurationUnencrypted);
-
-        manager.loadIfLogged(credentials);
-
-        verify(databaseCreator).createOrOpenDatabase(databaseAdapter, userConfigurationUnencrypted);
+                databaseCopy, databaseAdapterFactory);
     }
 
     @Test
@@ -137,7 +110,7 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
 
         manager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(SERVER_URL, USERNAME, encrypt);
 
-        verify(databaseCreator).createOrOpenDatabase(databaseAdapter, userConfigurationUnencrypted);
+        verify(databaseAdapterFactory).createOrOpenDatabase(databaseAdapter, userConfigurationUnencrypted);
     }
 
     @Test
@@ -150,20 +123,19 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
 
         manager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(SERVER_URL, USERNAME, encrypt);
 
-        verify(databaseCreator).createOrOpenDatabase(databaseAdapter, userConfigurationEncrypted);
-        verify(databaseCreator).createOrOpenDatabase(any(), same(userConfigurationUnencrypted));
+        verify(databaseAdapterFactory).createOrOpenDatabase(databaseAdapter, userConfigurationEncrypted);
+        verify(databaseAdapterFactory).createOrOpenDatabase(any(), same(userConfigurationUnencrypted));
 
-        verify(databaseCopy).copy(any(), same(databaseAdapter));
-        verify(databaseCopy).copy(any(), same(databaseAdapter));
+        verify(databaseCopy).copyDatabase(any(), same(databaseAdapter));
 
-        verify(context).deleteDatabase(UNENCRYPTED_DB_NAME);
+        verify(databaseAdapterFactory).deleteDatabase(userConfigurationEncrypted);
     }
 
     @Test
     public void not_create_database_when_non_existing_when_calling_loadExistingKeepingEncryption() {
         manager.loadExistingKeepingEncryption(SERVER_URL, USERNAME);
 
-        verifyNoMoreInteractions(databaseCreator);
+        verifyNoMoreInteractions(databaseAdapterFactory);
     }
 
     @Test
@@ -175,6 +147,6 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
 
         manager.loadExistingKeepingEncryption(SERVER_URL, USERNAME);
 
-        verify(databaseCreator).createOrOpenDatabase(databaseAdapter, userConfigurationUnencrypted);
+        verify(databaseAdapterFactory).createOrOpenDatabase(databaseAdapter, userConfigurationUnencrypted);
     }
 }

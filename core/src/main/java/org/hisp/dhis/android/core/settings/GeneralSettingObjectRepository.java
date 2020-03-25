@@ -39,7 +39,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-public final class GeneralSettingObjectRepository
+public class GeneralSettingObjectRepository
         extends ReadOnlyAnyObjectWithDownloadRepositoryImpl<GeneralSettings>
         implements ReadOnlyWithDownloadObjectRepository<GeneralSettings> {
 

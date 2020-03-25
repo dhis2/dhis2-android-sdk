@@ -127,6 +127,15 @@ public class WhereClauseBuilder {
         return appendKeyValue(column, "", AND, IS_NOT_NULL, "");
     }
 
+    public WhereClauseBuilder appendIsNullOrValue(String column, String value) {
+        String innerClause = new WhereClauseBuilder()
+                .appendIsNullValue(column)
+                .appendOrKeyStringValue(column, value)
+                .build();
+
+        return appendComplexQuery(innerClause);
+    }
+
     private WhereClauseBuilder appendKeyValue(String column, Object value, String logicGate, String eq, String end) {
         String andOpt = addOperator ? logicGate : "";
         addOperator = true;

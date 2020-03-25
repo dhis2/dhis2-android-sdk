@@ -31,10 +31,20 @@ package org.hisp.dhis.android.core.settings;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 public enum DownloadPeriod {
-    ANY,
-    LAST_MONTH,
-    LAST_3_MONTHS,
-    LAST_12_MONTHS;
+    ANY(null),
+    LAST_MONTH(1),
+    LAST_3_MONTHS(3),
+    LAST_12_MONTHS(12);
+
+    private final Integer months;
+
+    DownloadPeriod(final Integer months) {
+        this.months = months;
+    }
+
+    public Integer getMonths() {
+        return this.months;
+    }
 
     @JsonCreator
     public static DownloadPeriod forName(String name) {

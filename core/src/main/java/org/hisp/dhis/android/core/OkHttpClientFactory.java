@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.arch.api.internal.DynamicServerURLInterceptor;
 import org.hisp.dhis.android.core.arch.api.internal.PreventURLDecodeInterceptor;
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLVersionRedirectionInterceptor;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 
 import java.security.KeyStore;
 import java.util.ArrayList;
@@ -60,7 +60,7 @@ import okhttp3.TlsVersion;
 final class OkHttpClientFactory {
 
     static OkHttpClient okHttpClient(D2Configuration d2Configuration,
-                                     ObjectSecureStore<Credentials> credentialsSecureStore) {
+                                     ObjectKeyValueStore<Credentials> credentialsSecureStore) {
 
         OkHttpClient.Builder client = new OkHttpClient.Builder()
                 .addInterceptor(new DynamicServerURLInterceptor())

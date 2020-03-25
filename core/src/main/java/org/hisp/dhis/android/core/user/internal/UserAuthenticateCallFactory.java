@@ -34,13 +34,12 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.Transaction;
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager;
 import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -48,6 +47,7 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
+import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.user.AuthenticatedUser;
 import org.hisp.dhis.android.core.user.User;
@@ -56,6 +56,7 @@ import org.hisp.dhis.android.core.wipe.internal.WipeModule;
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Completable;
 import io.reactivex.Single;
 import okhttp3.HttpUrl;
 import retrofit2.Call;
@@ -72,7 +73,7 @@ public final class UserAuthenticateCallFactory {
 
     private final UserService userService;
 
-    private final ObjectSecureStore<Credentials> credentialsSecureStore;
+    private final ObjectKeyValueStore<Credentials> credentialsSecureStore;
 
     private final Handler<User> userHandler;
     private final ResourceHandler resourceHandler;
@@ -81,20 +82,22 @@ public final class UserAuthenticateCallFactory {
     private final IdentifiableObjectStore<User> userStore;
     private final WipeModule wipeModule;
     private final MultiUserDatabaseManager multiUserDatabaseManager;
+    private final GeneralSettingCall generalSettingCall;
 
     @Inject
     UserAuthenticateCallFactory(
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull APICallExecutor apiCallExecutor,
             @NonNull UserService userService,
-            @NonNull ObjectSecureStore<Credentials> credentialsSecureStore,
+            @NonNull ObjectKeyValueStore<Credentials> credentialsSecureStore,
             @NonNull Handler<User> userHandler,
             @NonNull ResourceHandler resourceHandler,
             @NonNull ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore,
             @NonNull ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
             @NonNull IdentifiableObjectStore<User> userStore,
             @NonNull WipeModule wipeModule,
-            @NonNull MultiUserDatabaseManager multiUserDatabaseManager) {
+            @NonNull MultiUserDatabaseManager multiUserDatabaseManager,
+            @NonNull GeneralSettingCall generalSettingCall) {
         this.databaseAdapter = databaseAdapter;
         this.apiCallExecutor = apiCallExecutor;
 
@@ -109,6 +112,7 @@ public final class UserAuthenticateCallFactory {
         this.userStore = userStore;
         this.wipeModule = wipeModule;
         this.multiUserDatabaseManager = multiUserDatabaseManager;
+        this.generalSettingCall = generalSettingCall;
     }
 
     public Single<User> logIn(final String username, final String password, final String serverUrl) {
@@ -133,8 +137,7 @@ public final class UserAuthenticateCallFactory {
         try {
             User authenticatedUser = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall,
                     new UserAuthenticateCallErrorCatcher());
-            return loginOnline(parsedServerUrl, authenticatedUser, username, password,
-                    DatabaseAdapterFactory.getExperimentalEncryption());
+            return loginOnline(parsedServerUrl, authenticatedUser, username, password);
         } catch (D2Error d2Error) {
             if (d2Error.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR ||
                     d2Error.errorCode() == D2ErrorCode.SOCKET_TIMEOUT ||
@@ -149,17 +152,16 @@ public final class UserAuthenticateCallFactory {
         }
     }
 
-    private User loginOnline(HttpUrl serverUrl, User authenticatedUser, String username, String password,
-                             boolean encrypt) {
-        multiUserDatabaseManager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(serverUrl.toString(),
-                username, encrypt);
+    private User loginOnline(HttpUrl serverUrl, User authenticatedUser, String username, String password) {
+        credentialsSecureStore.set(Credentials.create(username, password));
+
+        loadDatabaseOnline(serverUrl, username).blockingAwait();
+
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
             AuthenticatedUser authenticatedUserToStore = buildAuthenticatedUser(authenticatedUser.uid(),
                     username, password);
             authenticatedUserStore.updateOrInsertWhere(authenticatedUserToStore);
-            credentialsSecureStore.set(Credentials.create(username, password));
-
             systemInfoRepository.download().blockingAwait();
 
             handleUser(authenticatedUser);
@@ -168,6 +170,18 @@ public final class UserAuthenticateCallFactory {
         } finally {
             transaction.end();
         }
+    }
+
+    private Completable loadDatabaseOnline(HttpUrl serverUrl, String username) {
+        return generalSettingCall.isDatabaseEncrypted()
+                .doOnSuccess(encrypt ->
+                        multiUserDatabaseManager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(
+                                serverUrl.toString(), username, encrypt))
+                .doOnError(error ->
+                        multiUserDatabaseManager.loadExistingKeepingEncryptionOtherwiseCreateNew(
+                                serverUrl.toString(), username, false))
+                .ignoreElement()
+                .onErrorComplete();
     }
 
     private D2Error noUserOfflineError() {

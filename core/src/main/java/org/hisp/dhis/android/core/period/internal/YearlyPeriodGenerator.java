@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.period.internal;
 import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.Calendar;
+import java.util.Date;
 
 final class YearlyPeriodGenerator extends AbstractPeriodGenerator {
     private final int firstMonth;
@@ -53,8 +54,14 @@ final class YearlyPeriodGenerator extends AbstractPeriodGenerator {
 
     @Override
     protected String generateId() {
-        String year = idFormatter.format(calendar.getTime());
-        return year + suffix;
+        if (periodType == PeriodType.FinancialNov) {
+            calendar.add(Calendar.YEAR, +1);
+            Date date = calendar.getTime();
+            calendar.add(Calendar.YEAR, -1);
+            return idFormatter.format(date) + suffix;
+        } else {
+            return idFormatter.format(calendar.getTime())+ suffix;
+        }
     }
 
     @Override

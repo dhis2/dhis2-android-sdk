@@ -29,8 +29,9 @@
 package org.hisp.dhis.android.core.user.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.junit.Before;
@@ -52,13 +53,16 @@ import static org.mockito.Mockito.when;
 public class LogOutCallFactoryShould {
 
     @Mock
-    private ObjectSecureStore<Credentials> credentialsSecureStore;
+    private ObjectKeyValueStore<Credentials> credentialsSecureStore;
 
     @Mock
     private Credentials credentials;
 
     @Mock
     private DatabaseAdapter databaseAdapter;
+
+    @Mock
+    private DatabaseAdapterFactory databaseAdapterFactory;
 
     private Completable logOutCompletable;
 
@@ -69,7 +73,7 @@ public class LogOutCallFactoryShould {
         when(credentials.username()).thenReturn("user");
         when(credentials.password()).thenReturn("password");
 
-        logOutCompletable = new LogOutCallFactory(databaseAdapter, credentialsSecureStore).logOut();
+        logOutCompletable = new LogOutCallFactory(databaseAdapter, databaseAdapterFactory, credentialsSecureStore).logOut();
     }
 
     @Test

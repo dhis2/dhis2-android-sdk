@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.program.internal;
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactory;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
-import org.hisp.dhis.android.core.arch.modules.internal.MetadataModuleDownloader;
+import org.hisp.dhis.android.core.arch.modules.internal.MetadataModuleByUidDownloader;
 import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.option.OptionGroup;
 import org.hisp.dhis.android.core.option.OptionSet;
@@ -52,9 +52,9 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-public class ProgramModuleDownloader implements MetadataModuleDownloader<List<Program>> {
+public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<List<Program>> {
 
-    private final ListCallFactory<Program> programCallFactory;
+    private final UidsCallFactory<Program> programCallFactory;
     private final UidsCallFactory<ProgramStage> programStageCallFactory;
     private final UidsCallFactory<ProgramRule> programRuleCallFactory;
     private final UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory;
@@ -66,7 +66,7 @@ public class ProgramModuleDownloader implements MetadataModuleDownloader<List<Pr
     private final DHISVersionManager versionManager;
 
     @Inject
-    ProgramModuleDownloader(ListCallFactory<Program> programCallFactory,
+    ProgramModuleDownloader(UidsCallFactory<Program> programCallFactory,
                             UidsCallFactory<ProgramStage> programStageCallFactory,
                             UidsCallFactory<ProgramRule> programRuleCallFactory,
                             UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory,
@@ -89,9 +89,9 @@ public class ProgramModuleDownloader implements MetadataModuleDownloader<List<Pr
     }
 
     @Override
-    public Callable<List<Program>> downloadMetadata() {
+    public Callable<List<Program>> downloadMetadata(Set<String> orgUnitProgramUids) {
         return () -> {
-            List<Program> programs = programCallFactory.create().call();
+            List<Program> programs = programCallFactory.create(orgUnitProgramUids).call();
 
             Set<String> programUids = UidsHelper.getUids(programs);
             List<ProgramStage> programStages = programStageCallFactory.create(programUids).call();

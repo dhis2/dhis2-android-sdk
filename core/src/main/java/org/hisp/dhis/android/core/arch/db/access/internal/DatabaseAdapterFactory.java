@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.arch.db.access.internal;
 import android.content.Context;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
+import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager;
 import org.hisp.dhis.android.core.configuration.internal.DatabaseUserConfiguration;
 
 import java.util.ArrayList;
@@ -37,33 +39,40 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public final class DatabaseAdapterFactory {
+import javax.inject.Inject;
 
-    private static boolean encryptNextNotConfiguredDatabases;
-    private static String ENCRYPTION_PASSWORD = "dhis-password";
+import dagger.Reusable;
+
+@Reusable
+public class DatabaseAdapterFactory {
 
     private static Map<String, UnencryptedDatabaseOpenHelper> unencryptedOpenHelpers = new HashMap<>();
     private static Map<String, EncryptedDatabaseOpenHelper> encryptedOpenHelpers = new HashMap<>();
     private static List<DatabaseAdapter> adaptersToPreventNotClosedError = new ArrayList<>();
 
-    public static void setExperimentalEncryption(boolean experimentalEncryption) {
-        encryptNextNotConfiguredDatabases = experimentalEncryption;
+    private final Context context;
+    private final DatabaseEncryptionPasswordManager passwordManager;
+
+    @Inject
+    DatabaseAdapterFactory(Context context,
+                           DatabaseEncryptionPasswordManager passwordManager) {
+        this.context = context;
+        this.passwordManager = passwordManager;
     }
 
-    public static boolean getExperimentalEncryption() {
-        return encryptNextNotConfiguredDatabases;
+    public static DatabaseAdapterFactory create(Context context, SecureStore secureStore) {
+        return new DatabaseAdapterFactory(context, DatabaseEncryptionPasswordManager.create(secureStore));
     }
 
-    public static DatabaseAdapter newParentDatabaseAdapter() {
+    public DatabaseAdapter newParentDatabaseAdapter() {
         return new ParentDatabaseAdapter();
     }
 
     @SuppressWarnings("PMD.EmptyCatchBlock")
-    public static void createOrOpenDatabase(DatabaseAdapter adapter, String databaseName, Context context,
-                                            boolean encrypt, Integer version) {
+    public void createOrOpenDatabase(DatabaseAdapter adapter, String databaseName, boolean encrypt, Integer version) {
         try {
             ParentDatabaseAdapter parentDatabaseAdapter = (ParentDatabaseAdapter) adapter;
-            DatabaseAdapter internalAdapter = instantiateAdapter(databaseName, context, encrypt, version);
+            DatabaseAdapter internalAdapter = newInternalAdapter(databaseName, context, encrypt, version);
             adaptersToPreventNotClosedError.add(internalAdapter);
             parentDatabaseAdapter.setAdapter(internalAdapter);
         } catch (ClassCastException cce) {
@@ -71,23 +80,32 @@ public final class DatabaseAdapterFactory {
         }
     }
 
-    public static void createOrOpenDatabase(DatabaseAdapter adapter, String databaseName, Context context,
-                                            boolean encrypt) {
-        createOrOpenDatabase(adapter, databaseName, context, encrypt, BaseDatabaseOpenHelper.VERSION);
+    public void createOrOpenDatabase(DatabaseAdapter adapter, String databaseName, boolean encrypt) {
+        createOrOpenDatabase(adapter, databaseName, encrypt, BaseDatabaseOpenHelper.VERSION);
     }
 
-    public static void createOrOpenDatabase(DatabaseAdapter adapter, Context context,
-                                            DatabaseUserConfiguration userConfiguration) {
-        createOrOpenDatabase(adapter, userConfiguration.databaseName(), context, userConfiguration.encrypted(),
+    public void createOrOpenDatabase(DatabaseAdapter adapter, DatabaseUserConfiguration userConfiguration) {
+        createOrOpenDatabase(adapter, userConfiguration.databaseName(), userConfiguration.encrypted(),
                 BaseDatabaseOpenHelper.VERSION);
     }
 
-    private static DatabaseAdapter instantiateAdapter(String databaseName, Context context,
+    public void deleteDatabase(DatabaseUserConfiguration userConfiguration) {
+        context.deleteDatabase(userConfiguration.databaseName());
+        if (userConfiguration.encrypted()) {
+            encryptedOpenHelpers.remove(userConfiguration.databaseName());
+            passwordManager.deletePassword(userConfiguration.databaseName());
+        } else {
+            unencryptedOpenHelpers.remove(userConfiguration.databaseName());
+        }
+    }
+
+    private DatabaseAdapter newInternalAdapter(String databaseName, Context context,
                                                       boolean encrypt, int version) {
         if (encrypt) {
             EncryptedDatabaseOpenHelper openHelper = instantiateOpenHelper(databaseName, encryptedOpenHelpers,
                     v -> new EncryptedDatabaseOpenHelper(context, databaseName, version));
-            return new EncryptedDatabaseAdapter(openHelper.getWritableDatabase(ENCRYPTION_PASSWORD));
+            String password = passwordManager.getPassword(databaseName);
+            return new EncryptedDatabaseAdapter(openHelper.getWritableDatabase(password));
         } else {
             UnencryptedDatabaseOpenHelper openHelper = instantiateOpenHelper(databaseName, unencryptedOpenHelpers,
                     v -> new UnencryptedDatabaseOpenHelper(context, databaseName, version));
@@ -99,8 +117,7 @@ public final class DatabaseAdapterFactory {
         O run(I i);
     }
 
-    private static <H> H instantiateOpenHelper(String databaseName, Map<String, H> helpers,
-                                               Function<Void, H> helperCreator) {
+    private <H> H instantiateOpenHelper(String databaseName, Map<String, H> helpers, Function<Void, H> helperCreator) {
         H openHelper;
         if (databaseName == null || !helpers.containsKey(databaseName)) {
             openHelper = helperCreator.run(null);
@@ -114,15 +131,12 @@ public final class DatabaseAdapterFactory {
     }
 
     @SuppressWarnings("PMD.EmptyCatchBlock")
-    public static void removeDatabaseAdapter(DatabaseAdapter adapter) {
+    public void removeDatabaseAdapter(DatabaseAdapter adapter) {
         try {
             ParentDatabaseAdapter parentDatabaseAdapter = (ParentDatabaseAdapter) adapter;
             parentDatabaseAdapter.removeAdapter();
         } catch (ClassCastException cce) {
             // This ensures tests that mock DatabaseAdapter pass
         }
-    }
-
-    private DatabaseAdapterFactory() {
     }
 }

@@ -53,6 +53,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.internal.util.collections.Sets;
 
 import java.io.IOException;
 import java.util.List;
@@ -121,7 +122,7 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
         ContentValues trackedEntityAttribute3 = CreateTrackedEntityAttributeUtils.create(3L, "cejWyOfXge6", null);
         databaseAdapter.insert(TrackedEntityAttributeTableInfo.TABLE_INFO.name(), null, trackedEntityAttribute3);
 
-        programEndpointCall = objects.d2DIComponent.programCallFactory().create();
+        programEndpointCall = objects.d2DIComponent.programCallFactory().create(Sets.newSet("IpHINAT79UW"));
     }
 
     @Before

@@ -36,6 +36,7 @@ import com.facebook.stetho.Stetho;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore;
 
 public class TestDatabaseAdapterFactory {
     private static String dbName = null;
@@ -58,8 +59,10 @@ public class TestDatabaseAdapterFactory {
     private static DatabaseAdapter create() {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
         Stetho.initializeWithDefaults(context);
-        DatabaseAdapter parentDatabaseAdapter = DatabaseAdapterFactory.newParentDatabaseAdapter();
-        DatabaseAdapterFactory.createOrOpenDatabase(parentDatabaseAdapter, dbName, context, false);
+        DatabaseAdapterFactory databaseAdapterFactory = DatabaseAdapterFactory.create(context,
+                new InMemorySecureStore());
+        DatabaseAdapter parentDatabaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter();
+        databaseAdapterFactory.createOrOpenDatabase(parentDatabaseAdapter, dbName,false);
         parentDatabaseAdapter.setForeignKeyConstraintsEnabled(false);
         return parentDatabaseAdapter;
     }

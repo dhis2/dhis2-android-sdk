@@ -35,17 +35,17 @@ import androidx.annotation.VisibleForTesting;
 import org.hisp.dhis.android.core.arch.api.ssl.internal.SSLContextInitializer;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.arch.storage.internal.AndroidInsecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreImpl;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
-import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager;
-import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManagerForD2Manager;
 
 import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
-import io.reactivex.annotations.Nullable;
 
 /**
  * Helper class that offers static methods to setup and initialize the D2 instance. Also, it ensures that D2 is a
@@ -58,6 +58,7 @@ public final class D2Manager {
     private static DatabaseAdapter databaseAdapter;
     private static boolean isTestMode;
     private static SecureStore testingSecureStore;
+    private static InsecureStore testingInsecureStore;
 
     private D2Manager() {
     }
@@ -92,9 +93,16 @@ public final class D2Manager {
      */
     public static Single<D2> instantiateD2(@NonNull D2Configuration d2Config) {
         return Single.fromCallable(() -> {
-            setUp(d2Config);
-
             long startTime = System.currentTimeMillis();
+            SecureStore secureStore = testingSecureStore == null ? new AndroidSecureStore(d2Config.context())
+                    : testingSecureStore;
+            InsecureStore insecureStore = testingInsecureStore == null ? new AndroidInsecureStore(d2Config.context())
+                    : testingInsecureStore;
+            DatabaseAdapterFactory databaseAdapterFactory = DatabaseAdapterFactory.create(d2Config.context(),
+                    secureStore);
+
+            d2Configuration = D2ConfigurationValidator.validateAndSetDefaultValues(d2Config);
+            databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter();
 
             if (isTestMode) {
                 NotClosedObjectsDetector.enableNotClosedObjectsDetection();
@@ -104,10 +112,9 @@ public final class D2Manager {
                 SSLContextInitializer.initializeSSLContext(d2Configuration.context());
             }
 
-            SecureStore secureStore = testingSecureStore == null ? new AndroidSecureStore(d2Config.context())
-                    : testingSecureStore;
-            ObjectSecureStore<Credentials> credentialsSecureStore = new CredentialsSecureStoreImpl(secureStore);
-            MultiUserDatabaseManager.create(databaseAdapter, d2Config.context(), secureStore)
+            ObjectKeyValueStore<Credentials> credentialsSecureStore = new CredentialsSecureStoreImpl(secureStore);
+            MultiUserDatabaseManagerForD2Manager.create(databaseAdapter, d2Config.context(), secureStore, insecureStore,
+                    databaseAdapterFactory)
                     .loadIfLogged(credentialsSecureStore.get());
 
             d2 = new D2(
@@ -116,6 +123,7 @@ public final class D2Manager {
                     databaseAdapter,
                     d2Configuration.context(),
                     secureStore,
+                    insecureStore,
                     credentialsSecureStore
             );
 
@@ -136,15 +144,6 @@ public final class D2Manager {
         return instantiateD2(d2Config).blockingGet();
     }
 
-    private static void setUp(@Nullable D2Configuration d2Config) throws D2Error {
-        long startTime = System.currentTimeMillis();
-        d2Configuration = D2ConfigurationValidator.validateAndSetDefaultValues(d2Config);
-        databaseAdapter = DatabaseAdapterFactory.newParentDatabaseAdapter();
-
-        long setUpTime = System.currentTimeMillis() - startTime;
-        Log.i(D2Manager.class.getName(), "Set up took " + setUpTime + "ms");
-    }
-
     @VisibleForTesting
     static void setTestMode(boolean testMode) {
         isTestMode = testMode;
@@ -156,10 +155,16 @@ public final class D2Manager {
     }
 
     @VisibleForTesting
+    static void setTestingInsecureStore(InsecureStore insecureStore) {
+        testingInsecureStore = insecureStore;
+    }
+
+    @VisibleForTesting
     static void clear() {
         d2Configuration = null;
         d2 = null;
         databaseAdapter =  null;
         testingSecureStore = null;
+        testingInsecureStore = null;
     }
 }

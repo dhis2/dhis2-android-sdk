@@ -8,7 +8,7 @@ import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
-import org.hisp.dhis.android.core.sms.domain.repository.internal.SmsVersionRepository;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
@@ -28,9 +28,9 @@ public class EnrollmentConverter extends Converter<TrackedEntityInstance> {
     private final String enrollmentUid;
 
     public EnrollmentConverter(LocalDbRepository localDbRepository,
-                               SmsVersionRepository smsVersionRepository,
+                               DHISVersionManager dhisVersionManager,
                                String enrollmentUid) {
-        super(localDbRepository, smsVersionRepository);
+        super(localDbRepository, dhisVersionManager);
         this.enrollmentUid = enrollmentUid;
     }
 

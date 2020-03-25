@@ -6,7 +6,7 @@ import org.hisp.dhis.android.core.arch.helpers.GeometryHelper;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
-import org.hisp.dhis.android.core.sms.domain.repository.internal.SmsVersionRepository;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.smscompression.models.SMSSubmission;
 import org.hisp.dhis.smscompression.models.TrackerEventSMSSubmission;
 
@@ -17,9 +17,9 @@ public class TrackerEventConverter extends Converter<Event> {
     private final String eventUid;
 
     public TrackerEventConverter(LocalDbRepository localDbRepository,
-                                 SmsVersionRepository smsVersionRepository,
+                                 DHISVersionManager dhisVersionManager,
                                  String eventUid) {
-        super(localDbRepository, smsVersionRepository);
+        super(localDbRepository, dhisVersionManager);
         this.eventUid = eventUid;
     }
 

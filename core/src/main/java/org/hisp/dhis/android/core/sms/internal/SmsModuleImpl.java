@@ -9,6 +9,7 @@ import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.internal.DeviceStateRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.internal.SmsVersionRepository;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import javax.inject.Inject;
 
@@ -20,17 +21,17 @@ class SmsModuleImpl implements SmsModule {
     private final LocalDbRepository localDbRepository;
     private final SmsRepository smsRepository;
     private final WebApiRepository webApiRepository;
-    private final SmsVersionRepository smsVersionRepository;
+    private final DHISVersionManager dhisVersionManager;
 
     @Inject
     SmsModuleImpl(DeviceStateRepository deviceStateRepository, LocalDbRepository localDbRepository,
                   SmsRepository smsRepository, WebApiRepository webApiRepository,
-                  SmsVersionRepository smsVersionRepository) {
+                  DHISVersionManager dhisVersionManager) {
         this.deviceStateRepository = deviceStateRepository;
         this.localDbRepository = localDbRepository;
         this.smsRepository = smsRepository;
         this.webApiRepository = webApiRepository;
-        this.smsVersionRepository = smsVersionRepository;
+        this.dhisVersionManager = dhisVersionManager;
     }
 
     @Override
@@ -40,11 +41,11 @@ class SmsModuleImpl implements SmsModule {
 
     @Override
     public QrCodeCase qrCodeCase() {
-        return new QrCodeCase(localDbRepository, smsVersionRepository);
+        return new QrCodeCase(localDbRepository, dhisVersionManager);
     }
 
     @Override
     public SmsSubmitCase smsSubmitCase() {
-        return new SmsSubmitCase(localDbRepository, smsRepository, deviceStateRepository, smsVersionRepository);
+        return new SmsSubmitCase(localDbRepository, smsRepository, deviceStateRepository, dhisVersionManager);
     }
 }

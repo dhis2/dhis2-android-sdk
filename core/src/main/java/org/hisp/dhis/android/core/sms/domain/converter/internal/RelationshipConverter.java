@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
-import org.hisp.dhis.android.core.sms.domain.repository.internal.SmsVersionRepository;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.smscompression.models.RelationshipSMSSubmission;
 import org.hisp.dhis.smscompression.models.SMSSubmission;
 
@@ -16,9 +16,9 @@ public class RelationshipConverter extends Converter<Relationship> {
     private final String relationshipUid;
 
     public RelationshipConverter(LocalDbRepository localDbRepository,
-                                 SmsVersionRepository smsVersionRepository,
+                                 DHISVersionManager dhisVersionManager,
                                  String relationshipUid) {
-        super(localDbRepository, smsVersionRepository);
+        super(localDbRepository, dhisVersionManager);
         this.relationshipUid = relationshipUid;
     }
 

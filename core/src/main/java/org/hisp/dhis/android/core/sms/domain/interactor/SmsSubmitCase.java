@@ -13,8 +13,8 @@ import org.hisp.dhis.android.core.sms.domain.converter.internal.TrackerEventConv
 import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.internal.DeviceStateRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
-import org.hisp.dhis.android.core.sms.domain.repository.internal.SmsVersionRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import java.util.Date;
 import java.util.List;
@@ -28,7 +28,7 @@ public class SmsSubmitCase {
     private final LocalDbRepository localDbRepository;
     private final SmsRepository smsRepository;
     private final DeviceStateRepository deviceStateRepository;
-    private final SmsVersionRepository smsVersionRepository;
+    private final DHISVersionManager dhisVersionManager;
     private Converter<?> converter;
     private List<String> smsParts;
     private Integer submissionId;
@@ -37,11 +37,11 @@ public class SmsSubmitCase {
     public SmsSubmitCase(LocalDbRepository localDbRepository,
                          SmsRepository smsRepository,
                          DeviceStateRepository deviceStateRepository,
-                         SmsVersionRepository smsVersionRepository) {
+                         DHISVersionManager dhisVersionManager) {
         this.localDbRepository = localDbRepository;
         this.smsRepository = smsRepository;
         this.deviceStateRepository = deviceStateRepository;
-        this.smsVersionRepository = smsVersionRepository;
+        this.dhisVersionManager = dhisVersionManager;
     }
 
     /**
@@ -50,7 +50,7 @@ public class SmsSubmitCase {
      * @return {@code Single} with the number of SMS to send.
      */
     public Single<Integer> convertTrackerEvent(String eventUid) {
-        return convert(new TrackerEventConverter(localDbRepository, smsVersionRepository, eventUid));
+        return convert(new TrackerEventConverter(localDbRepository, dhisVersionManager, eventUid));
     }
 
     /**
@@ -59,7 +59,7 @@ public class SmsSubmitCase {
      * @return {@code Single} with the number of SMS to send.
      */
     public Single<Integer> convertSimpleEvent(String eventUid) {
-        return convert(new SimpleEventConverter(localDbRepository, smsVersionRepository, eventUid));
+        return convert(new SimpleEventConverter(localDbRepository, dhisVersionManager, eventUid));
     }
 
     /**
@@ -68,7 +68,7 @@ public class SmsSubmitCase {
      * @return {@code Single} with the number of SMS to send.
      */
     public Single<Integer> convertEnrollment(String enrollmentUid) {
-        return convert(new EnrollmentConverter(localDbRepository, smsVersionRepository, enrollmentUid));
+        return convert(new EnrollmentConverter(localDbRepository, dhisVersionManager, enrollmentUid));
     }
 
     /**
@@ -85,7 +85,7 @@ public class SmsSubmitCase {
                                           String attributeOptionComboUid) {
         return convert(new DatasetConverter(
                 localDbRepository,
-                smsVersionRepository,
+                dhisVersionManager,
                 dataSet,
                 orgUnit,
                 period,
@@ -98,7 +98,7 @@ public class SmsSubmitCase {
      * @return {@code Single} with the number of SMS to send.
      */
     public Single<Integer> convertRelationship(String relationshipUid) {
-        return convert(new RelationshipConverter(localDbRepository, smsVersionRepository, relationshipUid));
+        return convert(new RelationshipConverter(localDbRepository, dhisVersionManager, relationshipUid));
     }
 
     /**
@@ -107,7 +107,7 @@ public class SmsSubmitCase {
      * @return {@code Single} with the number of SMS to send.
      */
     public Single<Integer> convertDeletion(String itemToDeleteUid) {
-        return convert(new DeletionConverter(localDbRepository, smsVersionRepository, itemToDeleteUid));
+        return convert(new DeletionConverter(localDbRepository, dhisVersionManager, itemToDeleteUid));
     }
 
     private Single<Integer> convert(Converter<?> converter) {

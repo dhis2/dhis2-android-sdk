@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
-import org.hisp.dhis.android.core.sms.domain.repository.internal.SmsVersionRepository;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.smscompression.models.DeleteSMSSubmission;
 import org.hisp.dhis.smscompression.models.SMSSubmission;
 
@@ -15,9 +15,9 @@ public class DeletionConverter extends Converter<String> {
     private final String uid;
 
     public DeletionConverter(LocalDbRepository localDbRepository,
-                             SmsVersionRepository smsVersionRepository,
+                             DHISVersionManager dhisVersionManager,
                              String uid) {
-        super(localDbRepository, smsVersionRepository);
+        super(localDbRepository, dhisVersionManager);
         this.uid = uid;
     }
 

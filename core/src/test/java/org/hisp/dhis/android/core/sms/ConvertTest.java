@@ -4,11 +4,11 @@ package org.hisp.dhis.android.core.sms;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.sms.domain.interactor.QrCodeCase;
 import org.hisp.dhis.android.core.sms.domain.model.internal.SMSDataValueSet;
-import org.hisp.dhis.android.core.sms.domain.repository.internal.SmsVersionRepository;
 import org.hisp.dhis.android.core.sms.mockrepos.MockLocalDbRepository;
-import org.hisp.dhis.android.core.sms.mockrepos.MockSmsVersionRepository;
 import org.hisp.dhis.android.core.sms.mockrepos.testobjects.MockMetadata;
 import org.hisp.dhis.android.core.sms.mockrepos.testobjects.MockObjects;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
+import org.hisp.dhis.android.core.systeminfo.SMSVersion;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.smscompression.SMSSubmissionReader;
@@ -26,6 +26,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.Base64;
@@ -39,21 +41,25 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class ConvertTest {
     private MockLocalDbRepository testLocalDb;
-    private SmsVersionRepository smsVersionRepository;
+
+    @Mock
+    private DHISVersionManager dhisVersionManager;
 
     @Before
     public void init() {
+        MockitoAnnotations.initMocks(this);
         testLocalDb = new MockLocalDbRepository();
-        smsVersionRepository = new MockSmsVersionRepository();
+        when(dhisVersionManager.getSmsVersion()).thenReturn(SMSVersion.V2);
     }
 
     @Test
     public void convertEnrollment() throws Exception {
-        EnrollmentSMSSubmission s = (EnrollmentSMSSubmission) convert(new QrCodeCase(testLocalDb, smsVersionRepository)
+        EnrollmentSMSSubmission s = (EnrollmentSMSSubmission) convert(new QrCodeCase(testLocalDb, dhisVersionManager)
                 .generateEnrollmentCode(MockObjects.enrollmentUid));
         assertEquals(s.getUserID().uid, MockObjects.user);
         assertEquals(s.getEnrollment().uid, MockObjects.enrollmentUid);
@@ -86,28 +92,28 @@ public class ConvertTest {
 
     @Test
     public void convertEnrollmentWitNullEvent() throws Exception {
-        EnrollmentSMSSubmission s = (EnrollmentSMSSubmission) convert(new QrCodeCase(testLocalDb, smsVersionRepository)
+        EnrollmentSMSSubmission s = (EnrollmentSMSSubmission) convert(new QrCodeCase(testLocalDb, dhisVersionManager)
                 .generateEnrollmentCode(MockObjects.enrollmentUidWithNullEvents));
         assertNull(s.getEvents());
     }
 
     @Test
     public void convertEnrollmentWithEmptyEventList() throws Exception {
-        EnrollmentSMSSubmission s = (EnrollmentSMSSubmission) convert(new QrCodeCase(testLocalDb, smsVersionRepository)
+        EnrollmentSMSSubmission s = (EnrollmentSMSSubmission) convert(new QrCodeCase(testLocalDb, dhisVersionManager)
                 .generateEnrollmentCode(MockObjects.enrollmentUidWithoutEvents));
         assertNull(s.getEvents());
     }
 
     @Test
     public void convertEnrollmentWithoutGeometry() throws Exception {
-        EnrollmentSMSSubmission s = (EnrollmentSMSSubmission) convert(new QrCodeCase(testLocalDb, smsVersionRepository)
+        EnrollmentSMSSubmission s = (EnrollmentSMSSubmission) convert(new QrCodeCase(testLocalDb, dhisVersionManager)
                 .generateEnrollmentCode(MockObjects.enrollmentUidWithoutGeometry));
         assertNull(s.getCoordinates());
     }
 
     @Test
     public void convertSimpleEvent() throws Exception {
-        SimpleEventSMSSubmission s = (SimpleEventSMSSubmission) convert(new QrCodeCase(testLocalDb, smsVersionRepository)
+        SimpleEventSMSSubmission s = (SimpleEventSMSSubmission) convert(new QrCodeCase(testLocalDb, dhisVersionManager)
                 .generateSimpleEventCode(MockObjects.eventUid));
         assertEquals(s.getUserID().uid, MockObjects.user);
         assertEquals(s.getEvent().uid, MockObjects.eventUid);
@@ -126,7 +132,7 @@ public class ConvertTest {
 
     @Test
     public void convertTrackerEvent() throws Exception {
-        TrackerEventSMSSubmission s = (TrackerEventSMSSubmission) convert(new QrCodeCase(testLocalDb, smsVersionRepository)
+        TrackerEventSMSSubmission s = (TrackerEventSMSSubmission) convert(new QrCodeCase(testLocalDb, dhisVersionManager)
                 .generateTrackerEventCode(MockObjects.eventUid));
         assertEquals(s.getUserID().uid, MockObjects.user);
         assertEquals(s.getEvent().uid, MockObjects.eventUid);
@@ -146,7 +152,7 @@ public class ConvertTest {
 
     @Test
     public void convertDataSet() throws Exception {
-        AggregateDatasetSMSSubmission s = (AggregateDatasetSMSSubmission) convert(new QrCodeCase(testLocalDb, smsVersionRepository)
+        AggregateDatasetSMSSubmission s = (AggregateDatasetSMSSubmission) convert(new QrCodeCase(testLocalDb, dhisVersionManager)
                 .generateDataSetCode(MockObjects.dataSetUid, MockObjects.orgUnit,
                         MockObjects.period, MockObjects.attributeOptionCombo));
         assertEquals(s.getUserID().uid, MockObjects.user);
@@ -165,7 +171,7 @@ public class ConvertTest {
     // TODO Enable this test when the compression supports empty lists
     //@Test
     public void convertDataSetWithEmptyDataValueList() throws Exception {
-        AggregateDatasetSMSSubmission s = (AggregateDatasetSMSSubmission) convert(new QrCodeCase(testLocalDb, smsVersionRepository)
+        AggregateDatasetSMSSubmission s = (AggregateDatasetSMSSubmission) convert(new QrCodeCase(testLocalDb, dhisVersionManager)
                 .generateDataSetCode(MockObjects.dataSetEmptyListUid, MockObjects.orgUnit,
                         MockObjects.period, MockObjects.attributeOptionCombo));
         assertEquals(s.getUserID().uid, MockObjects.user);
@@ -181,7 +187,7 @@ public class ConvertTest {
 
     @Test
     public void convertRelationship() throws Exception {
-        RelationshipSMSSubmission s = (RelationshipSMSSubmission) convert(new QrCodeCase(testLocalDb, smsVersionRepository)
+        RelationshipSMSSubmission s = (RelationshipSMSSubmission) convert(new QrCodeCase(testLocalDb, dhisVersionManager)
                 .generateRelationshipCode(MockObjects.relationship));
         assertEquals(s.getUserID().uid, MockObjects.user);
         assertEquals(s.getRelationship().uid, MockObjects.relationship);
@@ -192,7 +198,7 @@ public class ConvertTest {
 
     @Test
     public void convertDeletion() throws Exception {
-        DeleteSMSSubmission s = (DeleteSMSSubmission) convert(new QrCodeCase(testLocalDb, smsVersionRepository)
+        DeleteSMSSubmission s = (DeleteSMSSubmission) convert(new QrCodeCase(testLocalDb, dhisVersionManager)
                 .generateDeletionCode(MockObjects.eventUid));
         assertEquals(s.getUserID().uid, MockObjects.user);
         assertEquals(s.getEvent().uid, MockObjects.eventUid);

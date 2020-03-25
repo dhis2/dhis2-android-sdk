@@ -6,8 +6,12 @@ import android.util.Base64;
 import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
-import org.hisp.dhis.android.core.sms.domain.repository.internal.SmsVersionRepository;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
+import org.hisp.dhis.android.core.systeminfo.SMSVersion;
 import org.hisp.dhis.smscompression.SMSSubmissionWriter;
 import org.hisp.dhis.smscompression.models.SMSMetadata;
 import org.hisp.dhis.smscompression.models.SMSSubmission;
@@ -17,12 +21,12 @@ import io.reactivex.Single;
 
 public abstract class Converter<P> {
     private final LocalDbRepository localDbRepository;
-    private final SmsVersionRepository smsVersionRepository;
+    private final DHISVersionManager dhisVersionManager;
 
     Converter(LocalDbRepository localDbRepository,
-                     SmsVersionRepository smsVersionRepository) {
+              DHISVersionManager dhisVersionManager) {
         this.localDbRepository = localDbRepository;
-        this.smsVersionRepository = smsVersionRepository;
+        this.dhisVersionManager = dhisVersionManager;
     }
 
     public Single<String> readAndConvert() {
@@ -47,7 +51,15 @@ public abstract class Converter<P> {
     private Single<String> convert(@NonNull P dataItem, SMSMetadata metadata, String user, Integer submissionId) {
         return convert(dataItem, user, submissionId).map(submission -> {
             SMSSubmissionWriter writer = new SMSSubmissionWriter(metadata);
-            return base64(writer.compress(submission, smsVersionRepository.getSMSVersion()));
+            SMSVersion smsVersion = dhisVersionManager.getSmsVersion();
+            if (smsVersion == null) {
+                throw D2Error.builder()
+                        .errorCode(D2ErrorCode.SMS_NOT_SUPPORTED)
+                        .errorDescription("SMS is not supported in version " + dhisVersionManager.getPatchVersion())
+                        .errorComponent(D2ErrorComponent.SDK)
+                        .build();
+            }
+            return base64(writer.compress(submission, smsVersion.getIntValue()));
         });
     }
 

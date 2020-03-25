@@ -19,7 +19,7 @@ public abstract class Converter<P> {
     private final LocalDbRepository localDbRepository;
     private final SmsVersionRepository smsVersionRepository;
 
-    public Converter(LocalDbRepository localDbRepository,
+    Converter(LocalDbRepository localDbRepository,
                      SmsVersionRepository smsVersionRepository) {
         this.localDbRepository = localDbRepository;
         this.smsVersionRepository = smsVersionRepository;

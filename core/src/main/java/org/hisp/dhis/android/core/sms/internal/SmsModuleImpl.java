@@ -15,7 +15,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-public class SmsModuleImpl implements SmsModule {
+class SmsModuleImpl implements SmsModule {
     private final DeviceStateRepository deviceStateRepository;
     private final LocalDbRepository localDbRepository;
     private final SmsRepository smsRepository;
@@ -23,9 +23,9 @@ public class SmsModuleImpl implements SmsModule {
     private final SmsVersionRepository smsVersionRepository;
 
     @Inject
-    public SmsModuleImpl(DeviceStateRepository deviceStateRepository, LocalDbRepository localDbRepository,
-                         SmsRepository smsRepository, WebApiRepository webApiRepository,
-                         SmsVersionRepository smsVersionRepository) {
+    SmsModuleImpl(DeviceStateRepository deviceStateRepository, LocalDbRepository localDbRepository,
+                  SmsRepository smsRepository, WebApiRepository webApiRepository,
+                  SmsVersionRepository smsVersionRepository) {
         this.deviceStateRepository = deviceStateRepository;
         this.localDbRepository = localDbRepository;
         this.smsRepository = smsRepository;

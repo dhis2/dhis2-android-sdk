@@ -43,8 +43,6 @@ public class EnrollmentConverter extends Converter<TrackedEntityInstance> {
             );
         }
 
-        List<Event> events = EnrollmentInternalAccessor.accessEvents(enrollments.get(0));
-
         List<TrackedEntityAttributeValue> attributeValues = tei.trackedEntityAttributeValues();
         if (attributeValues == null) {
             return Single.error(
@@ -77,6 +75,8 @@ public class EnrollmentConverter extends Converter<TrackedEntityInstance> {
                 values.add(createAttributeValue(attr.trackedEntityAttribute(), attr.value()));
             }
             subm.setValues(values);
+
+            List<Event> events = EnrollmentInternalAccessor.accessEvents(enrollments.get(0));
 
             if (events != null) {
                 ArrayList<SMSEvent> smsEvents = new ArrayList<>();

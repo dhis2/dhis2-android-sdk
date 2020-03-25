@@ -8,7 +8,6 @@ import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.internal.DeviceStateRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
-import org.hisp.dhis.android.core.sms.domain.repository.internal.SmsVersionRepository;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import javax.inject.Inject;

@@ -79,7 +79,7 @@ public enum DHISPatchVersion {
 
     public static DHISPatchVersion getValue(String versionStr) {
         for (DHISPatchVersion patchVersion : DHISPatchVersion.values()) {
-            if (patchVersion.getStrValue().equals(versionStr)) {
+            if (versionStr.equals(patchVersion.strValue) || versionStr.startsWith(patchVersion.strValue + "-")) {
                 return patchVersion;
             }
         }

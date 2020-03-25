@@ -208,7 +208,11 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     }
 
     private Single<List<Event>> getEventsForEnrollment(String enrollmentUid) {
-        return eventModule.events().byEnrollmentUid().eq(enrollmentUid).withTrackedEntityDataValues().get()
+        return eventModule.events()
+                .byEnrollmentUid().eq(enrollmentUid)
+                .byState().in(State.uploadableStates())
+                .withTrackedEntityDataValues()
+                .get()
                 .flatMapObservable(Observable::fromIterable)
                 .flatMapSingle(fileResourceCleaner::removeFileDataValues)
                 .toList();

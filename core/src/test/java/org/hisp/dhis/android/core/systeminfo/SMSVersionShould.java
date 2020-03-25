@@ -28,43 +28,33 @@
 
 package org.hisp.dhis.android.core.systeminfo;
 
-public enum SMSVersion {
-    V1(1),
-    V2(2);
+import org.junit.Test;
 
-    private final static SMSVersion latestVersion = SMSVersion.V2;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-    private Integer intValue;
+public class SMSVersionShould {
 
-    SMSVersion(Integer intValue) {
-        this.intValue = intValue;
+    @Test
+    public void return_sms_version_if_patch_version_exists() {
+        SMSVersion smsVersion = SMSVersion.getValue("2.33.2");
+        assertThat(smsVersion).isEqualByComparingTo(SMSVersion.V1);
     }
 
-    public Integer getIntValue() {
-        return intValue;
+    @Test
+    public void return_latest_sms_version_if_patch_does_not_exist() {
+        SMSVersion smsVersion = SMSVersion.getValue("2.33.100");
+        assertThat(smsVersion).isEqualByComparingTo(SMSVersion.V2);
     }
 
-    public static SMSVersion getValue(String versionStr) {
-        DHISPatchVersion patchVersion = DHISPatchVersion.getValue(versionStr);
-        if (patchVersion == null) {
-            DHISVersion dhisVersion = DHISVersion.getValue(versionStr);
-            return getLatestInDHISVersion(dhisVersion);
-        } else {
-            return patchVersion.getSmsVersion();
-        }
+    @Test
+    public void return_null_if_patch_version_has_no_support() {
+        SMSVersion smsVersion = SMSVersion.getValue("2.32.1");
+        assertThat(smsVersion).isNull();
     }
 
-    private static SMSVersion getLatestInDHISVersion(DHISVersion dhisVersion) {
-        SMSVersion latest = null;
-        for (DHISPatchVersion patchVersion : DHISPatchVersion.values()) {
-            if (patchVersion.getMajorVersion().equals(dhisVersion) && patchVersion.getSmsVersion() != null) {
-                SMSVersion smsVersion = patchVersion.getSmsVersion();
-
-                if (latest == null || latest.intValue <  smsVersion.intValue) {
-                    latest = smsVersion;
-                }
-            }
-        }
-        return latest;
+    @Test
+    public void return_null_if_patch_does_not_exist() {
+        SMSVersion smsVersion = SMSVersion.getValue("2.32.100");
+        assertThat(smsVersion).isNull();
     }
 }

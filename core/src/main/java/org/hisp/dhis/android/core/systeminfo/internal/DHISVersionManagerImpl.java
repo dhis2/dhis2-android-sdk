@@ -77,7 +77,11 @@ public class DHISVersionManagerImpl implements DHISVersionManager {
     @Override
     public SMSVersion getSmsVersion() {
         if (smsVersion == null) {
-            smsVersion = SMSVersion.getValue(getPatchVersion());
+            SystemInfo systemInfo = systemInfoStore.selectFirst();
+
+            if (systemInfo != null && systemInfo.version() != null) {
+                smsVersion = SMSVersion.getValue(systemInfo.version());
+            }
         }
         return smsVersion;
     }
@@ -120,6 +124,6 @@ public class DHISVersionManagerImpl implements DHISVersionManager {
     void setVersion(String versionStr) {
         this.version = DHISVersion.getValue(versionStr);
         this.patchVersion = DHISPatchVersion.getValue(versionStr);
-        this.smsVersion = SMSVersion.getValue(this.patchVersion);
+        this.smsVersion = SMSVersion.getValue(versionStr);
     }
 }

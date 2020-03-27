@@ -95,6 +95,16 @@ public class TrackedEntityInstanceLocalQueryHelperShould {
     }
 
     @Test
+    public void build_sql_without_relationships_by_default() {
+        TrackedEntityInstanceQueryRepositoryScope scope  = queryBuilder
+                .program("IpHINAT79UW")
+                .build();
+
+        String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(scope, Collections.emptyList(), 50);
+        assertThat(sqlQuery).contains("state != 'RELATIONSHIP'");
+    }
+
+    @Test
     public void build_sql_query_with_include_deleted() {
         TrackedEntityInstanceQueryRepositoryScope scopeDeleted = queryBuilder
                 .includeDeleted(true)

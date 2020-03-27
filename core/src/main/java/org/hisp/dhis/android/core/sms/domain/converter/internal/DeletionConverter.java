@@ -1,19 +1,23 @@
 package org.hisp.dhis.android.core.sms.domain.converter.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.smscompression.models.DeleteSMSSubmission;
 import org.hisp.dhis.smscompression.models.SMSSubmission;
 
-import androidx.annotation.NonNull;
 import io.reactivex.Completable;
 import io.reactivex.Single;
 
 public class DeletionConverter extends Converter<String> {
     private final String uid;
 
-    public DeletionConverter(LocalDbRepository localDbRepository, String uid) {
-        super(localDbRepository);
+    public DeletionConverter(LocalDbRepository localDbRepository,
+                             DHISVersionManager dhisVersionManager,
+                             String uid) {
+        super(localDbRepository, dhisVersionManager);
         this.uid = uid;
     }
 

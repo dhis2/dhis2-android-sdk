@@ -80,7 +80,7 @@ public final class GeometryHelper {
      * Converts a {@link Geometry} object of type point in a {@code List<Double>} object with the point coordinates.
      *
      * @param geometry Geometry of type point.
-     * @return The converted {@code List<Double>} object.
+     * @return The converted {@code List<Double>} object with format {@code [longitude, latitude]}.
      */
     public static List<Double> getPoint(Geometry geometry) throws D2Error {
         return getGeometryObject(geometry, FeatureType.POINT, new TypeReference<List<Double>>(){});
@@ -91,7 +91,7 @@ public final class GeometryHelper {
      * polygon coordinates.
      *
      * @param geometry Geometry of type polygon.
-     * @return The converted {@code List<List<List<Double>>>} object.
+     * @return The converted {@code List<List<List<Double>>>} object with format {@code [longitude, latitude]}.
      */
     public static List<List<List<Double>>> getPolygon(Geometry geometry) throws D2Error {
         return getGeometryObject(geometry, FeatureType.POLYGON, new TypeReference<List<List<List<Double>>>>(){});
@@ -102,7 +102,7 @@ public final class GeometryHelper {
      * multi polygon coordinates.
      *
      * @param geometry Geometry of type multi polygon.
-     * @return The converted {@code List<List<List<List<Double>>>>} object.
+     * @return The converted {@code List<List<List<List<Double>>>>} object with format {@code [longitude, latitude]}.
      */
     public static List<List<List<List<Double>>>> getMultiPolygon(Geometry geometry) throws D2Error {
         return getGeometryObject(geometry, FeatureType.MULTI_POLYGON,
@@ -125,7 +125,7 @@ public final class GeometryHelper {
     /**
      * Build a {@link Geometry} object of type point from a {@code List<Double>} object with the point coordinate.
      *
-     * @param point The point coordinate.
+     * @param point The point coordinate with format {@code [longitude, latitude]}.
      * @return The {@link Geometry} object of type point created.
      */
     public static Geometry createPointGeometry(List<Double> point) {
@@ -139,7 +139,7 @@ public final class GeometryHelper {
      * Build a {@link Geometry} object of type polygon from a {@code List<List<List<Double>>>} object with the polygon
      * coordinates.
      *
-     * @param polygon The polygon coordinates.
+     * @param polygon The polygon coordinates with format {@code [longitude, latitude]}.
      * @return The {@link Geometry} object of type polygon created.
      */
     public static Geometry createPolygonGeometry(List<List<List<Double>>> polygon) {
@@ -153,7 +153,7 @@ public final class GeometryHelper {
      * Build a {@link Geometry} object of type multi polygon from a {@code List<List<List<List<Double>>>>} object with
      * the multi polygon coordinates.
      *
-     * @param multiPolygon The mulit polygon coordinates.
+     * @param multiPolygon The mulit polygon coordinates with format {@code [longitude, latitude]}.
      * @return The {@link Geometry} object of type multi polygon created.
      */
     public static Geometry createMultiPolygonGeometry(List<List<List<List<Double>>>> multiPolygon) {

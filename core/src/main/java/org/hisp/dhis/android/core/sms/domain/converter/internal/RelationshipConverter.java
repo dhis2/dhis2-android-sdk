@@ -1,20 +1,24 @@
 package org.hisp.dhis.android.core.sms.domain.converter.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.smscompression.models.RelationshipSMSSubmission;
 import org.hisp.dhis.smscompression.models.SMSSubmission;
 
-import androidx.annotation.NonNull;
 import io.reactivex.Completable;
 import io.reactivex.Single;
 
 public class RelationshipConverter extends Converter<Relationship> {
     private final String relationshipUid;
 
-    public RelationshipConverter(LocalDbRepository localDbRepository, String relationshipUid) {
-        super(localDbRepository);
+    public RelationshipConverter(LocalDbRepository localDbRepository,
+                                 DHISVersionManager dhisVersionManager,
+                                 String relationshipUid) {
+        super(localDbRepository, dhisVersionManager);
         this.relationshipUid = relationshipUid;
     }
 

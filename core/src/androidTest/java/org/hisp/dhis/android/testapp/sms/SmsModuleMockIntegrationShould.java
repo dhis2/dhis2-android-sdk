@@ -25,30 +25,38 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo;
 
-public interface DHISVersionManager {
-    DHISVersion getVersion();
+package org.hisp.dhis.android.testapp.sms;
 
-    DHISPatchVersion getPatchVersion();
+import org.hisp.dhis.android.core.sms.domain.interactor.ConfigCase;
+import org.hisp.dhis.android.core.sms.domain.interactor.QrCodeCase;
+import org.hisp.dhis.android.core.sms.domain.interactor.SmsSubmitCase;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTest;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-    SMSVersion getSmsVersion();
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsNull.notNullValue;
 
-    boolean is2_29();
+@RunWith(D2JunitRunner.class)
+public class SmsModuleMockIntegrationShould extends BaseMockIntegrationTest {
 
-    boolean is2_30();
+    @Test
+    public void access_submit_case() {
+        SmsSubmitCase submitCase = d2.smsModule().smsSubmitCase();
+        assertThat(submitCase, notNullValue());
+    }
 
-    boolean is2_31();
+    @Test
+    public void access_qr_case() {
+        QrCodeCase qrCodeCase = d2.smsModule().qrCodeCase();
+        assertThat(qrCodeCase, notNullValue());
+    }
 
-    boolean is2_32();
-
-    boolean is2_33();
-
-    /**
-     * Check if the current version is strictly greater than the parameter.
-     *
-     * @param version Version to compare to
-     * @return True if current version is strictly greater than the parameter.
-     */
-    boolean isGreaterThan(DHISVersion version);
+    @Test
+    public void access_config_case() {
+        ConfigCase configCase = d2.smsModule().configCase();
+        assertThat(configCase, notNullValue());
+    }
 }

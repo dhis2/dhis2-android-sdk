@@ -48,7 +48,8 @@ public final class OrganisationUnitTree {
      * @param organisationUnits
      * @return set of root uid's
      */
-    public static Set<OrganisationUnit> findRoots(List<OrganisationUnit> organisationUnits) throws IllegalArgumentException {
+    public static Set<OrganisationUnit> findRoots(List<OrganisationUnit> organisationUnits)
+            throws IllegalArgumentException {
         Set<OrganisationUnit> rootNodes = new HashSet<>();
         if (organisationUnits == null || organisationUnits.isEmpty()) {
             return rootNodes; //no assigned uid's, so don't waste time & quit early
@@ -92,14 +93,14 @@ public final class OrganisationUnitTree {
                                         String path) {
         String[] pathOrgUnitUids = path.split(DELIMITER);
         for (String pathOrgUnitUid : pathOrgUnitUids) {
-            if (uidInOrgUnitCollection(pathOrgUnitUid, rootNodes) != null) {
-                break; //already in root nodes stop iterating.
-            } else {
+            if (uidInOrgUnitCollection(pathOrgUnitUid, rootNodes) == null) {
                 OrganisationUnit organisationUnit = uidInOrgUnitCollection(pathOrgUnitUid, organisationUnits);
                 if (organisationUnit != null) {
                     rootNodes.add(organisationUnit);
                     break;
                 }
+            } else {
+                break; //already in root nodes stop iterating.
             }
         }
     }

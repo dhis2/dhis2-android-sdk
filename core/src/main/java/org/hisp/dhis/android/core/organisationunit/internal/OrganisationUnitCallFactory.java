@@ -89,7 +89,8 @@ class OrganisationUnitCallFactory {
     }
 
     private List<OrganisationUnit> downloadOrgUnits(final User user) throws D2Error {
-        Set<OrganisationUnit> rootSearchOrgUnits = findRoots(UserInternalAccessor.accessTeiSearchOrganisationUnits(user));
+        Set<OrganisationUnit> rootSearchOrgUnits =
+                findRoots(UserInternalAccessor.accessTeiSearchOrganisationUnits(user));
         List<OrganisationUnit> orgUnits =
                 downloadOrgUnits(UidsHelper.getUids(rootSearchOrgUnits), user, OrganisationUnit.Scope.SCOPE_TEI_SEARCH);
 

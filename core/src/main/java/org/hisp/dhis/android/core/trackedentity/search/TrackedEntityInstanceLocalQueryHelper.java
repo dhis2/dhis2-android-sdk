@@ -97,10 +97,10 @@ final class TrackedEntityInstanceLocalQueryHelper {
                     escapeQuotes(scope.trackedEntityType()));
         }
 
-        if (scope.states() != null) {
-            where.appendInKeyEnumValues(dot(TEI_ALIAS, DataColumns.STATE), scope.states());
-        } else {
+        if (scope.states() == null) {
             where.appendNotKeyStringValue(dot(TEI_ALIAS, DataColumns.STATE), State.RELATIONSHIP.name());
+        } else {
+            where.appendInKeyEnumValues(dot(TEI_ALIAS, DataColumns.STATE), scope.states());
         }
 
         if (scope.includeDeleted() == null || !scope.includeDeleted()) {

@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -62,7 +63,7 @@ public class OrganisationUnitTreeShould {
             OrganisationUnit orgUnit = OrganisationUnit.builder().uid(uids[i]).path(paths[i]).build();
             orgUnits.add(orgUnit);
         }
-        Set<String> rootUids = OrganisationUnitTree.findRoots(orgUnits);
+        Set<String> rootUids = UidsHelper.getUids(OrganisationUnitTree.findRoots(orgUnits));
         //assert that: returned uid list does not contain unassigned & root.
         assertThat(rootUids.contains(UNASSIGNED_L12)).isFalse();
         assertThat(rootUids.contains(UNASSIGNED_L23)).isFalse();
@@ -79,7 +80,7 @@ public class OrganisationUnitTreeShould {
         OrganisationUnit orgUnit = OrganisationUnit.builder().uid(uids[0]).path("RootOrgUnit/Level11").build();
         orgUnits.add(orgUnit);
 
-        Set<String> rootUids = OrganisationUnitTree.findRoots(orgUnits);
+        Set<String> rootUids = UidsHelper.getUids(OrganisationUnitTree.findRoots(orgUnits));
         assertThat(rootUids.contains(UNASSIGNED_L12)).isFalse();
         assertThat(rootUids.contains(UNASSIGNED_L23)).isFalse();
         assertThat(rootUids.contains(UNASIGNED_ROOT)).isFalse();
@@ -94,7 +95,7 @@ public class OrganisationUnitTreeShould {
         OrganisationUnit orgUnit = OrganisationUnit.builder().uid(uids[0]).path("//RootOrgUnit//Level11//").build();
         orgUnits.add(orgUnit);
 
-        Set<String> rootUids = OrganisationUnitTree.findRoots(orgUnits);
+        Set<String> rootUids = UidsHelper.getUids(OrganisationUnitTree.findRoots(orgUnits));
         assertThat(rootUids.contains(UNASSIGNED_L12)).isFalse();
         assertThat(rootUids.contains(UNASSIGNED_L23)).isFalse();
         assertThat(rootUids.contains(UNASIGNED_ROOT)).isFalse();
@@ -114,7 +115,7 @@ public class OrganisationUnitTreeShould {
 
     @Test
     public void return_all_root_empty_uids_list_when_find_roots_with_empty_list() {
-        Set<String> rootUids = OrganisationUnitTree.findRoots(new ArrayList<>());
+        Set<String> rootUids = UidsHelper.getUids(OrganisationUnitTree.findRoots(new ArrayList<>()));
         assertThat(rootUids.isEmpty()).isTrue();
     }
 
@@ -135,7 +136,7 @@ public class OrganisationUnitTreeShould {
     }
     @Test
     public void findRoots_shouldReturnRootUids_NullList() {
-        Set<String> rootUids = OrganisationUnitTree.findRoots(null);
+        Set<String> rootUids = UidsHelper.getUids(OrganisationUnitTree.findRoots(null));
         assertThat(rootUids.isEmpty()).isTrue();
     }
 }

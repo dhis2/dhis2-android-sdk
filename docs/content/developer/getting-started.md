@@ -10,12 +10,12 @@ Include dependency in build.gradle.
 
 ```gradle
 dependencies {
-    implementation "org.hisp.dhis:android-core:1.0.2"
+    implementation "org.hisp.dhis:android-core:1.0.3"
     ...
 }
 ```
 
-Addiotionally, you need to include this repository in your root gradle file if it is not already there:
+Additionally, you need to include this repository in your root gradle file if it is not already there:
 
 ```gradle
 allprojects {

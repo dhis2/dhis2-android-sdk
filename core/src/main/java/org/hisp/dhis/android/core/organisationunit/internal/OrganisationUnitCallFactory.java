@@ -31,6 +31,7 @@ import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.resource.internal.Resource;
@@ -48,6 +49,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree.findRoots;
+import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree.findRootsOutsideSearchScope;
 
 @Reusable
 class OrganisationUnitCallFactory {
@@ -78,26 +80,29 @@ class OrganisationUnitCallFactory {
         return () -> {
             handler.resetLinks();
 
-            List<OrganisationUnit> orgUnits = downloadCaptureOrgunits(user);
-            orgUnits.addAll(downloadSearchOrgunits(user));
+            List<OrganisationUnit> allOrgUnits = downloadOrgUnits(user);
 
             resourceHandler.handleResource(Resource.Type.ORGANISATION_UNIT);
 
-            return orgUnits;
+            return allOrgUnits;
         };
     }
 
-    private List<OrganisationUnit> downloadCaptureOrgunits(final User user) throws D2Error {
-        Set<String> captureOrgunitsUids = findRoots(UserInternalAccessor.accessOrganisationUnits(user));
-        return downloadOrgunits(captureOrgunitsUids, user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
+    private List<OrganisationUnit> downloadOrgUnits(final User user) throws D2Error {
+        Set<OrganisationUnit> rootSearchOrgUnits = findRoots(UserInternalAccessor.accessTeiSearchOrganisationUnits(user));
+        List<OrganisationUnit> orgUnits =
+                downloadOrgUnits(UidsHelper.getUids(rootSearchOrgUnits), user, OrganisationUnit.Scope.SCOPE_TEI_SEARCH);
+
+        Set<OrganisationUnit> allRootCaptureOrgUnits = findRoots(UserInternalAccessor.accessOrganisationUnits(user));
+        Set<OrganisationUnit> rootCaptureOrgUnitsOutsideSearchScope =
+                findRootsOutsideSearchScope(allRootCaptureOrgUnits, rootSearchOrgUnits);
+        orgUnits.addAll(downloadOrgUnits(UidsHelper.getUids(rootCaptureOrgUnitsOutsideSearchScope),
+                user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE));
+
+        return orgUnits;
     }
 
-    private List<OrganisationUnit> downloadSearchOrgunits(final User user) throws D2Error {
-        Set<String> searchOrgunitsUids = findRoots(UserInternalAccessor.accessTeiSearchOrganisationUnits(user));
-        return downloadOrgunits(searchOrgunitsUids, user, OrganisationUnit.Scope.SCOPE_TEI_SEARCH);
-    }
-
-    private List<OrganisationUnit> downloadOrgunits(final Set<String> orgUnits,
+    private List<OrganisationUnit> downloadOrgUnits(final Set<String> orgUnits,
                                                     final User user,
                                                     final OrganisationUnit.Scope scope) throws D2Error {
 

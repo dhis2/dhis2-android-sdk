@@ -107,13 +107,13 @@ public final class OrganisationUnitTree {
 
     private static boolean inSearchScope(OrganisationUnit orgUnit,
                                          Collection<OrganisationUnit> rootSearchOrgUnits) {
-        for (OrganisationUnit rootSearchOrgUnit : rootSearchOrgUnits) {
-            String path = rootSearchOrgUnit.path();
-            if (path == null || path.isEmpty()) {
-                throw new IllegalArgumentException("OrganisationUnit's path should not be null or empty!");
-            } else {
-                List<String> pathSearchOrgUnitUids = Arrays.asList(path.split(DELIMITER));
-                if (!pathSearchOrgUnitUids.contains(orgUnit.uid())) {
+        String path = orgUnit.path();
+        List<String> pathUids = Arrays.asList(path.split(DELIMITER));
+        if (path.isEmpty()) {
+            throw new IllegalArgumentException("OrganisationUnit's path should not be empty!");
+        } else {
+            for (OrganisationUnit rootSearchOrgUnit : rootSearchOrgUnits) {
+                if (pathUids.contains(rootSearchOrgUnit.uid())) {
                     return true;
                 }
             }

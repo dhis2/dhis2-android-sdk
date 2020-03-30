@@ -114,21 +114,36 @@ public final class EventStoreImpl extends IdentifiableDeletableDataObjectStoreIm
     }
 
     @Override
-    public List<Event> queryOrderedForEnrollmentAndProgramStage(String enrollmentUid, String programStageUid) {
-        String byEnrollmentAndProgramStageQuery = "SELECT Event.* FROM Event " +
-                "WHERE Event.enrollment = '" + enrollmentUid + "' " +
-                "AND Event.programStage = '" + programStageUid + "' " +
-                "ORDER BY Event." + Columns.EVENT_DATE + ", Event." + Columns.LAST_UPDATED;
+    public List<Event> queryOrderedForEnrollmentAndProgramStage(String enrollmentUid, String programStageUid,
+                                                                Boolean includeDeleted) {
+        WhereClauseBuilder whereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(Columns.ENROLLMENT, enrollmentUid)
+                .appendKeyStringValue(Columns.PROGRAM_STAGE, programStageUid);
 
-        return eventListFromQuery(byEnrollmentAndProgramStageQuery);
+        if (!includeDeleted) {
+            whereClause.appendIsNullOrValue(Columns.DELETED, "0");
+        }
+
+        String query = "SELECT * FROM " + EventTableInfo.TABLE_INFO.name() + " " +
+                "WHERE " + whereClause.build() +
+                "ORDER BY " + Columns.EVENT_DATE + ", " + Columns.LAST_UPDATED;
+
+        return eventListFromQuery(query);
     }
 
     @Override
-    public Integer countEventsForEnrollment(String enrollmentUid) {
-        String countByEnrollment = "SELECT Event.* FROM Event " +
-                "WHERE Event.enrollment = '" + enrollmentUid + "'";
+    public Integer countEventsForEnrollment(String enrollmentUid, Boolean includeDeleted) {
+        WhereClauseBuilder whereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(Columns.ENROLLMENT, enrollmentUid);
 
-        List<Event> events = eventListFromQuery(countByEnrollment);
+        if (!includeDeleted) {
+            whereClause.appendIsNullOrValue(Columns.DELETED, "0");
+        }
+
+        String query = "SELECT * FROM " + EventTableInfo.TABLE_INFO.name() + " " +
+                "WHERE " + whereClause.build();
+
+        List<Event> events = eventListFromQuery(query);
         return events.size();
     }
 

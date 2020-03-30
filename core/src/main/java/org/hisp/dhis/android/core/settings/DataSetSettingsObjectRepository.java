@@ -58,6 +58,10 @@ public class DataSetSettingsObjectRepository
     public DataSetSettings blockingGet() {
         List<DataSetSetting> settings = store.selectAll();
 
+        if (settings.isEmpty()) {
+            return null;
+        }
+
         DataSetSettings.Builder builder = DataSetSettings.builder();
         Map<String, DataSetSetting> specifics = new HashMap<>();
 

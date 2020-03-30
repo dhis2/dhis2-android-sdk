@@ -28,15 +28,18 @@ d2.userModule().logOut()
 After a logout, the SDK keeps track of the last logged user so that it is able to differentiate recurring and new users. It also keeps a hash of the user credentials in order to authenticate the user even when there is no connectivity. Given that said, the login method will:
 
 - If an authenticated user already exists: throw an error.
-- If *Online*:
-  - If user is different than last logged user: try **login online** and wipe DB if successful.
-  - If server is different (even if the user is the same): try **login online** and wipe DB if successful.
-  - If user account has been disabled in server: wipe DB and throw an error.
-- If *Offline*:
-  - If the user has ever been authenticated:
-    - If server is the same: try **login offline**.
-    - If server is different: throw an error.
-  - If the user has not been authenticated before: throw an error.
+- Else if *Online*:
+  - Try **login online**: the SDK will send the username and password to the API, which will determine whether they are correct. If successful:
+        - If no database exists: create new database with encryption value from server.
+        - If database for another [serverUrl, user] exists, delete it and create new database with encryption value from server. Not synced data of previously logged user will be permanently lost.
+        - If database for the current [serverUrl, user] pair exists, open the database and encrypt or decrypt database if encryption status has changed in the server.
+  - If user account has been disabled in server: delete database and throw an error.
+- Else if *Offline*:
+  - If the [serverUrl, user] pair was the last authenticated:
+    - Try **login offline**: the SDK will verify that the credentials are the same as the last provided, which were previously validated by the API.
+  - If the [serverUrl, user] pair was not the last authenticated: throw an error
+
+Calling module or repository methods before a successful login or after a logout will result in "Database not created" errors.
 
 Logout method removes user credentials, so a new login is required before any interaction with the server. Metadata and data is preserved so a user is able to logout/login without losing any information.
 

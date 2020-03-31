@@ -31,14 +31,25 @@ package org.hisp.dhis.android.core.arch.db.access.internal;
 import android.content.Context;
 
 import net.sqlcipher.database.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteDatabaseHook;
 import net.sqlcipher.database.SQLiteOpenHelper;
 
 class EncryptedDatabaseOpenHelper extends SQLiteOpenHelper {
 
     private final BaseDatabaseOpenHelper baseHelper;
 
+    private static final SQLiteDatabaseHook hook = new SQLiteDatabaseHook() {
+        public void preKey(SQLiteDatabase database) {
+        }
+
+        public void postKey(SQLiteDatabase database) {
+            database.rawExecSQL("PRAGMA cipher_page_size = 16384;");
+            database.rawExecSQL("PRAGMA cipher_memory_security = OFF;");
+        }
+    };
+
     EncryptedDatabaseOpenHelper(Context context, String databaseName, int targetVersion) {
-        super(context, databaseName, null, targetVersion);
+        super(context, databaseName, null, targetVersion, hook);
         SQLiteDatabase.loadLibs(context);
         this.baseHelper = new BaseDatabaseOpenHelper(context, targetVersion);
     }

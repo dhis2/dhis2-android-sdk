@@ -40,6 +40,7 @@ class EncryptedDatabaseOpenHelper extends SQLiteOpenHelper {
 
     private static final SQLiteDatabaseHook hook = new SQLiteDatabaseHook() {
         public void preKey(SQLiteDatabase database) {
+            // Nothing to do here
         }
 
         public void postKey(SQLiteDatabase database) {

@@ -41,7 +41,7 @@ public interface LocalDbRepository {
 
     Completable updateEventSubmissionState(String eventUid, State state);
 
-    Completable updateEnrollmentSubmissionState(String enrollmentUid, State state);
+    Completable updateEnrollmentSubmissionState(TrackedEntityInstance tei, State state);
 
     Completable setMetadataDownloadConfig(WebApiRepository.GetMetadataIdsConfig metadataIdsConfig);
 

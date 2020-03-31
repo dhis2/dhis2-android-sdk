@@ -42,9 +42,11 @@ public interface EventStore extends IdentifiableDeletableDataObjectStore<Event> 
 
     List<Event> querySingleEvents();
 
-    List<Event> queryOrderedForEnrollmentAndProgramStage(String enrollmentUid, String programStageUid);
+    List<Event> queryOrderedForEnrollmentAndProgramStage(String enrollmentUid,
+                                                         String programStageUid,
+                                                         Boolean includeDeleted);
 
-    Integer countEventsForEnrollment(String enrollmentUid);
+    Integer countEventsForEnrollment(String enrollmentUid, Boolean includeDeleted);
 
     int countTeisWhereEvents(String whereClause);
 }

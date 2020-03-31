@@ -10,8 +10,19 @@ Include dependency in build.gradle.
 
 ```gradle
 dependencies {
-    implementation "org.hisp.dhis:android-core:1.0.0"
+    implementation "org.hisp.dhis:android-core:1.0.2"
     ...
+}
+```
+
+Additionally, you need to include this repository in your root gradle file if it is not already there:
+
+```gradle
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
 }
 ```
 
@@ -37,7 +48,7 @@ Using the configuration you can instantiate `D2`.
 Single<D2> d2Single = D2Manager.instantiateD2(configuration);
 ```
 
-Once the single is completed, you can access D2 with the following method:
+Once the Single is completed, you can access D2 with the following method:
 
 ```java
 D2 d2 = D2Manager.getD2();

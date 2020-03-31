@@ -111,7 +111,7 @@ public class MockLocalDbRepository implements LocalDbRepository {
     }
 
     @Override
-    public Completable updateEnrollmentSubmissionState(String enrollmentUid, State state) {
+    public Completable updateEnrollmentSubmissionState(TrackedEntityInstance trackedEntityInstance, State state) {
         return Completable.complete();
     }
 

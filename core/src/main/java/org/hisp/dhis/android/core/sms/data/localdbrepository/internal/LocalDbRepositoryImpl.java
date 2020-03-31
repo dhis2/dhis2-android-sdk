@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationTableInfo;
@@ -224,11 +225,17 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     }
 
     @Override
-    public Completable updateEnrollmentSubmissionState(String enrollmentUid, State state) {
+    public Completable updateEnrollmentSubmissionState(TrackedEntityInstance tei, State state) {
         return Completable.fromAction(() -> {
-            enrollmentStore.setState(enrollmentUid, state);
-            Enrollment enrollment = enrollmentStore.selectByUid(enrollmentUid);
+            Enrollment enrollment = TrackedEntityInstanceInternalAccessor.accessEnrollments(tei).get(0);
+            enrollmentStore.setState(enrollment.uid(), state);
             trackedEntityInstanceStore.setState(enrollment.trackedEntityInstance(), state);
+
+            List<Event> events = EnrollmentInternalAccessor.accessEvents(enrollment);
+            if (events != null && !events.isEmpty()) {
+                List<String> eventUids = UidsHelper.getUidsList(events);
+                eventStore.setState(eventUids, state);
+            }
         });
     }
 

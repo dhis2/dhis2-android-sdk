@@ -26,6 +26,7 @@ import io.reactivex.Single;
 public class EnrollmentConverter extends Converter<TrackedEntityInstance> {
 
     private final String enrollmentUid;
+    private TrackedEntityInstance trackedEntityInstance;
 
     public EnrollmentConverter(LocalDbRepository localDbRepository,
                                DHISVersionManager dhisVersionManager,
@@ -36,6 +37,7 @@ public class EnrollmentConverter extends Converter<TrackedEntityInstance> {
 
     @Override
     public Single<? extends SMSSubmission> convert(@NonNull TrackedEntityInstance tei, String user, int submissionId) {
+        trackedEntityInstance = tei;
         List<Enrollment> enrollments = TrackedEntityInstanceInternalAccessor.accessEnrollments(tei);
         if (enrollments == null || enrollments.size() != 1) {
             return Single.error(
@@ -91,7 +93,7 @@ public class EnrollmentConverter extends Converter<TrackedEntityInstance> {
 
     @Override
     public Completable updateSubmissionState(State state) {
-        return getLocalDbRepository().updateEnrollmentSubmissionState(enrollmentUid, state);
+        return getLocalDbRepository().updateEnrollmentSubmissionState(trackedEntityInstance, state);
     }
 
     @Override

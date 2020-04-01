@@ -64,6 +64,6 @@ public class DataOrphanCleanerImpl<P extends ObjectWithUidInterface, C extends O
                         + stateColumn + " IN ('" + State.SYNCED + "','" + State.SYNCED_VIA_SMS + "')"
                         + " AND "
                         + IdentifiableColumns.UID + " NOT IN (" + childrenUids + ");";
-        return databaseAdapter.database().delete(tableName, clause, null) > 0;
+        return databaseAdapter.delete(tableName, clause, null) > 0;
     }
 }

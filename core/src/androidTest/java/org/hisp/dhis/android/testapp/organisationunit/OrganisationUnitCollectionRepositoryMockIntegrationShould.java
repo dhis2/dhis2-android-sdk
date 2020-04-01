@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.testapp.organisationunit;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
@@ -41,6 +42,7 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.notNullValue;
 
 @RunWith(D2JunitRunner.class)
 public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -141,14 +143,20 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
     public void include_programs_as_children() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits()
                 .withProgramUids().one().blockingGet();
-        assertThat(organisationUnit.programs().get(0).uid(), is("lxAQ7Zs9VYR"));
+        assertThat(organisationUnit.programs().size(), is(2));
+        for (ObjectWithUid program : organisationUnit.programs()) {
+            assertThat(program.uid(), notNullValue());
+        }
     }
 
     @Test
     public void include_data_sets_as_children() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits()
                 .withDataSetUids().one().blockingGet();
-        assertThat(organisationUnit.dataSets().get(0).uid(), is("lyLU2wR22tC"));
+        assertThat(organisationUnit.dataSets().size(), is(2));
+        for (ObjectWithUid dataSet : organisationUnit.dataSets()) {
+            assertThat(dataSet.uid(), notNullValue());
+        }
     }
 
     @Test
@@ -162,14 +170,20 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
     public void include_programs_as_children_in_collection_repository_when_all_selected() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits()
                 .withProgramUids().blockingGet().get(0);
-        assertThat(organisationUnit.programs().get(0).uid(), is("lxAQ7Zs9VYR"));
+        assertThat(organisationUnit.programs().size(), is(2));
+        for (ObjectWithUid program : organisationUnit.programs()) {
+            assertThat(program.uid(), notNullValue());
+        }
     }
 
     @Test
     public void include_data_sets_as_children_in_collection_repository_when_all_selected() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits()
                 .withDataSetUids().blockingGet().get(0);
-        assertThat(organisationUnit.dataSets().get(0).uid(), is("lyLU2wR22tC"));
+        assertThat(organisationUnit.dataSets().size(), is(2));
+        for (ObjectWithUid dataSet : organisationUnit.dataSets()) {
+            assertThat(dataSet.uid(), notNullValue());
+        }
     }
 
     @Test
@@ -183,14 +197,20 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
     public void include_programs_as_children_in_object_repository_when_all_selected() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits()
                 .withProgramUids().one().blockingGet();
-        assertThat(organisationUnit.programs().get(0).uid(), is("lxAQ7Zs9VYR"));
+        assertThat(organisationUnit.programs().size(), is(2));
+        for (ObjectWithUid program : organisationUnit.programs()) {
+            assertThat(program.uid(), notNullValue());
+        }
     }
 
     @Test
     public void include_data_sets_as_children_in_object_repository_when_all_selected() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits()
                 .withDataSetUids().one().blockingGet();
-        assertThat(organisationUnit.dataSets().get(0).uid(), is("lyLU2wR22tC"));
+        assertThat(organisationUnit.dataSets().size(), is(2));
+        for (ObjectWithUid dataSet : organisationUnit.dataSets()) {
+            assertThat(dataSet.uid(), notNullValue());
+        }
     }
 
     @Test

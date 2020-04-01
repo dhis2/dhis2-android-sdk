@@ -28,11 +28,10 @@
 
 package org.hisp.dhis.android.core.indicator.internal;
 
-import android.database.sqlite.SQLiteStatement;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.indicator.IndicatorType;
@@ -40,18 +39,16 @@ import org.hisp.dhis.android.core.indicator.IndicatorTypeTableInfo;
 
 import androidx.annotation.NonNull;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 public final class IndicatorTypeStore {
 
     private IndicatorTypeStore() {}
 
     private static StatementBinder<IndicatorType> BINDER = new IdentifiableStatementBinder<IndicatorType>() {
         @Override
-        public void bindToStatement(@NonNull IndicatorType o, @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 7, o.number());
-            sqLiteBind(sqLiteStatement, 8, o.factor());
+        public void bindToStatement(@NonNull IndicatorType o, @NonNull StatementWrapper w) {
+            super.bindToStatement(o, w);
+            w.bind(7, o.number());
+            w.bind(8, o.factor());
         }
     };
 

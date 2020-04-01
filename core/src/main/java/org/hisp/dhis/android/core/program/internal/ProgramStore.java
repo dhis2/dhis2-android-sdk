@@ -28,16 +28,12 @@
 
 package org.hisp.dhis.android.core.program.internal;
 
-import android.database.sqlite.SQLiteStatement;
-
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableWithStyleStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStoreImpl;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
@@ -47,61 +43,58 @@ import org.hisp.dhis.android.core.program.ProgramType;
 
 import java.util.List;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
+import androidx.annotation.NonNull;
 
 public final class ProgramStore extends IdentifiableObjectStoreImpl<Program> implements ProgramStoreInterface {
 
     private ProgramStore(DatabaseAdapter databaseAdapter,
-                         SQLStatementWrapper statementWrapper,
                          SQLStatementBuilderImpl statementBuilder) {
-        super(databaseAdapter, statementWrapper, statementBuilder, BINDER, Program::create);
+        super(databaseAdapter, statementBuilder, BINDER, Program::create);
     }
     
     private static StatementBinder<Program> BINDER = new NameableWithStyleStatementBinder<Program>() {
         
         @Override
-        public void bindToStatement(@NonNull Program o, @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 13, o.version());
-            sqLiteBind(sqLiteStatement, 14, o.onlyEnrollOnce());
-            sqLiteBind(sqLiteStatement, 15, o.enrollmentDateLabel());
-            sqLiteBind(sqLiteStatement, 16, o.displayIncidentDate());
-            sqLiteBind(sqLiteStatement, 17, o.incidentDateLabel());
-            sqLiteBind(sqLiteStatement, 18, o.registration());
-            sqLiteBind(sqLiteStatement, 19, o.selectEnrollmentDatesInFuture());
-            sqLiteBind(sqLiteStatement, 20, o.dataEntryMethod());
-            sqLiteBind(sqLiteStatement, 21, o.ignoreOverdueEvents());
-            sqLiteBind(sqLiteStatement, 22, o.selectIncidentDatesInFuture());
-            sqLiteBind(sqLiteStatement, 23, o.useFirstStageDuringRegistration());
-            sqLiteBind(sqLiteStatement, 24, o.displayFrontPageList());
-            sqLiteBind(sqLiteStatement, 25, o.programType());
-            sqLiteBind(sqLiteStatement, 26, UidsHelper.getUidOrNull(o.relatedProgram()));
-            sqLiteBind(sqLiteStatement, 27, UidsHelper.getUidOrNull(o.trackedEntityType()));
-            sqLiteBind(sqLiteStatement, 28, o.categoryComboUid());
-            sqLiteBind(sqLiteStatement, 29, o.access().data().write());
-            sqLiteBind(sqLiteStatement, 30, o.expiryDays());
-            sqLiteBind(sqLiteStatement, 31, o.completeEventsExpiryDays());
-            sqLiteBind(sqLiteStatement, 32, o.expiryPeriodType());
-            sqLiteBind(sqLiteStatement, 33, o.minAttributesRequiredToSearch());
-            sqLiteBind(sqLiteStatement, 34, o.maxTeiCountToReturn());
-            sqLiteBind(sqLiteStatement, 35, o.featureType());
-            sqLiteBind(sqLiteStatement, 36, o.accessLevel());
+        public void bindToStatement(@NonNull Program o, @NonNull StatementWrapper w) {
+            super.bindToStatement(o, w);
+            w.bind(13, o.version());
+            w.bind(14, o.onlyEnrollOnce());
+            w.bind(15, o.enrollmentDateLabel());
+            w.bind(16, o.displayIncidentDate());
+            w.bind(17, o.incidentDateLabel());
+            w.bind(18, o.registration());
+            w.bind(19, o.selectEnrollmentDatesInFuture());
+            w.bind(20, o.dataEntryMethod());
+            w.bind(21, o.ignoreOverdueEvents());
+            w.bind(22, o.selectIncidentDatesInFuture());
+            w.bind(23, o.useFirstStageDuringRegistration());
+            w.bind(24, o.displayFrontPageList());
+            w.bind(25, o.programType());
+            w.bind(26, UidsHelper.getUidOrNull(o.relatedProgram()));
+            w.bind(27, UidsHelper.getUidOrNull(o.trackedEntityType()));
+            w.bind(28, o.categoryComboUid());
+            w.bind(29, o.access().data().write());
+            w.bind(30, o.expiryDays());
+            w.bind(31, o.completeEventsExpiryDays());
+            w.bind(32, o.expiryPeriodType());
+            w.bind(33, o.minAttributesRequiredToSearch());
+            w.bind(34, o.maxTeiCountToReturn());
+            w.bind(35, o.featureType());
+            w.bind(36, o.accessLevel());
         }
     };
 
     public static ProgramStoreInterface create(DatabaseAdapter databaseAdapter) {
         SQLStatementBuilderImpl statementBuilder = new SQLStatementBuilderImpl(ProgramTableInfo.TABLE_INFO.name(),
                 ProgramTableInfo.TABLE_INFO.columns());
-        SQLStatementWrapper statementWrapper = new SQLStatementWrapper(statementBuilder, databaseAdapter);
 
-        return new ProgramStore(databaseAdapter, statementWrapper, statementBuilder);
+        return new ProgramStore(databaseAdapter, statementBuilder);
     }
 
     @Override
-    public List<String> queryWithoutRegistrationProgramUids() throws RuntimeException {
+    public List<String> getUidsByProgramType(ProgramType programType) throws RuntimeException {
         String whereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(ProgramTableInfo.Columns.PROGRAM_TYPE,
-                        ProgramType.WITHOUT_REGISTRATION.toString()).build();
+                .appendKeyStringValue(ProgramTableInfo.Columns.PROGRAM_TYPE, programType.toString()).build();
         return selectStringColumnsWhereClause(IdentifiableColumns.UID, whereClause);
     }
 }

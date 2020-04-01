@@ -36,21 +36,18 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.user.AuthenticatedUser;
 import org.hisp.dhis.android.core.user.AuthenticatedUserTableInfo;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 public final class AuthenticatedUserStore {
 
-    private static final StatementBinder<AuthenticatedUser> BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.user());
-        sqLiteBind(sqLiteStatement, 2, o.hash());
+    private static final StatementBinder<AuthenticatedUser> BINDER = (o, w) -> {
+        w.bind(1, o.user());
+        w.bind(2, o.hash());
     };
 
     private static final WhereStatementBinder<AuthenticatedUser> WHERE_UPDATE_BINDER
-            = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 3, o.user());
+            = (o, w) -> w.bind(3, o.user());
 
     private static final WhereStatementBinder<AuthenticatedUser> WHERE_DELETE_BINDER
-            = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 1, o.user());
+            = (o, w) -> w.bind(1, o.user());
 
     private AuthenticatedUserStore() {}
 

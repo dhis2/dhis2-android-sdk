@@ -29,9 +29,13 @@
 package org.hisp.dhis.android.core.event.internal;
 
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
+import org.hisp.dhis.android.core.note.Note;
+import org.hisp.dhis.android.core.note.internal.NoteDHISVersionManager;
+import org.hisp.dhis.android.core.note.internal.NoteUniquenessManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,8 +45,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.anyCollection;
+import static org.mockito.ArgumentMatchers.anyCollectionOf;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
@@ -60,6 +66,18 @@ public class EventHandlerShould {
     private HandlerWithTransformer<TrackedEntityDataValue> trackedEntityDataValueHandler;
 
     @Mock
+    private Handler<Note> noteHandler;
+
+    @Mock
+    private NoteUniquenessManager noteUniquenessManager;
+
+    @Mock
+    private Note note;
+
+    @Mock
+    private NoteDHISVersionManager noteVersionManager;
+
+    @Mock
     private Event event;
 
     // object to test
@@ -70,8 +88,10 @@ public class EventHandlerShould {
         MockitoAnnotations.initMocks(this);
 
         when(event.uid()).thenReturn("test_event_uid");
+        when(event.notes()).thenReturn(Collections.singletonList(note));
 
-        eventHandler = new EventHandler(eventStore, trackedEntityDataValueHandler);
+        eventHandler = new EventHandler(eventStore, trackedEntityDataValueHandler, noteHandler, noteVersionManager,
+                noteUniquenessManager);
     }
 
     @Test
@@ -82,6 +102,7 @@ public class EventHandlerShould {
         verify(eventStore, never()).deleteIfExists(anyString());
         verify(eventStore, never()).update(any(Event.class));
         verify(eventStore, never()).insert(any(Event.class));
+        verify(noteHandler, never()).handleMany(anyCollectionOf(Note.class));
     }
 
     @Test
@@ -96,6 +117,7 @@ public class EventHandlerShould {
         // verify that update and insert is never invoked
         verify(eventStore, never()).update(any(Event.class));
         verify(eventStore, never()).insert(any(Event.class));
+        verify(noteHandler, never()).handleMany(anyCollectionOf(Note.class));
 
         // verify that data value handler is never invoked
         verify(trackedEntityDataValueHandler, never()).handleMany(anyCollection(), any());
@@ -112,7 +134,7 @@ public class EventHandlerShould {
         // verify that update and insert is invoked, since we're updating before inserting
         verify(eventStore, times(1)).updateOrInsert(any(Event.class));
         verify(trackedEntityDataValueHandler, times(1)).handleMany(anyCollection(), any());
-
+        verify(noteHandler, times(1)).handleMany(anyCollectionOf(Note.class));
 
         // verify that delete is never invoked
         verify(eventStore, never()).deleteIfExists(anyString());

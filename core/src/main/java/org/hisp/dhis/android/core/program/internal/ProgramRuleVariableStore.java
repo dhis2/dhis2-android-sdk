@@ -28,11 +28,10 @@
 
 package org.hisp.dhis.android.core.program.internal;
 
-import android.database.sqlite.SQLiteStatement;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
@@ -42,23 +41,20 @@ import org.hisp.dhis.android.core.program.ProgramRuleVariableTableInfo;
 
 import androidx.annotation.NonNull;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 final class ProgramRuleVariableStore {
 
     private static StatementBinder<ProgramRuleVariable> BINDER =
             new IdentifiableStatementBinder<ProgramRuleVariable>() {
 
         @Override
-        public void bindToStatement(@NonNull ProgramRuleVariable o,
-                                    @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 7, o.useCodeForOptionSet());
-            sqLiteBind(sqLiteStatement, 8, UidsHelper.getUidOrNull(o.program()));
-            sqLiteBind(sqLiteStatement, 9, UidsHelper.getUidOrNull(o.programStage()));
-            sqLiteBind(sqLiteStatement, 10, UidsHelper.getUidOrNull(o.dataElement()));
-            sqLiteBind(sqLiteStatement, 11, UidsHelper.getUidOrNull(o.trackedEntityAttribute()));
-            sqLiteBind(sqLiteStatement, 12, o.programRuleVariableSourceType());
+        public void bindToStatement(@NonNull ProgramRuleVariable o, @NonNull StatementWrapper w) {
+            super.bindToStatement(o, w);
+            w.bind(7, o.useCodeForOptionSet());
+            w.bind(8, UidsHelper.getUidOrNull(o.program()));
+            w.bind(9, UidsHelper.getUidOrNull(o.programStage()));
+            w.bind(10, UidsHelper.getUidOrNull(o.dataElement()));
+            w.bind(11, UidsHelper.getUidOrNull(o.trackedEntityAttribute()));
+            w.bind(12, o.programRuleVariableSourceType());
         }
     };
 

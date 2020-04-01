@@ -31,21 +31,21 @@ package org.hisp.dhis.android.core.enrollment.internal;
 import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
-import org.hisp.dhis.android.core.note.Note;
-import org.hisp.dhis.android.core.note.NoteTableInfo;
 import org.hisp.dhis.android.core.event.internal.EventImportHandler;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 import org.hisp.dhis.android.core.imports.TrackerImportConflictTableInfo;
 import org.hisp.dhis.android.core.imports.internal.EnrollmentImportSummary;
 import org.hisp.dhis.android.core.imports.internal.EventImportSummaries;
 import org.hisp.dhis.android.core.imports.internal.ImportConflict;
+import org.hisp.dhis.android.core.note.Note;
+import org.hisp.dhis.android.core.note.NoteTableInfo;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
 
 import java.util.ArrayList;
@@ -62,7 +62,7 @@ import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getS
 public class EnrollmentImportHandler {
     private final EnrollmentStore enrollmentStore;
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
-    private final ObjectWithoutUidStore<Note> noteStore;
+    private final IdentifiableObjectStore<Note> noteStore;
     private final EventImportHandler eventImportHandler;
     private final ObjectStore<TrackerImportConflict> trackerImportConflictStore;
     private final DataStatePropagator dataStatePropagator;
@@ -70,7 +70,7 @@ public class EnrollmentImportHandler {
     @Inject
     public EnrollmentImportHandler(@NonNull EnrollmentStore enrollmentStore,
                                    @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
-                                   @NonNull ObjectWithoutUidStore<Note> noteStore,
+                                   @NonNull IdentifiableObjectStore<Note> noteStore,
                                    @NonNull EventImportHandler eventImportHandler,
                                    @NonNull ObjectStore<TrackerImportConflict> trackerImportConflictStore,
                                    @NonNull DataStatePropagator dataStatePropagator) {
@@ -145,7 +145,7 @@ public class EnrollmentImportHandler {
                 .appendKeyStringValue(NoteTableInfo.Columns.ENROLLMENT, enrollmentUid).build();
         List<Note> notes = noteStore.selectWhere(whereClause);
         for (Note note : notes) {
-            noteStore.updateWhere(note.toBuilder().state(state).build());
+            noteStore.update(note.toBuilder().state(state).build());
         }
     }
 

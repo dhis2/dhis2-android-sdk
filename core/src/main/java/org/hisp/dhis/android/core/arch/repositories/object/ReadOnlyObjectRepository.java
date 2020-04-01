@@ -27,11 +27,9 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.object;
 
-import org.hisp.dhis.android.core.common.CoreObject;
-
 import io.reactivex.Single;
 
-public interface ReadOnlyObjectRepository<M extends CoreObject> {
+public interface ReadOnlyObjectRepository<M> {
 
     /**
      * Returns the object in an asynchronous way, returning a {@code Single<M>}.

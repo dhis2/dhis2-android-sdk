@@ -28,20 +28,17 @@
 
 package org.hisp.dhis.android.core.dataset.internal;
 
-import android.database.sqlite.SQLiteStatement;
-
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableWithStyleStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetTableInfo;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
+import androidx.annotation.NonNull;
 
 public final class DataSetStore {
 
@@ -49,25 +46,25 @@ public final class DataSetStore {
 
     private static StatementBinder<DataSet> BINDER = new NameableWithStyleStatementBinder<DataSet>() {
         @Override
-        public void bindToStatement(@NonNull DataSet o, @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 13, o.periodType());
-            sqLiteBind(sqLiteStatement, 14, UidsHelper.getUidOrNull(o.categoryCombo()));
-            sqLiteBind(sqLiteStatement, 15, o.mobile());
-            sqLiteBind(sqLiteStatement, 16, o.version());
-            sqLiteBind(sqLiteStatement, 17, o.expiryDays());
-            sqLiteBind(sqLiteStatement, 18, o.timelyDays());
-            sqLiteBind(sqLiteStatement, 19, o.notifyCompletingUser());
-            sqLiteBind(sqLiteStatement, 20, o.openFuturePeriods());
-            sqLiteBind(sqLiteStatement, 21, o.fieldCombinationRequired());
-            sqLiteBind(sqLiteStatement, 22, o.validCompleteOnly());
-            sqLiteBind(sqLiteStatement, 23, o.noValueRequiresComment());
-            sqLiteBind(sqLiteStatement, 24, o.skipOffline());
-            sqLiteBind(sqLiteStatement, 25, o.dataElementDecoration());
-            sqLiteBind(sqLiteStatement, 26, o.renderAsTabs());
-            sqLiteBind(sqLiteStatement, 27, o.renderHorizontally());
-            sqLiteBind(sqLiteStatement, 28, o.access().data().write());
-            sqLiteBind(sqLiteStatement, 29, UidsHelper.getUidOrNull(o.workflow()));
+        public void bindToStatement(@NonNull DataSet o, @NonNull StatementWrapper w) {
+            super.bindToStatement(o, w);
+            w.bind(13, o.periodType());
+            w.bind(14, UidsHelper.getUidOrNull(o.categoryCombo()));
+            w.bind(15, o.mobile());
+            w.bind(16, o.version());
+            w.bind(17, o.expiryDays());
+            w.bind(18, o.timelyDays());
+            w.bind(19, o.notifyCompletingUser());
+            w.bind(20, o.openFuturePeriods());
+            w.bind(21, o.fieldCombinationRequired());
+            w.bind(22, o.validCompleteOnly());
+            w.bind(23, o.noValueRequiresComment());
+            w.bind(24, o.skipOffline());
+            w.bind(25, o.dataElementDecoration());
+            w.bind(26, o.renderAsTabs());
+            w.bind(27, o.renderHorizontally());
+            w.bind(28, o.access().data().write());
+            w.bind(29, UidsHelper.getUidOrNull(o.workflow()));
         }
     };
 

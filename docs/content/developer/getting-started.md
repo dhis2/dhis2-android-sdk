@@ -48,7 +48,7 @@ Using the configuration you can instantiate `D2`.
 Single<D2> d2Single = D2Manager.instantiateD2(configuration);
 ```
 
-Once the single is completed, you can access D2 with the following method:
+Once the Single is completed, you can access D2 with the following method:
 
 ```java
 D2 d2 = D2Manager.getD2();

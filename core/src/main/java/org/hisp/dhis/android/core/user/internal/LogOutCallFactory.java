@@ -30,8 +30,10 @@ package org.hisp.dhis.android.core.user.internal;
 
 import androidx.annotation.NonNull;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
@@ -42,17 +44,24 @@ import io.reactivex.Completable;
 
 public final class LogOutCallFactory {
 
+    private final DatabaseAdapter databaseAdapter;
+    private final DatabaseAdapterFactory databaseAdapterFactory;
+
     @NonNull
-    private final CredentialsSecureStore credentialsSecureStore;
+    private final ObjectKeyValueStore<Credentials> credentialsSecureStore;
 
     @Inject
-    LogOutCallFactory(@NonNull CredentialsSecureStore credentialsSecureStore) {
+    LogOutCallFactory(@NonNull DatabaseAdapter databaseAdapter,
+                      @NonNull DatabaseAdapterFactory databaseAdapterFactory,
+                      @NonNull ObjectKeyValueStore<Credentials> credentialsSecureStore) {
+        this.databaseAdapter = databaseAdapter;
+        this.databaseAdapterFactory = databaseAdapterFactory;
         this.credentialsSecureStore = credentialsSecureStore;
     }
 
     public Completable logOut() {
         return Completable.create(emitter -> {
-            Credentials credentials = this.credentialsSecureStore.getCredentials();
+            Credentials credentials = this.credentialsSecureStore.get();
 
             if (credentials == null) {
                 throw D2Error.builder()
@@ -62,7 +71,9 @@ public final class LogOutCallFactory {
                         .build();
             }
 
-            this.credentialsSecureStore.removeCredentials();
+            databaseAdapterFactory.removeDatabaseAdapter(databaseAdapter);
+
+            this.credentialsSecureStore.remove();
             emitter.onComplete();
         });
     }

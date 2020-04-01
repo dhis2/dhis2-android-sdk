@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX event_data_element ON TrackedEntityDataValue(event, dataElement);

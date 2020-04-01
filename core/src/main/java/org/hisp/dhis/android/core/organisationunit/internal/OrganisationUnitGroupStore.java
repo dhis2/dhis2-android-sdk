@@ -28,19 +28,16 @@
 
 package org.hisp.dhis.android.core.organisationunit.internal;
 
-import android.database.sqlite.SQLiteStatement;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroupTableInfo;
 
 import androidx.annotation.NonNull;
-
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 
 final class OrganisationUnitGroupStore {
 
@@ -49,11 +46,10 @@ final class OrganisationUnitGroupStore {
     private static StatementBinder<OrganisationUnitGroup> BINDER
             = new IdentifiableStatementBinder<OrganisationUnitGroup>() {
         @Override
-        public void bindToStatement(@NonNull OrganisationUnitGroup organisationUnitGroup,
-                                    @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(organisationUnitGroup, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 7, organisationUnitGroup.shortName());
-            sqLiteBind(sqLiteStatement, 8, organisationUnitGroup.displayShortName());
+        public void bindToStatement(@NonNull OrganisationUnitGroup organisationUnitGroup, @NonNull StatementWrapper w) {
+            super.bindToStatement(organisationUnitGroup, w);
+            w.bind(7, organisationUnitGroup.shortName());
+            w.bind(8, organisationUnitGroup.displayShortName());
         }
     };
 

@@ -90,6 +90,14 @@ public abstract class DataSetInstance implements CoreObject {
 
     @Nullable
     @ColumnAdapter(StateColumnAdapter.class)
+    public abstract State dataValueState();
+
+    @Nullable
+    @ColumnAdapter(StateColumnAdapter.class)
+    public abstract State completionState();
+
+    @Nullable
+    @ColumnAdapter(StateColumnAdapter.class)
     public abstract State state();
 
     @NonNull
@@ -128,6 +136,10 @@ public abstract class DataSetInstance implements CoreObject {
         public abstract Builder completed(Boolean completed);
 
         public abstract Builder completionDate(Date completionDate);
+
+        public abstract Builder dataValueState(State dataValueState);
+
+        public abstract Builder completionState(State completitionState);
 
         public abstract Builder state(State state);
 

@@ -28,11 +28,10 @@
 
 package org.hisp.dhis.android.core.program.internal;
 
-import android.database.sqlite.SQLiteStatement;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
@@ -42,20 +41,17 @@ import org.hisp.dhis.android.core.program.ProgramRuleTableInfo;
 
 import androidx.annotation.NonNull;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 public final class ProgramRuleStore {
 
     private static StatementBinder<ProgramRule> BINDER = new IdentifiableStatementBinder<ProgramRule>() {
 
         @Override
-        public void bindToStatement(@NonNull ProgramRule o,
-                                    @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 7, o.priority());
-            sqLiteBind(sqLiteStatement, 8, o.condition());
-            sqLiteBind(sqLiteStatement, 9, UidsHelper.getUidOrNull(o.program()));
-            sqLiteBind(sqLiteStatement, 10, UidsHelper.getUidOrNull(o.programStage()));
+        public void bindToStatement(@NonNull ProgramRule o, @NonNull StatementWrapper w) {
+            super.bindToStatement(o, w);
+            w.bind(7, o.priority());
+            w.bind(8, o.condition());
+            w.bind(9, UidsHelper.getUidOrNull(o.program()));
+            w.bind(10, UidsHelper.getUidOrNull(o.programStage()));
         }
     };
 

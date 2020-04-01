@@ -30,7 +30,8 @@ package org.hisp.dhis.android.core.arch.api.authentication.internal;
 
 import androidx.annotation.NonNull;
 
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 
 public final class BasicAuthenticatorFactory {
     private BasicAuthenticatorFactory() {
@@ -38,7 +39,7 @@ public final class BasicAuthenticatorFactory {
     }
 
     @NonNull
-    public static Authenticator create(@NonNull CredentialsSecureStore credentialsSecureStore) {
+    public static Authenticator create(@NonNull ObjectKeyValueStore<Credentials> credentialsSecureStore) {
         return new BasicAuthenticator(credentialsSecureStore);
     }
 }

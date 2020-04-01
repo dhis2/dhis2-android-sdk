@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.event.internal;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl;
 import org.hisp.dhis.android.core.arch.api.testutils.RetrofitFactory;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer;
 import org.hisp.dhis.android.core.event.Event;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -41,9 +41,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.Callable;
 
 import okhttp3.mockwebserver.RecordedRequest;
@@ -51,8 +49,6 @@ import retrofit2.Retrofit;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
 
 public class EventEndpointCallShould {
 
@@ -65,7 +61,7 @@ public class EventEndpointCallShould {
 
     @BeforeClass
     public static void setUpClass() throws IOException {
-        mockWebServer = new Dhis2MockServer();
+        mockWebServer = new Dhis2MockServer(0);
         retrofit = RetrofitFactory.fromDHIS2MockServer(mockWebServer);
     }
 
@@ -77,12 +73,6 @@ public class EventEndpointCallShould {
     @AfterClass
     public static void tearDownClass() throws IOException {
         mockWebServer.shutdown();
-    }
-
-    @Test
-    public void create_event_call_if_uids_size_does_not_exceeds_the_limit() {
-        Callable<List<Event>> eventEndpointCall = givenAEventCallByUIds(64);
-        assertThat(eventEndpointCall, is(notNullValue()));
     }
 
     @Test
@@ -110,20 +100,6 @@ public class EventEndpointCallShould {
 
         assertThat(request.getPath(), containsString("orgUnit=OU"));
         assertThat(request.getPath(), containsString("program=P"));
-    }
-
-    private Callable<List<Event>> givenAEventCallByUIds(int numUIds) {
-        Set<String> uIds = new HashSet<>();
-
-        for (int i = 0; i < numUIds; i++) {
-            uIds.add("uid" + i);
-        }
-
-        EventQuery eventQuery = EventQuery.builder()
-                .uids(uIds)
-                .build();
-
-        return new EventEndpointCallFactory(retrofit.create(EventService.class), APICallExecutorImpl.create(databaseAdapter)).getCall(eventQuery);
     }
 
     private Callable<List<Event>> givenAEventCallByPagination(int page, int pageCount) {

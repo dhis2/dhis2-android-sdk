@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.data.organisationunit;
 
+import org.hisp.dhis.android.core.common.FeatureType;
+import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
@@ -57,6 +59,10 @@ public class OrganisationUnitSamples {
                 .openingDate(FillPropertiesTestUtils.CREATED)
                 .closedDate(FillPropertiesTestUtils.LAST_UPDATED)
                 .level(100)
+                .geometry(Geometry.builder()
+                        .type(FeatureType.POLYGON)
+                        .coordinates("[11.0, 11.0]")
+                        .build())
                 .parent(null)
                 .displayNamePath(displayNamePathArray)
                 .build();

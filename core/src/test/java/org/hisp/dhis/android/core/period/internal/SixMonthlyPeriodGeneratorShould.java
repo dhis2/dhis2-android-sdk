@@ -154,12 +154,12 @@ public class SixMonthlyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
         SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
         PeriodGenerator generator = NMonthlyPeriodGeneratorFactory.sixMonthlyNov(calendar);
         Period period = generator.generatePeriod(dateFormatter.parse("2019-05-01"));
-        assertThat(generator.generatePeriod(dateFormatter.parse("2019-04-30")).periodId()).isEqualTo("2018NovS1");
-        assertThat(generator.generatePeriod(dateFormatter.parse("2019-05-01")).periodId()).isEqualTo("2018NovS2");
-        assertThat(generator.generatePeriod(dateFormatter.parse("2019-10-31")).periodId()).isEqualTo("2018NovS2");
-        assertThat(generator.generatePeriod(dateFormatter.parse("2019-11-01")).periodId()).isEqualTo("2019NovS1");
-        assertThat(generator.generatePeriod(dateFormatter.parse("2019-12-31")).periodId()).isEqualTo("2019NovS1");
-        assertThat(generator.generatePeriod(dateFormatter.parse("2020-01-01")).periodId()).isEqualTo("2019NovS1");
+        assertThat(generator.generatePeriod(dateFormatter.parse("2019-04-30")).periodId()).isEqualTo("2019NovS1");
+        assertThat(generator.generatePeriod(dateFormatter.parse("2019-05-01")).periodId()).isEqualTo("2019NovS2");
+        assertThat(generator.generatePeriod(dateFormatter.parse("2019-10-31")).periodId()).isEqualTo("2019NovS2");
+        assertThat(generator.generatePeriod(dateFormatter.parse("2019-11-01")).periodId()).isEqualTo("2020NovS1");
+        assertThat(generator.generatePeriod(dateFormatter.parse("2019-12-31")).periodId()).isEqualTo("2020NovS1");
+        assertThat(generator.generatePeriod(dateFormatter.parse("2020-01-01")).periodId()).isEqualTo("2020NovS1");
     }
 
 }

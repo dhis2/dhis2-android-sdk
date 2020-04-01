@@ -28,22 +28,18 @@
 
 package org.hisp.dhis.android.core.arch.db.stores.binders.internal;
 
-import android.database.sqlite.SQLiteStatement;
-
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.common.IdentifiableObject;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
+import androidx.annotation.NonNull;
 
 public abstract class IdentifiableWithStyleStatementBinder<O extends IdentifiableObject & ObjectWithStyle>
         extends IdentifiableStatementBinder<O> {
 
     @Override
-    public void bindToStatement(@NonNull O o, @NonNull SQLiteStatement sqLiteStatement) {
-        super.bindToStatement(o, sqLiteStatement);
-        sqLiteBind(sqLiteStatement, 7, o.style().color());
-        sqLiteBind(sqLiteStatement, 8, o.style().icon());
+    public void bindToStatement(@NonNull O o, @NonNull StatementWrapper w) {
+        super.bindToStatement(o, w);
+        w.bind(7, o.style().color());
+        w.bind(8, o.style().icon());
     }
 }

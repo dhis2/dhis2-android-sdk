@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX tracked_entity_instance_attribute ON TrackedEntityAttributeValue(trackedEntityInstance, trackedEntityAttribute);

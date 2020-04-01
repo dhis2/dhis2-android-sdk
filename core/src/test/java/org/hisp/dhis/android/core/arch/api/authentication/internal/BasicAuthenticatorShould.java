@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.arch.api.authentication.internal;
 
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,7 +55,7 @@ import static org.mockito.Mockito.when;
 public class BasicAuthenticatorShould {
 
     @Mock
-    private CredentialsSecureStore credentialsSecureStore;
+    private ObjectKeyValueStore<Credentials> credentialsSecureStore;
 
     private MockWebServer mockWebServer;
     private OkHttpClient okHttpClient;
@@ -77,7 +77,7 @@ public class BasicAuthenticatorShould {
     public void return_test_and_user_when_server_take_request() throws IOException, InterruptedException {
         Credentials credentials = Credentials.create("test_user", "test_password");
 
-        when(credentialsSecureStore.getCredentials()).thenReturn(credentials);
+        when(credentialsSecureStore.get()).thenReturn(credentials);
 
         okHttpClient.newCall(
                 new Request.Builder()
@@ -92,7 +92,7 @@ public class BasicAuthenticatorShould {
 
     @Test
     public void return_null_when_server_take_request_with_authenticate_with_empty_list() throws IOException, InterruptedException {
-        when(credentialsSecureStore.getCredentials()).thenReturn(null);
+        when(credentialsSecureStore.get()).thenReturn(null);
 
         okHttpClient.newCall(
                 new Request.Builder()

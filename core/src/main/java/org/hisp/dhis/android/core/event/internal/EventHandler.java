@@ -31,11 +31,19 @@ package org.hisp.dhis.android.core.event.internal;
 import android.util.Log;
 
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerImpl;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
+import org.hisp.dhis.android.core.note.Note;
+import org.hisp.dhis.android.core.note.internal.NoteDHISVersionManager;
+import org.hisp.dhis.android.core.note.internal.NoteUniquenessManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -44,12 +52,21 @@ import dagger.Reusable;
 @Reusable
 final class EventHandler extends IdentifiableDataHandlerImpl<Event> {
     private final HandlerWithTransformer<TrackedEntityDataValue> trackedEntityDataValueHandler;
+    private final Handler<Note> noteHandler;
+    private final NoteDHISVersionManager noteVersionManager;
+    private final NoteUniquenessManager noteUniquenessManager;
 
     @Inject
     EventHandler(EventStore eventStore,
-                 HandlerWithTransformer<TrackedEntityDataValue> trackedEntityDataValueHandler) {
+                 HandlerWithTransformer<TrackedEntityDataValue> trackedEntityDataValueHandler,
+                 Handler<Note> noteHandler,
+                 NoteDHISVersionManager noteVersionManager,
+                 NoteUniquenessManager noteUniquenessManager) {
         super(eventStore);
         this.trackedEntityDataValueHandler = trackedEntityDataValueHandler;
+        this.noteHandler = noteHandler;
+        this.noteVersionManager = noteVersionManager;
+        this.noteUniquenessManager = noteUniquenessManager;
     }
 
     @Override
@@ -61,6 +78,16 @@ final class EventHandler extends IdentifiableDataHandlerImpl<Event> {
         } else {
             trackedEntityDataValueHandler.handleMany(event.trackedEntityDataValues(),
                     dataValue -> dataValue.toBuilder().event(eventUid).build());
+
+            Collection<Note> notes = new ArrayList<>();
+            if (event.notes() != null) {
+                for (Note note : event.notes()) {
+                    notes.add(noteVersionManager.transform(Note.NoteType.EVENT_NOTE, event.uid(), note));
+                }
+            }
+            Set<Note> notesToSync = noteUniquenessManager.buildUniqueCollection(
+                    notes, Note.NoteType.EVENT_NOTE, event.uid());
+            noteHandler.handleMany(notesToSync);
         }
     }
 

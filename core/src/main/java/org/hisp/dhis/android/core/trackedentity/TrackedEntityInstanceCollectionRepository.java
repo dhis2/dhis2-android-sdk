@@ -149,6 +149,24 @@ public final class TrackedEntityInstanceCollectionRepository
                 programUids);
     }
 
+    public TrackedEntityInstanceCollectionRepository orderByCreated(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(Columns.CREATED, direction);
+    }
+
+    public TrackedEntityInstanceCollectionRepository orderByLastUpdated(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(Columns.LAST_UPDATED, direction);
+    }
+
+    public TrackedEntityInstanceCollectionRepository orderByCreatedAtClient(
+            RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(Columns.CREATED_AT_CLIENT, direction);
+    }
+
+    public TrackedEntityInstanceCollectionRepository orderByLastUpdatedAtClient(
+            RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(Columns.LAST_UPDATED_AT_CLIENT, direction);
+    }
+
     public TrackedEntityInstanceCollectionRepository withTrackedEntityAttributeValues() {
         return cf.withChild(TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES);
     }

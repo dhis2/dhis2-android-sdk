@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core;
 
 import android.util.Log;
 
-import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 
 import java.io.IOException;

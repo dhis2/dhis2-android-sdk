@@ -28,12 +28,11 @@
 
 package org.hisp.dhis.android.core.utils.integration.mock;
 
-import android.database.sqlite.SQLiteDatabase;
-
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.MockIntegrationTestObjects;
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer;
 
 public abstract class BaseMockIntegrationTest {
 
@@ -41,13 +40,11 @@ public abstract class BaseMockIntegrationTest {
     protected static D2 d2;
     protected static Dhis2MockServer dhis2MockServer;
     protected static DatabaseAdapter databaseAdapter;
-    protected static SQLiteDatabase database;
 
     static boolean setUpClass(MockIntegrationTestDatabaseContent content) throws Exception {
         MockIntegrationTestObjectsFactory.IntegrationTestObjectsWithIsNewInstance tuple = MockIntegrationTestObjectsFactory.getObjects(content);
         objects = tuple.objects;
         d2 = objects.d2;
-        database = objects.database;
         databaseAdapter = objects.databaseAdapter;
         dhis2MockServer = objects.dhis2MockServer;
         ServerURLWrapper.setServerUrl(dhis2MockServer.getBaseEndpoint());

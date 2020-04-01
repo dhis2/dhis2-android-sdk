@@ -38,18 +38,15 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttributeTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttributeTableInfo.Columns;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 final class TrackedEntityTypeAttributeStore {
 
-    private static final StatementBinder<TrackedEntityTypeAttribute> BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.trackedEntityType().uid());
-        sqLiteBind(sqLiteStatement, 2, o.trackedEntityAttribute().uid());
-        sqLiteBind(sqLiteStatement, 3, o.displayInList());
-        sqLiteBind(sqLiteStatement, 4, o.mandatory());
-        sqLiteBind(sqLiteStatement, 5, o.searchable());
-        sqLiteBind(sqLiteStatement, 6, o.sortOrder());
+    private static final StatementBinder<TrackedEntityTypeAttribute> BINDER = (o, w) -> {
+        w.bind(1, o.trackedEntityType().uid());
+        w.bind(2, o.trackedEntityAttribute().uid());
+        w.bind(3, o.displayInList());
+        w.bind(4, o.mandatory());
+        w.bind(5, o.searchable());
+        w.bind(6, o.sortOrder());
     };
 
     static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(

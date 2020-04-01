@@ -37,35 +37,33 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.dataapproval.DataApproval;
 import org.hisp.dhis.android.core.dataapproval.DataApprovalTableInfo;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 final class DataApprovalStore {
 
     private static final StatementBinder<DataApproval> BINDER
-            = (dataApproval, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, dataApproval.workflow());
-        sqLiteBind(sqLiteStatement, 2, dataApproval.organisationUnit());
-        sqLiteBind(sqLiteStatement, 3, dataApproval.period());
-        sqLiteBind(sqLiteStatement, 4, dataApproval.attributeOptionCombo());
-        sqLiteBind(sqLiteStatement, 5, dataApproval.state());
+            = (dataApproval, w) -> {
+        w.bind(1, dataApproval.workflow());
+        w.bind(2, dataApproval.organisationUnit());
+        w.bind(3, dataApproval.period());
+        w.bind(4, dataApproval.attributeOptionCombo());
+        w.bind(5, dataApproval.state());
     };
 
     private static final WhereStatementBinder<DataApproval> WHERE_UPDATE_BINDER
-            = (dataApproval, sqLiteStatement) -> {
+            = (dataApproval, w) -> {
 
-        sqLiteBind(sqLiteStatement, 6, dataApproval.workflow());
-        sqLiteBind(sqLiteStatement, 7, dataApproval.organisationUnit());
-        sqLiteBind(sqLiteStatement, 8, dataApproval.period());
-        sqLiteBind(sqLiteStatement, 9, dataApproval.attributeOptionCombo());
+        w.bind(6, dataApproval.workflow());
+        w.bind(7, dataApproval.organisationUnit());
+        w.bind(8, dataApproval.period());
+        w.bind(9, dataApproval.attributeOptionCombo());
     };
 
     private static final WhereStatementBinder<DataApproval> WHERE_DELETE_BINDER
-            = (dataApproval, sqLiteStatement) -> {
+            = (dataApproval, w) -> {
 
-        sqLiteBind(sqLiteStatement, 1, dataApproval.workflow());
-        sqLiteBind(sqLiteStatement, 2, dataApproval.organisationUnit());
-        sqLiteBind(sqLiteStatement, 3, dataApproval.period());
-        sqLiteBind(sqLiteStatement, 4, dataApproval.attributeOptionCombo());
+        w.bind(1, dataApproval.workflow());
+        w.bind(2, dataApproval.organisationUnit());
+        w.bind(3, dataApproval.period());
+        w.bind(4, dataApproval.attributeOptionCombo());
     };
 
     public static ObjectWithoutUidStore<DataApproval> create(DatabaseAdapter databaseAdapter) {

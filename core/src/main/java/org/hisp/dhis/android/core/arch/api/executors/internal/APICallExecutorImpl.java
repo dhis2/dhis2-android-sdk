@@ -144,7 +144,9 @@ public final class APICallExecutorImpl implements APICallExecutor {
     }
 
     private D2Error storeAndReturn(D2Error error) {
-        errorStore.insert(error);
+        if (errorStore.isReady()) {
+            errorStore.insert(error);
+        }
         return error;
     }
 

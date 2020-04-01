@@ -1,0 +1,4 @@
+ALTER TABLE ProgramSection RENAME TO ProgramSection_Old;
+CREATE TABLE ProgramSection (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL UNIQUE, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, description TEXT, program TEXT, sortOrder INTEGER, formName TEXT, FOREIGN KEY (program) REFERENCES Program (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+INSERT INTO ProgramSection (_id, uid, code, name, displayName, created, lastUpdated, description, program, sortOrder, formName) SELECT _id, uid, code, name, displayName, created, lastUpdated, description, program, sortOrder, formName FROM ProgramSection_Old;
+DROP TABLE ProgramSection_Old;

@@ -1,0 +1,1 @@
+ALTER TABLE ProgramIndicator ADD COLUMN aggregationType TEXT;

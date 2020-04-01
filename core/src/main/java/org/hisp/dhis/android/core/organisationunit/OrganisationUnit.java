@@ -41,14 +41,19 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringArrayColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreFeatureTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreObjectWithUidListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreOrganisationUnitGroupListAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreOrganisationUnitListAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreStringColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.common.FeatureType;
+import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 import java.text.ParseException;
@@ -86,6 +91,21 @@ public abstract class OrganisationUnit extends BaseNameableObject implements Cor
     @Nullable
     @JsonProperty()
     public abstract Integer level();
+
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(IgnoreStringColumnAdapter.class)
+    abstract String coordinates();
+
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(IgnoreFeatureTypeColumnAdapter.class)
+    abstract FeatureType featureType();
+
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(DbGeometryColumnAdapter.class)
+    public abstract Geometry geometry();
 
     @Nullable
     @JsonProperty()
@@ -146,6 +166,12 @@ public abstract class OrganisationUnit extends BaseNameableObject implements Cor
 
         public abstract Builder level(Integer level);
 
+        abstract Builder coordinates(String coordinates);
+
+        abstract Builder featureType(FeatureType featureType);
+
+        public abstract Builder geometry(Geometry geometry);
+
         public abstract Builder programs(List<ObjectWithUid> programs);
 
         public abstract Builder dataSets(List<ObjectWithUid> dataSets);
@@ -156,6 +182,21 @@ public abstract class OrganisationUnit extends BaseNameableObject implements Cor
 
         public abstract Builder displayNamePath(List<String> displayNamePath);
 
-        public abstract OrganisationUnit build();
+        abstract OrganisationUnit autoBuild();
+
+        // Auxiliary fields to access values
+        abstract FeatureType featureType();
+        abstract String coordinates();
+        abstract Geometry geometry();
+
+        public OrganisationUnit build() {
+            if (geometry() == null && coordinates() != null && featureType() != null) {
+                geometry(Geometry.builder()
+                        .type(featureType())
+                        .coordinates(coordinates())
+                        .build());
+            }
+            return autoBuild();
+        }
     }
 }

@@ -28,11 +28,5 @@
 
 package org.hisp.dhis.android.core.arch.storage.internal;
 
-interface SecureStore {
-
-    void setData(String key, String data);
-
-    String getData(String key);
-
-    void removeData(String key);
+public interface SecureStore extends KeyValueStore {
 }

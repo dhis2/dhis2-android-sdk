@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.arch.api.authentication.internal;
 import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -45,9 +45,9 @@ final class BasicAuthenticator implements Authenticator {
     private static final String AUTHORIZATION = "Authorization";
     private static final String BASIC_CREDENTIALS = "Basic %s";
 
-    private final CredentialsSecureStore credentialsSecureStore;
+    private final ObjectKeyValueStore<Credentials> credentialsSecureStore;
 
-    BasicAuthenticator(@NonNull CredentialsSecureStore credentialsSecureStore) {
+    BasicAuthenticator(@NonNull ObjectKeyValueStore<Credentials> credentialsSecureStore) {
         this.credentialsSecureStore = credentialsSecureStore;
     }
 
@@ -59,7 +59,7 @@ final class BasicAuthenticator implements Authenticator {
             return chain.proceed(chain.request());
         }
 
-        Credentials credentials = credentialsSecureStore.getCredentials();
+        Credentials credentials = credentialsSecureStore.get();
         if (credentials == null) {
             // proceed request if we do not
             // have any users authenticated

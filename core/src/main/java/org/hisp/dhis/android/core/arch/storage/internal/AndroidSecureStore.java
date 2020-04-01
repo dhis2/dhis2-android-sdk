@@ -63,8 +63,8 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.security.auth.x500.X500Principal;
 
-@SuppressWarnings({"PMD.EmptyCatchBlock", "PMD.ExcessiveImports"})
-final class AndroidSecureStore implements SecureStore {
+@SuppressWarnings({"PMD.EmptyCatchBlock", "PMD.ExcessiveImports", "PMD.PreserveStackTrace"})
+public final class AndroidSecureStore implements SecureStore {
 
     private static final String KEY_ALGORITHM_RSA = "RSA";
 
@@ -77,7 +77,7 @@ final class AndroidSecureStore implements SecureStore {
 
     private final SharedPreferences preferences;
 
-    AndroidSecureStore(Context context) {
+    public AndroidSecureStore(Context context) {
         preferences = context.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE);
 
         KeyStore ks;
@@ -126,6 +126,7 @@ final class AndroidSecureStore implements SecureStore {
             kpGenerator.generateKeyPair();
         } catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException | NoSuchProviderException e) {
             deleteKeyStoreEntry(ks, ALIAS);
+            throw new RuntimeException("Couldn't initialize AndroidSecureStore");
         }
     }
 
@@ -154,6 +155,7 @@ final class AndroidSecureStore implements SecureStore {
                 | IllegalBlockSizeException | BadPaddingException | KeyStoreException |
                 CertificateException | IOException e) {
             deleteKeyStoreEntry(ks, ALIAS);
+            throw new RuntimeException("Couldn't store value in AndroidSecureStore for key: " + key);
         }
     }
 
@@ -171,8 +173,8 @@ final class AndroidSecureStore implements SecureStore {
                 | UnrecoverableEntryException | InvalidKeyException | NoSuchPaddingException
                 | IllegalBlockSizeException | BadPaddingException e) {
             deleteKeyStoreEntry(ks, ALIAS);
+            throw new RuntimeException("Couldn't get value from AndroidSecureStore for key: " + key);
         }
-        return null;
     }
 
     public void removeData(String key) {

@@ -54,6 +54,8 @@ ext {
             duktape         : "1.1.0",
             dagger          : "2.14.1",
             rxjava          : "2.2.8",
+            rxandroid       : "2.1.1",
+            sqlcipher       : "4.2.0",
 
             // code checks
             findbugs        : "3.0.0",
@@ -72,9 +74,6 @@ ext {
 
             // plugins
             errorpronecore  : "2.0.15",
-
-            //database
-            sqlbritemigrations  : "v1.0.1",
 
             // google
             safetynet  : "16.0.0",
@@ -149,11 +148,7 @@ android {
 dependencies {
 
     api "io.reactivex.rxjava2:rxjava:${libraries.rxjava}"
-
-    // sqlbrite-migrations library
-    api ("com.github.lykmapipo:sqlbrite-migrations:${libraries.sqlbritemigrations}") {
-        exclude group: 'io.reactivex.rxjava2', module: 'rxjava'
-    }
+    api "io.reactivex.rxjava2:rxandroid:${libraries.rxandroid}"
 
     // Support libraries
     api "androidx.annotation:annotation:${libraries.support}"
@@ -199,7 +194,11 @@ dependencies {
     api "com.gabrielittner.auto.value:auto-value-cursor-annotations:${libraries.autovaluecursor}"
     annotationProcessor "com.gabrielittner.auto.value:auto-value-cursor:${libraries.autovaluecursor}"
 
+    api "net.zetetic:android-database-sqlcipher:${libraries.sqlcipher}"
+
     api "com.google.code.findbugs:annotations:${libraries.findbugs}"
+
+    api "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
 
     // Java test dependencies
     testImplementation "junit:junit:${libraries.junit}"
@@ -213,7 +212,6 @@ dependencies {
     // Android test dependencies
     androidTestImplementation "commons-logging:commons-logging:1.2"
     androidTestImplementation "org.mockito:mockito-core:${libraries.mockito}"
-    androidTestImplementation "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
     androidTestImplementation "android.arch.core:core-testing:${libraries.coretesting}"
     androidTestImplementation "com.jraska.livedata:testing:${libraries.livedatatesting}"
     androidTestImplementation "androidx.test:runner:${libraries.testrunner}"

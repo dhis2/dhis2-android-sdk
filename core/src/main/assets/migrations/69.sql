@@ -1,0 +1,4 @@
+CREATE TABLE Note_temp (_id INTEGER PRIMARY KEY AUTOINCREMENT, noteType TEXT, event TEXT, enrollment TEXT, value TEXT, storedBy TEXT, storedDate TEXT, uid TEXT, state TEXT, deleted INTEGER, FOREIGN KEY (event) REFERENCES Event (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (enrollment) REFERENCES Enrollment (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, UNIQUE (noteType, event, enrollment, value, storedBy, storedDate));
+INSERT INTO Note_temp (_id, noteType, enrollment, value, storedBy, storedDate, uid, state, deleted) SELECT _id, 'ENROLLMENT_NOTE', enrollment, value, storedBy, storedDate, uid, state, 0 FROM Note;
+DROP TABLE IF EXISTS Note;
+ALTER TABLE Note_temp RENAME TO Note;

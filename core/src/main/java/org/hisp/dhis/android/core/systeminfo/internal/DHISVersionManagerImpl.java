@@ -28,8 +28,10 @@
 package org.hisp.dhis.android.core.systeminfo.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.systeminfo.DHISPatchVersion;
 import org.hisp.dhis.android.core.systeminfo.DHISVersion;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
+import org.hisp.dhis.android.core.systeminfo.SMSVersion;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 
 import javax.inject.Inject;
@@ -39,6 +41,8 @@ import javax.inject.Singleton;
 public class DHISVersionManagerImpl implements DHISVersionManager {
 
     private DHISVersion version;
+    private DHISPatchVersion patchVersion;
+    private SMSVersion smsVersion;
     private final ObjectWithoutUidStore<SystemInfo> systemInfoStore;
 
     @Inject
@@ -56,6 +60,30 @@ public class DHISVersionManagerImpl implements DHISVersionManager {
             }
         }
         return version;
+    }
+
+    @Override
+    public DHISPatchVersion getPatchVersion() {
+        if (patchVersion == null) {
+            SystemInfo systemInfo = systemInfoStore.selectFirst();
+
+            if (systemInfo != null && systemInfo.version() != null) {
+                patchVersion = DHISPatchVersion.getValue(systemInfo.version());
+            }
+        }
+        return patchVersion;
+    }
+
+    @Override
+    public SMSVersion getSmsVersion() {
+        if (smsVersion == null) {
+            SystemInfo systemInfo = systemInfoStore.selectFirst();
+
+            if (systemInfo != null && systemInfo.version() != null) {
+                smsVersion = SMSVersion.getValue(systemInfo.version());
+            }
+        }
+        return smsVersion;
     }
 
     @Override
@@ -95,5 +123,7 @@ public class DHISVersionManagerImpl implements DHISVersionManager {
 
     void setVersion(String versionStr) {
         this.version = DHISVersion.getValue(versionStr);
+        this.patchVersion = DHISPatchVersion.getValue(versionStr);
+        this.smsVersion = SMSVersion.getValue(versionStr);
     }
 }

@@ -47,8 +47,8 @@ public class MultiUserDatabaseManager {
     private final DatabaseAdapter databaseAdapter;
     private final ObjectKeyValueStore<DatabasesConfiguration> databaseConfigurationSecureStore;
     private final DatabaseConfigurationHelper configurationHelper;
-    private final DatabaseCopy databaseCopy;
     private final DatabaseAdapterFactory databaseAdapterFactory;
+    private final DatabaseExport databaseExport;
 
     private static int maxServerUserPairs = 1;
 
@@ -57,13 +57,13 @@ public class MultiUserDatabaseManager {
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull ObjectKeyValueStore<DatabasesConfiguration> databaseConfigurationSecureStore,
             @NonNull DatabaseConfigurationHelper configurationHelper,
-            @NonNull DatabaseCopy databaseCopy,
-            @NonNull DatabaseAdapterFactory databaseAdapterFactory) {
+            @NonNull DatabaseAdapterFactory databaseAdapterFactory,
+            @NonNull DatabaseExport databaseExport) {
         this.databaseAdapter = databaseAdapter;
         this.databaseConfigurationSecureStore = databaseConfigurationSecureStore;
         this.configurationHelper = configurationHelper;
-        this.databaseCopy = databaseCopy;
         this.databaseAdapterFactory = databaseAdapterFactory;
+        this.databaseExport = databaseExport;
     }
 
     public static void setMaxServerUserPairs(int pairs) {
@@ -121,13 +121,14 @@ public class MultiUserDatabaseManager {
         }
 
         boolean encrypt = encryptionExtractor.extract(existingUserConfiguration);
+        changeEncryptionIfRequired(serverUrl, existingUserConfiguration, encrypt);
+
         if (encrypt != existingUserConfiguration.encrypted() || alsoOpenWhenEncryptionDoesntChange) {
             DatabaseUserConfiguration updatedUserConfiguration = addNewConfigurationInternal(serverUrl, username,
                     encrypt);
             databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, updatedUserConfiguration);
         }
 
-        changeEncryptionIfRequired(existingUserConfiguration, encrypt);
         return true;
     }
 
@@ -135,13 +136,17 @@ public class MultiUserDatabaseManager {
         boolean extract(DatabaseUserConfiguration userConfiguration);
     }
 
-    private void changeEncryptionIfRequired(DatabaseUserConfiguration existingUserConfiguration, boolean encrypt) {
+    private void changeEncryptionIfRequired(String serverUrl, DatabaseUserConfiguration existingUserConfiguration, boolean encrypt) {
         if (encrypt != existingUserConfiguration.encrypted()) {
             Log.w(MultiUserDatabaseManager.class.getName(),
                     "Encryption value changed for " + existingUserConfiguration.username() +  ": " + encrypt);
-            DatabaseAdapter auxOldParentDatabaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter();
-            databaseAdapterFactory.createOrOpenDatabase(auxOldParentDatabaseAdapter, existingUserConfiguration);
-            databaseCopy.copyDatabase(auxOldParentDatabaseAdapter, databaseAdapter);
+
+            if (encrypt && !existingUserConfiguration.encrypted()) {
+                databaseExport.encrypt(serverUrl, existingUserConfiguration);
+            } else if (!encrypt && existingUserConfiguration.encrypted()) {
+                databaseExport.decrypt(serverUrl, existingUserConfiguration);
+            }
+
             databaseAdapterFactory.deleteDatabase(existingUserConfiguration);
         }
     }

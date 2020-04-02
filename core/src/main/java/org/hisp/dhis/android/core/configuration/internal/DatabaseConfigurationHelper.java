@@ -72,6 +72,14 @@ class DatabaseConfigurationHelper {
         return null;
     }
 
+    DatabaseUserConfiguration changeEncryption(String serverUrl, DatabaseUserConfiguration userConfiguration) {
+        return userConfiguration.toBuilder()
+                .encrypted(!userConfiguration.encrypted())
+                .databaseName(databaseNameGenerator.getDatabaseName(serverUrl, userConfiguration.username(),
+                        !userConfiguration.encrypted()))
+                .build();
+    }
+
     @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})
     DatabasesConfiguration removeServerUserConfiguration(DatabasesConfiguration configuration,
                                                          DatabaseUserConfiguration userToRemove) {

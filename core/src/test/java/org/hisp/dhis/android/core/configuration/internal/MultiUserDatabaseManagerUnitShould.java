@@ -59,7 +59,7 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
     private DatabaseConfigurationHelper configurationHelper;
 
     @Mock
-    private DatabaseCopy databaseCopy;
+    private DatabaseExport databaseExport;
 
     @Mock
     private DatabaseAdapterFactory databaseAdapterFactory;
@@ -98,7 +98,7 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
     public void setUp() throws Exception {
         super.setUp();
         manager = new MultiUserDatabaseManager(databaseAdapter, databaseConfigurationSecureStore, configurationHelper,
-                databaseCopy, databaseAdapterFactory);
+                databaseAdapterFactory, databaseExport);
     }
 
     @Test
@@ -124,9 +124,8 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
         manager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(SERVER_URL, USERNAME, encrypt);
 
         verify(databaseAdapterFactory).createOrOpenDatabase(databaseAdapter, userConfigurationEncrypted);
-        verify(databaseAdapterFactory).createOrOpenDatabase(any(), same(userConfigurationUnencrypted));
 
-        verify(databaseCopy).copyDatabase(any(), same(databaseAdapter));
+        verify(databaseExport).encrypt(SERVER_URL, userConfigurationUnencrypted);
 
         verify(databaseAdapterFactory).deleteDatabase(userConfigurationEncrypted);
     }

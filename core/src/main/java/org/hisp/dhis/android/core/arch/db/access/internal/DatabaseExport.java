@@ -110,7 +110,7 @@ public class DatabaseExport {
         try {
             action.run();
         } catch (Exception e) {
-            Log.e("ADAS", "DELETE THISSS!!!");
+            throw new RuntimeException("Exception thrown during database export action: " + tag);
         }
         long endMillis = System.currentTimeMillis();
 

@@ -105,6 +105,7 @@ public class DatabaseExport {
         }, tag);
     }
 
+    @SuppressWarnings({"PMD.PrematureDeclaration", "PMD.PreserveStackTrace"})
     private void wrapAction(Action action, String tag) {
         long startMillis = System.currentTimeMillis();
         try {

@@ -137,7 +137,8 @@ public class MultiUserDatabaseManager {
         boolean extract(DatabaseUserConfiguration userConfiguration);
     }
 
-    private void changeEncryptionIfRequired(String serverUrl, DatabaseUserConfiguration existingUserConfiguration, boolean encrypt) {
+    private void changeEncryptionIfRequired(String serverUrl, DatabaseUserConfiguration existingUserConfiguration,
+                                            boolean encrypt) {
         if (encrypt != existingUserConfiguration.encrypted()) {
             Log.w(MultiUserDatabaseManager.class.getName(),
                     "Encryption value changed for " + existingUserConfiguration.username() +  ": " + encrypt);

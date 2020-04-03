@@ -55,7 +55,8 @@ public class DatabaseExport {
 
 
     @Inject
-    DatabaseExport(Context context, DatabaseEncryptionPasswordManager passwordManager, DatabaseConfigurationHelper configurationHelper) {
+    DatabaseExport(Context context, DatabaseEncryptionPasswordManager passwordManager,
+                   DatabaseConfigurationHelper configurationHelper) {
         this.context = context;
         this.passwordManager = passwordManager;
         this.configurationHelper = configurationHelper;
@@ -83,7 +84,8 @@ public class DatabaseExport {
 
 
             SQLiteDatabase.loadLibs(context);
-            SQLiteDatabase oldDatabase = SQLiteDatabase.openOrCreateDatabase(oldDatabaseFile, oldPassword, null, oldHook);
+            SQLiteDatabase oldDatabase = SQLiteDatabase.openOrCreateDatabase(oldDatabaseFile, oldPassword, null,
+                    oldHook);
             oldDatabase.rawExecSQL(String.format(
                     "ATTACH DATABASE '%s' as alias KEY '%s';", newDatabaseFile.getAbsolutePath(), newPassword));
             if (newHook != null) {
@@ -94,7 +96,8 @@ public class DatabaseExport {
             oldDatabase.rawExecSQL("DETACH DATABASE alias;");
 
             int version = oldDatabase.getVersion();
-            SQLiteDatabase newDatabase = SQLiteDatabase.openOrCreateDatabase(newDatabaseFile, newPassword, null, newHook);
+            SQLiteDatabase newDatabase = SQLiteDatabase.openOrCreateDatabase(newDatabaseFile, newPassword, null,
+                    newHook);
             newDatabase.setVersion(version);
 
             newDatabase.close();

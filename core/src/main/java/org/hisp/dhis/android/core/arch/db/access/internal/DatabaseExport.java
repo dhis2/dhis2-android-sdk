@@ -62,37 +62,22 @@ public class DatabaseExport {
     }
 
     public void encrypt(String serverUrl, DatabaseUserConfiguration oldConfiguration) {
-        wrapAction(() -> {
-            DatabaseUserConfiguration newConfiguration =
-                    configurationHelper.changeEncryption(serverUrl, oldConfiguration);
-
-            File oldDatabaseFile = context.getDatabasePath(oldConfiguration.databaseName());
-            File newDatabaseFile = context.getDatabasePath(newConfiguration.databaseName());
-
-            String newPassword = passwordManager.getPassword(newConfiguration.databaseName());
-
-            SQLiteDatabase.loadLibs(context);
-            SQLiteDatabase oldDatabase = SQLiteDatabase.openOrCreateDatabase(oldDatabaseFile.getAbsolutePath(), "", null);
-            oldDatabase.rawExecSQL(String.format(
-                    "ATTACH DATABASE '%s' as encrypted KEY '%s';", newDatabaseFile.getAbsolutePath(), newPassword));
-            oldDatabase.rawExecSQL("SELECT sqlcipher_export('encrypted');");
-            oldDatabase.rawExecSQL("DETACH DATABASE encrypted;");
-
-            oldDatabase.close();
-        }, "Encrypt");
+        DatabaseUserConfiguration newConfiguration = configurationHelper.changeEncryption(serverUrl, oldConfiguration);
+        export(oldConfiguration, newConfiguration, null,
+                passwordManager.getPassword(newConfiguration.databaseName()), "Encrypt", null,
+                EncryptedDatabaseOpenHelper.hook);
     }
 
     public void decrypt(String serverUrl, DatabaseUserConfiguration oldConfiguration) {
-        export(serverUrl, oldConfiguration, passwordManager.getPassword(oldConfiguration.databaseName()),
-                null, "Decrypt", EncryptedDatabaseOpenHelper.hook, null);
+        DatabaseUserConfiguration newConfiguration = configurationHelper.changeEncryption(serverUrl, oldConfiguration);
+        export(oldConfiguration, newConfiguration, passwordManager.getPassword(oldConfiguration.databaseName()),
+                "", "Decrypt", EncryptedDatabaseOpenHelper.hook, null);
     }
 
-    private void export(String serverUrl, DatabaseUserConfiguration oldConfiguration, String oldPassword, String newPassword, String tag,
+    private void export(DatabaseUserConfiguration oldConfiguration,
+                        DatabaseUserConfiguration newConfiguration, String oldPassword, String newPassword, String tag,
                         SQLiteDatabaseHook oldHook, SQLiteDatabaseHook newHook) {
         wrapAction(() -> {
-            DatabaseUserConfiguration newConfiguration =
-                    configurationHelper.changeEncryption(serverUrl, oldConfiguration);
-
             File oldDatabaseFile = context.getDatabasePath(oldConfiguration.databaseName());
             File newDatabaseFile = context.getDatabasePath(newConfiguration.databaseName());
 
@@ -101,11 +86,15 @@ public class DatabaseExport {
             SQLiteDatabase oldDatabase = SQLiteDatabase.openOrCreateDatabase(oldDatabaseFile, oldPassword, null, oldHook);
             oldDatabase.rawExecSQL(String.format(
                     "ATTACH DATABASE '%s' as alias KEY '%s';", newDatabaseFile.getAbsolutePath(), newPassword));
+            if (newHook != null) {
+                oldDatabase.rawExecSQL("PRAGMA alias.cipher_page_size = 16384;");
+                oldDatabase.rawExecSQL("PRAGMA alias.cipher_memory_security = OFF;");
+            }
             oldDatabase.rawExecSQL("SELECT sqlcipher_export('alias');");
             oldDatabase.rawExecSQL("DETACH DATABASE alias;");
 
             int version = oldDatabase.getVersion();
-            SQLiteDatabase newDatabase = SQLiteDatabase.openOrCreateDatabase(newDatabaseFile, null, null, newHook);
+            SQLiteDatabase newDatabase = SQLiteDatabase.openOrCreateDatabase(newDatabaseFile, newPassword, null, newHook);
             newDatabase.setVersion(version);
 
             newDatabase.close();

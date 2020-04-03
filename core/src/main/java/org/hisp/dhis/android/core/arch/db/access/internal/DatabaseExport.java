@@ -32,6 +32,7 @@ import android.content.Context;
 import android.util.Log;
 
 import net.sqlcipher.database.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteDatabaseHook;
 
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper;
 import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager;
@@ -82,6 +83,12 @@ public class DatabaseExport {
     }
 
     public void decrypt(String serverUrl, DatabaseUserConfiguration oldConfiguration) {
+        export(serverUrl, oldConfiguration, passwordManager.getPassword(oldConfiguration.databaseName()),
+                null, "Decrypt", EncryptedDatabaseOpenHelper.hook, null);
+    }
+
+    private void export(String serverUrl, DatabaseUserConfiguration oldConfiguration, String oldPassword, String newPassword, String tag,
+                        SQLiteDatabaseHook oldHook, SQLiteDatabaseHook newHook) {
         wrapAction(() -> {
             DatabaseUserConfiguration newConfiguration =
                     configurationHelper.changeEncryption(serverUrl, oldConfiguration);
@@ -89,22 +96,21 @@ public class DatabaseExport {
             File oldDatabaseFile = context.getDatabasePath(oldConfiguration.databaseName());
             File newDatabaseFile = context.getDatabasePath(newConfiguration.databaseName());
 
-            String oldPassword = passwordManager.getPassword(oldConfiguration.databaseName());
 
             SQLiteDatabase.loadLibs(context);
-            SQLiteDatabase oldDatabase = SQLiteDatabase.openOrCreateDatabase(oldDatabaseFile, oldPassword, null, EncryptedDatabaseOpenHelper.hook);
+            SQLiteDatabase oldDatabase = SQLiteDatabase.openOrCreateDatabase(oldDatabaseFile, oldPassword, null, oldHook);
             oldDatabase.rawExecSQL(String.format(
-                    "ATTACH DATABASE '%s' as plaintext KEY '';", newDatabaseFile.getAbsolutePath()));
-            oldDatabase.rawExecSQL("SELECT sqlcipher_export('plaintext');");
-            oldDatabase.rawExecSQL("DETACH DATABASE plaintext;");
+                    "ATTACH DATABASE '%s' as alias KEY '%s';", newDatabaseFile.getAbsolutePath(), newPassword));
+            oldDatabase.rawExecSQL("SELECT sqlcipher_export('alias');");
+            oldDatabase.rawExecSQL("DETACH DATABASE alias;");
 
             int version = oldDatabase.getVersion();
-            SQLiteDatabase newDatabase = SQLiteDatabase.openOrCreateDatabase(newDatabaseFile, null, null);
+            SQLiteDatabase newDatabase = SQLiteDatabase.openOrCreateDatabase(newDatabaseFile, null, null, newHook);
             newDatabase.setVersion(version);
 
             newDatabase.close();
             oldDatabase.close();
-        }, "Decrypt");
+        }, tag);
     }
 
     private void wrapAction(Action action, String tag) {

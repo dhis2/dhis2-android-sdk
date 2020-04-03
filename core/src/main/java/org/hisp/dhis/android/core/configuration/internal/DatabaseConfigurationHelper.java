@@ -41,7 +41,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-class DatabaseConfigurationHelper {
+public class DatabaseConfigurationHelper {
 
     private final DatabaseNameGenerator databaseNameGenerator;
     private final DateProvider dateProvider;
@@ -72,7 +72,7 @@ class DatabaseConfigurationHelper {
         return null;
     }
 
-    DatabaseUserConfiguration changeEncryption(String serverUrl, DatabaseUserConfiguration userConfiguration) {
+    public DatabaseUserConfiguration changeEncryption(String serverUrl, DatabaseUserConfiguration userConfiguration) {
         return userConfiguration.toBuilder()
                 .encrypted(!userConfiguration.encrypted())
                 .databaseName(databaseNameGenerator.getDatabaseName(serverUrl, userConfiguration.username(),

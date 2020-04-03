@@ -26,55 +26,54 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration.internal;
+package org.hisp.dhis.android.core.arch.db.access.internal;
 
 import android.content.Context;
 import android.util.Log;
 
 import net.sqlcipher.database.SQLiteDatabase;
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor;
-import org.hisp.dhis.android.core.common.Unit;
+import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper;
+import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager;
+import org.hisp.dhis.android.core.configuration.internal.DatabaseUserConfiguration;
 
 import java.io.File;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
-import io.reactivex.Observable;
 import io.reactivex.functions.Action;
 
 @SuppressWarnings("PMD.ExcessiveImports")
 @Reusable
-class DatabaseExport {
+public class DatabaseExport {
 
-    private final RxAPICallExecutor executor;
     private final Context context;
     private final DatabaseEncryptionPasswordManager passwordManager;
     private final DatabaseConfigurationHelper configurationHelper;
 
 
     @Inject
-    DatabaseExport(RxAPICallExecutor executor, Context context, DatabaseEncryptionPasswordManager passwordManager, DatabaseConfigurationHelper configurationHelper) {
-        this.executor = executor;
+    DatabaseExport(Context context, DatabaseEncryptionPasswordManager passwordManager, DatabaseConfigurationHelper configurationHelper) {
         this.context = context;
         this.passwordManager = passwordManager;
         this.configurationHelper = configurationHelper;
     }
 
-    void encrypt(String serverUrl, DatabaseUserConfiguration oldConfiguration) {
+    public void encrypt(String serverUrl, DatabaseUserConfiguration oldConfiguration) {
         wrapAction(() -> {
-
             DatabaseUserConfiguration newConfiguration =
                     configurationHelper.changeEncryption(serverUrl, oldConfiguration);
 
             File oldDatabaseFile = context.getDatabasePath(oldConfiguration.databaseName());
             File newDatabaseFile = context.getDatabasePath(newConfiguration.databaseName());
 
-            String password = passwordManager.getPassword(newConfiguration.databaseName());
+            String newPassword = passwordManager.getPassword(newConfiguration.databaseName());
+
+            SQLiteDatabase.loadLibs(context);
             SQLiteDatabase oldDatabase = SQLiteDatabase.openOrCreateDatabase(oldDatabaseFile.getAbsolutePath(), "", null);
             oldDatabase.rawExecSQL(String.format(
-                    "ATTACH DATABASE '%s' as encrypted KEY '%s';", newDatabaseFile.getAbsolutePath(), password));
+                    "ATTACH DATABASE '%s' as encrypted KEY '%s';", newDatabaseFile.getAbsolutePath(), newPassword));
             oldDatabase.rawExecSQL("SELECT sqlcipher_export('encrypted');");
             oldDatabase.rawExecSQL("DETACH DATABASE encrypted;");
 
@@ -82,7 +81,7 @@ class DatabaseExport {
         }, "Encrypt");
     }
 
-    void decrypt(String serverUrl, DatabaseUserConfiguration oldConfiguration) {
+    public void decrypt(String serverUrl, DatabaseUserConfiguration oldConfiguration) {
         wrapAction(() -> {
             DatabaseUserConfiguration newConfiguration =
                     configurationHelper.changeEncryption(serverUrl, oldConfiguration);
@@ -90,25 +89,33 @@ class DatabaseExport {
             File oldDatabaseFile = context.getDatabasePath(oldConfiguration.databaseName());
             File newDatabaseFile = context.getDatabasePath(newConfiguration.databaseName());
 
-            String password = passwordManager.getPassword(oldConfiguration.databaseName());
-            SQLiteDatabase oldDatabase = SQLiteDatabase.openOrCreateDatabase(oldDatabaseFile, password, null);
+            String oldPassword = passwordManager.getPassword(oldConfiguration.databaseName());
+
+            SQLiteDatabase.loadLibs(context);
+            SQLiteDatabase oldDatabase = SQLiteDatabase.openOrCreateDatabase(oldDatabaseFile, oldPassword, null, EncryptedDatabaseOpenHelper.hook);
             oldDatabase.rawExecSQL(String.format(
                     "ATTACH DATABASE '%s' as plaintext KEY '';", newDatabaseFile.getAbsolutePath()));
             oldDatabase.rawExecSQL("SELECT sqlcipher_export('plaintext');");
             oldDatabase.rawExecSQL("DETACH DATABASE plaintext;");
 
+            int version = oldDatabase.getVersion();
+            SQLiteDatabase newDatabase = SQLiteDatabase.openOrCreateDatabase(newDatabaseFile, null, null);
+            newDatabase.setVersion(version);
+
+            newDatabase.close();
             oldDatabase.close();
         }, "Decrypt");
     }
 
     private void wrapAction(Action action, String tag) {
-        executor.wrapObservableTransactionally(Observable.fromCallable(() -> {
-            long startMillis = System.currentTimeMillis();
+        long startMillis = System.currentTimeMillis();
+        try {
             action.run();
-            long endMillis = System.currentTimeMillis();
+        } catch (Exception e) {
+            Log.e("ADAS", "DELETE THISSS!!!");
+        }
+        long endMillis = System.currentTimeMillis();
 
-            Log.e("DatabaseExport", tag + ": " + (endMillis - startMillis) + "ms");
-            return new Unit();
-        }), true).blockingSubscribe();
+        Log.e("DatabaseExport", tag + ": " + (endMillis - startMillis) + "ms");
     }
 }

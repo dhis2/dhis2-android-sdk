@@ -84,7 +84,19 @@ public final class RelationshipTypeCollectionRepository
         return new WhereClauseBuilder()
                 .appendKeyStringValue(
                         RelationshipConstraintTableInfo.Columns.RELATIONSHIP_ENTITY, relationshipEntityType)
-                .appendKeyStringValue(
-                        RelationshipConstraintTableInfo.Columns.TRACKED_ENTITY_TYPE, relationshipEntityUid);
+                .appendKeyStringValue(getRelationshipEntityColumn(relationshipEntityType), relationshipEntityUid);
+    }
+    
+    private String getRelationshipEntityColumn(@NonNull RelationshipEntityType relationshipEntityType) {
+        switch (relationshipEntityType) {
+            case TRACKED_ENTITY_INSTANCE:
+                return RelationshipConstraintTableInfo.Columns.TRACKED_ENTITY_TYPE;
+            case PROGRAM_INSTANCE:
+                return RelationshipConstraintTableInfo.Columns.PROGRAM;
+            case PROGRAM_STAGE_INSTANCE:
+                return RelationshipConstraintTableInfo.Columns.PROGRAM_STAGE;
+            default:
+                return null;
+        }
     }
 }

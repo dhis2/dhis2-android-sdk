@@ -4,11 +4,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationTableInfo;
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationStore;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
 import org.hisp.dhis.android.core.event.Event;
@@ -29,11 +31,13 @@ import org.hisp.dhis.smscompression.models.SMSMetadata;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 
 import io.reactivex.Completable;
+import io.reactivex.Observable;
 import io.reactivex.Single;
 
 @SuppressWarnings("PMD.ExcessiveImports")
@@ -43,6 +47,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     private final TrackedEntityModule trackedEntityModule;
     private final EventModule eventModule;
     private final EnrollmentModule enrollmentModule;
+    private final FileResourceCleaner fileResourceCleaner;
     private final EventStore eventStore;
     private final EnrollmentStore enrollmentStore;
     private final static String CONFIG_FILE = "smsconfig";
@@ -66,6 +71,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
                           TrackedEntityModule trackedEntityModule,
                           EventModule eventModule,
                           EnrollmentModule enrollmentModule,
+                          FileResourceCleaner fileResourceCleaner,
                           EventStore eventStore,
                           EnrollmentStore enrollmentStore,
                           RelationshipStore relationshipStore,
@@ -77,6 +83,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
         this.trackedEntityModule = trackedEntityModule;
         this.eventModule = eventModule;
         this.enrollmentModule = enrollmentModule;
+        this.fileResourceCleaner = fileResourceCleaner;
         this.eventStore = eventStore;
         this.enrollmentStore = enrollmentStore;
         this.relationshipStore = relationshipStore;
@@ -167,24 +174,49 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
 
     @Override
     public Single<Event> getSimpleEventToSubmit(String eventUid) {
-        return Single.fromCallable(() ->
-                eventModule.events().withTrackedEntityDataValues()
-                        .byUid().eq(eventUid).one().blockingGet()
-        );
+        return eventModule.events().withTrackedEntityDataValues()
+                .byUid().eq(eventUid).one()
+                .get()
+                .flatMap(fileResourceCleaner::removeFileDataValues);
     }
 
     @Override
     public Single<TrackedEntityInstance> getTeiEnrollmentToSubmit(String enrollmentUid) {
         return Single.fromCallable(() -> {
             Enrollment enrollment = enrollmentModule.enrollments().byUid().eq(enrollmentUid).one().blockingGet();
-            TrackedEntityInstance trackedEntityInstance = trackedEntityModule.trackedEntityInstances()
-                    .withTrackedEntityAttributeValues()
-                    .byUid().eq(enrollment.trackedEntityInstance())
-                    .one().blockingGet();
+            List<Event> events = getEventsForEnrollment(enrollmentUid).blockingGet();
+
+            Enrollment enrollmentWithEvents = EnrollmentInternalAccessor
+                    .insertEvents(enrollment.toBuilder(), events)
+                    .build();
+
+            TrackedEntityInstance trackedEntityInstance =
+                    getTrackedEntityInstance(enrollment.trackedEntityInstance()).blockingGet();
+
             return TrackedEntityInstanceInternalAccessor
-                    .insertEnrollments(trackedEntityInstance.toBuilder(), Collections.singletonList(enrollment))
+                    .insertEnrollments(trackedEntityInstance.toBuilder(),
+                            Collections.singletonList(enrollmentWithEvents))
                     .build();
         });
+    }
+
+    private Single<TrackedEntityInstance> getTrackedEntityInstance(String instanceUid) {
+        return trackedEntityModule.trackedEntityInstances()
+                .withTrackedEntityAttributeValues()
+                .uid(instanceUid)
+                .get()
+                .flatMap(fileResourceCleaner::removeFileAttributeValues);
+    }
+
+    private Single<List<Event>> getEventsForEnrollment(String enrollmentUid) {
+        return eventModule.events()
+                .byEnrollmentUid().eq(enrollmentUid)
+                .byState().in(State.uploadableStates())
+                .withTrackedEntityDataValues()
+                .get()
+                .flatMapObservable(Observable::fromIterable)
+                .flatMapSingle(fileResourceCleaner::removeFileDataValues)
+                .toList();
     }
 
     @Override
@@ -193,11 +225,17 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     }
 
     @Override
-    public Completable updateEnrollmentSubmissionState(String enrollmentUid, State state) {
+    public Completable updateEnrollmentSubmissionState(TrackedEntityInstance tei, State state) {
         return Completable.fromAction(() -> {
-            enrollmentStore.setState(enrollmentUid, state);
-            Enrollment enrollment = enrollmentStore.selectByUid(enrollmentUid);
+            Enrollment enrollment = TrackedEntityInstanceInternalAccessor.accessEnrollments(tei).get(0);
+            enrollmentStore.setState(enrollment.uid(), state);
             trackedEntityInstanceStore.setState(enrollment.trackedEntityInstance(), state);
+
+            List<Event> events = EnrollmentInternalAccessor.accessEvents(enrollment);
+            if (events != null && !events.isEmpty()) {
+                List<String> eventUids = UidsHelper.getUidsList(events);
+                eventStore.setState(eventUids, state);
+            }
         });
     }
 

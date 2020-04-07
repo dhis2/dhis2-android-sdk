@@ -6,6 +6,7 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.sms.domain.model.internal.SMSDataValueSet;
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.smscompression.models.AggregateDatasetSMSSubmission;
 import org.hisp.dhis.smscompression.models.SMSDataValue;
 import org.hisp.dhis.smscompression.models.SMSSubmission;
@@ -25,11 +26,12 @@ public class DatasetConverter extends Converter<SMSDataValueSet> {
     private final String attributeOptionComboUid;
 
     public DatasetConverter(LocalDbRepository localDbRepository,
+                            DHISVersionManager dhisVersionManager,
                             String dataSet,
                             String orgUnit,
                             String period,
                             String attributeOptionComboUid) {
-        super(localDbRepository);
+        super(localDbRepository, dhisVersionManager);
         this.dataSet = dataSet;
         this.orgUnit = orgUnit;
         this.period = period;

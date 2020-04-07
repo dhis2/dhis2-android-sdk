@@ -4,6 +4,7 @@ import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository;
 import org.hisp.dhis.smscompression.models.SMSMetadata;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import io.reactivex.Single;
@@ -23,7 +24,10 @@ public class WebApiRepositoryImpl implements WebApiRepository {
                 metadataCall(config)
         ).map(response -> {
             SMSMetadata metadata = new SMSMetadata();
-            metadata.lastSyncDate = response.system().date();
+            // TODO Server date has not timezone. We cannot use server date because it will be consider as local and
+            //  potentially could be move some hours back or forth.
+            //metadata.lastSyncDate = response.system().date();
+            metadata.lastSyncDate = new Date();
             metadata.categoryOptionCombos = mapIds(response.categoryOptionCombos());
             metadata.dataElements = mapIds(response.dataElements());
             metadata.organisationUnits = mapIds(response.organisationUnits());

@@ -26,27 +26,45 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.event.internal;
+package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore;
-import org.hisp.dhis.android.core.event.Event;
+public enum SMSVersion {
+    V1(1),
+    V2(2);
 
-import java.util.List;
-import java.util.Map;
+    private final static SMSVersion latestVersion = SMSVersion.V2;
 
-public interface EventStore extends IdentifiableDeletableDataObjectStore<Event> {
+    private Integer intValue;
 
-    Map<String, List<Event>> queryEventsAttachedToEnrollmentToPost();
+    SMSVersion(Integer intValue) {
+        this.intValue = intValue;
+    }
 
-    List<Event> querySingleEventsToPost();
+    public Integer getIntValue() {
+        return intValue;
+    }
 
-    List<Event> querySingleEvents();
+    public static SMSVersion getValue(String versionStr) {
+        DHISPatchVersion patchVersion = DHISPatchVersion.getValue(versionStr);
+        if (patchVersion == null) {
+            DHISVersion dhisVersion = DHISVersion.getValue(versionStr);
+            return getLatestInDHISVersion(dhisVersion);
+        } else {
+            return patchVersion.getSmsVersion();
+        }
+    }
 
-    List<Event> queryOrderedForEnrollmentAndProgramStage(String enrollmentUid,
-                                                         String programStageUid,
-                                                         Boolean includeDeleted);
+    private static SMSVersion getLatestInDHISVersion(DHISVersion dhisVersion) {
+        SMSVersion latest = null;
+        for (DHISPatchVersion patchVersion : DHISPatchVersion.values()) {
+            if (patchVersion.getMajorVersion().equals(dhisVersion) && patchVersion.getSmsVersion() != null) {
+                SMSVersion smsVersion = patchVersion.getSmsVersion();
 
-    Integer countEventsForEnrollment(String enrollmentUid, Boolean includeDeleted);
-
-    int countTeisWhereEvents(String whereClause);
+                if (latest == null || latest.intValue <  smsVersion.intValue) {
+                    latest = smsVersion;
+                }
+            }
+        }
+        return latest;
+    }
 }

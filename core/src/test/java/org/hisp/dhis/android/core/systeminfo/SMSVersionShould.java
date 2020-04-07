@@ -26,27 +26,35 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.event.internal;
+package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore;
-import org.hisp.dhis.android.core.event.Event;
+import org.junit.Test;
 
-import java.util.List;
-import java.util.Map;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public interface EventStore extends IdentifiableDeletableDataObjectStore<Event> {
+public class SMSVersionShould {
 
-    Map<String, List<Event>> queryEventsAttachedToEnrollmentToPost();
+    @Test
+    public void return_sms_version_if_patch_version_exists() {
+        SMSVersion smsVersion = SMSVersion.getValue("2.33.2");
+        assertThat(smsVersion).isEqualByComparingTo(SMSVersion.V1);
+    }
 
-    List<Event> querySingleEventsToPost();
+    @Test
+    public void return_latest_sms_version_if_patch_does_not_exist() {
+        SMSVersion smsVersion = SMSVersion.getValue("2.33.100");
+        assertThat(smsVersion).isEqualByComparingTo(SMSVersion.V2);
+    }
 
-    List<Event> querySingleEvents();
+    @Test
+    public void return_null_if_patch_version_has_no_support() {
+        SMSVersion smsVersion = SMSVersion.getValue("2.32.1");
+        assertThat(smsVersion).isNull();
+    }
 
-    List<Event> queryOrderedForEnrollmentAndProgramStage(String enrollmentUid,
-                                                         String programStageUid,
-                                                         Boolean includeDeleted);
-
-    Integer countEventsForEnrollment(String enrollmentUid, Boolean includeDeleted);
-
-    int countTeisWhereEvents(String whereClause);
+    @Test
+    public void return_null_if_patch_does_not_exist() {
+        SMSVersion smsVersion = SMSVersion.getValue("2.32.100");
+        assertThat(smsVersion).isNull();
+    }
 }

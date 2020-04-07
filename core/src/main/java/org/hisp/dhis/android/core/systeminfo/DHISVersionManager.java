@@ -30,6 +30,10 @@ package org.hisp.dhis.android.core.systeminfo;
 public interface DHISVersionManager {
     DHISVersion getVersion();
 
+    DHISPatchVersion getPatchVersion();
+
+    SMSVersion getSmsVersion();
+
     boolean is2_29();
 
     boolean is2_30();
@@ -39,4 +43,12 @@ public interface DHISVersionManager {
     boolean is2_32();
 
     boolean is2_33();
+
+    /**
+     * Check if the current version is strictly greater than the parameter.
+     *
+     * @param version Version to compare to
+     * @return True if current version is strictly greater than the parameter.
+     */
+    boolean isGreaterThan(DHISVersion version);
 }

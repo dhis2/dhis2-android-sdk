@@ -264,7 +264,7 @@ public class ProgramIndicatorEngine {
                     } else if (ENROLLMENT_STATUS.equals(uid)) {
                         value =  cachedEnrollment.status() == null ? null : cachedEnrollment.status().name();
                     } else if (EVENT_COUNT.equals(uid)) {
-                        value = formatCount(eventStore.countEventsForEnrollment(enrollment));
+                        value = formatCount(eventStore.countEventsForEnrollment(enrollment, false));
                     }
                 }
 
@@ -324,7 +324,7 @@ public class ProgramIndicatorEngine {
         if (enrollmentUid == null) {
             events = Collections.singletonList(eventStore.selectByUid(eventUid));
         } else {
-            events = eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid);
+            events = eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid, false);
         }
 
         List<Event> eventsWithValues = new ArrayList<>();

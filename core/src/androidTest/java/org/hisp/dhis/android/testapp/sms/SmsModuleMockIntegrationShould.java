@@ -26,27 +26,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.event.internal;
+package org.hisp.dhis.android.testapp.sms;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore;
-import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.sms.domain.interactor.ConfigCase;
+import org.hisp.dhis.android.core.sms.domain.interactor.QrCodeCase;
+import org.hisp.dhis.android.core.sms.domain.interactor.SmsSubmitCase;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTest;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import java.util.List;
-import java.util.Map;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsNull.notNullValue;
 
-public interface EventStore extends IdentifiableDeletableDataObjectStore<Event> {
+@RunWith(D2JunitRunner.class)
+public class SmsModuleMockIntegrationShould extends BaseMockIntegrationTest {
 
-    Map<String, List<Event>> queryEventsAttachedToEnrollmentToPost();
+    @Test
+    public void access_submit_case() {
+        SmsSubmitCase submitCase = d2.smsModule().smsSubmitCase();
+        assertThat(submitCase, notNullValue());
+    }
 
-    List<Event> querySingleEventsToPost();
+    @Test
+    public void access_qr_case() {
+        QrCodeCase qrCodeCase = d2.smsModule().qrCodeCase();
+        assertThat(qrCodeCase, notNullValue());
+    }
 
-    List<Event> querySingleEvents();
-
-    List<Event> queryOrderedForEnrollmentAndProgramStage(String enrollmentUid,
-                                                         String programStageUid,
-                                                         Boolean includeDeleted);
-
-    Integer countEventsForEnrollment(String enrollmentUid, Boolean includeDeleted);
-
-    int countTeisWhereEvents(String whereClause);
+    @Test
+    public void access_config_case() {
+        ConfigCase configCase = d2.smsModule().configCase();
+        assertThat(configCase, notNullValue());
+    }
 }

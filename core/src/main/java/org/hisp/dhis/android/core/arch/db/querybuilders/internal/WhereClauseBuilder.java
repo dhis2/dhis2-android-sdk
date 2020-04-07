@@ -38,6 +38,7 @@ public class WhereClauseBuilder {
     private static final String GREATER_OR_EQ_STR = " >= '";
     private static final String LESS_THAN_OR_EQ_STR = " <= '";
     private static final String EQ_STR = " = '";
+    private static final String NOT_EQ_STR = " != '";
     private static final String LIKE_STR = " LIKE '";
     private static final String END_STR = "'";
     private static final String PARENTHESES_START = "(";
@@ -61,6 +62,10 @@ public class WhereClauseBuilder {
 
     public WhereClauseBuilder appendKeyStringValue(String column, Object value) {
         return appendKeyValue(column, value, AND, EQ_STR, END_STR);
+    }
+
+    public WhereClauseBuilder appendNotKeyStringValue(String column, Object value) {
+        return appendKeyValue(column, value, AND, NOT_EQ_STR, END_STR);
     }
 
     public WhereClauseBuilder appendKeyGreaterOrEqStringValue(String column, Object value) {
@@ -125,6 +130,15 @@ public class WhereClauseBuilder {
 
     public WhereClauseBuilder appendIsNotNullValue(String column) {
         return appendKeyValue(column, "", AND, IS_NOT_NULL, "");
+    }
+
+    public WhereClauseBuilder appendIsNullOrValue(String column, String value) {
+        String innerClause = new WhereClauseBuilder()
+                .appendIsNullValue(column)
+                .appendOrKeyStringValue(column, value)
+                .build();
+
+        return appendComplexQuery(innerClause);
     }
 
     private WhereClauseBuilder appendKeyValue(String column, Object value, String logicGate, String eq, String end) {

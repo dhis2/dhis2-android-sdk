@@ -50,6 +50,7 @@ import dagger.Reusable;
 
 import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree.findRoots;
 import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree.findRootsOutsideSearchScope;
+import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree.getCaptureOrgUnitsInSearchScope;
 
 @Reusable
 class OrganisationUnitCallFactory {
@@ -97,6 +98,9 @@ class OrganisationUnitCallFactory {
         Set<OrganisationUnit> allRootCaptureOrgUnits = findRoots(UserInternalAccessor.accessOrganisationUnits(user));
         Set<OrganisationUnit> rootCaptureOrgUnitsOutsideSearchScope =
                 findRootsOutsideSearchScope(allRootCaptureOrgUnits, rootSearchOrgUnits);
+        linkCaptureOrgUnitsInSearchScope(getCaptureOrgUnitsInSearchScope(orgUnits, allRootCaptureOrgUnits,
+                rootCaptureOrgUnitsOutsideSearchScope), user);
+
         orgUnits.addAll(downloadOrgUnits(UidsHelper.getUids(rootCaptureOrgUnitsOutsideSearchScope),
                 user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE));
 
@@ -128,6 +132,11 @@ class OrganisationUnitCallFactory {
         }
 
         return organisationUnitList;
+    }
+
+    private void linkCaptureOrgUnitsInSearchScope(final Set<OrganisationUnit> orgUnits, final User user) {
+        handler.setData(user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
+        handler.addUserOrganisationUnitLinks(orgUnits);
     }
 
     private retrofit2.Call<Payload<OrganisationUnit>> getOrganisationUnitAndDescendants(OrganisationUnitQuery query) {

@@ -48,6 +48,7 @@ import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkHelper;
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStoreImpl;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -152,6 +153,13 @@ class OrganisationUnitHandlerImpl extends IdentifiableHandlerImpl<OrganisationUn
                         .root(UserOrganisationUnitLinkHelper.isRoot(scope, user, orgUnit))
                         .build()
         );
+    }
+
+    @Override
+    public void addUserOrganisationUnitLinks(@NonNull Collection<OrganisationUnit> organisationUnits) {
+        for (OrganisationUnit organisationUnit : organisationUnits) {
+            addOrganisationUnitDataSetLink(organisationUnit);
+        }
     }
 
     public static OrganisationUnitHandler create(DatabaseAdapter databaseAdapter) {

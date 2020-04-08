@@ -80,12 +80,34 @@ public final class OrganisationUnitTree {
         }
 
         for (OrganisationUnit rootCaptureOrgUnit : allRootCaptureOrgUnits) {
-            if (!inSearchScope(rootCaptureOrgUnit, rootSearchOrgUnits)) {
+            if (!inScope(rootCaptureOrgUnit, rootSearchOrgUnits)) {
                 outsideSearchScopeRootCaptureNodes.add(rootCaptureOrgUnit);
             }
         }
 
         return outsideSearchScopeRootCaptureNodes;
+    }
+
+    public static Set<OrganisationUnit> getCaptureOrgUnitsInSearchScope(
+            List<OrganisationUnit> allSearchOrgUnits,
+            Set<OrganisationUnit> allRootCaptureOrgUnits,
+            Set<OrganisationUnit> rootCaptureOrgUnitsOutsideSearchScope) throws IllegalArgumentException {
+
+        Set<OrganisationUnit> captureOrgUnitsInSearchScope = new HashSet<>();
+        Set<OrganisationUnit> rootCaptureOrgUnitsInSearchScope = new HashSet<>();
+        for (OrganisationUnit rootCaptureOrgUnit : allRootCaptureOrgUnits) {
+            if (uidInOrgUnitCollection(rootCaptureOrgUnit.uid(), rootCaptureOrgUnitsOutsideSearchScope) == null) {
+                rootCaptureOrgUnitsInSearchScope.add(rootCaptureOrgUnit);
+            }
+        }
+
+        for (OrganisationUnit searchOrgUnit : allSearchOrgUnits) {
+            if (inScope(searchOrgUnit, rootCaptureOrgUnitsInSearchScope)) {
+                captureOrgUnitsInSearchScope.add(searchOrgUnit);
+            }
+        }
+
+        return captureOrgUnitsInSearchScope;
     }
 
     private static void getRootFromPath(Set<OrganisationUnit> rootNodes,
@@ -105,14 +127,13 @@ public final class OrganisationUnitTree {
         }
     }
 
-    private static boolean inSearchScope(OrganisationUnit orgUnit,
-                                         Collection<OrganisationUnit> rootSearchOrgUnits) {
+    private static boolean inScope(OrganisationUnit orgUnit, Collection<OrganisationUnit> rootOrgUnits) {
         String path = orgUnit.path();
         List<String> pathUids = Arrays.asList(path.split(DELIMITER));
         if (path.isEmpty()) {
             throw new IllegalArgumentException("OrganisationUnit's path should not be empty!");
         } else {
-            for (OrganisationUnit rootSearchOrgUnit : rootSearchOrgUnits) {
+            for (OrganisationUnit rootSearchOrgUnit : rootOrgUnits) {
                 if (pathUids.contains(rootSearchOrgUnit.uid())) {
                     return true;
                 }

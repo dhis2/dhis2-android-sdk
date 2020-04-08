@@ -158,7 +158,7 @@ class OrganisationUnitHandlerImpl extends IdentifiableHandlerImpl<OrganisationUn
     @Override
     public void addUserOrganisationUnitLinks(@NonNull Collection<OrganisationUnit> organisationUnits) {
         for (OrganisationUnit organisationUnit : organisationUnits) {
-            addOrganisationUnitDataSetLink(organisationUnit);
+            addUserOrganisationUnitLink(organisationUnit);
         }
     }
 

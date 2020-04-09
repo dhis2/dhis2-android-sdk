@@ -50,6 +50,7 @@ import java.util.concurrent.Callable;
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Single;
 
 @Reusable
 public final class EventPersistenceCallFactory {
@@ -88,10 +89,10 @@ public final class EventPersistenceCallFactory {
             if (!searchOrgUnitUids.isEmpty()) {
                 AuthenticatedUser authenticatedUser = authenticatedUserStore.selectFirst();
 
-                Callable<List<OrganisationUnit>> organisationUnitCall =
+                Single<List<OrganisationUnit>> organisationUnitCall =
                         organisationUnitDownloader.downloadSearchOrganisationUnits(
                             searchOrgUnitUids, User.builder().uid(authenticatedUser.user()).build());
-                organisationUnitCall.call();
+                organisationUnitCall.blockingGet();
             }
 
             foreignKeyCleaner.cleanForeignKeyErrors();

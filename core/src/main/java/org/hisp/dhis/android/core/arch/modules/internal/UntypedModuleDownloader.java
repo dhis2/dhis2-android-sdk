@@ -25,42 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings.internal;
 
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader;
+package org.hisp.dhis.android.core.arch.modules.internal;
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
 import io.reactivex.Completable;
 
-@Reusable
-public class SettingModuleDownloader implements UntypedModuleDownloader {
-
-    private final SystemSettingCall systemSettingCall;
-
-    private final GeneralSettingCall generalSettingCall;
-    private final DataSetSettingCall dataSetSettingCall;
-    private final ProgramSettingCall programSettingCall;
-
-    @Inject
-    SettingModuleDownloader(SystemSettingCall systemSettingCall,
-                            GeneralSettingCall generalSettingCall,
-                            DataSetSettingCall dataSetSettingCall,
-                            ProgramSettingCall programSettingCall) {
-        this.systemSettingCall = systemSettingCall;
-        this.generalSettingCall = generalSettingCall;
-        this.dataSetSettingCall = dataSetSettingCall;
-        this.programSettingCall = programSettingCall;
-    }
-
-    @Override
-    public Completable downloadMetadata() {
-        return Completable.fromAction(() -> {
-            generalSettingCall.getCompletable(false).blockingAwait();
-            dataSetSettingCall.getCompletable(false).blockingAwait();
-            programSettingCall.getCompletable(false).blockingAwait();
-            systemSettingCall.call();
-        });
-    }
+public interface UntypedModuleDownloader {
+   Completable downloadMetadata();
 }

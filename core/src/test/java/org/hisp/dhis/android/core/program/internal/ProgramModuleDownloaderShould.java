@@ -53,6 +53,7 @@ import java.util.concurrent.Callable;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import io.reactivex.Single;
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
@@ -132,7 +133,7 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     private DHISVersionManager versionManager;
 
     // object to test
-    private Callable<List<Program>> programDownloadCall;
+    private Single<List<Program>> programDownloadCall;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -191,13 +192,13 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     }
 
     @Test
-    public void succeed_when_endpoint_calls_succeed() throws Exception {
-        programDownloadCall.call();
+    public void succeed_when_endpoint_calls_succeed() {
+        programDownloadCall.blockingGet();
     }
 
     @Test
-    public void return_programs() throws Exception {
-        List<Program> programs = programDownloadCall.call();
+    public void return_programs() {
+        List<Program> programs = programDownloadCall.blockingGet();
         assertTrue(!programs.isEmpty());
         assertThat(programs.get(0)).isEqualTo(program);
     }
@@ -205,36 +206,36 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     @Test(expected = Exception.class)
     public void fail_when_program_call_fail() throws Exception {
         whenEndpointCallFails(programEndpointCall);
-        programDownloadCall.call();
+        programDownloadCall.blockingGet();
     }
 
     @Test(expected = Exception.class)
     public void fail_when_program_stage_call_fail() throws Exception {
         whenEndpointCallFails(programStageEndpointCall);
-        programDownloadCall.call();
+        programDownloadCall.blockingGet();
     }
 
     @Test(expected = Exception.class)
     public void fail_when_program_rule_call_fail() throws Exception {
         whenEndpointCallFails(programRuleEndpointCall);
-        programDownloadCall.call();
+        programDownloadCall.blockingGet();
     }
 
     @Test(expected = Exception.class)
     public void fail_when_tracked_entity_types_call_fail() throws Exception {
         whenEndpointCallFails(trackedEntityTypeCall);
-        programDownloadCall.call();
+        programDownloadCall.blockingGet();
     }
 
     @Test(expected = Exception.class)
     public void fail_when_tracked_entity_attributes_call_fail() throws Exception {
         whenEndpointCallFails(trackedEntityAttributeCall);
-        programDownloadCall.call();
+        programDownloadCall.blockingGet();
     }
 
     @Test(expected = Exception.class)
     public void fail_when_relationship_type_call_fail() throws Exception {
         whenEndpointCallFails(relationshipTypeCall);
-        programDownloadCall.call();
+        programDownloadCall.blockingGet();
     }
 }

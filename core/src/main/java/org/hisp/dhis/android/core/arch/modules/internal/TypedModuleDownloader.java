@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.arch.modules.internal;
 
-import io.reactivex.Completable;
+import io.reactivex.Single;
 
-public interface RxMetadataModuleDownloader {
-   Completable downloadMetadata();
+public interface TypedModuleDownloader<O> {
+   Single<O> downloadMetadata();
 }

@@ -29,8 +29,9 @@
 package org.hisp.dhis.android.core.arch.modules.internal;
 
 import java.util.Set;
-import java.util.concurrent.Callable;
+
+import io.reactivex.Single;
 
 public interface MetadataModuleByUidDownloader<O> {
-   Callable<O> downloadMetadata(Set<String> uids);
+   Single<O> downloadMetadata(Set<String> uids);
 }

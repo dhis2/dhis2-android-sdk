@@ -28,19 +28,22 @@
 
 package org.hisp.dhis.android.core.datavalue.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 import io.reactivex.Observable;
 
@@ -51,17 +54,20 @@ public final class DataValuePostCall {
     private final DataValueImportHandler dataValueImportHandler;
     private final APICallExecutor apiCallExecutor;
     private final SystemInfoModuleDownloader systemInfoDownloader;
+    private final DataValueStore dataValueStore;
 
     @Inject
     DataValuePostCall(@NonNull DataValueService dataValueService,
                       @NonNull DataValueImportHandler dataValueImportHandler,
                       @NonNull APICallExecutor apiCallExecutor,
-                      @NonNull SystemInfoModuleDownloader systemInfoDownloader) {
+                      @NonNull SystemInfoModuleDownloader systemInfoDownloader,
+                      @NonNull DataValueStore dataValueStore) {
 
         this.dataValueService = dataValueService;
         this.dataValueImportHandler = dataValueImportHandler;
         this.apiCallExecutor = apiCallExecutor;
         this.systemInfoDownloader = systemInfoDownloader;
+        this.dataValueStore = dataValueStore;
     }
 
     public Observable<D2Progress> uploadDataValues(List<DataValue> dataValues) {
@@ -73,6 +79,8 @@ public final class DataValuePostCall {
 
                 return systemInfoDownloader.downloadMetadata().andThen(Observable.create(emitter -> {
                     emitter.onNext(progressManager.increaseProgress(SystemInfo.class, false));
+
+                    markPartitionsAsUploading(dataValues);
 
                     DataValueSet dataValueSet = new DataValueSet(dataValues);
 
@@ -86,5 +94,11 @@ public final class DataValuePostCall {
                 }));
             }
         });
+    }
+
+    private void markPartitionsAsUploading(Collection<DataValue> dataValues) {
+        for (DataValue dataValue : dataValues) {
+            dataValueStore.setState(dataValue, State.UPLOADING);
+        }
     }
 }

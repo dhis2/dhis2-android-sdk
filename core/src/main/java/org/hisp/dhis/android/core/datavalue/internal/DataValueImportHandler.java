@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.datavalue.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.imports.ImportStatus;
@@ -35,7 +37,6 @@ import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 
 @Reusable
@@ -59,7 +60,9 @@ final class DataValueImportHandler {
                 (dataValueImportSummary.importStatus() == ImportStatus.ERROR) ? State.ERROR : State.SYNCED;
 
         for (DataValue dataValue : dataValueSet.dataValues) {
-            dataValueStore.setState(dataValue, newState);
+            if (dataValueStore.isDataValueBeingUpload(dataValue)) {
+                dataValueStore.setState(dataValue, newState);
+            }
         }
     }
 }

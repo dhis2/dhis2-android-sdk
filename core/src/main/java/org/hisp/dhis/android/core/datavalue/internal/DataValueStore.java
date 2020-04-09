@@ -110,13 +110,22 @@ public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
     }
 
     public boolean exists(DataValue dataValue) {
-        String whereClause = new WhereClauseBuilder()
+        return selectWhere(uniqueWhereClauseBuilder(dataValue).build()).size() > 0;
+    }
+
+    boolean isDataValueBeingUpload(DataValue dataValue) {
+        String whereClause = uniqueWhereClauseBuilder(dataValue)
+                .appendKeyStringValue(Columns.STATE, State.UPLOADING)
+                .build();
+        return selectWhere(whereClause).size() > 0;
+    }
+
+    private WhereClauseBuilder uniqueWhereClauseBuilder(DataValue dataValue) {
+        return new WhereClauseBuilder()
                 .appendKeyStringValue(Columns.DATA_ELEMENT, dataValue.dataElement())
                 .appendKeyStringValue(Columns.PERIOD, dataValue.period())
                 .appendKeyStringValue(Columns.ORGANISATION_UNIT, dataValue.organisationUnit())
                 .appendKeyStringValue(Columns.CATEGORY_OPTION_COMBO, dataValue.categoryOptionCombo())
-                .appendKeyStringValue(Columns.ATTRIBUTE_OPTION_COMBO, dataValue.attributeOptionCombo())
-                .build();
-        return selectWhere(whereClause).size() > 0;
+                .appendKeyStringValue(Columns.ATTRIBUTE_OPTION_COMBO, dataValue.attributeOptionCombo());
     }
 }

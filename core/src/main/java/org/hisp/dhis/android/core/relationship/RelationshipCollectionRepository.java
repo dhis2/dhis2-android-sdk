@@ -31,6 +31,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreWithState;
+import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUidCollectionRepository;
@@ -105,12 +106,19 @@ public final class RelationshipCollectionRepository
                     .errorDescription("Tried to create already existing Relationship: " + relationship)
                     .build();
         } else {
+            if (relationship.uid() == null) {
+                String generatedUid = new UidGeneratorImpl().generate();
+                relationship = relationship.toBuilder().uid(generatedUid).build();
+            }
             RelationshipItem from = relationship.from();
             StoreWithState fromStore = storeSelector.getElementStore(from);
             State fromState = fromStore.getState(from.elementUid());
 
             if (isUpdatableState(fromState)) {
-                relationshipHandler.handle(relationship);
+                relationshipHandler.handle(relationship, r -> r.toBuilder()
+                        .state(State.TO_POST)
+                        .deleted(false)
+                        .build());
                 setToUpdate(fromStore, fromState, from.elementUid());
             } else {
                 throw D2Error

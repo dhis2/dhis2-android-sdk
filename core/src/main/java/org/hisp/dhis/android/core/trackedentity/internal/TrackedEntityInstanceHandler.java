@@ -97,32 +97,35 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
                         overwrite);
             }
 
-            handleRelationships(trackedEntityInstance);
-        }
-    }
-
-    private void handleRelationships(TrackedEntityInstance trackedEntityInstance) {
-        List<Relationship229Compatible> relationships =
-                TrackedEntityInstanceInternalAccessor.accessRelationships(trackedEntityInstance);
-        if (relationships != null) {
-            for (Relationship229Compatible relationship229 : relationships) {
-                TrackedEntityInstance relativeTEI =
-                        relationshipVersionManager.getRelativeTei(relationship229, trackedEntityInstance.uid());
-
-                if (relativeTEI != null) {
-                    handleRelationship(relativeTEI, relationship229);
-                }
+            List<Relationship229Compatible> relationships =
+                    TrackedEntityInstanceInternalAccessor.accessRelationships(trackedEntityInstance);
+            if (relationships != null) {
+                handleRelationships(trackedEntityInstance.uid(), relationships);
             }
         }
     }
 
-    private void handleRelationship(TrackedEntityInstance relativeTEI, Relationship229Compatible relationship229) {
-        if (!trackedEntityInstanceStore.exists(relativeTEI.uid())) {
-            handle(relativeTEI, relationshipTransformer(), false);
-        }
+    private void handleRelationships(String trackedEntityInstanceUid,
+                                     List<Relationship229Compatible> relationships) {
+        createRelativesIfNotExist(trackedEntityInstanceUid, relationships);
 
-        Relationship relationship = relationshipVersionManager.from229Compatible(relationship229);
-        relationshipHandler.handle(relationship);
+        List<Relationship> relationshipsList = relationshipVersionManager.from229Compatible(relationships);
+        relationshipHandler.handleMany(relationshipsList, relationship -> relationship.toBuilder()
+                .state(State.SYNCED)
+                .deleted(false)
+                .build());
+    }
+
+    private void createRelativesIfNotExist(String trackedEntityInstanceUid,
+                                           List<Relationship229Compatible> relationships) {
+        for (Relationship229Compatible relationship229 : relationships) {
+            TrackedEntityInstance relativeTEI =
+                    relationshipVersionManager.getRelativeTei(relationship229, trackedEntityInstanceUid);
+
+            if (!trackedEntityInstanceStore.exists(relativeTEI.uid())) {
+                handle(relativeTEI, relationshipTransformer(), false);
+            }
+        }
     }
 
     public void handleMany(final Collection<TrackedEntityInstance> trackedEntityInstances, boolean asRelationship,

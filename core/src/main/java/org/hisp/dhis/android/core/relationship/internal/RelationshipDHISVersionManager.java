@@ -113,6 +113,14 @@ public class RelationshipDHISVersionManager {
         }
     }
 
+    public List<Relationship> from229Compatible(List<Relationship229Compatible> list) {
+        List<Relationship> result = new ArrayList<>(list.size());
+        for (Relationship229Compatible r : list) {
+            result.add(from229Compatible(r));
+        }
+        return result;
+    }
+
     public TrackedEntityInstance getRelativeTei(Relationship229Compatible relationship229Compatible, String teiUid) {
         if (versionManager.is2_29()) {
             return relationship229Compatible.relative();

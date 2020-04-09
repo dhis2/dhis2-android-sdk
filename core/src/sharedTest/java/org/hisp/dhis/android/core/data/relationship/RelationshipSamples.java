@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.data.relationship;
 
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.internal.Relationship229Compatible;
 import org.hisp.dhis.android.core.relationship.RelationshipHelper;
@@ -58,13 +59,17 @@ public class RelationshipSamples {
             .builder()
             .created(CREATED)
             .lastUpdated(LAST_UPDATED)
-            .name(NAME);
+            .name(NAME)
+            .state(State.SYNCED)
+            .deleted(false);
 
     private static Relationship.Builder commonBuilder = Relationship
             .builder()
             .created(CREATED)
             .lastUpdated(LAST_UPDATED)
-            .name(NAME);
+            .name(NAME)
+            .state(State.SYNCED)
+            .deleted(false);
 
     public Relationship229Compatible get229Compatible() {
         return commonCompatibleBuilder

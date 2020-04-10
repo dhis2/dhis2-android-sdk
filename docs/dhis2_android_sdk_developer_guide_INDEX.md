@@ -7,7 +7,7 @@ month: March
 keywords: [DHIS2, Android]
 commit:
 version: master
-applicable_txt: 'Applicable to version 1.0.2'
+applicable_txt: 'Applicable to version 1.0.3'
 ---
 <!--DHIS2-SECTION-ID:index-->
 

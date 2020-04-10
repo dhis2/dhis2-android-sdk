@@ -73,7 +73,7 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
 
     private void compileStatements() {
         resetStatementsIfDbChanged();
-        if (selectStateQuery == null) {
+        if (setStateStatement == null) {
             String whereUid = " WHERE " + UID + " =?";
 
             String setState = "UPDATE " + tableName + " SET " +

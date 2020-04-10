@@ -25,32 +25,46 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.systeminfo;
 
-public interface DHISVersionManager {
-    DHISVersion getVersion();
+public enum SMSVersion {
+    V1(1),
+    V2(2);
 
-    DHISPatchVersion getPatchVersion();
+    private final static SMSVersion latestVersion = SMSVersion.V2;
 
-    SMSVersion getSmsVersion();
+    private Integer intValue;
 
-    boolean is2_29();
+    SMSVersion(Integer intValue) {
+        this.intValue = intValue;
+    }
 
-    boolean is2_30();
+    public Integer getIntValue() {
+        return intValue;
+    }
 
-    boolean is2_31();
+    public static SMSVersion getValue(String versionStr) {
+        DHISPatchVersion patchVersion = DHISPatchVersion.getValue(versionStr);
+        if (patchVersion == null) {
+            DHISVersion dhisVersion = DHISVersion.getValue(versionStr);
+            return getLatestInDHISVersion(dhisVersion);
+        } else {
+            return patchVersion.getSmsVersion();
+        }
+    }
 
-    boolean is2_32();
+    private static SMSVersion getLatestInDHISVersion(DHISVersion dhisVersion) {
+        SMSVersion latest = null;
+        for (DHISPatchVersion patchVersion : DHISPatchVersion.values()) {
+            if (patchVersion.getMajorVersion().equals(dhisVersion) && patchVersion.getSmsVersion() != null) {
+                SMSVersion smsVersion = patchVersion.getSmsVersion();
 
-    boolean is2_33();
-
-    boolean is2_34();
-
-    /**
-     * Check if the current version is strictly greater than the parameter.
-     *
-     * @param version Version to compare to
-     * @return True if current version is strictly greater than the parameter.
-     */
-    boolean isGreaterThan(DHISVersion version);
+                if (latest == null || latest.intValue <  smsVersion.intValue) {
+                    latest = smsVersion;
+                }
+            }
+        }
+        return latest;
+    }
 }

@@ -10,7 +10,7 @@ Include dependency in build.gradle.
 
 ```gradle
 dependencies {
-    implementation "org.hisp.dhis:android-core:1.0.2"
+    implementation "org.hisp.dhis:android-core:1.0.3"
     ...
 }
 ```

@@ -28,31 +28,24 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import android.util.Log;
-
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreWithState;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
-import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyOneObjectRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadWriteWithUidDataObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
-import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemElementStoreSelector;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore;
 
+import java.util.Collections;
 import java.util.Map;
 
-import io.reactivex.Completable;
-
 final class RelationshipObjectRepository
-        extends ReadOnlyOneObjectRepositoryImpl<Relationship, RelationshipObjectRepository>
+        extends ReadWriteWithUidDataObjectRepositoryImpl<Relationship, RelationshipObjectRepository>
         implements ReadWriteObjectRepository<Relationship> {
 
-    private final RelationshipStore relationshipStore;
     private final RelationshipItemElementStoreSelector storeSelector;
-    private final String uid;
 
     RelationshipObjectRepository(final RelationshipStore store,
                                  final String uid,
@@ -61,46 +54,19 @@ final class RelationshipObjectRepository
                                  final RelationshipItemElementStoreSelector storeSelector) {
         super(store, childrenAppenders, scope,
                 s -> new RelationshipObjectRepository(store, uid, childrenAppenders, s, storeSelector));
-        this.relationshipStore = store;
         this.storeSelector = storeSelector;
-        this.uid = uid;
     }
 
     @Override
-    public Completable delete() {
-        return Completable.fromAction(this::blockingDelete);
-    }
-
-    @Override
-    public void blockingDelete() throws D2Error {
-        Relationship relationship = blockingGet();
-        if (relationship == null) {
-            throw D2Error
-                    .builder()
-                    .errorComponent(D2ErrorComponent.SDK)
-                    .errorCode(D2ErrorCode.CANT_DELETE_NON_EXISTING_OBJECT)
-                    .errorDescription("Tried to delete non existing relationship")
-                    .build();
-        } else {
-            RelationshipItem fromItem = relationship.from();
-            StoreWithState elementStore = storeSelector.getElementStore(fromItem);
-            relationshipStore.delete(uid);
-            elementStore.setState(fromItem.elementUid(), State.TO_UPDATE);
+    protected void propagateState(Relationship relationship) {
+        RelationshipItem fromItem = relationship.from();
+        if (fromItem == null) {
+            Relationship withChildren = ChildrenAppenderExecutor.appendInObject(relationship, childrenAppenders,
+                    new ChildrenSelection(Collections.singleton(
+                            RelationshipFields.ITEMS)));
+            fromItem = withChildren.from();
         }
-    }
-
-    @Override
-    public Completable deleteIfExist() {
-        return Completable.fromAction(this::blockingDeleteIfExist);
-    }
-
-    @Override
-    public void blockingDeleteIfExist() {
-        try {
-            blockingDelete();
-        } catch (D2Error d2Error) {
-            Log.v(RelationshipObjectRepository.class.getCanonicalName(), d2Error.errorDescription());
-
-        }
+        StoreWithState elementStore = storeSelector.getElementStore(fromItem);
+        elementStore.setStateForUpdate(fromItem.elementUid());
     }
 }

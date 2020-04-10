@@ -97,6 +97,7 @@ public class DataValueImportHandlerShould {
         dataValueSet.dataValues = dataValueCollection;
 
         when(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.SUCCESS);
+        when(dataValueStore.isDataValueBeingUpload(any(DataValue.class))).thenReturn(Boolean.TRUE);
 
         dataValueImportHandler.handleImportSummary(dataValueSet, dataValueImportSummary);
 
@@ -112,10 +113,10 @@ public class DataValueImportHandlerShould {
         dataValueSet.dataValues = dataValueCollection;
 
         when(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.ERROR);
+        when(dataValueStore.isDataValueBeingUpload(any(DataValue.class))).thenReturn(Boolean.TRUE);
 
         dataValueImportHandler.handleImportSummary(dataValueSet, dataValueImportSummary);
 
         verify(dataValueStore, times(1)).setState(dataValue, State.ERROR);
     }
-
 }

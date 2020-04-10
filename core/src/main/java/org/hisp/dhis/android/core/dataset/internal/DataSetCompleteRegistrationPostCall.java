@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 import org.hisp.dhis.android.core.category.CategoryOptionComboCollectionRepository;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -43,6 +44,7 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -61,6 +63,7 @@ public final class DataSetCompleteRegistrationPostCall {
     private final APICallExecutor apiCallExecutor;
     private final SystemInfoModuleDownloader systemInfoDownloader;
     private final CategoryOptionComboCollectionRepository categoryOptionComboCollectionRepository;
+    private final DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore;
 
     @Inject
     DataSetCompleteRegistrationPostCall(
@@ -68,13 +71,15 @@ public final class DataSetCompleteRegistrationPostCall {
             @NonNull DataSetCompleteRegistrationImportHandler dataSetCompleteRegistrationImportHandler,
             @NonNull APICallExecutor apiCallExecutor,
             @NonNull SystemInfoModuleDownloader systemInfoDownloader,
-            @NonNull CategoryOptionComboCollectionRepository categoryOptionCollectionRepository) {
+            @NonNull CategoryOptionComboCollectionRepository categoryOptionCollectionRepository,
+            @NonNull DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore) {
 
         this.dataSetCompleteRegistrationService = dataSetCompleteRegistrationService;
         this.dataSetCompleteRegistrationImportHandler = dataSetCompleteRegistrationImportHandler;
         this.apiCallExecutor = apiCallExecutor;
         this.systemInfoDownloader = systemInfoDownloader;
         this.categoryOptionComboCollectionRepository = categoryOptionCollectionRepository;
+        this.dataSetCompleteRegistrationStore = dataSetCompleteRegistrationStore;
     }
 
     public Observable<D2Progress> uploadDataSetCompleteRegistrations(
@@ -115,6 +120,7 @@ public final class DataSetCompleteRegistrationPostCall {
         DataSetCompleteRegistrationPayload dataSetCompleteRegistrationPayload
                 = new DataSetCompleteRegistrationPayload(toPostDataSetCompleteRegistrations);
         if (!toPostDataSetCompleteRegistrations.isEmpty()) {
+            markPartitionsAsUploading(toPostDataSetCompleteRegistrations);
             dataValueImportSummary = apiCallExecutor.executeObjectCall(
                     dataSetCompleteRegistrationService.postDataSetCompleteRegistrations(
                             dataSetCompleteRegistrationPayload));
@@ -130,6 +136,7 @@ public final class DataSetCompleteRegistrationPostCall {
                             .withCategoryOptions()
                             .uid(dataSetCompleteRegistration.attributeOptionCombo())
                             .blockingGet();
+                    markPartitionsAsUploading(toDeleteDataSetCompleteRegistrations);
                     apiCallExecutor.executeObjectCallWithEmptyResponse(
                             dataSetCompleteRegistrationService.deleteDataSetCompleteRegistration(
                                     dataSetCompleteRegistration.dataSet(),
@@ -151,5 +158,11 @@ public final class DataSetCompleteRegistrationPostCall {
 
         emitter.onNext(progressManager.increaseProgress(DataSetCompleteRegistration.class, true));
         emitter.onComplete();
+    }
+
+    private void markPartitionsAsUploading(Collection<DataSetCompleteRegistration> dataSetCompleteRegistrations) {
+        for (DataSetCompleteRegistration dscr : dataSetCompleteRegistrations) {
+            dataSetCompleteRegistrationStore.setState(dscr, State.UPLOADING);
+        }
     }
 }

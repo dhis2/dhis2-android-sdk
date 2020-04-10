@@ -97,6 +97,8 @@ public class DataSetCompleteRegistrationImportHandlerShould {
         dataSetCompleteRegistrationPayload.dataSetCompleteRegistrations = dataSetCompleteRegistrations;
 
         when(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.SUCCESS);
+        when(dataSetCompleteRegistrationStore.isDSCRBeingUpload(any(DataSetCompleteRegistration.class)))
+                .thenReturn(Boolean.TRUE);
 
         dataSetCompleteRegistrationImportHandler.handleImportSummary(dataSetCompleteRegistrationPayload,
                 dataValueImportSummary, new ArrayList<>(), new ArrayList<>());
@@ -113,6 +115,8 @@ public class DataSetCompleteRegistrationImportHandlerShould {
         dataSetCompleteRegistrationPayload.dataSetCompleteRegistrations = dataValueCollection;
 
         when(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.ERROR);
+        when(dataSetCompleteRegistrationStore.isDSCRBeingUpload(any(DataSetCompleteRegistration.class)))
+                .thenReturn(Boolean.TRUE);
 
         dataSetCompleteRegistrationImportHandler.handleImportSummary(
                 dataSetCompleteRegistrationPayload, dataValueImportSummary, new ArrayList<>(), new ArrayList<>());

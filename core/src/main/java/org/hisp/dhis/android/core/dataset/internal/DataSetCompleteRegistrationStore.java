@@ -43,4 +43,6 @@ public interface DataSetCompleteRegistrationStore extends ObjectWithoutUidStore<
     boolean removeNotPresentAndSynced(Collection<String> dataSetUids,
                                       Collection<String> periodIds,
                                       String rootOrgunitUid);
+
+    boolean isDSCRBeingUpload(DataSetCompleteRegistration dscr);
 }

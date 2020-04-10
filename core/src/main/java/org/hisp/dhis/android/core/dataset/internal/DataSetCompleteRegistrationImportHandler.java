@@ -28,19 +28,20 @@
 
 package org.hisp.dhis.android.core.dataset.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
+import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary;
 import org.hisp.dhis.android.core.imports.internal.ImportConflict;
 import org.hisp.dhis.android.core.imports.internal.ImportCount;
-import org.hisp.dhis.android.core.imports.ImportStatus;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 
 @Reusable
@@ -59,24 +60,28 @@ final class DataSetCompleteRegistrationImportHandler {
             @NonNull DataValueImportSummary dataValueImportSummary,
             @NonNull List<DataSetCompleteRegistration> deletedDataSetCompleteRegistrations,
             @NonNull List<DataSetCompleteRegistration> withErrorDataSetCompleteRegistrations) {
-        State newState =
-                dataValueImportSummary.importStatus() == ImportStatus.ERROR ||
-                        !withErrorDataSetCompleteRegistrations.isEmpty() ? State.ERROR : State.SYNCED;
+        State newState = dataValueImportSummary.importStatus() == ImportStatus.ERROR ? State.ERROR : State.SYNCED;
 
         for (DataSetCompleteRegistration dataSetCompleteRegistration :
                 dataSetCompleteRegistrationPayload.dataSetCompleteRegistrations) {
-            dataSetCompleteRegistrationStore.setState(dataSetCompleteRegistration, newState);
+            if (dataSetCompleteRegistrationStore.isDSCRBeingUpload(dataSetCompleteRegistration)) {
+                dataSetCompleteRegistrationStore.setState(dataSetCompleteRegistration, newState);
+            }
         }
 
         List<ImportConflict> conflicts = new ArrayList<>();
         for (DataSetCompleteRegistration dataSetCompleteRegistration : withErrorDataSetCompleteRegistrations) {
-            dataSetCompleteRegistrationStore.setState(dataSetCompleteRegistration, State.ERROR);
-            conflicts.add(ImportConflict.create(
-                    dataSetCompleteRegistration.toString(), "Error marking as incomplete"));
+            if (dataSetCompleteRegistrationStore.isDSCRBeingUpload(dataSetCompleteRegistration)) {
+                dataSetCompleteRegistrationStore.setState(dataSetCompleteRegistration, State.ERROR);
+                conflicts.add(ImportConflict.create(
+                        dataSetCompleteRegistration.toString(), "Error marking as incomplete"));
+            }
         }
 
         for (DataSetCompleteRegistration dataSetCompleteRegistration : deletedDataSetCompleteRegistrations) {
-            dataSetCompleteRegistrationStore.deleteById(dataSetCompleteRegistration);
+            if (dataSetCompleteRegistrationStore.isDSCRBeingUpload(dataSetCompleteRegistration)) {
+                dataSetCompleteRegistrationStore.deleteById(dataSetCompleteRegistration);
+            }
         }
 
         if (dataValueImportSummary.importConflicts() != null) {

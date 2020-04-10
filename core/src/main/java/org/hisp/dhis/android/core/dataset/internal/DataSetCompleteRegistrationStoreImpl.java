@@ -89,7 +89,7 @@ final class DataSetCompleteRegistrationStoreImpl extends
 
     /**
      * @param dataSetCompleteRegistration DataSetCompleteRegistration element you want to update
-     * @param newState The new state to be set for the DataValue
+     * @param newState                    The new state to be set for the DataValue
      */
     @Override
     public void setState(DataSetCompleteRegistration dataSetCompleteRegistration, State newState) {
@@ -126,5 +126,19 @@ final class DataSetCompleteRegistrationStoreImpl extends
         whereClause.appendKeyStringValue(DataSetCompleteRegistrationTableInfo.Columns.STATE, State.SYNCED);
 
         return deleteWhere(whereClause.build());
+    }
+
+    @Override
+    public boolean isDSCRBeingUpload(DataSetCompleteRegistration dscr) {
+        String whereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(DataSetCompleteRegistrationTableInfo.Columns.PERIOD, dscr.period())
+                .appendKeyStringValue(DataSetCompleteRegistrationTableInfo.Columns.DATA_SET, dscr.dataSet())
+                .appendKeyStringValue(DataSetCompleteRegistrationTableInfo.Columns.ORGANISATION_UNIT,
+                        dscr.organisationUnit())
+                .appendKeyStringValue(DataSetCompleteRegistrationTableInfo.Columns.ATTRIBUTE_OPTION_COMBO,
+                        dscr.attributeOptionCombo())
+                .appendKeyStringValue(DataSetCompleteRegistrationTableInfo.Columns.STATE, State.UPLOADING)
+                .build();
+        return selectWhere(whereClause).size() > 0;
     }
 }

@@ -226,10 +226,10 @@ public class Dhis2MockServer {
     public void enqueueMetadataResponses() {
         enqueueMockResponse(GENERAL_SETTINGS_JSON);
         enqueueMockResponse(SYSTEM_INFO_JSON);
-        enqueueMockResponse(SYSTEM_SETTINGS_JSON);
         enqueueMockResponse(GENERAL_SETTINGS_JSON);
         enqueueMockResponse(DATASET_SETTINGS_JSON);
-        enqueueMockResponse(PROGRAM_SETTINGS_JSON);
+        server.enqueue(getErrorResponse());
+        enqueueMockResponse(SYSTEM_SETTINGS_JSON);
         enqueueMockResponse(USER_JSON);
         enqueueMockResponse(AUTHORITIES_JSON);
         enqueueMockResponse(ORGANISATION_UNITS_JSON);
@@ -263,6 +263,10 @@ public class Dhis2MockServer {
         } catch (IOException e) {
             return new MockResponse().setResponseCode(500).setBody("Error reading JSON file for MockServer");
         }
+    }
+
+    private MockResponse getErrorResponse() {
+        return new MockResponse().setResponseCode(500).setBody("Error");
     }
 
     public void enqueueMockResponse(String fileName, Date dateHeader) {

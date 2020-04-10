@@ -69,6 +69,21 @@ final class DataSetCompleteRegistrationImportHandler {
             }
         }
 
+        List<ImportConflict> conflicts = handleDeletedDataSetCompleteRegistrations(deletedDataSetCompleteRegistrations,
+                withErrorDataSetCompleteRegistrations);
+
+        if (dataValueImportSummary.importConflicts() != null) {
+            conflicts.addAll(dataValueImportSummary.importConflicts());
+        }
+
+        return recreateDataValueImportSummary(dataValueImportSummary, conflicts,
+                deletedDataSetCompleteRegistrations.size());
+    }
+
+    private List<ImportConflict> handleDeletedDataSetCompleteRegistrations(
+            @NonNull List<DataSetCompleteRegistration> deletedDataSetCompleteRegistrations,
+            @NonNull List<DataSetCompleteRegistration> withErrorDataSetCompleteRegistrations) {
+
         List<ImportConflict> conflicts = new ArrayList<>();
         for (DataSetCompleteRegistration dataSetCompleteRegistration : withErrorDataSetCompleteRegistrations) {
             if (dataSetCompleteRegistrationStore.isDSCRBeingUpload(dataSetCompleteRegistration)) {
@@ -83,13 +98,7 @@ final class DataSetCompleteRegistrationImportHandler {
                 dataSetCompleteRegistrationStore.deleteById(dataSetCompleteRegistration);
             }
         }
-
-        if (dataValueImportSummary.importConflicts() != null) {
-            conflicts.addAll(dataValueImportSummary.importConflicts());
-        }
-
-        return recreateDataValueImportSummary(dataValueImportSummary, conflicts,
-                deletedDataSetCompleteRegistrations.size());
+        return conflicts;
     }
 
     private DataValueImportSummary recreateDataValueImportSummary(DataValueImportSummary dataValueImportSummary,

@@ -25,47 +25,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.relationship.internal;
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactory;
-import org.hisp.dhis.android.core.relationship.RelationshipModule;
-import org.hisp.dhis.android.core.relationship.RelationshipType;
+import org.hisp.dhis.android.core.imports.internal.RelationshipDeleteWebResponse;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
+import retrofit2.Call;
+import retrofit2.http.DELETE;
+import retrofit2.http.Path;
 
-@Module(includes = {
-        RelationshipConstraintEntityDIModule.class,
-        RelationshipEntityDIModule.class,
-        RelationshipItemEntityDIModule.class,
-        RelationshipTypeEntityDIModule.class
-})
-public final class RelationshipPackageDIModule {
+interface RelationshipService {
 
-    @Provides
-    @Reusable
-    ListCallFactory<RelationshipType> relationshipCallFactory(RelationshipTypeEndpointCallFactory impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    RelationshipTypeService relationshipTypeService(Retrofit retrofit) {
-        return retrofit.create(RelationshipTypeService.class);
-    }
-
-    @Provides
-    @Reusable
-    RelationshipService relationshipService(Retrofit retrofit) {
-        return retrofit.create(RelationshipService.class);
-    }
-
-    @Provides
-    @Reusable
-    RelationshipModule module(RelationshipModuleImpl impl) {
-        return impl;
-    }
+    @DELETE("relationships/{uid}")
+    Call<RelationshipDeleteWebResponse> deleteRelationship(@Path("uid") String relationship);
 }

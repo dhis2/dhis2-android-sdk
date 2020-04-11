@@ -54,7 +54,10 @@ import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
 import org.hisp.dhis.android.core.relationship.RelationshipHelper;
 import org.hisp.dhis.android.core.relationship.internal.Relationship229Compatible;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipDeleteCall;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStore;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipStore;
+import org.hisp.dhis.android.core.systeminfo.DHISVersion;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader;
@@ -91,12 +94,14 @@ public final class TrackedEntityInstancePostCall {
     private final EventStore eventStore;
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
+    private final RelationshipStore relationshipStore;
     private final RelationshipItemStore relationshipItemStore;
     private final IdentifiableObjectStore<Note> noteStore;
 
     private final TEIWebResponseHandler teiWebResponseHandler;
 
     private final APICallExecutor apiCallExecutor;
+    private final RelationshipDeleteCall relationshipDeleteCall;
     private final SystemInfoModuleDownloader systemInfoDownloader;
 
     private static final int DEFAULT_PAGE_SIZE = 10;
@@ -111,10 +116,12 @@ public final class TrackedEntityInstancePostCall {
                                   @NonNull EventStore eventStore,
                                   @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore,
                                   @NonNull TrackedEntityAttributeValueStore trackedEntityAttributeValueStore,
+                                  @NonNull RelationshipStore relationshipStore,
                                   @NonNull RelationshipItemStore relationshipItemStore,
                                   @NonNull IdentifiableObjectStore<Note> noteStore,
                                   @NonNull TEIWebResponseHandler teiWebResponseHandler,
                                   @NonNull APICallExecutor apiCallExecutor,
+                                  @NonNull RelationshipDeleteCall relationshipDeleteCall,
                                   @NonNull SystemInfoModuleDownloader systemInfoDownloader) {
         this.versionManager = versionManager;
         this.relationshipDHISVersionManager = relationshipDHISVersionManager;
@@ -125,10 +132,12 @@ public final class TrackedEntityInstancePostCall {
         this.eventStore = eventStore;
         this.trackedEntityDataValueStore = trackedEntityDataValueStore;
         this.trackedEntityAttributeValueStore = trackedEntityAttributeValueStore;
+        this.relationshipStore = relationshipStore;
         this.relationshipItemStore = relationshipItemStore;
         this.noteStore = noteStore;
         this.teiWebResponseHandler = teiWebResponseHandler;
         this.apiCallExecutor = apiCallExecutor;
+        this.relationshipDeleteCall = relationshipDeleteCall;
         this.systemInfoDownloader = systemInfoDownloader;
     }
 
@@ -155,6 +164,10 @@ public final class TrackedEntityInstancePostCall {
                     }
 
                     for (List<TrackedEntityInstance> partition : trackedEntityInstancesToPost) {
+                        if (versionManager.isGreaterThan(DHISVersion.V2_29)) {
+                            partition = relationshipDeleteCall.postDeletedRelationships(partition);
+                        }
+
                         TrackedEntityInstancePayload trackedEntityInstancePayload =
                                 TrackedEntityInstancePayload.create(partition);
 
@@ -357,6 +370,7 @@ public final class TrackedEntityInstancePostCall {
         List<String> trackedEntityInstancesUids = new ArrayList<>();
         List<String> enrollmentUids = new ArrayList<>();
         List<String> eventUids = new ArrayList<>();
+        List<String> relationshipUids = new ArrayList<>();
 
         for (TrackedEntityInstance instance : partition) {
             trackedEntityInstancesUids.add(instance.uid());
@@ -366,9 +380,13 @@ public final class TrackedEntityInstancePostCall {
                     eventUids.add(event.uid());
                 }
             }
+            for (Relationship229Compatible r : TrackedEntityInstanceInternalAccessor.accessRelationships(instance)) {
+                relationshipUids.add(r.uid());
+            }
         }
 
         trackedEntityInstanceStore.setState(trackedEntityInstancesUids, state);
+        relationshipStore.setState(relationshipUids, state);
         enrollmentStore.setState(enrollmentUids, state);
         eventStore.setState(eventUids, state);
     }

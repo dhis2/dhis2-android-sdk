@@ -37,6 +37,9 @@ import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 import org.hisp.dhis.android.core.imports.internal.EnrollmentImportSummaries;
 import org.hisp.dhis.android.core.imports.internal.EnrollmentImportSummary;
 import org.hisp.dhis.android.core.imports.internal.TEIImportSummary;
+import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -77,7 +80,16 @@ public class TrackedEntityInstanceImportHandlerShould {
     private ObjectStore<TrackerImportConflict> trackerImportConflictStore;
 
     @Mock
+    private RelationshipStore relationshipStore;
+
+    @Mock
     private DataStatePropagator dataStatePropagator;
+
+    @Mock
+    private RelationshipDHISVersionManager relationshipDHISVersionManager;
+
+    @Mock
+    private RelationshipCollectionRepository relationshipCollectionRepository;
 
     // object to test
     private TrackedEntityInstanceImportHandler trackedEntityInstanceImportHandler;
@@ -89,7 +101,8 @@ public class TrackedEntityInstanceImportHandlerShould {
 
         trackedEntityInstanceImportHandler =
                 new TrackedEntityInstanceImportHandler(trackedEntityInstanceStore, enrollmentImportHandler,
-                        trackerImportConflictStore, dataStatePropagator);
+                        trackerImportConflictStore, relationshipStore, dataStatePropagator,
+                        relationshipDHISVersionManager, relationshipCollectionRepository);
     }
 
     @Test

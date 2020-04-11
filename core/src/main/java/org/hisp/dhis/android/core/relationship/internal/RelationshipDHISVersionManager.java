@@ -71,7 +71,9 @@ public class RelationshipDHISVersionManager {
         Relationship229Compatible.Builder builder = Relationship229Compatible.builder()
                 .name(relationship.name())
                 .created(relationship.created())
-                .lastUpdated(relationship.lastUpdated());
+                .lastUpdated(relationship.lastUpdated())
+                .state(relationship.state())
+                .deleted(relationship.deleted());
 
         if (versionManager.is2_29()) {
             return builder
@@ -94,7 +96,9 @@ public class RelationshipDHISVersionManager {
         Relationship.Builder builder = Relationship.builder()
                 .name(relationship229Compatible.name())
                 .created(relationship229Compatible.created())
-                .lastUpdated(relationship229Compatible.lastUpdated());
+                .lastUpdated(relationship229Compatible.lastUpdated())
+                .state(relationship229Compatible.state())
+                .deleted(relationship229Compatible.deleted());
 
         if (versionManager.is2_29()) {
             return builder

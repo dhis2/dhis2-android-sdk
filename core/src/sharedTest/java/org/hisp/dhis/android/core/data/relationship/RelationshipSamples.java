@@ -55,21 +55,25 @@ public class RelationshipSamples {
 
     protected RelationshipItem eventItem = RelationshipHelper.eventItem(TO_UID);
 
+    protected static State STATE = State.SYNCED;
+
+    protected static Boolean DELETED = false;
+
     private Relationship229Compatible.Builder commonCompatibleBuilder = Relationship229Compatible
             .builder()
             .created(CREATED)
             .lastUpdated(LAST_UPDATED)
             .name(NAME)
-            .state(State.SYNCED)
-            .deleted(false);
+            .state(STATE)
+            .deleted(DELETED);
 
     private static Relationship.Builder commonBuilder = Relationship
             .builder()
             .created(CREATED)
             .lastUpdated(LAST_UPDATED)
             .name(NAME)
-            .state(State.SYNCED)
-            .deleted(false);
+            .state(STATE)
+            .deleted(DELETED);
 
     public Relationship229Compatible get229Compatible() {
         return commonCompatibleBuilder

@@ -26,46 +26,43 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship.internal;
+package org.hisp.dhis.android.core.imports.internal;
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactory;
-import org.hisp.dhis.android.core.relationship.RelationshipModule;
-import org.hisp.dhis.android.core.relationship.RelationshipType;
+import androidx.annotation.Nullable;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-@Module(includes = {
-        RelationshipConstraintEntityDIModule.class,
-        RelationshipEntityDIModule.class,
-        RelationshipItemEntityDIModule.class,
-        RelationshipTypeEntityDIModule.class
-})
-public final class RelationshipPackageDIModule {
+@AutoValue
+@JsonDeserialize(builder = AutoValue_RelationshipDeleteWebResponse.Builder.class)
+public abstract class RelationshipDeleteWebResponse extends WebResponse {
 
-    @Provides
-    @Reusable
-    ListCallFactory<RelationshipType> relationshipCallFactory(RelationshipTypeEndpointCallFactory impl) {
-        return impl;
+    private static final String RESPONSE = "response"; // is called response from api
+
+    @Nullable
+    @JsonProperty(RESPONSE)
+    public abstract BaseImportSummary response();
+
+    public static Builder builder() {
+        return new AutoValue_RelationshipDeleteWebResponse.Builder();
     }
 
-    @Provides
-    @Reusable
-    RelationshipTypeService relationshipTypeService(Retrofit retrofit) {
-        return retrofit.create(RelationshipTypeService.class);
+    public static RelationshipDeleteWebResponse empty() {
+        return builder()
+                .httpStatus("SUCCESS")
+                .httpStatusCode(200)
+                .message("Emtpy response")
+                .status("OK")
+                .build();
     }
 
-    @Provides
-    @Reusable
-    RelationshipService relationshipService(Retrofit retrofit) {
-        return retrofit.create(RelationshipService.class);
-    }
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder extends WebResponse.Builder<Builder> {
+        public abstract Builder response(BaseImportSummary response);
 
-    @Provides
-    @Reusable
-    RelationshipModule module(RelationshipModuleImpl impl) {
-        return impl;
+        public abstract RelationshipDeleteWebResponse build();
     }
 }

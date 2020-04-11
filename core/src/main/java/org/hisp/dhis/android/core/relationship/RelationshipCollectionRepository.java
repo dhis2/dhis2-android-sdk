@@ -187,9 +187,7 @@ public final class RelationshipCollectionRepository
                     to = iterationItem;
                 }
 
-                Relationship relationship = Relationship.builder()
-                        .uid(relationshipFromDb.uid())
-                        .relationshipType(relationshipFromDb.relationshipType())
+                Relationship relationship = relationshipFromDb.toBuilder()
                         .from(from)
                         .to(to)
                         .build();

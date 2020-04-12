@@ -146,11 +146,11 @@ public class RelationshipCollectionRepository
     }
 
     private boolean isUpdatableState(State state) {
-        return state == State.SYNCED || state == State.TO_POST || state == State.TO_UPDATE;
+        return state != State.RELATIONSHIP;
     }
 
     private void setToUpdate(StoreWithState store, State state, String elementUid) {
-        if (state == State.SYNCED) {
+        if (state != State.TO_POST) {
             store.setState(elementUid, State.TO_UPDATE);
         }
     }

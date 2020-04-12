@@ -62,6 +62,7 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
     private final HandlerWithTransformer<TrackedEntityAttributeValue> trackedEntityAttributeValueHandler;
     private final IdentifiableDataHandler<Enrollment> enrollmentHandler;
     private final OrphanCleaner<TrackedEntityInstance, Enrollment> enrollmentOrphanCleaner;
+    private final OrphanCleaner<TrackedEntityInstance, Relationship229Compatible> relationshipOrphanCleaner;
 
     @Inject
     TrackedEntityInstanceHandler(
@@ -70,7 +71,8 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
             @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
             @NonNull HandlerWithTransformer<TrackedEntityAttributeValue> trackedEntityAttributeValueHandler,
             @NonNull IdentifiableDataHandler<Enrollment> enrollmentHandler,
-            @NonNull OrphanCleaner<TrackedEntityInstance, Enrollment> enrollmentOrphanCleaner) {
+            @NonNull OrphanCleaner<TrackedEntityInstance, Enrollment> enrollmentOrphanCleaner,
+            @NonNull OrphanCleaner<TrackedEntityInstance, Relationship229Compatible> relationshipOrphanCleaner) {
         super(trackedEntityInstanceStore);
         this.relationshipVersionManager = relationshipVersionManager;
         this.relationshipHandler = relationshipHandler;
@@ -78,6 +80,7 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
         this.trackedEntityAttributeValueHandler = trackedEntityAttributeValueHandler;
         this.enrollmentHandler = enrollmentHandler;
         this.enrollmentOrphanCleaner = enrollmentOrphanCleaner;
+        this.relationshipOrphanCleaner = relationshipOrphanCleaner;
     }
 
     @Override
@@ -122,7 +125,7 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
             TrackedEntityInstance relativeTEI =
                     relationshipVersionManager.getRelativeTei(relationship229, trackedEntityInstanceUid);
 
-            if (!trackedEntityInstanceStore.exists(relativeTEI.uid())) {
+            if (relativeTEI != null && !trackedEntityInstanceStore.exists(relativeTEI.uid())) {
                 handle(relativeTEI, relationshipTransformer(), false);
             }
         }
@@ -155,6 +158,10 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
                 enrollmentOrphanCleaner.deleteOrphan(
                         trackedEntityInstance,
                         TrackedEntityInstanceInternalAccessor.accessEnrollments(trackedEntityInstance));
+
+                relationshipOrphanCleaner.deleteOrphan(
+                        trackedEntityInstance,
+                        TrackedEntityInstanceInternalAccessor.accessRelationships(trackedEntityInstance));
             }
         }
 

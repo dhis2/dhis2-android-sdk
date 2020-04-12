@@ -28,41 +28,19 @@
 
 package org.hisp.dhis.android.core.imports.internal;
 
-import androidx.annotation.Nullable;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_RelationshipDeleteWebResponse.Builder.class)
-public abstract class RelationshipDeleteWebResponse extends WebResponse {
-
-    private static final String RESPONSE = "response";
-
-    @Nullable
-    @JsonProperty(RESPONSE)
-    public abstract RelationshipDeleteSummary response();
-
-    public static Builder builder() {
-        return new AutoValue_RelationshipDeleteWebResponse.Builder();
-    }
-
-    public static RelationshipDeleteWebResponse empty() {
-        return builder()
-                .httpStatus("SUCCESS")
-                .httpStatusCode(200)
-                .message("Emtpy response")
-                .status("OK")
-                .build();
-    }
+@JsonDeserialize(builder = AutoValue_RelationshipDeleteSummary.Builder.class)
+public abstract class RelationshipDeleteSummary extends BaseImportSummary {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends WebResponse.Builder<Builder> {
-        public abstract Builder response(RelationshipDeleteSummary response);
+    public static abstract class Builder extends BaseImportSummary.Builder<Builder> {
 
-        public abstract RelationshipDeleteWebResponse build();
+        public abstract RelationshipDeleteSummary build();
+
     }
 }

@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipItem;
 
-import java.util.Collection;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -91,12 +90,6 @@ final class RelationshipHandlerImpl extends IdentifiableHandlerImpl<Relationship
                 .relationship(ObjectWithUid.create(relationship.uid())).relationshipItemType(FROM).build());
         relationshipItemHandler.handle(relationship.to().toBuilder()
                 .relationship(ObjectWithUid.create(relationship.uid())).relationshipItemType(TO).build());
-    }
-
-    @Override
-    protected Collection<Relationship> beforeCollectionHandled(Collection<Relationship> oCollection) {
-        // TODO Delete existing relationships
-        return oCollection;
     }
 
     @Override

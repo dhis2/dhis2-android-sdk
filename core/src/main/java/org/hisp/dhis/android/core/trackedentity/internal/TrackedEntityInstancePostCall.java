@@ -77,7 +77,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 import io.reactivex.Observable;
 
-@SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops", "PMD.ExcessiveImports"})
+@SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops", "PMD.ExcessiveImports", "PMD.TooManyFields"})
 @Reusable
 public final class TrackedEntityInstancePostCall {
     // internal modules

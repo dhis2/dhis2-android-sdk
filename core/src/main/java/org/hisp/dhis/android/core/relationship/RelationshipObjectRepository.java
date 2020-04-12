@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreWithState;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenSelection;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadWriteWithUidDataObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemElementStoreSelector;
@@ -42,8 +41,7 @@ import java.util.Collections;
 import java.util.Map;
 
 final class RelationshipObjectRepository
-        extends ReadWriteWithUidDataObjectRepositoryImpl<Relationship, RelationshipObjectRepository>
-        implements ReadWriteObjectRepository<Relationship> {
+        extends ReadWriteWithUidDataObjectRepositoryImpl<Relationship, RelationshipObjectRepository> {
 
     private final RelationshipItemElementStoreSelector storeSelector;
 

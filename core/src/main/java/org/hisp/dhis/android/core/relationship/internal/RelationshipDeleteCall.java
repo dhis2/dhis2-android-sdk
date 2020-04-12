@@ -44,7 +44,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import dagger.Reusable;
-import io.reactivex.Single;
+import io.reactivex.Completable;
 
 import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.isDeleted;
 
@@ -66,6 +66,7 @@ public final class RelationshipDeleteCall {
         this.apiCallExecutor = apiCallExecutor;
     }
 
+    @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})
     public List<TrackedEntityInstance> postDeletedRelationships(List<TrackedEntityInstance> trackedEntityInstances) {
         List<TrackedEntityInstance> withoutDeletedRelationships = new ArrayList<>(trackedEntityInstances.size());
 
@@ -73,11 +74,13 @@ public final class RelationshipDeleteCall {
             List<Relationship229Compatible> relationships = TrackedEntityInstanceInternalAccessor
                     .accessRelationships(instance);
 
-            if (relationships != null && !relationships.isEmpty()) {
+            if (relationships == null || relationships.isEmpty()) {
+                withoutDeletedRelationships.add(instance);
+            } else {
                 List<Relationship229Compatible> nonDeletedRelationships = new ArrayList<>();
                 for (Relationship229Compatible relationship : relationships) {
                     if (isDeleted(relationship)) {
-                        deleteRelationship(relationship.uid()).blockingGet();
+                        deleteRelationship(relationship.uid()).blockingAwait();
                     } else {
                         nonDeletedRelationships.add(relationship);
                     }
@@ -86,15 +89,13 @@ public final class RelationshipDeleteCall {
                         .insertRelationships(instance.toBuilder(), nonDeletedRelationships)
                         .build();
                 withoutDeletedRelationships.add(newInstance);
-            } else {
-                withoutDeletedRelationships.add(instance);
             }
         }
         return withoutDeletedRelationships;
     }
 
-    private Single<RelationshipDeleteWebResponse> deleteRelationship(String relationshipUid) {
-        return Single.fromCallable(() -> {
+    private Completable deleteRelationship(String relationshipUid) {
+        return Completable.fromCallable(() -> {
             RelationshipDeleteWebResponse httpResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
                     relationshipService.deleteRelationship(relationshipUid),
                     Collections.singletonList(404),
@@ -102,7 +103,7 @@ public final class RelationshipDeleteCall {
 
             ImportStatus status  = httpResponse.response() == null ? null : httpResponse.response().status();
 
-            if ((httpResponse.httpStatusCode() == 200 && ImportStatus.SUCCESS.equals(status)) ||
+            if (httpResponse.httpStatusCode() == 200 && ImportStatus.SUCCESS.equals(status) ||
                     httpResponse.httpStatusCode() == 404) {
                 relationshipStore.delete(relationshipUid);
             } else {

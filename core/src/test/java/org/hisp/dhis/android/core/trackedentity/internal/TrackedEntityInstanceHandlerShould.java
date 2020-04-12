@@ -36,8 +36,8 @@ import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.relationship.Relationship;
-import org.hisp.dhis.android.core.relationship.internal.Relationship229Compatible;
 import org.hisp.dhis.android.core.relationship.RelationshipHelper;
+import org.hisp.dhis.android.core.relationship.internal.Relationship229Compatible;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
@@ -54,6 +54,7 @@ import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyCollection;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
@@ -99,6 +100,9 @@ public class TrackedEntityInstanceHandlerShould {
     @Mock
     private OrphanCleaner<TrackedEntityInstance, Enrollment> enrollmentCleaner;
 
+    @Mock
+    private OrphanCleaner<TrackedEntityInstance, Relationship229Compatible> relationshipCleaner;
+
     // Constants
     private String TEI_UID = "test_tei_uid";
     private String RELATIVE_UID = "relative_uid";
@@ -125,7 +129,7 @@ public class TrackedEntityInstanceHandlerShould {
 
         trackedEntityInstanceHandler = new TrackedEntityInstanceHandler(
                 relationshipVersionManager, relationshipHandler, trackedEntityInstanceStore,
-                trackedEntityAttributeValueHandler, enrollmentHandler, enrollmentCleaner);
+                trackedEntityAttributeValueHandler, enrollmentHandler, enrollmentCleaner, relationshipCleaner);
     }
 
     @Test
@@ -139,6 +143,7 @@ public class TrackedEntityInstanceHandlerShould {
                 anyCollection(), any(Transformer.class));
         verify(enrollmentHandler, never()).handleMany(anyCollection(), anyBoolean());
         verify(enrollmentCleaner, never()).deleteOrphan(any(TrackedEntityInstance.class), anyCollection());
+        verify(relationshipCleaner, never()).deleteOrphan(any(TrackedEntityInstance.class), anyCollection());
     }
 
     @Test
@@ -178,23 +183,25 @@ public class TrackedEntityInstanceHandlerShould {
     }
 
     @Test
-    public void invoke_enrollment_cleaner_if_full_update() {
+    public void invoke_cleaners_if_full_update() {
         when(trackedEntityInstance.toBuilder()).thenReturn(TrackedEntityInstance.builder().uid("uid"));
         when(trackedEntityInstanceStore.updateOrInsert(any(TrackedEntityInstance.class))).thenReturn(HandleAction.Update);
 
         trackedEntityInstanceHandler.handleMany(Collections.singletonList(trackedEntityInstance), false, true, false);
 
         verify(enrollmentCleaner, times(1)).deleteOrphan(any(TrackedEntityInstance.class), anyCollection());
+        verify(relationshipCleaner, times(1)).deleteOrphan(any(TrackedEntityInstance.class), anyCollection());
     }
 
     @Test
-    public void do_not_invoke_enrollment_cleaner_if_not_full_update() {
+    public void do_not_invoke_cleaners_if_not_full_update() {
         when(trackedEntityInstance.toBuilder()).thenReturn(TrackedEntityInstance.builder().uid("uid"));
         when(trackedEntityInstanceStore.updateOrInsert(any(TrackedEntityInstance.class))).thenReturn(HandleAction.Update);
 
         trackedEntityInstanceHandler.handleMany(Collections.singletonList(trackedEntityInstance), false, false, false);
 
         verify(enrollmentCleaner, never()).deleteOrphan(any(TrackedEntityInstance.class), anyCollection());
+        verify(relationshipCleaner, never()).deleteOrphan(any(TrackedEntityInstance.class), anyCollection());
     }
 
     @Test
@@ -205,7 +212,7 @@ public class TrackedEntityInstanceHandlerShould {
         when(relativeBuilder.build()).thenReturn(relative);
 
         trackedEntityInstanceHandler.handle(trackedEntityInstance, false);
-        verify(relationshipHandler).handle(relationship);
+        verify(relationshipHandler, times(2)).handleMany(anyList(), any());
     }
 
     @Test

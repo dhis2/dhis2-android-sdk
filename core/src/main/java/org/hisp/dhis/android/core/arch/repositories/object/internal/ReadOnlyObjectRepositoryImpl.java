@@ -40,7 +40,7 @@ import io.reactivex.Single;
 public abstract class ReadOnlyObjectRepositoryImpl<M extends CoreObject, R extends ReadOnlyObjectRepository<M>>
         implements ReadOnlyObjectRepository<M> {
 
-    private final Map<String, ChildrenAppender<M>> childrenAppenders;
+    protected final Map<String, ChildrenAppender<M>> childrenAppenders;
     protected final RepositoryScope scope;
     protected final ObjectRepositoryFactory<R> repositoryFactory;
 

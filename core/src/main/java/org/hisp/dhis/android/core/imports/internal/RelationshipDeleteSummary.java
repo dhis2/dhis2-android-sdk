@@ -26,14 +26,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship.internal;
+package org.hisp.dhis.android.core.imports.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore;
-import org.hisp.dhis.android.core.relationship.Relationship;
-import org.hisp.dhis.android.core.relationship.RelationshipItem;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-import java.util.List;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_RelationshipDeleteSummary.Builder.class)
+public abstract class RelationshipDeleteSummary extends BaseImportSummary {
 
-public interface RelationshipStore extends IdentifiableDeletableDataObjectStore<Relationship> {
-    List<Relationship> getRelationshipsByItem(RelationshipItem relationshipItem);
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder extends BaseImportSummary.Builder<Builder> {
+
+        public abstract RelationshipDeleteSummary build();
+
+    }
 }

@@ -42,6 +42,11 @@ import org.hisp.dhis.android.core.imports.TrackerImportConflictTableInfo;
 import org.hisp.dhis.android.core.imports.internal.EnrollmentImportSummaries;
 import org.hisp.dhis.android.core.imports.internal.ImportConflict;
 import org.hisp.dhis.android.core.imports.internal.TEIImportSummary;
+import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
+import org.hisp.dhis.android.core.relationship.RelationshipHelper;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo;
 
 import java.util.ArrayList;
@@ -59,17 +64,26 @@ public final class TrackedEntityInstanceImportHandler {
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
     private final EnrollmentImportHandler enrollmentImportHandler;
     private final ObjectStore<TrackerImportConflict> trackerImportConflictStore;
+    private final RelationshipStore relationshipStore;
     private final DataStatePropagator dataStatePropagator;
+    private final RelationshipDHISVersionManager relationshipDHISVersionManager;
+    private final RelationshipCollectionRepository relationshipRepository;
 
     @Inject
     TrackedEntityInstanceImportHandler(@NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
                                        @NonNull EnrollmentImportHandler enrollmentImportHandler,
                                        @NonNull ObjectStore<TrackerImportConflict> trackerImportConflictStore,
-                                       @NonNull DataStatePropagator dataStatePropagator) {
+                                       @NonNull RelationshipStore relationshipStore,
+                                       @NonNull DataStatePropagator dataStatePropagator,
+                                       @NonNull RelationshipDHISVersionManager relationshipDHISVersionManager,
+                                       @NonNull RelationshipCollectionRepository relationshipRepository) {
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
         this.enrollmentImportHandler = enrollmentImportHandler;
         this.trackerImportConflictStore = trackerImportConflictStore;
+        this.relationshipStore = relationshipStore;
         this.dataStatePropagator = dataStatePropagator;
+        this.relationshipDHISVersionManager = relationshipDHISVersionManager;
+        this.relationshipRepository = relationshipRepository;
     }
 
     public void handleTrackedEntityInstanceImportSummaries(List<TEIImportSummary> teiImportSummaries) {
@@ -87,8 +101,12 @@ public final class TrackedEntityInstanceImportHandler {
 
             if (teiImportSummary.reference() != null) {
                 handleAction = trackedEntityInstanceStore.setStateOrDelete(teiImportSummary.reference(), state);
+
                 if (state.equals(State.ERROR) || state.equals(State.WARNING)) {
                     dataStatePropagator.resetUploadingEnrollmentAndEventStates(teiImportSummary.reference());
+                    setRelationshipsState(teiImportSummary.reference(), State.TO_UPDATE);
+                } else {
+                    setRelationshipsState(teiImportSummary.reference(), State.SYNCED);
                 }
 
                 deleteTEIConflicts(teiImportSummary.reference());
@@ -146,5 +164,17 @@ public final class TrackedEntityInstanceImportHandler {
                         TrackedEntityInstanceTableInfo.TABLE_INFO.name())
                 .build();
         trackerImportConflictStore.deleteWhereIfExists(whereClause);
+    }
+
+    private void setRelationshipsState(String trackedEntityInstanceUid, State state) {
+        List<Relationship> dbRelationships =
+                relationshipRepository.getByItem(RelationshipHelper.teiItem(trackedEntityInstanceUid), true);
+
+        List<Relationship> ownedRelationships = relationshipDHISVersionManager
+                .getOwnedRelationships(dbRelationships, trackedEntityInstanceUid);
+
+        for (Relationship relationship : ownedRelationships) {
+            relationshipStore.setStateOrDelete(relationship.uid(), state);
+        }
     }
 }

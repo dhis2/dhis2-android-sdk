@@ -25,15 +25,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.relationship.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore;
-import org.hisp.dhis.android.core.relationship.Relationship;
-import org.hisp.dhis.android.core.relationship.RelationshipItem;
+import org.hisp.dhis.android.core.imports.internal.RelationshipDeleteWebResponse;
 
-import java.util.List;
+import retrofit2.Call;
+import retrofit2.http.DELETE;
+import retrofit2.http.Path;
 
-public interface RelationshipStore extends IdentifiableDeletableDataObjectStore<Relationship> {
-    List<Relationship> getRelationshipsByItem(RelationshipItem relationshipItem);
+interface RelationshipService {
+
+    @DELETE("relationships/{uid}")
+    Call<RelationshipDeleteWebResponse> deleteRelationship(@Path("uid") String relationship);
 }

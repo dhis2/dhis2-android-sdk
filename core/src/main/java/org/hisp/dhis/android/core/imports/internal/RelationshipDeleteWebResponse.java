@@ -26,14 +26,43 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship.internal;
+package org.hisp.dhis.android.core.imports.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore;
-import org.hisp.dhis.android.core.relationship.Relationship;
-import org.hisp.dhis.android.core.relationship.RelationshipItem;
+import androidx.annotation.Nullable;
 
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-public interface RelationshipStore extends IdentifiableDeletableDataObjectStore<Relationship> {
-    List<Relationship> getRelationshipsByItem(RelationshipItem relationshipItem);
+@AutoValue
+@JsonDeserialize(builder = AutoValue_RelationshipDeleteWebResponse.Builder.class)
+public abstract class RelationshipDeleteWebResponse extends WebResponse {
+
+    private static final String RESPONSE = "response";
+
+    @Nullable
+    @JsonProperty(RESPONSE)
+    public abstract RelationshipDeleteSummary response();
+
+    public static Builder builder() {
+        return new AutoValue_RelationshipDeleteWebResponse.Builder();
+    }
+
+    public static RelationshipDeleteWebResponse empty() {
+        return builder()
+                .httpStatus("SUCCESS")
+                .httpStatusCode(200)
+                .message("Emtpy response")
+                .status("OK")
+                .build();
+    }
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder extends WebResponse.Builder<Builder> {
+        public abstract Builder response(RelationshipDeleteSummary response);
+
+        public abstract RelationshipDeleteWebResponse build();
+    }
 }

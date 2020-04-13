@@ -62,6 +62,7 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
     private final HandlerWithTransformer<TrackedEntityAttributeValue> trackedEntityAttributeValueHandler;
     private final IdentifiableDataHandler<Enrollment> enrollmentHandler;
     private final OrphanCleaner<TrackedEntityInstance, Enrollment> enrollmentOrphanCleaner;
+    private final OrphanCleaner<TrackedEntityInstance, Relationship229Compatible> relationshipOrphanCleaner;
 
     @Inject
     TrackedEntityInstanceHandler(
@@ -70,7 +71,8 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
             @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
             @NonNull HandlerWithTransformer<TrackedEntityAttributeValue> trackedEntityAttributeValueHandler,
             @NonNull IdentifiableDataHandler<Enrollment> enrollmentHandler,
-            @NonNull OrphanCleaner<TrackedEntityInstance, Enrollment> enrollmentOrphanCleaner) {
+            @NonNull OrphanCleaner<TrackedEntityInstance, Enrollment> enrollmentOrphanCleaner,
+            @NonNull OrphanCleaner<TrackedEntityInstance, Relationship229Compatible> relationshipOrphanCleaner) {
         super(trackedEntityInstanceStore);
         this.relationshipVersionManager = relationshipVersionManager;
         this.relationshipHandler = relationshipHandler;
@@ -78,6 +80,7 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
         this.trackedEntityAttributeValueHandler = trackedEntityAttributeValueHandler;
         this.enrollmentHandler = enrollmentHandler;
         this.enrollmentOrphanCleaner = enrollmentOrphanCleaner;
+        this.relationshipOrphanCleaner = relationshipOrphanCleaner;
     }
 
     @Override
@@ -97,32 +100,35 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
                         overwrite);
             }
 
-            handleRelationships(trackedEntityInstance);
-        }
-    }
-
-    private void handleRelationships(TrackedEntityInstance trackedEntityInstance) {
-        List<Relationship229Compatible> relationships =
-                TrackedEntityInstanceInternalAccessor.accessRelationships(trackedEntityInstance);
-        if (relationships != null) {
-            for (Relationship229Compatible relationship229 : relationships) {
-                TrackedEntityInstance relativeTEI =
-                        relationshipVersionManager.getRelativeTei(relationship229, trackedEntityInstance.uid());
-
-                if (relativeTEI != null) {
-                    handleRelationship(relativeTEI, relationship229);
-                }
+            List<Relationship229Compatible> relationships =
+                    TrackedEntityInstanceInternalAccessor.accessRelationships(trackedEntityInstance);
+            if (relationships != null) {
+                handleRelationships(trackedEntityInstance.uid(), relationships);
             }
         }
     }
 
-    private void handleRelationship(TrackedEntityInstance relativeTEI, Relationship229Compatible relationship229) {
-        if (!trackedEntityInstanceStore.exists(relativeTEI.uid())) {
-            handle(relativeTEI, relationshipTransformer(), false);
-        }
+    private void handleRelationships(String trackedEntityInstanceUid,
+                                     List<Relationship229Compatible> relationships) {
+        createRelativesIfNotExist(trackedEntityInstanceUid, relationships);
 
-        Relationship relationship = relationshipVersionManager.from229Compatible(relationship229);
-        relationshipHandler.handle(relationship);
+        Collection<Relationship> relationshipsList = relationshipVersionManager.from229Compatible(relationships);
+        relationshipHandler.handleMany(relationshipsList, relationship -> relationship.toBuilder()
+                .state(State.SYNCED)
+                .deleted(false)
+                .build());
+    }
+
+    private void createRelativesIfNotExist(String trackedEntityInstanceUid,
+                                           List<Relationship229Compatible> relationships) {
+        for (Relationship229Compatible relationship229 : relationships) {
+            TrackedEntityInstance relativeTEI =
+                    relationshipVersionManager.getRelativeTei(relationship229, trackedEntityInstanceUid);
+
+            if (relativeTEI != null && !trackedEntityInstanceStore.exists(relativeTEI.uid())) {
+                handle(relativeTEI, relationshipTransformer(), false);
+            }
+        }
     }
 
     public void handleMany(final Collection<TrackedEntityInstance> trackedEntityInstances, boolean asRelationship,
@@ -152,6 +158,10 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
                 enrollmentOrphanCleaner.deleteOrphan(
                         trackedEntityInstance,
                         TrackedEntityInstanceInternalAccessor.accessEnrollments(trackedEntityInstance));
+
+                relationshipOrphanCleaner.deleteOrphan(
+                        trackedEntityInstance,
+                        TrackedEntityInstanceInternalAccessor.accessRelationships(trackedEntityInstance));
             }
         }
 

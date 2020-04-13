@@ -35,12 +35,12 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreRelationshipItemAdapter;
-import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 import java.util.Date;
 
-public abstract class BaseRelationship extends BaseObject implements ObjectWithUidInterface {
+public abstract class BaseRelationship extends BaseDeletableDataObject implements ObjectWithUidInterface {
 
     @Nullable
     @JsonProperty(RelationshipFields.RELATIONSHIP)
@@ -74,7 +74,7 @@ public abstract class BaseRelationship extends BaseObject implements ObjectWithU
     @ColumnAdapter(IgnoreRelationshipItemAdapter.class)
     public abstract RelationshipItem to();
 
-    public abstract static class Builder<T extends Builder> extends BaseObject.Builder<T> {
+    public abstract static class Builder<T extends Builder> extends BaseDeletableDataObject.Builder<T> {
 
         @JsonProperty(RelationshipFields.RELATIONSHIP)
         public abstract T uid(String uid);

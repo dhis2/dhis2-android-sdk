@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.relationship.internal;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -38,10 +40,8 @@ import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.Tracked
 import org.hisp.dhis.android.core.relationship.BaseRelationship;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
-import androidx.annotation.Nullable;
-
 @AutoValue
-@JsonDeserialize(builder = AutoValue_Relationship229Compatible.Builder.class)
+@JsonDeserialize(builder = $AutoValue_Relationship229Compatible.Builder.class)
 public abstract class Relationship229Compatible extends BaseRelationship {
 
     @Nullable
@@ -59,7 +59,7 @@ public abstract class Relationship229Compatible extends BaseRelationship {
 
 
     public static Builder builder() {
-        return new AutoValue_Relationship229Compatible.Builder();
+        return new $AutoValue_Relationship229Compatible.Builder();
     }
 
     @AutoValue.Builder

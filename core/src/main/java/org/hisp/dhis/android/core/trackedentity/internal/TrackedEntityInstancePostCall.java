@@ -333,7 +333,7 @@ public final class TrackedEntityInstancePostCall {
         List<TrackedEntityAttributeValue> attributeValues = attributeValueMap.get(trackedEntityInstanceUid);
 
         List<Relationship> dbRelationships =
-                relationshipRepository.getByItem(RelationshipHelper.teiItem(trackedEntityInstance.uid()));
+                relationshipRepository.getByItem(RelationshipHelper.teiItem(trackedEntityInstance.uid()), true);
         List<Relationship229Compatible> versionAwareRelationships =
                 relationshipDHISVersionManager.to229Compatible(dbRelationships, trackedEntityInstance.uid());
 

@@ -350,10 +350,11 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         List<TrackedEntityInstance> responseTeiB = d2.trackedEntityModule().trackedEntityInstances().byUid().eq(teiBUid).blockingGet();
         assertThat(responseTeiB.size() == 1).isTrue();
 
-        List<Relationship> relationships = d2.relationshipModule().relationships().getByItem(RelationshipHelper.teiItem(teiA.uid()));
+        List<Relationship> relationships =
+                d2.relationshipModule().relationships().getByItem(RelationshipHelper.teiItem(teiA.uid()), true);
         assertThat(relationships.size() > 0).isTrue();
 
-        Boolean relationshipFound = false;
+        boolean relationshipFound = false;
         for (Relationship relationship : relationships) {
             if (!relationshipType.uid().equals(relationship.relationshipType())) {
                 break;

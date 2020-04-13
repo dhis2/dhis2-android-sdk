@@ -66,7 +66,7 @@ public class RelationshipOrphanCleanerImpl implements OrphanCleaner<TrackedEntit
 
         List<Relationship229Compatible> existingRelationships = relationshipDHISVersionManager
                 .to229Compatible(
-                        relationshipRepository.getByItem(RelationshipHelper.teiItem(instance.uid())),
+                        relationshipRepository.getByItem(RelationshipHelper.teiItem(instance.uid()), true),
                         instance.uid()
                 );
 

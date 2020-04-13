@@ -61,6 +61,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 import io.reactivex.Single;
 
+import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.isDeleted;
 import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.FROM;
 import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.TO;
 import static org.hisp.dhis.android.core.relationship.RelationshipHelper.areItemsEqual;
@@ -156,6 +157,10 @@ public class RelationshipCollectionRepository
     }
 
     public List<Relationship> getByItem(@NonNull RelationshipItem searchItem) {
+        return getByItem(searchItem, false);
+    }
+
+    public List<Relationship> getByItem(@NonNull RelationshipItem searchItem, Boolean includeDeleted) {
 
         // TODO Create query to avoid retrieving the whole table
         List<RelationshipItem> relationshipItems = this.relationshipItemStore.selectAll();
@@ -170,6 +175,10 @@ public class RelationshipCollectionRepository
                         UidsHelper.findByUid(allRelationshipsFromDb, iterationItem.relationship().uid());
 
                 if (relationshipFromDb == null) {
+                    continue;
+                }
+
+                if (!includeDeleted && isDeleted(relationshipFromDb)) {
                     continue;
                 }
 

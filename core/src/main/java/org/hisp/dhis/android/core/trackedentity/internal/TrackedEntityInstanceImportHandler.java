@@ -169,7 +169,7 @@ public final class TrackedEntityInstanceImportHandler {
 
     private void setRelationshipsState(String trackedEntityInstanceUid, State state) {
         List<Relationship> dbRelationships =
-                relationshipRepository.getByItem(RelationshipHelper.teiItem(trackedEntityInstanceUid));
+                relationshipRepository.getByItem(RelationshipHelper.teiItem(trackedEntityInstanceUid), true);
 
         List<Relationship229Compatible> ownedRelationships = relationshipDHISVersionManager
                 .to229Compatible(dbRelationships, trackedEntityInstanceUid);

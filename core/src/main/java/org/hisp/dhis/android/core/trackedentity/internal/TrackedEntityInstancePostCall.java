@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
@@ -57,7 +58,6 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionM
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDeleteCall;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStore;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore;
-import org.hisp.dhis.android.core.systeminfo.DHISVersion;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader;
@@ -164,9 +164,7 @@ public final class TrackedEntityInstancePostCall {
                     }
 
                     for (List<TrackedEntityInstance> partition : trackedEntityInstancesToPost) {
-                        if (versionManager.isGreaterThan(DHISVersion.V2_29)) {
-                            partition = relationshipDeleteCall.postDeletedRelationships(partition);
-                        }
+                        partition = relationshipDeleteCall.postDeletedRelationships(partition);
 
                         TrackedEntityInstancePayload trackedEntityInstancePayload =
                                 TrackedEntityInstancePayload.create(partition);
@@ -334,8 +332,10 @@ public final class TrackedEntityInstancePostCall {
 
         List<Relationship> dbRelationships =
                 relationshipRepository.getByItem(RelationshipHelper.teiItem(trackedEntityInstance.uid()), true);
+        List<Relationship> ownedRelationships =
+                relationshipDHISVersionManager.getOwnedRelationships(dbRelationships, trackedEntityInstance.uid());
         List<Relationship229Compatible> versionAwareRelationships =
-                relationshipDHISVersionManager.to229Compatible(dbRelationships, trackedEntityInstance.uid());
+                relationshipDHISVersionManager.to229Compatible(ownedRelationships, trackedEntityInstance.uid());
 
         return TrackedEntityInstanceInternalAccessor
                 .insertEnrollments(
@@ -381,7 +381,15 @@ public final class TrackedEntityInstancePostCall {
                 }
             }
             for (Relationship229Compatible r : TrackedEntityInstanceInternalAccessor.accessRelationships(instance)) {
-                relationshipUids.add(r.uid());
+                if (versionManager.is2_29()) {
+                    String whereClause = new WhereClauseBuilder().appendKeyStringValue(CoreColumns.ID, r.id()).build();
+                    Relationship dbRelationship = relationshipStore.selectOneWhere(whereClause);
+                    if (dbRelationship != null) {
+                        relationshipUids.add(dbRelationship.uid());
+                    }
+                } else {
+                    relationshipUids.add(r.uid());
+                }
             }
         }
 

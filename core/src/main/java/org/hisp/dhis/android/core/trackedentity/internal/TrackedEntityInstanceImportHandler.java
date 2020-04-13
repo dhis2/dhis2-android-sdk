@@ -45,7 +45,6 @@ import org.hisp.dhis.android.core.imports.internal.TEIImportSummary;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
 import org.hisp.dhis.android.core.relationship.RelationshipHelper;
-import org.hisp.dhis.android.core.relationship.internal.Relationship229Compatible;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo;
@@ -171,11 +170,11 @@ public final class TrackedEntityInstanceImportHandler {
         List<Relationship> dbRelationships =
                 relationshipRepository.getByItem(RelationshipHelper.teiItem(trackedEntityInstanceUid), true);
 
-        List<Relationship229Compatible> ownedRelationships = relationshipDHISVersionManager
-                .to229Compatible(dbRelationships, trackedEntityInstanceUid);
+        List<Relationship> ownedRelationships = relationshipDHISVersionManager
+                .getOwnedRelationships(dbRelationships, trackedEntityInstanceUid);
 
-        for (Relationship229Compatible r : ownedRelationships) {
-            relationshipStore.setStateOrDelete(r.uid(), state);
+        for (Relationship relationship : ownedRelationships) {
+            relationshipStore.setStateOrDelete(relationship.uid(), state);
         }
     }
 }

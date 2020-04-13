@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.relationship.internal;
 
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
 import org.hisp.dhis.android.core.relationship.RelationshipHelper;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
@@ -51,9 +52,9 @@ public class RelationshipOrphanCleanerImpl implements OrphanCleaner<TrackedEntit
     private final RelationshipDHISVersionManager relationshipDHISVersionManager;
 
     @Inject
-    public RelationshipOrphanCleanerImpl(RelationshipStore relationshipStore,
-                                         RelationshipCollectionRepository relationshipRepository,
-                                         RelationshipDHISVersionManager relationshipDHISVersionManager) {
+    RelationshipOrphanCleanerImpl(RelationshipStore relationshipStore,
+                                  RelationshipCollectionRepository relationshipRepository,
+                                  RelationshipDHISVersionManager relationshipDHISVersionManager) {
         this.relationshipStore = relationshipStore;
         this.relationshipRepository = relationshipRepository;
         this.relationshipDHISVersionManager = relationshipDHISVersionManager;
@@ -64,15 +65,16 @@ public class RelationshipOrphanCleanerImpl implements OrphanCleaner<TrackedEntit
             return false;
         }
 
-        List<Relationship229Compatible> existingRelationships = relationshipDHISVersionManager
-                .to229Compatible(
-                        relationshipRepository.getByItem(RelationshipHelper.teiItem(instance.uid()), true),
-                        instance.uid()
-                );
+        Collection<Relationship> teiRelationships =
+                relationshipDHISVersionManager.from229Compatible(relationships);
+
+        List<Relationship> existingRelationships =
+                relationshipRepository.getByItem(RelationshipHelper.teiItem(instance.uid()), true);
 
         int count = 0;
-        for (Relationship229Compatible existingRelationship : existingRelationships) {
-            if (isSynced(existingRelationship.state()) && !isInRelationshipList(existingRelationship, relationships)) {
+        for (Relationship existingRelationship : existingRelationships) {
+            if (isSynced(existingRelationship.state()) &&
+                    !isInRelationshipList(existingRelationship, teiRelationships)) {
                 relationshipStore.delete(existingRelationship.uid());
                 count++;
             }
@@ -85,9 +87,9 @@ public class RelationshipOrphanCleanerImpl implements OrphanCleaner<TrackedEntit
         return State.SYNCED.equals(state) || State.SYNCED_VIA_SMS.equals(state);
     }
 
-    private boolean isInRelationshipList(Relationship229Compatible target,
-                                         Collection<Relationship229Compatible> list) {
-        for (Relationship229Compatible relationship : list) {
+    private boolean isInRelationshipList(Relationship target,
+                                         Collection<Relationship> list) {
+        for (Relationship relationship : list) {
             if (target.from() == null || target.to() == null || relationship.from() == null || target.to() == null) {
                 continue;
             }

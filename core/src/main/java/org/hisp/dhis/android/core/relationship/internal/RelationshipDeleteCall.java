@@ -31,9 +31,12 @@ package org.hisp.dhis.android.core.relationship.internal;
 import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+import org.hisp.dhis.android.core.common.CoreColumns;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.hisp.dhis.android.core.imports.internal.RelationshipDeleteWebResponse;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
 
@@ -57,13 +60,17 @@ public final class RelationshipDeleteCall {
 
     private final APICallExecutor apiCallExecutor;
 
+    private final DHISVersionManager dhisVersionManager;
+
     @Inject
     RelationshipDeleteCall(@NonNull RelationshipService relationshipService,
                            @NonNull RelationshipStore relationshipStore,
-                           @NonNull APICallExecutor apiCallExecutor) {
+                           @NonNull APICallExecutor apiCallExecutor,
+                           @NonNull DHISVersionManager dhisVersionManager) {
         this.relationshipService = relationshipService;
         this.relationshipStore = relationshipStore;
         this.apiCallExecutor = apiCallExecutor;
+        this.dhisVersionManager = dhisVersionManager;
     }
 
     @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})
@@ -80,7 +87,7 @@ public final class RelationshipDeleteCall {
                 List<Relationship229Compatible> nonDeletedRelationships = new ArrayList<>();
                 for (Relationship229Compatible relationship : relationships) {
                     if (isDeleted(relationship)) {
-                        deleteRelationship(relationship.uid()).blockingAwait();
+                        deleteRelationship(relationship).blockingAwait();
                     } else {
                         nonDeletedRelationships.add(relationship);
                     }
@@ -94,25 +101,31 @@ public final class RelationshipDeleteCall {
         return withoutDeletedRelationships;
     }
 
-    private Completable deleteRelationship(String relationshipUid) {
+    private Completable deleteRelationship(Relationship229Compatible relationship) {
         return Completable.fromCallable(() -> {
-            RelationshipDeleteWebResponse httpResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
-                    relationshipService.deleteRelationship(relationshipUid),
-                    Collections.singletonList(404),
-                    RelationshipDeleteWebResponse.class);
-
-            ImportStatus status  = httpResponse.response() == null ? null : httpResponse.response().status();
-
-            if (httpResponse.httpStatusCode() == 200 && ImportStatus.SUCCESS.equals(status) ||
-                    httpResponse.httpStatusCode() == 404) {
-                relationshipStore.delete(relationshipUid);
+            if (dhisVersionManager.is2_29()) {
+                String whereClause = new WhereClauseBuilder()
+                        .appendKeyStringValue(CoreColumns.ID, relationship.id()).build();
+                relationshipStore.deleteWhereIfExists(whereClause);
+                return RelationshipDeleteWebResponse.empty();
             } else {
-                // TODO Implement better handling
-                // The relationship is marked as error, but there is no handling in the TEI. The TEI is being posted.
-                relationshipStore.setState(relationshipUid, State.ERROR);
-            }
+                RelationshipDeleteWebResponse httpResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
+                        relationshipService.deleteRelationship(relationship.uid()),
+                        Collections.singletonList(404),
+                        RelationshipDeleteWebResponse.class);
 
-            return httpResponse;
+                ImportStatus status  = httpResponse.response() == null ? null : httpResponse.response().status();
+
+                if (httpResponse.httpStatusCode() == 200 && ImportStatus.SUCCESS.equals(status) ||
+                        httpResponse.httpStatusCode() == 404) {
+                    relationshipStore.delete(relationship.uid());
+                } else {
+                    // TODO Implement better handling
+                    // The relationship is marked as error, but there is no handling in the TEI. The TEI is being posted
+                    relationshipStore.setState(relationship.uid(), State.ERROR);
+                }
+                return httpResponse;
+            }
         });
     }
 

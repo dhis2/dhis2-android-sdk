@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -55,20 +56,29 @@ public class RelationshipDHISVersionManager {
         this.versionManager = versionManager;
     }
 
-    public List<Relationship229Compatible> to229Compatible(List<Relationship> storedRelationships, String teiUid) {
-        List<Relationship229Compatible> transformedRelationships = new ArrayList<>();
-        for (Relationship relationship : storedRelationships) {
+    public List<Relationship> getOwnedRelationships(List<Relationship> relationships, String teiUid) {
+        List<Relationship> ownedRelationships = new ArrayList<>();
+        for (Relationship relationship : relationships) {
             RelationshipItem fromTei = relationship.from();
             if (versionManager.is2_29() || fromTei != null && fromTei.trackedEntityInstance() != null &&
                     fromTei.trackedEntityInstance().trackedEntityInstance().equals(teiUid)) {
-                transformedRelationships.add(to229Compatible(relationship, teiUid));
+                ownedRelationships.add(relationship);
             }
+        }
+        return ownedRelationships;
+    }
+
+    public List<Relationship229Compatible> to229Compatible(List<Relationship> storedRelationships, String teiUid) {
+        List<Relationship229Compatible> transformedRelationships = new ArrayList<>();
+        for (Relationship relationship : storedRelationships) {
+            transformedRelationships.add(to229Compatible(relationship, teiUid));
         }
         return transformedRelationships;
     }
 
     Relationship229Compatible to229Compatible(Relationship relationship, String teiUid) {
         Relationship229Compatible.Builder builder = Relationship229Compatible.builder()
+                .id(relationship.id())
                 .name(relationship.name())
                 .created(relationship.created())
                 .lastUpdated(relationship.lastUpdated())
@@ -117,7 +127,7 @@ public class RelationshipDHISVersionManager {
         }
     }
 
-    public List<Relationship> from229Compatible(List<Relationship229Compatible> list) {
+    public Collection<Relationship> from229Compatible(Collection<Relationship229Compatible> list) {
         List<Relationship> result = new ArrayList<>(list.size());
         for (Relationship229Compatible r : list) {
             result.add(from229Compatible(r));

@@ -112,7 +112,7 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
                                      List<Relationship229Compatible> relationships) {
         createRelativesIfNotExist(trackedEntityInstanceUid, relationships);
 
-        List<Relationship> relationshipsList = relationshipVersionManager.from229Compatible(relationships);
+        Collection<Relationship> relationshipsList = relationshipVersionManager.from229Compatible(relationships);
         relationshipHandler.handleMany(relationshipsList, relationship -> relationship.toBuilder()
                 .state(State.SYNCED)
                 .deleted(false)

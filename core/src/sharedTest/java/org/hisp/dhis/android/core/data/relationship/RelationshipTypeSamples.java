@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.data.relationship;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.relationship.RelationshipConstraint;
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType;
+import org.hisp.dhis.android.core.relationship.RelationshipEntityType;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 
 import java.util.HashMap;
@@ -41,6 +42,8 @@ public class RelationshipTypeSamples {
 
     public static String RELATIONSHIP_TYPE_UID_1 = "RELATIONSHIP_TYPE_UID_1";
     public static String RELATIONSHIP_TYPE_UID_2 = "RELATIONSHIP_TYPE_UID_2";
+    public static String RELATIONSHIP_TYPE_UID_3 = "RELATIONSHIP_TYPE_UID_3";
+    public static String TET_FOR_RELATIONSHIP_3_UID = "nEenWmSyUEp";
 
     public static RelationshipConstraint FROM_CONSTRAINT_1 = RelationshipConstraint
             .builder()
@@ -68,6 +71,24 @@ public class RelationshipTypeSamples {
             .id(4L)
             .constraintType(RelationshipConstraintType.TO)
             .relationshipType(ObjectWithUid.create(RELATIONSHIP_TYPE_UID_2))
+            .relationshipEntity(RelationshipEntityType.TRACKED_ENTITY_INSTANCE)
+            .trackedEntityType(ObjectWithUid.create(TET_FOR_RELATIONSHIP_3_UID))
+            .build();
+
+    public static RelationshipConstraint FROM_CONSTRAINT_3 = RelationshipConstraint
+            .builder()
+            .id(5L)
+            .constraintType(RelationshipConstraintType.FROM)
+            .relationshipType(ObjectWithUid.create(RELATIONSHIP_TYPE_UID_3))
+            .relationshipEntity(RelationshipEntityType.TRACKED_ENTITY_INSTANCE)
+            .trackedEntityType(ObjectWithUid.create(TET_FOR_RELATIONSHIP_3_UID))
+            .build();
+
+    public static RelationshipConstraint TO_CONSTRAINT_3 = RelationshipConstraint
+            .builder()
+            .id(6L)
+            .constraintType(RelationshipConstraintType.TO)
+            .relationshipType(ObjectWithUid.create(RELATIONSHIP_TYPE_UID_3))
             .build();
 
     public static RelationshipType RELATIONSHIP_TYPE_1 = RelationshipType
@@ -86,10 +107,19 @@ public class RelationshipTypeSamples {
             .toConstraint(TO_CONSTRAINT_2)
             .build();
 
+    public static RelationshipType RELATIONSHIP_TYPE_3 = RelationshipType
+            .builder()
+            .id(3L)
+            .uid(RELATIONSHIP_TYPE_UID_3)
+            .fromConstraint(FROM_CONSTRAINT_3)
+            .toConstraint(TO_CONSTRAINT_3)
+            .build();
+
     public static Map<String, RelationshipType> typeMap() {
         Map<String, RelationshipType> typeMap = new HashMap<>();
         typeMap.put(RELATIONSHIP_TYPE_UID_1, RELATIONSHIP_TYPE_1);
         typeMap.put(RELATIONSHIP_TYPE_UID_2, RELATIONSHIP_TYPE_2);
+        typeMap.put(RELATIONSHIP_TYPE_UID_3, RELATIONSHIP_TYPE_3);
         return typeMap;
     }
 }

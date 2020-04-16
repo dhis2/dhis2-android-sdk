@@ -36,7 +36,9 @@ import org.hisp.dhis.android.core.arch.call.fetchers.internal.UidsNoResourceCall
 import org.hisp.dhis.android.core.arch.call.internal.EndpointCall;
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
 import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.user.AuthenticatedUser;
 import org.hisp.dhis.android.core.user.User;
 
 import java.util.List;
@@ -57,22 +59,25 @@ final class SearchOrganisationUnitOnDemandCallFactory {
     private final D2CallExecutor d2CallExecutor;
     private final OrganisationUnitHandler handler;
     private final OrganisationUnitDisplayPathTransformer pathTransformer;
+    private final ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
 
     @Inject
     SearchOrganisationUnitOnDemandCallFactory(OrganisationUnitService service,
                                               APICallExecutor apiCallExecutor,
                                               D2CallExecutor d2CallExecutor,
                                               OrganisationUnitHandler handler,
-                                              OrganisationUnitDisplayPathTransformer pathTransformer) {
+                                              OrganisationUnitDisplayPathTransformer pathTransformer,
+                                              ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore) {
         this.service = service;
         this.apiCallExecutor = apiCallExecutor;
         this.d2CallExecutor = d2CallExecutor;
         this.handler = handler;
         this.pathTransformer = pathTransformer;
+        this.authenticatedUserStore = authenticatedUserStore;
     }
 
-    public Callable<List<OrganisationUnit>> create(Set<String> uids, User user) {
-        return new EndpointCall<>(fetcher(uids), processor(user));
+    public Callable<List<OrganisationUnit>> create(Set<String> uids) {
+        return new EndpointCall<>(fetcher(uids), processor());
     }
 
     private CallFetcher<OrganisationUnit> fetcher(Set<String> uids) {
@@ -87,9 +92,12 @@ final class SearchOrganisationUnitOnDemandCallFactory {
         };
     }
 
-    private CallProcessor<OrganisationUnit> processor(final User user) {
+    private CallProcessor<OrganisationUnit> processor() {
         return objectList -> {
             if (objectList != null && !objectList.isEmpty()) {
+                AuthenticatedUser authenticatedUser = authenticatedUserStore.selectFirst();
+                User user = User.builder().uid(authenticatedUser.user()).build();
+
                 d2CallExecutor.executeD2CallTransactionally(() -> {
                     handler.setData(user, OrganisationUnit.Scope.SCOPE_TEI_SEARCH);
                     handler.handleMany(objectList, pathTransformer);

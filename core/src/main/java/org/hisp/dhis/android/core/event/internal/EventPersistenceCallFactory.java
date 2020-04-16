@@ -31,42 +31,34 @@ package org.hisp.dhis.android.core.event.internal;
 import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader;
-import org.hisp.dhis.android.core.user.AuthenticatedUser;
-import org.hisp.dhis.android.core.user.User;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 import io.reactivex.Completable;
-import io.reactivex.Single;
 
 @Reusable
 public final class EventPersistenceCallFactory {
 
     private final IdentifiableDataHandler<Event> eventHandler;
-    private final ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
     private final IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
     private final OrganisationUnitModuleDownloader organisationUnitDownloader;
 
     @Inject
     EventPersistenceCallFactory(
             @NonNull IdentifiableDataHandler<Event> eventHandler,
-            @NonNull ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore,
             @NonNull IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
             @NonNull OrganisationUnitModuleDownloader organisationUnitDownloader) {
         this.eventHandler = eventHandler;
-        this.authenticatedUserStore = authenticatedUserStore;
         this.organisationUnitStore = organisationUnitStore;
         this.organisationUnitDownloader = organisationUnitDownloader;
     }
@@ -79,23 +71,9 @@ public final class EventPersistenceCallFactory {
                             .build(),
                     false);
 
-            return downloadSearchOrgUnits(events);
+            Set<String> searchUnitUids = getMissingOrganisationUnitUids(events);
+            return organisationUnitDownloader.downloadSearchOrganisationUnits(searchUnitUids);
         });
-    }
-
-    private Completable downloadSearchOrgUnits(Collection<Event> events) {
-        Set<String> searchOrgUnitUids = getMissingOrganisationUnitUids(events);
-
-        if (searchOrgUnitUids.isEmpty()) {
-            return Completable.complete();
-        } else {
-            AuthenticatedUser authenticatedUser = authenticatedUserStore.selectFirst();
-
-            Single<List<OrganisationUnit>> organisationUnitCall =
-                    organisationUnitDownloader.downloadSearchOrganisationUnits(
-                            searchOrgUnitUids, User.builder().uid(authenticatedUser.user()).build());
-            return organisationUnitCall.ignoreElement();
-        }
     }
 
     private Set<String> getMissingOrganisationUnitUids(Collection<Event> events) {

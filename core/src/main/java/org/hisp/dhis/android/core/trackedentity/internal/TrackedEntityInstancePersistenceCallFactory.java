@@ -30,12 +30,8 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 
 import androidx.annotation.NonNull;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.android.core.user.AuthenticatedUser;
-import org.hisp.dhis.android.core.user.User;
 
 import java.util.List;
 import java.util.Set;
@@ -44,45 +40,39 @@ import javax.inject.Inject;
 
 import dagger.Reusable;
 import io.reactivex.Completable;
-import io.reactivex.Single;
 
 @Reusable
 final class TrackedEntityInstancePersistenceCallFactory {
 
     private final TrackedEntityInstanceHandler trackedEntityInstanceHandler;
     private final TrackedEntityInstanceUidHelper uidsHelper;
-    private final ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
     private final OrganisationUnitModuleDownloader organisationUnitDownloader;
 
     @Inject
     TrackedEntityInstancePersistenceCallFactory(
             @NonNull TrackedEntityInstanceHandler trackedEntityInstanceHandler,
             @NonNull TrackedEntityInstanceUidHelper uidsHelper,
-            @NonNull ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore,
             @NonNull OrganisationUnitModuleDownloader organisationUnitDownloader) {
         this.trackedEntityInstanceHandler = trackedEntityInstanceHandler;
         this.uidsHelper = uidsHelper;
-        this.authenticatedUserStore = authenticatedUserStore;
         this.organisationUnitDownloader = organisationUnitDownloader;
     }
 
     Completable persistTEIs(final List<TrackedEntityInstance> trackedEntityInstances,
                             boolean isFullUpdate, boolean overwrite) {
+        return persistTEIsInternal(trackedEntityInstances, false, isFullUpdate, overwrite);
+    }
+
+    Completable persistRelationships(final List<TrackedEntityInstance> trackedEntityInstances) {
+        return persistTEIsInternal(trackedEntityInstances, true, false, false);
+    }
+
+    private Completable persistTEIsInternal(final List<TrackedEntityInstance> trackedEntityInstances,
+                            boolean asRelationship, boolean isFullUpdate, boolean overwrite) {
         return Completable.defer(() -> {
-            trackedEntityInstanceHandler.handleMany(trackedEntityInstances, false, isFullUpdate, overwrite);
-
+            trackedEntityInstanceHandler.handleMany(trackedEntityInstances, asRelationship, isFullUpdate, overwrite);
             Set<String> searchOrgUnitUids = uidsHelper.getMissingOrganisationUnitUids(trackedEntityInstances);
-
-            if (searchOrgUnitUids.isEmpty()) {
-                return Completable.complete();
-            } else {
-                AuthenticatedUser authenticatedUser = authenticatedUserStore.selectFirst();
-
-                Single<List<OrganisationUnit>> organisationUnitCall =
-                        organisationUnitDownloader.downloadSearchOrganisationUnits(searchOrgUnitUids,
-                                User.builder().uid(authenticatedUser.user()).build());
-                return organisationUnitCall.ignoreElement();
-            }
+            return organisationUnitDownloader.downloadSearchOrganisationUnits(searchOrgUnitUids);
         });
     }
 }

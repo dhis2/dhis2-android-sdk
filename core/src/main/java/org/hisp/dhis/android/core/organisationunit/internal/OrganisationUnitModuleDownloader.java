@@ -36,6 +36,7 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Completable;
 import io.reactivex.Single;
 
 @Reusable
@@ -66,7 +67,11 @@ public class OrganisationUnitModuleDownloader {
         });
     }
 
-    public Single<List<OrganisationUnit>> downloadSearchOrganisationUnits(Set<String> uids, User user) {
-        return Single.fromCallable(searchOrganisationUnitOnDemandCallFactory.create(uids, user));
+    public Completable downloadSearchOrganisationUnits(Set<String> uids) {
+        if (uids.isEmpty()) {
+            return Completable.complete();
+        } else {
+            return Completable.fromCallable(searchOrganisationUnitOnDemandCallFactory.create(uids));
+        }
     }
 }

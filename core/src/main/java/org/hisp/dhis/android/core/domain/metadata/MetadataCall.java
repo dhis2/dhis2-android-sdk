@@ -119,10 +119,12 @@ public class MetadataCall {
     public Observable<D2Progress> download() {
         D2ProgressManager progressManager = new D2ProgressManager(9);
         return rxCallExecutor.wrapObservableTransactionally(Observable.merge(
+                changeEncryptionIfRequired().toObservable(),
+                systemInfoDownloader.downloadMetadata().toSingle(() ->
+                                progressManager.increaseProgress(SystemInfo.class, false)).toObservable(),
                 executeIndependentCalls(progressManager),
                 executeUserCallAndChildren(progressManager)
-        ).startWith(changeEncryptionIfRequired().andThen(systemInfoDownloader.downloadMetadata().toSingle(() ->
-                progressManager.increaseProgress(SystemInfo.class, false)).toObservable())), true);
+        ), true);
     }
 
     private Observable<D2Progress> executeIndependentCalls(D2ProgressManager progressManager) {
@@ -143,24 +145,18 @@ public class MetadataCall {
     private Observable<D2Progress> executeUserCallAndChildren(D2ProgressManager progressManager) {
         return userModuleDownloader.downloadMetadata().flatMapObservable(user ->
                 organisationUnitModuleDownloader.downloadMetadata(user).flatMapObservable(orgUnits ->
-                        categoryDownloader.downloadMetadata().toSingle(
-                                () -> progressManager.increaseProgress(Category.class, false)).toObservable()
-                                .startWith(
-                                        Single.merge(
-                                                Single.just(progressManager.increaseProgress(
-                                                        User.class, false)),
-                                                Single.just(progressManager.increaseProgress(
-                                                        OrganisationUnit.class, false)),
-                                                programDownloader.downloadMetadata(
-                                                        MetadataHelper.getOrgUnitsProgramUids(orgUnits)).map(
-                                                                r -> progressManager.increaseProgress(
-                                                                        Program.class, false)),
-                                                dataSetDownloader.downloadMetadata(
-                                                        MetadataHelper.getOrgUnitsDataSetUids(orgUnits)).map(
-                                                                r -> progressManager.increaseProgress(
-                                                                        DataSet.class, false))
-                                        ).toObservable()
-                                )
+                        Single.<D2Progress>concatArray(
+                                Single.just(progressManager.increaseProgress(User.class, false)),
+                                Single.just(progressManager.increaseProgress(OrganisationUnit.class, false)),
+                                programDownloader.downloadMetadata(
+                                        MetadataHelper.getOrgUnitsProgramUids(orgUnits)).map(
+                                        r -> progressManager.increaseProgress(Program.class, false)),
+                                dataSetDownloader.downloadMetadata(
+                                        MetadataHelper.getOrgUnitsDataSetUids(orgUnits)).map(
+                                        r -> progressManager.increaseProgress(DataSet.class, false)),
+                                categoryDownloader.downloadMetadata().toSingle(() ->
+                                        progressManager.increaseProgress(Category.class, false))
+                        ).toObservable()
                 ));
     }
 

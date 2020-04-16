@@ -73,15 +73,15 @@ final class TrackedEntityInstancePersistenceCallFactory {
 
             Set<String> searchOrgUnitUids = uidsHelper.getMissingOrganisationUnitUids(trackedEntityInstances);
 
-            if (!searchOrgUnitUids.isEmpty()) {
+            if (searchOrgUnitUids.isEmpty()) {
+                return Completable.complete();
+            } else {
                 AuthenticatedUser authenticatedUser = authenticatedUserStore.selectFirst();
 
                 Single<List<OrganisationUnit>> organisationUnitCall =
                         organisationUnitDownloader.downloadSearchOrganisationUnits(searchOrgUnitUids,
                                 User.builder().uid(authenticatedUser.user()).build());
                 return organisationUnitCall.ignoreElement();
-            } else {
-                return Completable.complete();
             }
         });
     }

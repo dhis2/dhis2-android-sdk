@@ -86,7 +86,7 @@ public final class EventPersistenceCallFactory {
     private Completable downloadSearchOrgUnits(Collection<Event> events) {
         Set<String> searchOrgUnitUids = getMissingOrganisationUnitUids(events);
 
-        if (!searchOrgUnitUids.isEmpty()) {
+        if (searchOrgUnitUids.isEmpty()) {
             return Completable.complete();
         } else {
             AuthenticatedUser authenticatedUser = authenticatedUserStore.selectFirst();

@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader;
 import org.hisp.dhis.android.core.user.AuthenticatedUser;
@@ -45,11 +44,11 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Completable;
 import io.reactivex.Single;
 
 @Reusable
@@ -59,46 +58,44 @@ public final class EventPersistenceCallFactory {
     private final ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
     private final IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
     private final OrganisationUnitModuleDownloader organisationUnitDownloader;
-    private final ForeignKeyCleaner foreignKeyCleaner;
 
     @Inject
     EventPersistenceCallFactory(
             @NonNull IdentifiableDataHandler<Event> eventHandler,
             @NonNull ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore,
             @NonNull IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
-            @NonNull OrganisationUnitModuleDownloader organisationUnitDownloader,
-            @NonNull ForeignKeyCleaner foreignKeyCleaner) {
+            @NonNull OrganisationUnitModuleDownloader organisationUnitDownloader) {
         this.eventHandler = eventHandler;
         this.authenticatedUserStore = authenticatedUserStore;
         this.organisationUnitStore = organisationUnitStore;
         this.organisationUnitDownloader = organisationUnitDownloader;
-        this.foreignKeyCleaner = foreignKeyCleaner;
     }
 
-    public Callable<Void> getCall(final Collection<Event> events) {
-
-        return () -> {
+    Completable persistEvents(final Collection<Event> events) {
+        return Completable.defer(() -> {
             eventHandler.handleMany(events,
                     event -> event.toBuilder()
                             .state(State.SYNCED)
                             .build(),
                     false);
 
-            Set<String> searchOrgUnitUids = getMissingOrganisationUnitUids(events);
+            return downloadSearchOrgUnits(events);
+        });
+    }
 
-            if (!searchOrgUnitUids.isEmpty()) {
-                AuthenticatedUser authenticatedUser = authenticatedUserStore.selectFirst();
+    private Completable downloadSearchOrgUnits(Collection<Event> events) {
+        Set<String> searchOrgUnitUids = getMissingOrganisationUnitUids(events);
 
-                Single<List<OrganisationUnit>> organisationUnitCall =
-                        organisationUnitDownloader.downloadSearchOrganisationUnits(
+        if (!searchOrgUnitUids.isEmpty()) {
+            return Completable.complete();
+        } else {
+            AuthenticatedUser authenticatedUser = authenticatedUserStore.selectFirst();
+
+            Single<List<OrganisationUnit>> organisationUnitCall =
+                    organisationUnitDownloader.downloadSearchOrganisationUnits(
                             searchOrgUnitUids, User.builder().uid(authenticatedUser.user()).build());
-                organisationUnitCall.blockingGet();
-            }
-
-            foreignKeyCleaner.cleanForeignKeyErrors();
-
-            return null;
-        };
+            return organisationUnitCall.ignoreElement();
+        }
     }
 
     private Set<String> getMissingOrganisationUnitUids(Collection<Event> events) {

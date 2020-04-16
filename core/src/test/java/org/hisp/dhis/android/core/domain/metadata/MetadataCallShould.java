@@ -37,15 +37,11 @@ import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.category.internal.CategoryModuleDownloader;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager;
-import org.hisp.dhis.android.core.constant.Constant;
 import org.hisp.dhis.android.core.constant.internal.ConstantModuleDownloader;
-import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.internal.DataSetModuleDownloader;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationTableInfo;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader;
-import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.internal.ProgramModuleDownloader;
 import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall;
 import org.hisp.dhis.android.core.settings.internal.SettingModuleDownloader;
@@ -60,8 +56,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.AdditionalAnswers;
 import org.mockito.Mock;
-
-import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
@@ -84,18 +78,6 @@ public class MetadataCallShould extends BaseCallShould {
 
     @Mock
     private RxAPICallExecutor rxAPICallExecutor;
-
-    @Mock
-    private DataSet dataSet;
-
-    @Mock
-    private OrganisationUnit organisationUnit;
-
-    @Mock
-    private Constant constant;
-
-    @Mock
-    private Single<List<Program>> programDownloadCall;
 
     @Mock
     private SystemInfoModuleDownloader systemInfoDownloader;
@@ -151,10 +133,10 @@ public class MetadataCallShould extends BaseCallShould {
         when(systemInfoDownloader.downloadMetadata()).thenReturn(Completable.complete());
         when(systemSettingDownloader.downloadMetadata()).thenReturn(Completable.complete());
         when(userDownloader.downloadMetadata()).thenReturn(Single.just(user));
-        when(programDownloader.downloadMetadata(anySet())).thenReturn(programDownloadCall);
-        when(organisationUnitDownloader.downloadMetadata(same(user))).thenReturn(Single.just(Lists.newArrayList(organisationUnit)));
-        when(dataSetDownloader.downloadMetadata(anySet())).thenReturn(Single.just(Lists.newArrayList(dataSet)));
-        when(constantDownloader.downloadMetadata()).thenReturn(Single.just(Lists.newArrayList(constant)));
+        when(programDownloader.downloadMetadata(anySet())).thenReturn(Single.just(Lists.emptyList()));
+        when(organisationUnitDownloader.downloadMetadata(same(user))).thenReturn(Single.just(Lists.emptyList()));
+        when(dataSetDownloader.downloadMetadata(anySet())).thenReturn(Single.just(Lists.emptyList()));
+        when(constantDownloader.downloadMetadata()).thenReturn(Single.just(Lists.emptyList()));
         when(categoryDownloader.downloadMetadata()).thenReturn(Completable.complete());
         when(smsModule.configCase()).thenReturn(configCase);
         when(configCase.refreshMetadataIdsCallable()).thenReturn(Completable.complete());

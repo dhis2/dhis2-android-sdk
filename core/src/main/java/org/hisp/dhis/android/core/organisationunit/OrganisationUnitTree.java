@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -36,7 +36,8 @@ public final class OrganisationUnitTree {
 
     public static final String DELIMITER = "/";
 
-    private OrganisationUnitTree() {}
+    private OrganisationUnitTree() {
+    }
 
     /**
      * Extract a set of root uid's of OrganisationUnits, accessible by the user,
@@ -46,15 +47,11 @@ public final class OrganisationUnitTree {
      * @param organisationUnits
      * @return set of root uid's
      */
-    public static Set<String> findRoots(List<OrganisationUnit> organisationUnits) throws IllegalArgumentException {
-        Set<String> rootNodes = new HashSet<>();
+    public static Set<OrganisationUnit> findRoots(List<OrganisationUnit> organisationUnits)
+            throws IllegalArgumentException {
+        Set<OrganisationUnit> rootNodes = new HashSet<>();
         if (organisationUnits == null || organisationUnits.isEmpty()) {
             return rootNodes; //no assigned uid's, so don't waste time & quit early
-        }
-        //extract a list of the uid's:
-        List<String> organisationUnitUids = new ArrayList<>(organisationUnits.size());
-        for (OrganisationUnit orgUnit : organisationUnits) {
-            organisationUnitUids.add(orgUnit.uid());
         }
 
         for (int i = 0, size = organisationUnits.size(); i < size; i++) {
@@ -63,21 +60,92 @@ public final class OrganisationUnitTree {
             if (path == null || path.isEmpty()) { //path shouldn't be empty or null.
                 throw new IllegalArgumentException("OrganisationUnit's path should not be null or empty!");
             } else {
-                getRootFromPath(rootNodes, organisationUnitUids, path);
+                getRootFromPath(rootNodes, organisationUnits, path);
             }
         }
         return rootNodes;
     }
 
-    private static void getRootFromPath(Set<String> rootNodes, List<String> organisationUnitUids, String path) {
-        String[] result = path.split(DELIMITER);
-        for (int j = 0, rSize = result.length; j < rSize; j++) {
-            if (rootNodes.contains(result[j])) {
-                break; //already in root nodes stop iterating.
-            } else if (organisationUnitUids.contains(result[j])) {
-                rootNodes.add(result[j]);
-                break;
+    public static Set<OrganisationUnit> findRootsOutsideSearchScope(Set<OrganisationUnit> allRootCaptureOrgUnits,
+                                                                    Set<OrganisationUnit> rootSearchOrgUnits)
+            throws IllegalArgumentException {
+
+        Set<OrganisationUnit> outsideSearchScopeRootCaptureNodes = new HashSet<>();
+        if (allRootCaptureOrgUnits == null || allRootCaptureOrgUnits.isEmpty()) {
+            return outsideSearchScopeRootCaptureNodes;
+        }
+        if (rootSearchOrgUnits == null || rootSearchOrgUnits.isEmpty()) {
+            return allRootCaptureOrgUnits;
+        }
+
+        for (OrganisationUnit rootCaptureOrgUnit : allRootCaptureOrgUnits) {
+            if (!inScope(rootCaptureOrgUnit, rootSearchOrgUnits)) {
+                outsideSearchScopeRootCaptureNodes.add(rootCaptureOrgUnit);
             }
         }
+
+        return outsideSearchScopeRootCaptureNodes;
+    }
+
+    public static Set<OrganisationUnit> getCaptureOrgUnitsInSearchScope(
+            List<OrganisationUnit> allSearchOrgUnits,
+            Set<OrganisationUnit> allRootCaptureOrgUnits,
+            Set<OrganisationUnit> rootCaptureOrgUnitsOutsideSearchScope) throws IllegalArgumentException {
+
+        Set<OrganisationUnit> captureOrgUnitsInSearchScope = new HashSet<>();
+        Set<OrganisationUnit> rootCaptureOrgUnitsInSearchScope = new HashSet<>();
+        for (OrganisationUnit rootCaptureOrgUnit : allRootCaptureOrgUnits) {
+            if (uidInOrgUnitCollection(rootCaptureOrgUnit.uid(), rootCaptureOrgUnitsOutsideSearchScope) == null) {
+                rootCaptureOrgUnitsInSearchScope.add(rootCaptureOrgUnit);
+            }
+        }
+
+        for (OrganisationUnit searchOrgUnit : allSearchOrgUnits) {
+            if (inScope(searchOrgUnit, rootCaptureOrgUnitsInSearchScope)) {
+                captureOrgUnitsInSearchScope.add(searchOrgUnit);
+            }
+        }
+
+        return captureOrgUnitsInSearchScope;
+    }
+
+    private static void getRootFromPath(Set<OrganisationUnit> rootNodes,
+                                        List<OrganisationUnit> organisationUnits,
+                                        String path) {
+        String[] pathOrgUnitUids = path.split(DELIMITER);
+        for (String pathOrgUnitUid : pathOrgUnitUids) {
+            if (uidInOrgUnitCollection(pathOrgUnitUid, rootNodes) == null) {
+                OrganisationUnit organisationUnit = uidInOrgUnitCollection(pathOrgUnitUid, organisationUnits);
+                if (organisationUnit != null) {
+                    rootNodes.add(organisationUnit);
+                    break;
+                }
+            } else {
+                break; //already in root nodes stop iterating.
+            }
+        }
+    }
+
+    private static boolean inScope(OrganisationUnit orgUnit, Collection<OrganisationUnit> rootOrgUnits) {
+        if (orgUnit.path() == null || orgUnit.path().isEmpty()) {
+            throw new IllegalArgumentException("OrganisationUnit's path should not be empty!");
+        } else {
+            for (OrganisationUnit rootSearchOrgUnit : rootOrgUnits) {
+                if (orgUnit.path().contains(rootSearchOrgUnit.uid())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private static OrganisationUnit uidInOrgUnitCollection(String orgUnitUid,
+                                                           Collection<OrganisationUnit> organisationUnits) {
+        for (OrganisationUnit organisationUnit : organisationUnits) {
+            if (orgUnitUid.equals(organisationUnit.uid())) {
+                return organisationUnit;
+            }
+        }
+        return null;
     }
 }

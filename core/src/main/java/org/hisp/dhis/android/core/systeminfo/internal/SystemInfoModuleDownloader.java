@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.systeminfo.internal;
 
-import org.hisp.dhis.android.core.arch.modules.internal.RxMetadataModuleDownloader;
+import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 
@@ -37,7 +37,7 @@ import dagger.Reusable;
 import io.reactivex.Completable;
 
 @Reusable
-public class SystemInfoModuleDownloader implements RxMetadataModuleDownloader {
+public class SystemInfoModuleDownloader implements UntypedModuleDownloader {
 
     private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
 

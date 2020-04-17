@@ -58,13 +58,12 @@ import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.internal.UserModuleDownloader;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import dagger.Reusable;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 
 @Reusable
 @SuppressWarnings("PMD.ExcessiveImports")
@@ -119,50 +118,46 @@ public class MetadataCall {
 
     public Observable<D2Progress> download() {
         D2ProgressManager progressManager = new D2ProgressManager(9);
+        return rxCallExecutor.wrapObservableTransactionally(Observable.merge(
+                changeEncryptionIfRequired().toObservable(),
+                systemInfoDownloader.downloadMetadata().toSingle(() ->
+                                progressManager.increaseProgress(SystemInfo.class, false)).toObservable(),
+                executeIndependentCalls(progressManager),
+                executeUserCallAndChildren(progressManager)
+        ), true);
+    }
 
-        return changeEncryptionIfRequired().andThen(
-                rxCallExecutor.wrapObservableTransactionally(
-                        systemInfoDownloader.downloadMetadata().andThen(Observable.create(emitter -> {
+    private Observable<D2Progress> executeIndependentCalls(D2ProgressManager progressManager) {
+        return Single.merge(
+                Single.fromCallable(() -> {
+                    databaseAdapter.delete(ForeignKeyViolationTableInfo.TABLE_INFO.name());
+                    return progressManager.increaseProgress(SystemInfo.class, false);
+                }),
+                systemSettingDownloader.downloadMetadata().toSingle(()
+                        -> progressManager.increaseProgress(SystemSetting.class, false)),
+                constantModuleDownloader.downloadMetadata().map(c
+                        -> progressManager.increaseProgress(Constant.class, false)),
+                smsModule.configCase().refreshMetadataIdsCallable().toSingle(()
+                        -> progressManager.increaseProgress(SmsModule.class, false))
+        ).toObservable();
+    }
 
-                            databaseAdapter.delete(ForeignKeyViolationTableInfo.TABLE_INFO.name());
-
-                            emitter.onNext(progressManager.increaseProgress(SystemInfo.class, false));
-
-                            systemSettingDownloader.downloadMetadata().call();
-                            emitter.onNext(progressManager.increaseProgress(SystemSetting.class, false));
-
-
-                            User user = userModuleDownloader.downloadMetadata().call();
-                            emitter.onNext(progressManager.increaseProgress(User.class, false));
-
-
-                            List<OrganisationUnit> orgUnits = organisationUnitModuleDownloader.downloadMetadata(user)
-                                    .call();
-                            emitter.onNext(progressManager.increaseProgress(OrganisationUnit.class, false));
-
-
-                            programDownloader.downloadMetadata(MetadataHelper.getOrgUnitsProgramUids(orgUnits)).call();
-                            emitter.onNext(progressManager.increaseProgress(Program.class, false));
-
-
-                            dataSetDownloader.downloadMetadata(MetadataHelper.getOrgUnitsDataSetUids(orgUnits)).call();
-                            emitter.onNext(progressManager.increaseProgress(DataSet.class, false));
-
-
-                            categoryDownloader.downloadMetadata().call();
-                            emitter.onNext(progressManager.increaseProgress(Category.class, false));
-
-
-                            constantModuleDownloader.downloadMetadata().call();
-                            emitter.onNext(progressManager.increaseProgress(Constant.class, false));
-
-
-                            smsModule.configCase().refreshMetadataIdsCallable().call();
-                            emitter.onNext(progressManager.increaseProgress(SmsModule.class, false));
-
-                            emitter.onComplete();
-
-                        })), true));
+    private Observable<D2Progress> executeUserCallAndChildren(D2ProgressManager progressManager) {
+        return userModuleDownloader.downloadMetadata().flatMapObservable(user ->
+                organisationUnitModuleDownloader.downloadMetadata(user).flatMapObservable(orgUnits ->
+                        Single.<D2Progress>concatArray(
+                                Single.just(progressManager.increaseProgress(User.class, false)),
+                                Single.just(progressManager.increaseProgress(OrganisationUnit.class, false)),
+                                programDownloader.downloadMetadata(
+                                        MetadataHelper.getOrgUnitsProgramUids(orgUnits)).map(
+                                        r -> progressManager.increaseProgress(Program.class, false)),
+                                dataSetDownloader.downloadMetadata(
+                                        MetadataHelper.getOrgUnitsDataSetUids(orgUnits)).map(
+                                        r -> progressManager.increaseProgress(DataSet.class, false)),
+                                categoryDownloader.downloadMetadata().toSingle(() ->
+                                        progressManager.increaseProgress(Category.class, false))
+                        ).toObservable()
+                ));
     }
 
     private Completable changeEncryptionIfRequired() {

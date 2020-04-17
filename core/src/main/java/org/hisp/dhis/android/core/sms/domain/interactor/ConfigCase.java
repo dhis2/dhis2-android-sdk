@@ -5,12 +5,8 @@ import android.util.Log;
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
 
-import java.util.concurrent.Callable;
-
 import io.reactivex.Completable;
-import io.reactivex.CompletableObserver;
 import io.reactivex.Single;
-import io.reactivex.disposables.Disposable;
 
 /**
  * Used to set initial data that is common for all sms sending tasks
@@ -129,26 +125,11 @@ public class ConfigCase {
      * Callable that triggers the method {@link #refreshMetadataIds()}.
      * @return Callable object to refresh metadata ids.
      */
-    public Callable<Void> refreshMetadataIdsCallable() {
-        return () -> {
-            refreshMetadataIds().subscribe(new CompletableObserver() {
-                @Override
-                public void onSubscribe(Disposable d) {
-                    Log.d(TAG, "Started SMS metadata sync.");
-                }
-
-                @Override
-                public void onComplete() {
-                    Log.d(TAG, "Completed SMS metadata sync.");
-                }
-
-                @Override
-                public void onError(Throwable e) {
-                    Log.d(TAG, e.getClass().getSimpleName() + " Error on SMS metadata sync.");
-                }
-            });
-            return null;
-        };
+    public Completable refreshMetadataIdsCallable() {
+        return refreshMetadataIds()
+                .doOnSubscribe(d -> Log.d(TAG, "Started SMS metadata sync."))
+                .doOnComplete(() -> Log.d(TAG, "Completed SMS metadata sync."))
+                .doOnError(e -> Log.d(TAG, e.getClass().getSimpleName() + " Error on SMS metadata sync."));
     }
 
     private WebApiRepository.GetMetadataIdsConfig getDefaultMetadataDownloadConfig() {

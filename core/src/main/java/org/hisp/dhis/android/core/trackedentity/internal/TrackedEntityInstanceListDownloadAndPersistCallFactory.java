@@ -100,7 +100,7 @@ public final class TrackedEntityInstanceListDownloadAndPersistCallFactory {
                 teis.addAll(teiList);
             }
 
-            d2CallExecutor.executeD2Call(persistenceCallFactory.getCall(teis, true, false));
+            persistenceCallFactory.persistTEIs(teis, true, false).blockingGet();
 
             if (!versionManager.is2_29()) {
                 relationshipsCallFactory.downloadAndPersist().blockingGet();

@@ -230,6 +230,7 @@ public class Dhis2MockServer {
         enqueueMockResponse(DATASET_SETTINGS_JSON);
         server.enqueue(getErrorResponse());
         enqueueMockResponse(SYSTEM_SETTINGS_JSON);
+        enqueueMockResponse(CONSTANTS_JSON);
         enqueueMockResponse(USER_JSON);
         enqueueMockResponse(AUTHORITIES_JSON);
         enqueueMockResponse(ORGANISATION_UNITS_JSON);
@@ -249,7 +250,6 @@ public class Dhis2MockServer {
         enqueueMockResponse(INDICATOR_TYPES_JSON);
         enqueueMockResponse(CATEGORY_COMBOS_JSON);
         enqueueMockResponse(CATEGORIES_JSON);
-        enqueueMockResponse(CONSTANTS_JSON);
     }
 
     @NonNull

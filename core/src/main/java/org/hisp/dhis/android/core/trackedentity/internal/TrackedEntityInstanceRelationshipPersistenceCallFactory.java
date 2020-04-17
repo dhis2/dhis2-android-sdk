@@ -46,6 +46,7 @@ import java.util.concurrent.Callable;
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Single;
 
 @Reusable
 final class TrackedEntityInstanceRelationshipPersistenceCallFactory {
@@ -80,11 +81,11 @@ final class TrackedEntityInstanceRelationshipPersistenceCallFactory {
             if (!searchOrgUnitUids.isEmpty()) {
                 AuthenticatedUser authenticatedUser = authenticatedUserStore.selectFirst();
 
-                Callable<List<OrganisationUnit>> organisationUnitCall =
+                Single<List<OrganisationUnit>> organisationUnitCall =
                         organisationUnitDownloader.downloadSearchOrganisationUnits(
                                 searchOrgUnitUids,
                                 User.builder().uid(authenticatedUser.user()).build());
-                organisationUnitCall.call();
+                organisationUnitCall.blockingGet();
             }
 
             foreignKeyCleaner.cleanForeignKeyErrors();

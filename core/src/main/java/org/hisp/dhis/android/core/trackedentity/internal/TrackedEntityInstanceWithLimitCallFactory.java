@@ -149,15 +149,15 @@ class TrackedEntityInstanceWithLimitCallFactory {
 
         Date serverDate = systemInfoRepository.blockingGet().serverDate();
 
-        return teiDownloadObservable.map(
-                teiList -> {
-                    boolean isFullUpdate = params.program() == null;
-                    boolean overwrite = params.overwrite();
-                    persistenceCallFactory.getCall(teiList, isFullUpdate, overwrite).call();
-                    programOrganisationUnitSet.addAll(
-                            TrackedEntityInstanceHelper.getProgramOrganisationUnitTuple(teiList, serverDate));
-                    return progressManager.increaseProgress(TrackedEntityInstance.class, false);
-                });
+        boolean isFullUpdate = params.program() == null;
+        boolean overwrite = params.overwrite();
+
+        return teiDownloadObservable.flatMapSingle(
+                teiList -> persistenceCallFactory.persistTEIs(teiList, isFullUpdate, overwrite)
+                        .doOnComplete(() -> programOrganisationUnitSet.addAll(
+                                TrackedEntityInstanceHelper.getProgramOrganisationUnitTuple(teiList, serverDate)))
+                        .toSingle(() ->
+                                progressManager.increaseProgress(TrackedEntityInstance.class, false)));
     }
 
     private Observable<D2Progress> downloadRelationshipTeis(D2ProgressManager progressManager) {

@@ -39,11 +39,12 @@ import org.hisp.dhis.android.core.user.User;
 
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Completable;
+import io.reactivex.Single;
 
 @Reusable
 final class TrackedEntityInstancePersistenceCallFactory {
@@ -65,24 +66,23 @@ final class TrackedEntityInstancePersistenceCallFactory {
         this.organisationUnitDownloader = organisationUnitDownloader;
     }
 
-    public Callable<Void> getCall(final List<TrackedEntityInstance> trackedEntityInstances,
-                                  boolean isFullUpdate, boolean overwrite) {
-
-        return () -> {
+    Completable persistTEIs(final List<TrackedEntityInstance> trackedEntityInstances,
+                            boolean isFullUpdate, boolean overwrite) {
+        return Completable.defer(() -> {
             trackedEntityInstanceHandler.handleMany(trackedEntityInstances, false, isFullUpdate, overwrite);
 
             Set<String> searchOrgUnitUids = uidsHelper.getMissingOrganisationUnitUids(trackedEntityInstances);
 
-            if (!searchOrgUnitUids.isEmpty()) {
+            if (searchOrgUnitUids.isEmpty()) {
+                return Completable.complete();
+            } else {
                 AuthenticatedUser authenticatedUser = authenticatedUserStore.selectFirst();
 
-                Callable<List<OrganisationUnit>> organisationUnitCall =
+                Single<List<OrganisationUnit>> organisationUnitCall =
                         organisationUnitDownloader.downloadSearchOrganisationUnits(searchOrgUnitUids,
                                 User.builder().uid(authenticatedUser.user()).build());
-                organisationUnitCall.call();
+                return organisationUnitCall.ignoreElement();
             }
-
-            return null;
-        };
+        });
     }
 }

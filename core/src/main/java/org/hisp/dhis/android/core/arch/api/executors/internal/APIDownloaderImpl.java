@@ -28,28 +28,30 @@
 
 package org.hisp.dhis.android.core.arch.api.executors.internal;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 
-@Module
-public class APIExecutorsDIModule {
+import java.util.List;
+import java.util.Set;
 
-    @Provides
-    @Reusable
-    APICallExecutor apiCallExecutor(APICallExecutorImpl impl) {
-        return impl;
-    }
+import io.reactivex.Maybe;
+import io.reactivex.Observable;
+import io.reactivex.Single;
+import io.reactivex.functions.Function;
 
-    @Provides
-    @Reusable
-    RxAPICallExecutor rxApiCallExecutor(RxAPICallExecutorImpl impl) {
-        return impl;
-    }
+final class APIDownloaderImpl implements APIDownloader {
 
-    @Provides
-    @Reusable
-    APIDownloader apiDownloader() {
-        return new APIDownloaderImpl();
+    @Override
+    public <P> Maybe<List<P>> downloadPartitioned(Set<String> uids, int pageSize, Handler<P> handler,
+                                                  Function<Set<String>, Single<Payload<P>>> pageDownloader) {
+        List<Set<String>> partitions = CollectionsHelper.setPartition(uids, pageSize);
+        return Observable.fromIterable(partitions)
+                .flatMapSingle(pageDownloader)
+                .map(Payload::items)
+                .reduce((items, items2) -> {
+                    items.addAll(items2);
+                    return items;
+                }).doOnSuccess(handler::handleMany);
     }
 }

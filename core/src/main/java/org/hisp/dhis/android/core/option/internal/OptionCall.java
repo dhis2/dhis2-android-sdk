@@ -28,10 +28,9 @@
 
 package org.hisp.dhis.android.core.option.internal;
 
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
 import org.hisp.dhis.android.core.arch.call.factories.internal.RxUidsCall;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.option.Option;
 
@@ -42,8 +41,6 @@ import javax.inject.Inject;
 
 import dagger.Reusable;
 import io.reactivex.Maybe;
-import io.reactivex.Observable;
-import io.reactivex.Single;
 
 @Reusable
 public final class OptionCall implements RxUidsCall<Option> {
@@ -52,26 +49,20 @@ public final class OptionCall implements RxUidsCall<Option> {
 
     private final OptionService service;
     private final Handler<Option> handler;
+    private final APIDownloader apiDownloader;
 
     @Inject
-    OptionCall(OptionService service, Handler<Option> handler) {
+    OptionCall(OptionService service, Handler<Option> handler, APIDownloader apiDownloader) {
         this.service = service;
         this.handler = handler;
+        this.apiDownloader = apiDownloader;
     }
 
     @Override
-    public Maybe<List<Option>> download(Set<String> uids) {
-        List<Set<String>> partitions = CollectionsHelper.setPartition(uids, MAX_UID_LIST_SIZE);
-        return Observable.fromIterable(partitions).flatMapSingle(this::downloadPage)
-                .reduce((options, options2) -> {
-                    options.addAll(options2);
-                    return options;
-                }).doOnSuccess(handler::handleMany);
-    }
-
-    private Single<List<Option>> downloadPage(Set<String> uids) {
-        String optionSetUidsFilterStr = "optionSet." + ObjectWithUid.uid.in(uids).generateString();
-        return service.getOptions(OptionFields.allFields, optionSetUidsFilterStr, Boolean.FALSE)
-                .map(Payload::items);
+    public Maybe<List<Option>> download(Set<String> optionSetUids) {
+        return apiDownloader.downloadPartitioned(optionSetUids, MAX_UID_LIST_SIZE, handler, partitionUids -> {
+            String optionSetUidsFilterStr = "optionSet." + ObjectWithUid.uid.in(partitionUids).generateString();
+            return service.getOptions(OptionFields.allFields, optionSetUidsFilterStr, Boolean.FALSE);
+        });
     }
 }

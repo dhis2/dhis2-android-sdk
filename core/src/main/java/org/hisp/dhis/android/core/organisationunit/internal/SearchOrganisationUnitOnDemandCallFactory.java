@@ -37,7 +37,9 @@ import org.hisp.dhis.android.core.arch.call.internal.EndpointCall;
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
 import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRepository;
 import org.hisp.dhis.android.core.user.User;
+import org.hisp.dhis.android.core.user.UserObjectRepository;
 
 import java.util.List;
 import java.util.Set;
@@ -57,22 +59,28 @@ final class SearchOrganisationUnitOnDemandCallFactory {
     private final D2CallExecutor d2CallExecutor;
     private final OrganisationUnitHandler handler;
     private final OrganisationUnitDisplayPathTransformer pathTransformer;
+    private final UserObjectRepository userRepository;
+    private final OrganisationUnitCollectionRepository organisationUnitRepository;
 
     @Inject
     SearchOrganisationUnitOnDemandCallFactory(OrganisationUnitService service,
                                               APICallExecutor apiCallExecutor,
                                               D2CallExecutor d2CallExecutor,
                                               OrganisationUnitHandler handler,
-                                              OrganisationUnitDisplayPathTransformer pathTransformer) {
+                                              OrganisationUnitDisplayPathTransformer pathTransformer,
+                                              UserObjectRepository userRepository,
+                                              OrganisationUnitCollectionRepository organisationUnitRepository) {
         this.service = service;
         this.apiCallExecutor = apiCallExecutor;
         this.d2CallExecutor = d2CallExecutor;
         this.handler = handler;
         this.pathTransformer = pathTransformer;
+        this.userRepository = userRepository;
+        this.organisationUnitRepository = organisationUnitRepository;
     }
 
-    public Callable<List<OrganisationUnit>> create(Set<String> uids, User user) {
-        return new EndpointCall<>(fetcher(uids), processor(user));
+    public Callable<List<OrganisationUnit>> create(Set<String> uids) {
+        return new EndpointCall<>(fetcher(uids), processor());
     }
 
     private CallFetcher<OrganisationUnit> fetcher(Set<String> uids) {
@@ -87,11 +95,21 @@ final class SearchOrganisationUnitOnDemandCallFactory {
         };
     }
 
-    private CallProcessor<OrganisationUnit> processor(final User user) {
+    private CallProcessor<OrganisationUnit> processor() {
         return objectList -> {
             if (objectList != null && !objectList.isEmpty()) {
                 d2CallExecutor.executeD2CallTransactionally(() -> {
-                    handler.setData(user, OrganisationUnit.Scope.SCOPE_TEI_SEARCH);
+                    OrganisationUnit.Scope scope = OrganisationUnit.Scope.SCOPE_TEI_SEARCH;
+                    List<OrganisationUnit> orgUnits = organisationUnitRepository
+                            .byOrganisationUnitScope(scope)
+                            .byRootOrganisationUnit(true)
+                            .blockingGet();
+
+                    User user = userRepository.blockingGet().toBuilder()
+                            .teiSearchOrganisationUnits(orgUnits)
+                            .build();
+
+                    handler.setData(user, scope);
                     handler.handleMany(objectList, pathTransformer);
                     return null;
                 });

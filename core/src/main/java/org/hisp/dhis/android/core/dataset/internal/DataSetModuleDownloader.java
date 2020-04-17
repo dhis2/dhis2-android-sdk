@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.dataset.internal;
 
+import org.hisp.dhis.android.core.arch.call.factories.internal.RxUidsCall;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
 import org.hisp.dhis.android.core.arch.modules.internal.MetadataModuleByUidDownloader;
 import org.hisp.dhis.android.core.dataelement.DataElement;
@@ -52,7 +53,7 @@ public class DataSetModuleDownloader implements MetadataModuleByUidDownloader<Li
     private final UidsCallFactory<Indicator> indicatorCallFactory;
     private final UidsCallFactory<IndicatorType> indicatorTypeCallFactory;
     private final UidsCallFactory<OptionSet> optionSetCallFactory;
-    private final UidsCallFactory<Option> optionCallFactory;
+    private final RxUidsCall<Option> optionCallFactory;
     private final PeriodHandler periodHandler;
 
     @Inject
@@ -61,7 +62,7 @@ public class DataSetModuleDownloader implements MetadataModuleByUidDownloader<Li
                             UidsCallFactory<Indicator> indicatorCallFactory,
                             UidsCallFactory<IndicatorType> indicatorTypeCallFactory,
                             UidsCallFactory<OptionSet> optionSetCallFactory,
-                            UidsCallFactory<Option> optionCallFactory,
+                            RxUidsCall<Option> optionCallFactory,
                             PeriodHandler periodHandler) {
         this.dataSetCallFactory = dataSetCallFactory;
         this.dataElementCallFactory = dataElementCallFactory;
@@ -90,7 +91,7 @@ public class DataSetModuleDownloader implements MetadataModuleByUidDownloader<Li
             Set<String> optionSetUids = DataSetParentUidsHelper.getAssignedOptionSetUids(dataElements);
             optionSetCallFactory.create(optionSetUids).call();
 
-            optionCallFactory.create(optionSetUids).call();
+            optionCallFactory.download(optionSetUids).blockingGet();
 
             periodHandler.generateAndPersist();
 

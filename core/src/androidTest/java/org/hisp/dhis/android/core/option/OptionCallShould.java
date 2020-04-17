@@ -41,14 +41,15 @@ import org.junit.runner.RunWith;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
+
+import io.reactivex.Maybe;
 
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
 public class OptionCallShould extends BaseMockIntegrationTestEmptyEnqueable {
 
-    private Callable<List<Option>> optionCall;
+    private Maybe<List<Option>> optionCall;
     private D2CallExecutor d2CallExecutor;
 
     @Before
@@ -62,7 +63,7 @@ public class OptionCallShould extends BaseMockIntegrationTestEmptyEnqueable {
         uids.add("non_existent_option_uid");
         uids.add("Z1ILwhy5VDY");
 
-        optionCall = objects.d2DIComponent.optionCallFactory().create(uids);
+        optionCall = objects.d2DIComponent.optionCall().download(uids);
 
         d2CallExecutor = D2CallExecutor.create(databaseAdapter);
 
@@ -122,7 +123,7 @@ public class OptionCallShould extends BaseMockIntegrationTestEmptyEnqueable {
         return d2CallExecutor.executeD2CallTransactionally(() -> {
             List<Option> options = null;
             try {
-                options = optionCall.call();
+                options = optionCall.blockingGet();
             } catch (Exception ignored) {
             }
 

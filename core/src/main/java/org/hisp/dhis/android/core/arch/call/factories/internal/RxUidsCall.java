@@ -26,21 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.option.internal;
+package org.hisp.dhis.android.core.arch.call.factories.internal;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.option.Option;
+import java.util.List;
+import java.util.Set;
 
-import io.reactivex.Single;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
+import io.reactivex.Maybe;
 
-interface OptionService {
-
-    @GET("options")
-    Single<Payload<Option>> getOptions(@Query("fields") @Which Fields<Option> fields,
-                                       @Query("filter") String optionSetUidsFilterString,
-                                       @Query("paging") Boolean paging);
+public interface RxUidsCall<P> {
+    Maybe<List<P>> download(Set<String> uids);
 }

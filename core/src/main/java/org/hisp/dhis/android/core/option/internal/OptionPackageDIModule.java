@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.option.internal;
 
+import org.hisp.dhis.android.core.arch.call.factories.internal.RxUidsCall;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
 import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.option.OptionGroup;
@@ -61,7 +62,7 @@ public final class OptionPackageDIModule {
 
     @Provides
     @Reusable
-    UidsCallFactory<Option> optionCallFactory(OptionEndpointCallFactory impl) {
+    RxUidsCall<Option> optionCall(RxOptionCall impl) {
         return impl;
     }
 

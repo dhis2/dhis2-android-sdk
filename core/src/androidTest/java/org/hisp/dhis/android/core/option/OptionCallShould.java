@@ -109,7 +109,7 @@ public class OptionCallShould extends BaseMockIntegrationTestEmptyEnqueable {
                 Set<String> uids = new HashSet<>();
                 uids.add("POc7DkGU3QU");
 
-                optionSets = objects.d2DIComponent.optionSetCallFactory().create(uids).call();
+                optionSets = objects.d2DIComponent.optionSetCall().download(uids).blockingGet();
             } catch (Exception ignored) {
             }
 

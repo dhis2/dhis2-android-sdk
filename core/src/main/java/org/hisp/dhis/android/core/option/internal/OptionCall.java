@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.option.internal;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
-import org.hisp.dhis.android.core.arch.call.factories.internal.RxUidsCall;
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.option.Option;
@@ -43,7 +43,7 @@ import dagger.Reusable;
 import io.reactivex.Maybe;
 
 @Reusable
-public final class OptionCall implements RxUidsCall<Option> {
+public final class OptionCall implements UidsCall<Option> {
 
     private static final int MAX_UID_LIST_SIZE = 64;
 

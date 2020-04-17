@@ -33,6 +33,6 @@ import java.util.Set;
 
 import io.reactivex.Maybe;
 
-public interface RxUidsCall<P> {
+public interface UidsCall<P> {
     Maybe<List<P>> download(Set<String> uids);
 }

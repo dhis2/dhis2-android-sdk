@@ -102,6 +102,7 @@ final class SearchOrganisationUnitOnDemandCallFactory {
                     OrganisationUnit.Scope scope = OrganisationUnit.Scope.SCOPE_TEI_SEARCH;
                     List<OrganisationUnit> orgUnits = organisationUnitRepository
                             .byOrganisationUnitScope(scope)
+                            .byRootOrganisationUnit(true)
                             .blockingGet();
 
                     User user = userRepository.blockingGet().toBuilder()

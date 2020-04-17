@@ -62,7 +62,7 @@ public final class OptionPackageDIModule {
 
     @Provides
     @Reusable
-    RxUidsCall<Option> optionCall(RxOptionCall impl) {
+    RxUidsCall<Option> optionCall(OptionCall impl) {
         return impl;
     }
 

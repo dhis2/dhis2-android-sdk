@@ -46,7 +46,7 @@ import io.reactivex.Observable;
 import io.reactivex.Single;
 
 @Reusable
-public final class RxOptionCall implements RxUidsCall<Option> {
+public final class OptionCall implements RxUidsCall<Option> {
 
     private static final int MAX_UID_LIST_SIZE = 64;
 
@@ -54,7 +54,7 @@ public final class RxOptionCall implements RxUidsCall<Option> {
     private final Handler<Option> handler;
 
     @Inject
-    public RxOptionCall(OptionService service, Handler<Option> handler) {
+    OptionCall(OptionService service, Handler<Option> handler) {
         this.service = service;
         this.handler = handler;
     }

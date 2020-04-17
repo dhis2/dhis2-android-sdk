@@ -63,7 +63,7 @@ public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<Li
     private final ListCallFactory<RelationshipType> relationshipTypeCallFactory;
     private final UidsCall<OptionSet> optionSetCall;
     private final UidsCall<Option> optionCall;
-    private final UidsCallFactory<OptionGroup> optionGroupCallFactory;
+    private final UidsCall<OptionGroup> optionGroupCallFactory;
     private final DHISVersionManager versionManager;
 
     @Inject
@@ -75,7 +75,7 @@ public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<Li
                             ListCallFactory<RelationshipType> relationshipTypeCallFactory,
                             UidsCall<OptionSet> optionSetCall,
                             UidsCall<Option> optionCall,
-                            UidsCallFactory<OptionGroup> optionGroupCallFactory,
+                            UidsCall<OptionGroup> optionGroupCallFactory,
                             DHISVersionManager versionManager) {
         this.programCallFactory = programCallFactory;
         this.programStageCallFactory = programStageCallFactory;
@@ -116,7 +116,7 @@ public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<Li
             optionCall.download(optionSetUids).blockingGet();
 
             if (!versionManager.is2_29()) {
-                optionGroupCallFactory.create(optionSetUids).call();
+                optionGroupCallFactory.download(optionSetUids).blockingGet();
             }
 
             return programs;

@@ -96,9 +96,6 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     private Callable<List<RelationshipType>> relationshipTypeCall;
 
     @Mock
-    private Callable<List<OptionGroup>> optionGroupCall;
-
-    @Mock
     private UidsCallFactory<Program> programCallFactory;
 
     @Mock
@@ -123,7 +120,7 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     private UidsCall<Option> optionCall;
 
     @Mock
-    private UidsCallFactory<OptionGroup> optionGroupCallFactory;
+    private UidsCall<OptionGroup> optionGroupCall;
 
     @Mock
     private DHISVersionManager versionManager;
@@ -153,8 +150,6 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
                 .thenReturn(trackedEntityAttributeCall);
         when(relationshipTypeCallFactory.create())
                 .thenReturn(relationshipTypeCall);
-        when(optionGroupCallFactory.create(any(Set.class)))
-                .thenReturn(optionGroupCall);
 
         // Calls
         when(programEndpointCall.call()).thenReturn(Collections.singletonList(program));
@@ -163,7 +158,7 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
         when(relationshipTypeCall.call()).thenReturn(Collections.emptyList());
         when(optionSetCall.download(anySet())).thenReturn(Maybe.just(Collections.emptyList()));
         when(optionCall.download(anySet())).thenReturn(Maybe.just(Collections.emptyList()));
-        when(optionGroupCall.call()).thenReturn(Collections.emptyList());
+        when(optionGroupCall.download(anySet())).thenReturn(Maybe.just(Collections.emptyList()));
         when(programStageEndpointCall.call()).thenReturn(Collections.emptyList());
         when(programRuleEndpointCall.call()).thenReturn(Collections.emptyList());
 
@@ -179,7 +174,7 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
                 relationshipTypeCallFactory,
                 optionSetCall,
                 optionCall,
-                optionGroupCallFactory,
+                optionGroupCall,
                 versionManager).downloadMetadata(anySet());
     }
 

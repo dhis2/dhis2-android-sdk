@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -128,13 +127,11 @@ public final class OrganisationUnitTree {
     }
 
     private static boolean inScope(OrganisationUnit orgUnit, Collection<OrganisationUnit> rootOrgUnits) {
-        String path = orgUnit.path();
-        List<String> pathUids = Arrays.asList(path.split(DELIMITER));
-        if (path.isEmpty()) {
+        if (orgUnit.path() == null || orgUnit.path().isEmpty()) {
             throw new IllegalArgumentException("OrganisationUnit's path should not be empty!");
         } else {
             for (OrganisationUnit rootSearchOrgUnit : rootOrgUnits) {
-                if (pathUids.contains(rootSearchOrgUnit.uid())) {
+                if (orgUnit.path().contains(rootSearchOrgUnit.uid())) {
                     return true;
                 }
             }

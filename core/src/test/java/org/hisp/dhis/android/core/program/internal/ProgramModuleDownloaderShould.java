@@ -90,9 +90,6 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     private Callable<List<TrackedEntityType>> trackedEntityTypeCall;
 
     @Mock
-    private Callable<List<TrackedEntityAttribute>> trackedEntityAttributeCall;
-
-    @Mock
     private Callable<List<RelationshipType>> relationshipTypeCall;
 
     @Mock
@@ -108,7 +105,7 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     private UidsCallFactory<TrackedEntityType> trackedEntityCallFactory;
 
     @Mock
-    private UidsCallFactory<TrackedEntityAttribute> trackedEntityAttributeCallFactory;
+    private UidsCall<TrackedEntityAttribute> trackedEntityAttributeCall;
 
     @Mock
     private ListCallFactory<RelationshipType> relationshipTypeCallFactory;
@@ -146,15 +143,13 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
                 .thenReturn(programRuleEndpointCall);
         when(trackedEntityCallFactory.create(any(Set.class)))
                 .thenReturn(trackedEntityTypeCall);
-        when(trackedEntityAttributeCallFactory.create(any(Set.class)))
-                .thenReturn(trackedEntityAttributeCall);
         when(relationshipTypeCallFactory.create())
                 .thenReturn(relationshipTypeCall);
 
         // Calls
         when(programEndpointCall.call()).thenReturn(Collections.singletonList(program));
         when(trackedEntityTypeCall.call()).thenReturn(Collections.singletonList(trackedEntityType));
-        when(trackedEntityAttributeCall.call()).thenReturn(Collections.singletonList(trackedEntityAttribute));
+        when(trackedEntityAttributeCall.download(anySet())).thenReturn(Maybe.just(Collections.singletonList(trackedEntityAttribute)));
         when(relationshipTypeCall.call()).thenReturn(Collections.emptyList());
         when(optionSetCall.download(anySet())).thenReturn(Maybe.just(Collections.emptyList()));
         when(optionCall.download(anySet())).thenReturn(Maybe.just(Collections.emptyList()));
@@ -170,7 +165,7 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
                 programStageCallFactory,
                 programRuleCallFactory,
                 trackedEntityCallFactory,
-                trackedEntityAttributeCallFactory,
+                trackedEntityAttributeCall,
                 relationshipTypeCallFactory,
                 optionSetCall,
                 optionCall,
@@ -215,8 +210,8 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     }
 
     @Test(expected = Exception.class)
-    public void fail_when_tracked_entity_attributes_call_fail() throws Exception {
-        whenEndpointCallFails(trackedEntityAttributeCall);
+    public void fail_when_tracked_entity_attributes_call_fail() {
+        when(trackedEntityAttributeCall.download(anySet())).thenReturn(Maybe.error(new RuntimeException()));
         programDownloadCall.blockingGet();
     }
 

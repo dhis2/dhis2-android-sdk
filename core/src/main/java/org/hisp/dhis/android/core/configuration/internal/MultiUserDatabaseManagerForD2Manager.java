@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.configuration.internal;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -66,13 +67,21 @@ public class MultiUserDatabaseManagerForD2Manager {
     }
 
     public void loadIfLogged(Credentials credentials) {
+        if (credentials == null) {
+            Log.e("MIG_DEBUG", "Load if logged: credentials null");
+        } else {
+            Log.e("MIG_DEBUG", "Load if logged: " + credentials.username());
+        }
         DatabasesConfiguration databaseConfiguration = migration.apply();
 
         if (databaseConfiguration != null && credentials != null) {
+            Log.e("MIG_DEBUG", "Load database");
             ServerURLWrapper.setServerUrl(databaseConfiguration.loggedServerUrl());
             DatabaseUserConfiguration userConfiguration = configurationHelper.getLoggedUserConfiguration(
                     databaseConfiguration, credentials.username());
+            Log.e("MIG_DEBUG", "Load database for name: " + userConfiguration.databaseName());
             databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, userConfiguration);
+            Log.e("MIG_DEBUG", "Database loaded");
         }
     }
 }

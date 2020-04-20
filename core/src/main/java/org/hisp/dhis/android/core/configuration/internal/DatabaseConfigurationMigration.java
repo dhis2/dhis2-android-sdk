@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.configuration.internal;
 
 import android.content.Context;
+import android.util.Log;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
@@ -68,6 +69,7 @@ class DatabaseConfigurationMigration {
 
     DatabasesConfiguration apply() {
         boolean oldDatabaseExist = Arrays.asList(context.databaseList()).contains(OLD_DBNAME);
+        Log.e("MIG_DEBUG", "Old database exists: " + oldDatabaseExist);
         if (oldDatabaseExist) {
             DatabaseAdapter databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter();
             databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, OLD_DBNAME, false);
@@ -76,14 +78,24 @@ class DatabaseConfigurationMigration {
             String serverUrl = getServerUrl(databaseAdapter);
             databaseAdapter.close();
 
+            Log.e("MIG_DEBUG", "Username: " + username);
+            Log.e("MIG_DEBUG", "Server URL: " + serverUrl);
+
             if (username == null || serverUrl == null) {
+                Log.e("MIG_DEBUG", "Delete database");
                 context.deleteDatabase(OLD_DBNAME);
                 return null;
             } else {
                 String databaseName = nameGenerator.getDatabaseName(serverUrl, username, false);
+                Log.e("MIG_DEBUG", "Rename database: " + databaseName);
                 renamer.renameDatabase(OLD_DBNAME, databaseName);
                 DatabasesConfiguration newConfiguration = transformer.transform(serverUrl, databaseName, username);
                 newConfigurationStore.set(newConfiguration);
+
+                Log.e("MIG_DEBUG", "Databases:");
+                for (String dbName : context.databaseList()) {
+                    Log.e("MIG_DEBUG", "Db name: " + dbName);
+                }
                 return newConfiguration;
             }
         } else {

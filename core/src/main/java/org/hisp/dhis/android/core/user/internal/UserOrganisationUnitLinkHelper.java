@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.user.internal;
 
 import androidx.annotation.NonNull;
 
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserInternalAccessor;
@@ -41,12 +42,12 @@ import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree.f
 
 public final class UserOrganisationUnitLinkHelper {
 
-    private UserOrganisationUnitLinkHelper(){
+    private UserOrganisationUnitLinkHelper() {
     }
 
     public static boolean isRoot(@NonNull OrganisationUnit.Scope scope,
-                           @NonNull User user,
-                           @NonNull OrganisationUnit organisationUnit) {
+                                 @NonNull User user,
+                                 @NonNull OrganisationUnit organisationUnit) {
 
         List<OrganisationUnit> selectedScopeOrganisationUnits = null;
 
@@ -67,7 +68,7 @@ public final class UserOrganisationUnitLinkHelper {
         if (selectedScopeOrganisationUnits == null) {
             return false;
         } else {
-            Set<String> rootOrgUnitUids = findRoots(selectedScopeOrganisationUnits);
+            Set<String> rootOrgUnitUids = UidsHelper.getUids(findRoots(selectedScopeOrganisationUnits));
             return rootOrgUnitUids.contains(organisationUnit.uid());
         }
     }

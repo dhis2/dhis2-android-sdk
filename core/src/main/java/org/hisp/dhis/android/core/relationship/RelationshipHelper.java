@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.relationship;
 
+import androidx.annotation.Nullable;
+
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
 
 public final class RelationshipHelper {
@@ -64,6 +66,20 @@ public final class RelationshipHelper {
                 .to(RelationshipHelper.teiItem(toUid))
                 .relationshipType(relationshipTypeUid)
                 .build();
+    }
+
+    public static boolean areItemsEqual(RelationshipItem a, RelationshipItem b) {
+        return equalsConsideringNull(a.event(), b.event())
+                && equalsConsideringNull(a.enrollment(), b.enrollment())
+                && equalsConsideringNull(a.trackedEntityInstance(), b.trackedEntityInstance());
+    }
+
+    private static <O> boolean equalsConsideringNull(@Nullable O a, @Nullable O b) {
+        if (a == null) {
+            return b == null;
+        } else {
+            return a.equals(b);
+        }
     }
 
     private RelationshipHelper() {

@@ -80,6 +80,7 @@ import org.hisp.dhis.android.core.settings.internal.SettingPackageDIModule;
 import org.hisp.dhis.android.core.sms.internal.SmsDIModule;
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoPackageDIModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityPackageDIModule;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.user.internal.UserPackageDIModule;
 import org.hisp.dhis.android.core.wipe.internal.WipeDIModule;
@@ -151,6 +152,8 @@ public interface D2DIComponent {
     UidsCallFactory<DataSet> dataSetCallFactory();
     @VisibleForTesting
     Handler<RelationshipType> relationshipTypeHandler();
+    @VisibleForTesting
+    Handler<TrackedEntityType> trackedEntityTypeHandler();
     @VisibleForTesting
     TrackedEntityInstancePostCall trackedEntityInstancePostCall();
     @VisibleForTesting

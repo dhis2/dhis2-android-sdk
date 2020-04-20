@@ -45,11 +45,11 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Single;
 
 @Reusable
 public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<List<Program>> {
@@ -89,8 +89,8 @@ public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<Li
     }
 
     @Override
-    public Callable<List<Program>> downloadMetadata(Set<String> orgUnitProgramUids) {
-        return () -> {
+    public Single<List<Program>> downloadMetadata(Set<String> orgUnitProgramUids) {
+        return Single.fromCallable(() -> {
             List<Program> programs = programCallFactory.create(orgUnitProgramUids).call();
 
             Set<String> programUids = UidsHelper.getUids(programs);
@@ -119,6 +119,6 @@ public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<Li
             }
 
             return programs;
-        };
+        });
     }
 }

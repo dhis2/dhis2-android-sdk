@@ -110,4 +110,14 @@ public class RelationshipCollectionRepositoryMockIntegrationShould extends BaseM
         assertThat(relationships.size(), is(4));
     }
 
+    @Test
+    public void filter_by_object_repository() {
+        Relationship relationship =
+                d2.relationshipModule().relationships()
+                        .uid("AJOytZW7OaB")
+                        .blockingGet();
+
+        assertThat(relationship.uid(), is("AJOytZW7OaB"));
+    }
+
 }

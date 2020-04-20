@@ -27,17 +27,15 @@
  */
 package org.hisp.dhis.android.core.settings.internal;
 
-import org.hisp.dhis.android.core.arch.modules.internal.MetadataModuleDownloader;
-import org.hisp.dhis.android.core.common.Unit;
-
-import java.util.concurrent.Callable;
+import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Completable;
 
 @Reusable
-public class SettingModuleDownloader implements MetadataModuleDownloader<Unit> {
+public class SettingModuleDownloader implements UntypedModuleDownloader {
 
     private final SystemSettingCall systemSettingCall;
 
@@ -57,13 +55,12 @@ public class SettingModuleDownloader implements MetadataModuleDownloader<Unit> {
     }
 
     @Override
-    public Callable<Unit> downloadMetadata() {
-        return () -> {
+    public Completable downloadMetadata() {
+        return Completable.fromAction(() -> {
             generalSettingCall.getCompletable(false).blockingAwait();
             dataSetSettingCall.getCompletable(false).blockingAwait();
             programSettingCall.getCompletable(false).blockingAwait();
             systemSettingCall.call();
-            return new Unit();
-        };
+        });
     }
 }

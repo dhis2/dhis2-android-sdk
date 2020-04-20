@@ -30,6 +30,10 @@ package org.hisp.dhis.android.core.systeminfo;
 public interface DHISVersionManager {
     DHISVersion getVersion();
 
+    DHISPatchVersion getPatchVersion();
+
+    SMSVersion getSmsVersion();
+
     boolean is2_29();
 
     boolean is2_30();

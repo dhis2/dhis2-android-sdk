@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.relationship;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.common.DeletableDataColumns;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
 
 public final class RelationshipTableInfo {
@@ -51,7 +52,7 @@ public final class RelationshipTableInfo {
         }
     };
 
-    public static class Columns extends CoreColumns {
+    public static class Columns extends DeletableDataColumns {
         public static final String UID = IdentifiableColumns.UID;
         public static final String NAME = IdentifiableColumns.NAME;
         public static final String CREATED = IdentifiableColumns.CREATED;
@@ -65,7 +66,9 @@ public final class RelationshipTableInfo {
                     NAME,
                     CREATED,
                     LAST_UPDATED,
-                    RELATIONSHIP_TYPE
+                    RELATIONSHIP_TYPE,
+                    STATE,
+                    DELETED
             );
         }
     }

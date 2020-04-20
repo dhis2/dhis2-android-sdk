@@ -39,11 +39,11 @@ import org.hisp.dhis.android.core.period.internal.PeriodHandler;
 
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Single;
 
 @Reusable
 public class DataSetModuleDownloader implements MetadataModuleByUidDownloader<List<DataSet>> {
@@ -73,8 +73,8 @@ public class DataSetModuleDownloader implements MetadataModuleByUidDownloader<Li
     }
 
     @Override
-    public Callable<List<DataSet>> downloadMetadata(Set<String> orgUnitDataSetUids) {
-        return () -> {
+    public Single<List<DataSet>> downloadMetadata(Set<String> orgUnitDataSetUids) {
+        return Single.fromCallable(() -> {
 
             List<DataSet> dataSets = dataSetCallFactory.create(orgUnitDataSetUids).call();
 
@@ -95,6 +95,6 @@ public class DataSetModuleDownloader implements MetadataModuleByUidDownloader<Li
             periodHandler.generateAndPersist();
 
             return dataSets;
-        };
+        });
     }
 }

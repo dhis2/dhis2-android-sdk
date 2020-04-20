@@ -187,7 +187,7 @@ public class ProgramIndicatorEngineShould {
 
         when(event1.uid()).thenReturn(eventUid1);
         when(eventStore.selectByUid(eventUid1)).thenReturn(event1);
-        when(eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid1))
+        when(eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid1, false))
                 .thenReturn(Collections.singletonList(event1));
 
         when(event1.toBuilder()).thenReturn(eventBuilder1);
@@ -209,9 +209,9 @@ public class ProgramIndicatorEngineShould {
         when(eventBuilder3.build()).thenReturn(event3WithDataValues);
         when(event3WithDataValues.trackedEntityDataValues()).thenReturn(Collections.singletonList(value5));
 
-        when(eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid2))
+        when(eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid2, false))
                 .thenReturn(Arrays.asList(event2, event3));
-        when(eventStore.countEventsForEnrollment(enrollmentUid)).thenReturn(2);
+        when(eventStore.countEventsForEnrollment(enrollmentUid, false)).thenReturn(2);
 
         when(enrollment.trackedEntityInstance()).thenReturn(trackedEntityInstanceUid);
         when(enrollmentStore.selectByUid(enrollmentUid)).thenReturn(enrollment);
@@ -449,7 +449,7 @@ public class ProgramIndicatorEngineShould {
         when(value1.value()).thenReturn("3.5");
 
         // Event2 does not exist
-        when(eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid2))
+        when(eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid2, false))
                 .thenReturn(Collections.emptyList());
 
         String resultWithoutEvent = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, null,
@@ -467,7 +467,7 @@ public class ProgramIndicatorEngineShould {
                 de(programStageUid2, dataElementUid2) + " * 10");
 
         // Event2 does not exist
-        when(eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid2))
+        when(eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid2, false))
                 .thenReturn(Collections.emptyList());
 
         String result = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, null,

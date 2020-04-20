@@ -36,7 +36,7 @@ import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.isDelete
 public class IdentifiableHandlerImpl<O extends ObjectWithUidInterface & ObjectWithDeleteInterface>
         extends HandlerBaseImpl<O> {
 
-    final IdentifiableObjectStore<O> store;
+    protected final IdentifiableObjectStore<O> store;
 
     public IdentifiableHandlerImpl(IdentifiableObjectStore<O> store) {
         this.store = store;

@@ -27,12 +27,13 @@
  */
 package org.hisp.dhis.android.core.relationship.internal;
 
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipItem;
 
-import java.util.Collection;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -43,9 +44,8 @@ import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.TO;
 
 @Reusable
-final class RelationshipHandlerImpl implements RelationshipHandler {
+final class RelationshipHandlerImpl extends IdentifiableHandlerImpl<Relationship> implements RelationshipHandler {
 
-    private final RelationshipStore relationshipStore;
     private final RelationshipItemStore relationshipItemStore;
     private final Handler<RelationshipItem> relationshipItemHandler;
     private final RelationshipItemElementStoreSelector storeSelector;
@@ -58,7 +58,7 @@ final class RelationshipHandlerImpl implements RelationshipHandler {
             Handler<RelationshipItem> relationshipItemHandler,
             RelationshipItemElementStoreSelector storeSelector,
             RelationshipDHISVersionManager versionManager) {
-        this.relationshipStore = relationshipStore;
+        super(relationshipStore);
         this.relationshipItemStore = relationshipItemStore;
         this.relationshipItemHandler = relationshipItemHandler;
         this.storeSelector = storeSelector;
@@ -66,16 +66,7 @@ final class RelationshipHandlerImpl implements RelationshipHandler {
     }
 
     @Override
-    public void handleMany(Collection<Relationship> relationships) {
-        if (relationships != null) {
-            for (Relationship r: relationships) {
-                handle(r);
-            }
-        }
-    }
-
-    @Override
-    public void handle(Relationship relationship) {
+    protected Relationship beforeObjectHandled(Relationship relationship) {
         if (!versionManager.isRelationshipSupported(relationship)) {
             throw new RuntimeException("Only TEI to TEI relationships are supported in 2.29");
         }
@@ -86,17 +77,22 @@ final class RelationshipHandlerImpl implements RelationshipHandler {
 
         String existingRelationshipUid = getExistingRelationshipUid(relationship);
 
+        // Compatibility with 2.29. Relationships do not have uids and must be matched based on their items.
         if (existingRelationshipUid != null && !existingRelationshipUid.equals(relationship.uid())) {
-            relationshipStore.delete(existingRelationshipUid);
+            store.delete(existingRelationshipUid);
         }
+        return relationship;
+    }
 
-        relationshipStore.updateOrInsert(relationship);
+    @Override
+    protected void afterObjectHandled(Relationship relationship, HandleAction action) {
         relationshipItemHandler.handle(relationship.from().toBuilder()
                 .relationship(ObjectWithUid.create(relationship.uid())).relationshipItemType(FROM).build());
         relationshipItemHandler.handle(relationship.to().toBuilder()
                 .relationship(ObjectWithUid.create(relationship.uid())).relationshipItemType(TO).build());
     }
 
+    @Override
     public boolean doesRelationshipExist(Relationship relationship) {
         return getExistingRelationshipUid(relationship) != null;
     }
@@ -110,7 +106,7 @@ final class RelationshipHandlerImpl implements RelationshipHandler {
                 this.relationshipItemStore.getRelationshipUidsForItems(relationship.from(), relationship.to());
 
         for (String existingRelationshipUid : existingRelationshipUidsForPair) {
-            Relationship existingRelationship = this.relationshipStore.selectByUid(existingRelationshipUid);
+            Relationship existingRelationship = store.selectByUid(existingRelationshipUid);
 
             if (existingRelationship != null &&
                     relationship.relationshipType().equals(existingRelationship.relationshipType())) {

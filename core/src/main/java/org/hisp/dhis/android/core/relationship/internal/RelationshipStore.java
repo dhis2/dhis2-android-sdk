@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.relationship.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipItem;
 
 import java.util.List;
 
-public interface RelationshipStore extends IdentifiableObjectStore<Relationship> {
+public interface RelationshipStore extends IdentifiableDeletableDataObjectStore<Relationship> {
     List<Relationship> getRelationshipsByItem(RelationshipItem relationshipItem);
 }

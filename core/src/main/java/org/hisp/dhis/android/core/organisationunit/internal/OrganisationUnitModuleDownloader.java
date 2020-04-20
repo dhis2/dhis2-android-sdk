@@ -32,11 +32,12 @@ import org.hisp.dhis.android.core.user.User;
 
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Completable;
+import io.reactivex.Single;
 
 @Reusable
 public class OrganisationUnitModuleDownloader {
@@ -57,16 +58,20 @@ public class OrganisationUnitModuleDownloader {
         this.organisationUnitLevelEndpointCallFactory = organisationUnitLevelEndpointCallFactory;
     }
 
-    public Callable<List<OrganisationUnit>> downloadMetadata(final User user) {
-        return () -> {
+    public Single<List<OrganisationUnit>> downloadMetadata(final User user) {
+        return Single.fromCallable(() -> {
             List<OrganisationUnit> organisationUnits = organisationUnitCallFactory.create(user).call();
             organisationUnitLevelEndpointCallFactory.create().call();
 
             return organisationUnits;
-        };
+        });
     }
 
-    public Callable<List<OrganisationUnit>> downloadSearchOrganisationUnits(Set<String> uids, User user) {
-        return searchOrganisationUnitOnDemandCallFactory.create(uids, user);
+    public Completable downloadSearchOrganisationUnits(Set<String> uids) {
+        if (uids.isEmpty()) {
+            return Completable.complete();
+        } else {
+            return Completable.fromCallable(searchOrganisationUnitOnDemandCallFactory.create(uids));
+        }
     }
 }

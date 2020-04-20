@@ -36,6 +36,8 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
+import org.hisp.dhis.android.core.relationship.internal.Relationship229Compatible;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipOrphanCleanerImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection;
 
@@ -79,6 +81,13 @@ public final class TrackedEntityInstanceEntityDIModule {
     OrphanCleaner<TrackedEntityInstance, Enrollment> enrollmentOrphanCleaner(DatabaseAdapter databaseAdapter) {
         return new DataOrphanCleanerImpl<>(EnrollmentTableInfo.TABLE_INFO.name(),
                 EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE, DataColumns.STATE, databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    OrphanCleaner<TrackedEntityInstance, Relationship229Compatible> relationshipOrphanCleaner(
+            RelationshipOrphanCleanerImpl impl) {
+        return impl;
     }
 
     @Provides

@@ -58,6 +58,10 @@ public class ProgramSettingsObjectRepository
     public ProgramSettings blockingGet() {
         List<ProgramSetting> settings = store.selectAll();
 
+        if (settings.isEmpty()) {
+            return null;
+        }
+
         ProgramSettings.Builder builder = ProgramSettings.builder();
         Map<String, ProgramSetting> specifics = new HashMap<>();
 

@@ -62,7 +62,7 @@ conventions used in the document are explained below.
 > **Work_in_progress**
 >
 > Information contained in these sections, will indicate that these 
-> are issues or freatures not completely implemented or with unexpected
+> are issues or features not completely implemented or with unexpected
 > behaviour already reported.
 
     Program listings usually contain some type of computer code.

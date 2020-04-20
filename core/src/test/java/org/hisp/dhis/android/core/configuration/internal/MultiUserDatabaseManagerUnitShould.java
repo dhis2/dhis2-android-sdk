@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.configuration.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseExport;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.common.BaseCallShould;
@@ -39,8 +40,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -59,7 +58,7 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
     private DatabaseConfigurationHelper configurationHelper;
 
     @Mock
-    private DatabaseCopy databaseCopy;
+    private DatabaseExport databaseExport;
 
     @Mock
     private DatabaseAdapterFactory databaseAdapterFactory;
@@ -98,7 +97,7 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
     public void setUp() throws Exception {
         super.setUp();
         manager = new MultiUserDatabaseManager(databaseAdapter, databaseConfigurationSecureStore, configurationHelper,
-                databaseCopy, databaseAdapterFactory);
+                databaseAdapterFactory, databaseExport);
     }
 
     @Test
@@ -124,9 +123,8 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
         manager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(SERVER_URL, USERNAME, encrypt);
 
         verify(databaseAdapterFactory).createOrOpenDatabase(databaseAdapter, userConfigurationEncrypted);
-        verify(databaseAdapterFactory).createOrOpenDatabase(any(), same(userConfigurationUnencrypted));
 
-        verify(databaseCopy).copyDatabase(any(), same(databaseAdapter));
+        verify(databaseExport).encrypt(SERVER_URL, userConfigurationUnencrypted);
 
         verify(databaseAdapterFactory).deleteDatabase(userConfigurationEncrypted);
     }

@@ -41,7 +41,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-class DatabaseConfigurationHelper {
+public class DatabaseConfigurationHelper {
 
     private final DatabaseNameGenerator databaseNameGenerator;
     private final DateProvider dateProvider;
@@ -70,6 +70,14 @@ class DatabaseConfigurationHelper {
             }
         }
         return null;
+    }
+
+    public DatabaseUserConfiguration changeEncryption(String serverUrl, DatabaseUserConfiguration userConfiguration) {
+        return userConfiguration.toBuilder()
+                .encrypted(!userConfiguration.encrypted())
+                .databaseName(databaseNameGenerator.getDatabaseName(serverUrl, userConfiguration.username(),
+                        !userConfiguration.encrypted()))
+                .build();
     }
 
     @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})

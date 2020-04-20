@@ -59,6 +59,12 @@ public final class RelationshipPackageDIModule {
 
     @Provides
     @Reusable
+    RelationshipService relationshipService(Retrofit retrofit) {
+        return retrofit.create(RelationshipService.class);
+    }
+
+    @Provides
+    @Reusable
     RelationshipModule module(RelationshipModuleImpl impl) {
         return impl;
     }

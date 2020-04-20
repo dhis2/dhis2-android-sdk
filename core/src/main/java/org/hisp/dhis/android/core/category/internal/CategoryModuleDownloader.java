@@ -28,21 +28,20 @@
 package org.hisp.dhis.android.core.category.internal;
 
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
-import org.hisp.dhis.android.core.arch.modules.internal.MetadataModuleDownloader;
+import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
-import org.hisp.dhis.android.core.common.Unit;
 
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Completable;
 
 @Reusable
-public class CategoryModuleDownloader implements MetadataModuleDownloader<Unit> {
+public class CategoryModuleDownloader implements UntypedModuleDownloader {
 
     private final UidsCallFactory<Category> categoryCallFactory;
     private final UidsCallFactory<CategoryCombo> categoryComboCallFactory;
@@ -58,13 +57,11 @@ public class CategoryModuleDownloader implements MetadataModuleDownloader<Unit> 
     }
 
     @Override
-    public Callable<Unit> downloadMetadata() {
-        return () -> {
+    public Completable downloadMetadata() {
+        return Completable.fromAction(() -> {
             Set<String> comboUids = categoryComboUidsSeeker.seekUids();
             List<CategoryCombo> categoryCombos = categoryComboCallFactory.create(comboUids).call();
             categoryCallFactory.create(CategoryParentUidsHelper.getCategoryUids(categoryCombos)).call();
-
-            return new Unit();
-        };
+        });
     }
 }

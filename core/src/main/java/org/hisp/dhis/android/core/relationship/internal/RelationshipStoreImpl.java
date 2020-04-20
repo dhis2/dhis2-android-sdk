@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStoreImpl;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStoreImpl;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipItem;
 import org.hisp.dhis.android.core.relationship.RelationshipTableInfo;
@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.relationship.RelationshipTableInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class RelationshipStoreImpl extends IdentifiableObjectStoreImpl<Relationship>
+public final class RelationshipStoreImpl extends IdentifiableDeletableDataObjectStoreImpl<Relationship>
         implements RelationshipStore {
 
     private static StatementBinder<Relationship> BINDER = (o, w) -> {
@@ -49,6 +49,8 @@ public final class RelationshipStoreImpl extends IdentifiableObjectStoreImpl<Rel
         w.bind(3, o.created());
         w.bind(4, o.lastUpdated());
         w.bind(5, o.relationshipType());
+        w.bind(6, o.state());
+        w.bind(7, o.deleted());
     };
 
     private RelationshipStoreImpl(DatabaseAdapter databaseAdapter,

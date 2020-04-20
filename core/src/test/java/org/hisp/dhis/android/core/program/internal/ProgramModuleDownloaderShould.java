@@ -84,9 +84,6 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     private Callable<List<ProgramStage>> programStageEndpointCall;
 
     @Mock
-    private Callable<List<ProgramRule>> programRuleEndpointCall;
-
-    @Mock
     private Callable<List<RelationshipType>> relationshipTypeCall;
 
     @Mock
@@ -96,7 +93,7 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     private UidsCallFactory<ProgramStage> programStageCallFactory;
 
     @Mock
-    private UidsCallFactory<ProgramRule> programRuleCallFactory;
+    private UidsCall<ProgramRule> programRuleCall;
 
     @Mock
     private UidsCall<TrackedEntityType> trackedEntityTypeCall;
@@ -136,8 +133,6 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
                 .thenReturn(programEndpointCall);
         when(programStageCallFactory.create(any(Set.class)))
                 .thenReturn(programStageEndpointCall);
-        when(programRuleCallFactory.create(any(Set.class)))
-                .thenReturn(programRuleEndpointCall);
         when(relationshipTypeCallFactory.create())
                 .thenReturn(relationshipTypeCall);
 
@@ -146,11 +141,11 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
         when(trackedEntityTypeCall.download(anySet())).thenReturn(Maybe.just(Collections.singletonList(trackedEntityType)));
         when(trackedEntityAttributeCall.download(anySet())).thenReturn(Maybe.just(Collections.singletonList(trackedEntityAttribute)));
         when(relationshipTypeCall.call()).thenReturn(Collections.emptyList());
-        when(optionSetCall.download(anySet())).thenReturn(Maybe.just(Collections.emptyList()));
-        when(optionCall.download(anySet())).thenReturn(Maybe.just(Collections.emptyList()));
-        when(optionGroupCall.download(anySet())).thenReturn(Maybe.just(Collections.emptyList()));
+        returnEmptyList(optionSetCall);
+        returnEmptyList(optionCall);
+        returnEmptyList(optionGroupCall);
+        returnEmptyList(programRuleCall);
         when(programStageEndpointCall.call()).thenReturn(Collections.emptyList());
-        when(programRuleEndpointCall.call()).thenReturn(Collections.emptyList());
 
         when(versionManager.is2_29()).thenReturn(Boolean.FALSE);
 
@@ -158,7 +153,7 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
         programDownloadCall = new ProgramModuleDownloader(
                 programCallFactory,
                 programStageCallFactory,
-                programRuleCallFactory,
+                programRuleCall,
                 trackedEntityTypeCall,
                 trackedEntityAttributeCall,
                 relationshipTypeCallFactory,
@@ -166,6 +161,14 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
                 optionCall,
                 optionGroupCall,
                 versionManager).downloadMetadata(anySet());
+    }
+
+    private void returnEmptyList(UidsCall<?> call) {
+        when(call.download(anySet())).thenReturn(Maybe.just(Collections.emptyList()));
+    }
+
+    private void returnError(UidsCall<?> call) {
+        when(call.download(anySet())).thenReturn(Maybe.error(new RuntimeException()));
     }
 
     @Test
@@ -193,20 +196,20 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     }
 
     @Test(expected = Exception.class)
-    public void fail_when_program_rule_call_fail() throws Exception {
-        whenEndpointCallFails(programRuleEndpointCall);
+    public void fail_when_program_rule_call_fail() {
+        returnError(programRuleCall);
         programDownloadCall.blockingGet();
     }
 
     @Test(expected = Exception.class)
     public void fail_when_tracked_entity_types_call_fail() {
-        when(trackedEntityTypeCall.download(anySet())).thenReturn(Maybe.error(new RuntimeException()));
+        returnError(trackedEntityTypeCall);
         programDownloadCall.blockingGet();
     }
 
     @Test(expected = Exception.class)
     public void fail_when_tracked_entity_attributes_call_fail() {
-        when(trackedEntityAttributeCall.download(anySet())).thenReturn(Maybe.error(new RuntimeException()));
+        returnError(trackedEntityAttributeCall);
         programDownloadCall.blockingGet();
     }
 

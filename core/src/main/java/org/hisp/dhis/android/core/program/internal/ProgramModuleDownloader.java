@@ -57,7 +57,7 @@ public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<Li
 
     private final UidsCallFactory<Program> programCallFactory;
     private final UidsCallFactory<ProgramStage> programStageCallFactory;
-    private final UidsCallFactory<ProgramRule> programRuleCallFactory;
+    private final UidsCall<ProgramRule> programRuleCall;
     private final UidsCall<TrackedEntityType> trackedEntityTypeCall;
     private final UidsCall<TrackedEntityAttribute> trackedEntityAttributeCall;
     private final ListCallFactory<RelationshipType> relationshipTypeCallFactory;
@@ -69,7 +69,7 @@ public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<Li
     @Inject
     ProgramModuleDownloader(UidsCallFactory<Program> programCallFactory,
                             UidsCallFactory<ProgramStage> programStageCallFactory,
-                            UidsCallFactory<ProgramRule> programRuleCallFactory,
+                            UidsCall<ProgramRule> programRuleCall,
                             UidsCall<TrackedEntityType> trackedEntityTypeCall,
                             UidsCall<TrackedEntityAttribute> trackedEntityAttributeCall,
                             ListCallFactory<RelationshipType> relationshipTypeCallFactory,
@@ -79,7 +79,7 @@ public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<Li
                             DHISVersionManager versionManager) {
         this.programCallFactory = programCallFactory;
         this.programStageCallFactory = programStageCallFactory;
-        this.programRuleCallFactory = programRuleCallFactory;
+        this.programRuleCall = programRuleCall;
         this.trackedEntityTypeCall = trackedEntityTypeCall;
         this.trackedEntityAttributeCall = trackedEntityAttributeCall;
         this.relationshipTypeCallFactory = relationshipTypeCallFactory;
@@ -97,7 +97,7 @@ public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<Li
             Set<String> programUids = UidsHelper.getUids(programs);
             List<ProgramStage> programStages = programStageCallFactory.create(programUids).call();
 
-            programRuleCallFactory.create(programUids).call();
+            programRuleCall.download(programUids).blockingGet();
 
             Set<String> trackedEntityUids = ProgramParentUidsHelper.getAssignedTrackedEntityUids(programs);
 

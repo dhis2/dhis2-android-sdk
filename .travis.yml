@@ -28,8 +28,8 @@ branches:
   only:
   - master
   - develop
-  - master-sms
   - master-dev
+  - validation-rules
 script:
 - travis_wait 70 "./build.sh"
 before_script:

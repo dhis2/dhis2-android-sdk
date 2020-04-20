@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeCall;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeEntityDIModule;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueEndpointCallFactory;
@@ -42,7 +41,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueE
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceEntityDIModule;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityModuleImpl;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeAttributeEntityDIModule;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeCallFactory;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeCall;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeEntityDIModule;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeService;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryEntityDIModule;
@@ -66,7 +65,7 @@ public final class TrackedEntityPackageDIModule {
 
     @Provides
     @Reusable
-    UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory(TrackedEntityTypeCallFactory impl) {
+    UidsCall<TrackedEntityType> trackedEntityTypeCall(TrackedEntityTypeCall impl) {
         return impl;
     }
 

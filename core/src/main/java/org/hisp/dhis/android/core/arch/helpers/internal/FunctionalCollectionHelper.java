@@ -26,27 +26,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+package org.hisp.dhis.android.core.arch.helpers.internal;
 
-import androidx.annotation.NonNull;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
+import io.reactivex.functions.Function;
 
-import io.reactivex.Single;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
+public final class FunctionalCollectionHelper {
 
-public interface TrackedEntityTypeService {
-
-    @GET("trackedEntityTypes")
-    Single<Payload<TrackedEntityType>> getTrackedEntityTypes(
-            @NonNull @Query("fields") @Which Fields<TrackedEntityType> fields,
-            @NonNull @Query("filter") @Where Filter<TrackedEntityType, String> idFilter,
-            @NonNull @Query("paging") boolean paging
-    );
+    public static <T> List<T> map(List<T> list, Function<T, T> map) throws Exception {
+        List<T> newList = new ArrayList<>();
+        for (T t : list) {
+            newList.add(map.apply(t));
+        }
+        return newList;
+    }
 }

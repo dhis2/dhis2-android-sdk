@@ -58,7 +58,7 @@ public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<Li
     private final UidsCallFactory<Program> programCallFactory;
     private final UidsCallFactory<ProgramStage> programStageCallFactory;
     private final UidsCallFactory<ProgramRule> programRuleCallFactory;
-    private final UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory;
+    private final UidsCall<TrackedEntityType> trackedEntityTypeCall;
     private final UidsCall<TrackedEntityAttribute> trackedEntityAttributeCall;
     private final ListCallFactory<RelationshipType> relationshipTypeCallFactory;
     private final UidsCall<OptionSet> optionSetCall;
@@ -70,7 +70,7 @@ public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<Li
     ProgramModuleDownloader(UidsCallFactory<Program> programCallFactory,
                             UidsCallFactory<ProgramStage> programStageCallFactory,
                             UidsCallFactory<ProgramRule> programRuleCallFactory,
-                            UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory,
+                            UidsCall<TrackedEntityType> trackedEntityTypeCall,
                             UidsCall<TrackedEntityAttribute> trackedEntityAttributeCall,
                             ListCallFactory<RelationshipType> relationshipTypeCallFactory,
                             UidsCall<OptionSet> optionSetCall,
@@ -80,7 +80,7 @@ public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<Li
         this.programCallFactory = programCallFactory;
         this.programStageCallFactory = programStageCallFactory;
         this.programRuleCallFactory = programRuleCallFactory;
-        this.trackedEntityTypeCallFactory = trackedEntityTypeCallFactory;
+        this.trackedEntityTypeCall = trackedEntityTypeCall;
         this.trackedEntityAttributeCall = trackedEntityAttributeCall;
         this.relationshipTypeCallFactory = relationshipTypeCallFactory;
         this.optionSetCall = optionSetCall;
@@ -101,7 +101,8 @@ public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<Li
 
             Set<String> trackedEntityUids = ProgramParentUidsHelper.getAssignedTrackedEntityUids(programs);
 
-            List<TrackedEntityType> trackedEntityTypes = trackedEntityTypeCallFactory.create(trackedEntityUids).call();
+            List<TrackedEntityType> trackedEntityTypes = trackedEntityTypeCall.download(trackedEntityUids)
+                    .blockingGet();
 
             Set<String> attributeUids = ProgramParentUidsHelper.getAssignedTrackedEntityAttributeUids(programs,
                     trackedEntityTypes);

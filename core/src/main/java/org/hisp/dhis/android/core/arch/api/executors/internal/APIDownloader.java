@@ -41,4 +41,8 @@ import io.reactivex.functions.Function;
 public interface APIDownloader {
     <P> Maybe<List<P>> downloadPartitioned(Set<String> uids, int pageSize, Handler<P> handler,
                                            Function<Set<String>, Single<Payload<P>>> pageDownloader);
+
+    <P> Maybe<List<P>> downloadPartitioned(Set<String> uids, int pageSize, Handler<P> handler,
+                                           Function<Set<String>, Single<Payload<P>>> pageDownloader,
+                                           Function<P, P> transform);
 }

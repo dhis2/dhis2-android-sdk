@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactory;
+import org.hisp.dhis.android.core.arch.call.factories.internal.RxUidsCall;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.option.Option;
@@ -53,6 +54,7 @@ import java.util.concurrent.Callable;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import io.reactivex.Maybe;
 import io.reactivex.Single;
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
@@ -97,9 +99,6 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     private Callable<List<OptionSet>> optionSetCall;
 
     @Mock
-    private Callable<List<Option>> optionCall;
-
-    @Mock
     private Callable<List<OptionGroup>> optionGroupCall;
 
     @Mock
@@ -124,7 +123,7 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     private UidsCallFactory<OptionSet> optionSetCallFactory;
 
     @Mock
-    private UidsCallFactory<Option> optionCallFactory;
+    private RxUidsCall<Option> optionCall;
 
     @Mock
     private UidsCallFactory<OptionGroup> optionGroupCallFactory;
@@ -159,8 +158,6 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
                 .thenReturn(relationshipTypeCall);
         when(optionSetCallFactory.create(any(Set.class)))
                 .thenReturn(optionSetCall);
-        when(optionCallFactory.create(any(Set.class)))
-                .thenReturn(optionCall);
         when(optionGroupCallFactory.create(any(Set.class)))
                 .thenReturn(optionGroupCall);
 
@@ -170,7 +167,7 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
         when(trackedEntityAttributeCall.call()).thenReturn(Collections.singletonList(trackedEntityAttribute));
         when(relationshipTypeCall.call()).thenReturn(Collections.emptyList());
         when(optionSetCall.call()).thenReturn(Collections.emptyList());
-        when(optionCall.call()).thenReturn(Collections.emptyList());
+        when(optionCall.download(anySet())).thenReturn(Maybe.just(Collections.emptyList()));
         when(optionGroupCall.call()).thenReturn(Collections.emptyList());
         when(programStageEndpointCall.call()).thenReturn(Collections.emptyList());
         when(programRuleEndpointCall.call()).thenReturn(Collections.emptyList());
@@ -186,7 +183,7 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
                 trackedEntityAttributeCallFactory,
                 relationshipTypeCallFactory,
                 optionSetCallFactory,
-                optionCallFactory,
+                optionCall,
                 optionGroupCallFactory,
                 versionManager).downloadMetadata(anySet());
     }

@@ -9,7 +9,7 @@ At the moment, just one [server, user] pair is supported, so logging out and log
 pair will delete the current database and create a new one.
 
 ## Encryption
-As of SDK version 1.1, it is possible to store the data in an encrypted database. The encryption key is generated randomly
+As of SDK version 1.1.0, it is possible to store the data in an encrypted database. The encryption key is generated randomly
 by the SDK and kept secure.
 
 The encryption status (if the database is encrypted or not) can be configured at server level in the android-settings-app.

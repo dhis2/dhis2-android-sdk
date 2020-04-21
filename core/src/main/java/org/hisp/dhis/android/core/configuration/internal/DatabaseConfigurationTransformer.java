@@ -35,11 +35,11 @@ import java.util.Date;
 
 final class DatabaseConfigurationTransformer {
 
-    public DatabasesConfiguration transform(Configuration oldConfiguration, String databaseName, String username) {
+    public DatabasesConfiguration transform(String serverUrl, String databaseName, String username) {
         return DatabasesConfiguration.builder()
-                .loggedServerUrl(oldConfiguration.serverUrl().toString())
+                .loggedServerUrl(serverUrl)
                 .servers(Collections.singletonList(DatabaseServerConfiguration.builder()
-                        .serverUrl(oldConfiguration.serverUrl().toString())
+                        .serverUrl(serverUrl)
                         .users(Collections.singletonList(
                                 DatabaseUserConfiguration.builder()
                                         .username(username)

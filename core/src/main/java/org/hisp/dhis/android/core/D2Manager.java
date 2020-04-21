@@ -113,7 +113,7 @@ public final class D2Manager {
             }
 
             ObjectKeyValueStore<Credentials> credentialsSecureStore = new CredentialsSecureStoreImpl(secureStore);
-            MultiUserDatabaseManagerForD2Manager.create(databaseAdapter, d2Config.context(), secureStore, insecureStore,
+            MultiUserDatabaseManagerForD2Manager.create(databaseAdapter, d2Config.context(), insecureStore,
                     databaseAdapterFactory)
                     .loadIfLogged(credentialsSecureStore.get());
 

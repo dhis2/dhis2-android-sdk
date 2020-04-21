@@ -50,7 +50,7 @@ public class ObjectStoreImpl<M extends CoreObject> extends ReadableStoreImpl<M> 
     protected final StatementBinder<M> binder;
     private Integer adapterHashCode;
 
-    public ObjectStoreImpl(DatabaseAdapter databaseAdapter, SQLStatementBuilder builder, StatementBinder<M> binder,
+    ObjectStoreImpl(DatabaseAdapter databaseAdapter, SQLStatementBuilder builder, StatementBinder<M> binder,
                     ObjectFactory<M> objectFactory) {
         super(databaseAdapter, builder, objectFactory);
         this.builder = builder;

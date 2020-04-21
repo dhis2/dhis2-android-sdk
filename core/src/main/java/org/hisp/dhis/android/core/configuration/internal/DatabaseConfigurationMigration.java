@@ -32,6 +32,7 @@ import android.content.Context;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.user.UserCredentials;
@@ -97,7 +98,7 @@ class DatabaseConfigurationMigration {
     }
 
     private String getServerUrl(DatabaseAdapter databaseAdapter) {
-        ConfigurationStore store = ConfigurationStoreImpl.create(databaseAdapter);
+        ObjectStore<Configuration> store = ConfigurationStore.create(databaseAdapter);
         Configuration configuration = store.selectFirst();
         return configuration == null ? null : configuration.serverUrl().toString();
     }

@@ -28,7 +28,10 @@
 
 package org.hisp.dhis.android.core.configuration.internal;
 
-final class DatabaseNameGenerator {
+import androidx.annotation.VisibleForTesting;
+
+@VisibleForTesting
+public final class DatabaseNameGenerator {
 
     String getDatabaseName(String serverUrl, String username, boolean encrypt) {
         String encryptedStr = encrypt ? "encrypted" : "unencrypted";

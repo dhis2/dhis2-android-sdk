@@ -34,6 +34,7 @@ import androidx.test.InstrumentationRegistry;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.InMemoryUnsecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore;
@@ -141,7 +142,7 @@ public class DatabaseConfigurationMigrationIntegrationShould {
         UserCredentialsStore credentialsStore = UserCredentialsStoreImpl.create(databaseAdapter);
         credentialsStore.insert(credentials);
 
-        ConfigurationStore configurationStore = ConfigurationStoreImpl.create(databaseAdapter);
+        ObjectStore<Configuration> configurationStore = ConfigurationStore.create(databaseAdapter);
         configurationStore.insert(Configuration.forServerUrl(HttpUrl.parse(URL_STR)));
     }
 }

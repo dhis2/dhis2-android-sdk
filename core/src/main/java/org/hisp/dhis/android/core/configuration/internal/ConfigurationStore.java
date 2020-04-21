@@ -27,8 +27,21 @@
  */
 package org.hisp.dhis.android.core.configuration.internal;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 
-public interface ConfigurationStore extends ObjectStore<Configuration> {
-    void save(Configuration configuration);
+final class ConfigurationStore {
+
+    private static final StatementBinder<Configuration> BINDER = (o, w) ->
+            w.bind(1, o.serverUrl().toString());
+
+    private ConfigurationStore() {
+    }
+
+    static ObjectStore<Configuration> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectStore(databaseAdapter, ConfigurationTableInfo.TABLE_INFO, BINDER,
+                Configuration::create);
+    }
 }

@@ -51,8 +51,6 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.util.Arrays;
 
-import okhttp3.HttpUrl;
-
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationMigration.OLD_DBNAME;
 
@@ -143,6 +141,6 @@ public class DatabaseConfigurationMigrationIntegrationShould {
         credentialsStore.insert(credentials);
 
         ObjectStore<Configuration> configurationStore = ConfigurationStore.create(databaseAdapter);
-        configurationStore.insert(Configuration.forServerUrl(HttpUrl.parse(URL_STR)));
+        configurationStore.insert(Configuration.forServerUrl(URL_STR));
     }
 }

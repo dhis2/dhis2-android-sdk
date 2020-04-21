@@ -100,7 +100,7 @@ class DatabaseConfigurationMigration {
     private String getServerUrl(DatabaseAdapter databaseAdapter) {
         ObjectStore<Configuration> store = ConfigurationStore.create(databaseAdapter);
         Configuration configuration = store.selectFirst();
-        return configuration == null ? null : configuration.serverUrl().toString();
+        return configuration == null ? null : configuration.serverUrl();
     }
 
     static DatabaseConfigurationMigration create(Context context,

@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 final class ConfigurationStore {
 
     private static final StatementBinder<Configuration> BINDER = (o, w) ->
-            w.bind(1, o.serverUrl().toString());
+            w.bind(1, o.serverUrl());
 
     private ConfigurationStore() {
     }

@@ -28,60 +28,91 @@
 
 package org.hisp.dhis.android.core.configuration.internal;
 
-import android.content.Context;
-
-import androidx.test.InstrumentationRegistry;
-
-import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.data.configuration.ConfigurationSamples;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.util.List;
 
 import okhttp3.HttpUrl;
 
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
-public class ConfigurationSecureStoreIntegrationShould {
+public class ConfigurationStoreIntegrationShould {
 
     private final Configuration configuration;
-    private final ObjectKeyValueStore<Configuration> configurationSecureStore;
+    private final ConfigurationStore store;
+    private final TableInfo tableInfo;
+    private final DatabaseAdapter databaseAdapter;
 
-    public ConfigurationSecureStoreIntegrationShould() {
-        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        this.configurationSecureStore = new ConfigurationSecureStoreImpl(new AndroidSecureStore(context));
+    public ConfigurationStoreIntegrationShould() {
+        this.store = ConfigurationStoreImpl.create(TestDatabaseAdapterFactory.get());
         this.configuration = buildObject();
+        this.tableInfo = ConfigurationTableInfo.TABLE_INFO;
+        this.databaseAdapter = TestDatabaseAdapterFactory.get();
     }
 
     @Before
     public void setUp() throws IOException {
-        configurationSecureStore.remove();
+        store.delete();
+    }
+
+    @After
+    public void tearDown() {
+        // DatabaseAdapterFactory.get().database().close();
     }
 
     @Test
-    public void configure_and_get() {
-        configurationSecureStore.set(configuration);
-        Configuration objectFromDb = configurationSecureStore.get();
+    public void insert_and_select_first_object() {
+        store.insert(configuration);
+        Configuration objectFromDb = store.selectFirst();
         assertThat(objectFromDb.serverUrl()).isEqualTo(HttpUrl.parse("http://testserver.org/api/"));
     }
 
     @Test
-    public void configure_and_remove() {
-        configurationSecureStore.set(configuration);
-        configurationSecureStore.remove();
-        assertThat(configurationSecureStore.get()).isNull();
+    public void insert_as_content_values_and_select_first_object() {
+        long rowsInserted = databaseAdapter.insert(tableInfo.name(), null, configuration.toContentValues());
+        assertThat(rowsInserted).isEqualTo(1);
+        Configuration objectFromDb = store.selectFirst();
+        assertThat(objectFromDb).isEqualTo(configuration);
     }
 
     @Test
-    public void overwrite_and_not_fail_in_a_consecutive_configuration() {
-        configurationSecureStore.set(configuration);
-        configurationSecureStore.set(configuration);
-        assertThat(configurationSecureStore.get()).isNotNull();
+    public void insert_and_select_all_objects() {
+        store.insert(configuration);
+        List<Configuration> objectsFromDb = store.selectAll();
+        assertThat(objectsFromDb.iterator().next().serverUrl()).isEqualTo(HttpUrl.parse("http://testserver.org/api/"));
+    }
+
+    @Test
+    public void delete_inserted_object_by_id() {
+        store.insert(configuration);
+        Configuration insertedConfiguration = store.selectFirst();
+        store.deleteById(insertedConfiguration);
+        assertThat(store.selectFirst()).isEqualTo(null);
+    }
+
+    @Test
+    public void save_configuration_properly() {
+        store.save(configuration);
+        Configuration objectFromDb = store.selectFirst();
+        assertThat(objectFromDb.serverUrl()).isEqualTo(HttpUrl.parse("http://testserver.org/api/"));
+    }
+
+    @Test
+    public void delete_old_configuration_before_save_the_new_one() {
+        store.save(configuration);
+        store.save(configuration);
+        store.save(configuration);
+        assertThat(store.count()).isEqualTo(1);
     }
 
     protected Configuration buildObject() {

@@ -26,18 +26,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.configuration;
+package org.hisp.dhis.android.core.configuration.internal;
 
-import org.hisp.dhis.android.core.configuration.internal.Configuration;
+import android.content.ContentValues;
+import android.database.Cursor;
+
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
 import okhttp3.HttpUrl;
 
-public class ConfigurationSamples {
+final class HttpUrlColumnAdapter implements ColumnTypeAdapter<HttpUrl> {
 
-    public static Configuration getConfiguration() {
-        return Configuration.builder()
-                .id(1L)
-                .serverUrl(HttpUrl.parse("http://testserver.org/api/"))
-                .build();
+    @Override
+    public HttpUrl fromCursor(Cursor cursor, String columnName) {
+        int columnIndex = cursor.getColumnIndex(columnName);
+        String sourceServerUrl = cursor.getString(columnIndex);
+
+        if (sourceServerUrl != null) {
+            return HttpUrl.parse(sourceServerUrl);
+        }
+        return null;
+    }
+
+    @Override
+    public void toContentValues(ContentValues values, String columnName, HttpUrl value) {
+        if (value != null) {
+            values.put(columnName, value.toString());
+        }
     }
 }

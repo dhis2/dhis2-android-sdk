@@ -25,19 +25,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.configuration.internal;
 
-package org.hisp.dhis.android.core.data.configuration;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStoreImpl;
 
-import org.hisp.dhis.android.core.configuration.internal.Configuration;
+public final class ConfigurationStoreImpl extends ObjectStoreImpl<Configuration> implements ConfigurationStore {
 
-import okhttp3.HttpUrl;
+    private static final StatementBinder<Configuration> BINDER = (o, w) ->
+            w.bind( 1, o.serverUrl().toString());
 
-public class ConfigurationSamples {
+    private ConfigurationStoreImpl(DatabaseAdapter databaseAdapter,
+                                   SQLStatementBuilderImpl builder) {
+        super(databaseAdapter,  builder, BINDER, Configuration::create);
+    }
 
-    public static Configuration getConfiguration() {
-        return Configuration.builder()
-                .id(1L)
-                .serverUrl(HttpUrl.parse("http://testserver.org/api/"))
-                .build();
+    @Override
+    public void save(Configuration configuration) {
+        delete();
+        insert(configuration);
+    }
+
+    public static ConfigurationStore create(DatabaseAdapter databaseAdapter) {
+        SQLStatementBuilderImpl statementBuilder = new SQLStatementBuilderImpl(ConfigurationTableInfo.TABLE_INFO);
+        return new ConfigurationStoreImpl(databaseAdapter, statementBuilder);
     }
 }

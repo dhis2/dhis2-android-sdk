@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore;
-import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 
 public class MultiUserDatabaseManagerForD2Manager {
 
@@ -58,12 +57,12 @@ public class MultiUserDatabaseManagerForD2Manager {
     }
 
     public static MultiUserDatabaseManagerForD2Manager create(DatabaseAdapter databaseAdapter, Context context,
-                                                              SecureStore secureStore, InsecureStore insecureStore,
+                                                              InsecureStore insecureStore,
                                                               DatabaseAdapterFactory databaseAdapterFactory) {
         return new MultiUserDatabaseManagerForD2Manager(databaseAdapter,
                 DatabaseConfigurationHelper.create(),
-                DatabaseConfigurationMigration.create(context, secureStore,
-                        insecureStore, databaseAdapterFactory), databaseAdapterFactory);
+                DatabaseConfigurationMigration.create(context, insecureStore, databaseAdapterFactory),
+                databaseAdapterFactory);
     }
 
     public void loadIfLogged(Credentials credentials) {

@@ -25,45 +25,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.configuration.internal;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
-import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
-
-import okhttp3.HttpUrl;
-
-public final class ConfigurationSecureStoreImpl implements ObjectKeyValueStore<Configuration> {
-
-    private static final String SERVER_URL = "server_url";
-
-    private final SecureStore secureStore;
-
-    public ConfigurationSecureStoreImpl(@NonNull SecureStore secureStore) {
-        this.secureStore = secureStore;
-    }
-
-    @Override
-    public void set(@NonNull Configuration configuration) {
-        if (configuration == null) {
-            throw new IllegalArgumentException("configuration == null");
-        }
-
-        secureStore.setData(SERVER_URL, configuration.serverUrl().toString());
-    }
-
-    @Nullable
-    @Override
-    public Configuration get() {
-        String serverUrl = secureStore.getData(SERVER_URL);
-        return serverUrl == null ? null : Configuration.forServerUrl(HttpUrl.parse(serverUrl));
-    }
-
-    @Override
-    public void remove() {
-        secureStore.removeData(SERVER_URL);
-    }
+public interface ConfigurationStore extends ObjectStore<Configuration> {
+    void save(Configuration configuration);
 }

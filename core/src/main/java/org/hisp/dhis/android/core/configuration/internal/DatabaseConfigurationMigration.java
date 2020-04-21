@@ -34,17 +34,17 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
-import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.internal.UserCredentialsStore;
 import org.hisp.dhis.android.core.user.internal.UserCredentialsStoreImpl;
+
+import java.util.Arrays;
 
 class DatabaseConfigurationMigration {
 
     static final String OLD_DBNAME = "dhis.db";
 
     private final Context context;
-    private final ObjectKeyValueStore<Configuration> oldConfigurationStore;
     private final ObjectKeyValueStore<DatabasesConfiguration> newConfigurationStore;
     private final DatabaseConfigurationTransformer transformer;
     private final DatabaseNameGenerator nameGenerator;
@@ -52,14 +52,12 @@ class DatabaseConfigurationMigration {
     private final DatabaseAdapterFactory databaseAdapterFactory;
 
     DatabaseConfigurationMigration(Context context,
-                                   ObjectKeyValueStore<Configuration> oldConfigurationStore,
                                    ObjectKeyValueStore<DatabasesConfiguration> newConfigurationStore,
                                    DatabaseConfigurationTransformer transformer,
                                    DatabaseNameGenerator nameGenerator,
                                    DatabaseRenamer renamer,
                                    DatabaseAdapterFactory databaseAdapterFactory) {
         this.context = context;
-        this.oldConfigurationStore = oldConfigurationStore;
         this.newConfigurationStore = newConfigurationStore;
         this.transformer = transformer;
         this.nameGenerator = nameGenerator;
@@ -68,40 +66,47 @@ class DatabaseConfigurationMigration {
     }
 
     DatabasesConfiguration apply() {
-        Configuration oldConfiguration = oldConfigurationStore.get();
-        if (oldConfiguration == null) {
-            return newConfigurationStore.get();
-        } else {
-            oldConfigurationStore.remove();
+        boolean oldDatabaseExist = Arrays.asList(context.databaseList()).contains(OLD_DBNAME);
+        if (oldDatabaseExist) {
             DatabaseAdapter databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter();
             databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, OLD_DBNAME, false);
-            UserCredentialsStore userCredentialsStore = UserCredentialsStoreImpl.create(databaseAdapter);
-            UserCredentials credentials = userCredentialsStore.selectFirst();
-            String username = credentials == null ? null : credentials.username();
+
+            String username = getUsername(databaseAdapter);
+            String serverUrl = getServerUrl(databaseAdapter);
             databaseAdapter.close();
 
-            String databaseName = nameGenerator.getDatabaseName(oldConfiguration.serverUrl().toString(),
-                    username, false);
-            if (username == null) {
+            if (username == null || serverUrl == null) {
                 context.deleteDatabase(OLD_DBNAME);
                 return null;
             } else {
+                String databaseName = nameGenerator.getDatabaseName(serverUrl, username, false);
                 renamer.renameDatabase(OLD_DBNAME, databaseName);
-                DatabasesConfiguration newConfiguration = transformer.transform(oldConfiguration, databaseName,
-                        username);
+                DatabasesConfiguration newConfiguration = transformer.transform(serverUrl, databaseName, username);
                 newConfigurationStore.set(newConfiguration);
                 return newConfiguration;
             }
+        } else {
+            return newConfigurationStore.get();
         }
     }
 
+    private String getUsername(DatabaseAdapter databaseAdapter) {
+        UserCredentialsStore store = UserCredentialsStoreImpl.create(databaseAdapter);
+        UserCredentials credentials = store.selectFirst();
+        return credentials == null ? null : credentials.username();
+    }
+
+    private String getServerUrl(DatabaseAdapter databaseAdapter) {
+        ConfigurationStore store = ConfigurationStoreImpl.create(databaseAdapter);
+        Configuration configuration = store.selectFirst();
+        return configuration == null ? null : configuration.serverUrl().toString();
+    }
+
     static DatabaseConfigurationMigration create(Context context,
-                                                 SecureStore secureStore,
                                                  InsecureStore insecureStore,
                                                  DatabaseAdapterFactory databaseAdapterFactory) {
         return new DatabaseConfigurationMigration(
                 context,
-                new ConfigurationSecureStoreImpl(secureStore),
                 DatabaseConfigurationInsecureStore.get(insecureStore),
                 new DatabaseConfigurationTransformer(),
                 new DatabaseNameGenerator(),

@@ -28,11 +28,10 @@
 
 package org.hisp.dhis.android.core.dataset.internal;
 
-import android.database.sqlite.SQLiteStatement;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
@@ -41,19 +40,17 @@ import org.hisp.dhis.android.core.dataset.SectionTableInfo;
 
 import androidx.annotation.NonNull;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 final class SectionStore {
 
     private static StatementBinder<Section> BINDER = new IdentifiableStatementBinder<Section>() {
         @Override
-        public void bindToStatement(@NonNull Section o, @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 7, o.description());
-            sqLiteBind(sqLiteStatement, 8, o.sortOrder());
-            sqLiteBind(sqLiteStatement, 9, UidsHelper.getUidOrNull(o.dataSet()));
-            sqLiteBind(sqLiteStatement, 10, o.showRowTotals());
-            sqLiteBind(sqLiteStatement, 11, o.showColumnTotals());
+        public void bindToStatement(@NonNull Section o, @NonNull StatementWrapper w) {
+            super.bindToStatement(o, w);
+            w.bind(7, o.description());
+            w.bind(8, o.sortOrder());
+            w.bind(9, UidsHelper.getUidOrNull(o.dataSet()));
+            w.bind(10, o.showRowTotals());
+            w.bind(11, o.showColumnTotals());
         }
     };
 

@@ -35,9 +35,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
 
@@ -47,9 +45,6 @@ class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
     private final PeriodGenerator monthly;
     private final NMonthlyPeriodGenerators nMonthly;
     private final YearlyPeriodGenerators yearly;
-
-    final Map<PeriodType, Integer> past;
-    final Map<PeriodType, Integer> future;
 
     ParentPeriodGeneratorImpl(PeriodGenerator daily,
                               WeeklyPeriodGenerators weekly,
@@ -63,78 +58,30 @@ class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
         this.monthly = monthly;
         this.nMonthly = nMonthly;
         this.yearly = yearly;
-
-        this.past = getDefaultPastPeriods();
-        this.future = getDefaultFuturePeriods();
-    }
-
-    private Map<PeriodType, Integer> getDefaultPastPeriods() {
-        Map<PeriodType, Integer> past = new HashMap<>();
-        past.put(PeriodType.Daily, 59);
-        past.put(PeriodType.Weekly, 12);
-        past.put(PeriodType.WeeklySaturday, 12);
-        past.put(PeriodType.WeeklySunday, 12);
-        past.put(PeriodType.WeeklyThursday, 12);
-        past.put(PeriodType.WeeklyWednesday, 12);
-        past.put(PeriodType.BiWeekly, 12);
-        past.put(PeriodType.Monthly, 11);
-        past.put(PeriodType.BiMonthly, 5);
-        past.put(PeriodType.Quarterly, 4);
-        past.put(PeriodType.SixMonthly, 4);
-        past.put(PeriodType.SixMonthlyApril, 4);
-        past.put(PeriodType.SixMonthlyNov, 4);
-        past.put(PeriodType.Yearly, 4);
-        past.put(PeriodType.FinancialApril, 4);
-        past.put(PeriodType.FinancialJuly, 4);
-        past.put(PeriodType.FinancialOct, 4);
-        past.put(PeriodType.FinancialNov, 4);
-        return past;
-    }
-
-    private Map<PeriodType, Integer> getDefaultFuturePeriods() {
-        Map<PeriodType, Integer> future = new HashMap<>();
-        future.put(PeriodType.Daily, 1);
-        future.put(PeriodType.Weekly, 1);
-        future.put(PeriodType.WeeklySaturday, 1);
-        future.put(PeriodType.WeeklySunday, 1);
-        future.put(PeriodType.WeeklyThursday, 1);
-        future.put(PeriodType.WeeklyWednesday, 1);
-        future.put(PeriodType.BiWeekly, 1);
-        future.put(PeriodType.Monthly, 1);
-        future.put(PeriodType.BiMonthly, 1);
-        future.put(PeriodType.Quarterly, 1);
-        future.put(PeriodType.SixMonthly, 1);
-        future.put(PeriodType.SixMonthlyApril, 1);
-        future.put(PeriodType.SixMonthlyNov, 1);
-        future.put(PeriodType.Yearly, 1);
-        future.put(PeriodType.FinancialApril, 1);
-        future.put(PeriodType.FinancialJuly, 1);
-        future.put(PeriodType.FinancialOct, 1);
-        future.put(PeriodType.FinancialNov, 1);
-        return future;
     }
 
     public List<Period> generatePeriods() {
         List<Period> periods = new ArrayList<>();
 
         for (PeriodType periodType : PeriodType.values()) {
-            PeriodGenerator periodGenerator = getPeriodGenerator(periodType);
-            if (periodGenerator != null) {
-                List<Period> ps = periodGenerator.generatePeriods(getPast(periodType), getFuture(periodType));
-                periods.addAll(ps);
-            }
+            List<Period> periodsInType = generatePeriods(periodType, periodType.getDefaultFuturePeriods());
+            periods.addAll(periodsInType);
         }
 
         return periods;
     }
 
     public List<Period> generatePeriods(PeriodType periodType, int futurePeriods) {
+        return generatePeriods(periodType, periodType.getDefaultPastPeriods(), futurePeriods);
+    }
+
+    public List<Period> generatePeriods(PeriodType periodType, int pastPeriods, int futurePeriods) {
         PeriodGenerator periodGenerator = getPeriodGenerator(periodType);
 
         if (periodGenerator == null) {
             return Collections.emptyList();
         } else {
-            return periodGenerator.generatePeriods(getPast(periodType), futurePeriods);
+            return periodGenerator.generatePeriods(pastPeriods, futurePeriods);
         }
     }
 
@@ -195,18 +142,8 @@ class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
         }
     }
 
-    private int getPast(PeriodType periodType) {
-        Integer periods = past.get(periodType);
-        return periods == null ? 0 : periods;
-    }
-
-    private int getFuture(PeriodType periodType) {
-        Integer periods = future.get(periodType);
-        return periods == null ? 0 : periods;
-    }
-
-    static ParentPeriodGeneratorImpl create() {
-        Calendar calendar = Calendar.getInstance();
+    static ParentPeriodGeneratorImpl create(CalendarProvider calendarProvider) {
+        Calendar calendar = calendarProvider.getCalendar();
         return new ParentPeriodGeneratorImpl(
                 new DailyPeriodGenerator(calendar),
                 WeeklyPeriodGenerators.create(calendar),

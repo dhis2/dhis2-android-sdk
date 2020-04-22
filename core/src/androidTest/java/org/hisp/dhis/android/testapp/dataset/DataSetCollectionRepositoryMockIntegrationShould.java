@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.testapp.dataset;
 
 import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
@@ -48,7 +49,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void find_all() {
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .blockingGet();
-        assertThat(dataSets.size(), is(1));
+        assertThat(dataSets.size(), is(2));
     }
 
     @Test
@@ -56,7 +57,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byPeriodType().eq(PeriodType.Monthly)
                 .blockingGet();
-        assertThat(dataSets.size(), is(1));
+        assertThat(dataSets.size(), is(2));
     }
 
     @Test
@@ -64,7 +65,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byCategoryComboUid().eq("m2jTvAj5kkm")
                 .blockingGet();
-        assertThat(dataSets.size(), is(1));
+        assertThat(dataSets.size(), is(2));
     }
 
     @Test
@@ -104,7 +105,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byVersion().smallerThan(21)
                 .blockingGet();
-        assertThat(dataSets.size(), is(0));
+        assertThat(dataSets.size(), is(1));
     }
 
     @Test
@@ -112,7 +113,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byVersion().smallerThan(23)
                 .blockingGet();
-        assertThat(dataSets.size(), is(1));
+        assertThat(dataSets.size(), is(2));
     }
 
     @Test
@@ -144,7 +145,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byOpenFuturePeriods().eq(3)
                 .blockingGet();
-        assertThat(dataSets.size(), is(1));
+        assertThat(dataSets.size(), is(2));
     }
 
     @Test
@@ -208,7 +209,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byAccessDataWrite().isTrue()
                 .blockingGet();
-        assertThat(dataSets.size(), is(1));
+        assertThat(dataSets.size(), is(2));
     }
 
     @Test
@@ -232,7 +233,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byOrganisationUnitUid("DiszpKrYNg8")
                 .blockingGet();
-        assertThat(dataSets.size(), is(1));
+        assertThat(dataSets.size(), is(2));
     }
 
     @Test
@@ -240,7 +241,20 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byOrganisationUnitList(Collections.singletonList("DiszpKrYNg8"))
                 .blockingGet();
-        assertThat(dataSets.size(), is(1));
+        assertThat(dataSets.size(), is(2));
+    }
+
+    @Test
+    public void filter_by_orgunit_scope() {
+        List<DataSet> dataSetCapture = d2.dataSetModule().dataSets()
+                .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
+                .blockingGet();
+        assertThat(dataSetCapture.size(), is(2));
+
+        List<DataSet> dataSetSearch = d2.dataSetModule().dataSets()
+                .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH)
+                .blockingGet();
+        assertThat(dataSetSearch.size(), is(0));
     }
 
     @Test

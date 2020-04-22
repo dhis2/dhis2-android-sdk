@@ -28,136 +28,56 @@
 
 package org.hisp.dhis.android.core.maintenance.internal;
 
-import android.database.Cursor;
-
 import androidx.test.runner.AndroidJUnit4;
 
-import com.google.common.truth.Truth;
-
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.D2Factory;
-import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper;
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.category.CategoryCategoryComboLink;
-import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkTableInfo;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation;
+import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationTableInfo;
 import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramRuleAction;
-import org.hisp.dhis.android.core.program.ProgramRuleActionTableInfo;
 import org.hisp.dhis.android.core.program.ProgramRuleActionType;
-import org.hisp.dhis.android.core.program.ProgramRuleTableInfo;
 import org.hisp.dhis.android.core.program.internal.ProgramRuleActionStore;
 import org.hisp.dhis.android.core.program.internal.ProgramRuleStore;
 import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.UserCredentialsTableInfo;
 import org.hisp.dhis.android.core.user.UserTableInfo;
 import org.hisp.dhis.android.core.user.internal.UserCredentialsStoreImpl;
-import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
-import org.junit.After;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
-public class ForeignKeyCleanerShould extends BaseRealIntegrationTest {
+public class ForeignKeyCleanerShould extends BaseMockIntegrationTestEmptyDispatcher {
 
-    private Dhis2MockServer dhis2MockServer;
-    private D2 d2;
-    private final String[] USER_CREDENTIALS_PROJECTION = {
-            UserCredentialsTableInfo.Columns.UID,
-            UserCredentialsTableInfo.Columns.USER
-    };
-    private final String[] PROGRAM_RULE_PROJECTION = {
-            IdentifiableColumns.UID
-    };
-    private final String[] PROGRAM_RULE_ACTION_PROJECTION = {
-            IdentifiableColumns.UID
-    };
-
-    @Override
     @Before
-    public void setUp() throws IOException {
-        super.setUp();
-
-        dhis2MockServer = new Dhis2MockServer();
-        ServerURLWrapper.setServerUrl(dhis2MockServer.getBaseEndpoint() + "api/");
-
-        d2 = D2Factory.forDatabaseAdapter(databaseAdapter());
-    }
-
-    @Override
-    @After
-    public void tearDown() throws IOException {
-        super.tearDown();
-
-        dhis2MockServer.shutdown();
+    public void setUp() {
+        d2.databaseAdapter().delete(ForeignKeyViolationTableInfo.TABLE_INFO.name());
     }
 
     @Test
     public void remove_rows_that_produce_foreign_key_errors() throws Exception {
-        syncMetadataAndAddFKViolation();
-
-        Cursor cursor = getUserCredentialsCursor();
-        assertThatCursorHasRowCount(cursor, 1);
-        cursor.moveToFirst();
-
-        int uidColumnIndex = cursor.getColumnIndex(UserCredentialsTableInfo.Columns.UID);
-        Truth.assertThat(cursor.getString(uidColumnIndex)).isEqualTo("M0fCOxtkURr");
-        int userColumnIndex = cursor.getColumnIndex(UserCredentialsTableInfo.Columns.USER);
-        Truth.assertThat(cursor.getString(userColumnIndex)).isEqualTo("DXyJmlo9rge");
-
-        assertThatCursor(cursor).isExhausted();
-        cursor.close();
+        addUserCredentialsForeignKeyViolation();
+        UserCredentials userCredentials = d2.userModule().userCredentials().blockingGet();
+        assertThat(userCredentials.uid()).isEqualTo("M0fCOxtkURr");
+        assertThat(userCredentials.user().uid()).isEqualTo("DXyJmlo9rge");
     }
 
     @Test
-    public void not_cause_null_records_on_fk_table() throws Exception {
-        final D2CallExecutor executor = D2CallExecutor.create(d2.databaseAdapter());
+    public void add_foreign_key_violation_to_table() throws Exception {
+        addUserCredentialsForeignKeyViolation();
 
-        executor.executeD2CallTransactionally(() -> {
-            givenAMetadataInDatabase();
+        assertThat(d2.maintenanceModule().foreignKeyViolations().blockingCount()).isEqualTo(1);
 
-            CategoryCategoryComboLink categoryCategoryComboLink = CategoryCategoryComboLink.builder()
-                    .category("no_category")
-                    .categoryCombo("no_category_combo")
-                    .sortOrder(2)
-                    .build();
+        ForeignKeyViolation foreignKeyViolation = d2.maintenanceModule().foreignKeyViolations().one().blockingGet();
 
-            d2.databaseAdapter().database().insert(CategoryCategoryComboLinkTableInfo.TABLE_INFO.name(),
-                    null, categoryCategoryComboLink.toContentValues());
-
-            ForeignKeyCleanerImpl.create(d2.databaseAdapter()).cleanForeignKeyErrors();
-
-            return null;
-        });
-
-        List<ForeignKeyViolation> foreignKeyViolationList =
-                ForeignKeyViolationStore.create(d2.databaseAdapter()).selectAll();
-
-        Truth.assertThat(foreignKeyViolationList.size()).isEqualTo(3);
-    }
-
-    @Test
-    public void save_foreign_key_violations_when_some_errors_are_find() throws Exception {
-        syncMetadataAndAddFKViolation();
-
-        List<ForeignKeyViolation> foreignKeyViolationList =
-                ForeignKeyViolationStore.create(d2.databaseAdapter()).selectAll();
-
-        ForeignKeyViolation categoryOptionComboViolation = ForeignKeyViolation.builder()
+        ForeignKeyViolation expectedViolation = ForeignKeyViolation.builder()
                 .toTable(UserTableInfo.TABLE_INFO.name())
                 .toColumn(IdentifiableColumns.UID)
                 .fromTable(UserCredentialsTableInfo.TABLE_INFO.name())
@@ -166,31 +86,20 @@ public class ForeignKeyCleanerShould extends BaseRealIntegrationTest {
                 .fromObjectUid("user_credential_uid1")
                 .build();
 
-        List<ForeignKeyViolation> violationsToCompare = new ArrayList<>();
-        for (ForeignKeyViolation violation : foreignKeyViolationList) {
-            violationsToCompare.add(violation.toBuilder().id(null).created(null).fromObjectRow(null).build());
-        }
+        ForeignKeyViolation violationWithoutId = foreignKeyViolation.toBuilder()
+                .id(null)
+                .created(null)
+                .fromObjectRow(null)
+                .build();
 
-        assertThat(violationsToCompare.contains(categoryOptionComboViolation), is(true));
-        assertThat(violationsToCompare.contains(categoryOptionComboViolation), is(true));
+        assertThat(expectedViolation).isEqualTo(violationWithoutId);
     }
 
     @Test
-    public void cascade_deletion_on_foreign_key_error() throws Exception {
+    public void delete_in_cascade_on_foreign_key_error() throws Exception {
         final D2CallExecutor executor = D2CallExecutor.create(d2.databaseAdapter());
 
         final String PROGRAM_RULE_UID = "program_rule_uid";
-
-        givenAMetadataInDatabase();
-
-        final Cursor programRuleCursor = getProgramRuleCursor();
-        Cursor programRuleActionCursor = getProgramRuleActionCursor();
-
-        final Integer programRuleCount = programRuleCursor.getCount();
-        final Integer programRuleActionCount = programRuleActionCursor.getCount();
-
-        programRuleCursor.close();
-        programRuleActionCursor.close();
 
         final ObjectWithUid program = ObjectWithUid.create("nonexisent-program");
 
@@ -207,36 +116,26 @@ public class ForeignKeyCleanerShould extends BaseRealIntegrationTest {
 
             ProgramRuleActionStore.create(d2.databaseAdapter()).insert(programRuleAction);
 
-            Cursor programRuleCursor1 = getProgramRuleCursor();
-            Cursor programRuleActionCursor1 = getProgramRuleActionCursor();
-            assertThatCursorHasRowCount(programRuleCursor1, programRuleCount + 1);
-            assertThatCursorHasRowCount(programRuleActionCursor1, programRuleActionCount + 1);
-            programRuleCursor1.close();
-            programRuleActionCursor1.close();
+            assertThat(d2.programModule().programRules().blockingCount()).isEqualTo(1);
+            assertThat(d2.programModule().programRuleActions().blockingCount()).isEqualTo(1);
 
             ForeignKeyCleaner foreignKeyCleaner = ForeignKeyCleanerImpl.create(d2.databaseAdapter());
             Integer rowsAffected = foreignKeyCleaner.cleanForeignKeyErrors();
 
-            Truth.assertThat(rowsAffected).isEqualTo(1);
+            assertThat(rowsAffected).isEqualTo(1);
 
-            Cursor programRuleCursor2 = getProgramRuleCursor();
-            Cursor programRuleActionCursor2 = getProgramRuleActionCursor();
-            assertThatCursorHasRowCount(programRuleCursor2, programRuleCount);
-            assertThatCursorHasRowCount(programRuleActionCursor2, programRuleActionCount);
-            programRuleCursor2.close();
-            programRuleActionCursor2.close();
+            assertThat(d2.programModule().programRules().blockingCount()).isEqualTo(0);
+            assertThat(d2.programModule().programRuleActions().blockingCount()).isEqualTo(0);
 
             return null;
         });
 
     }
 
-    private void syncMetadataAndAddFKViolation() throws D2Error {
-
+    private void addUserCredentialsForeignKeyViolation() throws D2Error {
         final D2CallExecutor executor = D2CallExecutor.create(d2.databaseAdapter());
 
         executor.executeD2CallTransactionally(() -> {
-            givenAMetadataInDatabase();
             ObjectWithUid user = ObjectWithUid.create("no_user_uid");
             UserCredentials userCredentials = UserCredentials.builder()
                     .id(2L)
@@ -248,41 +147,9 @@ public class ForeignKeyCleanerShould extends BaseRealIntegrationTest {
                     UserCredentialsStoreImpl.create(d2.databaseAdapter());
             userCredentialsStore.insert(userCredentials);
 
-            List<UserCredentials> ds = userCredentialsStore.selectAll();
-            assertThat(ds.contains(userCredentials), is(true));
-
             ForeignKeyCleanerImpl.create(d2.databaseAdapter()).cleanForeignKeyErrors();
 
-            assertThat(userCredentialsStore.selectAll().contains(userCredentials), is(false));
             return null;
         });
-    }
-
-    private void givenAMetadataInDatabase() {
-        try {
-            dhis2MockServer.setRequestDispatcher();
-            d2.userModule().logIn(username, password, dhis2MockServer.getBaseEndpoint());
-            d2.metadataModule().blockingDownload();
-        } catch (Exception ignore) {
-        }
-    }
-
-    private Cursor getUserCredentialsCursor() {
-        return database().query(UserCredentialsTableInfo.TABLE_INFO.name(), USER_CREDENTIALS_PROJECTION,
-                null, null, null, null, null);
-    }
-
-    private Cursor getProgramRuleCursor() {
-        return database().query(ProgramRuleTableInfo.TABLE_INFO.name(), PROGRAM_RULE_PROJECTION,
-                null, null, null, null, null);
-    }
-
-    private Cursor getProgramRuleActionCursor() {
-        return database().query(ProgramRuleActionTableInfo.TABLE_INFO.name(), PROGRAM_RULE_ACTION_PROJECTION,
-                null, null, null, null, null);
-    }
-
-    private void assertThatCursorHasRowCount(Cursor cursor, int rowCount) {
-        Truth.assertThat(cursor.getCount()).isEqualTo(rowCount);
     }
 }

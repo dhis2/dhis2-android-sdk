@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractI
 import org.hisp.dhis.android.core.data.indicator.IndicatorSamples;
 import org.hisp.dhis.android.core.indicator.Indicator;
 import org.hisp.dhis.android.core.indicator.IndicatorTableInfo;
-import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.runner.RunWith;
 
@@ -41,7 +41,7 @@ import org.junit.runner.RunWith;
 public class IndicatorStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Indicator> {
 
     public IndicatorStoreIntegrationShould() {
-        super(IndicatorStore.create(DatabaseAdapterFactory.get()), IndicatorTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
+        super(IndicatorStore.create(TestDatabaseAdapterFactory.get()), IndicatorTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 
     @Override

@@ -125,7 +125,7 @@ public class ProgramIndicatorEngineIntegrationShould extends BaseMockIntegration
         teiStore.insert(trackedEntityInstance);
 
         ContentValues categoryCombo = CreateCategoryComboUtils.create(1L, CategoryCombo.DEFAULT_UID);
-        database.insert(CategoryComboTableInfo.TABLE_INFO.name(), null, categoryCombo);
+        databaseAdapter.insert(CategoryComboTableInfo.TABLE_INFO.name(), null, categoryCombo);
 
         Access access = Access.create(true, null, DataAccess.create(true, true));
         Program program = Program.builder().uid(programUid)

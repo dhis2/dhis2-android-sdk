@@ -28,19 +28,16 @@
 
 package org.hisp.dhis.android.core.constant.internal;
 
-import android.database.sqlite.SQLiteStatement;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.constant.Constant;
 import org.hisp.dhis.android.core.constant.ConstantTableInfo;
 
 import androidx.annotation.NonNull;
-
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
 
 final class ConstantStore {
 
@@ -49,9 +46,9 @@ final class ConstantStore {
 
     private static StatementBinder<Constant> BINDER = new IdentifiableStatementBinder<Constant>() {
         @Override
-        public void bindToStatement(@NonNull Constant o, @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 7, o.value());
+        public void bindToStatement(@NonNull Constant o, @NonNull StatementWrapper w) {
+            super.bindToStatement(o, w);
+            w.bind(7, o.value());
         }
     };
 

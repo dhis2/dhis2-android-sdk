@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.note.internal;
 
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.note.Note;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
@@ -50,8 +49,14 @@ public class NoteDHISVersionManager {
         this.versionManager = versionManager;
     }
 
-    public Note transform(Enrollment enrollment, Note note) {
-        Note.Builder builder = Note.builder().enrollment(enrollment.uid());
+    public Note transform(Note.NoteType noteType, String ownerUid, Note note) {
+        if (noteType == null) {
+            throw new IllegalArgumentException("Note type is null");
+        }
+
+        Note.Builder builder = noteType == Note.NoteType.ENROLLMENT_NOTE ?
+                Note.builder().noteType(noteType).enrollment(ownerUid) :
+                Note.builder().noteType(noteType).event(ownerUid);
 
         try {
             if (this.versionManager.is2_29()) {

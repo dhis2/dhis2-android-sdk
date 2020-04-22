@@ -60,6 +60,7 @@ public class PeriodForDataSetManager {
         return dataSetCollectionRepository.uid(dataSetUid).get().map(dataSet -> {
             Integer dataSetFuturePeriods = dataSet.openFuturePeriods();
             int futurePeriods = dataSetFuturePeriods == null ? 0 : dataSetFuturePeriods;
+
             List<Period> periods = parentPeriodGenerator.generatePeriods(dataSet.periodType(), futurePeriods);
             storePeriods(periods);
             return periods;
@@ -81,6 +82,12 @@ public class PeriodForDataSetManager {
         }
 
         List<Period> periods = parentPeriodGenerator.generatePeriods(periodType, maxFuturePeriods);
+        storePeriods(periods);
+        return periods;
+    }
+
+    public List<Period> getPeriodsInRange(PeriodType periodType, int pastPeriods, int futurePeriods) {
+        List<Period> periods = parentPeriodGenerator.generatePeriods(periodType, pastPeriods, futurePeriods);
         storePeriods(periods);
         return periods;
     }

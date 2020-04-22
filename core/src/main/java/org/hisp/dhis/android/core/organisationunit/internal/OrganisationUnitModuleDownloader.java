@@ -27,14 +27,9 @@
  */
 package org.hisp.dhis.android.core.organisationunit.internal;
 
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
-import org.hisp.dhis.android.core.common.Unit;
-import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.user.User;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -62,15 +57,12 @@ public class OrganisationUnitModuleDownloader {
         this.organisationUnitLevelEndpointCallFactory = organisationUnitLevelEndpointCallFactory;
     }
 
-    public Callable<Unit> downloadMetadata(final User user,
-                                           final Collection<Program> programs,
-                                           final Collection<DataSet> dataSets) {
+    public Callable<List<OrganisationUnit>> downloadMetadata(final User user) {
         return () -> {
-            organisationUnitCallFactory.create(
-                    user, UidsHelper.getUids(programs), UidsHelper.getUids(dataSets)).call();
+            List<OrganisationUnit> organisationUnits = organisationUnitCallFactory.create(user).call();
             organisationUnitLevelEndpointCallFactory.create().call();
 
-            return new Unit();
+            return organisationUnits;
         };
     }
 

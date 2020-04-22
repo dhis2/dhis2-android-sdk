@@ -1,0 +1,1 @@
+CREATE TABLE D2Error (_id INTEGER PRIMARY KEY AUTOINCREMENT, resourceType TEXT, uid TEXT, url TEXT, errorComponent TEXT, errorCode TEXT, errorDescription TEXT, httpErrorCode INTEGER);

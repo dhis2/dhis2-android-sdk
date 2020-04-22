@@ -35,19 +35,17 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationTableInfo;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 final class ForeignKeyViolationStore {
 
-    private static final StatementBinder<ForeignKeyViolation> BINDER = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.fromTable());
-        sqLiteBind(sqLiteStatement, 2, o.fromColumn());
-        sqLiteBind(sqLiteStatement, 3, o.toTable());
-        sqLiteBind(sqLiteStatement, 4, o.toColumn());
-        sqLiteBind(sqLiteStatement, 5, o.notFoundValue());
-        sqLiteBind(sqLiteStatement, 6, o.fromObjectUid());
-        sqLiteBind(sqLiteStatement, 7, o.fromObjectRow());
-        sqLiteBind(sqLiteStatement, 8, o.created());
+    private static final StatementBinder<ForeignKeyViolation> BINDER = (o, w) -> {
+        w.bind(1, o.fromTable());
+        w.bind(2, o.fromColumn());
+        w.bind(3, o.toTable());
+        w.bind(4, o.toColumn());
+        w.bind(5, o.notFoundValue());
+        w.bind(6, o.fromObjectUid());
+        w.bind(7, o.fromObjectRow());
+        w.bind(8, o.created());
     };
 
     private ForeignKeyViolationStore() {

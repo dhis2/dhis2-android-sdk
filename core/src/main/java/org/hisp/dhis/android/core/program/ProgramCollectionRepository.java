@@ -37,10 +37,12 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.program.ProgramTableInfo.Columns;
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo;
 
 import java.util.Collections;
 import java.util.List;
@@ -176,6 +178,18 @@ public final class ProgramCollectionRepository
                 OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM,
                 OrganisationUnitProgramLinkTableInfo.Columns.ORGANISATION_UNIT,
                 uids);
+    }
+
+    public ProgramCollectionRepository byOrganisationUnitScope(OrganisationUnit.Scope scope) {
+        return cf.subQuery(IdentifiableColumns.UID).inTwoLinkTable(
+                OrganisationUnitProgramLinkTableInfo.TABLE_INFO.name(),
+                OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM,
+                OrganisationUnitProgramLinkTableInfo.Columns.ORGANISATION_UNIT,
+                UserOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
+                UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
+                UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT_SCOPE,
+                Collections.singletonList(scope.name())
+        );
     }
 
     public ProgramCollectionRepository withTrackedEntityType() {

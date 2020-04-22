@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
+import org.hisp.dhis.android.core.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
@@ -35,7 +36,6 @@ import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventTableInfo;
 import org.hisp.dhis.android.core.event.internal.EventCallFactory;
 import org.hisp.dhis.android.core.user.AuthenticatedUser;
-import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 
 import java.io.IOException;
@@ -81,7 +81,7 @@ public class LogoutCallRealIntegrationShould extends BaseRealIntegrationTest {
         AuthenticatedUser authenticatedUser = authenticatedUserStore.selectFirst();
 
         assertThat(authenticatedUser).isNotNull();
-        assertThat(credentialsSecureStore.getCredentials()).isNull();
+        assertThat(getD2DIComponent(d2).credentialsSecureStore().get()).isNull();
     }
 
     //@Test
@@ -100,14 +100,14 @@ public class LogoutCallRealIntegrationShould extends BaseRealIntegrationTest {
         AuthenticatedUser authenticatedUser = authenticatedUserStore.selectFirst();
 
         assertThat(authenticatedUser).isNotNull();
-        assertThat(credentialsSecureStore.getCredentials()).isNull();
+        assertThat(getD2DIComponent(d2).credentialsSecureStore().get()).isNull();
 
         d2.userModule().logIn(username, password, url).blockingGet();
 
         authenticatedUser = authenticatedUserStore.selectFirst();
 
         assertThat(authenticatedUser).isNotNull();
-        assertThat(credentialsSecureStore.getCredentials()).isNotNull();
+        assertThat(getD2DIComponent(d2).credentialsSecureStore().get()).isNull();
     }
 
     //@Test

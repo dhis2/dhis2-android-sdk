@@ -30,23 +30,21 @@ package org.hisp.dhis.android.core.arch.db.stores.internal;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-
-import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.common.DataObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
 
 import java.util.List;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
+import androidx.annotation.NonNull;
+
 import static org.hisp.dhis.android.core.common.DataColumns.STATE;
 import static org.hisp.dhis.android.core.common.IdentifiableColumns.UID;
 
@@ -57,47 +55,70 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
     private final static String NE = " != ";
     private final static String AND = " AND ";
 
-    private final String selectStateQuery;
-    private final String existsQuery;
-    private final SQLiteStatement setStateStatement;
-    private final SQLiteStatement setStateForUpdateStatement;
+    private String selectStateQuery;
+    private String existsQuery;
+    private StatementWrapper setStateStatement;
+    private StatementWrapper setStateForUpdateStatement;
     final String tableName;
 
+    private Integer adapterHashCode;
+
     public IdentifiableDataObjectStoreImpl(DatabaseAdapter databaseAdapter,
-                                           SQLStatementWrapper statements,
-                                           SQLStatementBuilder builder, StatementBinder<M> binder,
+                                           SQLStatementBuilder builder,
+                                           StatementBinder<M> binder,
                                            ObjectFactory<M> objectFactory) {
-        super(databaseAdapter, statements, builder, binder, objectFactory);
+        super(databaseAdapter, builder, binder, objectFactory);
         this.tableName = builder.getTableName();
-        String whereUid =  " WHERE " + UID + " =?";
+    }
 
-        String setState = "UPDATE " + tableName + " SET " +
-                STATE + " =?" + whereUid;
-        this.setStateStatement = databaseAdapter.compileStatement(setState);
+    private void compileStatements() {
+        resetStatementsIfDbChanged();
+        if (setStateStatement == null) {
+            String whereUid = " WHERE " + UID + " =?";
 
-        String setStateForUpdate = "UPDATE " + tableName + " SET " +
-                STATE + " = (case " +
+            String setState = "UPDATE " + tableName + " SET " +
+                    STATE + " =?" + whereUid;
+            this.setStateStatement = databaseAdapter.compileStatement(setState);
+
+            String setStateForUpdate = "UPDATE " + tableName + " SET " +
+                    STATE + " = (case " +
                     "when " + STATE + EQ + "'" + State.TO_POST + "' then '" + State.TO_POST + "' " +
                     "when " + STATE + NE + "'" + State.TO_POST + "'" + AND +
-                        STATE + NE + "'" + State.RELATIONSHIP + "' then '" + State.TO_UPDATE + "'" +
-                        " END)" +
-                    " where "  +
-                        UID + " =? ;";
-        this.setStateForUpdateStatement = databaseAdapter.compileStatement(setStateForUpdate);
+                    STATE + NE + "'" + State.RELATIONSHIP + "' then '" + State.TO_UPDATE + "'" +
+                    " END)" +
+                    " where " +
+                    UID + " =? ;";
+            this.setStateForUpdateStatement = databaseAdapter.compileStatement(setStateForUpdate);
 
-        this.selectStateQuery = "SELECT " + STATE + " FROM " + tableName + whereUid;
-        this.existsQuery = "SELECT 1 FROM " + tableName + whereUid;
+            this.selectStateQuery = "SELECT " + STATE + " FROM " + tableName + whereUid;
+            this.existsQuery = "SELECT 1 FROM " + tableName + whereUid;
+        }
+    }
 
+    private boolean hasAdapterChanged() {
+        Integer oldCode = adapterHashCode;
+        adapterHashCode = databaseAdapter.hashCode();
+        return oldCode != null && databaseAdapter.hashCode() != oldCode;
+    }
+
+    private void resetStatementsIfDbChanged() {
+        if (hasAdapterChanged()) {
+            setStateStatement.close();
+            setStateForUpdateStatement.close();
+            setStateStatement = null;
+            setStateForUpdateStatement = null;
+        }
     }
 
     @Override
     public int setState(@NonNull String uid, @NonNull State state) {
-        sqLiteBind(setStateStatement, 1, state);
+        compileStatements();
+        setStateStatement.bind(1, state);
 
         // bind the where argument
-        sqLiteBind(setStateStatement, 2, uid);
+        setStateStatement.bind(2, uid);
 
-        int updatedRow = databaseAdapter.executeUpdateDelete(tableName, setStateStatement);
+        int updatedRow = databaseAdapter.executeUpdateDelete(setStateStatement);
         setStateStatement.clearBindings();
 
         return updatedRow;
@@ -112,14 +133,15 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
                 .appendInKeyStringValues(UID, uids)
                 .build();
 
-        return databaseAdapter.database().update(tableName, updates, whereClause, null);
+        return databaseAdapter.update(tableName, updates, whereClause, null);
     }
 
     @Override
     public int setStateForUpdate(@NonNull String uid) {
-        sqLiteBind(setStateForUpdateStatement, 1, uid);
+        compileStatements();
+        setStateForUpdateStatement.bind(1, uid);
 
-        int updatedRow = databaseAdapter.executeUpdateDelete(tableName, setStateForUpdateStatement);
+        int updatedRow = databaseAdapter.executeUpdateDelete(setStateForUpdateStatement);
         setStateForUpdateStatement.clearBindings();
 
         return updatedRow;
@@ -127,7 +149,8 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
 
     @Override
     public State getState(@NonNull String uid) {
-        Cursor cursor = databaseAdapter.query(selectStateQuery, uid);
+        compileStatements();
+        Cursor cursor = databaseAdapter.rawQuery(selectStateQuery, uid);
         State state = null;
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
@@ -140,7 +163,8 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
 
     @Override
     public Boolean exists(@NonNull String uid) {
-        Cursor cursor = databaseAdapter.query(existsQuery, uid);
+        compileStatements();
+        Cursor cursor = databaseAdapter.rawQuery(existsQuery, uid);
         int count = cursor.getCount();
         cursor.close();
         return count > 0;

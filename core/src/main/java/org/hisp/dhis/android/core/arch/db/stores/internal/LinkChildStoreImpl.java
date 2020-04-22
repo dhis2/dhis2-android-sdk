@@ -64,6 +64,6 @@ class LinkChildStoreImpl<P extends ObjectWithUidInterface, C extends ObjectWithU
     public List<C> getChildrenWhere(P p, String whereClause) {
         String selectStatement = statementBuilder.selectChildrenWithLinkTable(
                 linkTableChildProjection, p.uid(), whereClause);
-        return cursorExecutor.getObjects(databaseAdapter.query(selectStatement));
+        return cursorExecutor.getObjects(databaseAdapter.rawQuery(selectStatement));
     }
 }

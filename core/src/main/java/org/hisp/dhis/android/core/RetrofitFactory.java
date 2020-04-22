@@ -31,7 +31,8 @@ package org.hisp.dhis.android.core;
 import org.hisp.dhis.android.core.arch.api.fields.internal.FieldsConverterFactory;
 import org.hisp.dhis.android.core.arch.api.filters.internal.FilterConverterFactory;
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory;
-import org.hisp.dhis.android.core.configuration.ServerUrlParser;
+import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -40,7 +41,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 
 final class RetrofitFactory {
 
-    static Retrofit retrofit(OkHttpClient okHttpClient) {
+    static Retrofit retrofit(OkHttpClient okHttpClient) throws D2Error {
         return new Retrofit.Builder()
                 // Actual baseUrl will be set later during logIn through DynamicServerURLInterceptor. But it's mandatory
                 // to create Retrofit

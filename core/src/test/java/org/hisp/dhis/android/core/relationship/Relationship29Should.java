@@ -57,11 +57,4 @@ public class Relationship29Should extends BaseObjectShould implements ObjectShou
         assertThat(relationship.uid()).isEqualTo("V2kkHafqs8G");
         assertThat(relationship.name()).isEqualTo("Mother-Child");
     }
-
-    @Test
-    public void serialize_and_deserialize_to_same_object() throws IOException {
-        Relationship229Compatible initialRelationship = samples.get229Compatible();
-        Relationship229Compatible newRelationship = deserialize(serialize(initialRelationship), Relationship229Compatible.class);
-        assertThat(newRelationship).isEqualTo(initialRelationship);
-    }
 }

@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
+import org.hisp.dhis.android.core.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
@@ -59,7 +60,6 @@ import org.hisp.dhis.android.core.relationship.RelationshipTypeCollectionReposit
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 
 import java.io.IOException;
@@ -350,10 +350,11 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         List<TrackedEntityInstance> responseTeiB = d2.trackedEntityModule().trackedEntityInstances().byUid().eq(teiBUid).blockingGet();
         assertThat(responseTeiB.size() == 1).isTrue();
 
-        List<Relationship> relationships = d2.relationshipModule().relationships().getByItem(RelationshipHelper.teiItem(teiA.uid()));
+        List<Relationship> relationships =
+                d2.relationshipModule().relationships().getByItem(RelationshipHelper.teiItem(teiA.uid()), true);
         assertThat(relationships.size() > 0).isTrue();
 
-        Boolean relationshipFound = false;
+        boolean relationshipFound = false;
         for (Relationship relationship : relationships) {
             if (!relationshipType.uid().equals(relationship.relationshipType())) {
                 break;

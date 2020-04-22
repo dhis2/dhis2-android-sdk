@@ -28,26 +28,27 @@
 
 package org.hisp.dhis.android.core.arch.db.stores.internal;
 
-import android.database.sqlite.SQLiteStatement;
-
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.common.CoreObject;
+
+import androidx.annotation.NonNull;
 
 import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.isNull;
 
 public class ObjectWithoutUidStoreImpl<M extends CoreObject>
         extends ObjectStoreImpl<M> implements ObjectWithoutUidStore<M> {
-    private final SQLiteStatement updateWhereStatement;
-    private final SQLiteStatement deleteWhereStatement;
+    private StatementWrapper updateWhereStatement;
+    private StatementWrapper deleteWhereStatement;
     private final WhereStatementBinder<M> whereUpdateBinder;
     private final WhereStatementBinder<M> whereDeleteBinder;
+
+    private Integer adapterHashCode;
 
     public ObjectWithoutUidStoreImpl(DatabaseAdapter databaseAdapter,
                                      SQLStatementBuilder builder,
@@ -55,9 +56,7 @@ public class ObjectWithoutUidStoreImpl<M extends CoreObject>
                                      WhereStatementBinder<M> whereUpdateBinder,
                                      WhereStatementBinder<M> whereDeleteBinder,
                                      ObjectFactory<M> objectFactory) {
-        super(databaseAdapter, databaseAdapter.compileStatement(builder.insert()), builder, binder, objectFactory);
-        this.updateWhereStatement = databaseAdapter.compileStatement(builder.updateWhere());
-        this.deleteWhereStatement = databaseAdapter.compileStatement(builder.deleteWhere());
+        super(databaseAdapter, builder, binder, objectFactory);
         this.whereUpdateBinder = whereUpdateBinder;
         this.whereDeleteBinder = whereDeleteBinder;
     }
@@ -65,14 +64,39 @@ public class ObjectWithoutUidStoreImpl<M extends CoreObject>
     @Override
     public void updateWhere(@NonNull M m) throws RuntimeException {
         isNull(m);
+        compileStatements();
         binder.bindToStatement(m, updateWhereStatement);
         whereUpdateBinder.bindWhereStatement(m, updateWhereStatement);
         executeUpdateDelete(updateWhereStatement);
     }
 
+    private void compileStatements() {
+        resetStatementsIfDbChanged();
+        if (updateWhereStatement == null) {
+            updateWhereStatement = databaseAdapter.compileStatement(builder.updateWhere());
+            deleteWhereStatement = databaseAdapter.compileStatement(builder.deleteWhere());
+        }
+    }
+
+    private boolean hasAdapterChanged() {
+        Integer oldCode = adapterHashCode;
+        adapterHashCode = databaseAdapter.hashCode();
+        return oldCode != null && databaseAdapter.hashCode() != oldCode;
+    }
+
+    private void resetStatementsIfDbChanged() {
+        if (hasAdapterChanged()) {
+            updateWhereStatement.close();
+            deleteWhereStatement.close();
+            updateWhereStatement = null;
+            deleteWhereStatement = null;
+        }
+    }
+
     @Override
     public void deleteWhere(@NonNull M m) throws RuntimeException {
         isNull(m);
+        compileStatements();
         whereDeleteBinder.bindWhereStatement(m, deleteWhereStatement);
         executeUpdateDelete(deleteWhereStatement);
     }

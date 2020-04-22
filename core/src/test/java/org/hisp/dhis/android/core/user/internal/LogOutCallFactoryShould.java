@@ -28,8 +28,10 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.junit.Before;
@@ -51,10 +53,16 @@ import static org.mockito.Mockito.when;
 public class LogOutCallFactoryShould {
 
     @Mock
-    private CredentialsSecureStore credentialsSecureStore;
+    private ObjectKeyValueStore<Credentials> credentialsSecureStore;
 
     @Mock
     private Credentials credentials;
+
+    @Mock
+    private DatabaseAdapter databaseAdapter;
+
+    @Mock
+    private DatabaseAdapterFactory databaseAdapterFactory;
 
     private Completable logOutCompletable;
 
@@ -65,21 +73,21 @@ public class LogOutCallFactoryShould {
         when(credentials.username()).thenReturn("user");
         when(credentials.password()).thenReturn("password");
 
-        logOutCompletable = new LogOutCallFactory(credentialsSecureStore).logOut();
+        logOutCompletable = new LogOutCallFactory(databaseAdapter, databaseAdapterFactory, credentialsSecureStore).logOut();
     }
 
     @Test
     public void clear_user_credentials() {
-        when(credentialsSecureStore.getCredentials()).thenReturn(credentials);
+        when(credentialsSecureStore.get()).thenReturn(credentials);
 
         logOutCompletable.blockingAwait();
 
-        verify(credentialsSecureStore, times(1)).removeCredentials();
+        verify(credentialsSecureStore, times(1)).remove();
     }
 
     @Test
     public void throw_d2_exception_if_no_authenticated_user() {
-        when(credentialsSecureStore.getCredentials()).thenReturn(null);
+        when(credentialsSecureStore.get()).thenReturn(null);
 
         TestObserver<Void> testObserver = logOutCompletable.test();
         testObserver.awaitTerminalEvent();

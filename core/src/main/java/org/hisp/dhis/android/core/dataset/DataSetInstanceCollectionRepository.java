@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterC
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.dataset.internal.DataSetInstanceSQLStatementBuilder;
 import org.hisp.dhis.android.core.dataset.internal.DataSetInstanceStore;
 import org.hisp.dhis.android.core.period.PeriodType;
@@ -81,6 +82,10 @@ public final class DataSetInstanceCollectionRepository
 
     public StringFilterConnector<DataSetInstanceCollectionRepository> byAttributeOptionComboUid() {
         return cf.string(DataSetInstanceSQLStatementBuilder.ATTRIBUTE_OPTION_COMBO_UID_ALIAS);
+    }
+
+    public EnumFilterConnector<DataSetInstanceCollectionRepository, State> byState() {
+        return cf.enumC(DataSetInstanceSQLStatementBuilder.STATE_ALIAS);
     }
 
 }

@@ -30,37 +30,45 @@ package org.hisp.dhis.android.core;
 
 import android.content.Context;
 
+import androidx.test.InstrumentationRegistry;
+
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore;
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreImpl;
+import org.hisp.dhis.android.core.arch.storage.internal.AndroidInsecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.InMemoryUnsecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 
 import java.util.Collections;
 
-import androidx.test.InstrumentationRegistry;
 import okhttp3.logging.HttpLoggingInterceptor;
 
 public class D2Factory {
 
-    public static D2 forDatabaseName(String databaseName) {
+    public static D2 forNewDatabase() {
+        return forNewDatabaseInternal(new InMemorySecureStore(), new InMemoryUnsecureStore());
+    }
+
+    public static D2 forNewDatabaseWithAndroidSecureStore() {
+        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
+        return forNewDatabaseInternal(new AndroidSecureStore(context), new AndroidInsecureStore(context));
+    }
+
+    private static D2 forNewDatabaseInternal(SecureStore secureStore, InsecureStore insecureStore) {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
 
         D2Configuration d2Configuration = d2Configuration(context);
 
-        D2Manager.setDatabaseName(databaseName);
-
         D2Manager.setTestMode(true);
+        D2Manager.setTestingSecureStore(secureStore);
+        D2Manager.setTestingInsecureStore(insecureStore);
         D2 d2 = D2Manager.blockingInstantiateD2(d2Configuration);
 
         D2Manager.clear();
-        D2Manager.setDatabaseName(null);
 
         return d2;
-    }
-
-    public static D2 forNewDatabase() {
-        return forDatabaseName(null);
     }
 
     private static D2Configuration d2Configuration(Context context) {
@@ -75,18 +83,5 @@ public class D2Factory {
                 .interceptors(Collections.singletonList(loggingInterceptor))
                 .context(context)
                 .build();
-    }
-
-    public static D2 forDatabaseAdapter(DatabaseAdapter databaseAdapter) {
-        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        NotClosedObjectsDetector.enableNotClosedObjectsDetection();
-        CredentialsSecureStore credentialsSecureStore = new CredentialsSecureStoreImpl(context);
-        return new D2(
-                RetrofitFactory.retrofit(
-                        OkHttpClientFactory.okHttpClient(d2Configuration(context), credentialsSecureStore)),
-                databaseAdapter,
-                context,
-                credentialsSecureStore
-        );
     }
 }

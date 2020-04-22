@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.data.relationship;
 
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.internal.Relationship229Compatible;
 import org.hisp.dhis.android.core.relationship.RelationshipHelper;
@@ -54,17 +55,25 @@ public class RelationshipSamples {
 
     protected RelationshipItem eventItem = RelationshipHelper.eventItem(TO_UID);
 
+    protected static State STATE = State.SYNCED;
+
+    protected static Boolean DELETED = false;
+
     private Relationship229Compatible.Builder commonCompatibleBuilder = Relationship229Compatible
             .builder()
             .created(CREATED)
             .lastUpdated(LAST_UPDATED)
-            .name(NAME);
+            .name(NAME)
+            .state(STATE)
+            .deleted(DELETED);
 
     private static Relationship.Builder commonBuilder = Relationship
             .builder()
             .created(CREATED)
             .lastUpdated(LAST_UPDATED)
-            .name(NAME);
+            .name(NAME)
+            .state(STATE)
+            .deleted(DELETED);
 
     public Relationship229Compatible get229Compatible() {
         return commonCompatibleBuilder

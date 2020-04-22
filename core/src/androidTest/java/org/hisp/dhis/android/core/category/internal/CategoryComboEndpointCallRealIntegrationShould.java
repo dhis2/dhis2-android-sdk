@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.category.internal;
 
 import com.google.common.collect.Lists;
 
+import org.hisp.dhis.android.core.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
@@ -38,7 +39,6 @@ import org.hisp.dhis.android.core.category.CategoryCategoryComboLink;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.category.CategoryOptionCombo;
-import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 
 import java.io.IOException;
@@ -64,7 +64,7 @@ public class CategoryComboEndpointCallRealIntegrationShould extends BaseRealInte
     public void download_categories_combos_and_relatives() throws Exception {
         d2.userModule().logIn(username, password, url).blockingGet();
 
-        d2.databaseAdapter().database().setForeignKeyConstraintsEnabled(false);
+        d2.databaseAdapter().setForeignKeyConstraintsEnabled(false);
 
         assertNotCombosInDB();
         assertTrue(getCategoryCategoryComboLinks().isEmpty());

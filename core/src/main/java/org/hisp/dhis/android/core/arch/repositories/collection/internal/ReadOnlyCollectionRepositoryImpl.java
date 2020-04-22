@@ -165,7 +165,7 @@ public class ReadOnlyCollectionRepositoryImpl<M extends CoreObject, R extends Re
      */
     @Override
     public boolean blockingIsEmpty() {
-        return blockingCount() == 0;
+        return !one().blockingExists();
     }
 
     protected String getWhereClause() {

@@ -91,7 +91,7 @@ final class SearchOrganisationUnitOnDemandCallFactory {
         return objectList -> {
             if (objectList != null && !objectList.isEmpty()) {
                 d2CallExecutor.executeD2CallTransactionally(() -> {
-                    handler.setData(null, null, user, OrganisationUnit.Scope.SCOPE_TEI_SEARCH);
+                    handler.setData(user, OrganisationUnit.Scope.SCOPE_TEI_SEARCH);
                     handler.handleMany(objectList, pathTransformer);
                     return null;
                 });

@@ -32,7 +32,6 @@ import android.util.Log;
 
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl;
-import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.junit.Before;
 
 import java.io.IOException;

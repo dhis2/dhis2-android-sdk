@@ -33,7 +33,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hisp.dhis.android.core.arch.api.fields.internal.FieldsConverterFactory;
 import org.hisp.dhis.android.core.arch.api.filters.internal.FilterConverterFactory;
 import org.hisp.dhis.android.core.arch.api.internal.PreventURLDecodeInterceptor;
-import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer;
 
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockWebServer;

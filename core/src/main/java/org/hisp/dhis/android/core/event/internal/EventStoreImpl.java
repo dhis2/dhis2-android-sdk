@@ -34,9 +34,9 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStoreImpl;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.State;
@@ -50,39 +50,37 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
 public final class EventStoreImpl extends IdentifiableDeletableDataObjectStoreImpl<Event> implements EventStore {
 
     private static final String QUERY_SINGLE_EVENTS = "SELECT Event.* FROM Event WHERE Event.enrollment IS NULL";
 
-    private static final StatementBinder<Event> BINDER = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.uid());
-        sqLiteBind(sqLiteStatement, 2, o.enrollment());
-        sqLiteBind(sqLiteStatement, 3, o.created());
-        sqLiteBind(sqLiteStatement, 4, o.lastUpdated());
-        sqLiteBind(sqLiteStatement, 5, o.createdAtClient());
-        sqLiteBind(sqLiteStatement, 6, o.lastUpdatedAtClient());
-        sqLiteBind(sqLiteStatement, 7, o.status());
-        sqLiteBind(sqLiteStatement, 8, o.geometry() == null ? null : o.geometry().type());
-        sqLiteBind(sqLiteStatement, 9, o.geometry() == null ? null : o.geometry().coordinates());
-        sqLiteBind(sqLiteStatement, 10, o.program());
-        sqLiteBind(sqLiteStatement, 11, o.programStage());
-        sqLiteBind(sqLiteStatement, 12, o.organisationUnit());
-        sqLiteBind(sqLiteStatement, 13, o.eventDate());
-        sqLiteBind(sqLiteStatement, 14, o.completedDate());
-        sqLiteBind(sqLiteStatement, 15, o.dueDate());
-        sqLiteBind(sqLiteStatement, 16, o.state());
-        sqLiteBind(sqLiteStatement, 17, o.attributeOptionCombo());
-        sqLiteBind(sqLiteStatement, 18, o.deleted());
+    private static final StatementBinder<Event> BINDER = (o, w) -> {
+        w.bind(1, o.uid());
+        w.bind(2, o.enrollment());
+        w.bind(3, o.created());
+        w.bind(4, o.lastUpdated());
+        w.bind(5, o.createdAtClient());
+        w.bind(6, o.lastUpdatedAtClient());
+        w.bind(7, o.status());
+        w.bind(8, o.geometry() == null ? null : o.geometry().type());
+        w.bind(9, o.geometry() == null ? null : o.geometry().coordinates());
+        w.bind(10, o.program());
+        w.bind(11, o.programStage());
+        w.bind(12, o.organisationUnit());
+        w.bind(13, o.eventDate());
+        w.bind(14, o.completedDate());
+        w.bind(15, o.dueDate());
+        w.bind(16, o.state());
+        w.bind(17, o.attributeOptionCombo());
+        w.bind(18, o.deleted());
+        w.bind(19, o.assignedUser());
     };
 
     private EventStoreImpl(DatabaseAdapter databaseAdapter,
-                           SQLStatementWrapper statementWrapper,
                            SQLStatementBuilderImpl builder,
                            StatementBinder<Event> binder,
                            ObjectFactory<Event> objectFactory) {
-        super(databaseAdapter, statementWrapper, builder, binder, objectFactory);
+        super(databaseAdapter, builder, binder, objectFactory);
     }
 
     @Override
@@ -103,8 +101,10 @@ public final class EventStoreImpl extends IdentifiableDeletableDataObjectStoreIm
 
     @Override
     public List<Event> querySingleEventsToPost() {
+        String states = CollectionsHelper.commaAndSpaceSeparatedArrayValues(
+                CollectionsHelper.withSingleQuotationMarksArray(EnumHelper.asStringList(State.uploadableStates())));
         String singleEventsToPostQuery = QUERY_SINGLE_EVENTS +
-                " AND (Event.state = '" + State.TO_POST + "' OR Event.state = '" + State.TO_UPDATE + "')";
+                " AND (Event.state IN (" + states + "))";
         return eventListFromQuery(singleEventsToPostQuery);
     }
 
@@ -157,12 +157,12 @@ public final class EventStoreImpl extends IdentifiableDeletableDataObjectStoreIm
                     " FROM " + EventTableInfo.TABLE_INFO.name() + whereStatement + ") b " +
                 "ON a." + IdentifiableColumns.UID + " = b." + Columns.ENROLLMENT;
 
-        return processCount(databaseAdapter.query(query));
+        return processCount(databaseAdapter.rawQuery(query));
     }
 
     private List<Event> eventListFromQuery(String query) {
         List<Event> eventList = new ArrayList<>();
-        Cursor cursor = databaseAdapter.query(query);
+        Cursor cursor = databaseAdapter.rawQuery(query);
         addObjectsToCollection(cursor, eventList);
         return eventList;
     }
@@ -179,11 +179,9 @@ public final class EventStoreImpl extends IdentifiableDeletableDataObjectStoreIm
         SQLStatementBuilderImpl statementBuilder = new SQLStatementBuilderImpl(
                 EventTableInfo.TABLE_INFO.name(),
                 EventTableInfo.TABLE_INFO.columns());
-        SQLStatementWrapper statementWrapper = new SQLStatementWrapper(statementBuilder, databaseAdapter);
 
         return new EventStoreImpl(
                 databaseAdapter,
-                statementWrapper,
                 statementBuilder,
                 BINDER,
                 Event::create

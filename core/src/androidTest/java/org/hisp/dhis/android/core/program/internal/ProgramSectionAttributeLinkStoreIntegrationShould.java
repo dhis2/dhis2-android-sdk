@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShou
 import org.hisp.dhis.android.core.data.program.ProgramSectionAttributeLinkSamples;
 import org.hisp.dhis.android.core.program.ProgramSectionAttributeLink;
 import org.hisp.dhis.android.core.program.ProgramSectionAttributeLinkTableInfo;
-import org.hisp.dhis.android.core.utils.integration.mock.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.runner.RunWith;
 
@@ -41,8 +41,8 @@ public class ProgramSectionAttributeLinkStoreIntegrationShould
         extends LinkStoreAbstractIntegrationShould<ProgramSectionAttributeLink> {
 
     public ProgramSectionAttributeLinkStoreIntegrationShould() {
-        super(ProgramSectionAttributeLinkStore.create(DatabaseAdapterFactory.get()),
-                ProgramSectionAttributeLinkTableInfo.TABLE_INFO, DatabaseAdapterFactory.get());
+        super(ProgramSectionAttributeLinkStore.create(TestDatabaseAdapterFactory.get()),
+                ProgramSectionAttributeLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 
     @Override

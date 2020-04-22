@@ -36,7 +36,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
+import org.hisp.dhis.android.core.arch.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;

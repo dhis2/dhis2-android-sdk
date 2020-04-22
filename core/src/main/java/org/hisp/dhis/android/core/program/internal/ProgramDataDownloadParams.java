@@ -36,8 +36,8 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.UnwrappedEqInFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
-import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
+import org.hisp.dhis.android.core.settings.EnrollmentScope;
 
 import java.util.Collections;
 import java.util.Date;
@@ -46,7 +46,7 @@ import java.util.List;
 @AutoValue
 public abstract class ProgramDataDownloadParams {
 
-    private static Integer DEFAULT_LIMIT = 500;
+    public static final Integer DEFAULT_LIMIT = 500;
 
     @NonNull
     public abstract List<String> uids();
@@ -61,7 +61,7 @@ public abstract class ProgramDataDownloadParams {
     public abstract String program();
 
     @Nullable
-    public abstract EnrollmentStatus programStatus();
+    public abstract EnrollmentScope programStatus();
 
     @Nullable
     public abstract Date programStartDate();
@@ -72,13 +72,13 @@ public abstract class ProgramDataDownloadParams {
     @Nullable
     public abstract String trackedEntityType();
 
-    @NonNull
+    @Nullable
     public abstract Boolean limitByOrgunit();
 
-    @NonNull
+    @Nullable
     public abstract Boolean limitByProgram();
 
-    @NonNull
+    @Nullable
     public abstract Integer limit();
 
     @NonNull
@@ -103,6 +103,9 @@ public abstract class ProgramDataDownloadParams {
                 case QueryParams.LIMIT:
                     builder.limit(Integer.parseInt(item.value()));
                     break;
+                case QueryParams.PROGRAM_STATUS:
+                    builder.programStatus(EnrollmentScope.valueOf(item.value()));
+                    break;
                 case QueryParams.OVERWRITE:
                     builder.overwrite(item.value().equals("1"));
                     break;
@@ -114,7 +117,6 @@ public abstract class ProgramDataDownloadParams {
 
     public static Builder builder() {
         return new AutoValue_ProgramDataDownloadParams.Builder()
-                .limitByOrgunit(false).limitByProgram(false).limit(DEFAULT_LIMIT)
                 .overwrite(false)
                 .orgUnits(Collections.emptyList())
                 .uids(Collections.emptyList());
@@ -132,7 +134,7 @@ public abstract class ProgramDataDownloadParams {
 
         public abstract Builder program(String program);
 
-        public abstract Builder programStatus(EnrollmentStatus enrollmentStatus);
+        public abstract Builder programStatus(EnrollmentScope enrollmentScope);
 
         public abstract Builder programStartDate(Date programStartDate);
 

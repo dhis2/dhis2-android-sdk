@@ -251,6 +251,16 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     }
 
     @Test
+    public void filter_by_assigned_user() {
+        List<Event> events =
+                d2.eventModule().events()
+                        .byAssignedUser().eq("aTwqot2S410")
+                        .blockingGet();
+
+        assertThat(events.size(), is(1));
+    }
+
+    @Test
     public void count_tracked_entity_instances_unrestricted() {
         int count = d2.eventModule().events().countTrackedEntityInstances();
 
@@ -272,9 +282,38 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     }
 
     @Test
+    public void include_notes_as_children() {
+        Event event = d2.eventModule().events()
+                .withNotes().uid("single1").blockingGet();
+        assertThat(event.notes().size(), is(2));
+    }
+
+    @Test
     public void order_by_due_date() {
         List<Event> events = d2.eventModule().events()
                 .orderByDueDate(RepositoryScope.OrderByDirection.ASC)
+                .blockingGet();
+        assertThat(events.get(0).uid(), is("event1"));
+        assertThat(events.get(1).uid(), is("event2"));
+        assertThat(events.get(2).uid(), is("single1"));
+        assertThat(events.get(3).uid(), is("single2"));
+    }
+
+    @Test
+    public void order_by_created() {
+        List<Event> events = d2.eventModule().events()
+                .orderByCreated(RepositoryScope.OrderByDirection.ASC)
+                .blockingGet();
+        assertThat(events.get(0).uid(), is("event1"));
+        assertThat(events.get(1).uid(), is("event2"));
+        assertThat(events.get(2).uid(), is("single1"));
+        assertThat(events.get(3).uid(), is("single2"));
+    }
+
+    @Test
+    public void order_by_created_at_client() {
+        List<Event> events = d2.eventModule().events()
+                .orderByCreatedAtClient(RepositoryScope.OrderByDirection.ASC)
                 .blockingGet();
         assertThat(events.get(0).uid(), is("event1"));
         assertThat(events.get(1).uid(), is("event2"));
@@ -291,6 +330,17 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
         assertThat(events.get(1).uid(), is("event2"));
         assertThat(events.get(2).uid(), is("single2"));
         assertThat(events.get(3).uid(), is("single1"));
+    }
+
+    @Test
+    public void order_by_last_updated_at_client() {
+        List<Event> events = d2.eventModule().events()
+                .orderByLastUpdatedAtClient(RepositoryScope.OrderByDirection.ASC)
+                .blockingGet();
+        assertThat(events.get(0).uid(), is("event1"));
+        assertThat(events.get(1).uid(), is("event2"));
+        assertThat(events.get(2).uid(), is("single1"));
+        assertThat(events.get(3).uid(), is("single2"));
     }
 
     @Test

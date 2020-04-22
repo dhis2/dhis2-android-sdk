@@ -30,10 +30,11 @@ package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.program.Program;
+import org.hisp.dhis.android.core.program.ProgramType;
 
 import java.util.List;
 
 public interface ProgramStoreInterface extends IdentifiableObjectStore<Program> {
 
-    List<String> queryWithoutRegistrationProgramUids() throws RuntimeException;
+    List<String> getUidsByProgramType(ProgramType programType) throws RuntimeException;
 }

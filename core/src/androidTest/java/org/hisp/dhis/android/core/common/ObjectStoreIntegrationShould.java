@@ -29,13 +29,12 @@
 package org.hisp.dhis.android.core.common;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteConstraintException;
 
+import org.hisp.dhis.android.core.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetTableInfo;
 import org.hisp.dhis.android.core.option.internal.OptionSetStore;
-import org.hisp.dhis.android.core.utils.integration.real.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,7 +62,7 @@ public class ObjectStoreIntegrationShould extends BaseRealIntegrationTest {
     @Test
     public void insert_option_set() {
         store.insert(optionSet);
-        Cursor cursor = getCursor(OptionSetTableInfo.TABLE_INFO.name(), OptionSetTableInfo.TABLE_INFO.columns().all());
+        Cursor cursor = databaseAdapter().query(OptionSetTableInfo.TABLE_INFO.name(), OptionSetTableInfo.TABLE_INFO.columns().all());
         optionSetCursorAssert(cursor, optionSet);
     }
 
@@ -72,7 +71,7 @@ public class ObjectStoreIntegrationShould extends BaseRealIntegrationTest {
         store.insert(null);
     }
 
-    @Test(expected = SQLiteConstraintException.class)
+    @Test(expected = RuntimeException.class)
     public void throw_exception_for_second_identical_insertion() {
         store.insert(this.optionSet);
         store.insert(this.optionSet);

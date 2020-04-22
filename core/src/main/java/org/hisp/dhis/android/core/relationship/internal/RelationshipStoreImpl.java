@@ -31,9 +31,8 @@ package org.hisp.dhis.android.core.relationship.internal;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.db.statementwrapper.internal.SQLStatementWrapper;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStoreImpl;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStoreImpl;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipItem;
 import org.hisp.dhis.android.core.relationship.RelationshipTableInfo;
@@ -41,23 +40,22 @@ import org.hisp.dhis.android.core.relationship.RelationshipTableInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.sqLiteBind;
-
-public final class RelationshipStoreImpl extends IdentifiableObjectStoreImpl<Relationship>
+public final class RelationshipStoreImpl extends IdentifiableDeletableDataObjectStoreImpl<Relationship>
         implements RelationshipStore {
 
-    private static StatementBinder<Relationship> BINDER = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.uid());
-        sqLiteBind(sqLiteStatement, 2, o.name());
-        sqLiteBind(sqLiteStatement, 3, o.created());
-        sqLiteBind(sqLiteStatement, 4, o.lastUpdated());
-        sqLiteBind(sqLiteStatement, 5, o.relationshipType());
+    private static StatementBinder<Relationship> BINDER = (o, w) -> {
+        w.bind(1, o.uid());
+        w.bind(2, o.name());
+        w.bind(3, o.created());
+        w.bind(4, o.lastUpdated());
+        w.bind(5, o.relationshipType());
+        w.bind(6, o.state());
+        w.bind(7, o.deleted());
     };
 
     private RelationshipStoreImpl(DatabaseAdapter databaseAdapter,
-                                  SQLStatementWrapper statementWrapper,
                                   SQLStatementBuilderImpl statementBuilder) {
-        super(databaseAdapter, statementWrapper, statementBuilder, BINDER, Relationship::create);
+        super(databaseAdapter, statementBuilder, BINDER, Relationship::create);
     }
 
     @Override
@@ -74,14 +72,13 @@ public final class RelationshipStoreImpl extends IdentifiableObjectStoreImpl<Rel
                 "WHERE " + whereClause + ";";
 
         List<Relationship> relationships = new ArrayList<>();
-        addObjectsToCollection(databaseAdapter.query(queryStatement), relationships);
+        addObjectsToCollection(databaseAdapter.rawQuery(queryStatement), relationships);
 
         return relationships;
     }
 
     public static RelationshipStore create(DatabaseAdapter databaseAdapter) {
         SQLStatementBuilderImpl statementBuilder = new SQLStatementBuilderImpl(RelationshipTableInfo.TABLE_INFO);
-        SQLStatementWrapper statementWrapper = new SQLStatementWrapper(statementBuilder, databaseAdapter);
-        return new RelationshipStoreImpl(databaseAdapter, statementWrapper, statementBuilder);
+        return new RelationshipStoreImpl(databaseAdapter, statementBuilder);
     }
 }

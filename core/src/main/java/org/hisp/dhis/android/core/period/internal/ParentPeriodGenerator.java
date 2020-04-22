@@ -37,5 +37,6 @@ import java.util.List;
 interface ParentPeriodGenerator {
     List<Period> generatePeriods();
     List<Period> generatePeriods(PeriodType periodType, int futurePeriods);
+    List<Period> generatePeriods(PeriodType periodType, int pastPeriods, int futurePeriods);
     Period generatePeriod(PeriodType periodType, Date date);
 }

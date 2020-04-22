@@ -50,13 +50,12 @@ public class UserAuthenticateCallMockIntegrationShould extends BaseMockIntegrati
 
     @Before
     public void setUp() throws D2Error {
-        dhis2MockServer.enqueueMockResponse("user/user.json");
-        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
+        dhis2MockServer.enqueueLoginResponses();
     }
 
     @After
     public void tearDown() {
-        UserStore.create(databaseAdapter).delete();
+        d2.userModule().blockingLogOut();
     }
 
     @Test
@@ -93,14 +92,9 @@ public class UserAuthenticateCallMockIntegrationShould extends BaseMockIntegrati
     }
 
     private User login() {
-        User user;
-        try {
-            d2.userModule().logOut().blockingAwait();
-        } catch (RuntimeException e) {
-            // Do nothing
-        } finally {
-            user = d2.userModule().blockingLogIn("test_user", "test_password", dhis2MockServer.getBaseEndpoint());
+        if (d2.userModule().blockingIsLogged()) {
+            d2.userModule().blockingLogOut();
         }
-        return user;
+        return d2.userModule().blockingLogIn("test_user", "test_password", dhis2MockServer.getBaseEndpoint());
     }
 }

@@ -28,16 +28,14 @@
 
 package org.hisp.dhis.android.core.data.configuration;
 
-import org.hisp.dhis.android.core.configuration.Configuration;
-
-import okhttp3.HttpUrl;
+import org.hisp.dhis.android.core.configuration.internal.Configuration;
 
 public class ConfigurationSamples {
 
     public static Configuration getConfiguration() {
         return Configuration.builder()
                 .id(1L)
-                .serverUrl(HttpUrl.parse("http://testserver.org/api/"))
+                .serverUrl("http://testserver.org/api/")
                 .build();
     }
 }

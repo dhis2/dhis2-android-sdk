@@ -208,6 +208,7 @@
       "remindCompleted": false,
       "minDaysFromStart": 1,
       "standardInterval": 1,
+      "enableUserAssignment": true,
       "periodType": "Weekly",
       "reportDateToUse": "report_date_to_use_2",
       "featureType": "POINT",

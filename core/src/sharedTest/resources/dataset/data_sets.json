@@ -103,6 +103,47 @@
         "color": "#000",
         "icon": "my-icon-name"
       }
+    },
+    {
+      "lastUpdated": "2014-08-09T12:35:36.743",
+      "id": "BfMAe6Itzgt",
+      "created": "2012-06-10T00:36:10.036",
+      "name": "Child Health",
+      "shortName": "Child Health",
+      "validCompleteOnly": true,
+      "skipOffline": true,
+      "version": 2,
+      "timelyDays": 5,
+      "dataElementDecoration": false,
+      "displayName": "Child Health",
+      "notifyCompletingUser": true,
+      "noValueRequiresComment": false,
+      "displayShortName": "Child Health",
+      "fieldCombinationRequired": true,
+      "renderHorizontally": true,
+      "renderAsTabs": false,
+      "mobile": true,
+      "periodType": "Monthly",
+      "openFuturePeriods": 3,
+      "expiryDays": 2,
+      "categoryCombo": {
+        "id": "m2jTvAj5kkm"
+      },
+      "dataSetElements": [
+      ],
+      "indicators": [
+      ],
+      "access": {
+        "data": {
+          "write": true
+        }
+      },
+      "sections": [
+      ],
+      "compulsoryDataElementOperands": [
+      ],
+      "dataInputPeriods": [
+      ]
     }
   ]
 }

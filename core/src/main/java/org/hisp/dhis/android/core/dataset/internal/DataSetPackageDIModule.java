@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.dataset.internal;
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactory;
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
 import org.hisp.dhis.android.core.dataset.DataSetModule;
@@ -62,7 +62,7 @@ public final class DataSetPackageDIModule {
 
     @Provides
     @Reusable
-    ListCallFactory<DataSet> dataSetEndpointCallFactory(DataSetEndpointCallFactory impl) {
+    UidsCallFactory<DataSet> dataSetEndpointCallFactory(DataSetEndpointCallFactory impl) {
         return impl;
     }
 

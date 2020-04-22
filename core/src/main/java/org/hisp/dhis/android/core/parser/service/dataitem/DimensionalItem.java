@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.parser.expression.item;
+package org.hisp.dhis.android.core.parser.service.dataitem;
 
 /*
  * Copyright (c) 2004-2020, University of Oslo
@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
 import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
 
-import static org.hisp.dhis.android.core.parser.antlr.AntlrParserUtils.DOUBLE_VALUE_IF_NULL;
+import static org.hisp.dhis.android.core.parser.expression.ParserUtils.DOUBLE_VALUE_IF_NULL;
 
 /**
  * Parsed dimensional item as handled by the expression service.
@@ -81,9 +81,7 @@ public abstract class DimensionalItem
     {
         Double value = visitor.getItemValueMap().get( getId( ctx ) );
 
-        // TODO Handle nulls?
-        //return visitor.handleNulls( value );
-        return value;
+        return visitor.handleNulls( value );
     }
 
     /**

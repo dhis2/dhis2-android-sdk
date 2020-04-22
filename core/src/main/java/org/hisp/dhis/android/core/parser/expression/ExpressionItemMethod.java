@@ -43,7 +43,8 @@ public interface ExpressionItemMethod
      *
      * @param item the item to evaluate
      * @param ctx the second function argument
-     * @return the function result
+     * @param visitor the visitor class for supporting methods
+     * @return the method result from the expression item class
      */
     Object apply(ExpressionItem item, ExprContext ctx, CommonExpressionVisitor visitor );
 }

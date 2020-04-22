@@ -28,6 +28,13 @@ package org.hisp.dhis.android.core.parser.expression;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import org.hisp.dhis.android.core.parser.expression.dataitem.ItemConstant;
+import org.hisp.dhis.android.core.parser.expression.function.FunctionFirstNonNull;
+import org.hisp.dhis.android.core.parser.expression.function.FunctionGreatest;
+import org.hisp.dhis.android.core.parser.expression.function.FunctionIf;
+import org.hisp.dhis.android.core.parser.expression.function.FunctionIsNotNull;
+import org.hisp.dhis.android.core.parser.expression.function.FunctionIsNull;
+import org.hisp.dhis.android.core.parser.expression.function.FunctionLeast;
 import org.hisp.dhis.android.core.parser.expression.operator.OperatorCompareEqual;
 import org.hisp.dhis.android.core.parser.expression.operator.OperatorCompareGreaterThan;
 import org.hisp.dhis.android.core.parser.expression.operator.OperatorCompareGreaterThanOrEqual;
@@ -50,11 +57,18 @@ import java.util.Map;
 
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.AMPERSAND_2;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.AND;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.C_BRACE;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.DIV;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.EQ;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.EXCLAMATION_POINT;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.FIRST_NON_NULL;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.GEQ;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.GREATEST;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.GT;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.IF;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.IS_NOT_NULL;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.IS_NULL;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.LEAST;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.LEQ;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.LT;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.MINUS;
@@ -67,6 +81,7 @@ import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.PAREN;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.PLUS;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.POWER;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.VERTICAL_BAR_2;
+
 /**
  * Utilities for ANTLR parsing
  *
@@ -106,16 +121,16 @@ public class ParserUtils
 
         // Functions
 
-        //m.put( FIRST_NON_NULL, new FunctionFirstNonNull() );
-        //m.put( GREATEST, new FunctionGreatest() );
-        //m.put( IF, new FunctionIf() );
-        //m.put( IS_NOT_NULL, new FunctionIsNotNull() );
-        //m.put( IS_NULL, new FunctionIsNull() );
-        //m.put( LEAST, new FunctionLeast() );
+        m.put( FIRST_NON_NULL, new FunctionFirstNonNull() );
+        m.put( GREATEST, new FunctionGreatest() );
+        m.put( IF, new FunctionIf() );
+        m.put( IS_NOT_NULL, new FunctionIsNotNull() );
+        m.put( IS_NULL, new FunctionIsNull() );
+        m.put( LEAST, new FunctionLeast() );
 
         // Data items
 
-        //m.put( C_BRACE, new ItemConstant() );
+        m.put( C_BRACE, new ItemConstant() );
 
         COMMON_EXPRESSION_ITEMS = m;
     }

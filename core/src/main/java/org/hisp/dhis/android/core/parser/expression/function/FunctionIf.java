@@ -1,7 +1,7 @@
-package org.hisp.dhis.android.core.parser.antlr.operator;
+package org.hisp.dhis.android.core.parser.expression.function;
 
 /*
- * Copyright (c) 2004-2019, University of Oslo
+ * Copyright (c) 2004-2020, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,47 +28,63 @@ package org.hisp.dhis.android.core.parser.antlr.operator;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.hisp.dhis.android.core.parser.antlr.AntlrExprItem;
-import org.hisp.dhis.android.core.parser.antlr.AntlrExpressionVisitor;
+import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
+import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
 
+import static org.hisp.dhis.antlr.AntlrParserUtils.castClass;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
 
 /**
- * Logical operator: And
+ * Function if
  * <pre>
  *
- * Truth table (same as for SQL):
+ * In-memory Logic:
  *
- *       A      B    A and B
- *     -----  -----  -------
- *     null   null    null
- *     null   false   null
- *     null   true    null
+ *     arg0   returns
+ *     ----   -------
+ *     true   arg1
+ *     false  arg2
+ *     null   null
  *
- *     false  null    false
- *     false  false   false
- *     false  true    false
+ * SQL logic (CASE WHEN arg0 THEN arg1 ELSE arg2 END):
  *
- *     true   null    null
- *     true   false   false
- *     true   true    true
+ *     arg0   returns
+ *     ----   -------
+ *     true   arg1
+ *     false  arg2
+ *     null   arg2
  * </pre>
  *
  * @author Jim Grace
  */
-public class AntlrOperatorLogicalAnd
-    implements AntlrExprItem
+public class FunctionIf
+    implements ExpressionItem
 {
     @Override
-    public Object evaluate( ExprContext ctx, AntlrExpressionVisitor visitor )
+    public Object evaluate( ExprContext ctx, CommonExpressionVisitor visitor )
     {
-        Boolean value = visitor.castBooleanVisit( ctx.expr( 0 ) );
+        Boolean arg0 = visitor.castBooleanVisit( ctx.expr( 0 ) );
 
-        if ( value != null && value )
+        return arg0 == null
+            ? null
+            : arg0
+            ? visitor.visit( ctx.expr( 1 ) )
+            : visitor.visit( ctx.expr( 2 ) );
+    }
+
+    @Override
+    public Object evaluateAllPaths( ExprContext ctx, CommonExpressionVisitor visitor )
+    {
+        Boolean arg0 = visitor.castBooleanVisit( ctx.expr( 0 ) );
+        Object arg1 = visitor.visit( ctx.expr( 1 ) );
+        Object arg2 = visitor.visit( ctx.expr( 2 ) );
+
+        if ( arg1 != null )
         {
-            value = visitor.castBooleanVisit( ctx.expr( 1 ) );
+            castClass( arg1.getClass(), arg2 );
         }
 
-        return value;
+        return arg0 != null && arg0 ? arg1 : arg2;
     }
+
 }

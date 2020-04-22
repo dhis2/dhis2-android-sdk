@@ -28,14 +28,17 @@
 
 package org.hisp.dhis.android.core.parser.expression;
 
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.apache.commons.lang3.Validate;
-import org.hisp.dhis.android.core.parser.antlr.AntlrExpressionVisitor;
-import org.hisp.dhis.android.core.parser.antlr.ParserExceptionWithoutContext;
+import org.hisp.dhis.android.core.constant.Constant;
+import org.hisp.dhis.antlr.AntlrExpressionVisitor;
+import org.hisp.dhis.antlr.ParserExceptionWithoutContext;
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import static org.hisp.dhis.android.core.parser.expression.ParserUtils.DOUBLE_VALUE_IF_NULL;
 
 /**
  * Common traversal of the ANTLR4 org.hisp.dhis.rules.parser.expression parse tree using the
@@ -57,14 +60,19 @@ public class CommonExpressionVisitor
     private ExpressionItemMethod itemMethod;
 
     /**
-     * Count of days in period to use in evaluating an expression.
-     */
-    private Double days = null;
-
-    /**
      * By default, replace nulls with 0 or ''.
      */
     private boolean replaceNulls = true;
+
+    /**
+     * Constants to use in evaluating an expression.
+     */
+    private Map<String, Constant> constantMap = new HashMap<>();
+
+    /**
+     * Count of days in period to use in evaluating an expression.
+     */
+    private Double days = null;
 
     /**
      * Values to use for variables in evaluating an org.hisp.dhis.rules.parser.expression.
@@ -72,9 +80,14 @@ public class CommonExpressionVisitor
     private Map<String, Double> itemValueMap = new HashMap<>();
 
     /**
-     * Supplementary data for users and org units
+     * Count of dimension items found.
      */
-    private Map<String, List<String>> supplementaryData = new HashMap<>();
+    private int itemsFound = 0;
+
+    /**
+     * Count of dimension item values found.
+     */
+    private int itemValuesFound = 0;
 
     /**
      * Default value for data type double.
@@ -86,7 +99,7 @@ public class CommonExpressionVisitor
     // Constructors
     // -------------------------------------------------------------------------
 
-    CommonExpressionVisitor()
+    protected CommonExpressionVisitor()
     {
     }
 
@@ -129,8 +142,80 @@ public class CommonExpressionVisitor
     }
 
     // -------------------------------------------------------------------------
+    // Logic for expression items
+    // -------------------------------------------------------------------------
+
+    /**
+     * Visits a context while allowing null values (not replacing them
+     * with 0 or ''), even if we would otherwise be replacing them.
+     *
+     * @param ctx any context
+     * @return the value while allowing nulls
+     */
+    public Object visitAllowingNulls( ParserRuleContext ctx )
+    {
+        boolean savedReplaceNulls = replaceNulls;
+
+        replaceNulls = false;
+
+        Object result = visit( ctx );
+
+        replaceNulls = savedReplaceNulls;
+
+        return result;
+    }
+
+    /**
+     * Handles nulls and missing values.
+     * <p/>
+     * If we should replace nulls with the default value, then do so, and
+     * remember how many items found, and how many of them had values, for
+     * subsequent MissingValueStrategy analysis.
+     * <p/>
+     * If we should not replace nulls with the default value, then don't,
+     * as this is likely for some function that is testing for nulls, and
+     * a missing value should not count towards the MissingValueStrategy.
+     *
+     * @param value the (possibly null) value
+     * @return the value we should return.
+     */
+    public Object handleNulls( Object value )
+    {
+        if ( replaceNulls )
+        {
+            itemsFound++;
+
+            if ( value == null )
+            {
+                return DOUBLE_VALUE_IF_NULL;
+            }
+            else
+            {
+                itemValuesFound++;
+            }
+        }
+
+        return value;
+    }
+
+    // -------------------------------------------------------------------------
     // Getters and setters
     // -------------------------------------------------------------------------
+
+    public Map<String, Constant> getConstantMap()
+    {
+        return constantMap;
+    }
+
+    public boolean getReplaceNulls()
+    {
+        return replaceNulls;
+    }
+
+    public void setReplaceNulls( boolean replaceNulls )
+    {
+        this.replaceNulls = replaceNulls;
+    }
 
     public Map<String, Double> getItemValueMap()
     {
@@ -150,6 +235,16 @@ public class CommonExpressionVisitor
         this.days = days;
     }
 
+    public int getItemsFound()
+    {
+        return itemsFound;
+    }
+
+    public int getItemValuesFound()
+    {
+        return itemValuesFound;
+    }
+
     // -------------------------------------------------------------------------
     // Builder
     // -------------------------------------------------------------------------
@@ -165,19 +260,34 @@ public class CommonExpressionVisitor
             this.visitor = new CommonExpressionVisitor();
         }
 
-        public Builder withItemMap( Map<Integer, ExpressionItem> itemMap ) {
+        public Builder withItemMap( Map<Integer, ExpressionItem> itemMap )
+        {
             this.visitor.itemMap = itemMap;
             return this;
         }
 
-        public Builder withExprItemMethod( ExpressionItemMethod expressionItemMethod) {
-            this.visitor.itemMethod = expressionItemMethod;
+        public Builder withItemMethod( ExpressionItemMethod itemMethod )
+        {
+            this.visitor.itemMethod = itemMethod;
             return this;
         }
 
-        public CommonExpressionVisitor validateCommonProperties() {
+        public Builder withConstantMap( Map<String, Constant> constantMap )
+        {
+            this.visitor.constantMap = constantMap;
+            return this;
+        }
+
+        private CommonExpressionVisitor validateCommonProperties() {
+            Validate.notNull( this.visitor.constantMap, "Missing required property 'constantMap'" );
             Validate.notNull( this.visitor.itemMap, "Missing required property 'itemMap'" );
+            Validate.notNull( this.visitor.itemMethod, "Missing required property 'itemMethod'" );
             return visitor;
+        }
+
+        public CommonExpressionVisitor buildForExpressions()
+        {
+            return validateCommonProperties();
         }
     }
 }

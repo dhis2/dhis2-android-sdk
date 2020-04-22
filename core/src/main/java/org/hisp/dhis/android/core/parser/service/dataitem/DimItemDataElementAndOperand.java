@@ -1,7 +1,5 @@
-package org.hisp.dhis.android.core.parser.antlr.operator;
-
 /*
- * Copyright (c) 2004-2019, University of Oslo
+ * Copyright (c) 2004-2020, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,29 +26,53 @@ package org.hisp.dhis.android.core.parser.antlr.operator;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.util.List;
+package org.hisp.dhis.android.core.parser.service.dataitem;
 
-import static org.hisp.dhis.android.core.parser.antlr.AntlrParserUtils.castDouble;
+import org.hisp.dhis.antlr.ParserExceptionWithoutContext;
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
+
+import static org.apache.commons.lang3.ObjectUtils.anyNotNull;
 
 /**
- * Math operator: Minus
+ * Parsed expression item as handled by the expression service.
+ * <p/>
+ * When getting item id and org unit group, just return default values
+ * (because not every item implements these, only those that need to.)
  *
  * @author Jim Grace
  */
-public class AntlrOperatorMathMinus
-    extends AntlrComputeFunction
-{
+public class DimItemDataElementAndOperand extends DimensionalItem {
+
     @Override
-    public Object compute( List<Object> values )
+    public String getId( ExprContext ctx )
     {
-        if ( values.size() == 1 ) // Unary minus operator
+        if ( isDataElementOperandSyntax( ctx ) )
         {
-            return - castDouble( values.get( 0 ) );
+            return ctx.uid0.getText() + "." +
+                    ( ctx.uid1 == null ? "*" : ctx.uid1.getText() ) +
+                    ( ctx.uid2 == null ? "" : "." + ctx.uid2.getText() );
+        }
+        else // Data element:
+        {
+            return ctx.uid0.getText();
+        }
+    }
+
+    /**
+     * Does an item of the form #{...} have the syntax of a
+     * data element operand (as opposed to a data element)?
+     *
+     * @param ctx the item context
+     * @return true if data element operand syntax
+     */
+    private boolean isDataElementOperandSyntax( ExprContext ctx )
+    {
+        if ( ctx.uid0 == null )
+        {
+            throw new ParserExceptionWithoutContext( "Data Element or DataElementOperand must have a uid " + ctx.getText() );
         }
 
-        // Subtraction operator
-
-        return castDouble( values.get( 0 ) )
-            - castDouble( values.get( 1 ) );
+        return anyNotNull( ctx.uid1, ctx.uid2 );
     }
+
 }

@@ -29,7 +29,9 @@
 package org.hisp.dhis.android.core.parser.expression;
 
 import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.constant.Constant;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
+import org.hisp.dhis.android.core.parser.service.ExpressionService;
 import org.hisp.dhis.android.core.validation.MissingValueStrategy;
 import org.junit.Test;
 
@@ -37,11 +39,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.assertj.core.api.Java6Assertions.assertThat;
+
 public class ExpressionServiceShould {
+
+    private String constantId = "e19hj1w7yKP";
 
     @Test
     public void evaluate() {
-        String expression = "#{sK2wroysTNW.tpghB93ks57} + #{lZGmxYbs97q.zDhUuAYrxNC}";
+        String expression = "#{sK2wroysTNW.tpghB93ks57} + #{lZGmxYbs97q.zDhUuAYrxNC} + C{" + constantId + "}";
 
         ExpressionService service = new ExpressionService();
 
@@ -49,6 +55,10 @@ public class ExpressionServiceShould {
         valueMap.put(DataElementOperand.builder().uid("operand1").dataElement(ObjectWithUid.create("sK2wroysTNW.tpghB93ks57")).build(), 5.0);
         valueMap.put(DataElementOperand.builder().uid("operand2").dataElement(ObjectWithUid.create("lZGmxYbs97q.zDhUuAYrxNC")).build(), 3.0);
 
-        Double result = service.getExpressionValue(expression, valueMap, Collections.emptyMap(), Collections.emptyMap(), 10, MissingValueStrategy.NEVER_SKIP);
+        Map<String, Constant> constantMap = new HashMap<>();
+        constantMap.put(constantId, Constant.builder().uid(constantId).value(4.0).build());
+
+        Double result = service.getExpressionValue(expression, valueMap, constantMap, Collections.emptyMap(), 10, MissingValueStrategy.NEVER_SKIP);
+        assertThat(result).isEqualTo(12.0);
     }
 }

@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.parser.antlr;
+package org.hisp.dhis.android.core.parser.expression.literal;
 
 /*
  * Copyright (c) 2004-2020, University of Oslo
@@ -28,41 +28,33 @@ package org.hisp.dhis.android.core.parser.antlr;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import org.hisp.dhis.antlr.AntlrExprLiteral;
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
+
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.BooleanLiteralContext;
-import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.NumericLiteralContext;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.StringLiteralContext;
 
 /**
- * Fetches literal values from an ANTLR4 expression parse tree
- *
- * @author Jim Grace
+ * Gets typed literal values from an ANTLR parse tree for use internally.
  */
-public interface AntlrExprLiteral
+public class RegenerateLiteral
+    implements AntlrExprLiteral
 {
-    /**
-     * Gets a value from the ANTLR4 expression parse tree node for
-     * a numeric literal
-     *
-     * @param ctx parse tree literal context
-     * @return the literal value
-     */
-    Object getNumericLiteral(NumericLiteralContext ctx);
+    @Override
+    public Object getNumericLiteral( ExpressionParser.NumericLiteralContext ctx )
+    {
+        return ctx.getText();
+    }
 
-    /**
-     * Gets a value from the ANTLR4 expression parse tree node for
-     * a string literal
-     *
-     * @param ctx parse tree literal context
-     * @return the literal value
-     */
-    Object getStringLiteral(StringLiteralContext ctx);
+    @Override
+    public Object getStringLiteral( StringLiteralContext ctx )
+    {
+        return ctx.getText();
+    }
 
-    /**
-     * Gets a value from the ANTLR4 expression parse tree node for
-     * a boolean literal
-     *
-     * @param ctx parse tree literal context
-     * @return the literal value
-     */
-    Object getBooleanLiteral(BooleanLiteralContext ctx);
+    @Override
+    public Object getBooleanLiteral( BooleanLiteralContext ctx )
+    {
+        return ctx.getText();
+    }
 }

@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.parser.antlr.operator;
+package org.hisp.dhis.android.core.parser.expression.dataitem;
 
 /*
  * Copyright (c) 2004-2020, University of Oslo
@@ -28,48 +28,48 @@ package org.hisp.dhis.android.core.parser.antlr.operator;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.hisp.dhis.android.core.parser.antlr.AntlrExprItem;
-import org.hisp.dhis.android.core.parser.antlr.AntlrExpressionVisitor;
+import org.hisp.dhis.android.core.constant.Constant;
+import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
+import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
+import org.hisp.dhis.antlr.ParserExceptionWithoutContext;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import static org.hisp.dhis.android.core.parser.expression.ParserUtils.DOUBLE_VALUE_IF_NULL;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
 
 /**
- * A function that computes the result from the arguments, where if any
- * of the arguments are null, then the result is null.
+ * Expression item Constant
  *
  * @author Jim Grace
  */
-public abstract class AntlrComputeFunction
-    implements AntlrExprItem
+public class ItemConstant
+    implements ExpressionItem
 {
     @Override
-    public final Object evaluate( ExprContext ctx, AntlrExpressionVisitor visitor )
+    public Object getDescription( ExprContext ctx, CommonExpressionVisitor visitor )
     {
-        List<Object> values = new ArrayList<>();
+        Constant constant = visitor.getConstantMap().get( ctx.uid0.getText() );
 
-        for ( ExprContext expr : ctx.expr() )
+        if ( constant == null )
         {
-            Object value = visitor.visit( expr );
-
-            if ( value == null )
-            {
-                return null;
-            }
-
-            values.add( value );
+            throw new ParserExceptionWithoutContext( "No constant defined for " + ctx.uid0.getText() );
         }
 
-        return compute( values );
+        // TODO
+        //visitor.getItemDescriptions().put( ctx.getText(), constant.name() );
+
+        return DOUBLE_VALUE_IF_NULL;
     }
 
-    /**
-     * Computes the result from non-null values.
-     *
-     * @param values the values to use.
-     * @return the computed value.
-     */
-    public abstract Object compute( List<Object> values );
+    @Override
+    public Object evaluate( ExprContext ctx, CommonExpressionVisitor visitor )
+    {
+        Constant constant = visitor.getConstantMap().get( ctx.uid0.getText() );
+
+        if ( constant == null ) // Shouldn't happen for a valid expression.
+        {
+            throw new ParserExceptionWithoutContext( "Can't find constant to evaluate " + ctx.uid0.getText() );
+        }
+
+        return constant.value();
+    }
 }

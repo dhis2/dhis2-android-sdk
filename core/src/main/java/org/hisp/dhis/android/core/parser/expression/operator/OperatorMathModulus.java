@@ -29,8 +29,8 @@ package org.hisp.dhis.android.core.parser.expression.operator;
  */
 
 
-import org.hisp.dhis.android.core.parser.antlr.operator.AntlrOperatorMathModulus;
 import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
+import org.hisp.dhis.antlr.operator.AntlrOperatorMathModulus;
 
 /**
  * Math operator: Modulus

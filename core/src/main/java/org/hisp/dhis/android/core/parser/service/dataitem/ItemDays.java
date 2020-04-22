@@ -1,7 +1,5 @@
-package org.hisp.dhis.android.core.parser.antlr.operator;
-
 /*
- * Copyright (c) 2004-2019, University of Oslo
+ * Copyright (c) 2004-2020, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,19 +26,26 @@ package org.hisp.dhis.android.core.parser.antlr.operator;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.util.List;
+package org.hisp.dhis.android.core.parser.service.dataitem;
+
+import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
+import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
 
 /**
- * Compare operator: greater than or equal
+ * Parsed expression item as handled by the expression service.
+ * <p/>
+ * When getting item id and org unit group, just return default values
+ * (because not every item implements these, only those that need to.)
  *
  * @author Jim Grace
  */
-public class AntlrOperatorCompareGreaterThanOrEqual
-    extends AntlrOperatorCompare
-{
+public class ItemDays implements ExpressionItem {
+
     @Override
-    public Object compute( List<Object> values )
+    public Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor )
     {
-        return compare( values ) >= 0;
+        return visitor.getDays();
     }
+
 }

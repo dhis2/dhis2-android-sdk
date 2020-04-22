@@ -46,7 +46,7 @@ public interface DatabaseAdapter {
      *
      * @param sql The raw SQL statement, may contain ? for unknown values to be
      *            bound later.
-     * @return A pre-compiled {@link StatementWrapper} object. Note that
+     * @return A pre-compiled {@code StatementWrapper} object.
      */
     StatementWrapper compileStatement(String sql);
 
@@ -66,7 +66,8 @@ public interface DatabaseAdapter {
     Cursor query(String sql, String... columns);
 
     Cursor query(String table, String[] columns, String selection, String[] selectionArgs);
-                               /**
+
+    /**
      * Execute {@code statement} and return the ID of the row inserted due to this call.
      * The SQL statement should be an INSERT for this to be a useful call.
      *

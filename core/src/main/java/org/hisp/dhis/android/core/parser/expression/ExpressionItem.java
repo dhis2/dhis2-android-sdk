@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.core.parser.expression;
 
-import org.hisp.dhis.android.core.parser.antlr.AntlrExprItem;
-import org.hisp.dhis.android.core.parser.antlr.AntlrExpressionVisitor;
-import org.hisp.dhis.android.core.parser.antlr.ParserException;
-import org.hisp.dhis.android.core.parser.antlr.ParserExceptionWithoutContext;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
+import org.hisp.dhis.antlr.AntlrExprItem;
+import org.hisp.dhis.antlr.AntlrExpressionVisitor;
+import org.hisp.dhis.antlr.ParserException;
+import org.hisp.dhis.antlr.ParserExceptionWithoutContext;
 
 import static org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor.DEFAULT_DOUBLE_VALUE;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
 
 /**
  * A parsed item from an ANTLR expression, as processed in the backend.
@@ -58,7 +58,7 @@ public interface ExpressionItem
      * @param visitor the tree visitor
      * @return a dummy value for the item (of the right type, for type checking)
      */
-    default Object getDescription( ExprContext ctx, CommonExpressionVisitor visitor )
+    default Object getDescription(ExprContext ctx, CommonExpressionVisitor visitor )
     {
         return evaluateAllPaths( ctx, visitor );
     }

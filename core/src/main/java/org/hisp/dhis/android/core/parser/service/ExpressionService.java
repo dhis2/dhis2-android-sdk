@@ -26,16 +26,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.parser.expression;
+package org.hisp.dhis.android.core.parser.service;
 
 import org.hisp.dhis.android.core.constant.Constant;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
-import org.hisp.dhis.android.core.parser.antlr.AntlrParserUtils;
-import org.hisp.dhis.android.core.parser.antlr.Parser;
-import org.hisp.dhis.android.core.parser.expression.item.DimItemDataElementAndOperand;
-import org.hisp.dhis.android.core.parser.expression.item.ItemDays;
+import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
+import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
+import org.hisp.dhis.android.core.parser.expression.ExpressionItemMethod;
+import org.hisp.dhis.android.core.parser.service.dataitem.DimItemDataElementAndOperand;
+import org.hisp.dhis.android.core.parser.service.dataitem.ItemDays;
 import org.hisp.dhis.android.core.validation.MissingValueStrategy;
+import org.hisp.dhis.antlr.Parser;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,30 +68,80 @@ public class ExpressionService {
                                      Map<String, Integer> orgUnitCountMap, Integer days,
                                      MissingValueStrategy missingValueStrategy ) {
 
-        if (expression == null) {
+        if ( expression == null) {
             return null;
         }
 
-        Map<String, Double> keyValueMap = new HashMap<>();
+        CommonExpressionVisitor visitor = newVisitor(
+                ExpressionItem::evaluate,
+                constantMap
+        );
+
+        Map<String, Double> itemValueMap = new HashMap<>();
         for (Map.Entry<DataElementOperand, Double> entry : valueMap.entrySet()) {
             // TODO create key
-            keyValueMap.put(entry.getKey().dataElement().uid(), entry.getValue());
+            itemValueMap.put(entry.getKey().dataElement().uid(), entry.getValue());
         }
 
-        CommonExpressionVisitor visitor = CommonExpressionVisitor.newBuilder()
-                .withItemMap(VALIDATION_RULE_EXPRESSION_ITEMS)
-                .withExprItemMethod(ExpressionItem::evaluate)
-                .validateCommonProperties();
-
-        visitor.setItemValueMap(keyValueMap);
+        visitor.setItemValueMap(itemValueMap);
+        //visitor.setOrgUnitCountMap( orgUnitCountMap );
 
         if ( days != null )
         {
             visitor.setDays( Double.valueOf( days ) );
         }
 
-        Object object = Parser.visit(expression, visitor);
+        Object value = Parser.visit(expression, visitor);
 
-        return (Double) object;
+        int itemsFound = visitor.getItemsFound();
+        int itemValuesFound = visitor.getItemValuesFound();
+
+        switch ( missingValueStrategy )
+        {
+            case SKIP_IF_ANY_VALUE_MISSING:
+                if ( itemValuesFound < itemsFound )
+                {
+                    return null;
+                }
+
+            case SKIP_IF_ALL_VALUES_MISSING:
+                if ( itemsFound != 0 && itemValuesFound == 0 )
+                {
+                    return null;
+                }
+
+            case NEVER_SKIP:
+                if ( value == null )
+                {
+                    // TODO Handle other ParseType
+                    return 0d;
+                }
+        }
+
+        return (Double) value;
+    }
+
+    // -------------------------------------------------------------------------
+    // Supportive methods
+    // -------------------------------------------------------------------------
+
+    /**
+     * Creates a new ExpressionItemsVisitor object.
+     */
+    private CommonExpressionVisitor newVisitor(
+                                                //ParseType parseType,
+                                               ExpressionItemMethod itemMethod,
+                                               //List<Period> samplePeriods,
+                                               Map<String, Constant> constantMap )
+    {
+        return CommonExpressionVisitor.newBuilder()
+                //.withItemMap( PARSE_TYPE_EXPRESSION_ITEMS.get( parseType ) )
+                .withItemMap( VALIDATION_RULE_EXPRESSION_ITEMS )
+                .withItemMethod( itemMethod )
+                .withConstantMap( constantMap )
+                //.withDimensionService( dimensionService )
+                //.withOrganisationUnitGroupService( organisationUnitGroupService )
+                //.withSamplePeriods( samplePeriods )();
+                .buildForExpressions();
     }
 }

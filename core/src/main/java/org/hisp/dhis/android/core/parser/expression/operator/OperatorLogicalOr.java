@@ -29,9 +29,9 @@ package org.hisp.dhis.android.core.parser.expression.operator;
  */
 
 
-import org.hisp.dhis.android.core.parser.antlr.operator.AntlrOperatorLogicalOr;
 import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
 import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
+import org.hisp.dhis.antlr.operator.AntlrOperatorLogicalOr;
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
 
 /**

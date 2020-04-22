@@ -28,8 +28,8 @@ package org.hisp.dhis.android.core.parser.expression.operator;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.hisp.dhis.android.core.parser.antlr.operator.AntlrOperatorCompareGreaterThan;
 import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
+import org.hisp.dhis.antlr.operator.AntlrOperatorCompareGreaterThan;
 
 /**
  * Compare operator: greater than

@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.parser.antlr.operator;
+package org.hisp.dhis.android.core.parser.expression.function;
 
 /*
  * Copyright (c) 2004-2020, University of Oslo
@@ -28,56 +28,45 @@ package org.hisp.dhis.android.core.parser.antlr.operator;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.hisp.dhis.android.core.parser.antlr.InternalParserException;
+import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
+import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
 
-import java.util.List;
-
-import static org.hisp.dhis.android.core.parser.antlr.AntlrParserUtils.castBoolean;
-import static org.hisp.dhis.android.core.parser.antlr.AntlrParserUtils.castDouble;
-import static org.hisp.dhis.android.core.parser.antlr.AntlrParserUtils.castString;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
 
 /**
- * Abstract class for compare operators
+ * Function firstNonNull
  *
  * @author Jim Grace
  */
-public abstract class AntlrOperatorCompare
-    extends AntlrComputeFunction
+public class FunctionFirstNonNull
+    implements ExpressionItem
 {
-    /**
-     * Compares two Doubles, Strings or Booleans.
-     *
-     * @param values the values to compare
-     * @return the results of the comparision.
-     */
-    protected int compare( List<Object> values )
+    @Override
+    public Object evaluate( ExprContext ctx, CommonExpressionVisitor visitor )
     {
-        Object o1 = values.get( 0 );
-        Object o2 = values.get( 1 );
+        for ( ExprContext c : ctx.expr() )
+        {
+            Object value = visitor.visitAllowingNulls( c );
 
-        if ( o1 == null || o2 == null )
-        {
-            throw new InternalParserException( "found null when comparing '" + o1 + "' with '" + o2 + "'" );
+            if ( value != null )
+            {
+                return value;
+            }
         }
-        else if ( o1 instanceof Double )
-        {
-            return ((Double) o1).compareTo( castDouble( o2 ) );
+        return null;
+    }
+
+    @Override
+    public Object evaluateAllPaths( ExprContext ctx, CommonExpressionVisitor visitor )
+    {
+        for (ExprContext c : ctx.expr()) {
+            Object value = visitor.visitAllowingNulls(c);
+
+            if ( value != null )
+            {
+                return value;
+            }
         }
-        else if ( o2 instanceof Double )
-        {
-            return ((Double) o2).compareTo( castDouble( o1 ) );
-        }
-        else if ( o1 instanceof String )
-        {
-            return ((String) o1).compareTo( castString( o2 ) );
-        }
-        else if ( o1 instanceof Boolean )
-        {
-            return ((Boolean) o1).compareTo( castBoolean( o2 ) );
-        }
-        else
-        {
-            throw new InternalParserException( "trying to compare class " + o1.getClass().getName() );
-        }
+        return null;
     }
 }

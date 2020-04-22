@@ -1,7 +1,7 @@
-package org.hisp.dhis.android.core.parser.antlr.operator;
+package org.hisp.dhis.android.core.parser.expression.function;
 
 /*
- * Copyright (c) 2004-2019, University of Oslo
+ * Copyright (c) 2004-2020, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,56 +28,21 @@ package org.hisp.dhis.android.core.parser.antlr.operator;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.hisp.dhis.android.core.parser.antlr.AntlrExprItem;
-import org.hisp.dhis.android.core.parser.antlr.AntlrExpressionVisitor;
+import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
 
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
 
 /**
- * Logical operator: Or
- * <pre>
- *
- * Truth table (same as for SQL):
- *
- *       A      B    A or B
- *     -----  -----  ------
- *     null   null    null
- *     null   false   null
- *     null   true    true
- *
- *     false  null    null
- *     false  false   false
- *     false  true    true
- *
- *     true   null    true
- *     true   false   true
- *     true   true    true
- * </pre>
+ * Function least
  *
  * @author Jim Grace
  */
-public class AntlrOperatorLogicalOr
-    implements AntlrExprItem
+public class FunctionLeast
+    extends FunctionGreatestOrLeast
 {
     @Override
-    public Object evaluate( ExprContext ctx, AntlrExpressionVisitor visitor )
+    public Object evaluate( ExprContext ctx, CommonExpressionVisitor visitor )
     {
-        Boolean value = visitor.castBooleanVisit( ctx.expr( 0 ) );
-
-        if ( value == null )
-        {
-            value = visitor.castBooleanVisit( ctx.expr( 1 ) );
-
-            if ( value != null && !value )
-            {
-                value = null;
-            }
-        }
-        else if ( !value )
-        {
-            value = visitor.castBooleanVisit( ctx.expr( 1 ) );
-        }
-
-        return value;
+        return greatestOrLeast( ctx.expr(), visitor, -1.0 );
     }
 }

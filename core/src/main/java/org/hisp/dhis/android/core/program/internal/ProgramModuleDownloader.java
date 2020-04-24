@@ -56,7 +56,7 @@ import io.reactivex.Single;
 public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<List<Program>> {
 
     private final UidsCallFactory<Program> programCallFactory;
-    private final UidsCallFactory<ProgramStage> programStageCallFactory;
+    private final UidsCall<ProgramStage> programStageCall;
     private final UidsCall<ProgramRule> programRuleCall;
     private final UidsCall<TrackedEntityType> trackedEntityTypeCall;
     private final UidsCall<TrackedEntityAttribute> trackedEntityAttributeCall;
@@ -68,7 +68,7 @@ public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<Li
 
     @Inject
     ProgramModuleDownloader(UidsCallFactory<Program> programCallFactory,
-                            UidsCallFactory<ProgramStage> programStageCallFactory,
+                            UidsCall<ProgramStage> programStageCall,
                             UidsCall<ProgramRule> programRuleCall,
                             UidsCall<TrackedEntityType> trackedEntityTypeCall,
                             UidsCall<TrackedEntityAttribute> trackedEntityAttributeCall,
@@ -78,7 +78,7 @@ public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<Li
                             UidsCall<OptionGroup> optionGroupCallFactory,
                             DHISVersionManager versionManager) {
         this.programCallFactory = programCallFactory;
-        this.programStageCallFactory = programStageCallFactory;
+        this.programStageCall = programStageCall;
         this.programRuleCall = programRuleCall;
         this.trackedEntityTypeCall = trackedEntityTypeCall;
         this.trackedEntityAttributeCall = trackedEntityAttributeCall;
@@ -95,7 +95,7 @@ public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<Li
             List<Program> programs = programCallFactory.create(orgUnitProgramUids).call();
 
             Set<String> programUids = UidsHelper.getUids(programs);
-            List<ProgramStage> programStages = programStageCallFactory.create(programUids).call();
+            List<ProgramStage> programStages = programStageCall.download(programUids).blockingGet();
 
             programRuleCall.download(programUids).blockingGet();
 

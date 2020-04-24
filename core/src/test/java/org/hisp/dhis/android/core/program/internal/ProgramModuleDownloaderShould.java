@@ -49,7 +49,6 @@ import org.mockito.Mock;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.Callable;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -63,7 +62,6 @@ import retrofit2.Response;
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anySet;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
@@ -81,16 +79,13 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     private Callable<List<Program>> programEndpointCall;
 
     @Mock
-    private Callable<List<ProgramStage>> programStageEndpointCall;
-
-    @Mock
     private Callable<List<RelationshipType>> relationshipTypeCall;
 
     @Mock
     private UidsCallFactory<Program> programCallFactory;
 
     @Mock
-    private UidsCallFactory<ProgramStage> programStageCallFactory;
+    private UidsCall<ProgramStage> programStageCall;
 
     @Mock
     private UidsCall<ProgramRule> programRuleCall;
@@ -131,8 +126,6 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
         // Call factories
         when(programCallFactory.create(anySet()))
                 .thenReturn(programEndpointCall);
-        when(programStageCallFactory.create(any(Set.class)))
-                .thenReturn(programStageEndpointCall);
         when(relationshipTypeCallFactory.create())
                 .thenReturn(relationshipTypeCall);
 
@@ -145,14 +138,14 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
         returnEmptyList(optionCall);
         returnEmptyList(optionGroupCall);
         returnEmptyList(programRuleCall);
-        when(programStageEndpointCall.call()).thenReturn(Collections.emptyList());
+        returnEmptyList(programStageCall);
 
         when(versionManager.is2_29()).thenReturn(Boolean.FALSE);
 
         // Metadata call
         programDownloadCall = new ProgramModuleDownloader(
                 programCallFactory,
-                programStageCallFactory,
+                programStageCall,
                 programRuleCall,
                 trackedEntityTypeCall,
                 trackedEntityAttributeCall,
@@ -190,8 +183,8 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     }
 
     @Test(expected = Exception.class)
-    public void fail_when_program_stage_call_fail() throws Exception {
-        whenEndpointCallFails(programStageEndpointCall);
+    public void fail_when_program_stage_call_fail() {
+        returnError(programStageCall);
         programDownloadCall.blockingGet();
     }
 

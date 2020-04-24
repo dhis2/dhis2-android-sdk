@@ -43,7 +43,7 @@ import dagger.Reusable;
 import io.reactivex.Maybe;
 
 @Reusable
-final class ProgramRuleEndpointCall implements UidsCall<ProgramRule> {
+final class ProgramRuleCall implements UidsCall<ProgramRule> {
 
     private static final int MAX_UID_LIST_SIZE = 64;
 
@@ -52,7 +52,7 @@ final class ProgramRuleEndpointCall implements UidsCall<ProgramRule> {
     private final APIDownloader apiDownloader;
 
     @Inject
-    ProgramRuleEndpointCall(ProgramRuleService service, Handler<ProgramRule> handler, APIDownloader apiDownloader) {
+    ProgramRuleCall(ProgramRuleService service, Handler<ProgramRule> handler, APIDownloader apiDownloader) {
         this.service = service;
         this.handler = handler;
         this.apiDownloader = apiDownloader;

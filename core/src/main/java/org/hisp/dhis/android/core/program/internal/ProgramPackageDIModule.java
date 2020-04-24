@@ -67,13 +67,13 @@ public final class ProgramPackageDIModule {
 
     @Provides
     @Reusable
-    UidsCall<ProgramRule> programRuleCall(ProgramRuleEndpointCall impl) {
+    UidsCall<ProgramRule> programRuleCall(ProgramRuleCall impl) {
         return impl;
     }
 
     @Provides
     @Reusable
-    UidsCallFactory<ProgramStage> programStageCallFactory(ProgramStageEndpointCallFactory impl) {
+    UidsCall<ProgramStage> programStageCall(ProgramStageCall impl) {
         return impl;
     }
 

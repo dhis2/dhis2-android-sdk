@@ -39,17 +39,13 @@ import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
  * @author Jim Grace
  */
 public class FunctionFirstNonNull
-    implements ExpressionItem
-{
+        implements ExpressionItem {
     @Override
-    public Object evaluate( ExprContext ctx, CommonExpressionVisitor visitor )
-    {
-        for ( ExprContext c : ctx.expr() )
-        {
-            Object value = visitor.visitAllowingNulls( c );
+    public Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor) {
+        for (ExprContext c : ctx.expr()) {
+            Object value = visitor.visitAllowingNulls(c);
 
-            if ( value != null )
-            {
+            if (value != null) {
                 return value;
             }
         }
@@ -57,13 +53,11 @@ public class FunctionFirstNonNull
     }
 
     @Override
-    public Object evaluateAllPaths( ExprContext ctx, CommonExpressionVisitor visitor )
-    {
+    public Object evaluateAllPaths(ExprContext ctx, CommonExpressionVisitor visitor) {
         for (ExprContext c : ctx.expr()) {
             Object value = visitor.visitAllowingNulls(c);
 
-            if ( value != null )
-            {
+            if (value != null) {
                 return value;
             }
         }

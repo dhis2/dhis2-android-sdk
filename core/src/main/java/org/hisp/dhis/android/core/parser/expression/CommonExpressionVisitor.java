@@ -47,8 +47,7 @@ import static org.hisp.dhis.android.core.parser.expression.ParserUtils.DOUBLE_VA
  * @author Jim Grace
  */
 public class CommonExpressionVisitor
-        extends AntlrExpressionVisitor
-{
+        extends AntlrExpressionVisitor {
     /**
      * Map of ExprItem instances to call for each expression item
      */
@@ -104,8 +103,7 @@ public class CommonExpressionVisitor
     // Constructors
     // -------------------------------------------------------------------------
 
-    protected CommonExpressionVisitor()
-    {
+    protected CommonExpressionVisitor() {
     }
 
     /**
@@ -113,8 +111,7 @@ public class CommonExpressionVisitor
      *
      * @return a Builder for CommonExpressionVisitor.
      */
-    public static Builder newBuilder()
-    {
+    public static Builder newBuilder() {
         return new CommonExpressionVisitor.Builder();
     }
 
@@ -123,27 +120,24 @@ public class CommonExpressionVisitor
     // -------------------------------------------------------------------------
 
     @Override
-    public Object visitExpr( ExprContext ctx )
-    {
-        if ( ctx.it != null )
-        {
-            ExpressionItem item = itemMap.get( ctx.it.getType() );
+    public Object visitExpr(ExprContext ctx) {
+        if (ctx.it != null) {
+            ExpressionItem item = itemMap.get(ctx.it.getType());
 
-            if ( item == null )
-            {
+            if (item == null) {
                 throw new ParserExceptionWithoutContext(
-                        "Item " + ctx.it.getText() + " not supported for this type of expression" );
+                        "Item " + ctx.it.getText() + " not supported for this type of expression");
             }
 
-            return itemMethod.apply( item, ctx, this );
+            return itemMethod.apply(item, ctx, this);
         }
 
-        if ( ctx.expr().size() > 0 ) // If there's an expr, visit the expr
-        {
-            return visit( ctx.expr( 0 ) );
+        if (ctx.expr().size() > 0) {
+            // If there's an expr, visit the expr
+            return visit(ctx.expr(0));
         }
 
-        return visit( ctx.getChild( 0 ) ); // All others: visit first child.
+        return visit(ctx.getChild(0)); // All others: visit first child.
     }
 
     // -------------------------------------------------------------------------
@@ -157,13 +151,12 @@ public class CommonExpressionVisitor
      * @param ctx any context
      * @return the value while allowing nulls
      */
-    public Object visitAllowingNulls( ParserRuleContext ctx )
-    {
+    public Object visitAllowingNulls(ParserRuleContext ctx) {
         boolean savedReplaceNulls = replaceNulls;
 
         replaceNulls = false;
 
-        Object result = visit( ctx );
+        Object result = visit(ctx);
 
         replaceNulls = savedReplaceNulls;
 
@@ -184,18 +177,13 @@ public class CommonExpressionVisitor
      * @param value the (possibly null) value
      * @return the value we should return.
      */
-    public Object handleNulls( Object value )
-    {
-        if ( replaceNulls )
-        {
+    public Object handleNulls(Object value) {
+        if (replaceNulls) {
             itemsFound++;
 
-            if ( value == null )
-            {
+            if (value == null) {
                 return DOUBLE_VALUE_IF_NULL;
-            }
-            else
-            {
+            } else {
                 itemValuesFound++;
             }
         }
@@ -207,38 +195,31 @@ public class CommonExpressionVisitor
     // Getters and setters
     // -------------------------------------------------------------------------
 
-    public Map<String, Constant> getConstantMap()
-    {
+    public Map<String, Constant> getConstantMap() {
         return constantMap;
     }
 
-    public boolean getReplaceNulls()
-    {
+    public boolean getReplaceNulls() {
         return replaceNulls;
     }
 
-    public void setReplaceNulls( boolean replaceNulls )
-    {
+    public void setReplaceNulls(boolean replaceNulls) {
         this.replaceNulls = replaceNulls;
     }
 
-    public Map<String, Integer> getOrgUnitCountMap()
-    {
+    public Map<String, Integer> getOrgUnitCountMap() {
         return orgUnitCountMap;
     }
 
-    public void setOrgUnitCountMap( Map<String, Integer> orgUnitCountMap )
-    {
+    public void setOrgUnitCountMap(Map<String, Integer> orgUnitCountMap) {
         this.orgUnitCountMap = orgUnitCountMap;
     }
 
-    public Map<String, Double> getItemValueMap()
-    {
+    public Map<String, Double> getItemValueMap() {
         return itemValueMap;
     }
 
-    public void setItemValueMap( Map<String, Double> itemValueMap )
-    {
+    public void setItemValueMap(Map<String, Double> itemValueMap) {
         this.itemValueMap = itemValueMap;
     }
 
@@ -250,13 +231,11 @@ public class CommonExpressionVisitor
         this.days = days;
     }
 
-    public int getItemsFound()
-    {
+    public int getItemsFound() {
         return itemsFound;
     }
 
-    public int getItemValuesFound()
-    {
+    public int getItemValuesFound() {
         return itemValuesFound;
     }
 
@@ -270,38 +249,33 @@ public class CommonExpressionVisitor
     public static class Builder {
         private CommonExpressionVisitor visitor;
 
-        protected Builder()
-        {
+        protected Builder() {
             this.visitor = new CommonExpressionVisitor();
         }
 
-        public Builder withItemMap( Map<Integer, ExpressionItem> itemMap )
-        {
+        public Builder withItemMap(Map<Integer, ExpressionItem> itemMap) {
             this.visitor.itemMap = itemMap;
             return this;
         }
 
-        public Builder withItemMethod( ExpressionItemMethod itemMethod )
-        {
+        public Builder withItemMethod(ExpressionItemMethod itemMethod) {
             this.visitor.itemMethod = itemMethod;
             return this;
         }
 
-        public Builder withConstantMap( Map<String, Constant> constantMap )
-        {
+        public Builder withConstantMap(Map<String, Constant> constantMap) {
             this.visitor.constantMap = constantMap;
             return this;
         }
 
         private CommonExpressionVisitor validateCommonProperties() {
-            Validate.notNull( this.visitor.constantMap, "Missing required property 'constantMap'" );
-            Validate.notNull( this.visitor.itemMap, "Missing required property 'itemMap'" );
-            Validate.notNull( this.visitor.itemMethod, "Missing required property 'itemMethod'" );
+            Validate.notNull(this.visitor.constantMap, "Missing required property 'constantMap'");
+            Validate.notNull(this.visitor.itemMap, "Missing required property 'itemMap'");
+            Validate.notNull(this.visitor.itemMethod, "Missing required property 'itemMethod'");
             return visitor;
         }
 
-        public CommonExpressionVisitor buildForExpressions()
-        {
+        public CommonExpressionVisitor buildForExpressions() {
             return validateCommonProperties();
         }
     }

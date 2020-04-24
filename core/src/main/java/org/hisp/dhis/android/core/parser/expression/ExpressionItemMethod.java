@@ -36,15 +36,14 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
  * @author Jim Grace
  */
 @FunctionalInterface
-public interface ExpressionItemMethod
-{
+public interface ExpressionItemMethod {
     /**
      * Invokes a method in an expression function
      *
-     * @param item the item to evaluate
-     * @param ctx the second function argument
+     * @param item    the item to evaluate
+     * @param ctx     the second function argument
      * @param visitor the visitor class for supporting methods
      * @return the method result from the expression item class
      */
-    Object apply(ExpressionItem item, ExprContext ctx, CommonExpressionVisitor visitor );
+    Object apply(ExpressionItem item, ExprContext ctx, CommonExpressionVisitor visitor);
 }

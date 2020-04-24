@@ -41,8 +41,7 @@ import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
  * @author Jim Grace
  */
 public abstract class FunctionGreatestOrLeast
-    implements ExpressionItem
-{
+        implements ExpressionItem {
     /**
      * Returns the greatest or least value.
      *
@@ -50,16 +49,13 @@ public abstract class FunctionGreatestOrLeast
      * @param greatestLeast 1.0 for greatest, -1.0 for least.
      * @return the greatest or least value.
      */
-    protected Double greatestOrLeast( List<ExprContext> contexts, AntlrExpressionVisitor visitor, double greatestLeast )
-    {
+    protected Double greatestOrLeast(List<ExprContext> contexts, AntlrExpressionVisitor visitor, double greatestLeast) {
         Double returnVal = null;
 
-        for ( ExprContext c : contexts )
-        {
-            Double val = visitor.castDoubleVisit( c );
+        for (ExprContext c : contexts) {
+            Double val = visitor.castDoubleVisit(c);
 
-            if ( returnVal == null || val != null && (val - returnVal) * greatestLeast > 0 )
-            {
+            if (returnVal == null || val != null && (val - returnVal) * greatestLeast > 0) {
                 returnVal = val;
             }
         }

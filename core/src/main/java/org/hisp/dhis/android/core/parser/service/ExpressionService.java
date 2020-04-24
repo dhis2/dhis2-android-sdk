@@ -50,10 +50,10 @@ import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.OUG_BRACE;
 
 public class ExpressionService {
 
-    private final Map<Integer, ExpressionItem> VALIDATION_RULE_EXPRESSION_ITEMS;
+    private final Map<Integer, ExpressionItem> validationRuleExpresionItems;
 
     public ExpressionService() {
-        this.VALIDATION_RULE_EXPRESSION_ITEMS = getExpressionItems();
+        this.validationRuleExpresionItems = getExpressionItems();
     }
 
     private Map<Integer, ExpressionItem> getExpressionItems() {
@@ -68,9 +68,9 @@ public class ExpressionService {
     public Double getExpressionValue(String expression,
                                      Map<DimensionalItemObject, Double> valueMap, Map<String, Constant> constantMap,
                                      Map<String, Integer> orgUnitCountMap, Integer days,
-                                     MissingValueStrategy missingValueStrategy ) {
+                                     MissingValueStrategy missingValueStrategy) {
 
-        if ( expression == null) {
+        if (expression == null) {
             return null;
         }
 
@@ -85,11 +85,10 @@ public class ExpressionService {
         }
 
         visitor.setItemValueMap(itemValueMap);
-        visitor.setOrgUnitCountMap( orgUnitCountMap );
+        visitor.setOrgUnitCountMap(orgUnitCountMap);
 
-        if ( days != null )
-        {
-            visitor.setDays( Double.valueOf( days ) );
+        if (days != null) {
+            visitor.setDays(Double.valueOf(days));
         }
 
         Object value = Parser.visit(expression, visitor);
@@ -97,23 +96,19 @@ public class ExpressionService {
         int itemsFound = visitor.getItemsFound();
         int itemValuesFound = visitor.getItemValuesFound();
 
-        switch ( missingValueStrategy )
-        {
+        switch (missingValueStrategy) {
             case SKIP_IF_ANY_VALUE_MISSING:
-                if ( itemValuesFound < itemsFound )
-                {
+                if (itemValuesFound < itemsFound) {
                     return null;
                 }
 
             case SKIP_IF_ALL_VALUES_MISSING:
-                if ( itemsFound != 0 && itemValuesFound == 0 )
-                {
+                if (itemsFound != 0 && itemValuesFound == 0) {
                     return null;
                 }
 
             case NEVER_SKIP:
-                if ( value == null )
-                {
+                if (value == null) {
                     // TODO Handle other ParseType
                     return 0d;
                 }
@@ -130,16 +125,15 @@ public class ExpressionService {
      * Creates a new ExpressionItemsVisitor object.
      */
     private CommonExpressionVisitor newVisitor(
-                                                //ParseType parseType,
-                                               ExpressionItemMethod itemMethod,
-                                               //List<Period> samplePeriods,
-                                               Map<String, Constant> constantMap )
-    {
+            //ParseType parseType,
+            ExpressionItemMethod itemMethod,
+            //List<Period> samplePeriods,
+            Map<String, Constant> constantMap) {
         return CommonExpressionVisitor.newBuilder()
                 //.withItemMap( PARSE_TYPE_EXPRESSION_ITEMS.get( parseType ) )
-                .withItemMap( VALIDATION_RULE_EXPRESSION_ITEMS )
-                .withItemMethod( itemMethod )
-                .withConstantMap( constantMap )
+                .withItemMap(validationRuleExpresionItems)
+                .withItemMethod(itemMethod)
+                .withConstantMap(constantMap)
                 //.withDimensionService( dimensionService )
                 //.withOrganisationUnitGroupService( organisationUnitGroupService )
                 //.withSamplePeriods( samplePeriods )()

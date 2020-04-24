@@ -58,26 +58,20 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
  * @author Jim Grace
  */
 public class OperatorLogicalOr
-    extends AntlrOperatorLogicalOr
-    implements ExpressionItem
-{
+        extends AntlrOperatorLogicalOr
+        implements ExpressionItem {
     @Override
-    public Object evaluateAllPaths(ExprContext ctx, CommonExpressionVisitor visitor )
-    {
-        Boolean value = visitor.castBooleanVisit( ctx.expr( 0 ) );
-        Boolean value1 = visitor.castBooleanVisit( ctx.expr( 1 ) );
+    public Object evaluateAllPaths(ExprContext ctx, CommonExpressionVisitor visitor) {
+        Boolean value = visitor.castBooleanVisit(ctx.expr(0));
+        Boolean value1 = visitor.castBooleanVisit(ctx.expr(1));
 
-        if ( value == null )
-        {
+        if (value == null) {
             value = value1;
 
-            if ( value != null && !value )
-            {
+            if (value != null && !value) {
                 value = null;
             }
-        }
-        else if ( !value )
-        {
+        } else if (!value) {
             value = value1;
         }
 

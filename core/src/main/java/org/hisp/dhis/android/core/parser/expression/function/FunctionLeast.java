@@ -38,11 +38,9 @@ import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
  * @author Jim Grace
  */
 public class FunctionLeast
-    extends FunctionGreatestOrLeast
-{
+        extends FunctionGreatestOrLeast {
     @Override
-    public Object evaluate( ExprContext ctx, CommonExpressionVisitor visitor )
-    {
-        return greatestOrLeast( ctx.expr(), visitor, -1.0 );
+    public Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor) {
+        return greatestOrLeast(ctx.expr(), visitor, -1.0);
     }
 }

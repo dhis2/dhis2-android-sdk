@@ -43,8 +43,7 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
 public class ItemDays implements ExpressionItem {
 
     @Override
-    public Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor )
-    {
+    public Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor) {
         return visitor.getDays();
     }
 

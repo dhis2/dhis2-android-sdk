@@ -28,10 +28,8 @@ package org.hisp.dhis.android.core.parser.service.dataitem;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
 import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
-import org.hisp.dhis.antlr.ParserExceptionWithoutContext;
 
 import static org.hisp.dhis.android.core.parser.expression.ParserUtils.DOUBLE_VALUE_IF_NULL;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
@@ -42,14 +40,13 @@ import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
  * @author Jim Grace
  */
 public class ItemOrgUnitGroup
-    implements ExpressionItem
-{
+        implements ExpressionItem {
     @Override
-    public Object getDescription( ExprContext ctx, CommonExpressionVisitor visitor )
-    {
+    public Object getDescription(ExprContext ctx, CommonExpressionVisitor visitor) {
         // TODO
         /*
-        OrganisationUnitGroup orgUnitGroup = visitor.getOrganisationUnitGroupService().getOrganisationUnitGroup( ctx.uid0.getText() );
+        OrganisationUnitGroup orgUnitGroup = visitor.getOrganisationUnitGroupService()
+                .getOrganisationUnitGroup( ctx.uid0.getText() );
 
         if ( orgUnitGroup == null )
         {
@@ -73,12 +70,10 @@ public class ItemOrgUnitGroup
      */
 
     @Override
-    public Object evaluate( ExprContext ctx, CommonExpressionVisitor visitor )
-    {
-        Integer count = visitor.getOrgUnitCountMap().get( ctx.uid0.getText() );
+    public Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor) {
+        Integer count = visitor.getOrgUnitCountMap().get(ctx.uid0.getText());
 
-        if ( count == null )
-        {
+        if (count == null) {
             count = 0;
         }
 

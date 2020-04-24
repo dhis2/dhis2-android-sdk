@@ -47,19 +47,16 @@ public class DataElementOperandObject implements DimensionalItemObject {
     // Constructors
     // -------------------------------------------------------------------------
 
-    public DataElementOperandObject(String dataElement )
-    {
+    public DataElementOperandObject(String dataElement) {
         this.dataElement = dataElement;
     }
 
-    public DataElementOperandObject(String dataElement, String categoryOptionCombo )
-    {
+    public DataElementOperandObject(String dataElement, String categoryOptionCombo) {
         this.dataElement = dataElement;
         this.categoryOptionCombo = categoryOptionCombo;
     }
 
-    public DataElementOperandObject(String dataElement, String categoryOptionCombo, String attributeOptionCombo )
-    {
+    public DataElementOperandObject(String dataElement, String categoryOptionCombo, String attributeOptionCombo) {
         this.dataElement = dataElement;
         this.categoryOptionCombo = categoryOptionCombo;
         this.attributeOptionCombo = attributeOptionCombo;
@@ -70,25 +67,19 @@ public class DataElementOperandObject implements DimensionalItemObject {
     // -------------------------------------------------------------------------
 
     @Override
-    public String getDimensionItem()
-    {
+    public String getDimensionItem() {
         String item = null;
 
-        if ( dataElement != null )
-        {
+        if (dataElement != null) {
             item = dataElement;
 
-            if ( categoryOptionCombo != null )
-            {
+            if (categoryOptionCombo != null) {
                 item += SEPARATOR + categoryOptionCombo;
-            }
-            else if ( attributeOptionCombo != null )
-            {
+            } else if (attributeOptionCombo != null) {
                 item += SEPARATOR + SYMBOL_WILDCARD;
             }
 
-            if ( attributeOptionCombo != null )
-            {
+            if (attributeOptionCombo != null) {
                 item += SEPARATOR + attributeOptionCombo;
             }
         }

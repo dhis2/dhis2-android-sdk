@@ -29,6 +29,8 @@
 package org.hisp.dhis.android.core.trackedentity.search;
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
 import org.hisp.dhis.android.core.common.AssignedUserMode;
@@ -130,10 +132,15 @@ final class TrackedEntityInstanceLocalQueryHelper {
         }
 
         // TODO In case a program uid is provided, the server orders by enrollmentStatus.
-
+        String order1 = CollectionsHelper.commaAndSpaceSeparatedArrayValues(
+                CollectionsHelper.withSingleQuotationMarksArray(
+                        EnumHelper.asStringList(State.TO_POST, State.TO_UPDATE, State.UPLOADING)));
+        String order2 = CollectionsHelper.commaAndSpaceSeparatedArrayValues(
+                CollectionsHelper.withSingleQuotationMarksArray(
+                        EnumHelper.asStringList(State.SYNCED, State.SYNCED_VIA_SMS, State.SENT_VIA_SMS)));
         queryStr += " ORDER BY CASE " +
-                "WHEN " + TEI_STATE + " IN ('" + State.TO_POST + "','" + State.TO_UPDATE + "') THEN 1 " +
-                "WHEN " + TEI_STATE + " = '" + State.SYNCED + "' THEN 2 ELSE 3 END ASC, " +
+                "WHEN " + TEI_STATE + " IN (" + order1 + ") THEN 1 " +
+                "WHEN " + TEI_STATE + " IN (" + order2 + ") THEN 2 ELSE 3 END ASC, " +
                 TEI_LAST_UPDATED + " DESC ";
 
         if (limit > 0) {

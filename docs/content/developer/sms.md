@@ -50,6 +50,30 @@ case.send().blockingSubscribe();
 
 > *Important*: the app is responsible for asking the user for permissions (READ_PHONE_STATE, SEND_SMS, READ_SMS, RECEIVE_SMS). Otherwise, SMS module will fail.
 
+## SMS version
+
+SMSs are sent in a compressed format from/to the server. This task is done by the [SMS Compression library](https://github.com/dhis2/sms-compression), which is responsible for doing the conversion between the plain text and the compressed format.
+
+The SDK includes the latest available version of the compression library, but there is no guarantee that the server is using it as well. For this reason, it is required to check the server version in order to enable/disable some functionalities. The SMS version in the server can be checked by:
+
+```java
+d2.systemInfoModule().versionManager().getSmsVersion()
+```
+
+Overview of versions - features:
+
+Version 1:
+- Aggregated data.
+- Tracker / event data, but there are some known bugs. We recommend not to enable tracker SMS sync in version 1.
+
+Version 2:
+- Add support for empty lists.
+- Add support for geometry in events (POINT).
+- Add missing properties in events (event data, due date) and enrollments (execution date, incident date).
+- Add support for sending enrollment + events in the same SMS submit case.
+
+For more information, please check [SMS compression repository](https://github.com/dhis2/sms-compression).
+
 ## ConfigCase
 
 <!--DHIS2-SECTION-ID:sms_module_config_case-->

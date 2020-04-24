@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBui
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStoreImpl;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.State;
@@ -100,8 +101,10 @@ public final class EventStoreImpl extends IdentifiableDeletableDataObjectStoreIm
 
     @Override
     public List<Event> querySingleEventsToPost() {
+        String states = CollectionsHelper.commaAndSpaceSeparatedArrayValues(
+                CollectionsHelper.withSingleQuotationMarksArray(EnumHelper.asStringList(State.uploadableStates())));
         String singleEventsToPostQuery = QUERY_SINGLE_EVENTS +
-                " AND (Event.state = '" + State.TO_POST + "' OR Event.state = '" + State.TO_UPDATE + "')";
+                " AND (Event.state IN (" + states + "))";
         return eventListFromQuery(singleEventsToPostQuery);
     }
 

@@ -28,17 +28,29 @@
 
 package org.hisp.dhis.android.core.configuration.internal;
 
+import android.database.Cursor;
+
 import androidx.annotation.NonNull;
 
 import com.google.auto.value.AutoValue;
 
-import okhttp3.HttpUrl;
+import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.CoreObject;
 
+/**
+ * Old configuration class. Needs to be kept for migration from SDK version previous to 1.1.0
+ * Use {@link DatabasesConfiguration} instead.
+ */
 @AutoValue
-public abstract class Configuration {
+@Deprecated
+public abstract class Configuration implements CoreObject {
 
     @NonNull
-    public abstract HttpUrl serverUrl();
+    public abstract String serverUrl();
+
+    public static Configuration create(Cursor cursor) {
+        return $AutoValue_Configuration.createFromCursor(cursor);
+    }
 
     public abstract Builder toBuilder();
 
@@ -47,13 +59,15 @@ public abstract class Configuration {
     }
 
     @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder serverUrl(HttpUrl serverUrl);
+    public abstract static class Builder extends BaseObject.Builder<Builder> {
+        public abstract Builder id(Long id);
+
+        public abstract Builder serverUrl(String serverUrl);
 
         public abstract Configuration build();
     }
 
-    public static Configuration forServerUrl(HttpUrl url) {
+    static Configuration forServerUrl(String url) {
         return Configuration.builder().serverUrl(url).build();
     }
 }

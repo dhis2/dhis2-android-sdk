@@ -38,6 +38,8 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinde
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo;
@@ -114,10 +116,10 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
         return queryTrackedEntityDataValues(queryStatement);
     }
 
-    // TODO Could we reuse EnumHelper.asStringList(State.uploadableStates())?
     private String eventInUploadableState() {
-        return "(Event.state IN ('" + State.TO_POST + "', '" + State.TO_UPDATE + "', '"
-                + State.SENT_VIA_SMS + "', '" + State.SYNCED_VIA_SMS + "'))";
+        String states = CollectionsHelper.commaAndSpaceSeparatedArrayValues(
+                CollectionsHelper.withSingleQuotationMarksArray(EnumHelper.asStringList(State.uploadableStates())));
+        return "(Event.state IN (" + states + "))";
     }
 
     @Override

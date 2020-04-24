@@ -25,31 +25,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.configuration.internal;
 
-package org.hisp.dhis.android.core.arch.api.executors.internal;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+final class ConfigurationStore {
 
-@Module
-public class APIExecutorsDIModule {
+    private static final StatementBinder<Configuration> BINDER = (o, w) ->
+            w.bind(1, o.serverUrl());
 
-    @Provides
-    @Reusable
-    APICallExecutor apiCallExecutor(APICallExecutorImpl impl) {
-        return impl;
+    private ConfigurationStore() {
     }
 
-    @Provides
-    @Reusable
-    RxAPICallExecutor rxApiCallExecutor(RxAPICallExecutorImpl impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    APIDownloader apiDownloader() {
-        return new APIDownloaderImpl();
+    static ObjectStore<Configuration> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectStore(databaseAdapter, ConfigurationTableInfo.TABLE_INFO, BINDER,
+                Configuration::create);
     }
 }

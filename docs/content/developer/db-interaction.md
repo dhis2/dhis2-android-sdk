@@ -14,7 +14,7 @@ d2.constantModule().constants().blockingGet() // List<Constant>
 
 // Direct database interaction
 String query = "SELECT * FROM " + ConstantTableInfo.TABLE_INFO.name();
-try (Cursor cursor = Sdk.d2().databaseAdapter().query(query)) {
+try (Cursor cursor = Sdk.d2().databaseAdapter().rawQuery(query)) {
     List<Constant> constantList = new ArrayList<>();
     if (cursor.getCount() > 0) {
         cursor.moveToFirst();

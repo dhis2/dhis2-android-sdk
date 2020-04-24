@@ -26,30 +26,45 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.api.executors.internal;
+package org.hisp.dhis.android.core.configuration.internal;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
-@Module
-public class APIExecutorsDIModule {
+final class ConfigurationTableInfo {
 
-    @Provides
-    @Reusable
-    APICallExecutor apiCallExecutor(APICallExecutorImpl impl) {
-        return impl;
+    private ConfigurationTableInfo() {
     }
 
-    @Provides
-    @Reusable
-    RxAPICallExecutor rxApiCallExecutor(RxAPICallExecutorImpl impl) {
-        return impl;
-    }
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    @Provides
-    @Reusable
-    APIDownloader apiDownloader() {
-        return new APIDownloaderImpl();
+        @Override
+        public String name() {
+            return "Configuration";
+        }
+
+        @Override
+        public CoreColumns columns() {
+            return new Columns();
+        }
+    };
+
+    public static class Columns extends CoreColumns {
+        static final String SERVER_URL = "serverUrl";
+
+        @Override
+        public String[] all() {
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    SERVER_URL
+            );
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return CollectionsHelper.appendInNewArray(super.whereUpdate(),
+                    SERVER_URL
+            );
+        }
     }
 }

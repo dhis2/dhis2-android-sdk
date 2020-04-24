@@ -30,12 +30,12 @@ package org.hisp.dhis.android.core.configuration.internal;
 
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 
-public class DatabaseEncryptionPasswordManager {
+public final class DatabaseEncryptionPasswordManager {
 
     private final SecureStore secureStore;
     private final DatabaseEncryptionPasswordGenerator passwordGenerator;
 
-    DatabaseEncryptionPasswordManager(SecureStore secureStore,
+    private DatabaseEncryptionPasswordManager(SecureStore secureStore,
                                               DatabaseEncryptionPasswordGenerator passwordGenerator) {
         this.secureStore = secureStore;
         this.passwordGenerator = passwordGenerator;

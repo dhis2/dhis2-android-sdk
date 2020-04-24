@@ -33,14 +33,14 @@ import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.option.Option;
 
-import retrofit2.Call;
+import io.reactivex.Single;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 interface OptionService {
 
     @GET("options")
-    Call<Payload<Option>> getOptions(@Query("fields") @Which Fields<Option> fields,
-                                           @Query("filter") String optionSetUidsFilterString,
-                                           @Query("paging") Boolean paging);
+    Single<Payload<Option>> getOptions(@Query("fields") @Which Fields<Option> fields,
+                                       @Query("filter") String optionSetUidsFilterString,
+                                       @Query("paging") Boolean paging);
 }

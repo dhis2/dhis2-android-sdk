@@ -69,13 +69,13 @@ public enum State {
 
     public static State[] uploadableStates() {
         return new State[] {
-                TO_POST, TO_UPDATE, SENT_VIA_SMS, SYNCED_VIA_SMS
+                TO_POST, TO_UPDATE, SENT_VIA_SMS, SYNCED_VIA_SMS, UPLOADING
         };
     }
 
     public static State[] uploadableStatesIncludingError() {
         return new State[] {
-                TO_POST, TO_UPDATE, SENT_VIA_SMS, SYNCED_VIA_SMS, ERROR, WARNING
+                TO_POST, TO_UPDATE, SENT_VIA_SMS, SYNCED_VIA_SMS, UPLOADING, ERROR, WARNING
         };
     }
 }

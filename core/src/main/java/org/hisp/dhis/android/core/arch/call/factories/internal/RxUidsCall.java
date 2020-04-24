@@ -26,30 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.api.executors.internal;
+package org.hisp.dhis.android.core.arch.call.factories.internal;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import java.util.List;
+import java.util.Set;
 
-@Module
-public class APIExecutorsDIModule {
+import io.reactivex.Maybe;
 
-    @Provides
-    @Reusable
-    APICallExecutor apiCallExecutor(APICallExecutorImpl impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    RxAPICallExecutor rxApiCallExecutor(RxAPICallExecutorImpl impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    APIDownloader apiDownloader() {
-        return new APIDownloaderImpl();
-    }
+public interface RxUidsCall<P> {
+    Maybe<List<P>> download(Set<String> uids);
 }

@@ -116,7 +116,7 @@ public final class D2Manager {
 
             ObjectKeyValueStore<Credentials> credentialsSecureStore = new CredentialsSecureStoreImpl(secureStore);
             MultiUserDatabaseManagerForD2Manager multiUserDatabaseManager = MultiUserDatabaseManagerForD2Manager
-                    .create(databaseAdapter, d2Config.context(), secureStore, insecureStore, databaseAdapterFactory);
+                    .create(databaseAdapter, d2Config.context(), insecureStore, databaseAdapterFactory);
             if (wantToImportDBForExternalTesting()) {
                 multiUserDatabaseManager.loadDbForTesting(testingDatabaseName, false, testingUsername);
             } else {

@@ -28,62 +28,21 @@
 
 package org.hisp.dhis.android.core.configuration.internal;
 
-import android.content.Context;
-
-import androidx.test.InstrumentationRegistry;
-
-import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.data.configuration.ConfigurationSamples;
+import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.IOException;
-
-import okhttp3.HttpUrl;
-
-import static com.google.common.truth.Truth.assertThat;
-
 @RunWith(D2JunitRunner.class)
-public class ConfigurationSecureStoreIntegrationShould {
+public class ConfigurationStoreIntegrationShould extends ObjectStoreAbstractIntegrationShould<Configuration> {
 
-    private final Configuration configuration;
-    private final ObjectKeyValueStore<Configuration> configurationSecureStore;
-
-    public ConfigurationSecureStoreIntegrationShould() {
-        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        this.configurationSecureStore = new ConfigurationSecureStoreImpl(new AndroidSecureStore(context));
-        this.configuration = buildObject();
+    public ConfigurationStoreIntegrationShould() {
+        super(ConfigurationStore.create(TestDatabaseAdapterFactory.get()),
+                ConfigurationTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 
-    @Before
-    public void setUp() throws IOException {
-        configurationSecureStore.remove();
-    }
-
-    @Test
-    public void configure_and_get() {
-        configurationSecureStore.set(configuration);
-        Configuration objectFromDb = configurationSecureStore.get();
-        assertThat(objectFromDb.serverUrl()).isEqualTo(HttpUrl.parse("http://testserver.org/api/"));
-    }
-
-    @Test
-    public void configure_and_remove() {
-        configurationSecureStore.set(configuration);
-        configurationSecureStore.remove();
-        assertThat(configurationSecureStore.get()).isNull();
-    }
-
-    @Test
-    public void overwrite_and_not_fail_in_a_consecutive_configuration() {
-        configurationSecureStore.set(configuration);
-        configurationSecureStore.set(configuration);
-        assertThat(configurationSecureStore.get()).isNotNull();
-    }
-
+    @Override
     protected Configuration buildObject() {
         return ConfigurationSamples.getConfiguration();
     }

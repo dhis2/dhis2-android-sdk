@@ -144,7 +144,7 @@ System modules:
 - importModule
 - maintenanceModule
 - systemInfoModule
-- systemSettingModule
+- settingModule
 - wipeModule
 
 Big block modules:

@@ -44,5 +44,5 @@ public interface DataSetCompleteRegistrationStore extends ObjectWithoutUidStore<
                                       Collection<String> periodIds,
                                       String rootOrgunitUid);
 
-    boolean isDSCRBeingUpload(DataSetCompleteRegistration dscr);
+    boolean isBeingUpload(DataSetCompleteRegistration dscr);
 }

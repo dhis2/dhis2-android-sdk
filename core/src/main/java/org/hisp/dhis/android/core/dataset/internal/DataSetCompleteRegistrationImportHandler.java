@@ -64,7 +64,7 @@ final class DataSetCompleteRegistrationImportHandler {
 
         for (DataSetCompleteRegistration dataSetCompleteRegistration :
                 dataSetCompleteRegistrationPayload.dataSetCompleteRegistrations) {
-            if (dataSetCompleteRegistrationStore.isDSCRBeingUpload(dataSetCompleteRegistration)) {
+            if (dataSetCompleteRegistrationStore.isBeingUpload(dataSetCompleteRegistration)) {
                 dataSetCompleteRegistrationStore.setState(dataSetCompleteRegistration, newState);
             }
         }
@@ -86,7 +86,7 @@ final class DataSetCompleteRegistrationImportHandler {
 
         List<ImportConflict> conflicts = new ArrayList<>();
         for (DataSetCompleteRegistration dataSetCompleteRegistration : withErrorDataSetCompleteRegistrations) {
-            if (dataSetCompleteRegistrationStore.isDSCRBeingUpload(dataSetCompleteRegistration)) {
+            if (dataSetCompleteRegistrationStore.isBeingUpload(dataSetCompleteRegistration)) {
                 dataSetCompleteRegistrationStore.setState(dataSetCompleteRegistration, State.ERROR);
                 conflicts.add(ImportConflict.create(
                         dataSetCompleteRegistration.toString(), "Error marking as incomplete"));
@@ -94,7 +94,7 @@ final class DataSetCompleteRegistrationImportHandler {
         }
 
         for (DataSetCompleteRegistration dataSetCompleteRegistration : deletedDataSetCompleteRegistrations) {
-            if (dataSetCompleteRegistrationStore.isDSCRBeingUpload(dataSetCompleteRegistration)) {
+            if (dataSetCompleteRegistrationStore.isBeingUpload(dataSetCompleteRegistration)) {
                 dataSetCompleteRegistrationStore.deleteById(dataSetCompleteRegistration);
             }
         }

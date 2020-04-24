@@ -129,7 +129,7 @@ final class DataSetCompleteRegistrationStoreImpl extends
     }
 
     @Override
-    public boolean isDSCRBeingUpload(DataSetCompleteRegistration dscr) {
+    public boolean isBeingUpload(DataSetCompleteRegistration dscr) {
         String whereClause = new WhereClauseBuilder()
                 .appendKeyStringValue(DataSetCompleteRegistrationTableInfo.Columns.PERIOD, dscr.period())
                 .appendKeyStringValue(DataSetCompleteRegistrationTableInfo.Columns.DATA_SET, dscr.dataSet())

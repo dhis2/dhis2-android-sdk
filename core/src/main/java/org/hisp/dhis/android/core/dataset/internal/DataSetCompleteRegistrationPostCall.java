@@ -120,10 +120,15 @@ public final class DataSetCompleteRegistrationPostCall {
         DataSetCompleteRegistrationPayload dataSetCompleteRegistrationPayload
                 = new DataSetCompleteRegistrationPayload(toPostDataSetCompleteRegistrations);
         if (!toPostDataSetCompleteRegistrations.isEmpty()) {
-            markPartitionsAsUploading(toPostDataSetCompleteRegistrations);
-            dataValueImportSummary = apiCallExecutor.executeObjectCall(
-                    dataSetCompleteRegistrationService.postDataSetCompleteRegistrations(
-                            dataSetCompleteRegistrationPayload));
+            markPartitionsAs(toPostDataSetCompleteRegistrations, State.UPLOADING);
+            try {
+                dataValueImportSummary = apiCallExecutor.executeObjectCall(
+                        dataSetCompleteRegistrationService.postDataSetCompleteRegistrations(
+                                dataSetCompleteRegistrationPayload));
+            } catch (Exception e) {
+                markPartitionsAs(toPostDataSetCompleteRegistrations, State.ERROR);
+                throw e;
+            }
         }
 
         List<DataSetCompleteRegistration> deletedDataSetCompleteRegistrations = new ArrayList<>();
@@ -136,7 +141,7 @@ public final class DataSetCompleteRegistrationPostCall {
                             .withCategoryOptions()
                             .uid(dataSetCompleteRegistration.attributeOptionCombo())
                             .blockingGet();
-                    markPartitionsAsUploading(toDeleteDataSetCompleteRegistrations);
+                    markPartitionsAs(toDeleteDataSetCompleteRegistrations, State.UPLOADING);
                     apiCallExecutor.executeObjectCallWithEmptyResponse(
                             dataSetCompleteRegistrationService.deleteDataSetCompleteRegistration(
                                     dataSetCompleteRegistration.dataSet(),
@@ -160,9 +165,10 @@ public final class DataSetCompleteRegistrationPostCall {
         emitter.onComplete();
     }
 
-    private void markPartitionsAsUploading(Collection<DataSetCompleteRegistration> dataSetCompleteRegistrations) {
+    private void markPartitionsAs(Collection<DataSetCompleteRegistration> dataSetCompleteRegistrations,
+                                           State state) {
         for (DataSetCompleteRegistration dscr : dataSetCompleteRegistrations) {
-            dataSetCompleteRegistrationStore.setState(dscr, State.UPLOADING);
+            dataSetCompleteRegistrationStore.setState(dscr, state);
         }
     }
 }

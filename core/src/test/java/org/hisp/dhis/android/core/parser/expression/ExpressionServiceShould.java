@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.parser.service.ExpressionService;
 import org.hisp.dhis.android.core.parser.service.dataobject.DataElementOperandObject;
 import org.hisp.dhis.android.core.parser.service.dataobject.DimensionalItemObject;
 import org.hisp.dhis.android.core.validation.MissingValueStrategy;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -51,30 +52,95 @@ public class ExpressionServiceShould {
 
     private String constantId = "e19hj1w7yKP";
 
-    @Test
-    public void evaluate() {
-        String expression = deOperand(dataElement1, coc1) + " + " +
-                deOperand(dataElement2, coc2) + " + " +
-                constant(constantId);
+    private String orgunitGroupId = "RAL7YE4KJ58";
 
-        ExpressionService service = new ExpressionService();
+    private ExpressionService service;
+
+    @Before
+    public void setUp() {
+        service = new ExpressionService();
+    }
+
+    @Test
+    public void evaluate_dataelements() {
+        String expression = deOperand(dataElement1, coc1) + " + " + deOperand(dataElement2, coc2);
 
         Map<DimensionalItemObject, Double> valueMap = new HashMap<>();
         valueMap.put(new DataElementOperandObject(dataElement1, coc1), 5.0);
         valueMap.put(new DataElementOperandObject(dataElement2, coc2), 3.0);
 
+        Double result = service.getExpressionValue(expression, valueMap, Collections.emptyMap(), Collections.emptyMap(), 10,
+                MissingValueStrategy.NEVER_SKIP);
+        assertThat(result).isEqualTo(12.0);
+    }
+
+    @Test
+    public void evaluate_constants() {
+        String expression = de(dataElement1) + " + " + constant(constantId);
+
+        Map<DimensionalItemObject, Double> valueMap = new HashMap<>();
+        valueMap.put(new DataElementOperandObject(dataElement1, null), 5.0);
+
         Map<String, Constant> constantMap = new HashMap<>();
         constantMap.put(constantId, Constant.builder().uid(constantId).value(4.0).build());
 
-        Double result = service.getExpressionValue(expression, valueMap, constantMap, Collections.emptyMap(), 10, MissingValueStrategy.NEVER_SKIP);
-        assertThat(result).isEqualTo(12.0);
+        Double result = service.getExpressionValue(expression, valueMap, constantMap, Collections.emptyMap(), 10,
+                MissingValueStrategy.NEVER_SKIP);
+        assertThat(result).isEqualTo(9.0);
+    }
+
+    @Test
+    public void evaluate_without_coc() {
+        String expression = de(dataElement1) + " + " + de(dataElement2);
+
+        Map<DimensionalItemObject, Double> valueMap = new HashMap<>();
+        valueMap.put(new DataElementOperandObject(dataElement1, null), 5.0);
+        valueMap.put(new DataElementOperandObject(dataElement2, null), 3.0);
+
+        Double result = service.getExpressionValue(expression, valueMap, Collections.emptyMap(), Collections.emptyMap(), 10,
+                MissingValueStrategy.NEVER_SKIP);
+        assertThat(result).isEqualTo(8.0);
+    }
+
+    @Test
+    public void evaluate_days() {
+        String expression = de(dataElement1) + " + [days]";
+
+        Map<DimensionalItemObject, Double> valueMap = new HashMap<>();
+        valueMap.put(new DataElementOperandObject(dataElement1, null), 5.0);
+
+        Double result = service.getExpressionValue(expression, valueMap, Collections.emptyMap(), Collections.emptyMap(), 10,
+                MissingValueStrategy.NEVER_SKIP);
+        assertThat(result).isEqualTo(15.0);
+    }
+
+    @Test
+    public void evaluate_orgunit_groups() {
+        String expression = de(dataElement1) + " + " + oug(orgunitGroupId);
+
+        Map<DimensionalItemObject, Double> valueMap = new HashMap<>();
+        valueMap.put(new DataElementOperandObject(dataElement1, null), 5.0);
+
+        Map<String, Integer> orgunitMap = new HashMap<>();
+        orgunitMap.put(orgunitGroupId, 20);
+
+        Double result = service.getExpressionValue(expression, valueMap, Collections.emptyMap(), orgunitMap, 10,
+                MissingValueStrategy.NEVER_SKIP);
+        assertThat(result).isEqualTo(25.0);
     }
 
     private String constant(String uid) {
         return "C{" + uid + "}";
     }
 
+    private String de(String uid) {
+        return "#{" + uid + "}";
+    }
     private String deOperand(String de, String coc) {
         return "#{" + de + "." + coc + "}";
+    }
+
+    private String oug(String uid) {
+        return "OUG{" + uid + "}";
     }
 }

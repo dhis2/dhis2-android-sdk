@@ -80,14 +80,18 @@ public final class DataValuePostCall {
                 return systemInfoDownloader.downloadMetadata().andThen(Observable.create(emitter -> {
                     emitter.onNext(progressManager.increaseProgress(SystemInfo.class, false));
 
-                    markPartitionsAsUploading(dataValues);
+                    markPartitionsAs(dataValues, State.UPLOADING);
 
-                    DataValueSet dataValueSet = new DataValueSet(dataValues);
+                    try {
+                        DataValueSet dataValueSet = new DataValueSet(dataValues);
+                        DataValueImportSummary dataValueImportSummary = apiCallExecutor.executeObjectCall(
+                                dataValueService.postDataValues(dataValueSet));
 
-                    DataValueImportSummary dataValueImportSummary = apiCallExecutor.executeObjectCall(
-                            dataValueService.postDataValues(dataValueSet));
-
-                    dataValueImportHandler.handleImportSummary(dataValueSet, dataValueImportSummary);
+                        dataValueImportHandler.handleImportSummary(dataValueSet, dataValueImportSummary);
+                    } catch (Exception e) {
+                        markPartitionsAs(dataValues, State.ERROR);
+                        throw e;
+                    }
 
                     emitter.onNext(progressManager.increaseProgress(DataValue.class, true));
                     emitter.onComplete();
@@ -96,9 +100,9 @@ public final class DataValuePostCall {
         });
     }
 
-    private void markPartitionsAsUploading(Collection<DataValue> dataValues) {
+    private void markPartitionsAs(Collection<DataValue> dataValues, State state) {
         for (DataValue dataValue : dataValues) {
-            dataValueStore.setState(dataValue, State.UPLOADING);
+            dataValueStore.setState(dataValue, state);
         }
     }
 }

@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.core.parser.expression;
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.constant.Constant;
-import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.hisp.dhis.android.core.parser.service.ExpressionService;
+import org.hisp.dhis.android.core.parser.service.dataobject.DataElementOperandObject;
+import org.hisp.dhis.android.core.parser.service.dataobject.DimensionalItemObject;
 import org.hisp.dhis.android.core.validation.MissingValueStrategy;
 import org.junit.Test;
 
@@ -43,22 +43,38 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class ExpressionServiceShould {
 
+    private String dataElement1 = "sK2wroysTNW";
+    private String dataElement2 = "lZGmxYbs97q";
+
+    private String coc1 = "tpghB93ks57";
+    private String coc2 = "zDhUuAYrxNC";
+
     private String constantId = "e19hj1w7yKP";
 
     @Test
     public void evaluate() {
-        String expression = "#{sK2wroysTNW.tpghB93ks57} + #{lZGmxYbs97q.zDhUuAYrxNC} + C{" + constantId + "}";
+        String expression = deOperand(dataElement1, coc1) + " + " +
+                deOperand(dataElement2, coc2) + " + " +
+                constant(constantId);
 
         ExpressionService service = new ExpressionService();
 
-        Map<DataElementOperand, Double> valueMap = new HashMap<>();
-        valueMap.put(DataElementOperand.builder().uid("operand1").dataElement(ObjectWithUid.create("sK2wroysTNW.tpghB93ks57")).build(), 5.0);
-        valueMap.put(DataElementOperand.builder().uid("operand2").dataElement(ObjectWithUid.create("lZGmxYbs97q.zDhUuAYrxNC")).build(), 3.0);
+        Map<DimensionalItemObject, Double> valueMap = new HashMap<>();
+        valueMap.put(new DataElementOperandObject(dataElement1, coc1), 5.0);
+        valueMap.put(new DataElementOperandObject(dataElement2, coc2), 3.0);
 
         Map<String, Constant> constantMap = new HashMap<>();
         constantMap.put(constantId, Constant.builder().uid(constantId).value(4.0).build());
 
         Double result = service.getExpressionValue(expression, valueMap, constantMap, Collections.emptyMap(), 10, MissingValueStrategy.NEVER_SKIP);
         assertThat(result).isEqualTo(12.0);
+    }
+
+    private String constant(String uid) {
+        return "C{" + uid + "}";
+    }
+
+    private String deOperand(String de, String coc) {
+        return "#{" + de + "." + coc + "}";
     }
 }

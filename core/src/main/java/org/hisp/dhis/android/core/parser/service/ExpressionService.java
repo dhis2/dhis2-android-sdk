@@ -29,20 +29,20 @@
 package org.hisp.dhis.android.core.parser.service;
 
 import org.hisp.dhis.android.core.constant.Constant;
-import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
 import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
 import org.hisp.dhis.android.core.parser.expression.ExpressionItemMethod;
 import org.hisp.dhis.android.core.parser.service.dataitem.DimItemDataElementAndOperand;
 import org.hisp.dhis.android.core.parser.service.dataitem.ItemDays;
+import org.hisp.dhis.android.core.parser.service.dataobject.DimensionalItemObject;
 import org.hisp.dhis.android.core.validation.MissingValueStrategy;
 import org.hisp.dhis.antlr.Parser;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.hisp.dhis.android.core.parser.expression.ParserUtils.COMMON_EXPRESSION_ITEMS;
+import static org.hisp.dhis.android.core.parser.expression.ParserUtils.ITEM_EVALUATE;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.DAYS;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.HASH_BRACE;
 
@@ -64,7 +64,7 @@ public class ExpressionService {
     }
 
     public Double getExpressionValue(String expression,
-                                     Map<DataElementOperand, Double> valueMap, Map<String, Constant> constantMap,
+                                     Map<DimensionalItemObject, Double> valueMap, Map<String, Constant> constantMap,
                                      Map<String, Integer> orgUnitCountMap, Integer days,
                                      MissingValueStrategy missingValueStrategy ) {
 
@@ -73,14 +73,14 @@ public class ExpressionService {
         }
 
         CommonExpressionVisitor visitor = newVisitor(
-                ExpressionItem::evaluate,
+                ITEM_EVALUATE,
                 constantMap
         );
 
         Map<String, Double> itemValueMap = new HashMap<>();
-        for (Map.Entry<DataElementOperand, Double> entry : valueMap.entrySet()) {
+        for (Map.Entry<DimensionalItemObject, Double> entry : valueMap.entrySet()) {
             // TODO create key
-            itemValueMap.put(entry.getKey().dataElement().uid(), entry.getValue());
+            itemValueMap.put(entry.getKey().getDimensionItem(), entry.getValue());
         }
 
         visitor.setItemValueMap(itemValueMap);
@@ -141,7 +141,7 @@ public class ExpressionService {
                 .withConstantMap( constantMap )
                 //.withDimensionService( dimensionService )
                 //.withOrganisationUnitGroupService( organisationUnitGroupService )
-                //.withSamplePeriods( samplePeriods )();
+                //.withSamplePeriods( samplePeriods )()
                 .buildForExpressions();
     }
 }

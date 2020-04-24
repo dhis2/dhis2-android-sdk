@@ -39,11 +39,9 @@ import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
  * @author Jim Grace
  */
 public class FunctionIsNull
-    implements ExpressionItem
-{
+        implements ExpressionItem {
     @Override
-    public Object evaluate( ExprContext ctx, CommonExpressionVisitor visitor )
-    {
-        return visitor.visitAllowingNulls( ctx.expr( 0 ) ) == null;
+    public Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor) {
+        return visitor.visitAllowingNulls(ctx.expr(0)) == null;
     }
 }

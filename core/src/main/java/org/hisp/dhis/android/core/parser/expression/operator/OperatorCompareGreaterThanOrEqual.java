@@ -37,7 +37,6 @@ import org.hisp.dhis.antlr.operator.AntlrOperatorCompareGreaterThanOrEqual;
  * @author Jim Grace
  */
 public class OperatorCompareGreaterThanOrEqual
-    extends AntlrOperatorCompareGreaterThanOrEqual
-    implements ExpressionItem
-{
+        extends AntlrOperatorCompareGreaterThanOrEqual
+        implements ExpressionItem {
 }

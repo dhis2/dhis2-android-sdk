@@ -48,7 +48,6 @@ import org.hisp.dhis.antlr.operator.AntlrOperatorLogicalNot;
  * @author Jim Grace
  */
 public class OperatorLogicalNot
-    extends AntlrOperatorLogicalNot
-    implements ExpressionItem
-{
+        extends AntlrOperatorLogicalNot
+        implements ExpressionItem {
 }

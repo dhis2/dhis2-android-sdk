@@ -42,8 +42,7 @@ import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
  * @author Jim Grace
  */
 public interface ExpressionItem
-        extends AntlrExprItem
-{
+        extends AntlrExprItem {
     /**
      * Collects the description of an individual data item, to use later
      * in constructing a description of the expression as a whole.
@@ -54,13 +53,12 @@ public interface ExpressionItem
      * For other items, evaluate all paths to be sure that we collect the
      * description of any items that may be within this expression.
      *
-     * @param ctx the expression context
+     * @param ctx     the expression context
      * @param visitor the tree visitor
      * @return a dummy value for the item (of the right type, for type checking)
      */
-    default Object getDescription(ExprContext ctx, CommonExpressionVisitor visitor )
-    {
-        return evaluateAllPaths( ctx, visitor );
+    default Object getDescription(ExprContext ctx, CommonExpressionVisitor visitor) {
+        return evaluateAllPaths(ctx, visitor);
     }
 
     /**
@@ -75,13 +73,12 @@ public interface ExpressionItem
      * null from this function, to make sure that no part of the expression is
      * skipped.
      *
-     * @param ctx the expression context
+     * @param ctx     the expression context
      * @param visitor the tree visitor
      * @return a dummy value for the item
      */
-    default Object getItemId( ExprContext ctx, CommonExpressionVisitor visitor )
-    {
-        Object value = evaluateAllPaths( ctx, visitor );
+    default Object getItemId(ExprContext ctx, CommonExpressionVisitor visitor) {
+        Object value = evaluateAllPaths(ctx, visitor);
 
         return value == null ? DEFAULT_DOUBLE_VALUE : value;
     }
@@ -96,18 +93,14 @@ public interface ExpressionItem
      * organisation unit groups that may be within this expression.
      * But if we hit a parser exception (like constant not found), continue.
      *
-     * @param ctx the expression context
+     * @param ctx     the expression context
      * @param visitor the tree visitor
      * @return a dummy value for the item
      */
-    default Object getOrgUnitGroup( ExprContext ctx, CommonExpressionVisitor visitor )
-    {
-        try
-        {
-            return evaluateAllPaths( ctx, visitor);
-        }
-        catch ( ParserException e )
-        {
+    default Object getOrgUnitGroup(ExprContext ctx, CommonExpressionVisitor visitor) {
+        try {
+            return evaluateAllPaths(ctx, visitor);
+        } catch (ParserException e) {
             return DEFAULT_DOUBLE_VALUE;
         }
     }
@@ -121,13 +114,12 @@ public interface ExpressionItem
      * <p/>
      * For all other items, this method must be overridden.
      *
-     * @param ctx the expression context
+     * @param ctx     the expression context
      * @param visitor the tree visitor
      * @return a dummy value (of the right type) for the item
      */
-    default Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor )
-    {
-        return evaluate( ctx, (AntlrExpressionVisitor) visitor );
+    default Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor) {
+        return evaluate(ctx, (AntlrExpressionVisitor) visitor);
     }
 
     /**
@@ -138,14 +130,13 @@ public interface ExpressionItem
      * If a higher-level item does not override the method evaluate(... CommonExpressionVisitor ...)
      * then this default implementation will be called, resulting in an exception.
      *
-     * @param ctx the expression context
+     * @param ctx     the expression context
      * @param visitor the tree visitor
      * @return a dummy value (of the right type) for the item
      */
     @Override
-    default Object evaluate(ExprContext ctx, AntlrExpressionVisitor visitor )
-    {
-        throw new ParserExceptionWithoutContext( "evaluate not implemnted for " + ctx.getText() );
+    default Object evaluate(ExprContext ctx, AntlrExpressionVisitor visitor) {
+        throw new ParserExceptionWithoutContext("evaluate not implemnted for " + ctx.getText());
     }
 
     /**
@@ -158,13 +149,12 @@ public interface ExpressionItem
      * <p/>
      * For other items, this method does not need to be overridden.
      *
-     * @param ctx the expression context
+     * @param ctx     the expression context
      * @param visitor the tree visitor
      * @return the value of the function, evaluating all args
      */
-    default Object evaluateAllPaths(ExprContext ctx, CommonExpressionVisitor visitor )
-    {
-        return evaluate( ctx, visitor );
+    default Object evaluateAllPaths(ExprContext ctx, CommonExpressionVisitor visitor) {
+        return evaluate(ctx, visitor);
     }
 
     /**
@@ -175,12 +165,11 @@ public interface ExpressionItem
      * <p/>
      * For other items, this method does not need to be overridden.
      *
-     * @param ctx the expression context
+     * @param ctx     the expression context
      * @param visitor the tree visitor
      * @return the generated SQL (as a String) for the function
      */
-    default Object getSql( ExprContext ctx, CommonExpressionVisitor visitor )
-    {
-        throw new ParserExceptionWithoutContext( "getSql not implemnted for " + ctx.getText() );
+    default Object getSql(ExprContext ctx, CommonExpressionVisitor visitor) {
+        throw new ParserExceptionWithoutContext("getSql not implemnted for " + ctx.getText());
     }
 }

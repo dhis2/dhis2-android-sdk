@@ -44,16 +44,13 @@ import static org.apache.commons.lang3.ObjectUtils.anyNotNull;
 public class DimItemDataElementAndOperand extends DimensionalItem {
 
     @Override
-    public String getId( ExprContext ctx )
-    {
-        if ( isDataElementOperandSyntax( ctx ) )
-        {
+    public String getId(ExprContext ctx) {
+        if (isDataElementOperandSyntax(ctx)) {
             return ctx.uid0.getText() + "." +
-                    ( ctx.uid1 == null ? "*" : ctx.uid1.getText() ) +
-                    ( ctx.uid2 == null ? "" : "." + ctx.uid2.getText() );
-        }
-        else // Data element:
-        {
+                    (ctx.uid1 == null ? "*" : ctx.uid1.getText()) +
+                    (ctx.uid2 == null ? "" : "." + ctx.uid2.getText());
+        } else {
+            // Data element:
             return ctx.uid0.getText();
         }
     }
@@ -65,14 +62,13 @@ public class DimItemDataElementAndOperand extends DimensionalItem {
      * @param ctx the item context
      * @return true if data element operand syntax
      */
-    private boolean isDataElementOperandSyntax( ExprContext ctx )
-    {
-        if ( ctx.uid0 == null )
-        {
-            throw new ParserExceptionWithoutContext( "Data Element or DataElementOperand must have a uid " + ctx.getText() );
+    private boolean isDataElementOperandSyntax(ExprContext ctx) {
+        if (ctx.uid0 == null) {
+            throw new ParserExceptionWithoutContext("Data Element or DataElementOperand must have a uid " +
+                    ctx.getText());
         }
 
-        return anyNotNull( ctx.uid1, ctx.uid2 );
+        return anyNotNull(ctx.uid1, ctx.uid2);
     }
 
 }

@@ -38,7 +38,6 @@ import org.hisp.dhis.antlr.operator.AntlrOperatorMathPlus;
  * @author Jim Grace
  */
 public class OperatorMathPlus
-    extends AntlrOperatorMathPlus
-    implements ExpressionItem
-{
+        extends AntlrOperatorMathPlus
+        implements ExpressionItem {
 }

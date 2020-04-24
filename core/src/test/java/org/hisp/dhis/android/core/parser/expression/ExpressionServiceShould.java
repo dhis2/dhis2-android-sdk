@@ -136,6 +136,7 @@ public class ExpressionServiceShould {
     private String de(String uid) {
         return "#{" + uid + "}";
     }
+
     private String deOperand(String de, String coc) {
         return "#{" + de + "." + coc + "}";
     }

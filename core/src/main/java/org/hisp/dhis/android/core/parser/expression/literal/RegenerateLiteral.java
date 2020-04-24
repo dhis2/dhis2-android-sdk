@@ -38,23 +38,19 @@ import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.StringLiter
  * Gets typed literal values from an ANTLR parse tree for use internally.
  */
 public class RegenerateLiteral
-    implements AntlrExprLiteral
-{
+        implements AntlrExprLiteral {
     @Override
-    public Object getNumericLiteral( ExpressionParser.NumericLiteralContext ctx )
-    {
+    public Object getNumericLiteral(ExpressionParser.NumericLiteralContext ctx) {
         return ctx.getText();
     }
 
     @Override
-    public Object getStringLiteral( StringLiteralContext ctx )
-    {
+    public Object getStringLiteral(StringLiteralContext ctx) {
         return ctx.getText();
     }
 
     @Override
-    public Object getBooleanLiteral( BooleanLiteralContext ctx )
-    {
+    public Object getBooleanLiteral(BooleanLiteralContext ctx) {
         return ctx.getText();
     }
 }

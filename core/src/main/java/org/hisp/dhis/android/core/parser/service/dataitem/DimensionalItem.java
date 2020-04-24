@@ -40,11 +40,9 @@ import static org.hisp.dhis.android.core.parser.expression.ParserUtils.DOUBLE_VA
  * @author Jim Grace
  */
 public abstract class DimensionalItem
-    implements ExpressionItem
-{
+        implements ExpressionItem {
     @Override
-    public final Object getDescription( ExprContext ctx, CommonExpressionVisitor visitor )
-    {
+    public final Object getDescription(ExprContext ctx, CommonExpressionVisitor visitor) {
         // TODO Implement
         /*
         DimensionalItemId itemId = getDimensionalItemId( ctx );
@@ -53,7 +51,8 @@ public abstract class DimensionalItem
 
         if ( item == null )
         {
-            throw new ParserExceptionWithoutContext( "Can't find " + itemId.getDimensionItemType().name() + " for '" + itemId + "'" );
+            throw new ParserExceptionWithoutContext( "Can't find " + itemId.getDimensionItemType().name() + " for '" +
+                itemId + "'" );
         }
 
         visitor.getItemDescriptions().put( ctx.getText(), item.getDisplayName() );
@@ -62,8 +61,7 @@ public abstract class DimensionalItem
     }
 
     @Override
-    public final Object getItemId(ExprContext ctx, CommonExpressionVisitor visitor )
-    {
+    public final Object getItemId(ExprContext ctx, CommonExpressionVisitor visitor) {
         // TODO Implement
         //visitor.getItemIds().add( getDimensionalItemId( ctx ) );
 
@@ -71,17 +69,15 @@ public abstract class DimensionalItem
     }
 
     @Override
-    public final Object getOrgUnitGroup( ExprContext ctx, CommonExpressionVisitor visitor )
-    {
+    public final Object getOrgUnitGroup(ExprContext ctx, CommonExpressionVisitor visitor) {
         return DOUBLE_VALUE_IF_NULL;
     }
 
     @Override
-    public final Object evaluate( ExprContext ctx, CommonExpressionVisitor visitor )
-    {
-        Double value = visitor.getItemValueMap().get( getId( ctx ) );
+    public final Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor) {
+        Double value = visitor.getItemValueMap().get(getId(ctx));
 
-        return visitor.handleNulls( value );
+        return visitor.handleNulls(value);
     }
 
     /**
@@ -92,5 +88,5 @@ public abstract class DimensionalItem
      * @param ctx the parser item context
      * @return the id for this item
      */
-    public abstract String getId( ExprContext ctx );
+    public abstract String getId(ExprContext ctx);
 }

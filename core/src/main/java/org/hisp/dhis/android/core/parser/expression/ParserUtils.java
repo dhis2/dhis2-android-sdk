@@ -87,8 +87,7 @@ import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.VERTICAL_BA
  *
  * @author Jim Grace
  */
-public class ParserUtils
-{
+public class ParserUtils {
     public final static double DOUBLE_VALUE_IF_NULL = 0.0;
 
     public final static Map<Integer, ExpressionItem> COMMON_EXPRESSION_ITEMS;
@@ -96,44 +95,48 @@ public class ParserUtils
     static {
         Map<Integer, ExpressionItem> m = new HashMap<>();
 
-        m.put( PAREN, new OperatorGroupingParentheses() );
-        m.put( PLUS, new OperatorMathPlus() );
-        m.put( MINUS, new OperatorMathMinus() );
-        m.put( POWER, new OperatorMathPower() );
-        m.put( MUL, new OperatorMathMultiply() );
-        m.put( DIV, new OperatorMathDivide() );
-        m.put( MOD, new OperatorMathModulus() );
-        m.put( NOT, new OperatorLogicalNot() );
-        m.put( EXCLAMATION_POINT, new OperatorLogicalNot() );
-        m.put( AND, new OperatorLogicalAnd() );
-        m.put( AMPERSAND_2, new OperatorLogicalAnd() );
-        m.put( OR, new OperatorLogicalOr() );
-        m.put( VERTICAL_BAR_2, new OperatorLogicalOr() );
+        m.put(PAREN, new OperatorGroupingParentheses());
+        m.put(PLUS, new OperatorMathPlus());
+        m.put(MINUS, new OperatorMathMinus());
+        m.put(POWER, new OperatorMathPower());
+        m.put(MUL, new OperatorMathMultiply());
+        m.put(DIV, new OperatorMathDivide());
+        m.put(MOD, new OperatorMathModulus());
+        m.put(NOT, new OperatorLogicalNot());
+        m.put(EXCLAMATION_POINT, new OperatorLogicalNot());
+        m.put(AND, new OperatorLogicalAnd());
+        m.put(AMPERSAND_2, new OperatorLogicalAnd());
+        m.put(OR, new OperatorLogicalOr());
+        m.put(VERTICAL_BAR_2, new OperatorLogicalOr());
 
         // Comparison operators
 
-        m.put( EQ, new OperatorCompareEqual() );
-        m.put( NE, new OperatorCompareNotEqual() );
-        m.put( GT, new OperatorCompareGreaterThan() );
-        m.put( LT, new OperatorCompareLessThan() );
-        m.put( GEQ, new OperatorCompareGreaterThanOrEqual() );
-        m.put( LEQ, new OperatorCompareLessThanOrEqual() );
+        m.put(EQ, new OperatorCompareEqual());
+        m.put(NE, new OperatorCompareNotEqual());
+        m.put(GT, new OperatorCompareGreaterThan());
+        m.put(LT, new OperatorCompareLessThan());
+        m.put(GEQ, new OperatorCompareGreaterThanOrEqual());
+        m.put(LEQ, new OperatorCompareLessThanOrEqual());
 
         // Functions
 
-        m.put( FIRST_NON_NULL, new FunctionFirstNonNull() );
-        m.put( GREATEST, new FunctionGreatest() );
-        m.put( IF, new FunctionIf() );
-        m.put( IS_NOT_NULL, new FunctionIsNotNull() );
-        m.put( IS_NULL, new FunctionIsNull() );
-        m.put( LEAST, new FunctionLeast() );
+        m.put(FIRST_NON_NULL, new FunctionFirstNonNull());
+        m.put(GREATEST, new FunctionGreatest());
+        m.put(IF, new FunctionIf());
+        m.put(IS_NOT_NULL, new FunctionIsNotNull());
+        m.put(IS_NULL, new FunctionIsNull());
+        m.put(LEAST, new FunctionLeast());
 
         // Data items
 
-        m.put( C_BRACE, new ItemConstant() );
+        m.put(C_BRACE, new ItemConstant());
 
         COMMON_EXPRESSION_ITEMS = m;
     }
+
+    private ParserUtils() {
+    }
+
     public final static ExpressionItemMethod ITEM_GET_DESCRIPTIONS = ExpressionItem::getDescription;
 
     public final static ExpressionItemMethod ITEM_GET_IDS = ExpressionItem::getItemId;

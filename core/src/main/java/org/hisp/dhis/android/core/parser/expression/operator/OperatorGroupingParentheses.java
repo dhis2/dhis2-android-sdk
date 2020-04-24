@@ -37,7 +37,6 @@ import org.hisp.dhis.antlr.operator.AntlrOperatorGroupingParentheses;
  * @author Jim Grace
  */
 public class OperatorGroupingParentheses
-    extends AntlrOperatorGroupingParentheses
-    implements ExpressionItem
-{
+        extends AntlrOperatorGroupingParentheses
+        implements ExpressionItem {
 }

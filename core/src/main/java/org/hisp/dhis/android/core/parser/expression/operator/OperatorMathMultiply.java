@@ -38,7 +38,6 @@ import org.hisp.dhis.antlr.operator.AntlrOperatorMathMultiply;
  * @author Jim Grace
  */
 public class OperatorMathMultiply
-    extends AntlrOperatorMathMultiply
-    implements ExpressionItem
-{
+        extends AntlrOperatorMathMultiply
+        implements ExpressionItem {
 }

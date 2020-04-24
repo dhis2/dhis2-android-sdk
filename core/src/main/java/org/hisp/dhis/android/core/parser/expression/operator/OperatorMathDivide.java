@@ -38,7 +38,6 @@ import org.hisp.dhis.antlr.operator.AntlrOperatorMathDivide;
  * @author Jim Grace
  */
 public class OperatorMathDivide
-    extends AntlrOperatorMathDivide
-    implements ExpressionItem
-{
+        extends AntlrOperatorMathDivide
+        implements ExpressionItem {
 }

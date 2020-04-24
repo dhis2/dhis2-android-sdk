@@ -42,16 +42,13 @@ import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
  * @author Jim Grace
  */
 public class ItemConstant
-    implements ExpressionItem
-{
+        implements ExpressionItem {
     @Override
-    public Object getDescription( ExprContext ctx, CommonExpressionVisitor visitor )
-    {
-        Constant constant = visitor.getConstantMap().get( ctx.uid0.getText() );
+    public Object getDescription(ExprContext ctx, CommonExpressionVisitor visitor) {
+        Constant constant = visitor.getConstantMap().get(ctx.uid0.getText());
 
-        if ( constant == null )
-        {
-            throw new ParserExceptionWithoutContext( "No constant defined for " + ctx.uid0.getText() );
+        if (constant == null) {
+            throw new ParserExceptionWithoutContext("No constant defined for " + ctx.uid0.getText());
         }
 
         // TODO
@@ -61,13 +58,12 @@ public class ItemConstant
     }
 
     @Override
-    public Object evaluate( ExprContext ctx, CommonExpressionVisitor visitor )
-    {
-        Constant constant = visitor.getConstantMap().get( ctx.uid0.getText() );
+    public Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor) {
+        Constant constant = visitor.getConstantMap().get(ctx.uid0.getText());
 
-        if ( constant == null ) // Shouldn't happen for a valid expression.
-        {
-            throw new ParserExceptionWithoutContext( "Can't find constant to evaluate " + ctx.uid0.getText() );
+        if (constant == null) {
+            // Shouldn't happen for a valid expression.
+            throw new ParserExceptionWithoutContext("Can't find constant to evaluate " + ctx.uid0.getText());
         }
 
         return constant.value();

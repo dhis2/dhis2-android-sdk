@@ -38,7 +38,6 @@ import org.hisp.dhis.antlr.operator.AntlrOperatorMathPower;
  * @author Jim Grace
  */
 public class OperatorMathPower
-    extends AntlrOperatorMathPower
-    implements ExpressionItem
-{
+        extends AntlrOperatorMathPower
+        implements ExpressionItem {
 }

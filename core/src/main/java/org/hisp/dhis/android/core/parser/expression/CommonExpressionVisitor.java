@@ -70,6 +70,11 @@ public class CommonExpressionVisitor
     private Map<String, Constant> constantMap = new HashMap<>();
 
     /**
+     * Organisation unit group counts to use in evaluating an expression.
+     */
+    Map<String, Integer> orgUnitCountMap = new HashMap<>();
+
+    /**
      * Count of days in period to use in evaluating an expression.
      */
     private Double days = null;
@@ -215,6 +220,16 @@ public class CommonExpressionVisitor
     public void setReplaceNulls( boolean replaceNulls )
     {
         this.replaceNulls = replaceNulls;
+    }
+
+    public Map<String, Integer> getOrgUnitCountMap()
+    {
+        return orgUnitCountMap;
+    }
+
+    public void setOrgUnitCountMap( Map<String, Integer> orgUnitCountMap )
+    {
+        this.orgUnitCountMap = orgUnitCountMap;
     }
 
     public Map<String, Double> getItemValueMap()

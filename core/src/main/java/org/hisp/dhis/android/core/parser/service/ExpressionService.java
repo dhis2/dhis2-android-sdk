@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
 import org.hisp.dhis.android.core.parser.expression.ExpressionItemMethod;
 import org.hisp.dhis.android.core.parser.service.dataitem.DimItemDataElementAndOperand;
 import org.hisp.dhis.android.core.parser.service.dataitem.ItemDays;
+import org.hisp.dhis.android.core.parser.service.dataitem.ItemOrgUnitGroup;
 import org.hisp.dhis.android.core.parser.service.dataobject.DimensionalItemObject;
 import org.hisp.dhis.android.core.validation.MissingValueStrategy;
 import org.hisp.dhis.antlr.Parser;
@@ -45,6 +46,7 @@ import static org.hisp.dhis.android.core.parser.expression.ParserUtils.COMMON_EX
 import static org.hisp.dhis.android.core.parser.expression.ParserUtils.ITEM_EVALUATE;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.DAYS;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.HASH_BRACE;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.OUG_BRACE;
 
 public class ExpressionService {
 
@@ -58,7 +60,7 @@ public class ExpressionService {
         Map<Integer, ExpressionItem> expressionItems = new HashMap<>(COMMON_EXPRESSION_ITEMS);
 
         expressionItems.put(HASH_BRACE, new DimItemDataElementAndOperand());
-        //expressionItems.put(OUG_BRACE, new ItemOrgUnitGroup());
+        expressionItems.put(OUG_BRACE, new ItemOrgUnitGroup());
         expressionItems.put(DAYS, new ItemDays());
         return expressionItems;
     }
@@ -79,12 +81,11 @@ public class ExpressionService {
 
         Map<String, Double> itemValueMap = new HashMap<>();
         for (Map.Entry<DimensionalItemObject, Double> entry : valueMap.entrySet()) {
-            // TODO create key
             itemValueMap.put(entry.getKey().getDimensionItem(), entry.getValue());
         }
 
         visitor.setItemValueMap(itemValueMap);
-        //visitor.setOrgUnitCountMap( orgUnitCountMap );
+        visitor.setOrgUnitCountMap( orgUnitCountMap );
 
         if ( days != null )
         {

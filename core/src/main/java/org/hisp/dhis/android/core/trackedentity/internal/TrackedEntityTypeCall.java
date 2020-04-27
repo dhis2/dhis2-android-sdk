@@ -69,7 +69,7 @@ public final class TrackedEntityTypeCall implements UidsCall<TrackedEntityType> 
                     Boolean.FALSE), this::transform);
     }
 
-    protected TrackedEntityType transform(TrackedEntityType type) {
+    private TrackedEntityType transform(TrackedEntityType type) {
         if (type.trackedEntityTypeAttributes() == null) {
             return type;
         } else {

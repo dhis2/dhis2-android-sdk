@@ -42,4 +42,7 @@ public final class FunctionalCollectionHelper {
         }
         return newList;
     }
+
+    private FunctionalCollectionHelper() {
+    }
 }

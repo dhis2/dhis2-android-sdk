@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactory;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.arch.modules.internal.MetadataModuleByUidDownloader;
 import org.hisp.dhis.android.core.option.Option;
@@ -55,7 +54,7 @@ import io.reactivex.Single;
 @Reusable
 public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<List<Program>> {
 
-    private final UidsCallFactory<Program> programCallFactory;
+    private final UidsCall<Program> programCall;
     private final UidsCall<ProgramStage> programStageCall;
     private final UidsCall<ProgramRule> programRuleCall;
     private final UidsCall<TrackedEntityType> trackedEntityTypeCall;
@@ -67,7 +66,7 @@ public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<Li
     private final DHISVersionManager versionManager;
 
     @Inject
-    ProgramModuleDownloader(UidsCallFactory<Program> programCallFactory,
+    ProgramModuleDownloader(UidsCall<Program> programCall,
                             UidsCall<ProgramStage> programStageCall,
                             UidsCall<ProgramRule> programRuleCall,
                             UidsCall<TrackedEntityType> trackedEntityTypeCall,
@@ -77,7 +76,7 @@ public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<Li
                             UidsCall<Option> optionCall,
                             UidsCall<OptionGroup> optionGroupCallFactory,
                             DHISVersionManager versionManager) {
-        this.programCallFactory = programCallFactory;
+        this.programCall = programCall;
         this.programStageCall = programStageCall;
         this.programRuleCall = programRuleCall;
         this.trackedEntityTypeCall = trackedEntityTypeCall;
@@ -92,7 +91,7 @@ public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<Li
     @Override
     public Single<List<Program>> downloadMetadata(Set<String> orgUnitProgramUids) {
         return Single.fromCallable(() -> {
-            List<Program> programs = programCallFactory.create(orgUnitProgramUids).call();
+            List<Program> programs = programCall.download(orgUnitProgramUids).blockingGet();
 
             Set<String> programUids = UidsHelper.getUids(programs);
             List<ProgramStage> programStages = programStageCall.download(programUids).blockingGet();

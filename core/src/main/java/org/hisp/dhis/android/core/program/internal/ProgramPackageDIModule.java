@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramModule;
 import org.hisp.dhis.android.core.program.ProgramRule;
@@ -61,7 +60,7 @@ public final class ProgramPackageDIModule {
 
     @Provides
     @Reusable
-    UidsCallFactory<Program> programCallFactory(ProgramEndpointCallFactory impl) {
+    UidsCall<Program> programCall(ProgramCall impl) {
         return impl;
     }
 

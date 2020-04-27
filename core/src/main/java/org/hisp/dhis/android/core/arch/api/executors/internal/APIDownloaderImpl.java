@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.arch.api.executors.internal;
 
+import androidx.annotation.VisibleForTesting;
+
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
@@ -43,7 +45,8 @@ import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.functions.Function;
 
-final class APIDownloaderImpl implements APIDownloader {
+@VisibleForTesting
+public final class APIDownloaderImpl implements APIDownloader {
 
     @Override
     public <P> Maybe<List<P>> downloadPartitioned(Set<String> uids, int pageSize, Handler<P> handler,

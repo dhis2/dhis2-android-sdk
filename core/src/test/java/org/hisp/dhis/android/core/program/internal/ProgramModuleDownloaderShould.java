@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactory;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.option.OptionGroup;
@@ -76,13 +75,10 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     private TrackedEntityAttribute trackedEntityAttribute;
 
     @Mock
-    private Callable<List<Program>> programEndpointCall;
-
-    @Mock
     private Callable<List<RelationshipType>> relationshipTypeCall;
 
     @Mock
-    private UidsCallFactory<Program> programCallFactory;
+    private UidsCall<Program> programCall;
 
     @Mock
     private UidsCall<ProgramStage> programStageCall;
@@ -124,15 +120,14 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
                 ResponseBody.create(MediaType.parse("application/json"), "{}"));
 
         // Call factories
-        when(programCallFactory.create(anySet()))
-                .thenReturn(programEndpointCall);
         when(relationshipTypeCallFactory.create())
                 .thenReturn(relationshipTypeCall);
 
         // Calls
-        when(programEndpointCall.call()).thenReturn(Collections.singletonList(program));
-        when(trackedEntityTypeCall.download(anySet())).thenReturn(Maybe.just(Collections.singletonList(trackedEntityType)));
-        when(trackedEntityAttributeCall.download(anySet())).thenReturn(Maybe.just(Collections.singletonList(trackedEntityAttribute)));
+        returnSingletonList(programCall, program);
+        returnSingletonList(trackedEntityTypeCall, trackedEntityType);
+        returnSingletonList(trackedEntityAttributeCall, trackedEntityAttribute);
+        returnSingletonList(programCall, program);
         when(relationshipTypeCall.call()).thenReturn(Collections.emptyList());
         returnEmptyList(optionSetCall);
         returnEmptyList(optionCall);
@@ -144,7 +139,7 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
 
         // Metadata call
         programDownloadCall = new ProgramModuleDownloader(
-                programCallFactory,
+                programCall,
                 programStageCall,
                 programRuleCall,
                 trackedEntityTypeCall,
@@ -158,6 +153,10 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
 
     private void returnEmptyList(UidsCall<?> call) {
         when(call.download(anySet())).thenReturn(Maybe.just(Collections.emptyList()));
+    }
+
+    private <O> void returnSingletonList(UidsCall<O> call, O o) {
+        when(call.download(anySet())).thenReturn(Maybe.just(Collections.singletonList(o)));
     }
 
     private void returnError(UidsCall<?> call) {
@@ -177,8 +176,8 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     }
 
     @Test(expected = Exception.class)
-    public void fail_when_program_call_fail() throws Exception {
-        whenEndpointCallFails(programEndpointCall);
+    public void fail_when_program_call_fail() {
+        returnError(programCall);
         programDownloadCall.blockingGet();
     }
 

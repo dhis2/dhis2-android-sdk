@@ -1,4 +1,4 @@
-# Know issues
+# Known issues
 
 <!--DHIS2-SECTION-ID:known_issues-->
 

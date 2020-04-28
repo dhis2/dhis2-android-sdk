@@ -39,11 +39,13 @@ import org.hisp.dhis.android.core.parser.service.dataobject.DimensionalItemObjec
 import org.hisp.dhis.android.core.validation.MissingValueStrategy;
 import org.hisp.dhis.antlr.Parser;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.hisp.dhis.android.core.parser.expression.ParserUtils.COMMON_EXPRESSION_ITEMS;
 import static org.hisp.dhis.android.core.parser.expression.ParserUtils.ITEM_EVALUATE;
+import static org.hisp.dhis.android.core.validation.MissingValueStrategy.NEVER_SKIP;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.DAYS;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.HASH_BRACE;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.OUG_BRACE;
@@ -65,9 +67,16 @@ public class ExpressionService {
         return expressionItems;
     }
 
-    public Double getExpressionValue(String expression,
-                                     Map<DimensionalItemObject, Double> valueMap, Map<String, Constant> constantMap,
-                                     Map<String, Integer> orgUnitCountMap, Integer days,
+    public Object getExpressionValue(String expression) {
+        return getExpressionValue(expression, Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap(),
+                0, NEVER_SKIP);
+    }
+
+    public Object getExpressionValue(String expression,
+                                     Map<DimensionalItemObject, Double> valueMap,
+                                     Map<String, Constant> constantMap,
+                                     Map<String, Integer> orgUnitCountMap,
+                                     Integer days,
                                      MissingValueStrategy missingValueStrategy) {
 
         if (expression == null) {
@@ -114,7 +123,7 @@ public class ExpressionService {
                 }
         }
 
-        return (Double) value;
+        return value;
     }
 
     // -------------------------------------------------------------------------

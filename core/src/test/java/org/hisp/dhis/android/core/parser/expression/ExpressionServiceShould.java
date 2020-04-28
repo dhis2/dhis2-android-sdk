@@ -69,9 +69,9 @@ public class ExpressionServiceShould {
         valueMap.put(new DataElementOperandObject(dataElement1, coc1), 5.0);
         valueMap.put(new DataElementOperandObject(dataElement2, coc2), 3.0);
 
-        Double result = service.getExpressionValue(expression, valueMap, Collections.emptyMap(), Collections.emptyMap(), 10,
-                MissingValueStrategy.NEVER_SKIP);
-        assertThat(result).isEqualTo(12.0);
+        Double result = (Double) service.getExpressionValue(expression, valueMap, Collections.emptyMap(),
+                Collections.emptyMap(), 10, MissingValueStrategy.NEVER_SKIP);
+        assertThat(result).isEqualTo(8.0);
     }
 
     @Test
@@ -84,8 +84,8 @@ public class ExpressionServiceShould {
         Map<String, Constant> constantMap = new HashMap<>();
         constantMap.put(constantId, Constant.builder().uid(constantId).value(4.0).build());
 
-        Double result = service.getExpressionValue(expression, valueMap, constantMap, Collections.emptyMap(), 10,
-                MissingValueStrategy.NEVER_SKIP);
+        Double result = (Double) service.getExpressionValue(expression, valueMap, constantMap, Collections.emptyMap(),
+                10, MissingValueStrategy.NEVER_SKIP);
         assertThat(result).isEqualTo(9.0);
     }
 
@@ -97,8 +97,8 @@ public class ExpressionServiceShould {
         valueMap.put(new DataElementOperandObject(dataElement1, null), 5.0);
         valueMap.put(new DataElementOperandObject(dataElement2, null), 3.0);
 
-        Double result = service.getExpressionValue(expression, valueMap, Collections.emptyMap(), Collections.emptyMap(), 10,
-                MissingValueStrategy.NEVER_SKIP);
+        Double result = (Double) service.getExpressionValue(expression, valueMap, Collections.emptyMap(),
+                Collections.emptyMap(), 10, MissingValueStrategy.NEVER_SKIP);
         assertThat(result).isEqualTo(8.0);
     }
 
@@ -109,8 +109,8 @@ public class ExpressionServiceShould {
         Map<DimensionalItemObject, Double> valueMap = new HashMap<>();
         valueMap.put(new DataElementOperandObject(dataElement1, null), 5.0);
 
-        Double result = service.getExpressionValue(expression, valueMap, Collections.emptyMap(), Collections.emptyMap(), 10,
-                MissingValueStrategy.NEVER_SKIP);
+        Double result = (Double) service.getExpressionValue(expression, valueMap, Collections.emptyMap(),
+                Collections.emptyMap(), 10, MissingValueStrategy.NEVER_SKIP);
         assertThat(result).isEqualTo(15.0);
     }
 
@@ -124,8 +124,8 @@ public class ExpressionServiceShould {
         Map<String, Integer> orgunitMap = new HashMap<>();
         orgunitMap.put(orgunitGroupId, 20);
 
-        Double result = service.getExpressionValue(expression, valueMap, Collections.emptyMap(), orgunitMap, 10,
-                MissingValueStrategy.NEVER_SKIP);
+        Double result = (Double) service.getExpressionValue(expression, valueMap, Collections.emptyMap(),
+                orgunitMap, 10, MissingValueStrategy.NEVER_SKIP);
         assertThat(result).isEqualTo(25.0);
     }
 

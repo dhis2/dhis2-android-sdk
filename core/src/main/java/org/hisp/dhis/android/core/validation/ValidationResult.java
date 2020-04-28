@@ -26,28 +26,54 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.validation.engine;
+package org.hisp.dhis.android.core.validation;
 
-import org.hisp.dhis.android.core.datavalue.DataValue;
+import com.google.auto.value.AutoValue;
 
-import java.util.Collection;
+import java.util.List;
 
-public class ValidationTask implements Runnable {
+@AutoValue
+public abstract class ValidationResult {
 
-    private Collection<DataValue> dataValues;
+    public abstract ValidationResultStatus status();
 
-    private String period;
+    public abstract String dataSetUid();
 
-    private String organisationUnit;
+    public abstract String period();
 
-    private String attributeOptionCombo;
+    public abstract String organisationUnitUid();
 
-    public ValidationTask(Collection<DataValue> dataValues) {
-        this.dataValues = dataValues;
+    public abstract String attributeOptionComboUid();
+
+    public abstract List<ValidationResultViolation> violations();
+
+    public static Builder builder() {
+        return new AutoValue_ValidationResult.Builder();
     }
 
-    @Override
-    public void run() {
+    public abstract Builder toBuilder();
 
+    @AutoValue.Builder
+    public abstract static class Builder {
+
+        public abstract Builder status(ValidationResultStatus status);
+
+        public abstract Builder dataSetUid(String dataSetUid);
+
+        public abstract Builder period(String period);
+
+        public abstract Builder organisationUnitUid(String organisationUnitUid);
+
+        public abstract Builder attributeOptionComboUid(String attributeOptionComboUid);
+
+        public abstract Builder violations(List<ValidationResultViolation> violations);
+
+        public abstract ValidationResult build();
     }
+
+    public enum ValidationResultStatus {
+        OK,
+        ERROR
+    }
+
 }

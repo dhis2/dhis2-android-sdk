@@ -28,23 +28,48 @@
 
 package org.hisp.dhis.android.core.validation;
 
-public enum ValidationRuleOperator {
-    equal_to("=="),
-    not_equal_to("!="),
-    greater_than(">"),
-    greater_than_or_equal_to(">="),
-    less_than("<"),
-    less_than_or_equal_to("<="),
-    compulsory_pair("[compulsory pair]"),
-    exclusive_pair("[exclusive pair]");
+import com.google.auto.value.AutoValue;
 
-    private final String mathematicalOperator;
+import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 
-    ValidationRuleOperator(String mathematicalOperator) {
-        this.mathematicalOperator = mathematicalOperator;
+import java.util.List;
+
+@AutoValue
+public abstract class ValidationResultViolation {
+
+    public abstract ValidationRule validationRule();
+
+    public abstract List<DataElementOperand> dataElementUids();
+
+    public abstract Double leftSideValue();
+
+    public abstract String leftSideExpression();
+
+    public abstract Double rightSideValue();
+
+    public abstract String rightSideExpression();
+
+    public static Builder builder() {
+        return new AutoValue_ValidationResultViolation.Builder();
     }
 
-    public String getMathematicalOperator() {
-        return mathematicalOperator;
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+
+        public abstract Builder validationRule(ValidationRule validationRule);
+
+        public abstract Builder dataElementUids(List<DataElementOperand> dataElementUids);
+
+        public abstract Builder leftSideValue(Double leftSideValue);
+
+        public abstract Builder leftSideExpression(String leftSideExpression);
+
+        public abstract Builder rightSideValue(Double rightSideValue);
+
+        public abstract Builder rightSideExpression(String rightSideExpression);
+
+        public abstract ValidationResultViolation build();
     }
 }

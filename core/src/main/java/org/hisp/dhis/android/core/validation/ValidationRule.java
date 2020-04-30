@@ -137,19 +137,19 @@ public abstract class ValidationRule extends BaseNameableObject implements CoreO
 
         public abstract Builder leftSide(ValidationRuleExpression leftSide);
 
-        abstract Builder leftSideExpression(String skipFormValidation);
+        abstract Builder leftSideExpression(String leftSideExpression);
 
-        abstract Builder leftSideDescription(String skipFormValidation);
+        abstract Builder leftSideDescription(String leftSideDescription);
 
-        abstract Builder leftSideMissingValueStrategy(MissingValueStrategy skipFormValidation);
+        abstract Builder leftSideMissingValueStrategy(MissingValueStrategy leftSideMissingValueStrategy);
 
         public abstract Builder rightSide(ValidationRuleExpression rightSide);
 
-        abstract Builder rightSideExpression(String skipFormValidation);
+        abstract Builder rightSideExpression(String rightSideExpression);
 
-        abstract Builder rightSideDescription(String skipFormValidation);
+        abstract Builder rightSideDescription(String rightSideDescription);
 
-        abstract Builder rightSideMissingValueStrategy(MissingValueStrategy skipFormValidation);
+        abstract Builder rightSideMissingValueStrategy(MissingValueStrategy rightSideMissingValueStrategy);
 
         public abstract ValidationRule build();
     }

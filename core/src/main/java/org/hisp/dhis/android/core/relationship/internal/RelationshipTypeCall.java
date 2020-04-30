@@ -66,7 +66,7 @@ final class RelationshipTypeCall implements ListCall<RelationshipType> {
 
     @Override
     public Single<List<RelationshipType>> download() {
-        return apiDownloader.downloadList(handler, resourceType, lastUpdated -> {
+        return apiDownloader.downloadWithLastUpdated(handler, resourceType, lastUpdated -> {
             String accessDataFilter = versionManager.is2_29() ? null :
                     "access.data." + DataAccessFields.read.eq(true).generateString();
 

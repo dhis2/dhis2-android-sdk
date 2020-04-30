@@ -46,6 +46,6 @@ public interface APIDownloader {
                                            Function<Set<String>, Single<Payload<P>>> pageDownloader,
                                            Function<P, P> transform);
 
-    <P> Single<List<P>> downloadList(Handler<P> handler, Resource.Type resourceType,
-                                            Function<String, Single<Payload<P>>> downloader);
+    <P> Single<List<P>> downloadWithLastUpdated(Handler<P> handler, Resource.Type resourceType,
+                                                Function<String, Single<Payload<P>>> downloader);
 }

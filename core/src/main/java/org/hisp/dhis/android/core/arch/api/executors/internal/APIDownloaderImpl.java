@@ -90,8 +90,8 @@ public final class APIDownloaderImpl implements APIDownloader {
     }
 
     @Override
-    public <P> Single<List<P>> downloadList(Handler<P> handler, Resource.Type resourceType,
-                                           Function<String, Single<Payload<P>>> downloader) {
+    public <P> Single<List<P>> downloadWithLastUpdated(Handler<P> handler, Resource.Type resourceType,
+                                                       Function<String, Single<Payload<P>>> downloader) {
         return Single.defer(() -> downloader.apply(resourceHandler.getLastUpdated(resourceType)))
                 .map(Payload::items)
                 .doOnSuccess(items -> {

@@ -90,8 +90,7 @@ public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<Li
 
     @Override
     public Single<List<Program>> downloadMetadata(Set<String> orgUnitProgramUids) {
-        return Single.fromCallable(() -> {
-            List<Program> programs = programCall.download(orgUnitProgramUids).blockingGet();
+        return programCall.download(orgUnitProgramUids).map(programs -> {
 
             Set<String> programUids = UidsHelper.getUids(programs);
             List<ProgramStage> programStages = programStageCall.download(programUids).blockingGet();

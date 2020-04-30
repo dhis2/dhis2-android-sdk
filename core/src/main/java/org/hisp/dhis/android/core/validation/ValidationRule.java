@@ -72,28 +72,28 @@ public abstract class ValidationRule extends BaseNameableObject implements CoreO
     public abstract ValidationRuleExpression leftSide();
 
     @JsonProperty()
-    abstract String leftSideExpression();
+    public abstract String leftSideExpression();
 
     @JsonProperty()
-    abstract String leftSideDescription();
+    public abstract String leftSideDescription();
 
     @JsonProperty()
     @ColumnAdapter(MissingValueStrategyColumnAdapter.class)
-    abstract MissingValueStrategy leftSideMissingValueStrategy();
+    public abstract MissingValueStrategy leftSideMissingValueStrategy();
 
     @JsonProperty()
     @ColumnAdapter(IgnoreValidationRuleExpressionColumnAdapter.class)
     public abstract ValidationRuleExpression rightSide();
 
     @JsonProperty()
-    abstract String rightSideExpression();
+    public abstract String rightSideExpression();
 
     @JsonProperty()
-    abstract String rightSideDescription();
+    public abstract String rightSideDescription();
 
     @JsonProperty()
     @ColumnAdapter(MissingValueStrategyColumnAdapter.class)
-    abstract MissingValueStrategy rightSideMissingValueStrategy();
+    public abstract MissingValueStrategy rightSideMissingValueStrategy();
 
 
     // TODO OrganisationUnitLevels

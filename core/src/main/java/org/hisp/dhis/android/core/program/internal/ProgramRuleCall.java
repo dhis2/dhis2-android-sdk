@@ -28,62 +28,41 @@
 
 package org.hisp.dhis.android.core.program.internal;
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactoryImpl;
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.UidsNoResourceCallFetcher;
-import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
-import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
-import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor;
-import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.program.ProgramRule;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Maybe;
 
 @Reusable
-final class ProgramRuleEndpointCallFactory extends UidsCallFactoryImpl<ProgramRule> {
+final class ProgramRuleCall implements UidsCall<ProgramRule> {
 
     private static final int MAX_UID_LIST_SIZE = 64;
 
     private final ProgramRuleService service;
     private final Handler<ProgramRule> handler;
+    private final APIDownloader apiDownloader;
 
     @Inject
-    ProgramRuleEndpointCallFactory(GenericCallData data,
-                                   APICallExecutor apiCallExecutor,
-                                   ProgramRuleService service,
-                                   Handler<ProgramRule> handler) {
-        super(data, apiCallExecutor);
+    ProgramRuleCall(ProgramRuleService service, Handler<ProgramRule> handler, APIDownloader apiDownloader) {
         this.service = service;
         this.handler = handler;
+        this.apiDownloader = apiDownloader;
     }
 
     @Override
-    protected CallFetcher<ProgramRule> fetcher(Set<String> uids) {
-
-        return new UidsNoResourceCallFetcher<ProgramRule>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
-
-            @Override
-            protected retrofit2.Call<Payload<ProgramRule>> getCall(UidsQuery query) {
-                String programUidsFilterStr = "program." + ObjectWithUid.uid.in(query.uids()).generateString();
-                return service.getProgramRules(
-                        ProgramRuleFields.allFields,
-                        programUidsFilterStr,
-                        Boolean.FALSE);
-            }
-        };
-    }
-
-    @Override
-    protected CallProcessor<ProgramRule> processor() {
-        return new TransactionalNoResourceSyncCallProcessor<>(
-                data.databaseAdapter(), handler);
+    public Maybe<List<ProgramRule>> download(Set<String> programUids) {
+        return apiDownloader.downloadPartitioned(programUids, MAX_UID_LIST_SIZE, handler, partitionUids -> {
+            String programUidsFilterStr = "program." + ObjectWithUid.uid.in(partitionUids).generateString();
+            return service.getProgramRules(ProgramRuleFields.allFields, programUidsFilterStr, Boolean.FALSE);
+        });
     }
 }

@@ -28,59 +28,40 @@
 
 package org.hisp.dhis.android.core.option.internal;
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactoryImpl;
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.UidsNoResourceCallFetcher;
-import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
-import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
-import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor;
-import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.option.OptionSet;
+import org.hisp.dhis.android.core.option.OptionGroup;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Maybe;
 
 @Reusable
-final class OptionSetCallFactory extends UidsCallFactoryImpl<OptionSet> {
+final class OptionGroupCall implements UidsCall<OptionGroup> {
 
     private static final int MAX_UID_LIST_SIZE = 130;
 
-    private final OptionSetService service;
-    private final Handler<OptionSet> handler;
+    private final OptionGroupService service;
+    private final Handler<OptionGroup> handler;
+    private final APIDownloader apiDownloader;
 
     @Inject
-    OptionSetCallFactory(GenericCallData data,
-                                APICallExecutor apiCallExecutor,
-                                OptionSetService service,
-                                Handler<OptionSet> handler) {
-        super(data, apiCallExecutor);
+    OptionGroupCall(OptionGroupService service, Handler<OptionGroup> handler, APIDownloader apiDownloader) {
         this.service = service;
         this.handler = handler;
+        this.apiDownloader = apiDownloader;
     }
 
     @Override
-    protected CallFetcher<OptionSet> fetcher(Set<String> uids) {
-
-        return new UidsNoResourceCallFetcher<OptionSet>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
-
-            @Override
-            protected retrofit2.Call<Payload<OptionSet>> getCall(UidsQuery query) {
-                return service.optionSets(OptionSetFields.allFields, OptionSetFields.uid.in(query.uids()),
-                        query.paging());
-            }
-        };
-    }
-
-    @Override
-    protected CallProcessor<OptionSet> processor() {
-        return new TransactionalNoResourceSyncCallProcessor<>(
-                data.databaseAdapter(),
-                handler);
+    public Maybe<List<OptionGroup>> download(Set<String> optionSetUids) {
+        return apiDownloader.downloadPartitioned(optionSetUids, MAX_UID_LIST_SIZE, handler, partitionUids -> {
+            String optionSetUidsFilterStr = "optionSet." + OptionSetFields.uid.in(partitionUids).generateString();
+            return service.optionGroups(OptionGroupFields.allFields, optionSetUidsFilterStr, Boolean.FALSE);
+        });
     }
 }

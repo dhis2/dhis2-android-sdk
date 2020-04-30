@@ -28,19 +28,38 @@
 
 package org.hisp.dhis.android.core.option.internal;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.option.OptionGroup;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.option.OptionSet;
 
-import io.reactivex.Single;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
+import java.util.List;
+import java.util.Set;
 
-interface OptionGroupService {
+import javax.inject.Inject;
 
-    @GET("optionGroups")
-    Single<Payload<OptionGroup>> optionGroups(@Query("fields") @Which Fields<OptionGroup> fields,
-                                              @Query("filter") String dataSetUidsFilter,
-                                              @Query("paging") boolean paging);
+import dagger.Reusable;
+import io.reactivex.Maybe;
+
+@Reusable
+final class OptionSetCall implements UidsCall<OptionSet> {
+
+    private static final int MAX_UID_LIST_SIZE = 130;
+
+    private final OptionSetService service;
+    private final Handler<OptionSet> handler;
+    private final APIDownloader apiDownloader;
+
+    @Inject
+    OptionSetCall(OptionSetService service, Handler<OptionSet> handler, APIDownloader apiDownloader) {
+        this.service = service;
+        this.handler = handler;
+        this.apiDownloader = apiDownloader;
+    }
+
+    @Override
+    public Maybe<List<OptionSet>> download(Set<String> uids) {
+        return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler, partitionUids ->
+                service.optionSets(OptionSetFields.allFields, OptionSetFields.uid.in(partitionUids), Boolean.FALSE));
+    }
 }

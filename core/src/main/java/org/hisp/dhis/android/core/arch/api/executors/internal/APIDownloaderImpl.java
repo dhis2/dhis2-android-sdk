@@ -28,23 +28,37 @@
 
 package org.hisp.dhis.android.core.arch.api.executors.internal;
 
+import androidx.annotation.VisibleForTesting;
+
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.arch.helpers.internal.FunctionalCollectionHelper;
 
 import java.util.List;
 import java.util.Set;
+
+import javax.annotation.Nullable;
 
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.functions.Function;
 
-final class APIDownloaderImpl implements APIDownloader {
+@VisibleForTesting
+public final class APIDownloaderImpl implements APIDownloader {
 
     @Override
     public <P> Maybe<List<P>> downloadPartitioned(Set<String> uids, int pageSize, Handler<P> handler,
                                                   Function<Set<String>, Single<Payload<P>>> pageDownloader) {
+        return downloadPartitioned(uids, pageSize, handler, pageDownloader, null);
+    }
+
+
+    @Override
+    public <P> Maybe<List<P>> downloadPartitioned(Set<String> uids, int pageSize, Handler<P> handler,
+                                                  Function<Set<String>, Single<Payload<P>>> pageDownloader,
+                                                  @Nullable Function<P, P> transform) {
         List<Set<String>> partitions = CollectionsHelper.setPartition(uids, pageSize);
         return Observable.fromIterable(partitions)
                 .flatMapSingle(pageDownloader)
@@ -52,6 +66,15 @@ final class APIDownloaderImpl implements APIDownloader {
                 .reduce((items, items2) -> {
                     items.addAll(items2);
                     return items;
-                }).doOnSuccess(handler::handleMany);
+                })
+                .map(items -> {
+                    if (transform == null) {
+                        return items;
+                    } else {
+                        return FunctionalCollectionHelper.map(items, transform);
+                    }
+                })
+                .doOnSuccess(handler::handleMany);
+
     }
 }

@@ -28,8 +28,7 @@
 package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactory;
-import org.hisp.dhis.android.core.arch.call.factories.internal.RxUidsCall;
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.option.OptionGroup;
@@ -49,7 +48,6 @@ import org.mockito.Mock;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.Callable;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -63,7 +61,6 @@ import retrofit2.Response;
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anySet;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
@@ -78,55 +75,34 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     private TrackedEntityAttribute trackedEntityAttribute;
 
     @Mock
-    private Callable<List<Program>> programEndpointCall;
-
-    @Mock
-    private Callable<List<ProgramStage>> programStageEndpointCall;
-
-    @Mock
-    private Callable<List<ProgramRule>> programRuleEndpointCall;
-
-    @Mock
-    private Callable<List<TrackedEntityType>> trackedEntityTypeCall;
-
-    @Mock
-    private Callable<List<TrackedEntityAttribute>> trackedEntityAttributeCall;
-
-    @Mock
     private Callable<List<RelationshipType>> relationshipTypeCall;
 
     @Mock
-    private Callable<List<OptionSet>> optionSetCall;
+    private UidsCall<Program> programCall;
 
     @Mock
-    private Callable<List<OptionGroup>> optionGroupCall;
+    private UidsCall<ProgramStage> programStageCall;
 
     @Mock
-    private UidsCallFactory<Program> programCallFactory;
+    private UidsCall<ProgramRule> programRuleCall;
 
     @Mock
-    private UidsCallFactory<ProgramStage> programStageCallFactory;
+    private UidsCall<TrackedEntityType> trackedEntityTypeCall;
 
     @Mock
-    private UidsCallFactory<ProgramRule> programRuleCallFactory;
-
-    @Mock
-    private UidsCallFactory<TrackedEntityType> trackedEntityCallFactory;
-
-    @Mock
-    private UidsCallFactory<TrackedEntityAttribute> trackedEntityAttributeCallFactory;
+    private UidsCall<TrackedEntityAttribute> trackedEntityAttributeCall;
 
     @Mock
     private ListCallFactory<RelationshipType> relationshipTypeCallFactory;
 
     @Mock
-    private UidsCallFactory<OptionSet> optionSetCallFactory;
+    private UidsCall<OptionSet> optionSetCall;
 
     @Mock
-    private RxUidsCall<Option> optionCall;
+    private UidsCall<Option> optionCall;
 
     @Mock
-    private UidsCallFactory<OptionGroup> optionGroupCallFactory;
+    private UidsCall<OptionGroup> optionGroupCall;
 
     @Mock
     private DHISVersionManager versionManager;
@@ -144,48 +120,47 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
                 ResponseBody.create(MediaType.parse("application/json"), "{}"));
 
         // Call factories
-        when(programCallFactory.create(anySet()))
-                .thenReturn(programEndpointCall);
-        when(programStageCallFactory.create(any(Set.class)))
-                .thenReturn(programStageEndpointCall);
-        when(programRuleCallFactory.create(any(Set.class)))
-                .thenReturn(programRuleEndpointCall);
-        when(trackedEntityCallFactory.create(any(Set.class)))
-                .thenReturn(trackedEntityTypeCall);
-        when(trackedEntityAttributeCallFactory.create(any(Set.class)))
-                .thenReturn(trackedEntityAttributeCall);
         when(relationshipTypeCallFactory.create())
                 .thenReturn(relationshipTypeCall);
-        when(optionSetCallFactory.create(any(Set.class)))
-                .thenReturn(optionSetCall);
-        when(optionGroupCallFactory.create(any(Set.class)))
-                .thenReturn(optionGroupCall);
 
         // Calls
-        when(programEndpointCall.call()).thenReturn(Collections.singletonList(program));
-        when(trackedEntityTypeCall.call()).thenReturn(Collections.singletonList(trackedEntityType));
-        when(trackedEntityAttributeCall.call()).thenReturn(Collections.singletonList(trackedEntityAttribute));
+        returnSingletonList(programCall, program);
+        returnSingletonList(trackedEntityTypeCall, trackedEntityType);
+        returnSingletonList(trackedEntityAttributeCall, trackedEntityAttribute);
+        returnSingletonList(programCall, program);
         when(relationshipTypeCall.call()).thenReturn(Collections.emptyList());
-        when(optionSetCall.call()).thenReturn(Collections.emptyList());
-        when(optionCall.download(anySet())).thenReturn(Maybe.just(Collections.emptyList()));
-        when(optionGroupCall.call()).thenReturn(Collections.emptyList());
-        when(programStageEndpointCall.call()).thenReturn(Collections.emptyList());
-        when(programRuleEndpointCall.call()).thenReturn(Collections.emptyList());
+        returnEmptyList(optionSetCall);
+        returnEmptyList(optionCall);
+        returnEmptyList(optionGroupCall);
+        returnEmptyList(programRuleCall);
+        returnEmptyList(programStageCall);
 
         when(versionManager.is2_29()).thenReturn(Boolean.FALSE);
 
         // Metadata call
         programDownloadCall = new ProgramModuleDownloader(
-                programCallFactory,
-                programStageCallFactory,
-                programRuleCallFactory,
-                trackedEntityCallFactory,
-                trackedEntityAttributeCallFactory,
+                programCall,
+                programStageCall,
+                programRuleCall,
+                trackedEntityTypeCall,
+                trackedEntityAttributeCall,
                 relationshipTypeCallFactory,
-                optionSetCallFactory,
+                optionSetCall,
                 optionCall,
-                optionGroupCallFactory,
+                optionGroupCall,
                 versionManager).downloadMetadata(anySet());
+    }
+
+    private void returnEmptyList(UidsCall<?> call) {
+        when(call.download(anySet())).thenReturn(Maybe.just(Collections.emptyList()));
+    }
+
+    private <O> void returnSingletonList(UidsCall<O> call, O o) {
+        when(call.download(anySet())).thenReturn(Maybe.just(Collections.singletonList(o)));
+    }
+
+    private void returnError(UidsCall<?> call) {
+        when(call.download(anySet())).thenReturn(Maybe.error(new RuntimeException()));
     }
 
     @Test
@@ -201,32 +176,32 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     }
 
     @Test(expected = Exception.class)
-    public void fail_when_program_call_fail() throws Exception {
-        whenEndpointCallFails(programEndpointCall);
+    public void fail_when_program_call_fail() {
+        returnError(programCall);
         programDownloadCall.blockingGet();
     }
 
     @Test(expected = Exception.class)
-    public void fail_when_program_stage_call_fail() throws Exception {
-        whenEndpointCallFails(programStageEndpointCall);
+    public void fail_when_program_stage_call_fail() {
+        returnError(programStageCall);
         programDownloadCall.blockingGet();
     }
 
     @Test(expected = Exception.class)
-    public void fail_when_program_rule_call_fail() throws Exception {
-        whenEndpointCallFails(programRuleEndpointCall);
+    public void fail_when_program_rule_call_fail() {
+        returnError(programRuleCall);
         programDownloadCall.blockingGet();
     }
 
     @Test(expected = Exception.class)
-    public void fail_when_tracked_entity_types_call_fail() throws Exception {
-        whenEndpointCallFails(trackedEntityTypeCall);
+    public void fail_when_tracked_entity_types_call_fail() {
+        returnError(trackedEntityTypeCall);
         programDownloadCall.blockingGet();
     }
 
     @Test(expected = Exception.class)
-    public void fail_when_tracked_entity_attributes_call_fail() throws Exception {
-        whenEndpointCallFails(trackedEntityAttributeCall);
+    public void fail_when_tracked_entity_attributes_call_fail() {
+        returnError(trackedEntityAttributeCall);
         programDownloadCall.blockingGet();
     }
 

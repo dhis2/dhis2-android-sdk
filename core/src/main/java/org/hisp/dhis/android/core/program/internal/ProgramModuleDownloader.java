@@ -29,8 +29,7 @@
 package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactory;
-import org.hisp.dhis.android.core.arch.call.factories.internal.RxUidsCall;
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.arch.modules.internal.MetadataModuleByUidDownloader;
 import org.hisp.dhis.android.core.option.Option;
@@ -55,35 +54,35 @@ import io.reactivex.Single;
 @Reusable
 public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<List<Program>> {
 
-    private final UidsCallFactory<Program> programCallFactory;
-    private final UidsCallFactory<ProgramStage> programStageCallFactory;
-    private final UidsCallFactory<ProgramRule> programRuleCallFactory;
-    private final UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory;
-    private final UidsCallFactory<TrackedEntityAttribute> trackedEntityAttributeCallFactory;
+    private final UidsCall<Program> programCall;
+    private final UidsCall<ProgramStage> programStageCall;
+    private final UidsCall<ProgramRule> programRuleCall;
+    private final UidsCall<TrackedEntityType> trackedEntityTypeCall;
+    private final UidsCall<TrackedEntityAttribute> trackedEntityAttributeCall;
     private final ListCallFactory<RelationshipType> relationshipTypeCallFactory;
-    private final UidsCallFactory<OptionSet> optionSetCallFactory;
-    private final RxUidsCall<Option> optionCall;
-    private final UidsCallFactory<OptionGroup> optionGroupCallFactory;
+    private final UidsCall<OptionSet> optionSetCall;
+    private final UidsCall<Option> optionCall;
+    private final UidsCall<OptionGroup> optionGroupCallFactory;
     private final DHISVersionManager versionManager;
 
     @Inject
-    ProgramModuleDownloader(UidsCallFactory<Program> programCallFactory,
-                            UidsCallFactory<ProgramStage> programStageCallFactory,
-                            UidsCallFactory<ProgramRule> programRuleCallFactory,
-                            UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory,
-                            UidsCallFactory<TrackedEntityAttribute> trackedEntityAttributeCallFactory,
+    ProgramModuleDownloader(UidsCall<Program> programCall,
+                            UidsCall<ProgramStage> programStageCall,
+                            UidsCall<ProgramRule> programRuleCall,
+                            UidsCall<TrackedEntityType> trackedEntityTypeCall,
+                            UidsCall<TrackedEntityAttribute> trackedEntityAttributeCall,
                             ListCallFactory<RelationshipType> relationshipTypeCallFactory,
-                            UidsCallFactory<OptionSet> optionSetCallFactory,
-                            RxUidsCall<Option> optionCall,
-                            UidsCallFactory<OptionGroup> optionGroupCallFactory,
+                            UidsCall<OptionSet> optionSetCall,
+                            UidsCall<Option> optionCall,
+                            UidsCall<OptionGroup> optionGroupCallFactory,
                             DHISVersionManager versionManager) {
-        this.programCallFactory = programCallFactory;
-        this.programStageCallFactory = programStageCallFactory;
-        this.programRuleCallFactory = programRuleCallFactory;
-        this.trackedEntityTypeCallFactory = trackedEntityTypeCallFactory;
-        this.trackedEntityAttributeCallFactory = trackedEntityAttributeCallFactory;
+        this.programCall = programCall;
+        this.programStageCall = programStageCall;
+        this.programRuleCall = programRuleCall;
+        this.trackedEntityTypeCall = trackedEntityTypeCall;
+        this.trackedEntityAttributeCall = trackedEntityAttributeCall;
         this.relationshipTypeCallFactory = relationshipTypeCallFactory;
-        this.optionSetCallFactory = optionSetCallFactory;
+        this.optionSetCall = optionSetCall;
         this.optionCall = optionCall;
         this.optionGroupCallFactory = optionGroupCallFactory;
         this.versionManager = versionManager;
@@ -92,31 +91,32 @@ public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<Li
     @Override
     public Single<List<Program>> downloadMetadata(Set<String> orgUnitProgramUids) {
         return Single.fromCallable(() -> {
-            List<Program> programs = programCallFactory.create(orgUnitProgramUids).call();
+            List<Program> programs = programCall.download(orgUnitProgramUids).blockingGet();
 
             Set<String> programUids = UidsHelper.getUids(programs);
-            List<ProgramStage> programStages = programStageCallFactory.create(programUids).call();
+            List<ProgramStage> programStages = programStageCall.download(programUids).blockingGet();
 
-            programRuleCallFactory.create(programUids).call();
+            programRuleCall.download(programUids).blockingGet();
 
             Set<String> trackedEntityUids = ProgramParentUidsHelper.getAssignedTrackedEntityUids(programs);
 
-            List<TrackedEntityType> trackedEntityTypes = trackedEntityTypeCallFactory.create(trackedEntityUids).call();
+            List<TrackedEntityType> trackedEntityTypes = trackedEntityTypeCall.download(trackedEntityUids)
+                    .blockingGet();
 
             Set<String> attributeUids = ProgramParentUidsHelper.getAssignedTrackedEntityAttributeUids(programs,
                     trackedEntityTypes);
 
-            List<TrackedEntityAttribute> attributes = trackedEntityAttributeCallFactory.create(attributeUids).call();
+            List<TrackedEntityAttribute> attributes = trackedEntityAttributeCall.download(attributeUids).blockingGet();
 
             relationshipTypeCallFactory.create().call();
 
             Set<String> optionSetUids = ProgramParentUidsHelper.getAssignedOptionSetUids(attributes, programStages);
-            optionSetCallFactory.create(optionSetUids).call();
+            optionSetCall.download(optionSetUids).blockingGet();
 
             optionCall.download(optionSetUids).blockingGet();
 
             if (!versionManager.is2_29()) {
-                optionGroupCallFactory.create(optionSetUids).call();
+                optionGroupCallFactory.download(optionSetUids).blockingGet();
             }
 
             return programs;

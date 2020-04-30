@@ -26,14 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.option.internal;
+package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.option.Option;
+import org.hisp.dhis.android.core.common.internal.DataAccessFields;
+import org.hisp.dhis.android.core.program.ProgramStage;
+import org.hisp.dhis.android.core.program.ProgramStageDataElement;
+import org.hisp.dhis.android.core.program.ProgramStageInternalAccessor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -43,26 +47,47 @@ import dagger.Reusable;
 import io.reactivex.Maybe;
 
 @Reusable
-public final class OptionCall implements UidsCall<Option> {
+public final class ProgramStageCall implements UidsCall<ProgramStage> {
 
     private static final int MAX_UID_LIST_SIZE = 64;
 
-    private final OptionService service;
-    private final Handler<Option> handler;
+    private final ProgramStageService service;
+    private final Handler<ProgramStage> handler;
     private final APIDownloader apiDownloader;
 
     @Inject
-    OptionCall(OptionService service, Handler<Option> handler, APIDownloader apiDownloader) {
+    ProgramStageCall(ProgramStageService service,
+                     Handler<ProgramStage> handler,
+                     APIDownloader apiDownloader) {
         this.service = service;
         this.handler = handler;
         this.apiDownloader = apiDownloader;
     }
 
     @Override
-    public Maybe<List<Option>> download(Set<String> optionSetUids) {
-        return apiDownloader.downloadPartitioned(optionSetUids, MAX_UID_LIST_SIZE, handler, partitionUids -> {
-            String optionSetUidsFilterStr = "optionSet." + ObjectWithUid.uid.in(partitionUids).generateString();
-            return service.getOptions(OptionFields.allFields, optionSetUidsFilterStr, Boolean.FALSE);
-        });
+    public Maybe<List<ProgramStage>> download(Set<String> uids) {
+        return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler, partitionUids -> {
+            String accessDataReadFilter = "access.data." + DataAccessFields.read.eq(true).generateString();
+            String programUidsFilterStr = "program." + ObjectWithUid.uid.in(partitionUids).generateString();
+            return service.getProgramStages(
+                    ProgramStageFields.allFields,
+                    programUidsFilterStr,
+                    accessDataReadFilter,
+                    Boolean.FALSE);
+        }, this::transform);
+    }
+
+    private ProgramStage transform(ProgramStage stage) {
+        if (ProgramStageInternalAccessor.accessProgramStageDataElements(stage) == null) {
+            return stage;
+        } else {
+            List<ProgramStageDataElement> psdes = new ArrayList<>();
+            for (ProgramStageDataElement psde : ProgramStageInternalAccessor.accessProgramStageDataElements(stage)) {
+                if (psde.dataElement() != null) {
+                    psdes.add(psde);
+                }
+            }
+            return ProgramStageInternalAccessor.insertProgramStageDataElements(stage.toBuilder(), psdes).build();
+        }
     }
 }

@@ -33,7 +33,7 @@ import android.content.Context;
 import androidx.annotation.VisibleForTesting;
 
 import org.hisp.dhis.android.core.arch.api.internal.APIClientDIModule;
-import org.hisp.dhis.android.core.arch.call.factories.internal.RxUidsCall;
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseDIModule;
@@ -142,11 +142,11 @@ public interface D2DIComponent {
     @VisibleForTesting
     D2InternalModules internalModules();
     @VisibleForTesting
-    UidsCallFactory<Program> programCallFactory();
+    UidsCall<Program> programCall();
     @VisibleForTesting
-    UidsCallFactory<OptionSet> optionSetCallFactory();
+    UidsCall<OptionSet> optionSetCall();
     @VisibleForTesting
-    RxUidsCall<Option> optionCall();
+    UidsCall<Option> optionCall();
     @VisibleForTesting
     UidsCallFactory<DataElement> dataElementCallFactory();
     @VisibleForTesting

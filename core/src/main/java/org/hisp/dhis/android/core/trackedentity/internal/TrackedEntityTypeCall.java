@@ -25,15 +25,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-package org.hisp.dhis.android.core.option.internal;
+package org.hisp.dhis.android.core.trackedentity.internal;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.option.Option;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -43,26 +43,43 @@ import dagger.Reusable;
 import io.reactivex.Maybe;
 
 @Reusable
-public final class OptionCall implements UidsCall<Option> {
+public final class TrackedEntityTypeCall implements UidsCall<TrackedEntityType> {
 
-    private static final int MAX_UID_LIST_SIZE = 64;
+    private static final int MAX_UID_LIST_SIZE = 140;
 
-    private final OptionService service;
-    private final Handler<Option> handler;
+    private final TrackedEntityTypeService service;
+    private final Handler<TrackedEntityType> handler;
     private final APIDownloader apiDownloader;
 
     @Inject
-    OptionCall(OptionService service, Handler<Option> handler, APIDownloader apiDownloader) {
+    TrackedEntityTypeCall(TrackedEntityTypeService service,
+                          Handler<TrackedEntityType> handler,
+                          APIDownloader apiDownloader) {
         this.service = service;
         this.handler = handler;
         this.apiDownloader = apiDownloader;
     }
 
     @Override
-    public Maybe<List<Option>> download(Set<String> optionSetUids) {
-        return apiDownloader.downloadPartitioned(optionSetUids, MAX_UID_LIST_SIZE, handler, partitionUids -> {
-            String optionSetUidsFilterStr = "optionSet." + ObjectWithUid.uid.in(partitionUids).generateString();
-            return service.getOptions(OptionFields.allFields, optionSetUidsFilterStr, Boolean.FALSE);
-        });
+    public Maybe<List<TrackedEntityType>> download(Set<String> optionSetUids) {
+        return apiDownloader.downloadPartitioned(optionSetUids, MAX_UID_LIST_SIZE, handler, partitionUids ->
+            service.getTrackedEntityTypes(
+                    TrackedEntityTypeFields.allFields,
+                    TrackedEntityTypeFields.uid.in(optionSetUids),
+                    Boolean.FALSE), this::transform);
+    }
+
+    private TrackedEntityType transform(TrackedEntityType type) {
+        if (type.trackedEntityTypeAttributes() == null) {
+            return type;
+        } else {
+            List<TrackedEntityTypeAttribute> attributes = new ArrayList<>();
+            for (TrackedEntityTypeAttribute attribute : type.trackedEntityTypeAttributes()) {
+                if (attribute.trackedEntityAttribute() != null) {
+                    attributes.add(attribute);
+                }
+            }
+            return type.toBuilder().trackedEntityTypeAttributes(attributes).build();
+        }
     }
 }

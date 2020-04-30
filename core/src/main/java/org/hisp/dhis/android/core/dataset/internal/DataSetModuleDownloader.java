@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.dataset.internal;
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.RxUidsCall;
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
 import org.hisp.dhis.android.core.arch.modules.internal.MetadataModuleByUidDownloader;
 import org.hisp.dhis.android.core.dataelement.DataElement;
@@ -52,8 +52,8 @@ public class DataSetModuleDownloader implements MetadataModuleByUidDownloader<Li
     private final UidsCallFactory<DataElement> dataElementCallFactory;
     private final UidsCallFactory<Indicator> indicatorCallFactory;
     private final UidsCallFactory<IndicatorType> indicatorTypeCallFactory;
-    private final UidsCallFactory<OptionSet> optionSetCallFactory;
-    private final RxUidsCall<Option> optionCallFactory;
+    private final UidsCall<OptionSet> optionSetCall;
+    private final UidsCall<Option> optionCall;
     private final PeriodHandler periodHandler;
 
     @Inject
@@ -61,15 +61,15 @@ public class DataSetModuleDownloader implements MetadataModuleByUidDownloader<Li
                             UidsCallFactory<DataElement> dataElementCallFactory,
                             UidsCallFactory<Indicator> indicatorCallFactory,
                             UidsCallFactory<IndicatorType> indicatorTypeCallFactory,
-                            UidsCallFactory<OptionSet> optionSetCallFactory,
-                            RxUidsCall<Option> optionCallFactory,
+                            UidsCall<OptionSet> optionSetCall,
+                            UidsCall<Option> optionCall,
                             PeriodHandler periodHandler) {
         this.dataSetCallFactory = dataSetCallFactory;
         this.dataElementCallFactory = dataElementCallFactory;
         this.indicatorCallFactory = indicatorCallFactory;
         this.indicatorTypeCallFactory = indicatorTypeCallFactory;
-        this.optionSetCallFactory = optionSetCallFactory;
-        this.optionCallFactory = optionCallFactory;
+        this.optionSetCall = optionSetCall;
+        this.optionCall = optionCall;
         this.periodHandler = periodHandler;
     }
 
@@ -89,9 +89,9 @@ public class DataSetModuleDownloader implements MetadataModuleByUidDownloader<Li
                     DataSetParentUidsHelper.getIndicatorTypeUids(indicators)).call();
 
             Set<String> optionSetUids = DataSetParentUidsHelper.getAssignedOptionSetUids(dataElements);
-            optionSetCallFactory.create(optionSetUids).call();
+            optionSetCall.download(optionSetUids).blockingGet();
 
-            optionCallFactory.download(optionSetUids).blockingGet();
+            optionCall.download(optionSetUids).blockingGet();
 
             periodHandler.generateAndPersist();
 

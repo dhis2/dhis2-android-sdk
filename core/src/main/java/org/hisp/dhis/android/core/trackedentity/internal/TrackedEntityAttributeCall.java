@@ -27,64 +27,45 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal;
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactoryImpl;
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.UidsNoResourceCallFetcher;
-import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
-import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
-import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor;
-import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Maybe;
 
 @Reusable
-public final class TrackedEntityAttributeCallFactory extends UidsCallFactoryImpl<TrackedEntityAttribute> {
+public final class TrackedEntityAttributeCall implements UidsCall<TrackedEntityAttribute> {
 
     private static final int MAX_UID_LIST_SIZE = 140;
 
     private final TrackedEntityAttributeService service;
     private final Handler<TrackedEntityAttribute> handler;
-
+    private final APIDownloader apiDownloader;
 
     @Inject
-    public TrackedEntityAttributeCallFactory(GenericCallData data,
-                                             APICallExecutor apiCallExecutor,
-                                             TrackedEntityAttributeService service,
-                                             Handler<TrackedEntityAttribute> handler) {
-        super(data, apiCallExecutor);
+    TrackedEntityAttributeCall(TrackedEntityAttributeService service,
+                               Handler<TrackedEntityAttribute> handler,
+                               APIDownloader apiDownloader) {
         this.service = service;
         this.handler = handler;
+        this.apiDownloader = apiDownloader;
     }
 
 
     @Override
-    protected CallFetcher<TrackedEntityAttribute> fetcher(Set<String> uids) {
-
-        return new UidsNoResourceCallFetcher<TrackedEntityAttribute>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
-            @Override
-            protected retrofit2.Call<Payload<TrackedEntityAttribute>> getCall(UidsQuery query) {
-                return service.getTrackedEntityAttributes(
+    public Maybe<List<TrackedEntityAttribute>> download(Set<String> uids) {
+        return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler, partitionUids ->
+                service.getTrackedEntityAttributes(
                         TrackedEntityAttributeFields.allFields,
-                        TrackedEntityAttributeFields.uid.in(query.uids()),
-                        TrackedEntityAttributeFields.lastUpdated.gt(null),
+                        TrackedEntityAttributeFields.uid.in(partitionUids),
                         Boolean.FALSE
-                );
-            }
-        };
-    }
-
-    @Override
-    protected CallProcessor<TrackedEntityAttribute> processor() {
-        return new TransactionalNoResourceSyncCallProcessor<>(
-                data.databaseAdapter(),
-                handler);
+                ));
     }
 }

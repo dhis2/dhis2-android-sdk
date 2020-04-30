@@ -44,14 +44,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import io.reactivex.Maybe;
+import io.reactivex.Single;
 
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
 public class OptionSetCallShould extends BaseMockIntegrationTestEmptyEnqueable {
 
-    private Maybe<List<OptionSet>> optionSetCall;
+    private Single<List<OptionSet>> optionSetCall;
     private D2CallExecutor d2CallExecutor;
 
     @Before

@@ -40,7 +40,7 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import dagger.Reusable;
-import io.reactivex.Maybe;
+import io.reactivex.Single;
 
 @Reusable
 public final class OptionCall implements UidsCall<Option> {
@@ -59,7 +59,7 @@ public final class OptionCall implements UidsCall<Option> {
     }
 
     @Override
-    public Maybe<List<Option>> download(Set<String> optionSetUids) {
+    public Single<List<Option>> download(Set<String> optionSetUids) {
         return apiDownloader.downloadPartitioned(optionSetUids, MAX_UID_LIST_SIZE, handler, partitionUids -> {
             String optionSetUidsFilterStr = "optionSet." + ObjectWithUid.uid.in(partitionUids).generateString();
             return service.getOptions(OptionFields.allFields, optionSetUidsFilterStr, Boolean.FALSE);

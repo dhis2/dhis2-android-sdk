@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.arch.helpers.internal.FunctionalCollectionHelp
 import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -44,7 +45,6 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import dagger.Reusable;
-import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.functions.Function;
@@ -62,20 +62,20 @@ public final class APIDownloaderImpl implements APIDownloader {
     }
 
     @Override
-    public <P> Maybe<List<P>> downloadPartitioned(Set<String> uids, int pageSize, Handler<P> handler,
+    public <P> Single<List<P>> downloadPartitioned(Set<String> uids, int pageSize, Handler<P> handler,
                                                   Function<Set<String>, Single<Payload<P>>> pageDownloader) {
         return downloadPartitioned(uids, pageSize, handler, pageDownloader, null);
     }
 
     @Override
-    public <P> Maybe<List<P>> downloadPartitioned(Set<String> uids, int pageSize, Handler<P> handler,
+    public <P> Single<List<P>> downloadPartitioned(Set<String> uids, int pageSize, Handler<P> handler,
                                                   Function<Set<String>, Single<Payload<P>>> pageDownloader,
                                                   @Nullable Function<P, P> transform) {
         List<Set<String>> partitions = CollectionsHelper.setPartition(uids, pageSize);
         return Observable.fromIterable(partitions)
                 .flatMapSingle(pageDownloader)
                 .map(Payload::items)
-                .reduce((items, items2) -> {
+                .reduce(new ArrayList<P>(), (items, items2) -> {
                     items.addAll(items2);
                     return items;
                 })

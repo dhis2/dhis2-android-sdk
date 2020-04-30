@@ -31,8 +31,8 @@ package org.hisp.dhis.android.core.arch.call.factories.internal;
 import java.util.List;
 import java.util.Set;
 
-import io.reactivex.Maybe;
+import io.reactivex.Single;
 
 public interface UidsCall<P> {
-    Maybe<List<P>> download(Set<String> uids);
+    Single<List<P>> download(Set<String> uids);
 }

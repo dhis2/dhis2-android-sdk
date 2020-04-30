@@ -35,15 +35,14 @@ import org.hisp.dhis.android.core.resource.internal.Resource;
 import java.util.List;
 import java.util.Set;
 
-import io.reactivex.Maybe;
 import io.reactivex.Single;
 import io.reactivex.functions.Function;
 
 public interface APIDownloader {
-    <P> Maybe<List<P>> downloadPartitioned(Set<String> uids, int pageSize, Handler<P> handler,
+    <P> Single<List<P>> downloadPartitioned(Set<String> uids, int pageSize, Handler<P> handler,
                                            Function<Set<String>, Single<Payload<P>>> pageDownloader);
 
-    <P> Maybe<List<P>> downloadPartitioned(Set<String> uids, int pageSize, Handler<P> handler,
+    <P> Single<List<P>> downloadPartitioned(Set<String> uids, int pageSize, Handler<P> handler,
                                            Function<Set<String>, Single<Payload<P>>> pageDownloader,
                                            Function<P, P> transform);
 

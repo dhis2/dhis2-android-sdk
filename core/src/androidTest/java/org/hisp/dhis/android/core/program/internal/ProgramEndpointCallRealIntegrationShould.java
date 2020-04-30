@@ -38,7 +38,7 @@ import org.mockito.internal.util.collections.Sets;
 import java.io.IOException;
 import java.util.List;
 
-import io.reactivex.Maybe;
+import io.reactivex.Single;
 
 public class ProgramEndpointCallRealIntegrationShould extends BaseRealIntegrationTest {
     /**
@@ -46,7 +46,7 @@ public class ProgramEndpointCallRealIntegrationShould extends BaseRealIntegratio
      * metadataSyncCall. It works against the demo server.
      */
     private D2 d2;
-    private Maybe<List<Program>> programCall;
+    private Single<List<Program>> programCall;
 
     @Before
     @Override
@@ -56,7 +56,7 @@ public class ProgramEndpointCallRealIntegrationShould extends BaseRealIntegratio
         programCall = createCall();
     }
 
-    private Maybe<List<Program>> createCall() {
+    private Single<List<Program>> createCall() {
         return getD2DIComponent(d2).programCall().download(Sets.newSet("lxAQ7Zs9VYR", "AwNmMxxakEo"));
     }
 

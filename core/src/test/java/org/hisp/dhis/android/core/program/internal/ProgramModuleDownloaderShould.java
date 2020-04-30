@@ -51,7 +51,6 @@ import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import io.reactivex.Maybe;
 import io.reactivex.Single;
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
@@ -143,15 +142,15 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     }
 
     private void returnEmptyList(UidsCall<?> call) {
-        when(call.download(anySet())).thenReturn(Maybe.just(Collections.emptyList()));
+        when(call.download(anySet())).thenReturn(Single.just(Collections.emptyList()));
     }
 
     private <O> void returnSingletonList(UidsCall<O> call, O o) {
-        when(call.download(anySet())).thenReturn(Maybe.just(Collections.singletonList(o)));
+        when(call.download(anySet())).thenReturn(Single.just(Collections.singletonList(o)));
     }
 
     private void returnError(UidsCall<?> call) {
-        when(call.download(anySet())).thenReturn(Maybe.error(new RuntimeException()));
+        when(call.download(anySet())).thenReturn(Single.error(new RuntimeException()));
     }
 
     @Test

@@ -38,7 +38,7 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import dagger.Reusable;
-import io.reactivex.Maybe;
+import io.reactivex.Single;
 
 @Reusable
 public final class TrackedEntityAttributeCall implements UidsCall<TrackedEntityAttribute> {
@@ -60,7 +60,7 @@ public final class TrackedEntityAttributeCall implements UidsCall<TrackedEntityA
 
 
     @Override
-    public Maybe<List<TrackedEntityAttribute>> download(Set<String> uids) {
+    public Single<List<TrackedEntityAttribute>> download(Set<String> uids) {
         return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler, partitionUids ->
                 service.getTrackedEntityAttributes(
                         TrackedEntityAttributeFields.allFields,

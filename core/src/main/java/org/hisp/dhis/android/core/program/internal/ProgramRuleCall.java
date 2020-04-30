@@ -40,7 +40,7 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import dagger.Reusable;
-import io.reactivex.Maybe;
+import io.reactivex.Single;
 
 @Reusable
 final class ProgramRuleCall implements UidsCall<ProgramRule> {
@@ -59,7 +59,7 @@ final class ProgramRuleCall implements UidsCall<ProgramRule> {
     }
 
     @Override
-    public Maybe<List<ProgramRule>> download(Set<String> programUids) {
+    public Single<List<ProgramRule>> download(Set<String> programUids) {
         return apiDownloader.downloadPartitioned(programUids, MAX_UID_LIST_SIZE, handler, partitionUids -> {
             String programUidsFilterStr = "program." + ObjectWithUid.uid.in(partitionUids).generateString();
             return service.getProgramRules(ProgramRuleFields.allFields, programUidsFilterStr, Boolean.FALSE);

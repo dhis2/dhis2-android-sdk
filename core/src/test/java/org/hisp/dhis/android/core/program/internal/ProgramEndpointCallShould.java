@@ -110,7 +110,7 @@ public class ProgramEndpointCallShould extends BaseCallShould {
                 fieldsCaptor.capture(), filterCaptor.capture(), accessDataReadFilter.capture(), anyBoolean())
         ).thenReturn(apiCall);
 
-        new ProgramCall(programService, programHandler, new APIDownloaderImpl()).download(programUids).blockingGet();
+        new ProgramCall(programService, programHandler, new APIDownloaderImpl(resourceHandler)).download(programUids).blockingGet();
 
         assertThat(fieldsCaptor.getValue()).isEqualTo(ProgramFields.allFields);
         assertThat(filterCaptor.getValue().values().iterator().next()).isEqualTo("programUid");

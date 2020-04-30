@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.program.internal;
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactory;
+import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.option.Option;
@@ -48,7 +48,6 @@ import org.mockito.Mock;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -75,9 +74,6 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     private TrackedEntityAttribute trackedEntityAttribute;
 
     @Mock
-    private Callable<List<RelationshipType>> relationshipTypeCall;
-
-    @Mock
     private UidsCall<Program> programCall;
 
     @Mock
@@ -93,7 +89,7 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     private UidsCall<TrackedEntityAttribute> trackedEntityAttributeCall;
 
     @Mock
-    private ListCallFactory<RelationshipType> relationshipTypeCallFactory;
+    private ListCall<RelationshipType> relationshipTypeCall;
 
     @Mock
     private UidsCall<OptionSet> optionSetCall;
@@ -111,7 +107,6 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     private Single<List<Program>> programDownloadCall;
 
     @Before
-    @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         super.setUp();
 
@@ -119,16 +114,12 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
                 HttpsURLConnection.HTTP_CLIENT_TIMEOUT,
                 ResponseBody.create(MediaType.parse("application/json"), "{}"));
 
-        // Call factories
-        when(relationshipTypeCallFactory.create())
-                .thenReturn(relationshipTypeCall);
-
         // Calls
         returnSingletonList(programCall, program);
         returnSingletonList(trackedEntityTypeCall, trackedEntityType);
         returnSingletonList(trackedEntityAttributeCall, trackedEntityAttribute);
         returnSingletonList(programCall, program);
-        when(relationshipTypeCall.call()).thenReturn(Collections.emptyList());
+        when(relationshipTypeCall.download()).thenReturn(Single.just(Collections.emptyList()));
         returnEmptyList(optionSetCall);
         returnEmptyList(optionCall);
         returnEmptyList(optionGroupCall);
@@ -144,7 +135,7 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
                 programRuleCall,
                 trackedEntityTypeCall,
                 trackedEntityAttributeCall,
-                relationshipTypeCallFactory,
+                relationshipTypeCall,
                 optionSetCall,
                 optionCall,
                 optionGroupCall,
@@ -206,8 +197,8 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     }
 
     @Test(expected = Exception.class)
-    public void fail_when_relationship_type_call_fail() throws Exception {
-        whenEndpointCallFails(relationshipTypeCall);
+    public void fail_when_relationship_type_call_fail() {
+        when(relationshipTypeCall.download()).thenReturn(Single.error(new RuntimeException()));
         programDownloadCall.blockingGet();
     }
 }

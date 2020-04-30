@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.arch.api.executors.internal;
 
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.resource.internal.Resource;
 
 import java.util.List;
 import java.util.Set;
@@ -45,4 +46,7 @@ public interface APIDownloader {
     <P> Maybe<List<P>> downloadPartitioned(Set<String> uids, int pageSize, Handler<P> handler,
                                            Function<Set<String>, Single<Payload<P>>> pageDownloader,
                                            Function<P, P> transform);
+
+    <P> Single<List<P>> downloadList(Handler<P> handler, Resource.Type resourceType,
+                                            Function<String, Single<Payload<P>>> downloader);
 }

@@ -26,46 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship.internal;
+package org.hisp.dhis.android.core.arch.call.factories.internal;
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall;
-import org.hisp.dhis.android.core.relationship.RelationshipModule;
-import org.hisp.dhis.android.core.relationship.RelationshipType;
+import java.util.List;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
+import io.reactivex.Single;
 
-@Module(includes = {
-        RelationshipConstraintEntityDIModule.class,
-        RelationshipEntityDIModule.class,
-        RelationshipItemEntityDIModule.class,
-        RelationshipTypeEntityDIModule.class
-})
-public final class RelationshipPackageDIModule {
-
-    @Provides
-    @Reusable
-    ListCall<RelationshipType> relationshipCall(RelationshipTypeCall impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    RelationshipTypeService relationshipTypeService(Retrofit retrofit) {
-        return retrofit.create(RelationshipTypeService.class);
-    }
-
-    @Provides
-    @Reusable
-    RelationshipService relationshipService(Retrofit retrofit) {
-        return retrofit.create(RelationshipService.class);
-    }
-
-    @Provides
-    @Reusable
-    RelationshipModule module(RelationshipModuleImpl impl) {
-        return impl;
-    }
+public interface ListCall<P> {
+    Single<List<P>> download();
 }

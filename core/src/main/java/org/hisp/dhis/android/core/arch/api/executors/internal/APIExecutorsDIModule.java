@@ -49,7 +49,7 @@ public class APIExecutorsDIModule {
 
     @Provides
     @Reusable
-    APIDownloader apiDownloader() {
-        return new APIDownloaderImpl();
+    APIDownloader apiDownloader(APIDownloaderImpl impl) {
+        return impl;
     }
 }

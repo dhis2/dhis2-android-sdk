@@ -34,26 +34,38 @@ import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.arch.helpers.internal.FunctionalCollectionHelper;
+import org.hisp.dhis.android.core.resource.internal.Resource;
+import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 
 import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Nullable;
+import javax.inject.Inject;
 
+import dagger.Reusable;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.functions.Function;
 
+@Reusable
 @VisibleForTesting
 public final class APIDownloaderImpl implements APIDownloader {
+
+
+    private final ResourceHandler resourceHandler;
+
+    @Inject
+    public APIDownloaderImpl(ResourceHandler resourceHandler) {
+        this.resourceHandler = resourceHandler;
+    }
 
     @Override
     public <P> Maybe<List<P>> downloadPartitioned(Set<String> uids, int pageSize, Handler<P> handler,
                                                   Function<Set<String>, Single<Payload<P>>> pageDownloader) {
         return downloadPartitioned(uids, pageSize, handler, pageDownloader, null);
     }
-
 
     @Override
     public <P> Maybe<List<P>> downloadPartitioned(Set<String> uids, int pageSize, Handler<P> handler,
@@ -75,6 +87,16 @@ public final class APIDownloaderImpl implements APIDownloader {
                     }
                 })
                 .doOnSuccess(handler::handleMany);
+    }
 
+    @Override
+    public <P> Single<List<P>> downloadList(Handler<P> handler, Resource.Type resourceType,
+                                           Function<String, Single<Payload<P>>> downloader) {
+        return Single.defer(() -> downloader.apply(resourceHandler.getLastUpdated(resourceType)))
+                .map(Payload::items)
+                .doOnSuccess(items -> {
+                    handler.handleMany(items);
+                    resourceHandler.handleResource(resourceType);
+                });
     }
 }

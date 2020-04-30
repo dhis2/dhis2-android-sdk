@@ -34,14 +34,14 @@ import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 
-import retrofit2.Call;
+import io.reactivex.Single;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 interface RelationshipTypeService {
 
     @GET("relationshipTypes")
-    Call<Payload<RelationshipType>> getRelationshipTypes(
+    Single<Payload<RelationshipType>> getRelationshipTypes(
             @Query("fields") @Which Fields<RelationshipType> fields,
             @Query("filter") @Where Filter<RelationshipType, String> lastUpdated,
             @Query("filter") String accessDataReadFilter,

@@ -49,6 +49,9 @@ public final class ValidationRuleFields {
 
     public static final Field<ValidationRule, String> uid = fh.uid();
 
+    public static final Fields<ValidationRule> uidField = Fields.<ValidationRule>builder()
+            .fields(fh.uid()).build();
+
     public static final Fields<ValidationRule> allFields = Fields.<ValidationRule>builder()
             .fields(fh.getNameableFields())
             .fields(

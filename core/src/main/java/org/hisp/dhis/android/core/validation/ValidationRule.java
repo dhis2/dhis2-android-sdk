@@ -40,10 +40,14 @@ import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.MissingValueSt
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.ValidationRuleImportanceColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.ValidationRuleOperatorColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreOrganisationUnitLevelListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreValidationRuleExpressionColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel;
 import org.hisp.dhis.android.core.period.PeriodType;
+
+import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_ValidationRule.Builder.class)
@@ -95,8 +99,9 @@ public abstract class ValidationRule extends BaseNameableObject implements CoreO
     @ColumnAdapter(MissingValueStrategyColumnAdapter.class)
     public abstract MissingValueStrategy rightSideMissingValueStrategy();
 
-
-    // TODO OrganisationUnitLevels
+    @JsonProperty()
+    @ColumnAdapter(IgnoreOrganisationUnitLevelListColumnAdapter.class)
+    public abstract List<OrganisationUnitLevel> organisationUnitLevels();
 
     public static Builder builder() {
         return new $$AutoValue_ValidationRule.Builder();

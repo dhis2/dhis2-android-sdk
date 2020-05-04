@@ -23,4 +23,4 @@ if changed, will encrypt or decrypt the current database without data loss.
 
 ### Encryption performance
 - Database size: the database size is approximately the same, regardless of being encrypted or not.
-- Speed: reads and writes are on average 25% slower using an encrypted database.
+- Speed: reads and writes are on average 5 to 10% slower using an encrypted database.

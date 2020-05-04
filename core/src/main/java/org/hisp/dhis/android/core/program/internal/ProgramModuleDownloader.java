@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 
@@ -49,6 +48,7 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Completable;
 import io.reactivex.Single;
 
 @Reusable
@@ -62,8 +62,7 @@ public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<Li
     private final ListCall<RelationshipType> relationshipTypeCall;
     private final UidsCall<OptionSet> optionSetCall;
     private final UidsCall<Option> optionCall;
-    private final UidsCall<OptionGroup> optionGroupCallFactory;
-    private final DHISVersionManager versionManager;
+    private final UidsCall<OptionGroup> optionGroupCall;
 
     @Inject
     ProgramModuleDownloader(UidsCall<Program> programCall,
@@ -74,8 +73,7 @@ public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<Li
                             ListCall<RelationshipType> relationshipTypeCall,
                             UidsCall<OptionSet> optionSetCall,
                             UidsCall<Option> optionCall,
-                            UidsCall<OptionGroup> optionGroupCallFactory,
-                            DHISVersionManager versionManager) {
+                            UidsCall<OptionGroup> optionGroupCall) {
         this.programCall = programCall;
         this.programStageCall = programStageCall;
         this.programRuleCall = programRuleCall;
@@ -84,8 +82,7 @@ public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<Li
         this.relationshipTypeCall = relationshipTypeCall;
         this.optionSetCall = optionSetCall;
         this.optionCall = optionCall;
-        this.optionGroupCallFactory = optionGroupCallFactory;
-        this.versionManager = versionManager;
+        this.optionGroupCall = optionGroupCall;
     }
 
     @Override
@@ -110,15 +107,17 @@ public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<Li
             relationshipTypeCall.download().blockingGet();
 
             Set<String> optionSetUids = ProgramParentUidsHelper.getAssignedOptionSetUids(attributes, programStages);
-            optionSetCall.download(optionSetUids).blockingGet();
-
-            optionCall.download(optionSetUids).blockingGet();
-
-            if (!versionManager.is2_29()) {
-                optionGroupCallFactory.download(optionSetUids).blockingGet();
-            }
+            downloadOptions(optionSetUids).blockingAwait();
 
             return programs;
         });
+    }
+
+    private Completable downloadOptions(Set<String> optionSetUids) {
+        return Single.merge(
+                optionSetCall.download(optionSetUids),
+                optionCall.download(optionSetUids),
+                optionGroupCall.download(optionSetUids)
+        ).ignoreElements();
     }
 }

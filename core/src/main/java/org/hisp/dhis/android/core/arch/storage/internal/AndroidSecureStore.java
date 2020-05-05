@@ -54,6 +54,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.UnrecoverableEntryException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.spec.AlgorithmParameterSpec;
@@ -155,7 +156,9 @@ public final class AndroidSecureStore implements SecureStore {
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString(key, value);
             editor.apply();
-        } catch (Exception e) {
+        } catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException
+                | IllegalBlockSizeException | BadPaddingException | KeyStoreException |
+                CertificateException | IOException e) {
             deleteKeyStoreEntry(ks, ALIAS);
             throw new RuntimeException("Couldn't store value in AndroidSecureStore for key: " + key, e);
         }
@@ -171,7 +174,9 @@ public final class AndroidSecureStore implements SecureStore {
 
             return value == null ? null :
                     new String(decrypt(privateKey, value), CHARSET);
-        } catch (Exception e) {
+        } catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException
+                | UnrecoverableEntryException | InvalidKeyException | NoSuchPaddingException
+                | IllegalBlockSizeException | BadPaddingException e) {
             deleteKeyStoreEntry(ks, ALIAS);
             throw new RuntimeException("Couldn't get value from AndroidSecureStore for key: " + key, e);
         }

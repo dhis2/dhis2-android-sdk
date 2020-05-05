@@ -48,7 +48,6 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import dagger.Reusable;
-import io.reactivex.Completable;
 import io.reactivex.Single;
 
 @Reusable
@@ -87,37 +86,26 @@ public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<Li
 
     @Override
     public Single<List<Program>> downloadMetadata(Set<String> orgUnitProgramUids) {
-        return programCall.download(orgUnitProgramUids).map(programs -> {
-
+        return programCall.download(orgUnitProgramUids).flatMap(programs -> {
             Set<String> programUids = UidsHelper.getUids(programs);
-            List<ProgramStage> programStages = programStageCall.download(programUids).blockingGet();
-
-            programRuleCall.download(programUids).blockingGet();
-
-            Set<String> trackedEntityUids = ProgramParentUidsHelper.getAssignedTrackedEntityUids(programs);
-
-            List<TrackedEntityType> trackedEntityTypes = trackedEntityTypeCall.download(trackedEntityUids)
-                    .blockingGet();
-
-            Set<String> attributeUids = ProgramParentUidsHelper.getAssignedTrackedEntityAttributeUids(programs,
-                    trackedEntityTypes);
-
-            List<TrackedEntityAttribute> attributes = trackedEntityAttributeCall.download(attributeUids).blockingGet();
-
-            relationshipTypeCall.download().blockingGet();
-
-            Set<String> optionSetUids = ProgramParentUidsHelper.getAssignedOptionSetUids(attributes, programStages);
-            downloadOptions(optionSetUids).blockingAwait();
-
-            return programs;
+            return programStageCall.download(programUids).flatMap(programStages -> {
+                Set<String> trackedEntityUids = ProgramParentUidsHelper.getAssignedTrackedEntityUids(programs);
+                return trackedEntityTypeCall.download(trackedEntityUids).flatMap(trackedEntityTypes -> {
+                    Set<String> attributeUids = ProgramParentUidsHelper.getAssignedTrackedEntityAttributeUids(
+                            programs, trackedEntityTypes);
+                    return trackedEntityAttributeCall.download(attributeUids).flatMap(attributes -> {
+                        Set<String> optionSetUids = ProgramParentUidsHelper.getAssignedOptionSetUids(
+                                attributes, programStages);
+                        return Single.merge(
+                                programRuleCall.download(programUids),
+                                relationshipTypeCall.download(),
+                                optionSetCall.download(optionSetUids),
+                                optionCall.download(optionSetUids)
+                        ).ignoreElements()
+                                .andThen(optionGroupCall.download(optionSetUids)).map(toIgnore -> programs);
+                    });
+                });
+            });
         });
-    }
-
-    private Completable downloadOptions(Set<String> optionSetUids) {
-        return Single.merge(
-                optionSetCall.download(optionSetUids),
-                optionCall.download(optionSetUids),
-                optionGroupCall.download(optionSetUids)
-        ).ignoreElements();
     }
 }

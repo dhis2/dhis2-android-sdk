@@ -158,38 +158,44 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     }
 
     @Test(expected = Exception.class)
-    public void fail_when_program_call_fail() {
+    public void fail_when_program_call_fails() {
         returnError(programCall);
         programModuleDownloader.downloadMetadata(anySet()).blockingGet();
     }
 
     @Test(expected = Exception.class)
-    public void fail_when_program_stage_call_fail() {
+    public void fail_when_program_stage_call_fails() {
         returnError(programStageCall);
         programModuleDownloader.downloadMetadata(anySet()).blockingGet();
     }
 
     @Test(expected = Exception.class)
-    public void fail_when_program_rule_call_fail() {
+    public void fail_when_program_rule_call_fails() {
         returnError(programRuleCall);
         programModuleDownloader.downloadMetadata(anySet()).blockingGet();
     }
 
     @Test(expected = Exception.class)
-    public void fail_when_tracked_entity_types_call_fail() {
+    public void fail_when_tracked_entity_types_call_fails() {
         returnError(trackedEntityTypeCall);
         programModuleDownloader.downloadMetadata(anySet()).blockingGet();
     }
 
     @Test(expected = Exception.class)
-    public void fail_when_tracked_entity_attributes_call_fail() {
+    public void fail_when_tracked_entity_attributes_call_fails() {
         returnError(trackedEntityAttributeCall);
         programModuleDownloader.downloadMetadata(anySet()).blockingGet();
     }
 
     @Test(expected = Exception.class)
-    public void fail_when_relationship_type_call_fail() {
+    public void fail_when_relationship_type_call_fails() {
         when(relationshipTypeCall.download()).thenReturn(Single.error(new RuntimeException()));
+        programModuleDownloader.downloadMetadata(anySet()).blockingGet();
+    }
+
+    @Test(expected = Exception.class)
+    public void fail_when_option_call_fails() {
+        returnError(optionCall);
         programModuleDownloader.downloadMetadata(anySet()).blockingGet();
     }
 }

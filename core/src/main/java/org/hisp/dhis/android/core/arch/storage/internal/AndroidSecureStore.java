@@ -131,7 +131,7 @@ public final class AndroidSecureStore implements SecureStore {
             kpGenerator.generateKeyPair();
         } catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException | NoSuchProviderException e) {
             deleteKeyStoreEntry(ks, ALIAS);
-            throw keyStoreError(e, D2ErrorCode.CANT_ACCESS_KEYSTORE);
+            throw keyStoreError(e, D2ErrorCode.CANT_INSTANTIATE_KEYSTORE);
         }
     }
 
@@ -140,18 +140,25 @@ public final class AndroidSecureStore implements SecureStore {
         try {
             ks = KeyStore.getInstance(KEYSTORE_PROVIDER_ANDROID_KEYSTORE);
             ks.load(null);
+
+            if (ks.getCertificate(ALIAS) == null) {
+                throw new RuntimeException("Couldn't find certificate for key: " + key);
+            }
+
             PublicKey publicKey = ks.getCertificate(ALIAS).getPublicKey();
+
+            if (publicKey == null) {
+                throw new RuntimeException("Couldn't find publicKey for key: " + key);
+            }
 
             String value = encrypt(publicKey, data.getBytes(CHARSET));
 
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString(key, value);
             editor.apply();
-        } catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException
-                | IllegalBlockSizeException | BadPaddingException | KeyStoreException |
-                CertificateException | IOException e) {
+        } catch (Exception e) {
             deleteKeyStoreEntry(ks, ALIAS);
-            throw new RuntimeException("Couldn't store value in AndroidSecureStore for key: " + key);
+            throw new RuntimeException("Couldn't store value in AndroidSecureStore for key: " + key, e);
         }
     }
 
@@ -165,11 +172,9 @@ public final class AndroidSecureStore implements SecureStore {
 
             return value == null ? null :
                     new String(decrypt(privateKey, value), CHARSET);
-        } catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException
-                | UnrecoverableEntryException | InvalidKeyException | NoSuchPaddingException
-                | IllegalBlockSizeException | BadPaddingException e) {
+        } catch (Exception e) {
             deleteKeyStoreEntry(ks, ALIAS);
-            throw new RuntimeException("Couldn't get value from AndroidSecureStore for key: " + key);
+            throw new RuntimeException("Couldn't get value from AndroidSecureStore for key: " + key, e);
         }
     }
 

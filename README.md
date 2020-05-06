@@ -14,7 +14,7 @@ Main goals:
 
 ## Documentation
 
-User-oriented documentation can be found in [Documentation section](https://docs.dhis2.org/master/en/android-sdk/html/dhis2_android_sdk_user_guide_full.html) in DHIS2 web. It is intended to be used by developers.
+User-oriented documentation can be found in [Documentation section](https://docs.dhis2.org/master/en/dhis2_android_sdk_developer_guide/about-this-guide.html) in DHIS2 web. It is intended to be used by developers.
 
 ## Examples
 

@@ -37,6 +37,10 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
+
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
@@ -55,6 +59,7 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.spec.AlgorithmParameterSpec;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 import javax.crypto.BadPaddingException;
@@ -77,7 +82,7 @@ public final class AndroidSecureStore implements SecureStore {
 
     private final SharedPreferences preferences;
 
-    public AndroidSecureStore(Context context) {
+    public AndroidSecureStore(Context context) throws D2Error {
         preferences = context.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE);
 
         KeyStore ks;
@@ -95,7 +100,7 @@ public final class AndroidSecureStore implements SecureStore {
             }
         } catch (KeyStoreException | CertificateException | IOException |
                 NoSuchAlgorithmException | UnrecoverableKeyException ex) {
-            return;
+            throw keyStoreError(ex, D2ErrorCode.CANT_ACCESS_KEYSTORE);
         }
 
         // Create a start and end time, for the validity range of the key pair that's about to be
@@ -126,7 +131,7 @@ public final class AndroidSecureStore implements SecureStore {
             kpGenerator.generateKeyPair();
         } catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException | NoSuchProviderException e) {
             deleteKeyStoreEntry(ks, ALIAS);
-            throw new RuntimeException("Couldn't initialize AndroidSecureStore");
+            throw keyStoreError(e, D2ErrorCode.CANT_INSTANTIATE_KEYSTORE);
         }
     }
 
@@ -134,16 +139,16 @@ public final class AndroidSecureStore implements SecureStore {
         KeyStore ks = null;
         try {
             ks = KeyStore.getInstance(KEYSTORE_PROVIDER_ANDROID_KEYSTORE);
-
             ks.load(null);
+
             if (ks.getCertificate(ALIAS) == null) {
-                return;
+                throw new RuntimeException("Couldn't find certificate for key: " + key);
             }
 
             PublicKey publicKey = ks.getCertificate(ALIAS).getPublicKey();
 
             if (publicKey == null) {
-                return;
+                throw new RuntimeException("Couldn't find publicKey for key: " + key);
             }
 
             String value = encrypt(publicKey, data.getBytes(CHARSET));
@@ -155,7 +160,7 @@ public final class AndroidSecureStore implements SecureStore {
                 | IllegalBlockSizeException | BadPaddingException | KeyStoreException |
                 CertificateException | IOException e) {
             deleteKeyStoreEntry(ks, ALIAS);
-            throw new RuntimeException("Couldn't store value in AndroidSecureStore for key: " + key);
+            throw new RuntimeException("Couldn't store value in AndroidSecureStore for key: " + key, e);
         }
     }
 
@@ -173,7 +178,7 @@ public final class AndroidSecureStore implements SecureStore {
                 | UnrecoverableEntryException | InvalidKeyException | NoSuchPaddingException
                 | IllegalBlockSizeException | BadPaddingException e) {
             deleteKeyStoreEntry(ks, ALIAS);
-            throw new RuntimeException("Couldn't get value from AndroidSecureStore for key: " + key);
+            throw new RuntimeException("Couldn't get value from AndroidSecureStore for key: " + key, e);
         }
     }
 
@@ -210,5 +215,15 @@ public final class AndroidSecureStore implements SecureStore {
         } catch (Exception e1) {
             Log.w("SECURE_STORE", "Cannot deleted entry " + entry);
         }
+    }
+
+    private D2Error keyStoreError(Exception ex, D2ErrorCode d2ErrorCode) {
+        return D2Error.builder()
+                .errorComponent(D2ErrorComponent.SDK)
+                .errorCode(d2ErrorCode)
+                .errorDescription(ex.getMessage())
+                .originalException(ex)
+                .created(new Date())
+                .build();
     }
 }

@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.InMemoryUnsecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.Collections;
 
@@ -51,7 +52,7 @@ public class D2Factory {
         return forNewDatabaseInternal(new InMemorySecureStore(), new InMemoryUnsecureStore());
     }
 
-    public static D2 forNewDatabaseWithAndroidSecureStore() {
+    public static D2 forNewDatabaseWithAndroidSecureStore() throws D2Error {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
         return forNewDatabaseInternal(new AndroidSecureStore(context), new AndroidInsecureStore(context));
     }

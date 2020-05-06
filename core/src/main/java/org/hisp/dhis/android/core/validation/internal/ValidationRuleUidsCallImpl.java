@@ -29,40 +29,45 @@
 package org.hisp.dhis.android.core.validation.internal;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.validation.ValidationRule;
+import org.hisp.dhis.android.core.dataset.DataSet;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Observable;
 import io.reactivex.Single;
 
 @Reusable
-final class ValidationRuleCall implements UidsCall<ValidationRule> {
-
-    private static final int MAX_UID_LIST_SIZE = 64;
+final class ValidationRuleUidsCallImpl implements ValidationRuleUidsCall {
 
     private final ValidationRuleService service;
-    private final Handler<ValidationRule> handler;
+    private final LinkHandler<ObjectWithUid, DataSet> linkHandler;
     private final APIDownloader apiDownloader;
 
     @Inject
-    ValidationRuleCall(ValidationRuleService service, Handler<ValidationRule> handler, APIDownloader apiDownloader) {
+    ValidationRuleUidsCallImpl(ValidationRuleService service,
+                               LinkHandler<ObjectWithUid, DataSet> linkHandler,
+                               APIDownloader apiDownloader) {
         this.service = service;
-        this.handler = handler;
+        this.linkHandler = linkHandler;
         this.apiDownloader = apiDownloader;
     }
 
     @Override
-    public Single<List<ValidationRule>> download(Set<String> validationRuleUids) {
-        return apiDownloader.downloadPartitioned(validationRuleUids, MAX_UID_LIST_SIZE, handler, partitionUids -> {
-            String uidsFilterStr = ObjectWithUid.uid.in(partitionUids).generateString();
-            return service.getValidationRules(ValidationRuleFields.allFields, uidsFilterStr, Boolean.FALSE);
-        });
+    public Single<List<ObjectWithUid>> download(Set<String> dataSetUids) {
+        return Observable.fromIterable(dataSetUids)
+                .flatMapSingle(dataSetUid -> apiDownloader.downloadLink(dataSetUid, linkHandler, dataSetPartitionUids ->
+                        service.getDataSetValidationRuleUids(BaseIdentifiableObject.UID, dataSetUid, Boolean.FALSE)))
+                .reduce(new ArrayList<>(), (items1, items2) -> {
+                    items1.addAll(items2);
+                    return items1;
+                });
     }
 }

@@ -28,41 +28,35 @@
 
 package org.hisp.dhis.android.core.validation.internal;
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.validation.ValidationModule;
 import org.hisp.dhis.android.core.validation.ValidationRule;
 
-import java.util.List;
-import java.util.Set;
-
-import javax.inject.Inject;
-
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
-import io.reactivex.Single;
+import retrofit2.Retrofit;
 
-@Reusable
-final class ValidationRuleCall implements UidsCall<ValidationRule> {
+@Module(includes = {
+        ValidationRuleEntityDIModule.class
+})
+public final class ValidationPackageDIModule {
 
-    private static final int MAX_UID_LIST_SIZE = 64;
-
-    private final ValidationRuleService service;
-    private final Handler<ValidationRule> handler;
-    private final APIDownloader apiDownloader;
-
-    @Inject
-    ValidationRuleCall(ValidationRuleService service, Handler<ValidationRule> handler, APIDownloader apiDownloader) {
-        this.service = service;
-        this.handler = handler;
-        this.apiDownloader = apiDownloader;
+    @Provides
+    @Reusable
+    UidsCall<ValidationRule> validationRuleCall(ValidationRuleCall impl) {
+        return impl;
     }
 
-    @Override
-    public Single<List<ValidationRule>> download(Set<String> validationRuleUids) {
-        return apiDownloader.downloadPartitioned(validationRuleUids, MAX_UID_LIST_SIZE, handler, partitionUids -> {
-            String uidsFilterStr = ObjectWithUid.uid.in(partitionUids).generateString();
-            return service.getValidationRules(ValidationRuleFields.allFields, uidsFilterStr, Boolean.FALSE);
-        });
+    @Provides
+    @Reusable
+    ValidationRuleService validationRuleService(Retrofit retrofit) {
+        return retrofit.create(ValidationRuleService.class);
+    }
+
+    @Provides
+    @Reusable
+    ValidationModule module(ValidationModuleImpl impl) {
+        return impl;
     }
 }

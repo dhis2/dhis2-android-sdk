@@ -26,6 +26,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+plugins {
+    id 'maven-publish'
+}
 apply plugin: "com.android.library"
 apply from: project.file("plugins/android-checkstyle.gradle")
 apply from: project.file("plugins/android-findbugs.gradle")
@@ -225,6 +228,16 @@ dependencies {
     androidTestImplementation("com.facebook.stetho:stetho-okhttp3:${libraries.stetho}") {
         exclude module: 'okhttp'
         exclude module: 'jsr305'
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = GROUP
+            artifactId = POM_ARTIFACT_ID
+            version = VERSION_NAME
+        }
     }
 }
 

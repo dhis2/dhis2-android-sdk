@@ -28,41 +28,25 @@
 
 package org.hisp.dhis.android.core.validation.internal;
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.validation.ValidationRule;
-
-import java.util.List;
-import java.util.Set;
+import org.hisp.dhis.android.core.validation.ValidationModule;
+import org.hisp.dhis.android.core.validation.ValidationRuleCollectionRepository;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
-import io.reactivex.Single;
 
 @Reusable
-final class ValidationRuleCall implements UidsCall<ValidationRule> {
+public final class ValidationModuleImpl implements ValidationModule {
 
-    private static final int MAX_UID_LIST_SIZE = 64;
-
-    private final ValidationRuleService service;
-    private final Handler<ValidationRule> handler;
-    private final APIDownloader apiDownloader;
+    private final ValidationRuleCollectionRepository validationRules;
 
     @Inject
-    ValidationRuleCall(ValidationRuleService service, Handler<ValidationRule> handler, APIDownloader apiDownloader) {
-        this.service = service;
-        this.handler = handler;
-        this.apiDownloader = apiDownloader;
+    ValidationModuleImpl(ValidationRuleCollectionRepository validationRules) {
+        this.validationRules = validationRules;
     }
 
     @Override
-    public Single<List<ValidationRule>> download(Set<String> validationRuleUids) {
-        return apiDownloader.downloadPartitioned(validationRuleUids, MAX_UID_LIST_SIZE, handler, partitionUids -> {
-            String uidsFilterStr = ObjectWithUid.uid.in(partitionUids).generateString();
-            return service.getValidationRules(ValidationRuleFields.allFields, uidsFilterStr, Boolean.FALSE);
-        });
+    public ValidationRuleCollectionRepository validationRules() {
+        return validationRules;
     }
 }

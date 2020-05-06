@@ -29,7 +29,9 @@ package org.hisp.dhis.android.core.dataset.internal;
 
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.arch.modules.internal.MetadataModuleByUidDownloader;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.indicator.Indicator;
@@ -37,6 +39,8 @@ import org.hisp.dhis.android.core.indicator.IndicatorType;
 import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.period.internal.PeriodHandler;
+import org.hisp.dhis.android.core.validation.ValidationRule;
+import org.hisp.dhis.android.core.validation.internal.ValidationRuleUidsCall;
 
 import java.util.List;
 import java.util.Set;
@@ -54,6 +58,8 @@ public class DataSetModuleDownloader implements MetadataModuleByUidDownloader<Li
     private final UidsCallFactory<IndicatorType> indicatorTypeCallFactory;
     private final UidsCall<OptionSet> optionSetCall;
     private final UidsCall<Option> optionCall;
+    private final UidsCall<ValidationRule> validationRuleCall;
+    private final ValidationRuleUidsCall validationRuleUidsCall;
     private final PeriodHandler periodHandler;
 
     @Inject
@@ -63,6 +69,8 @@ public class DataSetModuleDownloader implements MetadataModuleByUidDownloader<Li
                             UidsCallFactory<IndicatorType> indicatorTypeCallFactory,
                             UidsCall<OptionSet> optionSetCall,
                             UidsCall<Option> optionCall,
+                            UidsCall<ValidationRule> validationRuleCall,
+                            ValidationRuleUidsCall validationRuleUidsCall,
                             PeriodHandler periodHandler) {
         this.dataSetCallFactory = dataSetCallFactory;
         this.dataElementCallFactory = dataElementCallFactory;
@@ -70,6 +78,8 @@ public class DataSetModuleDownloader implements MetadataModuleByUidDownloader<Li
         this.indicatorTypeCallFactory = indicatorTypeCallFactory;
         this.optionSetCall = optionSetCall;
         this.optionCall = optionCall;
+        this.validationRuleCall = validationRuleCall;
+        this.validationRuleUidsCall = validationRuleUidsCall;
         this.periodHandler = periodHandler;
     }
 
@@ -92,6 +102,11 @@ public class DataSetModuleDownloader implements MetadataModuleByUidDownloader<Li
             optionSetCall.download(optionSetUids).blockingGet();
 
             optionCall.download(optionSetUids).blockingGet();
+
+            List<ObjectWithUid> validationRuleUids =
+                    validationRuleUidsCall.download(UidsHelper.getUids(dataSets)).blockingGet();
+
+            validationRuleCall.download(UidsHelper.getUids(validationRuleUids)).blockingGet();
 
             periodHandler.generateAndPersist();
 

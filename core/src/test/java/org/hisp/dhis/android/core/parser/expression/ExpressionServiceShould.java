@@ -129,6 +129,60 @@ public class ExpressionServiceShould {
         assertThat(result).isEqualTo(25.0);
     }
 
+    @Test
+    public void evaluate_missing_strategies_with_some_missing_values() {
+        String expression = de(dataElement1) + " + " + de(dataElement2);
+
+        Map<DimensionalItemObject, Double> valueMap = new HashMap<>();
+        valueMap.put(new DataElementOperandObject(dataElement1, null), 5.0);
+
+        Double resultNeverSkip = (Double) service.getExpressionValue(expression, valueMap,
+                Collections.emptyMap(), Collections.emptyMap(), 10, MissingValueStrategy.NEVER_SKIP);
+        assertThat(resultNeverSkip).isEqualTo(5.0);
+
+        Double resultSkipIfAny = (Double) service.getExpressionValue(expression, valueMap,
+                Collections.emptyMap(), Collections.emptyMap(), 10, MissingValueStrategy.SKIP_IF_ANY_VALUE_MISSING);
+        assertThat(resultSkipIfAny).isNull();
+
+        Double resultSkipIfAll = (Double) service.getExpressionValue(expression, valueMap,
+                Collections.emptyMap(), Collections.emptyMap(), 10, MissingValueStrategy.SKIP_IF_ALL_VALUES_MISSING);
+        assertThat(resultSkipIfAll).isEqualTo(5.0);
+    }
+
+    @Test
+    public void evaluate_missing_strategies_with_all_missing_values() {
+        String expression = de(dataElement1) + " + " + de(dataElement2);
+
+        Map<DimensionalItemObject, Double> valueMap = Collections.emptyMap();
+
+        Double resultNeverSkip = (Double) service.getExpressionValue(expression, valueMap,
+                Collections.emptyMap(), Collections.emptyMap(), 10, MissingValueStrategy.NEVER_SKIP);
+        assertThat(resultNeverSkip).isEqualTo(0.0);
+
+        Double resultSkipIfAny = (Double) service.getExpressionValue(expression, valueMap,
+                Collections.emptyMap(), Collections.emptyMap(), 10, MissingValueStrategy.SKIP_IF_ANY_VALUE_MISSING);
+        assertThat(resultSkipIfAny).isNull();
+
+        Double resultSkipIfAll = (Double) service.getExpressionValue(expression, valueMap,
+                Collections.emptyMap(), Collections.emptyMap(), 10, MissingValueStrategy.SKIP_IF_ALL_VALUES_MISSING);
+        assertThat(resultSkipIfAll).isNull();
+    }
+
+    @Test
+    public void evaluate_number_comparison() {
+        assertThat((Boolean) service.getExpressionValue("5.0 < 8.0")).isTrue();
+        assertThat((Boolean) service.getExpressionValue("5.0 < 5.0")).isFalse();
+
+        assertThat((Boolean) service.getExpressionValue("5.0 <= 8.0")).isTrue();
+        assertThat((Boolean) service.getExpressionValue("5.0 <= 5.0")).isTrue();
+
+        assertThat((Boolean) service.getExpressionValue("5.0 == 8.0")).isFalse();
+        assertThat((Boolean) service.getExpressionValue("5.0 == 5.0")).isTrue();
+
+        assertThat((Boolean) service.getExpressionValue("5.0 != 8.0")).isTrue();
+        assertThat((Boolean) service.getExpressionValue("5.0 != 5.0")).isFalse();
+    }
+
     private String constant(String uid) {
         return "C{" + uid + "}";
     }

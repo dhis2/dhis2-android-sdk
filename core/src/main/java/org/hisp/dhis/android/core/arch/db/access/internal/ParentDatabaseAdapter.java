@@ -40,7 +40,7 @@ class ParentDatabaseAdapter implements DatabaseAdapter {
 
     private DatabaseAdapter getAdapter() {
         if (adapter == null) {
-            throw new RuntimeException("Database not yet created. Please login first.");
+            throw new RuntimeException("Please login to access the database.");
         } else {
             return adapter;
         }

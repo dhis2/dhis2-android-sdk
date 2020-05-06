@@ -3,11 +3,11 @@ title: 'DHIS 2 Android SDK Developer Guide'
 author: 'DHIS 2'
 date:
 year: 2020
-month: April
+month: May
 keywords: [DHIS2, Android]
 commit:
 version: master
-applicable_txt: 'Applicable to version 1.1.0'
+applicable_txt: 'Applicable to version 1.1.1'
 ---
 <!--DHIS2-SECTION-ID:index-->
 

@@ -222,6 +222,11 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
     }
 
     @Override
+    public String countAndGroupBy(String column) {
+        return "SELECT " + column + " , COUNT(*) FROM (" + selectAll() + ") GROUP BY " + column + ";";
+    }
+
+    @Override
     public String selectWhere(String whereClause, String orderByClause) {
         return selectWhere(whereClause) + " ORDER BY " + orderByClause;
     }

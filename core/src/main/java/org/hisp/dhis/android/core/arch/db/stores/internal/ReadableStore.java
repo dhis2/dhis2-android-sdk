@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.arch.db.stores.internal;
 import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ReadableStore<M> {
 
@@ -53,4 +54,6 @@ public interface ReadableStore<M> {
     int count();
 
     int countWhere(String whereClause);
+
+    Map<String, Integer> groupAndGetCountBy(String column);
 }

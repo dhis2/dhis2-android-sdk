@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.validation.engine;
 
 import org.apache.commons.lang3.math.NumberUtils;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.constant.Constant;
 import org.hisp.dhis.android.core.constant.ConstantCollectionRepository;
 import org.hisp.dhis.android.core.dataset.DataSet;
@@ -36,6 +37,8 @@ import org.hisp.dhis.android.core.dataset.DataSetCollectionRepository;
 import org.hisp.dhis.android.core.dataset.DataSetElement;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.datavalue.DataValueCollectionRepository;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLink;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo;
 import org.hisp.dhis.android.core.parser.service.dataobject.DataElementOperandObject;
 import org.hisp.dhis.android.core.parser.service.dataobject.DimensionalItemObject;
 import org.hisp.dhis.android.core.period.Period;
@@ -51,6 +54,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 public class ValidationService {
 
     private ValidationExecutor validationExecutor;
@@ -63,16 +68,21 @@ public class ValidationService {
 
     private PeriodCollectionRepository periodRepository;
 
+    private LinkStore<OrganisationUnitOrganisationUnitGroupLink> orgunitGroupLinkStore;
+
+    @Inject
     ValidationService(ValidationExecutor validationExecutor,
                       DataValueCollectionRepository dataValueRepository,
                       DataSetCollectionRepository dataSetRepository,
                       ConstantCollectionRepository constantRepository,
-                      PeriodCollectionRepository periodRepository) {
+                      PeriodCollectionRepository periodRepository,
+                      LinkStore<OrganisationUnitOrganisationUnitGroupLink> orgunitGroupLinkStore) {
         this.validationExecutor = validationExecutor;
         this.dataValueRepository = dataValueRepository;
         this.dataSetRepository = dataSetRepository;
         this.constantRepository = constantRepository;
         this.periodRepository = periodRepository;
+        this.orgunitGroupLinkStore = orgunitGroupLinkStore;
     }
 
     public ValidationResult validate(String dataSetUid, String attributeOptionComboUid,
@@ -153,8 +163,8 @@ public class ValidationService {
     }
 
     private Map<String, Integer> getOrgunitGroupMap() {
-        // TODO
-        return Collections.emptyMap();
+        return orgunitGroupLinkStore.groupAndGetCountBy(
+                OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT_GROUP);
     }
 
     private Integer getDays(String periodId) {

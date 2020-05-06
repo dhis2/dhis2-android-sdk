@@ -41,10 +41,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+@Singleton
 class ValidationExecutor {
 
     private ExpressionService expressionService;
 
+    @Inject
     ValidationExecutor(ExpressionService expressionService) {
         this.expressionService = expressionService;
     }

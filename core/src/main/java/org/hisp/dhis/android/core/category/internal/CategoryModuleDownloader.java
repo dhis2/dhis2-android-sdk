@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.category.internal;
 
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
@@ -45,15 +44,15 @@ import io.reactivex.Completable;
 public class CategoryModuleDownloader implements UntypedModuleDownloader {
 
     private final UidsCall<Category> categoryCall;
-    private final UidsCallFactory<CategoryCombo> categoryComboCallFactory;
+    private final UidsCall<CategoryCombo> categoryComboCall;
     private final CategoryComboUidsSeeker categoryComboUidsSeeker;
 
     @Inject
     CategoryModuleDownloader(UidsCall<Category> categoryCall,
-                             UidsCallFactory<CategoryCombo> categoryComboCallFactory,
+                             UidsCall<CategoryCombo> categoryComboCall,
                              CategoryComboUidsSeeker categoryComboUidsSeeker) {
         this.categoryCall = categoryCall;
-        this.categoryComboCallFactory = categoryComboCallFactory;
+        this.categoryComboCall = categoryComboCall;
         this.categoryComboUidsSeeker = categoryComboUidsSeeker;
     }
 
@@ -61,7 +60,7 @@ public class CategoryModuleDownloader implements UntypedModuleDownloader {
     public Completable downloadMetadata() {
         return Completable.fromAction(() -> {
             Set<String> comboUids = categoryComboUidsSeeker.seekUids();
-            List<CategoryCombo> categoryCombos = categoryComboCallFactory.create(comboUids).call();
+            List<CategoryCombo> categoryCombos = categoryComboCall.download(comboUids).blockingGet();
             categoryCall.download(CategoryParentUidsHelper.getCategoryUids(categoryCombos)).blockingGet();
         });
     }

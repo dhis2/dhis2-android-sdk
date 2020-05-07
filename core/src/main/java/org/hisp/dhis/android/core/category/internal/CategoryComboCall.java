@@ -29,60 +29,39 @@
 package org.hisp.dhis.android.core.category.internal;
 
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactoryImpl;
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.UidsNoResourceCallFetcher;
-import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
-import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
-import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor;
-import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Single;
 
 @Reusable
-final class CategoryComboEndpointCallFactory extends UidsCallFactoryImpl<CategoryCombo> {
+final class CategoryComboCall implements UidsCall<CategoryCombo> {
 
     private static final int MAX_UID_LIST_SIZE = 130;
 
     private final CategoryComboService service;
     private final Handler<CategoryCombo> handler;
+    private final APIDownloader apiDownloader;
 
     @Inject
-    CategoryComboEndpointCallFactory(GenericCallData data,
-                                     APICallExecutor apiCallExecutor,
-                                     CategoryComboService service,
-                                     Handler<CategoryCombo> handler) {
-        super(data, apiCallExecutor);
+    CategoryComboCall(CategoryComboService service, Handler<CategoryCombo> handler, APIDownloader apiDownloader) {
         this.service = service;
         this.handler = handler;
+        this.apiDownloader = apiDownloader;
     }
 
     @Override
-    protected CallFetcher<CategoryCombo> fetcher(Set<String> uids) {
-
-        return new UidsNoResourceCallFetcher<CategoryCombo>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
-
-            @Override
-            protected retrofit2.Call<Payload<CategoryCombo>> getCall(UidsQuery query) {
-                return service.getCategoryCombos(
-                        CategoryComboFields.allFields,
-                        CategoryComboFields.uid.in(query.uids()),
-                        Boolean.FALSE);
-            }
-        };
-    }
-
-    @Override
-    protected CallProcessor<CategoryCombo> processor() {
-        return new TransactionalNoResourceSyncCallProcessor<>(
-                data.databaseAdapter(), handler);
+    public Single<List<CategoryCombo>> download(Set<String> uids) {
+        return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler, partitionUids ->
+                service.getCategoryCombos(CategoryComboFields.allFields, CategoryComboFields.uid.in(partitionUids),
+                        Boolean.FALSE));
     }
 }

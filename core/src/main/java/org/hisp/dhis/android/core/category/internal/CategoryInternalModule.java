@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.category.internal;
 import androidx.annotation.VisibleForTesting;
 
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 
@@ -48,12 +47,12 @@ public final class CategoryInternalModule {
 
     @VisibleForTesting
     @SuppressFBWarnings("URF_UNREAD_FIELD")
-    final UidsCallFactory<CategoryCombo> categoryComboCallFactory;
+    final UidsCall<CategoryCombo> categoryComboCall;
 
     @Inject
     CategoryInternalModule(UidsCall<Category> categoryCall,
-                           UidsCallFactory<CategoryCombo> categoryComboCallFactory) {
+                           UidsCall<CategoryCombo> categoryComboCall) {
         this.categoryCall = categoryCall;
-        this.categoryComboCallFactory = categoryComboCallFactory;
+        this.categoryComboCall = categoryComboCall;
     }
 }

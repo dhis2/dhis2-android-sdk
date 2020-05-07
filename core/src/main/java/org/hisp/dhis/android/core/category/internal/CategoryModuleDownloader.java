@@ -32,13 +32,11 @@ import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 
-import java.util.List;
-import java.util.Set;
-
 import javax.inject.Inject;
 
 import dagger.Reusable;
 import io.reactivex.Completable;
+import io.reactivex.Single;
 
 @Reusable
 public class CategoryModuleDownloader implements UntypedModuleDownloader {
@@ -58,10 +56,10 @@ public class CategoryModuleDownloader implements UntypedModuleDownloader {
 
     @Override
     public Completable downloadMetadata() {
-        return Completable.fromAction(() -> {
-            Set<String> comboUids = categoryComboUidsSeeker.seekUids();
-            List<CategoryCombo> categoryCombos = categoryComboCall.download(comboUids).blockingGet();
-            categoryCall.download(CategoryParentUidsHelper.getCategoryUids(categoryCombos)).blockingGet();
-        });
+        return Single.fromCallable(categoryComboUidsSeeker::seekUids)
+                .flatMap(categoryComboCall::download)
+                .flatMap(categoryCombos ->
+                        categoryCall.download(CategoryParentUidsHelper.getCategoryUids(categoryCombos)))
+                .ignoreElement();
     }
 }

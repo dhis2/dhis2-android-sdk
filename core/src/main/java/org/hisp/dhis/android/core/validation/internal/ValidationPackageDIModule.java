@@ -38,13 +38,20 @@ import dagger.Reusable;
 import retrofit2.Retrofit;
 
 @Module(includes = {
-        ValidationRuleEntityDIModule.class
+        ValidationRuleEntityDIModule.class,
+        DataSetValidationRuleLinkEntityDIModule.class
 })
 public final class ValidationPackageDIModule {
 
     @Provides
     @Reusable
     UidsCall<ValidationRule> validationRuleCall(ValidationRuleCall impl) {
+        return impl;
+    }
+
+    @Provides
+    @Reusable
+    ValidationRuleUidsCall validationRuleUidsCall(ValidationRuleUidsCallImpl impl) {
         return impl;
     }
 

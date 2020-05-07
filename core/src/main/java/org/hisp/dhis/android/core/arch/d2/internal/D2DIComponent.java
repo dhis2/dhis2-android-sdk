@@ -84,6 +84,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityPackageDIModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.user.internal.UserPackageDIModule;
+import org.hisp.dhis.android.core.validation.internal.ValidationPackageDIModule;
 import org.hisp.dhis.android.core.wipe.internal.WipeDIModule;
 import org.hisp.dhis.android.core.wipe.internal.WipeModule;
 
@@ -129,7 +130,8 @@ import retrofit2.Retrofit;
         SettingPackageDIModule.class,
         TrackedEntityPackageDIModule.class,
         SmsDIModule.class,
-        UserPackageDIModule.class}
+        UserPackageDIModule.class,
+        ValidationPackageDIModule.class}
 )
 
 public interface D2DIComponent {
@@ -198,6 +200,7 @@ public interface D2DIComponent {
         Builder systemSettingPackageDIModule(SettingPackageDIModule settingPackageDIModule);
         Builder trackedEntityPackageDIModule(TrackedEntityPackageDIModule trackedEntityPackageDIModule);
         Builder userPackageDIModule(UserPackageDIModule userPackageDIModule);
+        Builder validationPackageDIModule(ValidationPackageDIModule validationPackageDIModule);
         D2DIComponent build();
     }
 

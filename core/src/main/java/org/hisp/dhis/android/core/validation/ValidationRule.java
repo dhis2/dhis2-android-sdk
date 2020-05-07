@@ -156,6 +156,28 @@ public abstract class ValidationRule extends BaseNameableObject implements CoreO
 
         abstract Builder rightSideMissingValueStrategy(MissingValueStrategy rightSideMissingValueStrategy);
 
-        public abstract ValidationRule build();
+        abstract Builder organisationUnitLevels(List<OrganisationUnitLevel> organisationUnitLevels);
+
+        abstract ValidationRule autoBuild();
+
+        // Auxiliary fields
+        abstract ValidationRuleExpression leftSide();
+        abstract ValidationRuleExpression rightSide();
+
+        public ValidationRule build() {
+            if (leftSide() != null) {
+                leftSideExpression(leftSide().expression());
+                leftSideDescription(leftSide().description());
+                leftSideMissingValueStrategy(leftSide().missingValueStrategy());
+            }
+
+            if (rightSide() != null) {
+                rightSideExpression(rightSide().expression());
+                rightSideDescription(rightSide().description());
+                rightSideMissingValueStrategy(rightSide().missingValueStrategy());
+            }
+
+            return autoBuild();
+        }
     }
 }

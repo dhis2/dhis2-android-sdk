@@ -90,20 +90,19 @@ public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<Li
             Set<String> programUids = UidsHelper.getUids(programs);
             return programStageCall.download(programUids).flatMap(programStages -> {
                 Set<String> trackedEntityUids = ProgramParentUidsHelper.getAssignedTrackedEntityUids(programs);
-                return trackedEntityTypeCall.download(trackedEntityUids).flatMap(trackedEntityTypes -> {
-                    Set<String> attributeUids = ProgramParentUidsHelper.getAssignedTrackedEntityAttributeUids(
-                            programs, trackedEntityTypes);
-                    return trackedEntityAttributeCall.download(attributeUids).flatMap(attributes -> {
-                        Set<String> optionSetUids = ProgramParentUidsHelper.getAssignedOptionSetUids(
-                                attributes, programStages);
-                        return Single.merge(
-                                programRuleCall.download(programUids),
-                                relationshipTypeCall.download(),
-                                optionSetCall.download(optionSetUids),
-                                optionCall.download(optionSetUids)
-                        ).ignoreElements()
-                                .andThen(optionGroupCall.download(optionSetUids)).map(toIgnore -> programs);
-                    });
+                return trackedEntityTypeCall.download(trackedEntityUids).flatMap(trackedEntityTypes ->
+                        trackedEntityAttributeCall.download(ProgramParentUidsHelper
+                                .getAssignedTrackedEntityAttributeUids(programs, trackedEntityTypes)))
+                        .flatMap(attributes -> {
+                            Set<String> optionSetUids = ProgramParentUidsHelper.getAssignedOptionSetUids(
+                                    attributes, programStages);
+                            return Single.merge(
+                                    programRuleCall.download(programUids),
+                                    relationshipTypeCall.download(),
+                                    optionSetCall.download(optionSetUids),
+                                    optionCall.download(optionSetUids)
+                            ).ignoreElements()
+                                    .andThen(optionGroupCall.download(optionSetUids)).map(toIgnore -> programs);
                 });
             });
         });

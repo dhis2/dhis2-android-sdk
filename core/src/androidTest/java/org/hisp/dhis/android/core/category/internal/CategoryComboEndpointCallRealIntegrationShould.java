@@ -88,9 +88,9 @@ public class CategoryComboEndpointCallRealIntegrationShould extends BaseRealInte
         assertThereAreCategoriesInDB();
     }
 
-    private void downloadCategories() throws Exception {
-        getD2DIComponent(d2).internalModules().category.categoryCallFactory.create(
-                new HashSet<>(Lists.newArrayList("GLevLNI9wkl"))).call();
+    private void downloadCategories() {
+        getD2DIComponent(d2).internalModules().category.categoryCall.download(
+                new HashSet<>(Lists.newArrayList("GLevLNI9wkl"))).blockingGet();
     }
 
     private void assertNotCombosInDB() {

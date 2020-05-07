@@ -39,7 +39,8 @@ import org.junit.Before;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.Callable;
+
+import io.reactivex.Single;
 
 import static junit.framework.Assert.assertFalse;
 
@@ -58,9 +59,9 @@ public class CategoryEndpointCallRealIntegrationShould extends BaseRealIntegrati
     public void call_categories_endpoint() throws Exception {
         d2.userModule().logIn(username, password, url).blockingGet();
 
-        Callable<List<Category>> categoryEndpointCall = getD2DIComponent(d2).internalModules().category.categoryCallFactory.create(
+        Single<List<Category>> categoryEndpointCall = getD2DIComponent(d2).internalModules().category.categoryCall.download(
                 new HashSet<>(Lists.newArrayList("cX5k9anHEHd")));
-        List<Category> categories = categoryEndpointCall.call();
+        List<Category> categories = categoryEndpointCall.blockingGet();
 
         assertFalse(categories.isEmpty());
     }

@@ -29,61 +29,38 @@
 package org.hisp.dhis.android.core.category.internal;
 
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactoryImpl;
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.UidsNoResourceCallFetcher;
-import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
-import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
-import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor;
-import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.category.Category;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Single;
 
 @Reusable
-final class CategoryEndpointCallFactory extends UidsCallFactoryImpl<Category> {
+final class CategoryCall implements UidsCall<Category> {
 
     private static final int MAX_UID_LIST_SIZE = 90;
 
     private final Handler<Category> handler;
     private final CategoryService service;
+    private final APIDownloader apiDownloader;
 
     @Inject
-    CategoryEndpointCallFactory(GenericCallData data,
-                                APICallExecutor apiCallExecutor,
-                                Handler<Category> handler,
-                                CategoryService service) {
-        super(data, apiCallExecutor);
+    CategoryCall(Handler<Category> handler, CategoryService service, APIDownloader apiDownloader) {
         this.handler = handler;
         this.service = service;
+        this.apiDownloader = apiDownloader;
     }
 
     @Override
-    protected CallFetcher<Category> fetcher(Set<String> uids) {
-
-        return new UidsNoResourceCallFetcher<Category>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
-
-            @Override
-            protected retrofit2.Call<Payload<Category>> getCall(UidsQuery query) {
-                return service.getCategory(
-                        CategoryFields.allFields,
-                        CategoryFields.uid.in(query.uids()),
-                        Boolean.FALSE);
-            }
-        };
-    }
-
-    @Override
-    protected CallProcessor<Category> processor() {
-        return new TransactionalNoResourceSyncCallProcessor<>(
-                data.databaseAdapter(), handler
-        );
+    public Single<List<Category>> download(Set<String> optionSetUids) {
+        return apiDownloader.downloadPartitioned(optionSetUids, MAX_UID_LIST_SIZE, handler, partitionUids ->
+                service.getCategories(CategoryFields.allFields, CategoryFields.uid.in(partitionUids), Boolean.FALSE));
     }
 }

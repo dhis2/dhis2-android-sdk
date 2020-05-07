@@ -36,14 +36,14 @@ import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.category.Category;
 
-import retrofit2.Call;
+import io.reactivex.Single;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 interface CategoryService {
 
   @GET("categories")
-  Call<Payload<Category>> getCategory(@Query("fields") @Which Fields<Category> fields,
-                                      @Query("filter") @Where Filter<Category, String> uids,
-                                      @Query("paging") Boolean paging);
+  Single<Payload<Category>> getCategories(@Query("fields") @Which Fields<Category> fields,
+                                          @Query("filter") @Where Filter<Category, String> uids,
+                                          @Query("paging") Boolean paging);
 }

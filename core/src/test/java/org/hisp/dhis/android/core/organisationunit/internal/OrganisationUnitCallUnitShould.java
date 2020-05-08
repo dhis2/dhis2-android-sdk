@@ -27,16 +27,11 @@
  */
 package org.hisp.dhis.android.core.organisationunit.internal;
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.resource.internal.Resource;
-import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserInternalAccessor;
 import org.junit.Before;
@@ -68,12 +63,6 @@ import static org.mockito.Mockito.when;
 public class OrganisationUnitCallUnitShould {
 
     @Mock
-    private DatabaseAdapter databaseAdapter;
-
-    @Mock
-    private APICallExecutor apiCallExecutor;
-
-    @Mock
     private Payload<OrganisationUnit> organisationUnitPayload;
 
     @Mock
@@ -99,8 +88,6 @@ public class OrganisationUnitCallUnitShould {
     @Mock
     private OrganisationUnit organisationUnit;
 
-    private List<OrganisationUnit> organisationUnits;
-
     @Mock
     private User user;
 
@@ -109,12 +96,6 @@ public class OrganisationUnitCallUnitShould {
 
     @Mock
     private Date lastUpdated;
-
-    @Mock
-    private ResourceHandler resourceHandler;
-
-    @Mock
-    private GenericCallData genericCallData;
 
     @Mock
     private OrganisationUnitHandler organisationUnitHandler;
@@ -170,11 +151,11 @@ public class OrganisationUnitCallUnitShould {
         when(user.nationality()).thenReturn("user_nationality");
 
         organisationUnitCall = new OrganisationUnitCallFactory(organisationUnitService, organisationUnitHandler,
-                organisationUnitDisplayPathTransformer, resourceHandler)
+                organisationUnitDisplayPathTransformer)
                 .create(user);
 
         //Return only one organisationUnit.
-        organisationUnits = Collections.singletonList(organisationUnit);
+        List<OrganisationUnit> organisationUnits = Collections.singletonList(organisationUnit);
         when(UserInternalAccessor.accessOrganisationUnits(user)).thenReturn(new ArrayList<>(organisationUnits));
 
         when(organisationUnitService.getOrganisationUnits(
@@ -182,19 +163,10 @@ public class OrganisationUnitCallUnitShould {
                 pageSizeCaptor.capture(), pageCaptor.capture()
         )).thenReturn(Single.just(organisationUnitPayload));
         when(organisationUnitPayload.items()).thenReturn(organisationUnits);
-
-        when(genericCallData.resourceHandler()).thenReturn(resourceHandler);
-        when(genericCallData.databaseAdapter()).thenReturn(databaseAdapter);
-        when(resourceHandler.getLastUpdated(Resource.Type.ORGANISATION_UNIT)).thenReturn("lastUpdated");
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void invoke_server_with_correct_parameters() throws Exception {
-        String date = "2014-11-25T09:37:53.358";
-        when(genericCallData.resourceHandler().getLastUpdated(Resource.Type.ORGANISATION_UNIT))
-                .thenReturn(date);
-
         organisationUnitCall.call();
 
         assertThat(fieldsCaptor.getValue()).isEqualTo(OrganisationUnitFields.allFields);

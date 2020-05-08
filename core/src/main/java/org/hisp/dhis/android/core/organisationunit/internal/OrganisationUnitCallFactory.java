@@ -31,10 +31,7 @@ import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.resource.internal.Resource;
-import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserInternalAccessor;
 
@@ -59,18 +56,14 @@ class OrganisationUnitCallFactory {
     private final OrganisationUnitHandler handler;
     private final OrganisationUnitDisplayPathTransformer pathTransformer;
 
-    private final ResourceHandler resourceHandler;
-
     @Inject
     OrganisationUnitCallFactory(@NonNull OrganisationUnitService organisationUnitService,
                                 @NonNull OrganisationUnitHandler handler,
-                                @NonNull OrganisationUnitDisplayPathTransformer pathTransformer,
-                                @NonNull ResourceHandler resourceHandler) {
+                                @NonNull OrganisationUnitDisplayPathTransformer pathTransformer) {
 
         this.organisationUnitService = organisationUnitService;
         this.handler = handler;
         this.pathTransformer = pathTransformer;
-        this.resourceHandler = resourceHandler;
     }
 
     public Callable<List<OrganisationUnit>> create(final User user) {
@@ -78,35 +71,36 @@ class OrganisationUnitCallFactory {
         return () -> {
             handler.resetLinks();
 
-            List<OrganisationUnit> allOrgUnits = downloadOrgUnits(user);
+            Set<OrganisationUnit> rootSearchOrgUnits =
+                    findRoots(UserInternalAccessor.accessTeiSearchOrganisationUnits(user));
+            List<OrganisationUnit> searchOrgUnits = downloadSearchOrgUnits(rootSearchOrgUnits, user);
+            List<OrganisationUnit> dataCaptureOrgUnits = downloadDataCaptureOrgUnits(rootSearchOrgUnits, searchOrgUnits,
+                    user);
 
-            resourceHandler.handleResource(Resource.Type.ORGANISATION_UNIT);
-
-            return allOrgUnits;
+            searchOrgUnits.addAll(dataCaptureOrgUnits);
+            return searchOrgUnits;
         };
     }
 
-    private List<OrganisationUnit> downloadOrgUnits(final User user) throws D2Error {
-        Set<OrganisationUnit> rootSearchOrgUnits =
-                findRoots(UserInternalAccessor.accessTeiSearchOrganisationUnits(user));
-        List<OrganisationUnit> orgUnits =
-                downloadOrgUnits(UidsHelper.getUids(rootSearchOrgUnits), user, OrganisationUnit.Scope.SCOPE_TEI_SEARCH);
+    private List<OrganisationUnit> downloadSearchOrgUnits(Set<OrganisationUnit> rootSearchOrgUnits, User user) {
+        return downloadOrgUnits(UidsHelper.getUids(rootSearchOrgUnits), user, OrganisationUnit.Scope.SCOPE_TEI_SEARCH);
+    }
 
+    private List<OrganisationUnit> downloadDataCaptureOrgUnits(Set<OrganisationUnit> rootSearchOrgUnits,
+                                                               List<OrganisationUnit> searchOrgUnits, User user) {
         Set<OrganisationUnit> allRootCaptureOrgUnits = findRoots(UserInternalAccessor.accessOrganisationUnits(user));
         Set<OrganisationUnit> rootCaptureOrgUnitsOutsideSearchScope =
                 findRootsOutsideSearchScope(allRootCaptureOrgUnits, rootSearchOrgUnits);
-        linkCaptureOrgUnitsInSearchScope(getCaptureOrgUnitsInSearchScope(orgUnits, allRootCaptureOrgUnits,
+        linkCaptureOrgUnitsInSearchScope(getCaptureOrgUnitsInSearchScope(searchOrgUnits, allRootCaptureOrgUnits,
                 rootCaptureOrgUnitsOutsideSearchScope), user);
 
-        orgUnits.addAll(downloadOrgUnits(UidsHelper.getUids(rootCaptureOrgUnitsOutsideSearchScope),
-                user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE));
-
-        return orgUnits;
+        return downloadOrgUnits(UidsHelper.getUids(rootCaptureOrgUnitsOutsideSearchScope),
+                user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
     }
 
     private List<OrganisationUnit> downloadOrgUnits(final Set<String> orgUnits,
                                                     final User user,
-                                                    final OrganisationUnit.Scope scope) throws D2Error {
+                                                    final OrganisationUnit.Scope scope) {
 
         handler.setData(user, scope);
 

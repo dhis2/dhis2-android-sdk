@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
+import io.reactivex.Single;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -58,7 +59,7 @@ interface OrganisationUnitService {
     );
 
     @GET(ORGANISATION_UNITS)
-    Call<Payload<OrganisationUnit>> getSearchOrganisationUnits(
+    Single<Payload<OrganisationUnit>> getSearchOrganisationUnits(
             @Query(FIELDS) @Which Fields<OrganisationUnit> fields,
             @Query(FILTER) @Where Filter<OrganisationUnit, String> filter,
             @Query(PAGING) Boolean paging

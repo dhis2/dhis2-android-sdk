@@ -43,13 +43,13 @@ import io.reactivex.Single;
 public class OrganisationUnitModuleDownloader {
 
     private final OrganisationUnitCallFactory organisationUnitCallFactory;
-    private final SearchOrganisationUnitOnDemandCallFactory searchOrganisationUnitOnDemandCallFactory;
+    private final SearchOrganisationUnitOnDemandCall searchOrganisationUnitOnDemandCallFactory;
     private final OrganisationUnitLevelEndpointCallFactory organisationUnitLevelEndpointCallFactory;
 
 
     @Inject
     OrganisationUnitModuleDownloader(OrganisationUnitCallFactory organisationUnitCallFactory,
-                                     SearchOrganisationUnitOnDemandCallFactory
+                                     SearchOrganisationUnitOnDemandCall
                                              searchOrganisationUnitOnDemandCallFactory,
                                      OrganisationUnitLevelEndpointCallFactory
                                              organisationUnitLevelEndpointCallFactory) {
@@ -71,7 +71,7 @@ public class OrganisationUnitModuleDownloader {
         if (uids.isEmpty()) {
             return Completable.complete();
         } else {
-            return Completable.fromCallable(searchOrganisationUnitOnDemandCallFactory.create(uids));
+            return searchOrganisationUnitOnDemandCallFactory.download(uids).ignoreElement();
         }
     }
 }

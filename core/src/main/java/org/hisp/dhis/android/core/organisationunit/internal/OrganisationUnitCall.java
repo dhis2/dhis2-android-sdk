@@ -50,16 +50,16 @@ import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree.f
 import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree.getCaptureOrgUnitsInSearchScope;
 
 @Reusable
-class OrganisationUnitCallFactory {
+class OrganisationUnitCall {
 
     private final OrganisationUnitService organisationUnitService;
     private final OrganisationUnitHandler handler;
     private final OrganisationUnitDisplayPathTransformer pathTransformer;
 
     @Inject
-    OrganisationUnitCallFactory(@NonNull OrganisationUnitService organisationUnitService,
-                                @NonNull OrganisationUnitHandler handler,
-                                @NonNull OrganisationUnitDisplayPathTransformer pathTransformer) {
+    OrganisationUnitCall(@NonNull OrganisationUnitService organisationUnitService,
+                         @NonNull OrganisationUnitHandler handler,
+                         @NonNull OrganisationUnitDisplayPathTransformer pathTransformer) {
 
         this.organisationUnitService = organisationUnitService;
         this.handler = handler;

@@ -42,25 +42,25 @@ import io.reactivex.Single;
 @Reusable
 public class OrganisationUnitModuleDownloader {
 
-    private final OrganisationUnitCallFactory organisationUnitCallFactory;
-    private final SearchOrganisationUnitOnDemandCall searchOrganisationUnitOnDemandCallFactory;
+    private final OrganisationUnitCall organisationUnitCall;
+    private final SearchOrganisationUnitOnDemandCall searchOrganisationUnitOnDemandCall;
     private final OrganisationUnitLevelEndpointCallFactory organisationUnitLevelEndpointCallFactory;
 
 
     @Inject
-    OrganisationUnitModuleDownloader(OrganisationUnitCallFactory organisationUnitCallFactory,
+    OrganisationUnitModuleDownloader(OrganisationUnitCall organisationUnitCall,
                                      SearchOrganisationUnitOnDemandCall
-                                             searchOrganisationUnitOnDemandCallFactory,
+                                             searchOrganisationUnitOnDemandCall,
                                      OrganisationUnitLevelEndpointCallFactory
                                              organisationUnitLevelEndpointCallFactory) {
-        this.organisationUnitCallFactory = organisationUnitCallFactory;
-        this.searchOrganisationUnitOnDemandCallFactory = searchOrganisationUnitOnDemandCallFactory;
+        this.organisationUnitCall = organisationUnitCall;
+        this.searchOrganisationUnitOnDemandCall = searchOrganisationUnitOnDemandCall;
         this.organisationUnitLevelEndpointCallFactory = organisationUnitLevelEndpointCallFactory;
     }
 
     public Single<List<OrganisationUnit>> downloadMetadata(final User user) {
         return Single.fromCallable(() -> {
-            List<OrganisationUnit> organisationUnits = organisationUnitCallFactory.create(user).call();
+            List<OrganisationUnit> organisationUnits = organisationUnitCall.create(user).call();
             organisationUnitLevelEndpointCallFactory.create().call();
 
             return organisationUnits;
@@ -71,7 +71,7 @@ public class OrganisationUnitModuleDownloader {
         if (uids.isEmpty()) {
             return Completable.complete();
         } else {
-            return searchOrganisationUnitOnDemandCallFactory.download(uids).ignoreElement();
+            return searchOrganisationUnitOnDemandCall.download(uids).ignoreElement();
         }
     }
 }

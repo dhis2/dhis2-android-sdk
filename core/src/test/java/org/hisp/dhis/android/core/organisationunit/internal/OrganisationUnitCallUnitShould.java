@@ -150,7 +150,7 @@ public class OrganisationUnitCallUnitShould {
         when(user.phoneNumber()).thenReturn("user_phone_number");
         when(user.nationality()).thenReturn("user_nationality");
 
-        organisationUnitCall = new OrganisationUnitCallFactory(organisationUnitService, organisationUnitHandler,
+        organisationUnitCall = new OrganisationUnitCall(organisationUnitService, organisationUnitHandler,
                 organisationUnitDisplayPathTransformer)
                 .create(user);
 

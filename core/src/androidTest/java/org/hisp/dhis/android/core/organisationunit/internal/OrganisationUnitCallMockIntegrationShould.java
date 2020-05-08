@@ -105,7 +105,7 @@ public class OrganisationUnitCallMockIntegrationShould extends BaseMockIntegrati
 
         OrganisationUnitDisplayPathTransformer pathTransformer = new OrganisationUnitDisplayPathTransformer();
 
-        organisationUnitCall = new OrganisationUnitCallFactory(organisationUnitService,
+        organisationUnitCall = new OrganisationUnitCall(organisationUnitService,
                 organisationUnitHandler, pathTransformer)
                 .create(user);
     }

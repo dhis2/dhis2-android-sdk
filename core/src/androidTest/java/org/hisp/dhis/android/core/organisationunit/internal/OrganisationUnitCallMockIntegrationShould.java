@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.organisationunit.internal;
 
 import android.content.ContentValues;
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
@@ -105,12 +103,10 @@ public class OrganisationUnitCallMockIntegrationShould extends BaseMockIntegrati
         OrganisationUnitHandler organisationUnitHandler =
                 OrganisationUnitHandlerImpl.create(databaseAdapter);
 
-        APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter);
-
         OrganisationUnitDisplayPathTransformer pathTransformer = new OrganisationUnitDisplayPathTransformer();
 
         organisationUnitCall = new OrganisationUnitCallFactory(organisationUnitService,
-                organisationUnitHandler, pathTransformer, apiCallExecutor, objects.resourceHandler)
+                organisationUnitHandler, pathTransformer, objects.resourceHandler)
                 .create(user);
     }
 

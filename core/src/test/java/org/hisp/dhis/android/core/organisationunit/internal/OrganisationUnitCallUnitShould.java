@@ -43,7 +43,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -55,6 +54,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
+
+import io.reactivex.Single;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.any;
@@ -72,9 +73,8 @@ public class OrganisationUnitCallUnitShould {
     @Mock
     private APICallExecutor apiCallExecutor;
 
-    //Mock return value of the mock service:
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private retrofit2.Call<Payload<OrganisationUnit>> retrofitCall;
+    @Mock
+    private Payload<OrganisationUnit> organisationUnitPayload;
 
     @Mock
     private OrganisationUnitService organisationUnitService;
@@ -170,7 +170,7 @@ public class OrganisationUnitCallUnitShould {
         when(user.nationality()).thenReturn("user_nationality");
 
         organisationUnitCall = new OrganisationUnitCallFactory(organisationUnitService, organisationUnitHandler,
-                organisationUnitDisplayPathTransformer, apiCallExecutor, resourceHandler)
+                organisationUnitDisplayPathTransformer, resourceHandler)
                 .create(user);
 
         //Return only one organisationUnit.
@@ -180,7 +180,8 @@ public class OrganisationUnitCallUnitShould {
         when(organisationUnitService.getOrganisationUnits(
                 fieldsCaptor.capture(), filtersCaptor.capture(), pagingCaptor.capture(),
                 pageSizeCaptor.capture(), pageCaptor.capture()
-        )).thenReturn(retrofitCall);
+        )).thenReturn(Single.just(organisationUnitPayload));
+        when(organisationUnitPayload.items()).thenReturn(organisationUnits);
 
         when(genericCallData.resourceHandler()).thenReturn(resourceHandler);
         when(genericCallData.databaseAdapter()).thenReturn(databaseAdapter);
@@ -206,8 +207,6 @@ public class OrganisationUnitCallUnitShould {
     @Test
     @SuppressWarnings("unchecked")
     public void invoke_handler_if_request_succeeds() throws Exception {
-        when(apiCallExecutor.executePayloadCall(retrofitCall)).thenReturn(organisationUnits);
-
         organisationUnitCall.call();
 
         verify(organisationUnitHandler,  times(1)).handleMany(anyCollectionOf(OrganisationUnit.class),

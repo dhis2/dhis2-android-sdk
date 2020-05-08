@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.organisationunit.internal;
 
 import androidx.annotation.NonNull;
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -47,6 +46,7 @@ import java.util.concurrent.Callable;
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Single;
 
 import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree.findRoots;
 import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree.findRootsOutsideSearchScope;
@@ -59,20 +59,17 @@ class OrganisationUnitCallFactory {
     private final OrganisationUnitHandler handler;
     private final OrganisationUnitDisplayPathTransformer pathTransformer;
 
-    private final APICallExecutor apiCallExecutor;
     private final ResourceHandler resourceHandler;
 
     @Inject
     OrganisationUnitCallFactory(@NonNull OrganisationUnitService organisationUnitService,
                                 @NonNull OrganisationUnitHandler handler,
                                 @NonNull OrganisationUnitDisplayPathTransformer pathTransformer,
-                                @NonNull APICallExecutor apiCallExecutor,
                                 @NonNull ResourceHandler resourceHandler) {
 
         this.organisationUnitService = organisationUnitService;
         this.handler = handler;
         this.pathTransformer = pathTransformer;
-        this.apiCallExecutor = apiCallExecutor;
         this.resourceHandler = resourceHandler;
     }
 
@@ -121,7 +118,7 @@ class OrganisationUnitCallFactory {
             OrganisationUnitQuery pageQuery;
             do {
                 pageQuery = queryBuilder.build();
-                pageOrgunits = apiCallExecutor.executePayloadCall(getOrganisationUnitAndDescendants(pageQuery));
+                pageOrgunits = getOrganisationUnitAndDescendants(pageQuery).blockingGet().items();
 
                 handler.handleMany(pageOrgunits, pathTransformer);
                 organisationUnitList.addAll(pageOrgunits);
@@ -139,7 +136,7 @@ class OrganisationUnitCallFactory {
         handler.addUserOrganisationUnitLinks(orgUnits);
     }
 
-    private retrofit2.Call<Payload<OrganisationUnit>> getOrganisationUnitAndDescendants(OrganisationUnitQuery query) {
+    private Single<Payload<OrganisationUnit>> getOrganisationUnitAndDescendants(OrganisationUnitQuery query) {
         return organisationUnitService.getOrganisationUnits(
                 OrganisationUnitFields.allFields, OrganisationUnitFields.path.like(query.orgUnit()),
                 query.paging(), query.pageSize(), query.page());

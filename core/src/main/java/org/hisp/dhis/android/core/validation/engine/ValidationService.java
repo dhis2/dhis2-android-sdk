@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.validation.engine;
 
-import org.apache.commons.lang3.math.NumberUtils;
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.constant.Constant;
 import org.hisp.dhis.android.core.constant.ConstantCollectionRepository;
@@ -39,7 +38,6 @@ import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.datavalue.DataValueCollectionRepository;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLink;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo;
-import org.hisp.dhis.android.core.parser.service.dataobject.DataElementOperandObject;
 import org.hisp.dhis.android.core.parser.service.dataobject.DimensionalItemObject;
 import org.hisp.dhis.android.core.period.Period;
 import org.hisp.dhis.android.core.period.PeriodCollectionRepository;
@@ -140,17 +138,10 @@ public class ValidationService {
                 .byAttributeOptionComboUid().eq(attributeOptionComboUid)
                 .byOrganisationUnitUid().eq(orgUnitUid)
                 .byPeriod().eq(periodId)
+                .byDeleted().isFalse()
                 .blockingGet();
 
-        Map<DimensionalItemObject, Double> dataValueMap = new HashMap<>();
-        for (DataValue dataValue : dataValues) {
-            if (NumberUtils.isCreatable(dataValue.value()))
-            dataValueMap.put(
-                    new DataElementOperandObject(dataValue.dataElement(), dataValue.categoryOptionCombo()),
-                    NumberUtils.createDouble(dataValue.value())
-            );
-        }
-        return dataValueMap;
+        return ValidationServiceHelper.getValueMap(dataValues);
     }
 
     private Map<String, Constant> getConstantMap() {

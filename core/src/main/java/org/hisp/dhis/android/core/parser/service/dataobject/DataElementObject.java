@@ -30,50 +30,18 @@ package org.hisp.dhis.android.core.parser.service.dataobject;
 
 import com.google.auto.value.AutoValue;
 
-import javax.annotation.Nullable;
-
 @AutoValue
-public abstract class DataElementOperandObject implements DimensionalItemObject {
-    private static final String SEPARATOR = ".";
-
-    private static final String SYMBOL_WILDCARD = "*";
+public abstract class DataElementObject implements DimensionalItemObject {
 
     abstract String dataElement();
 
-    @Nullable
-    abstract String categoryOptionCombo();
-
-    @Nullable
-    abstract String attributeOptionCombo();
-
-    public static DataElementOperandObject create(String dataElement, String categoryOptionCombo) {
-        return create(dataElement, categoryOptionCombo, null);
-    }
-
-    public static DataElementOperandObject create(String dataElement, String categoryOptionCombo,
-                                                  String attributeOptionCombo) {
-        return new AutoValue_DataElementOperandObject(dataElement, categoryOptionCombo, attributeOptionCombo);
+    public static DataElementObject create(String dataElement) {
+        return new AutoValue_DataElementObject(dataElement);
     }
 
     @Override
     public String getDimensionItem() {
-        String item = null;
-
-        if (dataElement() != null) {
-            item = dataElement();
-
-            if (categoryOptionCombo() != null) {
-                item += SEPARATOR + categoryOptionCombo();
-            } else if (attributeOptionCombo() != null) {
-                item += SEPARATOR + SYMBOL_WILDCARD;
-            }
-
-            if (attributeOptionCombo() != null) {
-                item += SEPARATOR + attributeOptionCombo();
-            }
-        }
-
-        return item;
+        return dataElement();
     }
 
 }

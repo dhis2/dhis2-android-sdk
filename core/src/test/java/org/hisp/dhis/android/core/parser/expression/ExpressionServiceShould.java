@@ -68,8 +68,8 @@ public class ExpressionServiceShould {
         String expression = deOperand(dataElement1, coc1) + " + " + deOperand(dataElement2, coc2);
 
         Map<DimensionalItemObject, Double> valueMap = new HashMap<>();
-        valueMap.put(new DataElementOperandObject(dataElement1, coc1), 5.0);
-        valueMap.put(new DataElementOperandObject(dataElement2, coc2), 3.0);
+        valueMap.put(DataElementOperandObject.create(dataElement1, coc1), 5.0);
+        valueMap.put(DataElementOperandObject.create(dataElement2, coc2), 3.0);
 
         Double result = (Double) service.getExpressionValue(expression, valueMap, Collections.emptyMap(),
                 Collections.emptyMap(), 10, MissingValueStrategy.NEVER_SKIP);
@@ -81,7 +81,7 @@ public class ExpressionServiceShould {
         String expression = de(dataElement1) + " + " + constant(constantId);
 
         Map<DimensionalItemObject, Double> valueMap = new HashMap<>();
-        valueMap.put(new DataElementOperandObject(dataElement1, null), 5.0);
+        valueMap.put(DataElementOperandObject.create(dataElement1, null), 5.0);
 
         Map<String, Constant> constantMap = new HashMap<>();
         constantMap.put(constantId, Constant.builder().uid(constantId).value(4.0).build());
@@ -96,8 +96,8 @@ public class ExpressionServiceShould {
         String expression = de(dataElement1) + " + " + de(dataElement2);
 
         Map<DimensionalItemObject, Double> valueMap = new HashMap<>();
-        valueMap.put(new DataElementOperandObject(dataElement1, null), 5.0);
-        valueMap.put(new DataElementOperandObject(dataElement2, null), 3.0);
+        valueMap.put(DataElementOperandObject.create(dataElement1, null), 5.0);
+        valueMap.put(DataElementOperandObject.create(dataElement2, null), 3.0);
 
         Double result = (Double) service.getExpressionValue(expression, valueMap, Collections.emptyMap(),
                 Collections.emptyMap(), 10, MissingValueStrategy.NEVER_SKIP);
@@ -109,7 +109,7 @@ public class ExpressionServiceShould {
         String expression = de(dataElement1) + " + [days]";
 
         Map<DimensionalItemObject, Double> valueMap = new HashMap<>();
-        valueMap.put(new DataElementOperandObject(dataElement1, null), 5.0);
+        valueMap.put(DataElementOperandObject.create(dataElement1, null), 5.0);
 
         Double result = (Double) service.getExpressionValue(expression, valueMap, Collections.emptyMap(),
                 Collections.emptyMap(), 10, MissingValueStrategy.NEVER_SKIP);
@@ -121,7 +121,7 @@ public class ExpressionServiceShould {
         String expression = de(dataElement1) + " + " + oug(orgunitGroupId);
 
         Map<DimensionalItemObject, Double> valueMap = new HashMap<>();
-        valueMap.put(new DataElementOperandObject(dataElement1, null), 5.0);
+        valueMap.put(DataElementOperandObject.create(dataElement1, null), 5.0);
 
         Map<String, Integer> orgunitMap = new HashMap<>();
         orgunitMap.put(orgunitGroupId, 20);
@@ -136,7 +136,7 @@ public class ExpressionServiceShould {
         String expression = de(dataElement1) + " + " + de(dataElement2);
 
         Map<DimensionalItemObject, Double> valueMap = new HashMap<>();
-        valueMap.put(new DataElementOperandObject(dataElement1, null), 5.0);
+        valueMap.put(DataElementOperandObject.create(dataElement1, null), 5.0);
 
         Double resultNeverSkip = (Double) service.getExpressionValue(expression, valueMap,
                 Collections.emptyMap(), Collections.emptyMap(), 10, MissingValueStrategy.NEVER_SKIP);

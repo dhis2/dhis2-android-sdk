@@ -28,11 +28,15 @@
 
 package org.hisp.dhis.android.core.parser.service;
 
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.constant.Constant;
+import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
 import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
 import org.hisp.dhis.android.core.parser.expression.ExpressionItemMethod;
 import org.hisp.dhis.android.core.parser.service.dataitem.DimItemDataElementAndOperand;
+import org.hisp.dhis.android.core.parser.service.dataitem.DimensionalItemId;
+import org.hisp.dhis.android.core.parser.service.dataitem.ItemConstant;
 import org.hisp.dhis.android.core.parser.service.dataitem.ItemDays;
 import org.hisp.dhis.android.core.parser.service.dataitem.ItemOrgUnitGroup;
 import org.hisp.dhis.android.core.parser.service.dataobject.DimensionalItemObject;
@@ -41,21 +45,25 @@ import org.hisp.dhis.antlr.Parser;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import static org.hisp.dhis.android.core.parser.expression.ParserUtils.COMMON_EXPRESSION_ITEMS;
 import static org.hisp.dhis.android.core.parser.expression.ParserUtils.ITEM_EVALUATE;
+import static org.hisp.dhis.android.core.parser.expression.ParserUtils.ITEM_GET_IDS;
 import static org.hisp.dhis.android.core.validation.MissingValueStrategy.NEVER_SKIP;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.C_BRACE;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.DAYS;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.HASH_BRACE;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.OUG_BRACE;
 
 public class ExpressionService {
 
-    private final Map<Integer, ExpressionItem> validationRuleExpresionItems;
+    private final Map<Integer, ExpressionItem> validationRuleExpressionItems;
 
     public ExpressionService() {
-        this.validationRuleExpresionItems = getExpressionItems();
+        this.validationRuleExpressionItems = getExpressionItems();
     }
 
     private Map<Integer, ExpressionItem> getExpressionItems() {
@@ -64,7 +72,37 @@ public class ExpressionService {
         expressionItems.put(HASH_BRACE, new DimItemDataElementAndOperand());
         expressionItems.put(OUG_BRACE, new ItemOrgUnitGroup());
         expressionItems.put(DAYS, new ItemDays());
+        expressionItems.put(C_BRACE, new ItemConstant());
         return expressionItems;
+    }
+
+    public Set<DimensionalItemId> getDimensionalItemIds(String expression) {
+        if (expression == null) {
+            return Collections.emptySet();
+        }
+
+        Set<DimensionalItemId> itemIds = new HashSet<>();
+        CommonExpressionVisitor visitor = newVisitor(ITEM_GET_IDS, Collections.emptyMap());
+        visitor.setItemIds(itemIds);
+
+        Parser.visit(expression, visitor);
+
+        return itemIds;
+    }
+
+    public Set<DataElementOperand> getDataElementOperands(String expression) {
+        Set<DimensionalItemId> dimensionalItemIds = getDimensionalItemIds(expression);
+
+        Set<DataElementOperand> dataElementOperands = new HashSet<>();
+        for (DimensionalItemId di : dimensionalItemIds) {
+            if (di.isDataElementOrOperand()) {
+                dataElementOperands.add(DataElementOperand.builder()
+                        .dataElement(ObjectWithUid.create(di.id0()))
+                        .categoryOptionCombo(di.id1() == null ? null : ObjectWithUid.create(di.id1()))
+                        .build());
+            }
+        }
+        return dataElementOperands;
     }
 
     public Object getExpressionValue(String expression) {
@@ -140,7 +178,7 @@ public class ExpressionService {
             Map<String, Constant> constantMap) {
         return CommonExpressionVisitor.newBuilder()
                 //.withItemMap( PARSE_TYPE_EXPRESSION_ITEMS.get( parseType ) )
-                .withItemMap(validationRuleExpresionItems)
+                .withItemMap(validationRuleExpressionItems)
                 .withItemMethod(itemMethod)
                 .withConstantMap(constantMap)
                 //.withDimensionService( dimensionService )

@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.parser.expression.dataitem;
+package org.hisp.dhis.android.core.parser.service.dataitem;
 
 /*
  * Copyright (c) 2004-2020, University of Oslo
@@ -58,14 +58,27 @@ public class ItemConstant
     }
 
     @Override
+    public Object getItemId(ExprContext ctx, CommonExpressionVisitor visitor) {
+        visitor.getItemIds().add( getDimensionalItemId( ctx ) );
+
+        return DOUBLE_VALUE_IF_NULL;
+    }
+
+    @Override
     public Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor) {
         Constant constant = visitor.getConstantMap().get(ctx.uid0.getText());
 
         if (constant == null) {
-            // Shouldn't happen for a valid expression.
-            throw new ParserExceptionWithoutContext("Can't find constant to evaluate " + ctx.uid0.getText());
+            throw new ParserExceptionWithoutContext( "Can't find constant to evaluate " + ctx.uid0.getText() );
         }
 
         return constant.value();
+    }
+
+    private DimensionalItemId getDimensionalItemId(ExprContext ctx ) {
+        return DimensionalItemId.builder()
+                .dimensionalItemType(DimensionalItemType.CONSTANT)
+                .id0(ctx.uid0.getText())
+                .build();
     }
 }

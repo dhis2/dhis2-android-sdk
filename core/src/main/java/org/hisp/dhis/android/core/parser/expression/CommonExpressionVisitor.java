@@ -31,12 +31,15 @@ package org.hisp.dhis.android.core.parser.expression;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.apache.commons.lang3.Validate;
 import org.hisp.dhis.android.core.constant.Constant;
+import org.hisp.dhis.android.core.parser.service.dataitem.DimensionalItemId;
 import org.hisp.dhis.antlr.AntlrExpressionVisitor;
 import org.hisp.dhis.antlr.ParserExceptionWithoutContext;
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import static org.hisp.dhis.android.core.parser.expression.ParserUtils.DOUBLE_VALUE_IF_NULL;
 
@@ -67,6 +70,11 @@ public class CommonExpressionVisitor
      * Constants to use in evaluating an expression.
      */
     private Map<String, Constant> constantMap = new HashMap<>();
+
+    /**
+     * Used to collect the dimensional item ids in the expression.
+     */
+    private Set<DimensionalItemId> itemIds = new HashSet<>();
 
     /**
      * Organisation unit group counts to use in evaluating an expression.
@@ -205,6 +213,14 @@ public class CommonExpressionVisitor
 
     public void setReplaceNulls(boolean replaceNulls) {
         this.replaceNulls = replaceNulls;
+    }
+
+    public Set<DimensionalItemId> getItemIds() {
+        return itemIds;
+    }
+
+    public void setItemIds(Set<DimensionalItemId> itemIds) {
+        this.itemIds = itemIds;
     }
 
     public Map<String, Integer> getOrgUnitCountMap() {

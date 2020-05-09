@@ -32,6 +32,8 @@ import org.hisp.dhis.antlr.ParserExceptionWithoutContext;
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
 
 import static org.apache.commons.lang3.ObjectUtils.anyNotNull;
+import static org.hisp.dhis.android.core.parser.service.dataitem.DimensionalItemType.DATA_ELEMENT;
+import static org.hisp.dhis.android.core.parser.service.dataitem.DimensionalItemType.DATA_ELEMENT_OPERAND;
 
 /**
  * Parsed expression item as handled by the expression service.
@@ -42,6 +44,27 @@ import static org.apache.commons.lang3.ObjectUtils.anyNotNull;
  * @author Jim Grace
  */
 public class DimItemDataElementAndOperand extends DimensionalItem {
+
+    @Override
+    public DimensionalItemId getDimensionalItemId( ExprContext ctx )
+    {
+        if ( isDataElementOperandSyntax( ctx ) )
+        {
+            return DimensionalItemId.builder()
+                    .dimensionalItemType(DATA_ELEMENT_OPERAND)
+                    .id0(ctx.uid0.getText())
+                    .id1(ctx.uid1 == null ? null : ctx.uid1.getText())
+                    .id2(ctx.uid2 == null ? null : ctx.uid2.getText())
+                    .build();
+        }
+        else
+        {
+            return DimensionalItemId.builder()
+                    .dimensionalItemType(DATA_ELEMENT)
+                    .id0(ctx.uid0.getText())
+                    .build();
+        }
+    }
 
     @Override
     public String getId(ExprContext ctx) {

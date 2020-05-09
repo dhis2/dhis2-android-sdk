@@ -28,7 +28,7 @@ package org.hisp.dhis.android.core.parser.expression;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.hisp.dhis.android.core.parser.expression.dataitem.ItemConstant;
+import org.hisp.dhis.android.core.parser.service.dataitem.ItemConstant;
 import org.hisp.dhis.android.core.parser.expression.function.FunctionFirstNonNull;
 import org.hisp.dhis.android.core.parser.expression.function.FunctionGreatest;
 import org.hisp.dhis.android.core.parser.expression.function.FunctionIf;
@@ -126,10 +126,6 @@ public class ParserUtils {
         m.put(IS_NOT_NULL, new FunctionIsNotNull());
         m.put(IS_NULL, new FunctionIsNull());
         m.put(LEAST, new FunctionLeast());
-
-        // Data items
-
-        m.put(C_BRACE, new ItemConstant());
 
         COMMON_EXPRESSION_ITEMS = m;
     }

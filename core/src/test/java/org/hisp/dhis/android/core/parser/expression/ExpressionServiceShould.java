@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.parser.expression;
 
 import org.hisp.dhis.android.core.constant.Constant;
+import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.hisp.dhis.android.core.parser.service.ExpressionService;
 import org.hisp.dhis.android.core.parser.service.dataobject.DataElementOperandObject;
 import org.hisp.dhis.android.core.parser.service.dataobject.DimensionalItemObject;
@@ -39,6 +40,7 @@ import org.junit.Test;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
@@ -181,6 +183,45 @@ public class ExpressionServiceShould {
 
         assertThat((Boolean) service.getExpressionValue("5.0 != 8.0")).isTrue();
         assertThat((Boolean) service.getExpressionValue("5.0 != 5.0")).isFalse();
+    }
+
+    @Test
+    public void get_dataelement_ids() {
+        String expression = de(dataElement1) + " + " + de(dataElement2);
+        Set<DataElementOperand> dataElementOperands = service.getDataElementOperands(expression);
+
+        assertThat(dataElementOperands.size()).isEqualTo(2);
+        for (DataElementOperand deo : dataElementOperands) {
+            if (!deo.dataElement().uid().equals(dataElement1) && !deo.dataElement().uid().equals(dataElement2)) {
+                throw new RuntimeException("Should not reach this point");
+            }
+            assertThat(deo.categoryOptionCombo()).isNull();
+        }
+    }
+
+    @Test
+    public void get_dataelement_operands_ids() {
+        String expression = deOperand(dataElement1, coc1) + " + " + deOperand(dataElement2, coc2);
+        Set<DataElementOperand> dataElementOperands = service.getDataElementOperands(expression);
+
+        assertThat(dataElementOperands.size()).isEqualTo(2);
+        for (DataElementOperand deo : dataElementOperands) {
+            if (deo.dataElement().uid().equals(dataElement1)) {
+                assertThat(deo.categoryOptionCombo().uid()).isEqualTo(coc1);
+            } else if (deo.dataElement().uid().equals(dataElement2)) {
+                assertThat(deo.categoryOptionCombo().uid()).isEqualTo(coc2);
+            } else {
+                throw new RuntimeException("Should not reach this point");
+            }
+        }
+    }
+
+    @Test
+    public void get_dataelement_ids_in_empty_expression() {
+        String expression = "[days] + " + constant(constantId) + " + " + oug(constantId);
+        Set<DataElementOperand> dataElementOperands = service.getDataElementOperands(expression);
+
+        assertThat(dataElementOperands).isEmpty();
     }
 
     private String constant(String uid) {

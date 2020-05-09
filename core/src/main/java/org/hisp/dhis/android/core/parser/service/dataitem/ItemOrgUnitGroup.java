@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.parser.service.dataitem;
 
 import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
 import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
+import org.hisp.dhis.antlr.ParserExceptionWithoutContext;
 
 import static org.hisp.dhis.android.core.parser.expression.ParserUtils.DOUBLE_VALUE_IF_NULL;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
@@ -70,13 +71,27 @@ public class ItemOrgUnitGroup
      */
 
     @Override
+    public Object getItemId(ExprContext ctx, CommonExpressionVisitor visitor) {
+        visitor.getItemIds().add( getDimensionalItemId( ctx ) );
+
+        return DOUBLE_VALUE_IF_NULL;
+    }
+
+    @Override
     public Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor) {
         Integer count = visitor.getOrgUnitCountMap().get(ctx.uid0.getText());
 
         if (count == null) {
-            count = 0;
+            throw new ParserExceptionWithoutContext( "Can't find count for orgunitGroup unit " + ctx.uid0.getText() );
         }
 
         return count.doubleValue();
+    }
+
+    private DimensionalItemId getDimensionalItemId( ExprContext ctx ) {
+        return DimensionalItemId.builder()
+                .dimensionalItemType(DimensionalItemType.ORGANISATION_UNIT_GROUP)
+                .id0(ctx.uid0.getText())
+                .build();
     }
 }

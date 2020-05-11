@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.program.internal;
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactory;
+import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.arch.modules.internal.MetadataModuleByUidDownloader;
@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 
@@ -59,11 +58,10 @@ public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<Li
     private final UidsCall<ProgramRule> programRuleCall;
     private final UidsCall<TrackedEntityType> trackedEntityTypeCall;
     private final UidsCall<TrackedEntityAttribute> trackedEntityAttributeCall;
-    private final ListCallFactory<RelationshipType> relationshipTypeCallFactory;
+    private final ListCall<RelationshipType> relationshipTypeCall;
     private final UidsCall<OptionSet> optionSetCall;
     private final UidsCall<Option> optionCall;
-    private final UidsCall<OptionGroup> optionGroupCallFactory;
-    private final DHISVersionManager versionManager;
+    private final UidsCall<OptionGroup> optionGroupCall;
 
     @Inject
     ProgramModuleDownloader(UidsCall<Program> programCall,
@@ -71,55 +69,43 @@ public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<Li
                             UidsCall<ProgramRule> programRuleCall,
                             UidsCall<TrackedEntityType> trackedEntityTypeCall,
                             UidsCall<TrackedEntityAttribute> trackedEntityAttributeCall,
-                            ListCallFactory<RelationshipType> relationshipTypeCallFactory,
+                            ListCall<RelationshipType> relationshipTypeCall,
                             UidsCall<OptionSet> optionSetCall,
                             UidsCall<Option> optionCall,
-                            UidsCall<OptionGroup> optionGroupCallFactory,
-                            DHISVersionManager versionManager) {
+                            UidsCall<OptionGroup> optionGroupCall) {
         this.programCall = programCall;
         this.programStageCall = programStageCall;
         this.programRuleCall = programRuleCall;
         this.trackedEntityTypeCall = trackedEntityTypeCall;
         this.trackedEntityAttributeCall = trackedEntityAttributeCall;
-        this.relationshipTypeCallFactory = relationshipTypeCallFactory;
+        this.relationshipTypeCall = relationshipTypeCall;
         this.optionSetCall = optionSetCall;
         this.optionCall = optionCall;
-        this.optionGroupCallFactory = optionGroupCallFactory;
-        this.versionManager = versionManager;
+        this.optionGroupCall = optionGroupCall;
     }
 
     @Override
     public Single<List<Program>> downloadMetadata(Set<String> orgUnitProgramUids) {
-        return Single.fromCallable(() -> {
-            List<Program> programs = programCall.download(orgUnitProgramUids).blockingGet();
-
+        return programCall.download(orgUnitProgramUids).flatMap(programs -> {
             Set<String> programUids = UidsHelper.getUids(programs);
-            List<ProgramStage> programStages = programStageCall.download(programUids).blockingGet();
-
-            programRuleCall.download(programUids).blockingGet();
-
-            Set<String> trackedEntityUids = ProgramParentUidsHelper.getAssignedTrackedEntityUids(programs);
-
-            List<TrackedEntityType> trackedEntityTypes = trackedEntityTypeCall.download(trackedEntityUids)
-                    .blockingGet();
-
-            Set<String> attributeUids = ProgramParentUidsHelper.getAssignedTrackedEntityAttributeUids(programs,
-                    trackedEntityTypes);
-
-            List<TrackedEntityAttribute> attributes = trackedEntityAttributeCall.download(attributeUids).blockingGet();
-
-            relationshipTypeCallFactory.create().call();
-
-            Set<String> optionSetUids = ProgramParentUidsHelper.getAssignedOptionSetUids(attributes, programStages);
-            optionSetCall.download(optionSetUids).blockingGet();
-
-            optionCall.download(optionSetUids).blockingGet();
-
-            if (!versionManager.is2_29()) {
-                optionGroupCallFactory.download(optionSetUids).blockingGet();
-            }
-
-            return programs;
+            return programStageCall.download(programUids).flatMap(programStages -> {
+                Set<String> trackedEntityUids = ProgramParentUidsHelper.getAssignedTrackedEntityUids(programs);
+                return trackedEntityTypeCall.download(trackedEntityUids).flatMap(trackedEntityTypes -> {
+                    Set<String> attributeUids = ProgramParentUidsHelper.getAssignedTrackedEntityAttributeUids(
+                            programs, trackedEntityTypes);
+                    return trackedEntityAttributeCall.download(attributeUids).flatMap(attributes -> {
+                        Set<String> optionSetUids = ProgramParentUidsHelper.getAssignedOptionSetUids(
+                                attributes, programStages);
+                        return Single.merge(
+                                programRuleCall.download(programUids),
+                                relationshipTypeCall.download(),
+                                optionSetCall.download(optionSetUids),
+                                optionCall.download(optionSetUids)
+                        ).ignoreElements()
+                                .andThen(optionGroupCall.download(optionSetUids)).map(toIgnore -> programs);
+                    });
+                });
+            });
         });
     }
 }

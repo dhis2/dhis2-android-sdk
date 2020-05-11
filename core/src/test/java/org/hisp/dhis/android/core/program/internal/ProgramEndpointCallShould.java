@@ -48,7 +48,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import io.reactivex.Maybe;
 import io.reactivex.Single;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -83,7 +82,7 @@ public class ProgramEndpointCallShould extends BaseCallShould {
     @Mock
     private APIDownloader mockedApiDownloader;
 
-    private Maybe<List<Program>> programCallResult = Maybe.just(Collections.emptyList());
+    private Single<List<Program>> programCallResult = Single.just(Collections.emptyList());
 
     private Set<String> programUids = Sets.newSet("programUid");
 
@@ -110,7 +109,7 @@ public class ProgramEndpointCallShould extends BaseCallShould {
                 fieldsCaptor.capture(), filterCaptor.capture(), accessDataReadFilter.capture(), anyBoolean())
         ).thenReturn(apiCall);
 
-        new ProgramCall(programService, programHandler, new APIDownloaderImpl()).download(programUids).blockingGet();
+        new ProgramCall(programService, programHandler, new APIDownloaderImpl(resourceHandler)).download(programUids).blockingGet();
 
         assertThat(fieldsCaptor.getValue()).isEqualTo(ProgramFields.allFields);
         assertThat(filterCaptor.getValue().values().iterator().next()).isEqualTo("programUid");

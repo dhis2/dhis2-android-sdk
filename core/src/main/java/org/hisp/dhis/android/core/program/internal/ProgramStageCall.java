@@ -44,7 +44,7 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import dagger.Reusable;
-import io.reactivex.Maybe;
+import io.reactivex.Single;
 
 @Reusable
 public final class ProgramStageCall implements UidsCall<ProgramStage> {
@@ -65,7 +65,7 @@ public final class ProgramStageCall implements UidsCall<ProgramStage> {
     }
 
     @Override
-    public Maybe<List<ProgramStage>> download(Set<String> uids) {
+    public Single<List<ProgramStage>> download(Set<String> uids) {
         return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler, partitionUids -> {
             String accessDataReadFilter = "access.data." + DataAccessFields.read.eq(true).generateString();
             String programUidsFilterStr = "program." + ObjectWithUid.uid.in(partitionUids).generateString();

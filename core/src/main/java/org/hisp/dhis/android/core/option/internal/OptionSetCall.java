@@ -39,7 +39,7 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import dagger.Reusable;
-import io.reactivex.Maybe;
+import io.reactivex.Single;
 
 @Reusable
 final class OptionSetCall implements UidsCall<OptionSet> {
@@ -58,7 +58,7 @@ final class OptionSetCall implements UidsCall<OptionSet> {
     }
 
     @Override
-    public Maybe<List<OptionSet>> download(Set<String> uids) {
+    public Single<List<OptionSet>> download(Set<String> uids) {
         return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler, partitionUids ->
                 service.optionSets(OptionSetFields.allFields, OptionSetFields.uid.in(partitionUids), Boolean.FALSE));
     }

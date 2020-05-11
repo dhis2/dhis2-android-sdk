@@ -28,69 +28,50 @@
 
 package org.hisp.dhis.android.core.relationship.internal;
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactoryImpl;
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.PayloadResourceCallFetcher;
-import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
-import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
-import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalResourceSyncCallProcessor;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
+import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.common.internal.DataAccessFields;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Single;
 
 @Reusable
-final class RelationshipTypeEndpointCallFactory extends ListCallFactoryImpl<RelationshipType> {
+final class RelationshipTypeCall implements ListCall<RelationshipType> {
 
     private final Resource.Type resourceType = Resource.Type.RELATIONSHIP_TYPE;
 
     private final RelationshipTypeService service;
     private final Handler<RelationshipType> handler;
     private final DHISVersionManager versionManager;
+    private final APIDownloader apiDownloader;
 
     @Inject
-    RelationshipTypeEndpointCallFactory(GenericCallData data,
-                                        APICallExecutor apiCallExecutor,
-                                        RelationshipTypeService service,
-                                        Handler<RelationshipType> handler,
-                                        DHISVersionManager versionManager) {
-        super(data, apiCallExecutor);
+    RelationshipTypeCall(RelationshipTypeService service,
+                         Handler<RelationshipType> handler,
+                         DHISVersionManager versionManager,
+                         APIDownloader apiDownloader) {
         this.service = service;
         this.handler = handler;
         this.versionManager = versionManager;
+        this.apiDownloader = apiDownloader;
     }
 
     @Override
-    protected CallFetcher<RelationshipType> fetcher() {
+    public Single<List<RelationshipType>> download() {
+        return apiDownloader.downloadWithLastUpdated(handler, resourceType, lastUpdated -> {
+            String accessDataFilter = versionManager.is2_29() ? null :
+                    "access.data." + DataAccessFields.read.eq(true).generateString();
 
-        return new PayloadResourceCallFetcher<RelationshipType>(data.resourceHandler(), resourceType,
-                apiCallExecutor) {
-            @Override
-            protected retrofit2.Call<Payload<RelationshipType>> getCall(String lastUpdated) {
-                String accessDataFilter = null;
-                if (!versionManager.is2_29()) {
-                    accessDataFilter = "access.data." + DataAccessFields.read.eq(true).generateString();
-                }
-
-                return service.getRelationshipTypes(RelationshipTypeFields.allFields,
-                        RelationshipTypeFields.lastUpdated.gt(lastUpdated), accessDataFilter, Boolean.FALSE);
-            }
-        };
-    }
-
-    @Override
-    protected CallProcessor<RelationshipType> processor() {
-        return new TransactionalResourceSyncCallProcessor<>(
-                data,
-                handler,
-                resourceType
-        );
+            return service.getRelationshipTypes(RelationshipTypeFields.allFields,
+                    RelationshipTypeFields.lastUpdated.gt(lastUpdated), accessDataFilter, Boolean.FALSE);
+        });
     }
 }

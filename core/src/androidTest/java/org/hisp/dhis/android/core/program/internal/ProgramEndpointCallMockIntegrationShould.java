@@ -58,7 +58,7 @@ import org.mockito.internal.util.collections.Sets;
 import java.io.IOException;
 import java.util.List;
 
-import io.reactivex.Maybe;
+import io.reactivex.Single;
 
 import static org.hisp.dhis.android.core.common.IdentifiableColumns.UID;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
@@ -97,7 +97,7 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
             Columns.ACCESS_LEVEL
     };
 
-    private static Maybe<List<Program>> programCall;
+    private static Single<List<Program>> programCall;
 
     @BeforeClass
     public static void setUpClass() throws Exception {

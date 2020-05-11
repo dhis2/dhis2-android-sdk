@@ -26,43 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.option.internal;
-
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.option.Option;
+package org.hisp.dhis.android.core.arch.call.factories.internal;
 
 import java.util.List;
-import java.util.Set;
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
 import io.reactivex.Single;
 
-@Reusable
-public final class OptionCall implements UidsCall<Option> {
-
-    private static final int MAX_UID_LIST_SIZE = 64;
-
-    private final OptionService service;
-    private final Handler<Option> handler;
-    private final APIDownloader apiDownloader;
-
-    @Inject
-    OptionCall(OptionService service, Handler<Option> handler, APIDownloader apiDownloader) {
-        this.service = service;
-        this.handler = handler;
-        this.apiDownloader = apiDownloader;
-    }
-
-    @Override
-    public Single<List<Option>> download(Set<String> optionSetUids) {
-        return apiDownloader.downloadPartitioned(optionSetUids, MAX_UID_LIST_SIZE, handler, partitionUids -> {
-            String optionSetUidsFilterStr = "optionSet." + ObjectWithUid.uid.in(partitionUids).generateString();
-            return service.getOptions(OptionFields.allFields, optionSetUidsFilterStr, Boolean.FALSE);
-        });
-    }
+public interface ListCall<P> {
+    Single<List<P>> download();
 }

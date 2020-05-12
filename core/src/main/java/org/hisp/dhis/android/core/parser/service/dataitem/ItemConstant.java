@@ -59,7 +59,7 @@ public class ItemConstant
 
     @Override
     public Object getItemId(ExprContext ctx, CommonExpressionVisitor visitor) {
-        visitor.getItemIds().add( getDimensionalItemId( ctx ) );
+        visitor.getItemIds().add(getDimensionalItemId(ctx));
 
         return DOUBLE_VALUE_IF_NULL;
     }
@@ -69,13 +69,13 @@ public class ItemConstant
         Constant constant = visitor.getConstantMap().get(ctx.uid0.getText());
 
         if (constant == null) {
-            throw new ParserExceptionWithoutContext( "Can't find constant to evaluate " + ctx.uid0.getText() );
+            throw new ParserExceptionWithoutContext("Can't find constant to evaluate " + ctx.uid0.getText());
         }
 
         return constant.value();
     }
 
-    private DimensionalItemId getDimensionalItemId(ExprContext ctx ) {
+    private DimensionalItemId getDimensionalItemId(ExprContext ctx) {
         return DimensionalItemId.builder()
                 .dimensionalItemType(DimensionalItemType.CONSTANT)
                 .id0(ctx.uid0.getText())

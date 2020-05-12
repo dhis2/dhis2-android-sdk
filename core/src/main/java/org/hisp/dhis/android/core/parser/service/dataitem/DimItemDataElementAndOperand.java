@@ -46,19 +46,15 @@ import static org.hisp.dhis.android.core.parser.service.dataitem.DimensionalItem
 public class DimItemDataElementAndOperand extends DimensionalItem {
 
     @Override
-    public DimensionalItemId getDimensionalItemId( ExprContext ctx )
-    {
-        if ( isDataElementOperandSyntax( ctx ) )
-        {
+    public DimensionalItemId getDimensionalItemId(ExprContext ctx) {
+        if (isDataElementOperandSyntax(ctx)) {
             return DimensionalItemId.builder()
                     .dimensionalItemType(DATA_ELEMENT_OPERAND)
                     .id0(ctx.uid0.getText())
                     .id1(ctx.uid1 == null ? null : ctx.uid1.getText())
                     .id2(ctx.uid2 == null ? null : ctx.uid2.getText())
                     .build();
-        }
-        else
-        {
+        } else {
             return DimensionalItemId.builder()
                     .dimensionalItemType(DATA_ELEMENT)
                     .id0(ctx.uid0.getText())

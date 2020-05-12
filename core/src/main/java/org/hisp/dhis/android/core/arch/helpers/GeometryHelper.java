@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.arch.helpers;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Geometry;
@@ -173,8 +174,7 @@ public final class GeometryHelper {
         }
 
         try {
-            //return new ObjectMapper().readValue(geometry.coordinates(), typeReference);
-            throw new IOException();
+            return new ObjectMapper().readValue(geometry.coordinates(), typeReference);
         } catch (IOException e) {
             throw d2Error(e, "It has not been possible to generate a " + type.getGeometryType() +
                     " from geometry coordinates: " + geometry.coordinates() + ".");

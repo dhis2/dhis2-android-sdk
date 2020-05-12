@@ -47,7 +47,7 @@ import javax.inject.Singleton;
 @Singleton
 class ValidationExecutor {
 
-    private ExpressionService expressionService;
+    private final ExpressionService expressionService;
 
     @Inject
     ValidationExecutor(ExpressionService expressionService) {
@@ -86,28 +86,30 @@ class ValidationExecutor {
         }
 
         if (ValidationRuleOperator.exclusive_pair.equals(rule.operator())) {
-            return (leftSide != null) && (rightSide != null);
+            return leftSide != null && rightSide != null;
         }
 
+        Double leftSideValue = leftSide;
         if (leftSide == null) {
             if (rule.leftSide().missingValueStrategy() == MissingValueStrategy.NEVER_SKIP) {
-                leftSide = 0d;
+                leftSideValue = 0d;
             } else {
                 return false;
             }
         }
 
+        Double rightSideValue = rightSide;
         if (rightSide == null) {
             if (rule.rightSide().missingValueStrategy() == MissingValueStrategy.NEVER_SKIP) {
-                rightSide = 0d;
+                rightSideValue = 0d;
             } else {
                 return false;
             }
         }
 
-        String test = leftSide
+        String test = leftSideValue
                 + rule.operator().getMathematicalOperator()
-                + rightSide;
+                + rightSideValue;
         return !(Boolean) expressionService.getExpressionValue(test);
     }
 }

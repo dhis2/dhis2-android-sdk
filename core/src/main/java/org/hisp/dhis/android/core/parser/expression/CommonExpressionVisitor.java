@@ -84,7 +84,7 @@ public class CommonExpressionVisitor
     /**
      * Count of days in period to use in evaluating an expression.
      */
-    private Double days = null;
+    private Double days;
 
     /**
      * Values to use for variables in evaluating an org.hisp.dhis.rules.parser.expression.
@@ -94,12 +94,12 @@ public class CommonExpressionVisitor
     /**
      * Count of dimension items found.
      */
-    private int itemsFound = 0;
+    private int itemsFound;
 
     /**
      * Count of dimension item values found.
      */
-    private int itemValuesFound = 0;
+    private int itemValuesFound;
 
     /**
      * Default value for data type double.
@@ -112,6 +112,7 @@ public class CommonExpressionVisitor
     // -------------------------------------------------------------------------
 
     protected CommonExpressionVisitor() {
+        // This constructor is intentionally empty.
     }
 
     /**
@@ -263,7 +264,7 @@ public class CommonExpressionVisitor
      * Builder for {@link CommonExpressionVisitor} instances.
      */
     public static class Builder {
-        private CommonExpressionVisitor visitor;
+        private final CommonExpressionVisitor visitor;
 
         protected Builder() {
             this.visitor = new CommonExpressionVisitor();

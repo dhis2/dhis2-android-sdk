@@ -57,23 +57,25 @@ public abstract class DataElementOperandObject implements DimensionalItemObject 
 
     @Override
     public String getDimensionItem() {
-        String item = null;
+        StringBuilder item = new StringBuilder();
 
         if (dataElement() != null) {
-            item = dataElement();
+            item.append(dataElement());
 
-            if (categoryOptionCombo() != null) {
-                item += SEPARATOR + categoryOptionCombo();
-            } else if (attributeOptionCombo() != null) {
-                item += SEPARATOR + SYMBOL_WILDCARD;
+            if (categoryOptionCombo() == null) {
+                if (attributeOptionCombo() != null) {
+                    item.append(SEPARATOR).append(SYMBOL_WILDCARD);
+                }
+            } else {
+                item.append(SEPARATOR).append(categoryOptionCombo());
             }
 
             if (attributeOptionCombo() != null) {
-                item += SEPARATOR + attributeOptionCombo();
+                item.append(SEPARATOR).append(attributeOptionCombo());
             }
         }
 
-        return item;
+        return item.toString();
     }
 
 }

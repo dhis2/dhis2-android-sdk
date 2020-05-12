@@ -58,6 +58,7 @@ import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.DAYS;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.HASH_BRACE;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.OUG_BRACE;
 
+@SuppressWarnings({"PMD.TooManyStaticImports", "PMD.CyclomaticComplexity", "PMD.StdCyclomaticComplexity"})
 public class ExpressionService {
 
     private final Map<Integer, ExpressionItem> validationRuleExpressionItems;
@@ -155,6 +156,7 @@ public class ExpressionService {
                 }
 
             case NEVER_SKIP:
+            default:
                 if (value == null) {
                     // TODO Handle other ParseType
                     return 0d;

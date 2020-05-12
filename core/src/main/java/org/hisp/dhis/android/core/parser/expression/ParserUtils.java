@@ -28,7 +28,6 @@ package org.hisp.dhis.android.core.parser.expression;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.hisp.dhis.android.core.parser.service.dataitem.ItemConstant;
 import org.hisp.dhis.android.core.parser.expression.function.FunctionFirstNonNull;
 import org.hisp.dhis.android.core.parser.expression.function.FunctionGreatest;
 import org.hisp.dhis.android.core.parser.expression.function.FunctionIf;
@@ -57,7 +56,6 @@ import java.util.Map;
 
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.AMPERSAND_2;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.AND;
-import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.C_BRACE;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.DIV;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.EQ;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.EXCLAMATION_POINT;
@@ -87,8 +85,20 @@ import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.VERTICAL_BA
  *
  * @author Jim Grace
  */
-public class ParserUtils {
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyStaticImports"})
+public final class ParserUtils {
+
     public final static double DOUBLE_VALUE_IF_NULL = 0.0;
+
+    public final static ExpressionItemMethod ITEM_GET_DESCRIPTIONS = ExpressionItem::getDescription;
+
+    public final static ExpressionItemMethod ITEM_GET_IDS = ExpressionItem::getItemId;
+
+    public final static ExpressionItemMethod ITEM_GET_ORG_UNIT_GROUPS = ExpressionItem::getOrgUnitGroup;
+
+    public final static ExpressionItemMethod ITEM_EVALUATE = ExpressionItem::evaluate;
+
+    public final static ExpressionItemMethod ITEM_GET_SQL = ExpressionItem::getSql;
 
     public final static Map<Integer, ExpressionItem> COMMON_EXPRESSION_ITEMS;
 
@@ -132,15 +142,4 @@ public class ParserUtils {
 
     private ParserUtils() {
     }
-
-    public final static ExpressionItemMethod ITEM_GET_DESCRIPTIONS = ExpressionItem::getDescription;
-
-    public final static ExpressionItemMethod ITEM_GET_IDS = ExpressionItem::getItemId;
-
-    public final static ExpressionItemMethod ITEM_GET_ORG_UNIT_GROUPS = ExpressionItem::getOrgUnitGroup;
-
-    public final static ExpressionItemMethod ITEM_EVALUATE = ExpressionItem::evaluate;
-
-    public final static ExpressionItemMethod ITEM_GET_SQL = ExpressionItem::getSql;
-
 }

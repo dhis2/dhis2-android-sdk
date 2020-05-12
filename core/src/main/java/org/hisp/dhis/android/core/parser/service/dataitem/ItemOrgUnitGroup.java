@@ -72,7 +72,7 @@ public class ItemOrgUnitGroup
 
     @Override
     public Object getItemId(ExprContext ctx, CommonExpressionVisitor visitor) {
-        visitor.getItemIds().add( getDimensionalItemId( ctx ) );
+        visitor.getItemIds().add(getDimensionalItemId(ctx));
 
         return DOUBLE_VALUE_IF_NULL;
     }
@@ -82,13 +82,13 @@ public class ItemOrgUnitGroup
         Integer count = visitor.getOrgUnitCountMap().get(ctx.uid0.getText());
 
         if (count == null) {
-            throw new ParserExceptionWithoutContext( "Can't find count for orgunitGroup unit " + ctx.uid0.getText() );
+            throw new ParserExceptionWithoutContext("Can't find count for orgunitGroup unit " + ctx.uid0.getText());
         }
 
         return count.doubleValue();
     }
 
-    private DimensionalItemId getDimensionalItemId( ExprContext ctx ) {
+    private DimensionalItemId getDimensionalItemId(ExprContext ctx) {
         return DimensionalItemId.builder()
                 .dimensionalItemType(DimensionalItemType.ORGANISATION_UNIT_GROUP)
                 .id0(ctx.uid0.getText())

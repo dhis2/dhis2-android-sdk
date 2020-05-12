@@ -62,7 +62,7 @@ public abstract class DimensionalItem
 
     @Override
     public final Object getItemId(ExprContext ctx, CommonExpressionVisitor visitor) {
-        visitor.getItemIds().add( getDimensionalItemId( ctx ) );
+        visitor.getItemIds().add(getDimensionalItemId(ctx));
 
         return DOUBLE_VALUE_IF_NULL;
     }
@@ -85,7 +85,7 @@ public abstract class DimensionalItem
      * @param ctx the parser item context
      * @return the DimensionalItemId object for this item
      */
-    public abstract DimensionalItemId getDimensionalItemId( ExprContext ctx );
+    public abstract DimensionalItemId getDimensionalItemId(ExprContext ctx);
 
     /**
      * Returns the id for this item.

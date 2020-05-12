@@ -38,7 +38,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-class ValidationServiceHelper {
+final class ValidationServiceHelper {
+
+    private ValidationServiceHelper() {
+    }
 
     static Map<DimensionalItemObject, Double> getValueMap(List<DataValue> dataValues) {
         Map<DimensionalItemObject, Double> valueMap = new HashMap<>();

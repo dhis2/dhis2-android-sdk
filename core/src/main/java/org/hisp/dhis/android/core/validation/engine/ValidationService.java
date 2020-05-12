@@ -56,17 +56,17 @@ import javax.inject.Inject;
 
 public class ValidationService {
 
-    private ValidationExecutor validationExecutor;
+    private final ValidationExecutor validationExecutor;
 
-    private DataValueCollectionRepository dataValueRepository;
+    private final DataValueCollectionRepository dataValueRepository;
 
-    private DataSetCollectionRepository dataSetRepository;
+    private final DataSetCollectionRepository dataSetRepository;
 
-    private ConstantCollectionRepository constantRepository;
+    private final ConstantCollectionRepository constantRepository;
 
-    private PeriodCollectionRepository periodRepository;
+    private final PeriodCollectionRepository periodRepository;
 
-    private LinkStore<OrganisationUnitOrganisationUnitGroupLink> orgunitGroupLinkStore;
+    private final LinkStore<OrganisationUnitOrganisationUnitGroupLink> orgunitGroupLinkStore;
 
     @Inject
     ValidationService(ValidationExecutor validationExecutor,
@@ -85,7 +85,7 @@ public class ValidationService {
 
     public ValidationResult validate(String dataSetUid, String attributeOptionComboUid,
                                      String orgUnitUid, String periodId) {
-        List<ValidationRule> rules = getValidationRulesByDataSet(dataSetUid);
+        List<ValidationRule> rules = getValidationRulesByDataSet();
         List<ValidationResultViolation> violations = new ArrayList<>();
 
         if (!rules.isEmpty()) {
@@ -114,7 +114,7 @@ public class ValidationService {
                 .build();
     }
 
-    private List<ValidationRule> getValidationRulesByDataSet(String dataSetUid) {
+    private List<ValidationRule> getValidationRulesByDataSet() {
         // TODO
         return Collections.emptyList();
     }

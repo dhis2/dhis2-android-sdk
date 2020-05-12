@@ -45,8 +45,6 @@ import static com.google.common.truth.Truth.assertThat;
 public class CategoryCategoryComboLinkStoreIntegrationShould
         extends LinkStoreAbstractIntegrationShould<CategoryCategoryComboLink> {
 
-    private String otherMasterUid = "new_category_combo";
-
     public CategoryCategoryComboLinkStoreIntegrationShould() {
         super(CategoryCategoryComboLinkStore.create(TestDatabaseAdapterFactory.get()),
                 CategoryCategoryComboLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
@@ -65,7 +63,7 @@ public class CategoryCategoryComboLinkStoreIntegrationShould
     @Override
     protected CategoryCategoryComboLink buildObjectWithOtherMasterUid() {
         return buildObject().toBuilder()
-                .categoryCombo(otherMasterUid)
+                .categoryCombo("new_category_combo")
                 .build();
     }
 
@@ -75,7 +73,7 @@ public class CategoryCategoryComboLinkStoreIntegrationShould
         store.insert(buildObject());
         Map<String, Integer> count = store.groupAndGetCountBy(CategoryCategoryComboLinkTableInfo.Columns.CATEGORY_COMBO);
         assertThat(count.keySet().size()).isEqualTo(2);
-        assertThat(count.get(addMasterUid())).isEqualTo(1);
-        assertThat(count.get(otherMasterUid)).isEqualTo(1);
+        assertThat(count.get(buildObjectWithOtherMasterUid().categoryCombo())).isEqualTo(1);
+        assertThat(count.get(buildObject().categoryCombo())).isEqualTo(1);
     }
 }

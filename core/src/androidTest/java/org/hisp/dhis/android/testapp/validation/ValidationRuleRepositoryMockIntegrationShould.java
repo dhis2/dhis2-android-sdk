@@ -25,28 +25,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.validation.internal;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+package org.hisp.dhis.android.testapp.validation;
+
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.hisp.dhis.android.core.validation.ValidationRule;
+import org.hisp.dhis.android.core.validation.ValidationRuleImportance;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import io.reactivex.Single;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
+import java.util.List;
 
-interface ValidationRuleService {
-    @GET("validationRules")
-    Single<Payload<ValidationRule>> getValidationRules(
-            @Query("fields") @Which Fields<ValidationRule> fields,
-            @Query("filter") String UidsFilterString,
-            @Query("paging") Boolean paging);
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
-    @GET("validationRules")
-    Single<Payload<ObjectWithUid>> getDataSetValidationRuleUids(
-            @Query("dataSet") String dataSetUid,
-            @Query("fields") String id,
-            @Query("paging") Boolean paging);
+@RunWith(D2JunitRunner.class)
+public class ValidationRuleRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
+
+    @Test
+    public void find_all() {
+        List<ValidationRule> validationRule = d2.validationModule().validationRules().blockingGet();
+        assertThat(validationRule.size(), is(8));
+    }
+
+    @Test
+    public void filter_by_start_date() {
+        List<ValidationRule> validationRule = d2.validationModule().validationRules()
+                .byImportance().eq(ValidationRuleImportance.MEDIUM)
+                .blockingGet();
+        assertThat(validationRule.size(), is(1));
+    }
 }

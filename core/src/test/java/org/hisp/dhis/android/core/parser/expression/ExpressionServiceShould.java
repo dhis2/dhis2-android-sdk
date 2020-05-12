@@ -186,6 +186,21 @@ public class ExpressionServiceShould {
     }
 
     @Test
+    public void evaluate_logical_operators() {
+        assertThat((Boolean) service.getExpressionValue("true && true")).isTrue();
+        assertThat((Boolean) service.getExpressionValue("true and true")).isTrue();
+
+        assertThat((Boolean) service.getExpressionValue("true || false")).isTrue();
+        assertThat((Boolean) service.getExpressionValue("true or false")).isTrue();
+
+        assertThat((Boolean) service.getExpressionValue("5.0 == 8.0 && 4.0 == 4.0")).isFalse();
+        assertThat((Boolean) service.getExpressionValue("5.0 == 5.0 && 4.0 == 4.0")).isTrue();
+
+        assertThat((Boolean) service.getExpressionValue("5.0 != 8.0 || 5.0 == 8.0")).isTrue();
+        assertThat((Boolean) service.getExpressionValue("5.0 != 5.0 || 8.0 != 8.0")).isFalse();
+    }
+
+    @Test
     public void get_dataelement_ids() {
         String expression = de(dataElement1) + " + " + de(dataElement2);
         Set<DataElementOperand> dataElementOperands = service.getDataElementOperands(expression);

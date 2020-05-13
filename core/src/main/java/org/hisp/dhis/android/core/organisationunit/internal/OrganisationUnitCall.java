@@ -38,11 +38,12 @@ import org.hisp.dhis.android.core.user.UserInternalAccessor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Observable;
 import io.reactivex.Single;
 
 import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree.findRoots;
@@ -51,6 +52,7 @@ import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree.g
 
 @Reusable
 class OrganisationUnitCall {
+    private static int PAGE_SIZE = 500;
 
     private final OrganisationUnitService organisationUnitService;
     private final OrganisationUnitHandler handler;
@@ -66,28 +68,26 @@ class OrganisationUnitCall {
         this.pathTransformer = pathTransformer;
     }
 
-    public Callable<List<OrganisationUnit>> create(final User user) {
-
-        return () -> {
+    public Single<List<OrganisationUnit>> download(final User user) {
+        return Single.defer(() -> {
             handler.resetLinks();
 
             Set<OrganisationUnit> rootSearchOrgUnits =
                     findRoots(UserInternalAccessor.accessTeiSearchOrganisationUnits(user));
-            List<OrganisationUnit> searchOrgUnits = downloadSearchOrgUnits(rootSearchOrgUnits, user);
-            List<OrganisationUnit> dataCaptureOrgUnits = downloadDataCaptureOrgUnits(rootSearchOrgUnits, searchOrgUnits,
-                    user);
-
-            searchOrgUnits.addAll(dataCaptureOrgUnits);
-            return searchOrgUnits;
-        };
+            return downloadSearchOrgUnits(rootSearchOrgUnits, user).flatMap(searchOrgUnits ->
+                    downloadDataCaptureOrgUnits(rootSearchOrgUnits, searchOrgUnits, user).map(dataCaptureOrgUnits -> {
+                        searchOrgUnits.addAll(dataCaptureOrgUnits);
+                        return searchOrgUnits;
+                    }));
+        });
     }
 
-    private List<OrganisationUnit> downloadSearchOrgUnits(Set<OrganisationUnit> rootSearchOrgUnits, User user) {
+    private Single<List<OrganisationUnit>> downloadSearchOrgUnits(Set<OrganisationUnit> rootSearchOrgUnits, User user) {
         return downloadOrgUnits(UidsHelper.getUids(rootSearchOrgUnits), user, OrganisationUnit.Scope.SCOPE_TEI_SEARCH);
     }
 
-    private List<OrganisationUnit> downloadDataCaptureOrgUnits(Set<OrganisationUnit> rootSearchOrgUnits,
-                                                               List<OrganisationUnit> searchOrgUnits, User user) {
+    private Single<List<OrganisationUnit>> downloadDataCaptureOrgUnits(
+            Set<OrganisationUnit> rootSearchOrgUnits, List<OrganisationUnit> searchOrgUnits, User user) {
         Set<OrganisationUnit> allRootCaptureOrgUnits = findRoots(UserInternalAccessor.accessOrganisationUnits(user));
         Set<OrganisationUnit> rootCaptureOrgUnitsOutsideSearchScope =
                 findRootsOutsideSearchScope(allRootCaptureOrgUnits, rootSearchOrgUnits);
@@ -98,31 +98,16 @@ class OrganisationUnitCall {
                 user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
     }
 
-    private List<OrganisationUnit> downloadOrgUnits(final Set<String> orgUnits,
-                                                    final User user,
-                                                    final OrganisationUnit.Scope scope) {
-
+    private Single<List<OrganisationUnit>> downloadOrgUnits(final Set<String> orgUnits,
+                                                            final User user,
+                                                            final OrganisationUnit.Scope scope) {
         handler.setData(user, scope);
-
-        List<OrganisationUnit> organisationUnitList = new ArrayList<>();
-        for (String uid : orgUnits) {
-            OrganisationUnitQuery.Builder queryBuilder = OrganisationUnitQuery.builder().orgUnit(uid);
-
-            List<OrganisationUnit> pageOrgunits;
-            OrganisationUnitQuery pageQuery;
-            do {
-                pageQuery = queryBuilder.build();
-                pageOrgunits = getOrganisationUnitAndDescendants(pageQuery).blockingGet().items();
-
-                handler.handleMany(pageOrgunits, pathTransformer);
-                organisationUnitList.addAll(pageOrgunits);
-
-                queryBuilder.page(pageQuery.page() + 1);
-            }
-            while (pageOrgunits.size() == pageQuery.pageSize());
-        }
-
-        return organisationUnitList;
+        return Observable.fromIterable(orgUnits)
+                .flatMap(this::downloadOrganisationUnitAndDescendants)
+                .reduce(new ArrayList<>(), (items, items2) -> {
+                    items.addAll(items2);
+                    return items;
+                });
     }
 
     private void linkCaptureOrgUnitsInSearchScope(final Set<OrganisationUnit> orgUnits, final User user) {
@@ -130,9 +115,18 @@ class OrganisationUnitCall {
         handler.addUserOrganisationUnitLinks(orgUnits);
     }
 
-    private Single<Payload<OrganisationUnit>> getOrganisationUnitAndDescendants(OrganisationUnitQuery query) {
-        return organisationUnitService.getOrganisationUnits(
-                OrganisationUnitFields.allFields, OrganisationUnitFields.path.like(query.orgUnit()),
-                query.paging(), query.pageSize(), query.page());
+    private Observable<List<OrganisationUnit>> downloadOrganisationUnitAndDescendants(String orgUnit) {
+        AtomicInteger page = new AtomicInteger(1);
+        return downloadPage(orgUnit, page)
+                .toObservable()
+                .takeUntil(organisationUnits -> organisationUnits.size() < PAGE_SIZE);
+    }
+
+    private Single<List<OrganisationUnit>> downloadPage(String orgUnit, AtomicInteger page) {
+        return Single.defer(() -> organisationUnitService.getOrganisationUnits(
+                OrganisationUnitFields.allFields, OrganisationUnitFields.path.like(orgUnit),
+                true, PAGE_SIZE, page.getAndIncrement())
+                .map(Payload::items)
+                .doOnSuccess(items -> handler.handleMany(items, pathTransformer)));
     }
 }

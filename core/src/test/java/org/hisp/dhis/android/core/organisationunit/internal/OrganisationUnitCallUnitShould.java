@@ -48,7 +48,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import io.reactivex.Single;
 
@@ -104,7 +103,7 @@ public class OrganisationUnitCallUnitShould {
     private OrganisationUnitDisplayPathTransformer organisationUnitDisplayPathTransformer;
 
     //the call we are testing:
-    private Callable<List<OrganisationUnit>> organisationUnitCall;
+    private Single<List<OrganisationUnit>> organisationUnitCall;
 
     @Before
     public void setUp() throws IOException {
@@ -152,7 +151,7 @@ public class OrganisationUnitCallUnitShould {
 
         organisationUnitCall = new OrganisationUnitCall(organisationUnitService, organisationUnitHandler,
                 organisationUnitDisplayPathTransformer)
-                .create(user);
+                .download(user);
 
         //Return only one organisationUnit.
         List<OrganisationUnit> organisationUnits = Collections.singletonList(organisationUnit);
@@ -166,8 +165,8 @@ public class OrganisationUnitCallUnitShould {
     }
 
     @Test
-    public void invoke_server_with_correct_parameters() throws Exception {
-        organisationUnitCall.call();
+    public void invoke_server_with_correct_parameters() {
+        organisationUnitCall.blockingGet();
 
         assertThat(fieldsCaptor.getValue()).isEqualTo(OrganisationUnitFields.allFields);
         assertThat(filtersCaptor.getValue().operator()).isEqualTo("like");
@@ -178,8 +177,8 @@ public class OrganisationUnitCallUnitShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void invoke_handler_if_request_succeeds() throws Exception {
-        organisationUnitCall.call();
+    public void invoke_handler_if_request_succeeds() {
+        organisationUnitCall.blockingGet();
 
         verify(organisationUnitHandler,  times(1)).handleMany(anyCollectionOf(OrganisationUnit.class),
                 any(Transformer.class));
@@ -187,9 +186,9 @@ public class OrganisationUnitCallUnitShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void perform_call_twice_on_consecutive_calls() throws Exception {
-        organisationUnitCall.call();
-        organisationUnitCall.call();
+    public void perform_call_twice_on_consecutive_calls() {
+        organisationUnitCall.blockingGet();
+        organisationUnitCall.blockingGet();
 
         verify(organisationUnitHandler, times(2)).handleMany(anyCollectionOf(OrganisationUnit.class),
                 any(Transformer.class));

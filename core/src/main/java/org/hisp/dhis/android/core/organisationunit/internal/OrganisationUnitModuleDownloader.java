@@ -60,7 +60,7 @@ public class OrganisationUnitModuleDownloader {
 
     public Single<List<OrganisationUnit>> downloadMetadata(final User user) {
         return Single.fromCallable(() -> {
-            List<OrganisationUnit> organisationUnits = organisationUnitCall.create(user).call();
+            List<OrganisationUnit> organisationUnits = organisationUnitCall.download(user).blockingGet();
             organisationUnitLevelEndpointCallFactory.create().call();
 
             return organisationUnits;

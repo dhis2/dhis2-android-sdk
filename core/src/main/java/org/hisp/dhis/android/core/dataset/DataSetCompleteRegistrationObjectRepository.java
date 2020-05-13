@@ -84,7 +84,7 @@ public final class DataSetCompleteRegistrationObjectRepository
     }
 
     public Completable set() {
-        return Completable.fromAction(() -> blockingSet());
+        return Completable.fromAction(this::blockingSet);
     }
 
     public void blockingSet() {
@@ -130,11 +130,13 @@ public final class DataSetCompleteRegistrationObjectRepository
                     .build();
         } else {
             if (dataSetCompleteRegistration.state() == State.TO_POST) {
-                dataSetCompleteRegistrationStore.delete();
+                dataSetCompleteRegistrationStore.deleteWhere(dataSetCompleteRegistration);
             } else {
-
-                dataSetCompleteRegistrationStore.setState(
-                        dataSetCompleteRegistration.toBuilder().deleted(true).build(), State.TO_UPDATE);
+                DataSetCompleteRegistration deletedRecord = dataSetCompleteRegistration.toBuilder()
+                        .deleted(true)
+                        .state(State.TO_UPDATE)
+                        .build();
+                dataSetCompleteRegistrationStore.updateWhere(deletedRecord);
             }
         }
     }

@@ -36,18 +36,19 @@ import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTest
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.List;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 public class DataSetCompleteRegistrationObjectRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
+    private String dataSetUid = "lyLU2wR22tC";
+    private String orgUnitUid = "DiszpKrYNg8";
+    private String cocUid = "bRowv6yZOF2";
+
     @Test
     public void delete() {
-
-        List<DataSetCompleteRegistration> dataSetCompleteRegistrations = d2.dataSetModule().dataSetCompleteRegistrations().blockingGet();
-
         try {
             objectRepository().blockingDelete();
         } catch (D2Error d2Error) {
@@ -58,11 +59,24 @@ public class DataSetCompleteRegistrationObjectRepositoryMockIntegrationShould ex
 
         assertThat(dataSetCompleteRegistration.deleted(), is(true));
         assertThat(dataSetCompleteRegistration.state(), is(State.TO_UPDATE));
+    }
 
+    @Test
+    public void delete_newly_created_record() throws D2Error {
+        DataSetCompleteRegistrationObjectRepository newObjectRepository =
+                d2.dataSetModule().dataSetCompleteRegistrations().value("2019", orgUnitUid, dataSetUid, cocUid);
+
+        newObjectRepository.blockingSet();
+        newObjectRepository.blockingDelete();
+
+        DataSetCompleteRegistration newObject = newObjectRepository.blockingGet();
+        assertNull(newObject);
+
+        DataSetCompleteRegistration existingObject = objectRepository().blockingGet();
+        assertNotNull(existingObject);
     }
 
     private DataSetCompleteRegistrationObjectRepository objectRepository() {
-        return d2.dataSetModule().dataSetCompleteRegistrations().value(
-                "2018", "DiszpKrYNg8", "lyLU2wR22tC","bRowv6yZOF2");
+        return d2.dataSetModule().dataSetCompleteRegistrations().value("2018", orgUnitUid, dataSetUid, cocUid);
     }
 }

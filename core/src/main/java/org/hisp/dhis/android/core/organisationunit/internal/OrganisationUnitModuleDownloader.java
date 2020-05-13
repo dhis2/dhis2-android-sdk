@@ -44,27 +44,22 @@ public class OrganisationUnitModuleDownloader {
 
     private final OrganisationUnitCall organisationUnitCall;
     private final SearchOrganisationUnitOnDemandCall searchOrganisationUnitOnDemandCall;
-    private final OrganisationUnitLevelEndpointCallFactory organisationUnitLevelEndpointCallFactory;
+    private final OrganisationUnitLevelEndpointCall organisationUnitLevelEndpointCall;
 
 
     @Inject
     OrganisationUnitModuleDownloader(OrganisationUnitCall organisationUnitCall,
                                      SearchOrganisationUnitOnDemandCall
                                              searchOrganisationUnitOnDemandCall,
-                                     OrganisationUnitLevelEndpointCallFactory
-                                             organisationUnitLevelEndpointCallFactory) {
+                                     OrganisationUnitLevelEndpointCall
+                                             organisationUnitLevelEndpointCall) {
         this.organisationUnitCall = organisationUnitCall;
         this.searchOrganisationUnitOnDemandCall = searchOrganisationUnitOnDemandCall;
-        this.organisationUnitLevelEndpointCallFactory = organisationUnitLevelEndpointCallFactory;
+        this.organisationUnitLevelEndpointCall = organisationUnitLevelEndpointCall;
     }
 
     public Single<List<OrganisationUnit>> downloadMetadata(final User user) {
-        return Single.fromCallable(() -> {
-            List<OrganisationUnit> organisationUnits = organisationUnitCall.download(user).blockingGet();
-            organisationUnitLevelEndpointCallFactory.create().call();
-
-            return organisationUnits;
-        });
+        return organisationUnitLevelEndpointCall.download().flatMap(level -> organisationUnitCall.download(user));
     }
 
     public Completable downloadSearchOrganisationUnits(Set<String> uids) {

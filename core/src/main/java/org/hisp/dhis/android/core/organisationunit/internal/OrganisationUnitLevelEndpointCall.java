@@ -28,51 +28,37 @@
 
 package org.hisp.dhis.android.core.organisationunit.internal;
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactoryImpl;
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.PayloadNoResourceCallFetcher;
-import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
-import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
-import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
+import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Single;
 
 @Reusable
-final class OrganisationUnitLevelEndpointCallFactory extends ListCallFactoryImpl<OrganisationUnitLevel> {
+final class OrganisationUnitLevelEndpointCall implements ListCall<OrganisationUnitLevel> {
 
     private final OrganisationUnitLevelService service;
     private final Handler<OrganisationUnitLevel> handler;
+    private final APIDownloader apiDownloader;
 
     @Inject
-    OrganisationUnitLevelEndpointCallFactory(GenericCallData data,
-                                             APICallExecutor apiCallExecutor,
-                                             OrganisationUnitLevelService service,
-                                             Handler<OrganisationUnitLevel> handler) {
-        super(data, apiCallExecutor);
+    OrganisationUnitLevelEndpointCall(OrganisationUnitLevelService service,
+                                      Handler<OrganisationUnitLevel> handler,
+                                      APIDownloader apiDownloader) {
         this.service = service;
         this.handler = handler;
+        this.apiDownloader = apiDownloader;
     }
 
     @Override
-    protected CallFetcher<OrganisationUnitLevel> fetcher() {
-
-        return new PayloadNoResourceCallFetcher<OrganisationUnitLevel>(apiCallExecutor) {
-            @Override
-            protected retrofit2.Call<Payload<OrganisationUnitLevel>> getCall() {
-                return service.getOrganisationUnitLevels(OrganisationUnitLevelFields.allFields, Boolean.FALSE);
-            }
-        };
-    }
-
-    @Override
-    protected CallProcessor<OrganisationUnitLevel> processor() {
-        return new TransactionalNoResourceSyncCallProcessor<>(
-                data.databaseAdapter(), handler);
+    public Single<List<OrganisationUnitLevel>> download() {
+        return apiDownloader.download(handler,
+                service.getOrganisationUnitLevels(OrganisationUnitLevelFields.allFields, Boolean.FALSE));
     }
 }

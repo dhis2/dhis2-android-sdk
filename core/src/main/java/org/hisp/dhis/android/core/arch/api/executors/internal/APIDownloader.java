@@ -53,4 +53,6 @@ public interface APIDownloader {
 
     <P> Single<List<P>> downloadWithLastUpdated(Handler<P> handler, Resource.Type resourceType,
                                                 Function<String, Single<Payload<P>>> downloader);
+
+    <P> Single<List<P>> download(Handler<P> handler, Single<Payload<P>> downloader);
 }

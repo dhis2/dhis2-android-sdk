@@ -115,4 +115,11 @@ public final class APIDownloaderImpl implements APIDownloader {
                     resourceHandler.handleResource(resourceType);
                 });
     }
+
+    @Override
+    public <P> Single<List<P>> download(Handler<P> handler, Single<Payload<P>> downloader) {
+        return downloader
+                .map(Payload::items)
+                .doOnSuccess(handler::handleMany);
+    }
 }

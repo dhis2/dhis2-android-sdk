@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.organisationunit.internal;
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactory;
+import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.di.internal.IdentifiableEntityDIModule;
@@ -70,8 +70,7 @@ public final class OrganisationUnitLevelEntityDIModule implements IdentifiableEn
 
     @Provides
     @Reusable
-    ListCallFactory<OrganisationUnitLevel> organisationUnitLevelCallFactory(
-            OrganisationUnitLevelEndpointCallFactory impl) {
+    ListCall<OrganisationUnitLevel> organisationUnitLevelCallFactory(OrganisationUnitLevelEndpointCall impl) {
         return impl;
     }
 

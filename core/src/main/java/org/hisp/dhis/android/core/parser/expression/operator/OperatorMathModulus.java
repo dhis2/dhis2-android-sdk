@@ -1,5 +1,7 @@
+package org.hisp.dhis.android.core.parser.expression.operator;
+
 /*
- * Copyright (c) 2004-2019, University of Oslo
+ * Copyright (c) 2004-2020, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,19 +28,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.stores.internal;
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
+import org.hisp.dhis.antlr.operator.AntlrOperatorMathModulus;
 
-import org.hisp.dhis.android.core.common.CoreObject;
-
-import java.util.List;
-
-public interface LinkStore<M extends CoreObject> extends ObjectStore<M> {
-
-    void deleteLinksForMasterUid(@NonNull String masterUid) throws RuntimeException;
-
-    int deleteAllLinks();
-
-    List<String> selectDistinctSlaves(@NonNull String slaveColumn);
+/**
+ * Math operator: Modulus
+ *
+ * @author Jim Grace
+ */
+public class OperatorMathModulus
+        extends AntlrOperatorMathModulus
+        implements ExpressionItem {
 }

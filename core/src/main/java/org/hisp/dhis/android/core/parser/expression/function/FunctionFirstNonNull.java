@@ -1,5 +1,7 @@
+package org.hisp.dhis.android.core.parser.expression.function;
+
 /*
- * Copyright (c) 2004-2019, University of Oslo
+ * Copyright (c) 2004-2020, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,19 +28,39 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.stores.internal;
+import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
+import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
 
-import androidx.annotation.NonNull;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
 
-import org.hisp.dhis.android.core.common.CoreObject;
+/**
+ * Function firstNonNull
+ *
+ * @author Jim Grace
+ */
+public class FunctionFirstNonNull
+        implements ExpressionItem {
+    @Override
+    public Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor) {
+        for (ExprContext c : ctx.expr()) {
+            Object value = visitor.visitAllowingNulls(c);
 
-import java.util.List;
+            if (value != null) {
+                return value;
+            }
+        }
+        return null;
+    }
 
-public interface LinkStore<M extends CoreObject> extends ObjectStore<M> {
+    @Override
+    public Object evaluateAllPaths(ExprContext ctx, CommonExpressionVisitor visitor) {
+        for (ExprContext c : ctx.expr()) {
+            Object value = visitor.visitAllowingNulls(c);
 
-    void deleteLinksForMasterUid(@NonNull String masterUid) throws RuntimeException;
-
-    int deleteAllLinks();
-
-    List<String> selectDistinctSlaves(@NonNull String slaveColumn);
+            if (value != null) {
+                return value;
+            }
+        }
+        return null;
+    }
 }

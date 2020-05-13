@@ -26,19 +26,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.stores.internal;
+package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.core.validation.ValidationRuleExpression;
 
-import org.hisp.dhis.android.core.common.CoreObject;
-
-import java.util.List;
-
-public interface LinkStore<M extends CoreObject> extends ObjectStore<M> {
-
-    void deleteLinksForMasterUid(@NonNull String masterUid) throws RuntimeException;
-
-    int deleteAllLinks();
-
-    List<String> selectDistinctSlaves(@NonNull String slaveColumn);
+public final class IgnoreValidationRuleExpressionColumnAdapter extends IgnoreColumnAdapter<ValidationRuleExpression> {
 }

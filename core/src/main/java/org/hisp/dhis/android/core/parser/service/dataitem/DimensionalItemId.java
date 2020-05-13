@@ -1,5 +1,7 @@
+package org.hisp.dhis.android.core.parser.service.dataitem;
+
 /*
- * Copyright (c) 2004-2019, University of Oslo
+ * Copyright (c) 2004-2020, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,19 +28,47 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.stores.internal;
+import com.google.auto.value.AutoValue;
 
-import androidx.annotation.NonNull;
+import javax.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.CoreObject;
+import static org.hisp.dhis.android.core.parser.service.dataitem.DimensionalItemType.DATA_ELEMENT;
+import static org.hisp.dhis.android.core.parser.service.dataitem.DimensionalItemType.DATA_ELEMENT_OPERAND;
 
-import java.util.List;
+@AutoValue
+public abstract class DimensionalItemId {
 
-public interface LinkStore<M extends CoreObject> extends ObjectStore<M> {
+    public abstract DimensionalItemType dimensionalItemType();
 
-    void deleteLinksForMasterUid(@NonNull String masterUid) throws RuntimeException;
+    public abstract String id0();
 
-    int deleteAllLinks();
+    @Nullable
+    public abstract String id1();
 
-    List<String> selectDistinctSlaves(@NonNull String slaveColumn);
+    @Nullable
+    public abstract String id2();
+
+    public static Builder builder() {
+        return new AutoValue_DimensionalItemId.Builder();
+    }
+
+    @AutoValue.Builder
+    abstract static class Builder {
+
+        abstract Builder dimensionalItemType(DimensionalItemType dimensionalItemType);
+
+        abstract Builder id0(String id0);
+
+        abstract Builder id1(@Nullable String id1);
+
+        abstract Builder id2(@Nullable String id2);
+
+        abstract DimensionalItemId build();
+    }
+
+    public boolean isDataElementOrOperand() {
+        return dimensionalItemType() == DATA_ELEMENT
+                || dimensionalItemType() == DATA_ELEMENT_OPERAND;
+    }
+
 }

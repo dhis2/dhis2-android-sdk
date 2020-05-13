@@ -26,19 +26,43 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.stores.internal;
+package org.hisp.dhis.android.core.validation;
 
-import androidx.annotation.NonNull;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.CoreObject;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_ValidationRuleExpression.Builder.class)
+public abstract class ValidationRuleExpression {
 
-import java.util.List;
+    @JsonProperty()
+    public abstract String expression();
 
-public interface LinkStore<M extends CoreObject> extends ObjectStore<M> {
+    @JsonProperty()
+    public abstract String description();
 
-    void deleteLinksForMasterUid(@NonNull String masterUid) throws RuntimeException;
+    @JsonProperty()
+    public abstract MissingValueStrategy missingValueStrategy();
 
-    int deleteAllLinks();
 
-    List<String> selectDistinctSlaves(@NonNull String slaveColumn);
+    public static Builder builder() {
+        return new AutoValue_ValidationRuleExpression.Builder();
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder {
+
+        public abstract Builder expression(String expression);
+
+        public abstract Builder description(String description);
+
+        public abstract Builder missingValueStrategy(MissingValueStrategy missingValueStrategy);
+
+        public abstract ValidationRuleExpression build();
+    }
 }

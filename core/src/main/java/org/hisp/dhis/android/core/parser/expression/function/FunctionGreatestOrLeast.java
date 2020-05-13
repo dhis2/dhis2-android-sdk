@@ -1,5 +1,7 @@
+package org.hisp.dhis.android.core.parser.expression.function;
+
 /*
- * Copyright (c) 2004-2019, University of Oslo
+ * Copyright (c) 2004-2020, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,19 +28,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.stores.internal;
-
-import androidx.annotation.NonNull;
-
-import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
+import org.hisp.dhis.antlr.AntlrExpressionVisitor;
 
 import java.util.List;
 
-public interface LinkStore<M extends CoreObject> extends ObjectStore<M> {
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
 
-    void deleteLinksForMasterUid(@NonNull String masterUid) throws RuntimeException;
+/**
+ * Abstract function for greatest or least
+ *
+ * @author Jim Grace
+ */
+public abstract class FunctionGreatestOrLeast
+        implements ExpressionItem {
+    /**
+     * Returns the greatest or least value.
+     *
+     * @param contexts      the expr contexts.
+     * @param greatestLeast 1.0 for greatest, -1.0 for least.
+     * @return the greatest or least value.
+     */
+    protected Double greatestOrLeast(List<ExprContext> contexts, AntlrExpressionVisitor visitor, double greatestLeast) {
+        Double returnVal = null;
 
-    int deleteAllLinks();
+        for (ExprContext c : contexts) {
+            Double val = visitor.castDoubleVisit(c);
 
-    List<String> selectDistinctSlaves(@NonNull String slaveColumn);
+            if (returnVal == null || val != null && (val - returnVal) * greatestLeast > 0) {
+                returnVal = val;
+            }
+        }
+        return returnVal;
+    }
 }

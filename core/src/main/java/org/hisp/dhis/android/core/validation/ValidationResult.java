@@ -26,19 +26,54 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.stores.internal;
+package org.hisp.dhis.android.core.validation;
 
-import androidx.annotation.NonNull;
-
-import org.hisp.dhis.android.core.common.CoreObject;
+import com.google.auto.value.AutoValue;
 
 import java.util.List;
 
-public interface LinkStore<M extends CoreObject> extends ObjectStore<M> {
+@AutoValue
+public abstract class ValidationResult {
 
-    void deleteLinksForMasterUid(@NonNull String masterUid) throws RuntimeException;
+    public abstract ValidationResultStatus status();
 
-    int deleteAllLinks();
+    public abstract String dataSetUid();
 
-    List<String> selectDistinctSlaves(@NonNull String slaveColumn);
+    public abstract String period();
+
+    public abstract String organisationUnitUid();
+
+    public abstract String attributeOptionComboUid();
+
+    public abstract List<ValidationResultViolation> violations();
+
+    public static Builder builder() {
+        return new AutoValue_ValidationResult.Builder();
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+
+        public abstract Builder status(ValidationResultStatus status);
+
+        public abstract Builder dataSetUid(String dataSetUid);
+
+        public abstract Builder period(String period);
+
+        public abstract Builder organisationUnitUid(String organisationUnitUid);
+
+        public abstract Builder attributeOptionComboUid(String attributeOptionComboUid);
+
+        public abstract Builder violations(List<ValidationResultViolation> violations);
+
+        public abstract ValidationResult build();
+    }
+
+    public enum ValidationResultStatus {
+        OK,
+        ERROR
+    }
+
 }

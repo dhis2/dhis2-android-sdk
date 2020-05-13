@@ -46,7 +46,7 @@ public abstract class ObjectStoreAbstractIntegrationShould<M extends CoreObject>
 
     final M object;
     private final ObjectStore<M> store;
-    private final TableInfo tableInfo;
+    protected final TableInfo tableInfo;
     private final DatabaseAdapter databaseAdapter;
 
     public ObjectStoreAbstractIntegrationShould(ObjectStore<M> store,

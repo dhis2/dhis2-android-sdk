@@ -66,7 +66,7 @@ ext {
             assertj         : "3.11.1",
             mockito         : "2.24.5",
             dexmaker        : "2.21.0",
-            truth           : "0.31",
+            truth           : "0.30",
             testrunner      : '1.1.0-alpha4',
             equalsverifier  : "2.1.8",
             stetho          : "1.5.0",
@@ -190,6 +190,9 @@ dependencies {
     // sms compression library
     api 'com.github.dhis2:sms-compression:0.2.0'
 
+    // DHIS 2 antlr expression parser
+    api "org.hisp.dhis.parser:dhis-antlr-expression-parser:1.0.5-SNAPSHOT"
+
     // Extension which generates mappers for work with cursor and content values
     api "com.gabrielittner.auto.value:auto-value-cursor-annotations:${libraries.autovaluecursor}"
     annotationProcessor "com.gabrielittner.auto.value:auto-value-cursor:${libraries.autovaluecursor}"
@@ -197,6 +200,8 @@ dependencies {
     api "net.zetetic:android-database-sqlcipher:${libraries.sqlcipher}"
 
     api "com.google.code.findbugs:annotations:${libraries.findbugs}"
+
+    api "org.antlr:antlr4-runtime:4.7.2"
 
     api "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
 

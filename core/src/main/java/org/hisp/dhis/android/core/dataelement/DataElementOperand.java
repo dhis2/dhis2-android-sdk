@@ -53,6 +53,7 @@ public abstract class DataElementOperand extends BaseObject
         implements ObjectWithUidInterface, ObjectWithDeleteInterface {
 
     @Override
+    @Nullable
     @JsonProperty(UID)
     public abstract String uid();
 

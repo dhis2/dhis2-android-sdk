@@ -1,5 +1,7 @@
+package org.hisp.dhis.android.core.parser.expression.literal;
+
 /*
- * Copyright (c) 2004-2019, University of Oslo
+ * Copyright (c) 2004-2020, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,19 +28,29 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.stores.internal;
+import org.hisp.dhis.antlr.AntlrExprLiteral;
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
 
-import androidx.annotation.NonNull;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.BooleanLiteralContext;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.StringLiteralContext;
 
-import org.hisp.dhis.android.core.common.CoreObject;
+/**
+ * Gets typed literal values from an ANTLR parse tree for use internally.
+ */
+public class RegenerateLiteral
+        implements AntlrExprLiteral {
+    @Override
+    public Object getNumericLiteral(ExpressionParser.NumericLiteralContext ctx) {
+        return ctx.getText();
+    }
 
-import java.util.List;
+    @Override
+    public Object getStringLiteral(StringLiteralContext ctx) {
+        return ctx.getText();
+    }
 
-public interface LinkStore<M extends CoreObject> extends ObjectStore<M> {
-
-    void deleteLinksForMasterUid(@NonNull String masterUid) throws RuntimeException;
-
-    int deleteAllLinks();
-
-    List<String> selectDistinctSlaves(@NonNull String slaveColumn);
+    @Override
+    public Object getBooleanLiteral(BooleanLiteralContext ctx) {
+        return ctx.getText();
+    }
 }

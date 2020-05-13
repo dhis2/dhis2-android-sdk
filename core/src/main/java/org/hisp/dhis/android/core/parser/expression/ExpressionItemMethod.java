@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
+ * Copyright (c) 2004-2020, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,19 +26,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.stores.internal;
+package org.hisp.dhis.android.core.parser.expression;
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
 
-import org.hisp.dhis.android.core.common.CoreObject;
-
-import java.util.List;
-
-public interface LinkStore<M extends CoreObject> extends ObjectStore<M> {
-
-    void deleteLinksForMasterUid(@NonNull String masterUid) throws RuntimeException;
-
-    int deleteAllLinks();
-
-    List<String> selectDistinctSlaves(@NonNull String slaveColumn);
+/**
+ * Applies a method in an ExprFunction.
+ *
+ * @author Jim Grace
+ */
+@FunctionalInterface
+public interface ExpressionItemMethod {
+    /**
+     * Invokes a method in an expression function
+     *
+     * @param item    the item to evaluate
+     * @param ctx     the second function argument
+     * @param visitor the visitor class for supporting methods
+     * @return the method result from the expression item class
+     */
+    Object apply(ExpressionItem item, ExprContext ctx, CommonExpressionVisitor visitor);
 }

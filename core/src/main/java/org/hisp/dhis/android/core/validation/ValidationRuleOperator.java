@@ -26,19 +26,25 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.stores.internal;
+package org.hisp.dhis.android.core.validation;
 
-import androidx.annotation.NonNull;
+public enum ValidationRuleOperator {
+    equal_to("=="),
+    not_equal_to("!="),
+    greater_than(">"),
+    greater_than_or_equal_to(">="),
+    less_than("<"),
+    less_than_or_equal_to("<="),
+    compulsory_pair("[compulsory pair]"),
+    exclusive_pair("[exclusive pair]");
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    private final String mathematicalOperator;
 
-import java.util.List;
+    ValidationRuleOperator(String mathematicalOperator) {
+        this.mathematicalOperator = mathematicalOperator;
+    }
 
-public interface LinkStore<M extends CoreObject> extends ObjectStore<M> {
-
-    void deleteLinksForMasterUid(@NonNull String masterUid) throws RuntimeException;
-
-    int deleteAllLinks();
-
-    List<String> selectDistinctSlaves(@NonNull String slaveColumn);
+    public String getMathematicalOperator() {
+        return mathematicalOperator;
+    }
 }

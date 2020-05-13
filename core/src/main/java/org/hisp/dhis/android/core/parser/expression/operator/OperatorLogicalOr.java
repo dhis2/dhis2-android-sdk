@@ -1,5 +1,7 @@
+package org.hisp.dhis.android.core.parser.expression.operator;
+
 /*
- * Copyright (c) 2004-2019, University of Oslo
+ * Copyright (c) 2004-2020, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,19 +28,53 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.stores.internal;
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
+import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
+import org.hisp.dhis.antlr.operator.AntlrOperatorLogicalOr;
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
 
-import org.hisp.dhis.android.core.common.CoreObject;
+/**
+ * Logical operator: Or
+ * <pre>
+ *
+ * Truth table (same as for SQL):
+ *
+ *       A      B    A or B
+ *     -----  -----  ------
+ *     null   null    null
+ *     null   false   null
+ *     null   true    true
+ *
+ *     false  null    null
+ *     false  false   false
+ *     false  true    true
+ *
+ *     true   null    true
+ *     true   false   true
+ *     true   true    true
+ * </pre>
+ *
+ * @author Jim Grace
+ */
+public class OperatorLogicalOr
+        extends AntlrOperatorLogicalOr
+        implements ExpressionItem {
+    @Override
+    public Object evaluateAllPaths(ExprContext ctx, CommonExpressionVisitor visitor) {
+        Boolean value = visitor.castBooleanVisit(ctx.expr(0));
+        Boolean value1 = visitor.castBooleanVisit(ctx.expr(1));
 
-import java.util.List;
+        if (value == null) {
+            value = value1;
 
-public interface LinkStore<M extends CoreObject> extends ObjectStore<M> {
+            if (value != null && !value) {
+                value = null;
+            }
+        } else if (!value) {
+            value = value1;
+        }
 
-    void deleteLinksForMasterUid(@NonNull String masterUid) throws RuntimeException;
-
-    int deleteAllLinks();
-
-    List<String> selectDistinctSlaves(@NonNull String slaveColumn);
+        return value;
+    }
 }

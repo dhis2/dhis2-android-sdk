@@ -26,19 +26,50 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.stores.internal;
+package org.hisp.dhis.android.core.validation;
 
-import androidx.annotation.NonNull;
+import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 
 import java.util.List;
 
-public interface LinkStore<M extends CoreObject> extends ObjectStore<M> {
+@AutoValue
+public abstract class ValidationResultViolation {
 
-    void deleteLinksForMasterUid(@NonNull String masterUid) throws RuntimeException;
+    public abstract ValidationRule validationRule();
 
-    int deleteAllLinks();
+    public abstract List<DataElementOperand> dataElementUids();
 
-    List<String> selectDistinctSlaves(@NonNull String slaveColumn);
+    public abstract Double leftSideValue();
+
+    public abstract String leftSideExpression();
+
+    public abstract Double rightSideValue();
+
+    public abstract String rightSideExpression();
+
+    public static Builder builder() {
+        return new AutoValue_ValidationResultViolation.Builder();
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+
+        public abstract Builder validationRule(ValidationRule validationRule);
+
+        public abstract Builder dataElementUids(List<DataElementOperand> dataElementUids);
+
+        public abstract Builder leftSideValue(Double leftSideValue);
+
+        public abstract Builder leftSideExpression(String leftSideExpression);
+
+        public abstract Builder rightSideValue(Double rightSideValue);
+
+        public abstract Builder rightSideExpression(String rightSideExpression);
+
+        public abstract ValidationResultViolation build();
+    }
 }

@@ -1,5 +1,7 @@
+package org.hisp.dhis.android.core.parser.expression.operator;
+
 /*
- * Copyright (c) 2004-2019, University of Oslo
+ * Copyright (c) 2004-2020, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,19 +28,42 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.stores.internal;
+import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
+import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
+import org.hisp.dhis.antlr.operator.AntlrOperatorLogicalAnd;
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
 
-import androidx.annotation.NonNull;
+/**
+ * Logical operator: And
+ * <pre>
+ *
+ * Truth table (same as for SQL):
+ *
+ *       A      B    A and B
+ *     -----  -----  -------
+ *     null   null    null
+ *     null   false   null
+ *     null   true    null
+ *
+ *     false  null    false
+ *     false  false   false
+ *     false  true    false
+ *
+ *     true   null    null
+ *     true   false   false
+ *     true   true    true
+ * </pre>
+ *
+ * @author Jim Grace
+ */
+public class OperatorLogicalAnd
+        extends AntlrOperatorLogicalAnd
+        implements ExpressionItem {
+    @Override
+    public Object evaluateAllPaths(ExprContext ctx, CommonExpressionVisitor visitor) {
+        Boolean value0 = visitor.castBooleanVisit(ctx.expr(0));
+        Boolean value1 = visitor.castBooleanVisit(ctx.expr(1));
 
-import org.hisp.dhis.android.core.common.CoreObject;
-
-import java.util.List;
-
-public interface LinkStore<M extends CoreObject> extends ObjectStore<M> {
-
-    void deleteLinksForMasterUid(@NonNull String masterUid) throws RuntimeException;
-
-    int deleteAllLinks();
-
-    List<String> selectDistinctSlaves(@NonNull String slaveColumn);
+        return value0 != null && value0 && value1 != null && value1;
+    }
 }

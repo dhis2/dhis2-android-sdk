@@ -39,7 +39,9 @@ import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationSt
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
+import org.hisp.dhis.android.core.user.UserCredentialsObjectRepository;
 
+import java.util.Date;
 import java.util.Map;
 
 import io.reactivex.Completable;
@@ -50,6 +52,7 @@ public final class DataSetCompleteRegistrationObjectRepository
         implements ReadWriteObjectRepository<DataSetCompleteRegistration> {
 
     private final DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore;
+    private final UserCredentialsObjectRepository credentialsRepository;
 
     private final String period;
     private final String dataSet;
@@ -58,6 +61,7 @@ public final class DataSetCompleteRegistrationObjectRepository
 
     DataSetCompleteRegistrationObjectRepository(
             final DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore,
+            final UserCredentialsObjectRepository credentialsRepository,
             final Map<String, ChildrenAppender<DataSetCompleteRegistration>> childrenAppenders,
             final RepositoryScope scope,
             final String period,
@@ -67,10 +71,11 @@ public final class DataSetCompleteRegistrationObjectRepository
             ) {
         super(dataSetCompleteRegistrationStore, childrenAppenders, scope,
                 s -> new DataSetCompleteRegistrationObjectRepository(
-                        dataSetCompleteRegistrationStore, childrenAppenders, s,
+                        dataSetCompleteRegistrationStore, credentialsRepository, childrenAppenders, s,
                 period, organisationUnit, dataSet, attributeOptionCombo));
 
         this.dataSetCompleteRegistrationStore = dataSetCompleteRegistrationStore;
+        this.credentialsRepository = credentialsRepository;
 
         this.period = period;
         this.dataSet = dataSet;
@@ -86,18 +91,24 @@ public final class DataSetCompleteRegistrationObjectRepository
         DataSetCompleteRegistration dataSetCompleteRegistration = blockingGetWithoutChildren();
 
         if (dataSetCompleteRegistration == null) {
+            String username = credentialsRepository.blockingGet().username();
             dataSetCompleteRegistrationStore.insert(
                     DataSetCompleteRegistration.builder()
-                            .state(State.TO_POST)
-                            .deleted(false)
                             .period(period)
                             .dataSet(dataSet)
                             .organisationUnit(organisationUnit)
                             .attributeOptionCombo(attributeOptionCombo)
+                            .date(new Date())
+                            .storedBy(username)
+                            .state(State.TO_POST)
+                            .deleted(false)
                             .build());
         } else {
-            dataSetCompleteRegistrationStore.setState(dataSetCompleteRegistration,
-                    dataSetCompleteRegistration.state() == State.TO_POST ? State.TO_POST : State.TO_UPDATE);
+            DataSetCompleteRegistration newRecord = dataSetCompleteRegistration.toBuilder()
+                    .deleted(false)
+                    .state(dataSetCompleteRegistration.state() == State.TO_POST ? State.TO_POST : State.TO_UPDATE)
+                    .build();
+            dataSetCompleteRegistrationStore.updateWhere(newRecord);
         }
     }
 

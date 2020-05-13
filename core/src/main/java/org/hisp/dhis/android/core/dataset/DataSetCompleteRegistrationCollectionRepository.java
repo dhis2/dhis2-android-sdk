@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationTableInfo.Columns;
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationPostCall;
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationStore;
+import org.hisp.dhis.android.core.user.UserCredentialsObjectRepository;
 
 import java.util.Map;
 
@@ -59,6 +60,7 @@ public final class DataSetCompleteRegistrationCollectionRepository
 
     private final DataSetCompleteRegistrationPostCall postCall;
     private final DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore;
+    private final UserCredentialsObjectRepository credentialsRepository;
 
     @Inject
     DataSetCompleteRegistrationCollectionRepository(
@@ -66,14 +68,16 @@ public final class DataSetCompleteRegistrationCollectionRepository
             final Map<String, ChildrenAppender<DataSetCompleteRegistration>> childrenAppenders,
             final RepositoryScope scope,
             final Handler<DataSetCompleteRegistration> handler,
-            final DataSetCompleteRegistrationPostCall postCall) {
+            final DataSetCompleteRegistrationPostCall postCall,
+            final UserCredentialsObjectRepository credentialsRepository) {
 
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 s -> new DataSetCompleteRegistrationCollectionRepository(store, childrenAppenders,
-                        s, handler, postCall)));
+                        s, handler, postCall, credentialsRepository)));
 
         this.postCall = postCall;
         this.dataSetCompleteRegistrationStore = store;
+        this.credentialsRepository = credentialsRepository;
     }
 
     public DataSetCompleteRegistrationObjectRepository value(final String period,
@@ -88,7 +92,7 @@ public final class DataSetCompleteRegistrationCollectionRepository
                 .scope;
 
         return new DataSetCompleteRegistrationObjectRepository(
-                dataSetCompleteRegistrationStore, childrenAppenders,
+                dataSetCompleteRegistrationStore, credentialsRepository, childrenAppenders,
                 updatedScope, period, organisationUnit, dataSet, attributeOptionCombo);
     }
 

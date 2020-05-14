@@ -33,6 +33,7 @@ import androidx.annotation.VisibleForTesting;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.arch.helpers.internal.FunctionalCollectionHelper;
 import org.hisp.dhis.android.core.common.CoreObject;
@@ -110,11 +111,12 @@ public final class APIDownloaderImpl implements APIDownloader {
     @Override
     public <P, O extends CoreObject> Single<List<P>> downloadLink(
             String masterUid, LinkHandler<P, O> handler,
-            Function<String, Single<Payload<P>>> downloader) {
+            Function<String, Single<Payload<P>>> downloader,
+            Transformer<P, O> transformer) {
         return Single.just(masterUid)
                 .flatMap(downloader)
                 .map(Payload::items)
-                .doOnSuccess(items -> handler.handleMany(masterUid, items, null));
+                .doOnSuccess(items -> handler.handleMany(masterUid, items, transformer));
     }
 
     @Override

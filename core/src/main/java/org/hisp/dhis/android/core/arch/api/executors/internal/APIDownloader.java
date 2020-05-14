@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.arch.api.executors.internal;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.resource.internal.Resource;
 
@@ -54,7 +55,8 @@ public interface APIDownloader {
                                            Function<P, P> transform);
 
     <P, O extends CoreObject> Single<List<P>> downloadLink(String masterUid, LinkHandler<P, O> handler,
-                                                           Function<String, Single<Payload<P>>> downloader);
+                                                           Function<String, Single<Payload<P>>> downloader,
+                                                           Transformer<P, O> transformer);
 
     <P> Single<List<P>> downloadWithLastUpdated(Handler<P> handler, Resource.Type resourceType,
                                                 Function<String, Single<Payload<P>>> downloader);

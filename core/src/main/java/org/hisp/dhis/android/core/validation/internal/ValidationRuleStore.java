@@ -53,12 +53,12 @@ final class ValidationRuleStore {
             w.bind(13, o.operator());
             w.bind(14, o.periodType());
             w.bind(15, o.skipFormValidation());
-            w.bind(16, o.leftSideExpression());
-            w.bind(17, o.leftSideDescription());
-            w.bind(18, o.leftSideMissingValueStrategy());
-            w.bind(19, o.rightSideExpression());
-            w.bind(20, o.rightSideDescription());
-            w.bind(21, o.rightSideMissingValueStrategy());
+            w.bind(16, o.leftSide().expression());
+            w.bind(17, o.leftSide().description());
+            w.bind(18, o.leftSide().missingValueStrategy());
+            w.bind(19, o.rightSide().expression());
+            w.bind(20, o.rightSide().description());
+            w.bind(21, o.rightSide().missingValueStrategy());
         }
     };
 

@@ -36,18 +36,21 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.LeftValidationRuleExpressionColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.RightValidationRuleExpressionColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.MissingValueStrategyColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.ValidationRuleImportanceColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.ValidationRuleOperatorColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreOrganisationUnitLevelListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreValidationRuleExpressionColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel;
 import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_ValidationRule.Builder.class)
@@ -72,33 +75,34 @@ public abstract class ValidationRule extends BaseNameableObject implements CoreO
     public abstract Boolean skipFormValidation();
 
     @JsonProperty()
-    @ColumnAdapter(IgnoreValidationRuleExpressionColumnAdapter.class)
+    @ColumnAdapter(LeftValidationRuleExpressionColumnAdapter.class)
     public abstract ValidationRuleExpression leftSide();
 
     @JsonProperty()
-    public abstract String leftSideExpression();
+    abstract String leftSideExpression();
 
     @JsonProperty()
-    public abstract String leftSideDescription();
+    abstract String leftSideDescription();
 
     @JsonProperty()
     @ColumnAdapter(MissingValueStrategyColumnAdapter.class)
-    public abstract MissingValueStrategy leftSideMissingValueStrategy();
+    abstract MissingValueStrategy leftSideMissingValueStrategy();
 
     @JsonProperty()
-    @ColumnAdapter(IgnoreValidationRuleExpressionColumnAdapter.class)
+    @ColumnAdapter(RightValidationRuleExpressionColumnAdapter.class)
     public abstract ValidationRuleExpression rightSide();
 
     @JsonProperty()
-    public abstract String rightSideExpression();
+    abstract String rightSideExpression();
 
     @JsonProperty()
-    public abstract String rightSideDescription();
+    abstract String rightSideDescription();
 
     @JsonProperty()
     @ColumnAdapter(MissingValueStrategyColumnAdapter.class)
-    public abstract MissingValueStrategy rightSideMissingValueStrategy();
+    abstract MissingValueStrategy rightSideMissingValueStrategy();
 
+    @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreOrganisationUnitLevelListColumnAdapter.class)
     public abstract List<OrganisationUnitLevel> organisationUnitLevels();
@@ -108,18 +112,7 @@ public abstract class ValidationRule extends BaseNameableObject implements CoreO
     }
 
     public static ValidationRule create(Cursor cursor) {
-        ValidationRule rule = $AutoValue_ValidationRule.createFromCursor(cursor);
-        ValidationRuleExpression leftSide = ValidationRuleExpression.builder()
-                .description(rule.leftSideDescription())
-                .expression(rule.leftSideExpression())
-                .missingValueStrategy(rule.leftSideMissingValueStrategy())
-                .build();
-        ValidationRuleExpression rightSide = ValidationRuleExpression.builder()
-                .description(rule.rightSideDescription())
-                .expression(rule.rightSideExpression())
-                .missingValueStrategy(rule.rightSideMissingValueStrategy())
-                .build();
-        return rule.toBuilder().leftSide(leftSide).rightSide(rightSide).build();
+        return $AutoValue_ValidationRule.createFromCursor(cursor);
     }
 
     public abstract Builder toBuilder();
@@ -162,19 +155,44 @@ public abstract class ValidationRule extends BaseNameableObject implements CoreO
 
         // Auxiliary fields
         abstract ValidationRuleExpression leftSide();
+
+        abstract String leftSideDescription();
+
+        abstract String leftSideExpression();
+
+        abstract MissingValueStrategy leftSideMissingValueStrategy();
+
         abstract ValidationRuleExpression rightSide();
+
+        abstract String rightSideDescription();
+
+        abstract String rightSideExpression();
+
+        abstract MissingValueStrategy rightSideMissingValueStrategy();
 
         public ValidationRule build() {
             if (leftSide() != null) {
                 leftSideExpression(leftSide().expression());
                 leftSideDescription(leftSide().description());
                 leftSideMissingValueStrategy(leftSide().missingValueStrategy());
+            } else {
+                leftSide(ValidationRuleExpression.builder()
+                        .description(leftSideDescription())
+                        .expression(leftSideExpression())
+                        .missingValueStrategy(leftSideMissingValueStrategy())
+                        .build());
             }
 
             if (rightSide() != null) {
                 rightSideExpression(rightSide().expression());
                 rightSideDescription(rightSide().description());
                 rightSideMissingValueStrategy(rightSide().missingValueStrategy());
+            } else {
+                rightSide(ValidationRuleExpression.builder()
+                        .description(rightSideDescription())
+                        .expression(rightSideExpression())
+                        .missingValueStrategy(rightSideMissingValueStrategy())
+                        .build());
             }
 
             return autoBuild();

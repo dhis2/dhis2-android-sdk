@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.arch.d2.internal;
 
 import org.hisp.dhis.android.core.category.internal.CategoryInternalModule;
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitInternalModule;
 import org.hisp.dhis.android.core.user.internal.UserInternalModule;
 
 import javax.inject.Inject;
@@ -41,11 +42,14 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 public final class D2InternalModules {
     public final CategoryInternalModule category;
     public final UserInternalModule user;
+    public final OrganisationUnitInternalModule organisationUnit;
 
     @Inject
-    public D2InternalModules(CategoryInternalModule category,
-                             UserInternalModule user) {
+    D2InternalModules(CategoryInternalModule category,
+                      UserInternalModule user,
+                      OrganisationUnitInternalModule organisationUnit) {
         this.category = category;
         this.user = user;
+        this.organisationUnit = organisationUnit;
     }
 }

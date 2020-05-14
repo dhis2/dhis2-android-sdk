@@ -26,13 +26,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.utils.integration.mock;
+package org.hisp.dhis.android.core.organisationunit.internal;
 
-public enum MockIntegrationTestDatabaseContent {
-    EmptyEnqueable,
-    EmptyDispatcher,
-    FullDispatcher,
-    MetadataEnqueable,
-    MetadataDispatcher,
-    LocalAnalyticsDispatcher
+import androidx.annotation.VisibleForTesting;
+
+import javax.inject.Inject;
+
+import dagger.Reusable;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+@Reusable
+public final class OrganisationUnitInternalModule {
+
+    @VisibleForTesting
+    @SuppressFBWarnings("URF_UNREAD_FIELD")
+    public final OrganisationUnitHandler organisationUnitHandler;
+
+    @Inject
+    OrganisationUnitInternalModule(OrganisationUnitHandler organisationUnitHandler) {
+        this.organisationUnitHandler = organisationUnitHandler;
+    }
 }

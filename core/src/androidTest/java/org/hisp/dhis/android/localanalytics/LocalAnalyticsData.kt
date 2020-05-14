@@ -25,14 +25,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.localanalytics
 
-package org.hisp.dhis.android.core.utils.integration.mock;
+import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 
-public enum MockIntegrationTestDatabaseContent {
-    EmptyEnqueable,
-    EmptyDispatcher,
-    FullDispatcher,
-    MetadataEnqueable,
-    MetadataDispatcher,
-    LocalAnalyticsDispatcher
+object LocalAnalyticsData {
+
+    fun getOrganisationUnit(): OrganisationUnit {
+        return OrganisationUnitSamples.getAdonkiaCHP()
+    }
 }

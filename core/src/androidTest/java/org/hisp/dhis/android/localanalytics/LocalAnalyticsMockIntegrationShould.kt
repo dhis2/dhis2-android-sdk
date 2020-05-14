@@ -25,14 +25,26 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.localanalytics
 
-package org.hisp.dhis.android.core.utils.integration.mock;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestLocalAnalyticsDispatcher
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.Test
+import org.junit.runner.RunWith
 
-public enum MockIntegrationTestDatabaseContent {
-    EmptyEnqueable,
-    EmptyDispatcher,
-    FullDispatcher,
-    MetadataEnqueable,
-    MetadataDispatcher,
-    LocalAnalyticsDispatcher
+@RunWith(D2JunitRunner::class)
+class LocalAnalyticsMockIntegrationShould : BaseMockIntegrationTestLocalAnalyticsDispatcher() {
+
+    @Test
+    fun check_user() {
+        val userExists = d2.userModule().user().blockingExists()
+        assertThat(userExists).isTrue()
+    }
+
+    @Test
+    fun check_organisation_units() {
+        val orgUnitsCount = d2.organisationUnitModule().organisationUnits().blockingCount()
+        assertThat(orgUnitsCount).isEqualTo(1)
+    }
 }

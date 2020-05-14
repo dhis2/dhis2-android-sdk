@@ -25,14 +25,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.utils.integration.mock
 
-package org.hisp.dhis.android.core.utils.integration.mock;
+import org.hisp.dhis.android.core.D2DIComponentAccessor
+import org.hisp.dhis.android.core.data.server.RealServerMother
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.localanalytics.LocalAnalyticsData
+import org.junit.BeforeClass
 
-public enum MockIntegrationTestDatabaseContent {
-    EmptyEnqueable,
-    EmptyDispatcher,
-    FullDispatcher,
-    MetadataEnqueable,
-    MetadataDispatcher,
-    LocalAnalyticsDispatcher
+abstract class BaseMockIntegrationTestLocalAnalyticsDispatcher : BaseMockIntegrationTest() {
+
+    companion object BaseMockIntegrationTestLocalAnalyticsDispatcher {
+        @BeforeClass
+        @Throws(Exception::class)
+        @JvmStatic
+        fun setUpClass() {
+            val isNewInstance = setUpClass(MockIntegrationTestDatabaseContent.LocalAnalyticsDispatcher)
+            if (isNewInstance) {
+                objects.dhis2MockServer.setRequestDispatcher()
+                objects.d2.userModule().blockingLogIn(RealServerMother.username, RealServerMother.password,
+                        objects.dhis2MockServer.baseEndpoint)
+            }
+
+            val d2DIComponent = D2DIComponentAccessor.getD2DIComponent(objects.d2)
+            val handler = d2DIComponent.internalModules().organisationUnit.organisationUnitHandler
+            handler.setData(d2.userModule().user().blockingGet(), OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
+            handler.handle(LocalAnalyticsData.getOrganisationUnit())
+        }
+    }
 }

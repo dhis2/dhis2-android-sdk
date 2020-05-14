@@ -26,9 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
+package org.hisp.dhis.android.core.validation.internal;
 
-import org.hisp.dhis.android.core.validation.ValidationRuleExpression;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.validation.ValidationRuleSamples;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.hisp.dhis.android.core.validation.ValidationRule;
+import org.hisp.dhis.android.core.validation.ValidationRuleImportance;
+import org.hisp.dhis.android.core.validation.ValidationRuleTableInfo;
+import org.junit.runner.RunWith;
 
-public final class IgnoreValidationRuleExpressionColumnAdapter extends IgnoreColumnAdapter<ValidationRuleExpression> {
+@RunWith(D2JunitRunner.class)
+public class ValidationRuleStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<ValidationRule> {
+
+    public ValidationRuleStoreIntegrationShould() {
+        super(ValidationRuleStore.create(TestDatabaseAdapterFactory.get()),
+                ValidationRuleTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+    }
+
+    @Override
+    protected ValidationRule buildObject() {
+        return ValidationRuleSamples.get();
+    }
+
+    @Override
+    protected ValidationRule buildObjectToUpdate() {
+        return ValidationRuleSamples.get().toBuilder()
+                .importance(ValidationRuleImportance.MEDIUM)
+                .build();
+    }
 }

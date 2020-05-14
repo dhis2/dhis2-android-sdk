@@ -85,8 +85,9 @@ public final class ValidationRuleCollectionRepository
         return cf.string(Columns.LEFT_SIDE_DESCRIPTION);
     }
 
-    public StringFilterConnector<ValidationRuleCollectionRepository> byLeftSideMissingValueStrategy() {
-        return cf.string(Columns.LEFT_SIDE_MISSING_VALUE_STRATEGY);
+    public EnumFilterConnector<ValidationRuleCollectionRepository, MissingValueStrategy>
+    byLeftSideMissingValueStrategy() {
+        return cf.enumC(Columns.LEFT_SIDE_MISSING_VALUE_STRATEGY);
     }
 
     public StringFilterConnector<ValidationRuleCollectionRepository> byRightSideExpression() {
@@ -97,7 +98,8 @@ public final class ValidationRuleCollectionRepository
         return cf.string(Columns.RIGHT_SIDE_DESCRIPTION);
     }
 
-    public StringFilterConnector<ValidationRuleCollectionRepository> byRightSideMissingValueStrategy() {
-        return cf.string(Columns.RIGHT_SIDE_MISSING_VALUE_STRATEGY);
+    public EnumFilterConnector<ValidationRuleCollectionRepository, MissingValueStrategy>
+    byRightSideMissingValueStrategy() {
+        return cf.enumC(Columns.RIGHT_SIDE_MISSING_VALUE_STRATEGY);
     }
 }

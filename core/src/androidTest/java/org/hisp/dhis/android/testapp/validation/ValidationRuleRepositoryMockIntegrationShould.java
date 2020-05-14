@@ -28,10 +28,13 @@
 
 package org.hisp.dhis.android.testapp.validation;
 
+import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.hisp.dhis.android.core.validation.MissingValueStrategy;
 import org.hisp.dhis.android.core.validation.ValidationRule;
 import org.hisp.dhis.android.core.validation.ValidationRuleImportance;
+import org.hisp.dhis.android.core.validation.ValidationRuleOperator;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -46,13 +49,93 @@ public class ValidationRuleRepositoryMockIntegrationShould extends BaseMockInteg
     @Test
     public void find_all() {
         List<ValidationRule> validationRule = d2.validationModule().validationRules().blockingGet();
-        assertThat(validationRule.size(), is(8));
+        assertThat(validationRule.size(), is(2));
     }
 
     @Test
-    public void filter_by_start_date() {
+    public void filter_by_instruction() {
         List<ValidationRule> validationRule = d2.validationModule().validationRules()
-                .byImportance().eq(ValidationRuleImportance.MEDIUM)
+                .byInstruction().eq("PCV 2 cannot be higher than PCV 1 doses given")
+                .blockingGet();
+        assertThat(validationRule.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_importance() {
+        List<ValidationRule> validationRule = d2.validationModule().validationRules()
+                .byImportance().eq(ValidationRuleImportance.LOW)
+                .blockingGet();
+        assertThat(validationRule.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_operator() {
+        List<ValidationRule> validationRule = d2.validationModule().validationRules()
+                .byOperator().eq(ValidationRuleOperator.less_than)
+                .blockingGet();
+        assertThat(validationRule.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_period_type() {
+        List<ValidationRule> validationRule = d2.validationModule().validationRules()
+                .byPeriodType().eq(PeriodType.Monthly)
+                .blockingGet();
+        assertThat(validationRule.size(), is(2));
+    }
+
+    @Test
+    public void filter_by_skip_form_validation() {
+        List<ValidationRule> validationRule = d2.validationModule().validationRules()
+                .bySkipFormValidation().eq(Boolean.TRUE)
+                .blockingGet();
+        assertThat(validationRule.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_left_side_expression() {
+        List<ValidationRule> validationRule = d2.validationModule().validationRules()
+                .byLeftSideExpression().eq("#{GCGfEY82Wz6.psbwp3CQEhs}")
+                .blockingGet();
+        assertThat(validationRule.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_left_side_description() {
+        List<ValidationRule> validationRule = d2.validationModule().validationRules()
+                .byLeftSideDescription().eq("At Measles, Slept under LLITN last night, >=1 year Fixed")
+                .blockingGet();
+        assertThat(validationRule.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_left_side_missing_value_strategy() {
+        List<ValidationRule> validationRule = d2.validationModule().validationRules()
+                .byLeftSideMissingValueStrategy().eq(MissingValueStrategy.SKIP_IF_ANY_VALUE_MISSING)
+                .blockingGet();
+        assertThat(validationRule.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_right_side_expression() {
+        List<ValidationRule> validationRule = d2.validationModule().validationRules()
+                .byRightSideExpression().eq("#{YtbsuPPo010.psbwp3CQEhs}")
+                .blockingGet();
+        assertThat(validationRule.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_right_side_description() {
+        List<ValidationRule> validationRule = d2.validationModule().validationRules()
+                .byRightSideDescription().eq("Measles, >=1 year Fixed[34.291]")
+                .blockingGet();
+        assertThat(validationRule.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_right_side_missing_value_strategy() {
+        List<ValidationRule> validationRule = d2.validationModule().validationRules()
+                .byRightSideMissingValueStrategy().eq(MissingValueStrategy.NEVER_SKIP)
                 .blockingGet();
         assertThat(validationRule.size(), is(1));
     }

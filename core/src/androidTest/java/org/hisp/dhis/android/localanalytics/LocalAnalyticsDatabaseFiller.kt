@@ -37,22 +37,19 @@ import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStor
 object LocalAnalyticsDatabaseFiller {
 
     fun fillDatabase(d2: D2) {
+        val da = d2.databaseAdapter()
 
         val params = LocalAnalyticsParams(3, 2, 6, 10)
         val dataGenerator = LocalAnalyticsDataGenerator(params)
 
-        val orgUnitStore = OrganisationUnitStore.create(d2.databaseAdapter())
-        orgUnitStore.insert(dataGenerator.getOrganisationUnits())
+        OrganisationUnitStore.create(da).insert(dataGenerator.getOrganisationUnits())
 
-        val categoryComboStore = CategoryComboStore.create(d2.databaseAdapter())
         val categoryCombos = dataGenerator.getCategoryCombos()
-        categoryComboStore.insert(categoryCombos)
+        CategoryComboStore.create(da).insert(categoryCombos)
 
-        val categoryOptionComboStore = CategoryOptionComboStoreImpl.create(d2.databaseAdapter())
-        categoryOptionComboStore.insert(dataGenerator.getCategoryOptionCombos(categoryCombos))
+        CategoryOptionComboStoreImpl.create(da).insert(dataGenerator.getCategoryOptionCombos(categoryCombos))
 
-        val dataElementStore = DataElementStore.create(d2.databaseAdapter())
-        dataElementStore.insert(dataGenerator.getDataElements(categoryCombos))
+        DataElementStore.create(da).insert(dataGenerator.getDataElements(categoryCombos))
 
         val d2DIComponent = D2DIComponentAccessor.getD2DIComponent(d2)
         d2DIComponent.periodHandler().generateAndPersist()

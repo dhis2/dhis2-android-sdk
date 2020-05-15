@@ -39,20 +39,10 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeS
 
 object LocalAnalyticsDatabaseFiller {
 
-    private val params = LocalAnalyticsParams(
-            organisationUnitChildren = 3,
-            categoryOptionCombos2 = 2,
-            categoryOptionCombos3 = 6,
-            dataElementsAggregated = 10,
-            dataElementsTracker = 10,
-            programStagesWithRegistration = 3,
-            programStagesWithoutRegistration = 1,
-            trackedEntityAttributes = 10)
-
     fun fillDatabase(d2: D2) {
         val da = d2.databaseAdapter()
 
-        val generator = LocalAnalyticsDataGenerator(params)
+        val generator = LocalAnalyticsDataGenerator(LocalAnalyticsParams.Default)
 
         OrganisationUnitStore.create(da).insert(generator.getOrganisationUnits())
 

@@ -44,15 +44,6 @@ import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.program.ProgramType
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 
-data class LocalAnalyticsParams(val organisationUnitChildren: Int,
-                                val categoryOptionCombos2: Int,
-                                val categoryOptionCombos3: Int,
-                                val dataElementsAggregated: Int,
-                                val dataElementsTracker: Int,
-                                val programStagesWithRegistration: Int,
-                                val programStagesWithoutRegistration: Int,
-                                val trackedEntityAttributes: Int)
-
 class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsParams) {
 
     fun getOrganisationUnits(): List<OrganisationUnit> {

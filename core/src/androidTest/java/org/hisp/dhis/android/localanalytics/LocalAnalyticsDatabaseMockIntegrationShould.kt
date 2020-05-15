@@ -34,7 +34,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
-class LocalAnalyticsMockIntegrationShould : BaseMockIntegrationTestLocalAnalyticsDispatcher() {
+class LocalAnalyticsDatabaseMockIntegrationShould : BaseMockIntegrationTestLocalAnalyticsDispatcher() {
 
     @Test
     fun check_user() {

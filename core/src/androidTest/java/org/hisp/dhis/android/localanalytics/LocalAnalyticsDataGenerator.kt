@@ -47,7 +47,8 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 data class LocalAnalyticsParams(val organisationUnitChildren: Int,
                                 val categoryOptionCombos2: Int,
                                 val categoryOptionCombos3: Int,
-                                val dataElements: Int,
+                                val dataElementsAggregated: Int,
+                                val dataElementsTracker: Int,
                                 val programStagesWithRegistration: Int,
                                 val programStagesWithoutRegistration: Int,
                                 val trackedEntityAttributes: Int)
@@ -87,11 +88,17 @@ class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsParams) {
         }
     }
 
-    fun getDataElements(categoryCombos: List<CategoryCombo>): List<DataElement> {
+    fun getDataElementsAggregated(categoryCombos: List<CategoryCombo>): List<DataElement> {
         return categoryCombos.flatMap { categoryCombo ->
-            (1..params.dataElements).map { i ->
-                DataElementSamples.getDataElement("DE $i", null, ObjectWithUid.create(categoryCombo.uid()))
+            (1..params.dataElementsAggregated).map { i ->
+                DataElementSamples.getDataElement("DE Aggr $i", null, ObjectWithUid.create(categoryCombo.uid()), null)
             }
+        }
+    }
+
+    fun getDataElementsTracker(categoryCombo: CategoryCombo): List<DataElement> {
+        return (1..params.dataElementsTracker).map { i ->
+            DataElementSamples.getDataElement("DE Tracker $i", null, ObjectWithUid.create(categoryCombo.uid()), "TRACKER")
         }
     }
 

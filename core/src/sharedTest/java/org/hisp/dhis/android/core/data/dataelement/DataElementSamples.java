@@ -55,12 +55,13 @@ public class DataElementSamples {
         return dataElementBuilder.build();
     }
 
-    public static DataElement getDataElement(String name, ObjectWithUid optionSet, ObjectWithUid categoryCombo) {
+    public static DataElement getDataElement(String name, ObjectWithUid optionSet, ObjectWithUid categoryCombo, String domainType) {
         return getDataElement().toBuilder()
                 .uid(new UidGeneratorImpl().generate())
                 .name(name)
                 .optionSet(optionSet)
                 .categoryCombo(categoryCombo)
+                .domainType(domainType)
                 .build();
     }
 }

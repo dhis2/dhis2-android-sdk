@@ -39,17 +39,18 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeS
 
 object LocalAnalyticsDatabaseFiller {
 
+    private val params = LocalAnalyticsParams(
+            organisationUnitChildren = 3,
+            categoryOptionCombos2 = 2,
+            categoryOptionCombos3 = 6,
+            dataElementsAggregated = 10,
+            dataElementsTracker = 10,
+            programStagesWithRegistration = 3,
+            programStagesWithoutRegistration = 1,
+            trackedEntityAttributes = 10)
+
     fun fillDatabase(d2: D2) {
         val da = d2.databaseAdapter()
-
-        val params = LocalAnalyticsParams(
-                organisationUnitChildren = 3,
-                categoryOptionCombos2 = 2,
-                categoryOptionCombos3 = 6,
-                dataElements = 10,
-                programStagesWithRegistration = 3,
-                programStagesWithoutRegistration = 1,
-                trackedEntityAttributes = 10)
 
         val generator = LocalAnalyticsDataGenerator(params)
 
@@ -60,18 +61,18 @@ object LocalAnalyticsDatabaseFiller {
 
         CategoryOptionComboStoreImpl.create(da).insert(generator.getCategoryOptionCombos(categoryCombos))
 
-        DataElementStore.create(da).insert(generator.getDataElements(categoryCombos))
+        val defaultCategoryCombo = categoryCombos.first()
+        DataElementStore.create(da).insert(generator.getDataElementsAggregated(categoryCombos) +
+                generator.getDataElementsTracker(defaultCategoryCombo))
 
         val d2DIComponent = D2DIComponentAccessor.getD2DIComponent(d2)
         d2DIComponent.periodHandler().generateAndPersist()
 
-        val programs = generator.getPrograms(categoryCombos.first())
+        val programs = generator.getPrograms(defaultCategoryCombo)
         ProgramStore.create(da).insert(programs)
 
         ProgramStageStore.create(da).insert(generator.getProgramStages(programs))
 
         TrackedEntityAttributeStore.create(da).insert(generator.getTrackedEntityAttributes())
-
-
     }
 }

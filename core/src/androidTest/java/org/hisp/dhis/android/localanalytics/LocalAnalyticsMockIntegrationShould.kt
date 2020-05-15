@@ -61,9 +61,15 @@ class LocalAnalyticsMockIntegrationShould : BaseMockIntegrationTestLocalAnalytic
     }
 
     @Test
-    fun check_data_elements() {
-        val count = d2.dataElementModule().dataElements().blockingCount()
+    fun check_aggregated_data_elements() {
+        val count = d2.dataElementModule().dataElements().byDomainType().isNull.blockingCount()
         assertThat(count).isEqualTo(30)
+    }
+
+    @Test
+    fun check_tracked_data_elements() {
+        val count = d2.dataElementModule().dataElements().byDomainType().eq("TRACKER").blockingCount()
+        assertThat(count).isEqualTo(10)
     }
 
     @Test

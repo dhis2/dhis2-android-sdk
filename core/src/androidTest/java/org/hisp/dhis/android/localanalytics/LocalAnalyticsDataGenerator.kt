@@ -33,17 +33,17 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 
 data class LocalAnalyticsParams(val ouChildren: Int)
 
-object LocalAnalyticsData {
+class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsParams) {
 
-    fun getOrganisationUnits(params: LocalAnalyticsParams): List<OrganisationUnit> {
+    fun getOrganisationUnits(): List<OrganisationUnit> {
         val root = OrganisationUnitSamples.getForValues("OU", 1, null)
-        val children = getChildren(params.ouChildren, root)
-        val grandchildren = children.flatMap { ch -> getChildren(3, ch) }
+        val children = getChildren(root)
+        val grandchildren = children.flatMap { ch -> getChildren(ch) }
         return listOf(root) + children + grandchildren
     }
 
-    private fun getChildren(count: Int, parent: OrganisationUnit): List<OrganisationUnit> {
-        return (1..count).map { i ->
+    private fun getChildren(parent: OrganisationUnit): List<OrganisationUnit> {
+        return (1..params.ouChildren).map { i ->
             OrganisationUnitSamples.getForValues("${parent.name()} $i", parent.level()!! + 1,
                     ObjectWithUid.create(parent.uid()))
         }

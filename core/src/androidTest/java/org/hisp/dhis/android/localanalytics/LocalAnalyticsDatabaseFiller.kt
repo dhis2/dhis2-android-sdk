@@ -37,8 +37,9 @@ object LocalAnalyticsDatabaseFiller {
         val orgUnitStore = OrganisationUnitStore.create(d2.databaseAdapter())
 
         val params = LocalAnalyticsParams(3)
+        val dataGenerator = LocalAnalyticsDataGenerator(params)
 
-        LocalAnalyticsData.getOrganisationUnits(params).forEach { orgUnit ->
+        dataGenerator.getOrganisationUnits().forEach { orgUnit ->
             orgUnitStore.insert(orgUnit)
         }
     }

@@ -64,7 +64,8 @@ final class ValidationRuleUidsCallImpl implements ValidationRuleUidsCall {
     public Single<List<ObjectWithUid>> download(Set<String> dataSetUids) {
         return Observable.fromIterable(dataSetUids)
                 .flatMapSingle(dataSetUid -> apiDownloader.downloadLink(dataSetUid, linkHandler, dataSetPartitionUids ->
-                                service.getDataSetValidationRuleUids(dataSetUid, BaseIdentifiableObject.UID, Boolean.FALSE),
+                                service.getDataSetValidationRuleUids(
+                                        dataSetUid, BaseIdentifiableObject.UID, Boolean.FALSE),
                         validationRule -> DataSetValidationRuleLink.builder()
                                 .dataSet(dataSetUid)
                                 .validationRule(validationRule.uid()).build()))

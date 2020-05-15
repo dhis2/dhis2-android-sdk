@@ -41,7 +41,7 @@ interface ValidationRuleService {
     @GET("validationRules")
     Single<Payload<ValidationRule>> getValidationRules(
             @Query("fields") @Which Fields<ValidationRule> fields,
-            @Query("filter") String UidsFilterString,
+            @Query("filter") String uidsFilterString,
             @Query("paging") Boolean paging);
 
     @GET("validationRules")

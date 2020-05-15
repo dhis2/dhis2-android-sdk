@@ -44,10 +44,6 @@ public class RightValidationRuleExpressionColumnAdapter implements ColumnTypeAda
 
     @Override
     public ValidationRuleExpression fromCursor(Cursor cursor, String columnName) {
-        int expressionColumnIndex = cursor.getColumnIndex(RIGHT_SIDE_EXPRESSION);
-        String expressionStr = cursor.getString(expressionColumnIndex);
-        int descriptionColumnIndex = cursor.getColumnIndex(RIGHT_SIDE_DESCRIPTION);
-        String descriptionStr = cursor.getString(descriptionColumnIndex);
         int missingValueStrategyColumnIndex = cursor.getColumnIndex(RIGHT_SIDE_MISSING_VALUE_STRATEGY);
         String missingValueStrategyStr = cursor.getString(missingValueStrategyColumnIndex);
 
@@ -59,6 +55,11 @@ public class RightValidationRuleExpressionColumnAdapter implements ColumnTypeAda
                 throw new RuntimeException("Unknown Missing value strategy", exception);
             }
         }
+
+        int expressionColumnIndex = cursor.getColumnIndex(RIGHT_SIDE_EXPRESSION);
+        String expressionStr = cursor.getString(expressionColumnIndex);
+        int descriptionColumnIndex = cursor.getColumnIndex(RIGHT_SIDE_DESCRIPTION);
+        String descriptionStr = cursor.getString(descriptionColumnIndex);
 
         return ValidationRuleExpression.builder()
                 .expression(expressionStr)

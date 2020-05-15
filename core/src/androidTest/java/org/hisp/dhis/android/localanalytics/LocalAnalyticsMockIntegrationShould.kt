@@ -47,4 +47,10 @@ class LocalAnalyticsMockIntegrationShould : BaseMockIntegrationTestLocalAnalytic
         val orgUnitsCount = d2.organisationUnitModule().organisationUnits().blockingCount()
         assertThat(orgUnitsCount).isEqualTo(13)
     }
+
+    @Test
+    fun check_category_combos() {
+        val categoryCombosCount = d2.categoryModule().categoryCombos().blockingCount()
+        assertThat(categoryCombosCount).isEqualTo(3)
+    }
 }

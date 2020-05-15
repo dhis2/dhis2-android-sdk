@@ -28,19 +28,25 @@
 package org.hisp.dhis.android.localanalytics
 
 import org.hisp.dhis.android.core.D2
+import org.hisp.dhis.android.core.category.internal.CategoryComboStore
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 
 
 object LocalAnalyticsDatabaseFiller {
 
     fun fillDatabase(d2: D2) {
-        val orgUnitStore = OrganisationUnitStore.create(d2.databaseAdapter())
 
         val params = LocalAnalyticsParams(3)
         val dataGenerator = LocalAnalyticsDataGenerator(params)
 
+        val orgUnitStore = OrganisationUnitStore.create(d2.databaseAdapter())
         dataGenerator.getOrganisationUnits().forEach { orgUnit ->
             orgUnitStore.insert(orgUnit)
+        }
+
+        val categoryComboStore = CategoryComboStore.create(d2.databaseAdapter())
+        for (categoryCombo in dataGenerator.getCategoryCombos()) {
+            categoryComboStore.insert(categoryCombo)
         }
     }
 }

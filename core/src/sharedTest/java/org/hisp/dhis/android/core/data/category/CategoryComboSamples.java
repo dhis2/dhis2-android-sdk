@@ -25,36 +25,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.localanalytics
 
-import org.hisp.dhis.android.core.category.CategoryCombo
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.data.category.CategoryComboSamples
-import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+package org.hisp.dhis.android.core.data.category;
 
-data class LocalAnalyticsParams(val organisationUnitChildrenCount: Int)
+import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
+import org.hisp.dhis.android.core.category.CategoryCombo;
 
-class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsParams) {
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
 
-    fun getOrganisationUnits(): List<OrganisationUnit> {
-        val root = OrganisationUnitSamples.getForValues("OU", 1, null)
-        val children = getChildren(root)
-        val grandchildren = children.flatMap { ch -> getChildren(ch) }
-        return listOf(root) + children + grandchildren
-    }
+public class CategoryComboSamples {
 
-    private fun getChildren(parent: OrganisationUnit): List<OrganisationUnit> {
-        return (1..params.organisationUnitChildrenCount).map { i ->
-            OrganisationUnitSamples.getForValues("${parent.name()} $i", parent.level()!! + 1,
-                    ObjectWithUid.create(parent.uid()))
-        }
-    }
+    public static CategoryCombo getCategoryCombo(String name, boolean isDefault) {
+        CategoryCombo.Builder builder = CategoryCombo.builder();
 
-    fun getCategoryCombos(): List<CategoryCombo> {
-        val default = CategoryComboSamples.getCategoryCombo("Default", true)
-        val cc2 = CategoryComboSamples.getCategoryCombo("CC2", false)
-        val cc3 = CategoryComboSamples.getCategoryCombo("CC3", false)
-        return listOf(default, cc2, cc3)
+        fillIdentifiableProperties(builder);
+        return builder
+                .uid(new UidGeneratorImpl().generate())
+                .isDefault(isDefault)
+                .name(name)
+                .build();
     }
 }

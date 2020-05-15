@@ -25,27 +25,21 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.utils.integration.mock
+package org.hisp.dhis.android.localanalytics
 
-import org.hisp.dhis.android.core.data.server.RealServerMother
-import org.hisp.dhis.android.localanalytics.LocalAnalyticsDatabaseFiller
-import org.junit.BeforeClass
+import org.hisp.dhis.android.core.D2
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 
-abstract class BaseMockIntegrationTestLocalAnalyticsDispatcher : BaseMockIntegrationTest() {
 
-    companion object BaseMockIntegrationTestLocalAnalyticsDispatcher {
-        @BeforeClass
-        @Throws(Exception::class)
-        @JvmStatic
-        fun setUpClass() {
-            val isNewInstance = setUpClass(MockIntegrationTestDatabaseContent.LocalAnalyticsDispatcher)
-            if (isNewInstance) {
-                objects.dhis2MockServer.setRequestDispatcher()
-                objects.d2.userModule().blockingLogIn(RealServerMother.username, RealServerMother.password,
-                        objects.dhis2MockServer.baseEndpoint)
-            }
+object LocalAnalyticsDatabaseFiller {
 
-            LocalAnalyticsDatabaseFiller.fillDatabase(objects.d2)
+    fun fillDatabase(d2: D2) {
+        val orgUnitStore = OrganisationUnitStore.create(d2.databaseAdapter())
+
+        val params = LocalAnalyticsParams(3)
+
+        LocalAnalyticsData.getOrganisationUnits(params).forEach { orgUnit ->
+            orgUnitStore.insert(orgUnit)
         }
     }
 }

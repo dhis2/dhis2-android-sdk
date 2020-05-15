@@ -25,38 +25,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.localanalytics
 
-import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestLocalAnalyticsDispatcher
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
-import org.junit.Test
-import org.junit.runner.RunWith
+package org.hisp.dhis.android.core.data.category;
 
-@RunWith(D2JunitRunner::class)
-class LocalAnalyticsMockIntegrationShould : BaseMockIntegrationTestLocalAnalyticsDispatcher() {
+import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
+import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 
-    @Test
-    fun check_user() {
-        val userExists = d2.userModule().user().blockingExists()
-        assertThat(userExists).isTrue()
-    }
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
 
-    @Test
-    fun check_organisation_units() {
-        val count = d2.organisationUnitModule().organisationUnits().blockingCount()
-        assertThat(count).isEqualTo(13)
-    }
+public class CategoryOptionComboSamples {
 
-    @Test
-    fun check_category_combos() {
-        val count = d2.categoryModule().categoryCombos().blockingCount()
-        assertThat(count).isEqualTo(3)
-    }
+    public static CategoryOptionCombo getCategoryOptionCombo(String name) {
+        CategoryOptionCombo.Builder builder = CategoryOptionCombo.builder();
 
-    @Test
-    fun check_category_option_combos() {
-        val count = d2.categoryModule().categoryOptionCombos().blockingCount()
-        assertThat(count).isEqualTo(8)
+        fillIdentifiableProperties(builder);
+        return builder
+                .uid(new UidGeneratorImpl().generate())
+                .name(name)
+                .build();
     }
 }

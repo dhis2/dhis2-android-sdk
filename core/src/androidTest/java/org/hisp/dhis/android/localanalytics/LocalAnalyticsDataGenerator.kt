@@ -28,23 +28,27 @@
 package org.hisp.dhis.android.localanalytics
 
 import org.hisp.dhis.android.core.category.CategoryCombo
+import org.hisp.dhis.android.core.category.CategoryOptionCombo
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.data.category.CategoryComboSamples
+import org.hisp.dhis.android.core.data.category.CategoryOptionComboSamples
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 
-data class LocalAnalyticsParams(val organisationUnitChildrenCount: Int)
+data class LocalAnalyticsParams(val organisationUnitChildrenCount: Int,
+                                val categoryOptionCombo2Count: Int,
+                                val categoryOptionCombo3Count: Int)
 
 class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsParams) {
 
     fun getOrganisationUnits(): List<OrganisationUnit> {
         val root = OrganisationUnitSamples.getForValues("OU", 1, null)
-        val children = getChildren(root)
-        val grandchildren = children.flatMap { ch -> getChildren(ch) }
+        val children = getOrganisationUnitChildren(root)
+        val grandchildren = children.flatMap { ch -> getOrganisationUnitChildren(ch) }
         return listOf(root) + children + grandchildren
     }
 
-    private fun getChildren(parent: OrganisationUnit): List<OrganisationUnit> {
+    private fun getOrganisationUnitChildren(parent: OrganisationUnit): List<OrganisationUnit> {
         return (1..params.organisationUnitChildrenCount).map { i ->
             OrganisationUnitSamples.getForValues("${parent.name()} $i", parent.level()!! + 1,
                     ObjectWithUid.create(parent.uid()))
@@ -56,5 +60,17 @@ class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsParams) {
         val cc2 = CategoryComboSamples.getCategoryCombo("CC2", false)
         val cc3 = CategoryComboSamples.getCategoryCombo("CC3", false)
         return listOf(default, cc2, cc3)
+    }
+
+    fun getCategoryOptionCombos(categoryCombos: List<CategoryCombo>): List<CategoryOptionCombo> {
+        val coc2 = getCategoryOptionCombos(categoryCombos[1], params.categoryOptionCombo2Count)
+        val coc3 = getCategoryOptionCombos(categoryCombos[1], params.categoryOptionCombo3Count)
+        return coc2 + coc3
+    }
+
+    private fun getCategoryOptionCombos(categoryCombo: CategoryCombo, count: Int): List<CategoryOptionCombo> {
+        return (1..count).map { i ->
+            CategoryOptionComboSamples.getCategoryOptionCombo("COC ${categoryCombo.name()} $i")
+        }
     }
 }

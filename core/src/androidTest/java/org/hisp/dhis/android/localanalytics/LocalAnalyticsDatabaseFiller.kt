@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.program.internal.ProgramStageStore
 import org.hisp.dhis.android.core.program.internal.ProgramStore
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 
 object LocalAnalyticsDatabaseFiller {
 
@@ -42,12 +43,13 @@ object LocalAnalyticsDatabaseFiller {
         val da = d2.databaseAdapter()
 
         val params = LocalAnalyticsParams(
-                organisationUnitChildrenCount = 3,
-                categoryOptionCombo2Count = 2,
-                categoryOptionCombo3Count = 6,
-                dataElementCount = 10,
+                organisationUnitChildren = 3,
+                categoryOptionCombos2 = 2,
+                categoryOptionCombos3 = 6,
+                dataElements = 10,
                 programStagesWithRegistration = 3,
-                programStagesWithoutRegistration = 1)
+                programStagesWithoutRegistration = 1,
+                trackedEntityAttributes = 10)
 
         val generator = LocalAnalyticsDataGenerator(params)
 
@@ -63,9 +65,13 @@ object LocalAnalyticsDatabaseFiller {
         val d2DIComponent = D2DIComponentAccessor.getD2DIComponent(d2)
         d2DIComponent.periodHandler().generateAndPersist()
 
-        val programs = generator.generatePrograms(categoryCombos.first())
+        val programs = generator.getPrograms(categoryCombos.first())
         ProgramStore.create(da).insert(programs)
 
-        ProgramStageStore.create(da).insert(generator.generateProgramStages(programs))
+        ProgramStageStore.create(da).insert(generator.getProgramStages(programs))
+
+        TrackedEntityAttributeStore.create(da).insert(generator.getTrackedEntityAttributes())
+
+
     }
 }

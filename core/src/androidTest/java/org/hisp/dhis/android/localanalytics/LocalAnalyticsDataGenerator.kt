@@ -36,18 +36,21 @@ import org.hisp.dhis.android.core.data.dataelement.DataElementSamples
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples
 import org.hisp.dhis.android.core.data.program.ProgramSamples
 import org.hisp.dhis.android.core.data.program.ProgramStageSamples
+import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityAttributeSamples
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.program.ProgramType
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 
-data class LocalAnalyticsParams(val organisationUnitChildrenCount: Int,
-                                val categoryOptionCombo2Count: Int,
-                                val categoryOptionCombo3Count: Int,
-                                val dataElementCount: Int,
+data class LocalAnalyticsParams(val organisationUnitChildren: Int,
+                                val categoryOptionCombos2: Int,
+                                val categoryOptionCombos3: Int,
+                                val dataElements: Int,
                                 val programStagesWithRegistration: Int,
-                                val programStagesWithoutRegistration: Int)
+                                val programStagesWithoutRegistration: Int,
+                                val trackedEntityAttributes: Int)
 
 class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsParams) {
 
@@ -59,7 +62,7 @@ class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsParams) {
     }
 
     private fun getOrganisationUnitChildren(parent: OrganisationUnit): List<OrganisationUnit> {
-        return (1..params.organisationUnitChildrenCount).map { i ->
+        return (1..params.organisationUnitChildren).map { i ->
             OrganisationUnitSamples.getForValues("${parent.name()} $i", parent.level()!! + 1,
                     ObjectWithUid.create(parent.uid()))
         }
@@ -73,8 +76,8 @@ class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsParams) {
     }
 
     fun getCategoryOptionCombos(categoryCombos: List<CategoryCombo>): List<CategoryOptionCombo> {
-        val coc2 = getCategoryOptionCombos(categoryCombos[1], params.categoryOptionCombo2Count)
-        val coc3 = getCategoryOptionCombos(categoryCombos[1], params.categoryOptionCombo3Count)
+        val coc2 = getCategoryOptionCombos(categoryCombos[1], params.categoryOptionCombos2)
+        val coc3 = getCategoryOptionCombos(categoryCombos[1], params.categoryOptionCombos3)
         return coc2 + coc3
     }
 
@@ -86,27 +89,33 @@ class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsParams) {
 
     fun getDataElements(categoryCombos: List<CategoryCombo>): List<DataElement> {
         return categoryCombos.flatMap { categoryCombo ->
-            (1..params.dataElementCount).map { i ->
+            (1..params.dataElements).map { i ->
                 DataElementSamples.getDataElement("DE $i", null, ObjectWithUid.create(categoryCombo.uid()))
             }
         }
     }
 
-    fun generatePrograms(categoryCombo: CategoryCombo): List<Program> {
+    fun getPrograms(categoryCombo: CategoryCombo): List<Program> {
         val withReg = ProgramSamples.getProgram("Program with registration", ProgramType.WITH_REGISTRATION, categoryCombo)
         val withoutReg = ProgramSamples.getProgram("Program without registration", ProgramType.WITHOUT_REGISTRATION, categoryCombo)
         return listOf(withReg, withoutReg)
     }
 
-    fun generateProgramStages(programs: List<Program>): List<ProgramStage> {
-        val withReg = generateProgramStages(programs[0], params.programStagesWithRegistration)
-        val withoutReg = generateProgramStages(programs[1], params.programStagesWithoutRegistration)
+    fun getProgramStages(programs: List<Program>): List<ProgramStage> {
+        val withReg = getProgramStages(programs[0], params.programStagesWithRegistration)
+        val withoutReg = getProgramStages(programs[1], params.programStagesWithoutRegistration)
         return withReg + withoutReg
     }
 
-    private fun generateProgramStages(program: Program, count: Int): List<ProgramStage> {
+    private fun getProgramStages(program: Program, count: Int): List<ProgramStage> {
         return (1..count).map { i ->
             ProgramStageSamples.getProgramStage("Stage ${program.name()} $i", program)
+        }
+    }
+
+    fun getTrackedEntityAttributes(): List<TrackedEntityAttribute> {
+        return (1..params.trackedEntityAttributes).map { i ->
+            TrackedEntityAttributeSamples.get("TEA $i")
         }
     }
 }

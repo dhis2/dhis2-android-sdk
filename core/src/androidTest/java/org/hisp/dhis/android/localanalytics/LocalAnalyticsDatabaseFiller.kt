@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.category.internal.CategoryComboStore
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStoreImpl
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
+import org.hisp.dhis.android.core.program.internal.ProgramStageStore
 import org.hisp.dhis.android.core.program.internal.ProgramStore
 
 object LocalAnalyticsDatabaseFiller {
@@ -40,7 +41,14 @@ object LocalAnalyticsDatabaseFiller {
     fun fillDatabase(d2: D2) {
         val da = d2.databaseAdapter()
 
-        val params = LocalAnalyticsParams(3, 2, 6, 10)
+        val params = LocalAnalyticsParams(
+                organisationUnitChildrenCount = 3,
+                categoryOptionCombo2Count = 2,
+                categoryOptionCombo3Count = 6,
+                dataElementCount = 10,
+                programStagesWithRegistration = 3,
+                programStagesWithoutRegistration = 1)
+
         val generator = LocalAnalyticsDataGenerator(params)
 
         OrganisationUnitStore.create(da).insert(generator.getOrganisationUnits())
@@ -55,6 +63,9 @@ object LocalAnalyticsDatabaseFiller {
         val d2DIComponent = D2DIComponentAccessor.getD2DIComponent(d2)
         d2DIComponent.periodHandler().generateAndPersist()
 
-        ProgramStore.create(da).insert(generator.generatePrograms(categoryCombos.first()))
+        val programs = generator.generatePrograms(categoryCombos.first())
+        ProgramStore.create(da).insert(programs)
+
+        ProgramStageStore.create(da).insert(generator.generateProgramStages(programs))
     }
 }

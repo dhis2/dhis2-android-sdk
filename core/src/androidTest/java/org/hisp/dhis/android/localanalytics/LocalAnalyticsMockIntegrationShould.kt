@@ -77,4 +77,10 @@ class LocalAnalyticsMockIntegrationShould : BaseMockIntegrationTestLocalAnalytic
         val count = d2.programModule().programs().blockingCount()
         assertThat(count).isEqualTo(2)
     }
+
+    @Test
+    fun check_program_stages() {
+        val count = d2.programModule().programStages().blockingCount()
+        assertThat(count).isEqualTo(4)
+    }
 }

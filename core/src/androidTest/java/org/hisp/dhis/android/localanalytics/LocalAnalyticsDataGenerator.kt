@@ -34,8 +34,11 @@ import org.hisp.dhis.android.core.data.category.CategoryComboSamples
 import org.hisp.dhis.android.core.data.category.CategoryOptionComboSamples
 import org.hisp.dhis.android.core.data.dataelement.DataElementSamples
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples
+import org.hisp.dhis.android.core.data.program.ProgramSamples
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.program.Program
+import org.hisp.dhis.android.core.program.ProgramType
 
 data class LocalAnalyticsParams(val organisationUnitChildrenCount: Int,
                                 val categoryOptionCombo2Count: Int,
@@ -83,5 +86,11 @@ class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsParams) {
                 DataElementSamples.getDataElement("DE $i", null, ObjectWithUid.create(categoryCombo.uid()))
             }
         }
+    }
+
+    fun generatePrograms(categoryCombo: CategoryCombo): List<Program> {
+        val withReg = ProgramSamples.getProgram("Program with registration", ProgramType.WITH_REGISTRATION, categoryCombo)
+        val withoutReg = ProgramSamples.getProgram("Program without registration", ProgramType.WITHOUT_REGISTRATION, categoryCombo)
+        return listOf(withReg, withoutReg)
     }
 }

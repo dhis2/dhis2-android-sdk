@@ -71,4 +71,10 @@ class LocalAnalyticsMockIntegrationShould : BaseMockIntegrationTestLocalAnalytic
         val count = d2.periodModule().periods().blockingCount()
         assertThat(count).isAtLeast(100)
     }
+
+    @Test
+    fun check_programs() {
+        val count = d2.programModule().programs().blockingCount()
+        assertThat(count).isEqualTo(2)
+    }
 }

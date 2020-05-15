@@ -31,11 +31,13 @@ import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 
+data class LocalAnalyticsParams(val ouChildren: Int)
+
 object LocalAnalyticsData {
 
-    fun getOrganisationUnits(): List<OrganisationUnit> {
+    fun getOrganisationUnits(params: LocalAnalyticsParams): List<OrganisationUnit> {
         val root = OrganisationUnitSamples.getForValues("OU", 1, null)
-        val children = getChildren(3, root)
+        val children = getChildren(params.ouChildren, root)
         val grandchildren = children.flatMap { ch -> getChildren(3, ch) }
         return listOf(root) + children + grandchildren
     }

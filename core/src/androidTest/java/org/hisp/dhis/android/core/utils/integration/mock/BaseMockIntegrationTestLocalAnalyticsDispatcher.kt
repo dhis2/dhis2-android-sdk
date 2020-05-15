@@ -31,6 +31,7 @@ import org.hisp.dhis.android.core.D2DIComponentAccessor
 import org.hisp.dhis.android.core.data.server.RealServerMother
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.localanalytics.LocalAnalyticsData
+import org.hisp.dhis.android.localanalytics.LocalAnalyticsParams
 import org.junit.BeforeClass
 
 abstract class BaseMockIntegrationTestLocalAnalyticsDispatcher : BaseMockIntegrationTest() {
@@ -51,7 +52,9 @@ abstract class BaseMockIntegrationTestLocalAnalyticsDispatcher : BaseMockIntegra
 
             val orgUnitStore = OrganisationUnitStore.create(d2.databaseAdapter())
 
-            LocalAnalyticsData.getOrganisationUnits().forEach { orgUnit ->
+            val params = LocalAnalyticsParams(3)
+
+            LocalAnalyticsData.getOrganisationUnits(params).forEach { orgUnit ->
                 orgUnitStore.insert(orgUnit)
             }
         }

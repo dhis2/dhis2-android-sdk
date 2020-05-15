@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.localanalytics
 
+import org.hisp.dhis.android.core.category.CategoryCombo
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
@@ -47,5 +48,10 @@ class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsParams) {
             OrganisationUnitSamples.getForValues("${parent.name()} $i", parent.level()!! + 1,
                     ObjectWithUid.create(parent.uid()))
         }
+    }
+
+    fun getCategoryCombos(): List<CategoryCombo> {
+        val default = CategoryCombo.builder().build()
+        return listOf(default)
     }
 }

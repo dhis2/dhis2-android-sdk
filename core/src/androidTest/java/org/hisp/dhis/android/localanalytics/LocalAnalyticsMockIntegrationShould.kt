@@ -45,6 +45,6 @@ class LocalAnalyticsMockIntegrationShould : BaseMockIntegrationTestLocalAnalytic
     @Test
     fun check_organisation_units() {
         val orgUnitsCount = d2.organisationUnitModule().organisationUnits().blockingCount()
-        assertThat(orgUnitsCount).isEqualTo(1)
+        assertThat(orgUnitsCount).isEqualTo(13)
     }
 }

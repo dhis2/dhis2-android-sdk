@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.utils.integration.mock
 
 import org.hisp.dhis.android.core.D2DIComponentAccessor
 import org.hisp.dhis.android.core.data.server.RealServerMother
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.localanalytics.LocalAnalyticsData
 import org.junit.BeforeClass
 
@@ -48,9 +48,12 @@ abstract class BaseMockIntegrationTestLocalAnalyticsDispatcher : BaseMockIntegra
             }
 
             val d2DIComponent = D2DIComponentAccessor.getD2DIComponent(objects.d2)
-            val handler = d2DIComponent.internalModules().organisationUnit.organisationUnitHandler
-            handler.setData(d2.userModule().user().blockingGet(), OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
-            handler.handle(LocalAnalyticsData.getOrganisationUnit())
+
+            val orgUnitStore = OrganisationUnitStore.create(d2.databaseAdapter())
+
+            LocalAnalyticsData.getOrganisationUnits().forEach { orgUnit ->
+                orgUnitStore.insert(orgUnit)
+            }
         }
     }
 }

@@ -27,12 +27,23 @@
  */
 package org.hisp.dhis.android.localanalytics
 
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 
 object LocalAnalyticsData {
 
-    fun getOrganisationUnit(): OrganisationUnit {
-        return OrganisationUnitSamples.getAdonkiaCHP()
+    fun getOrganisationUnits(): List<OrganisationUnit> {
+        val root = OrganisationUnitSamples.getForValues("OU", 1, null)
+        val children = getChildren(3, root)
+        val grandchildren = children.flatMap { ch -> getChildren(3, ch) }
+        return listOf(root) + children + grandchildren
+    }
+
+    private fun getChildren(count: Int, parent: OrganisationUnit): List<OrganisationUnit> {
+        return (1..count).map { i ->
+            OrganisationUnitSamples.getForValues("${parent.name()} $i", parent.level()!! + 1,
+                    ObjectWithUid.create(parent.uid()))
+        }
     }
 }

@@ -118,7 +118,7 @@ public class OrganisationUnitSamples {
                 .build();
     }
 
-    public static OrganisationUnit getForValues(String name, int level, ObjectWithUid parent) throws ParseException {
+    public static OrganisationUnit getOrganisationUnit(String name, int level, ObjectWithUid parent) throws ParseException {
         return OrganisationUnit.builder()
                 .uid(new UidGeneratorImpl().generate())
                 .code("code")

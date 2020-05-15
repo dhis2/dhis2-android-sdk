@@ -47,7 +47,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsParams) {
 
     fun getOrganisationUnits(): List<OrganisationUnit> {
-        val root = OrganisationUnitSamples.getForValues("OU", 1, null)
+        val root = OrganisationUnitSamples.getOrganisationUnit("OU", 1, null)
         val children = getOrganisationUnitChildren(root)
         val grandchildren = children.flatMap { ch -> getOrganisationUnitChildren(ch) }
         return listOf(root) + children + grandchildren
@@ -55,7 +55,7 @@ class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsParams) {
 
     private fun getOrganisationUnitChildren(parent: OrganisationUnit): List<OrganisationUnit> {
         return (1..params.organisationUnitChildren).map { i ->
-            OrganisationUnitSamples.getForValues("${parent.name()} $i", parent.level()!! + 1,
+            OrganisationUnitSamples.getOrganisationUnit("${parent.name()} $i", parent.level()!! + 1,
                     ObjectWithUid.create(parent.uid()))
         }
     }

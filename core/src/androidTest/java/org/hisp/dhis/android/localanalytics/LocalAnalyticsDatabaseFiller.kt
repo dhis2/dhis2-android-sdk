@@ -40,13 +40,9 @@ object LocalAnalyticsDatabaseFiller {
         val dataGenerator = LocalAnalyticsDataGenerator(params)
 
         val orgUnitStore = OrganisationUnitStore.create(d2.databaseAdapter())
-        dataGenerator.getOrganisationUnits().forEach { orgUnit ->
-            orgUnitStore.insert(orgUnit)
-        }
+        orgUnitStore.insert(dataGenerator.getOrganisationUnits())
 
         val categoryComboStore = CategoryComboStore.create(d2.databaseAdapter())
-        for (categoryCombo in dataGenerator.getCategoryCombos()) {
-            categoryComboStore.insert(categoryCombo)
-        }
+        categoryComboStore.insert(dataGenerator.getCategoryCombos())
     }
 }

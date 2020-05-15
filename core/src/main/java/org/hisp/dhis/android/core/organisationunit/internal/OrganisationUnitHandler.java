@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.user.User;
 
 import java.util.Collection;
 
-public interface OrganisationUnitHandler extends HandlerWithTransformer<OrganisationUnit> {
+interface OrganisationUnitHandler extends HandlerWithTransformer<OrganisationUnit> {
     void resetLinks();
     void setData(User user, OrganisationUnit.Scope scope);
     void addUserOrganisationUnitLinks(@NonNull Collection<OrganisationUnit> organisationUnits);

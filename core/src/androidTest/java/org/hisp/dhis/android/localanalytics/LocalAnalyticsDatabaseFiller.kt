@@ -28,11 +28,11 @@
 package org.hisp.dhis.android.localanalytics
 
 import org.hisp.dhis.android.core.D2
+import org.hisp.dhis.android.core.D2DIComponentAccessor
 import org.hisp.dhis.android.core.category.internal.CategoryComboStore
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStoreImpl
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
-
 
 object LocalAnalyticsDatabaseFiller {
 
@@ -53,5 +53,8 @@ object LocalAnalyticsDatabaseFiller {
 
         val dataElementStore = DataElementStore.create(d2.databaseAdapter())
         dataElementStore.insert(dataGenerator.getDataElements(categoryCombos))
+
+        val d2DIComponent = D2DIComponentAccessor.getD2DIComponent(d2)
+        d2DIComponent.periodHandler().generateAndPersist()
     }
 }

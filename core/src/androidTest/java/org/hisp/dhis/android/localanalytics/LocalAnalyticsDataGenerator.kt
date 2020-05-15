@@ -32,12 +32,15 @@ import org.hisp.dhis.android.core.category.CategoryOptionCombo
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.data.category.CategoryComboSamples
 import org.hisp.dhis.android.core.data.category.CategoryOptionComboSamples
+import org.hisp.dhis.android.core.data.dataelement.DataElementSamples
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples
+import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 
 data class LocalAnalyticsParams(val organisationUnitChildrenCount: Int,
                                 val categoryOptionCombo2Count: Int,
-                                val categoryOptionCombo3Count: Int)
+                                val categoryOptionCombo3Count: Int,
+                                val dataElementCount: Int)
 
 class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsParams) {
 
@@ -71,6 +74,14 @@ class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsParams) {
     private fun getCategoryOptionCombos(categoryCombo: CategoryCombo, count: Int): List<CategoryOptionCombo> {
         return (1..count).map { i ->
             CategoryOptionComboSamples.getCategoryOptionCombo("COC ${categoryCombo.name()} $i")
+        }
+    }
+
+    fun getDataElements(categoryCombos: List<CategoryCombo>): List<DataElement> {
+        return categoryCombos.flatMap { categoryCombo ->
+            (1..params.dataElementCount).map { i ->
+                DataElementSamples.getDataElement("DE $i", null, ObjectWithUid.create(categoryCombo.uid()))
+            }
         }
     }
 }

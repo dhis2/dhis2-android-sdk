@@ -59,4 +59,10 @@ class LocalAnalyticsMockIntegrationShould : BaseMockIntegrationTestLocalAnalytic
         val count = d2.categoryModule().categoryOptionCombos().blockingCount()
         assertThat(count).isEqualTo(8)
     }
+
+    @Test
+    fun check_data_elements() {
+        val count = d2.dataElementModule().dataElements().blockingCount()
+        assertThat(count).isEqualTo(30)
+    }
 }

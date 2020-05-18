@@ -119,6 +119,7 @@ class OrganisationUnitCall {
         AtomicInteger page = new AtomicInteger(1);
         return downloadPage(orgUnit, page)
                 .toObservable()
+                .repeat()
                 .takeUntil(organisationUnits -> organisationUnits.size() < PAGE_SIZE);
     }
 

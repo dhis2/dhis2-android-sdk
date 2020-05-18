@@ -82,7 +82,7 @@ class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsParams) {
     fun getDataElementsAggregated(categoryCombos: List<CategoryCombo>): List<DataElement> {
         return categoryCombos.flatMap { categoryCombo ->
             (1..params.dataElementsAggregated).map { i ->
-                DataElementSamples.getDataElement("DE Aggr $i", null, ObjectWithUid.create(categoryCombo.uid()), null)
+                DataElementSamples.getDataElement("DE Aggr $i", null, ObjectWithUid.create(categoryCombo.uid()), "AGGREGATE")
             }
         }
     }

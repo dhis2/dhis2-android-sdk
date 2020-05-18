@@ -62,7 +62,7 @@ class LocalAnalyticsDatabaseMockIntegrationShould : BaseMockIntegrationTestLocal
 
     @Test
     fun check_aggregated_data_elements() {
-        val count = d2.dataElementModule().dataElements().byDomainType().isNull.blockingCount()
+        val count = d2.dataElementModule().dataElements().byDomainType().eq("AGGREGATE").blockingCount()
         assertThat(count).isEqualTo(30)
     }
 

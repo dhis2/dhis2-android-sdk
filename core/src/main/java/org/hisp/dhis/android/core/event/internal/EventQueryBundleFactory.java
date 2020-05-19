@@ -124,10 +124,12 @@ class EventQueryBundleFactory {
                                                    String programUid,
                                                    String lastUpdated) {
         int limit = getLimit(params, programSettings, programUid);
+
+        if (limit == 0) {
+            return Collections.emptyList();
+        }
+
         String eventStartDate = getEventStartDate(programSettings, programUid);
-
-        List<EventQueryBundle> builders = new ArrayList<>();
-
         List<String> programs = Collections.singletonList(programUid);
         OrganisationUnitMode ouMode;
         List<String> orgUnits;
@@ -144,6 +146,8 @@ class EventQueryBundleFactory {
             ouMode = OrganisationUnitMode.DESCENDANTS;
             orgUnits = getRootCaptureOrgUnitUids();
         }
+
+        List<EventQueryBundle> builders = new ArrayList<>();
 
         if (hasLimitByOrgunit) {
             for (String orgUnitUid : orgUnits) {
@@ -162,10 +166,12 @@ class EventQueryBundleFactory {
                                                List<String> programList,
                                                String lastUpdated) {
         int limit = getLimit(params, programSettings, null);
+
+        if (limit == 0) {
+            return Collections.emptyList();
+        }
+
         String eventStartDate = getEventStartDate(programSettings, null);
-
-        List<EventQueryBundle> builders = new ArrayList<>();
-
         OrganisationUnitMode ouMode;
         List<String> orgUnits;
 
@@ -181,6 +187,8 @@ class EventQueryBundleFactory {
             ouMode = OrganisationUnitMode.DESCENDANTS;
             orgUnits = getRootCaptureOrgUnitUids();
         }
+
+        List<EventQueryBundle> builders = new ArrayList<>();
 
         if (hasLimitByOrgunit) {
             for (String orgUnitUid : orgUnits) {
@@ -284,7 +292,7 @@ class EventQueryBundleFactory {
     private int getLimit(ProgramDataDownloadParams params,
                          ProgramSettings programSettings,
                          String programUid) {
-        if (params.limit() != null) {
+        if (params.limit() != null && isGlobalOrUserDefinedProgram(params, programUid)) {
             return params.limit();
         }
 
@@ -326,5 +334,9 @@ class EventQueryBundleFactory {
 
     private boolean hasEventDateDownload(ProgramSetting programSetting) {
         return programSetting != null && programSetting.eventDateDownload() != null;
+    }
+
+    private boolean isGlobalOrUserDefinedProgram(ProgramDataDownloadParams params, String programUid) {
+        return programUid == null || programUid.equals(params.program());
     }
 }

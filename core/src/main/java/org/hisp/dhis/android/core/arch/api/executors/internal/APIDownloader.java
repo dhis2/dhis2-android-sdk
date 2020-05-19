@@ -36,9 +36,14 @@ import java.util.List;
 import java.util.Set;
 
 import io.reactivex.Single;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 
 public interface APIDownloader {
+    <P> Single<List<P>> downloadPartitionedWithCustomHandling(Set<String> uids, int pageSize,
+                                                              Consumer<List<P>> customHandling,
+                                                              Function<Set<String>, Single<Payload<P>>> pageDownloader);
+
     <P> Single<List<P>> downloadPartitioned(Set<String> uids, int pageSize, Handler<P> handler,
                                            Function<Set<String>, Single<Payload<P>>> pageDownloader);
 
@@ -48,4 +53,6 @@ public interface APIDownloader {
 
     <P> Single<List<P>> downloadWithLastUpdated(Handler<P> handler, Resource.Type resourceType,
                                                 Function<String, Single<Payload<P>>> downloader);
+
+    <P> Single<List<P>> download(Handler<P> handler, Single<Payload<P>> downloader);
 }

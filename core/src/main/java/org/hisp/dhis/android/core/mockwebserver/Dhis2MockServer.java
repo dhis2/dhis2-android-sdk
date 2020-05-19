@@ -233,8 +233,8 @@ public class Dhis2MockServer {
         enqueueMockResponse(CONSTANTS_JSON);
         enqueueMockResponse(USER_JSON);
         enqueueMockResponse(AUTHORITIES_JSON);
-        enqueueMockResponse(ORGANISATION_UNITS_JSON);
         enqueueMockResponse(ORGANISATION_UNIT_LEVELS_JSON);
+        enqueueMockResponse(ORGANISATION_UNITS_JSON);
         enqueueMockResponse(PROGRAMS_JSON);
         enqueueMockResponse(PROGRAM_STAGES_JSON);
         enqueueMockResponse(TRACKED_ENTITY_TYPES_JSON);

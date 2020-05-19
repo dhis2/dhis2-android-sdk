@@ -25,14 +25,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.utils.integration.mock
 
-package org.hisp.dhis.android.core.utils.integration.mock;
+import org.hisp.dhis.android.core.data.server.RealServerMother
+import org.hisp.dhis.android.localanalytics.LocalAnalyticsDatabaseFiller
+import org.junit.BeforeClass
 
-public enum MockIntegrationTestDatabaseContent {
-    EmptyEnqueable,
-    EmptyDispatcher,
-    FullDispatcher,
-    MetadataEnqueable,
-    MetadataDispatcher,
-    LocalAnalyticsDispatcher
+abstract class BaseMockIntegrationTestLocalAnalyticsDispatcher : BaseMockIntegrationTest() {
+
+    companion object BaseMockIntegrationTestLocalAnalyticsDispatcher {
+        @BeforeClass
+        @Throws(Exception::class)
+        @JvmStatic
+        fun setUpClass() {
+            val isNewInstance = setUpClass(MockIntegrationTestDatabaseContent.LocalAnalyticsDispatcher)
+            if (isNewInstance) {
+                objects.dhis2MockServer.setRequestDispatcher()
+                objects.d2.userModule().blockingLogIn(RealServerMother.username, RealServerMother.password,
+                        objects.dhis2MockServer.baseEndpoint)
+            }
+
+            LocalAnalyticsDatabaseFiller.fillDatabase(objects.d2)
+        }
+    }
 }

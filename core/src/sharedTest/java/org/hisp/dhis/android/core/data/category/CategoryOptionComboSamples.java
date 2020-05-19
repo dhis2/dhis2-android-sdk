@@ -26,13 +26,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.utils.integration.mock;
+package org.hisp.dhis.android.core.data.category;
 
-public enum MockIntegrationTestDatabaseContent {
-    EmptyEnqueable,
-    EmptyDispatcher,
-    FullDispatcher,
-    MetadataEnqueable,
-    MetadataDispatcher,
-    LocalAnalyticsDispatcher
+import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
+import org.hisp.dhis.android.core.category.CategoryOptionCombo;
+
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
+
+public class CategoryOptionComboSamples {
+
+    public static CategoryOptionCombo getCategoryOptionCombo(String name) {
+        CategoryOptionCombo.Builder builder = CategoryOptionCombo.builder();
+
+        fillIdentifiableProperties(builder);
+        return builder
+                .uid(new UidGeneratorImpl().generate())
+                .name(name)
+                .build();
+    }
 }

@@ -71,6 +71,7 @@ import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.internal.OptionPackageDIModule;
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitPackageDIModule;
+import org.hisp.dhis.android.core.period.internal.PeriodHandler;
 import org.hisp.dhis.android.core.period.internal.PeriodPackageDIModule;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.internal.ProgramPackageDIModule;
@@ -163,6 +164,8 @@ public interface D2DIComponent {
     IdentifiableObjectStore<CategoryOption> categoryOptionStore();
     @VisibleForTesting
     ObjectKeyValueStore<Credentials> credentialsSecureStore();
+    @VisibleForTesting
+    PeriodHandler periodHandler();
 
     @Component.Builder
     interface Builder {

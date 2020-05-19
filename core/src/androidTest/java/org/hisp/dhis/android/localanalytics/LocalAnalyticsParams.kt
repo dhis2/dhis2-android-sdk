@@ -25,14 +25,26 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.localanalytics
 
-package org.hisp.dhis.android.core.utils.integration.mock;
+data class LocalAnalyticsParams(val organisationUnitChildren: Int,
+                                val categoryOptionCombos2: Int,
+                                val categoryOptionCombos3: Int,
+                                val dataElementsAggregated: Int,
+                                val dataElementsTracker: Int,
+                                val programStagesWithRegistration: Int,
+                                val programStagesWithoutRegistration: Int,
+                                val trackedEntityAttributes: Int) {
 
-public enum MockIntegrationTestDatabaseContent {
-    EmptyEnqueable,
-    EmptyDispatcher,
-    FullDispatcher,
-    MetadataEnqueable,
-    MetadataDispatcher,
-    LocalAnalyticsDispatcher
+    companion object LocalAnalyticsParams {
+        val Default = LocalAnalyticsParams(
+                organisationUnitChildren = 3,
+                categoryOptionCombos2 = 2,
+                categoryOptionCombos3 = 6,
+                dataElementsAggregated = 10,
+                dataElementsTracker = 10,
+                programStagesWithRegistration = 3,
+                programStagesWithoutRegistration = 1,
+                trackedEntityAttributes = 10)
+    }
 }

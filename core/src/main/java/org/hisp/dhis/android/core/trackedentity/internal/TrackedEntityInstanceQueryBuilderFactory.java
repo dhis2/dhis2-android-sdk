@@ -285,7 +285,8 @@ class TrackedEntityInstanceQueryBuilderFactory {
     private int getLimit(ProgramDataDownloadParams params,
                          ProgramSettings programSettings,
                          String programUid) {
-        if (params.limit() != null) {
+
+        if (params.limit() != null && isGlobalOrUserDefinedProgram(params, programUid)) {
             return params.limit();
         }
 
@@ -307,7 +308,8 @@ class TrackedEntityInstanceQueryBuilderFactory {
     private EnrollmentStatus getProgramStatus(ProgramDataDownloadParams params,
                                               ProgramSettings programSettings,
                                               String programUid) {
-        if (params.programStatus() != null) {
+
+        if (params.programStatus() != null && isGlobalOrUserDefinedProgram(params, programUid)) {
             return enrollmentScopeToProgramStatus(params.programStatus());
         }
 
@@ -382,6 +384,10 @@ class TrackedEntityInstanceQueryBuilderFactory {
 
     private boolean hasUpdateDownload(ProgramSetting programSetting) {
         return programSetting != null && programSetting.updateDownload() != null;
+    }
+
+    private boolean isGlobalOrUserDefinedProgram(ProgramDataDownloadParams params, String programUid) {
+        return programUid == null || programUid.equals(params.program());
     }
 
 }

@@ -51,18 +51,14 @@ data class LocalAnalyticsMetadataParams(val organisationUnitChildren: Int,
 
 data class LocalAnalyticsDataParams(val dataValues: Int,
                                     val trackedEntityInstances: Int,
-                                    val eventsWithoutRegistration: Int,
-                                    val eventsWithRegistration: Int,
-                                    val trackedEntityAttributeValues: Int,
-                                    val trackedEntityDataValues: Int) {
+                                    val eventsWithoutRegistrationPerTeiAndPS: Int,
+                                    val eventsWithRegistrationPerEnrollmentAndPS: Int) {
     companion object LocalAnalyticsDataParams {
         fun get(f: Int) = LocalAnalyticsDataParams(
                 dataValues = 500 * f,
                 trackedEntityInstances = 500 * f,
-                eventsWithoutRegistration = 1500 * f,
-                eventsWithRegistration = 1500 * f,
-                trackedEntityAttributeValues = 1000 * f,
-                trackedEntityDataValues = 1000 * f
+                eventsWithoutRegistrationPerTeiAndPS = 3,
+                eventsWithRegistrationPerEnrollmentAndPS = 1
         )
 
         val Default = get(1)

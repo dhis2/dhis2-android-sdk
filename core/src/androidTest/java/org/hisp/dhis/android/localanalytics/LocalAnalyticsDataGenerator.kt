@@ -27,9 +27,19 @@
  */
 package org.hisp.dhis.android.localanalytics
 
-class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDataParams) {
-    fun generateTrackedEntityInstances() {
+import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityInstanceSamples
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
+class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDataParams) {
+
+    fun generateTrackedEntityInstances(organisationUnits: List<OrganisationUnit>): List<TrackedEntityInstance> {
+        val level3OrgUnits = organisationUnits.filter { ou -> ou.level() == 3 }
+        return (1..params.trackedEntityInstances).map { i ->
+            val ouIndex = i % level3OrgUnits.size
+            val ou = level3OrgUnits[ouIndex]
+            TrackedEntityInstanceSamples.get(ou.uid())
+        }
     }
 
 }

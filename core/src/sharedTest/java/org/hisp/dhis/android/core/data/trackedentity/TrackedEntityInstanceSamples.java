@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.data.trackedentity;
 
+import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Geometry;
@@ -40,15 +41,19 @@ import java.util.Date;
 public class TrackedEntityInstanceSamples {
 
     public static TrackedEntityInstance get() {
+        return get("tei_uid", "organisation_unit", "tracked_entity_type");
+    }
+
+    public static TrackedEntityInstance get(String uid, String organisationUnit, String trackedEntityType) {
         return TrackedEntityInstance.builder()
                 .id(1L)
-                .uid("tei_uid")
+                .uid(uid)
                 .created(getDate("2014-08-20T12:28:56.409"))
                 .lastUpdated(getDate("2015-10-14T13:36:53.063"))
                 .createdAtClient(getDate("2014-10-14T13:36:53.063"))
                 .lastUpdatedAtClient(getDate("2014-11-11T10:10:50.123"))
-                .organisationUnit("organisation_unit")
-                .trackedEntityType("tracked_entity_type")
+                .organisationUnit(organisationUnit)
+                .trackedEntityType(trackedEntityType)
                 .geometry(Geometry.builder()
                         .type(FeatureType.POLYGON)
                         .coordinates("[11.0, 11.0]")
@@ -56,6 +61,10 @@ public class TrackedEntityInstanceSamples {
                 .state(State.TO_POST)
                 .deleted(false)
                 .build();
+    }
+
+    public static TrackedEntityInstance get(String organisationUnit) {
+        return get(new UidGeneratorImpl().generate(), organisationUnit, null);
     }
 
     private static Date getDate(String dateStr) {

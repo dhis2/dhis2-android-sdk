@@ -95,4 +95,10 @@ class LocalAnalyticsDatabaseMockIntegrationShould : BaseMockIntegrationTestLocal
         val count = d2.trackedEntityModule().trackedEntityAttributes().blockingCount()
         assertThat(count).isEqualTo(10)
     }
+
+    @Test
+    fun check_tracked_entity_instances() {
+        val count = d2.trackedEntityModule().trackedEntityInstances().blockingCount()
+        assertThat(count).isEqualTo(500)
+    }
 }

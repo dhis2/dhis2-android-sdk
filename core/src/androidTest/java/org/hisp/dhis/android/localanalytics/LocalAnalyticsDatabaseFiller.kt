@@ -32,20 +32,29 @@ import org.hisp.dhis.android.core.D2DIComponentAccessor
 import org.hisp.dhis.android.core.category.internal.CategoryComboStore
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStoreImpl
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.program.internal.ProgramStageStore
 import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl
 
-object LocalAnalyticsDatabaseFiller {
+private data class MetadataForDataFilling(val organisationUnits: List<OrganisationUnit>)
 
-    fun fillDatabase(d2: D2, dataParams: LocalAnalyticsDataParams) {
-        val da = d2.databaseAdapter()
+class LocalAnalyticsDatabaseFiller(d2: D2) {
+    private val da = d2.databaseAdapter()
+    private val d2DIComponent = D2DIComponentAccessor.getD2DIComponent(d2)
 
-        val metadataParams = LocalAnalyticsMetadataParamsGenerator.generateMetadataParams(dataParams)
+    fun fillDatabase(metadataParams: LocalAnalyticsMetadataParams, dataParams: LocalAnalyticsDataParams) {
+        val metadata = fillMetadata(metadataParams)
+        fillData(dataParams, metadata)
+    }
+
+    private fun fillMetadata(metadataParams: LocalAnalyticsMetadataParams): MetadataForDataFilling {
         val generator = LocalAnalyticsMetadataGenerator(metadataParams)
 
-        OrganisationUnitStore.create(da).insert(generator.getOrganisationUnits())
+        val organisationUnits = generator.getOrganisationUnits()
+        OrganisationUnitStore.create(da).insert(organisationUnits)
 
         val categoryCombos = generator.getCategoryCombos()
         CategoryComboStore.create(da).insert(categoryCombos)
@@ -56,7 +65,6 @@ object LocalAnalyticsDatabaseFiller {
         DataElementStore.create(da).insert(generator.getDataElementsAggregated(categoryCombos) +
                 generator.getDataElementsTracker(defaultCategoryCombo))
 
-        val d2DIComponent = D2DIComponentAccessor.getD2DIComponent(d2)
         d2DIComponent.periodHandler().generateAndPersist()
 
         val programs = generator.getPrograms(defaultCategoryCombo)
@@ -65,5 +73,14 @@ object LocalAnalyticsDatabaseFiller {
         ProgramStageStore.create(da).insert(generator.getProgramStages(programs))
 
         TrackedEntityAttributeStore.create(da).insert(generator.getTrackedEntityAttributes())
+
+        return MetadataForDataFilling(organisationUnits)
+    }
+
+    private fun fillData(dataParams: LocalAnalyticsDataParams, metadata: MetadataForDataFilling) {
+        val generator = LocalAnalyticsDataGenerator(dataParams)
+
+        val teis = generator.generateTrackedEntityInstances(metadata.organisationUnits)
+        TrackedEntityInstanceStoreImpl.create(da).insert(teis)
     }
 }

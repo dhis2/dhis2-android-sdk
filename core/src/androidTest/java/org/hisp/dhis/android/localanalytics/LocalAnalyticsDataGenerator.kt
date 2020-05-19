@@ -27,93 +27,9 @@
  */
 package org.hisp.dhis.android.localanalytics
 
-import org.hisp.dhis.android.core.category.CategoryCombo
-import org.hisp.dhis.android.core.category.CategoryOptionCombo
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.data.category.CategoryComboSamples
-import org.hisp.dhis.android.core.data.category.CategoryOptionComboSamples
-import org.hisp.dhis.android.core.data.dataelement.DataElementSamples
-import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples
-import org.hisp.dhis.android.core.data.program.ProgramSamples
-import org.hisp.dhis.android.core.data.program.ProgramStageSamples
-import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityAttributeSamples
-import org.hisp.dhis.android.core.dataelement.DataElement
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import org.hisp.dhis.android.core.program.Program
-import org.hisp.dhis.android.core.program.ProgramStage
-import org.hisp.dhis.android.core.program.ProgramType
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
+class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDataParams) {
+    fun generateTrackedEntityInstances() {
 
-class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsParams) {
-
-    fun getOrganisationUnits(): List<OrganisationUnit> {
-        val root = OrganisationUnitSamples.getOrganisationUnit("OU", 1, null)
-        val children = getOrganisationUnitChildren(root)
-        val grandchildren = children.flatMap { ch -> getOrganisationUnitChildren(ch) }
-        return listOf(root) + children + grandchildren
     }
 
-    private fun getOrganisationUnitChildren(parent: OrganisationUnit): List<OrganisationUnit> {
-        return (1..params.organisationUnitChildren).map { i ->
-            OrganisationUnitSamples.getOrganisationUnit("${parent.name()} $i", parent.level()!! + 1,
-                    ObjectWithUid.create(parent.uid()))
-        }
-    }
-
-    fun getCategoryCombos(): List<CategoryCombo> {
-        val default = CategoryComboSamples.getCategoryCombo("Default", true)
-        val cc2 = CategoryComboSamples.getCategoryCombo("CC2", false)
-        val cc3 = CategoryComboSamples.getCategoryCombo("CC3", false)
-        return listOf(default, cc2, cc3)
-    }
-
-    fun getCategoryOptionCombos(categoryCombos: List<CategoryCombo>): List<CategoryOptionCombo> {
-        val coc2 = getCategoryOptionCombos(categoryCombos[1], params.categoryOptionCombos2)
-        val coc3 = getCategoryOptionCombos(categoryCombos[1], params.categoryOptionCombos3)
-        return coc2 + coc3
-    }
-
-    private fun getCategoryOptionCombos(categoryCombo: CategoryCombo, count: Int): List<CategoryOptionCombo> {
-        return (1..count).map { i ->
-            CategoryOptionComboSamples.getCategoryOptionCombo("COC ${categoryCombo.name()} $i")
-        }
-    }
-
-    fun getDataElementsAggregated(categoryCombos: List<CategoryCombo>): List<DataElement> {
-        return categoryCombos.flatMap { categoryCombo ->
-            (1..params.dataElementsAggregated).map { i ->
-                DataElementSamples.getDataElement("DE Aggr $i", null, ObjectWithUid.create(categoryCombo.uid()), "AGGREGATE")
-            }
-        }
-    }
-
-    fun getDataElementsTracker(categoryCombo: CategoryCombo): List<DataElement> {
-        return (1..params.dataElementsTracker).map { i ->
-            DataElementSamples.getDataElement("DE Tracker $i", null, ObjectWithUid.create(categoryCombo.uid()), "TRACKER")
-        }
-    }
-
-    fun getPrograms(categoryCombo: CategoryCombo): List<Program> {
-        val withReg = ProgramSamples.getProgram("Program with registration", ProgramType.WITH_REGISTRATION, categoryCombo)
-        val withoutReg = ProgramSamples.getProgram("Program without registration", ProgramType.WITHOUT_REGISTRATION, categoryCombo)
-        return listOf(withReg, withoutReg)
-    }
-
-    fun getProgramStages(programs: List<Program>): List<ProgramStage> {
-        val withReg = getProgramStages(programs[0], params.programStagesWithRegistration)
-        val withoutReg = getProgramStages(programs[1], params.programStagesWithoutRegistration)
-        return withReg + withoutReg
-    }
-
-    private fun getProgramStages(program: Program, count: Int): List<ProgramStage> {
-        return (1..count).map { i ->
-            ProgramStageSamples.getProgramStage("Stage ${program.name()} $i", program)
-        }
-    }
-
-    fun getTrackedEntityAttributes(): List<TrackedEntityAttribute> {
-        return (1..params.trackedEntityAttributes).map { i ->
-            TrackedEntityAttributeSamples.get("TEA $i")
-        }
-    }
 }

@@ -43,7 +43,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.inject.Inject;
 
 import dagger.Reusable;
-import io.reactivex.Observable;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 
 import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree.findRoots;
@@ -102,7 +102,7 @@ class OrganisationUnitCall {
                                                             final User user,
                                                             final OrganisationUnit.Scope scope) {
         handler.setData(user, scope);
-        return Observable.fromIterable(orgUnits)
+        return Flowable.fromIterable(orgUnits)
                 .flatMap(this::downloadOrganisationUnitAndDescendants)
                 .reduce(new ArrayList<>(), (items, items2) -> {
                     items.addAll(items2);
@@ -115,10 +115,10 @@ class OrganisationUnitCall {
         handler.addUserOrganisationUnitLinks(orgUnits);
     }
 
-    private Observable<List<OrganisationUnit>> downloadOrganisationUnitAndDescendants(String orgUnit) {
+    private Flowable<List<OrganisationUnit>> downloadOrganisationUnitAndDescendants(String orgUnit) {
         AtomicInteger page = new AtomicInteger(1);
         return downloadPage(orgUnit, page)
-                .toObservable()
+                .repeat()
                 .takeUntil(organisationUnits -> organisationUnits.size() < PAGE_SIZE);
     }
 

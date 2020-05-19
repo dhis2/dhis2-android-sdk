@@ -83,12 +83,8 @@ public class AbstractPeriodGeneratorShould {
     }
 
     @Test
-    public void throw_exception_for_zero_periods() {
-        try {
-            generator.generatePeriods(0, 0);
-            fail("Exception was expected, but nothing was thrown.");
-        } catch (RuntimeException e) {
-            // No operation.
-        }
+    public void empty_list_for_zero_periods() {
+        List<Period> periods = generator.generatePeriods(0, 0);
+        assertThat(periods).isEmpty();
     }
 }

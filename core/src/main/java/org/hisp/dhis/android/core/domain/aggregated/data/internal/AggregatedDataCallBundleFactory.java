@@ -109,15 +109,18 @@ class AggregatedDataCallBundleFactory {
             PastFuturePair pair = new PastFuturePair(entry.getKey());
 
             List<Period> periods = periodManager.getPeriodsInRange(periodType, pair.past, pair.future);
-            List<String> periodIds = selectPeriodIds(periods);
 
-            AggregatedDataCallBundle bundle = AggregatedDataCallBundle.builder()
-                    .dataSets(entry.getValue())
-                    .periodIds(periodIds)
-                    .orgUnitUids(organisationUnitUids)
-                    .build();
+            if (!periods.isEmpty()) {
+                List<String> periodIds = selectPeriodIds(periods);
 
-            queries.add(bundle);
+                AggregatedDataCallBundle bundle = AggregatedDataCallBundle.builder()
+                        .dataSets(entry.getValue())
+                        .periodIds(periodIds)
+                        .orgUnitUids(organisationUnitUids)
+                        .build();
+
+                queries.add(bundle);
+            }
         }
         return queries;
     }

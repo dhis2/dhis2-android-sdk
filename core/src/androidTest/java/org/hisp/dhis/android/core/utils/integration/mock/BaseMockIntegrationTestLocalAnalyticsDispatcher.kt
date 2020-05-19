@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.utils.integration.mock
 
 import org.hisp.dhis.android.core.data.server.RealServerMother
+import org.hisp.dhis.android.localanalytics.LocalAnalyticsDataParams
 import org.hisp.dhis.android.localanalytics.LocalAnalyticsDatabaseFiller
 import org.junit.BeforeClass
 
@@ -45,7 +46,7 @@ abstract class BaseMockIntegrationTestLocalAnalyticsDispatcher : BaseMockIntegra
                         objects.dhis2MockServer.baseEndpoint)
             }
 
-            LocalAnalyticsDatabaseFiller.fillDatabase(objects.d2)
+            LocalAnalyticsDatabaseFiller.fillDatabase(objects.d2, LocalAnalyticsDataParams.Default)
         }
     }
 }

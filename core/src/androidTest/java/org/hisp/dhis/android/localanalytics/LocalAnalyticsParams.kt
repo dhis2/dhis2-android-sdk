@@ -49,7 +49,27 @@ data class LocalAnalyticsMetadataParams(val organisationUnitChildren: Int,
     }
 }
 
-data class LocalAnalyticsDataParams(val trackedEntityInstances: Int)
+data class LocalAnalyticsDataParams(val dataValues: Int,
+                                    val trackedEntityInstances: Int,
+                                    val eventsWithoutRegistration: Int,
+                                    val eventsWithRegistration: Int,
+                                    val trackedEntityAttributeValues: Int,
+                                    val trackedEntityDataValues: Int) {
+    companion object LocalAnalyticsDataParams {
+        fun get(f: Int) = LocalAnalyticsDataParams(
+                dataValues = 500 * f,
+                trackedEntityInstances = 500 * f,
+                eventsWithoutRegistration = 1500 * f,
+                eventsWithRegistration = 1500 * f,
+                trackedEntityAttributeValues = 1000 * f,
+                trackedEntityDataValues = 1000 * f
+        )
+
+        val Default = get(1)
+        val Large = get(3)
+        val SuperLarge = get(6)
+    }
+}
 
 object LocalAnalyticsMetadataParamsGenerator {
     fun generateMetadataParams(dataParams: LocalAnalyticsDataParams): LocalAnalyticsMetadataParams {

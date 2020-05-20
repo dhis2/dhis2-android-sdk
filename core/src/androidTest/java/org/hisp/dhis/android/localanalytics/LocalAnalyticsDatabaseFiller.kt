@@ -44,12 +44,12 @@ import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl
 
-data class MetadataForDataFilling(val organisationUnits: List<OrganisationUnit>,
-                                  val periods: List<Period>,
-                                  val categoryOptionCombos: List<CategoryOptionCombo>,
-                                  val aggregatedDataElements: List<DataElement>)
+internal data class MetadataForDataFilling(val organisationUnits: List<OrganisationUnit>,
+                                           val periods: List<Period>,
+                                           val categoryOptionCombos: List<CategoryOptionCombo>,
+                                           val aggregatedDataElements: List<DataElement>)
 
-class LocalAnalyticsDatabaseFiller(private val d2: D2) {
+internal class LocalAnalyticsDatabaseFiller(private val d2: D2) {
     private val da = d2.databaseAdapter()
     private val d2DIComponent = D2DIComponentAccessor.getD2DIComponent(d2)
 
@@ -93,7 +93,8 @@ class LocalAnalyticsDatabaseFiller(private val d2: D2) {
     private fun fillData(dataParams: LocalAnalyticsDataParams, metadata: MetadataForDataFilling) {
         val generator = LocalAnalyticsDataGenerator(dataParams)
 
-        DataValueStore.create(da).insert(generator.generateDataValues(metadata))
+        val dv = generator.generateDataValues(metadata)
+        DataValueStore.create(da).insert(dv)
 
         val teis = generator.generateTrackedEntityInstances(metadata.organisationUnits)
         TrackedEntityInstanceStoreImpl.create(da).insert(teis)

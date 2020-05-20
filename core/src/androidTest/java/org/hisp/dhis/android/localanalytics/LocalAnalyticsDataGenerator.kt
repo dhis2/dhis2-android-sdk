@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
-class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDataParams) {
+internal class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDataParams) {
 
     fun generateDataValues(metadata: MetadataForDataFilling): List<DataValue> {
         val level3OrgUnits = metadata.organisationUnits.filter { ou -> ou.level() == 3 }

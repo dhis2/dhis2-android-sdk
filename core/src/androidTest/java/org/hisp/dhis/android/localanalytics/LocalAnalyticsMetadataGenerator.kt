@@ -44,7 +44,7 @@ import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.program.ProgramType
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 
-class LocalAnalyticsMetadataGenerator(private val params: LocalAnalyticsMetadataParams) {
+internal class LocalAnalyticsMetadataGenerator(private val params: LocalAnalyticsMetadataParams) {
 
     fun getOrganisationUnits(): List<OrganisationUnit> {
         val root = OrganisationUnitSamples.getOrganisationUnit("OU", 1, null)

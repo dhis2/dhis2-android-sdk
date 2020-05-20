@@ -25,49 +25,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.validation.internal;
 
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
-import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl;
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.validation.ValidationRule;
-import org.hisp.dhis.android.core.validation.ValidationRuleTableInfo;
 
-import java.util.Collections;
-import java.util.Map;
+import java.util.Collection;
 
-import dagger.Module;
-import dagger.Provides;
+import javax.inject.Inject;
+
 import dagger.Reusable;
 
-@Module
-public final class ValidationRuleEntityDIModule {
+@Reusable
+final class ValidationRuleHandler extends IdentifiableHandlerImpl<ValidationRule> {
 
-    @Provides
-    @Reusable
-    public IdentifiableObjectStore<ValidationRule> store(DatabaseAdapter databaseAdapter) {
-        return ValidationRuleStore.create(databaseAdapter);
+    private final CollectionCleaner<ValidationRule> collectionCleaner;
+
+    @Inject
+    ValidationRuleHandler(IdentifiableObjectStore<ValidationRule> store,
+                          CollectionCleaner<ValidationRule> collectionCleaner) {
+        super(store);
+        this.collectionCleaner = collectionCleaner;
     }
 
-    @Provides
-    @Reusable
-    public Handler<ValidationRule> handler(ValidationRuleHandler impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    CollectionCleaner<ValidationRule> collectionCleaner(DatabaseAdapter databaseAdapter) {
-        return new CollectionCleanerImpl<>(ValidationRuleTableInfo.TABLE_INFO.name(), databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<ValidationRule>> childrenAppenders() {
-        return Collections.emptyMap();
+    @Override
+    protected void afterCollectionHandled(Collection<ValidationRule> validationRules) {
+        collectionCleaner.deleteNotPresent(validationRules);
     }
 }

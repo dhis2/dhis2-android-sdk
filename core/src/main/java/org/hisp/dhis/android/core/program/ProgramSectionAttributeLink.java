@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.program;
 import android.database.Cursor;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 

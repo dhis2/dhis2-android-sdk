@@ -53,17 +53,17 @@ public final class DataSetValidationRuleLinkTableInfo {
     public static class Columns extends CoreColumns {
 
         public static final String DATA_SET = "dataSet";
-        public static final String INDICATOR = "validationRule";
+        public static final String VALIDATION_RULE = "validationRule";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    DATA_SET, INDICATOR);
+                    DATA_SET, VALIDATION_RULE);
         }
 
         @Override
         public String[] whereUpdate() {
-            return new String[]{DATA_SET, INDICATOR};
+            return new String[]{DATA_SET, VALIDATION_RULE};
         }
     }
 }

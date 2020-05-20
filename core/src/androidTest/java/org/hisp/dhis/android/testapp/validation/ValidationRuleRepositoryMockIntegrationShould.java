@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.validation.ValidationRuleOperator;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -146,5 +147,13 @@ public class ValidationRuleRepositoryMockIntegrationShould extends BaseMockInteg
                 .byOrganisationUnitLevels().like("3")
                 .blockingGet();
         assertThat(validationRule.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_data_set_uids() {
+        List<ValidationRule> validationRule = d2.validationModule().validationRules()
+                .byDataSetUids(Collections.singletonList("BfMAe6Itzgt"))
+                .blockingGet();
+        assertThat(validationRule.size(), is(2));
     }
 }

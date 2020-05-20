@@ -35,8 +35,10 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterC
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.period.PeriodType;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -105,5 +107,13 @@ public final class ValidationRuleCollectionRepository
 
     public StringFilterConnector<ValidationRuleCollectionRepository> byOrganisationUnitLevels() {
         return cf.string(Columns.ORGANISATION_UNIT_LEVELS);
+    }
+
+    public ValidationRuleCollectionRepository byDataSetUids(List<String> dataSetUids) {
+        return cf.subQuery(IdentifiableColumns.UID).inLinkTable(
+                DataSetValidationRuleLinkTableInfo.TABLE_INFO.name(),
+                DataSetValidationRuleLinkTableInfo.Columns.VALIDATION_RULE,
+                DataSetValidationRuleLinkTableInfo.Columns.DATA_SET,
+                dataSetUids);
     }
 }

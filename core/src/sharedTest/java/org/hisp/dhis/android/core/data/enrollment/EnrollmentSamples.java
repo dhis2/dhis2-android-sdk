@@ -43,10 +43,10 @@ public class EnrollmentSamples {
 
     public static Enrollment get() {
         return get("enrollment_uid", "organisation_unit", "program",
-                "tracked_entity_instance", "2014-08-20T12:28:56.409");
+                "tracked_entity_instance", getDate("2014-08-20T12:28:56.409"));
     }
 
-    public static Enrollment get(String uid, String organisationUnit, String program, String tei, String datesStr) {
+    public static Enrollment get(String uid, String organisationUnit, String program, String tei, Date date) {
         return Enrollment.builder()
                 .id(1L)
                 .uid(uid)
@@ -56,8 +56,8 @@ public class EnrollmentSamples {
                 .lastUpdatedAtClient(getDate("2014-11-11T10:10:50.123"))
                 .organisationUnit(organisationUnit)
                 .program(program)
-                .enrollmentDate(getDate(datesStr))
-                .incidentDate(getDate(datesStr))
+                .enrollmentDate(date)
+                .incidentDate(date)
                 .followUp(Boolean.FALSE)
                 .status(EnrollmentStatus.ACTIVE)
                 .trackedEntityInstance(tei)

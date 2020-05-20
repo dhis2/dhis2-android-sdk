@@ -35,8 +35,12 @@ import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import java.util.*
+import kotlin.random.Random
 
 internal class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDataParams) {
+
+    private val random = Random(132214235)
 
     fun generateDataValues(metadata: MetadataForDataFilling): List<DataValue> {
         val level3OrgUnits = metadata.organisationUnits.filter { ou -> ou.level() == 3 }
@@ -61,11 +65,14 @@ internal class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDat
 
     fun generateEnrollments(teis: List<TrackedEntityInstance>, program: Program): List<Enrollment> {
         return teis.map { tei ->
-            EnrollmentSamples.get(tei.uid(), tei.organisationUnit(), program.uid(), tei.uid(), getRandomDate())
+            EnrollmentSamples.get(tei.uid(), tei.organisationUnit(), program.uid(), tei.uid(), getRandomDateInLastYear())
         }
     }
 
-    private fun getRandomDate(): String {
-        return "2014-08-20T12:28:56.409"
+    private fun getRandomDateInLastYear(): Date {
+        val now = System.currentTimeMillis()
+        val oneYearMillis = 365L * 24 * 60 * 60 * 1000
+        val millis = now - random.nextDouble() * oneYearMillis
+        return Date(millis.toLong())
     }
 }

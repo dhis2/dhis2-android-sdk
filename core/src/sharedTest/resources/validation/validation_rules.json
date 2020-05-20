@@ -51,7 +51,9 @@
         "missingValueStrategy": "NEVER_SKIP"
       },
       "organisationUnitLevels": [
-
+        2,
+        3,
+        4
       ]
     }
   ]

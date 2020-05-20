@@ -72,5 +72,9 @@ public class ValidationRuleShould extends BaseObjectShould implements ObjectShou
         assertThat(validationRule.rightSide().expression()).isEqualTo("I{nFICjJluo74}");
         assertThat(validationRule.rightSide().description()).isEqualTo("Malaria case count");
         assertThat(validationRule.rightSide().missingValueStrategy()).isEqualTo(MissingValueStrategy.NEVER_SKIP);
+        assertThat(validationRule.organisationUnitLevels() == null).isFalse();
+        assertThat(validationRule.organisationUnitLevels().get(0)).isEqualTo(2);
+        assertThat(validationRule.organisationUnitLevels().get(1)).isEqualTo(3);
+        assertThat(validationRule.organisationUnitLevels().get(2)).isEqualTo(4);
     }
 }

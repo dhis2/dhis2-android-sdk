@@ -139,4 +139,12 @@ public class ValidationRuleRepositoryMockIntegrationShould extends BaseMockInteg
                 .blockingGet();
         assertThat(validationRule.size(), is(1));
     }
+
+    @Test
+    public void filter_by_organisation_unit_levels() {
+        List<ValidationRule> validationRule = d2.validationModule().validationRules()
+                .byOrganisationUnitLevels().like("3")
+                .blockingGet();
+        assertThat(validationRule.size(), is(1));
+    }
 }

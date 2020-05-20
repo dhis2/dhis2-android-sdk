@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.data.validation;
 
+import com.google.common.collect.Lists;
+
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.validation.MissingValueStrategy;
@@ -64,6 +66,7 @@ public class ValidationRuleSamples {
                         .expression("right_expression")
                         .missingValueStrategy(MissingValueStrategy.SKIP_IF_ALL_VALUES_MISSING)
                         .build())
+                .organisationUnitLevels(Lists.newArrayList(2, 3, 4))
                 .deleted(false)
                 .build();
     }

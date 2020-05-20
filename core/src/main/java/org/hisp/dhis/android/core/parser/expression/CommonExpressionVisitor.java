@@ -30,7 +30,11 @@ package org.hisp.dhis.android.core.parser.expression;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.apache.commons.lang3.Validate;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 import org.hisp.dhis.android.core.constant.Constant;
+import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.android.core.parser.service.dataitem.DimensionalItemId;
 import org.hisp.dhis.antlr.AntlrExpressionVisitor;
 import org.hisp.dhis.antlr.ParserExceptionWithoutContext;
@@ -51,6 +55,13 @@ import static org.hisp.dhis.android.core.parser.expression.ParserUtils.DOUBLE_VA
  */
 public class CommonExpressionVisitor
         extends AntlrExpressionVisitor {
+
+    private IdentifiableObjectStore<DataElement> dataElementStore;
+
+    private IdentifiableObjectStore<CategoryOptionCombo> categoryOptionComboStore;
+
+    private IdentifiableObjectStore<OrganisationUnitGroup> organisationUnitGroupStore;
+
     /**
      * Map of ExprItem instances to call for each expression item
      */
@@ -65,6 +76,11 @@ public class CommonExpressionVisitor
      * By default, replace nulls with 0 or ''.
      */
     private boolean replaceNulls = true;
+
+    /**
+     * Used to collect the string replacements to build a description.
+     */
+    private Map<String, String> itemDescriptions = new HashMap<>();
 
     /**
      * Constants to use in evaluating an expression.
@@ -204,6 +220,22 @@ public class CommonExpressionVisitor
     // Getters and setters
     // -------------------------------------------------------------------------
 
+    public IdentifiableObjectStore<DataElement> getDataElementStore() {
+        return dataElementStore;
+    }
+
+    public IdentifiableObjectStore<CategoryOptionCombo> getCategoryOptionComboStore() {
+        return categoryOptionComboStore;
+    }
+
+    public IdentifiableObjectStore<OrganisationUnitGroup> getOrganisationUnitGroupStore() {
+        return organisationUnitGroupStore;
+    }
+
+    public Map<String, String> getItemDescriptions() {
+        return itemDescriptions;
+    }
+
     public Map<String, Constant> getConstantMap() {
         return constantMap;
     }
@@ -285,6 +317,21 @@ public class CommonExpressionVisitor
             return this;
         }
 
+        public Builder withDataElementStore(IdentifiableObjectStore<DataElement> store) {
+            this.visitor.dataElementStore = store;
+            return this;
+        }
+
+        public Builder withCategoryOptionComboStore(IdentifiableObjectStore<CategoryOptionCombo> store) {
+            this.visitor.categoryOptionComboStore = store;
+            return this;
+        }
+
+        public Builder withOrganisationUnitGroupStore(IdentifiableObjectStore<OrganisationUnitGroup> store) {
+            this.visitor.organisationUnitGroupStore = store;
+            return this;
+        }
+
         private CommonExpressionVisitor validateCommonProperties() {
             Validate.notNull(this.visitor.constantMap, "Missing required property 'constantMap'");
             Validate.notNull(this.visitor.itemMap, "Missing required property 'itemMap'");
@@ -293,6 +340,13 @@ public class CommonExpressionVisitor
         }
 
         public CommonExpressionVisitor buildForExpressions() {
+            Validate.notNull(this.visitor.dataElementStore, "Missing required property " +
+                    "'dataElementStore'");
+            Validate.notNull(this.visitor.categoryOptionComboStore, "Missing required property " +
+                    "'categoryOptionComboStore'");
+            Validate.notNull(this.visitor.organisationUnitGroupStore, "Missing required property " +
+                    "'organisationUnitGroupStore'");
+
             return validateCommonProperties();
         }
     }

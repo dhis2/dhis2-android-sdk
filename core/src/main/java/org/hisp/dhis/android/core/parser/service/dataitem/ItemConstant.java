@@ -43,6 +43,7 @@ import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
  */
 public class ItemConstant
         implements ExpressionItem {
+
     @Override
     public Object getDescription(ExprContext ctx, CommonExpressionVisitor visitor) {
         Constant constant = visitor.getConstantMap().get(ctx.uid0.getText());
@@ -51,8 +52,7 @@ public class ItemConstant
             throw new ParserExceptionWithoutContext("No constant defined for " + ctx.uid0.getText());
         }
 
-        // TODO
-        //visitor.getItemDescriptions().put( ctx.getText(), constant.name() );
+        visitor.getItemDescriptions().put( ctx.getText(), constant.displayName() );
 
         return DOUBLE_VALUE_IF_NULL;
     }

@@ -28,6 +28,7 @@ package org.hisp.dhis.android.core.parser.service.dataitem;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
 import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
 import org.hisp.dhis.antlr.ParserExceptionWithoutContext;
@@ -44,19 +45,14 @@ public class ItemOrgUnitGroup
         implements ExpressionItem {
     @Override
     public Object getDescription(ExprContext ctx, CommonExpressionVisitor visitor) {
-        // TODO
-        /*
-        OrganisationUnitGroup orgUnitGroup = visitor.getOrganisationUnitGroupService()
-                .getOrganisationUnitGroup( ctx.uid0.getText() );
+        OrganisationUnitGroup orgUnitGroup = visitor.getOrganisationUnitGroupStore().selectByUid(ctx.uid0.getText());
 
-        if ( orgUnitGroup == null )
-        {
-            throw new ParserExceptionWithoutContext( "No organization unit group defined for " + ctx.uid0.getText() );
+        if (orgUnitGroup == null) {
+            throw new ParserExceptionWithoutContext("No organization unit group defined for " + ctx.uid0.getText());
         }
 
-        visitor.getItemDescriptions().put( ctx.getText(), orgUnitGroup.getDisplayName() );
+        visitor.getItemDescriptions().put(ctx.getText(), orgUnitGroup.displayName());
 
-         */
         return DOUBLE_VALUE_IF_NULL;
     }
 

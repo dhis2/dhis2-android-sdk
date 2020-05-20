@@ -81,6 +81,11 @@ public class ExpressionServiceShould {
     @Mock
     OrganisationUnitGroup organisationUnitGroup;
 
+    @Mock
+    Constant constant;
+
+    private Map<String, Constant> constantMap;
+
     private ExpressionService service;
 
     @Before
@@ -98,6 +103,8 @@ public class ExpressionServiceShould {
         when(categoryOptionComboStore.selectByUid(categoryOptionComboId2)).thenReturn(categoryOptionCombo2);
 
         when(organisationUnitGroupStore.selectByUid(orgunitGroupId)).thenReturn(organisationUnitGroup);
+
+        constantMap = Collections.singletonMap(constantId, constant);
     }
 
     @Test
@@ -108,7 +115,7 @@ public class ExpressionServiceShould {
         valueMap.put(DataElementOperandObject.create(dataElementId1, categoryOptionComboId1), 5.0);
         valueMap.put(DataElementOperandObject.create(dataElementId2, categoryOptionComboId2), 3.0);
 
-        Double result = (Double) service.getExpressionValue(expression, valueMap, Collections.emptyMap(),
+        Double result = (Double) service.getExpressionValue(expression, valueMap, constantMap,
                 Collections.emptyMap(), 10, MissingValueStrategy.NEVER_SKIP);
         assertThat(result).isEqualTo(8.0);
     }
@@ -120,8 +127,7 @@ public class ExpressionServiceShould {
         Map<DimensionalItemObject, Double> valueMap = new HashMap<>();
         valueMap.put(DataElementOperandObject.create(dataElementId1, null), 5.0);
 
-        Map<String, Constant> constantMap = new HashMap<>();
-        constantMap.put(constantId, Constant.builder().uid(constantId).value(4.0).build());
+        when(constant.value()).thenReturn(4.0);
 
         Double result = (Double) service.getExpressionValue(expression, valueMap, constantMap, Collections.emptyMap(),
                 10, MissingValueStrategy.NEVER_SKIP);
@@ -136,7 +142,7 @@ public class ExpressionServiceShould {
         valueMap.put(DataElementOperandObject.create(dataElementId1, null), 5.0);
         valueMap.put(DataElementOperandObject.create(dataElementId2, null), 3.0);
 
-        Double result = (Double) service.getExpressionValue(expression, valueMap, Collections.emptyMap(),
+        Double result = (Double) service.getExpressionValue(expression, valueMap, constantMap,
                 Collections.emptyMap(), 10, MissingValueStrategy.NEVER_SKIP);
         assertThat(result).isEqualTo(8.0);
     }
@@ -148,7 +154,7 @@ public class ExpressionServiceShould {
         Map<DimensionalItemObject, Double> valueMap = new HashMap<>();
         valueMap.put(DataElementOperandObject.create(dataElementId1, null), 5.0);
 
-        Double result = (Double) service.getExpressionValue(expression, valueMap, Collections.emptyMap(),
+        Double result = (Double) service.getExpressionValue(expression, valueMap, constantMap,
                 Collections.emptyMap(), 10, MissingValueStrategy.NEVER_SKIP);
         assertThat(result).isEqualTo(15.0);
     }
@@ -163,7 +169,7 @@ public class ExpressionServiceShould {
         Map<String, Integer> orgunitMap = new HashMap<>();
         orgunitMap.put(orgunitGroupId, 20);
 
-        Double result = (Double) service.getExpressionValue(expression, valueMap, Collections.emptyMap(),
+        Double result = (Double) service.getExpressionValue(expression, valueMap, constantMap,
                 orgunitMap, 10, MissingValueStrategy.NEVER_SKIP);
         assertThat(result).isEqualTo(25.0);
     }
@@ -176,15 +182,15 @@ public class ExpressionServiceShould {
         valueMap.put(DataElementOperandObject.create(dataElementId1, null), 5.0);
 
         Double resultNeverSkip = (Double) service.getExpressionValue(expression, valueMap,
-                Collections.emptyMap(), Collections.emptyMap(), 10, MissingValueStrategy.NEVER_SKIP);
+                constantMap, Collections.emptyMap(), 10, MissingValueStrategy.NEVER_SKIP);
         assertThat(resultNeverSkip).isEqualTo(5.0);
 
         Double resultSkipIfAny = (Double) service.getExpressionValue(expression, valueMap,
-                Collections.emptyMap(), Collections.emptyMap(), 10, MissingValueStrategy.SKIP_IF_ANY_VALUE_MISSING);
+                constantMap, Collections.emptyMap(), 10, MissingValueStrategy.SKIP_IF_ANY_VALUE_MISSING);
         assertThat(resultSkipIfAny).isNull();
 
         Double resultSkipIfAll = (Double) service.getExpressionValue(expression, valueMap,
-                Collections.emptyMap(), Collections.emptyMap(), 10, MissingValueStrategy.SKIP_IF_ALL_VALUES_MISSING);
+                constantMap, Collections.emptyMap(), 10, MissingValueStrategy.SKIP_IF_ALL_VALUES_MISSING);
         assertThat(resultSkipIfAll).isEqualTo(5.0);
     }
 
@@ -195,15 +201,15 @@ public class ExpressionServiceShould {
         Map<DimensionalItemObject, Double> valueMap = Collections.emptyMap();
 
         Double resultNeverSkip = (Double) service.getExpressionValue(expression, valueMap,
-                Collections.emptyMap(), Collections.emptyMap(), 10, MissingValueStrategy.NEVER_SKIP);
+                constantMap, Collections.emptyMap(), 10, MissingValueStrategy.NEVER_SKIP);
         assertThat(resultNeverSkip).isEqualTo(0.0);
 
         Double resultSkipIfAny = (Double) service.getExpressionValue(expression, valueMap,
-                Collections.emptyMap(), Collections.emptyMap(), 10, MissingValueStrategy.SKIP_IF_ANY_VALUE_MISSING);
+                constantMap, Collections.emptyMap(), 10, MissingValueStrategy.SKIP_IF_ANY_VALUE_MISSING);
         assertThat(resultSkipIfAny).isNull();
 
         Double resultSkipIfAll = (Double) service.getExpressionValue(expression, valueMap,
-                Collections.emptyMap(), Collections.emptyMap(), 10, MissingValueStrategy.SKIP_IF_ALL_VALUES_MISSING);
+                constantMap, Collections.emptyMap(), 10, MissingValueStrategy.SKIP_IF_ALL_VALUES_MISSING);
         assertThat(resultSkipIfAll).isNull();
     }
 
@@ -281,13 +287,17 @@ public class ExpressionServiceShould {
         when(dataElement1.displayName()).thenReturn("Data Element 1");
         when(dataElement2.displayName()).thenReturn("Data Element 2");
         when(categoryOptionCombo1.displayName()).thenReturn("COC 1");
-        when(categoryOptionCombo2.displayName()).thenReturn("COC 2");
+        when(organisationUnitGroup.displayName()).thenReturn("Org Unit Group");
+        when(constant.displayName()).thenReturn("Constant");
 
-        String expression = deOperand(dataElementId1, categoryOptionComboId1) + " + " + deOperand(dataElementId2, categoryOptionComboId2);
+        String expression = deOperand(dataElementId1, categoryOptionComboId1) + " + " +
+                de(dataElementId2) + " * " +
+                oug(orgunitGroupId) + " + " +
+                constant(constantId);
 
-        String description = service.getExpressionDescription(expression, Collections.emptyMap());
+        String description = service.getExpressionDescription(expression, constantMap);
 
-        assertThat(description).isEqualTo("Data Element 1 (COC 1) + Data Element 2 (COC 2)");
+        assertThat(description).isEqualTo("Data Element 1 (COC 1) + Data Element 2 * Org Unit Group + Constant");
     }
 
     @Test

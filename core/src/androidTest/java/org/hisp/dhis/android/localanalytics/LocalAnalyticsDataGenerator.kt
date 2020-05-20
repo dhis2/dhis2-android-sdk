@@ -27,11 +27,14 @@
  */
 package org.hisp.dhis.android.localanalytics
 
+import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
 import org.hisp.dhis.android.core.data.datavalue.DataValueSamples
 import org.hisp.dhis.android.core.data.enrollment.EnrollmentSamples
+import org.hisp.dhis.android.core.data.trackedentity.EventSamples
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityInstanceSamples
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.enrollment.Enrollment
+import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
@@ -41,6 +44,7 @@ import kotlin.random.Random
 internal class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDataParams) {
 
     private val random = Random(132214235)
+    private val uidGenerator = UidGeneratorImpl()
 
     fun generateDataValues(metadata: MetadataForDataFilling): List<DataValue> {
         val level3OrgUnits = metadata.organisationUnits.filter { ou -> ou.level() == 3 }
@@ -57,15 +61,26 @@ internal class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDat
     fun generateTrackedEntityInstances(organisationUnits: List<OrganisationUnit>): List<TrackedEntityInstance> {
         val level3OrgUnits = organisationUnits.filter { ou -> ou.level() == 3 }
         return (1..params.trackedEntityInstances).map { i ->
-            val ouIndex = i % level3OrgUnits.size
-            val ou = level3OrgUnits[ouIndex]
+            val ou = level3OrgUnits[i % level3OrgUnits.size]
             TrackedEntityInstanceSamples.get(ou.uid())
         }
     }
 
     fun generateEnrollments(teis: List<TrackedEntityInstance>, program: Program): List<Enrollment> {
         return teis.map { tei ->
-            EnrollmentSamples.get(tei.uid(), tei.organisationUnit(), program.uid(), tei.uid(), getRandomDateInLastYear())
+            EnrollmentSamples.get(uidGenerator.generate(), tei.organisationUnit(), program.uid(), tei.uid(), getRandomDateInLastYear())
+        }
+    }
+
+    fun generateEventsWithoutRegistration(metadata: MetadataForDataFilling): List<Event> {
+        val level3OrgUnits = metadata.organisationUnits.filter { ou -> ou.level() == 3 }
+        val program = metadata.programs[1]
+        val programStages = metadata.programStages.filter { ps -> ps.program()!!.uid() == program.uid() }
+        return (1..params.eventsWithoutRegistration).map { i ->
+            val ou = level3OrgUnits[i % level3OrgUnits.size]
+            val programStage = programStages[i % programStages.size]
+            EventSamples.get(uidGenerator.generate(), null, ou.uid(), programStage.program()!!.uid(), programStage.uid(),
+                    metadata.categoryOptionCombos.first().uid(), getRandomDateInLastYear())
         }
     }
 

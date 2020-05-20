@@ -36,16 +36,15 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.IntegerArrayColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.LeftValidationRuleExpressionColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.RightValidationRuleExpressionColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.MissingValueStrategyColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.ValidationRuleImportanceColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.ValidationRuleOperatorColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreOrganisationUnitLevelListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel;
 import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.List;
@@ -104,8 +103,8 @@ public abstract class ValidationRule extends BaseNameableObject implements CoreO
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(IgnoreOrganisationUnitLevelListColumnAdapter.class)
-    public abstract List<OrganisationUnitLevel> organisationUnitLevels();
+    @ColumnAdapter(IntegerArrayColumnAdapter.class)
+    public abstract List<Integer> organisationUnitLevels();
 
     public static Builder builder() {
         return new $$AutoValue_ValidationRule.Builder();
@@ -149,7 +148,7 @@ public abstract class ValidationRule extends BaseNameableObject implements CoreO
 
         abstract Builder rightSideMissingValueStrategy(MissingValueStrategy rightSideMissingValueStrategy);
 
-        abstract Builder organisationUnitLevels(List<OrganisationUnitLevel> organisationUnitLevels);
+        public abstract Builder organisationUnitLevels(List<Integer> organisationUnitLevels);
 
         abstract ValidationRule autoBuild();
 

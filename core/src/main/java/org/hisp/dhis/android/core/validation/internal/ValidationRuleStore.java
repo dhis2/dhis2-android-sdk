@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.validation.internal;
 import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.IntegerArrayColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
@@ -59,6 +60,7 @@ final class ValidationRuleStore {
             w.bind(19, o.rightSide().expression());
             w.bind(20, o.rightSide().description());
             w.bind(21, o.rightSide().missingValueStrategy());
+            w.bind(22, IntegerArrayColumnAdapter.serialize(o.organisationUnitLevels()));
         }
     };
 

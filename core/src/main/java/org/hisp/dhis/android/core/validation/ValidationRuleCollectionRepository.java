@@ -102,4 +102,8 @@ public final class ValidationRuleCollectionRepository
     byRightSideMissingValueStrategy() {
         return cf.enumC(Columns.RIGHT_SIDE_MISSING_VALUE_STRATEGY);
     }
+
+    public StringFilterConnector<ValidationRuleCollectionRepository> byOrganisationUnitLevels() {
+        return cf.string(Columns.ORGANISATION_UNIT_LEVELS);
+    }
 }

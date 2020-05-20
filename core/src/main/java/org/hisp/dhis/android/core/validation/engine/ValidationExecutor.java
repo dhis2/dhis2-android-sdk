@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.validation.engine;
 
 import org.hisp.dhis.android.core.constant.Constant;
+import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.hisp.dhis.android.core.parser.service.ExpressionService;
 import org.hisp.dhis.android.core.parser.service.dataobject.DimensionalItemObject;
 import org.hisp.dhis.android.core.validation.MissingValueStrategy;
@@ -40,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -70,11 +72,18 @@ class ValidationExecutor {
                 constantMap, orgunitGroupMap, days, rule.rightSide().missingValueStrategy());
 
         if (isViolation(rule, leftSide, rightSide)) {
+            String leftExpression = expressionService.getExpressionDescription(rule.leftSide().expression(),
+                    constantMap);
+            String rightExpression = expressionService.getExpressionDescription(rule.rightSide().expression(),
+                    constantMap);
+
             violations.add(ValidationResultViolation.builder()
-                    .dataElementUids(Collections.emptyList())
+                    .dataElementUids(getAllDataElementOperands(rule))
                     .validationRule(rule)
                     .leftSideValue(leftSide)
+                    .leftSideExpression(leftExpression)
                     .rightSideValue(rightSide)
+                    .rightSideExpression(rightExpression)
                     .build());
         }
         return violations;
@@ -111,5 +120,16 @@ class ValidationExecutor {
                 + rule.operator().getMathematicalOperator()
                 + rightSideValue;
         return !(Boolean) expressionService.getExpressionValue(test);
+    }
+
+    private Set<DataElementOperand> getAllDataElementOperands(ValidationRule rule) {
+        Set<DataElementOperand> ids = Collections.emptySet();
+        Set<DataElementOperand> leftIds = expressionService.getDataElementOperands(rule.leftSide().expression());
+        Set<DataElementOperand> rightIds = expressionService.getDataElementOperands(rule.leftSide().expression());
+
+        ids.addAll(leftIds);
+        ids.addAll(rightIds);
+
+        return ids;
     }
 }

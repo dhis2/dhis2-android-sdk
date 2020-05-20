@@ -32,14 +32,14 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 
-import java.util.List;
+import java.util.Set;
 
 @AutoValue
 public abstract class ValidationResultViolation {
 
     public abstract ValidationRule validationRule();
 
-    public abstract List<DataElementOperand> dataElementUids();
+    public abstract Set<DataElementOperand> dataElementUids();
 
     public abstract Double leftSideValue();
 
@@ -60,7 +60,7 @@ public abstract class ValidationResultViolation {
 
         public abstract Builder validationRule(ValidationRule validationRule);
 
-        public abstract Builder dataElementUids(List<DataElementOperand> dataElementUids);
+        public abstract Builder dataElementUids(Set<DataElementOperand> dataElementUids);
 
         public abstract Builder leftSideValue(Double leftSideValue);
 

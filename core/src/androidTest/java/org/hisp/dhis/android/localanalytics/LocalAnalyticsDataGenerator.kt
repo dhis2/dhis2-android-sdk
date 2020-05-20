@@ -28,9 +28,12 @@
 package org.hisp.dhis.android.localanalytics
 
 import org.hisp.dhis.android.core.data.datavalue.DataValueSamples
+import org.hisp.dhis.android.core.data.enrollment.EnrollmentSamples
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityInstanceSamples
 import org.hisp.dhis.android.core.datavalue.DataValue
+import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
 internal class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDataParams) {
@@ -56,4 +59,13 @@ internal class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDat
         }
     }
 
+    fun generateEnrollments(teis: List<TrackedEntityInstance>, program: Program): List<Enrollment> {
+        return teis.map { tei ->
+            EnrollmentSamples.get(tei.uid(), tei.organisationUnit(), program.uid(), tei.uid(), getRandomDate())
+        }
+    }
+
+    private fun getRandomDate(): String {
+        return "2014-08-20T12:28:56.409"
+    }
 }

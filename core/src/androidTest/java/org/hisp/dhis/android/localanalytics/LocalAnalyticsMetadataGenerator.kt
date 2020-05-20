@@ -68,14 +68,15 @@ class LocalAnalyticsMetadataGenerator(private val params: LocalAnalyticsMetadata
     }
 
     fun getCategoryOptionCombos(categoryCombos: List<CategoryCombo>): List<CategoryOptionCombo> {
+        val coc1 = getCategoryOptionCombos(categoryCombos[0], 1)
         val coc2 = getCategoryOptionCombos(categoryCombos[1], params.categoryOptionCombos2)
-        val coc3 = getCategoryOptionCombos(categoryCombos[1], params.categoryOptionCombos3)
-        return coc2 + coc3
+        val coc3 = getCategoryOptionCombos(categoryCombos[2], params.categoryOptionCombos3)
+        return coc1 + coc2 + coc3
     }
 
     private fun getCategoryOptionCombos(categoryCombo: CategoryCombo, count: Int): List<CategoryOptionCombo> {
         return (1..count).map { i ->
-            CategoryOptionComboSamples.getCategoryOptionCombo("COC ${categoryCombo.name()} $i")
+            CategoryOptionComboSamples.getCategoryOptionCombo("COC ${categoryCombo.name()} $i", categoryCombo)
         }
     }
 

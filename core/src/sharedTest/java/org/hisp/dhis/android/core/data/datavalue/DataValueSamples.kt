@@ -25,35 +25,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.localanalytics
+package org.hisp.dhis.android.core.data.datavalue
 
-import org.hisp.dhis.android.core.data.datavalue.DataValueSamples
-import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityInstanceSamples
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST_UPDATED
 import org.hisp.dhis.android.core.datavalue.DataValue
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
-class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDataParams) {
+object DataValueSamples {
 
-    fun generateDataValues(metadata: MetadataForDataFilling): List<DataValue> {
-        val level3OrgUnits = metadata.organisationUnits.filter { ou -> ou.level() == 3 }
-        return (1..params.trackedEntityInstances).map { i ->
-            val ou = level3OrgUnits[i % level3OrgUnits.size]
-            val period = metadata.periods[i % metadata.periods.size]
-            val coc = metadata.categoryOptionCombos[i % metadata.categoryOptionCombos.size]
-            val dataElements = metadata.aggregatedDataElements.filter { de -> de.categoryCombo() == coc.categoryCombo() }
-            DataValueSamples.getDataValue(ou.uid(), dataElements.random().uid(), period.periodId()!!, coc.uid(),
-                    metadata.categoryOptionCombos.first().uid())
-        }
+    fun getDataValue(organisationUnit: String, dataElement: String, period: String, categoryOptionCombo: String,
+        attributeOptionCombo: String): DataValue {
+
+        return DataValue.builder()
+                .id(1L)
+                .state(State.TO_POST)
+                .deleted(false)
+                .dataElement(dataElement)
+                .period(period)
+                .organisationUnit(organisationUnit)
+                .categoryOptionCombo(categoryOptionCombo)
+                .attributeOptionCombo(attributeOptionCombo)
+                .value("value")
+                .storedBy("storedBy")
+                .created(CREATED)
+                .lastUpdated(LAST_UPDATED)
+                .comment("Hey!")
+                .followUp(true)
+                .build()
     }
-
-    fun generateTrackedEntityInstances(organisationUnits: List<OrganisationUnit>): List<TrackedEntityInstance> {
-        val level3OrgUnits = organisationUnits.filter { ou -> ou.level() == 3 }
-        return (1..params.trackedEntityInstances).map { i ->
-            val ouIndex = i % level3OrgUnits.size
-            val ou = level3OrgUnits[ouIndex]
-            TrackedEntityInstanceSamples.get(ou.uid())
-        }
-    }
-
 }

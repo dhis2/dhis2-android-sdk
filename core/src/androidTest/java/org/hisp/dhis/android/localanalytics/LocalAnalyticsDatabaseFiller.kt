@@ -29,19 +29,27 @@ package org.hisp.dhis.android.localanalytics
 
 import org.hisp.dhis.android.core.D2
 import org.hisp.dhis.android.core.D2DIComponentAccessor
+import org.hisp.dhis.android.core.category.CategoryOptionCombo
 import org.hisp.dhis.android.core.category.internal.CategoryComboStore
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStoreImpl
+import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
+import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
+import org.hisp.dhis.android.core.period.Period
+import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.program.internal.ProgramStageStore
 import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl
 
-private data class MetadataForDataFilling(val organisationUnits: List<OrganisationUnit>)
+data class MetadataForDataFilling(val organisationUnits: List<OrganisationUnit>,
+                                  val periods: List<Period>,
+                                  val categoryOptionCombos: List<CategoryOptionCombo>,
+                                  val aggregatedDataElements: List<DataElement>)
 
-class LocalAnalyticsDatabaseFiller(d2: D2) {
+class LocalAnalyticsDatabaseFiller(private val d2: D2) {
     private val da = d2.databaseAdapter()
     private val d2DIComponent = D2DIComponentAccessor.getD2DIComponent(d2)
 
@@ -59,10 +67,12 @@ class LocalAnalyticsDatabaseFiller(d2: D2) {
         val categoryCombos = generator.getCategoryCombos()
         CategoryComboStore.create(da).insert(categoryCombos)
 
-        CategoryOptionComboStoreImpl.create(da).insert(generator.getCategoryOptionCombos(categoryCombos))
+        val categoryOptionCombos = generator.getCategoryOptionCombos(categoryCombos)
+        CategoryOptionComboStoreImpl.create(da).insert(categoryOptionCombos)
 
         val defaultCategoryCombo = categoryCombos.first()
-        DataElementStore.create(da).insert(generator.getDataElementsAggregated(categoryCombos) +
+        val aggregatedDataElements = generator.getDataElementsAggregated(categoryCombos)
+        DataElementStore.create(da).insert(aggregatedDataElements +
                 generator.getDataElementsTracker(defaultCategoryCombo))
 
         d2DIComponent.periodHandler().generateAndPersist()
@@ -74,11 +84,16 @@ class LocalAnalyticsDatabaseFiller(d2: D2) {
 
         TrackedEntityAttributeStore.create(da).insert(generator.getTrackedEntityAttributes())
 
-        return MetadataForDataFilling(organisationUnits)
+        val periodTypes = listOf(PeriodType.Monthly, PeriodType.Weekly, PeriodType.Daily)
+        val periods = d2.periodModule().periods().byPeriodType().`in`(periodTypes).blockingGet()
+
+        return MetadataForDataFilling(organisationUnits, periods, categoryOptionCombos, aggregatedDataElements)
     }
 
     private fun fillData(dataParams: LocalAnalyticsDataParams, metadata: MetadataForDataFilling) {
         val generator = LocalAnalyticsDataGenerator(dataParams)
+
+        DataValueStore.create(da).insert(generator.generateDataValues(metadata))
 
         val teis = generator.generateTrackedEntityInstances(metadata.organisationUnits)
         TrackedEntityInstanceStoreImpl.create(da).insert(teis)

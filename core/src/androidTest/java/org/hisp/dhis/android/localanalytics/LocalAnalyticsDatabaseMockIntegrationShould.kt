@@ -57,7 +57,7 @@ class LocalAnalyticsDatabaseMockIntegrationShould : BaseMockIntegrationTestLocal
     @Test
     fun check_category_option_combos() {
         val count = d2.categoryModule().categoryOptionCombos().blockingCount()
-        assertThat(count).isEqualTo(8)
+        assertThat(count).isEqualTo(9)
     }
 
     @Test
@@ -94,6 +94,12 @@ class LocalAnalyticsDatabaseMockIntegrationShould : BaseMockIntegrationTestLocal
     fun check_tracked_entity_attributes() {
         val count = d2.trackedEntityModule().trackedEntityAttributes().blockingCount()
         assertThat(count).isEqualTo(10)
+    }
+
+    @Test
+    fun check_data_values() {
+        val count = d2.dataValueModule().dataValues().blockingCount()
+        assertThat(count).isEqualTo(500)
     }
 
     @Test

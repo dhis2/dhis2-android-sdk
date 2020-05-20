@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.validation.internal;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.validation.ValidationRule;
 import org.hisp.dhis.android.core.validation.ValidationRuleExpression;
@@ -62,7 +61,7 @@ public final class ValidationRuleFields {
                     fh.<Boolean>field(Columns.SKIP_FORM_VALIDATION),
                     fh.<ValidationRuleExpression>nestedField(LEFT_SIDE).with(ValidationRuleExpressionFields.allFields),
                     fh.<ValidationRuleExpression>nestedField(RIGHT_SIDE).with(ValidationRuleExpressionFields.allFields),
-                    fh.<ObjectWithUid>nestedField(ORGANISATION_UNIT_LEVELS).with(ObjectWithUid.uid)
+                    fh.<Integer>nestedField(ORGANISATION_UNIT_LEVELS)
             ).build();
 
     private ValidationRuleFields() {

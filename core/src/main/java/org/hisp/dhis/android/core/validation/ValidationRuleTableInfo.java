@@ -63,6 +63,7 @@ public final class ValidationRuleTableInfo {
         public static final String RIGHT_SIDE_EXPRESSION = "rightSideExpression";
         public static final String RIGHT_SIDE_DESCRIPTION = "rightSideDescription";
         public static final String RIGHT_SIDE_MISSING_VALUE_STRATEGY = "rightSideMissingValueStrategy";
+        public static final String ORGANISATION_UNIT_LEVELS = "organisationUnitLevels";
 
         @Override
         public String[] all() {
@@ -77,7 +78,8 @@ public final class ValidationRuleTableInfo {
                     LEFT_SIDE_MISSING_VALUE_STRATEGY,
                     RIGHT_SIDE_EXPRESSION,
                     RIGHT_SIDE_DESCRIPTION,
-                    RIGHT_SIDE_MISSING_VALUE_STRATEGY
+                    RIGHT_SIDE_MISSING_VALUE_STRATEGY,
+                    ORGANISATION_UNIT_LEVELS
             );
         }
     }

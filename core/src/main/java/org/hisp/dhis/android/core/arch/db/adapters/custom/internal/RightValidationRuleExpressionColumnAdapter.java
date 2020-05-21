@@ -28,53 +28,24 @@
 
 package org.hisp.dhis.android.core.arch.db.adapters.custom.internal;
 
-import android.content.ContentValues;
-import android.database.Cursor;
-
-import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
-
-import org.hisp.dhis.android.core.validation.MissingValueStrategy;
-import org.hisp.dhis.android.core.validation.ValidationRuleExpression;
-
 import static org.hisp.dhis.android.core.validation.ValidationRuleTableInfo.Columns.RIGHT_SIDE_DESCRIPTION;
 import static org.hisp.dhis.android.core.validation.ValidationRuleTableInfo.Columns.RIGHT_SIDE_EXPRESSION;
 import static org.hisp.dhis.android.core.validation.ValidationRuleTableInfo.Columns.RIGHT_SIDE_MISSING_VALUE_STRATEGY;
 
-public class RightValidationRuleExpressionColumnAdapter implements ColumnTypeAdapter<ValidationRuleExpression> {
+public class RightValidationRuleExpressionColumnAdapter extends ValidationRuleExpressionColumnAdapter {
 
     @Override
-    public ValidationRuleExpression fromCursor(Cursor cursor, String columnName) {
-        int missingValueStrategyColumnIndex = cursor.getColumnIndex(RIGHT_SIDE_MISSING_VALUE_STRATEGY);
-        String missingValueStrategyStr = cursor.getString(missingValueStrategyColumnIndex);
-
-        MissingValueStrategy missingValueStrategy = null;
-        if (missingValueStrategyStr != null) {
-            try {
-                missingValueStrategy = MissingValueStrategy.valueOf(missingValueStrategyStr);
-            } catch (Exception exception) {
-                throw new RuntimeException("Unknown Missing value strategy", exception);
-            }
-        }
-
-        int expressionColumnIndex = cursor.getColumnIndex(RIGHT_SIDE_EXPRESSION);
-        String expressionStr = cursor.getString(expressionColumnIndex);
-        int descriptionColumnIndex = cursor.getColumnIndex(RIGHT_SIDE_DESCRIPTION);
-        String descriptionStr = cursor.getString(descriptionColumnIndex);
-
-        return ValidationRuleExpression.builder()
-                .expression(expressionStr)
-                .description(descriptionStr)
-                .missingValueStrategy(missingValueStrategy).build();
+    protected String missingValueStrategyColumnName() {
+        return RIGHT_SIDE_MISSING_VALUE_STRATEGY;
     }
 
     @Override
-    public void toContentValues(ContentValues values, String columnName, ValidationRuleExpression value) {
-        if (value != null) {
-            values.put(RIGHT_SIDE_EXPRESSION, value.expression());
-            values.put(RIGHT_SIDE_DESCRIPTION, value.description());
-            if (value.missingValueStrategy() != null) {
-                values.put(RIGHT_SIDE_MISSING_VALUE_STRATEGY, value.missingValueStrategy().name());
-            }
-        }
+    protected String expressionColumnName() {
+        return RIGHT_SIDE_EXPRESSION;
+    }
+
+    @Override
+    protected String descriptionColumnName() {
+        return RIGHT_SIDE_DESCRIPTION;
     }
 }

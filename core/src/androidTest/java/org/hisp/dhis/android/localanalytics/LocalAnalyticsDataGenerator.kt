@@ -53,14 +53,24 @@ internal class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDat
     private val uidGenerator = UidGeneratorImpl()
 
     fun generateDataValues(metadata: MetadataForDataFilling): List<DataValue> {
-        val level3OrgUnits = metadata.organisationUnits.filter { ou -> ou.level() == 3 }
-        return (1..params.trackedEntityInstances).map { i ->
-            val ou = level3OrgUnits[i % level3OrgUnits.size]
-            val period = metadata.periods[i % metadata.periods.size]
-            val coc = metadata.categoryOptionCombos[i % metadata.categoryOptionCombos.size]
-            val dataElements = metadata.aggregatedDataElements.filter { de -> de.categoryCombo() == coc.categoryCombo() }
-            DataValueSamples.getDataValue(ou.uid(), dataElements.random().uid(), period.periodId()!!, coc.uid(),
-                    metadata.categoryOptionCombos.first().uid())
+        val orgUnits: List<OrganisationUnit> = metadata.organisationUnits.filter { it.level() == 3 }.groupBy { it.parent() }.map { aa -> aa.value.first() }
+        val categoryOptionCombosByCategoryCombo = metadata.categoryOptionCombos.groupBy { coc -> coc.categoryCombo() }
+        val dataElementsByCategoryCombo = metadata.aggregatedDataElements.groupBy { de -> de.categoryCombo() }
+
+        val periodOrgUnits = metadata.periods.flatMap { period -> orgUnits.map { ou -> Pair(period, ou) } }
+
+        val iterations = params.dataValues / 100
+
+        return categoryOptionCombosByCategoryCombo.flatMap { (categoryCombo, categoryOptionCombos) ->
+            categoryOptionCombos.flatMap { categoryOptionCombo ->
+                dataElementsByCategoryCombo[categoryCombo]!!.flatMap { dataElement ->
+                    (1..iterations).map {
+                        val (period, ou) = periodOrgUnits[it]
+                        DataValueSamples.getDataValue(ou.uid(), dataElement.uid(), period.periodId()!!, categoryOptionCombo.uid(),
+                                metadata.categoryOptionCombos.first().uid())
+                    }
+                }
+            }
         }
     }
 

@@ -39,7 +39,7 @@ internal data class LocalAnalyticsMetadataParams(val organisationUnitChildren: I
     companion object LocalAnalyticsMetadataParams {
         val Default = LocalAnalyticsMetadataParams(
                 organisationUnitChildren = 3,
-                categoryOptionCombos2 = 2,
+                categoryOptionCombos2 = 3,
                 categoryOptionCombos3 = 6,
                 dataElementsAggregated = 10,
                 dataElementsTracker = 10,
@@ -55,7 +55,7 @@ internal data class LocalAnalyticsDataParams(val dataValues: Int,
                                              val eventsWithRegistrationPerEnrollmentAndPS: Int) {
     companion object LocalAnalyticsDataParams {
         fun get(f: Int) = LocalAnalyticsDataParams(
-                dataValues = 500 * f,
+                dataValues = 3000 * f,
                 trackedEntityInstances = 500 * f,
                 eventsWithoutRegistration = 500 * f,
                 eventsWithRegistrationPerEnrollmentAndPS = 1

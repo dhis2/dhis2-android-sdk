@@ -67,6 +67,8 @@ public class Dhis2MockServer {
     private static final String OPTION_SETS_JSON = "option/option_sets.json";
     private static final String OPTIONS_JSON = "option/options.json";
     private static final String OPTION_GROUPS_JSON = "option/option_groups.json";
+    private static final String VALIDATION_RULE_UIDS_JSON = "validation/validation_rule_uids.json";
+    private static final String VALIDATION_RULES_JSON = "validation/validation_rules.json";
     private static final String DATA_SETS_JSON = "dataset/data_sets.json";
     private static final String DATA_ELEMENTS_JSON = "dataelement/data_elements.json";
     private static final String INDICATORS_JSON = "indicators/indicators.json";
@@ -179,6 +181,10 @@ public class Dhis2MockServer {
                     return createMockResponse(OPTIONS_JSON);
                 } else if (path.startsWith("/api/optionGroups?")) {
                     return createMockResponse(OPTION_GROUPS_JSON);
+                } else if (path.startsWith("/api/validationRules?dataSet")) {
+                    return createMockResponse(VALIDATION_RULE_UIDS_JSON);
+                } else if (path.startsWith("/api/validationRules?")) {
+                    return createMockResponse(VALIDATION_RULES_JSON);
                 } else if (path.startsWith("/api/dataSets?")) {
                     return createMockResponse(DATA_SETS_JSON);
                 } else if (path.startsWith("/api/dataElements?")) {
@@ -248,6 +254,9 @@ public class Dhis2MockServer {
         enqueueMockResponse(DATA_ELEMENTS_JSON);
         enqueueMockResponse(INDICATORS_JSON);
         enqueueMockResponse(INDICATOR_TYPES_JSON);
+        enqueueMockResponse(VALIDATION_RULE_UIDS_JSON);
+        enqueueMockResponse(VALIDATION_RULE_UIDS_JSON);
+        enqueueMockResponse(VALIDATION_RULES_JSON);
         enqueueMockResponse(CATEGORY_COMBOS_JSON);
         enqueueMockResponse(CATEGORIES_JSON);
     }

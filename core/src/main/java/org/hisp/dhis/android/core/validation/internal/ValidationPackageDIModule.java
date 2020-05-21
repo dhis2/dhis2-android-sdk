@@ -26,44 +26,44 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.validation.internal;
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
+import org.hisp.dhis.android.core.validation.ValidationModule;
+import org.hisp.dhis.android.core.validation.ValidationRule;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
+import retrofit2.Retrofit;
 
-class BaseDatabaseOpenHelper {
+@Module(includes = {
+        ValidationRuleEntityDIModule.class,
+        DataSetValidationRuleLinkEntityDIModule.class
+})
+public final class ValidationPackageDIModule {
 
-    static final int VERSION = 75;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    @Provides
+    @Reusable
+    UidsCall<ValidationRule> validationRuleCall(ValidationRuleCall impl) {
+        return impl;
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
-        databaseAdapter.enableWriteAheadLogging();
+    @Provides
+    @Reusable
+    ValidationRuleUidsCall validationRuleUidsCall(ValidationRuleUidsCallImpl impl) {
+        return impl;
     }
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
+    @Provides
+    @Reusable
+    ValidationRuleService validationRuleService(Retrofit retrofit) {
+        return retrofit.create(ValidationRuleService.class);
     }
 
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    @Provides
+    @Reusable
+    ValidationModule module(ValidationModuleImpl impl) {
+        return impl;
     }
 }

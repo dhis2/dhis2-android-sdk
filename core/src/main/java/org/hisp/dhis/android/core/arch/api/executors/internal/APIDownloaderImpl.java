@@ -32,8 +32,11 @@ import androidx.annotation.VisibleForTesting;
 
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.arch.helpers.internal.FunctionalCollectionHelper;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 
@@ -103,6 +106,17 @@ public final class APIDownloaderImpl implements APIDownloader {
                                                   Function<Set<String>, Single<Payload<P>>> pageDownloader,
                                                   @Nullable Function<P, P> transform) {
         return downloadPartitionedWithCustomHandling(uids, pageSize, handler::handleMany, pageDownloader, transform);
+    }
+
+    @Override
+    public <P, O extends CoreObject> Single<List<P>> downloadLink(
+            String masterUid, LinkHandler<P, O> handler,
+            Function<String, Single<Payload<P>>> downloader,
+            Transformer<P, O> transformer) {
+        return Single.just(masterUid)
+                .flatMap(downloader)
+                .map(Payload::items)
+                .doOnSuccess(items -> handler.handleMany(masterUid, items, transformer));
     }
 
     @Override

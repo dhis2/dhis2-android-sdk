@@ -25,45 +25,28 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.validation.internal;
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.validation.ValidationRule;
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+import io.reactivex.Single;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+interface ValidationRuleService {
+    @GET("validationRules")
+    Single<Payload<ValidationRule>> getValidationRules(
+            @Query("fields") @Which Fields<ValidationRule> fields,
+            @Query("filter") String uidsFilterString,
+            @Query("paging") Boolean paging);
 
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 75;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
-    }
-
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
-    }
+    @GET("validationRules")
+    Single<Payload<ObjectWithUid>> getDataSetValidationRuleUids(
+            @Query("dataSet") String dataSetUid,
+            @Query("fields") String id,
+            @Query("paging") Boolean paging);
 }

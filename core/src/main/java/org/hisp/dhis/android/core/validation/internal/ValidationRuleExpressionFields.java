@@ -26,44 +26,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.validation.internal;
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import org.hisp.dhis.android.core.validation.MissingValueStrategy;
+import org.hisp.dhis.android.core.validation.ValidationRuleExpression;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+public final class ValidationRuleExpressionFields {
+    public static final String EXPRESSION = "expression";
+    public static final String DESCRIPTION = "description";
+    public static final String MISSING_VALUE_STRATEGY = "missingValueStrategy";
 
-class BaseDatabaseOpenHelper {
+    private static final FieldsHelper<ValidationRuleExpression> fh = new FieldsHelper<>();
 
-    static final int VERSION = 75;
+    public static final Field<ValidationRuleExpression, String> uid = fh.uid();
 
-    private final AssetManager assetManager;
-    private final int targetVersion;
+    public static final Fields<ValidationRuleExpression> allFields = Fields.<ValidationRuleExpression>builder()
+            .fields(
+                    fh.<String>field(EXPRESSION),
+                    fh.<String>field(DESCRIPTION),
+                    fh.<MissingValueStrategy>field(MISSING_VALUE_STRATEGY)
+            ).build();
 
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
-    }
-
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    private ValidationRuleExpressionFields() {
     }
 }

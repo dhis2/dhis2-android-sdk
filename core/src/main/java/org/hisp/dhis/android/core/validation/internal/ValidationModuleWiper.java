@@ -25,45 +25,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.validation.internal;
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+import org.hisp.dhis.android.core.validation.DataSetValidationRuleLinkTableInfo;
+import org.hisp.dhis.android.core.validation.ValidationRuleTableInfo;
+import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
+import org.hisp.dhis.android.core.wipe.internal.TableWiper;
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+import javax.inject.Inject;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import dagger.Reusable;
 
-class BaseDatabaseOpenHelper {
+@Reusable
+public final class ValidationModuleWiper implements ModuleWiper {
 
-    static final int VERSION = 75;
+    private final TableWiper tableWiper;
 
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    @Inject
+    ValidationModuleWiper(TableWiper tableWiper) {
+        this.tableWiper = tableWiper;
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
-        databaseAdapter.enableWriteAheadLogging();
+    @Override
+    public void wipeMetadata() {
+        tableWiper.wipeTables(
+                ValidationRuleTableInfo.TABLE_INFO,
+                DataSetValidationRuleLinkTableInfo.TABLE_INFO);
     }
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    @Override
+    public void wipeData() {
+        // No data to wipe
     }
 }

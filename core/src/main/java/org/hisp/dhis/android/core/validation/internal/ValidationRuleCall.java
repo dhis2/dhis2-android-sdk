@@ -26,44 +26,43 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.validation.internal;
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.validation.ValidationRule;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import java.util.List;
+import java.util.Set;
 
-class BaseDatabaseOpenHelper {
+import javax.inject.Inject;
 
-    static final int VERSION = 75;
+import dagger.Reusable;
+import io.reactivex.Single;
 
-    private final AssetManager assetManager;
-    private final int targetVersion;
+@Reusable
+final class ValidationRuleCall implements UidsCall<ValidationRule> {
 
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    private static final int MAX_UID_LIST_SIZE = 64;
+
+    private final ValidationRuleService service;
+    private final Handler<ValidationRule> handler;
+    private final APIDownloader apiDownloader;
+
+    @Inject
+    ValidationRuleCall(ValidationRuleService service, Handler<ValidationRule> handler, APIDownloader apiDownloader) {
+        this.service = service;
+        this.handler = handler;
+        this.apiDownloader = apiDownloader;
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    @Override
+    public Single<List<ValidationRule>> download(Set<String> validationRuleUids) {
+        return apiDownloader.downloadPartitioned(validationRuleUids, MAX_UID_LIST_SIZE, handler, partitionUids -> {
+            String uidsFilterStr = ObjectWithUid.uid.in(partitionUids).generateString();
+            return service.getValidationRules(ValidationRuleFields.allFields, uidsFilterStr, Boolean.FALSE);
+        });
     }
 }

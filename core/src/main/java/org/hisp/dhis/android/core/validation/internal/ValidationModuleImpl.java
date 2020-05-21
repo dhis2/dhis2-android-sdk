@@ -26,44 +26,27 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.validation.internal;
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+import org.hisp.dhis.android.core.validation.ValidationModule;
+import org.hisp.dhis.android.core.validation.ValidationRuleCollectionRepository;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import javax.inject.Inject;
 
-class BaseDatabaseOpenHelper {
+import dagger.Reusable;
 
-    static final int VERSION = 75;
+@Reusable
+public final class ValidationModuleImpl implements ValidationModule {
 
-    private final AssetManager assetManager;
-    private final int targetVersion;
+    private final ValidationRuleCollectionRepository validationRules;
 
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    @Inject
+    ValidationModuleImpl(ValidationRuleCollectionRepository validationRules) {
+        this.validationRules = validationRules;
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    @Override
+    public ValidationRuleCollectionRepository validationRules() {
+        return validationRules;
     }
 }

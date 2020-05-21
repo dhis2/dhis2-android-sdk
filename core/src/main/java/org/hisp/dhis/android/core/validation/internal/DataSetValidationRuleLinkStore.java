@@ -26,9 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
+package org.hisp.dhis.android.core.validation.internal;
 
-import org.hisp.dhis.android.core.validation.ValidationRuleExpression;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
+import org.hisp.dhis.android.core.validation.DataSetValidationRuleLink;
+import org.hisp.dhis.android.core.validation.DataSetValidationRuleLinkTableInfo;
 
-public final class IgnoreValidationRuleExpressionColumnAdapter extends IgnoreColumnAdapter<ValidationRuleExpression> {
+public final class DataSetValidationRuleLinkStore {
+
+    private static final StatementBinder<DataSetValidationRuleLink> BINDER = (o, w) -> {
+        w.bind(1, o.dataSet());
+        w.bind(2, o.validationRule());
+    };
+
+    private DataSetValidationRuleLinkStore() {}
+
+    public static LinkStore<DataSetValidationRuleLink> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.linkStore(databaseAdapter, DataSetValidationRuleLinkTableInfo.TABLE_INFO,
+                DataSetValidationRuleLinkTableInfo.Columns.DATA_SET, BINDER, DataSetValidationRuleLink::create);
+    }
 }

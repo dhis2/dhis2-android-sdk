@@ -26,44 +26,48 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.validation.internal;
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
-
+import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
+import org.hisp.dhis.android.core.validation.ValidationRule;
+import org.hisp.dhis.android.core.validation.ValidationRuleTableInfo;
 
-class BaseDatabaseOpenHelper {
+import java.util.Collections;
+import java.util.Map;
 
-    static final int VERSION = 75;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-    private final AssetManager assetManager;
-    private final int targetVersion;
+@Module
+public final class ValidationRuleEntityDIModule {
 
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    @Provides
+    @Reusable
+    public IdentifiableObjectStore<ValidationRule> store(DatabaseAdapter databaseAdapter) {
+        return ValidationRuleStore.create(databaseAdapter);
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
-        databaseAdapter.enableWriteAheadLogging();
+    @Provides
+    @Reusable
+    public Handler<ValidationRule> handler(ValidationRuleHandler impl) {
+        return impl;
     }
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
+    @Provides
+    @Reusable
+    CollectionCleaner<ValidationRule> collectionCleaner(DatabaseAdapter databaseAdapter) {
+        return new CollectionCleanerImpl<>(ValidationRuleTableInfo.TABLE_INFO.name(), databaseAdapter);
     }
 
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    @Provides
+    @Reusable
+    Map<String, ChildrenAppender<ValidationRule>> childrenAppenders() {
+        return Collections.emptyMap();
     }
 }

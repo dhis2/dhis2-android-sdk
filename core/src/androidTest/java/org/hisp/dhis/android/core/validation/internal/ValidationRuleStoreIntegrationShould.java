@@ -26,44 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.validation.internal;
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.validation.ValidationRuleSamples;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.hisp.dhis.android.core.validation.ValidationRule;
+import org.hisp.dhis.android.core.validation.ValidationRuleImportance;
+import org.hisp.dhis.android.core.validation.ValidationRuleTableInfo;
+import org.junit.runner.RunWith;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+@RunWith(D2JunitRunner.class)
+public class ValidationRuleStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<ValidationRule> {
 
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 75;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    public ValidationRuleStoreIntegrationShould() {
+        super(ValidationRuleStore.create(TestDatabaseAdapterFactory.get()),
+                ValidationRuleTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
-        databaseAdapter.enableWriteAheadLogging();
+    @Override
+    protected ValidationRule buildObject() {
+        return ValidationRuleSamples.get();
     }
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    @Override
+    protected ValidationRule buildObjectToUpdate() {
+        return ValidationRuleSamples.get().toBuilder()
+                .importance(ValidationRuleImportance.MEDIUM)
+                .build();
     }
 }

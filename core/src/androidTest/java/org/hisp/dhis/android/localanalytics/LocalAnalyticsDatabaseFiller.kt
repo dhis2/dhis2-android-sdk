@@ -48,12 +48,14 @@ import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStoreImpl
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl
 
 internal data class MetadataForDataFilling(val organisationUnits: List<OrganisationUnit>,
                                            val periods: List<Period>,
                                            val categoryOptionCombos: List<CategoryOptionCombo>,
                                            val aggregatedDataElements: List<DataElement>,
+                                           val trackerDataElements: List<DataElement>,
                                            val programs: List<Program>,
                                            val programStages: List<ProgramStage>,
                                            val trackedEntityAttributes: List<TrackedEntityAttribute>)
@@ -81,8 +83,8 @@ internal class LocalAnalyticsDatabaseFiller(private val d2: D2) {
 
         val defaultCategoryCombo = categoryCombos.first()
         val aggregatedDataElements = generator.getDataElementsAggregated(categoryCombos)
-        DataElementStore.create(da).insert(aggregatedDataElements +
-                generator.getDataElementsTracker(defaultCategoryCombo))
+        val trackerDataElements = generator.getDataElementsTracker(defaultCategoryCombo)
+        DataElementStore.create(da).insert(aggregatedDataElements + trackerDataElements)
 
         d2DIComponent.periodHandler().generateAndPersist()
 
@@ -99,7 +101,7 @@ internal class LocalAnalyticsDatabaseFiller(private val d2: D2) {
         val periods = d2.periodModule().periods().byPeriodType().`in`(periodTypes).blockingGet()
 
         return MetadataForDataFilling(organisationUnits, periods, categoryOptionCombos, aggregatedDataElements,
-                programs, programStages, trackedEntityAttributes)
+                trackerDataElements, programs, programStages, trackedEntityAttributes)
     }
 
     private fun fillData(dataParams: LocalAnalyticsDataParams, metadata: MetadataForDataFilling) {
@@ -114,11 +116,15 @@ internal class LocalAnalyticsDatabaseFiller(private val d2: D2) {
         val enrollments = generator.generateEnrollments(teis, metadata.programs.first())
         EnrollmentStoreImpl.create(da).insert(enrollments)
 
-        val eventsWithoutRegistration = generator.generateEventsWithoutRegistration(metadata)
-        val eventsWithRegistration = generator.generateEventsRegistration(metadata, enrollments)
-        EventStoreImpl.create(da).insert(eventsWithoutRegistration + eventsWithRegistration)
+        val events = generator.generateEventsWithoutRegistration(metadata) +
+                generator.generateEventsRegistration(metadata, enrollments)
+        EventStoreImpl.create(da).insert(events)
 
         TrackedEntityAttributeValueStoreImpl.create(da).insert(
-                generator.generateTrackedEntityAttributeValue(metadata.trackedEntityAttributes, teis))
+                generator.generateTrackedEntityAttributeValues(metadata.trackedEntityAttributes, teis))
+
+        TrackedEntityDataValueStoreImpl.create(da).insert(
+                generator.generateTrackedEntityDataValues(metadata.trackerDataElements, events)
+        )
     }
 }

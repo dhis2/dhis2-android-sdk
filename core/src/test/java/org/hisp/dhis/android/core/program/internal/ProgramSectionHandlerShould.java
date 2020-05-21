@@ -31,8 +31,7 @@ package org.hisp.dhis.android.core.program.internal;
 import org.assertj.core.util.Lists;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
 import org.hisp.dhis.android.core.program.ProgramSection;
 import org.hisp.dhis.android.core.program.ProgramSectionAttributeLink;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
@@ -45,8 +44,8 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -58,7 +57,7 @@ public class ProgramSectionHandlerShould {
     private IdentifiableObjectStore<ProgramSection> programSectionStore;
 
     @Mock
-    private LinkHandler<TrackedEntityAttribute, ProgramSectionAttributeLink>
+    private OrderedLinkHandler<TrackedEntityAttribute, ProgramSectionAttributeLink>
             programSectionAttributeLinkHandler;
 
     @Mock
@@ -85,7 +84,7 @@ public class ProgramSectionHandlerShould {
     public void save_program_section_attribute_links() throws Exception {
         programSectionHandler.handle(programSection);
         verify(programSectionAttributeLinkHandler).handleMany(same(SECTION_UID),
-                anyListOf(TrackedEntityAttribute.class), any(Transformer.class));
+                anyList(), any());
     }
 
     @Test

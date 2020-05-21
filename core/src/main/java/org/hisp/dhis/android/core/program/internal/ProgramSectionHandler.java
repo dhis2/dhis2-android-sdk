@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.program.internal;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
 import org.hisp.dhis.android.core.program.ProgramSection;
 import org.hisp.dhis.android.core.program.ProgramSectionAttributeLink;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
@@ -42,12 +42,12 @@ import dagger.Reusable;
 
 @Reusable
 final class ProgramSectionHandler extends IdentifiableHandlerImpl<ProgramSection> {
-    private final LinkHandler<TrackedEntityAttribute, ProgramSectionAttributeLink>
+    private final OrderedLinkHandler<TrackedEntityAttribute, ProgramSectionAttributeLink>
             programSectionAttributeLinkHandler;
 
     @Inject
     ProgramSectionHandler(IdentifiableObjectStore<ProgramSection> programSectionStore,
-                          LinkHandler<TrackedEntityAttribute, ProgramSectionAttributeLink>
+                          OrderedLinkHandler<TrackedEntityAttribute, ProgramSectionAttributeLink>
                                   programSectionAttributeLinkHandler) {
         super(programSectionStore);
         this.programSectionAttributeLinkHandler = programSectionAttributeLinkHandler;
@@ -55,9 +55,11 @@ final class ProgramSectionHandler extends IdentifiableHandlerImpl<ProgramSection
 
     @Override
     protected void afterObjectHandled(ProgramSection programSection, HandleAction action) {
-
         programSectionAttributeLinkHandler.handleMany(programSection.uid(), programSection.attributes(),
-                trackedEntityAttribute -> ProgramSectionAttributeLink.builder()
-                        .programSection(programSection.uid()).attribute(trackedEntityAttribute.uid()).build());
+                (trackedEntityAttribute, sortOrder) -> ProgramSectionAttributeLink.builder()
+                        .programSection(programSection.uid())
+                        .attribute(trackedEntityAttribute.uid())
+                        .sortOrder(sortOrder)
+                        .build());
     }
 }

@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.program;
 
 import android.database.Cursor;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 
 import com.google.auto.value.AutoValue;
 
@@ -39,11 +39,14 @@ import org.hisp.dhis.android.core.common.CoreObject;
 @AutoValue
 public abstract class ProgramSectionAttributeLink implements CoreObject {
 
-    @Nullable
+    @NonNull
     public abstract String programSection();
 
-    @Nullable
+    @NonNull
     public abstract String attribute();
+
+    @NonNull
+    public abstract Integer sortOrder();
 
     public static Builder builder() {
         return new AutoValue_ProgramSectionAttributeLink.Builder();
@@ -63,6 +66,8 @@ public abstract class ProgramSectionAttributeLink implements CoreObject {
         public abstract Builder programSection(String programSection);
 
         public abstract Builder attribute(String attribute);
+
+        public abstract Builder sortOrder(Integer integer);
 
         public abstract ProgramSectionAttributeLink build();
     }

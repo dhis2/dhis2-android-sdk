@@ -54,10 +54,11 @@ public final class ProgramSectionAttributeLinkTableInfo {
 
         public static final String PROGRAM_SECTION = "programSection";
         public static final String ATTRIBUTE = "attribute";
+        public static final String SORT_ORDER = "sortOrder";
 
         @Override
         public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(), PROGRAM_SECTION, ATTRIBUTE);
+            return CollectionsHelper.appendInNewArray(super.all(), PROGRAM_SECTION, ATTRIBUTE, SORT_ORDER);
         }
 
         @Override

@@ -58,7 +58,7 @@ internal data class LocalAnalyticsDataParams(val dataValues: Int,
                 dataValues = 500 * f,
                 trackedEntityInstances = 500 * f,
                 eventsWithoutRegistration = 500 * f,
-                eventsWithRegistrationPerEnrollmentAndPS = 3
+                eventsWithRegistrationPerEnrollmentAndPS = 1
         )
 
         val Default = get(1)

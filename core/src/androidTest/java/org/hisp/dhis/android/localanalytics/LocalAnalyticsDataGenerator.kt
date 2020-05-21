@@ -31,12 +31,15 @@ import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
 import org.hisp.dhis.android.core.data.datavalue.DataValueSamples
 import org.hisp.dhis.android.core.data.enrollment.EnrollmentSamples
 import org.hisp.dhis.android.core.data.trackedentity.EventSamples
+import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityAttributeValueSamples
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityInstanceSamples
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.program.Program
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import java.util.*
 import kotlin.random.Random
@@ -94,6 +97,14 @@ internal class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDat
                             enrollment.program(), ps.uid(), metadata.categoryOptionCombos.first().uid(),
                             getRandomDateInLastYear())
                 }
+            }
+        }
+    }
+
+    fun generateTrackedEntityAttributeValue(trackedEntityAttributes: List<TrackedEntityAttribute>, teis: List<TrackedEntityInstance>): List<TrackedEntityAttributeValue> {
+        return trackedEntityAttributes.flatMap { tea ->
+            teis.map { tei ->
+                TrackedEntityAttributeValueSamples.get(tea.uid(), tei.uid())
             }
         }
     }

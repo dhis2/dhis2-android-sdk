@@ -45,7 +45,9 @@ import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.program.internal.ProgramStageStore
 import org.hisp.dhis.android.core.program.internal.ProgramStore
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStoreImpl
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl
 
 internal data class MetadataForDataFilling(val organisationUnits: List<OrganisationUnit>,
@@ -53,7 +55,8 @@ internal data class MetadataForDataFilling(val organisationUnits: List<Organisat
                                            val categoryOptionCombos: List<CategoryOptionCombo>,
                                            val aggregatedDataElements: List<DataElement>,
                                            val programs: List<Program>,
-                                           val programStages: List<ProgramStage>)
+                                           val programStages: List<ProgramStage>,
+                                           val trackedEntityAttributes: List<TrackedEntityAttribute>)
 
 internal class LocalAnalyticsDatabaseFiller(private val d2: D2) {
     private val da = d2.databaseAdapter()
@@ -89,13 +92,14 @@ internal class LocalAnalyticsDatabaseFiller(private val d2: D2) {
         val programStages = generator.getProgramStages(programs)
         ProgramStageStore.create(da).insert(programStages)
 
-        TrackedEntityAttributeStore.create(da).insert(generator.getTrackedEntityAttributes())
+        val trackedEntityAttributes = generator.getTrackedEntityAttributes()
+        TrackedEntityAttributeStore.create(da).insert(trackedEntityAttributes)
 
         val periodTypes = listOf(PeriodType.Monthly, PeriodType.Weekly, PeriodType.Daily)
         val periods = d2.periodModule().periods().byPeriodType().`in`(periodTypes).blockingGet()
 
         return MetadataForDataFilling(organisationUnits, periods, categoryOptionCombos, aggregatedDataElements,
-                programs, programStages)
+                programs, programStages, trackedEntityAttributes)
     }
 
     private fun fillData(dataParams: LocalAnalyticsDataParams, metadata: MetadataForDataFilling) {
@@ -113,5 +117,8 @@ internal class LocalAnalyticsDatabaseFiller(private val d2: D2) {
         val eventsWithoutRegistration = generator.generateEventsWithoutRegistration(metadata)
         val eventsWithRegistration = generator.generateEventsRegistration(metadata, enrollments)
         EventStoreImpl.create(da).insert(eventsWithoutRegistration + eventsWithRegistration)
+
+        TrackedEntityAttributeValueStoreImpl.create(da).insert(
+                generator.generateTrackedEntityAttributeValue(metadata.trackedEntityAttributes, teis))
     }
 }

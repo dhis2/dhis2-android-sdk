@@ -37,13 +37,17 @@ import java.util.Date;
 public class TrackedEntityAttributeValueSamples {
 
     public static TrackedEntityAttributeValue get() {
+        return get("tracked_entity_attribute", "tracked_entity_instance");
+    }
+
+    public static TrackedEntityAttributeValue get(String trackedEntityAttribute, String trackedEntityInstance) {
         return TrackedEntityAttributeValue.builder()
                 .id(1L)
                 .value("value")
                 .created(getDate("2014-08-20T12:28:56.409"))
                 .lastUpdated(getDate("2015-10-14T13:36:53.063"))
-                .trackedEntityAttribute("tracked_entity_attribute")
-                .trackedEntityInstance("tracked_entity_instance")
+                .trackedEntityAttribute(trackedEntityAttribute)
+                .trackedEntityInstance(trackedEntityInstance)
                 .build();
     }
 

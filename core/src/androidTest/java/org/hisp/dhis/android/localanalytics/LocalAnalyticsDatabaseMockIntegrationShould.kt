@@ -125,4 +125,10 @@ internal class LocalAnalyticsDatabaseMockIntegrationShould : BaseMockIntegration
         val count = d2.eventModule().events().byEnrollmentUid().isNotNull.blockingCount()
         assertThat(count).isEqualTo(4500)
     }
+
+    @Test
+    fun check_tracked_entity_attributes_values() {
+        val count = d2.trackedEntityModule().trackedEntityAttributeValues().blockingCount()
+        assertThat(count).isEqualTo(5000)
+    }
 }

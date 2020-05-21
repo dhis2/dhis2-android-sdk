@@ -28,8 +28,11 @@
 
 package org.hisp.dhis.android.core.validation.engine;
 
+import com.google.common.collect.Sets;
+
 import org.hisp.dhis.android.core.constant.Constant;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.parser.service.ExpressionService;
 import org.hisp.dhis.android.core.parser.service.dataobject.DimensionalItemObject;
 import org.hisp.dhis.android.core.validation.MissingValueStrategy;
@@ -38,7 +41,6 @@ import org.hisp.dhis.android.core.validation.ValidationRule;
 import org.hisp.dhis.android.core.validation.ValidationRuleOperator;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -57,14 +59,19 @@ class ValidationExecutor {
     }
 
     List<ValidationResultViolation> evaluateRule(ValidationRule rule,
+                                                 OrganisationUnit organisationUnit,
                                                  Map<DimensionalItemObject, Double> valueMap,
                                                  Map<String, Constant> constantMap,
                                                  Map<String, Integer> orgunitGroupMap,
                                                  Integer days) {
 
-        // TODO Check orgunit levels
-
         List<ValidationResultViolation> violations = new ArrayList<>();
+
+        if (!rule.organisationUnitLevels().isEmpty() && organisationUnit != null) {
+            if (!rule.organisationUnitLevels().contains(organisationUnit.level())) {
+                return violations;
+            }
+        }
 
         Double leftSide = (Double) expressionService.getExpressionValue(rule.leftSide().expression(), valueMap,
                 constantMap, orgunitGroupMap, days, rule.leftSide().missingValueStrategy());
@@ -123,13 +130,9 @@ class ValidationExecutor {
     }
 
     private Set<DataElementOperand> getAllDataElementOperands(ValidationRule rule) {
-        Set<DataElementOperand> ids = Collections.emptySet();
-        Set<DataElementOperand> leftIds = expressionService.getDataElementOperands(rule.leftSide().expression());
-        Set<DataElementOperand> rightIds = expressionService.getDataElementOperands(rule.leftSide().expression());
-
-        ids.addAll(leftIds);
-        ids.addAll(rightIds);
-
-        return ids;
+        return Sets.union(
+                expressionService.getDataElementOperands(rule.leftSide().expression()),
+                expressionService.getDataElementOperands(rule.leftSide().expression())
+        );
     }
 }

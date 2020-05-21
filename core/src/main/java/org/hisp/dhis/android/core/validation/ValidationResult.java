@@ -37,8 +37,6 @@ public abstract class ValidationResult {
 
     public abstract ValidationResultStatus status();
 
-    public abstract String dataSetUid();
-
     public abstract String period();
 
     public abstract String organisationUnitUid();
@@ -57,8 +55,6 @@ public abstract class ValidationResult {
     public abstract static class Builder {
 
         public abstract Builder status(ValidationResultStatus status);
-
-        public abstract Builder dataSetUid(String dataSetUid);
 
         public abstract Builder period(String period);
 

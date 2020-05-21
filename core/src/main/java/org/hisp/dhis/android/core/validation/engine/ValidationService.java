@@ -36,6 +36,8 @@ import org.hisp.dhis.android.core.dataset.DataSetCollectionRepository;
 import org.hisp.dhis.android.core.dataset.DataSetElement;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.datavalue.DataValueCollectionRepository;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRepository;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLink;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo;
 import org.hisp.dhis.android.core.parser.service.dataobject.DimensionalItemObject;
@@ -44,6 +46,7 @@ import org.hisp.dhis.android.core.period.PeriodCollectionRepository;
 import org.hisp.dhis.android.core.validation.ValidationResult;
 import org.hisp.dhis.android.core.validation.ValidationResultViolation;
 import org.hisp.dhis.android.core.validation.ValidationRule;
+import org.hisp.dhis.android.core.validation.ValidationRuleCollectionRepository;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,6 +61,8 @@ public class ValidationService {
 
     private final ValidationExecutor validationExecutor;
 
+    private final ValidationRuleCollectionRepository validationRuleRepository;
+
     private final DataValueCollectionRepository dataValueRepository;
 
     private final DataSetCollectionRepository dataSetRepository;
@@ -66,26 +71,32 @@ public class ValidationService {
 
     private final PeriodCollectionRepository periodRepository;
 
+    private final OrganisationUnitCollectionRepository organisationUnitRepository;
+
     private final LinkStore<OrganisationUnitOrganisationUnitGroupLink> orgunitGroupLinkStore;
 
     @Inject
     ValidationService(ValidationExecutor validationExecutor,
+                      ValidationRuleCollectionRepository validationRuleRepository,
                       DataValueCollectionRepository dataValueRepository,
                       DataSetCollectionRepository dataSetRepository,
                       ConstantCollectionRepository constantRepository,
                       PeriodCollectionRepository periodRepository,
+                      OrganisationUnitCollectionRepository organisationUnitRepository,
                       LinkStore<OrganisationUnitOrganisationUnitGroupLink> orgunitGroupLinkStore) {
         this.validationExecutor = validationExecutor;
+        this.validationRuleRepository = validationRuleRepository;
         this.dataValueRepository = dataValueRepository;
         this.dataSetRepository = dataSetRepository;
         this.constantRepository = constantRepository;
         this.periodRepository = periodRepository;
+        this.organisationUnitRepository = organisationUnitRepository;
         this.orgunitGroupLinkStore = orgunitGroupLinkStore;
     }
 
     public ValidationResult validate(String dataSetUid, String attributeOptionComboUid,
                                      String orgUnitUid, String periodId) {
-        List<ValidationRule> rules = getValidationRulesByDataSet();
+        List<ValidationRule> rules = getValidationRulesByDataSet(dataSetUid);
         List<ValidationResultViolation> violations = new ArrayList<>();
 
         if (!rules.isEmpty()) {
@@ -93,10 +104,12 @@ public class ValidationService {
             Map<DimensionalItemObject, Double> valueMap = getValueMap(dataSetUid, attributeOptionComboUid,
                     orgUnitUid, periodId);
             Map<String, Integer> orgunitGroupMap = getOrgunitGroupMap();
+            OrganisationUnit organisationUnit = getOrganisationUnit(orgUnitUid);
             Integer days = getDays(periodId);
 
             for (ValidationRule rule : rules) {
-                violations.addAll(validationExecutor.evaluateRule(rule, valueMap, constantMap, orgunitGroupMap, days));
+                violations.addAll(validationExecutor.evaluateRule(rule, organisationUnit, valueMap, constantMap,
+                                orgunitGroupMap, days));
             }
         }
 
@@ -106,7 +119,6 @@ public class ValidationService {
 
         return ValidationResult.builder()
                 .status(status)
-                .dataSetUid(dataSetUid)
                 .period(periodId)
                 .organisationUnitUid(orgUnitUid)
                 .attributeOptionComboUid(attributeOptionComboUid)
@@ -114,9 +126,8 @@ public class ValidationService {
                 .build();
     }
 
-    private List<ValidationRule> getValidationRulesByDataSet() {
-        // TODO
-        return Collections.emptyList();
+    private List<ValidationRule> getValidationRulesByDataSet(String datasetUid) {
+        return validationRuleRepository.byDataSetUids(Collections.singletonList(datasetUid)).blockingGet();
     }
 
     private Map<DimensionalItemObject, Double> getValueMap(String dataSetUid, String attributeOptionComboUid,
@@ -151,6 +162,10 @@ public class ValidationService {
             constantMap.put(constant.uid(), constant);
         }
         return constantMap;
+    }
+
+    private OrganisationUnit getOrganisationUnit(String orgunitId) {
+        return organisationUnitRepository.uid(orgunitId).blockingGet();
     }
 
     private Map<String, Integer> getOrgunitGroupMap() {

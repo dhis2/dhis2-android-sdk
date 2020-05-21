@@ -101,7 +101,6 @@ public abstract class ValidationRule extends BaseNameableObject implements CoreO
     @ColumnAdapter(MissingValueStrategyColumnAdapter.class)
     abstract MissingValueStrategy rightSideMissingValueStrategy();
 
-    @Nullable
     @JsonProperty()
     @ColumnAdapter(IntegerArrayColumnAdapter.class)
     public abstract List<Integer> organisationUnitLevels();

@@ -40,6 +40,7 @@ public final class ProgramSectionAttributeLinkStore {
     private static final StatementBinder<ProgramSectionAttributeLink> BINDER = (o, w) -> {
         w.bind(1, o.programSection());
         w.bind(2, o.attribute());
+        w.bind(3, o.sortOrder());
     };
 
     private ProgramSectionAttributeLinkStore() {}

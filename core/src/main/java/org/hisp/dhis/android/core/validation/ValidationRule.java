@@ -36,14 +36,20 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.IntegerArrayColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.LeftValidationRuleExpressionColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.RightValidationRuleExpressionColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.MissingValueStrategyColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.ValidationRuleImportanceColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.ValidationRuleOperatorColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreValidationRuleExpressionColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.period.PeriodType;
+
+import java.util.List;
+
+import javax.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_ValidationRule.Builder.class)
@@ -68,7 +74,7 @@ public abstract class ValidationRule extends BaseNameableObject implements CoreO
     public abstract Boolean skipFormValidation();
 
     @JsonProperty()
-    @ColumnAdapter(IgnoreValidationRuleExpressionColumnAdapter.class)
+    @ColumnAdapter(LeftValidationRuleExpressionColumnAdapter.class)
     public abstract ValidationRuleExpression leftSide();
 
     @JsonProperty()
@@ -82,7 +88,7 @@ public abstract class ValidationRule extends BaseNameableObject implements CoreO
     abstract MissingValueStrategy leftSideMissingValueStrategy();
 
     @JsonProperty()
-    @ColumnAdapter(IgnoreValidationRuleExpressionColumnAdapter.class)
+    @ColumnAdapter(RightValidationRuleExpressionColumnAdapter.class)
     public abstract ValidationRuleExpression rightSide();
 
     @JsonProperty()
@@ -95,26 +101,17 @@ public abstract class ValidationRule extends BaseNameableObject implements CoreO
     @ColumnAdapter(MissingValueStrategyColumnAdapter.class)
     abstract MissingValueStrategy rightSideMissingValueStrategy();
 
-
-    // TODO OrganisationUnitLevels
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(IntegerArrayColumnAdapter.class)
+    public abstract List<Integer> organisationUnitLevels();
 
     public static Builder builder() {
         return new $$AutoValue_ValidationRule.Builder();
     }
 
     public static ValidationRule create(Cursor cursor) {
-        ValidationRule rule = $AutoValue_ValidationRule.createFromCursor(cursor);
-        ValidationRuleExpression leftSide = ValidationRuleExpression.builder()
-                .description(rule.leftSideDescription())
-                .expression(rule.leftSideExpression())
-                .missingValueStrategy(rule.leftSideMissingValueStrategy())
-                .build();
-        ValidationRuleExpression rightSide = ValidationRuleExpression.builder()
-                .description(rule.rightSideDescription())
-                .expression(rule.rightSideExpression())
-                .missingValueStrategy(rule.rightSideMissingValueStrategy())
-                .build();
-        return rule.toBuilder().leftSide(leftSide).rightSide(rightSide).build();
+        return $AutoValue_ValidationRule.createFromCursor(cursor);
     }
 
     public abstract Builder toBuilder();
@@ -137,20 +134,67 @@ public abstract class ValidationRule extends BaseNameableObject implements CoreO
 
         public abstract Builder leftSide(ValidationRuleExpression leftSide);
 
-        abstract Builder leftSideExpression(String skipFormValidation);
+        abstract Builder leftSideExpression(String leftSideExpression);
 
-        abstract Builder leftSideDescription(String skipFormValidation);
+        abstract Builder leftSideDescription(String leftSideDescription);
 
-        abstract Builder leftSideMissingValueStrategy(MissingValueStrategy skipFormValidation);
+        abstract Builder leftSideMissingValueStrategy(MissingValueStrategy leftSideMissingValueStrategy);
 
         public abstract Builder rightSide(ValidationRuleExpression rightSide);
 
-        abstract Builder rightSideExpression(String skipFormValidation);
+        abstract Builder rightSideExpression(String rightSideExpression);
 
-        abstract Builder rightSideDescription(String skipFormValidation);
+        abstract Builder rightSideDescription(String rightSideDescription);
 
-        abstract Builder rightSideMissingValueStrategy(MissingValueStrategy skipFormValidation);
+        abstract Builder rightSideMissingValueStrategy(MissingValueStrategy rightSideMissingValueStrategy);
 
-        public abstract ValidationRule build();
+        public abstract Builder organisationUnitLevels(List<Integer> organisationUnitLevels);
+
+        abstract ValidationRule autoBuild();
+
+        // Auxiliary fields
+        abstract ValidationRuleExpression leftSide();
+
+        abstract String leftSideDescription();
+
+        abstract String leftSideExpression();
+
+        abstract MissingValueStrategy leftSideMissingValueStrategy();
+
+        abstract ValidationRuleExpression rightSide();
+
+        abstract String rightSideDescription();
+
+        abstract String rightSideExpression();
+
+        abstract MissingValueStrategy rightSideMissingValueStrategy();
+
+        public ValidationRule build() {
+            if (leftSide() == null) {
+                leftSide(ValidationRuleExpression.builder()
+                        .description(leftSideDescription())
+                        .expression(leftSideExpression())
+                        .missingValueStrategy(leftSideMissingValueStrategy())
+                        .build());
+            } else {
+                leftSideExpression(leftSide().expression());
+                leftSideDescription(leftSide().description());
+                leftSideMissingValueStrategy(leftSide().missingValueStrategy());
+            }
+
+            if (rightSide() == null) {
+                rightSide(ValidationRuleExpression.builder()
+                        .description(rightSideDescription())
+                        .expression(rightSideExpression())
+                        .missingValueStrategy(rightSideMissingValueStrategy())
+                        .build());
+            } else {
+                rightSideExpression(rightSide().expression());
+                rightSideDescription(rightSide().description());
+                rightSideMissingValueStrategy(rightSide().missingValueStrategy());
+            }
+
+            return autoBuild();
+        }
     }
 }

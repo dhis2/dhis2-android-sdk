@@ -26,33 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.organisationunit.internal;
+package org.hisp.dhis.android.core.arch.db.adapters.custom.internal;
 
-import androidx.annotation.Nullable;
+import static org.hisp.dhis.android.core.validation.ValidationRuleTableInfo.Columns.RIGHT_SIDE_DESCRIPTION;
+import static org.hisp.dhis.android.core.validation.ValidationRuleTableInfo.Columns.RIGHT_SIDE_EXPRESSION;
+import static org.hisp.dhis.android.core.validation.ValidationRuleTableInfo.Columns.RIGHT_SIDE_MISSING_VALUE_STRATEGY;
 
-import com.google.auto.value.AutoValue;
+public class RightValidationRuleExpressionColumnAdapter extends ValidationRuleExpressionColumnAdapter {
 
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
-
-@AutoValue
-abstract class OrganisationUnitQuery extends BaseQuery {
-
-    private static int DEFAULT_PAGE_SIZE = 500;
-
-    @Nullable
-    public abstract String orgUnit();
-
-    public static Builder builder() {
-        return new AutoValue_OrganisationUnitQuery.Builder()
-                .page(1)
-                .pageSize(DEFAULT_PAGE_SIZE)
-                .paging(true);
+    @Override
+    protected String missingValueStrategyColumnName() {
+        return RIGHT_SIDE_MISSING_VALUE_STRATEGY;
     }
 
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseQuery.Builder<Builder> {
-        public abstract Builder orgUnit(String orgUnit);
+    @Override
+    protected String expressionColumnName() {
+        return RIGHT_SIDE_EXPRESSION;
+    }
 
-        public abstract OrganisationUnitQuery build();
+    @Override
+    protected String descriptionColumnName() {
+        return RIGHT_SIDE_DESCRIPTION;
     }
 }

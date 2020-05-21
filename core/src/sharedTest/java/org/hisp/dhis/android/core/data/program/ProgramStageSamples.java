@@ -28,12 +28,14 @@
 
 package org.hisp.dhis.android.core.data.program;
 
+import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.period.PeriodType;
+import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramStage;
 
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
@@ -68,5 +70,13 @@ public class ProgramStageSamples {
                 .program(ObjectWithUid.create("program_uid"))
                 .access(Access.create(null, null, DataAccess.create(true, true)))
                 .remindCompleted(Boolean.FALSE).build();
+    }
+
+    public static ProgramStage getProgramStage(String name, Program program) {
+        return getProgramStage().toBuilder()
+                .uid(new UidGeneratorImpl().generate())
+                .name(name)
+                .program(ObjectWithUid.create(program.uid()))
+                .build();
     }
 }

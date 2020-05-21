@@ -37,6 +37,7 @@ public class ProgramSectionAttributeLinkSamples {
                 .id(1L)
                 .programSection("program_section")
                 .attribute("attribute")
+                .sortOrder(1)
                 .build();
     }
 }

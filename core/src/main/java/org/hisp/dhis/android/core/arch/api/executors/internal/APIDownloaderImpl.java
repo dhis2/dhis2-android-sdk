@@ -32,8 +32,11 @@ import androidx.annotation.VisibleForTesting;
 
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.arch.helpers.internal.FunctionalCollectionHelper;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 
@@ -47,6 +50,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 
 @Reusable
@@ -61,16 +65,18 @@ public final class APIDownloaderImpl implements APIDownloader {
         this.resourceHandler = resourceHandler;
     }
 
-    @Override
-    public <P> Single<List<P>> downloadPartitioned(Set<String> uids, int pageSize, Handler<P> handler,
-                                                  Function<Set<String>, Single<Payload<P>>> pageDownloader) {
-        return downloadPartitioned(uids, pageSize, handler, pageDownloader, null);
-    }
+
 
     @Override
-    public <P> Single<List<P>> downloadPartitioned(Set<String> uids, int pageSize, Handler<P> handler,
-                                                  Function<Set<String>, Single<Payload<P>>> pageDownloader,
-                                                  @Nullable Function<P, P> transform) {
+    public <P> Single<List<P>> downloadPartitionedWithCustomHandling(
+            Set<String> uids, int pageSize, Consumer<List<P>> customHandling, Function<Set<String>,
+            Single<Payload<P>>> pageDownloader) {
+        return downloadPartitionedWithCustomHandling(uids, pageSize, customHandling, pageDownloader, null);
+    }
+
+    private <P> Single<List<P>> downloadPartitionedWithCustomHandling(
+            Set<String> uids, int pageSize, Consumer<List<P>> customHandling, Function<Set<String>,
+            Single<Payload<P>>> pageDownloader, @Nullable Function<P, P> transform) {
         List<Set<String>> partitions = CollectionsHelper.setPartition(uids, pageSize);
         return Observable.fromIterable(partitions)
                 .flatMapSingle(pageDownloader)
@@ -86,7 +92,31 @@ public final class APIDownloaderImpl implements APIDownloader {
                         return FunctionalCollectionHelper.map(items, transform);
                     }
                 })
-                .doOnSuccess(handler::handleMany);
+                .doOnSuccess(customHandling);
+    }
+
+    @Override
+    public <P> Single<List<P>> downloadPartitioned(Set<String> uids, int pageSize, Handler<P> handler,
+                                                  Function<Set<String>, Single<Payload<P>>> pageDownloader) {
+        return downloadPartitioned(uids, pageSize, handler, pageDownloader, null);
+    }
+
+    @Override
+    public <P> Single<List<P>> downloadPartitioned(Set<String> uids, int pageSize, Handler<P> handler,
+                                                  Function<Set<String>, Single<Payload<P>>> pageDownloader,
+                                                  @Nullable Function<P, P> transform) {
+        return downloadPartitionedWithCustomHandling(uids, pageSize, handler::handleMany, pageDownloader, transform);
+    }
+
+    @Override
+    public <P, O extends CoreObject> Single<List<P>> downloadLink(
+            String masterUid, LinkHandler<P, O> handler,
+            Function<String, Single<Payload<P>>> downloader,
+            Transformer<P, O> transformer) {
+        return Single.just(masterUid)
+                .flatMap(downloader)
+                .map(Payload::items)
+                .doOnSuccess(items -> handler.handleMany(masterUid, items, transformer));
     }
 
     @Override
@@ -98,5 +128,12 @@ public final class APIDownloaderImpl implements APIDownloader {
                     handler.handleMany(items);
                     resourceHandler.handleResource(resourceType);
                 });
+    }
+
+    @Override
+    public <P> Single<List<P>> download(Handler<P> handler, Single<Payload<P>> downloader) {
+        return downloader
+                .map(Payload::items)
+                .doOnSuccess(handler::handleMany);
     }
 }

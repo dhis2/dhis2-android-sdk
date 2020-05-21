@@ -169,6 +169,29 @@ public class EventQueryBundleFactoryShould {
         }
     }
 
+    @Test
+    public void apply_user_defined_limit_only_to_global_if_no_program() {
+        ProgramDataDownloadParams params = ProgramDataDownloadParams.builder().limit(5000).build();
+
+        Map<String, ProgramSetting> specificSettings = new HashMap<>();
+        specificSettings.put(p1, ProgramSetting.builder().uid(p1).eventsDownload(100).build());
+
+        when(programSettings.specificSettings()).thenReturn(specificSettings);
+
+        List<EventQueryBundle> bundles = bundleFactory.getEventQueryBundles(params);
+
+        assertThat(bundles.size()).isEqualTo(2);
+
+        for (EventQueryBundle bundle : bundles) {
+            if (bundle.programList().size() == 1) {
+                assertThat(bundle.programList().get(0)).isEqualTo(p1);
+                assertThat(bundle.limit()).isEqualTo(100);
+            } else {
+                assertThat(bundle.limit()).isEqualTo(5000);
+            }
+        }
+    }
+
     private List<String> getProgramList() {
         List<String> programList = new ArrayList<>();
         programList.add(p1);

@@ -65,6 +65,7 @@ import org.hisp.dhis.android.core.sms.SmsModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
 import org.hisp.dhis.android.core.user.UserModule;
+import org.hisp.dhis.android.core.validation.ValidationModule;
 import org.hisp.dhis.android.core.wipe.internal.WipeModule;
 
 import retrofit2.Retrofit;
@@ -201,6 +202,10 @@ public final class D2 {
 
     public UserModule userModule() {
         return modules.user;
+    }
+
+    public ValidationModule validationModule() {
+        return modules.validation;
     }
 
     public WipeModule wipeModule() {

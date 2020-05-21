@@ -71,6 +71,7 @@ import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.internal.OptionPackageDIModule;
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitPackageDIModule;
+import org.hisp.dhis.android.core.period.internal.PeriodHandler;
 import org.hisp.dhis.android.core.period.internal.PeriodPackageDIModule;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.internal.ProgramPackageDIModule;
@@ -84,6 +85,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityPackageDIModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.user.internal.UserPackageDIModule;
+import org.hisp.dhis.android.core.validation.internal.ValidationPackageDIModule;
 import org.hisp.dhis.android.core.wipe.internal.WipeDIModule;
 import org.hisp.dhis.android.core.wipe.internal.WipeModule;
 
@@ -129,7 +131,8 @@ import retrofit2.Retrofit;
         SettingPackageDIModule.class,
         TrackedEntityPackageDIModule.class,
         SmsDIModule.class,
-        UserPackageDIModule.class}
+        UserPackageDIModule.class,
+        ValidationPackageDIModule.class}
 )
 
 public interface D2DIComponent {
@@ -163,6 +166,8 @@ public interface D2DIComponent {
     IdentifiableObjectStore<CategoryOption> categoryOptionStore();
     @VisibleForTesting
     ObjectKeyValueStore<Credentials> credentialsSecureStore();
+    @VisibleForTesting
+    PeriodHandler periodHandler();
 
     @Component.Builder
     interface Builder {
@@ -198,6 +203,7 @@ public interface D2DIComponent {
         Builder systemSettingPackageDIModule(SettingPackageDIModule settingPackageDIModule);
         Builder trackedEntityPackageDIModule(TrackedEntityPackageDIModule trackedEntityPackageDIModule);
         Builder userPackageDIModule(UserPackageDIModule userPackageDIModule);
+        Builder validationPackageDIModule(ValidationPackageDIModule validationPackageDIModule);
         D2DIComponent build();
     }
 

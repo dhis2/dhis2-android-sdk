@@ -125,13 +125,16 @@ class TrackedEntityInstanceQueryBuilderFactory {
                                                    String programUid,
                                                    String globalLastUpdated) {
         int limit = getLimit(params, programSettings, programUid);
+
+        if (limit == 0) {
+            return Collections.emptyList();
+        }
+
         EnrollmentStatus programStatus = getProgramStatus(params, programSettings, programUid);
         String programStartDate = getProgramStartDate(programSettings, programUid);
 
         String lastUpdated = globalLastUpdated == null && params.uids().isEmpty() ?
                 getInitialLastpdated(programSettings, programUid) : globalLastUpdated;
-
-        List<TeiQuery.Builder> builders = new ArrayList<>();
 
         OrganisationUnitMode ouMode;
         List<String> orgUnits;
@@ -148,6 +151,8 @@ class TrackedEntityInstanceQueryBuilderFactory {
             ouMode = OrganisationUnitMode.DESCENDANTS;
             orgUnits = getRootCaptureOrgUnitUids();
         }
+
+        List<TeiQuery.Builder> builders = new ArrayList<>();
 
         if (hasLimitByOrgunit) {
             for (String orgUnitUid : orgUnits) {
@@ -167,10 +172,12 @@ class TrackedEntityInstanceQueryBuilderFactory {
                                                String globalLastUpdated) {
         int limit = getLimit(params, programSettings, null);
 
+        if (limit == 0) {
+            return Collections.emptyList();
+        }
+
         String lastUpdated = globalLastUpdated == null && params.uids().isEmpty() ?
                 getInitialLastpdated(programSettings, null) : globalLastUpdated;
-
-        List<TeiQuery.Builder> builders = new ArrayList<>();
 
         OrganisationUnitMode ouMode;
         List<String> orgUnits;
@@ -187,6 +194,8 @@ class TrackedEntityInstanceQueryBuilderFactory {
             ouMode = OrganisationUnitMode.DESCENDANTS;
             orgUnits = getRootCaptureOrgUnitUids();
         }
+
+        List<TeiQuery.Builder> builders = new ArrayList<>();
 
         if (hasLimitByOrgunit) {
             for (String orgUnitUid : orgUnits) {
@@ -285,7 +294,8 @@ class TrackedEntityInstanceQueryBuilderFactory {
     private int getLimit(ProgramDataDownloadParams params,
                          ProgramSettings programSettings,
                          String programUid) {
-        if (params.limit() != null) {
+
+        if (params.limit() != null && isGlobalOrUserDefinedProgram(params, programUid)) {
             return params.limit();
         }
 
@@ -307,7 +317,8 @@ class TrackedEntityInstanceQueryBuilderFactory {
     private EnrollmentStatus getProgramStatus(ProgramDataDownloadParams params,
                                               ProgramSettings programSettings,
                                               String programUid) {
-        if (params.programStatus() != null) {
+
+        if (params.programStatus() != null && isGlobalOrUserDefinedProgram(params, programUid)) {
             return enrollmentScopeToProgramStatus(params.programStatus());
         }
 
@@ -384,4 +395,7 @@ class TrackedEntityInstanceQueryBuilderFactory {
         return programSetting != null && programSetting.updateDownload() != null;
     }
 
+    private boolean isGlobalOrUserDefinedProgram(ProgramDataDownloadParams params, String programUid) {
+        return programUid == null || programUid.equals(params.program());
+    }
 }

@@ -111,6 +111,7 @@ internal class LocalAnalyticsDatabaseFiller(private val d2: D2) {
         EnrollmentStoreImpl.create(da).insert(enrollments)
 
         val eventsWithoutRegistration = generator.generateEventsWithoutRegistration(metadata)
-        EventStoreImpl.create(da).insert(eventsWithoutRegistration)
+        val eventsWithRegistration = generator.generateEventsRegistration(metadata, enrollments)
+        EventStoreImpl.create(da).insert(eventsWithoutRegistration + eventsWithRegistration)
     }
 }

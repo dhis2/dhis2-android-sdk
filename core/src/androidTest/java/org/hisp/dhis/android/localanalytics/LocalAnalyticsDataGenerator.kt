@@ -84,6 +84,20 @@ internal class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDat
         }
     }
 
+    fun generateEventsRegistration(metadata: MetadataForDataFilling, enrollments: List<Enrollment>): List<Event> {
+        val program = metadata.programs[0]
+        val programStages = metadata.programStages.filter { ps -> ps.program()!!.uid() == program.uid() }
+        return enrollments.flatMap { enrollment ->
+            programStages.flatMap { ps ->
+                (1..params.eventsWithRegistrationPerEnrollmentAndPS).map {
+                    EventSamples.get(uidGenerator.generate(), enrollment.uid(), enrollment.organisationUnit(),
+                            enrollment.program(), ps.uid(), metadata.categoryOptionCombos.first().uid(),
+                            getRandomDateInLastYear())
+                }
+            }
+        }
+    }
+
     private fun getRandomDateInLastYear(): Date {
         val now = System.currentTimeMillis()
         val oneYearMillis = 365L * 24 * 60 * 60 * 1000

@@ -162,6 +162,31 @@ public class TrackedEntityInstanceQueryBuilderFactoryShould {
         }
     }
 
+    @Test
+    public void apply_user_defined_limit_only_to_global_if_no_program() {
+        ProgramDataDownloadParams params = ProgramDataDownloadParams.builder().limit(5000).build();
+
+        Map<String, ProgramSetting> specificSettings = new HashMap<>();
+        specificSettings.put(p1, ProgramSetting.builder().uid(p1).teiDownload(100).build());
+
+        when(programSettings.specificSettings()).thenReturn(specificSettings);
+
+        List<TeiQuery.Builder> builders = builderFactory.getTeiQueryBuilders(params);
+
+        assertThat(builders.size()).isEqualTo(2);
+
+        for (TeiQuery.Builder builder : builders) {
+            TeiQuery query = builder.build();
+
+            if (query.program() != null) {
+                assertThat(query.program()).isEqualTo(p1);
+                assertThat(query.limit()).isEqualTo(100);
+            } else {
+                assertThat(query.limit()).isEqualTo(5000);
+            }
+        }
+    }
+
     private List<String> getProgramList() {
         List<String> programList = new ArrayList<>();
         programList.add(p1);

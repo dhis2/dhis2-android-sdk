@@ -106,7 +106,8 @@ class ValidationEngineImpl implements ValidationEngine {
     @Override
     public ValidationResult blockingValidate(String dataSetUid, String periodId,
                                              String orgUnitUid, String attributeOptionComboUid) {
-        List<ValidationRule> rules = getValidationRulesByDataSet(dataSetUid);
+
+        List<ValidationRule> rules = getValidationRulesForDataSetValidation(dataSetUid);
         List<ValidationResultViolation> violations = new ArrayList<>();
 
         if (!rules.isEmpty()) {
@@ -133,8 +134,11 @@ class ValidationEngineImpl implements ValidationEngine {
                 .build();
     }
 
-    private List<ValidationRule> getValidationRulesByDataSet(String datasetUid) {
-        return validationRuleRepository.byDataSetUids(Collections.singletonList(datasetUid)).blockingGet();
+    private List<ValidationRule> getValidationRulesForDataSetValidation(String datasetUid) {
+        return validationRuleRepository
+                .byDataSetUids(Collections.singletonList(datasetUid))
+                .bySkipFormValidation().isFalse()
+                .blockingGet();
     }
 
     private Map<DimensionalItemObject, Double> getValueMap(String dataSetUid, String attributeOptionComboUid,

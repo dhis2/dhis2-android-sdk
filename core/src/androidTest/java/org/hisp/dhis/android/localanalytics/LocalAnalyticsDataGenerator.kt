@@ -64,7 +64,7 @@ internal class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDat
         return categoryOptionCombosByCategoryCombo.flatMap { (categoryCombo, categoryOptionCombos) ->
             categoryOptionCombos.flatMap { categoryOptionCombo ->
                 dataElementsByCategoryCombo[categoryCombo]!!.flatMap { dataElement ->
-                    (1..iterations).map {
+                    (0 until iterations).map {
                         val (period, ou) = periodOrgUnits[it]
                         DataValueSamples.getDataValue(ou.uid(), dataElement.uid(), period.periodId()!!, categoryOptionCombo.uid(),
                                 metadata.categoryOptionCombos.first().uid())

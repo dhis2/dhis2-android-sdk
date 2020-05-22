@@ -97,7 +97,7 @@ internal class LocalAnalyticsDatabaseFiller(private val d2: D2) {
         val trackedEntityAttributes = generator.getTrackedEntityAttributes()
         TrackedEntityAttributeStore.create(da).insert(trackedEntityAttributes)
 
-        val periods = d2.periodModule().periods().byPeriodType().eq(PeriodType.Monthly).blockingGet()
+        val periods = d2.periodModule().periods().byPeriodType().eq(PeriodType.Daily).blockingGet()
 
         return MetadataForDataFilling(organisationUnits, periods, categoryOptionCombos, aggregatedDataElements,
                 trackerDataElements, programs, programStages, trackedEntityAttributes)

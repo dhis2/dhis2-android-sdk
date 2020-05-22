@@ -29,6 +29,7 @@ package org.hisp.dhis.android.localanalytics
 
 import org.hisp.dhis.android.core.D2
 import org.hisp.dhis.android.core.D2DIComponentAccessor
+import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor
 import org.hisp.dhis.android.core.category.CategoryOptionCombo
 import org.hisp.dhis.android.core.category.internal.CategoryComboStore
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStoreImpl
@@ -65,8 +66,10 @@ internal class LocalAnalyticsDatabaseFiller(private val d2: D2) {
     private val d2DIComponent = D2DIComponentAccessor.getD2DIComponent(d2)
 
     fun fillDatabase(metadataParams: LocalAnalyticsMetadataParams, dataParams: LocalAnalyticsDataParams) {
-        val metadata = fillMetadata(metadataParams)
-        fillData(dataParams, metadata)
+        D2CallExecutor.create(da).executeD2CallTransactionally {
+            val metadata = fillMetadata(metadataParams)
+            fillData(dataParams, metadata)
+        }
     }
 
     private fun fillMetadata(metadataParams: LocalAnalyticsMetadataParams): MetadataForDataFilling {

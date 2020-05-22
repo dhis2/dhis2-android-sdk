@@ -43,7 +43,7 @@ public abstract class ValidationResultSideViolation {
 
     public abstract String displayExpression();
 
-    public abstract String valueExpression();
+    public abstract String regeneratedExpression();
 
     public static Builder builder() {
         return new AutoValue_ValidationResultSideViolation.Builder();
@@ -60,7 +60,7 @@ public abstract class ValidationResultSideViolation {
 
         public abstract Builder displayExpression(String displayExpression);
 
-        public abstract Builder valueExpression(String valueExpression);
+        public abstract Builder regeneratedExpression(String valueExpression);
 
         public abstract ValidationResultSideViolation build();
     }

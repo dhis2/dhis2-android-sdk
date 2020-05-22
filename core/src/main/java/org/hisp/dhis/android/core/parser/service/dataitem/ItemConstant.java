@@ -74,6 +74,17 @@ public class ItemConstant implements ExpressionItem {
         return constant.value();
     }
 
+    @Override
+    public final Object regenerate(ExprContext ctx, CommonExpressionVisitor visitor) {
+        Constant constant = visitor.getConstantMap().get(ctx.uid0.getText());
+
+        if (constant == null || constant.value() == null) {
+            return ctx.getText();
+        } else {
+            return constant.value().toString();
+        }
+    }
+
     private DimensionalItemId getDimensionalItemId(ExprContext ctx) {
         return DimensionalItemId.builder()
                 .dimensionalItemType(DimensionalItemType.CONSTANT)

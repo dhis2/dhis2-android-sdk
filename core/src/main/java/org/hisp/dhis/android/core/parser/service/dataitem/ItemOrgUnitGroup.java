@@ -84,6 +84,17 @@ public class ItemOrgUnitGroup implements ExpressionItem {
         return count.doubleValue();
     }
 
+    @Override
+    public final Object regenerate(ExprContext ctx, CommonExpressionVisitor visitor) {
+        Integer count = visitor.getOrgUnitCountMap().get(ctx.uid0.getText());
+
+        if (count == null) {
+            return ctx.getText();
+        } else {
+            return count.toString();
+        }
+    }
+
     private DimensionalItemId getDimensionalItemId(ExprContext ctx) {
         return DimensionalItemId.builder()
                 .dimensionalItemType(DimensionalItemType.ORGANISATION_UNIT_GROUP)

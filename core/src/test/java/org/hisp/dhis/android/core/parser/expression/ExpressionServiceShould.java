@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.android.core.parser.service.ExpressionService;
+import org.hisp.dhis.android.core.parser.service.dataobject.DataElementObject;
 import org.hisp.dhis.android.core.parser.service.dataobject.DataElementOperandObject;
 import org.hisp.dhis.android.core.parser.service.dataobject.DimensionalItemObject;
 import org.hisp.dhis.android.core.validation.MissingValueStrategy;
@@ -63,6 +64,8 @@ public class ExpressionServiceShould {
     private String constantId = "e19hj1w7yKP";
 
     private String orgunitGroupId = "RAL7YE4KJ58";
+
+    private String days = "[days]";
 
     @Mock
     IdentifiableObjectStore<DataElement> dataElementStore;
@@ -150,7 +153,7 @@ public class ExpressionServiceShould {
 
     @Test
     public void evaluate_days() {
-        String expression = de(dataElementId1) + " + [days]";
+        String expression = de(dataElementId1) + " + " + days;
 
         Map<DimensionalItemObject, Double> valueMap = new HashMap<>();
         valueMap.put(DataElementOperandObject.create(dataElementId1, null), 5.0);
@@ -212,6 +215,15 @@ public class ExpressionServiceShould {
         Double resultSkipIfAll = (Double) service.getExpressionValue(expression, valueMap,
                 constantMap, Collections.emptyMap(), 10, MissingValueStrategy.SKIP_IF_ALL_VALUES_MISSING);
         assertThat(resultSkipIfAll).isNull();
+    }
+
+    @Test
+    public void evaluate_null_expression() {
+        assertThat(service.getExpressionValue(null)).isNull();
+        assertThat(service.getExpressionDescription(null, Collections.emptyMap())).isEqualTo("");
+        assertThat(service.getDataElementOperands(null)).isEmpty();
+        assertThat(service.regenerateExpression(null, Collections.emptyMap(), constantMap,
+                Collections.emptyMap(), 10)).isEqualTo("");
     }
 
     @Test
@@ -277,7 +289,7 @@ public class ExpressionServiceShould {
 
     @Test
     public void get_dataelement_ids_in_empty_expression() {
-        String expression = "[days] + " + constant(constantId) + " + " + oug(constantId);
+        String expression = days + " + " + constant(constantId) + " + " + oug(constantId);
         Set<DataElementOperand> dataElementOperands = service.getDataElementOperands(expression);
 
         assertThat(dataElementOperands).isEmpty();
@@ -310,6 +322,41 @@ public class ExpressionServiceShould {
         String description = service.getExpressionDescription(expression, Collections.emptyMap());
 
         assertThat(description).isEqualTo("Data Element 1 + " + de("atGmxEbs97n"));
+    }
+
+    @Test
+    public void regenerate_expression() {
+        String expression = deOperand(dataElementId1, categoryOptionComboId1) + " + " +
+                de(dataElementId2) + " / " +
+                constant(constantId) + " * " +
+                oug(orgunitGroupId) + " - " +
+                days;
+
+        Map<DimensionalItemObject, Double> valueMap = new HashMap<>();
+        valueMap.put(DataElementOperandObject.create(dataElementId1, categoryOptionComboId1), 5.0);
+        valueMap.put(DataElementObject.create(dataElementId2), 3.0);
+        when(constant.value()).thenReturn(3.14);
+
+        Map<String, Integer> orgunitMap = new HashMap<>();
+        orgunitMap.put(orgunitGroupId, 20);
+
+        Object regeneratedExpression = service.regenerateExpression(expression, valueMap, constantMap,
+                orgunitMap, 10);
+
+        assertThat(regeneratedExpression).isEqualTo("5.0 + 3.0 / 3.14 * 20 - 10.0");
+    }
+
+    @Test
+    public void regenerate_expression_with_missing_items() {
+        String expression = deOperand(dataElementId1, categoryOptionComboId1) + " + " + de(dataElementId2);
+
+        Map<DimensionalItemObject, Double> valueMap = new HashMap<>();
+        valueMap.put(DataElementOperandObject.create(dataElementId1, categoryOptionComboId1), 5.0);
+
+        Object regeneratedExpression = service.regenerateExpression(expression, valueMap, constantMap,
+                Collections.emptyMap(), 10);
+
+        assertThat(regeneratedExpression).isEqualTo("5.0 + " + de(dataElementId2));
     }
 
     private String constant(String uid) {

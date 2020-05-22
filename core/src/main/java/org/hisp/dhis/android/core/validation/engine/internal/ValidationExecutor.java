@@ -28,10 +28,7 @@
 
 package org.hisp.dhis.android.core.validation.engine.internal;
 
-import com.google.common.collect.Sets;
-
 import org.hisp.dhis.android.core.constant.Constant;
-import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.parser.service.ExpressionService;
 import org.hisp.dhis.android.core.parser.service.dataobject.DimensionalItemObject;
@@ -46,7 +43,6 @@ import org.hisp.dhis.android.core.validation.engine.ValidationResultViolation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -86,8 +82,10 @@ class ValidationExecutor {
                 constantMap, orgunitGroupMap, days, rule.rightSide().missingValueStrategy());
 
         if (isViolation(rule, leftSideValue, rightSideValue)) {
-            ValidationResultSideViolation leftSide = buildSideResult(leftSideValue, rule.leftSide(), constantMap);
-            ValidationResultSideViolation rightSide = buildSideResult(rightSideValue, rule.rightSide(), constantMap);
+            ValidationResultSideViolation leftSide = buildSideResult(leftSideValue, rule.leftSide(), valueMap,
+                    constantMap, orgunitGroupMap, days);
+            ValidationResultSideViolation rightSide = buildSideResult(rightSideValue, rule.leftSide(), valueMap,
+                    constantMap, orgunitGroupMap, days);
 
             violations.add(ValidationResultViolation.builder()
                     .period(period.periodId())
@@ -136,11 +134,17 @@ class ValidationExecutor {
 
     private ValidationResultSideViolation buildSideResult(Double value,
                                                           ValidationRuleExpression side,
-                                                          Map<String, Constant> constantMap) {
+                                                          Map<DimensionalItemObject, Double> valueMap,
+                                                          Map<String, Constant> constantMap,
+                                                          Map<String, Integer> orgunitGroupMap,
+                                                          Integer days) {
         return ValidationResultSideViolation.builder()
                 .value(value)
                 .dataElementUids(expressionService.getDataElementOperands(side.expression()))
                 .displayExpression(expressionService.getExpressionDescription(side.expression(), constantMap))
+                .regeneratedExpression(
+                        expressionService.regenerateExpression(side.expression(), valueMap, constantMap,
+                                orgunitGroupMap, days))
                 .build();
     }
 

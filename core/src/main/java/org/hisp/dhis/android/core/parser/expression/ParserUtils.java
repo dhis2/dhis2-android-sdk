@@ -100,6 +100,8 @@ public final class ParserUtils {
 
     public final static ExpressionItemMethod ITEM_GET_SQL = ExpressionItem::getSql;
 
+    public final static ExpressionItemMethod ITEM_REGENERATE = ExpressionItem::regenerate;
+
     public final static Map<Integer, ExpressionItem> COMMON_EXPRESSION_ITEMS;
 
     static {

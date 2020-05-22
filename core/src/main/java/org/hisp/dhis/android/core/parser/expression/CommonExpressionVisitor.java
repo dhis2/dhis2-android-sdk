@@ -28,7 +28,10 @@
 
 package org.hisp.dhis.android.core.parser.expression;
 
+import com.google.common.base.Joiner;
+
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.apache.commons.lang3.Validate;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.category.CategoryOptionCombo;
@@ -40,8 +43,10 @@ import org.hisp.dhis.antlr.AntlrExpressionVisitor;
 import org.hisp.dhis.antlr.ParserExceptionWithoutContext;
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -214,6 +219,21 @@ public class CommonExpressionVisitor
         }
 
         return value;
+    }
+
+    /**
+     * Regenerates an expression by visiting all the children of the
+     * expression node (including any terminal nodes).
+     *
+     * @param ctx the expression context
+     * @return the regenerated expression (as a String)
+     */
+    public Object regenerateAllChildren(ExprContext ctx) {
+        List<String> result = new ArrayList<>();
+        for (ParseTree child : ctx.children) {
+            result.add(castStringVisit(child));
+        }
+        return Joiner.on(' ').join(result);
     }
 
     // -------------------------------------------------------------------------

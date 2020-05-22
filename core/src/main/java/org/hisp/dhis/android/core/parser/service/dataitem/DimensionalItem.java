@@ -61,6 +61,17 @@ public abstract class DimensionalItem
         return visitor.handleNulls(value);
     }
 
+    @Override
+    public final Object regenerate(ExprContext ctx, CommonExpressionVisitor visitor) {
+        Double value = visitor.getItemValueMap().get(getId(ctx));
+
+        if (value == null) {
+            return ctx.getText();
+        } else {
+            return value.toString();
+        }
+    }
+
     /**
      * Constructs the DimensionalItemId object for this item.
      *

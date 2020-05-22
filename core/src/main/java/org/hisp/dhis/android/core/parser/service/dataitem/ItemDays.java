@@ -56,4 +56,9 @@ public class ItemDays implements ExpressionItem {
         return visitor.getDays();
     }
 
+    @Override
+    public final Object regenerate(ExprContext ctx, CommonExpressionVisitor visitor) {
+        return visitor.getDays().toString();
+    }
+
 }

@@ -26,50 +26,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.validation;
+package org.hisp.dhis.android.core.validation.engine.internal;
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.core.validation.engine.ValidationEngine;
 
-import org.hisp.dhis.android.core.dataelement.DataElementOperand;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-import java.util.List;
+@Module
+public final class ValidationEngineEntityDIModule {
 
-@AutoValue
-public abstract class ValidationResultViolation {
-
-    public abstract ValidationRule validationRule();
-
-    public abstract List<DataElementOperand> dataElementUids();
-
-    public abstract Double leftSideValue();
-
-    public abstract String leftSideExpression();
-
-    public abstract Double rightSideValue();
-
-    public abstract String rightSideExpression();
-
-    public static Builder builder() {
-        return new AutoValue_ValidationResultViolation.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder validationRule(ValidationRule validationRule);
-
-        public abstract Builder dataElementUids(List<DataElementOperand> dataElementUids);
-
-        public abstract Builder leftSideValue(Double leftSideValue);
-
-        public abstract Builder leftSideExpression(String leftSideExpression);
-
-        public abstract Builder rightSideValue(Double rightSideValue);
-
-        public abstract Builder rightSideExpression(String rightSideExpression);
-
-        public abstract ValidationResultViolation build();
+    @Provides
+    @Reusable
+    public ValidationEngine store(ValidationEngineImpl impl) {
+        return impl;
     }
 }

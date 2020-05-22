@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.validation.engine;
+package org.hisp.dhis.android.core.validation.engine.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.constant.Constant;
@@ -36,27 +36,34 @@ import org.hisp.dhis.android.core.dataset.DataSetCollectionRepository;
 import org.hisp.dhis.android.core.dataset.DataSetElement;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.datavalue.DataValueCollectionRepository;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRepository;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLink;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo;
 import org.hisp.dhis.android.core.parser.service.dataobject.DimensionalItemObject;
 import org.hisp.dhis.android.core.period.Period;
-import org.hisp.dhis.android.core.period.PeriodCollectionRepository;
-import org.hisp.dhis.android.core.validation.ValidationResult;
-import org.hisp.dhis.android.core.validation.ValidationResultViolation;
+import org.hisp.dhis.android.core.period.internal.PeriodHelper;
 import org.hisp.dhis.android.core.validation.ValidationRule;
+import org.hisp.dhis.android.core.validation.ValidationRuleCollectionRepository;
+import org.hisp.dhis.android.core.validation.engine.ValidationEngine;
+import org.hisp.dhis.android.core.validation.engine.ValidationResult;
+import org.hisp.dhis.android.core.validation.engine.ValidationResultViolation;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-public class ValidationService {
+import io.reactivex.Single;
+
+class ValidationEngineImpl implements ValidationEngine {
 
     private final ValidationExecutor validationExecutor;
+
+    private final ValidationRuleCollectionRepository validationRuleRepository;
 
     private final DataValueCollectionRepository dataValueRepository;
 
@@ -64,28 +71,43 @@ public class ValidationService {
 
     private final ConstantCollectionRepository constantRepository;
 
-    private final PeriodCollectionRepository periodRepository;
+    private final OrganisationUnitCollectionRepository organisationUnitRepository;
+
+    private final PeriodHelper periodHelper;
 
     private final LinkStore<OrganisationUnitOrganisationUnitGroupLink> orgunitGroupLinkStore;
 
     @Inject
-    ValidationService(ValidationExecutor validationExecutor,
-                      DataValueCollectionRepository dataValueRepository,
-                      DataSetCollectionRepository dataSetRepository,
-                      ConstantCollectionRepository constantRepository,
-                      PeriodCollectionRepository periodRepository,
-                      LinkStore<OrganisationUnitOrganisationUnitGroupLink> orgunitGroupLinkStore) {
+    ValidationEngineImpl(ValidationExecutor validationExecutor,
+                         ValidationRuleCollectionRepository validationRuleRepository,
+                         DataValueCollectionRepository dataValueRepository,
+                         DataSetCollectionRepository dataSetRepository,
+                         ConstantCollectionRepository constantRepository,
+                         OrganisationUnitCollectionRepository organisationUnitRepository,
+                         PeriodHelper periodHelper,
+                         LinkStore<OrganisationUnitOrganisationUnitGroupLink> orgunitGroupLinkStore) {
         this.validationExecutor = validationExecutor;
+        this.validationRuleRepository = validationRuleRepository;
         this.dataValueRepository = dataValueRepository;
         this.dataSetRepository = dataSetRepository;
         this.constantRepository = constantRepository;
-        this.periodRepository = periodRepository;
+        this.organisationUnitRepository = organisationUnitRepository;
+        this.periodHelper = periodHelper;
         this.orgunitGroupLinkStore = orgunitGroupLinkStore;
     }
 
-    public ValidationResult validate(String dataSetUid, String attributeOptionComboUid,
-                                     String orgUnitUid, String periodId) {
-        List<ValidationRule> rules = getValidationRulesByDataSet();
+    @Override
+    public Single<ValidationResult> validate(String dataSetUid, String periodId,
+                                             String orgUnitUid, String attributeOptionComboUid) {
+        return Single.fromCallable(() ->
+                blockingValidate(dataSetUid, attributeOptionComboUid, orgUnitUid,  periodId));
+    }
+
+    @Override
+    public ValidationResult blockingValidate(String dataSetUid, String periodId,
+                                             String orgUnitUid, String attributeOptionComboUid) {
+
+        List<ValidationRule> rules = getValidationRulesForDataSetValidation(dataSetUid);
         List<ValidationResultViolation> violations = new ArrayList<>();
 
         if (!rules.isEmpty()) {
@@ -93,10 +115,12 @@ public class ValidationService {
             Map<DimensionalItemObject, Double> valueMap = getValueMap(dataSetUid, attributeOptionComboUid,
                     orgUnitUid, periodId);
             Map<String, Integer> orgunitGroupMap = getOrgunitGroupMap();
-            Integer days = getDays(periodId);
+            OrganisationUnit organisationUnit = getOrganisationUnit(orgUnitUid);
+            Period period = getPeriod(periodId);
 
             for (ValidationRule rule : rules) {
-                violations.addAll(validationExecutor.evaluateRule(rule, valueMap, constantMap, orgunitGroupMap, days));
+                violations.addAll(validationExecutor.evaluateRule(rule, organisationUnit, valueMap, constantMap,
+                        orgunitGroupMap, period, attributeOptionComboUid));
             }
         }
 
@@ -106,17 +130,15 @@ public class ValidationService {
 
         return ValidationResult.builder()
                 .status(status)
-                .dataSetUid(dataSetUid)
-                .period(periodId)
-                .organisationUnitUid(orgUnitUid)
-                .attributeOptionComboUid(attributeOptionComboUid)
                 .violations(violations)
                 .build();
     }
 
-    private List<ValidationRule> getValidationRulesByDataSet() {
-        // TODO
-        return Collections.emptyList();
+    private List<ValidationRule> getValidationRulesForDataSetValidation(String datasetUid) {
+        return validationRuleRepository
+                .byDataSetUids(Collections.singletonList(datasetUid))
+                .bySkipFormValidation().isFalse()
+                .blockingGet();
     }
 
     private Map<DimensionalItemObject, Double> getValueMap(String dataSetUid, String attributeOptionComboUid,
@@ -141,7 +163,7 @@ public class ValidationService {
                 .byDeleted().isFalse()
                 .blockingGet();
 
-        return ValidationServiceHelper.getValueMap(dataValues);
+        return ValidationEngineHelper.getValueMap(dataValues);
     }
 
     private Map<String, Constant> getConstantMap() {
@@ -153,14 +175,16 @@ public class ValidationService {
         return constantMap;
     }
 
+    private OrganisationUnit getOrganisationUnit(String orgunitId) {
+        return organisationUnitRepository.uid(orgunitId).blockingGet();
+    }
+
     private Map<String, Integer> getOrgunitGroupMap() {
         return orgunitGroupLinkStore.groupAndGetCountBy(
                 OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT_GROUP);
     }
 
-    private Integer getDays(String periodId) {
-        Period period = periodRepository.byPeriodId().eq(periodId).one().blockingGet();
-        long diff = period.endDate().getTime() - period.startDate().getTime();
-        return (int) TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+    private Period getPeriod(String periodId) {
+        return periodHelper.blockingGetPeriodForPeriodId(periodId);
     }
 }

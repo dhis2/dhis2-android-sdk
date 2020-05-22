@@ -26,12 +26,38 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.validation;
+package org.hisp.dhis.android.core.validation.engine;
 
-import org.hisp.dhis.android.core.validation.engine.ValidationEngine;
+import com.google.auto.value.AutoValue;
 
-public interface ValidationModule {
-    ValidationRuleCollectionRepository validationRules();
+import java.util.List;
 
-    ValidationEngine validationEngine();
+@AutoValue
+public abstract class ValidationResult {
+
+    public abstract ValidationResultStatus status();
+
+    public abstract List<ValidationResultViolation> violations();
+
+    public static Builder builder() {
+        return new AutoValue_ValidationResult.Builder();
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+
+        public abstract Builder status(ValidationResultStatus status);
+
+        public abstract Builder violations(List<ValidationResultViolation> violations);
+
+        public abstract ValidationResult build();
+    }
+
+    public enum ValidationResultStatus {
+        OK,
+        ERROR
+    }
+
 }

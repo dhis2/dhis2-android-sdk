@@ -28,12 +28,17 @@
 
 package org.hisp.dhis.android.core.parser.service;
 
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.constant.Constant;
+import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
 import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
 import org.hisp.dhis.android.core.parser.expression.ExpressionItemMethod;
+import org.hisp.dhis.android.core.parser.expression.literal.RegenerateLiteral;
 import org.hisp.dhis.android.core.parser.service.dataitem.DimItemDataElementAndOperand;
 import org.hisp.dhis.android.core.parser.service.dataitem.DimensionalItemId;
 import org.hisp.dhis.android.core.parser.service.dataitem.ItemConstant;
@@ -49,21 +54,39 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.inject.Inject;
+
 import static org.hisp.dhis.android.core.parser.expression.ParserUtils.COMMON_EXPRESSION_ITEMS;
 import static org.hisp.dhis.android.core.parser.expression.ParserUtils.ITEM_EVALUATE;
+import static org.hisp.dhis.android.core.parser.expression.ParserUtils.ITEM_GET_DESCRIPTIONS;
 import static org.hisp.dhis.android.core.parser.expression.ParserUtils.ITEM_GET_IDS;
+import static org.hisp.dhis.android.core.parser.expression.ParserUtils.ITEM_REGENERATE;
 import static org.hisp.dhis.android.core.validation.MissingValueStrategy.NEVER_SKIP;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.C_BRACE;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.DAYS;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.HASH_BRACE;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.OUG_BRACE;
 
-@SuppressWarnings({"PMD.TooManyStaticImports", "PMD.CyclomaticComplexity", "PMD.StdCyclomaticComplexity"})
+@SuppressWarnings({
+        "PMD.TooManyStaticImports",
+        "PMD.ExcessiveImports",
+        "PMD.CyclomaticComplexity",
+        "PMD.StdCyclomaticComplexity"})
 public class ExpressionService {
+
+    private final IdentifiableObjectStore<DataElement> dataElementStore;
+    private final CategoryOptionComboStore categoryOptionComboStore;
+    private final IdentifiableObjectStore<OrganisationUnitGroup> organisationUnitGroupStore;
 
     private final Map<Integer, ExpressionItem> validationRuleExpressionItems;
 
-    public ExpressionService() {
+    @Inject
+    public ExpressionService(IdentifiableObjectStore<DataElement> dataElementStore,
+                             CategoryOptionComboStore categoryOptionComboStore,
+                             IdentifiableObjectStore<OrganisationUnitGroup> organisationUnitGroupStore) {
+        this.dataElementStore = dataElementStore;
+        this.categoryOptionComboStore = categoryOptionComboStore;
+        this.organisationUnitGroupStore = organisationUnitGroupStore;
         this.validationRuleExpressionItems = getExpressionItems();
     }
 
@@ -104,6 +127,27 @@ public class ExpressionService {
             }
         }
         return dataElementOperands;
+    }
+
+    public String getExpressionDescription(String expression, Map<String, Constant> constantMap) {
+
+        if (expression == null) {
+            return "";
+        }
+
+        CommonExpressionVisitor visitor = newVisitor(ITEM_GET_DESCRIPTIONS, constantMap);
+
+        Parser.visit(expression, visitor);
+
+        Map<String, String> itemDescriptions = visitor.getItemDescriptions();
+
+        String description = expression;
+
+        for (Map.Entry<String, String> entry : itemDescriptions.entrySet()) {
+            description = description.replace(entry.getKey(), entry.getValue());
+        }
+
+        return description;
     }
 
     public Object getExpressionValue(String expression) {
@@ -166,6 +210,37 @@ public class ExpressionService {
         return value;
     }
 
+    public String regenerateExpression(String expression,
+                                       Map<DimensionalItemObject, Double> valueMap,
+                                       Map<String, Constant> constantMap,
+                                       Map<String, Integer> orgUnitCountMap,
+                                       Integer days) {
+
+        if (expression == null) {
+            return "";
+        }
+
+        CommonExpressionVisitor visitor = newVisitor(
+                ITEM_REGENERATE,
+                constantMap
+        );
+
+        Map<String, Double> itemValueMap = new HashMap<>();
+        for (Map.Entry<DimensionalItemObject, Double> entry : valueMap.entrySet()) {
+            itemValueMap.put(entry.getKey().getDimensionItem(), entry.getValue());
+        }
+
+        visitor.setItemValueMap(itemValueMap);
+        visitor.setOrgUnitCountMap(orgUnitCountMap);
+        visitor.setExpressionLiteral(new RegenerateLiteral());
+
+        if (days != null) {
+            visitor.setDays(Double.valueOf(days));
+        }
+
+        return (String) Parser.visit(expression, visitor);
+    }
+
     // -------------------------------------------------------------------------
     // Supportive methods
     // -------------------------------------------------------------------------
@@ -183,8 +258,9 @@ public class ExpressionService {
                 .withItemMap(validationRuleExpressionItems)
                 .withItemMethod(itemMethod)
                 .withConstantMap(constantMap)
-                //.withDimensionService( dimensionService )
-                //.withOrganisationUnitGroupService( organisationUnitGroupService )
+                .withDataElementStore(dataElementStore)
+                .withCategoryOptionComboStore(categoryOptionComboStore)
+                .withOrganisationUnitGroupStore(organisationUnitGroupStore)
                 //.withSamplePeriods( samplePeriods )()
                 .buildForExpressions();
     }

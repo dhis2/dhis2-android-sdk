@@ -26,54 +26,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.validation;
+package org.hisp.dhis.android.core.validation.engine;
 
-import com.google.auto.value.AutoValue;
+import io.reactivex.Single;
 
-import java.util.List;
+public interface ValidationEngine {
 
-@AutoValue
-public abstract class ValidationResult {
+    Single<ValidationResult> validate(String dataSetUid, String periodId,
+                                      String orgUnitUid, String attributeOptionComboUid);
 
-    public abstract ValidationResultStatus status();
-
-    public abstract String dataSetUid();
-
-    public abstract String period();
-
-    public abstract String organisationUnitUid();
-
-    public abstract String attributeOptionComboUid();
-
-    public abstract List<ValidationResultViolation> violations();
-
-    public static Builder builder() {
-        return new AutoValue_ValidationResult.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder status(ValidationResultStatus status);
-
-        public abstract Builder dataSetUid(String dataSetUid);
-
-        public abstract Builder period(String period);
-
-        public abstract Builder organisationUnitUid(String organisationUnitUid);
-
-        public abstract Builder attributeOptionComboUid(String attributeOptionComboUid);
-
-        public abstract Builder violations(List<ValidationResultViolation> violations);
-
-        public abstract ValidationResult build();
-    }
-
-    public enum ValidationResultStatus {
-        OK,
-        ERROR
-    }
+    ValidationResult blockingValidate(String dataSetUid, String periodId,
+                                      String orgUnitUid, String attributeOptionComboUid);
 
 }

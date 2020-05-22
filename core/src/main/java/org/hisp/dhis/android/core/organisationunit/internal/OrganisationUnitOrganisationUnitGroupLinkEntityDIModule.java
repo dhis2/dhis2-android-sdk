@@ -26,12 +26,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.validation;
+package org.hisp.dhis.android.core.organisationunit.internal;
 
-import org.hisp.dhis.android.core.validation.engine.ValidationEngine;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLink;
 
-public interface ValidationModule {
-    ValidationRuleCollectionRepository validationRules();
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-    ValidationEngine validationEngine();
+@Module
+public final class OrganisationUnitOrganisationUnitGroupLinkEntityDIModule {
+
+    @Provides
+    @Reusable
+    LinkStore<OrganisationUnitOrganisationUnitGroupLink> store(DatabaseAdapter databaseAdapter) {
+        return OrganisationUnitOrganisationUnitGroupLinkStore.create(databaseAdapter);
+    }
 }

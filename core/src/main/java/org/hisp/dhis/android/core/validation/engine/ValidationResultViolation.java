@@ -26,46 +26,59 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.validation.internal;
+package org.hisp.dhis.android.core.validation.engine;
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.validation.ValidationModule;
+import com.google.auto.value.AutoValue;
+import com.google.common.collect.Sets;
+
+import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.hisp.dhis.android.core.validation.ValidationRule;
-import org.hisp.dhis.android.core.validation.engine.internal.ValidationEngineEntityDIModule;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
+import java.util.Set;
 
-@Module(includes = {
-        DataSetValidationRuleLinkEntityDIModule.class,
-        ValidationEngineEntityDIModule.class,
-        ValidationRuleEntityDIModule.class
-})
-public final class ValidationPackageDIModule {
+@AutoValue
+public abstract class ValidationResultViolation {
 
-    @Provides
-    @Reusable
-    UidsCall<ValidationRule> validationRuleCall(ValidationRuleCall impl) {
-        return impl;
+    public abstract ValidationRule validationRule();
+
+    public abstract String period();
+
+    public abstract String organisationUnitUid();
+
+    public abstract String attributeOptionComboUid();
+
+    public abstract ValidationResultSideEvaluation leftSideEvaluation();
+
+    public abstract ValidationResultSideEvaluation rightSideEvaluation();
+
+    public Set<DataElementOperand> dataElementUids() {
+        return Sets.union(
+                leftSideEvaluation().dataElementUids(),
+                rightSideEvaluation().dataElementUids()
+        );
     }
 
-    @Provides
-    @Reusable
-    ValidationRuleUidsCall validationRuleUidsCall(ValidationRuleUidsCallImpl impl) {
-        return impl;
+    public static Builder builder() {
+        return new AutoValue_ValidationResultViolation.Builder();
     }
 
-    @Provides
-    @Reusable
-    ValidationRuleService validationRuleService(Retrofit retrofit) {
-        return retrofit.create(ValidationRuleService.class);
-    }
+    public abstract Builder toBuilder();
 
-    @Provides
-    @Reusable
-    ValidationModule module(ValidationModuleImpl impl) {
-        return impl;
+    @AutoValue.Builder
+    public abstract static class Builder {
+
+        public abstract Builder validationRule(ValidationRule validationRule);
+
+        public abstract Builder period(String period);
+
+        public abstract Builder organisationUnitUid(String organisationUnitUid);
+
+        public abstract Builder attributeOptionComboUid(String attributeOptionComboUid);
+
+        public abstract Builder leftSideEvaluation(ValidationResultSideEvaluation leftSideEvaluation);
+
+        public abstract Builder rightSideEvaluation(ValidationResultSideEvaluation rightSideEvaluation);
+
+        public abstract ValidationResultViolation build();
     }
 }

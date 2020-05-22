@@ -32,6 +32,8 @@ import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
 import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
 
+import static org.hisp.dhis.android.core.parser.expression.ParserUtils.DOUBLE_VALUE_IF_NULL;
+
 /**
  * Parsed expression item as handled by the expression service.
  * <p/>
@@ -43,8 +45,20 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
 public class ItemDays implements ExpressionItem {
 
     @Override
+    public Object getDescription(ExprContext ctx, CommonExpressionVisitor visitor) {
+        visitor.getItemDescriptions().put(ctx.getText(), "[Number of days]");
+
+        return DOUBLE_VALUE_IF_NULL;
+    }
+
+    @Override
     public Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor) {
         return visitor.getDays();
+    }
+
+    @Override
+    public final Object regenerate(ExprContext ctx, CommonExpressionVisitor visitor) {
+        return visitor.getDays().toString();
     }
 
 }

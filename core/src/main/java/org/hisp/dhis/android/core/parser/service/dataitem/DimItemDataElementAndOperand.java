@@ -28,10 +28,14 @@
 
 package org.hisp.dhis.android.core.parser.service.dataitem;
 
+import org.hisp.dhis.android.core.category.CategoryOptionCombo;
+import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
 import org.hisp.dhis.antlr.ParserExceptionWithoutContext;
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
 
 import static org.apache.commons.lang3.ObjectUtils.anyNotNull;
+import static org.hisp.dhis.android.core.parser.expression.ParserUtils.DOUBLE_VALUE_IF_NULL;
 import static org.hisp.dhis.android.core.parser.service.dataitem.DimensionalItemType.DATA_ELEMENT;
 import static org.hisp.dhis.android.core.parser.service.dataitem.DimensionalItemType.DATA_ELEMENT_OPERAND;
 
@@ -44,6 +48,30 @@ import static org.hisp.dhis.android.core.parser.service.dataitem.DimensionalItem
  * @author Jim Grace
  */
 public class DimItemDataElementAndOperand extends DimensionalItem {
+
+    @Override
+    public Object getDescription(ExprContext ctx, CommonExpressionVisitor visitor) {
+
+        DataElement dataElement = visitor.getDataElementStore().selectByUid(ctx.uid0.getText());
+
+        if (dataElement != null) {
+            StringBuilder description = new StringBuilder(dataElement.displayName());
+
+            if (isDataElementOperandSyntax(ctx)) {
+                CategoryOptionCombo categoryOptionCombo =
+                        visitor.getCategoryOptionComboStore().selectByUid(ctx.uid1.getText());
+
+                String cocDescription = categoryOptionCombo == null ? ctx.uid1.getText() :
+                        categoryOptionCombo.displayName();
+
+                description.append(" (").append(cocDescription).append(')');
+            }
+
+            visitor.getItemDescriptions().put(ctx.getText(), description.toString());
+        }
+
+        return DOUBLE_VALUE_IF_NULL;
+    }
 
     @Override
     public DimensionalItemId getDimensionalItemId(ExprContext ctx) {

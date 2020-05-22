@@ -41,24 +41,6 @@ import static org.hisp.dhis.android.core.parser.expression.ParserUtils.DOUBLE_VA
  */
 public abstract class DimensionalItem
         implements ExpressionItem {
-    @Override
-    public final Object getDescription(ExprContext ctx, CommonExpressionVisitor visitor) {
-        // TODO Implement
-        /*
-        DimensionalItemId itemId = getDimensionalItemId( ctx );
-
-        DimensionalItemObject item = visitor.getDimensionService().getDataDimensionalItemObject( itemId );
-
-        if ( item == null )
-        {
-            throw new ParserExceptionWithoutContext( "Can't find " + itemId.getDimensionItemType().name() + " for '" +
-                itemId + "'" );
-        }
-
-        visitor.getItemDescriptions().put( ctx.getText(), item.getDisplayName() );
-         */
-        return DOUBLE_VALUE_IF_NULL;
-    }
 
     @Override
     public final Object getItemId(ExprContext ctx, CommonExpressionVisitor visitor) {
@@ -77,6 +59,17 @@ public abstract class DimensionalItem
         Double value = visitor.getItemValueMap().get(getId(ctx));
 
         return visitor.handleNulls(value);
+    }
+
+    @Override
+    public final Object regenerate(ExprContext ctx, CommonExpressionVisitor visitor) {
+        Double value = visitor.getItemValueMap().get(getId(ctx));
+
+        if (value == null) {
+            return ctx.getText();
+        } else {
+            return value.toString();
+        }
     }
 
     /**

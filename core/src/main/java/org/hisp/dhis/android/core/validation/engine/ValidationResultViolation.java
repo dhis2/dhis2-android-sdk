@@ -47,9 +47,9 @@ public abstract class ValidationResultViolation {
 
     public abstract String attributeOptionComboUid();
 
-    public abstract ValidationResultSideViolation leftSideEvaluation();
+    public abstract ValidationResultSideEvaluation leftSideEvaluation();
 
-    public abstract ValidationResultSideViolation rightSideEvaluation();
+    public abstract ValidationResultSideEvaluation rightSideEvaluation();
 
     public Set<DataElementOperand> dataElementUids() {
         return Sets.union(
@@ -75,9 +75,9 @@ public abstract class ValidationResultViolation {
 
         public abstract Builder attributeOptionComboUid(String attributeOptionComboUid);
 
-        public abstract Builder leftSideEvaluation(ValidationResultSideViolation leftSideEvaluation);
+        public abstract Builder leftSideEvaluation(ValidationResultSideEvaluation leftSideEvaluation);
 
-        public abstract Builder rightSideEvaluation(ValidationResultSideViolation rightSideEvaluation);
+        public abstract Builder rightSideEvaluation(ValidationResultSideEvaluation rightSideEvaluation);
 
         public abstract ValidationResultViolation build();
     }

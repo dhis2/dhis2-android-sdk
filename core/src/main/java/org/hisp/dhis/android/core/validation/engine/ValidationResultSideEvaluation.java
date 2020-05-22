@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import java.util.Set;
 
 @AutoValue
-public abstract class ValidationResultSideViolation {
+public abstract class ValidationResultSideEvaluation {
 
     public abstract Set<DataElementOperand> dataElementUids();
 
@@ -46,7 +46,7 @@ public abstract class ValidationResultSideViolation {
     public abstract String regeneratedExpression();
 
     public static Builder builder() {
-        return new AutoValue_ValidationResultSideViolation.Builder();
+        return new AutoValue_ValidationResultSideEvaluation.Builder();
     }
 
     public abstract Builder toBuilder();
@@ -62,6 +62,6 @@ public abstract class ValidationResultSideViolation {
 
         public abstract Builder regeneratedExpression(String valueExpression);
 
-        public abstract ValidationResultSideViolation build();
+        public abstract ValidationResultSideEvaluation build();
     }
 }

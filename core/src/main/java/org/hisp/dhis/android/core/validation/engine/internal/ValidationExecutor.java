@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.validation.MissingValueStrategy;
 import org.hisp.dhis.android.core.validation.ValidationRule;
 import org.hisp.dhis.android.core.validation.ValidationRuleExpression;
 import org.hisp.dhis.android.core.validation.ValidationRuleOperator;
-import org.hisp.dhis.android.core.validation.engine.ValidationResultSideViolation;
+import org.hisp.dhis.android.core.validation.engine.ValidationResultSideEvaluation;
 import org.hisp.dhis.android.core.validation.engine.ValidationResultViolation;
 
 import java.util.ArrayList;
@@ -82,9 +82,9 @@ class ValidationExecutor {
                 constantMap, orgunitGroupMap, days, rule.rightSide().missingValueStrategy());
 
         if (isViolation(rule, leftSideValue, rightSideValue)) {
-            ValidationResultSideViolation leftSide = buildSideResult(leftSideValue, rule.leftSide(), valueMap,
+            ValidationResultSideEvaluation leftSide = buildSideResult(leftSideValue, rule.leftSide(), valueMap,
                     constantMap, orgunitGroupMap, days);
-            ValidationResultSideViolation rightSide = buildSideResult(rightSideValue, rule.leftSide(), valueMap,
+            ValidationResultSideEvaluation rightSide = buildSideResult(rightSideValue, rule.rightSide(), valueMap,
                     constantMap, orgunitGroupMap, days);
 
             violations.add(ValidationResultViolation.builder()
@@ -132,13 +132,13 @@ class ValidationExecutor {
         return !(Boolean) expressionService.getExpressionValue(test);
     }
 
-    private ValidationResultSideViolation buildSideResult(Double value,
-                                                          ValidationRuleExpression side,
-                                                          Map<DimensionalItemObject, Double> valueMap,
-                                                          Map<String, Constant> constantMap,
-                                                          Map<String, Integer> orgunitGroupMap,
-                                                          Integer days) {
-        return ValidationResultSideViolation.builder()
+    private ValidationResultSideEvaluation buildSideResult(Double value,
+                                                           ValidationRuleExpression side,
+                                                           Map<DimensionalItemObject, Double> valueMap,
+                                                           Map<String, Constant> constantMap,
+                                                           Map<String, Integer> orgunitGroupMap,
+                                                           Integer days) {
+        return ValidationResultSideEvaluation.builder()
                 .value(value)
                 .dataElementUids(expressionService.getDataElementOperands(side.expression()))
                 .displayExpression(expressionService.getExpressionDescription(side.expression(), constantMap))

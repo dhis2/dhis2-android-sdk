@@ -29,37 +29,24 @@
 package org.hisp.dhis.android.core.validation.engine;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.collect.Sets;
 
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
-import org.hisp.dhis.android.core.validation.ValidationRule;
 
 import java.util.Set;
 
 @AutoValue
-public abstract class ValidationResultViolation {
+public abstract class ValidationResultSideViolation {
 
-    public abstract ValidationRule validationRule();
+    public abstract Set<DataElementOperand> dataElementUids();
 
-    public abstract String period();
+    public abstract Double value();
 
-    public abstract String organisationUnitUid();
+    public abstract String displayExpression();
 
-    public abstract String attributeOptionComboUid();
-
-    public abstract ValidationResultSideViolation leftSideEvaluation();
-
-    public abstract ValidationResultSideViolation rightSideEvaluation();
-
-    public Set<DataElementOperand> dataElementUids() {
-        return Sets.union(
-                leftSideEvaluation().dataElementUids(),
-                rightSideEvaluation().dataElementUids()
-        );
-    }
+    public abstract String valueExpression();
 
     public static Builder builder() {
-        return new AutoValue_ValidationResultViolation.Builder();
+        return new AutoValue_ValidationResultSideViolation.Builder();
     }
 
     public abstract Builder toBuilder();
@@ -67,18 +54,14 @@ public abstract class ValidationResultViolation {
     @AutoValue.Builder
     public abstract static class Builder {
 
-        public abstract Builder validationRule(ValidationRule validationRule);
+        public abstract Builder dataElementUids(Set<DataElementOperand> dataElementUids);
 
-        public abstract Builder period(String period);
+        public abstract Builder value(Double value);
 
-        public abstract Builder organisationUnitUid(String organisationUnitUid);
+        public abstract Builder displayExpression(String displayExpression);
 
-        public abstract Builder attributeOptionComboUid(String attributeOptionComboUid);
+        public abstract Builder valueExpression(String valueExpression);
 
-        public abstract Builder leftSideEvaluation(ValidationResultSideViolation leftSideEvaluation);
-
-        public abstract Builder rightSideEvaluation(ValidationResultSideViolation rightSideEvaluation);
-
-        public abstract ValidationResultViolation build();
+        public abstract ValidationResultSideViolation build();
     }
 }

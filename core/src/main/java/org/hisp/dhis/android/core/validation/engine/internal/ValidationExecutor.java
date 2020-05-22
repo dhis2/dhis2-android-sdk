@@ -38,7 +38,9 @@ import org.hisp.dhis.android.core.parser.service.dataobject.DimensionalItemObjec
 import org.hisp.dhis.android.core.period.Period;
 import org.hisp.dhis.android.core.validation.MissingValueStrategy;
 import org.hisp.dhis.android.core.validation.ValidationRule;
+import org.hisp.dhis.android.core.validation.ValidationRuleExpression;
 import org.hisp.dhis.android.core.validation.ValidationRuleOperator;
+import org.hisp.dhis.android.core.validation.engine.ValidationResultSideViolation;
 import org.hisp.dhis.android.core.validation.engine.ValidationResultViolation;
 
 import java.util.ArrayList;
@@ -78,27 +80,22 @@ class ValidationExecutor {
 
         Integer days = getDays(period);
 
-        Double leftSide = (Double) expressionService.getExpressionValue(rule.leftSide().expression(), valueMap,
+        Double leftSideValue = (Double) expressionService.getExpressionValue(rule.leftSide().expression(), valueMap,
                 constantMap, orgunitGroupMap, days, rule.leftSide().missingValueStrategy());
-        Double rightSide = (Double) expressionService.getExpressionValue(rule.rightSide().expression(), valueMap,
+        Double rightSideValue = (Double) expressionService.getExpressionValue(rule.rightSide().expression(), valueMap,
                 constantMap, orgunitGroupMap, days, rule.rightSide().missingValueStrategy());
 
-        if (isViolation(rule, leftSide, rightSide)) {
-            String leftExpression = expressionService.getExpressionDescription(rule.leftSide().expression(),
-                    constantMap);
-            String rightExpression = expressionService.getExpressionDescription(rule.rightSide().expression(),
-                    constantMap);
+        if (isViolation(rule, leftSideValue, rightSideValue)) {
+            ValidationResultSideViolation leftSide = buildSideResult(leftSideValue, rule.leftSide(), constantMap);
+            ValidationResultSideViolation rightSide = buildSideResult(rightSideValue, rule.rightSide(), constantMap);
 
             violations.add(ValidationResultViolation.builder()
                     .period(period.periodId())
                     .organisationUnitUid(organisationUnit.uid())
                     .attributeOptionComboUid(attributeOptionComboId)
-                    .dataElementUids(getAllDataElementOperands(rule))
                     .validationRule(rule)
-                    .leftSideValue(leftSide)
-                    .leftSideExpression(leftExpression)
-                    .rightSideValue(rightSide)
-                    .rightSideExpression(rightExpression)
+                    .leftSideEvaluation(leftSide)
+                    .rightSideEvaluation(rightSide)
                     .build());
         }
         return violations;
@@ -137,11 +134,14 @@ class ValidationExecutor {
         return !(Boolean) expressionService.getExpressionValue(test);
     }
 
-    private Set<DataElementOperand> getAllDataElementOperands(ValidationRule rule) {
-        return Sets.union(
-                expressionService.getDataElementOperands(rule.leftSide().expression()),
-                expressionService.getDataElementOperands(rule.leftSide().expression())
-        );
+    private ValidationResultSideViolation buildSideResult(Double value,
+                                                          ValidationRuleExpression side,
+                                                          Map<String, Constant> constantMap) {
+        return ValidationResultSideViolation.builder()
+                .value(value)
+                .dataElementUids(expressionService.getDataElementOperands(side.expression()))
+                .displayExpression(expressionService.getExpressionDescription(side.expression(), constantMap))
+                .build();
     }
 
     private Integer getDays(Period period) {

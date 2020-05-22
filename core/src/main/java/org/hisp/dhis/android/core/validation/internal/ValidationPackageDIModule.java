@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.validation.internal;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
 import org.hisp.dhis.android.core.validation.ValidationModule;
 import org.hisp.dhis.android.core.validation.ValidationRule;
+import org.hisp.dhis.android.core.validation.engine.internal.ValidationEngineEntityDIModule;
 
 import dagger.Module;
 import dagger.Provides;
@@ -38,8 +39,9 @@ import dagger.Reusable;
 import retrofit2.Retrofit;
 
 @Module(includes = {
-        ValidationRuleEntityDIModule.class,
-        DataSetValidationRuleLinkEntityDIModule.class
+        DataSetValidationRuleLinkEntityDIModule.class,
+        ValidationEngineEntityDIModule.class,
+        ValidationRuleEntityDIModule.class
 })
 public final class ValidationPackageDIModule {
 

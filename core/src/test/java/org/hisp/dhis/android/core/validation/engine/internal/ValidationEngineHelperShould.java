@@ -26,9 +26,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.validation.engine;
+package org.hisp.dhis.android.core.validation.engine.internal;
 
-import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.parser.service.dataobject.DataElementObject;
 import org.hisp.dhis.android.core.parser.service.dataobject.DataElementOperandObject;
@@ -40,9 +39,9 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.hisp.dhis.android.core.validation.engine.ValidationServiceHelper.getValueMap;
+import static org.hisp.dhis.android.core.validation.engine.internal.ValidationEngineHelper.getValueMap;
 
-public class ValidationServiceHelperShould {
+public class ValidationEngineHelperShould {
 
     private String dataElement1 = "sK2wroysTNW";
     private String dataElement2 = "lZGmxYbs97q";

@@ -26,12 +26,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.validation;
+package org.hisp.dhis.android.core.validation.engine;
 
-import org.hisp.dhis.android.core.validation.engine.ValidationEngine;
+import io.reactivex.Single;
 
-public interface ValidationModule {
-    ValidationRuleCollectionRepository validationRules();
+public interface ValidationEngine {
 
-    ValidationEngine validationEngine();
+    public Single<ValidationResult> validate(String dataSetUid, String attributeOptionComboUid,
+                                             String orgUnitUid, String periodId);
+
+    public ValidationResult blockingValidate(String dataSetUid, String attributeOptionComboUid,
+                                             String orgUnitUid, String periodId);
+
 }

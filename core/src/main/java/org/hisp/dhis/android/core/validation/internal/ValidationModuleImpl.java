@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.validation.internal;
 
 import org.hisp.dhis.android.core.validation.ValidationModule;
 import org.hisp.dhis.android.core.validation.ValidationRuleCollectionRepository;
+import org.hisp.dhis.android.core.validation.engine.ValidationEngine;
 
 import javax.inject.Inject;
 
@@ -40,13 +41,22 @@ public final class ValidationModuleImpl implements ValidationModule {
 
     private final ValidationRuleCollectionRepository validationRules;
 
+    private final ValidationEngine validationEngine;
+
     @Inject
-    ValidationModuleImpl(ValidationRuleCollectionRepository validationRules) {
+    ValidationModuleImpl(ValidationRuleCollectionRepository validationRules,
+                         ValidationEngine validationEngine) {
         this.validationRules = validationRules;
+        this.validationEngine = validationEngine;
     }
 
     @Override
     public ValidationRuleCollectionRepository validationRules() {
         return validationRules;
+    }
+
+    @Override
+    public ValidationEngine validationEngine() {
+        return validationEngine;
     }
 }

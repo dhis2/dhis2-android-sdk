@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.parser.expression;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.category.CategoryOptionCombo;
+import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore;
 import org.hisp.dhis.android.core.constant.Constant;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
@@ -70,7 +71,7 @@ public class ExpressionServiceShould {
     DataElement dataElement1, dataElement2;
 
     @Mock
-    IdentifiableObjectStore<CategoryOptionCombo> categoryOptionComboStore;
+    CategoryOptionComboStore categoryOptionComboStore;
 
     @Mock
     CategoryOptionCombo categoryOptionCombo1, categoryOptionCombo2;

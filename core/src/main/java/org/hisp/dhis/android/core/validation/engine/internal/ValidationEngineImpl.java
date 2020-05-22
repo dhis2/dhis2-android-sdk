@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.validation.engine;
+package org.hisp.dhis.android.core.validation.engine.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.constant.Constant;
@@ -43,10 +43,11 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationU
 import org.hisp.dhis.android.core.parser.service.dataobject.DimensionalItemObject;
 import org.hisp.dhis.android.core.period.Period;
 import org.hisp.dhis.android.core.period.PeriodCollectionRepository;
-import org.hisp.dhis.android.core.validation.ValidationResult;
-import org.hisp.dhis.android.core.validation.ValidationResultViolation;
 import org.hisp.dhis.android.core.validation.ValidationRule;
 import org.hisp.dhis.android.core.validation.ValidationRuleCollectionRepository;
+import org.hisp.dhis.android.core.validation.engine.ValidationEngine;
+import org.hisp.dhis.android.core.validation.engine.ValidationResult;
+import org.hisp.dhis.android.core.validation.engine.ValidationResultViolation;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,7 +58,9 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-public class ValidationService {
+import io.reactivex.Single;
+
+class ValidationEngineImpl implements ValidationEngine {
 
     private final ValidationExecutor validationExecutor;
 
@@ -76,14 +79,14 @@ public class ValidationService {
     private final LinkStore<OrganisationUnitOrganisationUnitGroupLink> orgunitGroupLinkStore;
 
     @Inject
-    ValidationService(ValidationExecutor validationExecutor,
-                      ValidationRuleCollectionRepository validationRuleRepository,
-                      DataValueCollectionRepository dataValueRepository,
-                      DataSetCollectionRepository dataSetRepository,
-                      ConstantCollectionRepository constantRepository,
-                      PeriodCollectionRepository periodRepository,
-                      OrganisationUnitCollectionRepository organisationUnitRepository,
-                      LinkStore<OrganisationUnitOrganisationUnitGroupLink> orgunitGroupLinkStore) {
+    ValidationEngineImpl(ValidationExecutor validationExecutor,
+                         ValidationRuleCollectionRepository validationRuleRepository,
+                         DataValueCollectionRepository dataValueRepository,
+                         DataSetCollectionRepository dataSetRepository,
+                         ConstantCollectionRepository constantRepository,
+                         PeriodCollectionRepository periodRepository,
+                         OrganisationUnitCollectionRepository organisationUnitRepository,
+                         LinkStore<OrganisationUnitOrganisationUnitGroupLink> orgunitGroupLinkStore) {
         this.validationExecutor = validationExecutor;
         this.validationRuleRepository = validationRuleRepository;
         this.dataValueRepository = dataValueRepository;
@@ -94,8 +97,16 @@ public class ValidationService {
         this.orgunitGroupLinkStore = orgunitGroupLinkStore;
     }
 
-    public ValidationResult validate(String dataSetUid, String attributeOptionComboUid,
-                                     String orgUnitUid, String periodId) {
+    @Override
+    public Single<ValidationResult> validate(String dataSetUid, String attributeOptionComboUid,
+                                             String orgUnitUid, String periodId) {
+        return Single.fromCallable(() ->
+                blockingValidate(dataSetUid, attributeOptionComboUid, orgUnitUid,  periodId));
+    }
+
+    @Override
+    public ValidationResult blockingValidate(String dataSetUid, String attributeOptionComboUid,
+                                             String orgUnitUid, String periodId) {
         List<ValidationRule> rules = getValidationRulesByDataSet(dataSetUid);
         List<ValidationResultViolation> violations = new ArrayList<>();
 
@@ -109,7 +120,7 @@ public class ValidationService {
 
             for (ValidationRule rule : rules) {
                 violations.addAll(validationExecutor.evaluateRule(rule, organisationUnit, valueMap, constantMap,
-                                orgunitGroupMap, days));
+                        orgunitGroupMap, days));
             }
         }
 
@@ -152,7 +163,7 @@ public class ValidationService {
                 .byDeleted().isFalse()
                 .blockingGet();
 
-        return ValidationServiceHelper.getValueMap(dataValues);
+        return ValidationEngineHelper.getValueMap(dataValues);
     }
 
     private Map<String, Constant> getConstantMap() {

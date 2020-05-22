@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.parser.service;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.category.CategoryOptionCombo;
+import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.constant.Constant;
 import org.hisp.dhis.android.core.dataelement.DataElement;
@@ -53,6 +53,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.inject.Inject;
+
 import static org.hisp.dhis.android.core.parser.expression.ParserUtils.COMMON_EXPRESSION_ITEMS;
 import static org.hisp.dhis.android.core.parser.expression.ParserUtils.ITEM_EVALUATE;
 import static org.hisp.dhis.android.core.parser.expression.ParserUtils.ITEM_GET_DESCRIPTIONS;
@@ -67,13 +69,14 @@ import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.OUG_BRACE;
 public class ExpressionService {
 
     private IdentifiableObjectStore<DataElement> dataElementStore;
-    private IdentifiableObjectStore<CategoryOptionCombo> categoryOptionComboStore;
+    private CategoryOptionComboStore categoryOptionComboStore;
     private IdentifiableObjectStore<OrganisationUnitGroup> organisationUnitGroupStore;
 
     private final Map<Integer, ExpressionItem> validationRuleExpressionItems;
 
+    @Inject
     public ExpressionService(IdentifiableObjectStore<DataElement> dataElementStore,
-                             IdentifiableObjectStore<CategoryOptionCombo> categoryOptionComboStore,
+                             CategoryOptionComboStore categoryOptionComboStore,
                              IdentifiableObjectStore<OrganisationUnitGroup> organisationUnitGroupStore) {
         this.dataElementStore = dataElementStore;
         this.categoryOptionComboStore = categoryOptionComboStore;

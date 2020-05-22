@@ -37,12 +37,6 @@ public abstract class ValidationResult {
 
     public abstract ValidationResultStatus status();
 
-    public abstract String period();
-
-    public abstract String organisationUnitUid();
-
-    public abstract String attributeOptionComboUid();
-
     public abstract List<ValidationResultViolation> violations();
 
     public static Builder builder() {
@@ -55,12 +49,6 @@ public abstract class ValidationResult {
     public abstract static class Builder {
 
         public abstract Builder status(ValidationResultStatus status);
-
-        public abstract Builder period(String period);
-
-        public abstract Builder organisationUnitUid(String organisationUnitUid);
-
-        public abstract Builder attributeOptionComboUid(String attributeOptionComboUid);
 
         public abstract Builder violations(List<ValidationResultViolation> violations);
 

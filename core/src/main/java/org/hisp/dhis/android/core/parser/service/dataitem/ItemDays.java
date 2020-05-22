@@ -45,9 +45,8 @@ import static org.hisp.dhis.android.core.parser.expression.ParserUtils.DOUBLE_VA
 public class ItemDays implements ExpressionItem {
 
     @Override
-    public Object getDescription( ExprContext ctx, CommonExpressionVisitor visitor )
-    {
-        visitor.getItemDescriptions().put( ctx.getText(), "[Number of days]" );
+    public Object getDescription(ExprContext ctx, CommonExpressionVisitor visitor) {
+        visitor.getItemDescriptions().put(ctx.getText(), "[Number of days]");
 
         return DOUBLE_VALUE_IF_NULL;
     }

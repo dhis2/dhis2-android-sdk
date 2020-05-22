@@ -41,8 +41,8 @@ import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
  *
  * @author Jim Grace
  */
-public class ItemOrgUnitGroup
-        implements ExpressionItem {
+public class ItemOrgUnitGroup implements ExpressionItem {
+
     @Override
     public Object getDescription(ExprContext ctx, CommonExpressionVisitor visitor) {
         OrganisationUnitGroup orgUnitGroup = visitor.getOrganisationUnitGroupStore().selectByUid(ctx.uid0.getText());

@@ -49,8 +49,6 @@ import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_ValidationRule.Builder.class)
 public abstract class ValidationRule extends BaseNameableObject implements CoreObject {

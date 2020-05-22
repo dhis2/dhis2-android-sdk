@@ -40,6 +40,12 @@ public abstract class ValidationResultViolation {
 
     public abstract ValidationRule validationRule();
 
+    public abstract String period();
+
+    public abstract String organisationUnitUid();
+
+    public abstract String attributeOptionComboUid();
+
     public abstract Set<DataElementOperand> dataElementUids();
 
     public abstract Double leftSideValue();
@@ -60,6 +66,12 @@ public abstract class ValidationResultViolation {
     public abstract static class Builder {
 
         public abstract Builder validationRule(ValidationRule validationRule);
+
+        public abstract Builder period(String period);
+
+        public abstract Builder organisationUnitUid(String organisationUnitUid);
+
+        public abstract Builder attributeOptionComboUid(String attributeOptionComboUid);
 
         public abstract Builder dataElementUids(Set<DataElementOperand> dataElementUids);
 

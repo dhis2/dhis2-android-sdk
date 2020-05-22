@@ -32,10 +32,10 @@ import io.reactivex.Single;
 
 public interface ValidationEngine {
 
-    public Single<ValidationResult> validate(String dataSetUid, String attributeOptionComboUid,
-                                             String orgUnitUid, String periodId);
+    Single<ValidationResult> validate(String dataSetUid, String periodId,
+                                      String orgUnitUid, String attributeOptionComboUid);
 
-    public ValidationResult blockingValidate(String dataSetUid, String attributeOptionComboUid,
-                                             String orgUnitUid, String periodId);
+    ValidationResult blockingValidate(String dataSetUid, String periodId,
+                                      String orgUnitUid, String attributeOptionComboUid);
 
 }

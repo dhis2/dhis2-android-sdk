@@ -80,7 +80,7 @@ public class CommonExpressionVisitor
     /**
      * Used to collect the string replacements to build a description.
      */
-    private Map<String, String> itemDescriptions = new HashMap<>();
+    private final Map<String, String> itemDescriptions = new HashMap<>();
 
     /**
      * Constants to use in evaluating an expression.

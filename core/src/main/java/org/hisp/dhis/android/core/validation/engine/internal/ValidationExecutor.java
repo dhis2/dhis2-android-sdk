@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.parser.service.ExpressionService;
 import org.hisp.dhis.android.core.parser.service.dataobject.DimensionalItemObject;
+import org.hisp.dhis.android.core.period.Period;
 import org.hisp.dhis.android.core.validation.MissingValueStrategy;
 import org.hisp.dhis.android.core.validation.ValidationRule;
 import org.hisp.dhis.android.core.validation.ValidationRuleOperator;
@@ -44,6 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -63,15 +65,18 @@ class ValidationExecutor {
                                                  Map<DimensionalItemObject, Double> valueMap,
                                                  Map<String, Constant> constantMap,
                                                  Map<String, Integer> orgunitGroupMap,
-                                                 Integer days) {
+                                                 Period period,
+                                                 String attributeOptionComboId) {
 
         List<ValidationResultViolation> violations = new ArrayList<>();
 
-        if (!rule.organisationUnitLevels().isEmpty() && organisationUnit != null) {
-            if (!rule.organisationUnitLevels().contains(organisationUnit.level())) {
-                return violations;
-            }
+        if (!rule.organisationUnitLevels().isEmpty() &&
+                organisationUnit != null &&
+                !rule.organisationUnitLevels().contains(organisationUnit.level())) {
+            return violations;
         }
+
+        Integer days = getDays(period);
 
         Double leftSide = (Double) expressionService.getExpressionValue(rule.leftSide().expression(), valueMap,
                 constantMap, orgunitGroupMap, days, rule.leftSide().missingValueStrategy());
@@ -85,6 +90,9 @@ class ValidationExecutor {
                     constantMap);
 
             violations.add(ValidationResultViolation.builder()
+                    .period(period.periodId())
+                    .organisationUnitUid(organisationUnit.uid())
+                    .attributeOptionComboUid(attributeOptionComboId)
                     .dataElementUids(getAllDataElementOperands(rule))
                     .validationRule(rule)
                     .leftSideValue(leftSide)
@@ -134,5 +142,10 @@ class ValidationExecutor {
                 expressionService.getDataElementOperands(rule.leftSide().expression()),
                 expressionService.getDataElementOperands(rule.leftSide().expression())
         );
+    }
+
+    private Integer getDays(Period period) {
+        long diff = period.endDate().getTime() - period.startDate().getTime();
+        return (int) TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
     }
 }

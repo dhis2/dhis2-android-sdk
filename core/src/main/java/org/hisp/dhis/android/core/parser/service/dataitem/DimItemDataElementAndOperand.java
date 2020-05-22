@@ -55,19 +55,19 @@ public class DimItemDataElementAndOperand extends DimensionalItem {
         DataElement dataElement = visitor.getDataElementStore().selectByUid(ctx.uid0.getText());
 
         if (dataElement != null) {
-            String description = dataElement.displayName();
+            StringBuilder description = new StringBuilder(dataElement.displayName());
 
             if (isDataElementOperandSyntax(ctx)) {
                 CategoryOptionCombo categoryOptionCombo =
                         visitor.getCategoryOptionComboStore().selectByUid(ctx.uid1.getText());
 
-                String cocDescription = categoryOptionCombo != null ? categoryOptionCombo.displayName() :
-                        ctx.uid1.getText();
+                String cocDescription = categoryOptionCombo == null ? ctx.uid1.getText() :
+                        categoryOptionCombo.displayName();
 
-                description = description + " (" + cocDescription + ")";
+                description.append(" (").append(cocDescription).append(')');
             }
 
-            visitor.getItemDescriptions().put(ctx.getText(), description);
+            visitor.getItemDescriptions().put(ctx.getText(), description.toString());
         }
 
         return DOUBLE_VALUE_IF_NULL;

@@ -42,16 +42,19 @@ public class SettingModuleDownloader implements UntypedModuleDownloader {
     private final GeneralSettingCall generalSettingCall;
     private final DataSetSettingCall dataSetSettingCall;
     private final ProgramSettingCall programSettingCall;
+    private final UserSettingsCall userSettingsCall;
 
     @Inject
     SettingModuleDownloader(SystemSettingCall systemSettingCall,
                             GeneralSettingCall generalSettingCall,
                             DataSetSettingCall dataSetSettingCall,
-                            ProgramSettingCall programSettingCall) {
+                            ProgramSettingCall programSettingCall,
+                            UserSettingsCall userSettingsCall) {
         this.systemSettingCall = systemSettingCall;
         this.generalSettingCall = generalSettingCall;
         this.dataSetSettingCall = dataSetSettingCall;
         this.programSettingCall = programSettingCall;
+        this.userSettingsCall = userSettingsCall;
     }
 
     @Override
@@ -60,6 +63,7 @@ public class SettingModuleDownloader implements UntypedModuleDownloader {
             generalSettingCall.getCompletable(false).blockingAwait();
             dataSetSettingCall.getCompletable(false).blockingAwait();
             programSettingCall.getCompletable(false).blockingAwait();
+            userSettingsCall.download();
             systemSettingCall.call();
         });
     }

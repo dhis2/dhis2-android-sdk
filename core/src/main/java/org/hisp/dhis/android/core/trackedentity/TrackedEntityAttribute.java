@@ -121,6 +121,10 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
     @JsonProperty()
     public abstract String formName();
 
+    @Nullable
+    @JsonProperty()
+    public abstract String displayFormName();
+
     public static Builder builder() {
         return new $$AutoValue_TrackedEntityAttribute.Builder();
     }
@@ -171,11 +175,15 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
 
         public abstract Builder formName(String formName);
 
+        public abstract Builder displayFormName(String displayFormName);
+
         abstract TrackedEntityAttribute autoBuild();
 
         // Auxiliary fields
         abstract Access access();
         abstract ObjectStyle style();
+        abstract String displayName();
+        abstract String displayFormName();
 
         public TrackedEntityAttribute build() {
             try {
@@ -188,6 +196,10 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
                 style();
             } catch (IllegalStateException e) {
                 style(ObjectStyle.builder().build());
+            }
+
+            if (displayFormName() == null) {
+                displayFormName(displayName());
             }
 
             return autoBuild();

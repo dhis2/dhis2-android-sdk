@@ -26,29 +26,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.testapp.settings;
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
+import org.hisp.dhis.android.core.settings.UserSettings;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import java.io.IOException;
-import java.text.ParseException;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+@RunWith(D2JunitRunner.class)
+public class UserSettingsObjectRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
-public class UserSettingsShould extends BaseObjectShould implements ObjectShould {
-
-    public UserSettingsShould() {
-        super("settings/user_settings.json");
-    }
-
-    @Override
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        UserSettings settings = objectMapper.readValue(jsonStream, UserSettings.class);
-
-        assertThat(settings.keyUiLocale()).isEqualTo("es");
-        assertThat(settings.keyDbLocale()).isEqualTo("en");
+    public void find_user_settings() {
+        UserSettings userSettings = d2.settingModule().userSettings().blockingGet();
+        assertThat(userSettings.keyUiLocale(), is("es"));
+        assertThat(userSettings.keyDbLocale(), is("en"));
     }
 }

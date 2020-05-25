@@ -26,29 +26,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.data.settings;
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+import org.hisp.dhis.android.core.settings.UserSettings;
 
-import java.io.IOException;
-import java.text.ParseException;
+public class UserSettingsSamples {
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
-
-public class UserSettingsShould extends BaseObjectShould implements ObjectShould {
-
-    public UserSettingsShould() {
-        super("settings/user_settings.json");
-    }
-
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        UserSettings settings = objectMapper.readValue(jsonStream, UserSettings.class);
-
-        assertThat(settings.keyUiLocale()).isEqualTo("es");
-        assertThat(settings.keyDbLocale()).isEqualTo("en");
+    public static UserSettings getUserSettings() {
+        return UserSettings.builder()
+                .id(1L)
+                .keyUiLocale("key_ui_locale")
+                .keyDbLocale("key_db_locale")
+                .build();
     }
 }

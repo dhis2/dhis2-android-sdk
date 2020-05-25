@@ -26,29 +26,27 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings.internal;
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.settings.UserSettingsSamples;
+import org.hisp.dhis.android.core.settings.UserSettings;
+import org.hisp.dhis.android.core.settings.UserSettingsTableInfo;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.runner.RunWith;
 
-import java.io.IOException;
-import java.text.ParseException;
+@RunWith(D2JunitRunner.class)
+public class UserSettingsStoreIntegrationShould
+        extends ObjectStoreAbstractIntegrationShould<UserSettings> {
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
-
-public class UserSettingsShould extends BaseObjectShould implements ObjectShould {
-
-    public UserSettingsShould() {
-        super("settings/user_settings.json");
+    public UserSettingsStoreIntegrationShould() {
+        super(UserSettingsStore.create(TestDatabaseAdapterFactory.get()), UserSettingsTableInfo.TABLE_INFO,
+                TestDatabaseAdapterFactory.get());
     }
 
     @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        UserSettings settings = objectMapper.readValue(jsonStream, UserSettings.class);
-
-        assertThat(settings.keyUiLocale()).isEqualTo("es");
-        assertThat(settings.keyDbLocale()).isEqualTo("en");
+    protected UserSettings buildObject() {
+        return UserSettingsSamples.getUserSettings();
     }
 }

@@ -37,14 +37,18 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.CoreObject;
 
+import javax.annotation.Nullable;
+
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_UserSettings.Builder.class)
 public abstract class UserSettings implements CoreObject {
 
     @JsonProperty()
+    @Nullable
     public abstract String keyUiLocale();
 
     @JsonProperty()
+    @Nullable
     public abstract String keyDbLocale();
 
     public static UserSettings create(Cursor cursor) {

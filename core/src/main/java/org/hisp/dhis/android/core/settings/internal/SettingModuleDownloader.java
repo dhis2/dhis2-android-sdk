@@ -63,7 +63,7 @@ public class SettingModuleDownloader implements UntypedModuleDownloader {
             generalSettingCall.getCompletable(false).blockingAwait();
             dataSetSettingCall.getCompletable(false).blockingAwait();
             programSettingCall.getCompletable(false).blockingAwait();
-            userSettingsCall.download();
+            userSettingsCall.download().blockingGet();
             systemSettingCall.call();
         });
     }

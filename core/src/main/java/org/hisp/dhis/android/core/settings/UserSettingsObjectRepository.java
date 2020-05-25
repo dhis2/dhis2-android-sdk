@@ -25,17 +25,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.settings;
 
-public interface SettingModule {
-    SystemSettingCollectionRepository systemSetting();
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl;
+import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall;
 
-    GeneralSettingObjectRepository generalSetting();
+import java.util.List;
 
-    DataSetSettingsObjectRepository dataSetSetting();
-    
-    ProgramSettingsObjectRepository programSetting();
+import javax.inject.Inject;
 
-    UserSettingsObjectRepository userSettings();
+import dagger.Reusable;
+
+@Reusable
+public class UserSettingsObjectRepository extends ReadOnlyAnyObjectWithDownloadRepositoryImpl<UserSettings>
+        implements ReadOnlyWithDownloadObjectRepository<UserSettings> {
+
+    private final ObjectWithoutUidStore<UserSettings> store;
+
+    @Inject
+    UserSettingsObjectRepository(ObjectWithoutUidStore<UserSettings> store,
+                                 GeneralSettingCall generalSettingCall) {
+        super(generalSettingCall);
+        this.store = store;
+    }
+
+    @Override
+    public UserSettings blockingGet() {
+        List<UserSettings> settings = store.selectAll();
+
+        if (settings.isEmpty()) {
+            return null;
+        } else {
+            return settings.get(0);
+        }
+    }
 }

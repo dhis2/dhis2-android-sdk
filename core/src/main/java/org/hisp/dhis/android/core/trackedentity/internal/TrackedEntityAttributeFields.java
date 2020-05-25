@@ -69,7 +69,8 @@ public final class TrackedEntityAttributeFields {
                     fh.nestedFieldWithUid(Columns.OPTION_SET),
                     fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyleFields.allFields),
                     fh.<Access>nestedField(ACCESS).with(AccessFields.read),
-                    fh.<String>field(Columns.FORM_NAME)
+                    fh.<String>field(Columns.FORM_NAME),
+                    fh.<String>field(Columns.DISPLAY_FORM_NAME)
                     ).build();
 
     private TrackedEntityAttributeFields() {

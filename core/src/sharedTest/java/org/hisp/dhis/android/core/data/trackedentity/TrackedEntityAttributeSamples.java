@@ -57,6 +57,7 @@ public class TrackedEntityAttributeSamples {
                 .inherit(Boolean.TRUE)
                 .fieldMask("XXXXX")
                 .formName("form_name")
+                .displayFormName("display_form_name")
                 .build();
     }
 }

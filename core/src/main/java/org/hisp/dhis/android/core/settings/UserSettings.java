@@ -44,6 +44,9 @@ public abstract class UserSettings implements CoreObject {
     @JsonProperty()
     public abstract String keyUiLocale();
 
+    @JsonProperty()
+    public abstract String keyDbLocale();
+
     public static UserSettings create(Cursor cursor) {
         return $AutoValue_UserSettings.createFromCursor(cursor);
     }
@@ -58,6 +61,8 @@ public abstract class UserSettings implements CoreObject {
         public abstract Builder id(Long id);
 
         public abstract Builder keyUiLocale(String keyUiLocale);
+
+        public abstract Builder keyDbLocale(String keyDbLocale);
 
         public abstract UserSettings build();
     }

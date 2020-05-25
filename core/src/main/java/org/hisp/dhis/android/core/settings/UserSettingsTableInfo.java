@@ -52,18 +52,13 @@ public final class UserSettingsTableInfo {
 
     public static class Columns extends CoreColumns {
         public static final String KEY_UI_LOCALE = "keyUiLocale";
+        public static final String KEY_DB_LOCALE = "keyDbLocale";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    KEY_UI_LOCALE
-            );
-        }
-
-        @Override
-        public String[] whereUpdate() {
-            return CollectionsHelper.appendInNewArray(super.whereUpdate(),
-                    KEY_UI_LOCALE
+                    KEY_UI_LOCALE,
+                    KEY_DB_LOCALE
             );
         }
     }

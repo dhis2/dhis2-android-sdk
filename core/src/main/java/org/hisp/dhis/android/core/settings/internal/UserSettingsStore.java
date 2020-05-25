@@ -40,13 +40,12 @@ final class UserSettingsStore {
 
     private static final StatementBinder<UserSettings> BINDER = (o, w) -> {
         w.bind(1, o.keyUiLocale());
+        w.bind(2, o.keyDbLocale());
     };
 
-    private static final WhereStatementBinder<UserSettings> WHERE_UPDATE_BINDER
-            = (o, w) -> w.bind(2, o.keyUiLocale());
+    private static final WhereStatementBinder<UserSettings> WHERE_UPDATE_BINDER = (o, w) -> {};
 
-    private static final WhereStatementBinder<UserSettings> WHERE_DELETE_BINDER
-            = (o, w) -> w.bind(1, o.keyUiLocale());
+    private static final WhereStatementBinder<UserSettings> WHERE_DELETE_BINDER = (o, w) -> {};
 
     private UserSettingsStore() {}
 

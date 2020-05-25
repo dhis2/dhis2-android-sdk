@@ -62,4 +62,6 @@ public interface APIDownloader {
                                                 Function<String, Single<Payload<P>>> downloader);
 
     <P> Single<List<P>> download(Handler<P> handler, Single<Payload<P>> downloader);
+
+    <P> Single<P> downloadObject(Handler<P> handler, Single<P> downloader);
 }

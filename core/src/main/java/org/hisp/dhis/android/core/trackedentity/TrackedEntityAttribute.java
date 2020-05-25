@@ -182,8 +182,6 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
         // Auxiliary fields
         abstract Access access();
         abstract ObjectStyle style();
-        abstract String displayName();
-        abstract String displayFormName();
 
         public TrackedEntityAttribute build() {
             try {
@@ -196,10 +194,6 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
                 style();
             } catch (IllegalStateException e) {
                 style(ObjectStyle.builder().build());
-            }
-
-            if (displayFormName() == null) {
-                displayFormName(displayName());
             }
 
             return autoBuild();

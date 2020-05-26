@@ -26,50 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.testapp.settings;
 
-import android.database.Cursor;
+import org.hisp.dhis.android.core.settings.ProgramSetting;
+import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
+import org.mockito.Mock;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
+public class ProgramSettingPublicAccessShould extends BasePublicAccessShould<ProgramSetting> {
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    @Mock
+    private ProgramSetting object;
 
-import javax.annotation.Nullable;
-
-@AutoValue
-@JsonDeserialize(builder = $$AutoValue_UserSettings.Builder.class)
-public abstract class UserSettings implements CoreObject {
-
-    @JsonProperty()
-    @Nullable
-    public abstract String keyUiLocale();
-
-    @JsonProperty()
-    @Nullable
-    public abstract String keyDbLocale();
-
-    public static UserSettings create(Cursor cursor) {
-        return $AutoValue_UserSettings.createFromCursor(cursor);
+    @Override
+    public ProgramSetting object() {
+        return object;
     }
 
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new $AutoValue_UserSettings.Builder();
+    @Override
+    public void has_public_create_method() {
+        ProgramSetting.create(null);
     }
 
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-        public abstract Builder id(Long id);
+    @Override
+    public void has_public_builder_method() {
+        ProgramSetting.builder();
+    }
 
-        public abstract Builder keyUiLocale(String keyUiLocale);
-
-        public abstract Builder keyDbLocale(String keyDbLocale);
-
-        public abstract UserSettings build();
+    @Override
+    public void has_public_to_builder_method() {
+        object().toBuilder();
     }
 }

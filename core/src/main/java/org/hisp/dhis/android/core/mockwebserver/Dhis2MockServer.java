@@ -237,8 +237,8 @@ public class Dhis2MockServer {
         enqueueMockResponse(SYSTEM_INFO_JSON);
         enqueueMockResponse(GENERAL_SETTINGS_JSON);
         enqueueMockResponse(DATASET_SETTINGS_JSON);
-        enqueueMockResponse(USER_SETTINGS_JSON);
         server.enqueue(getErrorResponse());
+        enqueueMockResponse(USER_SETTINGS_JSON);
         enqueueMockResponse(SYSTEM_SETTINGS_JSON);
         enqueueMockResponse(CONSTANTS_JSON);
         enqueueMockResponse(USER_JSON);

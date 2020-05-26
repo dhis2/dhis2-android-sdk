@@ -100,7 +100,7 @@ class ValidationEngineImpl implements ValidationEngine {
     public Single<ValidationResult> validate(String dataSetUid, String periodId,
                                              String orgUnitUid, String attributeOptionComboUid) {
         return Single.fromCallable(() ->
-                blockingValidate(dataSetUid, attributeOptionComboUid, orgUnitUid,  periodId));
+                blockingValidate(dataSetUid, periodId, orgUnitUid,  attributeOptionComboUid));
     }
 
     @Override

@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.datavalue.DataValue
 object DataValueSamples {
 
     fun getDataValue(organisationUnit: String, dataElement: String, period: String, categoryOptionCombo: String,
-        attributeOptionCombo: String): DataValue {
+        attributeOptionCombo: String, value: String): DataValue {
 
         return DataValue.builder()
                 .id(1L)
@@ -46,7 +46,7 @@ object DataValueSamples {
                 .organisationUnit(organisationUnit)
                 .categoryOptionCombo(categoryOptionCombo)
                 .attributeOptionCombo(attributeOptionCombo)
-                .value("value")
+                .value(value)
                 .storedBy("storedBy")
                 .created(CREATED)
                 .lastUpdated(LAST_UPDATED)

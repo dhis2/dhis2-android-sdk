@@ -67,7 +67,7 @@ internal class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDat
                     (0 until iterations).map {
                         val (period, ou) = periodOrgUnits[it]
                         DataValueSamples.getDataValue(ou.uid(), dataElement.uid(), period.periodId()!!, categoryOptionCombo.uid(),
-                                metadata.categoryOptionCombos.first().uid())
+                                metadata.categoryOptionCombos.first().uid(), random.nextDouble().toString())
                     }
                 }
             }
@@ -117,7 +117,7 @@ internal class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDat
     fun generateTrackedEntityAttributeValues(trackedEntityAttributes: List<TrackedEntityAttribute>, teis: List<TrackedEntityInstance>): List<TrackedEntityAttributeValue> {
         return trackedEntityAttributes.flatMap { tea ->
             teis.map { tei ->
-                TrackedEntityAttributeValueSamples.get(tea.uid(), tei.uid())
+                TrackedEntityAttributeValueSamples.get(tea.uid(), tei.uid(), generateRandomStringValue())
             }
         }
     }
@@ -125,9 +125,13 @@ internal class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDat
     fun generateTrackedEntityDataValues(dataElements: List<DataElement>, events: List<Event>): List<TrackedEntityDataValue> {
         return dataElements.flatMap { de ->
             events.map { event ->
-                TrackedEntityDataValueSamples.get(de.uid(), event.uid())
+                TrackedEntityDataValueSamples.get(de.uid(), event.uid(), generateRandomStringValue())
             }
         }
+    }
+
+    private fun generateRandomStringValue(): String {
+        return uidGenerator.generate()
     }
 
     private fun getRandomDateInLastYear(): Date {

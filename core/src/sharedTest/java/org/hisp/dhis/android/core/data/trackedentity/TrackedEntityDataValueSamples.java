@@ -37,10 +37,10 @@ import java.util.Date;
 public class TrackedEntityDataValueSamples {
 
     public static TrackedEntityDataValue get() {
-        return get("sWoqcoByYmD", "event_uid");
+        return get("sWoqcoByYmD", "event_uid", "value");
     }
 
-    public static TrackedEntityDataValue get(String dataElement, String event) {
+    public static TrackedEntityDataValue get(String dataElement, String event, String value) {
         return TrackedEntityDataValue.builder()
                 .id(1L)
                 .event(event)
@@ -48,7 +48,7 @@ public class TrackedEntityDataValueSamples {
                 .lastUpdated(getDate("2015-10-14T13:36:53.063"))
                 .dataElement(dataElement)
                 .storedBy("username")
-                .value("value")
+                .value(value)
                 .providedElsewhere(Boolean.TRUE)
                 .build();
     }

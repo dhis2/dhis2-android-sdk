@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.trackedentity.search;
 
+import com.google.common.base.Joiner;
+
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper;
@@ -45,8 +47,11 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTable
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo;
 import org.hisp.dhis.android.core.user.AuthenticatedUserTableInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import static org.hisp.dhis.android.core.common.IdentifiableColumns.CREATED;
+import static org.hisp.dhis.android.core.common.IdentifiableColumns.LAST_UPDATED;
 import static org.hisp.dhis.android.core.common.IdentifiableColumns.UID;
 
 @SuppressWarnings({"PMD.GodClass"})
@@ -131,17 +136,7 @@ final class TrackedEntityInstanceLocalQueryHelper {
             queryStr += " WHERE " + where.build();
         }
 
-        // TODO In case a program uid is provided, the server orders by enrollmentStatus.
-        String order1 = CollectionsHelper.commaAndSpaceSeparatedArrayValues(
-                CollectionsHelper.withSingleQuotationMarksArray(
-                        EnumHelper.asStringList(State.TO_POST, State.TO_UPDATE, State.UPLOADING)));
-        String order2 = CollectionsHelper.commaAndSpaceSeparatedArrayValues(
-                CollectionsHelper.withSingleQuotationMarksArray(
-                        EnumHelper.asStringList(State.SYNCED, State.SYNCED_VIA_SMS, State.SENT_VIA_SMS)));
-        queryStr += " ORDER BY CASE " +
-                "WHEN " + TEI_STATE + " IN (" + order1 + ") THEN 1 " +
-                "WHEN " + TEI_STATE + " IN (" + order2 + ") THEN 2 ELSE 3 END ASC, " +
-                TEI_LAST_UPDATED + " DESC ";
+        queryStr += orderByClause(scope);
 
         if (limit > 0) {
             queryStr += " LIMIT " + limit;
@@ -279,6 +274,48 @@ final class TrackedEntityInstanceLocalQueryHelper {
             default:
                 break;
         }
+    }
+
+    private static String orderByClause(TrackedEntityInstanceQueryRepositoryScope scope) {
+        List<String> orderClauses = new ArrayList<>();
+        for (TrackedEntityInstanceQueryScopeOrderByItem item : scope.order()) {
+            switch (item.column().type()) {
+                case CREATED:
+                    orderClauses.add(dot(TEI_ALIAS, CREATED) + " " + item.direction().name());
+                    break;
+                case LAST_UPDATED:
+                    orderClauses.add(dot(TEI_ALIAS, LAST_UPDATED) + " " + item.direction().name());
+                    break;
+                case ATTRIBUTE:
+                    // Trick to put null values at the end of the list
+                    String attOrder = String.format("IFNULL((SELECT %s FROM %s WHERE %s = %s AND %s = %s), 'zzzzz')",
+                            TrackedEntityAttributeValueTableInfo.Columns.VALUE,
+                            TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(),
+                            TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
+                            CollectionsHelper.withSingleQuotationMarks(item.column().apiName()),
+                            TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
+                            dot(TEI_ALIAS, UID));
+                    orderClauses.add(attOrder + " " + item.direction().name());
+                    break;
+            }
+        }
+        orderClauses.add(getOrderByState());
+
+        return " ORDER BY " + Joiner.on(", ").join(orderClauses);
+    }
+
+    private static String getOrderByState() {
+        // TODO In case a program uid is provided, the server orders by enrollmentStatus.
+        String order1 = CollectionsHelper.commaAndSpaceSeparatedArrayValues(
+                CollectionsHelper.withSingleQuotationMarksArray(
+                        EnumHelper.asStringList(State.TO_POST, State.TO_UPDATE, State.UPLOADING)));
+        String order2 = CollectionsHelper.commaAndSpaceSeparatedArrayValues(
+                CollectionsHelper.withSingleQuotationMarksArray(
+                        EnumHelper.asStringList(State.SYNCED, State.SYNCED_VIA_SMS, State.SENT_VIA_SMS)));
+        return " CASE " +
+                "WHEN " + TEI_STATE + " IN (" + order1 + ") THEN 1 " +
+                "WHEN " + TEI_STATE + " IN (" + order2 + ") THEN 2 ELSE 3 END ASC, " +
+                TEI_LAST_UPDATED + " DESC ";
     }
 
     private static String dot(String item1, String item2) {

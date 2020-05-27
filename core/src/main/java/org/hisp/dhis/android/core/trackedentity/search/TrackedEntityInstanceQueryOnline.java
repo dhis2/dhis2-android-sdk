@@ -32,6 +32,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
+import com.google.common.base.Joiner;
 
 import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
 import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat;
@@ -84,6 +85,9 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
     @Nullable
     abstract AssignedUserMode assignedUserMode();
 
+    @Nullable
+    abstract String order();
+
     String formattedProgramStartDate() {
         return programStartDate() == null ? null : QUERY_FORMAT.format(programStartDate());
     }
@@ -116,13 +120,14 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
                 .trackedEntityType(scope.trackedEntityType())
                 .includeDeleted(false)
                 .assignedUserMode(scope.assignedUserMode())
+                .order(toAPIOrderFormat(scope.order()))
                 .page(1)
                 .pageSize(50)
                 .paging(true)
                 .build();
     }
 
-    static List<String> toAPIFilterFormat(List<RepositoryScopeFilterItem> items) {
+    private static List<String> toAPIFilterFormat(List<RepositoryScopeFilterItem> items) {
         Map<String, String> itemMap = new HashMap<>();
         for (RepositoryScopeFilterItem item : items) {
             String filterClause = ":" + item.operator().getApiUpperOperator() + ":" + item.value();
@@ -137,6 +142,14 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
             itemList.add(entry.getKey() + entry.getValue());
         }
         return itemList;
+    }
+
+    private static String toAPIOrderFormat(List<TrackedEntityInstanceQueryScopeOrderByItem> orders) {
+        List<String> orderList = new ArrayList<>();
+        for (TrackedEntityInstanceQueryScopeOrderByItem order : orders) {
+            orderList.add(order.toAPIString());
+        }
+        return Joiner.on(',').join(orderList);
     }
 
     @AutoValue.Builder
@@ -162,6 +175,8 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
         abstract Builder includeDeleted(Boolean includeDeleted);
 
         abstract Builder assignedUserMode(AssignedUserMode assignedUserMode);
+
+        abstract Builder order(String order);
 
         abstract TrackedEntityInstanceQueryOnline build();
     }

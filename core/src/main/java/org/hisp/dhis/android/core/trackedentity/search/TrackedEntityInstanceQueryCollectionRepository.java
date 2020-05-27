@@ -41,8 +41,10 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqLikeItemF
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ListFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ScopedFilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeOrderByItem;
 import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -73,7 +75,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     private final TrackedEntityInstanceQueryCallFactory onlineCallFactory;
     private final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders;
     private final ScopedFilterConnectorFactory<TrackedEntityInstanceQueryCollectionRepository,
-                    TrackedEntityInstanceQueryRepositoryScope> connectorFactory;
+            TrackedEntityInstanceQueryRepositoryScope> connectorFactory;
     private final DHISVersionManager versionManager;
 
     private final TrackedEntityInstanceQueryRepositoryScope scope;
@@ -143,7 +145,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     /**
      * Add an "attribute" filter to the query. If this method is call several times, conditions are appended with
      * AND connector.
-     *
+     * <p>
      * For example,
      * <pre><br>.byAttribute("uid1").eq("value1")<br>.byAttribute("uid2").eq("value2")<br></pre>
      * means that the instance must have attribute "uid1" with value "value1" <b>AND</b> attribute "uid2" with
@@ -153,7 +155,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @return Repository connector
      */
     public EqLikeItemFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-                TrackedEntityInstanceQueryRepositoryScope> byAttribute(String attributeId) {
+            TrackedEntityInstanceQueryRepositoryScope> byAttribute(String attributeId) {
         return connectorFactory.eqLikeItemC(attributeId, filterItem -> {
             List<RepositoryScopeFilterItem> attributes = new ArrayList<>(scope.attribute());
             attributes.add(filterItem);
@@ -164,7 +166,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     /**
      * Add an "filter" to the query. If this method is call several times, conditions are appended with
      * AND connector.
-     *
+     * <p>
      * For example,
      * <pre><br>.byFilter("uid1").eq("value1")<br>.byFilter("uid2").eq("value2")<br></pre>
      * means that the instance must have attribute "uid1" with value "value1" <b>AND</b> attribute "uid2" with
@@ -198,7 +200,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @return Repository connector
      */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-                TrackedEntityInstanceQueryRepositoryScope, String> byProgram() {
+            TrackedEntityInstanceQueryRepositoryScope, String> byProgram() {
         return connectorFactory.eqConnector(programUid -> scope.toBuilder().program(programUid).build());
     }
 
@@ -208,7 +210,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @return Repository connector
      */
     public ListFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-                TrackedEntityInstanceQueryRepositoryScope, String> byOrgUnits() {
+            TrackedEntityInstanceQueryRepositoryScope, String> byOrgUnits() {
         return connectorFactory.listConnector(orgunitUids -> scope.toBuilder().orgUnits(orgunitUids).build());
     }
 
@@ -228,7 +230,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @return Repository connector
      */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-                TrackedEntityInstanceQueryRepositoryScope, Date> byProgramStartDate() {
+            TrackedEntityInstanceQueryRepositoryScope, Date> byProgramStartDate() {
         return connectorFactory.eqConnector(date -> scope.toBuilder().programStartDate(date).build());
     }
 
@@ -238,7 +240,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @return Repository connector
      */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-                TrackedEntityInstanceQueryRepositoryScope, Date> byProgramEndDate() {
+            TrackedEntityInstanceQueryRepositoryScope, Date> byProgramEndDate() {
         return connectorFactory.eqConnector(date -> scope.toBuilder().programEndDate(date).build());
     }
 
@@ -248,7 +250,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @return Repository connector
      */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-                TrackedEntityInstanceQueryRepositoryScope, String> byTrackedEntityType() {
+            TrackedEntityInstanceQueryRepositoryScope, String> byTrackedEntityType() {
         return connectorFactory.eqConnector(type -> scope.toBuilder().trackedEntityType(type).build());
     }
 
@@ -289,6 +291,21 @@ public final class TrackedEntityInstanceQueryCollectionRepository
                 return scope;
             }
         });
+    }
+
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+            TrackedEntityInstanceQueryRepositoryScope, RepositoryScope.OrderByDirection> orderByCreated() {
+        return orderConnector(TrackedEntityInstanceQueryScopeOrderColumn.CREATED);
+    }
+
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+            TrackedEntityInstanceQueryRepositoryScope, RepositoryScope.OrderByDirection> orderByLastUpdated() {
+        return orderConnector(TrackedEntityInstanceQueryScopeOrderColumn.LAST_UPDATED);
+    }
+
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+            TrackedEntityInstanceQueryRepositoryScope, RepositoryScope.OrderByDirection> OrderByAttribute(String attr) {
+        return orderConnector(TrackedEntityInstanceQueryScopeOrderColumn.attribute(attr));
     }
 
     @Override
@@ -380,5 +397,15 @@ public final class TrackedEntityInstanceQueryCollectionRepository
                 return blockingGet() != null;
             }
         };
+    }
+
+    private EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+            TrackedEntityInstanceQueryRepositoryScope, RepositoryScope.OrderByDirection> orderConnector(
+                    TrackedEntityInstanceQueryScopeOrderColumn col) {
+        return connectorFactory.eqConnector(direction -> {
+            List<TrackedEntityInstanceQueryScopeOrderByItem> order = new ArrayList<>(scope.order());
+            order.add(TrackedEntityInstanceQueryScopeOrderByItem.builder().column(col).direction(direction).build());
+            return scope.toBuilder().order(order).build();
+        });
     }
 }

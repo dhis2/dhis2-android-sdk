@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.di.internal.ObjectWithoutUidStoreProvider;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.settings.UserSettings;
 
@@ -56,7 +55,7 @@ public final class UserSettingsEntityDIModule implements ObjectWithoutUidStorePr
     @Provides
     @Reusable
     Handler<UserSettings> handler(ObjectWithoutUidStore<UserSettings> store) {
-        return new ObjectWithoutUidHandlerImpl<>(store);
+        return new UserSettingsHandler(store);
     }
 
     @Provides

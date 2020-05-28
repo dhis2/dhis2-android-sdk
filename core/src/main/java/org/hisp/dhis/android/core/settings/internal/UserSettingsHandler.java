@@ -32,8 +32,6 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
 import org.hisp.dhis.android.core.settings.UserSettings;
 
-import java.util.Collection;
-
 class UserSettingsHandler extends ObjectWithoutUidHandlerImpl<UserSettings> {
 
     UserSettingsHandler(ObjectWithoutUidStore<UserSettings> store) {
@@ -41,8 +39,8 @@ class UserSettingsHandler extends ObjectWithoutUidHandlerImpl<UserSettings> {
     }
 
     @Override
-    protected Collection<UserSettings> beforeCollectionHandled(Collection<UserSettings> oCollection) {
+    protected UserSettings beforeObjectHandled(UserSettings o) {
         store.delete();
-        return oCollection;
+        return super.beforeObjectHandled(o);
     }
 }

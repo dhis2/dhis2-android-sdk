@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.organisationunit.internal;
 
 import android.content.ContentValues;
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
@@ -59,7 +57,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
+
+import io.reactivex.Single;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -67,7 +66,7 @@ import static com.google.common.truth.Truth.assertThat;
 public class OrganisationUnitCallMockIntegrationShould extends BaseMockIntegrationTestEmptyEnqueable {
     
     //The return of the organisationUnitCall to be tested:
-    private Callable<List<OrganisationUnit>> organisationUnitCall;
+    private Single<List<OrganisationUnit>> organisationUnitCall;
 
     private OrganisationUnit expectedAfroArabicClinic = OrganisationUnitSamples.getAfroArabClinic();
     private OrganisationUnit expectedAdonkiaCHP = OrganisationUnitSamples.getAdonkiaCHP();
@@ -105,13 +104,11 @@ public class OrganisationUnitCallMockIntegrationShould extends BaseMockIntegrati
         OrganisationUnitHandler organisationUnitHandler =
                 OrganisationUnitHandlerImpl.create(databaseAdapter);
 
-        APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter);
-
         OrganisationUnitDisplayPathTransformer pathTransformer = new OrganisationUnitDisplayPathTransformer();
 
-        organisationUnitCall = new OrganisationUnitCallFactory(organisationUnitService,
-                organisationUnitHandler, pathTransformer, apiCallExecutor, objects.resourceHandler)
-                .create(user);
+        organisationUnitCall = new OrganisationUnitCall(organisationUnitService,
+                organisationUnitHandler, pathTransformer)
+                .download(user);
     }
 
     @AfterClass
@@ -139,8 +136,8 @@ public class OrganisationUnitCallMockIntegrationShould extends BaseMockIntegrati
     }
 
     @Test
-    public void persist_organisation_unit_tree() throws Exception {
-        organisationUnitCall.call();
+    public void persist_organisation_unit_tree() {
+        organisationUnitCall.blockingGet();
 
         IdentifiableObjectStore<OrganisationUnit> organisationUnitStore = OrganisationUnitStore.create(databaseAdapter);
         OrganisationUnit dbAfroArabicClinic = organisationUnitStore.selectByUid(expectedAfroArabicClinic.uid());
@@ -151,8 +148,8 @@ public class OrganisationUnitCallMockIntegrationShould extends BaseMockIntegrati
     }
 
     @Test
-    public void persist_organisation_unit_user_links() throws Exception {
-        organisationUnitCall.call();
+    public void persist_organisation_unit_user_links() {
+        organisationUnitCall.blockingGet();
 
         UserOrganisationUnitLinkStore userOrganisationUnitStore = UserOrganisationUnitLinkStoreImpl.create(databaseAdapter);
         List<UserOrganisationUnitLink> userOrganisationUnitLinks = userOrganisationUnitStore.selectAll();

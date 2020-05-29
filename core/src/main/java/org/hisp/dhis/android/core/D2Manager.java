@@ -59,6 +59,8 @@ public final class D2Manager {
     private static boolean isTestMode;
     private static SecureStore testingSecureStore;
     private static InsecureStore testingInsecureStore;
+    private static String testingDatabaseName;
+    private static String testingUsername;
 
     private D2Manager() {
     }
@@ -113,9 +115,13 @@ public final class D2Manager {
             }
 
             ObjectKeyValueStore<Credentials> credentialsSecureStore = new CredentialsSecureStoreImpl(secureStore);
-            MultiUserDatabaseManagerForD2Manager.create(databaseAdapter, d2Config.context(), insecureStore,
-                    databaseAdapterFactory)
-                    .loadIfLogged(credentialsSecureStore.get());
+            MultiUserDatabaseManagerForD2Manager multiUserDatabaseManager = MultiUserDatabaseManagerForD2Manager
+                    .create(databaseAdapter, d2Config.context(), insecureStore, databaseAdapterFactory);
+            if (wantToImportDBForExternalTesting()) {
+                multiUserDatabaseManager.loadDbForTesting(testingDatabaseName, false, testingUsername);
+            } else {
+                multiUserDatabaseManager.loadIfLogged(credentialsSecureStore.get());
+            }
 
             d2 = new D2(
                     RetrofitFactory.retrofit(
@@ -160,11 +166,23 @@ public final class D2Manager {
     }
 
     @VisibleForTesting
+    public static void setTestingDatabase(String databaseName, String username) {
+        testingDatabaseName = databaseName;
+        testingUsername = username;
+    }
+
+    private static boolean wantToImportDBForExternalTesting() {
+        return testingDatabaseName != null && testingUsername != null;
+    }
+
+    @VisibleForTesting
     static void clear() {
         d2Configuration = null;
         d2 = null;
         databaseAdapter =  null;
         testingSecureStore = null;
         testingInsecureStore = null;
+        testingDatabaseName = null;
+        testingUsername = null;
     }
 }

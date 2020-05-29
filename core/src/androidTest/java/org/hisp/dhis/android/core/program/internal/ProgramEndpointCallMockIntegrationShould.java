@@ -57,7 +57,8 @@ import org.mockito.internal.util.collections.Sets;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.Callable;
+
+import io.reactivex.Single;
 
 import static org.hisp.dhis.android.core.common.IdentifiableColumns.UID;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
@@ -96,7 +97,7 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
             Columns.ACCESS_LEVEL
     };
 
-    private static Callable<List<Program>> programEndpointCall;
+    private static Single<List<Program>> programCall;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -122,7 +123,7 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
         ContentValues trackedEntityAttribute3 = CreateTrackedEntityAttributeUtils.create(3L, "cejWyOfXge6", null);
         databaseAdapter.insert(TrackedEntityAttributeTableInfo.TABLE_INFO.name(), null, trackedEntityAttribute3);
 
-        programEndpointCall = objects.d2DIComponent.programCallFactory().create(Sets.newSet("IpHINAT79UW"));
+        programCall = objects.d2DIComponent.programCall().download(Sets.newSet("IpHINAT79UW"));
     }
 
     @Before
@@ -133,8 +134,7 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
 
     @Test
     public void persist_program_when_call() throws Exception {
-        // Fake call to api
-        programEndpointCall.call();
+        programCall.blockingGet();
 
         Cursor programCursor = databaseAdapter.query(ProgramTableInfo.TABLE_INFO.name(), PROGRAM_PROJECTION);
 
@@ -172,7 +172,7 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
 
     @Test
     public void persist_program_rule_variables_on_call() throws Exception {
-        programEndpointCall.call();
+        programCall.blockingGet();
         String[] projection = {
                 UID,
                 IdentifiableColumns.CODE,
@@ -209,7 +209,7 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
 
     @Test
     public void persist_program_tracker_entity_attributes_when_call() throws Exception {
-        programEndpointCall.call();
+        programCall.blockingGet();
         String[] projection = {
                 UID,
                 ProgramTrackedEntityAttributeTableInfo.Columns.CODE,
@@ -257,7 +257,7 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
 
     @Test
     public void persist_program_indicators_when_call() throws Exception {
-        programEndpointCall.call();
+        programCall.blockingGet();
 
         Cursor programIndicatorCursor = databaseAdapter.query(
                 ProgramIndicatorTableInfo.TABLE_INFO.name(),
@@ -289,7 +289,7 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
 
     @Test
     public void persist_legend_sets_when_call() throws Exception {
-        programEndpointCall.call();
+        programCall.blockingGet();
 
         Cursor programIndicatorCursor = databaseAdapter.query(
                 LegendSetTableInfo.TABLE_INFO.name(),
@@ -308,7 +308,7 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
 
     @Test
     public void persist_legends_when_call() throws Exception {
-        programEndpointCall.call();
+        programCall.blockingGet();
 
         Cursor programIndicatorCursor = databaseAdapter.query(
                 LegendTableInfo.TABLE_INFO.name(),
@@ -336,7 +336,7 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
      */
     @Test
     public void not_persist_relationship_type_when_call() throws Exception {
-        programEndpointCall.call();
+        programCall.blockingGet();
 
         Cursor relationshipTypeCursor = databaseAdapter.query(RelationshipTypeTableInfo.TABLE_INFO.name(), RelationshipTypeTableInfo.TABLE_INFO.columns().all());
 

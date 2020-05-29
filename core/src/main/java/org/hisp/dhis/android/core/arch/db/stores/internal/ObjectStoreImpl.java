@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapp
 import org.hisp.dhis.android.core.common.CoreColumns;
 import org.hisp.dhis.android.core.common.CoreObject;
 
+import java.util.Collection;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -68,6 +69,13 @@ public class ObjectStoreImpl<M extends CoreObject> extends ReadableStoreImpl<M> 
             throw new RuntimeException("Nothing was inserted.");
         }
         return insertedRowId;
+    }
+
+    @Override
+    public void insert(@NonNull Collection<M> objects) throws RuntimeException {
+        for (M m : objects) {
+            insert(m);
+        }
     }
 
     private void compileStatements() {

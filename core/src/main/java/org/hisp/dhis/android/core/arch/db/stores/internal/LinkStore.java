@@ -35,7 +35,10 @@ import org.hisp.dhis.android.core.common.CoreObject;
 import java.util.List;
 
 public interface LinkStore<M extends CoreObject> extends ObjectStore<M> {
+
     void deleteLinksForMasterUid(@NonNull String masterUid) throws RuntimeException;
+
     int deleteAllLinks();
+
     List<String> selectDistinctSlaves(@NonNull String slaveColumn);
 }

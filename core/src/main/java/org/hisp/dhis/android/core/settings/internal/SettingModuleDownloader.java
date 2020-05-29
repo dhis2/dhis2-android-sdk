@@ -27,43 +27,44 @@
  */
 package org.hisp.dhis.android.core.settings.internal;
 
-import org.hisp.dhis.android.core.arch.modules.internal.MetadataModuleDownloader;
-import org.hisp.dhis.android.core.common.Unit;
-
-import java.util.concurrent.Callable;
+import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Completable;
 
 @Reusable
-public class SettingModuleDownloader implements MetadataModuleDownloader<Unit> {
+public class SettingModuleDownloader implements UntypedModuleDownloader {
 
     private final SystemSettingCall systemSettingCall;
 
     private final GeneralSettingCall generalSettingCall;
     private final DataSetSettingCall dataSetSettingCall;
     private final ProgramSettingCall programSettingCall;
+    private final UserSettingsCall userSettingsCall;
 
     @Inject
     SettingModuleDownloader(SystemSettingCall systemSettingCall,
                             GeneralSettingCall generalSettingCall,
                             DataSetSettingCall dataSetSettingCall,
-                            ProgramSettingCall programSettingCall) {
+                            ProgramSettingCall programSettingCall,
+                            UserSettingsCall userSettingsCall) {
         this.systemSettingCall = systemSettingCall;
         this.generalSettingCall = generalSettingCall;
         this.dataSetSettingCall = dataSetSettingCall;
         this.programSettingCall = programSettingCall;
+        this.userSettingsCall = userSettingsCall;
     }
 
     @Override
-    public Callable<Unit> downloadMetadata() {
-        return () -> {
+    public Completable downloadMetadata() {
+        return Completable.fromAction(() -> {
             generalSettingCall.getCompletable(false).blockingAwait();
             dataSetSettingCall.getCompletable(false).blockingAwait();
             programSettingCall.getCompletable(false).blockingAwait();
+            userSettingsCall.download().blockingGet();
             systemSettingCall.call();
-            return new Unit();
-        };
+        });
     }
 }

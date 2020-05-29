@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.data.trackedentity;
 
+import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
@@ -58,6 +59,14 @@ public class TrackedEntityAttributeSamples {
                 .fieldMask("XXXXX")
                 .formName("form_name")
                 .displayFormName("display_form_name")
+                .build();
+    }
+
+    public static TrackedEntityAttribute get(String name) {
+        return get().toBuilder()
+                .uid(new UidGeneratorImpl().generate())
+                .optionSet(null)
+                .name(name)
                 .build();
     }
 }

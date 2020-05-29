@@ -39,6 +39,7 @@ import retrofit2.Retrofit;
         GeneralSettingEntityDIModule.class,
         DataSetSettingEntityDIModule.class,
         ProgramSettingEntityDIModule.class,
+        UserSettingsEntityDIModule.class,
         SystemSettingEntityDIModule.class
 })
 public final class SettingPackageDIModule {

@@ -1,0 +1,60 @@
+{
+  "validationRules": [
+    {
+      "created": "2011-12-24T12:24:22.817",
+      "lastUpdated": "2014-03-04T01:43:59.258",
+      "name": "Measles, Slept under LLITN last night, >=1 year Fixed",
+      "id": "sWlF63K4G6c",
+      "displayDescription": "Question asked at Measles",
+      "displayName": "Measles, Slept under LLITN last night, >=1 year Fixed",
+      "importance": "MEDIUM",
+      "description": "Question asked at Measles",
+      "operator": "less_than",
+      "periodType": "Monthly",
+      "instruction": "Slept under LLIN at measles (fixed > 1y) cannot be higher than measles doses given (fixed > 1y)",
+      "skipFormValidation": false,
+      "rightSide": {
+        "expression": "#{YtbsuPPo010.psbwp3CQEhs}",
+        "description": "Measles, >=1 year Fixed[34.291]",
+        "missingValueStrategy": "SKIP_IF_ANY_VALUE_MISSING"
+      },
+      "leftSide": {
+        "expression": "#{GCGfEY82Wz6.psbwp3CQEhs}",
+        "description": "At Measles, Slept under LLITN last night, >=1 year Fixed",
+        "missingValueStrategy": "SKIP_IF_ANY_VALUE_MISSING"
+      },
+      "organisationUnitLevels": [
+
+      ]
+    },
+    {
+      "created": "2014-07-16T12:56:42.441",
+      "lastUpdated": "2014-07-16T17:23:51.253",
+      "name": "PCV 2 <= PCV 1",
+      "id": "P2igXCbites",
+      "displayDescription": "PCV 2 must be equal or lower than PCV 1 doses given",
+      "displayName": "PCV 2 <= PCV 1",
+      "importance": "LOW",
+      "description": "PCV 2 must be equal or lower than PCV 1 doses given",
+      "operator": "less_than_or_equal_to",
+      "periodType": "Monthly",
+      "instruction": "PCV 2 cannot be higher than PCV 1 doses given",
+      "skipFormValidation": true,
+      "rightSide": {
+        "expression": "#{xc8gmAKfO95}",
+        "description": "PCV 1",
+        "missingValueStrategy": "NEVER_SKIP"
+      },
+      "leftSide": {
+        "expression": "#{mGN1az8Xub6}",
+        "description": "PCV 2",
+        "missingValueStrategy": "NEVER_SKIP"
+      },
+      "organisationUnitLevels": [
+        2,
+        3,
+        4
+      ]
+    }
+  ]
+}

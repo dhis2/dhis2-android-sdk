@@ -32,13 +32,13 @@ import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.program.ProgramRule;
 
-import retrofit2.Call;
+import io.reactivex.Single;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 interface ProgramRuleService {
     @GET("programRules")
-    Call<Payload<ProgramRule>> getProgramRules(@Query("fields") @Which Fields<ProgramRule> fields,
-                                               @Query("filter") String programUidsFilterString,
-                                               @Query("paging") Boolean paging);
+    Single<Payload<ProgramRule>> getProgramRules(@Query("fields") @Which Fields<ProgramRule> fields,
+                                                 @Query("filter") String programUidsFilterString,
+                                                 @Query("paging") Boolean paging);
 }

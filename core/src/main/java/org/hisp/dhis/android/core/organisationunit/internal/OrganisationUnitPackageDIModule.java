@@ -39,7 +39,8 @@ import retrofit2.Retrofit;
         OrganisationUnitEntityDIModule.class,
         OrganisationUnitLevelEntityDIModule.class,
         OrganisationUnitGroupEntityDIModule.class,
-        OrganisationUnitProgramLinkEntityDIModule.class
+        OrganisationUnitProgramLinkEntityDIModule.class,
+        OrganisationUnitOrganisationUnitGroupLinkEntityDIModule.class
 })
 public final class OrganisationUnitPackageDIModule {
 

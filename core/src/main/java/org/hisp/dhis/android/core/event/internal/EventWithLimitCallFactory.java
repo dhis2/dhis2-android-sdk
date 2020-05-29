@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.event.internal;
 
 import androidx.annotation.NonNull;
 
+import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor;
 import org.hisp.dhis.android.core.arch.api.paging.internal.ApiPagingEngine;
 import org.hisp.dhis.android.core.arch.api.paging.internal.Paging;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
@@ -48,6 +49,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.reactivex.Observable;
 
 @Reusable
@@ -59,6 +61,7 @@ public final class EventWithLimitCallFactory {
     private final ResourceHandler resourceHandler;
 
     private final D2CallExecutor d2CallExecutor;
+    private final RxAPICallExecutor rxCallExecutor;
 
     private final EventQueryBundleFactory eventQueryBundleFactory;
 
@@ -70,12 +73,14 @@ public final class EventWithLimitCallFactory {
             @NonNull ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
             @NonNull ResourceHandler resourceHandler,
             @NonNull D2CallExecutor d2CallExecutor,
+            @NonNull RxAPICallExecutor rxCallExecutor,
             @NonNull EventQueryBundleFactory eventQueryBundleFactory,
             @NonNull EventEndpointCallFactory endpointCallFactory,
             @NonNull EventPersistenceCallFactory persistenceCallFactory) {
         this.systemInfoRepository = systemInfoRepository;
         this.resourceHandler = resourceHandler;
         this.d2CallExecutor = d2CallExecutor;
+        this.rxCallExecutor = rxCallExecutor;
         this.eventQueryBundleFactory = eventQueryBundleFactory;
         this.endpointCallFactory = endpointCallFactory;
         this.persistenceCallFactory = persistenceCallFactory;
@@ -151,6 +156,7 @@ public final class EventWithLimitCallFactory {
         return new EventsWithPagingResult(eventsCount, successfulSync);
     }
 
+    @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED")
     private int getEventsWithPaging(EventQuery.Builder eventQueryBuilder, int combinationLimit) throws D2Error {
         int downloadedEventsForCombination = 0;
         EventQuery baseQuery = eventQueryBuilder.build();
@@ -166,7 +172,9 @@ public final class EventWithLimitCallFactory {
 
             List<Event> eventsToPersist = getEventsToPersist(paging, pageEvents);
 
-            d2CallExecutor.executeD2CallTransactionally(persistenceCallFactory.getCall(eventsToPersist));
+            rxCallExecutor.wrapCompletableTransactionally(persistenceCallFactory.persistEvents(eventsToPersist),
+                    true).blockingGet();
+
             downloadedEventsForCombination += eventsToPersist.size();
 
             if (pageEvents.size() < paging.pageSize()) {

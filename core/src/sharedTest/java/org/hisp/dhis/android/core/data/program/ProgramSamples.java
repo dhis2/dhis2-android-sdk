@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.data.program;
 
+import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
+import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.FeatureType;
@@ -72,5 +74,16 @@ public class ProgramSamples {
                 .accessLevel(AccessLevel.PROTECTED)
                 .build();
         return builder.build();
+    }
+
+    public static Program getProgram(String name, ProgramType type, CategoryCombo categoryCombo) {
+        return getProgram().toBuilder()
+                .name(name)
+                .uid(new UidGeneratorImpl().generate())
+                .trackedEntityType(null)
+                .categoryCombo(ObjectWithUid.create(categoryCombo.uid()))
+                .relatedProgram(null)
+                .programType(type)
+                .build();
     }
 }

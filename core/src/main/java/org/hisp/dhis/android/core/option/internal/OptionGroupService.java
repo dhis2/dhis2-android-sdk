@@ -29,21 +29,18 @@
 package org.hisp.dhis.android.core.option.internal;
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where;
 import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.option.OptionGroup;
 
-import retrofit2.Call;
+import io.reactivex.Single;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 interface OptionGroupService {
 
     @GET("optionGroups")
-    Call<Payload<OptionGroup>> optionGroups(@Query("fields") @Which Fields<OptionGroup> fields,
-                                            @Query("filter") String dataSetUidsFilter,
-                                            @Query("filter") @Where Filter<OptionGroup, String> lastUpdated,
-                                            @Query("paging") boolean paging);
+    Single<Payload<OptionGroup>> optionGroups(@Query("fields") @Which Fields<OptionGroup> fields,
+                                              @Query("filter") String dataSetUidsFilter,
+                                              @Query("paging") boolean paging);
 }

@@ -36,4 +36,6 @@ public interface SettingModule {
     DataSetSettingsObjectRepository dataSetSetting();
     
     ProgramSettingsObjectRepository programSetting();
+
+    UserSettingsObjectRepository userSettings();
 }

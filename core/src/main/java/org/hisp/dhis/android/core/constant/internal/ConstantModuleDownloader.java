@@ -27,18 +27,18 @@
  */
 package org.hisp.dhis.android.core.constant.internal;
 
-import org.hisp.dhis.android.core.arch.modules.internal.MetadataModuleDownloader;
+import org.hisp.dhis.android.core.arch.modules.internal.TypedModuleDownloader;
 import org.hisp.dhis.android.core.constant.Constant;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Single;
 
 @Reusable
-public class ConstantModuleDownloader implements MetadataModuleDownloader<List<Constant>> {
+public class ConstantModuleDownloader implements TypedModuleDownloader<List<Constant>> {
 
     private final ConstantCallFactory constantCallFactory;
 
@@ -48,7 +48,7 @@ public class ConstantModuleDownloader implements MetadataModuleDownloader<List<C
     }
 
     @Override
-    public Callable<List<Constant>> downloadMetadata() {
-        return constantCallFactory.create();
+    public Single<List<Constant>> downloadMetadata() {
+        return Single.fromCallable(constantCallFactory.create());
     }
 }

@@ -36,14 +36,14 @@ import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 
-import retrofit2.Call;
+import io.reactivex.Single;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 interface CategoryComboService {
 
     @GET("categoryCombos")
-    Call<Payload<CategoryCombo>> getCategoryCombos(
+    Single<Payload<CategoryCombo>> getCategoryCombos(
             @Query("fields") @Which Fields<CategoryCombo> fields,
             @Query("filter") @Where Filter<CategoryCombo, String> uids,
             @Query("paging") Boolean paging);

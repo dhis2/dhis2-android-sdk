@@ -203,6 +203,11 @@ public class SQLStatementBuilderImpl implements SQLStatementBuilder {
         return SELECT + "COUNT(*)" + FROM + tableName + WHERE + whereClause + ";";
     }
 
+    @Override
+    public String countAndGroupBy(String column) {
+        return SELECT + column + " , COUNT(*)" + FROM + tableName + " GROUP BY " + column + ";";
+    }
+
     public String update() {
         return "UPDATE " + tableName + " SET " + commaSeparatedColumnEqualInterrogationMark(columns) +
                 WHERE + UID + "=?;";

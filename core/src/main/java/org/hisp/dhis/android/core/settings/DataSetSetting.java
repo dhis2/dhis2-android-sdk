@@ -74,6 +74,8 @@ public abstract class DataSetSetting implements CoreObject {
         return $AutoValue_DataSetSetting.createFromCursor(cursor);
     }
 
+    public abstract Builder toBuilder();
+
     public static Builder builder() {
         return new $AutoValue_DataSetSetting.Builder();
     }

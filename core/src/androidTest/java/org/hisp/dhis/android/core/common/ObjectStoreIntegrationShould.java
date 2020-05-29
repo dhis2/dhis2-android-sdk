@@ -68,7 +68,8 @@ public class ObjectStoreIntegrationShould extends BaseRealIntegrationTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void throw_exception_for_null_when_inserting() {
-        store.insert(null);
+        OptionSet optionSet = null;
+        store.insert(optionSet);
     }
 
     @Test(expected = RuntimeException.class)

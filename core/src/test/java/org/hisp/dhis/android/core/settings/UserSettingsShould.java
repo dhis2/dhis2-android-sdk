@@ -25,37 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings.internal;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.settings.DataSetSettings;
-import org.hisp.dhis.android.core.settings.GeneralSettings;
-import org.hisp.dhis.android.core.settings.ProgramSettings;
-import org.hisp.dhis.android.core.settings.SystemSettings;
-import org.hisp.dhis.android.core.settings.UserSettings;
+package org.hisp.dhis.android.core.settings;
 
-import io.reactivex.Single;
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.junit.Test;
 
-interface SettingService {
+import java.io.IOException;
+import java.text.ParseException;
 
-    String ANDROID_APP_NAMESPACE = "dataStore/ANDROID_SETTING_APP";
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-    @GET("systemSettings")
-    Call<SystemSettings> getSystemSettings(@Query("fields") @Which Fields<SystemSettings> fields);
+public class UserSettingsShould extends BaseObjectShould implements ObjectShould {
 
-    @GET("userSettings")
-    Single<UserSettings> getUserSettings(@Query("key") @Which Fields<UserSettings> fields);
+    public UserSettingsShould() {
+        super("settings/user_settings.json");
+    }
 
-    @GET(ANDROID_APP_NAMESPACE + "/" + "general_settings")
-    Single<GeneralSettings> getGeneralSettings();
+    @Override
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        UserSettings settings = objectMapper.readValue(jsonStream, UserSettings.class);
 
-    @GET(ANDROID_APP_NAMESPACE + "/" + "dataSet_settings")
-    Single<DataSetSettings> getDataSetSettings();
-
-    @GET(ANDROID_APP_NAMESPACE + "/" + "program_settings")
-    Single<ProgramSettings> getProgramSettings();
+        assertThat(settings.keyUiLocale()).isEqualTo("es");
+        assertThat(settings.keyDbLocale()).isEqualTo("en");
+    }
 }

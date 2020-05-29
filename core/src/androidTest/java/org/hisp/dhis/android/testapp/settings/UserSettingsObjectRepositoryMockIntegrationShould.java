@@ -25,37 +25,25 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings.internal;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.settings.DataSetSettings;
-import org.hisp.dhis.android.core.settings.GeneralSettings;
-import org.hisp.dhis.android.core.settings.ProgramSettings;
-import org.hisp.dhis.android.core.settings.SystemSettings;
+package org.hisp.dhis.android.testapp.settings;
+
 import org.hisp.dhis.android.core.settings.UserSettings;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import io.reactivex.Single;
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
-interface SettingService {
+@RunWith(D2JunitRunner.class)
+public class UserSettingsObjectRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
-    String ANDROID_APP_NAMESPACE = "dataStore/ANDROID_SETTING_APP";
-
-    @GET("systemSettings")
-    Call<SystemSettings> getSystemSettings(@Query("fields") @Which Fields<SystemSettings> fields);
-
-    @GET("userSettings")
-    Single<UserSettings> getUserSettings(@Query("key") @Which Fields<UserSettings> fields);
-
-    @GET(ANDROID_APP_NAMESPACE + "/" + "general_settings")
-    Single<GeneralSettings> getGeneralSettings();
-
-    @GET(ANDROID_APP_NAMESPACE + "/" + "dataSet_settings")
-    Single<DataSetSettings> getDataSetSettings();
-
-    @GET(ANDROID_APP_NAMESPACE + "/" + "program_settings")
-    Single<ProgramSettings> getProgramSettings();
+    @Test
+    public void find_user_settings() {
+        UserSettings userSettings = d2.settingModule().userSettings().blockingGet();
+        assertThat(userSettings.keyUiLocale(), is("es"));
+        assertThat(userSettings.keyDbLocale(), is("en"));
+    }
 }

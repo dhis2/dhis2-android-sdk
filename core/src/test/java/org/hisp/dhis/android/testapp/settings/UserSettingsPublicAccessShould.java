@@ -25,37 +25,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings.internal;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.settings.DataSetSettings;
-import org.hisp.dhis.android.core.settings.GeneralSettings;
-import org.hisp.dhis.android.core.settings.ProgramSettings;
-import org.hisp.dhis.android.core.settings.SystemSettings;
+package org.hisp.dhis.android.testapp.settings;
+
 import org.hisp.dhis.android.core.settings.UserSettings;
+import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
+import org.mockito.Mock;
 
-import io.reactivex.Single;
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
+public class UserSettingsPublicAccessShould extends BasePublicAccessShould<UserSettings> {
 
-interface SettingService {
+    @Mock
+    private UserSettings object;
 
-    String ANDROID_APP_NAMESPACE = "dataStore/ANDROID_SETTING_APP";
+    @Override
+    public UserSettings object() {
+        return object;
+    }
 
-    @GET("systemSettings")
-    Call<SystemSettings> getSystemSettings(@Query("fields") @Which Fields<SystemSettings> fields);
+    @Override
+    public void has_public_create_method() {
+        UserSettings.create(null);
+    }
 
-    @GET("userSettings")
-    Single<UserSettings> getUserSettings(@Query("key") @Which Fields<UserSettings> fields);
+    @Override
+    public void has_public_builder_method() {
+        UserSettings.builder();
+    }
 
-    @GET(ANDROID_APP_NAMESPACE + "/" + "general_settings")
-    Single<GeneralSettings> getGeneralSettings();
-
-    @GET(ANDROID_APP_NAMESPACE + "/" + "dataSet_settings")
-    Single<DataSetSettings> getDataSetSettings();
-
-    @GET(ANDROID_APP_NAMESPACE + "/" + "program_settings")
-    Single<ProgramSettings> getProgramSettings();
+    @Override
+    public void has_public_to_builder_method() {
+        object().toBuilder();
+    }
 }

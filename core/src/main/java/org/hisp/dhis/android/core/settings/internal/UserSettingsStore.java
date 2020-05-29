@@ -25,37 +25,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.settings.internal;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.settings.DataSetSettings;
-import org.hisp.dhis.android.core.settings.GeneralSettings;
-import org.hisp.dhis.android.core.settings.ProgramSettings;
-import org.hisp.dhis.android.core.settings.SystemSettings;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.settings.UserSettings;
+import org.hisp.dhis.android.core.settings.UserSettingsTableInfo;
 
-import io.reactivex.Single;
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
+final class UserSettingsStore {
 
-interface SettingService {
+    private static final StatementBinder<UserSettings> BINDER = (o, w) -> {
+        w.bind(1, o.keyUiLocale());
+        w.bind(2, o.keyDbLocale());
+    };
 
-    String ANDROID_APP_NAMESPACE = "dataStore/ANDROID_SETTING_APP";
+    private static final WhereStatementBinder<UserSettings> WHERE_UPDATE_BINDER = (o, w) -> {};
 
-    @GET("systemSettings")
-    Call<SystemSettings> getSystemSettings(@Query("fields") @Which Fields<SystemSettings> fields);
+    private static final WhereStatementBinder<UserSettings> WHERE_DELETE_BINDER = (o, w) -> {};
 
-    @GET("userSettings")
-    Single<UserSettings> getUserSettings(@Query("key") @Which Fields<UserSettings> fields);
+    private UserSettingsStore() {}
 
-    @GET(ANDROID_APP_NAMESPACE + "/" + "general_settings")
-    Single<GeneralSettings> getGeneralSettings();
-
-    @GET(ANDROID_APP_NAMESPACE + "/" + "dataSet_settings")
-    Single<DataSetSettings> getDataSetSettings();
-
-    @GET(ANDROID_APP_NAMESPACE + "/" + "program_settings")
-    Single<ProgramSettings> getProgramSettings();
+    public static ObjectWithoutUidStore<UserSettings> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, UserSettingsTableInfo.TABLE_INFO, BINDER,
+                WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER, UserSettings::create);
+    }
 }

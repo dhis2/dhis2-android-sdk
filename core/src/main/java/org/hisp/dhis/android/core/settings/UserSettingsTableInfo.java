@@ -25,37 +25,41 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings.internal;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.settings.DataSetSettings;
-import org.hisp.dhis.android.core.settings.GeneralSettings;
-import org.hisp.dhis.android.core.settings.ProgramSettings;
-import org.hisp.dhis.android.core.settings.SystemSettings;
-import org.hisp.dhis.android.core.settings.UserSettings;
+package org.hisp.dhis.android.core.settings;
 
-import io.reactivex.Single;
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
-interface SettingService {
+public final class UserSettingsTableInfo {
 
-    String ANDROID_APP_NAMESPACE = "dataStore/ANDROID_SETTING_APP";
+    private UserSettingsTableInfo() {
+    }
 
-    @GET("systemSettings")
-    Call<SystemSettings> getSystemSettings(@Query("fields") @Which Fields<SystemSettings> fields);
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    @GET("userSettings")
-    Single<UserSettings> getUserSettings(@Query("key") @Which Fields<UserSettings> fields);
+        @Override
+        public String name() {
+            return "UserSettings";
+        }
 
-    @GET(ANDROID_APP_NAMESPACE + "/" + "general_settings")
-    Single<GeneralSettings> getGeneralSettings();
+        @Override
+        public CoreColumns columns() {
+            return new Columns();
+        }
+    };
 
-    @GET(ANDROID_APP_NAMESPACE + "/" + "dataSet_settings")
-    Single<DataSetSettings> getDataSetSettings();
+    public static class Columns extends CoreColumns {
+        public static final String KEY_UI_LOCALE = "keyUiLocale";
+        public static final String KEY_DB_LOCALE = "keyDbLocale";
 
-    @GET(ANDROID_APP_NAMESPACE + "/" + "program_settings")
-    Single<ProgramSettings> getProgramSettings();
+        @Override
+        public String[] all() {
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    KEY_UI_LOCALE,
+                    KEY_DB_LOCALE
+            );
+        }
+    }
 }

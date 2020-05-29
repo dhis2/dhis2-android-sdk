@@ -25,37 +25,42 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.settings.internal;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.settings.DataSetSettings;
-import org.hisp.dhis.android.core.settings.GeneralSettings;
-import org.hisp.dhis.android.core.settings.ProgramSettings;
-import org.hisp.dhis.android.core.settings.SystemSettings;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.di.internal.ObjectWithoutUidStoreProvider;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.settings.UserSettings;
 
-import io.reactivex.Single;
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
+import java.util.Collections;
+import java.util.Map;
 
-interface SettingService {
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-    String ANDROID_APP_NAMESPACE = "dataStore/ANDROID_SETTING_APP";
+@Module
+public final class UserSettingsEntityDIModule implements ObjectWithoutUidStoreProvider<UserSettings> {
 
-    @GET("systemSettings")
-    Call<SystemSettings> getSystemSettings(@Query("fields") @Which Fields<SystemSettings> fields);
+    @Override
+    @Provides
+    @Reusable
+    public ObjectWithoutUidStore<UserSettings> store(DatabaseAdapter databaseAdapter) {
+        return UserSettingsStore.create(databaseAdapter);
+    }
 
-    @GET("userSettings")
-    Single<UserSettings> getUserSettings(@Query("key") @Which Fields<UserSettings> fields);
+    @Provides
+    @Reusable
+    Handler<UserSettings> handler(ObjectWithoutUidStore<UserSettings> store) {
+        return new UserSettingsHandler(store);
+    }
 
-    @GET(ANDROID_APP_NAMESPACE + "/" + "general_settings")
-    Single<GeneralSettings> getGeneralSettings();
-
-    @GET(ANDROID_APP_NAMESPACE + "/" + "dataSet_settings")
-    Single<DataSetSettings> getDataSetSettings();
-
-    @GET(ANDROID_APP_NAMESPACE + "/" + "program_settings")
-    Single<ProgramSettings> getProgramSettings();
+    @Provides
+    @Reusable
+    Map<String, ChildrenAppender<UserSettings>> childrenAppenders() {
+        return Collections.emptyMap();
+    }
 }

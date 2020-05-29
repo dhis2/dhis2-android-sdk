@@ -58,6 +58,7 @@ public class Dhis2MockServer {
     private static final String GENERAL_SETTINGS_JSON = "settings/general_settings.json";
     private static final String DATASET_SETTINGS_JSON = "settings/dataset_settings.json";
     private static final String PROGRAM_SETTINGS_JSON = "settings/program_settings.json";
+    private static final String USER_SETTINGS_JSON = "settings/user_settings.json";
     private static final String PROGRAMS_JSON = "program/programs.json";
     private static final String PROGRAM_STAGES_JSON = "program/program_stages.json";
     private static final String PROGRAM_RULES_JSON = "program/program_rules.json";
@@ -163,6 +164,8 @@ public class Dhis2MockServer {
                     return createMockResponse(DATASET_SETTINGS_JSON);
                 } else if (path.startsWith("/api/dataStore/ANDROID_SETTING_APP/program_settings")) {
                     return createMockResponse(PROGRAM_SETTINGS_JSON);
+                } else if (path.startsWith("/api/userSettings?")) {
+                    return createMockResponse(USER_SETTINGS_JSON);
                 } else if (path.startsWith("/api/programs?")) {
                     return createMockResponse(PROGRAMS_JSON);
                 } else if (path.startsWith("/api/programStages?")) {
@@ -235,6 +238,7 @@ public class Dhis2MockServer {
         enqueueMockResponse(GENERAL_SETTINGS_JSON);
         enqueueMockResponse(DATASET_SETTINGS_JSON);
         server.enqueue(getErrorResponse());
+        enqueueMockResponse(USER_SETTINGS_JSON);
         enqueueMockResponse(SYSTEM_SETTINGS_JSON);
         enqueueMockResponse(CONSTANTS_JSON);
         enqueueMockResponse(USER_JSON);

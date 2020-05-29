@@ -135,6 +135,8 @@ public abstract class ProgramSetting implements CoreObject {
         return $AutoValue_ProgramSetting.createFromCursor(cursor);
     }
 
+    public abstract Builder toBuilder();
+
     public static Builder builder() {
         return new $AutoValue_ProgramSetting.Builder();
     }

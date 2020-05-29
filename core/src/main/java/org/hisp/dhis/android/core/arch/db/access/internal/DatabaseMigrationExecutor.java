@@ -42,7 +42,7 @@ class DatabaseMigrationExecutor {
     private final DatabaseAdapter databaseAdapter;
     private final DatabaseMigrationParser parser;
 
-    private static final int SNAPSHOT_VERSION = 75;
+    private static final int SNAPSHOT_VERSION = 76;
 
     DatabaseMigrationExecutor(DatabaseAdapter databaseAdapter, AssetManager assetManager) {
         this.databaseAdapter = databaseAdapter;

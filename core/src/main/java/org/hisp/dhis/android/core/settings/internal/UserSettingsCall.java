@@ -27,35 +27,34 @@
  */
 package org.hisp.dhis.android.core.settings.internal;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.settings.DataSetSettings;
-import org.hisp.dhis.android.core.settings.GeneralSettings;
-import org.hisp.dhis.android.core.settings.ProgramSettings;
-import org.hisp.dhis.android.core.settings.SystemSettings;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
+import org.hisp.dhis.android.core.arch.call.factories.internal.ObjectCall;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.settings.UserSettings;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
 import io.reactivex.Single;
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
 
-interface SettingService {
+@Reusable
+public class UserSettingsCall implements ObjectCall<UserSettings> {
 
-    String ANDROID_APP_NAMESPACE = "dataStore/ANDROID_SETTING_APP";
+    private final Handler<UserSettings> handler;
+    private final SettingService service;
+    private final APIDownloader apiDownloader;
 
-    @GET("systemSettings")
-    Call<SystemSettings> getSystemSettings(@Query("fields") @Which Fields<SystemSettings> fields);
+    @Inject
+    UserSettingsCall(Handler<UserSettings> handler,
+                     SettingService service,
+                     APIDownloader apiDownloader) {
+        this.handler = handler;
+        this.service = service;
+        this.apiDownloader = apiDownloader;
+    }
 
-    @GET("userSettings")
-    Single<UserSettings> getUserSettings(@Query("key") @Which Fields<UserSettings> fields);
-
-    @GET(ANDROID_APP_NAMESPACE + "/" + "general_settings")
-    Single<GeneralSettings> getGeneralSettings();
-
-    @GET(ANDROID_APP_NAMESPACE + "/" + "dataSet_settings")
-    Single<DataSetSettings> getDataSetSettings();
-
-    @GET(ANDROID_APP_NAMESPACE + "/" + "program_settings")
-    Single<ProgramSettings> getProgramSettings();
+    @Override
+    public Single<UserSettings> download() {
+        return apiDownloader.downloadObject(handler, service.getUserSettings(UserSettingsFields.allFields));
+    }
 }

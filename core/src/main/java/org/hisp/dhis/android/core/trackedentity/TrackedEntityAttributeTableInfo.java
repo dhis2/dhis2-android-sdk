@@ -65,6 +65,7 @@ public final class TrackedEntityAttributeTableInfo {
         public static final String INHERIT = "inherit";
         public static final String FIELD_MASK = "fieldMask";
         public static final String FORM_NAME = "formName";
+        public static final String DISPLAY_FORM_NAME = "displayFormName";
 
         @Override
         public String[] all() {
@@ -82,6 +83,7 @@ public final class TrackedEntityAttributeTableInfo {
                     UNIQUE,
                     INHERIT,
                     FORM_NAME,
+                    DISPLAY_FORM_NAME,
                     FIELD_MASK
             );
         }

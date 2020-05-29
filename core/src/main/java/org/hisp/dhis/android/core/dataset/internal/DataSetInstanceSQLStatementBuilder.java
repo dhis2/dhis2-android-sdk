@@ -99,7 +99,7 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
     private static final String ATTRIBUTE_OPTION_COMBO_NAME_ALIAS = "attributeOptionComboDisplayName";
     private static final String COMPLETION_DATE_ALIAS = "completionDate";
     private static final String COMPLETED_BY_ALIAS = "completedBy";
-    private static final String LAST_UPDATED_ALIAS = "lastUpdated";
+    static final String LAST_UPDATED_ALIAS = "lastUpdated";
     public static final String VALUE_STATE_ALIAS = "dataValueState";
     public static final String COMPLETION_STATE_ALIAS = "completionState";
     public static final String STATE_ALIAS = "state";
@@ -129,7 +129,7 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
     private static final String LAST_UPDATED_VALUES =
             "MAX(" + DATAVALUE_TABLE_ALIAS + "." + DataValueTableInfo.Columns.LAST_UPDATED + ")";
     private static final String LAST_UPDATED =
-            "MAX(" + LAST_UPDATED_VALUES + "," + COMPLETION_DATE + ")";
+            "MAX(" + LAST_UPDATED_VALUES + ", COALESCE(" + COMPLETION_DATE + ", 0))";
 
     private static final String VALUE_STATE = DATAVALUE_TABLE_ALIAS + "." + DataColumns.STATE;
     private static final String COMPLETION_STATE = COMPLETE_TABLE_ALIAS + "." + DataColumns.STATE;
@@ -208,7 +208,6 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
 
     @Override
     public String selectWhere(String whereClause) {
-        System.out.println(SELECT_CLAUSE + " WHERE " + whereClause);
         return SELECT_CLAUSE + " WHERE " + whereClause;
     }
 

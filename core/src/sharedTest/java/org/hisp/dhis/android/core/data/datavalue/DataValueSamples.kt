@@ -25,39 +25,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.data.datavalue
 
-package org.hisp.dhis.android.core.data.trackedentity;
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST_UPDATED
+import org.hisp.dhis.android.core.datavalue.DataValue
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
+object DataValueSamples {
 
-import java.text.ParseException;
-import java.util.Date;
+    fun getDataValue(organisationUnit: String, dataElement: String, period: String, categoryOptionCombo: String,
+        attributeOptionCombo: String, value: String): DataValue {
 
-public class TrackedEntityAttributeValueSamples {
-
-    public static TrackedEntityAttributeValue get() {
-        return get("tracked_entity_attribute", "tracked_entity_instance", "value");
-    }
-
-    public static TrackedEntityAttributeValue get(String trackedEntityAttribute, String trackedEntityInstance,
-                                                  String value) {
-        return TrackedEntityAttributeValue.builder()
+        return DataValue.builder()
                 .id(1L)
+                .state(State.TO_POST)
+                .deleted(false)
+                .dataElement(dataElement)
+                .period(period)
+                .organisationUnit(organisationUnit)
+                .categoryOptionCombo(categoryOptionCombo)
+                .attributeOptionCombo(attributeOptionCombo)
                 .value(value)
-                .created(getDate("2014-08-20T12:28:56.409"))
-                .lastUpdated(getDate("2015-10-14T13:36:53.063"))
-                .trackedEntityAttribute(trackedEntityAttribute)
-                .trackedEntityInstance(trackedEntityInstance)
-                .build();
-    }
-
-    private static Date getDate(String dateStr) {
-        try {
-            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
+                .storedBy("storedBy")
+                .created(CREATED)
+                .lastUpdated(LAST_UPDATED)
+                .comment("Hey!")
+                .followUp(true)
+                .build()
     }
 }

@@ -30,11 +30,13 @@ package org.hisp.dhis.android.localanalytics
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestLocalAnalyticsDispatcher
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@Ignore("Tests for local analytics. Only to be executed on demand")
 @RunWith(D2JunitRunner::class)
-class LocalAnalyticsDatabaseMockIntegrationShould : BaseMockIntegrationTestLocalAnalyticsDispatcher() {
+internal class LocalAnalyticsDatabaseMockIntegrationShould : BaseMockIntegrationTestLocalAnalyticsDispatcher() {
 
     @Test
     fun check_user() {
@@ -57,7 +59,7 @@ class LocalAnalyticsDatabaseMockIntegrationShould : BaseMockIntegrationTestLocal
     @Test
     fun check_category_option_combos() {
         val count = d2.categoryModule().categoryOptionCombos().blockingCount()
-        assertThat(count).isEqualTo(8)
+        assertThat(count).isEqualTo(10)
     }
 
     @Test
@@ -94,5 +96,47 @@ class LocalAnalyticsDatabaseMockIntegrationShould : BaseMockIntegrationTestLocal
     fun check_tracked_entity_attributes() {
         val count = d2.trackedEntityModule().trackedEntityAttributes().blockingCount()
         assertThat(count).isEqualTo(10)
+    }
+
+    @Test
+    fun check_data_values() {
+        val count = d2.dataValueModule().dataValues().blockingCount()
+        assertThat(count).isEqualTo(3000)
+    }
+
+    @Test
+    fun check_tracked_entity_instances() {
+        val count = d2.trackedEntityModule().trackedEntityInstances().blockingCount()
+        assertThat(count).isEqualTo(500)
+    }
+
+    @Test
+    fun check_enrollments() {
+        val count = d2.enrollmentModule().enrollments().blockingCount()
+        assertThat(count).isEqualTo(500)
+    }
+
+    @Test
+    fun check_events_without_registration() {
+        val count = d2.eventModule().events().byEnrollmentUid().isNull.blockingCount()
+        assertThat(count).isEqualTo(500)
+    }
+
+    @Test
+    fun check_events_with_registration() {
+        val count = d2.eventModule().events().byEnrollmentUid().isNotNull.blockingCount()
+        assertThat(count).isEqualTo(1500)
+    }
+
+    @Test
+    fun check_tracked_entity_attributes_values() {
+        val count = d2.trackedEntityModule().trackedEntityAttributeValues().blockingCount()
+        assertThat(count).isEqualTo(5000)
+    }
+
+    @Test
+    fun check_tracked_entity_data_values() {
+        val count = d2.trackedEntityModule().trackedEntityDataValues().blockingCount()
+        assertThat(count).isEqualTo(20000)
     }
 }

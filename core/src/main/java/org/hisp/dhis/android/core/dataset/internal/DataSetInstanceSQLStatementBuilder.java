@@ -99,6 +99,7 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
     private static final String ATTRIBUTE_OPTION_COMBO_NAME_ALIAS = "attributeOptionComboDisplayName";
     private static final String COMPLETION_DATE_ALIAS = "completionDate";
     private static final String COMPLETED_BY_ALIAS = "completedBy";
+    private static final String LAST_UPDATED_ALIAS = "lastUpdated";
     public static final String VALUE_STATE_ALIAS = "dataValueState";
     public static final String COMPLETION_STATE_ALIAS = "completionState";
     public static final String STATE_ALIAS = "state";
@@ -125,6 +126,10 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
             COMPLETE_TABLE_ALIAS + "." + DataSetCompleteRegistrationTableInfo.Columns.STORED_BY;
     private static final String DSE_CATEGORY_COMBO =
             DATASETELEMENT_TABLE_ALIAS + "." + DataSetElementLinkTableInfo.Columns.CATEGORY_COMBO;
+    private static final String LAST_UPDATED_VALUES =
+            "MAX(" + DATAVALUE_TABLE_ALIAS + "." + DataValueTableInfo.Columns.LAST_UPDATED + ")";
+    private static final String LAST_UPDATED =
+            "MAX(" + LAST_UPDATED_VALUES + "," + COMPLETION_DATE + ")";
 
     private static final String VALUE_STATE = DATAVALUE_TABLE_ALIAS + "." + DataColumns.STATE;
     private static final String COMPLETION_STATE = COMPLETE_TABLE_ALIAS + "." + DataColumns.STATE;
@@ -179,6 +184,7 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
             "COUNT(*)" + AS + VALUE_COUNT_ALIAS + "," +
             COMPLETION_DATE + AS + COMPLETION_DATE_ALIAS + "," +
             COMPLETED_BY + AS + COMPLETED_BY_ALIAS + "," +
+            LAST_UPDATED + AS + LAST_UPDATED_ALIAS + "," +
             VALUE_STATE + AS + VALUE_STATE_ALIAS + "," +
             // Auxiliary field to order the 'state' column and to prioritize TO_POST and TO_UPDATE
             SELECT_VALUE_STATE_ORDERING + "," +
@@ -202,6 +208,7 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
 
     @Override
     public String selectWhere(String whereClause) {
+        System.out.println(SELECT_CLAUSE + " WHERE " + whereClause);
         return SELECT_CLAUSE + " WHERE " + whereClause;
     }
 

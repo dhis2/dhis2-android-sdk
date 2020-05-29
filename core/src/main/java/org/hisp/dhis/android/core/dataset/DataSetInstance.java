@@ -92,6 +92,10 @@ public abstract class DataSetInstance implements CoreObject {
     public abstract String completedBy();
 
     @Nullable
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date lastUpdated();
+
+    @Nullable
     @ColumnAdapter(StateColumnAdapter.class)
     public abstract State dataValueState();
 
@@ -141,6 +145,8 @@ public abstract class DataSetInstance implements CoreObject {
         public abstract Builder completionDate(Date completionDate);
 
         public abstract Builder completedBy(String completedBy);
+
+        public abstract Builder lastUpdated(Date lastUpdated);
 
         public abstract Builder dataValueState(State dataValueState);
 

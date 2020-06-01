@@ -109,7 +109,7 @@ final class DataSetHandler extends IdentifiableHandlerImpl<DataSet> {
                 dataInputPeriod -> dataInputPeriod.toBuilder().dataSet(ObjectWithUid.create(dataSet.uid())).build());
 
         dataSetElementLinkHandler.handleMany(dataSet.uid(), dataSet.dataSetElements(),
-                dataSetElement -> dataSetElement);
+                dataSetElement -> dataSetElement.toBuilder().dataSet(ObjectWithUid.create(dataSet.uid())).build());
 
         dataSetIndicatorLinkHandler.handleMany(dataSet.uid(), dataSet.indicators(),
                 indicator -> DataSetIndicatorLink.builder().dataSet(dataSet.uid()).indicator(indicator.uid()).build());

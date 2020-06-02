@@ -118,9 +118,11 @@ public class OrganisationUnitSamples {
                 .build();
     }
 
-    public static OrganisationUnit getOrganisationUnit(String name, int level, ObjectWithUid parent) throws ParseException {
+    public static OrganisationUnit getOrganisationUnit(String name, int level, OrganisationUnit parent) throws ParseException {
+        String parentPath = parent == null ? "" : parent.path();
+        String uid = new UidGeneratorImpl().generate();
         return OrganisationUnit.builder()
-                .uid(new UidGeneratorImpl().generate())
+                .uid(uid)
                 .code("code")
                 .name(name)
                 .displayName(name)
@@ -130,10 +132,10 @@ public class OrganisationUnitSamples {
                 .displayShortName(name)
                 .description(null)
                 .displayDescription(null)
-                .path("path")
+                .path(parentPath + "/" + uid)
                 .openingDate("2010-01-01T00:00:00.000")
                 .level(level)
-                .parent(parent)
+                .parent(parent == null ? null : ObjectWithUid.create(parent.uid()))
                 .displayNamePath(Collections.singletonList(name))
                 .build();
     }

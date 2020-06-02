@@ -48,7 +48,7 @@ abstract class BaseMockIntegrationTestLocalAnalyticsDispatcher : BaseMockIntegra
             }
 
             val filler = LocalAnalyticsDatabaseFiller(objects.d2)
-            filler.fillDatabase(LocalAnalyticsMetadataParams.Default, LocalAnalyticsDataParams.Default)
+            filler.fillDatabase(LocalAnalyticsMetadataParams.Default, LocalAnalyticsDataParams.SuperLarge)
         }
     }
 }

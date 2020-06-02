@@ -56,7 +56,7 @@ internal class LocalAnalyticsMetadataGenerator(private val params: LocalAnalytic
     private fun getOrganisationUnitChildren(parent: OrganisationUnit): List<OrganisationUnit> {
         return (1..params.organisationUnitChildren).map { i ->
             OrganisationUnitSamples.getOrganisationUnit("${parent.name()} $i", parent.level()!! + 1,
-                    ObjectWithUid.create(parent.uid()))
+                    parent)
         }
     }
 

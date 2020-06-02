@@ -97,27 +97,43 @@ internal class LocalAnalyticsAggregatedDataMockIntegrationShould : BaseMockInteg
 
     @Test
     fun count_data_values_for_data_element_for_ou_level_2_and_descendants() {
-        assertThat(data_values_for_data_element_for_ou_level_and_descendants_repository(2).blockingCount()).isEqualTo(60)
+        assertThat(dataValuesForDataElementForOuAndDescendentsRepository(2).blockingCount()).isEqualTo(60)
     }
 
     @Test
     fun count_data_values_for_data_element_for_ou_level_1_and_descendants() {
-        assertThat(data_values_for_data_element_for_ou_level_and_descendants_repository(1).blockingCount()).isEqualTo(180)
+        assertThat(dataValuesForDataElementForOuAndDescendentsRepository(1).blockingCount()).isEqualTo(180)
     }
 
     @Test
     fun avg_data_values_for_data_element_for_ou_level_2_and_descendants() {
-        val dataValues = data_values_for_data_element_for_ou_level_and_descendants_repository(2).blockingGet()
+        val dataValues = dataValuesForDataElementForOuAndDescendentsRepository(2).blockingGet()
         assertThat(getAvgValue(dataValues)).isFinite()
     }
 
     @Test
     fun avg_data_values_for_data_element_for_ou_level_1_and_descendants() {
-        val dataValues = data_values_for_data_element_for_ou_level_and_descendants_repository(1).blockingGet()
+        val dataValues = dataValuesForDataElementForOuAndDescendentsRepository(1).blockingGet()
         assertThat(getAvgValue(dataValues)).isFinite()
     }
 
-    private fun data_values_for_data_element_for_ou_level_and_descendants_repository(level: Int): DataValueCollectionRepository {
+    @Test
+    fun avg_data_values_for_data_element_for_ou_level_2_and_descendants_group_by_period() {
+        val dataValues = dataValuesForDataElementForOuAndDescendentsRepository(2).blockingGet()
+        val groupedDataValues = dataValues.groupBy { it.period() }
+        val groupedAverages = groupedDataValues.map { kv -> kv.key to getAvgValue(kv.value) }.toMap()
+        assertThat(groupedAverages.size).isEqualTo(60)
+    }
+
+    @Test
+    fun avg_data_values_for_data_element_for_ou_level_1_and_descendants_group_by_period() {
+        val dataValues = dataValuesForDataElementForOuAndDescendentsRepository(1).blockingGet()
+        val groupedDataValues = dataValues.groupBy { it.period() }
+        val groupedAverages = groupedDataValues.map { kv -> kv.key to getAvgValue(kv.value) }.toMap()
+        assertThat(groupedAverages.size).isEqualTo(60)
+    }
+
+    private fun dataValuesForDataElementForOuAndDescendentsRepository(level: Int): DataValueCollectionRepository {
         val ou3 = d2.organisationUnitModule().organisationUnits()
                 .byLevel().eq(3)
                 .one().blockingGet()

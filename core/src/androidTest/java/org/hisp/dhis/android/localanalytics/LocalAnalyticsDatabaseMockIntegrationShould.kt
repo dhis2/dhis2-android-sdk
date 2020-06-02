@@ -34,9 +34,13 @@ import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@Ignore("Tests for local analytics. Only to be executed on demand")
-@RunWith(D2JunitRunner::class)
+//@Ignore("Tests for local analytics. Only to be executed on demand")
+//@RunWith(D2JunitRunner::class)
 internal class LocalAnalyticsDatabaseMockIntegrationShould : BaseMockIntegrationTestLocalAnalyticsDispatcher() {
+
+    // Size factor for local analytics database
+    // This must correspond with the one used in LocalAnalyticsDataParams
+    private val f = 1
 
     @Test
     fun check_user() {
@@ -101,42 +105,42 @@ internal class LocalAnalyticsDatabaseMockIntegrationShould : BaseMockIntegration
     @Test
     fun check_data_values() {
         val count = d2.dataValueModule().dataValues().blockingCount()
-        assertThat(count).isEqualTo(3000)
+        assertThat(count).isEqualTo(3000 * f)
     }
 
     @Test
     fun check_tracked_entity_instances() {
         val count = d2.trackedEntityModule().trackedEntityInstances().blockingCount()
-        assertThat(count).isEqualTo(500)
+        assertThat(count).isEqualTo(500 * f)
     }
 
     @Test
     fun check_enrollments() {
         val count = d2.enrollmentModule().enrollments().blockingCount()
-        assertThat(count).isEqualTo(500)
+        assertThat(count).isEqualTo(500 * f)
     }
 
     @Test
     fun check_events_without_registration() {
         val count = d2.eventModule().events().byEnrollmentUid().isNull.blockingCount()
-        assertThat(count).isEqualTo(500)
+        assertThat(count).isEqualTo(500 * f)
     }
 
     @Test
     fun check_events_with_registration() {
         val count = d2.eventModule().events().byEnrollmentUid().isNotNull.blockingCount()
-        assertThat(count).isEqualTo(1500)
+        assertThat(count).isEqualTo(1500 * f)
     }
 
     @Test
     fun check_tracked_entity_attributes_values() {
         val count = d2.trackedEntityModule().trackedEntityAttributeValues().blockingCount()
-        assertThat(count).isEqualTo(5000)
+        assertThat(count).isEqualTo(5000 * f)
     }
 
     @Test
     fun check_tracked_entity_data_values() {
         val count = d2.trackedEntityModule().trackedEntityDataValues().blockingCount()
-        assertThat(count).isEqualTo(20000)
+        assertThat(count).isEqualTo(20000 * f)
     }
 }

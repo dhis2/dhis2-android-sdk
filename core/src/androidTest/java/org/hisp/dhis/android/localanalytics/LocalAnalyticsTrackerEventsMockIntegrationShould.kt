@@ -30,6 +30,7 @@ package org.hisp.dhis.android.localanalytics
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.enrollment.EnrollmentCollectionRepository
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
+import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramType
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestLocalAnalyticsDispatcher
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
@@ -41,9 +42,26 @@ import org.junit.runner.RunWith
 internal class LocalAnalyticsTrackerEventsMockIntegrationShould : BaseMockIntegrationTestLocalAnalyticsDispatcher() {
 
     @Test
-    fun count_teis() {
-        val teisCount = d2.trackedEntityModule().trackedEntityInstances().blockingCount()
-        assertThat(teisCount).isEqualTo(3000)
+    fun count_events() {
+        val eventsCount = d2.eventModule().events()
+                .blockingCount()
+        assertThat(eventsCount).isEqualTo(12000)
+    }
+
+    @Test
+    fun count_events_for_program_with_registration() {
+        val eventsCount = d2.eventModule().events()
+                .byProgramUid().eq(getProgramWithRegistration().uid())
+                .blockingCount()
+        assertThat(eventsCount).isEqualTo(9000)
+    }
+
+    @Test
+    fun count_events_for_program_without_registration() {
+        val eventsCount = d2.eventModule().events()
+                .byProgramUid().eq(getProgramWithoutRegistration().uid())
+                .blockingCount()
+        assertThat(eventsCount).isEqualTo(3000)
     }
 
     @Test
@@ -61,12 +79,52 @@ internal class LocalAnalyticsTrackerEventsMockIntegrationShould : BaseMockIntegr
         assertThat(enrollmentsCount).isEqualTo(3000)
     }
 
+    @Test
+    fun count_teis() {
+        val teisCount = d2.trackedEntityModule().trackedEntityInstances().blockingCount()
+        assertThat(teisCount).isEqualTo(3000)
+    }
+
+    @Test
+    fun count_events_by_condition_in_tracked_entity_data_values_and_status() {
+        val dataElements = d2.dataElementModule().dataElements()
+                .byDomainType().eq("TRACKER")
+                .blockingGet()
+        val de0 = dataElements[0]
+        val de1 = dataElements[1]
+        val tedv0 = d2.trackedEntityModule().trackedEntityDataValues()
+                .byDataElement().eq(de0.uid())
+                .byValue().like("a")
+                .blockingGet()
+        val tedv1 = d2.trackedEntityModule().trackedEntityDataValues()
+                .byDataElement().eq(de1.uid())
+                .byValue().like("b")
+                .blockingGet()
+        val eventUidsCond0 = tedv0.map { it.event() }
+        val eventUidsCond1 = tedv1.map { it.event() }
+        val eventUids = eventUidsCond0.intersect(eventUidsCond1)
+        val eventsCount = d2.eventModule().events()
+                .byUid().`in`(eventUids)
+                .blockingCount()
+        assertThat(eventsCount).isAtLeast(0)
+    }
+
     private fun getProgramEnrollmentsRepository(): EnrollmentCollectionRepository {
-        val program = d2.programModule().programs()
+        return d2.enrollmentModule().enrollments()
+                .byProgram().eq(getProgramWithRegistration().uid())
+    }
+
+    private fun getProgramWithRegistration(): Program {
+        return d2.programModule().programs()
                 .byProgramType().eq(ProgramType.WITH_REGISTRATION)
                 .one()
                 .blockingGet()
-        return d2.enrollmentModule().enrollments()
-                .byProgram().eq(program.uid())
+    }
+
+    private fun getProgramWithoutRegistration(): Program {
+        return d2.programModule().programs()
+                .byProgramType().eq(ProgramType.WITHOUT_REGISTRATION)
+                .one()
+                .blockingGet()
     }
 }

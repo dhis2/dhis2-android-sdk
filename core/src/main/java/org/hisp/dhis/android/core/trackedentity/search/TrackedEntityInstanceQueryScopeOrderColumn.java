@@ -28,21 +28,15 @@
 
 package org.hisp.dhis.android.core.trackedentity.search;
 
+import androidx.annotation.Nullable;
+
 import com.google.auto.value.AutoValue;
 
 @AutoValue
 abstract class TrackedEntityInstanceQueryScopeOrderColumn {
 
     enum Type {
-        CREATED, LAST_UPDATED, ATTRIBUTE, ORGUNIT_NAME
-    }
-
-    public abstract Type type();
-
-    public abstract String apiName();
-
-    public static Builder builder() {
-        return new AutoValue_TrackedEntityInstanceQueryScopeOrderColumn.Builder();
+        CREATED, LAST_UPDATED, ATTRIBUTE, ORGUNIT_NAME, ENROLLMENT_DATE
     }
 
     public static final TrackedEntityInstanceQueryScopeOrderColumn CREATED =
@@ -51,12 +45,24 @@ abstract class TrackedEntityInstanceQueryScopeOrderColumn {
     public static final TrackedEntityInstanceQueryScopeOrderColumn LAST_UPDATED =
             builder().type(Type.LAST_UPDATED).apiName("lastupdated").build();
 
+    public static final TrackedEntityInstanceQueryScopeOrderColumn ORGUNIT_NAME =
+            builder().type(Type.ORGUNIT_NAME).apiName("ouname").build();
+
+    public static final TrackedEntityInstanceQueryScopeOrderColumn ENROLLMENT_DATE =
+            builder().type(Type.ENROLLMENT_DATE).build();
+
     public static TrackedEntityInstanceQueryScopeOrderColumn attribute(String attributeId) {
         return builder().type(Type.ATTRIBUTE).apiName(attributeId).build();
     }
 
-    public static final TrackedEntityInstanceQueryScopeOrderColumn ORGUNIT_NAME =
-            builder().type(Type.ORGUNIT_NAME).apiName("ouname").build();
+    public abstract Type type();
+
+    @Nullable
+    public abstract String apiName();
+
+    public static Builder builder() {
+        return new AutoValue_TrackedEntityInstanceQueryScopeOrderColumn.Builder();
+    }
 
     @AutoValue.Builder
     abstract static class Builder {

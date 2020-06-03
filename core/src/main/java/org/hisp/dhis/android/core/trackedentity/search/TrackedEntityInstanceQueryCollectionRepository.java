@@ -303,13 +303,18 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     }
 
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-            TrackedEntityInstanceQueryRepositoryScope, RepositoryScope.OrderByDirection> OrderByAttribute(String attr) {
+            TrackedEntityInstanceQueryRepositoryScope, RepositoryScope.OrderByDirection> orderByAttribute(String attr) {
         return orderConnector(TrackedEntityInstanceQueryScopeOrderColumn.attribute(attr));
     }
 
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
             TrackedEntityInstanceQueryRepositoryScope, RepositoryScope.OrderByDirection> orderByOrganisationUnitName() {
         return orderConnector(TrackedEntityInstanceQueryScopeOrderColumn.ORGUNIT_NAME);
+    }
+
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+            TrackedEntityInstanceQueryRepositoryScope, RepositoryScope.OrderByDirection> orderByEnrollmentDate() {
+        return orderConnector(TrackedEntityInstanceQueryScopeOrderColumn.ENROLLMENT_DATE);
     }
 
     @Override

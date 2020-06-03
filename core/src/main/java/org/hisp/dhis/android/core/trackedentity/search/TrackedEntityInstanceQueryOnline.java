@@ -147,7 +147,10 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
     private static String toAPIOrderFormat(List<TrackedEntityInstanceQueryScopeOrderByItem> orders) {
         List<String> orderList = new ArrayList<>();
         for (TrackedEntityInstanceQueryScopeOrderByItem order : orders) {
-            orderList.add(order.toAPIString());
+            String apiString  = order.toAPIString();
+            if (apiString != null) {
+                orderList.add(apiString);
+            }
         }
         return Joiner.on(',').join(orderList);
     }

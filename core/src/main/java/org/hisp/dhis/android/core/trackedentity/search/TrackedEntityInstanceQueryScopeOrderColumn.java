@@ -36,7 +36,7 @@ import com.google.auto.value.AutoValue;
 abstract class TrackedEntityInstanceQueryScopeOrderColumn {
 
     enum Type {
-        CREATED, LAST_UPDATED, ATTRIBUTE, ORGUNIT_NAME, ENROLLMENT_DATE
+        CREATED, LAST_UPDATED, ATTRIBUTE, ORGUNIT_NAME, ENROLLMENT_DATE, INCIDENT_DATE
     }
 
     public static final TrackedEntityInstanceQueryScopeOrderColumn CREATED =
@@ -50,6 +50,9 @@ abstract class TrackedEntityInstanceQueryScopeOrderColumn {
 
     public static final TrackedEntityInstanceQueryScopeOrderColumn ENROLLMENT_DATE =
             builder().type(Type.ENROLLMENT_DATE).build();
+
+    public static final TrackedEntityInstanceQueryScopeOrderColumn INCIDENT_DATE =
+            builder().type(Type.INCIDENT_DATE).build();
 
     public static TrackedEntityInstanceQueryScopeOrderColumn attribute(String attributeId) {
         return builder().type(Type.ATTRIBUTE).apiName(attributeId).build();

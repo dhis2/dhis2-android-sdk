@@ -317,6 +317,11 @@ public final class TrackedEntityInstanceQueryCollectionRepository
         return orderConnector(TrackedEntityInstanceQueryScopeOrderColumn.ENROLLMENT_DATE);
     }
 
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+            TrackedEntityInstanceQueryRepositoryScope, RepositoryScope.OrderByDirection> orderByIncidentDate() {
+        return orderConnector(TrackedEntityInstanceQueryScopeOrderColumn.INCIDENT_DATE);
+    }
+
     @Override
     public LiveData<PagedList<TrackedEntityInstance>> getPaged(int pageSize) {
         DataSource.Factory<TrackedEntityInstance, TrackedEntityInstance> factory =

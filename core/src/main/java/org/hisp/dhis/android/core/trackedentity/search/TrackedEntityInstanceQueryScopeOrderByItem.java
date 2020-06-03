@@ -40,7 +40,7 @@ abstract class TrackedEntityInstanceQueryScopeOrderByItem {
     public abstract RepositoryScope.OrderByDirection direction();
 
     public String toAPIString() {
-        return column().apiName() + ":" + direction().getApi();
+        return column().apiName() == null ? null : column().apiName() + ":" + direction().getApi();
     }
 
     public static Builder builder() {

@@ -53,6 +53,7 @@ import static org.hisp.dhis.android.core.common.IdentifiableColumns.CREATED;
 import static org.hisp.dhis.android.core.common.IdentifiableColumns.LAST_UPDATED;
 import static org.hisp.dhis.android.core.common.IdentifiableColumns.NAME;
 import static org.hisp.dhis.android.core.common.IdentifiableColumns.UID;
+import static org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo.Columns.INCIDENT_DATE;
 
 @SuppressWarnings({"PMD.GodClass"})
 final class TrackedEntityInstanceLocalQueryHelper {
@@ -311,12 +312,12 @@ final class TrackedEntityInstanceLocalQueryHelper {
                     break;
                 case ENROLLMENT_DATE:
                     if (hasProgram(scope)) {
-                        String enrollmentDate = String.format("SELECT MAX(%s) FROM %s WHERE %s = %s",
-                                EnrollmentTableInfo.Columns.ENROLLMENT_DATE,
-                                EnrollmentTableInfo.TABLE_INFO.name(),
-                                EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
-                                dot(TEI_ALIAS, UID));
-                        orderClauses.add(enrollmentDate + " " + item.direction().name());
+                        orderClauses.add(dot(ENROLLMENT_ALIAS, ENROLLMENT_DATE) + " " + item.direction().name());
+                    }
+                    break;
+                case INCIDENT_DATE:
+                    if (hasProgram(scope)) {
+                        orderClauses.add(dot(ENROLLMENT_ALIAS, INCIDENT_DATE) + " " + item.direction().name());
                     }
                     break;
                 default:

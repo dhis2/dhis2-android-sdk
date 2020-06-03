@@ -30,6 +30,7 @@ package org.hisp.dhis.android.localanalytics
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.enrollment.EnrollmentCollectionRepository
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
+import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramType
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestLocalAnalyticsDispatcher
@@ -86,7 +87,7 @@ internal class LocalAnalyticsTrackerEventsMockIntegrationShould : BaseMockIntegr
     }
 
     @Test
-    fun count_events_by_condition_in_tracked_entity_data_values_and_status() {
+    fun count_events_by_condition_on_tracked_entity_data_values_and_status() {
         val dataElements = d2.dataElementModule().dataElements()
                 .byDomainType().eq("TRACKER")
                 .blockingGet()
@@ -105,8 +106,32 @@ internal class LocalAnalyticsTrackerEventsMockIntegrationShould : BaseMockIntegr
         val eventUids = eventUidsCond0.intersect(eventUidsCond1)
         val eventsCount = d2.eventModule().events()
                 .byUid().`in`(eventUids)
+                .byStatus().eq(EventStatus.ACTIVE)
                 .blockingCount()
-        assertThat(eventsCount).isAtLeast(0)
+        assertThat(eventsCount).isAtLeast(1)
+    }
+
+    @Test
+    fun count_teis_by_condition_on_tracked_entity_attribute_values() {
+        val attributes = d2.trackedEntityModule().trackedEntityAttributes()
+                .blockingGet()
+        val at0 = attributes[0]
+        val at1 = attributes[1]
+        val atv0 = d2.trackedEntityModule().trackedEntityAttributeValues()
+                .byTrackedEntityAttribute().eq(at0.uid())
+                .byValue().like("a")
+                .blockingGet()
+        val atv1 = d2.trackedEntityModule().trackedEntityAttributeValues()
+                .byTrackedEntityAttribute().eq(at1.uid())
+                .byValue().like("b")
+                .blockingGet()
+        val teiUidsCond0 = atv0.map { it.trackedEntityInstance() }
+        val teiUidsCond1 = atv1.map { it.trackedEntityInstance() }
+        val teiUids = teiUidsCond0.intersect(teiUidsCond1)
+        val teiCount = d2.trackedEntityModule().trackedEntityInstances()
+                .byUid().`in`(teiUids)
+                .blockingCount()
+        assertThat(teiCount).isAtLeast(1)
     }
 
     private fun getProgramEnrollmentsRepository(): EnrollmentCollectionRepository {

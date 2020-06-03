@@ -30,6 +30,7 @@ package org.hisp.dhis.android.localanalytics
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.enrollment.EnrollmentCollectionRepository
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
+import org.hisp.dhis.android.core.event.EventCollectionRepository
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramType
@@ -88,25 +89,7 @@ internal class LocalAnalyticsTrackerEventsMockIntegrationShould : BaseMockIntegr
 
     @Test
     fun count_events_by_condition_on_tracked_entity_data_values_and_status() {
-        val dataElements = d2.dataElementModule().dataElements()
-                .byDomainType().eq("TRACKER")
-                .blockingGet()
-        val de0 = dataElements[0]
-        val de1 = dataElements[1]
-        val tedv0 = d2.trackedEntityModule().trackedEntityDataValues()
-                .byDataElement().eq(de0.uid())
-                .byValue().like("a")
-                .blockingGet()
-        val tedv1 = d2.trackedEntityModule().trackedEntityDataValues()
-                .byDataElement().eq(de1.uid())
-                .byValue().like("b")
-                .blockingGet()
-        val eventUidsCond0 = tedv0.map { it.event() }
-        val eventUidsCond1 = tedv1.map { it.event() }
-        val eventUids = eventUidsCond0.intersect(eventUidsCond1)
-        val eventsCount = d2.eventModule().events()
-                .byUid().`in`(eventUids)
-                .byStatus().eq(EventStatus.ACTIVE)
+        val eventsCount = getEventRepositoryByTrackedEntityDataValueConditions().byStatus().eq(EventStatus.ACTIVE)
                 .blockingCount()
         assertThat(eventsCount).isAtLeast(1)
     }
@@ -134,6 +117,21 @@ internal class LocalAnalyticsTrackerEventsMockIntegrationShould : BaseMockIntegr
         assertThat(teiCount).isAtLeast(1)
     }
 
+    @Test
+    fun count_teis_by_condition_on_tracked_entity_data_values() {
+        val events = getEventRepositoryByTrackedEntityDataValueConditions()
+                .byEnrollmentUid().isNotNull
+                .blockingGet()
+        val enrollmentUids = events.groupBy { it.enrollment() }.keys
+
+        val enrollments = d2.enrollmentModule().enrollments()
+                .byUid().`in`(enrollmentUids)
+                .blockingGet()
+
+        val enrollmentsByTei = enrollments.groupBy { it.trackedEntityInstance() }
+        assertThat(enrollmentsByTei.size).isAtLeast(1)
+    }
+
     private fun getProgramEnrollmentsRepository(): EnrollmentCollectionRepository {
         return d2.enrollmentModule().enrollments()
                 .byProgram().eq(getProgramWithRegistration().uid())
@@ -151,5 +149,27 @@ internal class LocalAnalyticsTrackerEventsMockIntegrationShould : BaseMockIntegr
                 .byProgramType().eq(ProgramType.WITHOUT_REGISTRATION)
                 .one()
                 .blockingGet()
+    }
+
+    private fun getEventRepositoryByTrackedEntityDataValueConditions(): EventCollectionRepository {
+        val dataElements = d2.dataElementModule().dataElements()
+                .byDomainType().eq("TRACKER")
+                .blockingGet()
+        val de0 = dataElements[0]
+        val de1 = dataElements[1]
+        val tedv0 = d2.trackedEntityModule().trackedEntityDataValues()
+                .byDataElement().eq(de0.uid())
+                .byValue().like("a")
+                .blockingGet()
+        val tedv1 = d2.trackedEntityModule().trackedEntityDataValues()
+                .byDataElement().eq(de1.uid())
+                .byValue().like("b")
+                .blockingGet()
+        val eventUidsCond0 = tedv0.map { it.event() }
+        val eventUidsCond1 = tedv1.map { it.event() }
+        val eventUids = eventUidsCond0.intersect(eventUidsCond1)
+        return d2.eventModule().events()
+                .byUid().`in`(eventUids)
+                .byStatus().eq(EventStatus.ACTIVE)
     }
 }

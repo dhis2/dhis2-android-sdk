@@ -51,6 +51,7 @@ import java.util.List;
 
 import static org.hisp.dhis.android.core.common.IdentifiableColumns.CREATED;
 import static org.hisp.dhis.android.core.common.IdentifiableColumns.LAST_UPDATED;
+import static org.hisp.dhis.android.core.common.IdentifiableColumns.NAME;
 import static org.hisp.dhis.android.core.common.IdentifiableColumns.UID;
 
 @SuppressWarnings({"PMD.GodClass"})
@@ -169,9 +170,19 @@ final class TrackedEntityInstanceLocalQueryHelper {
     }
 
     private static boolean hasOrgunits(TrackedEntityInstanceQueryRepositoryScope scope) {
-        return !scope.orgUnits().isEmpty() &&
+        return (!scope.orgUnits().isEmpty() &&
                 !OrganisationUnitMode.ALL.equals(scope.orgUnitMode()) &&
-                !OrganisationUnitMode.ACCESSIBLE.equals(scope.orgUnitMode());
+                !OrganisationUnitMode.ACCESSIBLE.equals(scope.orgUnitMode())
+        ) || hasOrgunitSortOrder(scope);
+    }
+
+    private static boolean hasOrgunitSortOrder(TrackedEntityInstanceQueryRepositoryScope scope) {
+        for (TrackedEntityInstanceQueryScopeOrderByItem order : scope.order()) {
+            if (order.column().equals(TrackedEntityInstanceQueryScopeOrderColumn.ORGUNIT_NAME)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static void appendOrgunitWhere(WhereClauseBuilder where, TrackedEntityInstanceQueryRepositoryScope scope) {
@@ -284,6 +295,8 @@ final class TrackedEntityInstanceLocalQueryHelper {
                 case LAST_UPDATED:
                     orderClauses.add(dot(TEI_ALIAS, LAST_UPDATED) + " " + item.direction().name());
                     break;
+                case ORGUNIT_NAME:
+                    orderClauses.add(dot(ORGUNIT_ALIAS, NAME) + " " + item.direction().name());
                 case ATTRIBUTE:
                     // Trick to put null values at the end of the list
                     String attOrder = String.format("IFNULL((SELECT %s FROM %s WHERE %s = %s AND %s = %s), 'zzzzz')",

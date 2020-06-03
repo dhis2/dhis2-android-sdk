@@ -34,7 +34,7 @@ import com.google.auto.value.AutoValue;
 abstract class TrackedEntityInstanceQueryScopeOrderColumn {
 
     enum Type {
-        CREATED, LAST_UPDATED, ATTRIBUTE
+        CREATED, LAST_UPDATED, ATTRIBUTE, ORGUNIT_NAME
     }
 
     public abstract Type type();
@@ -54,6 +54,9 @@ abstract class TrackedEntityInstanceQueryScopeOrderColumn {
     public static TrackedEntityInstanceQueryScopeOrderColumn attribute(String attributeId) {
         return builder().type(Type.ATTRIBUTE).apiName(attributeId).build();
     }
+
+    public static final TrackedEntityInstanceQueryScopeOrderColumn ORGUNIT_NAME =
+            builder().type(Type.ORGUNIT_NAME).apiName("ouname").build();
 
     @AutoValue.Builder
     abstract static class Builder {

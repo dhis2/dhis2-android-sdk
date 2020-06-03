@@ -44,7 +44,6 @@ import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectReposit
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeOrderByItem;
 import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -306,6 +305,11 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
             TrackedEntityInstanceQueryRepositoryScope, RepositoryScope.OrderByDirection> OrderByAttribute(String attr) {
         return orderConnector(TrackedEntityInstanceQueryScopeOrderColumn.attribute(attr));
+    }
+
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+            TrackedEntityInstanceQueryRepositoryScope, RepositoryScope.OrderByDirection> orderByOrganisationUnitName() {
+        return orderConnector(TrackedEntityInstanceQueryScopeOrderColumn.ORGUNIT_NAME);
     }
 
     @Override

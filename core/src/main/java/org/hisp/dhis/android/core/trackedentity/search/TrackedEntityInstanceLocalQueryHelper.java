@@ -32,7 +32,6 @@ import com.google.common.base.Joiner;
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
 import org.hisp.dhis.android.core.common.AssignedUserMode;
@@ -65,7 +64,6 @@ final class TrackedEntityInstanceLocalQueryHelper {
 
     private static String TEI_UID = dot(TEI_ALIAS, "uid");
     private static String TEI_ALL = dot(TEI_ALIAS, "*");
-    private static String TEI_STATE = dot(TEI_ALIAS, DataColumns.STATE);
     private static String TEI_LAST_UPDATED = dot(TEI_ALIAS, "lastUpdated");
 
     private static String ENROLLMENT_DATE = EnrollmentTableInfo.Columns.ENROLLMENT_DATE;
@@ -299,23 +297,14 @@ final class TrackedEntityInstanceLocalQueryHelper {
                     break;
             }
         }
-        orderClauses.add(getOrderByState());
+        orderClauses.add(getOrderByLastUpdated());
 
         return " ORDER BY " + Joiner.on(", ").join(orderClauses);
     }
 
-    private static String getOrderByState() {
+    private static String getOrderByLastUpdated() {
         // TODO In case a program uid is provided, the server orders by enrollmentStatus.
-        String order1 = CollectionsHelper.commaAndSpaceSeparatedArrayValues(
-                CollectionsHelper.withSingleQuotationMarksArray(
-                        EnumHelper.asStringList(State.TO_POST, State.TO_UPDATE, State.UPLOADING)));
-        String order2 = CollectionsHelper.commaAndSpaceSeparatedArrayValues(
-                CollectionsHelper.withSingleQuotationMarksArray(
-                        EnumHelper.asStringList(State.SYNCED, State.SYNCED_VIA_SMS, State.SENT_VIA_SMS)));
-        return " CASE " +
-                "WHEN " + TEI_STATE + " IN (" + order1 + ") THEN 1 " +
-                "WHEN " + TEI_STATE + " IN (" + order2 + ") THEN 2 ELSE 3 END ASC, " +
-                TEI_LAST_UPDATED + " DESC ";
+        return TEI_LAST_UPDATED + " DESC ";
     }
 
     private static String dot(String item1, String item2) {

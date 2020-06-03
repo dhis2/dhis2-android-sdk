@@ -52,6 +52,7 @@ public class DataSetInstanceSummarySQLStatementBuilder extends DataSetInstanceSQ
             "SUM(" + VALUE_COUNT_ALIAS + ")" + AS + VALUE_COUNT_ALIAS +  "," +
             "COUNT(*)" + AS + DATASETINSTANCE_COUNT_ALIAS + "," +
             STATE + "," +
+            "MAX(" + LAST_UPDATED_ALIAS + ")" + AS + LAST_UPDATED_ALIAS + "," +
             SELECT_STATE_ORDERING;
 
     private static final String GROUP_BY_CLAUSE = "GROUP BY " + DATASET_UID_ALIAS;

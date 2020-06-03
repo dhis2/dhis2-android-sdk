@@ -41,23 +41,29 @@ import java.util.Date;
 public class EventSamples {
 
     public static Event get() {
+        return get("event_uid", "enrollment", "organisation_unit", "program",
+                "program_stage", "attribute_option_combo", getDate("2014-08-20T12:28:56.409"));
+    }
+
+    public static Event get(String uid, String enrollment, String organisationUnit, String program,
+                            String programStage, String attributeOptionCombo, Date eventDate) {
         return Event.builder()
                 .id(1L)
-                .uid("event_uid")
-                .enrollment("enrollment")
+                .uid(uid)
+                .enrollment(enrollment)
                 .created(getDate("2014-08-20T12:28:56.409"))
                 .lastUpdated(getDate("2015-10-14T13:36:53.063"))
                 .createdAtClient(getDate("2014-10-14T13:36:53.063"))
                 .lastUpdatedAtClient(getDate("2014-11-11T10:10:50.123"))
-                .program("program")
-                .programStage("program_stage")
-                .organisationUnit("organisation_unit")
-                .eventDate(getDate("2014-08-20T12:28:56.409"))
+                .program(program)
+                .programStage(programStage)
+                .organisationUnit(organisationUnit)
+                .eventDate(eventDate)
                 .status(EventStatus.ACTIVE)
                 .geometry(Geometry.builder().type(FeatureType.POINT).coordinates("[23.23, 21.21]").build())
                 .completedDate(getDate("2014-08-20T12:28:56.409"))
                 .dueDate(getDate("2014-08-20T12:28:56.409"))
-                .attributeOptionCombo("attribute_option_combo")
+                .attributeOptionCombo(attributeOptionCombo)
                 .state(State.TO_POST)
                 .deleted(false)
                 .build();

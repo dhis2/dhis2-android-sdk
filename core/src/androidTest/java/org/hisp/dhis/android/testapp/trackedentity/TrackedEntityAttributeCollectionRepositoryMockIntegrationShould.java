@@ -192,6 +192,16 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
     }
 
     @Test
+    public void by_display_form_name() {
+        List<TrackedEntityAttribute> trackedEntityAttributes =
+                d2.trackedEntityModule().trackedEntityAttributes()
+                        .byDisplayFormName().eq("displayformname")
+                        .blockingGet();
+
+        assertThat(trackedEntityAttributes.size(), is(1));
+    }
+
+    @Test
     public void filter_by_field_color() {
         List<TrackedEntityAttribute> trackedEntityAttributes =
                 d2.trackedEntityModule().trackedEntityAttributes()

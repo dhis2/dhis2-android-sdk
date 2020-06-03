@@ -61,6 +61,8 @@ public class TrackedEntityAttributeShould extends BaseObjectShould implements Ob
         assertThat(trackedEntityAttribute.displayShortName()).isEqualTo("TB number");
         assertThat(trackedEntityAttribute.description()).isEqualTo("TB number");
         assertThat(trackedEntityAttribute.displayDescription()).isEqualTo("TB number");
+        assertThat(trackedEntityAttribute.formName()).isEqualTo("number");
+        assertThat(trackedEntityAttribute.displayFormName()).isEqualTo("num");
         assertThat(trackedEntityAttribute.displayInListNoProgram()).isFalse();
         assertThat(trackedEntityAttribute.displayOnVisitSchedule()).isFalse();
         assertThat(trackedEntityAttribute.generated()).isFalse();

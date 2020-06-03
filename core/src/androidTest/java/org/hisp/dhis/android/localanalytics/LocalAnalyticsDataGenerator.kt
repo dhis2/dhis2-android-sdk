@@ -27,93 +27,117 @@
  */
 package org.hisp.dhis.android.localanalytics
 
-import org.hisp.dhis.android.core.category.CategoryCombo
-import org.hisp.dhis.android.core.category.CategoryOptionCombo
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.data.category.CategoryComboSamples
-import org.hisp.dhis.android.core.data.category.CategoryOptionComboSamples
-import org.hisp.dhis.android.core.data.dataelement.DataElementSamples
-import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples
-import org.hisp.dhis.android.core.data.program.ProgramSamples
-import org.hisp.dhis.android.core.data.program.ProgramStageSamples
-import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityAttributeSamples
+import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
+import org.hisp.dhis.android.core.data.datavalue.DataValueSamples
+import org.hisp.dhis.android.core.data.enrollment.EnrollmentSamples
+import org.hisp.dhis.android.core.data.trackedentity.EventSamples
+import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityAttributeValueSamples
+import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityDataValueSamples
+import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityInstanceSamples
 import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.datavalue.DataValue
+import org.hisp.dhis.android.core.enrollment.Enrollment
+import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.program.Program
-import org.hisp.dhis.android.core.program.ProgramStage
-import org.hisp.dhis.android.core.program.ProgramType
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import java.util.*
+import kotlin.random.Random
 
-class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsParams) {
+internal class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDataParams) {
 
-    fun getOrganisationUnits(): List<OrganisationUnit> {
-        val root = OrganisationUnitSamples.getOrganisationUnit("OU", 1, null)
-        val children = getOrganisationUnitChildren(root)
-        val grandchildren = children.flatMap { ch -> getOrganisationUnitChildren(ch) }
-        return listOf(root) + children + grandchildren
-    }
+    private val random = Random(132214235)
+    private val uidGenerator = UidGeneratorImpl()
 
-    private fun getOrganisationUnitChildren(parent: OrganisationUnit): List<OrganisationUnit> {
-        return (1..params.organisationUnitChildren).map { i ->
-            OrganisationUnitSamples.getOrganisationUnit("${parent.name()} $i", parent.level()!! + 1,
-                    ObjectWithUid.create(parent.uid()))
-        }
-    }
+    fun generateDataValues(metadata: MetadataForDataFilling): List<DataValue> {
+        val orgUnits: List<OrganisationUnit> = metadata.organisationUnits.filter { it.level() == 3 }.groupBy { it.parent() }.map { aa -> aa.value.first() }
+        val categoryOptionCombosByCategoryCombo = metadata.categoryOptionCombos.groupBy { coc -> coc.categoryCombo() }
+        val dataElementsByCategoryCombo = metadata.aggregatedDataElements.groupBy { de -> de.categoryCombo() }
 
-    fun getCategoryCombos(): List<CategoryCombo> {
-        val default = CategoryComboSamples.getCategoryCombo("Default", true)
-        val cc2 = CategoryComboSamples.getCategoryCombo("CC2", false)
-        val cc3 = CategoryComboSamples.getCategoryCombo("CC3", false)
-        return listOf(default, cc2, cc3)
-    }
+        val periodOrgUnits = metadata.periods.flatMap { period -> orgUnits.map { ou -> Pair(period, ou) } }
 
-    fun getCategoryOptionCombos(categoryCombos: List<CategoryCombo>): List<CategoryOptionCombo> {
-        val coc2 = getCategoryOptionCombos(categoryCombos[1], params.categoryOptionCombos2)
-        val coc3 = getCategoryOptionCombos(categoryCombos[1], params.categoryOptionCombos3)
-        return coc2 + coc3
-    }
+        val iterations = params.dataValues / 100
 
-    private fun getCategoryOptionCombos(categoryCombo: CategoryCombo, count: Int): List<CategoryOptionCombo> {
-        return (1..count).map { i ->
-            CategoryOptionComboSamples.getCategoryOptionCombo("COC ${categoryCombo.name()} $i")
-        }
-    }
-
-    fun getDataElementsAggregated(categoryCombos: List<CategoryCombo>): List<DataElement> {
-        return categoryCombos.flatMap { categoryCombo ->
-            (1..params.dataElementsAggregated).map { i ->
-                DataElementSamples.getDataElement("DE Aggr $i", null, ObjectWithUid.create(categoryCombo.uid()), "AGGREGATE")
+        return categoryOptionCombosByCategoryCombo.flatMap { (categoryCombo, categoryOptionCombos) ->
+            categoryOptionCombos.flatMap { categoryOptionCombo ->
+                dataElementsByCategoryCombo[categoryCombo]!!.flatMap { dataElement ->
+                    (0 until iterations).map {
+                        val (period, ou) = periodOrgUnits[it]
+                        DataValueSamples.getDataValue(ou.uid(), dataElement.uid(), period.periodId()!!, categoryOptionCombo.uid(),
+                                metadata.categoryOptionCombos.first().uid(), random.nextDouble().toString())
+                    }
+                }
             }
         }
     }
 
-    fun getDataElementsTracker(categoryCombo: CategoryCombo): List<DataElement> {
-        return (1..params.dataElementsTracker).map { i ->
-            DataElementSamples.getDataElement("DE Tracker $i", null, ObjectWithUid.create(categoryCombo.uid()), "TRACKER")
+    fun generateTrackedEntityInstances(organisationUnits: List<OrganisationUnit>): List<TrackedEntityInstance> {
+        val level3OrgUnits = organisationUnits.filter { ou -> ou.level() == 3 }
+        return (1..params.trackedEntityInstances).map { i ->
+            val ou = level3OrgUnits[i % level3OrgUnits.size]
+            TrackedEntityInstanceSamples.get(ou.uid())
         }
     }
 
-    fun getPrograms(categoryCombo: CategoryCombo): List<Program> {
-        val withReg = ProgramSamples.getProgram("Program with registration", ProgramType.WITH_REGISTRATION, categoryCombo)
-        val withoutReg = ProgramSamples.getProgram("Program without registration", ProgramType.WITHOUT_REGISTRATION, categoryCombo)
-        return listOf(withReg, withoutReg)
-    }
-
-    fun getProgramStages(programs: List<Program>): List<ProgramStage> {
-        val withReg = getProgramStages(programs[0], params.programStagesWithRegistration)
-        val withoutReg = getProgramStages(programs[1], params.programStagesWithoutRegistration)
-        return withReg + withoutReg
-    }
-
-    private fun getProgramStages(program: Program, count: Int): List<ProgramStage> {
-        return (1..count).map { i ->
-            ProgramStageSamples.getProgramStage("Stage ${program.name()} $i", program)
+    fun generateEnrollments(teis: List<TrackedEntityInstance>, program: Program): List<Enrollment> {
+        return teis.map { tei ->
+            EnrollmentSamples.get(uidGenerator.generate(), tei.organisationUnit(), program.uid(), tei.uid(), getRandomDateInLastYear())
         }
     }
 
-    fun getTrackedEntityAttributes(): List<TrackedEntityAttribute> {
-        return (1..params.trackedEntityAttributes).map { i ->
-            TrackedEntityAttributeSamples.get("TEA $i")
+    fun generateEventsWithoutRegistration(metadata: MetadataForDataFilling): List<Event> {
+        val level3OrgUnits = metadata.organisationUnits.filter { ou -> ou.level() == 3 }
+        val program = metadata.programs[1]
+        val programStages = metadata.programStages.filter { ps -> ps.program()!!.uid() == program.uid() }
+        return (1..params.eventsWithoutRegistration).map { i ->
+            val ou = level3OrgUnits[i % level3OrgUnits.size]
+            val programStage = programStages[i % programStages.size]
+            EventSamples.get(uidGenerator.generate(), null, ou.uid(), programStage.program()!!.uid(), programStage.uid(),
+                    metadata.categoryOptionCombos.first().uid(), getRandomDateInLastYear())
         }
+    }
+
+    fun generateEventsRegistration(metadata: MetadataForDataFilling, enrollments: List<Enrollment>): List<Event> {
+        val program = metadata.programs[0]
+        val programStages = metadata.programStages.filter { ps -> ps.program()!!.uid() == program.uid() }
+        return enrollments.flatMap { enrollment ->
+            programStages.flatMap { ps ->
+                (1..params.eventsWithRegistrationPerEnrollmentAndPS).map {
+                    EventSamples.get(uidGenerator.generate(), enrollment.uid(), enrollment.organisationUnit(),
+                            enrollment.program(), ps.uid(), metadata.categoryOptionCombos.first().uid(),
+                            getRandomDateInLastYear())
+                }
+            }
+        }
+    }
+
+    fun generateTrackedEntityAttributeValues(trackedEntityAttributes: List<TrackedEntityAttribute>, teis: List<TrackedEntityInstance>): List<TrackedEntityAttributeValue> {
+        return trackedEntityAttributes.flatMap { tea ->
+            teis.map { tei ->
+                TrackedEntityAttributeValueSamples.get(tea.uid(), tei.uid(), generateRandomStringValue())
+            }
+        }
+    }
+
+    fun generateTrackedEntityDataValues(dataElements: List<DataElement>, events: List<Event>): List<TrackedEntityDataValue> {
+        return dataElements.flatMap { de ->
+            events.map { event ->
+                TrackedEntityDataValueSamples.get(de.uid(), event.uid(), generateRandomStringValue())
+            }
+        }
+    }
+
+    private fun generateRandomStringValue(): String {
+        return uidGenerator.generate()
+    }
+
+    private fun getRandomDateInLastYear(): Date {
+        val now = System.currentTimeMillis()
+        val oneYearMillis = 365L * 24 * 60 * 60 * 1000
+        val millis = now - random.nextDouble() * oneYearMillis
+        return Date(millis.toLong())
     }
 }

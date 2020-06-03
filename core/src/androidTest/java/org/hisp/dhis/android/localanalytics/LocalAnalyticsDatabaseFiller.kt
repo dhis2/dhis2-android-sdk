@@ -29,40 +29,104 @@ package org.hisp.dhis.android.localanalytics
 
 import org.hisp.dhis.android.core.D2
 import org.hisp.dhis.android.core.D2DIComponentAccessor
+import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor
+import org.hisp.dhis.android.core.category.CategoryOptionCombo
 import org.hisp.dhis.android.core.category.internal.CategoryComboStore
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStoreImpl
+import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
+import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl
+import org.hisp.dhis.android.core.event.internal.EventStoreImpl
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
+import org.hisp.dhis.android.core.period.Period
+import org.hisp.dhis.android.core.period.PeriodType
+import org.hisp.dhis.android.core.program.Program
+import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.program.internal.ProgramStageStore
 import org.hisp.dhis.android.core.program.internal.ProgramStore
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStoreImpl
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl
 
-object LocalAnalyticsDatabaseFiller {
+internal data class MetadataForDataFilling(val organisationUnits: List<OrganisationUnit>,
+                                           val periods: List<Period>,
+                                           val categoryOptionCombos: List<CategoryOptionCombo>,
+                                           val aggregatedDataElements: List<DataElement>,
+                                           val trackerDataElements: List<DataElement>,
+                                           val programs: List<Program>,
+                                           val programStages: List<ProgramStage>,
+                                           val trackedEntityAttributes: List<TrackedEntityAttribute>)
 
-    fun fillDatabase(d2: D2) {
-        val da = d2.databaseAdapter()
+internal class LocalAnalyticsDatabaseFiller(private val d2: D2) {
+    private val da = d2.databaseAdapter()
+    private val d2DIComponent = D2DIComponentAccessor.getD2DIComponent(d2)
 
-        val generator = LocalAnalyticsDataGenerator(LocalAnalyticsParams.Default)
+    fun fillDatabase(metadataParams: LocalAnalyticsMetadataParams, dataParams: LocalAnalyticsDataParams) {
+        D2CallExecutor.create(da).executeD2CallTransactionally {
+            val metadata = fillMetadata(metadataParams)
+            fillData(dataParams, metadata)
+        }
+    }
 
-        OrganisationUnitStore.create(da).insert(generator.getOrganisationUnits())
+    private fun fillMetadata(metadataParams: LocalAnalyticsMetadataParams): MetadataForDataFilling {
+        val generator = LocalAnalyticsMetadataGenerator(metadataParams)
+
+        val organisationUnits = generator.getOrganisationUnits()
+        OrganisationUnitStore.create(da).insert(organisationUnits)
 
         val categoryCombos = generator.getCategoryCombos()
         CategoryComboStore.create(da).insert(categoryCombos)
 
-        CategoryOptionComboStoreImpl.create(da).insert(generator.getCategoryOptionCombos(categoryCombos))
+        val categoryOptionCombos = generator.getCategoryOptionCombos(categoryCombos)
+        CategoryOptionComboStoreImpl.create(da).insert(categoryOptionCombos)
 
         val defaultCategoryCombo = categoryCombos.first()
-        DataElementStore.create(da).insert(generator.getDataElementsAggregated(categoryCombos) +
-                generator.getDataElementsTracker(defaultCategoryCombo))
+        val aggregatedDataElements = generator.getDataElementsAggregated(categoryCombos)
+        val trackerDataElements = generator.getDataElementsTracker(defaultCategoryCombo)
+        DataElementStore.create(da).insert(aggregatedDataElements + trackerDataElements)
 
-        val d2DIComponent = D2DIComponentAccessor.getD2DIComponent(d2)
         d2DIComponent.periodHandler().generateAndPersist()
 
         val programs = generator.getPrograms(defaultCategoryCombo)
         ProgramStore.create(da).insert(programs)
 
-        ProgramStageStore.create(da).insert(generator.getProgramStages(programs))
+        val programStages = generator.getProgramStages(programs)
+        ProgramStageStore.create(da).insert(programStages)
 
-        TrackedEntityAttributeStore.create(da).insert(generator.getTrackedEntityAttributes())
+        val trackedEntityAttributes = generator.getTrackedEntityAttributes()
+        TrackedEntityAttributeStore.create(da).insert(trackedEntityAttributes)
+
+        val periods = d2.periodModule().periods().byPeriodType().eq(PeriodType.Daily).blockingGet()
+
+        return MetadataForDataFilling(organisationUnits, periods, categoryOptionCombos, aggregatedDataElements,
+                trackerDataElements, programs, programStages, trackedEntityAttributes)
+    }
+
+    private fun fillData(dataParams: LocalAnalyticsDataParams, metadata: MetadataForDataFilling) {
+        val generator = LocalAnalyticsDataGenerator(dataParams)
+
+        val dv = generator.generateDataValues(metadata)
+        DataValueStore.create(da).insert(dv)
+
+        val teis = generator.generateTrackedEntityInstances(metadata.organisationUnits)
+        TrackedEntityInstanceStoreImpl.create(da).insert(teis)
+
+        val enrollments = generator.generateEnrollments(teis, metadata.programs.first())
+        EnrollmentStoreImpl.create(da).insert(enrollments)
+
+        val events = generator.generateEventsWithoutRegistration(metadata) +
+                generator.generateEventsRegistration(metadata, enrollments)
+        EventStoreImpl.create(da).insert(events)
+
+        TrackedEntityAttributeValueStoreImpl.create(da).insert(
+                generator.generateTrackedEntityAttributeValues(metadata.trackedEntityAttributes, teis))
+
+        TrackedEntityDataValueStoreImpl.create(da).insert(
+                generator.generateTrackedEntityDataValues(metadata.trackerDataElements, events)
+        )
     }
 }

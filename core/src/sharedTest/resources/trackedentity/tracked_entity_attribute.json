@@ -24,6 +24,8 @@
   "unique": false,
   "inherit": false,
   "fieldMask": "XXXXX",
+  "formName": "number",
+  "displayFormName": "num",
   "optionSetValue": false,
   "dimensionItemType": "PROGRAM_ATTRIBUTE",
   "access": {

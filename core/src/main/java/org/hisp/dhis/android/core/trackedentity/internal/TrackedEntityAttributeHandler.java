@@ -46,7 +46,17 @@ final class TrackedEntityAttributeHandler extends IdentifiableHandlerImpl<Tracke
 
     @Override
     protected TrackedEntityAttribute beforeObjectHandled(TrackedEntityAttribute o) {
-        return o.formName() == null ? o.toBuilder().formName(o.name()).build() : o;
+        TrackedEntityAttribute.Builder builder = o.toBuilder();
+
+        if (o.formName() == null) {
+            builder.formName(o.name());
+        }
+
+        if (o.displayFormName() == null) {
+            builder.displayFormName(o.displayName());
+        }
+
+        return builder.build();
     }
 
     @Override

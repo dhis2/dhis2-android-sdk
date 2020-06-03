@@ -27,24 +27,42 @@
  */
 package org.hisp.dhis.android.localanalytics
 
-data class LocalAnalyticsParams(val organisationUnitChildren: Int,
-                                val categoryOptionCombos2: Int,
-                                val categoryOptionCombos3: Int,
-                                val dataElementsAggregated: Int,
-                                val dataElementsTracker: Int,
-                                val programStagesWithRegistration: Int,
-                                val programStagesWithoutRegistration: Int,
-                                val trackedEntityAttributes: Int) {
+internal data class LocalAnalyticsMetadataParams(val organisationUnitChildren: Int,
+                                                 val categoryOptionCombos2: Int,
+                                                 val categoryOptionCombos3: Int,
+                                                 val dataElementsAggregated: Int,
+                                                 val dataElementsTracker: Int,
+                                                 val programStagesWithRegistration: Int,
+                                                 val programStagesWithoutRegistration: Int,
+                                                 val trackedEntityAttributes: Int) {
 
-    companion object LocalAnalyticsParams {
-        val Default = LocalAnalyticsParams(
+    companion object LocalAnalyticsMetadataParams {
+        val Default = LocalAnalyticsMetadataParams(
                 organisationUnitChildren = 3,
-                categoryOptionCombos2 = 2,
+                categoryOptionCombos2 = 3,
                 categoryOptionCombos3 = 6,
                 dataElementsAggregated = 10,
                 dataElementsTracker = 10,
                 programStagesWithRegistration = 3,
                 programStagesWithoutRegistration = 1,
                 trackedEntityAttributes = 10)
+    }
+}
+
+internal data class LocalAnalyticsDataParams(val dataValues: Int,
+                                             val trackedEntityInstances: Int,
+                                             val eventsWithoutRegistration: Int,
+                                             val eventsWithRegistrationPerEnrollmentAndPS: Int) {
+    companion object LocalAnalyticsDataParams {
+        fun get(f: Int) = LocalAnalyticsDataParams(
+                dataValues = 3000 * f,
+                trackedEntityInstances = 500 * f,
+                eventsWithoutRegistration = 500 * f,
+                eventsWithRegistrationPerEnrollmentAndPS = 1
+        )
+
+        val Default = get(1)
+        val Large = get(3)
+        val SuperLarge = get(6)
     }
 }

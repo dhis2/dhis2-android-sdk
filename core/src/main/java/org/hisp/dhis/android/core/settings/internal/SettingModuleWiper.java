@@ -27,10 +27,11 @@
  */
 package org.hisp.dhis.android.core.settings.internal;
 
-import org.hisp.dhis.android.core.settings.GeneralSettingTableInfo;
 import org.hisp.dhis.android.core.settings.DataSetSettingTableInfo;
+import org.hisp.dhis.android.core.settings.GeneralSettingTableInfo;
 import org.hisp.dhis.android.core.settings.ProgramSettingTableInfo;
 import org.hisp.dhis.android.core.settings.SystemSettingTableInfo;
+import org.hisp.dhis.android.core.settings.UserSettingsTableInfo;
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
 import org.hisp.dhis.android.core.wipe.internal.TableWiper;
 
@@ -54,6 +55,7 @@ public final class SettingModuleWiper implements ModuleWiper {
         tableWiper.wipeTable(GeneralSettingTableInfo.TABLE_INFO);
         tableWiper.wipeTable(DataSetSettingTableInfo.TABLE_INFO);
         tableWiper.wipeTable(ProgramSettingTableInfo.TABLE_INFO);
+        tableWiper.wipeTable(UserSettingsTableInfo.TABLE_INFO);
     }
 
     @Override

@@ -136,4 +136,10 @@ public final class APIDownloaderImpl implements APIDownloader {
                 .map(Payload::items)
                 .doOnSuccess(handler::handleMany);
     }
+
+    @Override
+    public <P> Single<P> downloadObject(Handler<P> handler, Single<P> downloader) {
+        return downloader
+                .doOnSuccess(handler::handle);
+    }
 }

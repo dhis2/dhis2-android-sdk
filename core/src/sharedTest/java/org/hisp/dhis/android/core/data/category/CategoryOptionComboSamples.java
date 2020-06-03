@@ -29,18 +29,21 @@
 package org.hisp.dhis.android.core.data.category;
 
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
+import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryOptionCombo;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
 
 public class CategoryOptionComboSamples {
 
-    public static CategoryOptionCombo getCategoryOptionCombo(String name) {
+    public static CategoryOptionCombo getCategoryOptionCombo(String name, CategoryCombo categoryCombo) {
         CategoryOptionCombo.Builder builder = CategoryOptionCombo.builder();
 
         fillIdentifiableProperties(builder);
         return builder
                 .uid(new UidGeneratorImpl().generate())
+                .categoryCombo(ObjectWithUid.create(categoryCombo.uid()))
                 .name(name)
                 .build();
     }

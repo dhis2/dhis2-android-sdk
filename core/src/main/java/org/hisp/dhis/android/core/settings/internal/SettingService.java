@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.settings.DataSetSettings;
 import org.hisp.dhis.android.core.settings.GeneralSettings;
 import org.hisp.dhis.android.core.settings.ProgramSettings;
 import org.hisp.dhis.android.core.settings.SystemSettings;
+import org.hisp.dhis.android.core.settings.UserSettings;
 
 import io.reactivex.Single;
 import retrofit2.Call;
@@ -45,6 +46,9 @@ interface SettingService {
 
     @GET("systemSettings")
     Call<SystemSettings> getSystemSettings(@Query("fields") @Which Fields<SystemSettings> fields);
+
+    @GET("userSettings")
+    Single<UserSettings> getUserSettings(@Query("key") @Which Fields<UserSettings> fields);
 
     @GET(ANDROID_APP_NAMESPACE + "/" + "general_settings")
     Single<GeneralSettings> getGeneralSettings();

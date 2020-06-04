@@ -36,6 +36,9 @@ import org.junit.BeforeClass
 abstract class BaseMockIntegrationTestLocalAnalyticsDispatcher : BaseMockIntegrationTest() {
 
     companion object BaseMockIntegrationTestLocalAnalyticsDispatcher {
+
+        const val SizeFactor = LocalAnalyticsDataParams.SuperLargeFactor
+
         @BeforeClass
         @Throws(Exception::class)
         @JvmStatic
@@ -48,7 +51,7 @@ abstract class BaseMockIntegrationTestLocalAnalyticsDispatcher : BaseMockIntegra
             }
 
             val filler = LocalAnalyticsDatabaseFiller(objects.d2)
-            filler.fillDatabase(LocalAnalyticsMetadataParams.Default, LocalAnalyticsDataParams.SuperLarge)
+            filler.fillDatabase(LocalAnalyticsMetadataParams.Default, LocalAnalyticsDataParams.get(SizeFactor))
         }
     }
 }

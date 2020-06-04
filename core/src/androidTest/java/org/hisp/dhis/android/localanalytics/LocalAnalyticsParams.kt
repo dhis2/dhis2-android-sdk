@@ -61,8 +61,8 @@ internal data class LocalAnalyticsDataParams(val dataValues: Int,
                 eventsWithRegistrationPerEnrollmentAndPS = 1
         )
 
-        val Default = get(1)
-        val Large = get(3)
-        val SuperLarge = get(6)
+        const val DefaultFactor = 1
+        const val LargeFactor = 3
+        const val SuperLargeFactor = 6
     }
 }

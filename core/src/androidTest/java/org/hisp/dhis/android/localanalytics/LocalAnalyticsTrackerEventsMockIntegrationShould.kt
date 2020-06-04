@@ -37,10 +37,11 @@ import org.hisp.dhis.android.core.program.ProgramType
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCollectionRepository
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestLocalAnalyticsDispatcher
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 
-//@Ignore("Tests for local analytics. Only to be executed on demand")
+@Ignore("Tests for local analytics. Only to be executed on demand")
 @RunWith(D2JunitRunner::class)
 internal class LocalAnalyticsTrackerEventsMockIntegrationShould : BaseMockIntegrationTestLocalAnalyticsDispatcher() {
 

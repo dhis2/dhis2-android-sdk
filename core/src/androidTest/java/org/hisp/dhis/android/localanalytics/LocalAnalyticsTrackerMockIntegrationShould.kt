@@ -43,7 +43,7 @@ import org.junit.runner.RunWith
 
 @Ignore("Tests for local analytics. Only to be executed on demand")
 @RunWith(D2JunitRunner::class)
-internal class LocalAnalyticsTrackerEventsMockIntegrationShould : BaseMockIntegrationTestLocalAnalyticsDispatcher() {
+internal class LocalAnalyticsTrackerMockIntegrationShould : BaseMockIntegrationTestLocalAnalyticsDispatcher() {
 
     @Test
     fun count_events() {

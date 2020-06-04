@@ -132,6 +132,27 @@ internal class LocalAnalyticsTrackerEventsMockIntegrationShould : BaseMockIntegr
         assertThat(enrollmentsByTei.size).isAtLeast(1)
     }
 
+    @Test
+    fun count_tedv_for_a_data_element() {
+        val firstTedv = d2.trackedEntityModule().trackedEntityDataValues()
+                .one().blockingGet()
+        val tedvCount = d2.trackedEntityModule().trackedEntityDataValues()
+                .byDataElement().eq(firstTedv.dataElement())
+                .blockingCount()
+        assertThat(tedvCount).isEqualTo(12000)
+    }
+
+    @Test
+    fun aggregate_tedv_for_a_data_element() {
+        val firstTedv = d2.trackedEntityModule().trackedEntityDataValues()
+                .one().blockingGet()
+        val tedv = d2.trackedEntityModule().trackedEntityDataValues()
+                .byDataElement().eq(firstTedv.dataElement())
+                .blockingGet()
+        val aggregatedTedv = tedv.sumBy { v -> v.value()!!.count { it == 'a' } }
+        assertThat(aggregatedTedv).isAtLeast(1)
+    }
+
     private fun getProgramEnrollmentsRepository(): EnrollmentCollectionRepository {
         return d2.enrollmentModule().enrollments()
                 .byProgram().eq(getProgramWithRegistration().uid())

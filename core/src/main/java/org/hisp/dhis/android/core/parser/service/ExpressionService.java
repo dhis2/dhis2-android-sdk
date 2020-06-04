@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.parser.service;
 
+import android.os.Build;
+
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
@@ -38,6 +40,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
 import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
 import org.hisp.dhis.android.core.parser.expression.ExpressionItemMethod;
+import org.hisp.dhis.android.core.parser.expression.Parser;
 import org.hisp.dhis.android.core.parser.expression.literal.RegenerateLiteral;
 import org.hisp.dhis.android.core.parser.service.dataitem.DimItemDataElementAndOperand;
 import org.hisp.dhis.android.core.parser.service.dataitem.DimensionalItemId;
@@ -46,7 +49,6 @@ import org.hisp.dhis.android.core.parser.service.dataitem.ItemDays;
 import org.hisp.dhis.android.core.parser.service.dataitem.ItemOrgUnitGroup;
 import org.hisp.dhis.android.core.parser.service.dataobject.DimensionalItemObject;
 import org.hisp.dhis.android.core.validation.MissingValueStrategy;
-import org.hisp.dhis.antlr.Parser;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -109,7 +111,7 @@ public class ExpressionService {
         CommonExpressionVisitor visitor = newVisitor(ITEM_GET_IDS, Collections.emptyMap());
         visitor.setItemIds(itemIds);
 
-        Parser.visit(expression, visitor);
+        visit(expression, visitor);
 
         return itemIds;
     }
@@ -137,7 +139,7 @@ public class ExpressionService {
 
         CommonExpressionVisitor visitor = newVisitor(ITEM_GET_DESCRIPTIONS, constantMap);
 
-        Parser.visit(expression, visitor);
+        visit(expression, visitor);
 
         Map<String, String> itemDescriptions = visitor.getItemDescriptions();
 
@@ -183,7 +185,7 @@ public class ExpressionService {
             visitor.setDays(Double.valueOf(days));
         }
 
-        Object value = Parser.visit(expression, visitor);
+        Object value = visit(expression, visitor);
 
         int itemsFound = visitor.getItemsFound();
         int itemValuesFound = visitor.getItemValuesFound();
@@ -238,12 +240,23 @@ public class ExpressionService {
             visitor.setDays(Double.valueOf(days));
         }
 
-        return (String) Parser.visit(expression, visitor);
+        return (String) visit(expression, visitor);
     }
 
     // -------------------------------------------------------------------------
     // Supportive methods
     // -------------------------------------------------------------------------
+
+    private Object visit(String expression, CommonExpressionVisitor visitor) {
+        int sdkVersion = Build.VERSION.SDK_INT;
+
+        // In unit test, sdk value is 0. Ignore it and use cache by default
+        if (sdkVersion > 0 && sdkVersion < Build.VERSION_CODES.LOLLIPOP) {
+            return Parser.visit(expression, visitor, false);
+        } else {
+            return Parser.visit(expression, visitor, true);
+        }
+    }
 
     /**
      * Creates a new ExpressionItemsVisitor object.

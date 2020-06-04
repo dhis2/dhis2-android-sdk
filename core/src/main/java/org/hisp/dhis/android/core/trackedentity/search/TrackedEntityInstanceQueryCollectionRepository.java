@@ -322,6 +322,21 @@ public final class TrackedEntityInstanceQueryCollectionRepository
         return orderConnector(TrackedEntityInstanceQueryScopeOrderColumn.INCIDENT_DATE);
     }
 
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+            TrackedEntityInstanceQueryRepositoryScope, RepositoryScope.OrderByDirection> orderByEventDate(String stage) {
+        return orderConnector(TrackedEntityInstanceQueryScopeOrderColumn.EVENT_DATE);
+    }
+
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+            TrackedEntityInstanceQueryRepositoryScope, RepositoryScope.OrderByDirection> orderByDueDate(String stage) {
+        return orderConnector(TrackedEntityInstanceQueryScopeOrderColumn.DUE_DATE);
+    }
+
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+            TrackedEntityInstanceQueryRepositoryScope, RepositoryScope.OrderByDirection> orderByCompletedDate(String stage) {
+        return orderConnector(TrackedEntityInstanceQueryScopeOrderColumn.COMPLETION_DATE);
+    }
+
     @Override
     public LiveData<PagedList<TrackedEntityInstance>> getPaged(int pageSize) {
         DataSource.Factory<TrackedEntityInstance, TrackedEntityInstance> factory =

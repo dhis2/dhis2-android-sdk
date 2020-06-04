@@ -36,7 +36,9 @@ import com.google.auto.value.AutoValue;
 abstract class TrackedEntityInstanceQueryScopeOrderColumn {
 
     enum Type {
-        CREATED, LAST_UPDATED, ATTRIBUTE, ORGUNIT_NAME, ENROLLMENT_DATE, INCIDENT_DATE
+        CREATED, LAST_UPDATED, ATTRIBUTE, ORGUNIT_NAME,
+        ENROLLMENT_DATE, INCIDENT_DATE,
+        EVENT_DATE, DUE_DATE, COMPLETION_DATE, EVENT_DATA_ELEMENT
     }
 
     public static final TrackedEntityInstanceQueryScopeOrderColumn CREATED =
@@ -54,14 +56,30 @@ abstract class TrackedEntityInstanceQueryScopeOrderColumn {
     public static final TrackedEntityInstanceQueryScopeOrderColumn INCIDENT_DATE =
             builder().type(Type.INCIDENT_DATE).build();
 
+    public static final TrackedEntityInstanceQueryScopeOrderColumn DUE_DATE =
+            builder().type(Type.DUE_DATE).build();
+
+    public static final TrackedEntityInstanceQueryScopeOrderColumn COMPLETION_DATE =
+            builder().type(Type.COMPLETION_DATE).build();
+
+    public static final TrackedEntityInstanceQueryScopeOrderColumn EVENT_DATE =
+            builder().type(Type.EVENT_DATE).build();
+
     public static TrackedEntityInstanceQueryScopeOrderColumn attribute(String attributeId) {
-        return builder().type(Type.ATTRIBUTE).apiName(attributeId).build();
+        return builder().type(Type.ATTRIBUTE).apiName(attributeId).value(attributeId).build();
     }
 
     public abstract Type type();
 
     @Nullable
     public abstract String apiName();
+
+    @Nullable
+    public abstract String value();
+
+    public boolean hasApiName() {
+        return apiName() != null;
+    }
 
     public static Builder builder() {
         return new AutoValue_TrackedEntityInstanceQueryScopeOrderColumn.Builder();
@@ -73,6 +91,8 @@ abstract class TrackedEntityInstanceQueryScopeOrderColumn {
         abstract Builder type(Type column);
 
         abstract Builder apiName(String apiName);
+
+        abstract Builder value(String value);
 
         abstract TrackedEntityInstanceQueryScopeOrderColumn build();
     }

@@ -32,6 +32,7 @@ import com.google.common.base.Joiner;
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
 import org.hisp.dhis.android.core.common.AssignedUserMode;
@@ -76,7 +77,8 @@ final class TrackedEntityInstanceLocalQueryHelper {
     private static String TRACKED_ENTITY_INSTANCE =
             TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE;
 
-    private TrackedEntityInstanceLocalQueryHelper() { }
+    private TrackedEntityInstanceLocalQueryHelper() {
+    }
 
     @SuppressWarnings({"PMD.UseStringBufferForStringAppends", "PMD.CyclomaticComplexity", "PMD.NPathComplexity"})
     static String getSqlQuery(TrackedEntityInstanceQueryRepositoryScope scope, List<String> excludeList, int limit) {
@@ -305,19 +307,19 @@ final class TrackedEntityInstanceLocalQueryHelper {
                             TrackedEntityAttributeValueTableInfo.Columns.VALUE,
                             TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(),
                             TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
-                            CollectionsHelper.withSingleQuotationMarks(item.column().apiName()),
+                            CollectionsHelper.withSingleQuotationMarks(item.column().value()),
                             TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
                             dot(TEI_ALIAS, UID));
                     orderClauses.add(attOrder + " " + item.direction().name());
                     break;
                 case ENROLLMENT_DATE:
                     if (hasProgram(scope)) {
-                        orderClauses.add(dot(ENROLLMENT_ALIAS, ENROLLMENT_DATE) + " " + item.direction().name());
+                        orderClauses.add(orderByEnrollmentField(scope.program(), ENROLLMENT_DATE, item.direction()));
                     }
                     break;
                 case INCIDENT_DATE:
                     if (hasProgram(scope)) {
-                        orderClauses.add(dot(ENROLLMENT_ALIAS, INCIDENT_DATE) + " " + item.direction().name());
+                        orderClauses.add(orderByEnrollmentField(scope.program(), INCIDENT_DATE, item.direction()));
                     }
                     break;
                 default:
@@ -332,6 +334,36 @@ final class TrackedEntityInstanceLocalQueryHelper {
     private static String getOrderByLastUpdated() {
         // TODO In case a program uid is provided, the server orders by enrollmentStatus.
         return TEI_LAST_UPDATED + " DESC ";
+    }
+
+    private static String orderByEnrollmentField(String program, String field, RepositoryScope.OrderByDirection dir) {
+        return String.format(
+                "(SELECT %s FROM %s WHERE %s = %s AND %s = %s) %s",
+                field,
+                EnrollmentTableInfo.TABLE_INFO.name(),
+                EnrollmentTableInfo.Columns.PROGRAM,
+                program,
+                EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
+                dot(TEI_ALIAS, UID),
+                dir.name());
+    }
+
+    private static String orderByEventField(String program, String stage,
+                                            String field, RepositoryScope.OrderByDirection dir) {
+        return String.format(
+                "(SELECT %s FROM %s WHERE %s = %s AND %s IN (SELECT %s FROM %s WHERE %s = %s AND %s = %s)) %s",
+                field,
+                EventTableInfo.TABLE_INFO.name(),
+                EventTableInfo.Columns.PROGRAM_STAGE,
+                stage,
+                EventTableInfo.Columns.ENROLLMENT,
+                UID,
+                EnrollmentTableInfo.TABLE_INFO.name(),
+                EnrollmentTableInfo.Columns.PROGRAM,
+                program,
+                EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
+                dot(TEI_ALIAS, UID),
+                dir.name());
     }
 
     private static String dot(String item1, String item2) {

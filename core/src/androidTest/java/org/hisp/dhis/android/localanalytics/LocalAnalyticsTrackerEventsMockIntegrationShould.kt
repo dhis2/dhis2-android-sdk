@@ -125,18 +125,18 @@ internal class LocalAnalyticsTrackerEventsMockIntegrationShould : BaseMockIntegr
     }
 
     @Test
+    fun count_teis_by_condition_on_1_tracked_entity_data_value() {
+        assertThat(countTeisByConditionOnTEDV(1)).isAtLeast(1)
+    }
+
+    @Test
     fun count_teis_by_condition_on_2_tracked_entity_data_values() {
-        val events = getEventRepositoryByTEDV(2)
-                .byEnrollmentUid().isNotNull
-                .blockingGet()
-        val enrollmentUids = events.groupBy { it.enrollment() }.keys
+        assertThat(countTeisByConditionOnTEDV(2)).isAtLeast(1)
+    }
 
-        val enrollments = d2.enrollmentModule().enrollments()
-                .byUid().`in`(enrollmentUids)
-                .blockingGet()
-
-        val enrollmentsByTei = enrollments.groupBy { it.trackedEntityInstance() }
-        assertThat(enrollmentsByTei.size).isAtLeast(1)
+    @Test
+    fun count_teis_by_condition_on_3_tracked_entity_data_values() {
+        assertThat(countTeisByConditionOnTEDV(3)).isAtLeast(1)
     }
 
     @Test
@@ -158,6 +158,19 @@ internal class LocalAnalyticsTrackerEventsMockIntegrationShould : BaseMockIntegr
                 .blockingGet()
         val aggregatedTedv = tedv.sumBy { v -> v.value()!!.count { it == 'a' } }
         assertThat(aggregatedTedv).isAtLeast(1)
+    }
+
+    private fun countTeisByConditionOnTEDV(tedvCount: Int): Int {
+        val events = getEventRepositoryByTEDV(tedvCount)
+                .byEnrollmentUid().isNotNull
+                .blockingGet()
+        val enrollmentUids = events.groupBy { it.enrollment() }.keys
+
+        val enrollments = d2.enrollmentModule().enrollments()
+                .byUid().`in`(enrollmentUids)
+                .blockingGet()
+
+        return enrollments.groupBy { it.trackedEntityInstance() }.size
     }
 
     private fun getProgramEnrollmentsRepository(): EnrollmentCollectionRepository {
@@ -183,7 +196,7 @@ internal class LocalAnalyticsTrackerEventsMockIntegrationShould : BaseMockIntegr
         val dataElements = d2.dataElementModule().dataElements()
                 .byDomainType().eq("TRACKER")
                 .blockingGet()
-        val eventsList = (0..tedvCount).flatMap { i ->
+        val eventsList = (0 until tedvCount).flatMap { i ->
             val de = dataElements[i]
             val tedv = d2.trackedEntityModule().trackedEntityDataValues()
                     .byDataElement().eq(de.uid())
@@ -200,7 +213,7 @@ internal class LocalAnalyticsTrackerEventsMockIntegrationShould : BaseMockIntegr
     private fun getTeiRepositoryByTEAV(teavCount: Int): TrackedEntityInstanceCollectionRepository {
         val attributes = d2.trackedEntityModule().trackedEntityAttributes()
                 .blockingGet()
-        val teisList = (0..teavCount).flatMap {  i ->
+        val teisList = (0 until teavCount).flatMap {  i ->
             val tea = attributes[i]
             val teav = d2.trackedEntityModule().trackedEntityAttributeValues()
                     .byTrackedEntityAttribute().eq(tea.uid())

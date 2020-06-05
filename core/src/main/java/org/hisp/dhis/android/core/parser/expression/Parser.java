@@ -50,12 +50,8 @@ import java.util.concurrent.TimeUnit;
  * @author Jim Grace
  */
 public class Parser {
-    private static Cache<ParseTree> EXPRESSION_PARSE_TREES_CACHE =
-            new SimpleCacheBuilder<ParseTree>().forRegion("expressionParseTrees")
-                    .expireAfterAccess(10, TimeUnit.MINUTES)
-                    .withInitialCapacity(10000)
-                    .withMaximumSize(50000)
-                    .build();
+
+    private static Cache<ParseTree> EXPRESSION_PARSE_TREES_CACHE = null;
 
     // -------------------------------------------------------------------------
     // Logic
@@ -111,7 +107,7 @@ public class Parser {
      */
     private static ParseTree getParseTree(String expr, Boolean cache) {
         if (cache) {
-            return EXPRESSION_PARSE_TREES_CACHE.get(expr, Parser::createParseTree).orNull();
+            return getExpressionParseTreesCache().get(expr, Parser::createParseTree).orNull();
         } else {
             return createParseTree(expr);
         }
@@ -141,5 +137,16 @@ public class Parser {
         parser.addErrorListener(errorListener); // Add custom error listener to throw any errors.
 
         return parser.expression(); // Parse the expression and return the parse tree.
+    }
+
+    private static Cache<ParseTree> getExpressionParseTreesCache() {
+        if (EXPRESSION_PARSE_TREES_CACHE == null) {
+            EXPRESSION_PARSE_TREES_CACHE = new SimpleCacheBuilder<ParseTree>().forRegion("expressionParseTrees")
+                    .expireAfterAccess(10, TimeUnit.MINUTES)
+                    .withInitialCapacity(10000)
+                    .withMaximumSize(50000)
+                    .build();
+        }
+        return EXPRESSION_PARSE_TREES_CACHE;
     }
 }

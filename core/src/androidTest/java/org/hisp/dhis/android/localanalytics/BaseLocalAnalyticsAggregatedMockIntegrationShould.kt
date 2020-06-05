@@ -30,20 +30,14 @@ package org.hisp.dhis.android.localanalytics
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueCollectionRepository
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestLocalAnalyticsDispatcher
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
-import org.junit.Ignore
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@Ignore("Tests for local analytics. Only to be executed on demand")
-@RunWith(D2JunitRunner::class)
-internal class LocalAnalyticsAggregatedDataMockIntegrationShould : BaseMockIntegrationTestLocalAnalyticsDispatcher() {
+internal abstract class BaseLocalAnalyticsAggregatedMockIntegrationShould : BaseLocalAnalyticsTest() {
 
     @Test
     fun count_data_values() {
         val dataValuesCount = d2.dataValueModule().dataValues().blockingCount()
-        assertThat(dataValuesCount).isEqualTo(18000)
+        assertThat(dataValuesCount).isEqualTo(3000 * SizeFactor)
     }
 
     @Test
@@ -52,14 +46,14 @@ internal class LocalAnalyticsAggregatedDataMockIntegrationShould : BaseMockInteg
         cursor.moveToFirst()
         val v = cursor.getInt(0)
         cursor.close()
-        assertThat(v).isEqualTo(18000)
+        assertThat(v).isEqualTo(3000 * SizeFactor)
     }
 
     @Test
     fun count_data_values_for_data_element() {
         val firstDataValue = d2.dataValueModule().dataValues().one().blockingGet()
         val dataValuesCount = d2.dataValueModule().dataValues().byDataElementUid().eq(firstDataValue.dataElement()).blockingCount()
-        assertThat(dataValuesCount).isEqualTo(180)
+        assertThat(dataValuesCount).isEqualTo(30 * SizeFactor)
     }
 
     @Test
@@ -93,17 +87,17 @@ internal class LocalAnalyticsAggregatedDataMockIntegrationShould : BaseMockInteg
                 .byOrganisationUnitUid().eq(ou.uid())
                 .byDataElementUid().eq(firstDataValue.dataElement())
                 .blockingCount()
-        assertThat(dataValuesCount).isEqualTo(60)
+        assertThat(dataValuesCount).isEqualTo(10 * SizeFactor)
     }
 
     @Test
     fun count_data_values_for_data_element_for_ou_level_2_and_descendants() {
-        assertThat(dataValuesForDataElementForOuAndDescendentsRepository(2).blockingCount()).isEqualTo(60)
+        assertThat(dataValuesForDataElementForOuAndDescendentsRepository(2).blockingCount()).isEqualTo(10 * SizeFactor)
     }
 
     @Test
     fun count_data_values_for_data_element_for_ou_level_1_and_descendants() {
-        assertThat(dataValuesForDataElementForOuAndDescendentsRepository(1).blockingCount()).isEqualTo(180)
+        assertThat(dataValuesForDataElementForOuAndDescendentsRepository(1).blockingCount()).isEqualTo(30 * SizeFactor)
     }
 
     @Test
@@ -123,7 +117,7 @@ internal class LocalAnalyticsAggregatedDataMockIntegrationShould : BaseMockInteg
         val dataValues = dataValuesForDataElementForOuAndDescendentsRepository(2).blockingGet()
         val groupedDataValues = dataValues.groupBy { it.period() }
         val groupedAverages = groupedDataValues.map { kv -> kv.key to getAvgValue(kv.value) }.toMap()
-        assertThat(groupedAverages.size).isEqualTo(60)
+        assertThat(groupedAverages.size).isEqualTo(10 * SizeFactor)
     }
 
     @Test
@@ -131,7 +125,7 @@ internal class LocalAnalyticsAggregatedDataMockIntegrationShould : BaseMockInteg
         val dataValues = dataValuesForDataElementForOuAndDescendentsRepository(1).blockingGet()
         val groupedDataValues = dataValues.groupBy { it.period() }
         val groupedAverages = groupedDataValues.map { kv -> kv.key to getAvgValue(kv.value) }.toMap()
-        assertThat(groupedAverages.size).isEqualTo(60)
+        assertThat(groupedAverages.size).isEqualTo(10 * SizeFactor)
     }
 
     private fun dataValuesForDataElementForOuAndDescendentsRepository(level: Int): DataValueCollectionRepository {
@@ -161,6 +155,6 @@ internal class LocalAnalyticsAggregatedDataMockIntegrationShould : BaseMockInteg
                 .byDataElementUid().eq(firstDataValue.dataElement())
                 .blockingGet()
         val dataValuesPerPeriod = dataValues.groupBy { it.period() }
-        assertThat(dataValuesPerPeriod.size).isEqualTo(60)
+        assertThat(dataValuesPerPeriod.size).isEqualTo(10 * SizeFactor)
     }
 }

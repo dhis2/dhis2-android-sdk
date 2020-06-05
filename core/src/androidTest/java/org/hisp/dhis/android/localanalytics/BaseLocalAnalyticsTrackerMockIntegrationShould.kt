@@ -36,21 +36,15 @@ import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramType
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCollectionRepository
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestLocalAnalyticsDispatcher
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
-import org.junit.Ignore
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@Ignore("Tests for local analytics. Only to be executed on demand")
-@RunWith(D2JunitRunner::class)
-internal class LocalAnalyticsTrackerMockIntegrationShould : BaseMockIntegrationTestLocalAnalyticsDispatcher() {
+internal abstract class BaseLocalAnalyticsTrackerMockIntegrationShould : BaseLocalAnalyticsTest() {
 
     @Test
     fun count_events() {
         val eventsCount = d2.eventModule().events()
                 .blockingCount()
-        assertThat(eventsCount).isEqualTo(12000)
+        assertThat(eventsCount).isEqualTo(2000 * SizeFactor)
     }
 
     @Test
@@ -58,7 +52,7 @@ internal class LocalAnalyticsTrackerMockIntegrationShould : BaseMockIntegrationT
         val eventsCount = d2.eventModule().events()
                 .byProgramUid().eq(getProgramWithRegistration().uid())
                 .blockingCount()
-        assertThat(eventsCount).isEqualTo(9000)
+        assertThat(eventsCount).isEqualTo(1500 * SizeFactor)
     }
 
     @Test
@@ -66,14 +60,14 @@ internal class LocalAnalyticsTrackerMockIntegrationShould : BaseMockIntegrationT
         val eventsCount = d2.eventModule().events()
                 .byProgramUid().eq(getProgramWithoutRegistration().uid())
                 .blockingCount()
-        assertThat(eventsCount).isEqualTo(3000)
+        assertThat(eventsCount).isEqualTo(500 * SizeFactor)
     }
 
     @Test
     fun count_enrollments_by_program() {
         val enrollmentsCount = getProgramEnrollmentsRepository()
                 .blockingCount()
-        assertThat(enrollmentsCount).isEqualTo(3000)
+        assertThat(enrollmentsCount).isEqualTo(500 * SizeFactor)
     }
 
     @Test
@@ -81,13 +75,13 @@ internal class LocalAnalyticsTrackerMockIntegrationShould : BaseMockIntegrationT
         val enrollmentsCount = getProgramEnrollmentsRepository()
                 .byStatus().eq(EnrollmentStatus.ACTIVE)
                 .blockingCount()
-        assertThat(enrollmentsCount).isEqualTo(3000)
+        assertThat(enrollmentsCount).isEqualTo(500 * SizeFactor)
     }
 
     @Test
     fun count_teis() {
         val teisCount = d2.trackedEntityModule().trackedEntityInstances().blockingCount()
-        assertThat(teisCount).isEqualTo(3000)
+        assertThat(teisCount).isEqualTo(500 * SizeFactor)
     }
 
     @Test
@@ -178,7 +172,7 @@ internal class LocalAnalyticsTrackerMockIntegrationShould : BaseMockIntegrationT
         val tedvCount = d2.trackedEntityModule().trackedEntityDataValues()
                 .byDataElement().eq(firstTedv.dataElement())
                 .blockingCount()
-        assertThat(tedvCount).isEqualTo(12000)
+        assertThat(tedvCount).isEqualTo(2000 * SizeFactor)
     }
 
     @Test

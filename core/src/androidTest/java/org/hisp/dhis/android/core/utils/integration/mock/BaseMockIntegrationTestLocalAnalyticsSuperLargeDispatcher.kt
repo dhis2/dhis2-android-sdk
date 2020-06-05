@@ -25,16 +25,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.utils.integration.mock
 
-package org.hisp.dhis.android.core.utils.integration.mock;
+import org.hisp.dhis.android.core.data.server.RealServerMother
+import org.hisp.dhis.android.localanalytics.LocalAnalyticsDataParams
+import org.hisp.dhis.android.localanalytics.LocalAnalyticsDatabaseFiller
+import org.hisp.dhis.android.localanalytics.LocalAnalyticsMetadataParams
+import org.junit.BeforeClass
 
-public enum MockIntegrationTestDatabaseContent {
-    EmptyEnqueable,
-    EmptyDispatcher,
-    FullDispatcher,
-    MetadataEnqueable,
-    MetadataDispatcher,
-    LocalAnalyticsDefaultDispatcher,
-    LocalAnalyticsLargeDispatcher,
-    LocalAnalyticsSuperLargeDispatcher
+abstract class BaseMockIntegrationTestLocalAnalyticsSuperLargeDispatcher : BaseMockIntegrationTest() {
+
+    companion object BaseMockIntegrationTestLocalAnalyticsDispatcher {
+
+        const val SizeFactor = LocalAnalyticsDataParams.SuperLargeFactor
+
+        @BeforeClass
+        @Throws(Exception::class)
+        @JvmStatic
+        fun setUpClass() {
+            val isNewInstance = setUpClass(MockIntegrationTestDatabaseContent.LocalAnalyticsSuperLargeDispatcher)
+            if (isNewInstance) {
+                objects.dhis2MockServer.setRequestDispatcher()
+                objects.d2.userModule().blockingLogIn(RealServerMother.username, RealServerMother.password,
+                        objects.dhis2MockServer.baseEndpoint)
+            }
+
+            val filler = LocalAnalyticsDatabaseFiller(objects.d2)
+            filler.fillDatabase(LocalAnalyticsMetadataParams.Default, LocalAnalyticsDataParams.get(SizeFactor))
+        }
+    }
 }

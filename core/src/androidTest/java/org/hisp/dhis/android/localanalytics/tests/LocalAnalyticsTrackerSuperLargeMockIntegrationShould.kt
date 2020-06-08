@@ -31,9 +31,10 @@ import org.hisp.dhis.android.core.utils.integration.mock.MockIntegrationTestData
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.hisp.dhis.android.localanalytics.dbgeneration.LocalAnalyticsDataParams
 import org.junit.BeforeClass
+import org.junit.Ignore
 import org.junit.runner.RunWith
 
-//@Ignore("Tests for local analytics. Only to be executed on demand")
+@Ignore("Tests for local analytics. Only to be executed on demand")
 @RunWith(D2JunitRunner::class)
 internal class LocalAnalyticsTrackerSuperLargeMockIntegrationShould : BaseLocalAnalyticsTrackerMockIntegrationShould() {
 

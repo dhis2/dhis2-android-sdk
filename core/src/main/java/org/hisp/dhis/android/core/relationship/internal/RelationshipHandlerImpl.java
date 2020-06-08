@@ -34,6 +34,8 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipItem;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -63,6 +65,20 @@ final class RelationshipHandlerImpl extends IdentifiableHandlerImpl<Relationship
         this.relationshipItemHandler = relationshipItemHandler;
         this.storeSelector = storeSelector;
         this.versionManager = versionManager;
+    }
+
+    @Override
+    protected Collection<Relationship> beforeCollectionHandled(Collection<Relationship> relationships) {
+        Collection<Relationship> supportedRelationships = new ArrayList<>();
+
+        for (Relationship relationship : relationships) {
+            // Only TEI - TEI relationships are supported so far
+            if (relationship.from().hasTrackedEntityInstance() && relationship.to().hasTrackedEntityInstance()) {
+                supportedRelationships.add(relationship);
+            }
+        }
+
+        return supportedRelationships;
     }
 
     @Override

@@ -44,7 +44,7 @@ internal abstract class BaseLocalAnalyticsTrackerMockIntegrationShould : BaseLoc
     fun count_events() {
         val eventsCount = d2.eventModule().events()
                 .blockingCount()
-        assertThat(eventsCount).isEqualTo(4000 * SizeFactor)
+        assertThat(eventsCount).isEqualTo(2000 * SizeFactor)
     }
 
     @Test
@@ -81,7 +81,7 @@ internal abstract class BaseLocalAnalyticsTrackerMockIntegrationShould : BaseLoc
     @Test
     fun count_teis() {
         val teisCount = d2.trackedEntityModule().trackedEntityInstances().blockingCount()
-        assertThat(teisCount).isEqualTo(1000 * SizeFactor)
+        assertThat(teisCount).isEqualTo(500 * SizeFactor)
     }
 
     @Test

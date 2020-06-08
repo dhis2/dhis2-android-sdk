@@ -25,23 +25,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.localanalytics
+package org.hisp.dhis.android.localanalytics.tests
 
 import org.hisp.dhis.android.core.utils.integration.mock.MockIntegrationTestDatabaseContent
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.localanalytics.dbgeneration.LocalAnalyticsDataParams
 import org.junit.BeforeClass
 import org.junit.runner.RunWith
 
 //@Ignore("Tests for local analytics. Only to be executed on demand")
 @RunWith(D2JunitRunner::class)
-internal class LocalAnalyticsAggregatedLargeDataMockIntegrationShould : BaseLocalAnalyticsAggregatedMockIntegrationShould() {
+internal class LocalAnalyticsTrackerDefaultMockIntegrationShould : BaseLocalAnalyticsTrackerMockIntegrationShould() {
 
     companion object LocalAnalyticsAggregatedLargeDataMockIntegrationShould {
 
         @BeforeClass
         @JvmStatic
         fun setUpClass() {
-            setUpClass(LocalAnalyticsDataParams.LargeFactor, MockIntegrationTestDatabaseContent.LocalAnalyticsLargeDispatcher)
+            setUpClass(LocalAnalyticsDataParams.DefaultFactor, MockIntegrationTestDatabaseContent.LocalAnalyticsDefaultDispatcher)
         }
     }
 }

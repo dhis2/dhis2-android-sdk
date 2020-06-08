@@ -25,7 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.localanalytics
+package org.hisp.dhis.android.localanalytics.tests
 
 import android.database.Cursor
 import com.google.common.truth.Truth.assertThat
@@ -44,7 +44,7 @@ internal abstract class BaseLocalAnalyticsTrackerMockIntegrationShould : BaseLoc
     fun count_events() {
         val eventsCount = d2.eventModule().events()
                 .blockingCount()
-        assertThat(eventsCount).isEqualTo(2000 * SizeFactor)
+        assertThat(eventsCount).isEqualTo(4000 * SizeFactor)
     }
 
     @Test
@@ -81,7 +81,7 @@ internal abstract class BaseLocalAnalyticsTrackerMockIntegrationShould : BaseLoc
     @Test
     fun count_teis() {
         val teisCount = d2.trackedEntityModule().trackedEntityInstances().blockingCount()
-        assertThat(teisCount).isEqualTo(500 * SizeFactor)
+        assertThat(teisCount).isEqualTo(1000 * SizeFactor)
     }
 
     @Test

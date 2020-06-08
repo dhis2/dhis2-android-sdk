@@ -25,31 +25,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.localanalytics
+package org.hisp.dhis.android.localanalytics.tests
 
-import org.hisp.dhis.android.core.data.server.RealServerMother
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTest
 import org.hisp.dhis.android.core.utils.integration.mock.MockIntegrationTestDatabaseContent
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.localanalytics.dbgeneration.LocalAnalyticsDataParams
+import org.junit.BeforeClass
+import org.junit.runner.RunWith
 
-abstract class BaseLocalAnalyticsTest : BaseMockIntegrationTest() {
+//@Ignore("Tests for local analytics. Only to be executed on demand")
+@RunWith(D2JunitRunner::class)
+internal class LocalAnalyticsAggregatedDefaultDataMockIntegrationShould : BaseLocalAnalyticsAggregatedMockIntegrationShould() {
 
-    companion object BaseMockIntegrationTestLocalAnalyticsDispatcher {
+    companion object LocalAnalyticsAggregatedLargeDataMockIntegrationShould {
 
-        var SizeFactor = 1
-
-        @Throws(Exception::class)
+        @BeforeClass
         @JvmStatic
-        fun setUpClass(sizeFactor: Int, dispatcher: MockIntegrationTestDatabaseContent) {
-            SizeFactor = sizeFactor
-            val isNewInstance = setUpClass(dispatcher)
-            if (isNewInstance) {
-                objects.dhis2MockServer.setRequestDispatcher()
-                objects.d2.userModule().blockingLogIn(RealServerMother.username, RealServerMother.password,
-                        objects.dhis2MockServer.baseEndpoint)
-            }
-
-            val filler = LocalAnalyticsDatabaseFiller(objects.d2)
-            filler.fillDatabase(LocalAnalyticsMetadataParams.Default, LocalAnalyticsDataParams.get(SizeFactor))
+        fun setUpClass() {
+            setUpClass(LocalAnalyticsDataParams.DefaultFactor, MockIntegrationTestDatabaseContent.LocalAnalyticsDefaultDispatcher)
         }
     }
 }

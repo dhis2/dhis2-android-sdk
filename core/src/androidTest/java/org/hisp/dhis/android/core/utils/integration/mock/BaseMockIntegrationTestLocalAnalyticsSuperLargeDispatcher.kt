@@ -28,9 +28,9 @@
 package org.hisp.dhis.android.core.utils.integration.mock
 
 import org.hisp.dhis.android.core.data.server.RealServerMother
-import org.hisp.dhis.android.localanalytics.LocalAnalyticsDataParams
-import org.hisp.dhis.android.localanalytics.LocalAnalyticsDatabaseFiller
-import org.hisp.dhis.android.localanalytics.LocalAnalyticsMetadataParams
+import org.hisp.dhis.android.localanalytics.dbgeneration.LocalAnalyticsDataParams
+import org.hisp.dhis.android.localanalytics.dbgeneration.LocalAnalyticsDatabaseFiller
+import org.hisp.dhis.android.localanalytics.dbgeneration.LocalAnalyticsMetadataParams
 import org.junit.BeforeClass
 
 abstract class BaseMockIntegrationTestLocalAnalyticsSuperLargeDispatcher : BaseMockIntegrationTest() {

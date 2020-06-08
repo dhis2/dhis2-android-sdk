@@ -25,16 +25,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.localanalytics
+package org.hisp.dhis.android.localanalytics.dbtests
 
 import org.hisp.dhis.android.core.utils.integration.mock.MockIntegrationTestDatabaseContent
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.localanalytics.dbgeneration.LocalAnalyticsDataParams
 import org.junit.BeforeClass
+import org.junit.Ignore
 import org.junit.runner.RunWith
 
-//@Ignore("Tests for local analytics. Only to be executed on demand")
+@Ignore("Tests for local analytics. Only to be executed on demand")
 @RunWith(D2JunitRunner::class)
-internal class LocalAnalyticsAggregatedSuperLargeDataMockIntegrationShould : BaseLocalAnalyticsAggregatedMockIntegrationShould() {
+internal class LocalAnalyticsSuperLargeDatabaseMockIntegrationShould : BaseLocalAnalyticsDatabaseSizeMockIntegrationShould() {
 
     companion object LocalAnalyticsAggregatedLargeDataMockIntegrationShould {
 

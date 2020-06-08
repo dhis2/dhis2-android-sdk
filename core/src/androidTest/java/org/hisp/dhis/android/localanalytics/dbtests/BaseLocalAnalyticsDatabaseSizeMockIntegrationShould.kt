@@ -25,9 +25,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.localanalytics
+package org.hisp.dhis.android.localanalytics.dbtests
 
 import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.localanalytics.tests.BaseLocalAnalyticsTest
 import org.junit.Test
 
 internal abstract class BaseLocalAnalyticsDatabaseSizeMockIntegrationShould : BaseLocalAnalyticsTest() {

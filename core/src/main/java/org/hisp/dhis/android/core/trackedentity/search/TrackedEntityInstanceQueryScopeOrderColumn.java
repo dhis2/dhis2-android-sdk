@@ -37,8 +37,8 @@ abstract class TrackedEntityInstanceQueryScopeOrderColumn {
 
     enum Type {
         CREATED, LAST_UPDATED, ATTRIBUTE, ORGUNIT_NAME,
-        ENROLLMENT_DATE, INCIDENT_DATE,
-        EVENT_DATE, DUE_DATE, COMPLETION_DATE, EVENT_DATA_ELEMENT
+        ENROLLMENT_DATE, INCIDENT_DATE, ENROLLMENT_STATUS,
+        EVENT_DATE, COMPLETION_DATE
     }
 
     public static final TrackedEntityInstanceQueryScopeOrderColumn CREATED =
@@ -56,14 +56,14 @@ abstract class TrackedEntityInstanceQueryScopeOrderColumn {
     public static final TrackedEntityInstanceQueryScopeOrderColumn INCIDENT_DATE =
             builder().type(Type.INCIDENT_DATE).build();
 
-    public static final TrackedEntityInstanceQueryScopeOrderColumn DUE_DATE =
-            builder().type(Type.DUE_DATE).build();
-
     public static final TrackedEntityInstanceQueryScopeOrderColumn COMPLETION_DATE =
             builder().type(Type.COMPLETION_DATE).build();
 
     public static final TrackedEntityInstanceQueryScopeOrderColumn EVENT_DATE =
             builder().type(Type.EVENT_DATE).build();
+
+    public static final TrackedEntityInstanceQueryScopeOrderColumn ENROLLMENT_STATUS =
+            builder().type(Type.ENROLLMENT_STATUS).build();
 
     public static TrackedEntityInstanceQueryScopeOrderColumn attribute(String attributeId) {
         return builder().type(Type.ATTRIBUTE).apiName(attributeId).value(attributeId).build();

@@ -55,8 +55,13 @@ import static org.hisp.dhis.android.core.common.IdentifiableColumns.LAST_UPDATED
 import static org.hisp.dhis.android.core.common.IdentifiableColumns.NAME;
 import static org.hisp.dhis.android.core.common.IdentifiableColumns.UID;
 import static org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo.Columns.INCIDENT_DATE;
+import static org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo.Columns.STATUS;
 
-@SuppressWarnings({"PMD.GodClass"})
+@SuppressWarnings({
+        "PMD.GodClass",
+        "PMD.TooManyStaticImports",
+        "PMD.CyclomaticComplexity",
+        "PMD.StdCyclomaticComplexity"})
 final class TrackedEntityInstanceLocalQueryHelper {
 
     private static String TEI_ALIAS = "tei";
@@ -288,22 +293,33 @@ final class TrackedEntityInstanceLocalQueryHelper {
         }
     }
 
+    @SuppressWarnings({
+            "PMD.CyclomaticComplexity",
+            "PMD.StdCyclomaticComplexity"})
     private static String orderByClause(TrackedEntityInstanceQueryRepositoryScope scope) {
         List<String> orderClauses = new ArrayList<>();
         for (TrackedEntityInstanceQueryScopeOrderByItem item : scope.order()) {
             switch (item.column().type()) {
                 case CREATED:
-                    orderClauses.add(dot(TEI_ALIAS, CREATED) + " " + item.direction().name());
+                    if (hasProgram(scope)) {
+                        orderClauses.add(orderByEnrollmentField(scope.program(), CREATED, item.direction()));
+                    } else {
+                        orderClauses.add(dot(TEI_ALIAS, CREATED) + " " + item.direction().name());
+                    }
                     break;
                 case LAST_UPDATED:
-                    orderClauses.add(dot(TEI_ALIAS, LAST_UPDATED) + " " + item.direction().name());
+                    if (hasProgram(scope)) {
+                        orderClauses.add(orderByEnrollmentField(scope.program(), LAST_UPDATED, item.direction()));
+                    } else {
+                        orderClauses.add(dot(TEI_ALIAS, LAST_UPDATED) + " " + item.direction().name());
+                    }
                     break;
                 case ORGUNIT_NAME:
                     orderClauses.add(dot(ORGUNIT_ALIAS, NAME) + " " + item.direction().name());
                     break;
                 case ATTRIBUTE:
                     // Trick to put null values at the end of the list
-                    String attOrder = String.format("IFNULL((SELECT %s FROM %s WHERE %s = %s AND %s = %s), 'zzzzz')",
+                    String attOrder = String.format("IFNULL((SELECT %s FROM %s WHERE %s = %s AND %s = %s), 'zzzzzzzz')",
                             TrackedEntityAttributeValueTableInfo.Columns.VALUE,
                             TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(),
                             TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
@@ -313,14 +329,22 @@ final class TrackedEntityInstanceLocalQueryHelper {
                     orderClauses.add(attOrder + " " + item.direction().name());
                     break;
                 case ENROLLMENT_DATE:
-                    if (hasProgram(scope)) {
-                        orderClauses.add(orderByEnrollmentField(scope.program(), ENROLLMENT_DATE, item.direction()));
-                    }
+                    orderClauses.add(orderByEnrollmentField(scope.program(), ENROLLMENT_DATE, item.direction()));
                     break;
                 case INCIDENT_DATE:
-                    if (hasProgram(scope)) {
-                        orderClauses.add(orderByEnrollmentField(scope.program(), INCIDENT_DATE, item.direction()));
-                    }
+                    orderClauses.add(orderByEnrollmentField(scope.program(), INCIDENT_DATE, item.direction()));
+                    break;
+                case ENROLLMENT_STATUS:
+                    orderClauses.add(orderByEnrollmentField(scope.program(), STATUS, item.direction()));
+                    break;
+                case EVENT_DATE:
+                    String eventField =
+                            "IFNULL(" + EventTableInfo.Columns.EVENT_DATE + "," + EventTableInfo.Columns.DUE_DATE + ")";
+                    orderClauses.add(orderByEventField(scope.program(), eventField, item.direction()));
+                    break;
+                case COMPLETION_DATE:
+                    orderClauses.add(orderByEventField(scope.program(), EventTableInfo.Columns.COMPLETE_DATE,
+                            item.direction()));
                     break;
                 default:
                     break;
@@ -337,32 +361,34 @@ final class TrackedEntityInstanceLocalQueryHelper {
     }
 
     private static String orderByEnrollmentField(String program, String field, RepositoryScope.OrderByDirection dir) {
+        String programClause = program == null ? "" :
+                "AND " + EnrollmentTableInfo.Columns.PROGRAM + " = '" + program + "'";
         return String.format(
-                "(SELECT %s FROM %s WHERE %s = %s AND %s = %s) %s",
+                "IFNULL((SELECT %s FROM %s WHERE %s = %s %s ORDER BY %s DESC LIMIT 1), 'zzzzz') %s",
                 field,
                 EnrollmentTableInfo.TABLE_INFO.name(),
-                EnrollmentTableInfo.Columns.PROGRAM,
-                program,
                 EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
                 dot(TEI_ALIAS, UID),
+                programClause,
+                EnrollmentTableInfo.Columns.ENROLLMENT_DATE,
                 dir.name());
     }
 
-    private static String orderByEventField(String program, String stage,
-                                            String field, RepositoryScope.OrderByDirection dir) {
+    private static String orderByEventField(String program, String field, RepositoryScope.OrderByDirection dir) {
+        String programClause = program == null ? "" :
+                "AND " + EnrollmentTableInfo.Columns.PROGRAM + " = '" + program + "'";
         return String.format(
-                "(SELECT %s FROM %s WHERE %s = %s AND %s IN (SELECT %s FROM %s WHERE %s = %s AND %s = %s)) %s",
+                "(SELECT %s FROM %s WHERE %s IN (SELECT %s FROM %s WHERE %s = %s %s) " +
+                        "ORDER BY IFNULL(%s, %s) DESC LIMIT 1) %s",
                 field,
                 EventTableInfo.TABLE_INFO.name(),
-                EventTableInfo.Columns.PROGRAM_STAGE,
-                stage,
                 EventTableInfo.Columns.ENROLLMENT,
                 UID,
                 EnrollmentTableInfo.TABLE_INFO.name(),
-                EnrollmentTableInfo.Columns.PROGRAM,
-                program,
                 EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
                 dot(TEI_ALIAS, UID),
+                programClause,
+                EventTableInfo.Columns.EVENT_DATE, EventTableInfo.Columns.DUE_DATE,
                 dir.name());
     }
 

@@ -292,50 +292,90 @@ public final class TrackedEntityInstanceQueryCollectionRepository
         });
     }
 
+    /**
+     * Order by created date. If a program is provided, it takes the created of most recent enrollment.
+     * Otherwise it takes the value of the tracked entity instance.
+     * @return Repository connector
+     */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
             TrackedEntityInstanceQueryRepositoryScope, RepositoryScope.OrderByDirection> orderByCreated() {
         return orderConnector(TrackedEntityInstanceQueryScopeOrderColumn.CREATED);
     }
 
+    /**
+     * Order by last updated date. If a program is provided, it takes the last updated of most recent enrollment.
+     * Otherwise it takes the value of the tracked entity instance.
+     * @return Repository connector
+     */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
             TrackedEntityInstanceQueryRepositoryScope, RepositoryScope.OrderByDirection> orderByLastUpdated() {
         return orderConnector(TrackedEntityInstanceQueryScopeOrderColumn.LAST_UPDATED);
     }
 
+    /**
+     * Order by tracked entity instance attribute value.
+     * @return Repository connector
+     */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
             TrackedEntityInstanceQueryRepositoryScope, RepositoryScope.OrderByDirection> orderByAttribute(String attr) {
         return orderConnector(TrackedEntityInstanceQueryScopeOrderColumn.attribute(attr));
     }
 
+    /**
+     * Order by organisation unit name of the tracked entity instance.
+     * @return Repository connector
+     */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
             TrackedEntityInstanceQueryRepositoryScope, RepositoryScope.OrderByDirection> orderByOrganisationUnitName() {
         return orderConnector(TrackedEntityInstanceQueryScopeOrderColumn.ORGUNIT_NAME);
     }
 
+    /**
+     * Order by enrollment date of most recent enrollment. This order only applies to local results.
+     * @return Repository connector
+     */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
             TrackedEntityInstanceQueryRepositoryScope, RepositoryScope.OrderByDirection> orderByEnrollmentDate() {
         return orderConnector(TrackedEntityInstanceQueryScopeOrderColumn.ENROLLMENT_DATE);
     }
 
+    /**
+     * Order by incident date of most recent enrollment. This order only applies to local results.
+     * @return Repository connector
+     */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
             TrackedEntityInstanceQueryRepositoryScope, RepositoryScope.OrderByDirection> orderByIncidentDate() {
         return orderConnector(TrackedEntityInstanceQueryScopeOrderColumn.INCIDENT_DATE);
     }
 
+    /**
+     * Order by most recent event. It takes the event date and, if it is null, it fallbacks to due date. This order
+     * only applies to local results.
+     * @return Repository connector
+     */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-            TrackedEntityInstanceQueryRepositoryScope, RepositoryScope.OrderByDirection> orderByEventDate(String stage) {
+            TrackedEntityInstanceQueryRepositoryScope, RepositoryScope.OrderByDirection> orderByEventDate() {
         return orderConnector(TrackedEntityInstanceQueryScopeOrderColumn.EVENT_DATE);
     }
 
+    /**
+     * Order by completion date of the most recent event. This order only applies to local results.
+     * @return Repository connector
+     */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-            TrackedEntityInstanceQueryRepositoryScope, RepositoryScope.OrderByDirection> orderByDueDate(String stage) {
-        return orderConnector(TrackedEntityInstanceQueryScopeOrderColumn.DUE_DATE);
-    }
-
-    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-            TrackedEntityInstanceQueryRepositoryScope, RepositoryScope.OrderByDirection> orderByCompletedDate(String stage) {
+            TrackedEntityInstanceQueryRepositoryScope, RepositoryScope.OrderByDirection> orderByCompletedDate() {
         return orderConnector(TrackedEntityInstanceQueryScopeOrderColumn.COMPLETION_DATE);
     }
+
+    /**
+     * Order by enrollment status.
+     * @return Repository connector
+     */
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+            TrackedEntityInstanceQueryRepositoryScope, RepositoryScope.OrderByDirection> orderByEnrollmentStatus() {
+        return orderConnector(TrackedEntityInstanceQueryScopeOrderColumn.ENROLLMENT_STATUS);
+    }
+
 
     @Override
     public LiveData<PagedList<TrackedEntityInstance>> getPaged(int pageSize) {

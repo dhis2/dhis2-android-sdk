@@ -27,8 +27,8 @@
  */
 
 apply plugin: "com.android.library"
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
+apply plugin: "kotlin-android"
+apply plugin: "kotlin-android-extensions"
 apply from: project.file("plugins/android-checkstyle.gradle")
 apply from: project.file("plugins/android-findbugs.gradle")
 apply from: project.file("plugins/android-pmd.gradle")
@@ -239,4 +239,5 @@ dependencies {
 apply from: project.file("plugins/gradle-mvn-push.gradle")
 repositories {
     mavenCentral()
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
 }

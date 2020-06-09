@@ -107,7 +107,7 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
         query = TrackedEntityInstanceQueryOnline.builder().
                 orgUnits(orgUnits).orgUnitMode(OrganisationUnitMode.ACCESSIBLE).program("program")
                 .programStartDate(new Date()).programEndDate(new Date()).trackedEntityType("teiTypeStr")
-                .query("queryStr").attribute(attribute).filter(filter).includeDeleted(false)
+                .query("queryStr").attribute(attribute).filter(filter).includeDeleted(false).order("lastupdated:desc")
                 .assignedUserMode(AssignedUserMode.ANY).paging(false).page(2).pageSize(33).build();
 
         whenServiceQuery().thenReturn(searchGridCall);

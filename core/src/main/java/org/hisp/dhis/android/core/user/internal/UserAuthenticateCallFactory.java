@@ -165,9 +165,15 @@ public final class UserAuthenticateCallFactory {
             systemInfoRepository.download().blockingAwait();
 
             handleUser(authenticatedUser);
+
             transaction.setSuccessful();
             return authenticatedUser;
-        } finally {
+        } catch (Exception e) {
+            credentialsSecureStore.remove();
+            throw e;
+        }
+
+        finally {
             transaction.end();
         }
     }

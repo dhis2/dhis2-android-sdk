@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.period.PeriodType;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -64,7 +65,7 @@ abstract class AbstractPeriodGenerator implements PeriodGenerator {
         }
 
         if (future + past < 1) {
-            throw new RuntimeException("Number of past + future periods must be positive.");
+            return Collections.emptyList();
         }
 
         List<Period> periods = new ArrayList<>();

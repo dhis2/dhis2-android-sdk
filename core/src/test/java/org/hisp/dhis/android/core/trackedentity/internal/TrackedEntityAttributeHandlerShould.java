@@ -53,13 +53,12 @@ public class TrackedEntityAttributeHandlerShould {
     private IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore;
 
     @Mock
-    private TrackedEntityAttribute trackedEntityAttribute;
-
-    @Mock
     private ObjectStyle objectStyle;
 
     @Mock
     private Access access;
+
+    private TrackedEntityAttribute trackedEntityAttribute;
 
     // object to test
     private List<TrackedEntityAttribute> trackedEntityAttributes;
@@ -70,13 +69,18 @@ public class TrackedEntityAttributeHandlerShould {
         MockitoAnnotations.initMocks(this);
         trackedEntityAttributeHandler = new TrackedEntityAttributeHandler(trackedEntityAttributeStore);
 
+        trackedEntityAttribute = TrackedEntityAttribute.builder()
+                .uid("test_tracked_entity_attribute_uid")
+                .style(objectStyle)
+                .name("name")
+                .displayName("display_name")
+                .formName("form_name")
+                .access(access)
+                .build();
+
         trackedEntityAttributes = new ArrayList<>();
         trackedEntityAttributes.add(trackedEntityAttribute);
 
-        when(trackedEntityAttribute.uid()).thenReturn("test_tracked_entity_attribute_uid");
-        when(trackedEntityAttribute.style()).thenReturn(objectStyle);
-        when(trackedEntityAttribute.formName()).thenReturn("form_name");
-        when(trackedEntityAttribute.access()).thenReturn(access);
         when(access.read()).thenReturn(true);
     }
 

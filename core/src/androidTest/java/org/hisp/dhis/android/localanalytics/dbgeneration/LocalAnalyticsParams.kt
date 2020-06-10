@@ -25,7 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.localanalytics
+package org.hisp.dhis.android.localanalytics.dbgeneration
 
 internal data class LocalAnalyticsMetadataParams(val organisationUnitChildren: Int,
                                                  val categoryOptionCombos2: Int,

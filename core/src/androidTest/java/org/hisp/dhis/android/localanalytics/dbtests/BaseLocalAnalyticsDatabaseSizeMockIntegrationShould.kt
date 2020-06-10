@@ -25,18 +25,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.localanalytics
+package org.hisp.dhis.android.localanalytics.dbtests
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestLocalAnalyticsDispatcher
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
-import org.junit.Ignore
+import org.hisp.dhis.android.localanalytics.tests.BaseLocalAnalyticsTest
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@Ignore("Tests for local analytics. Only to be executed on demand")
-@RunWith(D2JunitRunner::class)
-internal class LocalAnalyticsDatabaseMockIntegrationShould : BaseMockIntegrationTestLocalAnalyticsDispatcher() {
+internal abstract class BaseLocalAnalyticsDatabaseSizeMockIntegrationShould : BaseLocalAnalyticsTest() {
 
     @Test
     fun check_user() {

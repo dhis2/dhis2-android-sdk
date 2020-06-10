@@ -169,11 +169,10 @@ public final class UserAuthenticateCallFactory {
             transaction.setSuccessful();
             return authenticatedUser;
         } catch (Exception e) {
+            // Credentials are stored and then removed in case of error since they are required to download system info
             credentialsSecureStore.remove();
             throw e;
-        }
-
-        finally {
+        } finally {
             transaction.end();
         }
     }

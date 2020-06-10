@@ -107,7 +107,7 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
         query = TrackedEntityInstanceQueryOnline.builder().
                 orgUnits(orgUnits).orgUnitMode(OrganisationUnitMode.ACCESSIBLE).program("program")
                 .programStartDate(new Date()).programEndDate(new Date()).trackedEntityType("teiTypeStr")
-                .query("queryStr").attribute(attribute).filter(filter).includeDeleted(false)
+                .query("queryStr").attribute(attribute).filter(filter).includeDeleted(false).order("lastupdated:desc")
                 .assignedUserMode(AssignedUserMode.ANY).paging(false).page(2).pageSize(33).build();
 
         whenServiceQuery().thenReturn(searchGridCall);
@@ -146,6 +146,7 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
                 eq(query.attribute()),
                 eq(query.filter()),
                 eq(query.assignedUserMode().toString()),
+                eq(query.order()),
                 eq(query.paging()),
                 eq(query.page()),
                 eq(query.pageSize()));
@@ -179,6 +180,7 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
 
     private OngoingStubbing<Call<SearchGrid>> whenServiceQuery() {
         return when(service.query(anyString(), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyList(), anyList(), anyString(), anyBoolean(), anyInt(), anyInt()));
+                anyString(), anyString(), anyList(), anyList(), anyString(), anyString(),
+                anyBoolean(), anyInt(), anyInt()));
     }
 }

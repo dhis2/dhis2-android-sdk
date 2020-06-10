@@ -89,6 +89,9 @@ abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseScope {
     @Nullable
     public abstract AssignedUserMode assignedUserMode();
 
+    @NonNull
+    public abstract List<TrackedEntityInstanceQueryScopeOrderByItem> order();
+
     public String formattedProgramStartDate() {
         return programStartDate() == null ? null : QUERY_FORMAT.format(programStartDate());
     }
@@ -100,10 +103,12 @@ abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseScope {
     public abstract Builder toBuilder();
 
     public static Builder builder() {
+
         return new AutoValue_TrackedEntityInstanceQueryRepositoryScope.Builder()
                 .attribute(Collections.emptyList())
                 .filter(Collections.emptyList())
                 .orgUnits(Collections.emptyList())
+                .order(Collections.emptyList())
                 .mode(RepositoryMode.OFFLINE_ONLY)
                 .includeDeleted(false);
     }
@@ -140,6 +145,8 @@ abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseScope {
         public abstract Builder states(List<State> states);
 
         public abstract Builder assignedUserMode(AssignedUserMode assignedUserMode);
+
+        public abstract Builder order(List<TrackedEntityInstanceQueryScopeOrderByItem> order);
 
         abstract TrackedEntityInstanceQueryRepositoryScope autoBuild();
 

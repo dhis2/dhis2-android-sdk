@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.relationship.internal;
 
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
+import org.hisp.dhis.android.core.relationship.RelationshipDomain;
 import org.hisp.dhis.android.core.relationship.RelationshipModule;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeCollectionRepository;
 
@@ -42,11 +43,15 @@ public final class RelationshipModuleImpl implements RelationshipModule {
 
     private final RelationshipCollectionRepository relationships;
 
+    private final RelationshipDomain domain;
+
     @Inject
     RelationshipModuleImpl(RelationshipTypeCollectionRepository relationshipTypeRepository,
-                           RelationshipCollectionRepository relationshipRepository) {
+                           RelationshipCollectionRepository relationshipRepository,
+                           RelationshipDomain relationshipDomain) {
         this.relationshipTypes = relationshipTypeRepository;
         this.relationships = relationshipRepository;
+        this.domain = relationshipDomain;
     }
 
     @Override
@@ -57,5 +62,10 @@ public final class RelationshipModuleImpl implements RelationshipModule {
     @Override
     public RelationshipCollectionRepository relationships() {
         return relationships;
+    }
+
+    @Override
+    public RelationshipDomain domain() {
+        return domain;
     }
 }

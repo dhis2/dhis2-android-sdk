@@ -31,4 +31,6 @@ public interface RelationshipModule {
     RelationshipTypeCollectionRepository relationshipTypes();
 
     RelationshipCollectionRepository relationships();
+
+    RelationshipDomain domain();
 }

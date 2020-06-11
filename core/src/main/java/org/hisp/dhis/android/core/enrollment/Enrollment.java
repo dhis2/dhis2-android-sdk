@@ -46,6 +46,7 @@ import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EnrollmentStat
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreCoordinatesColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreEventListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNoteListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreRelationshipListColumnAdapter;
 import org.hisp.dhis.android.core.arch.helpers.CoordinateHelper;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.Coordinates;
@@ -53,6 +54,8 @@ import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
 import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.note.Note;
+import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.note.Note;
 
 import java.util.Date;
@@ -147,6 +150,11 @@ public abstract class Enrollment extends BaseDeletableDataObject implements Obje
     @ColumnAdapter(IgnoreNoteListColumnAdapter.class)
     public abstract List<Note> notes();
 
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(IgnoreRelationshipListColumnAdapter.class)
+    abstract List<Relationship> relationships();
+
     public static Builder builder() {
         return new $$AutoValue_Enrollment.Builder();
     }
@@ -201,6 +209,8 @@ public abstract class Enrollment extends BaseDeletableDataObject implements Obje
         abstract Builder events(List<Event> events);
 
         public abstract Builder notes(List<Note> notes);
+
+        public abstract Builder relationships(List<Relationship> relationships);
 
         abstract Enrollment autoBuild();
 

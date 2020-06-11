@@ -39,6 +39,8 @@ import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.internal.EventFields;
 import org.hisp.dhis.android.core.note.Note;
 import org.hisp.dhis.android.core.note.internal.NoteFields;
+import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.RelationshipFields;
 
 public final class EnrollmentFields {
 
@@ -49,6 +51,7 @@ public final class EnrollmentFields {
     private static final String EVENTS = "events";
     public static final String NOTES = "notes";
     private final static String GEOMETRY = "geometry";
+    public static final String RELATIONSHIPS = "relationships";
 
     private static FieldsHelper<Enrollment> fh = new FieldsHelper<>();
 
@@ -68,7 +71,8 @@ public final class EnrollmentFields {
                     fh.<Coordinates>field(COORDINATE),
                     fh.<Geometry>field(GEOMETRY),
                     fh.<Event>nestedField(EVENTS).with(EventFields.allFields),
-                    fh.<Note>nestedField(NOTES).with(NoteFields.all)
+                    fh.<Note>nestedField(NOTES).with(NoteFields.all),
+                    fh.<Relationship>nestedField(RELATIONSHIPS).with(RelationshipFields.allNewModelFields)
     ).build();
 
     private EnrollmentFields() {}

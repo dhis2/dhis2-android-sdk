@@ -165,8 +165,13 @@ public final class UserAuthenticateCallFactory {
             systemInfoRepository.download().blockingAwait();
 
             handleUser(authenticatedUser);
+
             transaction.setSuccessful();
             return authenticatedUser;
+        } catch (Exception e) {
+            // Credentials are stored and then removed in case of error since they are required to download system info
+            credentialsSecureStore.remove();
+            throw e;
         } finally {
             transaction.end();
         }

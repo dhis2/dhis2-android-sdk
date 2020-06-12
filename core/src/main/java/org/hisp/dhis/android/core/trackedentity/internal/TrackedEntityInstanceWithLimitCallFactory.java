@@ -63,6 +63,7 @@ class TrackedEntityInstanceWithLimitCallFactory {
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
     private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
     private final DHISVersionManager versionManager;
+    private final TrackedEntityInstanceTrimmer trackedEntityInstanceTrimmer;
 
     private final TrackedEntityInstanceQueryBuilderFactory trackedEntityInstanceQueryBuilderFactory;
 
@@ -87,6 +88,7 @@ class TrackedEntityInstanceWithLimitCallFactory {
             TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory relationshipDownloadCallFactory,
             TrackedEntityInstancePersistenceCallFactory persistenceCallFactory,
             DHISVersionManager versionManager,
+            TrackedEntityInstanceTrimmer trackedEntityInstanceTrimmer,
             TrackedEntityInstancesEndpointCallFactory endpointCallFactory,
             RxAPICallExecutor apiCallExecutor,
             TrackedEntityInstanceLastUpdatedManager lastUpdatedManager) {
@@ -95,6 +97,7 @@ class TrackedEntityInstanceWithLimitCallFactory {
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
         this.systemInfoRepository = systemInfoRepository;
         this.versionManager = versionManager;
+        this.trackedEntityInstanceTrimmer = trackedEntityInstanceTrimmer;
 
         this.trackedEntityInstanceQueryBuilderFactory = trackedEntityInstanceQueryBuilderFactory;
 
@@ -113,10 +116,11 @@ class TrackedEntityInstanceWithLimitCallFactory {
                 return Observable.just(
                         progressManager.increaseProgress(TrackedEntityInstance.class, true));
             } else {
-                return Observable.concat(
+                return Observable.concatArray(
                         downloadSystemInfo(progressManager),
                         downloadTeis(progressManager, params, programOrganisationUnitSet),
                         downloadRelationshipTeis(progressManager),
+                        trimTrackedEntityInstances(progressManager, params),
                         updateResource(progressManager, programOrganisationUnitSet)
                 );
             }
@@ -205,6 +209,14 @@ class TrackedEntityInstanceWithLimitCallFactory {
         } else {
             return pageTrackedEntityInstances;
         }
+    }
+
+    private Observable<D2Progress> trimTrackedEntityInstances(D2ProgressManager progressManager,
+                                                              ProgramDataDownloadParams params) {
+        return Single.fromCallable(() -> {
+            trackedEntityInstanceTrimmer.trimTrackedEntityInstances(params);
+            return progressManager.increaseProgress(SystemInfo.class, false);
+        }).toObservable();
     }
 
     private Observable<D2Progress> updateResource(D2ProgressManager progressManager,

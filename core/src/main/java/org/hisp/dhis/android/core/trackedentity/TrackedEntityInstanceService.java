@@ -25,18 +25,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeCollectionRepository;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeCollectionRepository;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueCollectionRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -45,28 +42,46 @@ import dagger.Reusable;
 import io.reactivex.Single;
 
 @Reusable
-public class RelationshipDomain {
+public class TrackedEntityInstanceService {
 
-    private TrackedEntityAttributeCollectionRepository trackedEntityAttributeRepository;
-    private TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValueRepository;
-    private ProgramTrackedEntityAttributeCollectionRepository programTrackedEntityAttributeRepository;
+    private final TrackedEntityAttributeCollectionRepository trackedEntityAttributeRepository;
+    private final TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValueRepository;
+    private final ProgramTrackedEntityAttributeCollectionRepository programTrackedEntityAttributeRepository;
 
     @Inject
-    RelationshipDomain(TrackedEntityAttributeCollectionRepository trackedEntityAttributeRepository,
-                       TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValueRepository,
-                       ProgramTrackedEntityAttributeCollectionRepository programTrackedEntityAttributeRepository) {
+    TrackedEntityInstanceService(TrackedEntityAttributeCollectionRepository trackedEntityAttributeRepository,
+                                 TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValueRepository,
+                                 ProgramTrackedEntityAttributeCollectionRepository
+                                         programTrackedEntityAttributeRepository) {
         this.trackedEntityAttributeRepository = trackedEntityAttributeRepository;
         this.trackedEntityAttributeValueRepository = trackedEntityAttributeValueRepository;
         this.programTrackedEntityAttributeRepository = programTrackedEntityAttributeRepository;
     }
 
+    /**
+     * Inherit the tracked entity attribute values from one TEI to another. It only inherits attributes that are marked
+     * as "inherited=true" and that belong to program passed as parameter. This method is useful when creating new
+     * relationships. Inherited values are persisted in database. Important: this is a blocking method and it should
+     * not be executed in the main thread. Consider the asynchronous version
+     * {@link #inheritAttributesFrom(String, String, String)}.
+     *
+     * @param fromTeiUid TrackedEntityInstance to inherit values from.
+     * @param toTeiUid TrackedEntityInstance that receive the inherited values.
+     * @param programUid Only attributes associated to this program will be inherited.
+     * @return Unit
+     */
     public Unit blockingInheritAttributesFrom(String fromTeiUid, String toTeiUid, String programUid) throws D2Error {
         List<ProgramTrackedEntityAttribute> programAttributes = programTrackedEntityAttributeRepository
                 .byProgram().eq(programUid)
                 .blockingGet();
 
+        List<String> attributeUids = new ArrayList<>();
+        for (ProgramTrackedEntityAttribute ptea : programAttributes) {
+            attributeUids.add(UidsHelper.getUidOrNull(ptea.trackedEntityAttribute()));
+        }
+
         List<TrackedEntityAttribute> inheritableAttributes = trackedEntityAttributeRepository
-                .byUid().in(UidsHelper.getUids(programAttributes))
+                .byUid().in(attributeUids)
                 .byInherit().isTrue()
                 .blockingGet();
 
@@ -88,6 +103,16 @@ public class RelationshipDomain {
         return new Unit();
     }
 
+    /**
+     * Inherit the tracked entity attribute values from one TEI to another. It only inherits attributes that are marked
+     * as "inherited=true" and that belong to program passed as parameter. This method is useful when creating new
+     * relationships. Inherited values are persisted in database.
+     *
+     * @param fromTeiUid TrackedEntityInstance to inherit values from.
+     * @param toTeiUid TrackedEntityInstance that receive the inherited values.
+     * @param programUid Only attributes associated to this program will be inherited.
+     * @return Unit
+     */
     public Single<Unit> inheritAttributesFrom(String fromTeiUid, String toTeiUid, String programUid) {
         return Single.fromCallable(() -> blockingInheritAttributesFrom(fromTeiUid, toTeiUid, programUid));
     }

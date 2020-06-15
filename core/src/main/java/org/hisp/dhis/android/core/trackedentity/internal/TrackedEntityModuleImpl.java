@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueColle
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueCollectionRepository;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCollectionRepository;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttributeCollectionRepository;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeCollectionRepository;
@@ -64,6 +65,8 @@ public final class TrackedEntityModuleImpl implements TrackedEntityModule {
     private final TrackedEntityInstanceDownloader trackedEntityInstanceDownloader;
     private final TrackedEntityInstanceListDownloadAndPersistCallFactory downloadAndPersistCallFactory;
 
+    private final TrackedEntityInstanceService trackedEntityInstanceService;
+
     @Inject
     TrackedEntityModuleImpl(
             TrackedEntityTypeCollectionRepository trackedEntityTypes,
@@ -75,7 +78,8 @@ public final class TrackedEntityModuleImpl implements TrackedEntityModule {
             TrackedEntityAttributeReservedValueManager reservedValueManager,
             TrackedEntityInstanceDownloader trackedEntityInstanceDownloader,
             TrackedEntityInstanceListDownloadAndPersistCallFactory downloadAndPersistCallFactory,
-            TrackedEntityInstanceQueryCollectionRepository trackedEntityInstanceQuery) {
+            TrackedEntityInstanceQueryCollectionRepository trackedEntityInstanceQuery,
+            TrackedEntityInstanceService trackedEntityInstanceService) {
         this.trackedEntityTypes = trackedEntityTypes;
         this.trackedEntityInstances = trackedEntityInstances;
         this.trackedEntityDataValues = trackedEntityDataValues;
@@ -86,6 +90,7 @@ public final class TrackedEntityModuleImpl implements TrackedEntityModule {
         this.trackedEntityInstanceDownloader = trackedEntityInstanceDownloader;
         this.downloadAndPersistCallFactory = downloadAndPersistCallFactory;
         this.trackedEntityInstanceQuery = trackedEntityInstanceQuery;
+        this.trackedEntityInstanceService = trackedEntityInstanceService;
     }
 
     /**
@@ -158,5 +163,10 @@ public final class TrackedEntityModuleImpl implements TrackedEntityModule {
     @Override
     public TrackedEntityInstanceDownloader trackedEntityInstanceDownloader() {
         return trackedEntityInstanceDownloader;
+    }
+
+    @Override
+    public TrackedEntityInstanceService trackedEntityInstanceService() {
+        return trackedEntityInstanceService;
     }
 }

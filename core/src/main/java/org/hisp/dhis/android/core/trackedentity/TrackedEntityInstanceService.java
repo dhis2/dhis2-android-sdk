@@ -63,14 +63,14 @@ public class TrackedEntityInstanceService {
      * as "inherited=true" and that belong to program passed as parameter. This method is useful when creating new
      * relationships. Inherited values are persisted in database. Important: this is a blocking method and it should
      * not be executed in the main thread. Consider the asynchronous version
-     * {@link #inheritAttributesFrom(String, String, String)}.
+     * {@link #inheritAttributes(String, String, String)}.
      *
      * @param fromTeiUid TrackedEntityInstance to inherit values from.
      * @param toTeiUid TrackedEntityInstance that receive the inherited values.
      * @param programUid Only attributes associated to this program will be inherited.
      * @return Unit
      */
-    public Unit blockingInheritAttributesFrom(String fromTeiUid, String toTeiUid, String programUid) throws D2Error {
+    public Unit blockingInheritAttributes(String fromTeiUid, String toTeiUid, String programUid) throws D2Error {
         List<ProgramTrackedEntityAttribute> programAttributes = programTrackedEntityAttributeRepository
                 .byProgram().eq(programUid)
                 .blockingGet();
@@ -113,7 +113,7 @@ public class TrackedEntityInstanceService {
      * @param programUid Only attributes associated to this program will be inherited.
      * @return Unit
      */
-    public Single<Unit> inheritAttributesFrom(String fromTeiUid, String toTeiUid, String programUid) {
-        return Single.fromCallable(() -> blockingInheritAttributesFrom(fromTeiUid, toTeiUid, programUid));
+    public Single<Unit> inheritAttributes(String fromTeiUid, String toTeiUid, String programUid) {
+        return Single.fromCallable(() -> blockingInheritAttributes(fromTeiUid, toTeiUid, programUid));
     }
 }

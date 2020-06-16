@@ -42,11 +42,12 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService;
 
 import java.text.ParseException;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
-import javax.net.ssl.HttpsURLConnection;
 
 import dagger.Reusable;
 import retrofit2.Call;
@@ -94,24 +95,10 @@ class TrackedEntityInstanceQueryCallFactory {
                 query.trackedEntityType(), query.query(), query.attribute(), query.filter(), assignedUserModeStr,
                 query.order(), query.paging(), query.page(), query.pageSize());
 
-        SearchGrid searchGrid;
-
         try {
-            searchGrid = apiCallExecutor.executeObjectCall(searchGridCall);
-        } catch (D2Error d2E) {
-            if (d2E.httpErrorCode() != null && d2E.httpErrorCode() == HttpsURLConnection.HTTP_REQ_TOO_LONG) {
-                throw D2Error.builder()
-                        .errorCode(D2ErrorCode.TOO_MANY_ORG_UNITS)
-                        .errorDescription("Too many org units were selected")
-                        .errorComponent(D2ErrorComponent.SDK)
-                        .httpErrorCode(d2E.httpErrorCode())
-                        .build();
-            } else {
-                throw d2E;
-            }
-        }
+            SearchGrid searchGrid = apiCallExecutor.executeObjectCallWithErrorCatcher(searchGridCall,
+                    new TrackedEntityInstanceQueryErrorCatcher());
 
-        try {
             return mapper.transform(searchGrid);
         } catch (ParseException pe) {
             throw D2Error.builder()
@@ -120,6 +107,12 @@ class TrackedEntityInstanceQueryCallFactory {
                     .errorDescription("Search Grid mapping exception")
                     .originalException(pe)
                     .build();
+        } catch (D2Error d2Error) {
+            if (d2Error.errorCode().equals(D2ErrorCode.MAX_TEI_COUNT_REACHED)) {
+                throw d2Error;
+            } else {
+                return Collections.emptyList();
+            }
         }
     }
 

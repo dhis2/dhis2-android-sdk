@@ -27,6 +27,18 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search;
 
+import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.fail;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.common.BaseCallShould;
@@ -56,19 +68,6 @@ import javax.net.ssl.HttpsURLConnection;
 
 import retrofit2.Call;
 
-import static com.google.common.truth.Truth.assertThat;
-import static org.junit.Assert.fail;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-
-@SuppressWarnings("unchecked")
 @RunWith(JUnit4.class)
 public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
     @Mock
@@ -121,7 +120,7 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
                 .paging(false).page(2).pageSize(33).build();
 
         whenServiceQuery().thenReturn(searchGridCall);
-        when(apiCallExecutor.executeObjectCall(searchGridCall)).thenReturn(searchGrid);
+        when(apiCallExecutor.executeObjectCallWithErrorCatcher(eq(searchGridCall), any())).thenReturn(searchGrid);
         when(mapper.transform(any(SearchGrid.class))).thenReturn(teis);
         when(dhisVersionManager.isGreaterThan(DHISVersion.V2_33)).thenReturn(true);
 
@@ -152,7 +151,8 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
 
     @Test(expected = D2Error.class)
     public void throw_D2CallException_when_service_call_returns_failed_response() throws Exception {
-        when(apiCallExecutor.executeObjectCall(searchGridCall)).thenThrow(d2Error);
+        when(apiCallExecutor.executeObjectCallWithErrorCatcher(eq(searchGridCall), any()))
+                .thenThrow(d2Error);
         call.call();
     }
 

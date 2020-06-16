@@ -541,7 +541,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
                 }
                 return instances;
             } catch (D2Error e) {
-                return Collections.emptyList();
+                throw new RuntimeException(e);
             } catch (Exception e) {
                 return Collections.emptyList();
             }

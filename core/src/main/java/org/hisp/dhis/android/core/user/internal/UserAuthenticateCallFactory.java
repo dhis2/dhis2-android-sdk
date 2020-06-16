@@ -139,14 +139,18 @@ public final class UserAuthenticateCallFactory {
                     new UserAuthenticateCallErrorCatcher());
             return loginOnline(parsedServerUrl, authenticatedUser, username, password);
         } catch (D2Error d2Error) {
-            if (d2Error.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR ||
-                    d2Error.errorCode() == D2ErrorCode.SOCKET_TIMEOUT ||
+            if (d2Error.errorCode() == D2ErrorCode.SOCKET_TIMEOUT ||
                     d2Error.errorCode() == D2ErrorCode.UNKNOWN_HOST) {
                 return loginOffline(parsedServerUrl, username, password);
             } else if (d2Error.errorCode() == D2ErrorCode.USER_ACCOUNT_DISABLED) {
                 wipeModule.wipeEverything();
                 throw d2Error;
-            } else {
+            } else if(d2Error.errorCode() == D2ErrorCode.UNEXPECTED ||
+                d2Error.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR) {
+                throw noDHIS2Server();
+            }
+
+            else {
                 throw d2Error;
             }
         }
@@ -261,6 +265,14 @@ public final class UserAuthenticateCallFactory {
                     .errorComponent(D2ErrorComponent.SDK)
                     .build();
         }
+    }
+
+    private D2Error noDHIS2Server() {
+        return D2Error.builder()
+                .errorCode(D2ErrorCode.NO_DHIS2_SERVER)
+                .errorDescription("The URL is no DHIS2 server")
+                .errorComponent(D2ErrorComponent.SDK)
+                .build();
     }
 
     private void handleUser(User user) {

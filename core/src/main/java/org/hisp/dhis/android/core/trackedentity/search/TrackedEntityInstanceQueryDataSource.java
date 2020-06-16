@@ -152,7 +152,7 @@ public final class TrackedEntityInstanceQueryDataSource
             }
             return instances;
         } catch (D2Error e) {
-            return Collections.emptyList();
+            throw new RuntimeException(e);
         } catch (Exception e) {
             return Collections.emptyList();
         }

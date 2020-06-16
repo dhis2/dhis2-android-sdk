@@ -409,7 +409,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
                         .toBuilder().paging(false).build();
                 return onlineCallFactory.getCall(noPagingQuery).call();
             } catch (D2Error e) {
-                return Collections.emptyList();
+                throw new RuntimeException(e);
             } catch (Exception e) {
                 return Collections.emptyList();
             }

@@ -26,52 +26,38 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.maintenance;
+package org.hisp.dhis.android.core.trackedentity.search;
 
-public enum D2ErrorCode {
-    ALREADY_AUTHENTICATED,
-    ALREADY_EXECUTED,
-    API_UNSUCCESSFUL_RESPONSE,
-    API_INVALID_QUERY,
-    API_RESPONSE_PROCESS_ERROR,
-    APP_NAME_NOT_SET,
-    APP_VERSION_NOT_SET,
-    BAD_CREDENTIALS,
-    CANT_ACCESS_KEYSTORE,
-    CANT_CREATE_EXISTING_OBJECT,
-    CANT_DELETE_NON_EXISTING_OBJECT,
-    CANT_INSTANTIATE_KEYSTORE,
-    COULD_NOT_RESERVE_VALUE_ON_SERVER,
-    FILE_NOT_FOUND,
-    FAIL_RESIZING_IMAGE,
-    IMPOSSIBLE_TO_GENERATE_COORDINATES,
-    LOGIN_USERNAME_NULL,
-    LOGIN_PASSWORD_NULL,
-    MAX_TEI_COUNT_REACHED,
-    MIGHT_BE_RUNNING_LOW_ON_AVAILABLE_VALUES,
-    NO_AUTHENTICATED_USER,
-    NO_AUTHENTICATED_USER_OFFLINE,
-    NOT_ENOUGH_VALUES_LEFT_TO_RESERVE_ON_SERVER,
-    DIFFERENT_AUTHENTICATED_USER_OFFLINE,
-    INVALID_DHIS_VERSION,
-    NO_RESERVED_VALUES,
-    OBJECT_CANT_BE_UPDATED,
-    OBJECT_CANT_BE_INSERTED,
-    OWNERSHIP_ACCESS_DENIED,
-    SEARCH_GRID_PARSE,
-    SERVER_URL_NULL,
-    SERVER_URL_MALFORMED,
-    SOCKET_TIMEOUT,
-    RELATIONSHIPS_CANT_BE_UPDATED,
-    TOO_MANY_ORG_UNITS,
-    TOO_MANY_PERIODS,
-    UNEXPECTED,
-    UNKNOWN_HOST,
-    URL_NOT_FOUND,
-    USER_ACCOUNT_DISABLED,
-    USER_ACCOUNT_LOCKED,
-    VALUE_CANT_BE_SET,
-    VALUES_RESERVATION_TOOK_TOO_LONG,
-    SSL_ERROR,
-    SMS_NOT_SUPPORTED
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher;
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory;
+import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
+
+import java.io.IOException;
+
+import javax.net.ssl.HttpsURLConnection;
+
+import retrofit2.Response;
+
+final class TrackedEntityInstanceQueryErrorCatcher implements APICallErrorCatcher {
+
+    @Override
+    public Boolean mustBeStored() {
+        return false;
+    }
+
+    @Override
+    public D2ErrorCode catchError(Response<?> response) throws IOException {
+        if (response.code() == HttpsURLConnection.HTTP_REQ_TOO_LONG) {
+            return D2ErrorCode.TOO_MANY_ORG_UNITS;
+        } else {
+            HttpMessageResponse parsed = ObjectMapperFactory.objectMapper().readValue(response.errorBody().string(),
+                    HttpMessageResponse.class);
+
+            if (parsed.httpStatusCode() == 409 && parsed.message().equals("maxteicountreached")) {
+                return D2ErrorCode.MAX_TEI_COUNT_REACHED;
+            }
+        }
+        return null;
+    }
 }

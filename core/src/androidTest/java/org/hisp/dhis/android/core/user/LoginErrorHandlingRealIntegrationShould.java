@@ -88,9 +88,13 @@ public class LoginErrorHandlingRealIntegrationShould extends BaseRealIntegration
         assertThatErrorCode("https://www.google.com").isEqualTo(D2ErrorCode.NO_DHIS2_SERVER);
     }
 
+    /**
+     * Unfortunately it's not possible to differentiate a server that can't be resolved from an actual one
+     * when we are offline
+     */
     @Test
-    public void fail_with_no_dhis_server_for_non_existent_server() {
-        assertThatErrorCode("https://www.ddkfwefwefkwefowgwekfnwefwefjwe.com").isEqualTo(D2ErrorCode.UNKNOWN_HOST);
+    public void fail_with_no_authenticated_user_offline_non_existent_server() {
+        assertThatErrorCode("https://www.ddkfwefwefkwefowgwekfnwefwefjwe.com").isEqualTo(D2ErrorCode.NO_AUTHENTICATED_USER_OFFLINE);
     }
 
     @Test

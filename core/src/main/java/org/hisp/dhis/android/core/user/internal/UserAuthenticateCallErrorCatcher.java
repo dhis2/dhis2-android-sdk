@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatche
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 
 import retrofit2.Response;
 
@@ -47,7 +48,8 @@ final class UserAuthenticateCallErrorCatcher implements APICallErrorCatcher {
 
         String errorResponse = response.errorBody().string();
 
-        if (errorResponse.contains("LDAP authentication is not configured") ||
+        if (response.code() == HttpURLConnection.HTTP_UNAUTHORIZED ||
+                errorResponse.contains("LDAP authentication is not configured") ||
                 errorResponse.contains("Bad credentials")) {
             return D2ErrorCode.BAD_CREDENTIALS;
         } else if (errorResponse.contains("User is disabled")) {

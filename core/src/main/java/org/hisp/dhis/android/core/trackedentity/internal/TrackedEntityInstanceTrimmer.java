@@ -100,16 +100,15 @@ class TrackedEntityInstanceTrimmer {
             return new Unit();
         }
 
-        if (params.program() != null) {
-            trimProgram(params.program(), programSettings);
-        } else if (params.program() == null) {
-            List<String> trackerPrograms = programStore.getUidsByProgramType(ProgramType.WITH_REGISTRATION);
-
+        List<String> trackerPrograms = programStore.getUidsByProgramType(ProgramType.WITH_REGISTRATION);
+        if (params.program() == null) {
             for (String programUid : trackerPrograms) {
                 trimProgram(programUid, programSettings);
             }
 
             trimGlobal(programSettings.globalSettings());
+        } else if (params.program() != null && trackerPrograms.contains(params.program())) {
+            trimProgram(params.program(), programSettings);
         }
         return new Unit();
     }

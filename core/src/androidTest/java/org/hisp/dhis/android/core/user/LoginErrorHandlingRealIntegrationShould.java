@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -44,7 +45,7 @@ import java.io.IOException;
 import io.reactivex.observers.TestObserver;
 import static com.google.common.truth.Truth.assertThat;
 
-//@Ignore("Tests with real servers. Depend on server state and network connection.")
+@Ignore("Tests with real servers. Depend on server state and network connection.")
 public class LoginErrorHandlingRealIntegrationShould extends BaseRealIntegrationTest {
 
     private D2 d2;

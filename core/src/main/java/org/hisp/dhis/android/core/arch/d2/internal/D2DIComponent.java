@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseDIModule;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.json.internal.JSONSerializationDIModule;
 import org.hisp.dhis.android.core.arch.repositories.di.internal.RepositoriesDIModule;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore;
@@ -100,6 +101,7 @@ import retrofit2.Retrofit;
         AppContextDIModule.class,
         APIClientDIModule.class,
         DatabaseDIModule.class,
+        JSONSerializationDIModule.class,
         KeyValueStorageDIModule.class,
         WipeDIModule.class,
         RepositoriesDIModule.class,

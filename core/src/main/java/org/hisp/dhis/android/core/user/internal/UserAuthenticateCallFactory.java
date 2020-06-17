@@ -83,6 +83,7 @@ public final class UserAuthenticateCallFactory {
     private final WipeModule wipeModule;
     private final MultiUserDatabaseManager multiUserDatabaseManager;
     private final GeneralSettingCall generalSettingCall;
+    private final UserAuthenticateCallErrorCatcher apiCallErrorCatcher;
 
     @Inject
     UserAuthenticateCallFactory(
@@ -97,7 +98,8 @@ public final class UserAuthenticateCallFactory {
             @NonNull IdentifiableObjectStore<User> userStore,
             @NonNull WipeModule wipeModule,
             @NonNull MultiUserDatabaseManager multiUserDatabaseManager,
-            @NonNull GeneralSettingCall generalSettingCall) {
+            @NonNull GeneralSettingCall generalSettingCall,
+            @NonNull UserAuthenticateCallErrorCatcher apiCallErrorCatcher) {
         this.databaseAdapter = databaseAdapter;
         this.apiCallExecutor = apiCallExecutor;
 
@@ -113,6 +115,7 @@ public final class UserAuthenticateCallFactory {
         this.wipeModule = wipeModule;
         this.multiUserDatabaseManager = multiUserDatabaseManager;
         this.generalSettingCall = generalSettingCall;
+        this.apiCallErrorCatcher = apiCallErrorCatcher;
     }
 
     public Single<User> logIn(final String username, final String password, final String serverUrl) {
@@ -136,7 +139,7 @@ public final class UserAuthenticateCallFactory {
                 userService.authenticate(basic(username, password), UserFields.allFieldsWithoutOrgUnit);
         try {
             User authenticatedUser = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall,
-                    new UserAuthenticateCallErrorCatcher());
+                    apiCallErrorCatcher);
             return loginOnline(parsedServerUrl, authenticatedUser, username, password);
         } catch (D2Error d2Error) {
             if (d2Error.errorCode() == D2ErrorCode.SOCKET_TIMEOUT ||

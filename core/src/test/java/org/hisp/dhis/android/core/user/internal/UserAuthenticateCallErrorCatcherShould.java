@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,61 +46,42 @@ public class UserAuthenticateCallErrorCatcherShould {
     private UserAuthenticateCallErrorCatcher catcher;
 
     @Before
-    public void setUp() throws Exception {
-        catcher = new UserAuthenticateCallErrorCatcher();
+    public void setUp() {
+        catcher = new UserAuthenticateCallErrorCatcher(ObjectMapperFactory.objectMapper());
     }
 
     @Test
-    public void return_bad_credentials_error_in_2_30() throws Exception {
-
-        String responseError = "<!doctype html><html lang=\"en\"><head><title>HTTP Status 401 – Unauthorized</title></head><body><h1>HTTP Status 401 – Unauthorized</h1><hr class=\"line\" /><p><b>Type</b> Status Report</p><p><b>Message</b> LDAP authentication is not configured</p><p><b>Description</b> The request has not been applied because it lacks valid authentication credentials for the target resource.</p><hr class=\"line\" /><h3>Apache Tomcat/8.5.24</h3></body></html>";
-        Response response = Response.error(409, ResponseBody.create(null, responseError));
-
+    public void return_bad_credentials_error_for_expected_error_response() {
+        String responseError = "{\"httpStatus\":\"Unauthorized\",\"httpStatusCode\":401,\"status\":\"ERROR\",\"message\":\"Unauthorized\"}";
+        Response<Object> response = Response.error(401, ResponseBody.create(null, responseError));
         assertThat(catcher.catchError(response)).isEqualTo(D2ErrorCode.BAD_CREDENTIALS);
     }
 
     @Test
-    public void return_bad_credentials_error_in_2_29() throws Exception {
-
-        String responseError = "<!doctype html><html lang=\"en\"><head><title>HTTP Status 401 – Unauthorized</title></head><body><h1>HTTP Status 401 – Unauthorized</h1><hr class=\"line\" /><p><b>Type</b> Status Report</p><p><b>Message</b> Bad credentials</p><p><b>Description</b> The request has not been applied because it lacks valid authentication credentials for the target resource.</p><hr class=\"line\" /><h3>Apache Tomcat/8.5.24</h3></body></html>";
-        Response response = Response.error(409, ResponseBody.create(null, responseError));
-
+    public void return_bad_credentials_error_for_other_messages() {
+        String responseError = "{\"httpStatus\":\"Unauthorized\",\"httpStatusCode\":401,\"status\":\"ERROR\",\"message\":\"Something new\"}";
+        Response<Object> response = Response.error(401, ResponseBody.create(null, responseError));
         assertThat(catcher.catchError(response)).isEqualTo(D2ErrorCode.BAD_CREDENTIALS);
     }
 
     @Test
-    public void return_user_account_disabled() throws Exception {
-
-        String responseError = "<!doctype html><html lang=\"en\"><head><title>HTTP Status 401 – Unauthorized</title></head><body><h1>HTTP Status 401 – Unauthorized</h1><hr class=\"line\" /><p><b>Type</b> Status Report</p><p><b>Message</b> User is disabled</p><p><b>Description</b> The request has not been applied because it lacks valid authentication credentials for the target resource.</p><hr class=\"line\" /><h3>Apache Tomcat/8.5.24</h3></body></html>";
-        Response response = Response.error(409, ResponseBody.create(null, responseError));
-
-        assertThat(catcher.catchError(response)).isEqualTo(D2ErrorCode.USER_ACCOUNT_DISABLED);
-    }
-
-    @Test
-    public void return_user_account_locked() throws Exception {
-
-        String responseError = "<!doctype html><html lang=\"en\"><head><title>HTTP Status 401 – Unauthorized</title></head><body><h1>HTTP Status 401 – Unauthorized</h1><hr class=\"line\" /><p><b>Type</b> Status Report</p><p><b>Message</b> User account is locked</p><p><b>Description</b> The request has not been applied because it lacks valid authentication credentials for the target resource.</p><hr class=\"line\" /><h3>Apache Tomcat/8.5.24</h3></body></html>";
-        Response response = Response.error(409, ResponseBody.create(null, responseError));
-
+    public void return_account_locked() {
+        String responseError = "{\"httpStatus\":\"Unauthorized\",\"httpStatusCode\":401,\"status\":\"ERROR\",\"message\":\"Account locked\"}";
+        Response<Object> response = Response.error(401, ResponseBody.create(null, responseError));
         assertThat(catcher.catchError(response)).isEqualTo(D2ErrorCode.USER_ACCOUNT_LOCKED);
     }
 
     @Test
-    public void return_null_if_there_is_no_matches() throws Exception {
-
-        String responseError = "";
-        Response response = Response.error(409, ResponseBody.create(null, responseError));
-
-        assertThat(catcher.catchError(response)).isEqualTo(null);
+    public void return_no_dhis_server_for_another_json() {
+        String responseError = "{\"other\":\"JSON\"}";
+        Response<Object> response = Response.error(401, ResponseBody.create(null, responseError));
+        assertThat(catcher.catchError(response)).isEqualTo(D2ErrorCode.NO_DHIS2_SERVER);
     }
 
     @Test
-    public void return_bad_url_if_not_found() throws Exception {
-
-        String responseError = "<html><head><title>404 Not Found</title></head><body bgcolor=\"white\"><center><h1>404 Not Found</h1></center><hr><center>nginx/1.14.0</center></body></html>";
-        Response response = Response.error(404, ResponseBody.create(null, responseError));
-
-        assertThat(catcher.catchError(response)).isEqualTo(D2ErrorCode.URL_NOT_FOUND);
+    public void return_no_dhis_server_for_non_json() {
+        String responseError = "<html>ERROR</html>";
+        Response<Object> response = Response.error(401, ResponseBody.create(null, responseError));
+        assertThat(catcher.catchError(response)).isEqualTo(D2ErrorCode.NO_DHIS2_SERVER);
     }
 }

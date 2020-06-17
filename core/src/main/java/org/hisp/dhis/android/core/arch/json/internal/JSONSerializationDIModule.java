@@ -26,52 +26,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user.internal;
+package org.hisp.dhis.android.core.arch.json.internal;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher;
-import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse;
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
-
-import java.net.HttpURLConnection;
-
-import javax.inject.Inject;
-
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
-import retrofit2.Response;
 
-@Reusable
-class UserAuthenticateCallErrorCatcher implements APICallErrorCatcher {
+@Module
+public class JSONSerializationDIModule {
 
-    private final ObjectMapper objectMapper;
-
-    @Inject
-    UserAuthenticateCallErrorCatcher(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
-
-    @Override
-    public Boolean mustBeStored() {
-        return true;
-    }
-
-    @Override
-    public D2ErrorCode catchError(Response<?> response) {
-        try {
-            String errorBodyStr = response.errorBody().string();
-            HttpMessageResponse errorResponse = objectMapper.readValue(errorBodyStr, HttpMessageResponse.class);
-            boolean isUnauthorized = response.code() == HttpURLConnection.HTTP_UNAUTHORIZED;
-            if (isUnauthorized && errorResponse.message().contains("Account locked")) {
-                return D2ErrorCode.USER_ACCOUNT_LOCKED;
-            } else if (isUnauthorized) {
-                return D2ErrorCode.BAD_CREDENTIALS;
-            } else {
-                return D2ErrorCode.NO_DHIS2_SERVER;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return D2ErrorCode.NO_DHIS2_SERVER;
-        }
+    @Provides
+    @Reusable
+    ObjectMapper objectMapper() {
+        return ObjectMapperFactory.objectMapper();
     }
 }

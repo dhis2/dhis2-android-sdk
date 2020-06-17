@@ -92,6 +92,10 @@ public class LoginErrorHandlingRealIntegrationShould extends BaseRealIntegration
     public void succeed_for_2_33() {
         assertSuccess(RealServerMother.url2_33);
     }
+    @Test
+    public void succeed_for_2_34() {
+        assertSuccess(RealServerMother.url2_34);
+    }
 
     @Test
     public void fail_with_bad_credentials_for_android_current() {
@@ -126,6 +130,11 @@ public class LoginErrorHandlingRealIntegrationShould extends BaseRealIntegration
     @Test
     public void fail_with_bad_credentials_for_2_33() {
         assertThatErrorCode(username, "wrong-pw", RealServerMother.url2_33).isEqualTo(D2ErrorCode.BAD_CREDENTIALS);
+    }
+
+    @Test
+    public void fail_with_bad_credentials_for_2_34() {
+        assertThatErrorCode(username, "wrong-pw", RealServerMother.url2_34).isEqualTo(D2ErrorCode.BAD_CREDENTIALS);
     }
 
     @Test

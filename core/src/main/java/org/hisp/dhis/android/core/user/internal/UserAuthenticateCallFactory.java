@@ -148,12 +148,10 @@ public final class UserAuthenticateCallFactory {
             } else if (d2Error.errorCode() == D2ErrorCode.USER_ACCOUNT_DISABLED) {
                 wipeModule.wipeEverything();
                 throw d2Error;
-            } else if(d2Error.errorCode() == D2ErrorCode.UNEXPECTED ||
+            } else if (d2Error.errorCode() == D2ErrorCode.UNEXPECTED ||
                 d2Error.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR) {
                 throw noDHIS2Server();
-            }
-
-            else {
+            } else {
                 throw d2Error;
             }
         }

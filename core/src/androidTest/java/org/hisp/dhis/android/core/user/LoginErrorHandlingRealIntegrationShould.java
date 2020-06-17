@@ -43,6 +43,7 @@ import org.junit.Test;
 import java.io.IOException;
 
 import io.reactivex.observers.TestObserver;
+
 import static com.google.common.truth.Truth.assertThat;
 
 @Ignore("Tests with real servers. Depend on server state and network connection.")
@@ -59,14 +60,72 @@ public class LoginErrorHandlingRealIntegrationShould extends BaseRealIntegration
 
     @Test
     public void succeed_for_android_current() {
-        TestObserver<User> testObserver = d2.userModule().logIn(username, password, RealServerMother.android_current).test();
-        testObserver.awaitTerminalEvent();
-        testObserver.assertComplete();
+        assertSuccess(RealServerMother.android_current);
+    }
+
+    @Test
+    public void succeed_for_android_previous1() {
+        assertSuccess(RealServerMother.android_previous1);
+    }
+
+    @Test
+    public void succeed_for_android_previous2() {
+        assertSuccess(RealServerMother.android_previous2);
+    }
+
+    @Test
+    public void succeed_for_2_30() {
+        assertSuccess(RealServerMother.url2_30);
+    }
+
+    @Test
+    public void succeed_for_2_31() {
+        assertSuccess(RealServerMother.url2_31);
+    }
+
+    @Test
+    public void succeed_for_2_32() {
+        assertSuccess(RealServerMother.url2_32);
+    }
+
+    @Test
+    public void succeed_for_2_33() {
+        assertSuccess(RealServerMother.url2_33);
     }
 
     @Test
     public void fail_with_bad_credentials_for_android_current() {
         assertThatErrorCode(username, "wrong-pw", RealServerMother.android_current).isEqualTo(D2ErrorCode.BAD_CREDENTIALS);
+    }
+
+    @Test
+    public void fail_with_bad_credentials_for_android_previous1() {
+        assertThatErrorCode(username, "wrong-pw", RealServerMother.android_previous1).isEqualTo(D2ErrorCode.BAD_CREDENTIALS);
+    }
+
+    @Test
+    public void fail_with_bad_credentials_for_android_previous2() {
+        assertThatErrorCode(username, "wrong-pw", RealServerMother.android_previous2).isEqualTo(D2ErrorCode.BAD_CREDENTIALS);
+    }
+
+    @Test
+    public void fail_with_bad_credentials_for_2_30() {
+        assertThatErrorCode(username, "wrong-pw", RealServerMother.url2_30).isEqualTo(D2ErrorCode.BAD_CREDENTIALS);
+    }
+
+    @Test
+    public void fail_with_bad_credentials_for_2_31() {
+        assertThatErrorCode(username, "wrong-pw", RealServerMother.url2_31).isEqualTo(D2ErrorCode.BAD_CREDENTIALS);
+    }
+
+    @Test
+    public void fail_with_bad_credentials_for_2_32() {
+        assertThatErrorCode(username, "wrong-pw", RealServerMother.url2_32).isEqualTo(D2ErrorCode.BAD_CREDENTIALS);
+    }
+
+    @Test
+    public void fail_with_bad_credentials_for_2_33() {
+        assertThatErrorCode(username, "wrong-pw", RealServerMother.url2_33).isEqualTo(D2ErrorCode.BAD_CREDENTIALS);
     }
 
     @Test
@@ -125,6 +184,12 @@ public class LoginErrorHandlingRealIntegrationShould extends BaseRealIntegration
 
     private ComparableSubject<?, D2ErrorCode> assertThatErrorCode(String serverUrl) {
         return assertThatErrorCode(username, password, serverUrl);
+    }
+
+    private void assertSuccess(String serverUrl) {
+        TestObserver<User> testObserver = d2.userModule().logIn(username, password, serverUrl).test();
+        testObserver.awaitTerminalEvent();
+        testObserver.assertComplete();
     }
 
     private ComparableSubject<?, D2ErrorCode> assertThatErrorCode(String username, String password, String serverUrl) {

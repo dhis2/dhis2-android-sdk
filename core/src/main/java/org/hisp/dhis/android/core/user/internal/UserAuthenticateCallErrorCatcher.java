@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
+import android.util.Log;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher;
@@ -72,7 +74,7 @@ class UserAuthenticateCallErrorCatcher implements APICallErrorCatcher {
                 return D2ErrorCode.NO_DHIS2_SERVER;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(UserAuthenticateCallErrorCatcher.class.getSimpleName(), e.getClass().getSimpleName(), e);
             return D2ErrorCode.NO_DHIS2_SERVER;
         }
     }

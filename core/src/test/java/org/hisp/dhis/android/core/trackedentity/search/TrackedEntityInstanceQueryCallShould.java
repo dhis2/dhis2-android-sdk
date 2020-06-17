@@ -31,6 +31,7 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService;
@@ -150,8 +151,9 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
 
     @Test(expected = D2Error.class)
     public void throw_D2CallException_when_service_call_returns_failed_response() throws Exception {
-        when(apiCallExecutor.executeObjectCallWithErrorCatcher(eq(searchGridCall), any()))
-                .thenThrow(d2Error);
+        when(apiCallExecutor.executeObjectCallWithErrorCatcher(eq(searchGridCall), any())).thenThrow(d2Error);
+        when(d2Error.errorCode()).thenReturn(D2ErrorCode.MAX_TEI_COUNT_REACHED);
+
         call.call();
     }
 

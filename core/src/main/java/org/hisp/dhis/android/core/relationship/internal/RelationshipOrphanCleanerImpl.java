@@ -17,7 +17,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * DISCLAIMED. IN NO O SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
@@ -29,52 +29,46 @@
 package org.hisp.dhis.android.core.relationship.internal;
 
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.relationship.BaseRelationship;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
-import org.hisp.dhis.android.core.relationship.RelationshipHelper;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.relationship.RelationshipItem;
 
 import java.util.Collection;
 import java.util.List;
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-
 import static org.hisp.dhis.android.core.relationship.RelationshipHelper.areItemsEqual;
 
-@Reusable
-public class RelationshipOrphanCleanerImpl implements OrphanCleaner<TrackedEntityInstance, Relationship229Compatible> {
+abstract class RelationshipOrphanCleanerImpl<O extends ObjectWithUidInterface, R extends BaseRelationship>
+        implements OrphanCleaner<O, R> {
 
     private final RelationshipStore relationshipStore;
     private final RelationshipCollectionRepository relationshipRepository;
-    private final RelationshipDHISVersionManager relationshipDHISVersionManager;
 
-    @Inject
     RelationshipOrphanCleanerImpl(RelationshipStore relationshipStore,
-                                  RelationshipCollectionRepository relationshipRepository,
-                                  RelationshipDHISVersionManager relationshipDHISVersionManager) {
+                                  RelationshipCollectionRepository relationshipRepository) {
         this.relationshipStore = relationshipStore;
         this.relationshipRepository = relationshipRepository;
-        this.relationshipDHISVersionManager = relationshipDHISVersionManager;
     }
 
-    public boolean deleteOrphan(TrackedEntityInstance instance, Collection<Relationship229Compatible> relationships) {
+    abstract RelationshipItem getItem(String uid);
+
+    abstract Collection<Relationship> relationships(Collection<R> relationships);
+
+    public boolean deleteOrphan(O instance, Collection<R> relationships) {
         if (instance == null || relationships == null) {
             return false;
         }
 
-        Collection<Relationship> teiRelationships =
-                relationshipDHISVersionManager.from229Compatible(relationships);
-
         List<Relationship> existingRelationships =
-                relationshipRepository.getByItem(RelationshipHelper.teiItem(instance.uid()), true);
+                relationshipRepository.getByItem(getItem(instance.uid()), true);
 
         int count = 0;
         for (Relationship existingRelationship : existingRelationships) {
             if (isSynced(existingRelationship.state()) &&
-                    !isInRelationshipList(existingRelationship, teiRelationships)) {
+                    !isInRelationshipList(existingRelationship, relationships(relationships))) {
                 relationshipStore.delete(existingRelationship.uid());
                 count++;
             }

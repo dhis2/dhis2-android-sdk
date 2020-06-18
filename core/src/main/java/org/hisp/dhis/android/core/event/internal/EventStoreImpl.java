@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinde
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStoreImpl;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper;
+import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
@@ -158,6 +159,16 @@ public final class EventStoreImpl extends IdentifiableDeletableDataObjectStoreIm
                 "ON a." + IdentifiableColumns.UID + " = b." + Columns.ENROLLMENT;
 
         return processCount(databaseAdapter.rawQuery(query));
+    }
+
+    @Override
+    public List<String> queryMissingRelationshipsUids() {
+        String whereRelationshipsClause = new WhereClauseBuilder()
+                .appendKeyStringValue(DataColumns.STATE, State.RELATIONSHIP)
+                .appendIsNullValue(EventTableInfo.Columns.ORGANISATION_UNIT)
+                .build();
+
+        return selectUidsWhere(whereRelationshipsClause);
     }
 
     private List<Event> eventListFromQuery(String query) {

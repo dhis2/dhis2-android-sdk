@@ -49,4 +49,6 @@ public interface EventStore extends IdentifiableDeletableDataObjectStore<Event> 
     Integer countEventsForEnrollment(String enrollmentUid, Boolean includeDeleted);
 
     int countTeisWhereEvents(String whereClause);
+
+    List<String> queryMissingRelationshipsUids();
 }

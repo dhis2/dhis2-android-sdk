@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.imports.internal.EventWebResponse;
 
+import io.reactivex.Single;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -73,6 +74,11 @@ interface EventService {
 
     @GET(EVENTS + "/{" + EVENT_UID + "}")
     Call<Event> getEvent(
+            @Path(EVENT_UID) String eventUid,
+            @Query(FIELDS) @Which Fields<Event> fields);
+
+    @GET(EVENTS + "/{" + EVENT_UID + "}")
+    Single<Event> getEventSingle(
             @Path(EVENT_UID) String eventUid,
             @Query(FIELDS) @Which Fields<Event> fields);
 }

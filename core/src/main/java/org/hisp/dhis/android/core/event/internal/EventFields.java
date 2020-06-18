@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.event.internal;
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Property;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.Geometry;
@@ -40,6 +41,10 @@ import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipFields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueFields;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.hisp.dhis.android.core.event.EventTableInfo.Columns;
 
@@ -56,27 +61,37 @@ public final class EventFields {
     private static FieldsHelper<Event> fh = new FieldsHelper<>();
 
     public static final Fields<Event> allFields = Fields.<Event>builder()
-            .fields(fh.<String>field(UID),
-                    fh.<String>field(Columns.ENROLLMENT),
-                    fh.<String>field(Columns.CREATED),
-                    fh.<String>field(Columns.LAST_UPDATED),
-                    fh.<EventStatus>field(Columns.STATUS),
-                    fh.<Coordinates>field(COORDINATE),
-                    fh.<Geometry>field(GEOMETRY),
-                    fh.<String>field(Columns.PROGRAM),
-                    fh.<String>field(Columns.PROGRAM_STAGE),
-                    fh.<String>field(ORGANISATION_UNIT),
-                    fh.<String>field(Columns.EVENT_DATE),
-                    fh.<String>field(Columns.COMPLETE_DATE),
-                    fh.<Boolean>field(Columns.DELETED),
-                    fh.<String>field(Columns.DUE_DATE),
-                    fh.<String>field(Columns.ATTRIBUTE_OPTION_COMBO),
-                    fh.<String>field(Columns.ASSIGNED_USER),
+            .fields(getCommonFields())
+            .fields(
                     fh.<Note>nestedField(NOTES).with(NoteFields.all),
                     fh.<Relationship>nestedField(RELATIONSHIPS).with(RelationshipFields.allNewModelFields),
                     fh.<TrackedEntityDataValue>nestedField(TRACKED_ENTITY_DATA_VALUES)
                             .with(TrackedEntityDataValueFields.allFields)
-    ).build();
+            ).build();
+
+    public static final Fields<Event> asRelationshipFields = Fields.<Event>builder()
+            .fields(getCommonFields()).build();
+
+    private static List<Property<Event, ?>> getCommonFields() {
+        return new ArrayList<>(Arrays.asList(
+                fh.<String>field(UID),
+                fh.<String>field(Columns.ENROLLMENT),
+                fh.<String>field(Columns.CREATED),
+                fh.<String>field(Columns.LAST_UPDATED),
+                fh.<EventStatus>field(Columns.STATUS),
+                fh.<Coordinates>field(COORDINATE),
+                fh.<Geometry>field(GEOMETRY),
+                fh.<String>field(Columns.PROGRAM),
+                fh.<String>field(Columns.PROGRAM_STAGE),
+                fh.<String>field(ORGANISATION_UNIT),
+                fh.<String>field(Columns.EVENT_DATE),
+                fh.<String>field(Columns.COMPLETE_DATE),
+                fh.<Boolean>field(Columns.DELETED),
+                fh.<String>field(Columns.DUE_DATE),
+                fh.<String>field(Columns.ATTRIBUTE_OPTION_COMBO),
+                fh.<String>field(Columns.ASSIGNED_USER)
+        ));
+    }
 
     private EventFields() {}
 

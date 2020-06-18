@@ -1,7 +1,5 @@
-package org.hisp.dhis.android.core.parser.expression.operator;
-
 /*
- * Copyright (c) 2004-2020, University of Oslo
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,43 +26,42 @@ package org.hisp.dhis.android.core.parser.expression.operator;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
-import org.hisp.dhis.antlr.AntlrExpressionVisitor;
-import org.hisp.dhis.antlr.operator.AntlrOperatorLogicalAnd;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
+package org.hisp.dhis.android.core.program.programindicatorengine.parser;
 
-/**
- * Logical operator: And
- * <pre>
- *
- * Truth table (same as for SQL):
- *
- *       A      B    A and B
- *     -----  -----  -------
- *     null   null    null
- *     null   false   null
- *     null   true    null
- *
- *     false  null    false
- *     false  false   false
- *     false  true    false
- *
- *     true   null    null
- *     true   false   false
- *     true   true    true
- * </pre>
- *
- * @author Jim Grace
- */
-public class OperatorLogicalAnd
-        extends AntlrOperatorLogicalAnd
-        implements ExpressionItem {
-    @Override
-    public Object evaluateAllPaths(ExprContext ctx, CommonExpressionVisitor visitor) {
-        Boolean value0 = visitor.castBooleanVisit(ctx.expr(0));
-        Boolean value1 = visitor.castBooleanVisit(ctx.expr(1));
+import com.google.auto.value.AutoValue;
 
-        return value0 != null && value0 && value1 != null && value1;
+import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.program.ProgramIndicator;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
+
+import java.util.List;
+import java.util.Map;
+
+@AutoValue
+public abstract class ProgramIndicatorContext {
+
+    public abstract ProgramIndicator programIndicator();
+
+    public abstract Map<String, TrackedEntityAttributeValue> attributeValues();
+
+    public abstract Map<String, List<Event>> events();
+
+    public abstract String enrollmentUid();
+
+    public static Builder builder() {
+        return new Autovalue_ProgramIndicatorContext.Builder();
+    }
+
+    @AutoValue.Builder
+    public static abstract class Builder {
+        public abstract Builder programIndicator(ProgramIndicator programIndicator);
+
+        public abstract Builder attributeValues(Map<String, TrackedEntityAttributeValue> attributeValues);
+
+        public abstract Builder events(Map<String, List<Event>> events);
+
+        public abstract Builder enrollmentUid(String enrollmentUid);
+
+        public abstract ProgramIndicatorContext build();
     }
 }

@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.validation.engine.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.constant.Constant;
 import org.hisp.dhis.android.core.constant.ConstantCollectionRepository;
 import org.hisp.dhis.android.core.dataset.DataSet;
@@ -168,11 +169,7 @@ class ValidationEngineImpl implements ValidationEngine {
 
     private Map<String, Constant> getConstantMap() {
         List<Constant> constants = constantRepository.blockingGet();
-        Map<String, Constant> constantMap = new HashMap<>();
-        for (Constant constant : constants) {
-            constantMap.put(constant.uid(), constant);
-        }
-        return constantMap;
+        return UidsHelper.mapByUid(constants);
     }
 
     private OrganisationUnit getOrganisationUnit(String orgunitId) {

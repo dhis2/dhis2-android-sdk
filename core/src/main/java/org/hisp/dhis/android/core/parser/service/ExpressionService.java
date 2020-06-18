@@ -41,9 +41,6 @@ import org.hisp.dhis.android.core.parser.expression.ExpressionItemMethod;
 import org.hisp.dhis.android.core.parser.expression.literal.RegenerateLiteral;
 import org.hisp.dhis.android.core.parser.service.dataitem.DimItemDataElementAndOperand;
 import org.hisp.dhis.android.core.parser.service.dataitem.DimensionalItemId;
-import org.hisp.dhis.android.core.parser.service.dataitem.ItemConstant;
-import org.hisp.dhis.android.core.parser.service.dataitem.ItemDays;
-import org.hisp.dhis.android.core.parser.service.dataitem.ItemOrgUnitGroup;
 import org.hisp.dhis.android.core.parser.service.dataobject.DimensionalItemObject;
 import org.hisp.dhis.android.core.validation.MissingValueStrategy;
 import org.hisp.dhis.antlr.Parser;
@@ -62,10 +59,7 @@ import static org.hisp.dhis.android.core.parser.expression.ParserUtils.ITEM_GET_
 import static org.hisp.dhis.android.core.parser.expression.ParserUtils.ITEM_GET_IDS;
 import static org.hisp.dhis.android.core.parser.expression.ParserUtils.ITEM_REGENERATE;
 import static org.hisp.dhis.android.core.validation.MissingValueStrategy.NEVER_SKIP;
-import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.C_BRACE;
-import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.DAYS;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.HASH_BRACE;
-import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.OUG_BRACE;
 
 @SuppressWarnings({
         "PMD.TooManyStaticImports",
@@ -87,16 +81,14 @@ public class ExpressionService {
         this.dataElementStore = dataElementStore;
         this.categoryOptionComboStore = categoryOptionComboStore;
         this.organisationUnitGroupStore = organisationUnitGroupStore;
-        this.validationRuleExpressionItems = getExpressionItems();
+        this.validationRuleExpressionItems = getValidationRuleExpressionItems();
     }
 
-    private Map<Integer, ExpressionItem> getExpressionItems() {
+    private Map<Integer, ExpressionItem> getValidationRuleExpressionItems() {
         Map<Integer, ExpressionItem> expressionItems = new HashMap<>(COMMON_EXPRESSION_ITEMS);
 
         expressionItems.put(HASH_BRACE, new DimItemDataElementAndOperand());
-        expressionItems.put(OUG_BRACE, new ItemOrgUnitGroup());
-        expressionItems.put(DAYS, new ItemDays());
-        expressionItems.put(C_BRACE, new ItemConstant());
+
         return expressionItems;
     }
 

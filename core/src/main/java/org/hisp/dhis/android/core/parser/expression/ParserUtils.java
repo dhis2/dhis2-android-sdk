@@ -50,12 +50,17 @@ import org.hisp.dhis.android.core.parser.expression.operator.OperatorMathModulus
 import org.hisp.dhis.android.core.parser.expression.operator.OperatorMathMultiply;
 import org.hisp.dhis.android.core.parser.expression.operator.OperatorMathPlus;
 import org.hisp.dhis.android.core.parser.expression.operator.OperatorMathPower;
+import org.hisp.dhis.android.core.parser.service.dataitem.ItemConstant;
+import org.hisp.dhis.android.core.parser.service.dataitem.ItemDays;
+import org.hisp.dhis.android.core.parser.service.dataitem.ItemOrgUnitGroup;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.AMPERSAND_2;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.AND;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.C_BRACE;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.DAYS;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.DIV;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.EQ;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.EXCLAMATION_POINT;
@@ -75,6 +80,7 @@ import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.MUL;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.NE;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.NOT;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.OR;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.OUG_BRACE;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.PAREN;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.PLUS;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.POWER;
@@ -138,6 +144,12 @@ public final class ParserUtils {
         m.put(IS_NOT_NULL, new FunctionIsNotNull());
         m.put(IS_NULL, new FunctionIsNull());
         m.put(LEAST, new FunctionLeast());
+
+        // Common variables
+
+        m.put(OUG_BRACE, new ItemOrgUnitGroup());
+        m.put(DAYS, new ItemDays());
+        m.put(C_BRACE, new ItemConstant());
 
         COMMON_EXPRESSION_ITEMS = m;
     }

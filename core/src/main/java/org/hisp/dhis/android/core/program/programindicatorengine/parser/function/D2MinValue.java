@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.parser.expression.operator;
+package org.hisp.dhis.android.core.program.programindicatorengine.parser.function;
 
 /*
  * Copyright (c) 2004-2020, University of Oslo
@@ -28,43 +28,8 @@ package org.hisp.dhis.android.core.parser.expression.operator;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
 import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
-import org.hisp.dhis.antlr.AntlrExpressionVisitor;
-import org.hisp.dhis.antlr.operator.AntlrOperatorLogicalAnd;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
 
-/**
- * Logical operator: And
- * <pre>
- *
- * Truth table (same as for SQL):
- *
- *       A      B    A and B
- *     -----  -----  -------
- *     null   null    null
- *     null   false   null
- *     null   true    null
- *
- *     false  null    false
- *     false  false   false
- *     false  true    false
- *
- *     true   null    null
- *     true   false   false
- *     true   true    true
- * </pre>
- *
- * @author Jim Grace
- */
-public class OperatorLogicalAnd
-        extends AntlrOperatorLogicalAnd
+public class D2MinValue
         implements ExpressionItem {
-    @Override
-    public Object evaluateAllPaths(ExprContext ctx, CommonExpressionVisitor visitor) {
-        Boolean value0 = visitor.castBooleanVisit(ctx.expr(0));
-        Boolean value1 = visitor.castBooleanVisit(ctx.expr(1));
-
-        return value0 != null && value0 && value1 != null && value1;
-    }
 }

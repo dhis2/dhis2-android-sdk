@@ -34,11 +34,14 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.apache.commons.lang3.Validate;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 import org.hisp.dhis.android.core.constant.Constant;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.android.core.parser.service.dataitem.DimensionalItemId;
+import org.hisp.dhis.android.core.program.programindicatorengine.parser.ProgramIndicatorContext;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.antlr.AntlrExpressionVisitor;
 import org.hisp.dhis.antlr.ParserExceptionWithoutContext;
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
@@ -128,12 +131,22 @@ public class CommonExpressionVisitor
     public static final double DEFAULT_DOUBLE_VALUE = 1d;
 
 
+    // Program indicators
+
+    public ProgramIndicatorContext programIndicatorContext;
+
+
     // -------------------------------------------------------------------------
     // Constructors
     // -------------------------------------------------------------------------
 
     protected CommonExpressionVisitor() {
         // This constructor is intentionally empty.
+    }
+
+    protected CommonExpressionVisitor(ExpressionItemMethod itemMethod, Map<Integer, ExpressionItem> itemMap) {
+        this.itemMethod = itemMethod;
+        this.itemMap = itemMap;
     }
 
     /**
@@ -260,14 +273,6 @@ public class CommonExpressionVisitor
         return constantMap;
     }
 
-    public boolean getReplaceNulls() {
-        return replaceNulls;
-    }
-
-    public void setReplaceNulls(boolean replaceNulls) {
-        this.replaceNulls = replaceNulls;
-    }
-
     public Set<DimensionalItemId> getItemIds() {
         return itemIds;
     }
@@ -352,6 +357,11 @@ public class CommonExpressionVisitor
             return this;
         }
 
+        public Builder withProgramIndicatorContext(ProgramIndicatorContext programIndicatorContext) {
+            this.visitor.programIndicatorContext = programIndicatorContext;
+            return this;
+        }
+
         private CommonExpressionVisitor validateCommonProperties() {
             Validate.notNull(this.visitor.constantMap, "Missing required property 'constantMap'");
             Validate.notNull(this.visitor.itemMap, "Missing required property 'itemMap'");
@@ -366,6 +376,13 @@ public class CommonExpressionVisitor
                     "'categoryOptionComboStore'");
             Validate.notNull(this.visitor.organisationUnitGroupStore, "Missing required property " +
                     "'organisationUnitGroupStore'");
+
+            return validateCommonProperties();
+        }
+
+        public CommonExpressionVisitor buildForProgramIndicator() {
+            Validate.notNull(this.visitor.programIndicatorContext, "Missing required property " +
+                    "'programIndicatorContext'");
 
             return validateCommonProperties();
         }

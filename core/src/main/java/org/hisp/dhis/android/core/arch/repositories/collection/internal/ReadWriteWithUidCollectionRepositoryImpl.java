@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
@@ -47,19 +47,17 @@ import io.reactivex.Single;
 
 public abstract class ReadWriteWithUidCollectionRepositoryImpl
         <M extends CoreObject & ObjectWithUidInterface, P, R extends ReadOnlyCollectionRepository<M>>
-        extends ReadOnlyCollectionRepositoryImpl<M, R>
+        extends BaseReadOnlyWithUidCollectionRepositoryImpl<M, R>
         implements ReadWriteWithUidCollectionRepository<M, P> {
 
-    protected final ObjectStore<M> store;
     protected final Transformer<P, M> transformer;
 
-    public ReadWriteWithUidCollectionRepositoryImpl(ObjectStore<M> store,
+    public ReadWriteWithUidCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
                                                     Map<String, ChildrenAppender<M>> childrenAppenders,
                                                     RepositoryScope scope,
                                                     Transformer<P, M> transformer,
                                                     FilterConnectorFactory<R> cf) {
         super(store, childrenAppenders, scope, cf);
-        this.store = store;
         this.transformer = transformer;
     }
 

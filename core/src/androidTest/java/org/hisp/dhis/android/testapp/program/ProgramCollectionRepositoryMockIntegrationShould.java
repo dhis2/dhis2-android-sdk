@@ -56,11 +56,30 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     }
 
     @Test
+    public void find_uids() {
+        List<String> programUids = d2.programModule().programs()
+                .blockingGetUids();
+        assertThat(programUids.size(), is(2));
+        assertThat(programUids.contains("IpHINAT79UW"), is(true));
+        assertThat(programUids.contains("lxAQ7Zs9VYR"), is(true));
+    }
+
+    @Test
     public void filter_by_version() {
         List<Program> programs = d2.programModule().programs()
                 .byVersion().eq(3)
                 .blockingGet();
         assertThat(programs.size(), is(1));
+    }
+
+    @Test
+    public void find_uids_with_filter_by_version() {
+        List<String> programUids = d2.programModule().programs()
+                .byVersion().eq(3)
+                .blockingGetUids();
+        assertThat(programUids.size(), is(1));
+        assertThat(programUids.contains("IpHINAT79UW"), is(false));
+        assertThat(programUids.contains("lxAQ7Zs9VYR"), is(true));
     }
 
     @Test

@@ -26,7 +26,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.dataset.internal;
+
+import android.database.Cursor;
 
 import androidx.annotation.NonNull;
 
@@ -57,11 +59,16 @@ public abstract class DataSetAggregatedDataSync extends BaseObject {
     public abstract Integer dataElementsHash();
 
     @NonNull
-    public abstract Integer organisationUnitHash();
+    public abstract Integer organisationUnitsHash();
 
     @NonNull
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
+
+    @NonNull
+    public static DataSetAggregatedDataSync create(Cursor cursor) {
+        return AutoValue_DataSetAggregatedDataSync.createFromCursor(cursor);
+    }
 
     public static Builder builder() {
         return new AutoValue_DataSetAggregatedDataSync.Builder();
@@ -81,7 +88,7 @@ public abstract class DataSetAggregatedDataSync extends BaseObject {
 
         public abstract Builder dataElementsHash(Integer dataElementsHash);
 
-        public abstract Builder organisationUnitHash(Integer organisationUnitHash);
+        public abstract Builder organisationUnitsHash(Integer organisationUnitHash);
 
         public abstract Builder lastUpdated(Date lastUpdated);
 

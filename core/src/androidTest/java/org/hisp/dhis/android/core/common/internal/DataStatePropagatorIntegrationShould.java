@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.common.internal;
 
 import androidx.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
@@ -41,6 +42,7 @@ import org.hisp.dhis.android.core.event.internal.EventStore;
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl;
@@ -50,9 +52,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.util.Date;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
 @RunWith(AndroidJUnit4.class)
 public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -141,6 +146,38 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
         trackedEntityInstanceStore.delete(teiUid);
     }
 
+    @Test
+    public void propagate_last_updated_if_previous_is_older() throws D2Error, ParseException {
+        Date oldDate = BaseIdentifiableObject.DATE_FORMAT.parse("1990-09-20T08:36:46.552");
+        String teiUid = createTEIWithLastUpdated(oldDate);
+
+        propagator.propagateEnrollmentUpdate(Enrollment.builder().uid("uid").trackedEntityInstance(teiUid).build());
+
+        assertThat(trackedEntityInstanceStore.selectByUid(teiUid).lastUpdated()).isAfter(oldDate);
+        trackedEntityInstanceStore.delete(teiUid);
+    }
+
+    @Test
+    public void do_not_propagate_last_updated_if_previous_is_newer() throws D2Error, ParseException {
+        Date newerDate = BaseIdentifiableObject.DATE_FORMAT.parse("2990-09-20T08:36:46.552");
+        String teiUid = createTEIWithLastUpdated(newerDate);
+
+        propagator.propagateEnrollmentUpdate(Enrollment.builder().uid("uid").trackedEntityInstance(teiUid).build());
+
+        assertThat(trackedEntityInstanceStore.selectByUid(teiUid).lastUpdated()).isEqualTo(newerDate);
+        trackedEntityInstanceStore.delete(teiUid);
+    }
+
+    @Test
+    public void propagate_last_updated_if_previous_is_null() throws D2Error {
+        String teiUid = createTEIWithLastUpdated(null);
+
+        propagator.propagateEnrollmentUpdate(Enrollment.builder().uid("uid").trackedEntityInstance(teiUid).build());
+
+        assertThat(trackedEntityInstanceStore.selectByUid(teiUid).lastUpdated()).isNotNull();
+        trackedEntityInstanceStore.delete(teiUid);
+    }
+
     private void assertThatSetTeiToUpdateWhenEnrollmentPropagation(State state) throws D2Error {
         String teiUid = d2.trackedEntityModule().trackedEntityInstances().blockingAdd(sampleTEIProjection());
         trackedEntityInstanceStore.setState(teiUid, state);
@@ -222,6 +259,15 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
         assertThat(enrollmentStore.selectByUid(enrolmentUid).state(), is(state));
         assertThat(eventStore.selectByUid(eventUid).state(), is(state));
         trackedEntityInstanceStore.delete(teiUid);
+    }
+
+    private String createTEIWithLastUpdated(Date lastUpdated) throws D2Error {
+        String teiUid = d2.trackedEntityModule().trackedEntityInstances().blockingAdd(sampleTEIProjection());
+
+        TrackedEntityInstance existingTEI = trackedEntityInstanceStore.selectByUid(teiUid);
+        trackedEntityInstanceStore.update(existingTEI.toBuilder().lastUpdated(lastUpdated).build());
+
+        return teiUid;
     }
 
     private TrackedEntityInstanceCreateProjection sampleTEIProjection() {

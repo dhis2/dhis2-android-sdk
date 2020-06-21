@@ -31,21 +31,24 @@ package org.hisp.dhis.android.core.arch.db.stores.internal;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.DataObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
 
+import java.util.Date;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-
 import static org.hisp.dhis.android.core.common.DataColumns.STATE;
+import static org.hisp.dhis.android.core.common.IdentifiableColumns.LAST_UPDATED;
 import static org.hisp.dhis.android.core.common.IdentifiableColumns.UID;
 
 public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & DataObject>
@@ -85,7 +88,8 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
                     "when " + STATE + EQ + "'" + State.TO_POST + "' then '" + State.TO_POST + "' " +
                     "when " + STATE + NE + "'" + State.TO_POST + "'" + AND +
                     STATE + NE + "'" + State.RELATIONSHIP + "' then '" + State.TO_UPDATE + "'" +
-                    " END)" +
+                    " END), " +
+                    LAST_UPDATED + " = IFNULL(MAX(?," + LAST_UPDATED + "), ?)" +
                     " where " +
                     UID + " =? ;";
             this.setStateForUpdateStatement = databaseAdapter.compileStatement(setStateForUpdate);
@@ -138,8 +142,12 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
 
     @Override
     public int setStateForUpdate(@NonNull String uid) {
+        String currentDate = BaseIdentifiableObject.DATE_FORMAT.format(new Date());
+
         compileStatements();
-        setStateForUpdateStatement.bind(1, uid);
+        setStateForUpdateStatement.bind(1, currentDate);
+        setStateForUpdateStatement.bind(2, currentDate);
+        setStateForUpdateStatement.bind(3, uid);
 
         int updatedRow = databaseAdapter.executeUpdateDelete(setStateForUpdateStatement);
         setStateForUpdateStatement.clearBindings();

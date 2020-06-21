@@ -219,6 +219,7 @@ dependencies {
     // Android test dependencies
     androidTestImplementation "commons-logging:commons-logging:1.2"
     androidTestImplementation "org.mockito:mockito-core:${libraries.mockito}"
+    androidTestImplementation "org.assertj:assertj-core:${libraries.assertj}"
     androidTestImplementation "android.arch.core:core-testing:${libraries.coretesting}"
     androidTestImplementation "com.jraska.livedata:testing:${libraries.livedatatesting}"
     androidTestImplementation "androidx.test:runner:${libraries.testrunner}"

@@ -39,8 +39,10 @@ import org.hisp.dhis.android.core.event.internal.EventStore;
 import org.hisp.dhis.android.core.note.Note;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -72,15 +74,15 @@ public final class DataStatePropagatorImpl implements DataStatePropagator {
     public void propagateEventUpdate(Event event) {
         if (event.enrollment() != null) {
             Enrollment enrollment = enrollmentStore.selectByUid(event.enrollment());
-            enrollmentStore.setStateForUpdate(enrollment.uid());
-            setTeiStateForUpdate(enrollment.trackedEntityInstance());
+            setEnrollmentStateForUpdate(enrollment.uid());
+            propagateEnrollmentUpdate(enrollment);
         }
     }
 
     @Override
     public void propagateTrackedEntityDataValueUpdate(TrackedEntityDataValue dataValue) {
         Event event = eventStore.selectByUid(dataValue.event());
-        eventStore.setStateForUpdate(event.uid());
+        setEventStateForUpdate(event.uid());
         propagateEventUpdate(event);
     }
 
@@ -93,17 +95,49 @@ public final class DataStatePropagatorImpl implements DataStatePropagator {
     public void propagateNoteCreation(Note note) {
         if (note.noteType() == Note.NoteType.ENROLLMENT_NOTE) {
             Enrollment enrollment = enrollmentStore.selectByUid(note.enrollment());
-            enrollmentStore.setStateForUpdate(enrollment.uid());
-            setTeiStateForUpdate(enrollment.trackedEntityInstance());
+            setEnrollmentStateForUpdate(enrollment.uid());
+            propagateEnrollmentUpdate(enrollment);
         } else if (note.noteType() == Note.NoteType.EVENT_NOTE) {
             Event event = eventStore.selectByUid(note.event());
-            eventStore.setStateForUpdate(event.uid());
+            setEventStateForUpdate(event.uid());
             propagateEventUpdate(event);
         }
     }
 
     private void setTeiStateForUpdate(String trackedEntityInstanceUid) {
-        trackedEntityInstanceStore.setStateForUpdate(trackedEntityInstanceUid);
+        TrackedEntityInstance instance = trackedEntityInstanceStore.selectByUid(trackedEntityInstanceUid);
+        if (instance != null) {
+            Date now = new Date();
+            trackedEntityInstanceStore.update(instance.toBuilder()
+                    .state(getStateForUpdate(instance.state()))
+                    .lastUpdated(getMaxDate(instance.lastUpdated(), now))
+                    .lastUpdatedAtClient(getMaxDate(instance.lastUpdatedAtClient(), now))
+                    .build());
+        }
+    }
+
+    private void setEventStateForUpdate(String eventUid) {
+        Event event = eventStore.selectByUid(eventUid);
+        if (event != null) {
+            Date now = new Date();
+            eventStore.update(event.toBuilder()
+                    .state(getStateForUpdate(event.state()))
+                    .lastUpdated(getMaxDate(event.lastUpdated(), now))
+                    .lastUpdatedAtClient(getMaxDate(event.lastUpdatedAtClient(), now))
+                    .build());
+        }
+    }
+
+    private void setEnrollmentStateForUpdate(String enrollmentUid) {
+        Enrollment enrollment = enrollmentStore.selectByUid(enrollmentUid);
+        if (enrollment != null) {
+            Date now = new Date();
+            enrollmentStore.update(enrollment.toBuilder()
+                    .state(getStateForUpdate(enrollment.state()))
+                    .lastUpdated(getMaxDate(enrollment.lastUpdated(), now))
+                    .lastUpdatedAtClient(getMaxDate(enrollment.lastUpdatedAtClient(), now))
+                    .build());
+        }
     }
 
     public void resetUploadingEnrollmentAndEventStates(String trackedEntityInstanceUid) {
@@ -138,6 +172,24 @@ public final class DataStatePropagatorImpl implements DataStatePropagator {
             if (State.UPLOADING.equals(event.state())) {
                 eventStore.setState(event.uid(), State.TO_UPDATE);
             }
+        }
+    }
+
+    private Date getMaxDate(Date existing, Date today) {
+        if (existing == null) {
+            return today;
+        } else if (today == null || existing.after(today)) {
+            return existing;
+        } else {
+            return today;
+        }
+    }
+
+    private State getStateForUpdate(State existingState) {
+        if (State.TO_POST.equals(existingState) || State.RELATIONSHIP.equals(existingState)) {
+            return existingState;
+        } else {
+            return State.TO_UPDATE;
         }
     }
 }

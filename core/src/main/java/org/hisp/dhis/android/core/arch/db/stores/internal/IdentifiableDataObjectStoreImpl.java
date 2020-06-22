@@ -88,8 +88,7 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
                     "when " + STATE + EQ + "'" + State.TO_POST + "' then '" + State.TO_POST + "' " +
                     "when " + STATE + NE + "'" + State.TO_POST + "'" + AND +
                     STATE + NE + "'" + State.RELATIONSHIP + "' then '" + State.TO_UPDATE + "'" +
-                    " END), " +
-                    LAST_UPDATED + " = IFNULL(MAX(?," + LAST_UPDATED + "), ?)" +
+                    " END)" +
                     " where " +
                     UID + " =? ;";
             this.setStateForUpdateStatement = databaseAdapter.compileStatement(setStateForUpdate);
@@ -142,12 +141,8 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
 
     @Override
     public int setStateForUpdate(@NonNull String uid) {
-        String currentDate = BaseIdentifiableObject.DATE_FORMAT.format(new Date());
-
         compileStatements();
-        setStateForUpdateStatement.bind(1, currentDate);
-        setStateForUpdateStatement.bind(2, currentDate);
-        setStateForUpdateStatement.bind(3, uid);
+        setStateForUpdateStatement.bind(1, uid);
 
         int updatedRow = databaseAdapter.executeUpdateDelete(setStateForUpdateStatement);
         setStateForUpdateStatement.clearBindings();

@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection.internal;
 
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
@@ -73,7 +74,7 @@ public abstract class BaseReadOnlyWithUidCollectionRepositoryImpl<M extends Core
      * @return List of uids
      */
     public List<String> blockingGetUids() {
-        return store.selectUidsWhere(getWhereClause());
-
+        return store.selectUidsWhere(getWhereClause(), OrderByClauseBuilder.orderByFromItems(
+                scope.orderBy(), scope.pagingKey()));
     }
 }

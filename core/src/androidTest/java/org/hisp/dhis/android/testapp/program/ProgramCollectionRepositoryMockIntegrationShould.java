@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.testapp.program;
 
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.period.PeriodType;
@@ -62,6 +63,26 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
         assertThat(programUids.size(), is(2));
         assertThat(programUids.contains("IpHINAT79UW"), is(true));
         assertThat(programUids.contains("lxAQ7Zs9VYR"), is(true));
+    }
+
+    @Test
+    public void find_uids_order_by_name_asc() {
+        List<String> programUids = d2.programModule().programs()
+                .orderByName(RepositoryScope.OrderByDirection.ASC)
+                .blockingGetUids();
+        assertThat(programUids.size(), is(2));
+        assertThat(programUids.get(0), is("lxAQ7Zs9VYR"));
+        assertThat(programUids.get(1), is("IpHINAT79UW"));
+    }
+
+    @Test
+    public void find_uids_order_by_name_desc() {
+        List<String> programUids = d2.programModule().programs()
+                .orderByName(RepositoryScope.OrderByDirection.DESC)
+                .blockingGetUids();
+        assertThat(programUids.size(), is(2));
+        assertThat(programUids.get(0), is("IpHINAT79UW"));
+        assertThat(programUids.get(1), is("lxAQ7Zs9VYR"));
     }
 
     @Test

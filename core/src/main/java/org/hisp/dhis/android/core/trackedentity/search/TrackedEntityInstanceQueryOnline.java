@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
 import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
 import org.hisp.dhis.android.core.common.AssignedUserMode;
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 
 import java.util.ArrayList;
@@ -74,6 +75,9 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
 
     @Nullable
     abstract Date programEndDate();
+
+    @Nullable
+    abstract EnrollmentStatus programStatus();
 
     @Nullable
     abstract String trackedEntityType();
@@ -117,6 +121,7 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
                 .program(scope.program())
                 .programStartDate(scope.programStartDate())
                 .programEndDate(scope.programEndDate())
+                .programStatus(scope.programStatus())
                 .trackedEntityType(scope.trackedEntityType())
                 .includeDeleted(false)
                 .assignedUserMode(scope.assignedUserMode())
@@ -172,6 +177,8 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
         abstract Builder programStartDate(Date programStartDate);
 
         abstract Builder programEndDate(Date programEndDate);
+
+        abstract Builder programStatus(EnrollmentStatus programStatus);
 
         abstract Builder trackedEntityType(String trackedEntityType);
 

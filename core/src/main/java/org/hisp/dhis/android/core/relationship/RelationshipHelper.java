@@ -50,6 +50,15 @@ public final class RelationshipHelper {
         ).build();
     }
 
+    public static RelationshipItem enrollmentItem(String uid) {
+        return RelationshipItem.builder().enrollment(
+                RelationshipItemEnrollment
+                        .builder()
+                        .enrollment(uid)
+                        .build()
+        ).build();
+    }
+
     public static RelationshipItem eventItem(String uid) {
         return RelationshipItem.builder().event(
                 RelationshipItemEvent

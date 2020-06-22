@@ -41,6 +41,8 @@ import org.hisp.dhis.android.core.event.EventCreateProjection;
 import org.hisp.dhis.android.core.event.internal.EventStore;
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.relationship.RelationshipHelper;
+import org.hisp.dhis.android.core.relationship.RelationshipItem;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection;
@@ -178,9 +180,44 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
         trackedEntityInstanceStore.delete(teiUid);
     }
 
+    @Test
+    public void propagate_tei_relationship_update() throws D2Error {
+        String teiUid = createTEIWithState(State.SYNCED);
+        RelationshipItem fromItem = RelationshipHelper.teiItem(teiUid);
+
+        propagator.propagateRelationshipUpdate(fromItem);
+
+        assertThat(trackedEntityInstanceStore.selectByUid(teiUid).state(), is(State.TO_UPDATE));
+    }
+
+    @Test
+    public void propagate_enrollment_relationship_update() throws D2Error {
+        String teiUid = createTEIWithState(State.SYNCED);
+        String enrollmentUid = createEnrollmentWithState(State.SYNCED, teiUid);
+        RelationshipItem fromItem = RelationshipHelper.enrollmentItem(enrollmentUid);
+
+        propagator.propagateRelationshipUpdate(fromItem);
+
+        assertThat(trackedEntityInstanceStore.selectByUid(teiUid).state(), is(State.TO_UPDATE));
+        assertThat(enrollmentStore.selectByUid(enrollmentUid).state(), is(State.TO_UPDATE));
+    }
+
+    @Test
+    public void propagate_event_relationship_update() throws D2Error {
+        String teiUid = createTEIWithState(State.SYNCED);
+        String enrollmentUid = createEnrollmentWithState(State.SYNCED, teiUid);
+        String eventUid = createEventWithState(State.SYNCED, enrollmentUid);
+        RelationshipItem fromItem = RelationshipHelper.eventItem(eventUid);
+
+        propagator.propagateRelationshipUpdate(fromItem);
+
+        assertThat(trackedEntityInstanceStore.selectByUid(teiUid).state(), is(State.TO_UPDATE));
+        assertThat(enrollmentStore.selectByUid(enrollmentUid).state(), is(State.TO_UPDATE));
+        assertThat(eventStore.selectByUid(eventUid).state(), is(State.TO_UPDATE));
+    }
+
     private void assertThatSetTeiToUpdateWhenEnrollmentPropagation(State state) throws D2Error {
-        String teiUid = d2.trackedEntityModule().trackedEntityInstances().blockingAdd(sampleTEIProjection());
-        trackedEntityInstanceStore.setState(teiUid, state);
+        String teiUid = createTEIWithState(state);
 
         propagator.propagateEnrollmentUpdate(Enrollment.builder().uid("uid").trackedEntityInstance(teiUid).build());
 
@@ -189,8 +226,7 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
     }
 
     private void assertThatDoNotSetTeiToUpdateWhenEnrollmentPropagation(State state) throws D2Error {
-        String teiUid = d2.trackedEntityModule().trackedEntityInstances().blockingAdd(sampleTEIProjection());
-        trackedEntityInstanceStore.setState(teiUid, state);
+        String teiUid = createTEIWithState(state);
 
         propagator.propagateEnrollmentUpdate(Enrollment.builder().uid("uid").trackedEntityInstance(teiUid).build());
 
@@ -199,10 +235,9 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
     }
 
     private void assertThatSetTeiToUpdateWhenEventPropagation(State state) throws D2Error {
-        String teiUid = d2.trackedEntityModule().trackedEntityInstances().blockingAdd(sampleTEIProjection());
-        String enrolmentUid = d2.enrollmentModule().enrollments().blockingAdd(sampleEnrollmentProjection(teiUid));
+        String teiUid = createTEIWithState(state);
 
-        trackedEntityInstanceStore.setState(teiUid, state);
+        String enrolmentUid = d2.enrollmentModule().enrollments().blockingAdd(sampleEnrollmentProjection(teiUid));
         enrollmentStore.setState(enrolmentUid, state);
 
         propagator.propagateEventUpdate(Event.builder().uid("uid").enrollment(enrolmentUid).build());
@@ -213,11 +248,8 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
     }
 
     private void assertThatDoNotSetTeiToUpdateWhenEventPropagation(State state) throws D2Error {
-        String teiUid = d2.trackedEntityModule().trackedEntityInstances().blockingAdd(sampleTEIProjection());
-        String enrolmentUid = d2.enrollmentModule().enrollments().blockingAdd(sampleEnrollmentProjection(teiUid));
-
-        trackedEntityInstanceStore.setState(teiUid, state);
-        enrollmentStore.setState(enrolmentUid, state);
+        String teiUid = createTEIWithState(state);
+        String enrolmentUid = createEnrollmentWithState(state, teiUid);
 
         propagator.propagateEventUpdate(Event.builder().uid("uid").enrollment(enrolmentUid).build());
 
@@ -227,14 +259,9 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
     }
 
     private void assertThatSetTeiToUpdateWhenTrackedEntityDataValuePropagation(State state) throws D2Error {
-        String teiUid = d2.trackedEntityModule().trackedEntityInstances().blockingAdd(sampleTEIProjection());
-        String enrolmentUid = d2.enrollmentModule().enrollments().blockingAdd(sampleEnrollmentProjection(teiUid));
-        String eventUid = d2.eventModule().events().blockingAdd(sampleEventProjection(enrolmentUid));
-
-
-        trackedEntityInstanceStore.setState(teiUid, state);
-        enrollmentStore.setState(enrolmentUid, state);
-        eventStore.setState(eventUid, state);
+        String teiUid = createTEIWithState(state);
+        String enrolmentUid = createEnrollmentWithState(state, teiUid);
+        String eventUid = createEventWithState(state, enrolmentUid);
 
         propagator.propagateTrackedEntityDataValueUpdate(TrackedEntityDataValue.builder().event(eventUid).build());
 
@@ -245,13 +272,9 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
     }
 
     private void assertThatDoNotSetTeiToUpdateWhenTrackedEntityDataValuePropagation(State state) throws D2Error {
-        String teiUid = d2.trackedEntityModule().trackedEntityInstances().blockingAdd(sampleTEIProjection());
-        String enrolmentUid = d2.enrollmentModule().enrollments().blockingAdd(sampleEnrollmentProjection(teiUid));
-        String eventUid = d2.eventModule().events().blockingAdd(sampleEventProjection(enrolmentUid));
-
-        trackedEntityInstanceStore.setState(teiUid, state);
-        enrollmentStore.setState(enrolmentUid, state);
-        eventStore.setState(eventUid, state);
+        String teiUid = createTEIWithState(state);
+        String enrolmentUid = createEnrollmentWithState(state, teiUid);
+        String eventUid = createEventWithState(state, enrolmentUid);
 
         propagator.propagateTrackedEntityDataValueUpdate(TrackedEntityDataValue.builder().event(eventUid).build());
 
@@ -259,6 +282,24 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
         assertThat(enrollmentStore.selectByUid(enrolmentUid).state(), is(state));
         assertThat(eventStore.selectByUid(eventUid).state(), is(state));
         trackedEntityInstanceStore.delete(teiUid);
+    }
+
+    private String createTEIWithState(State state) throws D2Error {
+        String teiUid = d2.trackedEntityModule().trackedEntityInstances().blockingAdd(sampleTEIProjection());
+        trackedEntityInstanceStore.setState(teiUid, state);
+        return teiUid;
+    }
+
+    private String createEnrollmentWithState(State state, String teiUid) throws D2Error {
+        String enrolmentUid = d2.enrollmentModule().enrollments().blockingAdd(sampleEnrollmentProjection(teiUid));
+        enrollmentStore.setState(enrolmentUid, state);
+        return enrolmentUid;
+    }
+
+    private String createEventWithState(State state, String enrolmentUid) throws D2Error {
+        String eventUid = d2.eventModule().events().blockingAdd(sampleEventProjection(enrolmentUid));
+        eventStore.setState(eventUid, state);
+        return eventUid;
     }
 
     private String createTEIWithLastUpdated(Date lastUpdated) throws D2Error {

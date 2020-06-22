@@ -39,16 +39,13 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBui
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.DataObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
 
-import java.util.Date;
 import java.util.List;
 
 import static org.hisp.dhis.android.core.common.DataColumns.STATE;
-import static org.hisp.dhis.android.core.common.IdentifiableColumns.LAST_UPDATED;
 import static org.hisp.dhis.android.core.common.IdentifiableColumns.UID;
 
 public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & DataObject>

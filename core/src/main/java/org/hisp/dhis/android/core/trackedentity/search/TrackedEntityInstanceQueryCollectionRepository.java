@@ -67,7 +67,7 @@ import dagger.Reusable;
 import io.reactivex.Single;
 
 @Reusable
-@SuppressWarnings({"PMD.ExcessiveImports"})
+@SuppressWarnings({"PMD.GodClass", "PMD.ExcessiveImports"})
 public final class TrackedEntityInstanceQueryCollectionRepository
         implements ReadOnlyCollectionRepository<TrackedEntityInstance> {
 

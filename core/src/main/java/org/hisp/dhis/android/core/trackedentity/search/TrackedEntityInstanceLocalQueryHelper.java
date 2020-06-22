@@ -172,7 +172,7 @@ final class TrackedEntityInstanceLocalQueryHelper {
             where.appendKeyLessThanOrEqStringValue(dot(ENROLLMENT_ALIAS, ENROLLMENT_DATE),
                     scope.formattedProgramEndDate());
         }
-        if(scope.programStatus() != null) {
+        if (scope.programStatus() != null) {
             where.appendKeyStringValue(dot(ENROLLMENT_ALIAS, STATUS), escapeQuotes(scope.programStatus().toString()));
         }
         if (scope.includeDeleted() == null || !scope.includeDeleted()) {

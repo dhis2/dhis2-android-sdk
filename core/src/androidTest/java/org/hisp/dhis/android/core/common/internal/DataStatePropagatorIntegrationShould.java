@@ -59,7 +59,7 @@ import java.util.Date;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
 public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -155,7 +155,7 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
 
         propagator.propagateEnrollmentUpdate(Enrollment.builder().uid("uid").trackedEntityInstance(teiUid).build());
 
-        assertThat(trackedEntityInstanceStore.selectByUid(teiUid).lastUpdated()).isAfter(oldDate);
+        assertThat(trackedEntityInstanceStore.selectByUid(teiUid).lastUpdated()).isGreaterThan(oldDate);
         trackedEntityInstanceStore.delete(teiUid);
     }
 

@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.domain.aggregated.data.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.dataset.DataSetCollectionRepository;
 import org.hisp.dhis.android.core.period.Period;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.period.internal.PeriodForDataSetManager;
@@ -56,7 +56,7 @@ import static org.mockito.Mockito.when;
 public class AggregatedDataCallBundleFactoryShould {
 
     @Mock
-    private IdentifiableObjectStore<DataSet> dataSetStore;
+    private DataSetCollectionRepository dataSetRepository;
 
     @Mock
     private UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
@@ -97,7 +97,7 @@ public class AggregatedDataCallBundleFactoryShould {
         when(periodManager.getPeriodsInRange(PeriodType.Monthly, 0, 0)).thenReturn(Collections.emptyList());
         when(periodManager.getPeriodsInRange(any(), anyInt(), anyInt())).thenReturn(periods);
 
-        bundleFactory = new AggregatedDataCallBundleFactory(dataSetStore, userOrganisationUnitLinkStore,
+        bundleFactory = new AggregatedDataCallBundleFactory(dataSetRepository, userOrganisationUnitLinkStore,
                 dataSetSettingsObjectRepository, periodManager);
     }
 

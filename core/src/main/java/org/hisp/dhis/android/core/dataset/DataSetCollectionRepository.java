@@ -54,8 +54,8 @@ import dagger.Reusable;
 import static org.hisp.dhis.android.core.dataset.DataSetTableInfo.Columns;
 
 @Reusable
-public final class DataSetCollectionRepository
-        extends ReadOnlyIdentifiableCollectionRepositoryImpl<DataSet, DataSetCollectionRepository> {
+public class DataSetCollectionRepository
+            extends ReadOnlyIdentifiableCollectionRepositoryImpl<DataSet, DataSetCollectionRepository> {
 
     @Inject
     DataSetCollectionRepository(final IdentifiableObjectStore<DataSet> store,

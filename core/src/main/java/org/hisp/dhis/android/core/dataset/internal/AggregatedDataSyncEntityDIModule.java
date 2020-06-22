@@ -26,29 +26,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.domain.aggregated.data;
+package org.hisp.dhis.android.core.dataset.internal;
 
-import org.hisp.dhis.android.core.arch.call.D2Progress;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataDispatcher;
-import org.junit.Test;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 
-import io.reactivex.observers.TestObserver;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-public class AggregatedDataCallMockIntegrationShould extends BaseMockIntegrationTestMetadataDispatcher {
+@Module
+public final class AggregatedDataSyncEntityDIModule {
 
-    @Test
-    public void emit_progress() {
-
-        TestObserver<D2Progress> testObserver = d2.aggregatedModule().data().download().test();
-        testObserver.assertValueCount(5);
-
-        testObserver.assertValueAt(0, v -> v.lastCall().equals("SystemInfo"));
-        testObserver.assertValueAt(1, v -> v.lastCall().equals("DataValue"));
-        testObserver.assertValueAt(2, v -> v.lastCall().equals("DataSetCompleteRegistration"));
-        testObserver.assertValueAt(3, v -> v.lastCall().equals("DataApproval"));
-        testObserver.assertValueAt(4, v -> v.lastCall().equals("DataSetAggregatedDataSync"));
-
-
-        testObserver.dispose();
+    @Provides
+    @Reusable
+    ObjectWithoutUidStore<DataSetAggregatedDataSync> store(DatabaseAdapter databaseAdapter) {
+        return DataSetAggregatedDataSyncStore.create(databaseAdapter);
     }
 }

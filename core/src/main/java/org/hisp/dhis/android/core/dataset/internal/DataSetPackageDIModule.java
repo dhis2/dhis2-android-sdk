@@ -40,6 +40,7 @@ import dagger.Reusable;
 import retrofit2.Retrofit;
 
 @Module(includes = {
+        AggregatedDataSyncEntityDIModule.class,
         DataInputPeriodEntityDIModule.class,
         DataSetElementEntityDIModule.class,
         DataSetCompulsoryDataElementOperandEntityDIModule.class,

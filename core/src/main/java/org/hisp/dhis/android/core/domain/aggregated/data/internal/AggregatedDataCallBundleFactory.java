@@ -28,10 +28,8 @@
 
 package org.hisp.dhis.android.core.domain.aggregated.data.internal;
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.dataset.DataSetTableInfo;
+import org.hisp.dhis.android.core.dataset.DataSetCollectionRepository;
 import org.hisp.dhis.android.core.period.Period;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.period.internal.PeriodForDataSetManager;
@@ -54,17 +52,17 @@ import dagger.Reusable;
 @Reusable
 class AggregatedDataCallBundleFactory {
 
-    private final IdentifiableObjectStore<DataSet> dataSetStore;
+    private final DataSetCollectionRepository dataSetRepository;
     private final UserOrganisationUnitLinkStore organisationUnitStore;
     private final DataSetSettingsObjectRepository dataSetSettingsObjectRepository;
     private final PeriodForDataSetManager periodManager;
 
     @Inject
-    AggregatedDataCallBundleFactory(IdentifiableObjectStore<DataSet> dataSetStore,
+    AggregatedDataCallBundleFactory(DataSetCollectionRepository dataSetRepository,
                                     UserOrganisationUnitLinkStore organisationUnitStore,
                                     DataSetSettingsObjectRepository dataSetSettingsObjectRepository,
                                     PeriodForDataSetManager periodManager) {
-        this.dataSetStore = dataSetStore;
+        this.dataSetRepository = dataSetRepository;
         this.organisationUnitStore = organisationUnitStore;
         this.dataSetSettingsObjectRepository = dataSetSettingsObjectRepository;
         this.periodManager = periodManager;
@@ -115,6 +113,7 @@ class AggregatedDataCallBundleFactory {
 
                 AggregatedDataCallBundle bundle = AggregatedDataCallBundle.builder()
                         .dataSets(entry.getValue())
+                        .pastPeriods(pair.past)
                         .periodIds(periodIds)
                         .orgUnitUids(organisationUnitUids)
                         .build();
@@ -160,10 +159,10 @@ class AggregatedDataCallBundleFactory {
     }
 
     private List<DataSet> getDataSetsInPeriodType(PeriodType periodType) {
-        String periodTypeClause = new WhereClauseBuilder()
-                .appendKeyStringValue(DataSetTableInfo.Columns.PERIOD_TYPE, periodType.name()).build();
-
-        return dataSetStore.selectWhere(periodTypeClause);
+        return dataSetRepository
+                .byPeriodType().eq(periodType)
+                .withDataSetElements()
+                .blockingGet();
     }
 
     static class PastFuturePair {

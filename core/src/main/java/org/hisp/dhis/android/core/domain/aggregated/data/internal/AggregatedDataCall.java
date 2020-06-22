@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
@@ -43,6 +44,8 @@ import org.hisp.dhis.android.core.dataapproval.DataApproval;
 import org.hisp.dhis.android.core.dataapproval.internal.DataApprovalQuery;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
+import org.hisp.dhis.android.core.dataset.DataSetElement;
+import org.hisp.dhis.android.core.dataset.internal.DataSetAggregatedDataSync;
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationQuery;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.datavalue.internal.DataValueQuery;
@@ -54,6 +57,7 @@ import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -75,6 +79,7 @@ final class AggregatedDataCall {
     private final UserOrganisationUnitLinkStore organisationUnitStore;
     private final CategoryOptionComboStore categoryOptionComboStore;
     private final RxAPICallExecutor rxCallExecutor;
+    private final ObjectWithoutUidStore<DataSetAggregatedDataSync> aggregatedDataSyncStore;
 
     private final AggregatedDataCallBundleFactory aggregatedDataCallBundleFactory;
 
@@ -88,6 +93,7 @@ final class AggregatedDataCall {
                        @NonNull UserOrganisationUnitLinkStore organisationUnitStore,
                        @NonNull CategoryOptionComboStore categoryOptionComboStore,
                        @NonNull RxAPICallExecutor rxCallExecutor,
+                       @NonNull ObjectWithoutUidStore<DataSetAggregatedDataSync> aggregatedDataSyncStore,
                        @NonNull AggregatedDataCallBundleFactory aggregatedDataCallBundleFactory) {
         this.systemInfoRepository = systemInfoRepository;
         this.dhisVersionManager = dhisVersionManager;
@@ -97,6 +103,7 @@ final class AggregatedDataCall {
         this.organisationUnitStore = organisationUnitStore;
         this.categoryOptionComboStore = categoryOptionComboStore;
         this.rxCallExecutor = rxCallExecutor;
+        this.aggregatedDataSyncStore = aggregatedDataSyncStore;
 
         this.aggregatedDataCallBundleFactory = aggregatedDataCallBundleFactory;
     }
@@ -145,18 +152,48 @@ final class AggregatedDataCall {
             add(dataSetCompleteRegistrationSingle);
         }};
 
+        List<String> organisationUnitsUids = organisationUnitStore.queryOrganisationUnitUidsByScope(
+                OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
+
         if (!dhisVersionManager.is2_29()) {
-            Single<D2Progress> approvalSingle = getApprovalSingle(bundle, progressManager);
+            Single<D2Progress> approvalSingle = getApprovalSingle(bundle, progressManager, organisationUnitsUids);
             if (approvalSingle != null) {
                 list.add(approvalSingle);
             }
         }
 
+        list.add(updateAggregatedDataSync(bundle, organisationUnitsUids, progressManager));
+
         return Single.merge(list).toObservable();
     }
 
+    private Single<D2Progress> updateAggregatedDataSync(AggregatedDataCallBundle bundle,
+                                                        List<String> organisationUnitUids,
+                                                        D2ProgressManager progressManager) {
+        return Single.fromCallable(() -> {
+            for (DataSet dataSet : bundle.dataSets()) {
+                Set<String> dataElementUids = new HashSet<>(dataSet.dataSetElements().size());
+                for (DataSetElement dse : dataSet.dataSetElements()) {
+                    dataElementUids.add(dse.dataElement().uid());
+                }
+
+                aggregatedDataSyncStore.updateOrInsertWhere(DataSetAggregatedDataSync.builder()
+                        .dataSet(dataSet.uid())
+                        .lastPeriods(bundle.pastPeriods())
+                        .futurePeriods(dataSet.openFuturePeriods())
+                        .dataElementsHash(dataElementUids.hashCode())
+                        .organisationUnitsHash(new HashSet<>(organisationUnitUids).hashCode())
+                        .lastUpdated(new Date()) // TODO replace with server date
+                        .build()
+                );
+            }
+            return progressManager.increaseProgress(DataSetAggregatedDataSync.class, false);
+        });
+    }
+
     private Single<D2Progress> getApprovalSingle(AggregatedDataCallBundle bundle,
-                                                 D2ProgressManager progressManager) {
+                                                 D2ProgressManager progressManager,
+                                                 List<String> organisationUnitsUids) {
         List<DataSet> dataSetsWithWorkflow = new ArrayList<>();
         Set<String> workflowUids = new HashSet<>();
         for (DataSet ds : bundle.dataSets()) {
@@ -170,8 +207,6 @@ final class AggregatedDataCall {
             return null;
         } else {
             Set<String> attributeOptionComboUids = getAttributeOptionCombosUidsFrom(dataSetsWithWorkflow);
-            List<String> organisationUnitsUids = organisationUnitStore.queryOrganisationUnitUidsByScope(
-                    OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
 
             DataApprovalQuery dataApprovalQuery = DataApprovalQuery.create(workflowUids,
                     organisationUnitsUids, bundle.periodIds(), attributeOptionComboUids);

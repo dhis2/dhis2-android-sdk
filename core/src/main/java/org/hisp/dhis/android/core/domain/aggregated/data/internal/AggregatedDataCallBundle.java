@@ -38,6 +38,8 @@ import java.util.Collection;
 abstract class AggregatedDataCallBundle {
     abstract Collection<DataSet> dataSets();
 
+    abstract Integer pastPeriods();
+
     abstract Collection<String> periodIds();
 
     abstract Collection<String> orgUnitUids();
@@ -49,6 +51,8 @@ abstract class AggregatedDataCallBundle {
     @AutoValue.Builder
     abstract static class Builder {
         abstract Builder dataSets(Collection<DataSet> dataSets);
+
+        abstract Builder pastPeriods(Integer pastPeriods);
 
         abstract Builder periodIds(Collection<String> periodIds);
 

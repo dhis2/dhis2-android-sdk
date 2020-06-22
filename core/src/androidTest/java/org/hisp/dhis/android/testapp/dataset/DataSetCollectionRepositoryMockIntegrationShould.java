@@ -282,6 +282,15 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
     }
 
     @Test
+    public void get_child_with_data_set_elements() {
+        DataSet dataSet = d2.dataSetModule().dataSets()
+                .withDataSetElements()
+                .uid("lyLU2wR22tC")
+                .blockingGet();
+        assertThat(dataSet.dataSetElements().size(), is(1));
+    }
+
+    @Test
     public void include_indicators_as_children() {
         DataSet dataSet = d2.dataSetModule().dataSets()
                 .withIndicators()

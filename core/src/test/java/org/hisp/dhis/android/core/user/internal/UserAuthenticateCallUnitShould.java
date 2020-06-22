@@ -139,6 +139,9 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     @Mock
     private GeneralSettingCall generalSettingCall;
 
+    @Mock
+    private UserAuthenticateCallErrorCatcher apiCallErrorCatcher;
+
     // call we are testing
     private Single<User> logInSingle;
 
@@ -189,7 +192,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private Single<User> instantiateCall(String username, String password, String serverUrl) {
         return new UserAuthenticateCallFactory(databaseAdapter, apiCallExecutor,
                 userService, credentialsSecureStore, userHandler, resourceHandler, authenticatedUserStore,
-                systemInfoRepository, userStore, wipeModule, multiUserDatabaseManager, generalSettingCall).logIn(username, password, serverUrl);
+                systemInfoRepository, userStore, wipeModule, multiUserDatabaseManager, generalSettingCall, apiCallErrorCatcher).logIn(username, password, serverUrl);
     }
 
     private OngoingStubbing<User> whenAPICall() throws D2Error {

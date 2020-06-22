@@ -166,7 +166,7 @@ final class APIErrorMapper {
         return errorBuilder
                 .errorCode(errorCode)
                 .httpErrorCode(response.code())
-                .errorDescription("API call failed, response: " + serverMessage)
+                .errorDescription("API call failed, server message: " + serverMessage)
                 .build();
     }
 

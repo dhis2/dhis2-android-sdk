@@ -51,14 +51,9 @@ import static org.hisp.dhis.android.core.common.IdentifiableColumns.UID;
 public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & DataObject>
         extends IdentifiableObjectStoreImpl<M> implements IdentifiableDataObjectStore<M> {
 
-    private final static String EQ = " = ";
-    private final static String NE = " != ";
-    private final static String AND = " AND ";
-
     private String selectStateQuery;
     private String existsQuery;
     private StatementWrapper setStateStatement;
-    private StatementWrapper setStateForUpdateStatement;
     final String tableName;
 
     private Integer adapterHashCode;
@@ -80,16 +75,6 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
                     STATE + " =?" + whereUid;
             this.setStateStatement = databaseAdapter.compileStatement(setState);
 
-            String setStateForUpdate = "UPDATE " + tableName + " SET " +
-                    STATE + " = (case " +
-                    "when " + STATE + EQ + "'" + State.TO_POST + "' then '" + State.TO_POST + "' " +
-                    "when " + STATE + NE + "'" + State.TO_POST + "'" + AND +
-                    STATE + NE + "'" + State.RELATIONSHIP + "' then '" + State.TO_UPDATE + "'" +
-                    " END)" +
-                    " where " +
-                    UID + " =? ;";
-            this.setStateForUpdateStatement = databaseAdapter.compileStatement(setStateForUpdate);
-
             this.selectStateQuery = "SELECT " + STATE + " FROM " + tableName + whereUid;
             this.existsQuery = "SELECT 1 FROM " + tableName + whereUid;
         }
@@ -104,9 +89,7 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
     private void resetStatementsIfDbChanged() {
         if (hasAdapterChanged()) {
             setStateStatement.close();
-            setStateForUpdateStatement.close();
             setStateStatement = null;
-            setStateForUpdateStatement = null;
         }
     }
 
@@ -134,17 +117,6 @@ public class IdentifiableDataObjectStoreImpl<M extends ObjectWithUidInterface & 
                 .build();
 
         return databaseAdapter.update(tableName, updates, whereClause, null);
-    }
-
-    @Override
-    public int setStateForUpdate(@NonNull String uid) {
-        compileStatements();
-        setStateForUpdateStatement.bind(1, uid);
-
-        int updatedRow = databaseAdapter.executeUpdateDelete(setStateForUpdateStatement);
-        setStateForUpdateStatement.clearBindings();
-
-        return updatedRow;
     }
 
     @Override

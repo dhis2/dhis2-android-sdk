@@ -129,7 +129,7 @@ public class RelationshipCollectionRepository
                         .state(State.TO_POST)
                         .deleted(false)
                         .build());
-                setToUpdate(fromStore, fromState, from.elementUid());
+                dataStatePropagator.propagateRelationshipUpdate(from);
             } else {
                 throw D2Error
                         .builder()
@@ -152,12 +152,6 @@ public class RelationshipCollectionRepository
 
     private boolean isUpdatableState(State state) {
         return state != State.RELATIONSHIP;
-    }
-
-    private void setToUpdate(StoreWithState store, State state, String elementUid) {
-        if (state != State.TO_POST) {
-            store.setState(elementUid, State.TO_UPDATE);
-        }
     }
 
     public List<Relationship> getByItem(@NonNull RelationshipItem searchItem) {

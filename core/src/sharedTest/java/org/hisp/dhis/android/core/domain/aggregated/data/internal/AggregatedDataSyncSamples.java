@@ -26,18 +26,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.dataset;
+package org.hisp.dhis.android.core.domain.aggregated.data.internal;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.dataset.internal.DataSetAggregatedDataSync;
 
 import java.text.ParseException;
 import java.util.Date;
 
-public class DataSetAggregatedDataSyncSamples {
+public class AggregatedDataSyncSamples {
 
-    public static DataSetAggregatedDataSync get1() {
-        return DataSetAggregatedDataSync.builder()
+    public static AggregatedDataSync get1() {
+        return AggregatedDataSync.builder()
                 .id(1L)
                 .dataSet("dataSet")
                 .lastPeriods(10)
@@ -48,7 +47,7 @@ public class DataSetAggregatedDataSyncSamples {
                 .build();
     }
 
-    public static DataSetAggregatedDataSync get2() {
+    public static AggregatedDataSync get2() {
         return get1().toBuilder()
                 .dataElementsHash(3333333)
                 .build();

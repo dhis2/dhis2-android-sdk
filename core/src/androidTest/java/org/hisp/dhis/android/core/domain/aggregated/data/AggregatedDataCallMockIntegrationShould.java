@@ -46,7 +46,7 @@ public class AggregatedDataCallMockIntegrationShould extends BaseMockIntegration
         testObserver.assertValueAt(1, v -> v.lastCall().equals("DataValue"));
         testObserver.assertValueAt(2, v -> v.lastCall().equals("DataSetCompleteRegistration"));
         testObserver.assertValueAt(3, v -> v.lastCall().equals("DataApproval"));
-        testObserver.assertValueAt(4, v -> v.lastCall().equals("DataSetAggregatedDataSync"));
+        testObserver.assertValueAt(4, v -> v.lastCall().equals("AggregatedDataSync"));
 
 
         testObserver.dispose();

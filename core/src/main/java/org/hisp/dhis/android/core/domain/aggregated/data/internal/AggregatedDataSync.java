@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset.internal;
+package org.hisp.dhis.android.core.domain.aggregated.data.internal;
 
 import android.database.Cursor;
 
@@ -43,55 +43,55 @@ import org.hisp.dhis.android.core.common.BaseObject;
 import java.util.Date;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_DataSetAggregatedDataSync.Builder.class)
-public abstract class DataSetAggregatedDataSync extends BaseObject {
+@JsonDeserialize(builder = AutoValue_AggregatedDataSync.Builder.class)
+abstract class AggregatedDataSync extends BaseObject {
 
     @NonNull
-    public abstract String dataSet();
+    abstract String dataSet();
 
     @NonNull
-    public abstract Integer lastPeriods();
+    abstract Integer lastPeriods();
 
     @NonNull
-    public abstract Integer futurePeriods();
+    abstract Integer futurePeriods();
 
     @NonNull
-    public abstract Integer dataElementsHash();
+    abstract Integer dataElementsHash();
 
     @NonNull
-    public abstract Integer organisationUnitsHash();
+    abstract Integer organisationUnitsHash();
 
     @NonNull
     @ColumnAdapter(DbDateColumnAdapter.class)
-    public abstract Date lastUpdated();
+    abstract Date lastUpdated();
 
     @NonNull
-    public static DataSetAggregatedDataSync create(Cursor cursor) {
-        return AutoValue_DataSetAggregatedDataSync.createFromCursor(cursor);
+    static AggregatedDataSync create(Cursor cursor) {
+        return AutoValue_AggregatedDataSync.createFromCursor(cursor);
     }
 
-    public static Builder builder() {
-        return new AutoValue_DataSetAggregatedDataSync.Builder();
+    static Builder builder() {
+        return new AutoValue_AggregatedDataSync.Builder();
     }
 
-    public abstract Builder toBuilder();
+    abstract Builder toBuilder();
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseObject.Builder<Builder> {
+    static abstract class Builder extends BaseObject.Builder<Builder> {
 
-        public abstract Builder dataSet(String dataSet);
+        abstract Builder dataSet(String dataSet);
 
-        public abstract Builder lastPeriods(Integer lastPeriods);
+        abstract Builder lastPeriods(Integer lastPeriods);
 
-        public abstract Builder futurePeriods(Integer futurePeriods);
+        abstract Builder futurePeriods(Integer futurePeriods);
 
-        public abstract Builder dataElementsHash(Integer dataElementsHash);
+        abstract Builder dataElementsHash(Integer dataElementsHash);
 
-        public abstract Builder organisationUnitsHash(Integer organisationUnitHash);
+        abstract Builder organisationUnitsHash(Integer organisationUnitHash);
 
-        public abstract Builder lastUpdated(Date lastUpdated);
+        abstract Builder lastUpdated(Date lastUpdated);
 
-        public abstract DataSetAggregatedDataSync build();
+        abstract AggregatedDataSync build();
     }
 }

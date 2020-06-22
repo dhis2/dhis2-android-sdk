@@ -26,29 +26,28 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset.internal;
+package org.hisp.dhis.android.core.domain.aggregated.data.internal;
 
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.dataset.DataSetAggregatedDataSyncSamples;
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)
-public class DataSetAggregatedDataSyncStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<DataSetAggregatedDataSync> {
+public class AggregatedDataSyncStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<AggregatedDataSync> {
 
-    public DataSetAggregatedDataSyncStoreIntegrationShould() {
-        super(DataSetAggregatedDataSyncStore.create(TestDatabaseAdapterFactory.get()), DataSetAggregatedDataSyncTableInfo.TABLE_INFO,
+    public AggregatedDataSyncStoreIntegrationShould() {
+        super(AggregatedDataSyncStore.create(TestDatabaseAdapterFactory.get()), AggregatedDataSyncTableInfo.TABLE_INFO,
                 TestDatabaseAdapterFactory.get());
     }
 
     @Override
-    protected DataSetAggregatedDataSync buildObject() {
-        return DataSetAggregatedDataSyncSamples.get1();
+    protected AggregatedDataSync buildObject() {
+        return AggregatedDataSyncSamples.get1();
     }
 
     @Override
-    protected DataSetAggregatedDataSync buildObjectToUpdate() {
-        return DataSetAggregatedDataSyncSamples.get2();
+    protected AggregatedDataSync buildObjectToUpdate() {
+        return AggregatedDataSyncSamples.get2();
     }
 }

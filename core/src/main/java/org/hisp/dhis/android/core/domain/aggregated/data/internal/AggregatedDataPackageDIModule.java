@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset.internal;
+package org.hisp.dhis.android.core.domain.aggregated.data.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
@@ -36,11 +36,11 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class AggregatedDataSyncEntityDIModule {
+public final class AggregatedDataPackageDIModule {
 
     @Provides
     @Reusable
-    ObjectWithoutUidStore<DataSetAggregatedDataSync> store(DatabaseAdapter databaseAdapter) {
-        return DataSetAggregatedDataSyncStore.create(databaseAdapter);
+    ObjectWithoutUidStore<AggregatedDataSync> store(DatabaseAdapter databaseAdapter) {
+        return AggregatedDataSyncStore.create(databaseAdapter);
     }
 }

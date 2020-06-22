@@ -45,7 +45,6 @@ import org.hisp.dhis.android.core.dataapproval.internal.DataApprovalQuery;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
 import org.hisp.dhis.android.core.dataset.DataSetElement;
-import org.hisp.dhis.android.core.dataset.internal.DataSetAggregatedDataSync;
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationQuery;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.datavalue.internal.DataValueQuery;
@@ -79,7 +78,7 @@ final class AggregatedDataCall {
     private final UserOrganisationUnitLinkStore organisationUnitStore;
     private final CategoryOptionComboStore categoryOptionComboStore;
     private final RxAPICallExecutor rxCallExecutor;
-    private final ObjectWithoutUidStore<DataSetAggregatedDataSync> aggregatedDataSyncStore;
+    private final ObjectWithoutUidStore<AggregatedDataSync> aggregatedDataSyncStore;
 
     private final AggregatedDataCallBundleFactory aggregatedDataCallBundleFactory;
 
@@ -93,7 +92,7 @@ final class AggregatedDataCall {
                        @NonNull UserOrganisationUnitLinkStore organisationUnitStore,
                        @NonNull CategoryOptionComboStore categoryOptionComboStore,
                        @NonNull RxAPICallExecutor rxCallExecutor,
-                       @NonNull ObjectWithoutUidStore<DataSetAggregatedDataSync> aggregatedDataSyncStore,
+                       @NonNull ObjectWithoutUidStore<AggregatedDataSync> aggregatedDataSyncStore,
                        @NonNull AggregatedDataCallBundleFactory aggregatedDataCallBundleFactory) {
         this.systemInfoRepository = systemInfoRepository;
         this.dhisVersionManager = dhisVersionManager;
@@ -177,7 +176,7 @@ final class AggregatedDataCall {
                     dataElementUids.add(dse.dataElement().uid());
                 }
 
-                aggregatedDataSyncStore.updateOrInsertWhere(DataSetAggregatedDataSync.builder()
+                aggregatedDataSyncStore.updateOrInsertWhere(AggregatedDataSync.builder()
                         .dataSet(dataSet.uid())
                         .lastPeriods(bundle.pastPeriods())
                         .futurePeriods(dataSet.openFuturePeriods())
@@ -187,7 +186,7 @@ final class AggregatedDataCall {
                         .build()
                 );
             }
-            return progressManager.increaseProgress(DataSetAggregatedDataSync.class, false);
+            return progressManager.increaseProgress(AggregatedDataSync.class, false);
         });
     }
 

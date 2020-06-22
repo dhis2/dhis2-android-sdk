@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset.internal;
+package org.hisp.dhis.android.core.domain.aggregated.data.internal;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
@@ -34,16 +34,16 @@ import org.hisp.dhis.android.core.common.CoreColumns;
 
 import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.LAST_UPDATED;
 
-public final class DataSetAggregatedDataSyncTableInfo {
+final class AggregatedDataSyncTableInfo {
 
-    private DataSetAggregatedDataSyncTableInfo() {
+    private AggregatedDataSyncTableInfo() {
     }
 
     public static final TableInfo TABLE_INFO = new TableInfo() {
 
         @Override
         public String name() {
-            return "DataSetAggregatedDataSync";
+            return "AggregatedDataSync";
         }
 
         @Override

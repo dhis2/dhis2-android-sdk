@@ -40,8 +40,6 @@ public interface StoreWithState {
 
     int setState(@NonNull List<String> uids, @NonNull State state);
 
-    int setStateForUpdate(@NonNull String uid);
-
     State getState(@NonNull String uid);
 
     Boolean exists(@NonNull String uid);

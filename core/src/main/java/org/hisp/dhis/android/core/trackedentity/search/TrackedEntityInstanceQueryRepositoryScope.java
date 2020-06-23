@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMod
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
 import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 
 import java.util.Collections;
@@ -76,6 +77,9 @@ abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseScope {
 
     @Nullable
     public abstract Date programEndDate();
+
+    @Nullable
+    public abstract EnrollmentStatus programStatus();
 
     @Nullable
     public abstract String trackedEntityType();
@@ -137,6 +141,8 @@ abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseScope {
         public abstract Builder programStartDate(Date programStartDate);
 
         public abstract Builder programEndDate(Date programEndDate);
+
+        public abstract Builder programStatus(EnrollmentStatus programStatus);
 
         public abstract Builder trackedEntityType(String trackedEntityType);
 

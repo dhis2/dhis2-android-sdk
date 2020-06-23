@@ -25,33 +25,47 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection;
+package org.hisp.dhis.android.core.arch.repositories.collection.internal;
 
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.Single;
 
-public interface ReadOnlyWithUidCollectionRepository<M extends CoreObject & ObjectWithUidInterface>
-        extends ReadOnlyCollectionRepository<M> {
+public abstract class BaseReadOnlyWithUidCollectionRepositoryImpl<M extends CoreObject & ObjectWithUidInterface,
+        R extends ReadOnlyCollectionRepository<M>>
+        extends ReadOnlyCollectionRepositoryImpl<M, R>
+        implements ReadOnlyWithUidCollectionRepository<M> {
 
-    /**
-     * Returns a new {@link ReadOnlyObjectRepository} whose scope is the one of the current repository plus the
-     * equal filter applied to the uid. This method is equivalent to byUid().eq(uid).one().
-     * @param uid to compare
-     * @return the {@link ReadOnlyObjectRepository}
-     */
-    ReadOnlyObjectRepository<M> uid(String uid);
+    protected final IdentifiableObjectStore<M> store;
+
+    public BaseReadOnlyWithUidCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
+                                                       Map<String, ChildrenAppender<M>> childrenAppenders,
+                                                       RepositoryScope scope,
+                                                       FilterConnectorFactory<R> cf) {
+        super(store, childrenAppenders, scope, cf);
+        this.store = store;
+    }
 
     /**
      * Get the list of uids of objects in scope in an asynchronous way, returning a {@code Single<List<String>>}.
      *
      * @return A {@code Single} object with the list of uids.
      */
-    Single<List<String>> getUids();
+    public Single<List<String>> getUids() {
+        return Single.fromCallable(this::blockingGetUids);
+
+    }
 
     /**
      * Get the list of uids of objects in scope in a synchronous way. Important: this is a blocking method and it should
@@ -59,5 +73,8 @@ public interface ReadOnlyWithUidCollectionRepository<M extends CoreObject & Obje
      *
      * @return List of uids
      */
-    List<String> blockingGetUids();
+    public List<String> blockingGetUids() {
+        return store.selectUidsWhere(getWhereClause(), OrderByClauseBuilder.orderByFromItems(
+                scope.orderBy(), scope.pagingKey()));
+    }
 }

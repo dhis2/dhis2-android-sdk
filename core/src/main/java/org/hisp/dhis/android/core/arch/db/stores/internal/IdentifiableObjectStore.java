@@ -49,5 +49,7 @@ public interface IdentifiableObjectStore<O extends ObjectWithUidInterface> exten
 
     List<String> selectUidsWhere(String whereClause) throws RuntimeException;
 
+    List<String> selectUidsWhere(String whereClause, String orderByClause) throws RuntimeException;
+
     O selectByUid(String uid) throws RuntimeException;
 }

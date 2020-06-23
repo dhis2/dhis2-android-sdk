@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUidCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseReadOnlyWithUidCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
@@ -69,7 +69,7 @@ import static org.hisp.dhis.android.core.relationship.RelationshipHelper.areItem
 @Reusable
 @SuppressWarnings("PMD.ExcessiveImports")
 public class RelationshipCollectionRepository
-        extends ReadOnlyCollectionRepositoryImpl<Relationship, RelationshipCollectionRepository>
+        extends BaseReadOnlyWithUidCollectionRepositoryImpl<Relationship, RelationshipCollectionRepository>
         implements ReadWriteWithUidCollectionRepository<Relationship, Relationship> {
 
     private final RelationshipStore store;

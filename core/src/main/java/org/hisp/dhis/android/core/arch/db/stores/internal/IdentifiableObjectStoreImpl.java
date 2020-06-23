@@ -135,8 +135,15 @@ public class IdentifiableObjectStoreImpl<M extends CoreObject & ObjectWithUidInt
         return mapStringColumnSetFromCursor(cursor);
     }
 
+    @Override
     public List<String> selectUidsWhere(String whereClause) throws RuntimeException {
         Cursor cursor = databaseAdapter.rawQuery(builder.selectUidsWhere(whereClause));
+        return mapStringColumnSetFromCursor(cursor);
+    }
+
+    @Override
+    public List<String> selectUidsWhere(String whereClause, String orderByClause) throws RuntimeException {
+        Cursor cursor = databaseAdapter.rawQuery(builder.selectUidsWhere(whereClause, orderByClause));
         return mapStringColumnSetFromCursor(cursor);
     }
 

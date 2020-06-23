@@ -49,10 +49,10 @@ import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationQu
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.datavalue.internal.DataValueQuery;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRepository;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -75,7 +75,7 @@ final class AggregatedDataCall {
     private final QueryCallFactory<DataSetCompleteRegistration,
             DataSetCompleteRegistrationQuery> dataSetCompleteRegistrationCallFactory;
     private final QueryCallFactory<DataApproval, DataApprovalQuery> dataApprovalCallFactory;
-    private final UserOrganisationUnitLinkStore organisationUnitStore;
+    private final OrganisationUnitCollectionRepository organisationUnitRepository;
     private final CategoryOptionComboStore categoryOptionComboStore;
     private final RxAPICallExecutor rxCallExecutor;
     private final ObjectWithoutUidStore<AggregatedDataSync> aggregatedDataSyncStore;
@@ -90,7 +90,7 @@ final class AggregatedDataCall {
                        @NonNull QueryCallFactory<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery>
                                dataSetCompleteRegistrationCallFactory,
                        @NonNull QueryCallFactory<DataApproval, DataApprovalQuery> dataApprovalCallFactory,
-                       @NonNull UserOrganisationUnitLinkStore organisationUnitStore,
+                       @NonNull OrganisationUnitCollectionRepository organisationUnitRepository,
                        @NonNull CategoryOptionComboStore categoryOptionComboStore,
                        @NonNull RxAPICallExecutor rxCallExecutor,
                        @NonNull ObjectWithoutUidStore<AggregatedDataSync> aggregatedDataSyncStore,
@@ -101,7 +101,7 @@ final class AggregatedDataCall {
         this.dataValueCallFactory = dataValueCallFactory;
         this.dataSetCompleteRegistrationCallFactory = dataSetCompleteRegistrationCallFactory;
         this.dataApprovalCallFactory = dataApprovalCallFactory;
-        this.organisationUnitStore = organisationUnitStore;
+        this.organisationUnitRepository = organisationUnitRepository;
         this.categoryOptionComboStore = categoryOptionComboStore;
         this.rxCallExecutor = rxCallExecutor;
         this.aggregatedDataSyncStore = aggregatedDataSyncStore;
@@ -154,8 +154,8 @@ final class AggregatedDataCall {
             add(dataSetCompleteRegistrationSingle);
         }};
 
-        List<String> organisationUnitsUids = organisationUnitStore.queryOrganisationUnitUidsByScope(
-                OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
+        List<String> organisationUnitsUids = organisationUnitRepository.byOrganisationUnitScope(
+                OrganisationUnit.Scope.SCOPE_DATA_CAPTURE).blockingGetUids();
 
         if (!dhisVersionManager.is2_29()) {
             Single<D2Progress> approvalSingle = getApprovalSingle(bundle, progressManager, organisationUnitsUids);

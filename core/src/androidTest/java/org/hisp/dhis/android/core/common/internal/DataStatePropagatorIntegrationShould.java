@@ -188,6 +188,8 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
         propagator.propagateRelationshipUpdate(fromItem);
 
         assertThat(trackedEntityInstanceStore.selectByUid(teiUid).state(), is(State.TO_UPDATE));
+
+        trackedEntityInstanceStore.delete(teiUid);
     }
 
     @Test
@@ -200,6 +202,8 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
 
         assertThat(trackedEntityInstanceStore.selectByUid(teiUid).state(), is(State.TO_UPDATE));
         assertThat(enrollmentStore.selectByUid(enrollmentUid).state(), is(State.TO_UPDATE));
+
+        trackedEntityInstanceStore.delete(teiUid);
     }
 
     @Test
@@ -214,6 +218,8 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
         assertThat(trackedEntityInstanceStore.selectByUid(teiUid).state(), is(State.TO_UPDATE));
         assertThat(enrollmentStore.selectByUid(enrollmentUid).state(), is(State.TO_UPDATE));
         assertThat(eventStore.selectByUid(eventUid).state(), is(State.TO_UPDATE));
+
+        trackedEntityInstanceStore.delete(teiUid);
     }
 
     private void assertThatSetTeiToUpdateWhenEnrollmentPropagation(State state) throws D2Error {

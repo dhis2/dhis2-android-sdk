@@ -49,6 +49,7 @@ import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationQu
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.datavalue.internal.DataValueQuery;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
@@ -56,7 +57,6 @@ import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -79,8 +79,9 @@ final class AggregatedDataCall {
     private final CategoryOptionComboStore categoryOptionComboStore;
     private final RxAPICallExecutor rxCallExecutor;
     private final ObjectWithoutUidStore<AggregatedDataSync> aggregatedDataSyncStore;
-
     private final AggregatedDataCallBundleFactory aggregatedDataCallBundleFactory;
+    private final ResourceHandler resourceHandler;
+
 
     @Inject
     AggregatedDataCall(@NonNull ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
@@ -93,7 +94,8 @@ final class AggregatedDataCall {
                        @NonNull CategoryOptionComboStore categoryOptionComboStore,
                        @NonNull RxAPICallExecutor rxCallExecutor,
                        @NonNull ObjectWithoutUidStore<AggregatedDataSync> aggregatedDataSyncStore,
-                       @NonNull AggregatedDataCallBundleFactory aggregatedDataCallBundleFactory) {
+                       @NonNull AggregatedDataCallBundleFactory aggregatedDataCallBundleFactory,
+                       @NonNull ResourceHandler resourceHandler) {
         this.systemInfoRepository = systemInfoRepository;
         this.dhisVersionManager = dhisVersionManager;
         this.dataValueCallFactory = dataValueCallFactory;
@@ -105,6 +107,7 @@ final class AggregatedDataCall {
         this.aggregatedDataSyncStore = aggregatedDataSyncStore;
 
         this.aggregatedDataCallBundleFactory = aggregatedDataCallBundleFactory;
+        this.resourceHandler = resourceHandler;
     }
 
     Observable<D2Progress> download() {
@@ -182,7 +185,7 @@ final class AggregatedDataCall {
                         .futurePeriods(dataSet.openFuturePeriods())
                         .dataElementsHash(dataElementUids.hashCode())
                         .organisationUnitsHash(new HashSet<>(organisationUnitUids).hashCode())
-                        .lastUpdated(new Date()) // TODO replace with server date
+                        .lastUpdated(resourceHandler.getServerDate())
                         .build()
                 );
             }

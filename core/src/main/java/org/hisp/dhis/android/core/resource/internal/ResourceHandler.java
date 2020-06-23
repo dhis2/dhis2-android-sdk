@@ -50,6 +50,10 @@ public class ResourceHandler {
         this.serverDate = new Date(serverDate.getTime());
     }
 
+    public Date getServerDate() {
+        return this.serverDate;
+    }
+
     public void handleResource(Resource.Type resourceType) {
         if (resourceType == null || serverDate == null) {
             return;

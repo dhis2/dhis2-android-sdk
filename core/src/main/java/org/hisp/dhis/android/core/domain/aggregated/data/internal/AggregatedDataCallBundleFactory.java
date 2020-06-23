@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.core.domain.aggregated.data.internal;
 
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetCollectionRepository;
 import org.hisp.dhis.android.core.period.Period;
-import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.period.internal.PeriodForDataSetManager;
 import org.hisp.dhis.android.core.settings.DataSetSetting;
 import org.hisp.dhis.android.core.settings.DataSetSettings;
@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,64 +57,65 @@ class AggregatedDataCallBundleFactory {
     private final UserOrganisationUnitLinkStore organisationUnitStore;
     private final DataSetSettingsObjectRepository dataSetSettingsObjectRepository;
     private final PeriodForDataSetManager periodManager;
+    private final ObjectWithoutUidStore<AggregatedDataSync> aggregatedDataSyncStore;
 
     @Inject
     AggregatedDataCallBundleFactory(DataSetCollectionRepository dataSetRepository,
                                     UserOrganisationUnitLinkStore organisationUnitStore,
                                     DataSetSettingsObjectRepository dataSetSettingsObjectRepository,
-                                    PeriodForDataSetManager periodManager) {
+                                    PeriodForDataSetManager periodManager,
+                                    ObjectWithoutUidStore<AggregatedDataSync> aggregatedDataSyncStore) {
         this.dataSetRepository = dataSetRepository;
         this.organisationUnitStore = organisationUnitStore;
         this.dataSetSettingsObjectRepository = dataSetSettingsObjectRepository;
         this.periodManager = periodManager;
+        this.aggregatedDataSyncStore = aggregatedDataSyncStore;
     }
 
-    List<AggregatedDataCallBundle> getDataValueQueries() {
-        List<AggregatedDataCallBundle> queries = new ArrayList<>();
-
+    List<AggregatedDataCallBundle> getBundles() {
         DataSetSettings dataSetSettings = dataSetSettingsObjectRepository.blockingGet();
-
+        Map<String, AggregatedDataSync> syncValues = getSyncValuesByDataSetUid();
         List<String> organisationUnitUids = Collections.unmodifiableList(
                 organisationUnitStore.queryRootCaptureOrganisationUnitUids());
+        List<DataSet> dataSets = getDataSets();
 
-        for (PeriodType periodType : PeriodType.values()) {
-            List<DataSet> dataSets = getDataSetsInPeriodType(periodType);
-            if (dataSets.isEmpty()) {
-                continue;
-            }
+        return getBundlesInternal(dataSets, dataSetSettings, organisationUnitUids, syncValues);
+    }
 
-            queries.addAll(getDataValueQueriesForDataSets(dataSets, periodType, dataSetSettings, organisationUnitUids));
+    private Map<String, AggregatedDataSync> getSyncValuesByDataSetUid() {
+        List<AggregatedDataSync> syncValues = aggregatedDataSyncStore.selectAll();
+        Map<String, AggregatedDataSync> map = new HashMap<>(syncValues.size());
+        for (AggregatedDataSync v : syncValues) {
+            map.put(v.dataSet(), v);
         }
-        return queries;
+        return map;
     }
 
     @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})
-    List<AggregatedDataCallBundle> getDataValueQueriesForDataSets(Collection<DataSet> dataSets,
-                                                                  PeriodType periodType,
-                                                                  DataSetSettings dataSetSettings,
-                                                                  List<String> organisationUnitUids) {
-        Map<String, List<DataSet>> pastFutureKeyDataSet = new HashMap<>();
+    List<AggregatedDataCallBundle> getBundlesInternal(Collection<DataSet> dataSets,
+                                                      DataSetSettings dataSetSettings,
+                                                      List<String> organisationUnitUids,
+                                                      Map<String, AggregatedDataSync> syncValues) {
+        Map<AggregatedDataCallBundleKey, List<DataSet>> keyDataSetMap = new HashMap<>();
         for (DataSet dataSet : dataSets) {
-            String pastFuturePair = getPastFuturePair(dataSetSettings, dataSet, periodType);
-
-            if (!pastFutureKeyDataSet.containsKey(pastFuturePair)) {
-                pastFutureKeyDataSet.put(pastFuturePair, new ArrayList<>());
+            AggregatedDataCallBundleKey key = getBundleKey(dataSetSettings, dataSet, syncValues);
+            if (!keyDataSetMap.containsKey(key)) {
+                keyDataSetMap.put(key, new ArrayList<>());
             }
-            pastFutureKeyDataSet.get(pastFuturePair).add(dataSet);
+            keyDataSetMap.get(key).add(dataSet);
         }
 
         List<AggregatedDataCallBundle> queries = new ArrayList<>();
-        for (Map.Entry<String, List<DataSet>> entry : pastFutureKeyDataSet.entrySet()) {
-            PastFuturePair pair = new PastFuturePair(entry.getKey());
-
-            List<Period> periods = periodManager.getPeriodsInRange(periodType, pair.past, pair.future);
+        for (Map.Entry<AggregatedDataCallBundleKey, List<DataSet>> entry : keyDataSetMap.entrySet()) {
+            AggregatedDataCallBundleKey key = entry.getKey();
+            List<Period> periods = periodManager.getPeriodsInRange(key.periodType(), key.pastPeriods(), key.futurePeriods());
 
             if (!periods.isEmpty()) {
                 List<String> periodIds = selectPeriodIds(periods);
 
                 AggregatedDataCallBundle bundle = AggregatedDataCallBundle.builder()
+                        .key(key)
                         .dataSets(entry.getValue())
-                        .pastPeriods(pair.past)
                         .periodIds(periodIds)
                         .orgUnitUids(organisationUnitUids)
                         .build();
@@ -124,14 +126,21 @@ class AggregatedDataCallBundleFactory {
         return queries;
     }
 
-    private String getPastFuturePair(DataSetSettings dataSetSettings, DataSet dataSet, PeriodType periodType) {
-        int pastPeriods = getPastPeriods(dataSetSettings, dataSet, periodType);
+    private AggregatedDataCallBundleKey getBundleKey(DataSetSettings dataSetSettings, DataSet dataSet,
+                                                     Map<String, AggregatedDataSync> syncValues) {
+        int pastPeriods = getPastPeriods(dataSetSettings, dataSet);
         int futurePeriods = dataSet.openFuturePeriods() == null ? 1 : dataSet.openFuturePeriods();
-
-        return new PastFuturePair(pastPeriods, futurePeriods).toKey();
+        AggregatedDataSync syncValue = syncValues.get(dataSet.uid());
+        Date lastUpdated = syncValue == null ? null : syncValue.lastUpdated();
+        return AggregatedDataCallBundleKey.builder()
+                .periodType(dataSet.periodType())
+                .pastPeriods(pastPeriods)
+                .futurePeriods(futurePeriods)
+                .lastUpdated(lastUpdated)
+            .build();
     }
 
-    private Integer getPastPeriods(DataSetSettings dataSetSettings, DataSet dataSet, PeriodType periodType) {
+    private Integer getPastPeriods(DataSetSettings dataSetSettings, DataSet dataSet) {
         if (dataSetSettings != null) {
             DataSetSetting specificSetting = dataSetSettings.specificSettings().get(dataSet.uid());
             DataSetSetting globalSetting = dataSetSettings.globalSettings();
@@ -142,7 +151,7 @@ class AggregatedDataCallBundleFactory {
                 return globalSetting.periodDSDownload();
             }
         }
-        return periodType.getDefaultPastPeriods();
+        return dataSet.periodType().getDefaultPastPeriods();
     }
 
     private boolean hasPeriodDSDownload(DataSetSetting dataSetSetting) {
@@ -158,30 +167,9 @@ class AggregatedDataCallBundleFactory {
         return periodIds;
     }
 
-    private List<DataSet> getDataSetsInPeriodType(PeriodType periodType) {
+    private List<DataSet> getDataSets() {
         return dataSetRepository
-                .byPeriodType().eq(periodType)
                 .withDataSetElements()
                 .blockingGet();
-    }
-
-    static class PastFuturePair {
-        Integer past;
-        Integer future;
-
-        private static String SEP = "x";
-
-        PastFuturePair(Integer past, Integer future) {
-            this.past = past;
-            this.future = future;
-        }
-
-        PastFuturePair(String key) {
-            this(Integer.parseInt(key.split(SEP)[0]), Integer.parseInt(key.split(SEP)[1]));
-        }
-
-        String toKey() {
-            return past + SEP + future;
-        }
     }
 }

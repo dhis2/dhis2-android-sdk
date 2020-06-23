@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.domain.aggregated.data.internal;
 
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetCollectionRepository;
 import org.hisp.dhis.android.core.period.Period;
@@ -45,6 +46,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -66,6 +68,9 @@ public class AggregatedDataCallBundleFactoryShould {
 
     @Mock
     private PeriodForDataSetManager periodManager;
+
+    @Mock
+    private ObjectWithoutUidStore<AggregatedDataSync> aggregatedDataSyncStore;
 
     @Mock
     private DataSetSettings dataSetSettings;
@@ -98,16 +103,18 @@ public class AggregatedDataCallBundleFactoryShould {
         when(periodManager.getPeriodsInRange(any(), anyInt(), anyInt())).thenReturn(periods);
 
         bundleFactory = new AggregatedDataCallBundleFactory(dataSetRepository, userOrganisationUnitLinkStore,
-                dataSetSettingsObjectRepository, periodManager);
+                dataSetSettingsObjectRepository, periodManager, aggregatedDataSyncStore);
     }
 
     @Test
     public void create_single_bundle_if_same_periods() {
         when(dataSet1.openFuturePeriods()).thenReturn(1);
+        when(dataSet1.periodType()).thenReturn(PeriodType.Monthly);
         when(dataSet2.openFuturePeriods()).thenReturn(1);
+        when(dataSet2.periodType()).thenReturn(PeriodType.Monthly);
 
-        List<AggregatedDataCallBundle> bundles = bundleFactory.getDataValueQueriesForDataSets(Arrays.asList(dataSet1, dataSet2),
-                PeriodType.Monthly, dataSetSettings, rootOrgUnits);
+        List<AggregatedDataCallBundle> bundles = bundleFactory.getBundlesInternal(Arrays.asList(dataSet1, dataSet2),
+                dataSetSettings, rootOrgUnits, new HashMap<>());
 
         assertThat(bundles.size()).isEqualTo(1);
         assertThat(bundles.get(0).dataSets()).contains(dataSet1, dataSet2);
@@ -116,10 +123,12 @@ public class AggregatedDataCallBundleFactoryShould {
     @Test
     public void create_different_bundles_if_different_periods() {
         when(dataSet1.openFuturePeriods()).thenReturn(1);
+        when(dataSet1.periodType()).thenReturn(PeriodType.Monthly);
         when(dataSet2.openFuturePeriods()).thenReturn(2);
+        when(dataSet2.periodType()).thenReturn(PeriodType.Monthly);
 
-        List<AggregatedDataCallBundle> bundles = bundleFactory.getDataValueQueriesForDataSets(Arrays.asList(dataSet1, dataSet2),
-                PeriodType.Monthly, dataSetSettings, rootOrgUnits);
+        List<AggregatedDataCallBundle> bundles = bundleFactory.getBundlesInternal(Arrays.asList(dataSet1, dataSet2),
+                dataSetSettings, rootOrgUnits, new HashMap<>());
 
         assertThat(bundles.size()).isEqualTo(2);
     }

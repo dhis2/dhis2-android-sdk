@@ -122,7 +122,7 @@ final class AggregatedDataCall {
     private Observable<D2Progress> selectDataSetsAndDownload(D2ProgressManager progressManager,
                                                              D2Progress systemInfoProgress) {
         return Observable
-                .fromIterable(aggregatedDataCallBundleFactory.getDataValueQueries())
+                .fromIterable(aggregatedDataCallBundleFactory.getBundles())
                 .flatMap(bundle ->
                         downloadInternal(bundle, progressManager, systemInfoProgress)
                 );
@@ -181,7 +181,8 @@ final class AggregatedDataCall {
 
                 aggregatedDataSyncStore.updateOrInsertWhere(AggregatedDataSync.builder()
                         .dataSet(dataSet.uid())
-                        .lastPeriods(bundle.pastPeriods())
+                        .periodType(dataSet.periodType())
+                        .pastPeriods(bundle.key().pastPeriods())
                         .futurePeriods(dataSet.openFuturePeriods())
                         .dataElementsHash(dataElementUids.hashCode())
                         .organisationUnitsHash(new HashSet<>(organisationUnitUids).hashCode())

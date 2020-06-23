@@ -28,31 +28,19 @@
 
 package org.hisp.dhis.android.core.domain.aggregated.data.internal;
 
-import android.database.Cursor;
-
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.Date;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_AggregatedDataSync.Builder.class)
-abstract class AggregatedDataSync extends BaseObject {
+abstract class AggregatedDataCallBundleKey {
 
     @NonNull
-    abstract String dataSet();
-
-    @NonNull
-    @ColumnAdapter(PeriodTypeColumnAdapter.class)
     abstract PeriodType periodType();
 
     @NonNull
@@ -61,32 +49,15 @@ abstract class AggregatedDataSync extends BaseObject {
     @NonNull
     abstract Integer futurePeriods();
 
-    @NonNull
-    abstract Integer dataElementsHash();
-
-    @NonNull
-    abstract Integer organisationUnitsHash();
-
-    @NonNull
-    @ColumnAdapter(DbDateColumnAdapter.class)
+    @Nullable
     abstract Date lastUpdated();
 
-    @NonNull
-    static AggregatedDataSync create(Cursor cursor) {
-        return AutoValue_AggregatedDataSync.createFromCursor(cursor);
-    }
-
     static Builder builder() {
-        return new AutoValue_AggregatedDataSync.Builder();
+        return new AutoValue_AggregatedDataCallBundleKey.Builder();
     }
-
-    abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    static abstract class Builder extends BaseObject.Builder<Builder> {
-
-        abstract Builder dataSet(String dataSet);
+    abstract static class Builder {
 
         abstract Builder periodType(PeriodType periodType);
 
@@ -94,12 +65,8 @@ abstract class AggregatedDataSync extends BaseObject {
 
         abstract Builder futurePeriods(Integer futurePeriods);
 
-        abstract Builder dataElementsHash(Integer dataElementsHash);
-
-        abstract Builder organisationUnitsHash(Integer organisationUnitHash);
-
         abstract Builder lastUpdated(Date lastUpdated);
 
-        abstract AggregatedDataSync build();
+        abstract AggregatedDataCallBundleKey build();
     }
 }

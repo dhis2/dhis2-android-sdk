@@ -38,15 +38,16 @@ final class AggregatedDataSyncStore {
 
     private static final StatementBinder<AggregatedDataSync> BINDER = (o, w) -> {
         w.bind(1, o.dataSet());
-        w.bind(2, o.lastPeriods());
-        w.bind(3, o.futurePeriods());
-        w.bind(4, o.dataElementsHash());
-        w.bind(5, o.organisationUnitsHash());
-        w.bind(6, o.lastUpdated());
+        w.bind(2, o.periodType());
+        w.bind(3, o.pastPeriods());
+        w.bind(4, o.futurePeriods());
+        w.bind(5, o.dataElementsHash());
+        w.bind(6, o.organisationUnitsHash());
+        w.bind(7, o.lastUpdated());
     };
 
     private static final WhereStatementBinder<AggregatedDataSync> WHERE_UPDATE_BINDER =
-            (o, w) -> w.bind(7, o.dataSet());
+            (o, w) -> w.bind(8, o.dataSet());
 
     private static final WhereStatementBinder<AggregatedDataSync> DELETE_UPDATE_BINDER =
             (o, w) -> w.bind(1, o.dataSet());

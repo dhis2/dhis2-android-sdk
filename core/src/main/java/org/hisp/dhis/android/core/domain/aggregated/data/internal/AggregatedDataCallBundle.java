@@ -36,9 +36,9 @@ import java.util.Collection;
 
 @AutoValue
 abstract class AggregatedDataCallBundle {
-    abstract Collection<DataSet> dataSets();
+    abstract AggregatedDataCallBundleKey key();
 
-    abstract Integer pastPeriods();
+    abstract Collection<DataSet> dataSets();
 
     abstract Collection<String> periodIds();
 
@@ -50,9 +50,9 @@ abstract class AggregatedDataCallBundle {
 
     @AutoValue.Builder
     abstract static class Builder {
-        abstract Builder dataSets(Collection<DataSet> dataSets);
+        abstract Builder key(AggregatedDataCallBundleKey key);
 
-        abstract Builder pastPeriods(Integer pastPeriods);
+        abstract Builder dataSets(Collection<DataSet> dataSets);
 
         abstract Builder periodIds(Collection<String> periodIds);
 

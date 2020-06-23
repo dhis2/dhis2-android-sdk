@@ -54,7 +54,8 @@ final class AggregatedDataSyncTableInfo {
 
     public static class Columns extends CoreColumns {
         public static final String DATA_SET = "dataSet";
-        public static final String LAST_PERIODS = "lastPeriods";
+        public static final String PERIOD_TYPE = "periodType";
+        public static final String LAST_PERIODS = "pastPeriods";
         public static final String FUTURE_PERIODS = "futurePeriods";
         public static final String DATA_ELEMENTS_HASH = "dataElementsHash";
         public static final String ORGANISATION_UNITS_HASH = "organisationUnitsHash";
@@ -63,6 +64,7 @@ final class AggregatedDataSyncTableInfo {
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
                     DATA_SET,
+                    PERIOD_TYPE,
                     LAST_PERIODS,
                     FUTURE_PERIODS,
                     DATA_ELEMENTS_HASH,

@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.domain.aggregated.data.internal;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -39,7 +40,8 @@ public class AggregatedDataSyncSamples {
         return AggregatedDataSync.builder()
                 .id(1L)
                 .dataSet("dataSet")
-                .lastPeriods(10)
+                .periodType(PeriodType.Daily)
+                .pastPeriods(10)
                 .futurePeriods(1)
                 .dataElementsHash(11111111)
                 .organisationUnitsHash(22222222)

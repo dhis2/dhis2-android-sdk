@@ -33,40 +33,46 @@ import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.Date;
 
 @AutoValue
-abstract class AggregatedDataCallBundleKey {
+public abstract class AggregatedDataCallBundleKey {
 
     @NonNull
-    abstract PeriodType periodType();
+    public abstract PeriodType periodType();
 
     @NonNull
-    abstract Integer pastPeriods();
+    public abstract Integer pastPeriods();
 
     @NonNull
-    abstract Integer futurePeriods();
+    public abstract Integer futurePeriods();
 
     @Nullable
-    abstract Date lastUpdated();
+    public abstract Date lastUpdated();
 
-    static Builder builder() {
+    @Nullable
+    public String lastUpdatedStr() {
+        return lastUpdated() == null ? null : BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated());
+    }
+
+    public static Builder builder() {
         return new AutoValue_AggregatedDataCallBundleKey.Builder();
     }
 
     @AutoValue.Builder
-    abstract static class Builder {
+    public abstract static class Builder {
 
-        abstract Builder periodType(PeriodType periodType);
+        public abstract Builder periodType(PeriodType periodType);
 
-        abstract Builder pastPeriods(Integer pastPeriods);
+        public abstract Builder pastPeriods(Integer pastPeriods);
 
-        abstract Builder futurePeriods(Integer futurePeriods);
+        public abstract Builder futurePeriods(Integer futurePeriods);
 
-        abstract Builder lastUpdated(Date lastUpdated);
+        public abstract Builder lastUpdated(Date lastUpdated);
 
-        abstract AggregatedDataCallBundleKey build();
+        public abstract AggregatedDataCallBundleKey build();
     }
 }

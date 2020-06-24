@@ -56,16 +56,17 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
 
+import dagger.Reusable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
+@Reusable
 @SuppressWarnings({"PMD.ExcessiveImports"})
 final class AggregatedDataCall {
 
@@ -131,19 +132,17 @@ final class AggregatedDataCall {
     private Observable<D2Progress> downloadInternal(AggregatedDataCallBundle bundle,
                                                     D2ProgressManager progressManager,
                                                     D2Progress systemInfoProgress) {
-        List<String> dataSetUids
-                = Collections.unmodifiableList(UidsHelper.getUidsList(bundle.dataSets()));
-
-        DataValueQuery dataValueQuery = DataValueQuery.create(dataSetUids, bundle.periodIds(), bundle.orgUnitUids());
+        DataValueQuery dataValueQuery = DataValueQuery.create(bundle);
 
         Single<D2Progress> dataValueSingle = Single.fromCallable(dataValueCallFactory.create(dataValueQuery))
                 .map(dataValues -> progressManager.increaseProgress(DataValue.class, false));
 
         DataSetCompleteRegistrationQuery dataSetCompleteRegistrationQuery =
-                DataSetCompleteRegistrationQuery.create(dataSetUids, bundle.periodIds(), bundle.orgUnitUids());
+                DataSetCompleteRegistrationQuery.create(UidsHelper.getUids(bundle.dataSets()),
+                        bundle.periodIds(), bundle.rootOrganisationUnitUids(), bundle.key().lastUpdated());
 
         Single<D2Progress> dataSetCompleteRegistrationSingle = Single.fromCallable(
-                dataSetCompleteRegistrationCallFactory.create(dataSetCompleteRegistrationQuery)).map(dataValues ->
+                dataSetCompleteRegistrationCallFactory.create(dataSetCompleteRegistrationQuery)).map(dscr ->
                 progressManager.increaseProgress(DataSetCompleteRegistration.class, false));
 
 

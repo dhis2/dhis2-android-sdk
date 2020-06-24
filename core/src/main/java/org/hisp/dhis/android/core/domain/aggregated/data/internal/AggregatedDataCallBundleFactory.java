@@ -41,7 +41,6 @@ import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,18 +57,21 @@ class AggregatedDataCallBundleFactory {
     private final DataSetSettingsObjectRepository dataSetSettingsObjectRepository;
     private final PeriodForDataSetManager periodManager;
     private final ObjectWithoutUidStore<AggregatedDataSync> aggregatedDataSyncStore;
+    private final AggregatedDataSyncLastUpdatedCalculator lastUpdatedCalculator;
 
     @Inject
     AggregatedDataCallBundleFactory(DataSetCollectionRepository dataSetRepository,
                                     UserOrganisationUnitLinkStore organisationUnitStore,
                                     DataSetSettingsObjectRepository dataSetSettingsObjectRepository,
                                     PeriodForDataSetManager periodManager,
-                                    ObjectWithoutUidStore<AggregatedDataSync> aggregatedDataSyncStore) {
+                                    ObjectWithoutUidStore<AggregatedDataSync> aggregatedDataSyncStore,
+                                    AggregatedDataSyncLastUpdatedCalculator lastUpdatedCalculator) {
         this.dataSetRepository = dataSetRepository;
         this.organisationUnitStore = organisationUnitStore;
         this.dataSetSettingsObjectRepository = dataSetSettingsObjectRepository;
         this.periodManager = periodManager;
         this.aggregatedDataSyncStore = aggregatedDataSyncStore;
+        this.lastUpdatedCalculator = lastUpdatedCalculator;
     }
 
     List<AggregatedDataCallBundle> getBundles() {
@@ -117,7 +119,7 @@ class AggregatedDataCallBundleFactory {
                         .key(key)
                         .dataSets(entry.getValue())
                         .periodIds(periodIds)
-                        .orgUnitUids(organisationUnitUids)
+                        .rootOrganisationUnitUids(organisationUnitUids)
                         .build();
 
                 queries.add(bundle);
@@ -131,12 +133,11 @@ class AggregatedDataCallBundleFactory {
         int pastPeriods = getPastPeriods(dataSetSettings, dataSet);
         int futurePeriods = dataSet.openFuturePeriods() == null ? 1 : dataSet.openFuturePeriods();
         AggregatedDataSync syncValue = syncValues.get(dataSet.uid());
-        Date lastUpdated = syncValue == null ? null : syncValue.lastUpdated();
         return AggregatedDataCallBundleKey.builder()
                 .periodType(dataSet.periodType())
                 .pastPeriods(pastPeriods)
                 .futurePeriods(futurePeriods)
-                .lastUpdated(lastUpdated)
+                .lastUpdated(lastUpdatedCalculator.getLastUpdated(dataSet, syncValue))
             .build();
     }
 

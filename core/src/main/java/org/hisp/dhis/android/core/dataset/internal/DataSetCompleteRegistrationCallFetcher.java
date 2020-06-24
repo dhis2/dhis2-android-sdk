@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.android.core.dataset.internal;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
@@ -39,10 +42,9 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
-
-import androidx.annotation.NonNull;
 
 abstract class DataSetCompleteRegistrationCallFetcher implements CallFetcher<DataSetCompleteRegistration> {
 
@@ -67,6 +69,7 @@ abstract class DataSetCompleteRegistrationCallFetcher implements CallFetcher<Dat
     private final Collection<String> totalDataSetUids;
     private final Collection<String> totalPeriodIds;
     private final Collection<String> totalRootOrganisationUnitsUids;
+    private final Date lastUpdated;
 
     private List<Set<String>> splitDataSetUids;
     private List<Set<String>> splitRootOrganisationUnitsUids;
@@ -77,10 +80,12 @@ abstract class DataSetCompleteRegistrationCallFetcher implements CallFetcher<Dat
     DataSetCompleteRegistrationCallFetcher(@NonNull Collection<String> dataSetUids,
                                            @NonNull Collection<String> periodIds,
                                            @NonNull Collection<String> rootOrganisationUnitsUids,
+                                           @Nullable Date lastUpdated,
                                            @NonNull APICallExecutor apiCallExecutor) {
         this.totalDataSetUids = dataSetUids;
         this.totalPeriodIds = periodIds;
         this.totalRootOrganisationUnitsUids = rootOrganisationUnitsUids;
+        this.lastUpdated = lastUpdated;
         this.apiCallExecutor = apiCallExecutor;
 
         this.queryLengthAvailableAfterIncludingPeriodIds =
@@ -167,7 +172,7 @@ abstract class DataSetCompleteRegistrationCallFetcher implements CallFetcher<Dat
             Collection<String> organisationUnitUids) throws D2Error {
 
         DataSetCompleteRegistrationQuery dataSetCompleteRegistrationQuery =
-                DataSetCompleteRegistrationQuery.create(dataSetUids, periodUids, organisationUnitUids);
+                DataSetCompleteRegistrationQuery.create(dataSetUids, periodUids, organisationUnitUids, lastUpdated);
 
         DataSetCompleteRegistrationPayload dataSetCompleteRegistrationPayload =
                 apiCallExecutor.executeObjectCall(getCall(dataSetCompleteRegistrationQuery));

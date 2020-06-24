@@ -73,6 +73,9 @@ public class AggregatedDataCallBundleFactoryShould {
     private ObjectWithoutUidStore<AggregatedDataSync> aggregatedDataSyncStore;
 
     @Mock
+    private AggregatedDataSyncLastUpdatedCalculator lastUpdatedCalculator;
+
+    @Mock
     private DataSetSettings dataSetSettings;
 
     @Mock
@@ -103,7 +106,7 @@ public class AggregatedDataCallBundleFactoryShould {
         when(periodManager.getPeriodsInRange(any(), anyInt(), anyInt())).thenReturn(periods);
 
         bundleFactory = new AggregatedDataCallBundleFactory(dataSetRepository, userOrganisationUnitLinkStore,
-                dataSetSettingsObjectRepository, periodManager, aggregatedDataSyncStore);
+                dataSetSettingsObjectRepository, periodManager, aggregatedDataSyncStore, lastUpdatedCalculator);
     }
 
     @Test

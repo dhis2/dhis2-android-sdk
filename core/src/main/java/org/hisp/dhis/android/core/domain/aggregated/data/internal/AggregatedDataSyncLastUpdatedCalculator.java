@@ -26,22 +26,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue.internal;
+package org.hisp.dhis.android.core.domain.aggregated.data.internal;
 
-import org.junit.Test;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.getDataSetUids;
-import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.getOrgUnitUids;
-import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.getPeriodIds;
+import org.hisp.dhis.android.core.dataset.DataSet;
 
-public class DataValueQueryShould {
+import java.util.Date;
 
-    @Test
-    public void create_data_value_query_successfully() {
-        DataValueQuery dataValueQuery = DataValueQuery.create(getDataSetUids(), getPeriodIds(), getOrgUnitUids());
-        assertThat(dataValueQuery.dataSetUids()).isEqualTo(getDataSetUids());
-        assertThat(dataValueQuery.periodIds()).isEqualTo(getPeriodIds());
-        assertThat(dataValueQuery.orgUnitUids()).isEqualTo(getOrgUnitUids());
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
+class AggregatedDataSyncLastUpdatedCalculator {
+
+    @Inject
+    AggregatedDataSyncLastUpdatedCalculator() {
+
+    }
+
+    Date getLastUpdated(@NonNull DataSet dataSet, @Nullable AggregatedDataSync syncValue) {
+        if (syncValue == null) {
+            return null;
+        } else {
+            // TODO INVALIDATE LAST UPDATED IF DOESN'T MATCH
+            return syncValue.lastUpdated();
+        }
     }
 }

@@ -33,31 +33,32 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.dataset.DataSet;
 
 import java.util.Collection;
+import java.util.List;
 
 @AutoValue
-abstract class AggregatedDataCallBundle {
-    abstract AggregatedDataCallBundleKey key();
+public abstract class AggregatedDataCallBundle {
+    public abstract AggregatedDataCallBundleKey key();
 
-    abstract Collection<DataSet> dataSets();
+    public abstract List<DataSet> dataSets();
 
-    abstract Collection<String> periodIds();
+    public abstract Collection<String> periodIds();
 
-    abstract Collection<String> orgUnitUids();
+    public abstract Collection<String> rootOrganisationUnitUids();
 
-    static Builder builder() {
+    public static Builder builder() {
         return new AutoValue_AggregatedDataCallBundle.Builder();
     }
 
     @AutoValue.Builder
-    abstract static class Builder {
-        abstract Builder key(AggregatedDataCallBundleKey key);
+    public abstract static class Builder {
+        public abstract Builder key(AggregatedDataCallBundleKey key);
 
-        abstract Builder dataSets(Collection<DataSet> dataSets);
+        public abstract Builder dataSets(List<DataSet> dataSets);
 
-        abstract Builder periodIds(Collection<String> periodIds);
+        public abstract Builder periodIds(Collection<String> periodIds);
 
-        abstract Builder orgUnitUids(Collection<String> orgUnitUids);
+        public abstract Builder rootOrganisationUnitUids(Collection<String> orgUnitUids);
 
-        abstract AggregatedDataCallBundle build();
+        public abstract AggregatedDataCallBundle build();
     }
 }

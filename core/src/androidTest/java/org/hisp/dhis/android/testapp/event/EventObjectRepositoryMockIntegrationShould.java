@@ -47,6 +47,8 @@ import java.util.Date;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.nullValue;
+import static org.hamcrest.core.IsNull.notNullValue;
 
 @RunWith(D2JunitRunner.class)
 public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -91,13 +93,27 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
     }
 
     @Test
-    public void update_event_status() throws D2Error {
+    public void update_event_status_completed() throws D2Error {
         EventStatus eventStatus = EventStatus.COMPLETED;
 
         EventObjectRepository repository = objectRepository();
 
         repository.setStatus(eventStatus);
         assertThat(repository.blockingGet().status(), is(eventStatus));
+        assertThat(repository.blockingGet().completedDate(), notNullValue());
+
+        repository.blockingDelete();
+    }
+
+    @Test
+    public void update_event_status_active() throws D2Error {
+        EventStatus eventStatus = EventStatus.ACTIVE;
+
+        EventObjectRepository repository = objectRepository();
+
+        repository.setStatus(eventStatus);
+        assertThat(repository.blockingGet().status(), is(eventStatus));
+        assertThat(repository.blockingGet().completedDate(), nullValue());
 
         repository.blockingDelete();
     }

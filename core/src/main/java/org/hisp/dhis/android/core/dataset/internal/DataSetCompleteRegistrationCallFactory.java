@@ -78,7 +78,7 @@ final class DataSetCompleteRegistrationCallFactory extends QueryCallFactoryImpl<
                     DataSetCompleteRegistrationQuery query) {
                 return service.getDataSetCompleteRegistrations(
                         DataSetCompleteRegistrationFields.allFields,
-                        DataSetCompleteRegistrationFields.lastUpdated.gt(query.lastUpdatedStr()),
+                        query.lastUpdatedStr(),
                         commaSeparatedCollectionValues(query.dataSetUids()),
                         commaSeparatedCollectionValues(query.periodIds()),
                         commaSeparatedCollectionValues(query.rootOrgUnitUids()),

@@ -29,8 +29,6 @@
 package org.hisp.dhis.android.core.dataset.internal;
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where;
 import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
@@ -48,7 +46,7 @@ interface DataSetCompleteRegistrationService {
     @GET("completeDataSetRegistrations")
     Call<DataSetCompleteRegistrationPayload> getDataSetCompleteRegistrations(
             @Query("fields") @Which Fields<DataSetCompleteRegistration> fields,
-            @Query("filter") @Where Filter<DataSetCompleteRegistration, String> lastUpdated,
+            @Query("lastUpdated") String lastUpdated,
             @Query("dataSet") String dataSetUids,
             @Query("period") String periodIds,
             @Query("orgUnit") String organisationUnitIds,

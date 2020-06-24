@@ -29,8 +29,6 @@
 package org.hisp.dhis.android.core.dataapproval.internal;
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where;
 import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
 import org.hisp.dhis.android.core.dataapproval.DataApproval;
 
@@ -45,7 +43,7 @@ interface DataApprovalService {
     @GET("dataApprovals/multiple")
     Call<List<DataApproval>> getDataApprovals(
             @Query("fields") @Which Fields<DataApproval> fields,
-            @Query("filter") @Where Filter<DataApproval, String> lastUpdated,
+            @Query("lastUpdated") String lastUpdated,
             @Query("wf") String workflow,
             @Query("pe") String startDate,
             @Query("ou") String organisationUnit,

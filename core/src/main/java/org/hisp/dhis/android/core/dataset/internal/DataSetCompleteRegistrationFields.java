@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.dataset.internal;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
@@ -39,8 +38,6 @@ final class DataSetCompleteRegistrationFields {
     private static final String COMPLETED = "completed";
 
     private static FieldsHelper<DataSetCompleteRegistration> fieldsHelper = new FieldsHelper<>();
-
-    static final Field<DataSetCompleteRegistration, String> lastUpdated = fieldsHelper.lastUpdated();
 
     static final Fields<DataSetCompleteRegistration> allFields = Fields.<DataSetCompleteRegistration>builder().fields(
             fieldsHelper.<String>field(DataSetCompleteRegistrationTableInfo.Columns.PERIOD),

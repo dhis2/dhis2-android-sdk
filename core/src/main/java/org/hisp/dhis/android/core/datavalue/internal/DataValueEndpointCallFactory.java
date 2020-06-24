@@ -71,7 +71,7 @@ final class DataValueEndpointCallFactory extends QueryCallFactoryImpl<DataValue,
                 AggregatedDataCallBundle b = query.bundle();
                 return dataValueService.getDataValues(
                         DataValueFields.allFields,
-                        DataValueFields.lastUpdated.gt(b.key().lastUpdatedStr()),
+                        b.key().lastUpdatedStr(),
                         commaSeparatedUids(b.dataSets()),
                         commaSeparatedCollectionValues(b.periodIds()),
                         commaSeparatedCollectionValues(b.rootOrganisationUnitUids()),

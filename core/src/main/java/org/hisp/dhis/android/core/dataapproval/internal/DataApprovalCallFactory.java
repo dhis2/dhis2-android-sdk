@@ -72,7 +72,7 @@ final class DataApprovalCallFactory extends QueryCallFactoryImpl<DataApproval,
 
                 return service.getDataApprovals(
                         DataApprovalFields.allFields,
-                        DataApprovalFields.lastUpdated.gt(query.lastUpdatedStr()),
+                        query.lastUpdatedStr(),
                         commaSeparatedCollectionValues(query.workflowsUids()),
                         commaSeparatedCollectionValues(query.periodIds()),
                         commaSeparatedCollectionValues(query.organisationUnistUids()),

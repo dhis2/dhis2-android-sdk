@@ -139,7 +139,7 @@ final class AggregatedDataCall {
 
         DataSetCompleteRegistrationQuery dataSetCompleteRegistrationQuery =
                 DataSetCompleteRegistrationQuery.create(UidsHelper.getUids(bundle.dataSets()),
-                        bundle.periodIds(), bundle.rootOrganisationUnitUids(), bundle.key().lastUpdated());
+                        bundle.periodIds(), bundle.rootOrganisationUnitUids(), bundle.key().lastUpdatedStr());
 
         Single<D2Progress> dataSetCompleteRegistrationSingle = Single.fromCallable(
                 dataSetCompleteRegistrationCallFactory.create(dataSetCompleteRegistrationQuery)).map(dscr ->
@@ -211,7 +211,7 @@ final class AggregatedDataCall {
             Set<String> attributeOptionComboUids = getAttributeOptionCombosUidsFrom(dataSetsWithWorkflow);
 
             DataApprovalQuery dataApprovalQuery = DataApprovalQuery.create(workflowUids,
-                    organisationUnitsUids, bundle.periodIds(), attributeOptionComboUids);
+                    organisationUnitsUids, bundle.periodIds(), attributeOptionComboUids, bundle.key().lastUpdatedStr());
 
             return Single.fromCallable(
                     dataApprovalCallFactory.create(dataApprovalQuery)).map(dataApprovals ->

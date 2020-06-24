@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.dataapproval.internal;
 
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.dataapproval.DataApproval;
@@ -42,6 +43,8 @@ public final class DataApprovalFields {
     public static final String ATTRIBUTE_OPTION_COMBO = "aoc";
 
     private static FieldsHelper<DataApproval> fieldsHelper = new FieldsHelper<>();
+
+    static final Field<DataApproval, String> lastUpdated = fieldsHelper.lastUpdated();
 
     static final Fields<DataApproval> allFields = Fields.<DataApproval>builder().fields(
             fieldsHelper.<String>field(WORKFLOW),

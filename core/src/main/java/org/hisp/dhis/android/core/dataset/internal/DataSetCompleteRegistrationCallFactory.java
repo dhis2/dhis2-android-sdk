@@ -71,7 +71,7 @@ final class DataSetCompleteRegistrationCallFactory extends QueryCallFactoryImpl<
                 query.dataSetUids(),
                 query.periodIds(),
                 query.rootOrgUnitUids(),
-                query.lastUpdated(), apiCallExecutor) {
+                query.lastUpdatedStr(), apiCallExecutor) {
 
             @Override
             protected Call<DataSetCompleteRegistrationPayload> getCall(

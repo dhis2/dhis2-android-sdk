@@ -33,10 +33,8 @@ import androidx.annotation.Nullable;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 
 import java.util.Collection;
-import java.util.Date;
 
 @AutoValue
 public abstract class DataSetCompleteRegistrationQuery extends BaseQuery {
@@ -48,19 +46,14 @@ public abstract class DataSetCompleteRegistrationQuery extends BaseQuery {
     public abstract Collection<String> rootOrgUnitUids();
 
     @Nullable
-    public abstract Date lastUpdated();
-
-    @Nullable
-    public String lastUpdatedStr() {
-        return lastUpdated() == null ? null : BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated());
-    }
+    public abstract String lastUpdatedStr();
 
     public static DataSetCompleteRegistrationQuery create(Collection<String> dataSetUids,
                                                           Collection<String> periodIds,
                                                           Collection<String> rootOrgUnitUids,
-                                                          Date lastUpdated) {
+                                                          String lastUpdatedStr) {
 
         return new AutoValue_DataSetCompleteRegistrationQuery(1, BaseQuery.DEFAULT_PAGE_SIZE,
-                false, dataSetUids, periodIds, rootOrgUnitUids, lastUpdated);
+                false, dataSetUids, periodIds, rootOrgUnitUids, lastUpdatedStr);
     }
 }

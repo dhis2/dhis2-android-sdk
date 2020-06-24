@@ -42,7 +42,6 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -69,7 +68,7 @@ abstract class DataSetCompleteRegistrationCallFetcher implements CallFetcher<Dat
     private final Collection<String> totalDataSetUids;
     private final Collection<String> totalPeriodIds;
     private final Collection<String> totalRootOrganisationUnitsUids;
-    private final Date lastUpdated;
+    private final String lastUpdatedStr;
 
     private List<Set<String>> splitDataSetUids;
     private List<Set<String>> splitRootOrganisationUnitsUids;
@@ -80,12 +79,12 @@ abstract class DataSetCompleteRegistrationCallFetcher implements CallFetcher<Dat
     DataSetCompleteRegistrationCallFetcher(@NonNull Collection<String> dataSetUids,
                                            @NonNull Collection<String> periodIds,
                                            @NonNull Collection<String> rootOrganisationUnitsUids,
-                                           @Nullable Date lastUpdated,
+                                           @Nullable String lastUpdatedStr,
                                            @NonNull APICallExecutor apiCallExecutor) {
         this.totalDataSetUids = dataSetUids;
         this.totalPeriodIds = periodIds;
         this.totalRootOrganisationUnitsUids = rootOrganisationUnitsUids;
-        this.lastUpdated = lastUpdated;
+        this.lastUpdatedStr = lastUpdatedStr;
         this.apiCallExecutor = apiCallExecutor;
 
         this.queryLengthAvailableAfterIncludingPeriodIds =
@@ -172,7 +171,7 @@ abstract class DataSetCompleteRegistrationCallFetcher implements CallFetcher<Dat
             Collection<String> organisationUnitUids) throws D2Error {
 
         DataSetCompleteRegistrationQuery dataSetCompleteRegistrationQuery =
-                DataSetCompleteRegistrationQuery.create(dataSetUids, periodUids, organisationUnitUids, lastUpdated);
+                DataSetCompleteRegistrationQuery.create(dataSetUids, periodUids, organisationUnitUids, lastUpdatedStr);
 
         DataSetCompleteRegistrationPayload dataSetCompleteRegistrationPayload =
                 apiCallExecutor.executeObjectCall(getCall(dataSetCompleteRegistrationQuery));

@@ -32,8 +32,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.dataset.DataSetElement;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -44,15 +47,27 @@ class AggregatedDataSyncLastUpdatedCalculator {
 
     @Inject
     AggregatedDataSyncLastUpdatedCalculator() {
-
     }
 
-    Date getLastUpdated(@NonNull DataSet dataSet, @Nullable AggregatedDataSync syncValue) {
-        if (syncValue == null) {
+    Date getLastUpdated(@Nullable AggregatedDataSync syncValue, @NonNull DataSet dataSet, @NonNull int pastPeriods,
+                        @NonNull int futurePeriods, @NonNull int organisationUnitHash) {
+        if (syncValue == null ||
+                syncValue.periodType() != dataSet.periodType() ||
+                syncValue.futurePeriods() < futurePeriods ||
+                syncValue.pastPeriods() < pastPeriods ||
+                syncValue.dataElementsHash() != getDataSetDataElementsHash(dataSet) ||
+                syncValue.organisationUnitsHash() != organisationUnitHash) {
             return null;
         } else {
-            // TODO INVALIDATE LAST UPDATED IF DOESN'T MATCH
             return syncValue.lastUpdated();
         }
+    }
+
+    int getDataSetDataElementsHash(DataSet dataSet) {
+        Set<String> dataElementUids = new HashSet<>(dataSet.dataSetElements().size());
+        for (DataSetElement dse : dataSet.dataSetElements()) {
+            dataElementUids.add(dse.dataElement().uid());
+        }
+        return dataElementUids.hashCode();
     }
 }

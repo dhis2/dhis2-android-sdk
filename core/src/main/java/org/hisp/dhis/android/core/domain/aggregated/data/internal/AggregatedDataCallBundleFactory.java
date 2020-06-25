@@ -31,19 +31,21 @@ package org.hisp.dhis.android.core.domain.aggregated.data.internal;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetCollectionRepository;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRepository;
 import org.hisp.dhis.android.core.period.Period;
 import org.hisp.dhis.android.core.period.internal.PeriodForDataSetManager;
 import org.hisp.dhis.android.core.settings.DataSetSetting;
 import org.hisp.dhis.android.core.settings.DataSetSettings;
 import org.hisp.dhis.android.core.settings.DataSetSettingsObjectRepository;
-import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -53,7 +55,7 @@ import dagger.Reusable;
 class AggregatedDataCallBundleFactory {
 
     private final DataSetCollectionRepository dataSetRepository;
-    private final UserOrganisationUnitLinkStore organisationUnitStore;
+    private final OrganisationUnitCollectionRepository organisationUnitRepository;
     private final DataSetSettingsObjectRepository dataSetSettingsObjectRepository;
     private final PeriodForDataSetManager periodManager;
     private final ObjectWithoutUidStore<AggregatedDataSync> aggregatedDataSyncStore;
@@ -61,13 +63,13 @@ class AggregatedDataCallBundleFactory {
 
     @Inject
     AggregatedDataCallBundleFactory(DataSetCollectionRepository dataSetRepository,
-                                    UserOrganisationUnitLinkStore organisationUnitStore,
+                                    OrganisationUnitCollectionRepository organisationUnitRepository,
                                     DataSetSettingsObjectRepository dataSetSettingsObjectRepository,
                                     PeriodForDataSetManager periodManager,
                                     ObjectWithoutUidStore<AggregatedDataSync> aggregatedDataSyncStore,
                                     AggregatedDataSyncLastUpdatedCalculator lastUpdatedCalculator) {
         this.dataSetRepository = dataSetRepository;
-        this.organisationUnitStore = organisationUnitStore;
+        this.organisationUnitRepository = organisationUnitRepository;
         this.dataSetSettingsObjectRepository = dataSetSettingsObjectRepository;
         this.periodManager = periodManager;
         this.aggregatedDataSyncStore = aggregatedDataSyncStore;
@@ -75,13 +77,20 @@ class AggregatedDataCallBundleFactory {
     }
 
     List<AggregatedDataCallBundle> getBundles() {
-        DataSetSettings dataSetSettings = dataSetSettingsObjectRepository.blockingGet();
-        Map<String, AggregatedDataSync> syncValues = getSyncValuesByDataSetUid();
-        List<String> organisationUnitUids = Collections.unmodifiableList(
-                organisationUnitStore.queryRootCaptureOrganisationUnitUids());
-        List<DataSet> dataSets = getDataSets();
+        List<String> rootOrganisationUnitUids = organisationUnitRepository
+                .byRootOrganisationUnit(true)
+                .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
+                .blockingGetUids();
+        List<String> allOrganisationUnitUids = organisationUnitRepository
+                .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
+                .blockingGetUids();
 
-        return getBundlesInternal(dataSets, dataSetSettings, organisationUnitUids, syncValues);
+        return getBundlesInternal(
+                getDataSets(),
+                dataSetSettingsObjectRepository.blockingGet(),
+                rootOrganisationUnitUids,
+                new HashSet<>(allOrganisationUnitUids),
+                getSyncValuesByDataSetUid());
     }
 
     private Map<String, AggregatedDataSync> getSyncValuesByDataSetUid() {
@@ -96,18 +105,20 @@ class AggregatedDataCallBundleFactory {
     @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})
     List<AggregatedDataCallBundle> getBundlesInternal(Collection<DataSet> dataSets,
                                                       DataSetSettings dataSetSettings,
-                                                      List<String> organisationUnitUids,
+                                                      List<String> rootOrganisationUnitUids,
+                                                      Set<String> allOrganisationUnitUids,
                                                       Map<String, AggregatedDataSync> syncValues) {
+        int organisationUnitsHash = allOrganisationUnitUids.hashCode();
         Map<AggregatedDataCallBundleKey, List<DataSet>> keyDataSetMap = new HashMap<>();
         for (DataSet dataSet : dataSets) {
-            AggregatedDataCallBundleKey key = getBundleKey(dataSetSettings, dataSet, syncValues);
+            AggregatedDataCallBundleKey key = getBundleKey(dataSetSettings, dataSet, syncValues, organisationUnitsHash);
             if (!keyDataSetMap.containsKey(key)) {
                 keyDataSetMap.put(key, new ArrayList<>());
             }
             keyDataSetMap.get(key).add(dataSet);
         }
 
-        List<AggregatedDataCallBundle> queries = new ArrayList<>();
+        List<AggregatedDataCallBundle> bundles = new ArrayList<>();
         for (Map.Entry<AggregatedDataCallBundleKey, List<DataSet>> entry : keyDataSetMap.entrySet()) {
             AggregatedDataCallBundleKey key = entry.getKey();
             List<Period> periods = periodManager.getPeriodsInRange(key.periodType(), key.pastPeriods(), key.futurePeriods());
@@ -119,17 +130,20 @@ class AggregatedDataCallBundleFactory {
                         .key(key)
                         .dataSets(entry.getValue())
                         .periodIds(periodIds)
-                        .rootOrganisationUnitUids(organisationUnitUids)
+                        .rootOrganisationUnitUids(rootOrganisationUnitUids)
+                        .allOrganisationUnitUidsSet(allOrganisationUnitUids)
                         .build();
 
-                queries.add(bundle);
+                bundles.add(bundle);
             }
         }
-        return queries;
+        return bundles;
     }
 
-    private AggregatedDataCallBundleKey getBundleKey(DataSetSettings dataSetSettings, DataSet dataSet,
-                                                     Map<String, AggregatedDataSync> syncValues) {
+    private AggregatedDataCallBundleKey getBundleKey(DataSetSettings dataSetSettings,
+                                                     DataSet dataSet,
+                                                     Map<String, AggregatedDataSync> syncValues,
+                                                     int organisationUnitsHash) {
         int pastPeriods = getPastPeriods(dataSetSettings, dataSet);
         int futurePeriods = dataSet.openFuturePeriods() == null ? 1 : dataSet.openFuturePeriods();
         AggregatedDataSync syncValue = syncValues.get(dataSet.uid());
@@ -137,7 +151,8 @@ class AggregatedDataCallBundleFactory {
                 .periodType(dataSet.periodType())
                 .pastPeriods(pastPeriods)
                 .futurePeriods(futurePeriods)
-                .lastUpdated(lastUpdatedCalculator.getLastUpdated(dataSet, syncValue))
+                .lastUpdated(lastUpdatedCalculator.getLastUpdated(syncValue, dataSet, pastPeriods, futurePeriods,
+                        organisationUnitsHash))
             .build();
     }
 

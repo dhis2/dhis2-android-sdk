@@ -31,12 +31,12 @@ package org.hisp.dhis.android.core.domain.aggregated.data.internal;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetCollectionRepository;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRepository;
 import org.hisp.dhis.android.core.period.Period;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.period.internal.PeriodForDataSetManager;
 import org.hisp.dhis.android.core.settings.DataSetSettings;
 import org.hisp.dhis.android.core.settings.DataSetSettingsObjectRepository;
-import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,7 +47,9 @@ import org.mockito.MockitoAnnotations;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -61,7 +63,7 @@ public class AggregatedDataCallBundleFactoryShould {
     private DataSetCollectionRepository dataSetRepository;
 
     @Mock
-    private UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
+    private OrganisationUnitCollectionRepository organisationUnitRepository;
 
     @Mock
     private DataSetSettingsObjectRepository dataSetSettingsObjectRepository;
@@ -90,6 +92,8 @@ public class AggregatedDataCallBundleFactoryShould {
 
     private List<String> rootOrgUnits = Arrays.asList(ou1, ou2);
 
+    private Set<String> allOrgUnits = new HashSet<>(rootOrgUnits);
+
     private List<Period> periods = Collections.singletonList(Period.builder().periodId("202002").build());
 
     // Object to test
@@ -105,7 +109,7 @@ public class AggregatedDataCallBundleFactoryShould {
         when(periodManager.getPeriodsInRange(PeriodType.Monthly, 0, 0)).thenReturn(Collections.emptyList());
         when(periodManager.getPeriodsInRange(any(), anyInt(), anyInt())).thenReturn(periods);
 
-        bundleFactory = new AggregatedDataCallBundleFactory(dataSetRepository, userOrganisationUnitLinkStore,
+        bundleFactory = new AggregatedDataCallBundleFactory(dataSetRepository, organisationUnitRepository,
                 dataSetSettingsObjectRepository, periodManager, aggregatedDataSyncStore, lastUpdatedCalculator);
     }
 
@@ -117,7 +121,7 @@ public class AggregatedDataCallBundleFactoryShould {
         when(dataSet2.periodType()).thenReturn(PeriodType.Monthly);
 
         List<AggregatedDataCallBundle> bundles = bundleFactory.getBundlesInternal(Arrays.asList(dataSet1, dataSet2),
-                dataSetSettings, rootOrgUnits, new HashMap<>());
+                dataSetSettings, rootOrgUnits, allOrgUnits, new HashMap<>());
 
         assertThat(bundles.size()).isEqualTo(1);
         assertThat(bundles.get(0).dataSets()).contains(dataSet1, dataSet2);
@@ -131,7 +135,7 @@ public class AggregatedDataCallBundleFactoryShould {
         when(dataSet2.periodType()).thenReturn(PeriodType.Monthly);
 
         List<AggregatedDataCallBundle> bundles = bundleFactory.getBundlesInternal(Arrays.asList(dataSet1, dataSet2),
-                dataSetSettings, rootOrgUnits, new HashMap<>());
+                dataSetSettings, rootOrgUnits, allOrgUnits, new HashMap<>());
 
         assertThat(bundles.size()).isEqualTo(2);
     }

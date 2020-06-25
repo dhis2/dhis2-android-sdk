@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.dataset.DataSet;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @AutoValue
 public abstract class AggregatedDataCallBundle {
@@ -44,6 +45,8 @@ public abstract class AggregatedDataCallBundle {
     public abstract Collection<String> periodIds();
 
     public abstract Collection<String> rootOrganisationUnitUids();
+
+    public abstract Set<String> allOrganisationUnitUidsSet();
 
     public static Builder builder() {
         return new AutoValue_AggregatedDataCallBundle.Builder();
@@ -58,6 +61,8 @@ public abstract class AggregatedDataCallBundle {
         public abstract Builder periodIds(Collection<String> periodIds);
 
         public abstract Builder rootOrganisationUnitUids(Collection<String> orgUnitUids);
+
+        public abstract Builder allOrganisationUnitUidsSet(Set<String> allOrganisationUnitUidsSet);
 
         public abstract AggregatedDataCallBundle build();
     }

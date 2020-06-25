@@ -51,7 +51,7 @@ public class ResourceHandler {
     }
 
     public Date getServerDate() {
-        return this.serverDate;
+        return new Date(this.serverDate.getTime());
     }
 
     public void handleResource(Resource.Type resourceType) {

@@ -121,7 +121,8 @@ class AggregatedDataCallBundleFactory {
         List<AggregatedDataCallBundle> bundles = new ArrayList<>();
         for (Map.Entry<AggregatedDataCallBundleKey, List<DataSet>> entry : keyDataSetMap.entrySet()) {
             AggregatedDataCallBundleKey key = entry.getKey();
-            List<Period> periods = periodManager.getPeriodsInRange(key.periodType(), key.pastPeriods(), key.futurePeriods());
+            List<Period> periods = periodManager.getPeriodsInRange(key.periodType(), key.pastPeriods(),
+                    key.futurePeriods());
 
             if (!periods.isEmpty()) {
                 List<String> periodIds = selectPeriodIds(periods);

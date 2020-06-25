@@ -49,14 +49,14 @@ class AggregatedDataSyncLastUpdatedCalculator {
     AggregatedDataSyncLastUpdatedCalculator() {
     }
 
-    Date getLastUpdated(@Nullable AggregatedDataSync syncValue, @NonNull DataSet dataSet, @NonNull int pastPeriods,
-                        @NonNull int futurePeriods, @NonNull int organisationUnitHash) {
+    Date getLastUpdated(@Nullable AggregatedDataSync syncValue, @NonNull DataSet dataSet, @NonNull Integer pastPeriods,
+                        @NonNull Integer futurePeriods, @NonNull Integer organisationUnitHash) {
         if (syncValue == null ||
                 syncValue.periodType() != dataSet.periodType() ||
                 syncValue.futurePeriods() < futurePeriods ||
                 syncValue.pastPeriods() < pastPeriods ||
                 syncValue.dataElementsHash() != getDataSetDataElementsHash(dataSet) ||
-                syncValue.organisationUnitsHash() != organisationUnitHash) {
+                syncValue.organisationUnitsHash().intValue() != organisationUnitHash) {
             return null;
         } else {
             return syncValue.lastUpdated();

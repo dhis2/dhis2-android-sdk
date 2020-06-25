@@ -78,7 +78,7 @@ final class AggregatedDataCall {
     private final ObjectWithoutUidStore<AggregatedDataSync> aggregatedDataSyncStore;
     private final AggregatedDataCallBundleFactory aggregatedDataCallBundleFactory;
     private final ResourceHandler resourceHandler;
-    private final AggregatedDataSyncLastUpdatedCalculator lastUpdatedCalculator;
+    private final AggregatedDataSyncHashHelper hashHelper;
 
 
     @Inject
@@ -93,7 +93,7 @@ final class AggregatedDataCall {
                        @NonNull ObjectWithoutUidStore<AggregatedDataSync> aggregatedDataSyncStore,
                        @NonNull AggregatedDataCallBundleFactory aggregatedDataCallBundleFactory,
                        @NonNull ResourceHandler resourceHandler,
-                       @NonNull AggregatedDataSyncLastUpdatedCalculator lastUpdatedCalculator) {
+                       @NonNull AggregatedDataSyncHashHelper hashHelper) {
         this.systemInfoRepository = systemInfoRepository;
         this.dhisVersionManager = dhisVersionManager;
         this.dataValueCallFactory = dataValueCallFactory;
@@ -105,7 +105,7 @@ final class AggregatedDataCall {
 
         this.aggregatedDataCallBundleFactory = aggregatedDataCallBundleFactory;
         this.resourceHandler = resourceHandler;
-        this.lastUpdatedCalculator = lastUpdatedCalculator;
+        this.hashHelper = hashHelper;
     }
 
     Observable<D2Progress> download() {
@@ -171,7 +171,7 @@ final class AggregatedDataCall {
                         .periodType(dataSet.periodType())
                         .pastPeriods(bundle.key().pastPeriods())
                         .futurePeriods(dataSet.openFuturePeriods())
-                        .dataElementsHash(lastUpdatedCalculator.getDataSetDataElementsHash(dataSet))
+                        .dataElementsHash(hashHelper.getDataSetDataElementsHash(dataSet))
                         .organisationUnitsHash(bundle.allOrganisationUnitUidsSet().hashCode())
                         .lastUpdated(resourceHandler.getServerDate())
                         .build()

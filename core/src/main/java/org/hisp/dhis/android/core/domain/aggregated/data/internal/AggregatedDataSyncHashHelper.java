@@ -28,46 +28,28 @@
 
 package org.hisp.dhis.android.core.domain.aggregated.data.internal;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.dataset.DataSetElement;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
-class AggregatedDataSyncLastUpdatedCalculator {
-
-    private final AggregatedDataSyncHashHelper hashHelper;
+class AggregatedDataSyncHashHelper {
 
     @Inject
-    AggregatedDataSyncLastUpdatedCalculator(AggregatedDataSyncHashHelper hashHelper) {
-        this.hashHelper = hashHelper;
+    AggregatedDataSyncHashHelper() {
     }
 
-    Date getLastUpdated(@Nullable AggregatedDataSync syncValue, @NonNull DataSet dataSet, @NonNull Integer pastPeriods,
-                        @NonNull Integer futurePeriods, @NonNull Integer organisationUnitHash) {
-        if (syncValue == null ||
-                syncValue.periodType() != dataSet.periodType() ||
-                syncValue.futurePeriods() < futurePeriods ||
-                syncValue.pastPeriods() < pastPeriods ||
-                syncValue.dataElementsHash() != hashHelper.getDataSetDataElementsHash(dataSet) ||
-                syncValue.organisationUnitsHash().intValue() != organisationUnitHash) {
-            return null;
-        } else {
-            return getDateMinus24Hours(syncValue.lastUpdated());
+    int getDataSetDataElementsHash(DataSet dataSet) {
+        Set<String> dataElementUids = new HashSet<>(dataSet.dataSetElements().size());
+        for (DataSetElement dse : dataSet.dataSetElements()) {
+            dataElementUids.add(dse.dataElement().uid());
         }
-    }
-
-    private Date getDateMinus24Hours(Date date) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        cal.add(Calendar.DATE, -1);
-        return cal.getTime();
+        return dataElementUids.hashCode();
     }
 }

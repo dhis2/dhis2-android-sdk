@@ -43,6 +43,7 @@ class AggregatedDataSyncHashHelper {
 
     @Inject
     AggregatedDataSyncHashHelper() {
+        // Empty constructor for injection
     }
 
     int getDataSetDataElementsHash(DataSet dataSet) {

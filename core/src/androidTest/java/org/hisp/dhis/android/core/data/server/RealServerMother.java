@@ -32,6 +32,7 @@ public class RealServerMother {
     public static String url2_29 = "https://play.dhis2.org/2.29/";
     public static String url2_30 = "https://play.dhis2.org/2.30/";
     public static String url2_31 = "https://play.dhis2.org/2.31.9/";
+    public static String url2_31_nothing = "https://play.dhis2.org/2.31/";
     public static String url2_32 = "https://play.dhis2.org/2.32.5/";
     public static String url2_33 = "https://play.dhis2.org/2.33.4/";
     public static String url2_34 = "https://play.dhis2.org/2.34.0/";

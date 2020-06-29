@@ -31,9 +31,11 @@ package org.hisp.dhis.android.core.note;
 import org.hisp.dhis.android.core.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2Factory;
+import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
 
@@ -56,10 +58,10 @@ public class NotePostCallRealIntegrationShould extends BaseRealIntegrationTest {
         downloadUpdateAndSyncTei(RealServerMother.url2_29);
     }
 
-    //@Test
+    @Test
     public void download_tei_add_one_note_and_sync_in_2_30_or_more() throws Exception {
         d2 = D2Factory.forNewDatabase();
-        downloadUpdateAndSyncTei(RealServerMother.url2_31);
+        downloadUpdateAndSyncTei(RealServerMother.url2_31_nothing);
     }
 
     private void downloadUpdateAndSyncTei(String serverUrl) throws Exception {
@@ -74,6 +76,8 @@ public class NotePostCallRealIntegrationShould extends BaseRealIntegrationTest {
         d2.trackedEntityModule().trackedEntityInstanceDownloader().limit(100).blockingDownload();
 
         addNote();
+
+        ServerURLWrapper.setServerUrl(RealServerMother.url2_31_nothing);
 
         d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
 

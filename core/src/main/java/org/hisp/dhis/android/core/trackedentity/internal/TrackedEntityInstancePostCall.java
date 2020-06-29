@@ -60,8 +60,6 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipDeleteCall;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStore;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
-import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
@@ -103,7 +101,6 @@ public final class TrackedEntityInstancePostCall {
 
     private final APICallExecutor apiCallExecutor;
     private final RelationshipDeleteCall relationshipDeleteCall;
-    private final SystemInfoModuleDownloader systemInfoDownloader;
 
     private static final int DEFAULT_PAGE_SIZE = 10;
 
@@ -122,8 +119,7 @@ public final class TrackedEntityInstancePostCall {
                                   @NonNull IdentifiableObjectStore<Note> noteStore,
                                   @NonNull TEIWebResponseHandler teiWebResponseHandler,
                                   @NonNull APICallExecutor apiCallExecutor,
-                                  @NonNull RelationshipDeleteCall relationshipDeleteCall,
-                                  @NonNull SystemInfoModuleDownloader systemInfoDownloader) {
+                                  @NonNull RelationshipDeleteCall relationshipDeleteCall) {
         this.versionManager = versionManager;
         this.relationshipDHISVersionManager = relationshipDHISVersionManager;
         this.relationshipRepository = relationshipRepository;
@@ -139,23 +135,19 @@ public final class TrackedEntityInstancePostCall {
         this.teiWebResponseHandler = teiWebResponseHandler;
         this.apiCallExecutor = apiCallExecutor;
         this.relationshipDeleteCall = relationshipDeleteCall;
-        this.systemInfoDownloader = systemInfoDownloader;
     }
 
     public Observable<D2Progress> uploadTrackedEntityInstances(
             List<TrackedEntityInstance> filteredTrackedEntityInstances) {
         return Observable.defer(() -> {
-            List<List<TrackedEntityInstance>> trackedEntityInstancesToPost =
-                getPartitionsToSync(filteredTrackedEntityInstances);
+            List<List<TrackedEntityInstance>> teiPartitions = getPartitionsToSync(filteredTrackedEntityInstances);
 
             // if size is 0, then no need to do network request
-            if (trackedEntityInstancesToPost.isEmpty()) {
+            if (teiPartitions.isEmpty()) {
                 return Observable.empty();
             } else {
-                D2ProgressManager progressManager = new D2ProgressManager(2);
 
-                return systemInfoDownloader.downloadMetadata().andThen(Observable.create(emitter -> {
-                    emitter.onNext(progressManager.increaseProgress(SystemInfo.class, false));
+                return Observable.create(emitter -> {
 
                     String strategy;
                     if (versionManager.is2_29()) {
@@ -164,7 +156,9 @@ public final class TrackedEntityInstancePostCall {
                         strategy = "SYNC";
                     }
 
-                    for (List<TrackedEntityInstance> partition : trackedEntityInstancesToPost) {
+                    D2ProgressManager progressManager = new D2ProgressManager(teiPartitions.size());
+
+                    for (List<TrackedEntityInstance> partition : teiPartitions) {
                         partition = relationshipDeleteCall.postDeletedRelationships(partition);
 
                         TrackedEntityInstancePayload trackedEntityInstancePayload =
@@ -176,15 +170,20 @@ public final class TrackedEntityInstancePostCall {
                                             trackedEntityInstancePayload, strategy),
                                     Collections.singletonList(409), TEIWebResponse.class);
                             teiWebResponseHandler.handleWebResponse(webResponse);
+                            emitter.onNext(progressManager.increaseProgress(TrackedEntityInstance.class, false));
                         } catch (D2Error d2Error) {
                             markPartitionAs(partition, State.TO_UPDATE);
+                            if (d2Error.isOffline()) {
+                                emitter.onError(d2Error);
+                                break;
+                            } else {
+                                emitter.onNext(progressManager.increaseProgress(TrackedEntityInstance.class, false));
+                            }
                         }
-
                     }
 
-                    emitter.onNext(progressManager.increaseProgress(TrackedEntityInstance.class, true));
                     emitter.onComplete();
-                }));
+                });
             }
         });
     }

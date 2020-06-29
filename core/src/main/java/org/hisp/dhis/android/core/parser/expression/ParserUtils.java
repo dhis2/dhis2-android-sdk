@@ -165,10 +165,10 @@ public final class ParserUtils {
     }
 
     static boolean isZeroOrPositive(String value) {
-        return isNumeric(value) && Double.valueOf(value) >= 0d;
+        return isNumeric(value) && Double.parseDouble(value) >= 0d;
     }
 
-    private static boolean isNumeric(String value) {
+    public static boolean isNumeric(String value) {
         return value != null && isDouble(value) && NUMERIC_PATTERN.matcher(value).matches();
     }
 
@@ -179,5 +179,20 @@ public final class ParserUtils {
         } catch (NumberFormatException e) {
             return false;
         }
+    }
+
+    public static String fromDouble(Double value) {
+        if (value != null && !Double.isNaN(value)) {
+            Double rounded = getRounded(value, 2);
+            return String.valueOf(rounded).replaceAll("\\.0+$", "");
+        }
+
+        return "";
+    }
+
+    private static double getRounded(double value, int decimals) {
+        final double factor = Math.pow(10, decimals);
+
+        return Math.round(value * factor) / factor;
     }
 }

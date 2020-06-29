@@ -28,29 +28,19 @@ package org.hisp.dhis.android.core.program.programindicatorengine.parser.variabl
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
 import org.hisp.dhis.android.core.program.programindicatorengine.DateUtils;
+import org.hisp.dhis.android.core.program.programindicatorengine.parser.ProgramExpressionItem;
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
 
-import java.util.List;
-import java.util.Map;
-
 public class vEventDate
-        implements ExpressionItem {
+        extends ProgramExpressionItem {
 
     @Override
     public Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor) {
-        Enrollment enrollment = visitor.getProgramIndicatorContext().enrollment();
-        Map<String, List<Event>> events = visitor.getProgramIndicatorContext().events();
+        Event singleEvent = getSingleEvent(visitor);
 
-        if (enrollment == null && events.size() == 1 && events.values().iterator().next().size() == 1) {
-            Event singleEvent = events.values().iterator().next().get(0);
-            return DateUtils.getMediumDateString(singleEvent.eventDate());
-        }
-
-        return null;
+        return singleEvent == null ? null : DateUtils.getMediumDateString(singleEvent.eventDate());
     }
 }

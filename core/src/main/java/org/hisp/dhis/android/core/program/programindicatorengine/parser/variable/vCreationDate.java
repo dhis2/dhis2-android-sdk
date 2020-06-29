@@ -28,23 +28,26 @@ package org.hisp.dhis.android.core.program.programindicatorengine.parser.variabl
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
+import org.hisp.dhis.android.core.program.programindicatorengine.DateUtils;
+import org.hisp.dhis.android.core.program.programindicatorengine.parser.ProgramExpressionItem;
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
 
-/**
- * Program indicator variable: creation date
- *
- * @author Jim Grace
- */
 public class vCreationDate
-        implements ExpressionItem {
+        extends ProgramExpressionItem {
 
     @Override
     public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
+        Enrollment enrollment = visitor.getProgramIndicatorContext().enrollment();
 
-        //TODO Add completed date to enrollment
+        if (enrollment == null) {
+            Event singleEvent = getSingleEvent(visitor);
 
-        return null;
+            return singleEvent == null ? null : DateUtils.getMediumDateString(singleEvent.created());
+        } else {
+            return DateUtils.getMediumDateString(enrollment.created());
+        }
     }
 }

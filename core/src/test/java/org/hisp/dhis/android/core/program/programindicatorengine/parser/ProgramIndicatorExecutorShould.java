@@ -193,11 +193,11 @@ public class ProgramIndicatorExecutorShould {
                 var("value_count"));
 
         when(dataValue1.value()).thenReturn("4.5");
-        when(dataValue2_1.value()).thenReturn("1.5");
+        when(dataValue2_1.value()).thenReturn("1.9");
         when(dataValue2_2.value()).thenReturn("20.5");
 
         String resultNone = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression());
-        assertThat(resultNone).isEqualTo("3.0");
+        assertThat(resultNone).isEqualTo("3.2");
     }
 
     @Test
@@ -214,10 +214,11 @@ public class ProgramIndicatorExecutorShould {
 
     @Test
     public void evaluate_event_count() {
-        setExpression(var("event_count"));
+        setExpression(de(programStage1, dataElement1) + " / " + var("event_count"));
+        when(dataValue1.value()).thenReturn("10");
 
         String resultNone = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression());
-        assertThat(resultNone).isEqualTo("3");
+        assertThat(resultNone).isEqualTo("3.33");
     }
 
     @Test

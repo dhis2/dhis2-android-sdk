@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.program.programindicatorengine.parser.ProgramE
 import org.hisp.dhis.antlr.ParserExceptionWithoutContext;
 
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.V_CREATION_DATE;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.V_CURRENT_DATE;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.V_DUE_DATE;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.V_ENROLLMENT_COUNT;
@@ -57,6 +58,7 @@ public class ProgramVariableItem
             .put(V_EVENT_DATE, new vEventDate())
             .put(V_DUE_DATE, new vDueDate())
             .put(V_CURRENT_DATE, new vCurrentDate())
+            .put(V_CREATION_DATE, new vCreationDate())
 
             .put(V_ENROLLMENT_STATUS, new vEnrollmentStatus())
             .put(V_ENROLLMENT_COUNT, new vEnrollmentCount())

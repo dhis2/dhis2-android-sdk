@@ -40,6 +40,6 @@ public class vEnrollmentCount
     public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
         Enrollment enrollment = visitor.getProgramIndicatorContext().enrollment();
 
-        return enrollment == null ? 0.0 : 1.0;
+        return enrollment == null ? String.valueOf(0) : String.valueOf(1);
     }
 }

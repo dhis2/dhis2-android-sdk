@@ -54,7 +54,13 @@ public class ProgramIndicatorExecutor {
 
         Object result = Parser.visit(expression, visitor);
 
-        return AntlrParserUtils.castString(result);
+        String resultStr = AntlrParserUtils.castString(result);
+
+        if (ParserUtils.isNumeric(resultStr)) {
+            return ParserUtils.fromDouble(Double.valueOf(resultStr));
+        } else {
+            return resultStr;
+        }
     }
 
     public int getValueCount(String expression) {

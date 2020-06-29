@@ -28,12 +28,18 @@ package org.hisp.dhis.android.core.program.programindicatorengine.parser;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
 import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
 import org.hisp.dhis.android.core.program.programindicatorengine.parser.dataitem.ProgramItemAttribute;
 import org.hisp.dhis.android.core.program.programindicatorengine.parser.dataitem.ProgramItemPsEventdate;
 import org.hisp.dhis.android.core.program.programindicatorengine.parser.dataitem.ProgramItemStageElement;
 import org.hisp.dhis.android.core.program.programindicatorengine.parser.variable.ProgramVariableItem;
 import org.hisp.dhis.antlr.ParserExceptionWithoutContext;
+
+import java.util.List;
+import java.util.Map;
 
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
 
@@ -58,5 +64,15 @@ public abstract class ProgramExpressionItem
         }
 
         throw new ParserExceptionWithoutContext("Illegal argument in program indicator expression: " + ctx.getText());
+    }
+
+    protected Event getSingleEvent(CommonExpressionVisitor visitor) {
+        Enrollment enrollment = visitor.getProgramIndicatorContext().enrollment();
+        Map<String, List<Event>> events = visitor.getProgramIndicatorContext().events();
+
+        if (enrollment == null && events.size() == 1 && events.values().iterator().next().size() == 1) {
+           return events.values().iterator().next().get(0);
+        }
+        return null;
     }
 }

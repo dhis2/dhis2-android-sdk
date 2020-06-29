@@ -29,15 +29,8 @@
 package org.hisp.dhis.android.core.program.programindicatorengine;
 
 import org.joda.time.DateTime;
-import org.joda.time.Months;
-import org.joda.time.Years;
-
-import java.text.ParseException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static org.hisp.dhis.android.core.program.programindicatorengine.DateUtils.getMediumDateString;
-import static org.hisp.dhis.android.core.program.programindicatorengine.StringUtils.isEmpty;
 
 /**
  * This class has been copied/pasted from Android Tracker Capture SDK. Non-compatible methods have been commented out.

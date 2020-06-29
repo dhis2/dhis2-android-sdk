@@ -176,4 +176,15 @@ public interface ExpressionItem
     default Object regenerate(ExprContext ctx, CommonExpressionVisitor visitor) {
         return visitor.regenerateAllChildren(ctx);
     }
+
+    /**
+     * Method used to evaluate count variables where some items should behave differently.
+     *
+     * @param ctx       the expression context
+     * @param visitor   the tree visitor
+     * @return          value to be returned during a count action
+     */
+    default Object count(ExprContext ctx, CommonExpressionVisitor visitor) {
+        return evaluate(ctx, visitor);
+    }
 }

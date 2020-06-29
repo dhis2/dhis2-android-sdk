@@ -56,6 +56,7 @@ import org.hisp.dhis.android.core.parser.service.dataitem.ItemOrgUnitGroup;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.AMPERSAND_2;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.AND;
@@ -96,6 +97,10 @@ public final class ParserUtils {
 
     public final static double DOUBLE_VALUE_IF_NULL = 0.0;
 
+    private static final String NUMERIC_REGEXP = "^(-?0|-?[1-9]\\d*)(\\.\\d+)?(E(-)?\\d+)?$";
+
+    private static final Pattern NUMERIC_PATTERN = Pattern.compile(NUMERIC_REGEXP);
+
     public final static ExpressionItemMethod ITEM_GET_DESCRIPTIONS = ExpressionItem::getDescription;
 
     public final static ExpressionItemMethod ITEM_GET_IDS = ExpressionItem::getItemId;
@@ -107,6 +112,8 @@ public final class ParserUtils {
     public final static ExpressionItemMethod ITEM_GET_SQL = ExpressionItem::getSql;
 
     public final static ExpressionItemMethod ITEM_REGENERATE = ExpressionItem::regenerate;
+
+    public final static ExpressionItemMethod ITEM_VALUE_COUNT = ExpressionItem::count;
 
     public final static Map<Integer, ExpressionItem> COMMON_EXPRESSION_ITEMS;
 
@@ -155,5 +162,22 @@ public final class ParserUtils {
     }
 
     private ParserUtils() {
+    }
+
+    static boolean isZeroOrPositive(String value) {
+        return isNumeric(value) && Double.valueOf(value) >= 0d;
+    }
+
+    private static boolean isNumeric(String value) {
+        return value != null && isDouble(value) && NUMERIC_PATTERN.matcher(value).matches();
+    }
+
+    private static boolean isDouble(String value) {
+        try {
+            Double.valueOf(value);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 }

@@ -28,7 +28,16 @@ package org.hisp.dhis.android.core.program.programindicatorengine.parser.dataite
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import org.hisp.dhis.android.core.common.AggregationType;
+import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
 import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
+import org.hisp.dhis.android.core.program.programindicatorengine.parser.ProgramExpressionItem;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Program indicator expression data item ProgramItemStageElement
@@ -36,7 +45,42 @@ import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
  * @author Jim Grace
  */
 public class ProgramItemStageElement
-        implements ExpressionItem
-{
+        extends ProgramExpressionItem {
+
+    @Override
+    public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
+        String stageId = ctx.uid0.getText();
+        String dataElementId = ctx.uid1.getText();
+
+        List<Event> eventList = visitor.getProgramIndicatorContext().events().get(stageId);
+
+        String value = null;
+
+        if (eventList != null) {
+            List<TrackedEntityDataValue> candidates = new ArrayList<>();
+            for (Event event : eventList) {
+                if (event.trackedEntityDataValues() != null) {
+                    for (TrackedEntityDataValue dataValue : event.trackedEntityDataValues()) {
+                        if (dataElementId.equals(dataValue.dataElement())) {
+                            candidates.add(dataValue);
+                        }
+                    }
+                }
+            }
+
+            AggregationType aggregationType = visitor.getProgramIndicatorContext().programIndicator().aggregationType();
+
+            if (!candidates.isEmpty()) {
+                if (AggregationType.LAST.equals(aggregationType) ||
+                        AggregationType.LAST_AVERAGE_ORG_UNIT.equals(aggregationType)) {
+                    value = candidates.get(candidates.size() - 1).value();
+                } else {
+                    value = candidates.get(0).value();
+                }
+            }
+        }
+
+        return String.valueOf(visitor.handleNulls(value));
+    }
 
 }

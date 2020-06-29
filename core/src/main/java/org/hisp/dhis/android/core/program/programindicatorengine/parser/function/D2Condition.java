@@ -28,8 +28,28 @@ package org.hisp.dhis.android.core.program.programindicatorengine.parser.functio
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
 import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
+
+import static org.hisp.dhis.antlr.AntlrParserUtils.trimQuotes;
 
 public class D2Condition
         implements ExpressionItem {
+
+    @Override
+    public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
+        String testExpression = trimQuotes(ctx.stringLiteral().getText());
+
+        String valueIfTrue = visitor.castStringVisit(ctx.expr(0));
+        String valueIfFalse = visitor.castStringVisit(ctx.expr(1));
+
+        String testResult = visitor.getProgramIndicatorExecutor().getProgramIndicatorValue(testExpression);
+
+        if (testResult.equals("true")) {
+            return valueIfTrue;
+        } else {
+            return valueIfFalse;
+        }
+    }
 }

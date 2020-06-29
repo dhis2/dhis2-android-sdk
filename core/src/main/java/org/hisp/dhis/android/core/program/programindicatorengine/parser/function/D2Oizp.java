@@ -28,8 +28,17 @@ package org.hisp.dhis.android.core.program.programindicatorengine.parser.functio
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
 import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
 
 public class D2Oizp
         implements ExpressionItem {
+
+    @Override
+    public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
+        double value = Double.parseDouble(visitor.castStringVisit(ctx.expr(0)));
+
+        return value >= 0 ? String.valueOf(1) : String.valueOf(0);
+    }
 }

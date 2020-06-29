@@ -75,8 +75,7 @@ public class ProgramIndicatorEngineShould {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        programIndicatorEngine = new ProgramIndicatorEngine(programIndicatorStore,
-                constantStore);
+
 
         when(programIndicatorStore.selectByUid(programIndicatorUid)).thenReturn(programIndicator);
         when(constantStore.selectAll()).thenReturn(Arrays.asList(constant));

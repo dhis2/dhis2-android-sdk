@@ -29,8 +29,34 @@ package org.hisp.dhis.android.core.program.programindicatorengine.parser;
  */
 
 import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
+import org.hisp.dhis.android.core.program.programindicatorengine.parser.dataitem.ProgramItemAttribute;
+import org.hisp.dhis.android.core.program.programindicatorengine.parser.dataitem.ProgramItemPsEventdate;
+import org.hisp.dhis.android.core.program.programindicatorengine.parser.dataitem.ProgramItemStageElement;
+import org.hisp.dhis.android.core.program.programindicatorengine.parser.variable.ProgramVariableItem;
+import org.hisp.dhis.antlr.ParserExceptionWithoutContext;
+
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
 
 public abstract class ProgramExpressionItem
         implements ExpressionItem {
 
+    protected ProgramExpressionItem getProgramArgType(ExprContext ctx) {
+        if (ctx.psEventDate != null) {
+            return new ProgramItemPsEventdate();
+        }
+
+        if (ctx.uid1 != null) {
+            return new ProgramItemStageElement();
+        }
+
+        if (ctx.uid0 != null) {
+            return new ProgramItemAttribute();
+        }
+
+        if (ctx.programVariable() != null) {
+            return new ProgramVariableItem();
+        }
+
+        throw new ParserExceptionWithoutContext("Illegal argument in program indicator expression: " + ctx.getText());
+    }
 }

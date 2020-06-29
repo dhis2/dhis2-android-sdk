@@ -29,14 +29,23 @@ package org.hisp.dhis.android.core.program.programindicatorengine.parser.functio
  */
 
 import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
+import org.joda.time.DateTime;
 
 public class D2DaysBetween
-        implements ExpressionItem {
+        extends ProgramBetweenFunction {
 
     @Override
-    public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
-        return "2";
+    public Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor) {
+        String start = visitor.castStringVisit(ctx.expr(0));
+        String end = visitor.castStringVisit(ctx.expr(1));
+
+        if (isEmpty(start) || isEmpty(end)) {
+            return String.valueOf(0);
+        }
+        DateTime startDate = new DateTime(start);
+        DateTime endDate = new DateTime(end);
+
+        return String.valueOf((endDate.getMillis() - startDate.getMillis()) / 86400000);
     }
 }

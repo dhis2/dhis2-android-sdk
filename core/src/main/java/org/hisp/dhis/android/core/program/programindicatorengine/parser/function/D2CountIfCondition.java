@@ -28,8 +28,20 @@ package org.hisp.dhis.android.core.program.programindicatorengine.parser.functio
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
+import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
+
+import static org.hisp.dhis.antlr.AntlrParserUtils.trimQuotes;
 
 public class D2CountIfCondition
-        implements ExpressionItem {
+        extends ProgramCountFunction {
+
+    @Override
+    protected boolean countIf(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor, String value) {
+        String expression = value + trimQuotes(ctx.stringLiteral().getText());
+
+        String result = visitor.getProgramIndicatorExecutor().getProgramIndicatorValue(expression);
+
+       return result.equals("true");
+    }
 }

@@ -28,8 +28,50 @@ package org.hisp.dhis.android.core.program.programindicatorengine.parser.functio
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
+import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
+import org.hisp.dhis.android.core.program.programindicatorengine.parser.ProgramExpressionItem;
+import org.hisp.dhis.android.core.program.programindicatorengine.parser.dataitem.ProgramItemStageElement;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
+import org.hisp.dhis.antlr.ParserExceptionWithoutContext;
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
+
+import java.util.List;
 
 public abstract class ProgramCountFunction
-        implements ExpressionItem {
+        extends ProgramExpressionItem {
+
+    @Override
+    public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
+
+        validateCountFunctionArgs(ctx);
+
+        String programStage = ctx.uid0.getText();
+        String dataElement = ctx.uid1.getText();
+
+        int count = 0;
+
+        List<Event> stageEvents = visitor.getProgramIndicatorContext().events().get(programStage);
+
+        if (stageEvents != null) {
+            for (Event event : stageEvents) {
+                for (TrackedEntityDataValue dataValue : event.trackedEntityDataValues()) {
+                    if (dataElement.equals(dataValue.dataElement()) && countIf(ctx, visitor, dataValue.value())) {
+                        count++;
+                    }
+                }
+            }
+        }
+
+        return String.valueOf(count);
+    }
+
+    protected abstract boolean countIf(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor, String value);
+
+    private void validateCountFunctionArgs(ExpressionParser.ExprContext ctx) {
+        if (!(getProgramArgType(ctx) instanceof ProgramItemStageElement)) {
+            throw new ParserExceptionWithoutContext("First argument not supported for d2:count... functions: " +
+                    ctx.getText());
+        }
+    }
 }

@@ -28,8 +28,66 @@ package org.hisp.dhis.android.core.program.programindicatorengine.parser.functio
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
+import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
+import org.hisp.dhis.android.core.program.programindicatorengine.parser.ProgramExpressionItem;
+import org.hisp.dhis.android.core.program.programindicatorengine.parser.dataitem.ProgramItemAttribute;
+import org.hisp.dhis.android.core.program.programindicatorengine.parser.dataitem.ProgramItemStageElement;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
+import org.hisp.dhis.antlr.ParserExceptionWithoutContext;
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
+
+import java.util.List;
 
 public class D2HasValue
-        implements ExpressionItem {
+        extends ProgramExpressionItem {
+
+    @Override
+    public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
+
+        ProgramExpressionItem programExpressionItem = getProgramArgType(ctx);
+
+        if (programExpressionItem instanceof ProgramItemStageElement) {
+            return hasProgramItemStageElement(ctx, visitor);
+        } else if (programExpressionItem instanceof ProgramItemAttribute) {
+            return hasProgramAttribute(ctx, visitor);
+        } else {
+            throw new ParserExceptionWithoutContext("First argument not supported for d2:hasValue... function:" +
+                    ctx.getText());
+        }
+    }
+
+    private Object hasProgramAttribute(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
+        String attribute = ctx.uid0.getText();
+
+        for (TrackedEntityAttributeValue attributeValue :
+                visitor.getProgramIndicatorContext().attributeValues().values()) {
+            if (attribute.equals(attributeValue.trackedEntityAttribute()) && attributeValue.value() != null) {
+                return String.valueOf(true);
+            }
+        }
+
+        return String.valueOf(false);
+    }
+
+    private Object hasProgramItemStageElement(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
+        String programStage = ctx.uid0.getText();
+        String dataElement = ctx.uid1.getText();
+
+        List<Event> stageEvents = visitor.getProgramIndicatorContext().events().get(programStage);
+
+        if (stageEvents == null) {
+            return String.valueOf(false);
+        }
+
+        for (Event event : stageEvents) {
+            for (TrackedEntityDataValue dataValue : event.trackedEntityDataValues()) {
+                if (dataElement.equals(dataValue.dataElement()) && dataValue.value() != null) {
+                    return String.valueOf(true);
+                }
+            }
+        }
+        return String.valueOf(false);
+    }
 }

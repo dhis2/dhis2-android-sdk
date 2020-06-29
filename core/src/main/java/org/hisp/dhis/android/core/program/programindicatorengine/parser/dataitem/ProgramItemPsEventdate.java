@@ -28,7 +28,7 @@ package org.hisp.dhis.android.core.program.programindicatorengine.parser.dataite
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
+import org.hisp.dhis.android.core.program.programindicatorengine.parser.ProgramExpressionItem;
 
 /**
  * Program indicator expression data item PS_EVENTDATE: programStageUid
@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
  * @author Jim Grace
  */
 public class ProgramItemPsEventdate
-        implements ExpressionItem
-{
+        extends ProgramExpressionItem {
 
 }

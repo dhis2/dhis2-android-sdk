@@ -32,39 +32,54 @@ package org.hisp.dhis.android.core.program.programindicatorengine.parser;
 import org.hisp.dhis.android.core.constant.Constant;
 import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
 import org.hisp.dhis.android.core.parser.expression.ExpressionItemMethod;
+import org.hisp.dhis.android.core.parser.expression.ParserUtils;
+import org.hisp.dhis.antlr.AntlrParserUtils;
 import org.hisp.dhis.antlr.Parser;
 
 import java.util.Map;
 
 public class ProgramIndicatorExecutor {
 
-    private ExpressionItemMethod itemMethod;
     private Map<String, Constant> constantMap;
     private ProgramIndicatorContext programIndicatorContext;
 
-    ProgramIndicatorExecutor(ExpressionItemMethod itemMethod,
-                             Map<String, Constant> constantMap,
+    ProgramIndicatorExecutor(Map<String, Constant> constantMap,
                              ProgramIndicatorContext programIndicatorContext) {
-        this.itemMethod = itemMethod;
         this.constantMap = constantMap;
         this.programIndicatorContext = programIndicatorContext;
     }
 
     public String getProgramIndicatorValue(String expression) {
-
-        CommonExpressionVisitor visitor = newVisitor();
+        CommonExpressionVisitor visitor = newVisitor(ParserUtils.ITEM_EVALUATE);
 
         Object result = Parser.visit(expression, visitor);
 
-        return "" + result;
+        return AntlrParserUtils.castString(result);
     }
 
-    private CommonExpressionVisitor newVisitor() {
+    public int getValueCount(String expression) {
+        return getCountVisitor(expression).getItemValuesFound();
+    }
+
+    public int getZeroPosValueCount(String expression) {
+        return getCountVisitor(expression).getItemZeroPosValuesFound();
+    }
+
+    private CommonExpressionVisitor getCountVisitor(String expression) {
+        CommonExpressionVisitor visitor = newVisitor(ParserUtils.ITEM_VALUE_COUNT);
+
+        Parser.visit(expression, visitor);
+
+        return visitor;
+    }
+
+    private CommonExpressionVisitor newVisitor(ExpressionItemMethod itemMethod) {
         return CommonExpressionVisitor.newBuilder()
                 .withItemMap(ProgramIndicatorParserUtils.PROGRAM_INDICATOR_EXPRESSION_ITEMS)
                 .withItemMethod(itemMethod)
                 .withConstantMap(constantMap)
                 .withProgramIndicatorContext(programIndicatorContext)
+                .withProgramIndicatorExecutor(this)
                 .buildForProgramIndicator();
     }
 }

@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.android.core.parser.service.dataitem.DimensionalItemId;
 import org.hisp.dhis.android.core.program.programindicatorengine.parser.ProgramIndicatorContext;
+import org.hisp.dhis.android.core.program.programindicatorengine.parser.ProgramIndicatorExecutor;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.antlr.AntlrExpressionVisitor;
 import org.hisp.dhis.antlr.ParserExceptionWithoutContext;
@@ -118,22 +119,28 @@ public class CommonExpressionVisitor
     /**
      * Count of dimension items found.
      */
-    private int itemsFound;
+    private int itemsFound = 0;
 
     /**
      * Count of dimension item values found.
      */
-    private int itemValuesFound;
+    private int itemValuesFound = 0;
+
+    /**
+     * Count of zero or positive dimension item values found.
+     */
+    private int itemZeroPosValuesFound = 0;
 
     /**
      * Default value for data type double.
      */
     public static final double DEFAULT_DOUBLE_VALUE = 1d;
 
-
     // Program indicators
 
-    public ProgramIndicatorContext programIndicatorContext;
+    private ProgramIndicatorContext programIndicatorContext;
+
+    private ProgramIndicatorExecutor programIndicatorExecutor;
 
 
     // -------------------------------------------------------------------------
@@ -142,11 +149,6 @@ public class CommonExpressionVisitor
 
     protected CommonExpressionVisitor() {
         // This constructor is intentionally empty.
-    }
-
-    protected CommonExpressionVisitor(ExpressionItemMethod itemMethod, Map<Integer, ExpressionItem> itemMap) {
-        this.itemMethod = itemMethod;
-        this.itemMap = itemMap;
     }
 
     /**
@@ -228,6 +230,9 @@ public class CommonExpressionVisitor
                 return DOUBLE_VALUE_IF_NULL;
             } else {
                 itemValuesFound++;
+                if (ParserUtils.isZeroOrPositive(value.toString())) {
+                    itemZeroPosValuesFound++;
+                }
             }
         }
 
@@ -313,6 +318,18 @@ public class CommonExpressionVisitor
         return itemValuesFound;
     }
 
+    public int getItemZeroPosValuesFound() {
+        return itemZeroPosValuesFound;
+    }
+
+    public ProgramIndicatorContext getProgramIndicatorContext() {
+        return programIndicatorContext;
+    }
+
+    public ProgramIndicatorExecutor getProgramIndicatorExecutor() {
+        return programIndicatorExecutor;
+    }
+
     // -------------------------------------------------------------------------
     // Builder
     // -------------------------------------------------------------------------
@@ -362,6 +379,11 @@ public class CommonExpressionVisitor
             return this;
         }
 
+        public Builder withProgramIndicatorExecutor(ProgramIndicatorExecutor programIndicatorExecutor) {
+            this.visitor.programIndicatorExecutor = programIndicatorExecutor;
+            return this;
+        }
+
         private CommonExpressionVisitor validateCommonProperties() {
             Validate.notNull(this.visitor.constantMap, "Missing required property 'constantMap'");
             Validate.notNull(this.visitor.itemMap, "Missing required property 'itemMap'");
@@ -383,6 +405,8 @@ public class CommonExpressionVisitor
         public CommonExpressionVisitor buildForProgramIndicator() {
             Validate.notNull(this.visitor.programIndicatorContext, "Missing required property " +
                     "'programIndicatorContext'");
+            Validate.notNull(this.visitor.programIndicatorExecutor, "Missing required property " +
+                    "'programIndicatorExecutor'");
 
             return validateCommonProperties();
         }

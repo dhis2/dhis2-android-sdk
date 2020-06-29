@@ -28,29 +28,12 @@ package org.hisp.dhis.android.core.program.programindicatorengine.parser.functio
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
 import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
-
-import static org.hisp.dhis.antlr.AntlrParserUtils.castString;
-import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
 
 public abstract class ProgramBetweenFunction
         implements ExpressionItem {
 
-    @Override
-    public final Object getSql(ExprContext ctx, CommonExpressionVisitor visitor) {
-        String startDate = castString(visitor.visitAllowingNulls(ctx.expr(0)));
-        String endDate = castString(visitor.visitAllowingNulls(ctx.expr(1)));
-
-        return getSqlBetweenDates(startDate, endDate);
+    boolean isEmpty(CharSequence charSequence) {
+        return charSequence == null || charSequence.length() == 0;
     }
-
-    /**
-     * Generate SQL to compare dates, based on the time/date unit to compare.
-     *
-     * @param startDate starting date
-     * @param endDate   ending date
-     * @return the SQL to compare the dates based on the time/date unit
-     */
-    public abstract Object getSqlBetweenDates(String startDate, String endDate);
 }

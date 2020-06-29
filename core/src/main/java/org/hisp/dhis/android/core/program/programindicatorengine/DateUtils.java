@@ -34,7 +34,7 @@ import java.util.Date;
 /**
  * @author Lars Helge Overland
  */
-final class DateUtils {
+public final class DateUtils {
 
     static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
 
@@ -48,7 +48,7 @@ final class DateUtils {
      * @param date the Date to parse.
      * @return A formatted date string. Null if argument is null.
      */
-    static String getMediumDateString(Date date) {
+    public static String getMediumDateString(Date date) {
         final SimpleDateFormat format = new SimpleDateFormat();
 
         format.applyPattern(DEFAULT_DATE_FORMAT);

@@ -28,8 +28,22 @@ package org.hisp.dhis.android.core.program.programindicatorengine.parser.functio
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import org.apache.commons.lang3.StringUtils;
+import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
 import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
 
-public class D2RelationshipCount
+import static org.hisp.dhis.antlr.AntlrParserUtils.castDouble;
+
+public class D2Substring
         implements ExpressionItem {
+
+    @Override
+    public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
+        String originalString = visitor.castStringVisit(ctx.expr(0));
+        return StringUtils.substring(
+                originalString == null ? "" : originalString,
+                castDouble(visitor.castStringVisit(ctx.expr(1))).intValue(),
+                castDouble(visitor.castStringVisit(ctx.expr(2))).intValue());
+    }
 }

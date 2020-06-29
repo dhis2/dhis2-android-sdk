@@ -29,54 +29,70 @@
 package org.hisp.dhis.android.core.program.programindicatorengine.parser;
 
 
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.constant.Constant;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
+import org.hisp.dhis.android.core.event.internal.EventStore;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
+import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.hisp.dhis.android.core.program.ProgramStageTableInfo.Columns.PROGRAM;
+
 public class ProgramIndicatorEngine {
 
-    private IdentifiableObjectStore<Constant> constantStore;
-
-    private ObjectWithoutUidStore<TrackedEntityAttributeValue> trackedEntityAttributeValueStore;
-
     private IdentifiableObjectStore<ProgramIndicator> programIndicatorStore;
+    private IdentifiableObjectStore<Constant> constantStore;
+    private IdentifiableObjectStore<Enrollment> enrollmentStore;
+    private EventStore eventStore;
+    private IdentifiableObjectStore<ProgramStage> programStageStore;
+    private TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
 
     ProgramIndicatorEngine(IdentifiableObjectStore<ProgramIndicator> programIndicatorStore,
-                           ObjectWithoutUidStore<TrackedEntityAttributeValue> trackedEntityAttributeValueStore,
+                           IdentifiableObjectStore<Enrollment> enrollmentStore,
+                           EventStore eventStore,
+                           IdentifiableObjectStore<ProgramStage> programStageStore,
+                           TrackedEntityAttributeValueStore trackedEntityAttributeValueStore,
                            IdentifiableObjectStore<Constant> constantStore) {
         this.programIndicatorStore = programIndicatorStore;
+        this.enrollmentStore = enrollmentStore;
+        this.eventStore = eventStore;
+        this.programStageStore = programStageStore;
         this.trackedEntityAttributeValueStore = trackedEntityAttributeValueStore;
         this.constantStore = constantStore;
     }
 
-    public String getProgramIndicatorValue(String enrollment, String event, String programIndicatorUid) {
+    public String getProgramIndicatorValue(String enrollmentUid, String eventUid, String programIndicatorUid) {
         ProgramIndicator programIndicator = programIndicatorStore.selectByUid(programIndicatorUid);
 
-        if (programIndicator == null) {
-            return "";
+        if (programIndicator == null || (enrollmentUid == null && eventUid == null)) {
+            return null;
         }
 
-        ProgramIndicatorContext programIndicatorContext = ProgramIndicatorContext.builder()
-                .programIndicator(programIndicator)
-                .enrollmentUid(enrollment)
-                .attributeValues(getAttributeValues(enrollment))
-                .events()
-                .build();
+        ProgramIndicatorContext.Builder contextBuilder = ProgramIndicatorContext.builder()
+                .programIndicator(programIndicator);
+
+        if (enrollmentUid == null) {
+            contextBuilder.events(getSingleEvent(eventUid));
+        } else {
+            Enrollment enrollment = enrollmentStore.selectByUid(enrollmentUid);
+            contextBuilder
+                    .attributeValues(getAttributeValues(enrollment.trackedEntityInstance()))
+                    .events(getEvents(enrollment));
+        }
 
         ProgramIndicatorExecutor executor = new ProgramIndicatorExecutor(
-                ExpressionItem::evaluate,
                 getConstantMap(),
-                programIndicatorContext);
-
+                contextBuilder.build());
 
         return executor.getProgramIndicatorValue(programIndicator.expression());
     }
@@ -86,10 +102,10 @@ public class ProgramIndicatorEngine {
         return UidsHelper.mapByUid(constants);
     }
 
-    private Map<String, TrackedEntityAttributeValue> getAttributeValues(String enrollmentUid) {
+    private Map<String, TrackedEntityAttributeValue> getAttributeValues(String teiUid) {
         Map<String, TrackedEntityAttributeValue> attributeToAttributeValues = new HashMap<>();
         List<TrackedEntityAttributeValue> trackedEntityAttributeValues =
-                trackedEntityAttributeValueStore.queryByTrackedEntityInstance(tei);
+                trackedEntityAttributeValueStore.queryByTrackedEntityInstance(teiUid);
         if (trackedEntityAttributeValues != null) {
             for (TrackedEntityAttributeValue value : trackedEntityAttributeValues) {
                 attributeToAttributeValues.put(value.trackedEntityAttribute(), value);
@@ -98,8 +114,31 @@ public class ProgramIndicatorEngine {
         return attributeToAttributeValues;
     }
 
-    private Map<String, List<Event>> getEvents(String enrollmentUid) {
+    private Map<String, List<Event>> getEvents(Enrollment enrollment) {
+        String programClause = new WhereClauseBuilder()
+                .appendKeyStringValue(PROGRAM, enrollment.program())
+                .build();
+        List<String> programStageUids = programStageStore.selectUidsWhere(programClause);
 
+        Map<String, List<Event>> eventMap = new HashMap<>();
+        for (String programStageUid : programStageUids)
+            eventMap.put(
+                    programStageUid,
+                    eventStore.queryOrderedForEnrollmentAndProgramStage(enrollment.uid(), programStageUid, false)
+            );
+        return eventMap;
+    }
+
+    private Map<String, List<Event>> getSingleEvent(String eventUid) {
+        Map<String, List<Event>> eventMap = new HashMap<>();
+
+        Event event = eventStore.selectByUid(eventUid);
+
+        if (event != null) {
+            eventMap.put(event.programStage(), Collections.singletonList(event));
+        }
+
+        return eventMap;
     }
 
 }

@@ -28,40 +28,26 @@ package org.hisp.dhis.android.core.program.programindicatorengine.parser.dataite
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
 import org.hisp.dhis.android.core.program.programindicatorengine.parser.ProgramExpressionItem;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.antlr.ParserExceptionWithoutContext;
 
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.UID;
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE;
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
 
-/**
- * Program indicator expression data item ProgramAttribute
- *
- * @author Jim Grace
- */
 public class ProgramItemAttribute
         extends ProgramExpressionItem {
 
     @Override
     public Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor) {
         String attributeUid = getProgramAttributeId(ctx);
-        String teiQuery = visitor.programIndicatorContext.enrollmentUid();
-
-        WhereClauseBuilder clauseBuilder = new WhereClauseBuilder()
-                .appendKeyStringValue(TRACKED_ENTITY_ATTRIBUTE, attributeUid)
-                .appendInSubQuery(TRACKED_ENTITY_INSTANCE, getTrackedEntityInstanceQuery(teiQuery));
 
         TrackedEntityAttributeValue attributeValue =
-                visitor.getTrackedEntityAttributeValueStore().selectOneWhere(clauseBuilder.build());
+                visitor.getProgramIndicatorContext().attributeValues().get(attributeUid);
 
         String value = attributeValue == null ? null : attributeValue.value();
-        return visitor.handleNulls(value);
+
+        return String.valueOf(visitor.handleNulls(value));
     }
 
 
@@ -83,13 +69,5 @@ public class ProgramItemAttribute
         }
 
         return ctx.uid0.getText();
-    }
-
-    private String getTrackedEntityInstanceQuery(String enrollmentUid) {
-        return String.format("SELECT %s FROM %s WHERE %s = %s",
-                EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
-                EnrollmentTableInfo.TABLE_INFO.name(),
-                UID,
-                enrollmentUid);
     }
 }

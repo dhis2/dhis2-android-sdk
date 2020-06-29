@@ -39,12 +39,12 @@ public class DynamicServerURLInterceptor implements Interceptor {
 
     @Override
     public Response intercept(Chain chain) throws IOException {
-        Request request = chain.request();
+        return chain.proceed(transformRequest(chain.request()));
+    }
 
+    static Request transformRequest(Request request) {
         HttpUrl newUrl = HttpUrl.parse(ServerURLWrapper.getServerUrl() + "/api/"
                 + ServerURLWrapper.extractAfterAPI(request.url().toString()));
-        Request newRequest = request.newBuilder().url(newUrl).build();
-
-        return chain.proceed(newRequest);
+        return request.newBuilder().url(newUrl).build();
     }
 }

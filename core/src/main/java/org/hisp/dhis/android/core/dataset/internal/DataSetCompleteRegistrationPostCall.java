@@ -40,8 +40,6 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary;
 import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -61,7 +59,6 @@ public final class DataSetCompleteRegistrationPostCall {
     private final DataSetCompleteRegistrationService dataSetCompleteRegistrationService;
     private final DataSetCompleteRegistrationImportHandler dataSetCompleteRegistrationImportHandler;
     private final APICallExecutor apiCallExecutor;
-    private final SystemInfoModuleDownloader systemInfoDownloader;
     private final CategoryOptionComboCollectionRepository categoryOptionComboCollectionRepository;
     private final DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore;
 
@@ -70,14 +67,12 @@ public final class DataSetCompleteRegistrationPostCall {
             @NonNull DataSetCompleteRegistrationService dataSetCompleteRegistrationService,
             @NonNull DataSetCompleteRegistrationImportHandler dataSetCompleteRegistrationImportHandler,
             @NonNull APICallExecutor apiCallExecutor,
-            @NonNull SystemInfoModuleDownloader systemInfoDownloader,
             @NonNull CategoryOptionComboCollectionRepository categoryOptionCollectionRepository,
             @NonNull DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore) {
 
         this.dataSetCompleteRegistrationService = dataSetCompleteRegistrationService;
         this.dataSetCompleteRegistrationImportHandler = dataSetCompleteRegistrationImportHandler;
         this.apiCallExecutor = apiCallExecutor;
-        this.systemInfoDownloader = systemInfoDownloader;
         this.categoryOptionComboCollectionRepository = categoryOptionCollectionRepository;
         this.dataSetCompleteRegistrationStore = dataSetCompleteRegistrationStore;
     }
@@ -99,14 +94,12 @@ public final class DataSetCompleteRegistrationPostCall {
                     }
                 }
 
-                D2ProgressManager progressManager = new D2ProgressManager(2);
+                D2ProgressManager progressManager = new D2ProgressManager(1);
 
-                return systemInfoDownloader.downloadMetadata().andThen(Observable.create(emitter -> {
-                    emitter.onNext(progressManager.increaseProgress(SystemInfo.class, false));
-
-                    uploadInternal(progressManager, emitter, toPostDataSetCompleteRegistrations,
-                            toDeleteDataSetCompleteRegistrations);
-                }));
+                return Observable.create(emitter ->
+                        uploadInternal(progressManager, emitter,
+                                toPostDataSetCompleteRegistrations,
+                                toDeleteDataSetCompleteRegistrations));
             }
         });
     }
@@ -120,40 +113,37 @@ public final class DataSetCompleteRegistrationPostCall {
         DataSetCompleteRegistrationPayload dataSetCompleteRegistrationPayload
                 = new DataSetCompleteRegistrationPayload(toPostDataSetCompleteRegistrations);
         if (!toPostDataSetCompleteRegistrations.isEmpty()) {
-            markPartitionsAs(toPostDataSetCompleteRegistrations, State.UPLOADING);
+            markObjectsAs(toPostDataSetCompleteRegistrations, State.UPLOADING);
             try {
                 dataValueImportSummary = apiCallExecutor.executeObjectCall(
                         dataSetCompleteRegistrationService.postDataSetCompleteRegistrations(
                                 dataSetCompleteRegistrationPayload));
             } catch (Exception e) {
-                markPartitionsAs(toPostDataSetCompleteRegistrations, State.ERROR);
+                markObjectsAs(toPostDataSetCompleteRegistrations, State.ERROR);
                 throw e;
             }
         }
 
         List<DataSetCompleteRegistration> deletedDataSetCompleteRegistrations = new ArrayList<>();
         List<DataSetCompleteRegistration> withErrorDataSetCompleteRegistrations = new ArrayList<>();
-        if (!toDeleteDataSetCompleteRegistrations.isEmpty()) {
-            for (DataSetCompleteRegistration dataSetCompleteRegistration
-                    : toDeleteDataSetCompleteRegistrations) {
-                try {
-                    CategoryOptionCombo coc = categoryOptionComboCollectionRepository
-                            .withCategoryOptions()
-                            .uid(dataSetCompleteRegistration.attributeOptionCombo())
-                            .blockingGet();
-                    markPartitionsAs(toDeleteDataSetCompleteRegistrations, State.UPLOADING);
-                    apiCallExecutor.executeObjectCallWithEmptyResponse(
-                            dataSetCompleteRegistrationService.deleteDataSetCompleteRegistration(
-                                    dataSetCompleteRegistration.dataSet(),
-                                    dataSetCompleteRegistration.period(),
-                                    dataSetCompleteRegistration.organisationUnit(),
-                                    coc.categoryCombo().uid(),
-                                    semicolonSeparatedCollectionValues(UidsHelper.getUids(coc.categoryOptions())),
-                                    false));
-                    deletedDataSetCompleteRegistrations.add(dataSetCompleteRegistration);
-                } catch (D2Error d2Error) {
-                    withErrorDataSetCompleteRegistrations.add(dataSetCompleteRegistration);
-                }
+        for (DataSetCompleteRegistration dataSetCompleteRegistration : toDeleteDataSetCompleteRegistrations) {
+            try {
+                CategoryOptionCombo coc = categoryOptionComboCollectionRepository
+                        .withCategoryOptions()
+                        .uid(dataSetCompleteRegistration.attributeOptionCombo())
+                        .blockingGet();
+                markObjectsAs(toDeleteDataSetCompleteRegistrations, State.UPLOADING);
+                apiCallExecutor.executeObjectCallWithEmptyResponse(
+                        dataSetCompleteRegistrationService.deleteDataSetCompleteRegistration(
+                                dataSetCompleteRegistration.dataSet(),
+                                dataSetCompleteRegistration.period(),
+                                dataSetCompleteRegistration.organisationUnit(),
+                                coc.categoryCombo().uid(),
+                                semicolonSeparatedCollectionValues(UidsHelper.getUids(coc.categoryOptions())),
+                                false));
+                deletedDataSetCompleteRegistrations.add(dataSetCompleteRegistration);
+            } catch (D2Error d2Error) {
+                withErrorDataSetCompleteRegistrations.add(dataSetCompleteRegistration);
             }
         }
 
@@ -165,8 +155,7 @@ public final class DataSetCompleteRegistrationPostCall {
         emitter.onComplete();
     }
 
-    private void markPartitionsAs(Collection<DataSetCompleteRegistration> dataSetCompleteRegistrations,
-                                           State state) {
+    private void markObjectsAs(Collection<DataSetCompleteRegistration> dataSetCompleteRegistrations, State state) {
         for (DataSetCompleteRegistration dscr : dataSetCompleteRegistrations) {
             dataSetCompleteRegistrationStore.setState(dscr, state);
         }

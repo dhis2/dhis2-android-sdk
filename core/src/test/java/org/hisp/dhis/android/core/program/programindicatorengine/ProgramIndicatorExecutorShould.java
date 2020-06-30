@@ -115,7 +115,6 @@ public class ProgramIndicatorExecutorShould {
         MockitoAnnotations.initMocks(this);
 
         constantMap.put(constantUid1, constant);
-        when(constant.uid()).thenReturn(constantUid1);
 
         attributeValueMap.put(attribute1, attributeValue1);
         attributeValueMap.put(attribute2, attributeValue2);
@@ -124,9 +123,6 @@ public class ProgramIndicatorExecutorShould {
 
         eventsMap.put(programStage1, Collections.singletonList(event1));
         eventsMap.put(programStage2, Arrays.asList(event2_1, event2_2));
-        when(event1.uid()).thenReturn(eventUid1);
-        when(event2_1.uid()).thenReturn(eventUid2_1);
-        when(event2_2.uid()).thenReturn(eventUid2_2);
 
         // Data values
         when(event1.trackedEntityDataValues()).thenReturn(Collections.singletonList(dataValue1));
@@ -176,7 +172,7 @@ public class ProgramIndicatorExecutorShould {
 
         when(dataValue1.value()).thenReturn("4.5");
         when(dataValue2_1.value()).thenReturn("0.8");
-        when(dataValue2_2.value()).thenReturn("20.5");
+        when(dataValue2_2.value()).thenReturn("20.6");
 
         when(programIndicator.aggregationType()).thenReturn(AggregationType.NONE);
         String resultNone = programIndicatorExecutor.getProgramIndicatorValue(expression);
@@ -184,7 +180,7 @@ public class ProgramIndicatorExecutorShould {
 
         when(programIndicator.aggregationType()).thenReturn(AggregationType.LAST);
         String resultLast = programIndicatorExecutor.getProgramIndicatorValue(expression);
-        assertThat(resultLast).isEqualTo("25.0");
+        assertThat(resultLast).isEqualTo("25.1");
     }
 
     @Test
@@ -194,7 +190,6 @@ public class ProgramIndicatorExecutorShould {
 
         when(dataValue1.value()).thenReturn("4.5");
         when(dataValue2_1.value()).thenReturn("1.9");
-        when(dataValue2_2.value()).thenReturn("20.5");
 
         String resultNone = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression());
         assertThat(resultNone).isEqualTo("3.2");
@@ -209,7 +204,7 @@ public class ProgramIndicatorExecutorShould {
         when(dataValue2_1.value()).thenReturn("-1.5");
 
         String resultNone = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression());
-        assertThat(resultNone).isEqualTo("6.0");
+        assertThat(resultNone).isEqualTo("6");
     }
 
     @Test
@@ -307,11 +302,11 @@ public class ProgramIndicatorExecutorShould {
 
         when(dataValue1.value()).thenReturn("8");
         String resultTrue = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression());
-        assertThat(resultTrue).isEqualTo("150.0");
+        assertThat(resultTrue).isEqualTo("150");
 
         when(dataValue1.value()).thenReturn("15");
         String resultFalse = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression());
-        assertThat(resultFalse).isEqualTo("50.0");
+        assertThat(resultFalse).isEqualTo("50");
 
     }
 

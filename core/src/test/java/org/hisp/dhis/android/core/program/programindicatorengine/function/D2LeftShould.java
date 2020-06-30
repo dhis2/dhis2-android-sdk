@@ -103,14 +103,12 @@ public class D2LeftShould {
 
     @Test(expected = ParserExceptionWithoutContext.class)
     public void throw_parser_exception_without_context_if_position_is_a_text() {
-        when(visitor.castStringVisit(mockedFirstExpr)).thenReturn("test_variable_one");
         when(visitor.castStringVisit(mockedSecondExpr)).thenReturn("text");
         left.evaluate(context, visitor);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void throw_illegal_argument_when_number_not_an_integer() {
-        when(visitor.castStringVisit(mockedFirstExpr)).thenReturn("yyyy-MM-dd");
         when(visitor.castStringVisit(mockedSecondExpr)).thenReturn("6.8");
         left.evaluate(context, visitor);
     }

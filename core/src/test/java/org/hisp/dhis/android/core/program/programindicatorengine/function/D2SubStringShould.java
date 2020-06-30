@@ -112,7 +112,6 @@ public class D2SubStringShould {
     public void throw_parser_exception_without_context_if_start_index_is_a_text() {
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn("test_variable_one");
         when(visitor.castStringVisit(mockedSecondExpr)).thenReturn("variable");
-        when(visitor.castStringVisit(mockedThirdExpr)).thenReturn("3");
 
         functionToTest.evaluate(context, visitor);
     }

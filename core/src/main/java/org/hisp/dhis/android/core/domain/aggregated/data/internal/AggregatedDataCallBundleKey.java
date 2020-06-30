@@ -26,34 +26,53 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset.internal;
+package org.hisp.dhis.android.core.domain.aggregated.data.internal;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.period.PeriodType;
 
-import java.util.Collection;
+import java.util.Date;
 
 @AutoValue
-public abstract class DataSetCompleteRegistrationQuery extends BaseQuery {
+public abstract class AggregatedDataCallBundleKey {
 
-    public abstract Collection<String> dataSetUids();
+    @NonNull
+    public abstract PeriodType periodType();
 
-    public abstract Collection<String> periodIds();
+    @NonNull
+    public abstract Integer pastPeriods();
 
-    public abstract Collection<String> rootOrgUnitUids();
+    @NonNull
+    public abstract Integer futurePeriods();
 
     @Nullable
-    public abstract String lastUpdatedStr();
+    public abstract Date lastUpdated();
 
-    public static DataSetCompleteRegistrationQuery create(Collection<String> dataSetUids,
-                                                          Collection<String> periodIds,
-                                                          Collection<String> rootOrgUnitUids,
-                                                          String lastUpdatedStr) {
+    @Nullable
+    public String lastUpdatedStr() {
+        return lastUpdated() == null ? null : BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated());
+    }
 
-        return new AutoValue_DataSetCompleteRegistrationQuery(1, BaseQuery.DEFAULT_PAGE_SIZE,
-                false, dataSetUids, periodIds, rootOrgUnitUids, lastUpdatedStr);
+    public static Builder builder() {
+        return new AutoValue_AggregatedDataCallBundleKey.Builder();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+
+        public abstract Builder periodType(PeriodType periodType);
+
+        public abstract Builder pastPeriods(Integer pastPeriods);
+
+        public abstract Builder futurePeriods(Integer futurePeriods);
+
+        public abstract Builder lastUpdated(Date lastUpdated);
+
+        public abstract AggregatedDataCallBundleKey build();
     }
 }

@@ -31,21 +31,14 @@ package org.hisp.dhis.android.core.datavalue.internal;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
-
-import java.util.Collection;
+import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataCallBundle;
 
 @AutoValue
 public abstract class DataValueQuery extends BaseQuery {
-    public abstract Collection<String> dataSetUids();
+    public abstract AggregatedDataCallBundle bundle();
 
-    public abstract Collection<String> periodIds();
-
-    public abstract Collection<String> orgUnitUids();
-
-    public static DataValueQuery create(Collection<String> dataSetUids,
-                                        Collection<String> periodIds,
-                                        Collection<String> orgUnitUids) {
+    public static DataValueQuery create(AggregatedDataCallBundle bundle) {
         return new AutoValue_DataValueQuery(1, BaseQuery.DEFAULT_PAGE_SIZE, false,
-                dataSetUids, periodIds, orgUnitUids);
+                bundle);
     }
 }

@@ -52,7 +52,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-public final class OrganisationUnitCollectionRepository
+public class OrganisationUnitCollectionRepository
         extends ReadOnlyIdentifiableCollectionRepositoryImpl<OrganisationUnit, OrganisationUnitCollectionRepository> {
 
     @Inject

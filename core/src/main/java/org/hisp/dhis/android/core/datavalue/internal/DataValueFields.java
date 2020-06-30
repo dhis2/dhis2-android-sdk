@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.datavalue.internal;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.datavalue.DataValue;
@@ -42,8 +41,6 @@ public final class DataValueFields {
     public static final String DELETED = "deleted";
 
     private static FieldsHelper<DataValue> fieldsHelper = new FieldsHelper<>();
-
-    static final Field<DataValue, String> lastUpdated = fieldsHelper.lastUpdated();
 
     static final Fields<DataValue> allFields = Fields.<DataValue>builder().fields(
             fieldsHelper.<String>field(Columns.DATA_ELEMENT),

@@ -26,22 +26,28 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue.internal;
+package org.hisp.dhis.android.core.domain.aggregated.data.internal;
 
-import org.junit.Test;
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.runner.RunWith;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.getDataSetUids;
-import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.getOrgUnitUids;
-import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.getPeriodIds;
+@RunWith(D2JunitRunner.class)
+public class AggregatedDataSyncStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<AggregatedDataSync> {
 
-public class DataValueQueryShould {
+    public AggregatedDataSyncStoreIntegrationShould() {
+        super(AggregatedDataSyncStore.create(TestDatabaseAdapterFactory.get()), AggregatedDataSyncTableInfo.TABLE_INFO,
+                TestDatabaseAdapterFactory.get());
+    }
 
-    @Test
-    public void create_data_value_query_successfully() {
-        DataValueQuery dataValueQuery = DataValueQuery.create(getDataSetUids(), getPeriodIds(), getOrgUnitUids());
-        assertThat(dataValueQuery.dataSetUids()).isEqualTo(getDataSetUids());
-        assertThat(dataValueQuery.periodIds()).isEqualTo(getPeriodIds());
-        assertThat(dataValueQuery.orgUnitUids()).isEqualTo(getOrgUnitUids());
+    @Override
+    protected AggregatedDataSync buildObject() {
+        return AggregatedDataSyncSamples.get1();
+    }
+
+    @Override
+    protected AggregatedDataSync buildObjectToUpdate() {
+        return AggregatedDataSyncSamples.get2();
     }
 }

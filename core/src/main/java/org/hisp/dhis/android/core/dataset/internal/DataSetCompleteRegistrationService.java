@@ -46,6 +46,7 @@ interface DataSetCompleteRegistrationService {
     @GET("completeDataSetRegistrations")
     Call<DataSetCompleteRegistrationPayload> getDataSetCompleteRegistrations(
             @Query("fields") @Which Fields<DataSetCompleteRegistration> fields,
+            @Query("lastUpdated") String lastUpdated,
             @Query("dataSet") String dataSetUids,
             @Query("period") String periodIds,
             @Query("orgUnit") String organisationUnitIds,

@@ -26,34 +26,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset.internal;
+package org.hisp.dhis.android.core.domain.aggregated.data.internal;
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 
-import com.google.auto.value.AutoValue;
+final class AggregatedDataSyncStore {
 
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
+    private static final StatementBinder<AggregatedDataSync> BINDER = (o, w) -> {
+        w.bind(1, o.dataSet());
+        w.bind(2, o.periodType());
+        w.bind(3, o.pastPeriods());
+        w.bind(4, o.futurePeriods());
+        w.bind(5, o.dataElementsHash());
+        w.bind(6, o.organisationUnitsHash());
+        w.bind(7, o.lastUpdated());
+    };
 
-import java.util.Collection;
+    private static final WhereStatementBinder<AggregatedDataSync> WHERE_UPDATE_BINDER =
+            (o, w) -> w.bind(8, o.dataSet());
 
-@AutoValue
-public abstract class DataSetCompleteRegistrationQuery extends BaseQuery {
+    private static final WhereStatementBinder<AggregatedDataSync> DELETE_UPDATE_BINDER =
+            (o, w) -> w.bind(1, o.dataSet());
 
-    public abstract Collection<String> dataSetUids();
+    private AggregatedDataSyncStore() {
+    }
 
-    public abstract Collection<String> periodIds();
-
-    public abstract Collection<String> rootOrgUnitUids();
-
-    @Nullable
-    public abstract String lastUpdatedStr();
-
-    public static DataSetCompleteRegistrationQuery create(Collection<String> dataSetUids,
-                                                          Collection<String> periodIds,
-                                                          Collection<String> rootOrgUnitUids,
-                                                          String lastUpdatedStr) {
-
-        return new AutoValue_DataSetCompleteRegistrationQuery(1, BaseQuery.DEFAULT_PAGE_SIZE,
-                false, dataSetUids, periodIds, rootOrgUnitUids, lastUpdatedStr);
+    static ObjectWithoutUidStore<AggregatedDataSync> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, AggregatedDataSyncTableInfo.TABLE_INFO,
+                BINDER, WHERE_UPDATE_BINDER, DELETE_UPDATE_BINDER, AggregatedDataSync::create);
     }
 }

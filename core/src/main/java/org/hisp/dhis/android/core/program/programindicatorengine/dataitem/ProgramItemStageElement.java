@@ -38,11 +38,7 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Program indicator expression data item ProgramItemStageElement
- *
- * @author Jim Grace
- */
+@SuppressWarnings({"PMD.CyclomaticComplexity"})
 public class ProgramItemStageElement
         extends ProgramExpressionItem {
 
@@ -56,16 +52,7 @@ public class ProgramItemStageElement
         String value = null;
 
         if (eventList != null) {
-            List<TrackedEntityDataValue> candidates = new ArrayList<>();
-            for (Event event : eventList) {
-                if (event.trackedEntityDataValues() != null) {
-                    for (TrackedEntityDataValue dataValue : event.trackedEntityDataValues()) {
-                        if (dataElementId.equals(dataValue.dataElement())) {
-                            candidates.add(dataValue);
-                        }
-                    }
-                }
-            }
+            List<TrackedEntityDataValue> candidates = getCandidates(eventList, dataElementId);
 
             AggregationType aggregationType = visitor.getProgramIndicatorContext().programIndicator().aggregationType();
 
@@ -80,6 +67,21 @@ public class ProgramItemStageElement
         }
 
         return String.valueOf(visitor.handleNulls(value));
+    }
+
+    private List<TrackedEntityDataValue> getCandidates(List<Event> events, String dataElement) {
+        List<TrackedEntityDataValue> candidates = new ArrayList<>();
+        for (Event event : events) {
+            if (event.trackedEntityDataValues() == null) {
+                continue;
+            }
+            for (TrackedEntityDataValue dataValue : event.trackedEntityDataValues()) {
+                if (dataElement.equals(dataValue.dataElement())) {
+                    candidates.add(dataValue);
+                }
+            }
+        }
+        return candidates;
     }
 
 }

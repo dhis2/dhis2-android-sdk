@@ -28,18 +28,18 @@ package org.hisp.dhis.android.core.program.programindicatorengine.variable;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
 import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
-import org.hisp.dhis.android.core.program.programindicatorengine.DateUtils;
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
 
-import java.util.Date;
-
-public class vCurrentDate
+public class VEnrollmentCount
         implements ExpressionItem {
 
     @Override
     public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
-        return DateUtils.getMediumDateString(new Date());
+        Enrollment enrollment = visitor.getProgramIndicatorContext().enrollment();
+
+        return enrollment == null ? String.valueOf(0) : String.valueOf(1);
     }
 }

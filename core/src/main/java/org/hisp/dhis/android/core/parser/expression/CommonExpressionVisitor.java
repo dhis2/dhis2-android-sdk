@@ -54,12 +54,7 @@ import java.util.Set;
 
 import static org.hisp.dhis.android.core.parser.expression.ParserUtils.DOUBLE_VALUE_IF_NULL;
 
-/**
- * Common traversal of the ANTLR4 org.hisp.dhis.rules.parser.expression parse tree using the
- * visitor pattern.
- *
- * @author Jim Grace
- */
+@SuppressWarnings({"PMD.TooManyFields"})
 public class CommonExpressionVisitor
         extends AntlrExpressionVisitor {
 
@@ -117,17 +112,17 @@ public class CommonExpressionVisitor
     /**
      * Count of dimension items found.
      */
-    private int itemsFound = 0;
+    private int itemsFound;
 
     /**
      * Count of dimension item values found.
      */
-    private int itemValuesFound = 0;
+    private int itemValuesFound;
 
     /**
      * Count of zero or positive dimension item values found.
      */
-    private int itemZeroPosValuesFound = 0;
+    private int itemZeroPosValuesFound;
 
     /**
      * Default value for data type double.
@@ -383,30 +378,29 @@ public class CommonExpressionVisitor
         }
 
         private CommonExpressionVisitor validateCommonProperties() {
-            Validate.notNull(this.visitor.constantMap, "Missing required property 'constantMap'");
-            Validate.notNull(this.visitor.itemMap, "Missing required property 'itemMap'");
-            Validate.notNull(this.visitor.itemMethod, "Missing required property 'itemMethod'");
+            Validate.notNull(this.visitor.constantMap, missingProperty("constantMap"));
+            Validate.notNull(this.visitor.itemMap, missingProperty("itemMap"));
+            Validate.notNull(this.visitor.itemMethod, missingProperty("itemMethod"));
             return visitor;
         }
 
         public CommonExpressionVisitor buildForExpressions() {
-            Validate.notNull(this.visitor.dataElementStore, "Missing required property " +
-                    "'dataElementStore'");
-            Validate.notNull(this.visitor.categoryOptionComboStore, "Missing required property " +
-                    "'categoryOptionComboStore'");
-            Validate.notNull(this.visitor.organisationUnitGroupStore, "Missing required property " +
-                    "'organisationUnitGroupStore'");
+            Validate.notNull(this.visitor.dataElementStore, missingProperty("dataElementStore"));
+            Validate.notNull(this.visitor.categoryOptionComboStore, missingProperty("categoryOptionComboStore"));
+            Validate.notNull(this.visitor.organisationUnitGroupStore, missingProperty("organisationUnitGroupStore"));
 
             return validateCommonProperties();
         }
 
         public CommonExpressionVisitor buildForProgramIndicator() {
-            Validate.notNull(this.visitor.programIndicatorContext, "Missing required property " +
-                    "'programIndicatorContext'");
-            Validate.notNull(this.visitor.programIndicatorExecutor, "Missing required property " +
-                    "'programIndicatorExecutor'");
+            Validate.notNull(this.visitor.programIndicatorContext, missingProperty("programIndicatorContext"));
+            Validate.notNull(this.visitor.programIndicatorExecutor, missingProperty("programIndicatorExecutor"));
 
             return validateCommonProperties();
         }
+    }
+
+    private static String missingProperty(String property) {
+        return "Missing required property '" + property + "'.";
     }
 }

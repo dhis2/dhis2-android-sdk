@@ -73,14 +73,13 @@ public class D2HasValue
 
     private Object hasProgramItemStageElement(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
         String programStage = ctx.uid0.getText();
-        String dataElement = ctx.uid1.getText();
-
         List<Event> stageEvents = visitor.getProgramIndicatorContext().events().get(programStage);
 
         if (stageEvents == null) {
             return String.valueOf(false);
         }
 
+        String dataElement = ctx.uid1.getText();
         for (Event event : stageEvents) {
             for (TrackedEntityDataValue dataValue : event.trackedEntityDataValues()) {
                 if (dataElement.equals(dataValue.dataElement()) && dataValue.value() != null) {

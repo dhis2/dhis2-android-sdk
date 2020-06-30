@@ -46,7 +46,7 @@ public class D2Condition
 
         String testResult = visitor.getProgramIndicatorExecutor().getProgramIndicatorValue(testExpression);
 
-        if (testResult.equals("true")) {
+        if ("true".equals(testResult)) {
             return valueIfTrue;
         } else {
             return valueIfFalse;

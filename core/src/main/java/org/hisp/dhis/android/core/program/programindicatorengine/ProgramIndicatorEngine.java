@@ -51,12 +51,12 @@ import javax.inject.Inject;
 
 public class ProgramIndicatorEngine {
 
-    private IdentifiableObjectStore<ProgramIndicator> programIndicatorStore;
-    private IdentifiableObjectStore<Constant> constantStore;
-    private EnrollmentStore enrollmentStore;
-    private EventCollectionRepository eventRepository;
-    private ProgramStageCollectionRepository programRepository;
-    private TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
+    private final IdentifiableObjectStore<ProgramIndicator> programIndicatorStore;
+    private final IdentifiableObjectStore<Constant> constantStore;
+    private final EnrollmentStore enrollmentStore;
+    private final EventCollectionRepository eventRepository;
+    private final ProgramStageCollectionRepository programRepository;
+    private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
 
     @Inject
     ProgramIndicatorEngine(IdentifiableObjectStore<ProgramIndicator> programIndicatorStore,
@@ -76,7 +76,7 @@ public class ProgramIndicatorEngine {
     public String getProgramIndicatorValue(String enrollmentUid, String eventUid, String programIndicatorUid) {
         ProgramIndicator programIndicator = programIndicatorStore.selectByUid(programIndicatorUid);
 
-        if (programIndicator == null || (enrollmentUid == null && eventUid == null)) {
+        if (programIndicator == null || enrollmentUid == null && eventUid == null) {
             return null;
         }
 

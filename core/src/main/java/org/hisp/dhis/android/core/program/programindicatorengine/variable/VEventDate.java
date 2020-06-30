@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.program.programindicatorengine.DateUtils;
 import org.hisp.dhis.android.core.program.programindicatorengine.ProgramExpressionItem;
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
 
-public class vEventDate
+public class VEventDate
         extends ProgramExpressionItem {
 
     @Override

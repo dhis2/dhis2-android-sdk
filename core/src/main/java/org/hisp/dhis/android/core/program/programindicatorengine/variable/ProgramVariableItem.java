@@ -48,24 +48,25 @@ import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.V_INCIDENT_
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.V_VALUE_COUNT;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.V_ZERO_POS_VALUE_COUNT;
 
-public class ProgramVariableItem
-        extends ProgramExpressionItem {
+@SuppressWarnings({"PMD.TooManyStaticImports"})
+public class ProgramVariableItem extends ProgramExpressionItem {
 
-    private final static ImmutableMap<Integer, ExpressionItem> PROGRAM_VARIABLES = ImmutableMap.<Integer, ExpressionItem>builder()
+    private final static ImmutableMap<Integer, ExpressionItem>
+            PROGRAM_VARIABLES = ImmutableMap.<Integer, ExpressionItem>builder()
 
-            .put(V_ENROLLMENT_DATE, new vEnrollmentDate())
-            .put(V_INCIDENT_DATE, new vIncidentDate())
-            .put(V_EVENT_DATE, new vEventDate())
-            .put(V_DUE_DATE, new vDueDate())
-            .put(V_CURRENT_DATE, new vCurrentDate())
-            .put(V_CREATION_DATE, new vCreationDate())
+            .put(V_ENROLLMENT_DATE, new VEnrollmentDate())
+            .put(V_INCIDENT_DATE, new VIncidentDate())
+            .put(V_EVENT_DATE, new VEventDate())
+            .put(V_DUE_DATE, new VDueDate())
+            .put(V_CURRENT_DATE, new VCurrentDate())
+            .put(V_CREATION_DATE, new VCreationDate())
 
-            .put(V_ENROLLMENT_STATUS, new vEnrollmentStatus())
-            .put(V_ENROLLMENT_COUNT, new vEnrollmentCount())
+            .put(V_ENROLLMENT_STATUS, new VEnrollmentStatus())
+            .put(V_ENROLLMENT_COUNT, new VEnrollmentCount())
 
-            .put(V_EVENT_COUNT, new vEventCount())
-            .put(V_VALUE_COUNT, new vValueCount())
-            .put(V_ZERO_POS_VALUE_COUNT, new vZeroPosValueCount())
+            .put(V_EVENT_COUNT, new VEventCount())
+            .put(V_VALUE_COUNT, new VValueCount())
+            .put(V_ZERO_POS_VALUE_COUNT, new VZeroPosValueCount())
             .build();
 
     @Override
@@ -90,7 +91,8 @@ public class ProgramVariableItem
         ExpressionItem programVariable = PROGRAM_VARIABLES.get(ctx.programVariable().var.getType());
 
         if (programVariable == null) {
-            throw new ParserExceptionWithoutContext("Can't find program variable " + ctx.programVariable().var.getText());
+            throw new ParserExceptionWithoutContext("Can't find program variable " +
+                    ctx.programVariable().var.getText());
         }
 
         return programVariable;

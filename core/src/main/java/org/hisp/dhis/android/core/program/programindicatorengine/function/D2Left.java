@@ -42,12 +42,12 @@ public class D2Left
     @Override
     public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
         Double doubleValue = castDouble(visitor.castStringVisit(ctx.expr(1)));
-        int chars = doubleValue.intValue();
 
         if (doubleValue % 1 != 0) {
             throw new IllegalArgumentException("Number has to be an integer");
         }
 
+        int chars = doubleValue.intValue();
         return wrap(StringUtils.substring(visitor.castStringVisit(ctx.expr(0)), 0, chars));
     }
 }

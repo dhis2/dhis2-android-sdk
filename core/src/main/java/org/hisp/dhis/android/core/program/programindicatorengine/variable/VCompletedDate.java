@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.program.programindicatorengine.function;
+package org.hisp.dhis.android.core.program.programindicatorengine.variable;
 
 /*
  * Copyright (c) 2004-2020, University of Oslo
@@ -28,8 +28,17 @@ package org.hisp.dhis.android.core.program.programindicatorengine.function;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
 import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
 
-public abstract class ProgramMinMaxFunction
-        implements ExpressionItem {
+public class VCompletedDate implements ExpressionItem {
+
+    @Override
+    public Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor) {
+
+        //TODO Add completed date to enrollment
+
+        return null;
+    }
 }

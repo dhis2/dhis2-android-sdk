@@ -30,21 +30,16 @@ package org.hisp.dhis.android.core.program.programindicatorengine.variable;
 
 import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
 import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
+import org.hisp.dhis.android.core.program.programindicatorengine.DateUtils;
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
 
-public class vValueCount
+import java.util.Date;
+
+public class VCurrentDate
         implements ExpressionItem {
 
     @Override
-    public Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor) {
-
-        String expression = visitor.getProgramIndicatorContext().programIndicator().expression();
-
-        return String.valueOf(visitor.getProgramIndicatorExecutor().getValueCount(expression));
-    }
-
-    @Override
-    public Object count(ExprContext ctx, CommonExpressionVisitor visitor) {
-        return null;
+    public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
+        return DateUtils.getMediumDateString(new Date());
     }
 }

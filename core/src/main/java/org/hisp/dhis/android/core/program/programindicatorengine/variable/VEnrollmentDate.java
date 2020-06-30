@@ -31,15 +31,16 @@ package org.hisp.dhis.android.core.program.programindicatorengine.variable;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
 import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
+import org.hisp.dhis.android.core.program.programindicatorengine.DateUtils;
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
 
-public class vEnrollmentCount
+public class VEnrollmentDate
         implements ExpressionItem {
 
     @Override
     public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
         Enrollment enrollment = visitor.getProgramIndicatorContext().enrollment();
 
-        return enrollment == null ? String.valueOf(0) : String.valueOf(1);
+        return enrollment == null ? null : DateUtils.getMediumDateString(enrollment.enrollmentDate());
     }
 }

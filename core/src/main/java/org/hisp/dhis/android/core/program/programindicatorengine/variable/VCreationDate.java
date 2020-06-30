@@ -28,25 +28,26 @@ package org.hisp.dhis.android.core.program.programindicatorengine.variable;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
+import org.hisp.dhis.android.core.program.programindicatorengine.DateUtils;
+import org.hisp.dhis.android.core.program.programindicatorengine.ProgramExpressionItem;
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
 
-import java.util.List;
-import java.util.Map;
-
-public class vEventCount
-        implements ExpressionItem {
+public class VCreationDate
+        extends ProgramExpressionItem {
 
     @Override
     public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
-        int count = 0;
+        Enrollment enrollment = visitor.getProgramIndicatorContext().enrollment();
 
-        for (Map.Entry<String, List<Event>> entry : visitor.getProgramIndicatorContext().events().entrySet()) {
-            count += entry.getValue().size();
+        if (enrollment == null) {
+            Event singleEvent = getSingleEvent(visitor);
+
+            return singleEvent == null ? null : DateUtils.getMediumDateString(singleEvent.created());
+        } else {
+            return DateUtils.getMediumDateString(enrollment.created());
         }
-
-        return String.valueOf(count);
     }
 }

@@ -37,10 +37,10 @@ public class D2Zing
 
     @Override
     public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
-        String argument = visitor.castStringVisit( ctx.expr( 0 ) );
+        String argument = visitor.castStringVisit(ctx.expr(0));
 
-        double value = Double.parseDouble( argument );
+        double value = Double.parseDouble(argument);
 
-        return value < 0 ? String.valueOf( 0 ) : argument;
+        return value < 0 ? String.valueOf(0) : argument;
     }
 }

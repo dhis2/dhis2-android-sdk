@@ -40,8 +40,8 @@ import java.util.Map;
 
 public class ProgramIndicatorExecutor {
 
-    private Map<String, Constant> constantMap;
-    private ProgramIndicatorContext programIndicatorContext;
+    private final Map<String, Constant> constantMap;
+    private final ProgramIndicatorContext programIndicatorContext;
 
     ProgramIndicatorExecutor(Map<String, Constant> constantMap,
                              ProgramIndicatorContext programIndicatorContext) {

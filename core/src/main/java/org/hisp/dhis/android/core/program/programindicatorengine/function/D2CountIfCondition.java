@@ -42,6 +42,6 @@ public class D2CountIfCondition
 
         String result = visitor.getProgramIndicatorExecutor().getProgramIndicatorValue(expression);
 
-       return result.equals("true");
+       return "true".equals(result);
     }
 }

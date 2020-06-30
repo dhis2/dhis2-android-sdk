@@ -87,11 +87,6 @@ import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.PLUS;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.POWER;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.VERTICAL_BAR_2;
 
-/**
- * Utilities for ANTLR parsing
- *
- * @author Jim Grace
- */
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyStaticImports"})
 public final class ParserUtils {
 

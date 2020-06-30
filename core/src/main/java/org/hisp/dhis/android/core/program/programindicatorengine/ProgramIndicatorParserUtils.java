@@ -28,6 +28,8 @@ package org.hisp.dhis.android.core.program.programindicatorengine;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import com.google.common.collect.ImmutableMap;
+
 import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
 import org.hisp.dhis.android.core.parser.expression.ParserUtils;
 import org.hisp.dhis.android.core.program.programindicatorengine.dataitem.ProgramItemAttribute;
@@ -59,9 +61,6 @@ import org.hisp.dhis.android.core.program.programindicatorengine.function.D2Zing
 import org.hisp.dhis.android.core.program.programindicatorengine.function.D2Zpvc;
 import org.hisp.dhis.android.core.program.programindicatorengine.variable.ProgramVariableItem;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.A_BRACE;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.D2_CEIL;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.D2_CONCATENATE;
@@ -91,53 +90,52 @@ import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.HASH_BRACE;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.PS_EVENTDATE;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.V_BRACE;
 
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyStaticImports"})
 public final class ProgramIndicatorParserUtils {
 
-    public final static Map<Integer, ExpressionItem> PROGRAM_INDICATOR_EXPRESSION_ITEMS;
+    public final static ImmutableMap<Integer, ExpressionItem>
+            PROGRAM_INDICATOR_EXPRESSION_ITEMS = ImmutableMap.<Integer, ExpressionItem>builder()
 
-    static {
+            .putAll(ParserUtils.COMMON_EXPRESSION_ITEMS)
 
-        Map<Integer, ExpressionItem> m = new HashMap<>(ParserUtils.COMMON_EXPRESSION_ITEMS);
+            .put(D2_CEIL, new D2Ceil())
+            .put(D2_CONCATENATE, new D2Concatenate())
+            .put(D2_FLOOR, new D2Floor())
+            .put(D2_LEFT, new D2Left())
+            .put(D2_LENGTH, new D2Length())
+            .put(D2_MODULUS, new D2Modulus())
+            .put(D2_RIGHT, new D2Right())
+            .put(D2_ROUND, new D2Round())
+            .put(D2_SPLIT, new D2Split())
+            .put(D2_SUBSTRING, new D2Substring())
+            .put(D2_OIZP, new D2Oizp())
+            .put(D2_VALIDATE_PATTERN, new D2ValidatePattern())
+            .put(D2_ZING, new D2Zing())
+            .put(D2_ZPVC, new D2Zpvc())
 
-        m.put(D2_CEIL, new D2Ceil());
-        m.put(D2_CONCATENATE, new D2Concatenate());
-        m.put(D2_FLOOR, new D2Floor());
-        m.put(D2_LEFT, new D2Left());
-        m.put(D2_LENGTH, new D2Length());
-        m.put(D2_MODULUS, new D2Modulus());
-        m.put(D2_RIGHT, new D2Right());
-        m.put(D2_ROUND, new D2Round());
-        m.put(D2_SPLIT, new D2Split());
-        m.put(D2_SUBSTRING, new D2Substring());
-        m.put(D2_OIZP, new D2Oizp());
-        m.put(D2_VALIDATE_PATTERN, new D2ValidatePattern());
-        m.put(D2_ZING, new D2Zing());
-        m.put(D2_ZPVC, new D2Zpvc());
+            .put(D2_MINUTES_BETWEEN, new D2MinutesBetween())
+            .put(D2_DAYS_BETWEEN, new D2DaysBetween())
+            .put(D2_WEEKS_BETWEEN, new D2WeeksBetween())
+            .put(D2_MONTHS_BETWEEN, new D2MonthsBetween())
+            .put(D2_YEARS_BETWEEN, new D2YearsBetween())
 
-        m.put(D2_MINUTES_BETWEEN, new D2MinutesBetween());
-        m.put(D2_DAYS_BETWEEN, new D2DaysBetween());
-        m.put(D2_WEEKS_BETWEEN, new D2WeeksBetween());
-        m.put(D2_MONTHS_BETWEEN, new D2MonthsBetween());
-        m.put(D2_YEARS_BETWEEN, new D2YearsBetween());
+            .put(D2_COUNT, new D2Count())
+            .put(D2_COUNT_IF_CONDITION, new D2CountIfCondition())
+            .put(D2_COUNT_IF_VALUE, new D2CountIfValue())
+            .put(D2_HAS_VALUE, new D2HasValue())
+            .put(D2_CONDITION, new D2Condition())
 
-        m.put(D2_COUNT, new D2Count());
-        m.put(D2_COUNT_IF_CONDITION, new D2CountIfCondition());
-        m.put(D2_COUNT_IF_VALUE, new D2CountIfValue());
-        m.put(D2_HAS_VALUE, new D2HasValue());
-        m.put(D2_CONDITION, new D2Condition());
+            // Data items
 
-        // Data items
+            .put(HASH_BRACE, new ProgramItemStageElement())
+            .put(A_BRACE, new ProgramItemAttribute())
+            .put(PS_EVENTDATE, new ProgramItemPsEventdate())
 
-        m.put(HASH_BRACE, new ProgramItemStageElement());
-        m.put(A_BRACE, new ProgramItemAttribute());
-        m.put(PS_EVENTDATE, new ProgramItemPsEventdate());
+            // Program variables
 
-        // Program variables
+            .put(V_BRACE, new ProgramVariableItem())
 
-        m.put(V_BRACE, new ProgramVariableItem());
-
-        PROGRAM_INDICATOR_EXPRESSION_ITEMS = m;
-    }
+            .build();
 
     private ProgramIndicatorParserUtils() {
     }

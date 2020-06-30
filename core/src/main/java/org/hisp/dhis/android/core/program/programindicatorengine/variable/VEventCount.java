@@ -28,17 +28,25 @@ package org.hisp.dhis.android.core.program.programindicatorengine.variable;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
 import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
 
-public class vCompletedDate implements ExpressionItem {
+import java.util.List;
+import java.util.Map;
+
+public class VEventCount
+        implements ExpressionItem {
 
     @Override
-    public Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor) {
+    public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
+        int count = 0;
 
-        //TODO Add completed date to enrollment
+        for (Map.Entry<String, List<Event>> entry : visitor.getProgramIndicatorContext().events().entrySet()) {
+            count += entry.getValue().size();
+        }
 
-        return null;
+        return String.valueOf(count);
     }
 }

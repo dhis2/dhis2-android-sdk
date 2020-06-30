@@ -43,6 +43,7 @@ import java.util.Map;
 
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
 
+@SuppressWarnings({"PMD.CyclomaticComplexity"})
 public abstract class ProgramExpressionItem
         implements ExpressionItem {
 

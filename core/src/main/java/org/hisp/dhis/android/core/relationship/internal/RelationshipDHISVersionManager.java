@@ -28,14 +28,25 @@
 
 package org.hisp.dhis.android.core.relationship.internal;
 
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
+import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor;
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
+import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.event.EventInternalAccessor;
+import org.hisp.dhis.android.core.event.internal.EventStore;
 import org.hisp.dhis.android.core.relationship.BaseRelationship;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipHelper;
 import org.hisp.dhis.android.core.relationship.RelationshipItem;
+import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -50,10 +61,28 @@ import dagger.Reusable;
 public class RelationshipDHISVersionManager {
 
     private final DHISVersionManager versionManager;
+    private final TrackedEntityInstanceStore teiStore;
+    private final EnrollmentStore enrollmentStore;
+    private final EventStore eventStore;
+    private final IdentifiableDataHandler<TrackedEntityInstance> teiHandler;
+    private final IdentifiableDataHandler<Enrollment> enrollmentHandler;
+    private final IdentifiableDataHandler<Event> eventHandler;
 
     @Inject
-    public RelationshipDHISVersionManager(DHISVersionManager versionManager) {
+    public RelationshipDHISVersionManager(DHISVersionManager versionManager,
+                                          TrackedEntityInstanceStore teiStore,
+                                          EnrollmentStore enrollmentStore,
+                                          EventStore eventStore,
+                                          IdentifiableDataHandler<Enrollment> enrollmentHandler,
+                                          IdentifiableDataHandler<TrackedEntityInstance> teiHandler,
+                                          IdentifiableDataHandler<Event> eventHandler) {
         this.versionManager = versionManager;
+        this.teiStore = teiStore;
+        this.enrollmentStore = enrollmentStore;
+        this.eventStore = eventStore;
+        this.enrollmentHandler = enrollmentHandler;
+        this.teiHandler = teiHandler;
+        this.eventHandler = eventHandler;
     }
 
     public List<Relationship> getOwnedRelationships(List<Relationship> relationships, String teiUid) {
@@ -90,7 +119,7 @@ public class RelationshipDHISVersionManager {
                     .uid(relationship.relationshipType())
                     .trackedEntityInstanceA(relationship.from().trackedEntityInstance().trackedEntityInstance())
                     .trackedEntityInstanceB(relationship.to().trackedEntityInstance().trackedEntityInstance())
-                    .relative(getRelative230(relationship, teiUid))
+                    .relative(getRelativeTEI230(relationship, teiUid))
                     .build();
         } else {
             return builder
@@ -139,7 +168,7 @@ public class RelationshipDHISVersionManager {
         if (versionManager.is2_29()) {
             return relationship229Compatible.relative();
         } else {
-            return getRelative230(relationship229Compatible, teiUid);
+            return getRelativeTEI230(relationship229Compatible, teiUid);
         }
     }
 
@@ -155,9 +184,9 @@ public class RelationshipDHISVersionManager {
         }
     }
 
-    private TrackedEntityInstance getRelative230(BaseRelationship relationship229Compatible, String teiUid) {
-        String fromTEIUid = RelationshipHelper.getTeiUid(relationship229Compatible.from());
-        String toTEIUid = RelationshipHelper.getTeiUid(relationship229Compatible.to());
+    public TrackedEntityInstance getRelativeTEI230(BaseRelationship baseRelationship, String teiUid) {
+        String fromTEIUid = RelationshipHelper.getTeiUid(baseRelationship.from());
+        String toTEIUid = RelationshipHelper.getTeiUid(baseRelationship.to());
 
         if (fromTEIUid == null || toTEIUid == null) {
             return null;
@@ -170,5 +199,106 @@ public class RelationshipDHISVersionManager {
                 .uid(relatedTEIUid)
                 .deleted(false)
                 .build();
+    }
+
+    public TrackedEntityInstance getRelativeTEI(RelationshipItem relationshipItem) {
+        return TrackedEntityInstanceInternalAccessor.insertRelationships(
+                TrackedEntityInstance.builder(), Collections.emptyList())
+                .uid(relationshipItem.elementUid())
+                .deleted(false)
+                .build();
+    }
+
+    public Enrollment getRelativeEnrollment(RelationshipItem relationshipItem) {
+        return EnrollmentInternalAccessor.insertRelationships(Enrollment.builder(), Collections.emptyList())
+                .uid(relationshipItem.elementUid())
+                .deleted(false)
+                .build();
+    }
+
+    public Event getRelativeEvent(RelationshipItem relationshipItem) {
+        return EventInternalAccessor.insertRelationships(Event.builder(), Collections.emptyList())
+                .uid(relationshipItem.elementUid())
+                .deleted(false)
+                .build();
+    }
+
+
+    public RelationshipItem getRelatedRelationshipItem(BaseRelationship baseRelationship, String relationshipUid) {
+        String fromUid = baseRelationship.from() == null ? null : baseRelationship.from().elementUid();
+        String toUid = baseRelationship.to() == null ? null : baseRelationship.to().elementUid();
+
+        if (fromUid == null || toUid == null) {
+            return null;
+        }
+
+        return relationshipUid.equals(fromUid) ? baseRelationship.to() : baseRelationship.from();
+    }
+
+    public void createRelativesIfNotExist(Collection<Relationship> relationships) {
+        for (BaseRelationship relationship : relationships) {
+            RelationshipItem item = getRelatedRelationshipItem(relationship, relationship.uid());
+            if (item != null) {
+                switch (item.elementType()) {
+                    case RelationshipItemTableInfo.Columns.TRACKED_ENTITY_INSTANCE:
+                        TrackedEntityInstance relativeTEI = getRelativeTEI(item);
+                        if (relativeTEI != null && !teiStore.exists(relativeTEI.uid())) {
+                            teiHandler.handle(relativeTEI, trackedEntityInstanceTransformer(), false);
+                        }
+                        break;
+                    case RelationshipItemTableInfo.Columns.ENROLLMENT:
+                        Enrollment relativeEnrollment = getRelativeEnrollment(item);
+                        if (relativeEnrollment != null && !enrollmentStore.exists(relativeEnrollment.uid())) {
+                            enrollmentHandler.handle(relativeEnrollment, enrollmentTransformer(), false);
+                        }
+                        break;
+                    case RelationshipItemTableInfo.Columns.EVENT:
+                        Event relativeEvent = getRelativeEvent(item);
+                        if (relativeEvent != null && !eventStore.exists(relativeEvent.uid())) {
+                            eventHandler.handle(relativeEvent, eventTransformer(), false);
+                        }
+                        break;
+                }
+            }
+        }
+    }
+
+    private Transformer<TrackedEntityInstance, TrackedEntityInstance> trackedEntityInstanceTransformer() {
+        return object -> {
+            {
+                State currentState = teiStore.getState(object.uid());
+                if (currentState == State.RELATIONSHIP || currentState == null) {
+                    return object.toBuilder().state(State.RELATIONSHIP).build();
+                } else {
+                    return object;
+                }
+            }
+        };
+    }
+
+    private Transformer<Enrollment, Enrollment> enrollmentTransformer() {
+        return object -> {
+            {
+                State currentState = enrollmentStore.getState(object.uid());
+                if (currentState == State.RELATIONSHIP || currentState == null) {
+                    return object.toBuilder().state(State.RELATIONSHIP).build();
+                } else {
+                    return object;
+                }
+            }
+        };
+    }
+
+    private Transformer<Event, Event> eventTransformer() {
+        return object -> {
+            {
+                State currentState = eventStore.getState(object.uid());
+                if (currentState == State.RELATIONSHIP || currentState == null) {
+                    return object.toBuilder().state(State.RELATIONSHIP).build();
+                } else {
+                    return object;
+                }
+            }
+        };
     }
 }

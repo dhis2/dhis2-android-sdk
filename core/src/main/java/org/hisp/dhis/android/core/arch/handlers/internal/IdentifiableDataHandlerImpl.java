@@ -29,13 +29,16 @@
 package org.hisp.dhis.android.core.arch.handlers.internal;
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.DeletableDataObject;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,13 +47,19 @@ import java.util.List;
 
 import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.isDeleted;
 
-public class IdentifiableDataHandlerImpl<O extends DeletableDataObject & ObjectWithUidInterface>
+public abstract class IdentifiableDataHandlerImpl<O extends DeletableDataObject & ObjectWithUidInterface>
          implements IdentifiableDataHandler<O> {
 
-    final IdentifiableObjectStore<O> store;
+    final IdentifiableDataObjectStore<O> store;
+    private final RelationshipDHISVersionManager relationshipVersionManager;
+    private final RelationshipHandler relationshipHandler;
 
-    public IdentifiableDataHandlerImpl(IdentifiableObjectStore<O> store) {
+    public IdentifiableDataHandlerImpl(IdentifiableDataObjectStore<O> store,
+                                       RelationshipDHISVersionManager relationshipVersionManager,
+                                       RelationshipHandler relationshipHandler) {
         this.store = store;
+        this.relationshipVersionManager = relationshipVersionManager;
+        this.relationshipHandler = relationshipHandler;
     }
 
     @Override
@@ -110,6 +119,62 @@ public class IdentifiableDataHandlerImpl<O extends DeletableDataObject & ObjectW
         }
     }
 
+    public void handleMany(final Collection<O> oCollection, boolean asRelationship, boolean isFullUpdate,
+                           boolean overwrite) {
+        if (oCollection == null) {
+            return;
+        }
+
+        Transformer<O, O> transformer;
+        if (asRelationship) {
+            transformer = relationshipTransformer();
+        } else {
+            transformer = this::addSyncedState;
+        }
+
+        Collection<O> preHandledCollection = beforeCollectionHandled(oCollection, overwrite);
+
+        List<O> transformedCollection = new ArrayList<>(preHandledCollection.size());
+
+        for (O object : preHandledCollection) {
+
+
+            handle(object, transformer, transformedCollection, overwrite);
+
+            if (isFullUpdate) {
+                deleteOrphans(object);
+            }
+        }
+
+        afterCollectionHandled(transformedCollection, overwrite);
+
+    }
+
+    protected Transformer<O, O> relationshipTransformer() {
+        return object -> {
+            State currentState = store.getState(object.uid());
+            if (currentState == State.RELATIONSHIP || currentState == null) {
+                return addRelationshipState(object);
+            } else {
+                return object;
+            }
+        };
+    }
+
+    protected void handleRelationships(Collection<Relationship> relationships) {
+        relationshipVersionManager.createRelativesIfNotExist(relationships);
+        relationshipHandler.handleMany(relationships, relationship -> relationship.toBuilder()
+                .state(State.SYNCED)
+                .deleted(false)
+                .build());
+    }
+
+    protected abstract O addRelationshipState(O object);
+
+    protected abstract O addSyncedState(O object);
+
+    protected abstract void deleteOrphans(O object);
+
     protected HandleAction deleteOrPersist(O o) {
         String modelUid = o.uid();
         if ((isDeleted(o) || deleteIfCondition(o)) && modelUid != null) {
@@ -128,12 +193,7 @@ public class IdentifiableDataHandlerImpl<O extends DeletableDataObject & ObjectW
         return o;
     }
 
-    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
-    protected void afterObjectHandled(O o, HandleAction action, Boolean overwrite) {
-        /* Method is not abstract since empty action is the default action and we don't want it to
-         * be unnecessarily written in every child.
-         */
-    }
+    protected abstract void afterObjectHandled(O o, HandleAction action, Boolean overwrite);
 
     protected Collection<O> beforeCollectionHandled(Collection<O> oCollection, Boolean overwrite) {
         if (overwrite) {

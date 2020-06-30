@@ -26,34 +26,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset.internal;
+package org.hisp.dhis.android.core.domain.aggregated.data.internal;
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 
-import com.google.auto.value.AutoValue;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
+@Module
+public final class AggregatedDataPackageDIModule {
 
-import java.util.Collection;
-
-@AutoValue
-public abstract class DataSetCompleteRegistrationQuery extends BaseQuery {
-
-    public abstract Collection<String> dataSetUids();
-
-    public abstract Collection<String> periodIds();
-
-    public abstract Collection<String> rootOrgUnitUids();
-
-    @Nullable
-    public abstract String lastUpdatedStr();
-
-    public static DataSetCompleteRegistrationQuery create(Collection<String> dataSetUids,
-                                                          Collection<String> periodIds,
-                                                          Collection<String> rootOrgUnitUids,
-                                                          String lastUpdatedStr) {
-
-        return new AutoValue_DataSetCompleteRegistrationQuery(1, BaseQuery.DEFAULT_PAGE_SIZE,
-                false, dataSetUids, periodIds, rootOrgUnitUids, lastUpdatedStr);
+    @Provides
+    @Reusable
+    ObjectWithoutUidStore<AggregatedDataSync> store(DatabaseAdapter databaseAdapter) {
+        return AggregatedDataSyncStore.create(databaseAdapter);
     }
 }

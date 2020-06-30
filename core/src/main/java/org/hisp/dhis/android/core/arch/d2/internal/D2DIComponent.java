@@ -57,6 +57,7 @@ import org.hisp.dhis.android.core.dataelement.internal.DataElementPackageDIModul
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.internal.DataSetPackageDIModule;
 import org.hisp.dhis.android.core.datavalue.internal.DataValuePackageDIModule;
+import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataPackageDIModule;
 import org.hisp.dhis.android.core.domain.aggregated.internal.AggregatedModuleImpl;
 import org.hisp.dhis.android.core.domain.metadata.internal.MetadataModuleImpl;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentPackageDIModule;
@@ -106,6 +107,7 @@ import retrofit2.Retrofit;
         WipeDIModule.class,
         RepositoriesDIModule.class,
 
+        AggregatedDataPackageDIModule.class,
         CategoryPackageDIModule.class,
         CommonPackageDIModule.class,
         ConfigurationPackageDIModule.class,

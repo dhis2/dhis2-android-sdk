@@ -28,42 +28,53 @@
 
 package org.hisp.dhis.android.core.domain.aggregated.data.internal;
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
-import org.hisp.dhis.android.core.dataset.DataSet;
+import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.LAST_UPDATED;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+final class AggregatedDataSyncTableInfo {
 
-@AutoValue
-public abstract class AggregatedDataCallBundle {
-    public abstract AggregatedDataCallBundleKey key();
-
-    public abstract List<DataSet> dataSets();
-
-    public abstract Collection<String> periodIds();
-
-    public abstract Collection<String> rootOrganisationUnitUids();
-
-    public abstract Set<String> allOrganisationUnitUidsSet();
-
-    public static Builder builder() {
-        return new AutoValue_AggregatedDataCallBundle.Builder();
+    private AggregatedDataSyncTableInfo() {
     }
 
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder key(AggregatedDataCallBundleKey key);
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-        public abstract Builder dataSets(List<DataSet> dataSets);
+        @Override
+        public String name() {
+            return "AggregatedDataSync";
+        }
 
-        public abstract Builder periodIds(Collection<String> periodIds);
+        @Override
+        public CoreColumns columns() {
+            return new Columns();
+        }
+    };
 
-        public abstract Builder rootOrganisationUnitUids(Collection<String> orgUnitUids);
+    public static class Columns extends CoreColumns {
+        public static final String DATA_SET = "dataSet";
+        public static final String PERIOD_TYPE = "periodType";
+        public static final String LAST_PERIODS = "pastPeriods";
+        public static final String FUTURE_PERIODS = "futurePeriods";
+        public static final String DATA_ELEMENTS_HASH = "dataElementsHash";
+        public static final String ORGANISATION_UNITS_HASH = "organisationUnitsHash";
 
-        public abstract Builder allOrganisationUnitUidsSet(Set<String> allOrganisationUnitUidsSet);
+        @Override
+        public String[] all() {
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    DATA_SET,
+                    PERIOD_TYPE,
+                    LAST_PERIODS,
+                    FUTURE_PERIODS,
+                    DATA_ELEMENTS_HASH,
+                    ORGANISATION_UNITS_HASH,
+                    LAST_UPDATED);
+        }
 
-        public abstract AggregatedDataCallBundle build();
+        @Override
+        public String[] whereUpdate() {
+            return new String[]{DATA_SET};
+        }
     }
 }

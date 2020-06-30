@@ -28,7 +28,12 @@
 
 package org.hisp.dhis.android.core.data.datavalue;
 
+import org.hisp.dhis.android.core.data.dataset.DataSetSamples;
+import org.hisp.dhis.android.core.dataset.DataSet;
+
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -39,10 +44,10 @@ public final class DataValueUtils {
     DataValueUtils () {
     }
 
-    public static Set<String> getDataSetUids() {
-        Set<String> dataSetUids = new HashSet<>();
-        dataSetUids.add("BfMAe6Itzgt");
-        dataSetUids.add("TuL8IOPzpHh");
+    public static List<DataSet> getDataSets() {
+        List<DataSet> dataSetUids = new ArrayList<>(2);
+        dataSetUids.add(DataSetSamples.getDataSet());
+        dataSetUids.add(DataSetSamples.getDataSet().toBuilder().uid("TuL8IOPzpHh").build());
         return dataSetUids;
     }
 

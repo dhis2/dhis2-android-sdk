@@ -32,6 +32,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -167,6 +168,16 @@ public final class CollectionsHelper {
      */
     public static String commaSeparatedCollectionValues(Collection<String> values) {
         return commaSeparatedArrayValues(values.toArray(new String[values.size()]));
+    }
+
+    /**
+     * Build a {@link String} with the uids of the objects separated by commas.
+     *
+     * @param objectsWithUid Collection with the objects to concatenate.
+     * @return A {@link String} with the concatenated uids.
+     */
+    public static <O extends ObjectWithUidInterface> String commaSeparatedUids(Collection<O> objectsWithUid) {
+        return commaSeparatedCollectionValues(UidsHelper.getUids(objectsWithUid));
     }
 
     /**

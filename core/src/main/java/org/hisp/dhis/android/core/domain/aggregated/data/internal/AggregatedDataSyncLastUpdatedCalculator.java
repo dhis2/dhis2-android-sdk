@@ -26,34 +26,48 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset.internal;
+package org.hisp.dhis.android.core.domain.aggregated.data.internal;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.core.dataset.DataSet;
 
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
+import java.util.Calendar;
+import java.util.Date;
 
-import java.util.Collection;
+import javax.inject.Inject;
 
-@AutoValue
-public abstract class DataSetCompleteRegistrationQuery extends BaseQuery {
+import dagger.Reusable;
 
-    public abstract Collection<String> dataSetUids();
+@Reusable
+class AggregatedDataSyncLastUpdatedCalculator {
 
-    public abstract Collection<String> periodIds();
+    private final AggregatedDataSyncHashHelper hashHelper;
 
-    public abstract Collection<String> rootOrgUnitUids();
+    @Inject
+    AggregatedDataSyncLastUpdatedCalculator(AggregatedDataSyncHashHelper hashHelper) {
+        this.hashHelper = hashHelper;
+    }
 
-    @Nullable
-    public abstract String lastUpdatedStr();
+    Date getLastUpdated(@Nullable AggregatedDataSync syncValue, @NonNull DataSet dataSet, @NonNull Integer pastPeriods,
+                        @NonNull Integer futurePeriods, @NonNull Integer organisationUnitHash) {
+        if (syncValue == null ||
+                syncValue.periodType() != dataSet.periodType() ||
+                syncValue.futurePeriods() < futurePeriods ||
+                syncValue.pastPeriods() < pastPeriods ||
+                syncValue.dataElementsHash() != hashHelper.getDataSetDataElementsHash(dataSet) ||
+                syncValue.organisationUnitsHash().intValue() != organisationUnitHash) {
+            return null;
+        } else {
+            return getDateMinus24Hours(syncValue.lastUpdated());
+        }
+    }
 
-    public static DataSetCompleteRegistrationQuery create(Collection<String> dataSetUids,
-                                                          Collection<String> periodIds,
-                                                          Collection<String> rootOrgUnitUids,
-                                                          String lastUpdatedStr) {
-
-        return new AutoValue_DataSetCompleteRegistrationQuery(1, BaseQuery.DEFAULT_PAGE_SIZE,
-                false, dataSetUids, periodIds, rootOrgUnitUids, lastUpdatedStr);
+    private Date getDateMinus24Hours(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.DATE, -1);
+        return cal.getTime();
     }
 }

@@ -32,24 +32,24 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactoryImpl;
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.CallFetcher;
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.PayloadResourceCallFetcher;
+import org.hisp.dhis.android.core.arch.call.fetchers.internal.PayloadNoResourceCallFetcher;
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor;
 import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.datavalue.DataValue;
-import org.hisp.dhis.android.core.resource.internal.Resource;
+import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataCallBundle;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedCollectionValues;
+import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedUids;
 
 @Reusable
 final class DataValueEndpointCallFactory extends QueryCallFactoryImpl<DataValue, DataValueQuery> {
 
-    private final Resource.Type resourceType = Resource.Type.DATA_VALUE;
     private final Handler<DataValue> dataValueHandler;
 
     @Inject
@@ -65,15 +65,16 @@ final class DataValueEndpointCallFactory extends QueryCallFactoryImpl<DataValue,
 
         final DataValueService dataValueService = data.retrofit().create(DataValueService.class);
 
-        return new PayloadResourceCallFetcher<DataValue>(data.resourceHandler(), resourceType, apiCallExecutor) {
+        return new PayloadNoResourceCallFetcher<DataValue>(apiCallExecutor) {
             @Override
-            protected retrofit2.Call<Payload<DataValue>> getCall(String lastUpdated) {
+            protected retrofit2.Call<Payload<DataValue>> getCall() {
+                AggregatedDataCallBundle b = query.bundle();
                 return dataValueService.getDataValues(
                         DataValueFields.allFields,
-                        DataValueFields.lastUpdated.gt(lastUpdated),
-                        commaSeparatedCollectionValues(query.dataSetUids()),
-                        commaSeparatedCollectionValues(query.periodIds()),
-                        commaSeparatedCollectionValues(query.orgUnitUids()),
+                        b.key().lastUpdatedStr(),
+                        commaSeparatedUids(b.dataSets()),
+                        commaSeparatedCollectionValues(b.periodIds()),
+                        commaSeparatedCollectionValues(b.rootOrganisationUnitUids()),
                         Boolean.TRUE,
                         Boolean.FALSE,
                         Boolean.TRUE);

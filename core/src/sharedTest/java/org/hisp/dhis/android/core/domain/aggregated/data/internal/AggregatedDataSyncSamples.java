@@ -26,34 +26,41 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset.internal;
+package org.hisp.dhis.android.core.domain.aggregated.data.internal;
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.period.PeriodType;
 
-import com.google.auto.value.AutoValue;
+import java.text.ParseException;
+import java.util.Date;
 
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
+public class AggregatedDataSyncSamples {
 
-import java.util.Collection;
+    public static AggregatedDataSync get1() {
+        return AggregatedDataSync.builder()
+                .id(1L)
+                .dataSet("dataSet")
+                .periodType(PeriodType.Daily)
+                .pastPeriods(10)
+                .futurePeriods(1)
+                .dataElementsHash(11111111)
+                .organisationUnitsHash(22222222)
+                .lastUpdated(getDate("2017-11-29T11:27:46.935"))
+                .build();
+    }
 
-@AutoValue
-public abstract class DataSetCompleteRegistrationQuery extends BaseQuery {
+    public static AggregatedDataSync get2() {
+        return get1().toBuilder()
+                .dataElementsHash(3333333)
+                .build();
+    }
 
-    public abstract Collection<String> dataSetUids();
-
-    public abstract Collection<String> periodIds();
-
-    public abstract Collection<String> rootOrgUnitUids();
-
-    @Nullable
-    public abstract String lastUpdatedStr();
-
-    public static DataSetCompleteRegistrationQuery create(Collection<String> dataSetUids,
-                                                          Collection<String> periodIds,
-                                                          Collection<String> rootOrgUnitUids,
-                                                          String lastUpdatedStr) {
-
-        return new AutoValue_DataSetCompleteRegistrationQuery(1, BaseQuery.DEFAULT_PAGE_SIZE,
-                false, dataSetUids, periodIds, rootOrgUnitUids, lastUpdatedStr);
+    private static Date getDate(String dateStr) {
+        try {
+            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

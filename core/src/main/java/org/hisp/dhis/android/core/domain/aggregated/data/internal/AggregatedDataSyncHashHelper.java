@@ -26,34 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset.internal;
+package org.hisp.dhis.android.core.domain.aggregated.data.internal;
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.dataset.DataSetElement;
 
-import com.google.auto.value.AutoValue;
+import java.util.HashSet;
+import java.util.Set;
 
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
+import javax.inject.Inject;
 
-import java.util.Collection;
+import dagger.Reusable;
 
-@AutoValue
-public abstract class DataSetCompleteRegistrationQuery extends BaseQuery {
+@Reusable
+class AggregatedDataSyncHashHelper {
 
-    public abstract Collection<String> dataSetUids();
+    @Inject
+    AggregatedDataSyncHashHelper() {
+        // Empty constructor for injection
+    }
 
-    public abstract Collection<String> periodIds();
-
-    public abstract Collection<String> rootOrgUnitUids();
-
-    @Nullable
-    public abstract String lastUpdatedStr();
-
-    public static DataSetCompleteRegistrationQuery create(Collection<String> dataSetUids,
-                                                          Collection<String> periodIds,
-                                                          Collection<String> rootOrgUnitUids,
-                                                          String lastUpdatedStr) {
-
-        return new AutoValue_DataSetCompleteRegistrationQuery(1, BaseQuery.DEFAULT_PAGE_SIZE,
-                false, dataSetUids, periodIds, rootOrgUnitUids, lastUpdatedStr);
+    int getDataSetDataElementsHash(DataSet dataSet) {
+        Set<String> dataElementUids = new HashSet<>(dataSet.dataSetElements().size());
+        for (DataSetElement dse : dataSet.dataSetElements()) {
+            dataElementUids.add(dse.dataElement().uid());
+        }
+        return dataElementUids.hashCode();
     }
 }

@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
+import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper;
 import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 import org.hisp.dhis.android.core.category.CategoryOptionComboCollectionRepository;
 import org.hisp.dhis.android.core.common.State;
@@ -120,8 +121,7 @@ public final class DataSetCompleteRegistrationPostCall {
                         dataSetCompleteRegistrationService.postDataSetCompleteRegistrations(
                                 dataSetCompleteRegistrationPayload));
             } catch (D2Error e) {
-                State st = e.isOffline() ? null : State.ERROR;
-                markObjectsAs(toPostDataSetCompleteRegistrations, st);
+                markObjectsAs(toPostDataSetCompleteRegistrations, DataStateHelper.errorIfOnline(e));
                 throw e;
             }
         }
@@ -160,8 +160,7 @@ public final class DataSetCompleteRegistrationPostCall {
     private void markObjectsAs(Collection<DataSetCompleteRegistration> dataSetCompleteRegistrations,
                                @Nullable State forcedState) {
         for (DataSetCompleteRegistration dscr : dataSetCompleteRegistrations) {
-            State st = forcedState == null ? dscr.state() : forcedState;
-            dataSetCompleteRegistrationStore.setState(dscr, st);
+            dataSetCompleteRegistrationStore.setState(dscr, DataStateHelper.forcedOrOwn(dscr, forcedState));
         }
     }
 }

@@ -61,14 +61,18 @@ public class ProgramIndicatorExecutor {
     public String getProgramIndicatorValue(String expression) {
         CommonExpressionVisitor visitor = newVisitor(ParserUtils.ITEM_EVALUATE);
 
-        Object result = Parser.visit(expression, visitor);
+        try {
+            Object result = Parser.visit(expression, visitor);
 
-        String resultStr = AntlrParserUtils.castString(result);
+            String resultStr = AntlrParserUtils.castString(result);
 
-        if (ParserUtils.isNumeric(resultStr)) {
-            return ParserUtils.fromDouble(Double.valueOf(resultStr));
-        } else {
-            return resultStr;
+            if (ParserUtils.isNumeric(resultStr)) {
+                return ParserUtils.fromDouble(Double.valueOf(resultStr));
+            } else {
+                return resultStr;
+            }
+        } catch (IllegalArgumentException e) {
+            return null;
         }
     }
 

@@ -1,7 +1,7 @@
 package org.hisp.dhis.android.core.program.programindicatorengine.function;
 
 /*
- * Copyright (c) 2004-2020, University of Oslo
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,14 +28,22 @@ package org.hisp.dhis.android.core.program.programindicatorengine.function;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
+import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
+import org.hisp.dhis.android.core.program.programindicatorengine.DateUtils;
 import org.joda.time.DateTime;
-import org.joda.time.Months;
 
-public class D2MonthsBetween
-        extends ProgramBetweenDatesFunction {
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
+
+public class D2AddDays
+        implements ExpressionItem {
 
     @Override
-    public Object evaluate(DateTime startDate, DateTime endDate) {
-        return String.valueOf(Months.monthsBetween(startDate, endDate).getMonths());
+    public Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor) {
+        String dateStr = visitor.castStringVisit(ctx.expr(0));
+        String days =  visitor.castStringVisit(ctx.expr(1));
+
+        DateTime date = new DateTime(dateStr);
+        return DateUtils.getMediumDateString(date.plusDays(Double.valueOf(days).intValue()).toDate());
     }
 }

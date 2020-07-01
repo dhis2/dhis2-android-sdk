@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.constant.Constant;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
@@ -63,6 +64,7 @@ public class ProgramIndicatorExecutorShould {
 
     private String programStage1 = "p2adVnEmIei";
     private String programStage2 = "trjLe2gx6lI";
+    private String programStage3 = "atjLe6gt6lI";
     private String attributeUid1 = "JiuwgfybPrE";
     private String attributeUid2 = "U4w2S7vUxV7";
     private String dataElementUid1 = "UUqzccMujME";
@@ -333,6 +335,50 @@ public class ProgramIndicatorExecutorShould {
         String result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression());
 
         assertThat(result).isEqualTo("2");
+    }
+
+    @Test
+    public void evaluate_text_data_values() {
+        setExpression(de(programStage1, dataElementUid1));
+
+        when(dataValue1.value()).thenReturn("value");
+
+        String result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression());
+
+        assertThat(result).isEqualTo("value");
+    }
+
+    @Test
+    public void evaluate_enrollment_status() {
+        setExpression(var("enrollment_status"));
+
+        when(enrollment.status()).thenReturn(EnrollmentStatus.COMPLETED);
+
+        String result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression());
+
+        assertThat(result).isEqualTo("COMPLETED");
+    }
+
+    @Test
+    public void evaluate_enrollment_date() throws ParseException {
+        setExpression(var("enrollment_date"));
+
+        when(enrollment.enrollmentDate()).thenReturn(BaseIdentifiableObject.parseDate("2020-01-05T00:00:00.000"));
+
+        String result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression());
+
+        assertThat(result).isEqualTo("2020-01-05");
+    }
+
+    @Test
+    public void evaluate_values_in_missing_stages() {
+        setExpression(de(programStage1, dataElementUid1) + " + " + de(programStage3, dataElementUid1));
+
+        when(dataValue1.value()).thenReturn("5.3");
+
+        String result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression());
+
+        assertThat(result).isEqualTo("5.3");
     }
 
     // -------------------------------------------------------------------------

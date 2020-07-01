@@ -28,12 +28,31 @@ package org.hisp.dhis.android.core.program.programindicatorengine.function;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
 import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
+import org.joda.time.DateTime;
 
-public abstract class ProgramBetweenFunction
+public abstract class ProgramBetweenDatesFunction
         implements ExpressionItem {
+
+    public abstract Object evaluate(DateTime startDate, DateTime endDate);
 
     boolean isEmpty(CharSequence charSequence) {
         return charSequence == null || charSequence.length() == 0;
+    }
+
+    @Override
+    public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
+        String start = visitor.castStringVisit(ctx.expr(0));
+        String end = visitor.castStringVisit(ctx.expr(1));
+
+        if (isEmpty(start) || isEmpty(end)) {
+            return String.valueOf(0);
+        }
+        DateTime startDate = new DateTime(start);
+        DateTime endDate = new DateTime(end);
+
+        return evaluate(startDate, endDate);
     }
 }

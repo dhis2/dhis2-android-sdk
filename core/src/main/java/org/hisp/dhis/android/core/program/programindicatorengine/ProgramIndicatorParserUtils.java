@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.parser.expression.ParserUtils;
 import org.hisp.dhis.android.core.program.programindicatorengine.dataitem.ProgramItemAttribute;
 import org.hisp.dhis.android.core.program.programindicatorengine.dataitem.ProgramItemPsEventdate;
 import org.hisp.dhis.android.core.program.programindicatorengine.dataitem.ProgramItemStageElement;
+import org.hisp.dhis.android.core.program.programindicatorengine.function.D2AddDays;
 import org.hisp.dhis.android.core.program.programindicatorengine.function.D2Ceil;
 import org.hisp.dhis.android.core.program.programindicatorengine.function.D2Concatenate;
 import org.hisp.dhis.android.core.program.programindicatorengine.function.D2Condition;
@@ -62,6 +63,7 @@ import org.hisp.dhis.android.core.program.programindicatorengine.function.D2Zpvc
 import org.hisp.dhis.android.core.program.programindicatorengine.variable.ProgramVariableItem;
 
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.A_BRACE;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.D2_ADD_DAYS;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.D2_CEIL;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.D2_CONCATENATE;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.D2_CONDITION;
@@ -118,6 +120,7 @@ public final class ProgramIndicatorParserUtils {
             .put(D2_WEEKS_BETWEEN, new D2WeeksBetween())
             .put(D2_MONTHS_BETWEEN, new D2MonthsBetween())
             .put(D2_YEARS_BETWEEN, new D2YearsBetween())
+            .put(D2_ADD_DAYS, new D2AddDays())
 
             .put(D2_COUNT, new D2Count())
             .put(D2_COUNT_IF_CONDITION, new D2CountIfCondition())

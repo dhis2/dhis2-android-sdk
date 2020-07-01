@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.program.programindicatorengine.dataitem;
 
 import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
 import org.hisp.dhis.android.core.program.programindicatorengine.ProgramExpressionItem;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.antlr.ParserExceptionWithoutContext;
 
@@ -47,7 +48,9 @@ public class ProgramItemAttribute
 
         String value = attributeValue == null ? null : attributeValue.value();
 
-        return String.valueOf(visitor.handleNulls(value));
+        TrackedEntityAttribute attribute = visitor.getTrackedEntityAttributeStore().selectByUid(attributeUid);
+
+        return formatValue(String.valueOf(visitor.handleNulls(value)), attribute.valueType());
     }
 
 

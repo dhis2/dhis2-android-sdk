@@ -28,6 +28,7 @@ package org.hisp.dhis.android.core.program.programindicatorengine;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
@@ -75,5 +76,12 @@ public abstract class ProgramExpressionItem
            return events.values().iterator().next().get(0);
         }
         return null;
+    }
+
+    protected String formatValue(String value, ValueType valueType) {
+        if (valueType == ValueType.BOOLEAN) {
+            return "true".equals(value) ? "1" : "0";
+        }
+        return value;
     }
 }

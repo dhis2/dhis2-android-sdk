@@ -32,10 +32,13 @@ package org.hisp.dhis.android.core.program.programindicatorengine;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.constant.Constant;
+import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.junit.Before;
@@ -58,23 +61,18 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class ProgramIndicatorExecutorShould {
 
-    private String enrollmentUid = "enrollment-uid";
     private String programStage1 = "p2adVnEmIei";
     private String programStage2 = "trjLe2gx6lI";
-    private String eventUid1 = "qCUMGmMZAhz";
-    private String eventUid2_1 = "QApcv9Je3bp";
-    private String eventUid2_2 = "fvTdau868YO";
-    private String attribute1 = "JiuwgfybPrE";
-    private String attribute2 = "U4w2S7vUxV7";
-    private String dataElement1 = "UUqzccMujME";
-    private String dataElement2 = "JHpWWC1bISq";
-    private String programIndicatorUid = "program-indicator-uid";
-    private String trackedEntityInstanceUid = "tei-uid";
+    private String attributeUid1 = "JiuwgfybPrE";
+    private String attributeUid2 = "U4w2S7vUxV7";
+    private String dataElementUid1 = "UUqzccMujME";
+    private String dataElementUid2 = "JHpWWC1bISq";
+    private String constantUid1 = "gzlRs2HEGAf";
 
     @Mock
-    private IdentifiableObjectStore<ProgramIndicator> programIndicatorStore;
+    private IdentifiableObjectStore<DataElement> dataElementStore;
     @Mock
-    private IdentifiableObjectStore<Constant> constantStore;
+    private IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore;
 
     @Mock
     private ProgramIndicator programIndicator;
@@ -102,11 +100,11 @@ public class ProgramIndicatorExecutorShould {
     @Mock
     private TrackedEntityDataValue dataValue1, dataValue2_1, dataValue2_2;
 
+    @Mock
+    private DataElement dataElement1, dataElement2;
 
     @Mock
-    private TrackedEntityAttributeValue attributeValue;
-
-    private String constantUid1 = "gzlRs2HEGAf";
+    private TrackedEntityAttribute attribute1, attribute2;
 
     private ProgramIndicatorExecutor programIndicatorExecutor;
 
@@ -116,10 +114,10 @@ public class ProgramIndicatorExecutorShould {
 
         constantMap.put(constantUid1, constant);
 
-        attributeValueMap.put(attribute1, attributeValue1);
-        attributeValueMap.put(attribute2, attributeValue2);
-        when(attributeValue1.trackedEntityAttribute()).thenReturn(attribute1);
-        when(attributeValue2.trackedEntityAttribute()).thenReturn(attribute2);
+        attributeValueMap.put(attributeUid1, attributeValue1);
+        attributeValueMap.put(attributeUid2, attributeValue2);
+        when(attributeValue1.trackedEntityAttribute()).thenReturn(attributeUid1);
+        when(attributeValue2.trackedEntityAttribute()).thenReturn(attributeUid2);
 
         eventsMap.put(programStage1, Collections.singletonList(event1));
         eventsMap.put(programStage2, Arrays.asList(event2_1, event2_2));
@@ -129,9 +127,9 @@ public class ProgramIndicatorExecutorShould {
         when(event2_1.trackedEntityDataValues()).thenReturn(Collections.singletonList(dataValue2_1));
         when(event2_2.trackedEntityDataValues()).thenReturn(Collections.singletonList(dataValue2_2));
 
-        when(dataValue1.dataElement()).thenReturn(dataElement1);
-        when(dataValue2_1.dataElement()).thenReturn(dataElement2);
-        when(dataValue2_2.dataElement()).thenReturn(dataElement2);
+        when(dataValue1.dataElement()).thenReturn(dataElementUid1);
+        when(dataValue2_1.dataElement()).thenReturn(dataElementUid2);
+        when(dataValue2_2.dataElement()).thenReturn(dataElementUid2);
 
 
         when(programIndicatorContext.programIndicator()).thenReturn(programIndicator);
@@ -139,9 +137,23 @@ public class ProgramIndicatorExecutorShould {
         when(programIndicatorContext.attributeValues()).thenReturn(attributeValueMap);
         when(programIndicatorContext.events()).thenReturn(eventsMap);
 
+        when(dataElementStore.selectByUid(dataElementUid1)).thenReturn(dataElement1);
+        when(dataElementStore.selectByUid(dataElementUid2)).thenReturn(dataElement2);
+
+        when(dataElement1.valueType()).thenReturn(ValueType.NUMBER);
+        when(dataElement2.valueType()).thenReturn(ValueType.NUMBER);
+
+        when(trackedEntityAttributeStore.selectByUid(attributeUid1)).thenReturn(attribute1);
+        when(trackedEntityAttributeStore.selectByUid(attributeUid2)).thenReturn(attribute2);
+
+        when(attribute1.valueType()).thenReturn(ValueType.NUMBER);
+        when(attribute2.valueType()).thenReturn(ValueType.NUMBER);
+
         programIndicatorExecutor = new ProgramIndicatorExecutor(
                 constantMap,
-                programIndicatorContext
+                programIndicatorContext,
+                dataElementStore,
+                trackedEntityAttributeStore
         );
 
     }
@@ -157,7 +169,7 @@ public class ProgramIndicatorExecutorShould {
 
     @Test
     public void evaluate_tracked_entity_attribute_value() {
-        String expression = att(attribute1) + " - " + att(attribute2);
+        String expression = att(attributeUid1) + " - " + att(attributeUid2);
         when(attributeValue1.value()).thenReturn("7.8");
         when(attributeValue2.value()).thenReturn("2.5");
 
@@ -168,7 +180,7 @@ public class ProgramIndicatorExecutorShould {
 
     @Test
     public void evaluate_data_elements_in_stage() {
-        String expression = de(programStage1, dataElement1) + " + " + de(programStage2, dataElement2);
+        String expression = de(programStage1, dataElementUid1) + " + " + de(programStage2, dataElementUid2);
 
         when(dataValue1.value()).thenReturn("4.5");
         when(dataValue2_1.value()).thenReturn("0.8");
@@ -185,7 +197,7 @@ public class ProgramIndicatorExecutorShould {
 
     @Test
     public void evaluate_data_elements_with_value_count() {
-        setExpression("(" + de(programStage1, dataElement1) + " + " + de(programStage2, dataElement2) + ") / " +
+        setExpression("(" + de(programStage1, dataElementUid1) + " + " + de(programStage2, dataElementUid2) + ") / " +
                 var("value_count"));
 
         when(dataValue1.value()).thenReturn("4.5");
@@ -197,7 +209,7 @@ public class ProgramIndicatorExecutorShould {
 
     @Test
     public void evaluate_data_elements_with_zero_pos_value_count() {
-        setExpression("(" + de(programStage1, dataElement1) + " + " + de(programStage2, dataElement2) + ") / " +
+        setExpression("(" + de(programStage1, dataElementUid1) + " + " + de(programStage2, dataElementUid2) + ") / " +
                 var("zero_pos_value_count"));
 
         when(dataValue1.value()).thenReturn("7.5");
@@ -209,7 +221,7 @@ public class ProgramIndicatorExecutorShould {
 
     @Test
     public void evaluate_event_count() {
-        setExpression(de(programStage1, dataElement1) + " / " + var("event_count"));
+        setExpression(de(programStage1, dataElementUid1) + " / " + var("event_count"));
         when(dataValue1.value()).thenReturn("10");
 
         String resultNone = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression());
@@ -229,7 +241,7 @@ public class ProgramIndicatorExecutorShould {
 
     @Test
     public void evaluate_d2_count() {
-        setExpression("d2:count(" + de(programStage2, dataElement2) + ")");
+        setExpression("d2:count(" + de(programStage2, dataElementUid2) + ")");
 
         when(dataValue2_1.value()).thenReturn("1.5");
         when(dataValue2_2.value()).thenReturn("20.5");
@@ -240,7 +252,7 @@ public class ProgramIndicatorExecutorShould {
 
     @Test
     public void evaluate_d2_count_if_condition() {
-        setExpression("d2:countIfCondition(" + de(programStage2, dataElement2) + ", '< 10')");
+        setExpression("d2:countIfCondition(" + de(programStage2, dataElementUid2) + ", '< 10')");
 
         when(dataValue2_1.value()).thenReturn("1.5");
         when(dataValue2_2.value()).thenReturn("20.5");
@@ -251,7 +263,7 @@ public class ProgramIndicatorExecutorShould {
 
     @Test
     public void evaluate_d2_count_if_value_numeric() {
-        setExpression("d2:countIfValue(" + de(programStage2, dataElement2) + ", 1.5)");
+        setExpression("d2:countIfValue(" + de(programStage2, dataElementUid2) + ", 1.5)");
 
         when(dataValue2_1.value()).thenReturn("1.5");
         when(dataValue2_2.value()).thenReturn("20.5");
@@ -262,7 +274,7 @@ public class ProgramIndicatorExecutorShould {
 
     @Test
     public void evaluate_d2_count_if_value_string() {
-        setExpression("d2:countIfValue(" + de(programStage2, dataElement2) + ", 'positive')");
+        setExpression("d2:countIfValue(" + de(programStage2, dataElementUid2) + ", 'positive')");
 
         when(dataValue2_1.value()).thenReturn("positive");
         when(dataValue2_2.value()).thenReturn("negative");
@@ -273,7 +285,7 @@ public class ProgramIndicatorExecutorShould {
 
     @Test
     public void evaluate_d2_has_attribute_value() {
-        setExpression("d2:hasValue(" + att(attribute1) + ")");
+        setExpression("d2:hasValue(" + att(attributeUid1) + ")");
 
         when(attributeValue1.value()).thenReturn(null);
         String resultNull = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression());
@@ -286,11 +298,11 @@ public class ProgramIndicatorExecutorShould {
 
     @Test
     public void evaluate_d2_has_data_value() {
-        setExpression("d2:hasValue(" + de(programStage1, dataElement2) + ")");
+        setExpression("d2:hasValue(" + de(programStage1, dataElementUid2) + ")");
         String resultNull = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression());
         assertThat(resultNull).isEqualTo("false");
 
-        setExpression("d2:hasValue(" + de(programStage1, dataElement1) + ")");
+        setExpression("d2:hasValue(" + de(programStage1, dataElementUid1) + ")");
         when(dataValue1.value()).thenReturn("value");
         String resultNonNull = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression());
         assertThat(resultNonNull).isEqualTo("true");
@@ -298,7 +310,7 @@ public class ProgramIndicatorExecutorShould {
 
     @Test
     public void evaluate_d2_condition() {
-        setExpression("d2:condition('" + de(programStage1, dataElement1) + " < 10', 150, 50)");
+        setExpression("d2:condition('" + de(programStage1, dataElementUid1) + " < 10', 150, 50)");
 
         when(dataValue1.value()).thenReturn("8");
         String resultTrue = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression());
@@ -307,7 +319,20 @@ public class ProgramIndicatorExecutorShould {
         when(dataValue1.value()).thenReturn("15");
         String resultFalse = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression());
         assertThat(resultFalse).isEqualTo("50");
+    }
 
+    @Test
+    public void evaluate_boolean_elements() {
+        setExpression(de(programStage1, dataElementUid1) + " + " + att(attributeUid1));
+
+        when(dataValue1.value()).thenReturn("true");
+        when(dataElement1.valueType()).thenReturn(ValueType.BOOLEAN);
+        when(attributeValue1.value()).thenReturn("true");
+        when(attribute1.valueType()).thenReturn(ValueType.BOOLEAN);
+
+        String result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression());
+
+        assertThat(result).isEqualTo("2");
     }
 
     // -------------------------------------------------------------------------

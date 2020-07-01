@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.program.programindicatorengine.dataitem;
  */
 
 import org.hisp.dhis.android.core.common.AggregationType;
+import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
 import org.hisp.dhis.android.core.program.programindicatorengine.ProgramExpressionItem;
@@ -66,7 +67,9 @@ public class ProgramItemStageElement
             }
         }
 
-        return String.valueOf(visitor.handleNulls(value));
+        DataElement dataElement = visitor.getDataElementStore().selectByUid(dataElementId);
+
+        return formatValue(String.valueOf(visitor.handleNulls(value)), dataElement.valueType());
     }
 
     private List<TrackedEntityDataValue> getCandidates(List<Event> events, String dataElement) {

@@ -29,10 +29,13 @@
 package org.hisp.dhis.android.core.program.programindicatorengine;
 
 
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.constant.Constant;
+import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
 import org.hisp.dhis.android.core.parser.expression.ExpressionItemMethod;
 import org.hisp.dhis.android.core.parser.expression.ParserUtils;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.antlr.AntlrParserUtils;
 import org.hisp.dhis.antlr.Parser;
 
@@ -42,11 +45,17 @@ public class ProgramIndicatorExecutor {
 
     private final Map<String, Constant> constantMap;
     private final ProgramIndicatorContext programIndicatorContext;
+    private final IdentifiableObjectStore<DataElement> dataElementStore;
+    private final IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore;
 
     ProgramIndicatorExecutor(Map<String, Constant> constantMap,
-                             ProgramIndicatorContext programIndicatorContext) {
+                             ProgramIndicatorContext programIndicatorContext,
+                             IdentifiableObjectStore<DataElement> dataElementStore,
+                             IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore) {
         this.constantMap = constantMap;
         this.programIndicatorContext = programIndicatorContext;
+        this.dataElementStore = dataElementStore;
+        this.trackedEntityAttributeStore = trackedEntityAttributeStore;
     }
 
     public String getProgramIndicatorValue(String expression) {
@@ -86,6 +95,8 @@ public class ProgramIndicatorExecutor {
                 .withConstantMap(constantMap)
                 .withProgramIndicatorContext(programIndicatorContext)
                 .withProgramIndicatorExecutor(this)
+                .withDataElementStore(dataElementStore)
+                .withTrackedEntityAttributeStore(trackedEntityAttributeStore)
                 .buildForProgramIndicator();
     }
 }

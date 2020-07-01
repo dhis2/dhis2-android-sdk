@@ -33,12 +33,14 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.constant.Constant;
+import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventCollectionRepository;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore;
 
@@ -52,6 +54,8 @@ import javax.inject.Inject;
 public class ProgramIndicatorEngine {
 
     private final IdentifiableObjectStore<ProgramIndicator> programIndicatorStore;
+    private final IdentifiableObjectStore<DataElement> dataElementStore;
+    private final IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore;
     private final IdentifiableObjectStore<Constant> constantStore;
     private final EnrollmentStore enrollmentStore;
     private final EventCollectionRepository eventRepository;
@@ -60,12 +64,16 @@ public class ProgramIndicatorEngine {
 
     @Inject
     ProgramIndicatorEngine(IdentifiableObjectStore<ProgramIndicator> programIndicatorStore,
+                           IdentifiableObjectStore<DataElement> dataElementStore,
+                           IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore,
                            EnrollmentStore enrollmentStore,
                            EventCollectionRepository eventRepository,
                            ProgramStageCollectionRepository programRepository,
                            TrackedEntityAttributeValueStore trackedEntityAttributeValueStore,
                            IdentifiableObjectStore<Constant> constantStore) {
         this.programIndicatorStore = programIndicatorStore;
+        this.dataElementStore = dataElementStore;
+        this.trackedEntityAttributeStore = trackedEntityAttributeStore;
         this.enrollmentStore = enrollmentStore;
         this.eventRepository = eventRepository;
         this.programRepository = programRepository;
@@ -95,7 +103,9 @@ public class ProgramIndicatorEngine {
 
         ProgramIndicatorExecutor executor = new ProgramIndicatorExecutor(
                 getConstantMap(),
-                contextBuilder.build());
+                contextBuilder.build(),
+                dataElementStore,
+                trackedEntityAttributeStore);
 
         return executor.getProgramIndicatorValue(programIndicator.expression());
     }

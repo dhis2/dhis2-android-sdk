@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.android.core.parser.service.dataitem.DimensionalItemId;
 import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicatorContext;
 import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicatorExecutor;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.antlr.AntlrExpressionVisitor;
 import org.hisp.dhis.antlr.ParserExceptionWithoutContext;
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
@@ -59,6 +60,8 @@ public class CommonExpressionVisitor
         extends AntlrExpressionVisitor {
 
     private IdentifiableObjectStore<DataElement> dataElementStore;
+
+    private IdentifiableObjectStore<TrackedEntityAttribute> attributeStore;
 
     private IdentifiableObjectStore<CategoryOptionCombo> categoryOptionComboStore;
 
@@ -255,6 +258,10 @@ public class CommonExpressionVisitor
         return dataElementStore;
     }
 
+    public IdentifiableObjectStore<TrackedEntityAttribute> getTrackedEntityAttributeStore() {
+        return attributeStore;
+    }
+
     public IdentifiableObjectStore<CategoryOptionCombo> getCategoryOptionComboStore() {
         return categoryOptionComboStore;
     }
@@ -357,6 +364,11 @@ public class CommonExpressionVisitor
             return this;
         }
 
+        public Builder withTrackedEntityAttributeStore(IdentifiableObjectStore<TrackedEntityAttribute> store) {
+            this.visitor.attributeStore = store;
+            return this;
+        }
+
         public Builder withCategoryOptionComboStore(IdentifiableObjectStore<CategoryOptionCombo> store) {
             this.visitor.categoryOptionComboStore = store;
             return this;
@@ -395,6 +407,7 @@ public class CommonExpressionVisitor
         public CommonExpressionVisitor buildForProgramIndicator() {
             Validate.notNull(this.visitor.programIndicatorContext, missingProperty("programIndicatorContext"));
             Validate.notNull(this.visitor.programIndicatorExecutor, missingProperty("programIndicatorExecutor"));
+            Validate.notNull(this.visitor.attributeStore, missingProperty("trackedEntityAttributeStore"));
 
             return validateCommonProperties();
         }

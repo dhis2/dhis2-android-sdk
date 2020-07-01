@@ -29,15 +29,17 @@
 package org.hisp.dhis.android.core.program.programindicatorengine;
 
 
+import android.os.Build;
+
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.constant.Constant;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
+import org.hisp.dhis.android.core.parser.expression.CommonParser;
 import org.hisp.dhis.android.core.parser.expression.ExpressionItemMethod;
 import org.hisp.dhis.android.core.parser.expression.ParserUtils;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.antlr.AntlrParserUtils;
-import org.hisp.dhis.antlr.Parser;
 
 import java.util.Map;
 
@@ -62,7 +64,7 @@ public class ProgramIndicatorExecutor {
         CommonExpressionVisitor visitor = newVisitor(ParserUtils.ITEM_EVALUATE);
 
         try {
-            Object result = Parser.visit(expression, visitor);
+            Object result = CommonParser.visit(expression, visitor);
 
             String resultStr = AntlrParserUtils.castString(result);
 
@@ -87,7 +89,7 @@ public class ProgramIndicatorExecutor {
     private CommonExpressionVisitor getCountVisitor(String expression) {
         CommonExpressionVisitor visitor = newVisitor(ParserUtils.ITEM_VALUE_COUNT);
 
-        Parser.visit(expression, visitor);
+        CommonParser.visit(expression, visitor);
 
         return visitor;
     }

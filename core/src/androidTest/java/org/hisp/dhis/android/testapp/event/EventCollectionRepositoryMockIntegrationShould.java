@@ -367,6 +367,14 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     }
 
     @Test
+    public void order_by_organisation_unit_name() {
+        List<Event> events = d2.eventModule().events()
+                .orderByOrganisationUnitName(RepositoryScope.OrderByDirection.ASC)
+                .blockingGet();
+        assertThat(events.size(), is(4));
+    }
+
+    @Test
     public void add_events_to_the_repository() throws D2Error {
         List<Event> events1 = d2.eventModule().events().blockingGet();
         assertThat(events1.size(), is(4));

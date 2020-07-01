@@ -234,6 +234,16 @@ public final class EventCollectionRepository
         return cf.withOrderBy(column, direction);
     }
 
+    public EventCollectionRepository orderByTimeline(RepositoryScope.OrderByDirection direction) {
+        String column = String.format("(CASE WHEN %s IN ('%s', '%s', '%s') THEN %s ELSE %s END)",
+                Columns.STATUS,
+                EventStatus.ACTIVE, EventStatus.COMPLETED, EventStatus.VISITED,
+                Columns.EVENT_DATE,
+                Columns.DUE_DATE);
+
+        return cf.withOrderBy(column, direction);
+    }
+
     public int countTrackedEntityInstances() {
         return store.countTeisWhereEvents(getWhereClause());
     }

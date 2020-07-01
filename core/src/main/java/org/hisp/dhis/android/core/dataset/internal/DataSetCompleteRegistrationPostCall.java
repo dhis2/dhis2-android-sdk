@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.dataset.internal;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
@@ -118,8 +119,9 @@ public final class DataSetCompleteRegistrationPostCall {
                 dataValueImportSummary = apiCallExecutor.executeObjectCall(
                         dataSetCompleteRegistrationService.postDataSetCompleteRegistrations(
                                 dataSetCompleteRegistrationPayload));
-            } catch (Exception e) {
-                markObjectsAs(toPostDataSetCompleteRegistrations, State.ERROR);
+            } catch (D2Error e) {
+                State st = e.isOffline() ? null : State.ERROR;
+                markObjectsAs(toPostDataSetCompleteRegistrations, st);
                 throw e;
             }
         }
@@ -155,9 +157,11 @@ public final class DataSetCompleteRegistrationPostCall {
         emitter.onComplete();
     }
 
-    private void markObjectsAs(Collection<DataSetCompleteRegistration> dataSetCompleteRegistrations, State state) {
+    private void markObjectsAs(Collection<DataSetCompleteRegistration> dataSetCompleteRegistrations,
+                               @Nullable State forcedState) {
         for (DataSetCompleteRegistration dscr : dataSetCompleteRegistrations) {
-            dataSetCompleteRegistrationStore.setState(dscr, state);
+            State st = forcedState == null ? dscr.state() : forcedState;
+            dataSetCompleteRegistrationStore.setState(dscr, st);
         }
     }
 }

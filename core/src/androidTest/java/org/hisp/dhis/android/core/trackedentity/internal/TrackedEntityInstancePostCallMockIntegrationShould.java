@@ -155,7 +155,6 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
     public void handle_import_conflicts_correctly() {
         storeTrackedEntityInstance();
 
-        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_import_conflicts_2.json");
 
         d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
@@ -167,7 +166,6 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
     public void delete_old_import_conflicts() {
         storeTrackedEntityInstance();
 
-        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_import_conflicts_2.json");
         d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
         assertThat(d2.importModule().trackerImportConflicts().blockingCount()).isEqualTo(3);
@@ -179,7 +177,6 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
         EventStoreImpl.create(databaseAdapter).setState("event1Id", State.TO_POST);
         EventStoreImpl.create(databaseAdapter).setState("event2Id", State.TO_POST);
 
-        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_import_conflicts_3.json");
         d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
         assertThat(d2.importModule().trackerImportConflicts().blockingCount()).isEqualTo(1);
@@ -262,7 +259,6 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
     public void mark_payload_as_to_update_when_error_500() {
         storeTrackedEntityInstance();
 
-        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse(500, "Internal Server Error");
 
         d2.trackedEntityModule().trackedEntityInstances().blockingUpload();

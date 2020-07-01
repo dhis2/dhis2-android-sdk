@@ -38,8 +38,10 @@ public final class CommonParser {
     }
 
     public static Object visit(String expression, CommonExpressionVisitor visitor) {
-        // Check version 0 for unit tests.
-        if (Build.VERSION.SDK_INT > 0 && Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+        int sdkVersion = Build.VERSION.SDK_INT;
+
+        // In unit test, sdk value is 0. Ignore it and use cache by default.
+        if (sdkVersion > 0 && sdkVersion < Build.VERSION_CODES.LOLLIPOP) {
             return Parser.visit(expression, visitor, false);
         } else {
             return Parser.visit(expression, visitor);

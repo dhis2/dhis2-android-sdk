@@ -80,7 +80,7 @@ public class TrackedEntityAttributeReservedValueEndpointCallRealIntegrationShoul
         reserveValues();
 
         List<TrackedEntityAttributeReservedValue> reservedValues = TrackedEntityAttributeReservedValueStore.create(
-                databaseAdapter()).selectAll();
+                d2.databaseAdapter()).selectAll();
 
         assertThat(reservedValues.size()).isEqualTo(numberToReserve);
     }
@@ -92,7 +92,7 @@ public class TrackedEntityAttributeReservedValueEndpointCallRealIntegrationShoul
         d2.trackedEntityModule().reservedValueManager().blockingDownloadAllReservedValues(20);
 
         List<TrackedEntityAttributeReservedValue> reservedValues = TrackedEntityAttributeReservedValueStore.create(
-                databaseAdapter()).selectAll();
+                d2.databaseAdapter()).selectAll();
 
         String value = d2.trackedEntityModule().reservedValueManager().blockingGetValue("xs8A6tQJY0s", orgunitUid);
     }

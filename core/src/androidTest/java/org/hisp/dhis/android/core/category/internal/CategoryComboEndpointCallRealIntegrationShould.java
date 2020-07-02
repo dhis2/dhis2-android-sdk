@@ -95,31 +95,31 @@ public class CategoryComboEndpointCallRealIntegrationShould extends BaseRealInte
     }
 
     private void assertNotCombosInDB() {
-        IdentifiableObjectStore<CategoryCombo> categoryComboStore = CategoryComboStore.create(databaseAdapter());
+        IdentifiableObjectStore<CategoryCombo> categoryComboStore = CategoryComboStore.create(d2.databaseAdapter());
         List<CategoryCombo> categoryCombos = categoryComboStore.selectAll();
         assertTrue(categoryCombos.isEmpty());
     }
 
     private void assertThereAreCombosInDB() {
-        IdentifiableObjectStore<CategoryCombo> categoryComboStore = CategoryComboStore.create(databaseAdapter());
+        IdentifiableObjectStore<CategoryCombo> categoryComboStore = CategoryComboStore.create(d2.databaseAdapter());
         List<CategoryCombo> categoryCombos = categoryComboStore.selectAll();
         assertTrue(categoryCombos.size() > 0);
     }
 
     private List<CategoryCategoryComboLink> getCategoryCategoryComboLinks() {
         LinkStore<CategoryCategoryComboLink>
-                categoryCategoryComboLinkStore = CategoryCategoryComboLinkStore.create(databaseAdapter());
+                categoryCategoryComboLinkStore = CategoryCategoryComboLinkStore.create(d2.databaseAdapter());
         return categoryCategoryComboLinkStore.selectAll();
     }
 
     private void assertThereAreCategoryOptionCombosInDB() {
-        IdentifiableObjectStore<CategoryOptionCombo> categoryOptionComboStore = CategoryOptionComboStoreImpl.create(databaseAdapter());
+        IdentifiableObjectStore<CategoryOptionCombo> categoryOptionComboStore = CategoryOptionComboStoreImpl.create(d2.databaseAdapter());
         List<CategoryOptionCombo> categoryOptionCombos = categoryOptionComboStore.selectAll();
         assertTrue(categoryOptionCombos.size() > 0);
     }
 
     private void assertThereAreCategoriesInDB() {
-        IdentifiableObjectStore<CategoryOption> categoryOptionStore = CategoryOptionStore.create(databaseAdapter());
+        IdentifiableObjectStore<CategoryOption> categoryOptionStore = CategoryOptionStore.create(d2.databaseAdapter());
         List<String> categoryOptionUids = categoryOptionStore.selectUids();
         assertTrue(categoryOptionUids.size() > 0);
     }

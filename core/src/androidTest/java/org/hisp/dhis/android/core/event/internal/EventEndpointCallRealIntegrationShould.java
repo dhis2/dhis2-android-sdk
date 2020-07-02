@@ -92,7 +92,7 @@ public class EventEndpointCallRealIntegrationShould extends BaseRealIntegrationT
     }
 
     private boolean verifyAtLeastOneEventWithOptionCombo() {
-        EventStore eventStore = EventStoreImpl.create(databaseAdapter());
+        EventStore eventStore = EventStoreImpl.create(d2.databaseAdapter());
 
         List<Event> downloadedEvents = eventStore.querySingleEvents();
         for(Event event : downloadedEvents){
@@ -104,7 +104,7 @@ public class EventEndpointCallRealIntegrationShould extends BaseRealIntegrationT
     }
 
     private void verifyNumberOfDownloadedEvents(int numEvents) {
-        EventStore eventStore = EventStoreImpl.create(databaseAdapter());
+        EventStore eventStore = EventStoreImpl.create(d2.databaseAdapter());
 
         List<Event> downloadedEvents = eventStore.querySingleEvents();
 

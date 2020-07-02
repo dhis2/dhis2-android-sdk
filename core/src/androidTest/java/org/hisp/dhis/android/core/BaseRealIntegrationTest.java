@@ -83,7 +83,7 @@ public abstract class BaseRealIntegrationTest {
 
     protected GenericCallData getGenericCallData(D2 d2) {
         return GenericCallData.create(
-                databaseAdapter(), d2.retrofit(), resourceHandler, d2.systemInfoModule().versionManager());
+                d2.databaseAdapter(), d2.retrofit(), resourceHandler, d2.systemInfoModule().versionManager());
     }
 
     protected D2DIComponent getD2DIComponent(D2 d2) {

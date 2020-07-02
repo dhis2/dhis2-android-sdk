@@ -1,5 +1,7 @@
+package org.hisp.dhis.android.core.program.programindicatorengine.internal.function;
+
 /*
- * Copyright (c) 2004-2019, University of Oslo
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,10 +28,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program.programindicatorengine;
+import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
+import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
+import org.hisp.dhis.android.core.parser.expression.ParserUtils;
+import org.joda.time.DateTime;
 
-public interface ProgramIndicatorEngine {
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
 
-    String getProgramIndicatorValue(String enrollmentUid, String eventUid, String programIndicatorUid);
+public class D2AddDays
+        implements ExpressionItem {
 
+    @Override
+    public Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor) {
+        String dateStr = visitor.castStringVisit(ctx.expr(0));
+        String days =  visitor.castStringVisit(ctx.expr(1));
+
+        DateTime date = new DateTime(dateStr);
+        return ParserUtils.getMediumDateString(date.plusDays((int) Double.parseDouble(days)).toDate());
+    }
 }

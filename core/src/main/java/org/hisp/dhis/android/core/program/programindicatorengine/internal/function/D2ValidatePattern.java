@@ -1,5 +1,7 @@
+package org.hisp.dhis.android.core.program.programindicatorengine.internal.function;
+
 /*
- * Copyright (c) 2004-2019, University of Oslo
+ * Copyright (c) 2004-2020, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,10 +28,27 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program.programindicatorengine;
+import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
+import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
 
-public interface ProgramIndicatorEngine {
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-    String getProgramIndicatorValue(String enrollmentUid, String eventUid, String programIndicatorUid);
+import static org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorParserUtils.wrap;
 
+public class D2ValidatePattern
+        implements ExpressionItem {
+
+    @Override
+    public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
+        String input = visitor.castStringVisit(ctx.expr(0));
+        String regex = visitor.castStringVisit(ctx.expr(1));
+
+        Pattern pattern = Pattern.compile(regex);
+
+        Matcher matcher = pattern.matcher(input);
+
+        return wrap(String.valueOf(matcher.matches()));
+    }
 }

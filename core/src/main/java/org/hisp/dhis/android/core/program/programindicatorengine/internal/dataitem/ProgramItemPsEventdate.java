@@ -1,5 +1,7 @@
+package org.hisp.dhis.android.core.program.programindicatorengine.internal.dataitem;
+
 /*
- * Copyright (c) 2004-2019, University of Oslo
+ * Copyright (c) 2004-2020, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,10 +28,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program.programindicatorengine;
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramExpressionItem;
 
-public interface ProgramIndicatorEngine {
-
-    String getProgramIndicatorValue(String enrollmentUid, String eventUid, String programIndicatorUid);
+/**
+ * Program indicator expression data item PS_EVENTDATE: programStageUid
+ *
+ * @author Jim Grace
+ */
+public class ProgramItemPsEventdate
+        extends ProgramExpressionItem {
 
 }

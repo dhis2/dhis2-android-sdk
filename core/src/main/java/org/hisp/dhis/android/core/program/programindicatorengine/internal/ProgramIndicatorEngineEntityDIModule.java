@@ -26,10 +26,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program.programindicatorengine;
+package org.hisp.dhis.android.core.program.programindicatorengine.internal;
 
-public interface ProgramIndicatorEngine {
+import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicatorEngine;
 
-    String getProgramIndicatorValue(String enrollmentUid, String eventUid, String programIndicatorUid);
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
+
+@Module
+public final class ProgramIndicatorEngineEntityDIModule {
+
+    @Provides
+    @Reusable
+    public ProgramIndicatorEngine programIndicatorEngine(ProgramIndicatorEngineImpl impl) {
+        return impl;
+    }
 
 }

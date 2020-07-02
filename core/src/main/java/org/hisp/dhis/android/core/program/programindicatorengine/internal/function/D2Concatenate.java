@@ -1,5 +1,7 @@
+package org.hisp.dhis.android.core.program.programindicatorengine.internal.function;
+
 /*
- * Copyright (c) 2004-2019, University of Oslo
+ * Copyright (c) 2004-2020, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,10 +28,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program.programindicatorengine;
+import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
+import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
 
-public interface ProgramIndicatorEngine {
+public class D2Concatenate
+        implements ExpressionItem {
 
-    String getProgramIndicatorValue(String enrollmentUid, String eventUid, String programIndicatorUid);
+    @Override
+    public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
+        StringBuilder builder = new StringBuilder();
 
+        for (ExpressionParser.ExprContext string : ctx.expr()) {
+            String visitedString = visitor.castStringVisit(string);
+            if (visitedString != null) {
+                builder.append(visitedString);
+            }
+        }
+
+        return builder.toString();
+    }
 }

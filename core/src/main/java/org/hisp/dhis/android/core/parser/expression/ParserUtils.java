@@ -54,6 +54,8 @@ import org.hisp.dhis.android.core.parser.service.dataitem.ItemConstant;
 import org.hisp.dhis.android.core.parser.service.dataitem.ItemDays;
 import org.hisp.dhis.android.core.parser.service.dataitem.ItemOrgUnitGroup;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -95,6 +97,8 @@ public final class ParserUtils {
     private static final String NUMERIC_REGEXP = "^(-?0|-?[1-9]\\d*)(\\.\\d+)?(E(-)?\\d+)?$";
 
     private static final Pattern NUMERIC_PATTERN = Pattern.compile(NUMERIC_REGEXP);
+
+    private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
 
     public final static ExpressionItemMethod ITEM_GET_DESCRIPTIONS = ExpressionItem::getDescription;
 
@@ -189,5 +193,19 @@ public final class ParserUtils {
         final double factor = Math.pow(10, decimals);
 
         return Math.round(value * factor) / factor;
+    }
+
+    /**
+     * Formats a Date to the format YYYY-MM-DD.
+     *
+     * @param date the Date to parse.
+     * @return A formatted date string. Null if argument is null.
+     */
+    public static String getMediumDateString(Date date) {
+        final SimpleDateFormat format = new SimpleDateFormat();
+
+        format.applyPattern(DEFAULT_DATE_FORMAT);
+
+        return date == null ? null : format.format(date);
     }
 }

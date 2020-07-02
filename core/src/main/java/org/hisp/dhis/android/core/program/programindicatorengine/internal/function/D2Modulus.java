@@ -1,5 +1,7 @@
+package org.hisp.dhis.android.core.program.programindicatorengine.internal.function;
+
 /*
- * Copyright (c) 2004-2019, University of Oslo
+ * Copyright (c) 2004-2020, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,10 +28,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program.programindicatorengine;
+import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
+import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
 
-public interface ProgramIndicatorEngine {
+import static org.apache.commons.lang3.math.NumberUtils.toDouble;
 
-    String getProgramIndicatorValue(String enrollmentUid, String eventUid, String programIndicatorUid);
+public class D2Modulus
+        implements ExpressionItem {
 
+    @Override
+    public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
+        return String.format("%.1f",
+                toDouble(visitor.castStringVisit(ctx.expr(0)), 0.0) %
+                        toDouble(visitor.castStringVisit(ctx.expr(1)), 0.0));
+    }
 }

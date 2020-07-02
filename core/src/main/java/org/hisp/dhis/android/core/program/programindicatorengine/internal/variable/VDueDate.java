@@ -1,5 +1,7 @@
+package org.hisp.dhis.android.core.program.programindicatorengine.internal.variable;
+
 /*
- * Copyright (c) 2004-2019, University of Oslo
+ * Copyright (c) 2004-2020, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,10 +28,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program.programindicatorengine;
+import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
+import org.hisp.dhis.android.core.parser.expression.ParserUtils;
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramExpressionItem;
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
 
-public interface ProgramIndicatorEngine {
+public class VDueDate
+        extends ProgramExpressionItem {
 
-    String getProgramIndicatorValue(String enrollmentUid, String eventUid, String programIndicatorUid);
+    @Override
+    public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
+        Event singleEvent = getSingleEvent(visitor);
 
+        return singleEvent == null ? null : ParserUtils.getMediumDateString(singleEvent.dueDate());
+    }
 }

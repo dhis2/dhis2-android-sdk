@@ -26,10 +26,49 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program.programindicatorengine;
+package org.hisp.dhis.android.core.program.programindicatorengine.internal;
 
-public interface ProgramIndicatorEngine {
+import androidx.annotation.Nullable;
 
-    String getProgramIndicatorValue(String enrollmentUid, String eventUid, String programIndicatorUid);
+import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.program.ProgramIndicator;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+@AutoValue
+public abstract class ProgramIndicatorContext {
+
+    public abstract ProgramIndicator programIndicator();
+
+    @Nullable
+    public abstract Enrollment enrollment();
+
+    public abstract Map<String, TrackedEntityAttributeValue> attributeValues();
+
+    public abstract Map<String, List<Event>> events();
+
+    public static Builder builder() {
+        return new AutoValue_ProgramIndicatorContext.Builder()
+                .attributeValues(Collections.emptyMap())
+                .events(Collections.emptyMap());
+    }
+
+    @AutoValue.Builder
+    public static abstract class Builder {
+        public abstract Builder programIndicator(ProgramIndicator programIndicator);
+
+        public abstract Builder enrollment(Enrollment enrollment);
+
+        public abstract Builder attributeValues(Map<String, TrackedEntityAttributeValue> attributeValues);
+
+        public abstract Builder events(Map<String, List<Event>> events);
+
+        public abstract ProgramIndicatorContext build();
+    }
 }

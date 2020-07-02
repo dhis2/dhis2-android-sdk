@@ -142,8 +142,7 @@ public final class UserAuthenticateCallFactory {
                     apiCallErrorCatcher);
             return loginOnline(parsedServerUrl, authenticatedUser, username, password);
         } catch (D2Error d2Error) {
-            if (d2Error.errorCode() == D2ErrorCode.SOCKET_TIMEOUT ||
-                    d2Error.errorCode() == D2ErrorCode.UNKNOWN_HOST) {
+            if (d2Error.isOffline()) {
                 return loginOffline(parsedServerUrl, username, password);
             } else if (d2Error.errorCode() == D2ErrorCode.USER_ACCOUNT_DISABLED) {
                 wipeModule.wipeEverything();

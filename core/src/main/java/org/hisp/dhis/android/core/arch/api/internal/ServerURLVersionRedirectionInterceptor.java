@@ -31,16 +31,32 @@ package org.hisp.dhis.android.core.arch.api.internal;
 import java.io.IOException;
 
 import okhttp3.Interceptor;
+import okhttp3.Request;
 import okhttp3.Response;
 
 public class ServerURLVersionRedirectionInterceptor implements Interceptor {
 
+    private Request previousUpdateRedirectionRequest;
+
     @Override
     public Response intercept(Chain chain) throws IOException {
-        Response response = chain.proceed(chain.request());
+        Request request = fixedRedirectionRequest(chain.request());
+        previousUpdateRedirectionRequest = null;
+        Response response = chain.proceed(request);
         if (response.code() == 302) {
             ServerURLWrapper.setServerUrl(response.header("Location"));
+            if (!request.method().equals("GET")) {
+                this.previousUpdateRedirectionRequest = request;
+            }
         }
         return response;
+    }
+
+    private Request fixedRedirectionRequest(Request request) {
+        if (previousUpdateRedirectionRequest == null) {
+            return request;
+        } else {
+            return DynamicServerURLInterceptor.transformRequest(previousUpdateRedirectionRequest);
+        }
     }
 }

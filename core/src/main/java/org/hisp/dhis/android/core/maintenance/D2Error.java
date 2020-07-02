@@ -84,6 +84,10 @@ public abstract class D2Error extends Exception implements CoreObject {
 
     public abstract Builder toBuilder();
 
+    public boolean isOffline() {
+        return errorCode() == D2ErrorCode.SOCKET_TIMEOUT || errorCode() == D2ErrorCode.UNKNOWN_HOST;
+    }
+
     @AutoValue.Builder
     public static abstract class Builder extends BaseObject.Builder<Builder> {
 

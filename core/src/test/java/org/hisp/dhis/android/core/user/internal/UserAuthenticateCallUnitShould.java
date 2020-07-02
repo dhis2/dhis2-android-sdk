@@ -184,6 +184,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
 
         when(d2Error.errorCode()).thenReturn(D2ErrorCode.SOCKET_TIMEOUT);
+        when(d2Error.isOffline()).thenReturn(true);
         when(generalSettingCall.isDatabaseEncrypted()).thenReturn(Single.just(false));
 
         logInSingle = instantiateCall(USERNAME, PASSWORD, serverUrl);
@@ -289,6 +290,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     public void wipe_db_when_account_disabled() throws Exception {
         whenAPICall().thenThrow(d2Error);
         when(d2Error.errorCode()).thenReturn(D2ErrorCode.USER_ACCOUNT_DISABLED);
+        when(d2Error.isOffline()).thenReturn(false);
 
         TestObserver<User> testObserver = logInSingle.test();
         testObserver.awaitTerminalEvent();

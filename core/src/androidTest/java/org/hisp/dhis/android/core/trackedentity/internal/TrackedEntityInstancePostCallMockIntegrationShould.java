@@ -155,7 +155,6 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
     public void handle_import_conflicts_correctly() {
         storeTrackedEntityInstance();
 
-        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_import_conflicts_2.json");
 
         d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
@@ -167,7 +166,6 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
     public void delete_old_import_conflicts() {
         storeTrackedEntityInstance();
 
-        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_import_conflicts_2.json");
         d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
         assertThat(d2.importModule().trackerImportConflicts().blockingCount()).isEqualTo(3);
@@ -179,7 +177,6 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
         EventStoreImpl.create(databaseAdapter).setState("event1Id", State.TO_POST);
         EventStoreImpl.create(databaseAdapter).setState("event2Id", State.TO_POST);
 
-        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_import_conflicts_3.json");
         d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
         assertThat(d2.importModule().trackerImportConflicts().blockingCount()).isEqualTo(1);
@@ -259,28 +256,30 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
     }
 
     @Test
-    public void mark_payload_as_to_update_when_error_500() {
+    public void restore_payload_states_when_error_500() {
         storeTrackedEntityInstance();
 
-        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse(500, "Internal Server Error");
 
         d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
 
         TrackedEntityInstance instance = TrackedEntityInstanceStoreImpl.create(databaseAdapter).selectFirst();
-        assertThat(instance.state()).isEqualTo(State.TO_UPDATE);
+        assertThat(instance.state()).isEqualTo(State.TO_POST);
 
         List<Enrollment> enrollments = EnrollmentStoreImpl.create(databaseAdapter).selectAll();
         for (Enrollment enrollment : enrollments) {
             if ("enrollment1Id".equals(enrollment.uid()) || "enrollment2Id".equals(enrollment.uid())) {
-                assertThat(enrollment.state()).isEqualTo(State.TO_UPDATE);
+                assertThat(enrollment.state()).isEqualTo(State.TO_POST);
             }
         }
 
         List<Event> events = EventStoreImpl.create(databaseAdapter).selectAll();
         for (Event event : events) {
-            if ("event1Id".equals(event.uid()) || "event2Id".equals(event.uid())) {
+            if ("event1Id".equals(event.uid())) {
                 assertThat(event.state()).isEqualTo(State.TO_UPDATE);
+            }
+            if ("event2Id".equals(event.uid())) {
+                assertThat(event.state()).isEqualTo(State.SYNCED_VIA_SMS);
             }
         }
     }
@@ -307,7 +306,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
                 .organisationUnit(orgUnit.uid())
                 .program(program.uid())
                 .programStage(programStage.uid())
-                .state(State.TO_POST)
+                .state(State.TO_UPDATE)
                 .trackedEntityDataValues(Collections.singletonList(dataValue1))
                 .build();
 
@@ -328,7 +327,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
                 .organisationUnit(orgUnit.uid())
                 .program(program.uid())
                 .programStage(programStage.uid())
-                .state(State.TO_POST)
+                .state(State.SYNCED_VIA_SMS)
                 .trackedEntityDataValues(Collections.singletonList(dataValue2))
                 .build();
 

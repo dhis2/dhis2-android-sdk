@@ -47,7 +47,6 @@ import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.note.Note;
 import org.hisp.dhis.android.core.note.NoteTableInfo;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
-import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore;
 
@@ -103,9 +102,6 @@ public final class EventPostCall {
             } else {
                 D2ProgressManager progressManager = new D2ProgressManager(1);
                 return Observable.create(emitter -> {
-
-                    emitter.onNext(progressManager.increaseProgress(SystemInfo.class, false));
-
                     EventPayload eventPayload = new EventPayload();
                     eventPayload.events = eventsToPost;
 

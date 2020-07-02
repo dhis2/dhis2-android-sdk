@@ -27,16 +27,15 @@
  */
 package org.hisp.dhis.android.core.fileresource.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
 import org.hisp.dhis.android.core.fileresource.FileResource;
-import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 import io.reactivex.Observable;
 
@@ -45,32 +44,27 @@ public class FileResourceCall {
 
     private final RxAPICallExecutor rxCallExecutor;
 
-    private final SystemInfoModuleDownloader systemInfoDownloader;
     private final FileResourceModuleDownloader fileResourceModuleDownloader;
 
     @Inject
     FileResourceCall(@NonNull RxAPICallExecutor rxCallExecutor,
-                     @NonNull SystemInfoModuleDownloader systemInfoDownloader,
                      @NonNull FileResourceModuleDownloader fileResourceModuleDownloader) {
         this.rxCallExecutor = rxCallExecutor;
-        this.systemInfoDownloader = systemInfoDownloader;
         this.fileResourceModuleDownloader = fileResourceModuleDownloader;
     }
 
     public Observable<D2Progress> download() {
-        D2ProgressManager progressManager = new D2ProgressManager(2);
+        D2ProgressManager progressManager = new D2ProgressManager(1);
 
         return rxCallExecutor.wrapObservableTransactionally(
-                systemInfoDownloader.downloadMetadata().andThen(Observable.create(emitter -> {
-
-                    emitter.onNext(progressManager.increaseProgress(SystemInfo.class, false));
+                Observable.create(emitter -> {
 
                     fileResourceModuleDownloader.downloadMetadata().call();
                     emitter.onNext(progressManager.increaseProgress(FileResource.class, false));
 
                     emitter.onComplete();
 
-                })), true);
+                }), true);
     }
 
     public void blockingDownload() {

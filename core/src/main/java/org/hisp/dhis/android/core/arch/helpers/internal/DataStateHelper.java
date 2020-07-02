@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.maintenance.D2Error;
 
 public final class DataStateHelper {
 
-    public DataStateHelper() {
+    private DataStateHelper() {
     }
 
     public static State errorIfOnline(D2Error d2Error) {

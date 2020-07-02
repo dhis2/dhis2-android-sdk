@@ -187,7 +187,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
                         .byEventDate().eq(BaseNameableObject.DATE_FORMAT.parse("2017-02-27T00:00:00.000"))
                         .blockingGet();
 
-        assertThat(events.size(), is(2));
+        assertThat(events.size(), is(1));
     }
 
     @Test
@@ -349,8 +349,8 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
                 .orderByEventDate(RepositoryScope.OrderByDirection.ASC)
                 .orderByLastUpdated(RepositoryScope.OrderByDirection.ASC)
                 .blockingGet();
-        assertThat(events.get(0).uid(), is("event1"));
-        assertThat(events.get(1).uid(), is("event2"));
+        assertThat(events.get(0).uid(), is("event2"));
+        assertThat(events.get(1).uid(), is("event1"));
         assertThat(events.get(2).uid(), is("single2"));
         assertThat(events.get(3).uid(), is("single1"));
     }
@@ -364,6 +364,25 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
         assertThat(events.get(1).uid(), is("single1"));
         assertThat(events.get(2).uid(), is("single2"));
         assertThat(events.get(3).uid(), is("event1"));
+    }
+
+    @Test
+    public void order_by_organisation_unit_name() {
+        List<Event> events = d2.eventModule().events()
+                .orderByOrganisationUnitName(RepositoryScope.OrderByDirection.ASC)
+                .blockingGet();
+        assertThat(events.size(), is(4));
+    }
+
+    @Test
+    public void order_by_timeline() {
+        List<Event> events = d2.eventModule().events()
+                .orderByTimeline(RepositoryScope.OrderByDirection.ASC)
+                .blockingGet();
+        assertThat(events.get(0).uid(), is("event1"));  // eventDate
+        assertThat(events.get(1).uid(), is("event2"));  // dueDate
+        assertThat(events.get(2).uid(), is("single2")); // eventDate
+        assertThat(events.get(3).uid(), is("single1")); // eventDate
     }
 
     @Test

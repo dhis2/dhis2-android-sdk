@@ -66,31 +66,40 @@ final class DataValueImportHandler {
                 (dataValueImportSummary.importStatus() == ImportStatus.WARNING) ? State.WARNING : State.SYNCED;
 
         if (state == State.WARNING) {
-            boolean setStateOnlyForConflicts = Boolean.TRUE;
-            if (dataValueImportSummary.importConflicts() != null) {
-                Set<DataValue> dataValueConflicts = new HashSet<>();
-                for (ImportConflict importConflict : dataValueImportSummary.importConflicts()) {
-                    List<DataValue> dataValues = getDataValues(importConflict, dataValueSet.dataValues);
-                    if (dataValues.isEmpty()) {
-                        setStateOnlyForConflicts = Boolean.FALSE;
-                    }
-                    dataValueConflicts.addAll(dataValues);
-                }
-
-                if (setStateOnlyForConflicts) {
-                    Iterator<DataValue> i = dataValueSet.dataValues.iterator();
-                    while (i.hasNext()) {
-                        if (dataValueConflicts.contains(i.next())) {
-                            i.remove();
-                        }
-                    }
-                    setStateToDataValues(State.WARNING, dataValueConflicts);
-                }
-                setStateToDataValues(State.SYNCED, dataValueSet.dataValues);
-            }
+            handleDataValueWarnings(dataValueSet, dataValueImportSummary);
         } else {
             setStateToDataValues(state, dataValueSet.dataValues);
         }
+    }
+
+    private void handleDataValueWarnings(DataValueSet dataValueSet, DataValueImportSummary dataValueImportSummary) {
+        if (dataValueImportSummary.importConflicts() != null) {
+            Set<DataValue> dataValueConflicts = new HashSet<>();
+            boolean setStateOnlyForConflicts = Boolean.TRUE;
+            for (ImportConflict importConflict : dataValueImportSummary.importConflicts()) {
+                List<DataValue> dataValues = getDataValues(importConflict, dataValueSet.dataValues);
+                if (dataValues.isEmpty()) {
+                    setStateOnlyForConflicts = Boolean.FALSE;
+                }
+                dataValueConflicts.addAll(dataValues);
+            }
+            setDataValueStates(dataValueSet, dataValueConflicts, setStateOnlyForConflicts);
+        }
+    }
+
+    private void setDataValueStates(DataValueSet dataValueSet,
+                                    Set<DataValue> dataValueConflicts,
+                                    boolean setStateOnlyForConflicts) {
+        if (setStateOnlyForConflicts) {
+            Iterator<DataValue> i = dataValueSet.dataValues.iterator();
+            while (i.hasNext()) {
+                if (dataValueConflicts.contains(i.next())) {
+                    i.remove();
+                }
+            }
+            setStateToDataValues(State.WARNING, dataValueConflicts);
+        }
+        setStateToDataValues(State.SYNCED, dataValueSet.dataValues);
     }
 
     private List<DataValue> getDataValues(ImportConflict importConflict, Collection<DataValue> dataValues)

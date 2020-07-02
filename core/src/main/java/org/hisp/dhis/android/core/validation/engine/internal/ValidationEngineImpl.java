@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRepository;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLink;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo;
-import org.hisp.dhis.android.core.parser.service.dataobject.DimensionalItemObject;
+import org.hisp.dhis.android.core.parser.internal.service.dataobject.DimensionalItemObject;
 import org.hisp.dhis.android.core.period.Period;
 import org.hisp.dhis.android.core.period.internal.PeriodHelper;
 import org.hisp.dhis.android.core.validation.ValidationRule;

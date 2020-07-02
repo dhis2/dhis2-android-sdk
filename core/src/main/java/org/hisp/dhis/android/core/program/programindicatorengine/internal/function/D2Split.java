@@ -29,8 +29,8 @@ package org.hisp.dhis.android.core.program.programindicatorengine.internal.funct
  */
 
 import org.apache.commons.lang3.StringUtils;
-import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
 
 import java.util.Arrays;

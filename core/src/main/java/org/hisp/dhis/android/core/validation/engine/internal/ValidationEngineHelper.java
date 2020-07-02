@@ -30,9 +30,9 @@ package org.hisp.dhis.android.core.validation.engine.internal;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.hisp.dhis.android.core.datavalue.DataValue;
-import org.hisp.dhis.android.core.parser.service.dataobject.DataElementObject;
-import org.hisp.dhis.android.core.parser.service.dataobject.DataElementOperandObject;
-import org.hisp.dhis.android.core.parser.service.dataobject.DimensionalItemObject;
+import org.hisp.dhis.android.core.parser.internal.service.dataobject.DataElementObject;
+import org.hisp.dhis.android.core.parser.internal.service.dataobject.DataElementOperandObject;
+import org.hisp.dhis.android.core.parser.internal.service.dataobject.DimensionalItemObject;
 
 import java.util.HashMap;
 import java.util.List;

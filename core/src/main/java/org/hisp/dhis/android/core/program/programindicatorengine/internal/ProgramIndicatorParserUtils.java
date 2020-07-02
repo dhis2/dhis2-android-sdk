@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.program.programindicatorengine.internal;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.hisp.dhis.android.core.parser.expression.ExpressionItem;
-import org.hisp.dhis.android.core.parser.expression.ParserUtils;
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
+import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils;
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.dataitem.ProgramItemAttribute;
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.dataitem.ProgramItemPsEventdate;
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.dataitem.ProgramItemStageElement;

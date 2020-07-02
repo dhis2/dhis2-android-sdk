@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.program.programindicatorengine.internal.varia
 
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.expression.ParserUtils;
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
+import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils;
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramExpressionItem;
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
 

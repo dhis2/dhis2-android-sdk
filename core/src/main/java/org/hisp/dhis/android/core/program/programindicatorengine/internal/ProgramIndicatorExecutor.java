@@ -31,10 +31,10 @@ package org.hisp.dhis.android.core.program.programindicatorengine.internal;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.constant.Constant;
 import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.parser.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.expression.CommonParser;
-import org.hisp.dhis.android.core.parser.expression.ExpressionItemMethod;
-import org.hisp.dhis.android.core.parser.expression.ParserUtils;
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
+import org.hisp.dhis.android.core.parser.internal.expression.CommonParser;
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItemMethod;
+import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.antlr.AntlrParserUtils;
 

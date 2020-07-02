@@ -61,6 +61,9 @@ final class DataValueImportHandler {
 
     void handleImportSummary(@NonNull DataValueSet dataValueSet,
                              @NonNull DataValueImportSummary dataValueImportSummary) {
+        if (dataValueImportSummary == null || dataValueSet == null) {
+            return;
+        }
 
         State state = (dataValueImportSummary.importStatus() == ImportStatus.ERROR) ? State.ERROR :
                 (dataValueImportSummary.importStatus() == ImportStatus.WARNING) ? State.WARNING : State.SYNCED;

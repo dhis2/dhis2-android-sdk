@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
+import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl;
@@ -67,8 +68,6 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
     private String programStageUid;
     private String dataElementUid;
     private String attributeOptionCombo;
-    private String user = "admin";
-    private String password = "district";
 
     @Override
     @Before
@@ -76,14 +75,9 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
         super.setUp();
         d2 = D2Factory.forNewDatabase();
 
-        eventStore = EventStoreImpl.create(databaseAdapter());
-        trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl.create(databaseAdapter());
+        eventStore = EventStoreImpl.create(d2.databaseAdapter());
+        trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl.create(d2.databaseAdapter());
 
-        orgUnitUid = "ImspTQPwCqd";
-        programUid = "kla3mAPgvCH";
-        programStageUid = "aNLq9ZYoy9W";
-        dataElementUid = "b6dOUjAarHD";
-        attributeOptionCombo = "nvLjum6Xbv5";
         uidGenerator = new UidGeneratorImpl();
 
         eventUid1 = uidGenerator.generate();
@@ -95,8 +89,7 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
     public void successful_response_after_sync_events() throws Exception {
         downloadMetadata();
 
-        createDummyDataToPost(orgUnitUid, programUid, programStageUid, eventUid1,
-                dataElementUid, attributeOptionCombo);
+        createDummyDataToPost(eventUid1);
 
         d2.eventModule().events().blockingUpload();
     }
@@ -106,8 +99,7 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
     public void pull_event_with_correct_category_combo_after_be_pushed() throws Exception {
         downloadMetadata();
 
-        createDummyDataToPost(orgUnitUid, programUid, programStageUid, eventUid1, dataElementUid,
-                attributeOptionCombo);
+        createDummyDataToPost(eventUid1);
 
         pushDummyEvent();
 
@@ -127,11 +119,9 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
     public void pull_two_events_with_correct_category_combo_after_be_pushed() throws Exception {
         downloadMetadata();
 
-        createDummyDataToPost(orgUnitUid, programUid, programStageUid, eventUid1, dataElementUid,
-                attributeOptionCombo);
+        createDummyDataToPost(eventUid1);
 
-        createDummyDataToPost(orgUnitUid, programUid, programStageUid, eventUid2, dataElementUid,
-                attributeOptionCombo);
+        createDummyDataToPost(eventUid2);
 
         pushDummyEvent();
 
@@ -146,10 +136,7 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
         assertThatEventPushedIsDownloaded(pushedEvent);
     }
 
-    private void createDummyDataToPost(String orgUnitUid, String programUid,
-            String programStageUid, String eventUid,
-            String dataElementUid, String attributeOptionCombo) {
-
+    private void createDummyDataToPost(String eventUid) {
         eventStore.insert(Event.builder().uid(eventUid).created(new Date()).lastUpdated(new Date())
                 .geometry(Geometry.builder().type(FeatureType.POINT).coordinates("[12.21, 13.21]").build())
                 .status(EventStatus.ACTIVE).program(programUid)
@@ -200,13 +187,20 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
         return event;
     }
 
-    private void pushDummyEvent() throws Exception {
+    private void pushDummyEvent() {
         d2.eventModule().events().blockingUpload();
     }
 
-    private void downloadMetadata() throws Exception {
-        d2.userModule().logIn(user, password, url).blockingGet();
+    private void downloadMetadata() {
+        d2.userModule().logIn(username, password, url).blockingGet();
         d2.metadataModule().blockingDownload();
+
+        orgUnitUid = d2.organisationUnitModule().organisationUnits().one().blockingGet().uid();
+        ProgramStage programStage = d2.programModule().programStages().one().blockingGet();
+        programStageUid = programStage.uid();
+        programUid = programStage.program().uid();
+        dataElementUid = d2.dataElementModule().dataElements().one().blockingGet().uid();
+        attributeOptionCombo = d2.categoryModule().categoryOptionCombos().one().blockingGet().uid();
     }
 
     private boolean verifyPushedEventIsInPullList(Event event, List<Event> eventList) {

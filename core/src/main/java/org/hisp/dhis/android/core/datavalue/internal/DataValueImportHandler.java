@@ -34,6 +34,16 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary;
+import org.hisp.dhis.android.core.imports.internal.ImportConflict;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -52,16 +62,66 @@ final class DataValueImportHandler {
     void handleImportSummary(@NonNull DataValueSet dataValueSet,
                              @NonNull DataValueImportSummary dataValueImportSummary) {
 
-        if (dataValueImportSummary == null || dataValueSet == null) {
-            return;
+        State state = (dataValueImportSummary.importStatus() == ImportStatus.ERROR) ? State.ERROR :
+                (dataValueImportSummary.importStatus() == ImportStatus.WARNING) ? State.WARNING : State.SYNCED;
+
+        if (state == State.WARNING) {
+            boolean setStateOnlyForConflicts = Boolean.TRUE;
+            if (dataValueImportSummary.importConflicts() != null) {
+                Set<DataValue> dataValueConflicts = new HashSet<>();
+                for (ImportConflict importConflict : dataValueImportSummary.importConflicts()) {
+                    List<DataValue> dataValues = getDataValues(importConflict, dataValueSet.dataValues);
+                    if (dataValues.isEmpty()) {
+                        setStateOnlyForConflicts = Boolean.FALSE;
+                    }
+                    dataValueConflicts.addAll(dataValues);
+                }
+
+                if (setStateOnlyForConflicts) {
+                    Iterator<DataValue> i = dataValueSet.dataValues.iterator();
+                    while (i.hasNext()) {
+                        if (dataValueConflicts.contains(i.next())) {
+                            i.remove();
+                        }
+                    }
+                    setStateToDataValues(State.WARNING, dataValueConflicts);
+                }
+                setStateToDataValues(State.SYNCED, dataValueSet.dataValues);
+            }
+        } else {
+            setStateToDataValues(state, dataValueSet.dataValues);
+        }
+    }
+
+    private List<DataValue> getDataValues(ImportConflict importConflict, Collection<DataValue> dataValues)
+            throws IllegalArgumentException {
+        String patternStr = "(?<=:\\s)[a-zA-Z0-9]{11}";
+        Pattern pattern = Pattern.compile(patternStr);
+        Matcher matcher = pattern.matcher(importConflict.value());
+
+        List<DataValue> foundDataValues = new ArrayList<>();
+
+        if (matcher.find()) {
+            String value = importConflict.object();
+            String dataElementUid = matcher.group(0);
+            for (DataValue dataValue : dataValues) {
+                if (dataValue.value().equals(value) && dataValue.dataElement().equals(dataElementUid)) {
+                    foundDataValues.add(dataValue);
+                }
+            }
         }
 
-        State newState =
-                (dataValueImportSummary.importStatus() == ImportStatus.ERROR) ? State.ERROR : State.SYNCED;
+        if (foundDataValues.isEmpty()) {
+            throw new IllegalArgumentException("Import doesn't match to any data value");
+        } else {
+            return foundDataValues;
+        }
+    }
 
-        for (DataValue dataValue : dataValueSet.dataValues) {
+    private void setStateToDataValues(State state, Collection<DataValue> dataValues) {
+        for (DataValue dataValue : dataValues) {
             if (dataValueStore.isDataValueBeingUpload(dataValue)) {
-                dataValueStore.setState(dataValue, newState);
+                dataValueStore.setState(dataValue, state);
             }
         }
     }

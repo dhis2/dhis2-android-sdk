@@ -322,7 +322,7 @@ public class ProgramIndicatorEngineIntegrationShould extends BaseMockIntegration
     private void createEvent(String eventUid, String programStageUid, Date eventDate, Date lastUpdated) {
         Event event = Event.builder().uid(eventUid).enrollment(enrollmentUid).lastUpdated(lastUpdated)
                 .program(programUid).programStage(programStageUid).organisationUnit(orgunitUid)
-                .eventDate(eventDate).build();
+                .eventDate(eventDate).deleted(false).build();
 
         EventStoreImpl.create(databaseAdapter).insert(event);
     }

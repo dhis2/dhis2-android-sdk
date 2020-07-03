@@ -77,7 +77,8 @@ public final class EnrollmentStoreImpl
     @Override
     public Map<String, List<Enrollment>> queryEnrollmentsToPost() {
         String enrollmentsToPostQuery = new WhereClauseBuilder()
-                .appendInKeyStringValues(DataColumns.STATE, EnumHelper.asStringList(State.uploadableStates())).build();
+                .appendInKeyStringValues(DataColumns.STATE,
+                        EnumHelper.asStringList(State.uploadableStatesIncludingError())).build();
 
         List<Enrollment> enrollmentList = selectWhere(enrollmentsToPostQuery);
 

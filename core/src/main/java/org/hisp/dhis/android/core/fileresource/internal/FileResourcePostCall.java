@@ -32,6 +32,8 @@ import android.content.Context;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
@@ -42,8 +44,6 @@ import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.fileresource.FileResource;
 import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
@@ -57,7 +57,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 import io.reactivex.Observable;
 import okhttp3.MediaType;
@@ -76,7 +75,6 @@ public final class FileResourcePostCall {
     private final IdentifiableDataObjectStore<FileResource> fileResourceStore;
     private final HandlerWithTransformer<FileResource> fileResourceHandler;
     private final Context context;
-    private final SystemInfoModuleDownloader systemInfoDownloader;
 
 
     @Inject
@@ -86,8 +84,7 @@ public final class FileResourcePostCall {
                          @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore,
                          @NonNull IdentifiableDataObjectStore<FileResource> fileResourceStore,
                          @NonNull HandlerWithTransformer<FileResource> fileResourceHandler,
-                         @NonNull Context context,
-                         @NonNull SystemInfoModuleDownloader systemInfoDownloader) {
+                         @NonNull Context context) {
         this.fileResourceService = fileResourceService;
         this.apiCallExecutor = apiCallExecutor;
         this.trackedEntityAttributeValueStore = trackedEntityAttributeValueStore;
@@ -95,7 +92,6 @@ public final class FileResourcePostCall {
         this.fileResourceStore = fileResourceStore;
         this.fileResourceHandler = fileResourceHandler;
         this.context = context;
-        this.systemInfoDownloader = systemInfoDownloader;
     }
 
     public Observable<D2Progress> uploadFileResources(List<FileResource> filteredFileResources) {
@@ -105,11 +101,9 @@ public final class FileResourcePostCall {
             if (filteredFileResources.isEmpty()) {
                 return Observable.empty();
             } else {
-                D2ProgressManager progressManager = new D2ProgressManager(filteredFileResources.size() + 1);
+                D2ProgressManager progressManager = new D2ProgressManager(filteredFileResources.size());
 
-                return systemInfoDownloader.downloadMetadata().andThen(Observable.create(emitter -> {
-                    emitter.onNext(progressManager.increaseProgress(SystemInfo.class, false));
-
+                return Observable.create(emitter -> {
                     for (FileResource fileResource : filteredFileResources) {
 
                         File file = getRelatedFile(fileResource);
@@ -123,7 +117,7 @@ public final class FileResourcePostCall {
                     }
 
                     emitter.onComplete();
-                }));
+                });
             }
         });
     }

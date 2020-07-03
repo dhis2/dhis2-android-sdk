@@ -109,6 +109,37 @@ public class ProgramSamples {
                 .build();
     }
 
+    public static Program getAntenatalProgram() {
+        return Program.builder()
+                .id(1L)
+                .uid("lxAQ7Zs9VYR")
+                .name("Antenatal care visit")
+                .displayName("Antenatal care visit")
+                .created(parseDate("2016-04-12T15:30:43.783"))
+                .lastUpdated(parseDate("2017-01-19T14:32:05.307"))
+                .shortName("Antenatal care")
+                .displayShortName("Antenatal care")
+                .version(3)
+                .onlyEnrollOnce(false)
+                .enrollmentDateLabel("Enrollment Date")
+                .displayIncidentDate(false)
+                .incidentDateLabel("Incident date")
+                .registration(false)
+                .selectEnrollmentDatesInFuture(false)
+                .dataEntryMethod(true)
+                .ignoreOverdueEvents(true)
+                .selectIncidentDatesInFuture(true)
+                .useFirstStageDuringRegistration(true)
+                .displayFrontPageList(false)
+                .programType(ProgramType.WITHOUT_REGISTRATION)
+                .trackedEntityType(TrackedEntityType.builder().uid("nEenWmSyUEp").build())
+                .categoryCombo(ObjectWithUid.create("m2jTvAj5kkm"))
+                .access(Access.create(true, true, DataAccess.create(true, true)))
+                .accessLevel(AccessLevel.PROTECTED)
+                .style(ObjectStyle.builder().color("#333").icon("program-icon").build())
+                .build();
+    }
+
     public static Program getProgram(String name, ProgramType type, CategoryCombo categoryCombo) {
         return getProgram().toBuilder()
                 .name(name)

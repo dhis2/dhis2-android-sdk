@@ -32,35 +32,31 @@ import android.content.Context;
 
 import androidx.test.InstrumentationRegistry;
 
-import com.facebook.stetho.Stetho;
-
-import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
-import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent;
-import org.hisp.dhis.android.core.data.server.RealServerMother;
-import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore;
+import org.junit.After;
 import org.junit.Before;
 
 import java.io.IOException;
 
-public abstract class BaseRealIntegrationTest {
-
-    protected String username = RealServerMother.username;
-    protected String password = RealServerMother.password;
-    protected String url = RealServerMother.url;
+public abstract class BaseIntegrationTestWithDatabase {
+    private DatabaseAdapter databaseAdapter;
 
     @Before
     public void setUp() throws IOException {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        Stetho.initializeWithDefaults(context);
+        DatabaseAdapterFactory databaseAdapterFactory = DatabaseAdapterFactory.create(context, new InMemorySecureStore());
+        databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter();
+        databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, null, false);
     }
 
-    protected GenericCallData getGenericCallData(D2 d2) {
-        return GenericCallData.create(
-                d2.databaseAdapter(), d2.retrofit(), ResourceHandler.create(d2.databaseAdapter()),
-                d2.systemInfoModule().versionManager());
+    @After
+    public void tearDown() {
+        databaseAdapter.close();
     }
 
-    protected D2DIComponent getD2DIComponent(D2 d2) {
-        return d2.d2DIComponent;
+    protected DatabaseAdapter databaseAdapter() {
+        return databaseAdapter;
     }
 }

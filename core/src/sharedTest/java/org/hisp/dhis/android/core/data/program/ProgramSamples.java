@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.FeatureType;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.program.AccessLevel;
 import org.hisp.dhis.android.core.program.Program;
@@ -40,6 +41,7 @@ import org.hisp.dhis.android.core.program.ProgramType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate;
 
 public class ProgramSamples {
 
@@ -74,6 +76,37 @@ public class ProgramSamples {
                 .accessLevel(AccessLevel.PROTECTED)
                 .build();
         return builder.build();
+    }
+
+    public static Program getChildProgram() {
+        return Program.builder()
+                .id(1L)
+                .uid("IpHINAT79UW")
+                .name("Child Programme")
+                .displayName("Child Programme")
+                .created(parseDate("2013-03-04T11:41:07.494"))
+                .lastUpdated(parseDate("2017-01-26T19:39:33.356"))
+                .shortName("Child Programme")
+                .displayShortName("Child Programme")
+                .version(5)
+                .onlyEnrollOnce(true)
+                .enrollmentDateLabel("Date of enrollment")
+                .displayIncidentDate(true)
+                .incidentDateLabel("Date of birth")
+                .registration(true)
+                .selectEnrollmentDatesInFuture(false)
+                .dataEntryMethod(false)
+                .ignoreOverdueEvents(false)
+                .selectIncidentDatesInFuture(false)
+                .useFirstStageDuringRegistration(true)
+                .displayFrontPageList(false)
+                .programType(ProgramType.WITH_REGISTRATION)
+                .trackedEntityType(TrackedEntityType.builder().uid("nEenWmSyUEp").build())
+                .categoryCombo(ObjectWithUid.create("nM3u9s5a52V"))
+                .access(Access.create(true, true, DataAccess.create(true, false)))
+                .accessLevel(AccessLevel.PROTECTED)
+                .style(ObjectStyle.builder().color("#fff").icon("my-icon-name").build())
+                .build();
     }
 
     public static Program getProgram(String name, ProgramType type, CategoryCombo categoryCombo) {

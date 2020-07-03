@@ -16,7 +16,6 @@
           "ignoreOverdueEvents": false,
           "dataEntryMethod": false,
           "displayShortName": "Child Programme",
-          "captureCoordinates": true,
           "displayFrontPageList": false,
           "enrollmentDateLabel": "Date of enrollment",
           "onlyEnrollOnce": true,

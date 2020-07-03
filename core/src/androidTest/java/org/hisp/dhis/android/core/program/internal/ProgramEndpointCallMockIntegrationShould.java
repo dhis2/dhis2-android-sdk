@@ -34,13 +34,12 @@ import android.database.Cursor;
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
 import org.hisp.dhis.android.core.category.internal.CreateCategoryComboUtils;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
+import org.hisp.dhis.android.core.data.program.ProgramSamples;
 import org.hisp.dhis.android.core.legendset.LegendSetTableInfo;
 import org.hisp.dhis.android.core.legendset.LegendTableInfo;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramIndicatorTableInfo;
 import org.hisp.dhis.android.core.program.ProgramRuleVariableTableInfo;
-import org.hisp.dhis.android.core.program.ProgramTableInfo;
-import org.hisp.dhis.android.core.program.ProgramTableInfo.Columns;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityAttributeUtils;
@@ -58,42 +57,12 @@ import java.util.List;
 
 import io.reactivex.Single;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.common.IdentifiableColumns.UID;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(D2JunitRunner.class)
 public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegrationTestEmptyEnqueable {
-    private static String ACCESS_DATA_WRITE = "accessDataWrite";
-    private static String[] PROGRAM_PROJECTION = {
-            UID,
-            Columns.CODE,
-            Columns.NAME,
-            Columns.DISPLAY_NAME,
-            Columns.CREATED,
-            Columns.LAST_UPDATED,
-            Columns.SHORT_NAME,
-            Columns.DISPLAY_SHORT_NAME,
-            Columns.DESCRIPTION,
-            Columns.DISPLAY_DESCRIPTION,
-            Columns.VERSION,
-            Columns.ONLY_ENROLL_ONCE,
-            Columns.ENROLLMENT_DATE_LABEL,
-            Columns.DISPLAY_INCIDENT_DATE,
-            Columns.INCIDENT_DATE_LABEL,
-            Columns.REGISTRATION,
-            Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE,
-            Columns.DATA_ENTRY_METHOD,
-            Columns.IGNORE_OVERDUE_EVENTS,
-            Columns.SELECT_INCIDENT_DATES_IN_FUTURE,
-            Columns.USE_FIRST_STAGE_DURING_REGISTRATION,
-            Columns.DISPLAY_FRONT_PAGE_LIST,
-            Columns.PROGRAM_TYPE,
-            Columns.RELATED_PROGRAM,
-            Columns.TRACKED_ENTITY_TYPE,
-            Columns.CATEGORY_COMBO,
-            ACCESS_DATA_WRITE,
-            Columns.ACCESS_LEVEL
-    };
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -128,38 +97,9 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
 
     @Test
     public void persist_program_when_call() {
-        Cursor programCursor = databaseAdapter.query(ProgramTableInfo.TABLE_INFO.name(), PROGRAM_PROJECTION);
-
-        assertThatCursor(programCursor).hasRow(
-                "IpHINAT79UW",
-                null,
-                "Child Programme",
-                "Child Programme",
-                "2013-03-04T11:41:07.494",
-                "2017-01-26T19:39:33.356",
-                "Child Programme",
-                "Child Programme",
-                null,
-                null,
-                5,
-                1, // true
-                "Date of enrollment",
-                1, // true
-                "Date of birth",
-                1, // true
-                0, // false
-                0, // false
-                0, // false
-                0, // false
-                1, // true
-                0, // false
-                "WITH_REGISTRATION",
-                null,
-                "nEenWmSyUEp",
-                "nM3u9s5a52V",
-                0,
-                "PROTECTED"
-        ).isExhausted();
+        ProgramStoreInterface programStore = ProgramStore.create(databaseAdapter);
+        assertThat(programStore.count()).isEqualTo(1);
+        assertThat(programStore.selectFirst()).isEqualTo(ProgramSamples.getChildProgram());
     }
 
     @Test

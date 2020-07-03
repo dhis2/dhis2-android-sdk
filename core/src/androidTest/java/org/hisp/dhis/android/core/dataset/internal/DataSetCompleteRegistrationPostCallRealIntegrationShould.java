@@ -56,7 +56,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ba
 
         d2 = D2Factory.forNewDatabase();
 
-        dataSetCompleteRegistrationStore = DataSetCompleteRegistrationStoreImpl.create(databaseAdapter());
+        dataSetCompleteRegistrationStore = DataSetCompleteRegistrationStoreImpl.create(d2.databaseAdapter());
     }
 
     // commented out since it is a flaky test that works against a real server.

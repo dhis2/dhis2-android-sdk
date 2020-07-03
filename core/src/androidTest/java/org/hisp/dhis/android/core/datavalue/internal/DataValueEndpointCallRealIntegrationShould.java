@@ -68,7 +68,7 @@ public class DataValueEndpointCallRealIntegrationShould extends BaseRealIntegrat
     private Callable<List<DataValue>> createCall() {
         APICallExecutor apiCallExecutor = APICallExecutorImpl.create(d2.databaseAdapter());
         Handler<DataValue> dataValueHandler =  new ObjectWithoutUidHandlerImpl<>(
-                DataValueStore.create(databaseAdapter()));
+                DataValueStore.create(d2.databaseAdapter()));
         AggregatedDataCallBundleKey key = AggregatedDataCallBundleKey.builder()
                 .periodType(PeriodType.Daily)
                 .futurePeriods(0)

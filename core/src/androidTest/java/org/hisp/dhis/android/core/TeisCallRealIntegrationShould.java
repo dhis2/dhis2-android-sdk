@@ -64,7 +64,7 @@ public class TeisCallRealIntegrationShould extends BaseRealIntegrationTest {
 
         testObserver.awaitTerminalEvent();
 
-        int count = TrackedEntityInstanceStoreImpl.create(databaseAdapter()).count();
+        int count = TrackedEntityInstanceStoreImpl.create(d2.databaseAdapter()).count();
 
         assertThat(count >= 5).isTrue();
 

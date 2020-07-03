@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramModule;
 import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramStage;
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorEngineEntityDIModule;
 
 import dagger.Module;
 import dagger.Provides;
@@ -41,6 +42,7 @@ import retrofit2.Retrofit;
 
 @Module(includes = {
         ProgramEntityDIModule.class,
+        ProgramIndicatorEngineEntityDIModule.class,
         ProgramIndicatorEntityDIModule.class,
         ProgramIndicatorLegendSetEntityDIModule.class,
         ProgramRuleActionEntityDIModule.class,

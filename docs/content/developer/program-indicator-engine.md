@@ -20,48 +20,54 @@ Compatibility table:
 
 | Function (d2:)(doc)| Supported |
 |--------------------|-----------|
+| addDays           |   Yes     |
 | ceil              |   Yes     |
-| floor             |   Yes     |
-| round             |   Yes     |
-| modulus           |   Yes     |
-| zing              |   Yes     |
-| oizp              |   Yes     |
 | concatenate       |   Yes     |
 | condition         |   Yes     |
-| minutesBetween    |   No      |
-| daysBetween       |   Yes     |
-| monthsBetween     |   Yes     |
-| yearsBetween      |   Yes     |
-| relationshipCount |   No      |
-| count             |   No      |
-| countIfValue      |   No      |
+| count             |   Yes     |
+| countIfCondition  |   Yes     |
+| countIfValue      |   Yes     |
 | countIfZeroPos    |   No doc  |
-| hasValue          |   No      |
-| zpvc              |   Yes     |
-| validatePatten    |   Yes     |
-| left              |   Yes     |
-| right             |   Yes     |
-| substring         |   Yes     |
-| split             |   Yes     |
-| length            |   Yes     |
-| inOrgUnitGroup    |   No doc  |
+| daysBetween       |   Yes     |
+| floor             |   Yes     |
 | hasUserRole       |   No doc  |
+| hasValue          |   Yes     |
+| inOrgUnitGroup    |   No doc  |
+| left              |   Yes     |
+| length            |   Yes     |
+| minutesBetween    |   Yes     |
+| modulus           |   Yes     |
+| monthsBetween     |   Yes     |
+| oizp              |   Yes     |
+| relationshipCount |   No      |
+| right             |   Yes     |
+| round             |   Yes     |
+| split             |   Yes     |
+| substring         |   Yes     |
+| validatePatten    |   Yes     |
+| weeksBetween      |   Yes     |
+| yearsBetween      |   Yes     |
+| zing              |   Yes     |
+| zpvc              |   Yes     |
 
 | Variables (doc)       | Supported |
 |-----------------------|-----------|
+| completed_date        | No        |
+| creation_date         | Yes       |
 | current_date          | Yes       |
-| event_date            | Yes       |
 | due_date              | Yes       |
-| event_count           | Yes       |
+| enrollment_count      | Yes       |
 | enrollment_date       | Yes       |
+| enrollment_status     | Yes       |
+| event_count           | Yes       |
+| event_date            | Yes       |
 | incident_date         | Yes       |
+| organisationunit_count| N/A       |
 | program_stage_id      | No        |
 | program_stage_name    | No        |
-| enrollment_status     | Yes       |
+| reporting_period_end  | N/A       |
+| reporting_period_start| N/A       |
+| sync_date             | No        |
+| tei_count             | N/A       |
 | value_count           | Yes       |
 | zero_pos_value_count  | Yes       |
-| reporting_period_start| N/A       |
-| reporting_period_end  | N/A       |
-| tei_count             | N/A       |
-| enrollment_count      | N/A       |
-| organisationunit_count| N/A       |

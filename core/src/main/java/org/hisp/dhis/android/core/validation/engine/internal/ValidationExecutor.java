@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.validation.engine.internal;
 
 import org.hisp.dhis.android.core.constant.Constant;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.parser.service.ExpressionService;
-import org.hisp.dhis.android.core.parser.service.dataobject.DimensionalItemObject;
+import org.hisp.dhis.android.core.parser.internal.service.ExpressionService;
+import org.hisp.dhis.android.core.parser.internal.service.dataobject.DimensionalItemObject;
 import org.hisp.dhis.android.core.period.Period;
 import org.hisp.dhis.android.core.validation.MissingValueStrategy;
 import org.hisp.dhis.android.core.validation.ValidationRule;

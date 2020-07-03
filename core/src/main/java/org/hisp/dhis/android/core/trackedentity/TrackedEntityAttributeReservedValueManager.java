@@ -133,7 +133,8 @@ public final class TrackedEntityAttributeReservedValueManager {
      */
     public Single<String> getValue(@NonNull String attributeUid, @NonNull String organisationUnitUid) {
         Completable optionalDownload = downloadValuesIfBelowThreshold(
-                attributeUid, getOrganisationUnit(organisationUnitUid), null).onErrorComplete();
+                attributeUid, getOrganisationUnit(organisationUnitUid), null, false
+        ).onErrorComplete();
 
         return optionalDownload.andThen(Single.create(emitter -> {
             String pattern = trackedEntityAttributeStore.selectByUid(attributeUid).pattern();
@@ -293,11 +294,11 @@ public final class TrackedEntityAttributeReservedValueManager {
         if (isOrgunitDependent(pattern)) {
             List<OrganisationUnit> organisationUnits = getOrgUnitsLinkedToAttribute(attribute);
             return Observable.fromIterable(organisationUnits).flatMapSingle(organisationUnit ->
-                    downloadValuesIfBelowThreshold(attribute, organisationUnit, numberOfValuesToFillUp)
+                    downloadValuesIfBelowThreshold(attribute, organisationUnit, numberOfValuesToFillUp, true)
                             .onErrorComplete()
                             .toSingle(this::increaseProgress));
         } else {
-            return downloadValuesIfBelowThreshold(attribute, null, numberOfValuesToFillUp)
+            return downloadValuesIfBelowThreshold(attribute, null, numberOfValuesToFillUp, true)
                     .onErrorComplete()
                     .toSingle(this::increaseProgress)
                     .toObservable();
@@ -306,7 +307,8 @@ public final class TrackedEntityAttributeReservedValueManager {
 
     private Completable downloadValuesIfBelowThreshold(String attribute,
                                                        OrganisationUnit organisationUnit,
-                                                       Integer minNumberOfValuesToHave) {
+                                                       Integer minNumberOfValuesToHave,
+                                                       boolean storeError) {
         return Completable.defer(() -> {
             // Using local date. It's not worth it to make a system info call
             store.deleteExpired(new Date());
@@ -323,7 +325,7 @@ public final class TrackedEntityAttributeReservedValueManager {
             if (remainingValues < minNumberToTryFill) {
                 Integer numberToReserve = fillUpTo - remainingValues;
 
-                return downloadValues(attribute, organisationUnit, numberToReserve);
+                return downloadValues(attribute, organisationUnit, numberToReserve, storeError);
             } else {
                 return Completable.complete();
             }
@@ -332,7 +334,8 @@ public final class TrackedEntityAttributeReservedValueManager {
 
     private Completable downloadValues(String trackedEntityAttributeUid,
                                        OrganisationUnit organisationUnit,
-                                       Integer numberToReserve) {
+                                       Integer numberToReserve,
+                                       boolean storeError) {
 
         return Completable.fromAction(() -> {
             String trackedEntityAttributePattern;
@@ -345,7 +348,7 @@ public final class TrackedEntityAttributeReservedValueManager {
 
             executor.executeD2Call(reservedValueQueryCallFactory.create(
                     TrackedEntityAttributeReservedValueQuery.create(trackedEntityAttributeUid, numberToReserve,
-                            organisationUnit, trackedEntityAttributePattern)));
+                            organisationUnit, trackedEntityAttributePattern)), storeError);
         });
     }
 

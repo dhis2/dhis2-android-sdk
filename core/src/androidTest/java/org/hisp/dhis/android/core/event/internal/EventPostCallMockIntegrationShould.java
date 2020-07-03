@@ -88,7 +88,6 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
     public void handle_import_conflicts_correctly() {
         storeEvents();
 
-        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_event_import_conflicts.json");
 
         d2.eventModule().events().blockingUpload();
@@ -100,7 +99,6 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
     public void delete_old_import_conflicts() {
         storeEvents();
 
-        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_event_import_conflicts.json");
         d2.eventModule().events().blockingUpload();
         assertThat(d2.importModule().trackerImportConflicts().blockingCount()).isEqualTo(3);
@@ -109,7 +107,6 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
         eventStore.setState("event2Id", State.TO_POST);
         eventStore.setState("event3Id", State.TO_POST);
 
-        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_event_import_conflicts2.json");
         d2.eventModule().events().blockingUpload();
         assertThat(d2.importModule().trackerImportConflicts().blockingCount()).isEqualTo(2);
@@ -122,7 +119,6 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
 
         d2.eventModule().events().uid("event1Id").blockingDelete();
 
-        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_event_import_conflicts2.json");
 
         d2.eventModule().events().blockingUpload();

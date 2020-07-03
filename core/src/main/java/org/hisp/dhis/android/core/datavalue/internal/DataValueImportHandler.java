@@ -76,7 +76,9 @@ final class DataValueImportHandler {
     }
 
     private void handleDataValueWarnings(DataValueSet dataValueSet, DataValueImportSummary dataValueImportSummary) {
-        if (dataValueImportSummary.importConflicts() != null) {
+        if (dataValueImportSummary.importConflicts() == null) {
+            setStateToDataValues(State.WARNING, dataValueSet.dataValues);
+        } else {
             Set<DataValue> dataValueConflicts = new HashSet<>();
             boolean setStateOnlyForConflicts = Boolean.TRUE;
             for (ImportConflict importConflict : dataValueImportSummary.importConflicts()) {
@@ -123,11 +125,7 @@ final class DataValueImportHandler {
             }
         }
 
-        if (foundDataValues.isEmpty()) {
-            throw new IllegalArgumentException("Import doesn't match to any data value");
-        } else {
-            return foundDataValues;
-        }
+        return foundDataValues;
     }
 
     private void setStateToDataValues(State state, Collection<DataValue> dataValues) {

@@ -168,7 +168,7 @@ public final class EventWithLimitCallFactory {
             eventQueryBuilder.page(paging.page());
 
             List<Event> pageEvents = d2CallExecutor.executeD2Call(
-                    endpointCallFactory.getCall(eventQueryBuilder.build()));
+                    endpointCallFactory.getCall(eventQueryBuilder.build()), true);
 
             List<Event> eventsToPersist = getEventsToPersist(paging, pageEvents);
 

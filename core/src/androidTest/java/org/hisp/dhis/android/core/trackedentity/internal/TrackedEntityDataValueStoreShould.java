@@ -33,7 +33,7 @@ import android.database.Cursor;
 
 import androidx.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.BaseRealIntegrationTest;
+import org.hisp.dhis.android.core.BaseIntegrationTestWithDatabase;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
 import org.hisp.dhis.android.core.category.internal.CreateCategoryComboUtils;
@@ -79,7 +79,7 @@ import static org.hisp.dhis.android.core.AndroidTestUtils.toInteger;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
-public class TrackedEntityDataValueStoreShould extends BaseRealIntegrationTest {
+public class TrackedEntityDataValueStoreShould extends BaseIntegrationTestWithDatabase {
 
     private static final long TRACKED_ENTITY_ID = 1L;
 

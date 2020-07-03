@@ -26,55 +26,48 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core;
 
-import android.database.Cursor;
+import android.content.Context;
 
-import org.hisp.dhis.android.core.BaseIntegrationTestWithDatabase;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.option.OptionSetTableInfo;
-import org.hisp.dhis.android.core.option.internal.OptionSetStore;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import androidx.test.InstrumentationRegistry;
+
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore;
+import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
+import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.util.Date;
 
-import static org.hisp.dhis.android.core.common.StoreMocks.optionSetCursorAssert;
+import static com.google.common.truth.Truth.assertThat;
 
-@RunWith(D2JunitRunner.class)
-public class ObjectStoreIntegrationShould extends BaseIntegrationTestWithDatabase {
+public abstract class BaseIntegrationTestWithDatabase {
+    private DatabaseAdapter databaseAdapter;
 
-    private IdentifiableObjectStore<OptionSet> store;
+    protected Date serverDate = new Date();
+    protected ResourceHandler resourceHandler;
 
-    private OptionSet optionSet;
-
-    @Override
     @Before
     public void setUp() throws IOException {
-        super.setUp();
-        this.optionSet = StoreMocks.generateOptionSet();
-        this.store = OptionSetStore.create(databaseAdapter());
+        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
+
+        DatabaseAdapterFactory databaseAdapterFactory = DatabaseAdapterFactory.create(context, new InMemorySecureStore());
+        databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter();
+        databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, null, false);
+        resourceHandler = ResourceHandler.create(databaseAdapter);
+        resourceHandler.setServerDate(serverDate);
     }
 
-    @Test
-    public void insert_option_set() {
-        store.insert(optionSet);
-        Cursor cursor = databaseAdapter().query(OptionSetTableInfo.TABLE_INFO.name(), OptionSetTableInfo.TABLE_INFO.columns().all());
-        optionSetCursorAssert(cursor, optionSet);
+    @After
+    public void tearDown() {
+        assertThat(databaseAdapter).isNotNull();
+        databaseAdapter.close();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void throw_exception_for_null_when_inserting() {
-        OptionSet optionSet = null;
-        store.insert(optionSet);
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void throw_exception_for_second_identical_insertion() {
-        store.insert(this.optionSet);
-        store.insert(this.optionSet);
+    protected DatabaseAdapter databaseAdapter() {
+        return databaseAdapter;
     }
 }

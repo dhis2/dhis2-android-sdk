@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.common;
 
 import android.database.Cursor;
 
-import org.hisp.dhis.android.core.BaseRealIntegrationTest;
+import org.hisp.dhis.android.core.BaseIntegrationTestWithDatabase;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetTableInfo;
@@ -46,7 +46,7 @@ import static org.hisp.dhis.android.core.common.StoreMocks.optionSetCursorAssert
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(D2JunitRunner.class)
-public class IdentifiableObjectStoreIntegrationShould extends BaseRealIntegrationTest {
+public class IdentifiableObjectStoreIntegrationShould extends BaseIntegrationTestWithDatabase {
 
     private IdentifiableObjectStore<OptionSet> store;
 

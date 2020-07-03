@@ -35,7 +35,7 @@ import androidx.test.runner.AndroidJUnit4;
 
 import com.google.common.collect.Lists;
 
-import org.hisp.dhis.android.core.BaseRealIntegrationTest;
+import org.hisp.dhis.android.core.BaseIntegrationTestWithDatabase;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
@@ -63,7 +63,7 @@ import static org.hamcrest.core.Is.is;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
-public class TrackedEntityAttributeValueStoreShould extends BaseRealIntegrationTest {
+public class TrackedEntityAttributeValueStoreShould extends BaseIntegrationTestWithDatabase {
     private static final String VALUE = "test_value";
     private static final String TRACKED_ENTITY_ATTRIBUTE = "test_trackedEntityAttributeUid";
     private static final String TRACKED_ENTITY_ATTRIBUTE_2 = "test_trackedEntityAttributeUid_2";

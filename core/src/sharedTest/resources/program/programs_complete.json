@@ -46,11 +46,11 @@
           },
           "programRuleVariables": [
               {
-                  "created": "2015-08-07T18:41:55.152",
-                  "lastUpdated": "2015-08-07T18:41:55.153",
-                  "name": "apgarscore",
-                  "id": "g2GooOydipB",
-                  "displayName": "apgarscore",
+                  "created": "2016-04-12T15:57:18.645",
+                  "lastUpdated": "2017-05-23T00:29:24.356",
+                  "name": "hemoglobin",
+                  "id": "omrL0gtPpDL",
+                  "displayName": "hemoglobin",
                   "programRuleVariableSourceType": "DATAELEMENT_NEWEST_EVENT_PROGRAM",
                   "program": {
                       "id": "IpHINAT79UW"

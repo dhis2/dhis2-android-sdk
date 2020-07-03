@@ -31,15 +31,16 @@ package org.hisp.dhis.android.core.program.internal;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
 import org.hisp.dhis.android.core.category.internal.CreateCategoryComboUtils;
-import org.hisp.dhis.android.core.common.IdentifiableColumns;
+import org.hisp.dhis.android.core.data.program.ProgramRuleVariableSamples;
 import org.hisp.dhis.android.core.data.program.ProgramSamples;
 import org.hisp.dhis.android.core.legendset.LegendSetTableInfo;
 import org.hisp.dhis.android.core.legendset.LegendTableInfo;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramIndicatorTableInfo;
-import org.hisp.dhis.android.core.program.ProgramRuleVariableTableInfo;
+import org.hisp.dhis.android.core.program.ProgramRuleVariable;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityAttributeUtils;
@@ -104,38 +105,9 @@ public class ProgramEndpointCallMockIntegrationShould extends BaseMockIntegratio
 
     @Test
     public void persist_program_rule_variables_on_call() {
-        String[] projection = {
-                UID,
-                IdentifiableColumns.CODE,
-                IdentifiableColumns.NAME,
-                IdentifiableColumns.DISPLAY_NAME,
-                IdentifiableColumns.CREATED,
-                IdentifiableColumns.LAST_UPDATED,
-                ProgramRuleVariableTableInfo.Columns.USE_CODE_FOR_OPTION_SET,
-                ProgramRuleVariableTableInfo.Columns.PROGRAM,
-                ProgramRuleVariableTableInfo.Columns.PROGRAM_STAGE,
-                ProgramRuleVariableTableInfo.Columns.DATA_ELEMENT,
-                ProgramRuleVariableTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
-                ProgramRuleVariableTableInfo.Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE
-        };
-
-        Cursor programRuleVariableCursor = databaseAdapter.query(ProgramRuleVariableTableInfo.TABLE_INFO.name(), projection,
-                UID + "=?", new String[]{"g2GooOydipB"});
-
-        assertThatCursor(programRuleVariableCursor).hasRow(
-                "g2GooOydipB",
-                null,
-                "apgarscore",
-                "apgarscore",
-                "2015-08-07T18:41:55.152",
-                "2015-08-07T18:41:55.153",
-                null,
-                "IpHINAT79UW",
-                null,
-                null,
-                null,
-                "DATAELEMENT_NEWEST_EVENT_PROGRAM"
-        ).isExhausted();
+        IdentifiableObjectStore<ProgramRuleVariable> programRuleVariableStore = ProgramRuleVariableStore.create(databaseAdapter);
+        assertThat(programRuleVariableStore.count()).isEqualTo(2);
+        assertThat(programRuleVariableStore.selectByUid("omrL0gtPpDL")).isEqualTo(ProgramRuleVariableSamples.getHemoglobin());
     }
 
     @Test

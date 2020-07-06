@@ -61,7 +61,8 @@ public class ProgramRuleVariableSamples {
                 .name("hemoglobin")
                 .displayName("hemoglobin")
                 .programRuleVariableSourceType(ProgramRuleVariableSourceType.DATAELEMENT_NEWEST_EVENT_PROGRAM)
-                .program(ObjectWithUid.create("IpHINAT79UW"))
+                .program(ObjectWithUid.create("lxAQ7Zs9VYR"))
+                .dataElement(ObjectWithUid.create("vANAXwtLwcT"))
                 .build();
     }
 }

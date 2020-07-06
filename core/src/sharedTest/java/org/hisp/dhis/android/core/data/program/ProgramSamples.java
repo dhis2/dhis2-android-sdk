@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.program.AccessLevel;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramType;
@@ -78,40 +79,8 @@ public class ProgramSamples {
         return builder.build();
     }
 
-    public static Program getChildProgram() {
-        return Program.builder()
-                .id(1L)
-                .uid("IpHINAT79UW")
-                .name("Child Programme")
-                .displayName("Child Programme")
-                .created(parseDate("2013-03-04T11:41:07.494"))
-                .lastUpdated(parseDate("2017-01-26T19:39:33.356"))
-                .shortName("Child Programme")
-                .displayShortName("Child Programme")
-                .version(5)
-                .onlyEnrollOnce(true)
-                .enrollmentDateLabel("Date of enrollment")
-                .displayIncidentDate(true)
-                .incidentDateLabel("Date of birth")
-                .registration(true)
-                .selectEnrollmentDatesInFuture(false)
-                .dataEntryMethod(false)
-                .ignoreOverdueEvents(false)
-                .selectIncidentDatesInFuture(false)
-                .useFirstStageDuringRegistration(true)
-                .displayFrontPageList(false)
-                .programType(ProgramType.WITH_REGISTRATION)
-                .trackedEntityType(TrackedEntityType.builder().uid("nEenWmSyUEp").build())
-                .categoryCombo(ObjectWithUid.create("nM3u9s5a52V"))
-                .access(Access.create(true, true, DataAccess.create(true, false)))
-                .accessLevel(AccessLevel.PROTECTED)
-                .style(ObjectStyle.builder().color("#fff").icon("my-icon-name").build())
-                .build();
-    }
-
     public static Program getAntenatalProgram() {
         return Program.builder()
-                .id(1L)
                 .uid("lxAQ7Zs9VYR")
                 .name("Antenatal care visit")
                 .displayName("Antenatal care visit")
@@ -123,12 +92,12 @@ public class ProgramSamples {
                 .onlyEnrollOnce(false)
                 .enrollmentDateLabel("Enrollment Date")
                 .displayIncidentDate(false)
-                .incidentDateLabel("Incident date")
+                .incidentDateLabel("Incident Date")
                 .registration(false)
                 .selectEnrollmentDatesInFuture(false)
                 .dataEntryMethod(true)
                 .ignoreOverdueEvents(true)
-                .selectIncidentDatesInFuture(true)
+                .selectIncidentDatesInFuture(false)
                 .useFirstStageDuringRegistration(true)
                 .displayFrontPageList(false)
                 .programType(ProgramType.WITHOUT_REGISTRATION)
@@ -137,6 +106,14 @@ public class ProgramSamples {
                 .access(Access.create(true, true, DataAccess.create(true, true)))
                 .accessLevel(AccessLevel.PROTECTED)
                 .style(ObjectStyle.builder().color("#333").icon("program-icon").build())
+                .relatedProgram(ObjectWithUid.create("lxAQ7Zs9VYR"))
+                .expiryDays(2)
+                .completeEventsExpiryDays(4)
+                .expiryPeriodType(PeriodType.BiMonthly)
+                .minAttributesRequiredToSearch(7)
+                .featureType(FeatureType.NONE)
+                .maxTeiCountToReturn(20)
+
                 .build();
     }
 

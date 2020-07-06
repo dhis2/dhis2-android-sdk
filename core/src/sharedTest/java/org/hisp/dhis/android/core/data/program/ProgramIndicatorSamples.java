@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
 
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate;
 
 public class ProgramIndicatorSamples {
 
@@ -52,5 +53,25 @@ public class ProgramIndicatorSamples {
                 .aggregationType(AggregationType.AVERAGE)
                 .program(ObjectWithUid.create("test_program"));
         return builder.build();
+    }
+
+    public static ProgramIndicator getAgeAtVisit() {
+        return ProgramIndicator.builder()
+                .id(1L)
+                .uid("GSae40Fyppf")
+                .created(parseDate("2015-09-21T23:35:50.945"))
+                .lastUpdated(parseDate("2015-09-21T23:47:57.820"))
+                .name("Age at visit")
+                .displayName("Age at visit")
+                .shortName("Age")
+                .displayShortName("Age")
+                .aggregationType(AggregationType.AVERAGE)
+                .displayInForm(true)
+                .description("Age at visit")
+                .displayDescription("Age at visit")
+                .dimensionItem("GSae40Fyppf")
+                .expression("d2:yearsBetween(A{iESIqZ0R0R0},V{event_date})")
+                .program(ObjectWithUid.create("lxAQ7Zs9VYR"))
+                .build();
     }
 }

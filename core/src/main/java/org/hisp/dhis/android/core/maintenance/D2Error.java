@@ -51,7 +51,7 @@ public abstract class D2Error extends Exception implements CoreObject {
     @Nullable
     public abstract String url();
 
-    @NonNull
+    @Nullable
     @ColumnAdapter(D2ErrorComponentColumnAdapter.class)
     public abstract D2ErrorComponent errorComponent();
 

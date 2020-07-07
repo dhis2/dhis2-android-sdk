@@ -313,6 +313,12 @@ public final class TrackedEntityAttributeReservedValueManager {
             // Using local date. It's not worth it to make a system info call
             store.deleteExpired(new Date());
 
+            // Delete reserved values if the pattern has changed
+            String pattern = trackedEntityAttributeStore.selectByUid(attribute).pattern();
+            if (pattern != null) {
+                store.deleteIfOutdatedPattern(attribute, pattern);
+            }
+
             Integer fillUpTo = getFillUpToValue(minNumberOfValuesToHave);
 
             int remainingValues = organisationUnit == null ?

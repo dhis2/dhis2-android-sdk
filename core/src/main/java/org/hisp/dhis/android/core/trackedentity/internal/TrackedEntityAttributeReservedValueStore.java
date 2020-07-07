@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
@@ -40,9 +43,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedVa
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueTableInfo.Columns;
 
 import java.util.Date;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 public final class TrackedEntityAttributeReservedValueStore
         extends ObjectWithoutUidStoreImpl<TrackedEntityAttributeReservedValue>
@@ -87,6 +87,16 @@ public final class TrackedEntityAttributeReservedValueStore
         super.deleteWhere(Columns.EXPIRY_DATE + " < " + serverDateStr + " OR " +
                 "( " + Columns.TEMPORAL_VALIDITY_DATE + " < " + serverDateStr + " AND " +
                 Columns.TEMPORAL_VALIDITY_DATE + " IS NOT NULL );");
+    }
+
+    @Override
+    public void deleteIfOutdatedPattern(@NonNull String ownerUid, @NonNull String pattern) {
+        String deleteWhereClause = new WhereClauseBuilder()
+                .appendNotKeyStringValue(Columns.KEY, pattern)
+                .appendKeyStringValue(Columns.OWNER_UID, ownerUid)
+                .build();
+
+        super.deleteWhere(deleteWhereClause);
     }
 
     @Override

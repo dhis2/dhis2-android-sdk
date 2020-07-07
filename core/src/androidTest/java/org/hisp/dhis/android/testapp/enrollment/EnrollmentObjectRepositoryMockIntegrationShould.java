@@ -45,6 +45,8 @@ import java.util.Date;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.IsNull.nullValue;
 
 @RunWith(D2JunitRunner.class)
 public class EnrollmentObjectRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -101,6 +103,18 @@ public class EnrollmentObjectRepositoryMockIntegrationShould extends BaseMockInt
     }
 
     @Test
+    public void update_completed_date() throws D2Error {
+        Date completedDate = new Date();
+
+        EnrollmentObjectRepository repository = objectRepository();
+
+        repository.setCompletedDate(completedDate);
+        assertThat(repository.blockingGet().completedDate(), is(completedDate));
+
+        repository.blockingDelete();
+    }
+
+    @Test
     public void update_follow_up() throws D2Error {
         EnrollmentObjectRepository repository = objectRepository();
 
@@ -111,13 +125,27 @@ public class EnrollmentObjectRepositoryMockIntegrationShould extends BaseMockInt
     }
 
     @Test
-    public void update_enrollment_status() throws D2Error {
+    public void update_enrollment_status_completed() throws D2Error {
         EnrollmentStatus enrollmentStatus = EnrollmentStatus.COMPLETED;
 
         EnrollmentObjectRepository repository = objectRepository();
 
         repository.setStatus(enrollmentStatus);
         assertThat(repository.blockingGet().status(), is(enrollmentStatus));
+        assertThat(repository.blockingGet().completedDate(), notNullValue());
+
+        repository.blockingDelete();
+    }
+
+    @Test
+    public void update_enrollment_status_active() throws D2Error {
+        EnrollmentStatus enrollmentStatus = EnrollmentStatus.ACTIVE;
+
+        EnrollmentObjectRepository repository = objectRepository();
+
+        repository.setStatus(enrollmentStatus);
+        assertThat(repository.blockingGet().status(), is(enrollmentStatus));
+        assertThat(repository.blockingGet().completedDate(), nullValue());
 
         repository.blockingDelete();
     }

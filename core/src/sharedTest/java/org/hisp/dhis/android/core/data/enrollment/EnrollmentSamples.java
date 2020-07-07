@@ -58,6 +58,7 @@ public class EnrollmentSamples {
                 .program(program)
                 .enrollmentDate(date)
                 .incidentDate(date)
+                .completedDate(date)
                 .followUp(Boolean.FALSE)
                 .status(EnrollmentStatus.ACTIVE)
                 .trackedEntityInstance(tei)

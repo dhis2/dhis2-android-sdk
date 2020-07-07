@@ -35,10 +35,10 @@ import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo.Columns;
-import org.hisp.dhis.android.core.note.Note;
-import org.hisp.dhis.android.core.note.internal.NoteFields;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.internal.EventFields;
+import org.hisp.dhis.android.core.note.Note;
+import org.hisp.dhis.android.core.note.internal.NoteFields;
 
 public final class EnrollmentFields {
 
@@ -60,6 +60,7 @@ public final class EnrollmentFields {
                     fh.<String>field(Columns.PROGRAM),
                     fh.<String>field(Columns.ENROLLMENT_DATE),
                     fh.<String>field(Columns.INCIDENT_DATE),
+                    fh.<String>field(Columns.COMPLETED_DATE),
                     fh.<String>field(Columns.FOLLOW_UP),
                     fh.<EnrollmentStatus>field(Columns.STATUS),
                     fh.<Boolean>field(DELETED),

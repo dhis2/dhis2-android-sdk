@@ -10,7 +10,8 @@
   "enrollmentDate": "2014-08-07T12:27:50.730",
   "followup": false,
   "incidentDate": "2014-07-21T12:27:50.730",
-  "status": "ACTIVE",
+  "completedDate": "2014-08-21T12:27:50.730",
+  "status": "COMPLETED",
   "deleted": false,
   "coordinate": {
     "latitude": 10.03,

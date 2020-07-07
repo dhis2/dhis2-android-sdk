@@ -373,6 +373,17 @@ public class ProgramIndicatorExecutorShould {
     }
 
     @Test
+    public void evaluate_completed_date() throws ParseException {
+        setExpression(var("completed_date"));
+
+        when(enrollment.completedDate()).thenReturn(BaseIdentifiableObject.parseDate("2020-01-02T00:00:00.000"));
+
+        String result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression());
+
+        assertThat(result).isEqualTo("2020-01-02");
+    }
+
+    @Test
     public void evaluate_values_in_missing_stages() {
         setExpression(de(programStage1, dataElementUid1) + " + " + de(programStage3, dataElementUid1));
 

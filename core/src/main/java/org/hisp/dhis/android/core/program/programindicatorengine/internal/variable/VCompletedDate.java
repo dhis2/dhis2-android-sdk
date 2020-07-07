@@ -28,17 +28,25 @@ package org.hisp.dhis.android.core.program.programindicatorengine.internal.varia
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
+import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils;
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramExpressionItem;
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
 
-public class VCompletedDate implements ExpressionItem {
+public class VCompletedDate extends ProgramExpressionItem {
 
     @Override
     public Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor) {
+        Enrollment enrollment = visitor.getProgramIndicatorContext().enrollment();
 
-        //TODO Add completed date to enrollment
+        if (enrollment == null) {
+            Event singleEvent = getSingleEvent(visitor);
 
-        return null;
+            return singleEvent == null ? null : ParserUtils.getMediumDateString(singleEvent.completedDate());
+        } else {
+            return ParserUtils.getMediumDateString(enrollment.completedDate());
+        }
     }
 }

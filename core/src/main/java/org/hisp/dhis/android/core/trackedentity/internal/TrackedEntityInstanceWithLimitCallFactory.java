@@ -75,6 +75,8 @@ class TrackedEntityInstanceWithLimitCallFactory {
     private final TrackedEntityInstancePersistenceCallFactory persistenceCallFactory;
     private final TrackedEntityInstancesEndpointCallFactory endpointCallFactory;
 
+    private final RxAPICallExecutor apiCallExecutor;
+
     // TODO use scheduler for parallel download
     // private final Scheduler teiDownloadScheduler = Schedulers.from(Executors.newFixedThreadPool(6));
 
@@ -89,7 +91,8 @@ class TrackedEntityInstanceWithLimitCallFactory {
             TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory relationshipDownloadCallFactory,
             TrackedEntityInstancePersistenceCallFactory persistenceCallFactory,
             DHISVersionManager versionManager,
-            TrackedEntityInstancesEndpointCallFactory endpointCallFactory) {
+            TrackedEntityInstancesEndpointCallFactory endpointCallFactory,
+            RxAPICallExecutor apiCallExecutor) {
         this.rxCallExecutor = rxCallExecutor;
         this.resourceHandler = resourceHandler;
         this.programOrganisationUnitLastUpdatedHandler = programOrganisationUnitLastUpdatedHandler;
@@ -102,6 +105,7 @@ class TrackedEntityInstanceWithLimitCallFactory {
         this.relationshipDownloadCallFactory = relationshipDownloadCallFactory;
         this.persistenceCallFactory = persistenceCallFactory;
         this.endpointCallFactory = endpointCallFactory;
+        this.apiCallExecutor = apiCallExecutor;
     }
 
     Observable<D2Progress> download(final ProgramDataDownloadParams params) {
@@ -178,7 +182,7 @@ class TrackedEntityInstanceWithLimitCallFactory {
                 .fromIterable(pagingList)
                 .flatMapSingle(paging -> {
                     teiQueryBuilder.page(paging.page()).pageSize(paging.pageSize());
-                    return endpointCallFactory.getCall(teiQueryBuilder.build())
+                    return apiCallExecutor.wrapSingle(endpointCallFactory.getCall(teiQueryBuilder.build()), true)
                             .map(payload ->
                                 new TeiListWithPaging(true, limitTeisForPage(payload.items(), paging), paging))
                             .onErrorResumeNext((err) -> {

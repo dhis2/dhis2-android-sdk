@@ -26,37 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.legendset;
+package org.hisp.dhis.android.core.data.user;
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.legendset.Legend;
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
+import org.hisp.dhis.android.core.user.User;
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
+public class UserSamples {
 
-public class LegendSamples {
+    public static User getUser() {
+        User.Builder builder = User.builder();
 
-    public static Legend getLegend() {
-        Legend.Builder legendBuilder = Legend.builder();
-
-        fillIdentifiableProperties(legendBuilder);
-        legendBuilder
+        return builder
                 .id(1L)
-                .startValue(30.5)
-                .endValue(40.0)
-                .color("#d9f0a3")
-                .legendSet(ObjectWithUid.create("legend_set_uid"));
-        return legendBuilder.build();
-    }
-
-    public static Legend get45To60() {
-        return Legend.builder()
-                .id(1L)
-                .uid("BzQkRWHS7lu")
-                .name("45 - 60")
-                .startValue(45.0)
-                .endValue(60.0)
-                .color("#F38026")
-                .legendSet(ObjectWithUid.create("TiOkbpGEud4"))
+                .uid("DXyJmlo9rge")
+                .name("John Barnes")
+                .displayName("John Barnes")
+                .created(FillPropertiesTestUtils.parseDate("2015-03-31T13:31:09.324"))
+                .lastUpdated(FillPropertiesTestUtils.parseDate("2016-04-06T00:05:57.495"))
+                .firstName("John")
+                .surname("Barnes")
+                .email("john@hmail.com")
                 .build();
     }
 }

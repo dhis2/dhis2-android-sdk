@@ -384,6 +384,18 @@ public class ProgramIndicatorExecutorShould {
     }
 
     @Test
+    public void evaluate_ps_event_date() throws ParseException {
+        setExpression("d2:daysBetween(" + var("enrollment_date") + ", PS_EVENTDATE:" + programStage2 + ")");
+
+        when(enrollment.enrollmentDate()).thenReturn(BaseIdentifiableObject.parseDate("2020-01-02T00:00:00.000"));
+        when(event2_2.eventDate()).thenReturn(BaseIdentifiableObject.parseDate("2020-01-05T00:00:00.000"));
+
+        String result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression());
+
+        assertThat(result).isEqualTo("3");
+    }
+
+    @Test
     public void evaluate_values_in_missing_stages() {
         setExpression(de(programStage1, dataElementUid1) + " + " + de(programStage3, dataElementUid1));
 

@@ -28,14 +28,28 @@ package org.hisp.dhis.android.core.program.programindicatorengine.internal.datai
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
+import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils;
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramExpressionItem;
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
 
-/**
- * Program indicator expression data item PS_EVENTDATE: programStageUid
- *
- * @author Jim Grace
- */
+import java.util.List;
+
 public class ProgramItemPsEventdate
         extends ProgramExpressionItem {
+
+    @Override
+    public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
+        String programStageUid = ctx.uid0.getText();
+
+        List<Event> eventList = visitor.getProgramIndicatorContext().events().get(programStageUid);
+
+        if (eventList == null) {
+            return null;
+        } else {
+            return ParserUtils.getMediumDateString(eventList.get(eventList.size() - 1).eventDate());
+        }
+    }
 
 }

@@ -257,6 +257,24 @@ public class ExpressionServiceShould {
     }
 
     @Test
+    public void evaluate_functions() {
+        assertThat(service.getExpressionValue("firstNonNull(4 , 'two', 6)")).isEqualTo(4.0);
+        assertThat(service.getExpressionValue("firstNonNull('two' , 4, 6)")).isEqualTo("two");
+
+        assertThat(service.getExpressionValue("greatest(5, 2, 7, 3)")).isEqualTo(7.0);
+        assertThat(service.getExpressionValue("greatest(-5, -2, -7)")).isEqualTo(-2.0);
+
+        assertThat(service.getExpressionValue("if(5 > 2, 5, 2)")).isEqualTo(5.0);
+        assertThat(service.getExpressionValue("if(5 < 2, 5, 2)")).isEqualTo(2.0);
+
+        assertThat(service.getExpressionValue("isNotNull(5)")).isEqualTo(true);
+        assertThat(service.getExpressionValue("isNull(5)")).isEqualTo(false);
+
+        assertThat(service.getExpressionValue("least(5, 2, 7, 3)")).isEqualTo(2.0);
+        assertThat(service.getExpressionValue("least(-5, -2, -7)")).isEqualTo(-7.0);
+    }
+
+    @Test
     public void get_dataelement_ids() {
         String expression = de(dataElementId1) + " + " + de(dataElementId2);
         Set<DataElementOperand> dataElementOperands = service.getDataElementOperands(expression);

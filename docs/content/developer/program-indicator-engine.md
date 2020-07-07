@@ -18,6 +18,15 @@ d2.programModule()
 
 Compatibility table:
 
+| Common functions  | Supported |
+|-------------------|-----------|
+| if                | Yes       |
+| isNull            | Yes       |
+| isNotNull         | Yes       |
+| firstNonNull      | Yes       |
+| greatest          | Yes       |
+| least             | Yes       |
+
 | Function (d2:)(doc)| Supported |
 |--------------------|-----------|
 | addDays           |   Yes     |
@@ -52,7 +61,7 @@ Compatibility table:
 
 | Variables (doc)       | Supported |
 |-----------------------|-----------|
-| completed_date        | No        |
+| completed_date        | Yes       |
 | creation_date         | Yes       |
 | current_date          | Yes       |
 | due_date              | Yes       |
@@ -71,3 +80,9 @@ Compatibility table:
 | tei_count             | N/A       |
 | value_count           | Yes       |
 | zero_pos_value_count  | Yes       |
+
+Other components:
+
+| Component             | Supported |
+|-----------------------|-----------|
+| PS_EVENTDATE          | Yes       |

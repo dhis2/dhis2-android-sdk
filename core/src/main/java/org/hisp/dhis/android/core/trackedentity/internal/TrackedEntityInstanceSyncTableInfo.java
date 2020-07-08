@@ -26,30 +26,47 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.domain.aggregated.data.internal;
+package org.hisp.dhis.android.core.trackedentity.internal;
 
-import org.hisp.dhis.android.core.period.PeriodType;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate;
+import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.LAST_UPDATED;
 
-public class AggregatedDataSyncSamples {
+final class TrackedEntityInstanceSyncTableInfo {
 
-    public static AggregatedDataSync get1() {
-        return AggregatedDataSync.builder()
-                .id(1L)
-                .dataSet("dataSet")
-                .periodType(PeriodType.Daily)
-                .pastPeriods(10)
-                .futurePeriods(1)
-                .dataElementsHash(11111111)
-                .organisationUnitsHash(22222222)
-                .lastUpdated(parseDate("2017-11-29T11:27:46.935"))
-                .build();
+    private TrackedEntityInstanceSyncTableInfo() {
     }
 
-    public static AggregatedDataSync get2() {
-        return get1().toBuilder()
-                .dataElementsHash(3333333)
-                .build();
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "TrackedEntityInstanceSync";
+        }
+
+        @Override
+        public CoreColumns columns() {
+            return new Columns();
+        }
+    };
+
+    public static class Columns extends CoreColumns {
+        public static final String PROGRAM = "program";
+        public static final String DOWNLOAD_LIMIT = "downloadLimit";
+
+        @Override
+        public String[] all() {
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    PROGRAM,
+                    DOWNLOAD_LIMIT,
+                    LAST_UPDATED);
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return new String[]{PROGRAM};
+        }
     }
 }

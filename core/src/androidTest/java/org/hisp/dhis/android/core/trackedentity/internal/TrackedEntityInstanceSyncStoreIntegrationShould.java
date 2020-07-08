@@ -26,30 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.domain.aggregated.data.internal;
+package org.hisp.dhis.android.core.trackedentity.internal;
 
-import org.hisp.dhis.android.core.period.PeriodType;
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.runner.RunWith;
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate;
+@RunWith(D2JunitRunner.class)
+public class TrackedEntityInstanceSyncStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<TrackedEntityInstanceSync> {
 
-public class AggregatedDataSyncSamples {
-
-    public static AggregatedDataSync get1() {
-        return AggregatedDataSync.builder()
-                .id(1L)
-                .dataSet("dataSet")
-                .periodType(PeriodType.Daily)
-                .pastPeriods(10)
-                .futurePeriods(1)
-                .dataElementsHash(11111111)
-                .organisationUnitsHash(22222222)
-                .lastUpdated(parseDate("2017-11-29T11:27:46.935"))
-                .build();
+    public TrackedEntityInstanceSyncStoreIntegrationShould() {
+        super(TrackedEntityInstanceSyncStore.create(TestDatabaseAdapterFactory.get()), TrackedEntityInstanceSyncTableInfo.TABLE_INFO,
+                TestDatabaseAdapterFactory.get());
     }
 
-    public static AggregatedDataSync get2() {
-        return get1().toBuilder()
-                .dataElementsHash(3333333)
+    @Override
+    protected TrackedEntityInstanceSync buildObject() {
+        return TrackedEntityInstanceSyncSamples.get1();
+    }
+
+    @Override
+    protected TrackedEntityInstanceSync buildObjectToUpdate() {
+        return TrackedEntityInstanceSyncSamples.get1()
+                .toBuilder()
+                .downloadLimit(1000)
                 .build();
     }
 }

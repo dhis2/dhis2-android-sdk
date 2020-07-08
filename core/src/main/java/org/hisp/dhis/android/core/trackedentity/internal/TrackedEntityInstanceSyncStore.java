@@ -26,30 +26,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.domain.aggregated.data.internal;
+package org.hisp.dhis.android.core.trackedentity.internal;
 
-import org.hisp.dhis.android.core.period.PeriodType;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate;
+final class TrackedEntityInstanceSyncStore {
 
-public class AggregatedDataSyncSamples {
+    private static final StatementBinder<TrackedEntityInstanceSync> BINDER = (o, w) -> {
+        w.bind(1, o.program());
+        w.bind(2, o.downloadLimit());
+        w.bind(3, o.lastUpdated());
+    };
 
-    public static AggregatedDataSync get1() {
-        return AggregatedDataSync.builder()
-                .id(1L)
-                .dataSet("dataSet")
-                .periodType(PeriodType.Daily)
-                .pastPeriods(10)
-                .futurePeriods(1)
-                .dataElementsHash(11111111)
-                .organisationUnitsHash(22222222)
-                .lastUpdated(parseDate("2017-11-29T11:27:46.935"))
-                .build();
+    private static final WhereStatementBinder<TrackedEntityInstanceSync> WHERE_UPDATE_BINDER =
+            (o, w) -> w.bind(4, o.program());
+
+    private static final WhereStatementBinder<TrackedEntityInstanceSync> DELETE_UPDATE_BINDER =
+            (o, w) -> w.bind(1, o.program());
+
+    private TrackedEntityInstanceSyncStore() {
     }
 
-    public static AggregatedDataSync get2() {
-        return get1().toBuilder()
-                .dataElementsHash(3333333)
-                .build();
+    static ObjectWithoutUidStore<TrackedEntityInstanceSync> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, TrackedEntityInstanceSyncTableInfo.TABLE_INFO,
+                BINDER, WHERE_UPDATE_BINDER, DELETE_UPDATE_BINDER, TrackedEntityInstanceSync::create);
     }
 }

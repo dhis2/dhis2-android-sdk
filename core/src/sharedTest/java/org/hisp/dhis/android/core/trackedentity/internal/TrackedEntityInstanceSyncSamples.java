@@ -26,30 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.domain.aggregated.data.internal;
-
-import org.hisp.dhis.android.core.period.PeriodType;
+package org.hisp.dhis.android.core.trackedentity.internal;
 
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate;
 
-public class AggregatedDataSyncSamples {
+public class TrackedEntityInstanceSyncSamples {
 
-    public static AggregatedDataSync get1() {
-        return AggregatedDataSync.builder()
+    public static TrackedEntityInstanceSync get1() {
+        return TrackedEntityInstanceSync.builder()
                 .id(1L)
-                .dataSet("dataSet")
-                .periodType(PeriodType.Daily)
-                .pastPeriods(10)
-                .futurePeriods(1)
-                .dataElementsHash(11111111)
-                .organisationUnitsHash(22222222)
+                .program("program")
+                .downloadLimit(500)
                 .lastUpdated(parseDate("2017-11-29T11:27:46.935"))
-                .build();
-    }
-
-    public static AggregatedDataSync get2() {
-        return get1().toBuilder()
-                .dataElementsHash(3333333)
                 .build();
     }
 }

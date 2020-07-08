@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 
 @AutoValue
 abstract class TeiQuery extends BaseQuery {
@@ -53,7 +54,7 @@ abstract class TeiQuery extends BaseQuery {
     abstract OrganisationUnitMode ouMode();
 
     @Nullable
-    abstract String lastUpdatedStartDate();
+    abstract Date lastUpdatedStartDate();
 
     @NonNull
     abstract Collection<String> uids();
@@ -85,7 +86,7 @@ abstract class TeiQuery extends BaseQuery {
 
         abstract Builder ouMode(OrganisationUnitMode ouMode);
 
-        abstract Builder lastUpdatedStartDate(String lastUpdatedStartDate);
+        abstract Builder lastUpdatedStartDate(Date lastUpdatedStartDate);
 
         abstract Builder uids(Collection<String> uIds);
 

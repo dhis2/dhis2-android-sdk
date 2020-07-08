@@ -57,6 +57,5 @@ public final class ResourceModuleWiper implements ModuleWiper {
     public void wipeData() {
         store.deleteResource(Resource.Type.DATA_VALUE);
         store.deleteResource(Resource.Type.EVENT);
-        store.deleteResource(Resource.Type.TRACKED_ENTITY_INSTANCE);
     }
 }

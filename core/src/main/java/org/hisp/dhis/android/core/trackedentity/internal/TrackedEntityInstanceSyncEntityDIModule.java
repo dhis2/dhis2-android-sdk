@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.trackedentity.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 
 import dagger.Module;
 import dagger.Provides;
@@ -40,7 +40,7 @@ public final class TrackedEntityInstanceSyncEntityDIModule {
 
     @Provides
     @Reusable
-    public ObjectStore<TrackedEntityInstanceSync> store(DatabaseAdapter databaseAdapter) {
+    public ObjectWithoutUidStore<TrackedEntityInstanceSync> store(DatabaseAdapter databaseAdapter) {
         return TrackedEntityInstanceSyncStore.create(databaseAdapter);
     }
 }

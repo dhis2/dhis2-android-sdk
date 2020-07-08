@@ -203,9 +203,8 @@ class TrackedEntityInstanceQueryBuilderFactory {
                                            OrganisationUnitMode organisationUnitMode,
                                            ProgramDataDownloadParams params,
                                            int limit) {
-        String lastUpdatedStr = lastUpdated == null ? null : BaseIdentifiableObject.dateToDateStr(lastUpdated);
         return TeiQuery.builder()
-                .lastUpdatedStartDate(lastUpdatedStr)
+                .lastUpdatedStartDate(lastUpdated)
                 .orgUnits(organisationUnits)
                 .ouMode(organisationUnitMode)
                 .uids(params.uids())

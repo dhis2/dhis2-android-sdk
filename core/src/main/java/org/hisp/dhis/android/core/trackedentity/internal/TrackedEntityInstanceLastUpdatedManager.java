@@ -31,8 +31,9 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 import androidx.annotation.Nullable;
 
 import org.apache.commons.lang3.time.DateUtils;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams;
+import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.settings.DownloadPeriod;
 import org.hisp.dhis.android.core.settings.ProgramSetting;
 import org.hisp.dhis.android.core.settings.ProgramSettings;
@@ -49,15 +50,18 @@ import dagger.Reusable;
 @Reusable
 class TrackedEntityInstanceLastUpdatedManager {
 
-    private final ObjectStore<TrackedEntityInstanceSync> store;
+    private final ObjectWithoutUidStore<TrackedEntityInstanceSync> store;
+    private final ResourceHandler resourceHandler;
 
     private Map<String, TrackedEntityInstanceSync> byProgram;
     private ProgramSettings programSettings;
     private ProgramDataDownloadParams params;
 
     @Inject
-    TrackedEntityInstanceLastUpdatedManager(ObjectStore<TrackedEntityInstanceSync> store) {
+    TrackedEntityInstanceLastUpdatedManager(ObjectWithoutUidStore<TrackedEntityInstanceSync> store,
+                                            ResourceHandler resourceHandler) {
         this.store = store;
+        this.resourceHandler = resourceHandler;
     }
 
     void refresh(ProgramSettings programSettings, ProgramDataDownloadParams params) {
@@ -81,7 +85,13 @@ class TrackedEntityInstanceLastUpdatedManager {
                 }
             }
             TrackedEntityInstanceSync programSync = byProgram.get(null);
-            return getLastUpdatedIfValid(programSync, limit);
+            Date generalLastUpdated = getLastUpdatedIfValid(programSync, limit);
+
+            if (generalLastUpdated != null) {
+                return generalLastUpdated;
+            }
+
+            return getDefaultLastUpdated(programId);
         } else {
             return null;
         }
@@ -95,7 +105,7 @@ class TrackedEntityInstanceLastUpdatedManager {
         }
     }
 
-    Date getInitialLastUpdated(String programUid) {
+    private Date getDefaultLastUpdated(String programUid) {
         DownloadPeriod period = null;
         if (programSettings != null) {
             ProgramSetting specificSetting = programSettings.specificSettings().get(programUid);
@@ -118,5 +128,18 @@ class TrackedEntityInstanceLastUpdatedManager {
 
     private boolean hasUpdateDownload(ProgramSetting programSetting) {
         return programSetting != null && programSetting.updateDownload() != null;
+    }
+
+    public void update(TeiQuery teiQuery) {
+        TrackedEntityInstanceSync sync = TrackedEntityInstanceSync.builder()
+                .program(teiQuery.program())
+                .downloadLimit(teiQuery.limit())
+                .lastUpdated(resourceHandler.getServerDate())
+                .build();
+        try {
+            store.insert(sync);
+        } catch (Exception e){
+            store.updateWhere(sync);
+        }
     }
 }

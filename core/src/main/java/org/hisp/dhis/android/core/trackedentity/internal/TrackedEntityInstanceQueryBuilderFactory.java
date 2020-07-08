@@ -126,17 +126,17 @@ class TrackedEntityInstanceQueryBuilderFactory {
         EnrollmentStatus programStatus = getProgramStatus(params, programSettings, programUid);
         String programStartDate = getProgramStartDate(programSettings, programUid);
 
-        Date lastUpdated = lastUpdatedManager.getLastUpdated(programUid);
+        Date lastUpdated = lastUpdatedManager.getLastUpdated(programUid, limit);
 
         OrganisationUnitMode ouMode;
         List<String> orgUnits;
 
-        boolean hasLimitByOrgunit = hasLimitByOrgUnit(params, programSettings, programUid);
+        boolean hasLimitByOrgUnit = hasLimitByOrgUnit(params, programSettings, programUid);
 
         if (params.orgUnits().size() > 0) {
             ouMode = OrganisationUnitMode.SELECTED;
             orgUnits = params.orgUnits();
-        } else if (hasLimitByOrgunit) {
+        } else if (hasLimitByOrgUnit) {
             ouMode = OrganisationUnitMode.SELECTED;
             orgUnits = getLinkedCaptureOrgUnitUids(programUid);
         } else {
@@ -146,7 +146,7 @@ class TrackedEntityInstanceQueryBuilderFactory {
 
         List<TeiQuery.Builder> builders = new ArrayList<>();
 
-        if (hasLimitByOrgunit) {
+        if (hasLimitByOrgUnit) {
             for (String orgUnitUid : orgUnits) {
                 builders.add(getBuilderFor(lastUpdated, Collections.singletonList(orgUnitUid), ouMode, params, limit)
                         .program(programUid).programStatus(programStatus).programStartDate(programStartDate));
@@ -167,17 +167,17 @@ class TrackedEntityInstanceQueryBuilderFactory {
             return Collections.emptyList();
         }
 
-        Date lastUpdated = lastUpdatedManager.getLastUpdated(null);
+        Date lastUpdated = lastUpdatedManager.getLastUpdated(null, limit);
 
         OrganisationUnitMode ouMode;
         List<String> orgUnits;
 
-        boolean hasLimitByOrgunit = hasLimitByOrgUnit(params, programSettings, null);
+        boolean hasLimitByOrgUnit = hasLimitByOrgUnit(params, programSettings, null);
 
         if (params.orgUnits().size() > 0) {
             ouMode = OrganisationUnitMode.SELECTED;
             orgUnits = params.orgUnits();
-        } else if (hasLimitByOrgunit) {
+        } else if (hasLimitByOrgUnit) {
             ouMode = OrganisationUnitMode.SELECTED;
             orgUnits = getCaptureOrgUnitUids();
         } else {
@@ -187,7 +187,7 @@ class TrackedEntityInstanceQueryBuilderFactory {
 
         List<TeiQuery.Builder> builders = new ArrayList<>();
 
-        if (hasLimitByOrgunit) {
+        if (hasLimitByOrgUnit) {
             for (String orgUnitUid : orgUnits) {
                 builders.add(getBuilderFor(lastUpdated, Collections.singletonList(orgUnitUid), ouMode, params, limit));
             }

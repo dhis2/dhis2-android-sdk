@@ -71,12 +71,27 @@ class TrackedEntityInstanceLastUpdatedManager {
         }
     }
 
-    Date getLastUpdated(@Nullable String programId) {
+    Date getLastUpdated(@Nullable String programId, int limit) {
         if (params.uids().isEmpty()) {
-            TrackedEntityInstanceSync sync = byProgram.get(programId);
-            return sync == null ? getInitialLastUpdated(programId) : sync.lastUpdated();
+            if (programId != null) {
+                TrackedEntityInstanceSync programSync = byProgram.get(programId);
+                Date programLastUpdated = getLastUpdatedIfValid(programSync, limit);
+                if (programLastUpdated != null) {
+                    return programLastUpdated;
+                }
+            }
+            TrackedEntityInstanceSync programSync = byProgram.get(null);
+            return getLastUpdatedIfValid(programSync, limit);
         } else {
             return null;
+        }
+    }
+
+    private Date getLastUpdatedIfValid(TrackedEntityInstanceSync sync, int limit) {
+        if (sync == null || sync.downloadLimit() < limit) {
+            return null;
+        } else {
+            return sync.lastUpdated();
         }
     }
 

@@ -38,6 +38,8 @@ import org.hisp.dhis.android.core.settings.DownloadPeriod;
 import org.hisp.dhis.android.core.settings.ProgramSetting;
 import org.hisp.dhis.android.core.settings.ProgramSettings;
 
+import static org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceSyncTableInfo.Columns;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -136,10 +138,9 @@ class TrackedEntityInstanceLastUpdatedManager {
                 .downloadLimit(teiQuery.limit())
                 .lastUpdated(resourceHandler.getServerDate())
                 .build();
-        try {
-            store.insert(sync);
-        } catch (Exception e){
-            store.updateWhere(sync);
-        }
+
+        String whereClause = teiQuery.program() == null ? " IS NULL" : "='" + teiQuery.program() + "'";
+        store.deleteWhere(Columns.PROGRAM + whereClause);
+        store.insert(sync);
     }
 }

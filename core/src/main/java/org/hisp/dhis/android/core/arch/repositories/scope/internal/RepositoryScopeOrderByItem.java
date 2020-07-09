@@ -53,7 +53,10 @@ public abstract class RepositoryScopeOrderByItem {
 
     public static Builder builder() {
         return new AutoValue_RepositoryScopeOrderByItem.Builder()
-                .keyExtractor(ContentValues::getAsString);
+                .keyExtractor((contentValues, column) -> {
+                    String key = contentValues.getAsString(column);
+                    return "'" + key + "'";
+                });
     }
 
     @AutoValue.Builder

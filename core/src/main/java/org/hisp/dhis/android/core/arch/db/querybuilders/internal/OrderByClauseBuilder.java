@@ -113,7 +113,7 @@ public final class OrderByClauseBuilder {
     private static void addItemOperator(WhereClauseBuilder whereClauseBuilder, RepositoryScopeOrderByItem item,
                                         ContentValues object, String operator) {
         String key = item.getKey(object);
-        whereClauseBuilder.appendKeyOperatorValue(item.column(), operator, "'" + key + "'");
+        whereClauseBuilder.appendKeyOperatorValue(item.column(), operator, key);
     }
 
     private static String getDirectionOperator(RepositoryScopeOrderByItem item) {

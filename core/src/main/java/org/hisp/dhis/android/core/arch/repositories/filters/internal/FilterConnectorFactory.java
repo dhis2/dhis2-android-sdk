@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositorySco
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeKeyOrderExtractor;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeOrderByItem;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
+import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.event.EventTableInfo;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 
@@ -111,14 +112,41 @@ public class FilterConnectorFactory<R extends BaseRepository> {
                 externalLink,
                 ownLink);
 
-        RepositoryScopeKeyOrderExtractor extractor = ((contentValues, column1) -> {
+        RepositoryScopeKeyOrderExtractor extractor = (contentValues, column1) -> {
             String ownLinkKey = contentValues.getAsString(ownLink);
-            return String.format("(SELECT %s FROM %s WHERE %s = %s)",
+            return String.format("(SELECT %s FROM %s WHERE %s = '%s')",
                     externalColumn,
                     externalTable,
                     externalLink,
                     ownLinkKey);
-        });
+        };
+
+        RepositoryScopeOrderByItem item = RepositoryScopeOrderByItem.builder().column(column)
+                .direction(direction).keyExtractor(extractor).build();
+        return repositoryFactory.updated(RepositoryScopeHelper.withOrderBy(scope, item));
+    }
+
+    public R withConditionalOrderBy(String conditionalColumn,
+                                    String condition,
+                                    String ifTrueColumn,
+                                    String ifFalseColumn,
+                                    RepositoryScope.OrderByDirection direction) {
+        String column = String.format("(CASE WHEN %s %s THEN %s ELSE %s END)",
+                conditionalColumn,
+                condition,
+                ifTrueColumn,
+                ifFalseColumn);
+
+        RepositoryScopeKeyOrderExtractor extractor = (contentValues, column1) -> {
+            String conditionalValue = contentValues.getAsString(conditionalColumn);
+            String ifTrueValue = contentValues.getAsString(ifTrueColumn);
+            String ifFalseValue = contentValues.getAsString(ifFalseColumn);
+            return String.format("(CASE WHEN '%s' %s THEN '%s' ELSE '%s' END)",
+                    conditionalValue,
+                    condition,
+                    ifTrueValue,
+                    ifFalseValue);
+        };
 
         RepositoryScopeOrderByItem item = RepositoryScopeOrderByItem.builder().column(column)
                 .direction(direction).keyExtractor(extractor).build();

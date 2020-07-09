@@ -30,41 +30,9 @@ package org.hisp.dhis.android.core.arch.repositories.scope.internal;
 
 import android.content.ContentValues;
 
-import com.google.auto.value.AutoValue;
+@FunctionalInterface
+public interface RepositoryScopeKeyOrderExtractor {
 
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+    String extractKey(ContentValues contentValues, String column);
 
-@AutoValue
-public abstract class RepositoryScopeOrderByItem {
-
-    public abstract String column();
-
-    public abstract RepositoryScope.OrderByDirection direction();
-
-    public abstract RepositoryScopeKeyOrderExtractor keyExtractor();
-
-    public String getKey(ContentValues contentValues) {
-        return keyExtractor().extractKey(contentValues, column());
-    }
-
-    public String toSQLString() {
-        return column() + " " + direction();
-    }
-
-    public static Builder builder() {
-        return new AutoValue_RepositoryScopeOrderByItem.Builder()
-                .keyExtractor(ContentValues::getAsString);
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder column(String column);
-
-        public abstract Builder direction(RepositoryScope.OrderByDirection direction);
-
-        public abstract Builder keyExtractor(RepositoryScopeKeyOrderExtractor keyExtractor);
-
-        public abstract RepositoryScopeOrderByItem build();
-    }
 }

@@ -225,13 +225,12 @@ public final class EventCollectionRepository
     }
 
     public EventCollectionRepository orderByOrganisationUnitName(RepositoryScope.OrderByDirection direction) {
-        String column = String.format("(SELECT %s FROM %s WHERE %s = %s)",
-                IdentifiableColumns.NAME,
+        return cf.withExternalOrderBy(
                 OrganisationUnitTableInfo.TABLE_INFO.name(),
+                IdentifiableColumns.NAME,
                 IdentifiableColumns.UID,
-                Columns.ORGANISATION_UNIT);
-
-        return cf.withOrderBy(column, direction);
+                Columns.ORGANISATION_UNIT,
+                direction);
     }
 
     public EventCollectionRepository orderByTimeline(RepositoryScope.OrderByDirection direction) {

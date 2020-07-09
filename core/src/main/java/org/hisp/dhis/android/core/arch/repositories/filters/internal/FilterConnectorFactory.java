@@ -32,7 +32,11 @@ import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeKeyOrderExtractor;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeOrderByItem;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
+import org.hisp.dhis.android.core.event.EventTableInfo;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 
 public class FilterConnectorFactory<R extends BaseRepository> {
 
@@ -92,6 +96,32 @@ public class FilterConnectorFactory<R extends BaseRepository> {
     public R withOrderBy(String column, RepositoryScope.OrderByDirection direction) {
         RepositoryScopeOrderByItem item = RepositoryScopeOrderByItem.builder().column(column)
                 .direction(direction).build();
+        return repositoryFactory.updated(RepositoryScopeHelper.withOrderBy(scope, item));
+    }
+
+    public R withExternalOrderBy(String externalTable,
+                                 String externalColumn,
+                                 String externalLink,
+                                 String ownLink,
+                                 RepositoryScope.OrderByDirection direction) {
+
+        String column = String.format("(SELECT %s FROM %s WHERE %s = %s)",
+                externalColumn,
+                externalTable,
+                externalLink,
+                ownLink);
+
+        RepositoryScopeKeyOrderExtractor extractor = ((contentValues, column1) -> {
+            String ownLinkKey = contentValues.getAsString(ownLink);
+            return String.format("(SELECT %s FROM %s WHERE %s = %s)",
+                    externalColumn,
+                    externalTable,
+                    externalLink,
+                    ownLinkKey);
+        });
+
+        RepositoryScopeOrderByItem item = RepositoryScopeOrderByItem.builder().column(column)
+                .direction(direction).keyExtractor(extractor).build();
         return repositoryFactory.updated(RepositoryScopeHelper.withOrderBy(scope, item));
     }
 }

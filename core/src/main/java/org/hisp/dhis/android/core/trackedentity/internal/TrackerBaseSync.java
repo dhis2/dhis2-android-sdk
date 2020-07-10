@@ -39,27 +39,25 @@ import org.hisp.dhis.android.core.common.BaseObject;
 
 import java.util.Date;
 
-abstract class TrackerBaseSync extends BaseObject {
+public abstract class TrackerBaseSync extends BaseObject {
 
     @Nullable
-    abstract String program();
+    public abstract String program();
 
     @NonNull
-    abstract Integer downloadLimit();
+    public abstract Integer downloadLimit();
 
     @NonNull
     @ColumnAdapter(DbDateColumnAdapter.class)
-    abstract Date lastUpdated();
+    public abstract Date lastUpdated();
 
     @JsonPOJOBuilder(withPrefix = "")
-    static abstract class Builder<T extends BaseObject.Builder> extends BaseObject.Builder<T> {
+    public static abstract class Builder<T extends BaseObject.Builder> extends BaseObject.Builder<T> {
 
         public abstract T program(String program);
 
         public abstract T downloadLimit(Integer limit);
 
         public abstract T lastUpdated(Date lastUpdated);
-
-        abstract TrackerBaseSync build();
     }
 }

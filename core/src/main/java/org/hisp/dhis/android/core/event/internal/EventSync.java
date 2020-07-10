@@ -26,44 +26,36 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.event.internal;
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+import android.database.Cursor;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import androidx.annotation.NonNull;
 
-class BaseDatabaseOpenHelper {
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-    static final int VERSION = 81;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerBaseSync;
 
-    private final AssetManager assetManager;
-    private final int targetVersion;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_EventSync.Builder.class)
+abstract class EventSync extends TrackerBaseSync {
 
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    @NonNull
+    static EventSync create(Cursor cursor) {
+        return AutoValue_EventSync.createFromCursor(cursor);
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
-        databaseAdapter.enableWriteAheadLogging();
+    static Builder builder() {
+        return new AutoValue_EventSync.Builder();
     }
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
+    abstract Builder toBuilder();
 
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    static abstract class Builder extends TrackerBaseSync.Builder<Builder> {
+        abstract EventSync build();
     }
 }

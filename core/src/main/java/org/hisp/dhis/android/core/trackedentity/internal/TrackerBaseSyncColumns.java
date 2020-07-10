@@ -26,44 +26,27 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.trackedentity.internal;
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.LAST_UPDATED;
 
-class BaseDatabaseOpenHelper {
+public class TrackerBaseSyncColumns extends CoreColumns {
+    public static final String PROGRAM = "program";
+    public static final String DOWNLOAD_LIMIT = "downloadLimit";
 
-    static final int VERSION = 81;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    @Override
+    public String[] all() {
+        return CollectionsHelper.appendInNewArray(super.all(),
+                PROGRAM,
+                DOWNLOAD_LIMIT,
+                LAST_UPDATED);
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    @Override
+    public String[] whereUpdate() {
+        return new String[]{PROGRAM};
     }
 }

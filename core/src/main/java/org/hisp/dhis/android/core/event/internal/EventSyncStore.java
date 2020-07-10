@@ -26,44 +26,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
-
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+package org.hisp.dhis.android.core.event.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 
-class BaseDatabaseOpenHelper {
+final class EventSyncStore {
 
-    static final int VERSION = 81;
+    private static final StatementBinder<EventSync> BINDER = (o, w) -> {
+        w.bind(1, o.program());
+        w.bind(2, o.downloadLimit());
+        w.bind(3, o.lastUpdated());
+    };
 
-    private final AssetManager assetManager;
-    private final int targetVersion;
+    private static final WhereStatementBinder<EventSync> WHERE_UPDATE_BINDER =
+            (o, w) -> w.bind(4, o.program());
 
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    private static final WhereStatementBinder<EventSync> DELETE_UPDATE_BINDER =
+            (o, w) -> w.bind(1, o.program());
+
+    private EventSyncStore() {
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    static ObjectWithoutUidStore<EventSync> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, EventSyncTableInfo.TABLE_INFO,
+                BINDER, WHERE_UPDATE_BINDER, DELETE_UPDATE_BINDER, EventSync::create);
     }
 }

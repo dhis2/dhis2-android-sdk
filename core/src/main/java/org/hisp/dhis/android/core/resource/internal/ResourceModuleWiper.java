@@ -52,5 +52,6 @@ public final class ResourceModuleWiper implements ModuleWiper {
 
     @Override
     public void wipeData() {
+        // Nothing to wipe
     }
 }

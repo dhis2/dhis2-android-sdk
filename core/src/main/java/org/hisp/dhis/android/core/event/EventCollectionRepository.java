@@ -225,23 +225,22 @@ public final class EventCollectionRepository
     }
 
     public EventCollectionRepository orderByOrganisationUnitName(RepositoryScope.OrderByDirection direction) {
-        String column = String.format("(SELECT %s FROM %s WHERE %s = %s)",
-                IdentifiableColumns.NAME,
+        return cf.withExternalOrderBy(
                 OrganisationUnitTableInfo.TABLE_INFO.name(),
+                IdentifiableColumns.NAME,
                 IdentifiableColumns.UID,
-                Columns.ORGANISATION_UNIT);
-
-        return cf.withOrderBy(column, direction);
+                Columns.ORGANISATION_UNIT,
+                direction);
     }
 
     public EventCollectionRepository orderByTimeline(RepositoryScope.OrderByDirection direction) {
-        String column = String.format("(CASE WHEN %s IN ('%s', '%s', '%s') THEN %s ELSE %s END)",
+        return cf.withConditionalOrderBy(
                 Columns.STATUS,
-                EventStatus.ACTIVE, EventStatus.COMPLETED, EventStatus.VISITED,
+                String.format("IN ('%s', '%s', '%s')", EventStatus.ACTIVE, EventStatus.COMPLETED, EventStatus.VISITED),
                 Columns.EVENT_DATE,
-                Columns.DUE_DATE);
-
-        return cf.withOrderBy(column, direction);
+                Columns.DUE_DATE,
+                direction
+        );
     }
 
     public int countTrackedEntityInstances() {

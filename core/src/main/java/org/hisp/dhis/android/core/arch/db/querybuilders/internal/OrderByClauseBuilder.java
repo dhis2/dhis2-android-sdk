@@ -85,7 +85,7 @@ public final class OrderByClauseBuilder {
             for (int i = 0; i < items.size(); i++) {
                 RepositoryScopeOrderByItem item = items.get(i);
                 if (i == items.size() - 1) {
-                    addItemOperator(subWhereClause, item, object, reversed);
+                    addItemInequality(subWhereClause, item, object, reversed);
                 } else {
                     addItemEquality(subWhereClause, item, object);
                     nextIterationItems.add(item);
@@ -99,18 +99,21 @@ public final class OrderByClauseBuilder {
         whereClauseBuilder.appendComplexQuery(wrapperClause.build());
     }
 
-    private static void addItemOperator(WhereClauseBuilder whereClauseBuilder, RepositoryScopeOrderByItem item,
-                                        ContentValues object, boolean reversed) {
+    private static void addItemInequality(WhereClauseBuilder whereClauseBuilder, RepositoryScopeOrderByItem item,
+                                          ContentValues object, boolean reversed) {
         String operator = reversed ? getReversedDirectionOperator(item) : getDirectionOperator(item);
-        whereClauseBuilder.appendKeyOperatorValue(item.column(), operator,
-                "'" + object.getAsString(item.column()) + "'");
+        addItemOperator(whereClauseBuilder, item, object, operator);
     }
 
     private static void addItemEquality(WhereClauseBuilder whereClauseBuilder, RepositoryScopeOrderByItem item,
                                         ContentValues object) {
         String operator = "=";
-        whereClauseBuilder.appendKeyOperatorValue(item.column(), operator,
-                "'" + object.getAsString(item.column()) + "'");
+        addItemOperator(whereClauseBuilder, item, object, operator);    }
+
+    private static void addItemOperator(WhereClauseBuilder whereClauseBuilder, RepositoryScopeOrderByItem item,
+                                        ContentValues object, String operator) {
+        String key = item.getKey(object);
+        whereClauseBuilder.appendKeyOperatorValue(item.column(), operator, key);
     }
 
     private static String getDirectionOperator(RepositoryScopeOrderByItem item) {

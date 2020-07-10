@@ -82,10 +82,11 @@ class TrackedEntityInstanceQueryCallFactory {
         AssignedUserMode assignedUserMode = query.assignedUserMode();
         String assignedUserModeStr = assignedUserMode == null ? null : assignedUserMode.toString();
         String programStatus = query.programStatus() == null ? null : query.programStatus().toString();
+        String eventStatus = query.eventStatus() == null ? null : query.eventStatus().toString();
 
         String orgUnits = CollectionsHelper.joinCollectionWithSeparator(query.orgUnits(), ";");
         Call<SearchGrid> searchGridCall = service.query(orgUnits, orgUnitModeStr, query.program(),
-                query.formattedProgramStartDate(), query.formattedProgramEndDate(), programStatus,
+                query.formattedProgramStartDate(), query.formattedProgramEndDate(), programStatus, eventStatus,
                 query.trackedEntityType(), query.query(), query.attribute(), query.filter(), assignedUserModeStr,
                 query.order(), query.paging(), query.page(), query.pageSize());
 

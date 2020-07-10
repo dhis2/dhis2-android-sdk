@@ -55,7 +55,6 @@ import static org.hisp.dhis.android.core.common.IdentifiableColumns.LAST_UPDATED
 import static org.hisp.dhis.android.core.common.IdentifiableColumns.NAME;
 import static org.hisp.dhis.android.core.common.IdentifiableColumns.UID;
 import static org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo.Columns.INCIDENT_DATE;
-import static org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo.Columns.STATUS;
 
 @SuppressWarnings({
         "PMD.GodClass",
@@ -107,7 +106,7 @@ final class TrackedEntityInstanceLocalQueryHelper {
                         dot(ENROLLMENT_ALIAS, UID),
                         dot(EVENT_ALIAS, EventTableInfo.Columns.ENROLLMENT));
 
-                appendAssignedUserMode(where, scope);
+                appendEventWhere(where, scope);
             }
         }
 
@@ -157,7 +156,7 @@ final class TrackedEntityInstanceLocalQueryHelper {
     }
 
     private static boolean hasEvent(TrackedEntityInstanceQueryRepositoryScope scope) {
-        return scope.assignedUserMode() != null;
+        return scope.assignedUserMode() != null && scope.eventStatus() != null;
     }
 
     private static void appendProgramWhere(WhereClauseBuilder where, TrackedEntityInstanceQueryRepositoryScope scope) {
@@ -173,7 +172,8 @@ final class TrackedEntityInstanceLocalQueryHelper {
                     scope.formattedProgramEndDate());
         }
         if (scope.programStatus() != null) {
-            where.appendKeyStringValue(dot(ENROLLMENT_ALIAS, STATUS), escapeQuotes(scope.programStatus().toString()));
+            where.appendKeyStringValue(dot(ENROLLMENT_ALIAS, EnrollmentTableInfo.Columns.STATUS),
+                    escapeQuotes(scope.programStatus().toString()));
         }
         if (scope.includeDeleted() == null || !scope.includeDeleted()) {
             where.appendKeyOperatorValue(dot(ENROLLMENT_ALIAS, EnrollmentTableInfo.Columns.DELETED), "!=", "1");
@@ -270,6 +270,15 @@ final class TrackedEntityInstanceLocalQueryHelper {
         }
     }
 
+    private static void appendEventWhere(WhereClauseBuilder where, TrackedEntityInstanceQueryRepositoryScope scope) {
+        if (scope.assignedUserMode() != null) {
+            appendAssignedUserMode(where, scope);
+        }
+        if (scope.eventStatus() != null) {
+            where.appendInKeyEnumValues(dot(EVENT_ALIAS, EventTableInfo.Columns.STATUS), scope.eventStatus());
+        }
+    }
+
     private static void appendAssignedUserMode(WhereClauseBuilder where,
                                                TrackedEntityInstanceQueryRepositoryScope scope) {
         AssignedUserMode mode = scope.assignedUserMode();
@@ -338,7 +347,8 @@ final class TrackedEntityInstanceLocalQueryHelper {
                     orderClauses.add(orderByEnrollmentField(scope.program(), INCIDENT_DATE, item.direction()));
                     break;
                 case ENROLLMENT_STATUS:
-                    orderClauses.add(orderByEnrollmentField(scope.program(), STATUS, item.direction()));
+                    orderClauses.add(orderByEnrollmentField(scope.program(), EnrollmentTableInfo.Columns.STATUS,
+                            item.direction()));
                     break;
                 case EVENT_DATE:
                     String eventField =

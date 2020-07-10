@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
 import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
+import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 
 import java.util.ArrayList;
@@ -80,6 +81,9 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
     abstract EnrollmentStatus programStatus();
 
     @Nullable
+    abstract EventStatus eventStatus();
+
+    @Nullable
     abstract String trackedEntityType();
 
     //TODO It is not used in the query because it modifies returned grid structure: if true, it adds an extra column
@@ -112,6 +116,9 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
             query = scope.query().operator().getApiUpperOperator() + ":" + scope.query().value();
         }
 
+        EventStatus eventStatus = scope.eventStatus() == null || scope.eventStatus().isEmpty() ? null :
+                scope.eventStatus().get(0);
+
         return TrackedEntityInstanceQueryOnline.builder()
                 .query(query)
                 .attribute(toAPIFilterFormat(scope.attribute()))
@@ -122,6 +129,7 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
                 .programStartDate(scope.programStartDate())
                 .programEndDate(scope.programEndDate())
                 .programStatus(scope.programStatus())
+                .eventStatus(eventStatus)
                 .trackedEntityType(scope.trackedEntityType())
                 .includeDeleted(false)
                 .assignedUserMode(scope.assignedUserMode())
@@ -179,6 +187,8 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
         abstract Builder programEndDate(Date programEndDate);
 
         abstract Builder programStatus(EnrollmentStatus programStatus);
+
+        abstract Builder eventStatus(EventStatus eventStatus);
 
         abstract Builder trackedEntityType(String trackedEntityType);
 

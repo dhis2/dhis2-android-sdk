@@ -47,6 +47,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositorySco
 import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
+import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.systeminfo.DHISVersion;
@@ -252,6 +253,18 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
             TrackedEntityInstanceQueryRepositoryScope, EnrollmentStatus> byProgramStatus() {
         return connectorFactory.eqConnector(programStatus -> scope.toBuilder().programStatus(programStatus).build());
+    }
+
+    /**
+     * Filter by event status. It only applies if a program has been specified in {@link #byProgram()}.
+     * <br><b>IMPORTANT:</b> this filter accepts a list of status, but only the first will be used for the online
+     * query because the web API does not support multiple states.
+     *
+     * @return Repository connector
+     */
+    public ListFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+            TrackedEntityInstanceQueryRepositoryScope, EventStatus> byEventStatus() {
+        return connectorFactory.listConnector(eventStatus -> scope.toBuilder().eventStatus(eventStatus).build());
     }
 
     /**

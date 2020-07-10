@@ -44,7 +44,7 @@ import java.util.Map;
 
 import static org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceSyncTableInfo.Columns;
 
-class TrackerSyncLastUpdatedManager<S extends TrackedEntityInstanceSync> {
+public class TrackerSyncLastUpdatedManager<S extends TrackerBaseSync> {
 
     private final ObjectWithoutUidStore<S> store;
 
@@ -52,11 +52,11 @@ class TrackerSyncLastUpdatedManager<S extends TrackedEntityInstanceSync> {
     private ProgramSettings programSettings;
     private ProgramDataDownloadParams params;
 
-    TrackerSyncLastUpdatedManager(ObjectWithoutUidStore<S> store) {
+    public TrackerSyncLastUpdatedManager(ObjectWithoutUidStore<S> store) {
         this.store = store;
     }
 
-    void refresh(ProgramSettings programSettings, ProgramDataDownloadParams params) {
+    public void prepare(ProgramSettings programSettings, ProgramDataDownloadParams params) {
         this.programSettings = programSettings;
         this.params = params;
 
@@ -67,7 +67,7 @@ class TrackerSyncLastUpdatedManager<S extends TrackedEntityInstanceSync> {
         }
     }
 
-    Date getLastUpdated(@Nullable String programId, int limit) {
+    public Date getLastUpdated(@Nullable String programId, int limit) {
         if (params.uids().isEmpty()) {
             if (programId != null) {
                 S programSync = byProgram.get(programId);

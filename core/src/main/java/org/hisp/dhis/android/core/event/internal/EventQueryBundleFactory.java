@@ -39,8 +39,6 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTa
 import org.hisp.dhis.android.core.program.ProgramType;
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams;
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface;
-import org.hisp.dhis.android.core.resource.internal.Resource;
-import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.settings.DownloadPeriod;
 import org.hisp.dhis.android.core.settings.LimitScope;
 import org.hisp.dhis.android.core.settings.ProgramSetting;
@@ -61,34 +59,29 @@ import dagger.Reusable;
 @Reusable
 @SuppressWarnings({"PMD.GodClass"})
 class EventQueryBundleFactory {
-
-    private final Resource.Type resourceType = Resource.Type.EVENT;
-
-    private final ResourceHandler resourceHandler;
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
     private final LinkStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore;
     private final ProgramStoreInterface programStore;
     private final ProgramSettingsObjectRepository programSettingsObjectRepository;
+    private final EventLastUpdatedManager lastUpdatedManager;
 
     @Inject
     EventQueryBundleFactory(
-            ResourceHandler resourceHandler,
             UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
             LinkStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore,
             ProgramStoreInterface programStore,
-            ProgramSettingsObjectRepository programSettingsObjectRepository) {
-        this.resourceHandler = resourceHandler;
+            ProgramSettingsObjectRepository programSettingsObjectRepository,
+            EventLastUpdatedManager lastUpdatedManager) {
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
         this.organisationUnitProgramLinkStore = organisationUnitProgramLinkStore;
         this.programStore = programStore;
         this.programSettingsObjectRepository = programSettingsObjectRepository;
+        this.lastUpdatedManager = lastUpdatedManager;
     }
 
     List<EventQueryBundle> getEventQueryBundles(ProgramDataDownloadParams params) {
-
-        String lastUpdated = params.uids().isEmpty() ? resourceHandler.getLastUpdated(resourceType) : null;
-
         ProgramSettings programSettings = programSettingsObjectRepository.blockingGet();
+        lastUpdatedManager.prepare(programSettings, params);
 
         List<EventQueryBundle> builders = new ArrayList<>();
 
@@ -96,7 +89,7 @@ class EventQueryBundleFactory {
             List<String> eventPrograms = programStore.getUidsByProgramType(ProgramType.WITHOUT_REGISTRATION);
             if (hasLimitByProgram(params, programSettings)) {
                 for (String programUid : eventPrograms) {
-                    builders.addAll(queryPerProgram(params, programSettings, programUid, lastUpdated));
+                    builders.addAll(queryPerProgram(params, programSettings, programUid));
                 }
             } else {
                 Map<String, ProgramSetting> specificSettings = programSettings == null ?
@@ -105,15 +98,15 @@ class EventQueryBundleFactory {
                 for (Map.Entry<String, ProgramSetting> specificSetting : specificSettings.entrySet()) {
                     String programUid = specificSetting.getKey();
                     if (eventPrograms.contains(programUid)) {
-                        builders.addAll(queryPerProgram(params, programSettings, programUid, lastUpdated));
+                        builders.addAll(queryPerProgram(params, programSettings, programUid));
                         eventPrograms.remove(programUid);
                     }
                 }
 
-                builders.addAll(queryGlobal(params, programSettings, eventPrograms, lastUpdated));
+                builders.addAll(queryGlobal(params, programSettings, eventPrograms));
             }
         } else {
-            builders.addAll(queryPerProgram(params, programSettings, params.program(), lastUpdated));
+            builders.addAll(queryPerProgram(params, programSettings, params.program()));
         }
 
         return builders;
@@ -121,13 +114,14 @@ class EventQueryBundleFactory {
 
     private List<EventQueryBundle> queryPerProgram(ProgramDataDownloadParams params,
                                                    ProgramSettings programSettings,
-                                                   String programUid,
-                                                   String lastUpdated) {
+                                                   String programUid) {
         int limit = getLimit(params, programSettings, programUid);
 
         if (limit == 0) {
             return Collections.emptyList();
         }
+
+        Date lastUpdated = lastUpdatedManager.getLastUpdated(programUid, limit);
 
         String eventStartDate = getEventStartDate(programSettings, programUid);
         List<String> programs = Collections.singletonList(programUid);
@@ -163,13 +157,14 @@ class EventQueryBundleFactory {
 
     private List<EventQueryBundle> queryGlobal(ProgramDataDownloadParams params,
                                                ProgramSettings programSettings,
-                                               List<String> programList,
-                                               String lastUpdated) {
+                                               List<String> programList) {
         int limit = getLimit(params, programSettings, null);
 
         if (limit == 0) {
             return Collections.emptyList();
         }
+
+        Date lastUpdated = lastUpdatedManager.getLastUpdated(null, limit);
 
         String eventStartDate = getEventStartDate(programSettings, null);
         OrganisationUnitMode ouMode;
@@ -203,7 +198,7 @@ class EventQueryBundleFactory {
 
     }
 
-    private EventQueryBundle getBuilderFor(String lastUpdated,
+    private EventQueryBundle getBuilderFor(Date lastUpdated,
                                            List<String> organisationUnits,
                                            List<String> programs,
                                            OrganisationUnitMode organisationUnitMode,

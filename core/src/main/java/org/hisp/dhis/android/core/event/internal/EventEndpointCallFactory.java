@@ -28,8 +28,11 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.event.Event;
 
 import java.util.List;
@@ -37,7 +40,6 @@ import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 import retrofit2.Call;
 
@@ -58,9 +60,14 @@ final class EventEndpointCallFactory {
 
             Call<Payload<Event>> call = service.getEvents(eventQuery.orgUnit(), eventQuery.ouMode().name(),
                     eventQuery.program(), EventFields.allFields, Boolean.TRUE,
-                    eventQuery.page(), eventQuery.pageSize(), eventQuery.lastUpdatedStartDate(), true);
+                    eventQuery.page(), eventQuery.pageSize(), getLastUpdated(eventQuery), true);
 
             return apiCallExecutor.executePayloadCall(call);
         };
+    }
+
+    private String getLastUpdated(EventQuery query) {
+        return query.lastUpdatedStartDate() == null ? null :
+                BaseIdentifiableObject.dateToDateStr(query.lastUpdatedStartDate());
     }
 }

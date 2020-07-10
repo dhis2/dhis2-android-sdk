@@ -26,31 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.resource.internal;
+package org.hisp.dhis.android.core.event.internal;
 
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.internal.TableWiper;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerSyncLastUpdatedManager;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
-public final class ResourceModuleWiper implements ModuleWiper {
+class EventLastUpdatedManager extends TrackerSyncLastUpdatedManager<EventSync> {
 
-    private final TableWiper tableWiper;
+    private final ResourceHandler resourceHandler;
 
     @Inject
-    ResourceModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+    EventLastUpdatedManager(ObjectWithoutUidStore<EventSync> store,
+                            ResourceHandler resourceHandler) {
+        super(store);
+        this.resourceHandler = resourceHandler;
     }
 
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(ResourceTableInfo.TABLE_INFO);
-    }
-
-    @Override
-    public void wipeData() {
+    public void update(String program, int limit) {
+        EventSync sync = EventSync.builder()
+                .program(program)
+                .downloadLimit(limit)
+                .lastUpdated(resourceHandler.getServerDate())
+                .build();
+        super.update(sync);
     }
 }

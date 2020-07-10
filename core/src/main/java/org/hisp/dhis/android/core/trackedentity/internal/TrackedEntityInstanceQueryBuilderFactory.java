@@ -84,7 +84,7 @@ class TrackedEntityInstanceQueryBuilderFactory {
 
     List<TeiQuery.Builder> getTeiQueryBuilders(ProgramDataDownloadParams params) {
         ProgramSettings programSettings = programSettingsObjectRepository.blockingGet();
-        lastUpdatedManager.refresh(programSettings, params);
+        lastUpdatedManager.prepare(programSettings, params);
 
         List<TeiQuery.Builder> builders = new ArrayList<>();
 

@@ -40,8 +40,6 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownl
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams;
-import org.hisp.dhis.android.core.resource.internal.Resource;
-import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 
 import java.util.List;
@@ -55,10 +53,7 @@ import io.reactivex.Observable;
 @Reusable
 public final class EventWithLimitCallFactory {
 
-    private final Resource.Type resourceType = Resource.Type.EVENT;
-
     private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
-    private final ResourceHandler resourceHandler;
 
     private final D2CallExecutor d2CallExecutor;
     private final RxAPICallExecutor rxCallExecutor;
@@ -67,23 +62,25 @@ public final class EventWithLimitCallFactory {
 
     private final EventEndpointCallFactory endpointCallFactory;
     private final EventPersistenceCallFactory persistenceCallFactory;
+    private final EventLastUpdatedManager lastUpdatedManager;
+
 
     @Inject
     EventWithLimitCallFactory(
             @NonNull ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
-            @NonNull ResourceHandler resourceHandler,
             @NonNull D2CallExecutor d2CallExecutor,
             @NonNull RxAPICallExecutor rxCallExecutor,
             @NonNull EventQueryBundleFactory eventQueryBundleFactory,
             @NonNull EventEndpointCallFactory endpointCallFactory,
-            @NonNull EventPersistenceCallFactory persistenceCallFactory) {
+            @NonNull EventPersistenceCallFactory persistenceCallFactory,
+            @NonNull EventLastUpdatedManager lastUpdatedManager) {
         this.systemInfoRepository = systemInfoRepository;
-        this.resourceHandler = resourceHandler;
         this.d2CallExecutor = d2CallExecutor;
         this.rxCallExecutor = rxCallExecutor;
         this.eventQueryBundleFactory = eventQueryBundleFactory;
         this.endpointCallFactory = endpointCallFactory;
         this.persistenceCallFactory = persistenceCallFactory;
+        this.lastUpdatedManager = lastUpdatedManager;
     }
 
     public Observable<D2Progress> downloadSingleEvents(ProgramDataDownloadParams params) {
@@ -125,10 +122,6 @@ public final class EventWithLimitCallFactory {
                         successfulSync = successfulSync && result.successfulSync;
                     }
                 }
-            }
-
-            if (successfulSync && params.program() == null && params.orgUnits().isEmpty()) {
-                resourceHandler.handleResource(resourceType);
             }
 
             emitter.onNext(progressManager.increaseProgress(Event.class, true));
@@ -181,6 +174,8 @@ public final class EventWithLimitCallFactory {
                 break;
             }
         }
+
+        lastUpdatedManager.update(eventQueryBuilder.build().program(), combinationLimit);
 
         return downloadedEventsForCombination;
     }

@@ -28,33 +28,38 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
-import android.database.Cursor;
-
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 
-@AutoValue
-@JsonDeserialize(builder = AutoValue_TrackedEntityInstanceSync.Builder.class)
-abstract class TrackedEntityInstanceSync extends TrackerBaseSync {
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.common.BaseObject;
+
+import java.util.Date;
+
+abstract class TrackerBaseSync extends BaseObject {
+
+    @Nullable
+    abstract String program();
 
     @NonNull
-    static TrackedEntityInstanceSync create(Cursor cursor) {
-        return AutoValue_TrackedEntityInstanceSync.createFromCursor(cursor);
-    }
+    abstract Integer downloadLimit();
 
-    static Builder builder() {
-        return new AutoValue_TrackedEntityInstanceSync.Builder();
-    }
+    @NonNull
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    abstract Date lastUpdated();
 
-    abstract Builder toBuilder();
-
-    @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    static abstract class Builder extends TrackerBaseSync.Builder<Builder> {
+    static abstract class Builder<T extends BaseObject.Builder> extends BaseObject.Builder<T> {
 
-        abstract TrackedEntityInstanceSync build();
+        public abstract T program(String program);
+
+        public abstract T downloadLimit(Integer limit);
+
+        public abstract T lastUpdated(Date lastUpdated);
+
+        abstract TrackerBaseSync build();
     }
 }

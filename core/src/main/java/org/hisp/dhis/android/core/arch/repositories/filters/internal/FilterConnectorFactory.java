@@ -34,10 +34,6 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeKeyOrderExtractor;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeOrderByItem;
-import org.hisp.dhis.android.core.common.IdentifiableColumns;
-import org.hisp.dhis.android.core.event.EventStatus;
-import org.hisp.dhis.android.core.event.EventTableInfo;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 
 public class FilterConnectorFactory<R extends BaseRepository> {
 

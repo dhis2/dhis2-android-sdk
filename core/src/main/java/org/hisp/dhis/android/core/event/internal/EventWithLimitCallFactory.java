@@ -122,6 +122,8 @@ public final class EventWithLimitCallFactory {
                         successfulSync = successfulSync && result.successfulSync;
                     }
                 }
+
+                lastUpdatedManager.update(bundle.program(), bundle.limit());
             }
 
             emitter.onNext(progressManager.increaseProgress(Event.class, true));
@@ -174,8 +176,6 @@ public final class EventWithLimitCallFactory {
                 break;
             }
         }
-
-        lastUpdatedManager.update(eventQueryBuilder.build().program(), combinationLimit);
 
         return downloadedEventsForCombination;
     }

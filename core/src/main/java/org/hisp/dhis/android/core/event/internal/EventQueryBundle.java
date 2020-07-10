@@ -44,6 +44,9 @@ abstract class EventQueryBundle {
     @NonNull
     abstract List<String> orgUnitList();
 
+    @Nullable
+    abstract String program();
+
     @NonNull
     abstract List<String> programList();
 
@@ -67,6 +70,8 @@ abstract class EventQueryBundle {
     @AutoValue.Builder
     abstract static class Builder {
         abstract Builder orgUnitList(List<String> orgUnitList);
+
+        abstract Builder program(String program);
 
         abstract Builder programList(List<String> programList);
 

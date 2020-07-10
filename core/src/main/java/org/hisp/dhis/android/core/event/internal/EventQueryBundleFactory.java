@@ -145,11 +145,11 @@ class EventQueryBundleFactory {
 
         if (hasLimitByOrgunit) {
             for (String orgUnitUid : orgUnits) {
-                builders.add(getBuilderFor(lastUpdated, Collections.singletonList(orgUnitUid), programs, ouMode,
-                        eventStartDate, limit));
+                builders.add(getBuilderFor(lastUpdated, Collections.singletonList(orgUnitUid), programUid, programs,
+                        ouMode, eventStartDate, limit));
             }
         } else {
-            builders.add(getBuilderFor(lastUpdated, orgUnits, programs, ouMode, eventStartDate, limit));
+            builders.add(getBuilderFor(lastUpdated, orgUnits, programUid, programs, ouMode, eventStartDate, limit));
         }
 
         return builders;
@@ -187,11 +187,12 @@ class EventQueryBundleFactory {
 
         if (hasLimitByOrgunit) {
             for (String orgUnitUid : orgUnits) {
-                builders.add(getBuilderFor(lastUpdated, Collections.singletonList(orgUnitUid), programList, ouMode,
-                        eventStartDate, limit));
+                builders.add(getBuilderFor(lastUpdated, Collections.singletonList(orgUnitUid), null,
+                        programList, ouMode, eventStartDate, limit));
             }
         } else {
-            builders.add(getBuilderFor(lastUpdated, orgUnits, programList, ouMode, eventStartDate, limit));
+            builders.add(getBuilderFor(lastUpdated, orgUnits, null, programList, ouMode, eventStartDate,
+                    limit));
         }
 
         return builders;
@@ -200,6 +201,7 @@ class EventQueryBundleFactory {
 
     private EventQueryBundle getBuilderFor(Date lastUpdated,
                                            List<String> organisationUnits,
+                                           String program,
                                            List<String> programs,
                                            OrganisationUnitMode organisationUnitMode,
                                            String eventStartDate,
@@ -208,6 +210,7 @@ class EventQueryBundleFactory {
                 .lastUpdatedStartDate(lastUpdated)
                 .orgUnitList(organisationUnits)
                 .ouMode(organisationUnitMode)
+                .program(program)
                 .programList(programs)
                 .limit(limit)
                 .eventStartDate(eventStartDate)

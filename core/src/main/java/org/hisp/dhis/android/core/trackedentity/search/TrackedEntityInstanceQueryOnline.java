@@ -116,13 +116,9 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
             query = scope.query().operator().getApiUpperOperator() + ":" + scope.query().value();
         }
 
+        // EnrollmentStatus does not accepts a list of status but a single value in web API.
         EnrollmentStatus enrollmentStatus = scope.enrollmentStatus() == null || scope.enrollmentStatus().isEmpty() ?
                 null : scope.enrollmentStatus().get(0);
-
-        // EventStatus requires that eventStartDate and eventEndDate are present in the query. Currently they are not
-        // supported in the SDK, so this parameter is ignored.
-        // Additionally, eventStatus does not accepts a list of status but a single value.
-        EventStatus eventStatus = null;
 
         return TrackedEntityInstanceQueryOnline.builder()
                 .query(query)
@@ -134,7 +130,9 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
                 .programStartDate(scope.programStartDate())
                 .programEndDate(scope.programEndDate())
                 .enrollmentStatus(enrollmentStatus)
-                .eventStatus(eventStatus)
+                // EventStatus requires that eventStartDate and eventEndDate are present in the query.
+                // Currently they are not supported in the SDK, so this parameter is ignored.
+                .eventStatus(null)
                 .trackedEntityType(scope.trackedEntityType())
                 .includeDeleted(false)
                 .assignedUserMode(scope.assignedUserMode())

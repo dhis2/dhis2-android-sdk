@@ -123,7 +123,7 @@ public interface TrackedEntityInstanceService {
             @Query(PROGRAM) String program,
             @Query(PROGRAM_START_DATE) String programStartDate,
             @Query(PROGRAM_END_DATE) String programEndDate,
-            @Query(PROGRAM_STATUS) String programStatus,
+            @Query(PROGRAM_STATUS) String enrollmentStatus,
             @Query(EVENT_STATUS) String eventStatus,
             @Query(TRACKED_ENTITY_TYPE) String trackedEntityType,
             @Query(QUERY) String query,

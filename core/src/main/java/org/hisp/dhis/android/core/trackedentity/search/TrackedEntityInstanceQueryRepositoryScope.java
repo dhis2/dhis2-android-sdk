@@ -80,7 +80,7 @@ abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseScope {
     public abstract Date programEndDate();
 
     @Nullable
-    public abstract EnrollmentStatus programStatus();
+    public abstract List<EnrollmentStatus> enrollmentStatus();
 
     @Nullable
     public abstract List<EventStatus> eventStatus();
@@ -146,7 +146,7 @@ abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseScope {
 
         public abstract Builder programEndDate(Date programEndDate);
 
-        public abstract Builder programStatus(EnrollmentStatus programStatus);
+        public abstract Builder enrollmentStatus(List<EnrollmentStatus> programStatus);
 
         public abstract Builder eventStatus(List<EventStatus> eventStatus);
 

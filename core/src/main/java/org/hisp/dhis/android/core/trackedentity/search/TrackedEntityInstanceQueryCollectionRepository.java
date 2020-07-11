@@ -246,13 +246,25 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     }
 
     /**
+     * @deprecated use {@link #byEnrollmentStatus()} instead.
+     */
+    @Deprecated
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+            TrackedEntityInstanceQueryRepositoryScope, EnrollmentStatus> byProgramStatus() {
+        return connectorFactory.eqConnector(status ->
+                scope.toBuilder().enrollmentStatus(Collections.singletonList(status)).build());
+    }
+
+    /**
      * Filter by enrollment status. It only applies if a program has been specified in {@link #byProgram()}.
+     * <br><b>IMPORTANT:</b> this filter accepts a list of status, but only the first one will be used for the online
+     * query because the web API does not support querying by multiple status.
      *
      * @return Repository connector
      */
-    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-            TrackedEntityInstanceQueryRepositoryScope, EnrollmentStatus> byProgramStatus() {
-        return connectorFactory.eqConnector(programStatus -> scope.toBuilder().programStatus(programStatus).build());
+    public ListFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+            TrackedEntityInstanceQueryRepositoryScope, EnrollmentStatus> byEnrollmentStatus() {
+        return connectorFactory.listConnector(statusList -> scope.toBuilder().enrollmentStatus(statusList).build());
     }
 
     /**
@@ -263,7 +275,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      */
     public ListFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
             TrackedEntityInstanceQueryRepositoryScope, EventStatus> byEventStatus() {
-        return connectorFactory.listConnector(eventStatus -> scope.toBuilder().eventStatus(eventStatus).build());
+        return connectorFactory.listConnector(statusList -> scope.toBuilder().eventStatus(statusList).build());
     }
 
     /**

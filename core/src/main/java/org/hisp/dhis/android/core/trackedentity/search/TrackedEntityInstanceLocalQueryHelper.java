@@ -171,9 +171,9 @@ final class TrackedEntityInstanceLocalQueryHelper {
             where.appendKeyLessThanOrEqStringValue(dot(ENROLLMENT_ALIAS, ENROLLMENT_DATE),
                     scope.formattedProgramEndDate());
         }
-        if (scope.programStatus() != null) {
-            where.appendKeyStringValue(dot(ENROLLMENT_ALIAS, EnrollmentTableInfo.Columns.STATUS),
-                    escapeQuotes(scope.programStatus().toString()));
+        if (scope.enrollmentStatus() != null) {
+            where.appendInKeyEnumValues(dot(ENROLLMENT_ALIAS, EnrollmentTableInfo.Columns.STATUS),
+                    scope.enrollmentStatus());
         }
         if (scope.includeDeleted() == null || !scope.includeDeleted()) {
             where.appendKeyOperatorValue(dot(ENROLLMENT_ALIAS, EnrollmentTableInfo.Columns.DELETED), "!=", "1");

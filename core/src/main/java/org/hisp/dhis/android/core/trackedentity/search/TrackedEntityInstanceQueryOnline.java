@@ -78,7 +78,7 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
     abstract Date programEndDate();
 
     @Nullable
-    abstract EnrollmentStatus programStatus();
+    abstract EnrollmentStatus enrollmentStatus();
 
     @Nullable
     abstract EventStatus eventStatus();
@@ -116,6 +116,9 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
             query = scope.query().operator().getApiUpperOperator() + ":" + scope.query().value();
         }
 
+        EnrollmentStatus enrollmentStatus = scope.enrollmentStatus() == null || scope.enrollmentStatus().isEmpty() ?
+                null : scope.enrollmentStatus().get(0);
+
         // EventStatus requires that eventStartDate and eventEndDate are present in the query. Currently they are not
         // supported in the SDK, so this parameter is ignored.
         // Additionally, eventStatus does not accepts a list of status but a single value.
@@ -130,7 +133,7 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
                 .program(scope.program())
                 .programStartDate(scope.programStartDate())
                 .programEndDate(scope.programEndDate())
-                .programStatus(scope.programStatus())
+                .enrollmentStatus(enrollmentStatus)
                 .eventStatus(eventStatus)
                 .trackedEntityType(scope.trackedEntityType())
                 .includeDeleted(false)
@@ -188,7 +191,7 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
 
         abstract Builder programEndDate(Date programEndDate);
 
-        abstract Builder programStatus(EnrollmentStatus programStatus);
+        abstract Builder enrollmentStatus(EnrollmentStatus programStatus);
 
         abstract Builder eventStatus(EventStatus eventStatus);
 

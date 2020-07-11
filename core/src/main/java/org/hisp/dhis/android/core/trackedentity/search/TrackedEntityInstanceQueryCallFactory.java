@@ -76,17 +76,15 @@ class TrackedEntityInstanceQueryCallFactory {
     private List<TrackedEntityInstance> queryTrackedEntityInstances(TrackedEntityInstanceQueryOnline query)
             throws D2Error {
 
-        OrganisationUnitMode mode = query.orgUnitMode();
-        String orgUnitModeStr = mode == null ? null : mode.toString();
+        String orgUnitModeStr = query.orgUnitMode() == null ? null : query.orgUnitMode().toString();
 
-        AssignedUserMode assignedUserMode = query.assignedUserMode();
-        String assignedUserModeStr = assignedUserMode == null ? null : assignedUserMode.toString();
-        String programStatus = query.programStatus() == null ? null : query.programStatus().toString();
+        String assignedUserModeStr = query.assignedUserMode() == null ? null : query.assignedUserMode().toString();
+        String enrollmentStatus = query.enrollmentStatus() == null ? null : query.enrollmentStatus().toString();
         String eventStatus = query.eventStatus() == null ? null : query.eventStatus().toString();
 
         String orgUnits = CollectionsHelper.joinCollectionWithSeparator(query.orgUnits(), ";");
         Call<SearchGrid> searchGridCall = service.query(orgUnits, orgUnitModeStr, query.program(),
-                query.formattedProgramStartDate(), query.formattedProgramEndDate(), programStatus, eventStatus,
+                query.formattedProgramStartDate(), query.formattedProgramEndDate(), enrollmentStatus, eventStatus,
                 query.trackedEntityType(), query.query(), query.attribute(), query.filter(), assignedUserModeStr,
                 query.order(), query.paging(), query.page(), query.pageSize());
 

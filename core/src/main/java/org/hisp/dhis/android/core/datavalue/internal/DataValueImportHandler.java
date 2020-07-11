@@ -131,7 +131,11 @@ final class DataValueImportHandler {
     private void setStateToDataValues(State state, Collection<DataValue> dataValues) {
         for (DataValue dataValue : dataValues) {
             if (dataValueStore.isDataValueBeingUpload(dataValue)) {
-                dataValueStore.setState(dataValue, state);
+                if (state == State.SYNCED && dataValueStore.isDeleted(dataValue)) {
+                    dataValueStore.deleteWhere(dataValue);
+                } else {
+                    dataValueStore.setState(dataValue, state);
+                }
             }
         }
     }

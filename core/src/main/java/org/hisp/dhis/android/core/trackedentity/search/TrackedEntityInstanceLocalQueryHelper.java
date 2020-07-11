@@ -156,7 +156,7 @@ final class TrackedEntityInstanceLocalQueryHelper {
     }
 
     private static boolean hasEvent(TrackedEntityInstanceQueryRepositoryScope scope) {
-        return scope.assignedUserMode() != null && scope.eventStatus() != null;
+        return scope.assignedUserMode() != null || scope.eventStatus() != null;
     }
 
     private static void appendProgramWhere(WhereClauseBuilder where, TrackedEntityInstanceQueryRepositoryScope scope) {
@@ -275,7 +275,8 @@ final class TrackedEntityInstanceLocalQueryHelper {
             appendAssignedUserMode(where, scope);
         }
         if (scope.eventStatus() != null) {
-            where.appendInKeyEnumValues(dot(EVENT_ALIAS, EventTableInfo.Columns.STATUS), scope.eventStatus());
+            where.appendInKeyEnumValues(dot(EVENT_ALIAS, EventTableInfo.Columns.STATUS), scope.eventStatus())
+                    .appendKeyOperatorValue(dot(EVENT_ALIAS, EventTableInfo.Columns.DELETED), "!=", "1");
         }
     }
 
@@ -303,6 +304,7 @@ final class TrackedEntityInstanceLocalQueryHelper {
             default:
                 break;
         }
+        where.appendKeyOperatorValue(dot(EVENT_ALIAS, EventTableInfo.Columns.DELETED), "!=", "1");
     }
 
     @SuppressWarnings({

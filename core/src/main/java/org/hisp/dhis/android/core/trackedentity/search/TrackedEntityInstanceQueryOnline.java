@@ -116,8 +116,10 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
             query = scope.query().operator().getApiUpperOperator() + ":" + scope.query().value();
         }
 
-        EventStatus eventStatus = scope.eventStatus() == null || scope.eventStatus().isEmpty() ? null :
-                scope.eventStatus().get(0);
+        // EventStatus requires that eventStartDate and eventEndDate are present in the query. Currently they are not
+        // supported in the SDK, so this parameter is ignored.
+        // Additionally, eventStatus does not accepts a list of status but a single value.
+        EventStatus eventStatus = null;
 
         return TrackedEntityInstanceQueryOnline.builder()
                 .query(query)

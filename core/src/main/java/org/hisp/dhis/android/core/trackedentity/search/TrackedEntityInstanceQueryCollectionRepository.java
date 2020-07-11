@@ -257,8 +257,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
 
     /**
      * Filter by event status. It only applies if a program has been specified in {@link #byProgram()}.
-     * <br><b>IMPORTANT:</b> this filter accepts a list of status, but only the first will be used for the online
-     * query because the web API does not support multiple states.
+     * <br><b>IMPORTANT:</b> currently this filter only applies to <b>offline</b> instances.
      *
      * @return Repository connector
      */

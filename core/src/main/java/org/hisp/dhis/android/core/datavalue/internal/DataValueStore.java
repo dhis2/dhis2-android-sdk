@@ -120,6 +120,13 @@ public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
         return selectWhere(whereClause).size() > 0;
     }
 
+    boolean isDeleted(DataValue dataValue) {
+        String whereClause = uniqueWhereClauseBuilder(dataValue)
+                .appendKeyNumberValue(Columns.DELETED, 1)
+                .build();
+        return selectWhere(whereClause).size() > 0;
+    }
+
     private WhereClauseBuilder uniqueWhereClauseBuilder(DataValue dataValue) {
         return new WhereClauseBuilder()
                 .appendKeyStringValue(Columns.DATA_ELEMENT, dataValue.dataElement())

@@ -59,7 +59,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-@SuppressWarnings({"PMD.GodClass"})
+@SuppressWarnings({"PMD.GodClass", "PMD.NPathComplexity", "PMD.CyclomaticComplexity"})
 class TrackedEntityInstanceQueryBuilderFactory {
 
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
@@ -289,12 +289,18 @@ class TrackedEntityInstanceQueryBuilderFactory {
             return params.limit();
         }
 
-        if (programSettings != null) {
+        if (programUid != null && programSettings != null) {
             ProgramSetting specificSetting = programSettings.specificSettings().get(programUid);
             if (specificSetting != null && specificSetting.teiDownload() != null) {
                 return specificSetting.teiDownload();
             }
+        }
 
+        if (params.limit() != null && params.limitByProgram() != null && params.limitByProgram()) {
+            return params.limit();
+        }
+
+        if (programSettings != null) {
             ProgramSetting globalSetting = programSettings.globalSettings();
             if (globalSetting != null && globalSetting.teiDownload() != null) {
                 return globalSetting.teiDownload();
@@ -312,12 +318,18 @@ class TrackedEntityInstanceQueryBuilderFactory {
             return enrollmentScopeToProgramStatus(params.programStatus());
         }
 
-        if (programSettings != null) {
+        if (programUid != null && programSettings != null) {
             ProgramSetting specificSetting = programSettings.specificSettings().get(programUid);
             if (specificSetting != null && specificSetting.enrollmentDownload() != null) {
                 return enrollmentScopeToProgramStatus(specificSetting.enrollmentDownload());
             }
+        }
 
+        if (params.programStatus() != null && params.limitByProgram() != null && params.limitByProgram()) {
+            return enrollmentScopeToProgramStatus(params.programStatus());
+        }
+
+        if (programSettings != null) {
             ProgramSetting globalSetting = programSettings.globalSettings();
             if (globalSetting != null && globalSetting.enrollmentDownload() != null) {
                 return enrollmentScopeToProgramStatus(globalSetting.enrollmentDownload());

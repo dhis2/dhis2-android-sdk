@@ -47,6 +47,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositorySco
 import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
+import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.systeminfo.DHISVersion;
@@ -245,13 +246,36 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     }
 
     /**
+     * @deprecated use {@link #byEnrollmentStatus()} instead.
+     */
+    @Deprecated
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+            TrackedEntityInstanceQueryRepositoryScope, EnrollmentStatus> byProgramStatus() {
+        return connectorFactory.eqConnector(status ->
+                scope.toBuilder().enrollmentStatus(Collections.singletonList(status)).build());
+    }
+
+    /**
      * Filter by enrollment status. It only applies if a program has been specified in {@link #byProgram()}.
+     * <br><b>IMPORTANT:</b> this filter accepts a list of status, but only the first one will be used for the online
+     * query because the web API does not support querying by multiple status.
      *
      * @return Repository connector
      */
-    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-            TrackedEntityInstanceQueryRepositoryScope, EnrollmentStatus> byProgramStatus() {
-        return connectorFactory.eqConnector(programStatus -> scope.toBuilder().programStatus(programStatus).build());
+    public ListFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+            TrackedEntityInstanceQueryRepositoryScope, EnrollmentStatus> byEnrollmentStatus() {
+        return connectorFactory.listConnector(statusList -> scope.toBuilder().enrollmentStatus(statusList).build());
+    }
+
+    /**
+     * Filter by event status. It only applies if a program has been specified in {@link #byProgram()}.
+     * <br><b>IMPORTANT:</b> currently this filter only applies to <b>offline</b> instances.
+     *
+     * @return Repository connector
+     */
+    public ListFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+            TrackedEntityInstanceQueryRepositoryScope, EventStatus> byEventStatus() {
+        return connectorFactory.listConnector(statusList -> scope.toBuilder().eventStatus(statusList).build());
     }
 
     /**

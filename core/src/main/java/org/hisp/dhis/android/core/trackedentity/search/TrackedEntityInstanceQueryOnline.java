@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
 import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
+import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 
 import java.util.ArrayList;
@@ -77,7 +78,10 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
     abstract Date programEndDate();
 
     @Nullable
-    abstract EnrollmentStatus programStatus();
+    abstract EnrollmentStatus enrollmentStatus();
+
+    @Nullable
+    abstract EventStatus eventStatus();
 
     @Nullable
     abstract String trackedEntityType();
@@ -112,6 +116,10 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
             query = scope.query().operator().getApiUpperOperator() + ":" + scope.query().value();
         }
 
+        // EnrollmentStatus does not accepts a list of status but a single value in web API.
+        EnrollmentStatus enrollmentStatus = scope.enrollmentStatus() == null || scope.enrollmentStatus().isEmpty() ?
+                null : scope.enrollmentStatus().get(0);
+
         return TrackedEntityInstanceQueryOnline.builder()
                 .query(query)
                 .attribute(toAPIFilterFormat(scope.attribute()))
@@ -121,7 +129,10 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
                 .program(scope.program())
                 .programStartDate(scope.programStartDate())
                 .programEndDate(scope.programEndDate())
-                .programStatus(scope.programStatus())
+                .enrollmentStatus(enrollmentStatus)
+                // EventStatus requires that eventStartDate and eventEndDate are present in the query.
+                // Currently they are not supported in the SDK, so this parameter is ignored.
+                .eventStatus(null)
                 .trackedEntityType(scope.trackedEntityType())
                 .includeDeleted(false)
                 .assignedUserMode(scope.assignedUserMode())
@@ -178,7 +189,9 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
 
         abstract Builder programEndDate(Date programEndDate);
 
-        abstract Builder programStatus(EnrollmentStatus programStatus);
+        abstract Builder enrollmentStatus(EnrollmentStatus programStatus);
+
+        abstract Builder eventStatus(EventStatus eventStatus);
 
         abstract Builder trackedEntityType(String trackedEntityType);
 

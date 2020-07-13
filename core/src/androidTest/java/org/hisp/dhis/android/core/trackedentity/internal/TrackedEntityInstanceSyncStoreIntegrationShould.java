@@ -26,36 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.resource.internal;
+package org.hisp.dhis.android.core.trackedentity.internal;
 
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.internal.TableWiper;
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.runner.RunWith;
 
-import javax.inject.Inject;
+@RunWith(D2JunitRunner.class)
+public class TrackedEntityInstanceSyncStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<TrackedEntityInstanceSync> {
 
-import dagger.Reusable;
-
-@Reusable
-public final class ResourceModuleWiper implements ModuleWiper {
-
-    private final TableWiper tableWiper;
-
-    private final ResourceStore store;
-
-    @Inject
-    ResourceModuleWiper(TableWiper tableWiper, ResourceStore store) {
-        this.tableWiper = tableWiper;
-        this.store = store;
+    public TrackedEntityInstanceSyncStoreIntegrationShould() {
+        super(TrackedEntityInstanceSyncStore.create(TestDatabaseAdapterFactory.get()), TrackedEntityInstanceSyncTableInfo.TABLE_INFO,
+                TestDatabaseAdapterFactory.get());
     }
 
     @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(ResourceTableInfo.TABLE_INFO);
+    protected TrackedEntityInstanceSync buildObject() {
+        return TrackedEntityInstanceSyncSamples.get1();
     }
 
     @Override
-    public void wipeData() {
-        store.deleteResource(Resource.Type.DATA_VALUE);
-        store.deleteResource(Resource.Type.EVENT);
+    protected TrackedEntityInstanceSync buildObjectToUpdate() {
+        return TrackedEntityInstanceSyncSamples.get1()
+                .toBuilder()
+                .downloadLimit(1000)
+                .build();
     }
 }

@@ -26,36 +26,47 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.resource.internal;
+package org.hisp.dhis.android.core.trackedentity.internal;
 
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.internal.TableWiper;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
-import javax.inject.Inject;
+import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.LAST_UPDATED;
 
-import dagger.Reusable;
+final class TrackedEntityInstanceSyncTableInfo {
 
-@Reusable
-public final class ResourceModuleWiper implements ModuleWiper {
-
-    private final TableWiper tableWiper;
-
-    private final ResourceStore store;
-
-    @Inject
-    ResourceModuleWiper(TableWiper tableWiper, ResourceStore store) {
-        this.tableWiper = tableWiper;
-        this.store = store;
+    private TrackedEntityInstanceSyncTableInfo() {
     }
 
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(ResourceTableInfo.TABLE_INFO);
-    }
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    @Override
-    public void wipeData() {
-        store.deleteResource(Resource.Type.DATA_VALUE);
-        store.deleteResource(Resource.Type.EVENT);
+        @Override
+        public String name() {
+            return "TrackedEntityInstanceSync";
+        }
+
+        @Override
+        public CoreColumns columns() {
+            return new Columns();
+        }
+    };
+
+    public static class Columns extends CoreColumns {
+        public static final String PROGRAM = "program";
+        public static final String DOWNLOAD_LIMIT = "downloadLimit";
+
+        @Override
+        public String[] all() {
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    PROGRAM,
+                    DOWNLOAD_LIMIT,
+                    LAST_UPDATED);
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return new String[]{PROGRAM};
+        }
     }
 }

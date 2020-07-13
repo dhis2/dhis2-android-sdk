@@ -26,36 +26,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.resource.internal;
+package org.hisp.dhis.android.core.trackedentity.internal;
 
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.internal.TableWiper;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 
-import javax.inject.Inject;
+final class TrackedEntityInstanceSyncStore {
 
-import dagger.Reusable;
+    private static final StatementBinder<TrackedEntityInstanceSync> BINDER = (o, w) -> {
+        w.bind(1, o.program());
+        w.bind(2, o.downloadLimit());
+        w.bind(3, o.lastUpdated());
+    };
 
-@Reusable
-public final class ResourceModuleWiper implements ModuleWiper {
+    private static final WhereStatementBinder<TrackedEntityInstanceSync> WHERE_UPDATE_BINDER =
+            (o, w) -> w.bind(4, o.program());
 
-    private final TableWiper tableWiper;
+    private static final WhereStatementBinder<TrackedEntityInstanceSync> DELETE_UPDATE_BINDER =
+            (o, w) -> w.bind(1, o.program());
 
-    private final ResourceStore store;
-
-    @Inject
-    ResourceModuleWiper(TableWiper tableWiper, ResourceStore store) {
-        this.tableWiper = tableWiper;
-        this.store = store;
+    private TrackedEntityInstanceSyncStore() {
     }
 
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(ResourceTableInfo.TABLE_INFO);
-    }
-
-    @Override
-    public void wipeData() {
-        store.deleteResource(Resource.Type.DATA_VALUE);
-        store.deleteResource(Resource.Type.EVENT);
+    static ObjectWithoutUidStore<TrackedEntityInstanceSync> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, TrackedEntityInstanceSyncTableInfo.TABLE_INFO,
+                BINDER, WHERE_UPDATE_BINDER, DELETE_UPDATE_BINDER, TrackedEntityInstanceSync::create);
     }
 }

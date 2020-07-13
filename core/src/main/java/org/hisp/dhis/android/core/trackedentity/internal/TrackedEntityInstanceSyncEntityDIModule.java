@@ -26,36 +26,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.resource.internal;
+package org.hisp.dhis.android.core.trackedentity.internal;
 
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.internal.TableWiper;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 
-import javax.inject.Inject;
-
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
 
-@Reusable
-public final class ResourceModuleWiper implements ModuleWiper {
+@Module
+public final class TrackedEntityInstanceSyncEntityDIModule {
 
-    private final TableWiper tableWiper;
-
-    private final ResourceStore store;
-
-    @Inject
-    ResourceModuleWiper(TableWiper tableWiper, ResourceStore store) {
-        this.tableWiper = tableWiper;
-        this.store = store;
-    }
-
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(ResourceTableInfo.TABLE_INFO);
-    }
-
-    @Override
-    public void wipeData() {
-        store.deleteResource(Resource.Type.DATA_VALUE);
-        store.deleteResource(Resource.Type.EVENT);
+    @Provides
+    @Reusable
+    public ObjectWithoutUidStore<TrackedEntityInstanceSync> store(DatabaseAdapter databaseAdapter) {
+        return TrackedEntityInstanceSyncStore.create(databaseAdapter);
     }
 }

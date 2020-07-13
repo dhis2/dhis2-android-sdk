@@ -26,72 +26,58 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.resource.internal;
+package org.hisp.dhis.android.core.trackedentity.internal;
 
 import android.database.Cursor;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.ResourceTypeColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseObject;
-import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Date;
 
 @AutoValue
-public abstract class Resource implements CoreObject {
-
-    public enum Type {
-        EVENT,
-        SYSTEM_INFO,
-        USER,
-        USER_CREDENTIALS,
-        ORGANISATION_UNIT,
-        AUTHENTICATED_USER,
-        PROGRAM,
-        OPTION_SET,
-        TRACKED_ENTITY_TYPE,
-        DATA_SET,
-        DATA_ELEMENT,
-        CATEGORY_COMBO,
-        INDICATOR_TYPE,
-        INDICATOR,
-        DATA_VALUE,
-        PROGRAM_STAGE,
-        RELATIONSHIP_TYPE,
-        TRACKED_ENTITY_ATTRIBUTE_RESERVED_VALUE
-    }
+@JsonDeserialize(builder = AutoValue_TrackedEntityInstanceSync.Builder.class)
+abstract class TrackedEntityInstanceSync extends BaseObject {
 
     @Nullable
-    @ColumnAdapter(ResourceTypeColumnAdapter.class)
-    public abstract Resource.Type resourceType();
+    abstract String program();
 
-    @Nullable
+    @NonNull
+    abstract Integer downloadLimit();
+
+    @NonNull
     @ColumnAdapter(DbDateColumnAdapter.class)
-    public abstract Date lastSynced();
+    abstract Date lastUpdated();
 
-    public static Resource create(Cursor cursor) {
-        return $AutoValue_Resource.createFromCursor(cursor);
+    @NonNull
+    static TrackedEntityInstanceSync create(Cursor cursor) {
+        return AutoValue_TrackedEntityInstanceSync.createFromCursor(cursor);
     }
 
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new $$AutoValue_Resource.Builder();
+    static Builder builder() {
+        return new AutoValue_TrackedEntityInstanceSync.Builder();
     }
+
+    abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
-        public abstract Builder id(Long id);
+    @JsonPOJOBuilder(withPrefix = "")
+    static abstract class Builder extends BaseObject.Builder<Builder> {
 
-        public abstract Builder resourceType(Resource.Type resourceType);
+        public abstract Builder program(String program);
 
-        public abstract Builder lastSynced(Date lastSynced);
+        public abstract Builder downloadLimit(Integer limit);
 
-        public abstract Resource build();
+        public abstract Builder lastUpdated(Date lastUpdated);
+
+        abstract TrackedEntityInstanceSync build();
     }
 }

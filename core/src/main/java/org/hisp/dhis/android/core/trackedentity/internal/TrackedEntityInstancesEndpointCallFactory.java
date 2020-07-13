@@ -28,13 +28,15 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 import io.reactivex.Single;
 
@@ -50,16 +52,28 @@ final class TrackedEntityInstancesEndpointCallFactory {
     }
 
     Single<Payload<TrackedEntityInstance>> getCall(final TeiQuery query) {
-        String uidStr = query.uids().isEmpty() ? null :
-                CollectionsHelper.joinCollectionWithSeparator(query.uids(), ";");
-        String ouStr = query.orgUnits().isEmpty() ? null :
-                CollectionsHelper.joinCollectionWithSeparator(query.orgUnits(), ";");
-
-        String programStatus = query.programStatus() == null ? null : query.programStatus().toString();
-
-        return trackedEntityInstanceService.getTrackedEntityInstances(uidStr, ouStr,
-                query.ouMode().name(), query.program(), programStatus, query.programStartDate(),
+        return trackedEntityInstanceService.getTrackedEntityInstances(getUidStr(query), getOuStr(query),
+                query.ouMode().name(), query.program(), getProgramStatus(query), query.programStartDate(),
                 TrackedEntityInstanceFields.allFields, Boolean.TRUE, query.page(), query.pageSize(),
-                query.lastUpdatedStartDate(), true, true);
+                getLastUpdated(query), true, true);
+    }
+
+    private String getUidStr(TeiQuery query) {
+        return query.uids().isEmpty() ? null :
+                CollectionsHelper.joinCollectionWithSeparator(query.uids(), ";");
+    }
+
+    private String getOuStr(TeiQuery query) {
+        return query.orgUnits().isEmpty() ? null :
+                CollectionsHelper.joinCollectionWithSeparator(query.orgUnits(), ";");
+    }
+
+    private String getLastUpdated(TeiQuery query) {
+        return query.lastUpdatedStartDate() == null ? null :
+                BaseIdentifiableObject.dateToDateStr(query.lastUpdatedStartDate());
+    }
+
+    private String getProgramStatus(TeiQuery query) {
+        return query.programStatus() == null ? null : query.programStatus().toString();
     }
 }

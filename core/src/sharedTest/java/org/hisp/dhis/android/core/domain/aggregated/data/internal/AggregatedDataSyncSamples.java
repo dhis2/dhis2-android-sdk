@@ -28,11 +28,9 @@
 
 package org.hisp.dhis.android.core.domain.aggregated.data.internal;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.period.PeriodType;
 
-import java.text.ParseException;
-import java.util.Date;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate;
 
 public class AggregatedDataSyncSamples {
 
@@ -45,7 +43,7 @@ public class AggregatedDataSyncSamples {
                 .futurePeriods(1)
                 .dataElementsHash(11111111)
                 .organisationUnitsHash(22222222)
-                .lastUpdated(getDate("2017-11-29T11:27:46.935"))
+                .lastUpdated(parseDate("2017-11-29T11:27:46.935"))
                 .build();
     }
 
@@ -53,14 +51,5 @@ public class AggregatedDataSyncSamples {
         return get1().toBuilder()
                 .dataElementsHash(3333333)
                 .build();
-    }
-
-    private static Date getDate(String dateStr) {
-        try {
-            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 }

@@ -26,36 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.resource.internal;
+package org.hisp.dhis.android.core.trackedentity.internal;
 
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.internal.TableWiper;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate;
 
-import javax.inject.Inject;
+public class TrackedEntityInstanceSyncSamples {
 
-import dagger.Reusable;
-
-@Reusable
-public final class ResourceModuleWiper implements ModuleWiper {
-
-    private final TableWiper tableWiper;
-
-    private final ResourceStore store;
-
-    @Inject
-    ResourceModuleWiper(TableWiper tableWiper, ResourceStore store) {
-        this.tableWiper = tableWiper;
-        this.store = store;
-    }
-
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(ResourceTableInfo.TABLE_INFO);
-    }
-
-    @Override
-    public void wipeData() {
-        store.deleteResource(Resource.Type.DATA_VALUE);
-        store.deleteResource(Resource.Type.EVENT);
+    public static TrackedEntityInstanceSync get1() {
+        return TrackedEntityInstanceSync.builder()
+                .id(1L)
+                .program("program")
+                .downloadLimit(500)
+                .lastUpdated(parseDate("2017-11-29T11:27:46.935"))
+                .build();
     }
 }

@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeS
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueEntityDIModule;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueEntityDIModule;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceEntityDIModule;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceSyncEntityDIModule;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityModuleImpl;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeAttributeEntityDIModule;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeCall;
@@ -58,6 +59,7 @@ import retrofit2.Retrofit;
         TrackedEntityDataValueEntityDIModule.class,
         TrackedEntityInstanceEntityDIModule.class,
         TrackedEntityInstanceQueryEntityDIModule.class,
+        TrackedEntityInstanceSyncEntityDIModule.class,
         TrackedEntityTypeEntityDIModule.class,
         TrackedEntityTypeAttributeEntityDIModule.class
 })

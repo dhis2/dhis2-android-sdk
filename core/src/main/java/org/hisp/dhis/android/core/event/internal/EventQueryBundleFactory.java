@@ -294,12 +294,18 @@ class EventQueryBundleFactory {
             return params.limit();
         }
 
-        if (programSettings != null) {
+        if (programUid != null && programSettings != null) {
             ProgramSetting specificSetting = programSettings.specificSettings().get(programUid);
             if (specificSetting != null && specificSetting.eventsDownload() != null) {
                 return specificSetting.eventsDownload();
             }
+        }
 
+        if (params.limit() != null && params.limitByProgram() != null && params.limitByProgram()) {
+            return params.limit();
+        }
+
+        if (programSettings != null) {
             ProgramSetting globalSetting = programSettings.globalSettings();
             if (globalSetting != null && globalSetting.eventsDownload() != null) {
                 return globalSetting.eventsDownload();

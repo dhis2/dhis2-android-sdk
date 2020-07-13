@@ -284,7 +284,6 @@ class TrackedEntityInstanceQueryBuilderFactory {
     private int getLimit(ProgramDataDownloadParams params,
                          ProgramSettings programSettings,
                          String programUid) {
-
         if (params.limit() != null && isGlobalOrUserDefinedProgram(params, programUid)) {
             return params.limit();
         }

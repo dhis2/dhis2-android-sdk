@@ -57,7 +57,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-@SuppressWarnings({"PMD.GodClass"})
+@SuppressWarnings({"PMD.GodClass", "PMD.NPathComplexity", "PMD.CyclomaticComplexity"})
 class EventQueryBundleFactory {
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
     private final LinkStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore;

@@ -26,33 +26,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+package org.hisp.dhis.android.core.event.internal;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 
-import javax.inject.Inject;
+final class EventSyncStore {
 
-import dagger.Reusable;
+    private static final StatementBinder<EventSync> BINDER = (o, w) -> {
+        w.bind(1, o.program());
+        w.bind(2, o.downloadLimit());
+        w.bind(3, o.lastUpdated());
+    };
 
-@Reusable
-class TrackedEntityInstanceLastUpdatedManager extends TrackerSyncLastUpdatedManager<TrackedEntityInstanceSync> {
+    private static final WhereStatementBinder<EventSync> WHERE_UPDATE_BINDER =
+            (o, w) -> w.bind(4, o.program());
 
-    private final ResourceHandler resourceHandler;
+    private static final WhereStatementBinder<EventSync> DELETE_UPDATE_BINDER =
+            (o, w) -> w.bind(1, o.program());
 
-    @Inject
-    TrackedEntityInstanceLastUpdatedManager(ObjectWithoutUidStore<TrackedEntityInstanceSync> store,
-                                            ResourceHandler resourceHandler) {
-        super(store);
-        this.resourceHandler = resourceHandler;
+    private EventSyncStore() {
     }
 
-    public void update(TeiQuery teiQuery) {
-        TrackedEntityInstanceSync sync = TrackedEntityInstanceSync.builder()
-                .program(teiQuery.program())
-                .downloadLimit(teiQuery.limit())
-                .lastUpdated(resourceHandler.getServerDate())
-                .build();
-        super.update(sync);
+    static ObjectWithoutUidStore<EventSync> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, EventSyncTableInfo.TABLE_INFO,
+                BINDER, WHERE_UPDATE_BINDER, DELETE_UPDATE_BINDER, EventSync::create);
     }
 }

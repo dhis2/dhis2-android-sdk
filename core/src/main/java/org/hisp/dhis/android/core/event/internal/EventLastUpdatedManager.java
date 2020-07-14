@@ -26,31 +26,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+package org.hisp.dhis.android.core.event.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerSyncLastUpdatedManager;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
-class TrackedEntityInstanceLastUpdatedManager extends TrackerSyncLastUpdatedManager<TrackedEntityInstanceSync> {
+class EventLastUpdatedManager extends TrackerSyncLastUpdatedManager<EventSync> {
 
     private final ResourceHandler resourceHandler;
 
     @Inject
-    TrackedEntityInstanceLastUpdatedManager(ObjectWithoutUidStore<TrackedEntityInstanceSync> store,
-                                            ResourceHandler resourceHandler) {
+    EventLastUpdatedManager(ObjectWithoutUidStore<EventSync> store,
+                            ResourceHandler resourceHandler) {
         super(store);
         this.resourceHandler = resourceHandler;
     }
 
-    public void update(TeiQuery teiQuery) {
-        TrackedEntityInstanceSync sync = TrackedEntityInstanceSync.builder()
-                .program(teiQuery.program())
-                .downloadLimit(teiQuery.limit())
+    public void update(String program, int limit) {
+        EventSync sync = EventSync.builder()
+                .program(program)
+                .downloadLimit(limit)
                 .lastUpdated(resourceHandler.getServerDate())
                 .build();
         super.update(sync);

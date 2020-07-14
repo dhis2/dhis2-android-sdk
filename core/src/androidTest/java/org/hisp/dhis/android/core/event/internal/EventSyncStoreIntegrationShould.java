@@ -26,33 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+package org.hisp.dhis.android.core.event.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.runner.RunWith;
 
-import javax.inject.Inject;
+@RunWith(D2JunitRunner.class)
+public class EventSyncStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<EventSync> {
 
-import dagger.Reusable;
-
-@Reusable
-class TrackedEntityInstanceLastUpdatedManager extends TrackerSyncLastUpdatedManager<TrackedEntityInstanceSync> {
-
-    private final ResourceHandler resourceHandler;
-
-    @Inject
-    TrackedEntityInstanceLastUpdatedManager(ObjectWithoutUidStore<TrackedEntityInstanceSync> store,
-                                            ResourceHandler resourceHandler) {
-        super(store);
-        this.resourceHandler = resourceHandler;
+    public EventSyncStoreIntegrationShould() {
+        super(EventSyncStore.create(TestDatabaseAdapterFactory.get()), EventSyncTableInfo.TABLE_INFO,
+                TestDatabaseAdapterFactory.get());
     }
 
-    public void update(TeiQuery teiQuery) {
-        TrackedEntityInstanceSync sync = TrackedEntityInstanceSync.builder()
-                .program(teiQuery.program())
-                .downloadLimit(teiQuery.limit())
-                .lastUpdated(resourceHandler.getServerDate())
+    @Override
+    protected EventSync buildObject() {
+        return EventSyncSamples.get1();
+    }
+
+    @Override
+    protected EventSync buildObjectToUpdate() {
+        return EventSyncSamples.get1()
+                .toBuilder()
+                .downloadLimit(1000)
                 .build();
-        super.update(sync);
     }
 }

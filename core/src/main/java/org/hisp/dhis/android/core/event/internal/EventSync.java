@@ -26,33 +26,36 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+package org.hisp.dhis.android.core.event.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
+import android.database.Cursor;
 
-import javax.inject.Inject;
+import androidx.annotation.NonNull;
 
-import dagger.Reusable;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-@Reusable
-class TrackedEntityInstanceLastUpdatedManager extends TrackerSyncLastUpdatedManager<TrackedEntityInstanceSync> {
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerBaseSync;
 
-    private final ResourceHandler resourceHandler;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_EventSync.Builder.class)
+abstract class EventSync extends TrackerBaseSync {
 
-    @Inject
-    TrackedEntityInstanceLastUpdatedManager(ObjectWithoutUidStore<TrackedEntityInstanceSync> store,
-                                            ResourceHandler resourceHandler) {
-        super(store);
-        this.resourceHandler = resourceHandler;
+    @NonNull
+    static EventSync create(Cursor cursor) {
+        return AutoValue_EventSync.createFromCursor(cursor);
     }
 
-    public void update(TeiQuery teiQuery) {
-        TrackedEntityInstanceSync sync = TrackedEntityInstanceSync.builder()
-                .program(teiQuery.program())
-                .downloadLimit(teiQuery.limit())
-                .lastUpdated(resourceHandler.getServerDate())
-                .build();
-        super.update(sync);
+    static Builder builder() {
+        return new AutoValue_EventSync.Builder();
+    }
+
+    abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    static abstract class Builder extends TrackerBaseSync.Builder<Builder> {
+        abstract EventSync build();
     }
 }

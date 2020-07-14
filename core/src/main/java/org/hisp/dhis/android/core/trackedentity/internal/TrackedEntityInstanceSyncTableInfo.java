@@ -29,10 +29,7 @@
 package org.hisp.dhis.android.core.trackedentity.internal;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.CoreColumns;
-
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.LAST_UPDATED;
 
 final class TrackedEntityInstanceSyncTableInfo {
 
@@ -52,21 +49,6 @@ final class TrackedEntityInstanceSyncTableInfo {
         }
     };
 
-    public static class Columns extends CoreColumns {
-        public static final String PROGRAM = "program";
-        public static final String DOWNLOAD_LIMIT = "downloadLimit";
-
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(),
-                    PROGRAM,
-                    DOWNLOAD_LIMIT,
-                    LAST_UPDATED);
-        }
-
-        @Override
-        public String[] whereUpdate() {
-            return new String[]{PROGRAM};
-        }
+    public static class Columns extends TrackerBaseSyncColumns {
     }
 }

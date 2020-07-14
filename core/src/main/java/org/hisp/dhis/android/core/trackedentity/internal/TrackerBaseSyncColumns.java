@@ -28,31 +28,25 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
-import javax.inject.Inject;
+import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.LAST_UPDATED;
 
-import dagger.Reusable;
+public class TrackerBaseSyncColumns extends CoreColumns {
+    public static final String PROGRAM = "program";
+    public static final String DOWNLOAD_LIMIT = "downloadLimit";
 
-@Reusable
-class TrackedEntityInstanceLastUpdatedManager extends TrackerSyncLastUpdatedManager<TrackedEntityInstanceSync> {
-
-    private final ResourceHandler resourceHandler;
-
-    @Inject
-    TrackedEntityInstanceLastUpdatedManager(ObjectWithoutUidStore<TrackedEntityInstanceSync> store,
-                                            ResourceHandler resourceHandler) {
-        super(store);
-        this.resourceHandler = resourceHandler;
+    @Override
+    public String[] all() {
+        return CollectionsHelper.appendInNewArray(super.all(),
+                PROGRAM,
+                DOWNLOAD_LIMIT,
+                LAST_UPDATED);
     }
 
-    public void update(TeiQuery teiQuery) {
-        TrackedEntityInstanceSync sync = TrackedEntityInstanceSync.builder()
-                .program(teiQuery.program())
-                .downloadLimit(teiQuery.limit())
-                .lastUpdated(resourceHandler.getServerDate())
-                .build();
-        super.update(sync);
+    @Override
+    public String[] whereUpdate() {
+        return new String[]{PROGRAM};
     }
 }

@@ -28,31 +28,36 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import javax.inject.Inject;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 
-import dagger.Reusable;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.common.BaseObject;
 
-@Reusable
-class TrackedEntityInstanceLastUpdatedManager extends TrackerSyncLastUpdatedManager<TrackedEntityInstanceSync> {
+import java.util.Date;
 
-    private final ResourceHandler resourceHandler;
+public abstract class TrackerBaseSync extends BaseObject {
 
-    @Inject
-    TrackedEntityInstanceLastUpdatedManager(ObjectWithoutUidStore<TrackedEntityInstanceSync> store,
-                                            ResourceHandler resourceHandler) {
-        super(store);
-        this.resourceHandler = resourceHandler;
-    }
+    @Nullable
+    public abstract String program();
 
-    public void update(TeiQuery teiQuery) {
-        TrackedEntityInstanceSync sync = TrackedEntityInstanceSync.builder()
-                .program(teiQuery.program())
-                .downloadLimit(teiQuery.limit())
-                .lastUpdated(resourceHandler.getServerDate())
-                .build();
-        super.update(sync);
+    @NonNull
+    public abstract Integer downloadLimit();
+
+    @NonNull
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date lastUpdated();
+
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder<T extends BaseObject.Builder> extends BaseObject.Builder<T> {
+
+        public abstract T program(String program);
+
+        public abstract T downloadLimit(Integer limit);
+
+        public abstract T lastUpdated(Date lastUpdated);
     }
 }

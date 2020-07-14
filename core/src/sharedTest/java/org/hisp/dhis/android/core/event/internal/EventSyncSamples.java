@@ -26,33 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+package org.hisp.dhis.android.core.event.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate;
 
-import javax.inject.Inject;
+public class EventSyncSamples {
 
-import dagger.Reusable;
-
-@Reusable
-class TrackedEntityInstanceLastUpdatedManager extends TrackerSyncLastUpdatedManager<TrackedEntityInstanceSync> {
-
-    private final ResourceHandler resourceHandler;
-
-    @Inject
-    TrackedEntityInstanceLastUpdatedManager(ObjectWithoutUidStore<TrackedEntityInstanceSync> store,
-                                            ResourceHandler resourceHandler) {
-        super(store);
-        this.resourceHandler = resourceHandler;
-    }
-
-    public void update(TeiQuery teiQuery) {
-        TrackedEntityInstanceSync sync = TrackedEntityInstanceSync.builder()
-                .program(teiQuery.program())
-                .downloadLimit(teiQuery.limit())
-                .lastUpdated(resourceHandler.getServerDate())
+    public static EventSync get1() {
+        return EventSync.builder()
+                .id(1L)
+                .program("program")
+                .downloadLimit(500)
+                .lastUpdated(parseDate("2017-11-29T11:27:46.935"))
                 .build();
-        super.update(sync);
     }
 }

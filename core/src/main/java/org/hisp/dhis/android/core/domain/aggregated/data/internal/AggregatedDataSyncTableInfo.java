@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.common.CoreColumns;
 
 import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.LAST_UPDATED;
 
-final class AggregatedDataSyncTableInfo {
+public final class AggregatedDataSyncTableInfo {
 
     private AggregatedDataSyncTableInfo() {
     }

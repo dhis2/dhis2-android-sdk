@@ -84,7 +84,7 @@ class TrackedEntityInstanceQueryBuilderFactory {
 
     List<TeiQuery.Builder> getTeiQueryBuilders(ProgramDataDownloadParams params) {
         ProgramSettings programSettings = programSettingsObjectRepository.blockingGet();
-        lastUpdatedManager.refresh(programSettings, params);
+        lastUpdatedManager.prepare(programSettings, params);
 
         List<TeiQuery.Builder> builders = new ArrayList<>();
 
@@ -284,7 +284,6 @@ class TrackedEntityInstanceQueryBuilderFactory {
     private int getLimit(ProgramDataDownloadParams params,
                          ProgramSettings programSettings,
                          String programUid) {
-
         if (params.limit() != null && isGlobalOrUserDefinedProgram(params, programUid)) {
             return params.limit();
         }

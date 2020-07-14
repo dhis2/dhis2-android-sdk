@@ -62,6 +62,7 @@ public final class TrackedEntityModuleWiper implements ModuleWiper {
     public void wipeData() {
         tableWiper.wipeTables(
                 TrackedEntityInstanceTableInfo.TABLE_INFO,
+                TrackedEntityInstanceSyncTableInfo.TABLE_INFO,
                 TrackedEntityDataValueTableInfo.TABLE_INFO,
                 TrackedEntityAttributeValueTableInfo.TABLE_INFO,
                 TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO

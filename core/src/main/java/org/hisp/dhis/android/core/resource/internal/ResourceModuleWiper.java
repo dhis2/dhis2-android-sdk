@@ -40,12 +40,9 @@ public final class ResourceModuleWiper implements ModuleWiper {
 
     private final TableWiper tableWiper;
 
-    private final ResourceStore store;
-
     @Inject
-    ResourceModuleWiper(TableWiper tableWiper, ResourceStore store) {
+    ResourceModuleWiper(TableWiper tableWiper) {
         this.tableWiper = tableWiper;
-        this.store = store;
     }
 
     @Override
@@ -55,7 +52,6 @@ public final class ResourceModuleWiper implements ModuleWiper {
 
     @Override
     public void wipeData() {
-        store.deleteResource(Resource.Type.DATA_VALUE);
-        store.deleteResource(Resource.Type.EVENT);
+        // Nothing to wipe
     }
 }

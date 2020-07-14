@@ -25,5 +25,6 @@ applicable_txt: 'Applicable to version 1.1.2'
 !INCLUDE "content/developer/db-interaction.md"
 !INCLUDE "content/developer/program-rule-engine.md"
 !INCLUDE "content/developer/program-indicator-engine.md"
+!INCLUDE "content/developer/validation-rule-engine.md"
 !INCLUDE "content/developer/debugging.md"
 !INCLUDE "content/developer/known-issues.md"

@@ -32,9 +32,31 @@ import io.reactivex.Single;
 
 public interface ValidationEngine {
 
+    /**
+     * Run the validation associated to a particular dataSets returning a ValidationResult. This result contains the
+     * list of validation conflicts.
+     *
+     * @param dataSetUid DataSet uid to run the validation rules
+     * @param periodId Validation period
+     * @param orgUnitUid Organisation unit uid to run the validation rules
+     * @param attributeOptionComboUid AttributeOptionCombo uid to run the validation rules
+     * @return Validation result
+     */
     Single<ValidationResult> validate(String dataSetUid, String periodId,
                                       String orgUnitUid, String attributeOptionComboUid);
 
+    /**
+     * Run the validation associated to a particular dataSets returning a ValidationResult. This result contains the
+     * list of validation conflicts. Important: this is a blocking method and it should not be
+     * executed in the main thread. Consider the asynchronous version
+     * {@link #validate(String, String, String, String)}.
+     *
+     * @param dataSetUid DataSet uid to run the validation rules
+     * @param periodId Validation period
+     * @param orgUnitUid Organisation unit uid to run the validation rules
+     * @param attributeOptionComboUid AttributeOptionCombo uid to run the validation rules
+     * @return Validation result
+     */
     ValidationResult blockingValidate(String dataSetUid, String periodId,
                                       String orgUnitUid, String attributeOptionComboUid);
 

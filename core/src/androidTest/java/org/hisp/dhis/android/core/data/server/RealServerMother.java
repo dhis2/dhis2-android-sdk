@@ -32,9 +32,9 @@ public class RealServerMother {
     public static String url2_29 = "https://play.dhis2.org/2.29/";
     public static String url2_30 = "https://play.dhis2.org/2.30/";
     public static String url2_31 = "https://play.dhis2.org/2.31.9/";
-    public static String url2_32 = "https://play.dhis2.org/2.32.5/";
-    public static String url2_33 = "https://play.dhis2.org/2.33.4/";
-    public static String url2_34 = "https://play.dhis2.org/2.34.0/";
+    public static String url2_32 = "https://play.dhis2.org/2.32.6/";
+    public static String url2_33 = "https://play.dhis2.org/2.33.5/";
+    public static String url2_34 = "https://play.dhis2.org/2.34.1/";
     public static String url_dev = "https://play.dhis2.org/dev/";
     public static String android_current = "https://play.dhis2.org/android-current/";
     public static String android_previous1 = "https://play.dhis2.org/android-previous1/";

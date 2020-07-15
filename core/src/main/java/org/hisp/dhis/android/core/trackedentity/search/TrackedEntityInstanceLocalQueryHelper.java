@@ -278,40 +278,44 @@ final class TrackedEntityInstanceLocalQueryHelper {
         }
     }
 
+    @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})
     private static void appendEventWhere(WhereClauseBuilder where, TrackedEntityInstanceQueryRepositoryScope scope) {
         if (scope.assignedUserMode() != null) {
             appendAssignedUserMode(where, scope);
         }
         if (scope.eventStatus() == null) {
             appendEventDates(where, scope, EVENT_DATE);
-        } else if (scope.eventStartDate() != null && scope.eventEndDate() != null) {
+        } else if (scope.eventStatus().size() > 0 && scope.eventStartDate() != null && scope.eventEndDate() != null) {
             Date now = new Date();
+            WhereClauseBuilder statusListWhere = new WhereClauseBuilder();
             for (EventStatus eventStatus : scope.eventStatus()) {
+                WhereClauseBuilder statusWhere = new WhereClauseBuilder();
                 switch (eventStatus) {
                     case ACTIVE:
                     case COMPLETED:
                     case VISITED:
-                        where.appendInKeyEnumValues(dot(EVENT_ALIAS, EventTableInfo.Columns.STATUS),
-                                scope.eventStatus());
-                        appendEventDates(where, scope, EVENT_DATE);
+                        statusWhere.appendKeyStringValue(dot(EVENT_ALIAS, EventTableInfo.Columns.STATUS), eventStatus);
+                        appendEventDates(statusWhere, scope, EVENT_DATE);
                         break;
                     case SCHEDULE:
-                        appendEventDates(where, scope, DUE_DATE);
-                        where.appendKeyGreaterOrEqStringValue(dot(EVENT_ALIAS, DUE_DATE), QUERY_FORMAT.format(now));
+                        appendEventDates(statusWhere, scope, DUE_DATE);
+                        statusWhere.appendKeyGreaterOrEqStringValue(dot(EVENT_ALIAS, DUE_DATE),
+                                QUERY_FORMAT.format(now));
                         break;
                     case OVERDUE:
-                        appendEventDates(where, scope, DUE_DATE);
-                        where.appendKeyLessThanStringValue(dot(EVENT_ALIAS, DUE_DATE), QUERY_FORMAT.format(now));
+                        appendEventDates(statusWhere, scope, DUE_DATE);
+                        statusWhere.appendKeyLessThanStringValue(dot(EVENT_ALIAS, DUE_DATE), QUERY_FORMAT.format(now));
                         break;
                     case SKIPPED:
-                        where.appendInKeyEnumValues(dot(EVENT_ALIAS, EventTableInfo.Columns.STATUS),
-                                scope.eventStatus());
-                        appendEventDates(where, scope, DUE_DATE);
+                        statusWhere.appendKeyStringValue(dot(EVENT_ALIAS, EventTableInfo.Columns.STATUS), eventStatus);
+                        appendEventDates(statusWhere, scope, DUE_DATE);
                         break;
                     default:
                         break;
                 }
+                statusListWhere.appendOrComplexQuery(statusWhere.build());
             }
+            where.appendComplexQuery(statusListWhere.build());
         }
         where.appendKeyOperatorValue(dot(EVENT_ALIAS, EventTableInfo.Columns.DELETED), "!=", "1");
     }

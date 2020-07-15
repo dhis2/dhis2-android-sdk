@@ -82,7 +82,8 @@ class TrackedEntityInstanceQueryCallFactory {
 
         String orgUnits = CollectionsHelper.joinCollectionWithSeparator(query.orgUnits(), ";");
         Call<SearchGrid> searchGridCall = service.query(orgUnits, orgUnitModeStr, query.program(),
-                query.formattedProgramStartDate(), query.formattedProgramEndDate(), enrollmentStatus, eventStatus,
+                query.formattedProgramStartDate(), query.formattedProgramEndDate(), enrollmentStatus,
+                query.formattedEventStartDate(), query.formattedEventEndDate(), eventStatus,
                 query.trackedEntityType(), query.query(), query.attribute(), query.filter(), assignedUserModeStr,
                 query.order(), query.paging(), query.page(), query.pageSize());
 

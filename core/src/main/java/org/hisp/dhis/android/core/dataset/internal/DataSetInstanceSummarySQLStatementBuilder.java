@@ -46,16 +46,16 @@ public class DataSetInstanceSummarySQLStatementBuilder extends DataSetInstanceSQ
             "ELSE 4 END)";
 
     private static final String SELECT_CLAUSE = "SELECT " +
-            DeletableDataColumns.ID + "," +
-            DATASET_UID_ALIAS + "," +
-            DATASET_NAME_ALIAS + "," +
+            "ins." + DeletableDataColumns.ID + "," +
+            "ds.uid as " + DATASET_UID_ALIAS + "," +
+            "ds.name as " + DATASET_NAME_ALIAS + "," +
             "SUM(" + VALUE_COUNT_ALIAS + ")" + AS + VALUE_COUNT_ALIAS +  "," +
             "COUNT(*)" + AS + DATASETINSTANCE_COUNT_ALIAS + "," +
             STATE + "," +
-            "MAX(" + LAST_UPDATED_ALIAS + ")" + AS + LAST_UPDATED_ALIAS + "," +
+            "MAX(ins." + LAST_UPDATED_ALIAS + ")" + AS + LAST_UPDATED_ALIAS + "," +
             SELECT_STATE_ORDERING;
 
-    private static final String GROUP_BY_CLAUSE = "GROUP BY " + DATASET_UID_ALIAS;
+    private static final String GROUP_BY_CLAUSE = "GROUP BY " + "ds.uid";
 
     @Override
     public String selectWhere(String whereClause) {
@@ -104,6 +104,7 @@ public class DataSetInstanceSummarySQLStatementBuilder extends DataSetInstanceSQ
     }
 
     private String wrapInnerClause(String innerClause) {
-        return SELECT_CLAUSE + " FROM (" + innerClause + ") " + GROUP_BY_CLAUSE;
+        return SELECT_CLAUSE + " FROM (select uid,name from dataset) ds left join (" + innerClause + ") ins on " +
+                "ds.uid = ins.dataSetUid " + GROUP_BY_CLAUSE;
     }
 }

@@ -59,7 +59,7 @@ public abstract class DataSetInstanceSummary implements CoreObject {
     @NonNull
     public abstract Integer dataSetInstanceCount();
 
-    @Nullable
+    @NonNull
     @ColumnAdapter(StateColumnAdapter.class)
     public abstract State state();
 

@@ -80,15 +80,15 @@ public class TrackedEntityInstanceService {
             attributeUids.add(UidsHelper.getUidOrNull(ptea.trackedEntityAttribute()));
         }
 
-        List<TrackedEntityAttribute> inheritableAttributes = trackedEntityAttributeRepository
+        List<String> inheritableAttributeUids = trackedEntityAttributeRepository
                 .byUid().in(attributeUids)
                 .byInherit().isTrue()
-                .blockingGet();
+                .blockingGetUids();
 
-        if (!inheritableAttributes.isEmpty()) {
+        if (!inheritableAttributeUids.isEmpty()) {
             List<TrackedEntityAttributeValue> fromTeiAttributes = trackedEntityAttributeValueRepository
                     .byTrackedEntityInstance().eq(fromTeiUid)
-                    .byTrackedEntityAttribute().in(UidsHelper.getUids(inheritableAttributes))
+                    .byTrackedEntityAttribute().in(inheritableAttributeUids)
                     .blockingGet();
 
             if (!fromTeiAttributes.isEmpty()) {

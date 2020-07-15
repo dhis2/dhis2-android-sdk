@@ -30,6 +30,16 @@ package org.hisp.dhis.android.core.program.programindicatorengine;
 
 public interface ProgramIndicatorEngine {
 
+    /**
+     * Evaluates a program indicator in the context of an enrollment or event. This is only intended to evaluate the
+     * called "inline program indicator" (those indicators that appear at data entry). Either {@code enrollmentUid}
+     * or {@code eventUid} must be non-null, but not both.
+     *
+     * @param enrollmentUid Enrollment uid to evaluate the program indicator
+     * @param eventUid Single event to evaluate the program indicator
+     * @param programIndicatorUid Program indicator to evaluate
+     * @return Program indicator evaluation
+     */
     String getProgramIndicatorValue(String enrollmentUid, String eventUid, String programIndicatorUid);
 
 }

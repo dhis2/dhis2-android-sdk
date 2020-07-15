@@ -108,8 +108,8 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
 
         query = TrackedEntityInstanceQueryOnline.builder().
                 orgUnits(orgUnits).orgUnitMode(OrganisationUnitMode.ACCESSIBLE).program("program")
-                .programStartDate(new Date()).programEndDate(new Date())
-                .enrollmentStatus(EnrollmentStatus.ACTIVE).eventStatus(EventStatus.OVERDUE)
+                .programStartDate(new Date()).programEndDate(new Date()).enrollmentStatus(EnrollmentStatus.ACTIVE)
+                .eventStartDate(new Date()).eventEndDate(new Date()).eventStatus(EventStatus.OVERDUE)
                 .trackedEntityType("teiTypeStr").query("queryStr").attribute(attribute).filter(filter)
                 .includeDeleted(false).order("lastupdated:desc").assignedUserMode(AssignedUserMode.ANY)
                 .paging(false).page(2).pageSize(33).build();
@@ -146,6 +146,8 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
                 eq(query.formattedProgramStartDate()),
                 eq(query.formattedProgramEndDate()),
                 eq(query.enrollmentStatus().toString()),
+                eq(query.formattedEventStartDate()),
+                eq(query.formattedEventEndDate()),
                 eq(query.eventStatus().toString()),
                 eq(query.trackedEntityType()),
                 eq(query.query()),
@@ -186,7 +188,7 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
 
     private OngoingStubbing<Call<SearchGrid>> whenServiceQuery() {
         return when(service.query(anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyList(), anyList(), anyString(), anyString(),
-                anyBoolean(), anyInt(), anyInt()));
+                anyString(), anyString(), anyString(), anyString(), anyString(), anyList(), anyList(),
+                anyString(), anyString(), anyBoolean(), anyInt(), anyInt()));
     }
 }

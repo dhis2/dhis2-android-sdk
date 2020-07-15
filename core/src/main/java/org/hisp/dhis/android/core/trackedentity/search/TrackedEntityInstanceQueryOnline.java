@@ -84,6 +84,12 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
     abstract EventStatus eventStatus();
 
     @Nullable
+    abstract Date eventStartDate();
+
+    @Nullable
+    abstract Date eventEndDate();
+
+    @Nullable
     abstract String trackedEntityType();
 
     //TODO It is not used in the query because it modifies returned grid structure: if true, it adds an extra column
@@ -97,11 +103,23 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
     abstract String order();
 
     String formattedProgramStartDate() {
-        return programStartDate() == null ? null : QUERY_FORMAT.format(programStartDate());
+        return formatDate(programStartDate());
     }
 
     String formattedProgramEndDate() {
-        return programEndDate() == null ? null : QUERY_FORMAT.format(programEndDate());
+        return formatDate(programEndDate());
+    }
+
+    String formattedEventStartDate() {
+        return formatDate(eventStartDate());
+    }
+
+    String formattedEventEndDate() {
+        return formatDate(eventEndDate());
+    }
+
+    private String formatDate(Date date) {
+        return date == null ? null : QUERY_FORMAT.format(date);
     }
 
     abstract Builder toBuilder();
@@ -120,6 +138,8 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
         EnrollmentStatus enrollmentStatus = scope.enrollmentStatus() == null || scope.enrollmentStatus().isEmpty() ?
                 null : scope.enrollmentStatus().get(0);
 
+        EventStatus eventStatus = getEventStatus(scope);
+
         return TrackedEntityInstanceQueryOnline.builder()
                 .query(query)
                 .attribute(toAPIFilterFormat(scope.attribute()))
@@ -130,9 +150,9 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
                 .programStartDate(scope.programStartDate())
                 .programEndDate(scope.programEndDate())
                 .enrollmentStatus(enrollmentStatus)
-                // EventStatus requires that eventStartDate and eventEndDate are present in the query.
-                // Currently they are not supported in the SDK, so this parameter is ignored.
-                .eventStatus(null)
+                .eventStatus(eventStatus)
+                .eventStartDate(scope.eventStartDate())
+                .eventEndDate(scope.eventEndDate())
                 .trackedEntityType(scope.trackedEntityType())
                 .includeDeleted(false)
                 .assignedUserMode(scope.assignedUserMode())
@@ -171,6 +191,16 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
         return Joiner.on(',').join(orderList);
     }
 
+    private static EventStatus getEventStatus(TrackedEntityInstanceQueryRepositoryScope scope) {
+        // EventStatus does not accepts a list of status but a single value in web API.
+        // Additionally, it requires that eventStartDate and eventEndDate are defined.
+        if (scope.eventStatus() != null && scope.eventStatus().size() > 0 &&
+                scope.eventStartDate() != null && scope.eventEndDate() != null) {
+            return scope.eventStatus().get(0);
+        }
+        return null;
+    }
+
     @AutoValue.Builder
     abstract static class Builder extends BaseQuery.Builder<Builder> {
         abstract Builder orgUnits(List<String> orgUnits);
@@ -192,6 +222,10 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
         abstract Builder enrollmentStatus(EnrollmentStatus programStatus);
 
         abstract Builder eventStatus(EventStatus eventStatus);
+
+        abstract Builder eventStartDate(Date eventStartDate);
+
+        abstract Builder eventEndDate(Date eventEndDate);
 
         abstract Builder trackedEntityType(String trackedEntityType);
 

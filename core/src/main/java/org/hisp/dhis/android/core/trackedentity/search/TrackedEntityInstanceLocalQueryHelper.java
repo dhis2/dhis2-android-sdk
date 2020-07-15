@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity.search;
 
 import com.google.common.base.Joiner;
 
+import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
@@ -39,6 +40,7 @@ import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
+import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.event.EventTableInfo;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
@@ -48,6 +50,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo;
 import org.hisp.dhis.android.core.user.AuthenticatedUserTableInfo;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.hisp.dhis.android.core.common.IdentifiableColumns.CREATED;
@@ -55,6 +58,8 @@ import static org.hisp.dhis.android.core.common.IdentifiableColumns.LAST_UPDATED
 import static org.hisp.dhis.android.core.common.IdentifiableColumns.NAME;
 import static org.hisp.dhis.android.core.common.IdentifiableColumns.UID;
 import static org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo.Columns.INCIDENT_DATE;
+import static org.hisp.dhis.android.core.event.EventTableInfo.Columns.DUE_DATE;
+import static org.hisp.dhis.android.core.event.EventTableInfo.Columns.EVENT_DATE;
 
 @SuppressWarnings({
         "PMD.GodClass",
@@ -62,6 +67,8 @@ import static org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo.Columns.
         "PMD.CyclomaticComplexity",
         "PMD.StdCyclomaticComplexity"})
 final class TrackedEntityInstanceLocalQueryHelper {
+
+    private static final SafeDateFormat QUERY_FORMAT = new SafeDateFormat("yyyy-MM-dd");
 
     private static String TEI_ALIAS = "tei";
     private static String ENROLLMENT_ALIAS = "en";
@@ -92,7 +99,7 @@ final class TrackedEntityInstanceLocalQueryHelper {
 
         WhereClauseBuilder where = new WhereClauseBuilder();
 
-        if (hasProgram(scope) || hasEvent(scope)) {
+        if (hasProgram(scope)) {
             queryStr += String.format(" JOIN %s %s ON %s = %s",
                     EnrollmentTableInfo.TABLE_INFO.name(), ENROLLMENT_ALIAS,
                     dot(TEI_ALIAS, UID),
@@ -156,7 +163,8 @@ final class TrackedEntityInstanceLocalQueryHelper {
     }
 
     private static boolean hasEvent(TrackedEntityInstanceQueryRepositoryScope scope) {
-        return scope.assignedUserMode() != null || scope.eventStatus() != null;
+        return scope.assignedUserMode() != null || scope.eventStatus() != null ||
+                scope.eventStartDate() != null || scope.eventEndDate() != null;
     }
 
     private static void appendProgramWhere(WhereClauseBuilder where, TrackedEntityInstanceQueryRepositoryScope scope) {
@@ -274,9 +282,48 @@ final class TrackedEntityInstanceLocalQueryHelper {
         if (scope.assignedUserMode() != null) {
             appendAssignedUserMode(where, scope);
         }
-        if (scope.eventStatus() != null) {
-            where.appendInKeyEnumValues(dot(EVENT_ALIAS, EventTableInfo.Columns.STATUS), scope.eventStatus())
-                    .appendKeyOperatorValue(dot(EVENT_ALIAS, EventTableInfo.Columns.DELETED), "!=", "1");
+        if (scope.eventStatus() == null) {
+            appendEventDates(where, scope, EVENT_DATE);
+        } else if (scope.eventStartDate() != null && scope.eventEndDate() != null) {
+            Date now = new Date();
+            for (EventStatus eventStatus : scope.eventStatus()) {
+                switch (eventStatus) {
+                    case ACTIVE:
+                    case COMPLETED:
+                    case VISITED:
+                        where.appendInKeyEnumValues(dot(EVENT_ALIAS, EventTableInfo.Columns.STATUS),
+                                scope.eventStatus());
+                        appendEventDates(where, scope, EVENT_DATE);
+                        break;
+                    case SCHEDULE:
+                        appendEventDates(where, scope, DUE_DATE);
+                        where.appendKeyGreaterOrEqStringValue(dot(EVENT_ALIAS, DUE_DATE), QUERY_FORMAT.format(now));
+                        break;
+                    case OVERDUE:
+                        appendEventDates(where, scope, DUE_DATE);
+                        where.appendKeyLessThanStringValue(dot(EVENT_ALIAS, DUE_DATE), QUERY_FORMAT.format(now));
+                        break;
+                    case SKIPPED:
+                        where.appendInKeyEnumValues(dot(EVENT_ALIAS, EventTableInfo.Columns.STATUS),
+                                scope.eventStatus());
+                        appendEventDates(where, scope, DUE_DATE);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        where.appendKeyOperatorValue(dot(EVENT_ALIAS, EventTableInfo.Columns.DELETED), "!=", "1");
+    }
+
+    private static void appendEventDates(WhereClauseBuilder where,
+                                         TrackedEntityInstanceQueryRepositoryScope scope,
+                                         String targetDate) {
+        if (scope.eventStartDate() != null) {
+            where.appendKeyGreaterOrEqStringValue(dot(EVENT_ALIAS, targetDate), scope.formattedEventStartDate());
+        }
+        if (scope.eventEndDate() != null) {
+            where.appendKeyLessThanOrEqStringValue(dot(EVENT_ALIAS, targetDate), scope.formattedEventEndDate());
         }
     }
 
@@ -354,7 +401,7 @@ final class TrackedEntityInstanceLocalQueryHelper {
                     break;
                 case EVENT_DATE:
                     String eventField =
-                            "IFNULL(" + EventTableInfo.Columns.EVENT_DATE + "," + EventTableInfo.Columns.DUE_DATE + ")";
+                            "IFNULL(" + EVENT_DATE + "," + DUE_DATE + ")";
                     orderClauses.add(orderByEventField(scope.program(), eventField, item.direction()));
                     break;
                 case COMPLETION_DATE:
@@ -403,7 +450,7 @@ final class TrackedEntityInstanceLocalQueryHelper {
                 EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
                 dot(TEI_ALIAS, UID),
                 programClause,
-                EventTableInfo.Columns.EVENT_DATE, EventTableInfo.Columns.DUE_DATE,
+                EVENT_DATE, DUE_DATE,
                 dir.name());
     }
 

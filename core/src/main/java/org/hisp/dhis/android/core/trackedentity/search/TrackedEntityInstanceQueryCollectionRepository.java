@@ -268,8 +268,29 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     }
 
     /**
+     * Define an event start date. It only applies if a program has been specified in {@link #byProgram()}.
+     *
+     * @return Repository connector
+     */
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+            TrackedEntityInstanceQueryRepositoryScope, Date> byEventStartDate() {
+        return connectorFactory.eqConnector(date -> scope.toBuilder().eventStartDate(date).build());
+    }
+
+    /**
+     * Define an event end date. It only applies if a program has been specified in {@link #byProgram()}.
+     *
+     * @return Repository connector
+     */
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+            TrackedEntityInstanceQueryRepositoryScope, Date> byEventEndDate() {
+        return connectorFactory.eqConnector(date -> scope.toBuilder().eventEndDate(date).build());
+    }
+
+    /**
      * Filter by event status. It only applies if a program has been specified in {@link #byProgram()}.
-     * <br><b>IMPORTANT:</b> currently this filter only applies to <b>offline</b> instances.
+     * <br><b>IMPORTANT:</b> this filter requires that eventStartDate {@link #byEventStartDate()} and eventEndDate
+     * {@link #byEventEndDate()} are defined.
      *
      * @return Repository connector
      */

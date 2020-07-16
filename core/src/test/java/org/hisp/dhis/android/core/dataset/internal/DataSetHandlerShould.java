@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.dataset.internal;
 
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.LinkCleaner;
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
@@ -122,6 +123,9 @@ public class DataSetHandlerShould {
     private CollectionCleaner<DataSet> collectionCleaner;
 
     @Mock
+    private LinkCleaner<DataSet> linkCleaner;
+
+    @Mock
     private List<DataInputPeriod> dataInputPeriods;
 
     // object to test
@@ -140,8 +144,8 @@ public class DataSetHandlerShould {
                 dataInputPeriodHandler,
                 dataSetElementLinkHandler,
                 dataSetIndicatorLinkHandler,
-                collectionCleaner
-        );
+                collectionCleaner,
+                linkCleaner);
 
         when(dataSet.uid()).thenReturn("dataset_uid");
         when(dataSet.access()).thenReturn(access);

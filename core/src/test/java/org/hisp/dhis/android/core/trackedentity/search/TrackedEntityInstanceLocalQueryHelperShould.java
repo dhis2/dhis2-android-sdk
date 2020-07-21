@@ -169,7 +169,7 @@ public class TrackedEntityInstanceLocalQueryHelperShould {
 
         String query = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(overdueQuery, Collections.emptyList(), 50);
         assertThat(query).contains("dueDate");
-        assertThat(query).doesNotContain("eventDate");
+        assertThat(query).contains("eventDate");
     }
 
 }

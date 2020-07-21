@@ -286,7 +286,7 @@ final class TrackedEntityInstanceLocalQueryHelper {
         if (scope.eventStatus() == null) {
             appendEventDates(where, scope, EVENT_DATE);
         } else if (scope.eventStatus().size() > 0 && scope.eventStartDate() != null && scope.eventEndDate() != null) {
-            Date now = new Date();
+            String nowStr = QUERY_FORMAT.format(new Date());
             WhereClauseBuilder statusListWhere = new WhereClauseBuilder();
             for (EventStatus eventStatus : scope.eventStatus()) {
                 WhereClauseBuilder statusWhere = new WhereClauseBuilder();
@@ -299,12 +299,15 @@ final class TrackedEntityInstanceLocalQueryHelper {
                         break;
                     case SCHEDULE:
                         appendEventDates(statusWhere, scope, DUE_DATE);
-                        statusWhere.appendKeyGreaterOrEqStringValue(dot(EVENT_ALIAS, DUE_DATE),
-                                QUERY_FORMAT.format(now));
+                        statusWhere.appendIsNullValue(EVENT_DATE);
+                        statusWhere.appendIsNotNullValue(dot(EVENT_ALIAS, EventTableInfo.Columns.STATUS));
+                        statusWhere.appendKeyGreaterOrEqStringValue(dot(EVENT_ALIAS, DUE_DATE), nowStr);
                         break;
                     case OVERDUE:
                         appendEventDates(statusWhere, scope, DUE_DATE);
-                        statusWhere.appendKeyLessThanStringValue(dot(EVENT_ALIAS, DUE_DATE), QUERY_FORMAT.format(now));
+                        statusWhere.appendIsNullValue(EVENT_DATE);
+                        statusWhere.appendIsNotNullValue(dot(EVENT_ALIAS, EventTableInfo.Columns.STATUS));
+                        statusWhere.appendKeyLessThanStringValue(dot(EVENT_ALIAS, DUE_DATE), nowStr);
                         break;
                     case SKIPPED:
                         statusWhere.appendKeyStringValue(dot(EVENT_ALIAS, EventTableInfo.Columns.STATUS), eventStatus);

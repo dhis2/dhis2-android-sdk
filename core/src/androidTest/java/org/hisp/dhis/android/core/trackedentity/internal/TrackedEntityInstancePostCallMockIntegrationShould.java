@@ -44,6 +44,8 @@ import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleanerImpl;
+import org.hisp.dhis.android.core.note.Note;
+import org.hisp.dhis.android.core.note.NoteCreateProjection;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore;
 import org.hisp.dhis.android.core.program.Program;
@@ -77,6 +79,14 @@ import static com.google.common.truth.Truth.assertThat;
 public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMockIntegrationTestMetadataEnqueable {
 
     private static TrackedEntityInstancePostCall trackedEntityInstancePostCall;
+
+    private final String teiId = "teiId";
+    private final String enrollment1Id = "enrollment1Id";
+    private final String enrollment2Id = "enrollment2Id";
+    private final String enrollment3Id = "enrollment3Id";
+    private final String event1Id = "event1Id";
+    private final String event2Id = "event2Id";
+    private final String event3Id = "event3Id";
 
     @After
     public void tearDown() throws D2Error {
@@ -284,15 +294,63 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
         }
     }
 
-    private void storeTrackedEntityInstance() {
-        String teiId = "teiId";
-        String enrollment1Id = "enrollment1Id";
-        String enrollment2Id = "enrollment2Id";
-        String enrollment3Id = "enrollment3Id";
-        String event1Id = "event1Id";
-        String event2Id = "event2Id";
-        String event3Id = "event3Id";
+    @Test
+    public void build_payload_with_enrollment_notes() throws D2Error {
+        storeTrackedEntityInstance();
 
+        d2.noteModule().notes().blockingAdd(NoteCreateProjection.builder()
+                .enrollment(enrollment1Id)
+                .noteType(Note.NoteType.ENROLLMENT_NOTE)
+                .value("This is an enrollment note")
+                .build());
+
+        List<List<TrackedEntityInstance>> partitions =
+                trackedEntityInstancePostCall.getPartitionsToSync(null);
+
+        assertThat(partitions.size()).isEqualTo(1);
+        assertThat(partitions.get(0).size()).isEqualTo(1);
+        for (TrackedEntityInstance instance : partitions.get(0)) {
+            for (Enrollment enrollment : getEnrollments(instance)) {
+                if (enrollment.uid().equals(enrollment1Id)) {
+                    assertThat(enrollment.notes().size()).isEqualTo(1);
+                } else {
+                    assertThat(enrollment.notes().size()).isEqualTo(0);
+                }
+            }
+        }
+    }
+
+    @Test
+    public void build_payload_with_event_notes() throws D2Error {
+        storeTrackedEntityInstance();
+
+        d2.noteModule().notes().blockingAdd(NoteCreateProjection.builder()
+                .event(event1Id)
+                .noteType(Note.NoteType.EVENT_NOTE)
+                .value("This is an event note")
+                .build());
+
+        List<List<TrackedEntityInstance>> partitions =
+                trackedEntityInstancePostCall.getPartitionsToSync(null);
+
+        assertThat(partitions.size()).isEqualTo(1);
+        assertThat(partitions.get(0).size()).isEqualTo(1);
+        for (TrackedEntityInstance instance : partitions.get(0)) {
+            for (Enrollment enrollment : getEnrollments(instance)) {
+                if (enrollment.uid().equals(enrollment1Id)) {
+                    for (Event event : getEvents(enrollment)) {
+                        if (event.uid().equals(event1Id)) {
+                            assertThat(event.notes().size()).isEqualTo(1);
+                        } else {
+                            assertThat(enrollment.notes().size()).isEqualTo(0);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void storeTrackedEntityInstance() {
         OrganisationUnit orgUnit = OrganisationUnitStore.create(databaseAdapter).selectFirst();
         TrackedEntityType teiType = TrackedEntityTypeStore.create(databaseAdapter).selectFirst();
         Program program = d2.programModule().programs().one().blockingGet();

@@ -202,7 +202,7 @@ public final class TrackedEntityInstancePostCall {
         Map<String, List<TrackedEntityAttributeValue>> attributeValueMap =
                 trackedEntityAttributeValueStore.queryTrackedEntityAttributeValueToPost();
         String whereNotesClause = new WhereClauseBuilder()
-                .appendKeyStringValue(
+                .appendInKeyStringValues(
                         DataColumns.STATE, EnumHelper.asStringList(State.uploadableStatesIncludingError()))
                 .build();
         List<Note> notes = noteStore.selectWhere(whereNotesClause);

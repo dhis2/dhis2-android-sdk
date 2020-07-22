@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModu
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -85,5 +86,17 @@ public final class EventPersistenceCallFactory {
         }
         uids.removeAll(organisationUnitStore.selectUids());
         return uids;
+    }
+
+    public Completable persistRelationships(final List<Event> events) {
+        return persistEventsInternal(events, true, false, false);
+    }
+
+    private Completable persistEventsInternal(
+            final List<Event> events, boolean asRelationship, boolean isFullUpdate, boolean overwrite) {
+        return Completable.defer(() -> {
+            eventHandler.handleMany(events, asRelationship, isFullUpdate, overwrite);
+            return Completable.complete();
+        });
     }
 }

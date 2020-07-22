@@ -42,7 +42,7 @@ import dagger.Reusable;
 import io.reactivex.Completable;
 
 @Reusable
-final class TrackedEntityInstancePersistenceCallFactory {
+public final class TrackedEntityInstancePersistenceCallFactory {
 
     private final TrackedEntityInstanceHandler trackedEntityInstanceHandler;
     private final TrackedEntityInstanceUidHelper uidsHelper;
@@ -63,7 +63,7 @@ final class TrackedEntityInstancePersistenceCallFactory {
         return persistTEIsInternal(trackedEntityInstances, false, isFullUpdate, overwrite);
     }
 
-    Completable persistRelationships(final List<TrackedEntityInstance> trackedEntityInstances) {
+    public Completable persistRelationships(final List<TrackedEntityInstance> trackedEntityInstances) {
         return persistTEIsInternal(trackedEntityInstances, true, false, false);
     }
 

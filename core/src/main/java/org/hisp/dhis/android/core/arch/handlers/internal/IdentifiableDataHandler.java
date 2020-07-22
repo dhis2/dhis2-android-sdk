@@ -41,4 +41,6 @@ public interface IdentifiableDataHandler<O extends DeletableDataObject & ObjectW
     void handleMany(Collection<O> oCollection, Boolean overwrite);
 
     void handleMany(Collection<O> oCollection, Transformer<O, O> transformer, Boolean overwrite);
+
+    void handleMany(final Collection<O> oCollection, boolean asRelationship, boolean isFullUpdate, boolean overwrite);
 }

@@ -42,7 +42,7 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-interface EventService {
+public interface EventService {
     String ORG_UNIT = "orgUnit";
     String OU_MODE = "ouMode";
     String PROGRAM = "program";

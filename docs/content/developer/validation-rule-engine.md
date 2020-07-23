@@ -4,7 +4,9 @@
 
 Validation rules associated to a particular dataSet can be evaluated using the validation rule module. It only suppports the evaluation of validation rules in the context of a data entry form, i.e, validation rules that use data values contained in a particular combination of dataSet, period, organisationUnit and attributeOptionCombo.
 
-> ***Important***: Currently it is not possible to evaluate validation rules acrross different dataSets, periods, organisationUnits or attributeOptionCombos.
+> **Important**
+>
+> Currently it is not possible to evaluate validation rules acrross different dataSets, periods, organisationUnits or attributeOptionCombos.
 
 ```java
 d2.validationModule()

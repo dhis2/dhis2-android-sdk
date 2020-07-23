@@ -47,10 +47,13 @@ Integer numSMSs = case.convertTrackerEvent("event-uid").blockingGet();
 
 case.send().blockingSubscribe();
 ```
-
-> *Important*: the app is responsible for asking the user for permissions (READ_PHONE_STATE, SEND_SMS, READ_SMS, RECEIVE_SMS). Otherwise, SMS module will fail.
+> **Important**
+>
+> The app is responsible for asking the user for permissions (READ_PHONE_STATE, SEND_SMS, READ_SMS, RECEIVE_SMS). Otherwise, SMS module will fail.
 
 ## SMS version
+
+<!--DHIS2-SECTION-ID:sms_version-->
 
 SMSs are sent in a compressed format from/to the server. This task is done by the [SMS Compression library](https://github.com/dhis2/sms-compression), which is responsible for doing the conversion between the plain text and the compressed format.
 

@@ -116,7 +116,9 @@ Additionally, in `TrackedEntityInstance` we might have:
 
 ### Tracker data download
 
-> **Important**: see [Settings App](#settings_app) section to know how this application can be used to control synchronization parameters.
+> **Important**
+>
+> See [Settings App](#settings_app) section to know how this application can be used to control synchronization parameters.
 
 By default, the SDK only downloads TrackedEntityInstances and Events
 that are located in user capture scope, but it is also possible to
@@ -290,7 +292,9 @@ d2.trackedEntityModule().trackedEntityInstanceQuery()
                 .offlineFirst()
 ```
 
-> ***Important***: trackedEntityInstances retrieved using this repository are not persisted in the database. It is possible
+> **Important**
+>
+> TrackedEntityInstances retrieved using this repository are not persisted in the database. It is possible
 to fully download them using the `byUid()` filter of the `TrackedEntityInstanceDownloader` within the tracked entity instance module.
 
 [//]: # (Include glass protected download)
@@ -402,7 +406,9 @@ d2.trackedEntityModule().trackedEntityInstanceService()
 
 ### Aggregated data download
 
-> **Important**: see [Settings App](#settings_app) section to know how this application can be used to control synchronization parameters.
+> **Important**
+>
+> See [Settings App](#settings_app) section to know how this application can be used to control synchronization parameters.
 
 ```java
 d2.aggregatedModule().data().download()

@@ -61,6 +61,7 @@ Based on that, metadata sync includes the following elements:
 |-----------------------|-------------|
 | System info           | All |
 | System settings       | KeyFlag, KeyStyle |
+| User settings         | KeyDbLocale, KeyUiLocale |
 | User                  | Only authenticated user |
 | UserRole              | Roles assigned to authenticated user |
 | Authority             | Authorities assigned to authenticated user |

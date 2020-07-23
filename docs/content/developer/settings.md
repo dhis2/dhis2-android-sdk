@@ -1,4 +1,20 @@
-# Settings app
+# Settings
+
+<!--DHIS2-SECTION-ID:settings-->
+
+Settings are downloaded on every metadata synchronization. There are different kinds of settings:
+
+```java
+d2.settingModule()
+```
+
+- **System settings**: system-wide properties such as `flag` or `style`.
+- **User settings**: user specific settings such as `keyDbLocale` or `keyUiLocale`.
+- **Settings app**: these settings offer additional control over the behavior of the application. More about this in the next section.
+
+
+
+## Settings app
 
 <!--DHIS2-SECTION-ID:settings_app-->
 

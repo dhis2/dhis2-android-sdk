@@ -63,10 +63,12 @@ d2.systemInfoModule().versionManager().getSmsVersion()
 Overview of versions - features:
 
 Version 1:
+
 - Aggregated data.
 - Tracker / event data, but there are some known bugs. We recommend not to enable tracker SMS sync in version 1.
 
 Version 2:
+
 - Add support for empty lists.
 - Add support for geometry in events (POINT).
 - Add missing properties in events (event data, due date) and enrollments (execution date, incident date).

@@ -158,7 +158,6 @@ Concrete modules:
 - constantModule
 - dataElementModule
 - dataSetModule
-- optionModule
 - dataValueModule
 - enrollmentModule
 - eventModule
@@ -166,11 +165,12 @@ Concrete modules:
 - indicatorModule
 - legendSetModule
 - noteModule
-- programModule
-- optionModule
 - organisationUnitModule
+- optionModule
 - periodModule
+- programModule
 - relationshipModule
+- smsModule
 - trackedEntityModule
 - userModule
-- smsModule
+- validationModule

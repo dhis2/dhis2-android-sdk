@@ -22,6 +22,8 @@ buildscript {
         // enables cloud features of gradle plugin
         classpath "com.gradle:build-scan-plugin:2.0.2"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+
+        classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.10.0"
     }
 }
 

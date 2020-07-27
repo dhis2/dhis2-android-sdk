@@ -29,6 +29,7 @@
 apply plugin: "com.android.library"
 apply plugin: "kotlin-android"
 apply plugin: "kotlin-android-extensions"
+apply plugin: "io.gitlab.arturbosch.detekt"
 apply from: project.file("plugins/android-checkstyle.gradle")
 apply from: project.file("plugins/android-findbugs.gradle")
 apply from: project.file("plugins/android-pmd.gradle")

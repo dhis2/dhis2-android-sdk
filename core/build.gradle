@@ -67,6 +67,7 @@ ext {
             junit           : "4.12",
             assertj         : "3.11.1",
             mockito         : "2.24.5",
+            mockitoKotlin   : "2.2.0",
             dexmaker        : "2.21.0",
             truth           : "0.30",
             testrunner      : '1.1.0-alpha4',
@@ -210,6 +211,7 @@ dependencies {
     // Java test dependencies
     testImplementation "junit:junit:${libraries.junit}"
     testImplementation "org.mockito:mockito-core:${libraries.mockito}"
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${libraries.mockitoKotlin}"
     testImplementation "org.assertj:assertj-core:${libraries.assertj}"
     testImplementation "nl.jqno.equalsverifier:equalsverifier:${libraries.equalsverifier}"
     testImplementation "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"

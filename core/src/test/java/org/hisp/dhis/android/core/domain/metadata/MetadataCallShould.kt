@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.domain.metadata
 
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -58,58 +60,26 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.AdditionalAnswers
 import org.mockito.ArgumentMatchers
-import org.mockito.Mock
 import org.mockito.Mockito
 
 @RunWith(JUnit4::class)
 class MetadataCallShould : BaseCallShould() {
-    @Mock
-    private val user: User? = null
-
-    @Mock
-    private val rxAPICallExecutor: RxAPICallExecutor? = null
-
-    @Mock
-    private val systemInfoDownloader: SystemInfoModuleDownloader? = null
-
-    @Mock
-    private val systemSettingDownloader: SettingModuleDownloader? = null
-
-    @Mock
-    private val userDownloader: UserModuleDownloader? = null
-
-    @Mock
-    private val categoryDownloader: CategoryModuleDownloader? = null
-
-    @Mock
-    private val programDownloader: ProgramModuleDownloader? = null
-
-    @Mock
-    private val organisationUnitDownloader: OrganisationUnitModuleDownloader? = null
-
-    @Mock
-    private val dataSetDownloader: DataSetModuleDownloader? = null
-
-    @Mock
-    private val constantDownloader: ConstantModuleDownloader? = null
-
-    @Mock
-    private val d2ErrorStore: ObjectStore<D2Error>? = null
-
-    @Mock
-    private val smsModule: SmsModule? = null
-
-    @Mock
-    private val configCase: ConfigCase? = null
-
-    @Mock
-    private val generalSettingCall: GeneralSettingCall? = null
-
-    @Mock
-    private val multiUserDatabaseManager: MultiUserDatabaseManager? = null
-
-    @Mock
-    private val credentialsSecureStore: ObjectKeyValueStore<Credentials>? = null
+    private val user: User = mock()
+    private val rxAPICallExecutor: RxAPICallExecutor = mock()
+    private val systemInfoDownloader: SystemInfoModuleDownloader = mock()
+    private val systemSettingDownloader: SettingModuleDownloader = mock()
+    private val userDownloader: UserModuleDownloader = mock()
+    private val categoryDownloader: CategoryModuleDownloader = mock()
+    private val programDownloader: ProgramModuleDownloader = mock()
+    private val organisationUnitDownloader: OrganisationUnitModuleDownloader = mock()
+    private val dataSetDownloader: DataSetModuleDownloader = mock()
+    private val constantDownloader: ConstantModuleDownloader = mock()
+    private val d2ErrorStore: ObjectStore<D2Error> = mock()
+    private val smsModule: SmsModule = mock()
+    private val configCase: ConfigCase = mock()
+    private val generalSettingCall: GeneralSettingCall = mock()
+    private val multiUserDatabaseManager: MultiUserDatabaseManager = mock()
+    private val credentialsSecureStore: ObjectKeyValueStore<Credentials> = mock()
 
     // object to test
     private var metadataCall: MetadataCall? = null
@@ -120,19 +90,19 @@ class MetadataCallShould : BaseCallShould() {
         super.setUp()
 
         // Calls
-        Mockito.`when`(systemInfoDownloader!!.downloadMetadata()).thenReturn(Completable.complete())
-        Mockito.`when`(systemSettingDownloader!!.downloadMetadata()).thenReturn(Completable.complete())
-        Mockito.`when`(userDownloader!!.downloadMetadata()).thenReturn(Single.just(user))
-        Mockito.`when`(programDownloader!!.downloadMetadata(ArgumentMatchers.anySet())).thenReturn(Single.just(Lists.emptyList()))
-        Mockito.`when`(organisationUnitDownloader!!.downloadMetadata(ArgumentMatchers.same(user))).thenReturn(Single.just(Lists.emptyList()))
-        Mockito.`when`(dataSetDownloader!!.downloadMetadata(ArgumentMatchers.anySet())).thenReturn(Single.just(Lists.emptyList()))
-        Mockito.`when`(constantDownloader!!.downloadMetadata()).thenReturn(Single.just(Lists.emptyList()))
-        Mockito.`when`(categoryDownloader!!.downloadMetadata()).thenReturn(Completable.complete())
-        Mockito.`when`(smsModule!!.configCase()).thenReturn(configCase)
-        Mockito.`when`(configCase!!.refreshMetadataIdsCallable()).thenReturn(Completable.complete())
-        Mockito.`when`(generalSettingCall!!.isDatabaseEncrypted).thenReturn(Single.just(false))
-        Mockito.`when`(d2ErrorStore!!.insert(ArgumentMatchers.any(D2Error::class.java))).thenReturn(0L)
-        Mockito.`when`<Observable<D2Progress>>(rxAPICallExecutor!!.wrapObservableTransactionally(ArgumentMatchers.any(), ArgumentMatchers.anyBoolean()))
+        whenever(systemInfoDownloader.downloadMetadata()).thenReturn(Completable.complete())
+        whenever(systemSettingDownloader.downloadMetadata()).thenReturn(Completable.complete())
+        whenever(userDownloader.downloadMetadata()).thenReturn(Single.just(user))
+        whenever(programDownloader.downloadMetadata(ArgumentMatchers.anySet())).thenReturn(Single.just(Lists.emptyList()))
+        whenever(organisationUnitDownloader.downloadMetadata(ArgumentMatchers.same(user))).thenReturn(Single.just(Lists.emptyList()))
+        whenever(dataSetDownloader.downloadMetadata(ArgumentMatchers.anySet())).thenReturn(Single.just(Lists.emptyList()))
+        whenever(constantDownloader.downloadMetadata()).thenReturn(Single.just(Lists.emptyList()))
+        whenever(categoryDownloader.downloadMetadata()).thenReturn(Completable.complete())
+        whenever(smsModule.configCase()).thenReturn(configCase)
+        whenever(configCase.refreshMetadataIdsCallable()).thenReturn(Completable.complete())
+        whenever(generalSettingCall.isDatabaseEncrypted).thenReturn(Single.just(false))
+        whenever(d2ErrorStore.insert(ArgumentMatchers.any(D2Error::class.java))).thenReturn(0L)
+        Mockito.`when`<Observable<D2Progress>>(rxAPICallExecutor.wrapObservableTransactionally(ArgumentMatchers.any(), ArgumentMatchers.anyBoolean()))
                 .then(AdditionalAnswers.returnsFirstArg<Any>())
 
         // Metadata call
@@ -149,8 +119,8 @@ class MetadataCallShould : BaseCallShould() {
                 smsModule,
                 databaseAdapter,
                 generalSettingCall,
-                multiUserDatabaseManager!!,
-                credentialsSecureStore!!)
+                multiUserDatabaseManager,
+                credentialsSecureStore)
     }
 
     @Test
@@ -160,13 +130,13 @@ class MetadataCallShould : BaseCallShould() {
 
     @Test
     fun fail_when_system_info_call_fail() {
-        Mockito.`when`(systemInfoDownloader!!.downloadMetadata()).thenReturn(Completable.error(d2Error))
+        whenever(systemInfoDownloader.downloadMetadata()).thenReturn(Completable.error(d2Error))
         downloadAndAssertError()
     }
 
     @Test
     fun fail_when_system_setting_call_fail() {
-        Mockito.`when`(systemSettingDownloader!!.downloadMetadata()).thenReturn(Completable.error(d2Error))
+        whenever(systemSettingDownloader.downloadMetadata()).thenReturn(Completable.error(d2Error))
         downloadAndAssertError()
     }
 
@@ -178,44 +148,44 @@ class MetadataCallShould : BaseCallShould() {
 
     @Test
     fun fail_when_user_call_fail() {
-        Mockito.`when`(userDownloader!!.downloadMetadata()).thenReturn(Single.error(d2Error))
+        whenever(userDownloader.downloadMetadata()).thenReturn(Single.error(d2Error))
         downloadAndAssertError()
     }
 
     @Test
     fun fail_when_category_download_call_fail() {
-        Mockito.`when`(categoryDownloader!!.downloadMetadata()).thenReturn(Completable.error(d2Error))
+        whenever(categoryDownloader.downloadMetadata()).thenReturn(Completable.error(d2Error))
         downloadAndAssertError()
     }
 
     @Test
     fun fail_when_program_call_fail() {
-        Mockito.`when`(programDownloader!!.downloadMetadata(ArgumentMatchers.anySet())).thenReturn(Single.error(d2Error))
+        whenever(programDownloader.downloadMetadata(ArgumentMatchers.anySet())).thenReturn(Single.error(d2Error))
         downloadAndAssertError()
     }
 
     @Test
     fun fail_when_organisation_unit_call_fail() {
-        Mockito.`when`(organisationUnitDownloader!!.downloadMetadata(user)).thenReturn(Single.error(d2Error))
+        whenever(organisationUnitDownloader.downloadMetadata(user)).thenReturn(Single.error(d2Error))
         downloadAndAssertError()
     }
 
     @Test
     fun fail_when_dataset_parent_call_fail() {
-        Mockito.`when`(dataSetDownloader!!.downloadMetadata(ArgumentMatchers.anySet())).thenReturn(Single.error(d2Error))
+        whenever(dataSetDownloader.downloadMetadata(ArgumentMatchers.anySet())).thenReturn(Single.error(d2Error))
         downloadAndAssertError()
     }
 
     @Test
     fun fail_when_constant_call_fail() {
-        Mockito.`when`(constantDownloader!!.downloadMetadata()).thenReturn(Single.error(d2Error))
+        whenever(constantDownloader.downloadMetadata()).thenReturn(Single.error(d2Error))
         downloadAndAssertError()
     }
 
     @Test
     fun call_wrapObservableTransactionally() {
         metadataCall!!.blockingDownload()
-        Mockito.verify(rxAPICallExecutor)!!.wrapObservableTransactionally<D2Progress>(ArgumentMatchers.any(), ArgumentMatchers.eq(true))
+        Mockito.verify(rxAPICallExecutor).wrapObservableTransactionally<D2Progress>(ArgumentMatchers.any(), ArgumentMatchers.eq(true))
     }
 
     @Test

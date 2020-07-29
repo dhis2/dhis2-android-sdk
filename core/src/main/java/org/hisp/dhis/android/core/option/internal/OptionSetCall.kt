@@ -41,7 +41,9 @@ internal class OptionSetCall @Inject constructor(
         private val handler: Handler<OptionSet>,
         private val apiDownloader: APIDownloader) : UidsCall<OptionSet?> {
 
-    val MAX_UID_LIST_SIZE = 130
+    companion object {
+        const val MAX_UID_LIST_SIZE = 130
+    }
 
     override fun download(uids: Set<String>): Single<MutableList<OptionSet?>>? {
         return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler) { partitionUids: Set<String?>? ->

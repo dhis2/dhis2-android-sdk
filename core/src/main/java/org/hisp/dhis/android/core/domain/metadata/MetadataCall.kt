@@ -60,6 +60,7 @@ import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.UserModuleDownloader
 import javax.inject.Inject
 
+@Suppress("LongParameterList")
 @Reusable
 class MetadataCall @Inject internal constructor(
         private val rxCallExecutor: RxAPICallExecutor,
@@ -77,8 +78,12 @@ class MetadataCall @Inject internal constructor(
         private val multiUserDatabaseManager: MultiUserDatabaseManager,
         private val credentialsSecureStore: ObjectKeyValueStore<Credentials>) {
 
+    companion object {
+        const val CALLS_COUNT = 9
+    }
+
     fun download(): Observable<D2Progress> {
-        val progressManager = D2ProgressManager(9)
+        val progressManager = D2ProgressManager(CALLS_COUNT)
         return rxCallExecutor.wrapObservableTransactionally(Observable.merge(
                 changeEncryptionIfRequired().toObservable(),
                 systemInfoDownloader.downloadMetadata().toSingle {
@@ -137,5 +142,4 @@ class MetadataCall @Inject internal constructor(
     fun blockingDownload() {
         download().blockingSubscribe()
     }
-
 }

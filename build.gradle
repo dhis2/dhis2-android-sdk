@@ -18,8 +18,6 @@ buildscript {
         classpath "net.ltgt.gradle:gradle-apt-plugin:0.9"
 
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-
-        classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.10.0"
     }
 }
 

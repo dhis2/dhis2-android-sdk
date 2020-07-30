@@ -31,12 +31,11 @@ apply plugin: "kotlin-android"
 apply plugin: "kotlin-android-extensions"
 apply plugin: "io.gitlab.arturbosch.detekt"
 apply from: project.file("plugins/android-checkstyle.gradle")
-apply from: project.file("plugins/android-findbugs.gradle")
 apply from: project.file("plugins/android-pmd.gradle")
 
 ext {
     configuration = [
-            buildToolsVersion: "28.0.3",
+            buildToolsVersion: "29.0.3",
             minSdkVersion    : 19,
             targetSdkVersion : 28,
             versionCode      : 220,

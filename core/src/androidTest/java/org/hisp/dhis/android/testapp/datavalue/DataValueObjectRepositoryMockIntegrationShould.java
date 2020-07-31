@@ -105,6 +105,22 @@ public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockInte
     }
 
     @Test
+    public void set_not_deleted_when_updating_deleted_value() throws D2Error {
+        DataValueObjectRepository repository = objectRepository();
+
+        repository.blockingSet("value");
+        DataValueStore.create(databaseAdapter).setState(repository.blockingGet(), State.TO_UPDATE);
+
+        repository.blockingDelete();
+        assertThat(repository.blockingGet().state(), is(State.TO_UPDATE));
+        assertThat(repository.blockingGet().deleted(), is(Boolean.TRUE));
+
+        repository.blockingSet("new_value");
+        assertThat(repository.blockingGet().state(), is(State.TO_UPDATE));
+        assertThat(repository.blockingGet().deleted(), is(Boolean.FALSE));
+    }
+
+    @Test
     public void return_that_a_value_exists_only_if_it_has_been_created() {
         assertThat(d2.dataValueModule().dataValues()
                 .value("no_period", "no_org_unit", "no_data_element",

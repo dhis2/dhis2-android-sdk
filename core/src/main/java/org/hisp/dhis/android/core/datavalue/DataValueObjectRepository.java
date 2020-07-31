@@ -75,7 +75,7 @@ public final class DataValueObjectRepository
     }
 
     public void blockingSet(String value) throws D2Error {
-        DataValue objectWithValue = setBuilder().value(value).build();
+        DataValue objectWithValue = setBuilder().value(value).deleted(false).build();
         setObject(objectWithValue);
     }
 

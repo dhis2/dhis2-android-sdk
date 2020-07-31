@@ -36,13 +36,16 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImp
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
 import org.hisp.dhis.android.core.datavalue.DataValue;
+import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataCallBundle;
+import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataCallBundleKey;
+import org.hisp.dhis.android.core.period.PeriodType;
 import org.junit.Before;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.getDataSetUids;
+import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.getDataSets;
 import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.getOrgUnitUids;
 import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.getPeriodIds;
 
@@ -65,9 +68,21 @@ public class DataValueEndpointCallRealIntegrationShould extends BaseRealIntegrat
     private Callable<List<DataValue>> createCall() {
         APICallExecutor apiCallExecutor = APICallExecutorImpl.create(d2.databaseAdapter());
         Handler<DataValue> dataValueHandler =  new ObjectWithoutUidHandlerImpl<>(
-                DataValueStore.create(databaseAdapter()));
+                DataValueStore.create(d2.databaseAdapter()));
+        AggregatedDataCallBundleKey key = AggregatedDataCallBundleKey.builder()
+                .periodType(PeriodType.Daily)
+                .futurePeriods(0)
+                .pastPeriods(30)
+                .lastUpdated(null)
+                .build();
+        AggregatedDataCallBundle bundle = AggregatedDataCallBundle.builder()
+                .key(key)
+                .dataSets(getDataSets())
+                .periodIds(getPeriodIds())
+                .rootOrganisationUnitUids(getOrgUnitUids())
+                .build();
         return new DataValueEndpointCallFactory(getGenericCallData(d2), apiCallExecutor, dataValueHandler).create(
-                DataValueQuery.create(getDataSetUids(), getPeriodIds(), getOrgUnitUids()));
+                DataValueQuery.create(bundle));
     }
 
     // @Test

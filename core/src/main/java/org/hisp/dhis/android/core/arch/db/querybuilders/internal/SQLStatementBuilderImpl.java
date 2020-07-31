@@ -130,6 +130,11 @@ public class SQLStatementBuilderImpl implements SQLStatementBuilder {
     }
 
     @Override
+    public String selectUidsWhere(String whereClause, String orderByClause) {
+        return SELECT + UID + FROM + tableName + WHERE + whereClause + ORDER_BY + orderByClause + ";";
+    }
+
+    @Override
     public String selectColumnWhere(String column, String whereClause) {
         return SELECT + column + FROM + tableName + WHERE + whereClause + ";";
     }
@@ -201,6 +206,11 @@ public class SQLStatementBuilderImpl implements SQLStatementBuilder {
     @Override
     public String countWhere(String whereClause) {
         return SELECT + "COUNT(*)" + FROM + tableName + WHERE + whereClause + ";";
+    }
+
+    @Override
+    public String countAndGroupBy(String column) {
+        return SELECT + column + " , COUNT(*)" + FROM + tableName + " GROUP BY " + column + ";";
     }
 
     public String update() {

@@ -36,17 +36,12 @@ import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.category.internal.CategoryModuleDownloader;
 import org.hisp.dhis.android.core.common.BaseCallShould;
-import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager;
-import org.hisp.dhis.android.core.constant.Constant;
 import org.hisp.dhis.android.core.constant.internal.ConstantModuleDownloader;
-import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.internal.DataSetModuleDownloader;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationTableInfo;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader;
-import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.internal.ProgramModuleDownloader;
 import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall;
 import org.hisp.dhis.android.core.settings.internal.SettingModuleDownloader;
@@ -61,9 +56,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.AdditionalAnswers;
 import org.mockito.Mock;
-
-import java.util.List;
-import java.util.concurrent.Callable;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
@@ -86,36 +78,6 @@ public class MetadataCallShould extends BaseCallShould {
 
     @Mock
     private RxAPICallExecutor rxAPICallExecutor;
-
-    @Mock
-    private DataSet dataSet;
-
-    @Mock
-    private OrganisationUnit organisationUnit;
-
-    @Mock
-    private Constant constant;
-
-    @Mock
-    private Callable<Unit> systemSettingDownloadCall;
-
-    @Mock
-    private Callable<User> userCall;
-
-    @Mock
-    private Callable<Unit> categoryDownloadCall;
-
-    @Mock
-    private Callable<List<Program>> programDownloadCall;
-
-    @Mock
-    private Callable<List<DataSet>> dataSetDownloadCall;
-
-    @Mock
-    private Callable<List<Constant>> constantCall;
-
-    @Mock
-    private Callable<List<OrganisationUnit>> organisationUnitDownloadCall;
 
     @Mock
     private SystemInfoModuleDownloader systemInfoDownloader;
@@ -151,9 +113,6 @@ public class MetadataCallShould extends BaseCallShould {
     private ConfigCase configCase;
 
     @Mock
-    private Callable<Void> refreshMetadataIdsCallable;
-
-    @Mock
     private GeneralSettingCall generalSettingCall;
 
     @Mock
@@ -170,25 +129,17 @@ public class MetadataCallShould extends BaseCallShould {
     public void setUp() throws Exception {
         super.setUp();
 
-        // Call factories
-        when(systemInfoDownloader.downloadMetadata()).thenReturn(Completable.complete());
-        when(systemSettingDownloader.downloadMetadata()).thenReturn(systemSettingDownloadCall);
-        when(userDownloader.downloadMetadata()).thenReturn(userCall);
-        when(programDownloader.downloadMetadata(anySet())).thenReturn(programDownloadCall);
-        when(categoryDownloader.downloadMetadata()).thenReturn(categoryDownloadCall);
-        when(organisationUnitDownloader.downloadMetadata(same(user))).thenReturn(organisationUnitDownloadCall);
-        when(dataSetDownloader.downloadMetadata(anySet())).thenReturn(dataSetDownloadCall);
-        when(constantDownloader.downloadMetadata()).thenReturn(constantCall);
-        when(smsModule.configCase()).thenReturn(configCase);
-        when(configCase.refreshMetadataIdsCallable()).thenReturn(refreshMetadataIdsCallable);
-
         // Calls
-        when(systemSettingDownloadCall.call()).thenReturn(new Unit());
-        when(userCall.call()).thenReturn(user);
-        when(categoryDownloadCall.call()).thenReturn(new Unit());
-        when(dataSetDownloadCall.call()).thenReturn(Lists.newArrayList(dataSet));
-        when(organisationUnitDownloadCall.call()).thenReturn(Lists.newArrayList(organisationUnit));
-        when(constantCall.call()).thenReturn(Lists.newArrayList(constant));
+        when(systemInfoDownloader.downloadMetadata()).thenReturn(Completable.complete());
+        when(systemSettingDownloader.downloadMetadata()).thenReturn(Completable.complete());
+        when(userDownloader.downloadMetadata()).thenReturn(Single.just(user));
+        when(programDownloader.downloadMetadata(anySet())).thenReturn(Single.just(Lists.emptyList()));
+        when(organisationUnitDownloader.downloadMetadata(same(user))).thenReturn(Single.just(Lists.emptyList()));
+        when(dataSetDownloader.downloadMetadata(anySet())).thenReturn(Single.just(Lists.emptyList()));
+        when(constantDownloader.downloadMetadata()).thenReturn(Single.just(Lists.emptyList()));
+        when(categoryDownloader.downloadMetadata()).thenReturn(Completable.complete());
+        when(smsModule.configCase()).thenReturn(configCase);
+        when(configCase.refreshMetadataIdsCallable()).thenReturn(Completable.complete());
         when(generalSettingCall.isDatabaseEncrypted()).thenReturn(Single.just(false));
 
         when(d2ErrorStore.insert(any(D2Error.class))).thenReturn(0L);
@@ -226,8 +177,8 @@ public class MetadataCallShould extends BaseCallShould {
     }
 
     @Test
-    public void fail_when_system_setting_call_fail() throws Exception {
-        when(systemSettingDownloadCall.call()).thenThrow(d2Error);
+    public void fail_when_system_setting_call_fail() {
+        when(systemSettingDownloader.downloadMetadata()).thenReturn(Completable.error(d2Error));
         downloadAndAssertError();
     }
 
@@ -238,38 +189,38 @@ public class MetadataCallShould extends BaseCallShould {
     }
 
     @Test
-    public void fail_when_user_call_fail() throws Exception {
-        when(userCall.call()).thenThrow(d2Error);
+    public void fail_when_user_call_fail() {
+        when(userDownloader.downloadMetadata()).thenReturn(Single.error(d2Error));
         downloadAndAssertError();
     }
 
     @Test
-    public void fail_when_category_download_call_fail() throws Exception {
-        when(categoryDownloadCall.call()).thenThrow(d2Error);
+    public void fail_when_category_download_call_fail() {
+        when(categoryDownloader.downloadMetadata()).thenReturn(Completable.error(d2Error));
         downloadAndAssertError();
     }
 
     @Test
-    public void fail_when_program_call_fail() throws Exception {
-        when(programDownloadCall.call()).thenThrow(d2Error);
+    public void fail_when_program_call_fail() {
+        when(programDownloader.downloadMetadata(anySet())).thenReturn(Single.error(d2Error));
         downloadAndAssertError();
     }
 
     @Test
-    public void fail_when_organisation_unit_call_fail() throws Exception {
-        when(organisationUnitDownloadCall.call()).thenThrow(d2Error);
+    public void fail_when_organisation_unit_call_fail() {
+        when(organisationUnitDownloader.downloadMetadata(user)).thenReturn(Single.error(d2Error));
         downloadAndAssertError();
     }
 
     @Test
-    public void fail_when_dataset_parent_call_fail() throws Exception {
-        when(dataSetDownloadCall.call()).thenThrow(d2Error);
+    public void fail_when_dataset_parent_call_fail() {
+        when(dataSetDownloader.downloadMetadata(anySet())).thenReturn(Single.error(d2Error));
         downloadAndAssertError();
     }
 
     @Test
-    public void fail_when_constant_call_fail() throws Exception {
-        when(constantCall.call()).thenThrow(d2Error);
+    public void fail_when_constant_call_fail() {
+        when(constantDownloader.downloadMetadata()).thenReturn(Single.error(d2Error));
         downloadAndAssertError();
     }
 

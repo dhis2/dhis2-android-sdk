@@ -68,12 +68,17 @@ public final class EnrollmentObjectRepository
         return updateObject(updateBuilder().incidentDate(incidentDate).build());
     }
 
+    public Unit setCompletedDate(Date completedDate) throws D2Error {
+        return updateObject(updateBuilder().completedDate(completedDate).build());
+    }
+
     public Unit setFollowUp(Boolean followUp) throws D2Error {
         return updateObject(updateBuilder().followUp(followUp).build());
     }
 
     public Unit setStatus(EnrollmentStatus enrollmentStatus) throws D2Error {
-        return updateObject(updateBuilder().status(enrollmentStatus).build());
+        Date completedDate = enrollmentStatus.equals(EnrollmentStatus.COMPLETED) ? new Date() : null;
+        return updateObject(updateBuilder().status(enrollmentStatus).completedDate(completedDate).build());
     }
 
     public Unit setGeometry(Geometry geometry) throws D2Error {

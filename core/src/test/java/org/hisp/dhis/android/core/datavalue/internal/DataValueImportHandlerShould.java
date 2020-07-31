@@ -69,6 +69,11 @@ public class DataValueImportHandlerShould {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
+        Collection<DataValue> dataValueCollection = new ArrayList<>();
+        dataValueCollection.add(dataValue);
+
+        dataValueSet.dataValues = dataValueCollection;
+
         dataValueImportHandler = new DataValueImportHandler(dataValueStore);
     }
 
@@ -91,12 +96,8 @@ public class DataValueImportHandlerShould {
     @Test
     public void successfullyImportedDataValues_shouldBeMarkedAsSynced() {
 
-        Collection<DataValue> dataValueCollection = new ArrayList<>();
-        dataValueCollection.add(dataValue);
-
-        dataValueSet.dataValues = dataValueCollection;
-
         when(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.SUCCESS);
+        when(dataValueStore.isDataValueBeingUpload(any(DataValue.class))).thenReturn(Boolean.TRUE);
 
         dataValueImportHandler.handleImportSummary(dataValueSet, dataValueImportSummary);
 
@@ -104,18 +105,26 @@ public class DataValueImportHandlerShould {
     }
 
     @Test
+    public void successfullyImportedAndDeletedDataValues_shouldBeDeleted() {
+
+        when(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.SUCCESS);
+        when(dataValueStore.isDataValueBeingUpload(any(DataValue.class))).thenReturn(Boolean.TRUE);
+        when(dataValueStore.isDeleted(any(DataValue.class))).thenReturn(Boolean.TRUE);
+
+        dataValueImportHandler.handleImportSummary(dataValueSet, dataValueImportSummary);
+
+        verify(dataValueStore, never()).setState(any(DataValue.class), any());
+        verify(dataValueStore, times(1)).deleteWhere(dataValue);
+    }
+
+    @Test
     public void unsuccessfullyImportedDataValues_shouldBeMarkedAsError() {
 
-        Collection<DataValue> dataValueCollection = new ArrayList<>();
-        dataValueCollection.add(dataValue);
-
-        dataValueSet.dataValues = dataValueCollection;
-
         when(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.ERROR);
+        when(dataValueStore.isDataValueBeingUpload(any(DataValue.class))).thenReturn(Boolean.TRUE);
 
         dataValueImportHandler.handleImportSummary(dataValueSet, dataValueImportSummary);
 
         verify(dataValueStore, times(1)).setState(dataValue, State.ERROR);
     }
-
 }

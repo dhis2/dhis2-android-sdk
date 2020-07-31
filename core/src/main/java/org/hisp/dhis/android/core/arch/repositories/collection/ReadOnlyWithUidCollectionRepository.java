@@ -31,6 +31,10 @@ import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectReposit
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
+import java.util.List;
+
+import io.reactivex.Single;
+
 public interface ReadOnlyWithUidCollectionRepository<M extends CoreObject & ObjectWithUidInterface>
         extends ReadOnlyCollectionRepository<M> {
 
@@ -41,4 +45,19 @@ public interface ReadOnlyWithUidCollectionRepository<M extends CoreObject & Obje
      * @return the {@link ReadOnlyObjectRepository}
      */
     ReadOnlyObjectRepository<M> uid(String uid);
+
+    /**
+     * Get the list of uids of objects in scope in an asynchronous way, returning a {@code Single<List<String>>}.
+     *
+     * @return A {@code Single} object with the list of uids.
+     */
+    Single<List<String>> getUids();
+
+    /**
+     * Get the list of uids of objects in scope in a synchronous way. Important: this is a blocking method and it should
+     * not be executed in the main thread. Consider the asynchronous version {@link #getUids()}.
+     *
+     * @return List of uids
+     */
+    List<String> blockingGetUids();
 }

@@ -29,17 +29,21 @@
 package org.hisp.dhis.android.core.trackedentity.internal;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper;
 import org.hisp.dhis.android.core.common.CoreColumns;
 import org.hisp.dhis.android.core.common.DataColumns;
+import org.hisp.dhis.android.core.common.DataObject;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor;
@@ -60,8 +64,6 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipDeleteCall;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStore;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
-import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
@@ -69,6 +71,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAcc
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -103,7 +106,6 @@ public final class TrackedEntityInstancePostCall {
 
     private final APICallExecutor apiCallExecutor;
     private final RelationshipDeleteCall relationshipDeleteCall;
-    private final SystemInfoModuleDownloader systemInfoDownloader;
 
     private static final int DEFAULT_PAGE_SIZE = 10;
 
@@ -122,8 +124,7 @@ public final class TrackedEntityInstancePostCall {
                                   @NonNull IdentifiableObjectStore<Note> noteStore,
                                   @NonNull TEIWebResponseHandler teiWebResponseHandler,
                                   @NonNull APICallExecutor apiCallExecutor,
-                                  @NonNull RelationshipDeleteCall relationshipDeleteCall,
-                                  @NonNull SystemInfoModuleDownloader systemInfoDownloader) {
+                                  @NonNull RelationshipDeleteCall relationshipDeleteCall) {
         this.versionManager = versionManager;
         this.relationshipDHISVersionManager = relationshipDHISVersionManager;
         this.relationshipRepository = relationshipRepository;
@@ -139,23 +140,19 @@ public final class TrackedEntityInstancePostCall {
         this.teiWebResponseHandler = teiWebResponseHandler;
         this.apiCallExecutor = apiCallExecutor;
         this.relationshipDeleteCall = relationshipDeleteCall;
-        this.systemInfoDownloader = systemInfoDownloader;
     }
 
     public Observable<D2Progress> uploadTrackedEntityInstances(
             List<TrackedEntityInstance> filteredTrackedEntityInstances) {
         return Observable.defer(() -> {
-            List<List<TrackedEntityInstance>> trackedEntityInstancesToPost =
-                getPartitionsToSync(filteredTrackedEntityInstances);
+            List<List<TrackedEntityInstance>> teiPartitions = getPartitionsToSync(filteredTrackedEntityInstances);
 
             // if size is 0, then no need to do network request
-            if (trackedEntityInstancesToPost.isEmpty()) {
+            if (teiPartitions.isEmpty()) {
                 return Observable.empty();
             } else {
-                D2ProgressManager progressManager = new D2ProgressManager(2);
 
-                return systemInfoDownloader.downloadMetadata().andThen(Observable.create(emitter -> {
-                    emitter.onNext(progressManager.increaseProgress(SystemInfo.class, false));
+                return Observable.create(emitter -> {
 
                     String strategy;
                     if (versionManager.is2_29()) {
@@ -164,7 +161,9 @@ public final class TrackedEntityInstancePostCall {
                         strategy = "SYNC";
                     }
 
-                    for (List<TrackedEntityInstance> partition : trackedEntityInstancesToPost) {
+                    D2ProgressManager progressManager = new D2ProgressManager(teiPartitions.size());
+
+                    for (List<TrackedEntityInstance> partition : teiPartitions) {
                         partition = relationshipDeleteCall.postDeletedRelationships(partition);
 
                         TrackedEntityInstancePayload trackedEntityInstancePayload =
@@ -176,15 +175,20 @@ public final class TrackedEntityInstancePostCall {
                                             trackedEntityInstancePayload, strategy),
                                     Collections.singletonList(409), TEIWebResponse.class);
                             teiWebResponseHandler.handleWebResponse(webResponse);
+                            emitter.onNext(progressManager.increaseProgress(TrackedEntityInstance.class, false));
                         } catch (D2Error d2Error) {
-                            markPartitionAs(partition, State.TO_UPDATE);
+                            restorePartitionStates(partition);
+                            if (d2Error.isOffline()) {
+                                emitter.onError(d2Error);
+                                break;
+                            } else {
+                                emitter.onNext(progressManager.increaseProgress(TrackedEntityInstance.class, false));
+                            }
                         }
-
                     }
 
-                    emitter.onNext(progressManager.increaseProgress(TrackedEntityInstance.class, true));
                     emitter.onComplete();
-                }));
+                });
             }
         });
     }
@@ -198,7 +202,7 @@ public final class TrackedEntityInstancePostCall {
         Map<String, List<TrackedEntityAttributeValue>> attributeValueMap =
                 trackedEntityAttributeValueStore.queryTrackedEntityAttributeValueToPost();
         String whereNotesClause = new WhereClauseBuilder()
-                .appendKeyStringValue(
+                .appendInKeyStringValues(
                         DataColumns.STATE, EnumHelper.asStringList(State.uploadableStatesIncludingError()))
                 .build();
         List<Note> notes = noteStore.selectWhere(whereNotesClause);
@@ -224,7 +228,7 @@ public final class TrackedEntityInstancePostCall {
                 partitionRecreated.add(recreatedTrackedEntityInstance);
             }
             trackedEntityInstancesRecreated.add(partitionRecreated);
-            markPartitionAs(partitionRecreated, State.UPLOADING);
+            setPartitionStates(partitionRecreated, State.UPLOADING);
         }
 
         return trackedEntityInstancesRecreated;
@@ -369,18 +373,23 @@ public final class TrackedEntityInstancePostCall {
         return notesForEnrollment;
     }
 
-    private void markPartitionAs(List<TrackedEntityInstance> partition, State state) {
-        List<String> trackedEntityInstancesUids = new ArrayList<>();
-        List<String> enrollmentUids = new ArrayList<>();
-        List<String> eventUids = new ArrayList<>();
-        List<String> relationshipUids = new ArrayList<>();
+
+    private void restorePartitionStates(List<TrackedEntityInstance> partition) {
+        setPartitionStates(partition, null);
+    }
+
+    private void setPartitionStates(List<TrackedEntityInstance> partition, @Nullable State forcedState) {
+        Map<State, List<String>> teiMap = new HashMap<>();
+        Map<State, List<String>> enrollmentMap = new HashMap<>();
+        Map<State, List<String>> eventMap = new HashMap<>();
+        Map<State, List<String>> relationshipMap = new HashMap<>();
 
         for (TrackedEntityInstance instance : partition) {
-            trackedEntityInstancesUids.add(instance.uid());
+            addState(teiMap, instance, forcedState);
             for (Enrollment enrollment : TrackedEntityInstanceInternalAccessor.accessEnrollments(instance)) {
-                enrollmentUids.add(enrollment.uid());
+                addState(enrollmentMap, enrollment, forcedState);
                 for (Event event : EnrollmentInternalAccessor.accessEvents(enrollment)) {
-                    eventUids.add(event.uid());
+                    addState(eventMap, event, forcedState);
                 }
             }
             for (Relationship229Compatible r : TrackedEntityInstanceInternalAccessor.accessRelationships(instance)) {
@@ -388,17 +397,40 @@ public final class TrackedEntityInstancePostCall {
                     String whereClause = new WhereClauseBuilder().appendKeyStringValue(CoreColumns.ID, r.id()).build();
                     Relationship dbRelationship = relationshipStore.selectOneWhere(whereClause);
                     if (dbRelationship != null) {
-                        relationshipUids.add(dbRelationship.uid());
+                        addState(relationshipMap, dbRelationship, forcedState);
                     }
                 } else {
-                    relationshipUids.add(r.uid());
+                    addState(relationshipMap, r, forcedState);
                 }
             }
         }
 
-        trackedEntityInstanceStore.setState(trackedEntityInstancesUids, state);
-        relationshipStore.setState(relationshipUids, state);
-        enrollmentStore.setState(enrollmentUids, state);
-        eventStore.setState(eventUids, state);
+        persistStates(teiMap, trackedEntityInstanceStore);
+        persistStates(enrollmentMap, enrollmentStore);
+        persistStates(eventMap, eventStore);
+        persistStates(relationshipMap, relationshipStore);
+    }
+
+    private <O extends DataObject & ObjectWithUidInterface> void addState(Map<State, List<String>> stateMap, O o,
+                                                                          @Nullable State forcedState) {
+        State s = getStateToSet(o, forcedState);
+        if (!stateMap.containsKey(s)) {
+            stateMap.put(s, new ArrayList<>());
+        }
+        stateMap.get(s).add(o.uid());
+    }
+
+    private <O extends DataObject & ObjectWithUidInterface> State getStateToSet(O o, @Nullable State forcedState) {
+        if (forcedState == null) {
+            return o.state() == State.UPLOADING ? State.TO_UPDATE : o.state();
+        } else {
+            return forcedState;
+        }
+    }
+
+    private void persistStates(Map<State, List<String>> map, IdentifiableDeletableDataObjectStore<?> store) {
+        for (Map.Entry<State, List<String>> kv : map.entrySet()) {
+            store.setState(kv.getValue(), kv.getKey());
+        }
     }
 }

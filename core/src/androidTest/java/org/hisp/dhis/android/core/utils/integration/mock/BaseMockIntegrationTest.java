@@ -41,7 +41,7 @@ public abstract class BaseMockIntegrationTest {
     protected static Dhis2MockServer dhis2MockServer;
     protected static DatabaseAdapter databaseAdapter;
 
-    static boolean setUpClass(MockIntegrationTestDatabaseContent content) throws Exception {
+    public static boolean setUpClass(MockIntegrationTestDatabaseContent content) throws Exception {
         MockIntegrationTestObjectsFactory.IntegrationTestObjectsWithIsNewInstance tuple = MockIntegrationTestObjectsFactory.getObjects(content);
         objects = tuple.objects;
         d2 = objects.d2;

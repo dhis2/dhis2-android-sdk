@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.domain.aggregated.data;
 
+import android.util.Log;
+
 import org.hisp.dhis.android.core.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2Factory;
@@ -82,9 +84,16 @@ public class AggregatedDataCallRealIntegrationShould extends BaseRealIntegration
         d2.userModule().logIn(username, password, url).blockingGet();
 
         d2.metadataModule().blockingDownload();
+
+        long start = System.currentTimeMillis();
+        d2.aggregatedModule().data().download().subscribe();
+        long end = System.currentTimeMillis();
+        Log.e("AGGSYN", "AGGSYN first: " + (end - start));
+
+        //d2.metadataModule().blockingDownload();
         d2.aggregatedModule().data().download().subscribe();
 
-        d2.metadataModule().blockingDownload();
-        d2.aggregatedModule().data().download().subscribe();
+        long end2 = System.currentTimeMillis();
+        Log.e("AGGSYN", "AGGSYN second: " + (end2 - end));
     }
 }

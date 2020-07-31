@@ -104,4 +104,14 @@ public class GeometryHelperShould {
 
         assertThat(multiPolygon).isEqualTo(coordinates);
     }
+
+    @Test
+    public void should_build_coordinates_without_spaces() {
+        List<Double> coordinates = Lists.newArrayList(longitude1, latitude1);
+
+        Geometry geometry = GeometryHelper.createPointGeometry(coordinates);
+
+        String expectedCoordinates = "[" + longitude1 + "," + latitude1 + "]";
+        assertThat(geometry.coordinates()).isEqualTo(expectedCoordinates);
+    }
 }

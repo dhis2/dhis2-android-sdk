@@ -302,14 +302,13 @@ public class ProgramIndicatorEngineIntegrationShould extends BaseMockIntegration
     @Test
     public void evaluate_d2_functions_with_dates() throws ParseException {
         Date enrollmentDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").parse("2018-05-05T00:00:00.000");
-        Date eventDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").parse("2018-05-21T00:00:00.000");
+        Date incidentDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").parse("2018-05-21T00:00:00.000");
 
-        createEnrollment(enrollmentDate, null);
-        createEvent(event1, programStage1, eventDate);
+        createEnrollment(enrollmentDate, incidentDate);
 
-        setProgramIndicatorExpressionAsAverage("d2:daysBetween(V{enrollment_date}, V{event_date})");
+        setProgramIndicatorExpressionAsAverage("d2:daysBetween(V{enrollment_date}, V{incident_date})");
 
-        String result = programIndicatorEngine.getProgramIndicatorValue(enrollmentUid, event1, programIndicatorUid);
+        String result = programIndicatorEngine.getProgramIndicatorValue(enrollmentUid, null, programIndicatorUid);
 
         assertThat(result).isEqualTo("16");
     }
@@ -323,7 +322,7 @@ public class ProgramIndicatorEngineIntegrationShould extends BaseMockIntegration
     private void createEvent(String eventUid, String programStageUid, Date eventDate, Date lastUpdated) {
         Event event = Event.builder().uid(eventUid).enrollment(enrollmentUid).lastUpdated(lastUpdated)
                 .program(programUid).programStage(programStageUid).organisationUnit(orgunitUid)
-                .eventDate(eventDate).build();
+                .eventDate(eventDate).deleted(false).build();
 
         EventStoreImpl.create(databaseAdapter).insert(event);
     }

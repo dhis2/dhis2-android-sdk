@@ -27,14 +27,11 @@
  */
 package org.hisp.dhis.android.core.program.internal;
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloaderImpl;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.arch.call.fetchers.internal.UidsNoResourceCallFetcher;
-import org.hisp.dhis.android.core.arch.call.internal.EndpointCall;
-import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.program.Program;
@@ -47,15 +44,19 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.internal.util.collections.Sets;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
+import java.util.Set;
 
-import retrofit2.Response;
+import io.reactivex.Single;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
@@ -76,59 +77,42 @@ public class ProgramEndpointCallShould extends BaseCallShould {
     @Captor
     private ArgumentCaptor<String> accessDataReadFilter;
 
-    @Mock
-    private retrofit2.Call<Payload<Program>> retrofitCall;
+    private Single<Payload<Program>> apiCall = Single.just(Payload.emptyPayload());
 
     @Mock
-    private Payload<Program> payload;
+    private APIDownloader mockedApiDownloader;
 
-    private Callable<List<Program>> endpointCall;
+    private Single<List<Program>> programCallResult = Single.just(Collections.emptyList());
 
+    private Set<String> programUids = Sets.newSet("programUid");
 
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         super.setUp();
 
-        APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter);
-        endpointCall = new ProgramEndpointCallFactory(genericCallData, apiCallExecutor,
-                programService, programHandler).create(Sets.newSet("programUid"));
-        when(retrofitCall.execute()).thenReturn(Response.success(payload));
-
-        when(programService.getPrograms(any(Fields.class), any(Filter.class), anyString(), anyBoolean())
-        ).thenReturn(retrofitCall);
-    }
-
-    private EndpointCall<Program> castedEndpointCall() {
-        return (EndpointCall<Program>) endpointCall;
+        when(mockedApiDownloader.downloadPartitioned(same(programUids), anyInt(), any(Handler.class), any())).thenReturn(programCallResult);
+        when(programService.getPrograms(any(Fields.class), any(Filter.class), anyString(),
+                anyBoolean())).thenReturn(apiCall);
     }
 
     @Test
-    public void return_correct_fields_when_invoke_server() throws Exception {
+    public void call_api_downloader() {
+        new ProgramCall(programService, programHandler, mockedApiDownloader).download(programUids).blockingGet();
+
+        verify(mockedApiDownloader).downloadPartitioned(same(programUids), anyInt(), any(Handler.class), any());
+    }
+
+    @Test
+    public void call_service_for_real_api_downloader() {
         when(programService.getPrograms(
                 fieldsCaptor.capture(), filterCaptor.capture(), accessDataReadFilter.capture(), anyBoolean())
-        ).thenReturn(retrofitCall);
+        ).thenReturn(apiCall);
 
-        endpointCall.call();
+        new ProgramCall(programService, programHandler, new APIDownloaderImpl(resourceHandler)).download(programUids).blockingGet();
 
         assertThat(fieldsCaptor.getValue()).isEqualTo(ProgramFields.allFields);
         assertThat(filterCaptor.getValue().values().iterator().next()).isEqualTo("programUid");
         assertThat(accessDataReadFilter.getValue()).isEqualTo("access.data.read:eq:true");
-    }
-
-    @Test
-    public void extend_endpoint_call() {
-        assertThat(endpointCall instanceof EndpointCall).isTrue();
-    }
-
-    @Test
-    public void have_payload_no_resource_fetcher() {
-        assertThat(castedEndpointCall().getFetcher() instanceof UidsNoResourceCallFetcher).isTrue();
-    }
-
-    @Test
-    public void have_transactional_no_resource_call_processor() {
-        EndpointCall<Program> castedEndpointCall = (EndpointCall<Program>) endpointCall;
-        assertThat(castedEndpointCall.getProcessor() instanceof TransactionalNoResourceSyncCallProcessor).isTrue();
     }
 }

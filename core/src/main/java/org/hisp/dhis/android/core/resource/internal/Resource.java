@@ -55,13 +55,11 @@ public abstract class Resource implements CoreObject {
         PROGRAM,
         OPTION_SET,
         TRACKED_ENTITY_TYPE,
-        TRACKED_ENTITY_INSTANCE,
         DATA_SET,
         DATA_ELEMENT,
         CATEGORY_COMBO,
         INDICATOR_TYPE,
         INDICATOR,
-        DATA_VALUE,
         PROGRAM_STAGE,
         RELATIONSHIP_TYPE,
         TRACKED_ENTITY_ATTRIBUTE_RESERVED_VALUE

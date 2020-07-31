@@ -35,6 +35,8 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityDataValueSamples;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.note.Note;
+import org.hisp.dhis.android.core.note.NoteCreateProjection;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramStage;
@@ -58,6 +60,11 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
 
     private static EventPostCall eventPostCall;
     private static EventStore eventStore;
+
+    private final String event1Id = "event1Id";
+    private final String event2Id = "event2Id";
+    private final String event3Id = "event3Id";
+    private final String event4Id = "event4Id";
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -88,7 +95,6 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
     public void handle_import_conflicts_correctly() {
         storeEvents();
 
-        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_event_import_conflicts.json");
 
         d2.eventModule().events().blockingUpload();
@@ -100,16 +106,14 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
     public void delete_old_import_conflicts() {
         storeEvents();
 
-        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_event_import_conflicts.json");
         d2.eventModule().events().blockingUpload();
         assertThat(d2.importModule().trackerImportConflicts().blockingCount()).isEqualTo(3);
 
-        eventStore.setState("event1Id", State.TO_POST);
-        eventStore.setState("event2Id", State.TO_POST);
-        eventStore.setState("event3Id", State.TO_POST);
+        eventStore.setState(event1Id, State.TO_POST);
+        eventStore.setState(event2Id, State.TO_POST);
+        eventStore.setState(event3Id, State.TO_POST);
 
-        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_event_import_conflicts2.json");
         d2.eventModule().events().blockingUpload();
         assertThat(d2.importModule().trackerImportConflicts().blockingCount()).isEqualTo(2);
@@ -122,7 +126,6 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
 
         d2.eventModule().events().uid("event1Id").blockingDelete();
 
-        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_event_import_conflicts2.json");
 
         d2.eventModule().events().blockingUpload();
@@ -163,7 +166,7 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
         List<Event> dbEvents = d2.eventModule().events().blockingGet();
 
         for (Event event : dbEvents) {
-            if ("event1Id".equals(event.uid()) || "event2Id".equals(event.uid()) || "event3Id".equals(event.uid())) {
+            if (event1Id.equals(event.uid()) || event2Id.equals(event.uid()) || event3Id.equals(event.uid())) {
                 assertThat(event.state()).isEqualTo(State.UPLOADING);
             } else {
                 assertThat(event.state()).isNotEqualTo(State.UPLOADING);
@@ -171,12 +174,28 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
         }
     }
 
-    private void storeEvents() {
-        String event1Id = "event1Id";
-        String event2Id = "event2Id";
-        String event3Id = "event3Id";
-        String event4Id = "event4Id";
+    @Test
+    public void build_payload_with_event_notes() throws D2Error {
+        storeEvents();
 
+        d2.noteModule().notes().blockingAdd(NoteCreateProjection.builder()
+                .event(event1Id)
+                .noteType(Note.NoteType.EVENT_NOTE)
+                .value("This is an event note")
+                .build());
+
+        List<Event> events = eventPostCall.queryDataToSync(null);
+
+        for (Event event : events) {
+            if (event1Id.equals(event.uid())) {
+                assertThat(event.notes().size()).isEqualTo(1);
+            } else {
+                assertThat(event.notes().size()).isEqualTo(0);
+            }
+        }
+    }
+
+    private void storeEvents() {
         OrganisationUnit orgUnit = d2.organisationUnitModule().organisationUnits().one().blockingGet();
         Program program = d2.programModule().programs().one().blockingGet();
         ProgramStage programStage = d2.programModule().programStages().one().blockingGet();

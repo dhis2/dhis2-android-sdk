@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.trackedentity.search;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.common.BaseCallShould;
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
+import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
@@ -106,9 +108,11 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
 
         query = TrackedEntityInstanceQueryOnline.builder().
                 orgUnits(orgUnits).orgUnitMode(OrganisationUnitMode.ACCESSIBLE).program("program")
-                .programStartDate(new Date()).programEndDate(new Date()).trackedEntityType("teiTypeStr")
-                .query("queryStr").attribute(attribute).filter(filter).includeDeleted(false)
-                .assignedUserMode(AssignedUserMode.ANY).paging(false).page(2).pageSize(33).build();
+                .programStartDate(new Date()).programEndDate(new Date()).enrollmentStatus(EnrollmentStatus.ACTIVE)
+                .eventStartDate(new Date()).eventEndDate(new Date()).eventStatus(EventStatus.OVERDUE)
+                .trackedEntityType("teiTypeStr").query("queryStr").attribute(attribute).filter(filter)
+                .includeDeleted(false).order("lastupdated:desc").assignedUserMode(AssignedUserMode.ANY)
+                .paging(false).page(2).pageSize(33).build();
 
         whenServiceQuery().thenReturn(searchGridCall);
         when(apiCallExecutor.executeObjectCall(searchGridCall)).thenReturn(searchGrid);
@@ -141,11 +145,16 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
                 eq(query.program()),
                 eq(query.formattedProgramStartDate()),
                 eq(query.formattedProgramEndDate()),
+                eq(query.enrollmentStatus().toString()),
+                eq(query.formattedEventStartDate()),
+                eq(query.formattedEventEndDate()),
+                eq(query.eventStatus().toString()),
                 eq(query.trackedEntityType()),
                 eq(query.query()),
                 eq(query.attribute()),
                 eq(query.filter()),
                 eq(query.assignedUserMode().toString()),
+                eq(query.order()),
                 eq(query.paging()),
                 eq(query.page()),
                 eq(query.pageSize()));
@@ -178,7 +187,8 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
     }
 
     private OngoingStubbing<Call<SearchGrid>> whenServiceQuery() {
-        return when(service.query(anyString(), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyList(), anyList(), anyString(), anyBoolean(), anyInt(), anyInt()));
+        return when(service.query(anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
+                anyString(), anyString(), anyString(), anyString(), anyString(), anyList(), anyList(),
+                anyString(), anyString(), anyBoolean(), anyInt(), anyInt()));
     }
 }

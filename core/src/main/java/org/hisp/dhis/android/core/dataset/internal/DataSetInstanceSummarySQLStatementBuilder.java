@@ -32,10 +32,17 @@ import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType;
 import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.DeletableDataColumns;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.dataset.DataSetTableInfo;
+
+import static org.hisp.dhis.android.core.common.IdentifiableColumns.NAME;
+import static org.hisp.dhis.android.core.common.IdentifiableColumns.UID;
 
 public class DataSetInstanceSummarySQLStatementBuilder extends DataSetInstanceSQLStatementBuilder {
 
     private static final String DATASETINSTANCE_COUNT_ALIAS = "dataSetInstanceCount";
+
+    private static final String DS_LIST_TABLE_ALIAS = "dslist";
+    private static final String DS_INSTANCE_ALIAS = "dsinstance";
 
     private static final String STATE = DataColumns.STATE;
 
@@ -46,15 +53,22 @@ public class DataSetInstanceSummarySQLStatementBuilder extends DataSetInstanceSQ
             "ELSE 4 END)";
 
     private static final String SELECT_CLAUSE = "SELECT " +
-            DeletableDataColumns.ID + "," +
-            DATASET_UID_ALIAS + "," +
-            DATASET_NAME_ALIAS + "," +
+            dot(DS_LIST_TABLE_ALIAS, DeletableDataColumns.ID) + AS + DeletableDataColumns.ID + "," +
+            UID + AS + DATASET_UID_ALIAS + "," +
+            NAME + AS + DATASET_NAME_ALIAS + "," +
             "SUM(" + VALUE_COUNT_ALIAS + ")" + AS + VALUE_COUNT_ALIAS +  "," +
-            "COUNT(*)" + AS + DATASETINSTANCE_COUNT_ALIAS + "," +
-            STATE + "," +
+            "COUNT(" + VALUE_COUNT_ALIAS + ")" + AS + DATASETINSTANCE_COUNT_ALIAS + "," +
+            "IFNULL(" + STATE + ",'SYNCED')" + AS + STATE + "," +
+            "MAX(" + LAST_UPDATED_ALIAS + ")" + AS + LAST_UPDATED_ALIAS + "," +
             SELECT_STATE_ORDERING;
 
-    private static final String GROUP_BY_CLAUSE = "GROUP BY " + DATASET_UID_ALIAS;
+    private static final String DATASET_LIST_CLAUSE = "SELECT " +
+            DeletableDataColumns.ID + ", " +
+            UID + ", " +
+            NAME + " " +
+            "FROM " + DataSetTableInfo.TABLE_INFO.name();
+
+    private static final String GROUP_BY_CLAUSE = "GROUP BY " + UID;
 
     @Override
     public String selectWhere(String whereClause) {
@@ -103,6 +117,15 @@ public class DataSetInstanceSummarySQLStatementBuilder extends DataSetInstanceSQ
     }
 
     private String wrapInnerClause(String innerClause) {
-        return SELECT_CLAUSE + " FROM (" + innerClause + ") " + GROUP_BY_CLAUSE;
+        return SELECT_CLAUSE +
+                " FROM (" + DATASET_LIST_CLAUSE + ") " + DS_LIST_TABLE_ALIAS +
+                " LEFT JOIN (" + innerClause + ") " + DS_INSTANCE_ALIAS +
+                " ON " + dot(DS_LIST_TABLE_ALIAS, UID) + " = " +
+                        dot(DS_INSTANCE_ALIAS, DATASET_UID_ALIAS) +
+                " " + GROUP_BY_CLAUSE;
+    }
+
+    private static String dot(String string1, String string2) {
+        return string1 + "." + string2;
     }
 }

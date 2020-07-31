@@ -33,27 +33,37 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.dataset.DataSet;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 @AutoValue
-abstract class AggregatedDataCallBundle {
-    abstract Collection<DataSet> dataSets();
+public abstract class AggregatedDataCallBundle {
+    public abstract AggregatedDataCallBundleKey key();
 
-    abstract Collection<String> periodIds();
+    public abstract List<DataSet> dataSets();
 
-    abstract Collection<String> orgUnitUids();
+    public abstract Collection<String> periodIds();
 
-    static Builder builder() {
+    public abstract Collection<String> rootOrganisationUnitUids();
+
+    public abstract Set<String> allOrganisationUnitUidsSet();
+
+    public static Builder builder() {
         return new AutoValue_AggregatedDataCallBundle.Builder();
     }
 
     @AutoValue.Builder
-    abstract static class Builder {
-        abstract Builder dataSets(Collection<DataSet> dataSets);
+    public abstract static class Builder {
+        public abstract Builder key(AggregatedDataCallBundleKey key);
 
-        abstract Builder periodIds(Collection<String> periodIds);
+        public abstract Builder dataSets(List<DataSet> dataSets);
 
-        abstract Builder orgUnitUids(Collection<String> orgUnitUids);
+        public abstract Builder periodIds(Collection<String> periodIds);
 
-        abstract AggregatedDataCallBundle build();
+        public abstract Builder rootOrganisationUnitUids(Collection<String> orgUnitUids);
+
+        public abstract Builder allOrganisationUnitUidsSet(Set<String> allOrganisationUnitUidsSet);
+
+        public abstract AggregatedDataCallBundle build();
     }
 }

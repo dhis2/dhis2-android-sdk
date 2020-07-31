@@ -36,6 +36,8 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 
+import java.util.Date;
+
 @AutoValue
 abstract class EventQuery extends BaseQuery {
 
@@ -49,7 +51,7 @@ abstract class EventQuery extends BaseQuery {
     abstract OrganisationUnitMode ouMode();
 
     @Nullable
-    abstract String lastUpdatedStartDate();
+    abstract Date lastUpdatedStartDate();
 
     @Nullable
     abstract String eventStartDate();
@@ -70,7 +72,7 @@ abstract class EventQuery extends BaseQuery {
 
         abstract Builder ouMode(OrganisationUnitMode ouMode);
 
-        abstract Builder lastUpdatedStartDate(String lastUpdatedStartDate);
+        abstract Builder lastUpdatedStartDate(Date lastUpdatedStartDate);
 
         abstract Builder eventStartDate(String eventStartDate);
 

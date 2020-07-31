@@ -30,10 +30,13 @@ package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl;
+import org.hisp.dhis.android.core.arch.cleaners.internal.LinkCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.LinkCleanerImpl;
 import org.hisp.dhis.android.core.arch.cleaners.internal.ParentOrphanCleaner;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
 import org.hisp.dhis.android.core.program.ProgramTableInfo.Columns;
@@ -76,6 +79,13 @@ public final class ProgramEntityDIModule {
     @Reusable
     public CollectionCleaner<Program> collectionCleaner(DatabaseAdapter databaseAdapter) {
         return new CollectionCleanerImpl<>(ProgramTableInfo.TABLE_INFO.name(), databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    public LinkCleaner<Program> linkCleaner(DatabaseAdapter databaseAdapter) {
+        return new LinkCleanerImpl<>(OrganisationUnitProgramLinkTableInfo.TABLE_INFO.name(),
+                OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM, databaseAdapter);
     }
 
     @Provides

@@ -52,8 +52,8 @@ import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
-import org.hisp.dhis.android.core.note.Note;
 import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.note.Note;
 
 import java.util.Date;
 import java.util.List;
@@ -103,6 +103,11 @@ public abstract class Enrollment extends BaseDeletableDataObject implements Obje
     @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date incidentDate();
+
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date completedDate();
 
     @Nullable
     @JsonProperty(EnrollmentTableInfo.Columns.FOLLOW_UP)
@@ -176,6 +181,8 @@ public abstract class Enrollment extends BaseDeletableDataObject implements Obje
         public abstract Builder enrollmentDate(Date enrollmentDate);
 
         public abstract Builder incidentDate(Date incidentDate);
+
+        public abstract Builder completedDate(Date completedDate);
 
         @JsonProperty(EnrollmentTableInfo.Columns.FOLLOW_UP)
         public abstract Builder followUp(Boolean followUp);

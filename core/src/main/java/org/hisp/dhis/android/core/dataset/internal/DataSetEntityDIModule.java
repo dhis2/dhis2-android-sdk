@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.dataset.internal;
 
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl;
+import org.hisp.dhis.android.core.arch.cleaners.internal.LinkCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.LinkCleanerImpl;
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
@@ -37,6 +39,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo;
 import org.hisp.dhis.android.core.dataset.DataSetTableInfo;
 import org.hisp.dhis.android.core.dataset.Section;
 import org.hisp.dhis.android.core.dataset.SectionTableInfo;
@@ -75,6 +78,14 @@ public final class DataSetEntityDIModule {
     @Reusable
     public CollectionCleaner<DataSet> collectionCleaner(DatabaseAdapter databaseAdapter) {
         return new CollectionCleanerImpl<>(DataSetTableInfo.TABLE_INFO.name(), databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    public LinkCleaner<DataSet> linkCleaner(DatabaseAdapter databaseAdapter) {
+        return new LinkCleanerImpl<>(DataSetOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
+                DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET,
+                databaseAdapter);
     }
 
     @Provides

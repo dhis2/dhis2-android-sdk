@@ -35,6 +35,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 
+import java.util.Date;
 import java.util.List;
 
 @AutoValue
@@ -43,6 +44,9 @@ abstract class EventQueryBundle {
     @NonNull
     abstract List<String> orgUnitList();
 
+    @Nullable
+    abstract String program();
+
     @NonNull
     abstract List<String> programList();
 
@@ -50,7 +54,7 @@ abstract class EventQueryBundle {
     abstract OrganisationUnitMode ouMode();
 
     @Nullable
-    abstract String lastUpdatedStartDate();
+    abstract Date lastUpdatedStartDate();
 
     @Nullable
     abstract String eventStartDate();
@@ -67,11 +71,13 @@ abstract class EventQueryBundle {
     abstract static class Builder {
         abstract Builder orgUnitList(List<String> orgUnitList);
 
+        abstract Builder program(String program);
+
         abstract Builder programList(List<String> programList);
 
         abstract Builder ouMode(OrganisationUnitMode ouMode);
 
-        abstract Builder lastUpdatedStartDate(String lastUpdatedStartDate);
+        abstract Builder lastUpdatedStartDate(Date lastUpdatedStartDate);
 
         abstract Builder eventStartDate(String eventStartDate);
 

@@ -51,7 +51,7 @@ public abstract class D2Error extends Exception implements CoreObject {
     @Nullable
     public abstract String url();
 
-    @NonNull
+    @Nullable
     @ColumnAdapter(D2ErrorComponentColumnAdapter.class)
     public abstract D2ErrorComponent errorComponent();
 
@@ -83,6 +83,10 @@ public abstract class D2Error extends Exception implements CoreObject {
     }
 
     public abstract Builder toBuilder();
+
+    public boolean isOffline() {
+        return errorCode() == D2ErrorCode.SOCKET_TIMEOUT || errorCode() == D2ErrorCode.UNKNOWN_HOST;
+    }
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseObject.Builder<Builder> {

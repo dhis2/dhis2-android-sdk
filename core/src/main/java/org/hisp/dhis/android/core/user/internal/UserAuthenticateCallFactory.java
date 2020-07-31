@@ -83,6 +83,7 @@ public final class UserAuthenticateCallFactory {
     private final WipeModule wipeModule;
     private final MultiUserDatabaseManager multiUserDatabaseManager;
     private final GeneralSettingCall generalSettingCall;
+    private final UserAuthenticateCallErrorCatcher apiCallErrorCatcher;
 
     @Inject
     UserAuthenticateCallFactory(
@@ -97,7 +98,8 @@ public final class UserAuthenticateCallFactory {
             @NonNull IdentifiableObjectStore<User> userStore,
             @NonNull WipeModule wipeModule,
             @NonNull MultiUserDatabaseManager multiUserDatabaseManager,
-            @NonNull GeneralSettingCall generalSettingCall) {
+            @NonNull GeneralSettingCall generalSettingCall,
+            @NonNull UserAuthenticateCallErrorCatcher apiCallErrorCatcher) {
         this.databaseAdapter = databaseAdapter;
         this.apiCallExecutor = apiCallExecutor;
 
@@ -113,6 +115,7 @@ public final class UserAuthenticateCallFactory {
         this.wipeModule = wipeModule;
         this.multiUserDatabaseManager = multiUserDatabaseManager;
         this.generalSettingCall = generalSettingCall;
+        this.apiCallErrorCatcher = apiCallErrorCatcher;
     }
 
     public Single<User> logIn(final String username, final String password, final String serverUrl) {
@@ -136,16 +139,17 @@ public final class UserAuthenticateCallFactory {
                 userService.authenticate(basic(username, password), UserFields.allFieldsWithoutOrgUnit);
         try {
             User authenticatedUser = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall,
-                    new UserAuthenticateCallErrorCatcher());
+                    apiCallErrorCatcher);
             return loginOnline(parsedServerUrl, authenticatedUser, username, password);
         } catch (D2Error d2Error) {
-            if (d2Error.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR ||
-                    d2Error.errorCode() == D2ErrorCode.SOCKET_TIMEOUT ||
-                    d2Error.errorCode() == D2ErrorCode.UNKNOWN_HOST) {
+            if (d2Error.isOffline()) {
                 return loginOffline(parsedServerUrl, username, password);
             } else if (d2Error.errorCode() == D2ErrorCode.USER_ACCOUNT_DISABLED) {
                 wipeModule.wipeEverything();
                 throw d2Error;
+            } else if (d2Error.errorCode() == D2ErrorCode.UNEXPECTED ||
+                d2Error.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR) {
+                throw noDHIS2Server();
             } else {
                 throw d2Error;
             }
@@ -165,8 +169,13 @@ public final class UserAuthenticateCallFactory {
             systemInfoRepository.download().blockingAwait();
 
             handleUser(authenticatedUser);
+
             transaction.setSuccessful();
             return authenticatedUser;
+        } catch (Exception e) {
+            // Credentials are stored and then removed in case of error since they are required to download system info
+            credentialsSecureStore.remove();
+            throw e;
         } finally {
             transaction.end();
         }
@@ -256,6 +265,14 @@ public final class UserAuthenticateCallFactory {
                     .errorComponent(D2ErrorComponent.SDK)
                     .build();
         }
+    }
+
+    private D2Error noDHIS2Server() {
+        return D2Error.builder()
+                .errorCode(D2ErrorCode.NO_DHIS2_SERVER)
+                .errorDescription("The URL is no DHIS2 server")
+                .errorComponent(D2ErrorComponent.SDK)
+                .build();
     }
 
     private void handleUser(User user) {

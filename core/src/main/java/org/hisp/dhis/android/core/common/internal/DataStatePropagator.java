@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.common.internal;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.note.Note;
+import org.hisp.dhis.android.core.relationship.RelationshipItem;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 
@@ -44,6 +45,8 @@ public interface DataStatePropagator {
     void propagateTrackedEntityAttributeUpdate(TrackedEntityAttributeValue trackedEntityAttributeValue);
 
     void propagateNoteCreation(Note note);
+
+    void propagateRelationshipUpdate(RelationshipItem item);
 
     void resetUploadingEnrollmentAndEventStates(String trackedEntityInstanceUid);
 

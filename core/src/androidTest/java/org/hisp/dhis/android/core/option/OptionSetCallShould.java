@@ -43,14 +43,15 @@ import org.junit.runner.RunWith;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
+
+import io.reactivex.Single;
 
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
 public class OptionSetCallShould extends BaseMockIntegrationTestEmptyEnqueable {
 
-    private Callable<List<OptionSet>> optionSetCall;
+    private Single<List<OptionSet>> optionSetCall;
     private D2CallExecutor d2CallExecutor;
 
     @Before
@@ -59,7 +60,7 @@ public class OptionSetCallShould extends BaseMockIntegrationTestEmptyEnqueable {
         Set<String> uids = new HashSet<>();
         uids.add("POc7DkGU3QU");
 
-        optionSetCall = objects.d2DIComponent.optionSetCallFactory().create(uids);
+        optionSetCall = objects.d2DIComponent.optionSetCall().download(uids);
 
         d2CallExecutor = D2CallExecutor.create(databaseAdapter);
     }
@@ -99,7 +100,7 @@ public class OptionSetCallShould extends BaseMockIntegrationTestEmptyEnqueable {
         return d2CallExecutor.executeD2CallTransactionally(() -> {
             List<OptionSet> optionSets = null;
             try {
-                optionSets = optionSetCall.call();
+                optionSets = optionSetCall.blockingGet();
             } catch (Exception ignored) {
             }
 

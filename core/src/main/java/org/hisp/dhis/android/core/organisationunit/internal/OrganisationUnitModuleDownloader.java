@@ -32,41 +32,41 @@ import org.hisp.dhis.android.core.user.User;
 
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Completable;
+import io.reactivex.Single;
 
 @Reusable
 public class OrganisationUnitModuleDownloader {
 
-    private final OrganisationUnitCallFactory organisationUnitCallFactory;
-    private final SearchOrganisationUnitOnDemandCallFactory searchOrganisationUnitOnDemandCallFactory;
-    private final OrganisationUnitLevelEndpointCallFactory organisationUnitLevelEndpointCallFactory;
+    private final OrganisationUnitCall organisationUnitCall;
+    private final SearchOrganisationUnitOnDemandCall searchOrganisationUnitOnDemandCall;
+    private final OrganisationUnitLevelEndpointCall organisationUnitLevelEndpointCall;
 
 
     @Inject
-    OrganisationUnitModuleDownloader(OrganisationUnitCallFactory organisationUnitCallFactory,
-                                     SearchOrganisationUnitOnDemandCallFactory
-                                             searchOrganisationUnitOnDemandCallFactory,
-                                     OrganisationUnitLevelEndpointCallFactory
-                                             organisationUnitLevelEndpointCallFactory) {
-        this.organisationUnitCallFactory = organisationUnitCallFactory;
-        this.searchOrganisationUnitOnDemandCallFactory = searchOrganisationUnitOnDemandCallFactory;
-        this.organisationUnitLevelEndpointCallFactory = organisationUnitLevelEndpointCallFactory;
+    OrganisationUnitModuleDownloader(OrganisationUnitCall organisationUnitCall,
+                                     SearchOrganisationUnitOnDemandCall
+                                             searchOrganisationUnitOnDemandCall,
+                                     OrganisationUnitLevelEndpointCall
+                                             organisationUnitLevelEndpointCall) {
+        this.organisationUnitCall = organisationUnitCall;
+        this.searchOrganisationUnitOnDemandCall = searchOrganisationUnitOnDemandCall;
+        this.organisationUnitLevelEndpointCall = organisationUnitLevelEndpointCall;
     }
 
-    public Callable<List<OrganisationUnit>> downloadMetadata(final User user) {
-        return () -> {
-            List<OrganisationUnit> organisationUnits = organisationUnitCallFactory.create(user).call();
-            organisationUnitLevelEndpointCallFactory.create().call();
-
-            return organisationUnits;
-        };
+    public Single<List<OrganisationUnit>> downloadMetadata(final User user) {
+        return organisationUnitLevelEndpointCall.download().flatMap(level -> organisationUnitCall.download(user));
     }
 
-    public Callable<List<OrganisationUnit>> downloadSearchOrganisationUnits(Set<String> uids, User user) {
-        return searchOrganisationUnitOnDemandCallFactory.create(uids, user);
+    public Completable downloadSearchOrganisationUnits(Set<String> uids) {
+        if (uids.isEmpty()) {
+            return Completable.complete();
+        } else {
+            return searchOrganisationUnitOnDemandCall.download(uids).ignoreElement();
+        }
     }
 }

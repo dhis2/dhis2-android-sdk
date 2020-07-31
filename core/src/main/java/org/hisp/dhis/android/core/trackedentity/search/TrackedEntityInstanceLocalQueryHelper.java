@@ -28,13 +28,19 @@
 
 package org.hisp.dhis.android.core.trackedentity.search;
 
+import com.google.common.base.Joiner;
+
+import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
 import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
+import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.event.EventTableInfo;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
@@ -43,12 +49,26 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTable
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo;
 import org.hisp.dhis.android.core.user.AuthenticatedUserTableInfo;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import static org.hisp.dhis.android.core.common.IdentifiableColumns.CREATED;
+import static org.hisp.dhis.android.core.common.IdentifiableColumns.LAST_UPDATED;
+import static org.hisp.dhis.android.core.common.IdentifiableColumns.NAME;
 import static org.hisp.dhis.android.core.common.IdentifiableColumns.UID;
+import static org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo.Columns.INCIDENT_DATE;
+import static org.hisp.dhis.android.core.event.EventTableInfo.Columns.DUE_DATE;
+import static org.hisp.dhis.android.core.event.EventTableInfo.Columns.EVENT_DATE;
 
-@SuppressWarnings({"PMD.GodClass"})
+@SuppressWarnings({
+        "PMD.GodClass",
+        "PMD.TooManyStaticImports",
+        "PMD.CyclomaticComplexity",
+        "PMD.StdCyclomaticComplexity"})
 final class TrackedEntityInstanceLocalQueryHelper {
+
+    private static final SafeDateFormat QUERY_FORMAT = new SafeDateFormat("yyyy-MM-dd");
 
     private static String TEI_ALIAS = "tei";
     private static String ENROLLMENT_ALIAS = "en";
@@ -68,7 +88,8 @@ final class TrackedEntityInstanceLocalQueryHelper {
     private static String TRACKED_ENTITY_INSTANCE =
             TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE;
 
-    private TrackedEntityInstanceLocalQueryHelper() { }
+    private TrackedEntityInstanceLocalQueryHelper() {
+    }
 
     @SuppressWarnings({"PMD.UseStringBufferForStringAppends", "PMD.CyclomaticComplexity", "PMD.NPathComplexity"})
     static String getSqlQuery(TrackedEntityInstanceQueryRepositoryScope scope, List<String> excludeList, int limit) {
@@ -78,7 +99,7 @@ final class TrackedEntityInstanceLocalQueryHelper {
 
         WhereClauseBuilder where = new WhereClauseBuilder();
 
-        if (hasProgram(scope) || hasEvent(scope)) {
+        if (hasProgram(scope)) {
             queryStr += String.format(" JOIN %s %s ON %s = %s",
                     EnrollmentTableInfo.TABLE_INFO.name(), ENROLLMENT_ALIAS,
                     dot(TEI_ALIAS, UID),
@@ -92,7 +113,7 @@ final class TrackedEntityInstanceLocalQueryHelper {
                         dot(ENROLLMENT_ALIAS, UID),
                         dot(EVENT_ALIAS, EventTableInfo.Columns.ENROLLMENT));
 
-                appendAssignedUserMode(where, scope);
+                appendEventWhere(where, scope);
             }
         }
 
@@ -128,8 +149,7 @@ final class TrackedEntityInstanceLocalQueryHelper {
             queryStr += " WHERE " + where.build();
         }
 
-        // TODO In case a program uid is provided, the server orders by enrollmentStatus.
-        queryStr += " ORDER BY " + TEI_LAST_UPDATED + " DESC ";
+        queryStr += orderByClause(scope);
 
         if (limit > 0) {
             queryStr += " LIMIT " + limit;
@@ -143,7 +163,8 @@ final class TrackedEntityInstanceLocalQueryHelper {
     }
 
     private static boolean hasEvent(TrackedEntityInstanceQueryRepositoryScope scope) {
-        return scope.assignedUserMode() != null;
+        return scope.assignedUserMode() != null || scope.eventStatus() != null ||
+                scope.eventStartDate() != null || scope.eventEndDate() != null;
     }
 
     private static void appendProgramWhere(WhereClauseBuilder where, TrackedEntityInstanceQueryRepositoryScope scope) {
@@ -158,15 +179,29 @@ final class TrackedEntityInstanceLocalQueryHelper {
             where.appendKeyLessThanOrEqStringValue(dot(ENROLLMENT_ALIAS, ENROLLMENT_DATE),
                     scope.formattedProgramEndDate());
         }
+        if (scope.enrollmentStatus() != null) {
+            where.appendInKeyEnumValues(dot(ENROLLMENT_ALIAS, EnrollmentTableInfo.Columns.STATUS),
+                    scope.enrollmentStatus());
+        }
         if (scope.includeDeleted() == null || !scope.includeDeleted()) {
             where.appendKeyOperatorValue(dot(ENROLLMENT_ALIAS, EnrollmentTableInfo.Columns.DELETED), "!=", "1");
         }
     }
 
     private static boolean hasOrgunits(TrackedEntityInstanceQueryRepositoryScope scope) {
-        return !scope.orgUnits().isEmpty() &&
-                !OrganisationUnitMode.ALL.equals(scope.orgUnitMode()) &&
-                !OrganisationUnitMode.ACCESSIBLE.equals(scope.orgUnitMode());
+        return !scope.orgUnits().isEmpty()
+                && !OrganisationUnitMode.ALL.equals(scope.orgUnitMode())
+                && !OrganisationUnitMode.ACCESSIBLE.equals(scope.orgUnitMode())
+                || hasOrgunitSortOrder(scope);
+    }
+
+    private static boolean hasOrgunitSortOrder(TrackedEntityInstanceQueryRepositoryScope scope) {
+        for (TrackedEntityInstanceQueryScopeOrderByItem order : scope.order()) {
+            if (order.column().equals(TrackedEntityInstanceQueryScopeOrderColumn.ORGUNIT_NAME)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static void appendOrgunitWhere(WhereClauseBuilder where, TrackedEntityInstanceQueryRepositoryScope scope) {
@@ -243,6 +278,62 @@ final class TrackedEntityInstanceLocalQueryHelper {
         }
     }
 
+    @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})
+    private static void appendEventWhere(WhereClauseBuilder where, TrackedEntityInstanceQueryRepositoryScope scope) {
+        if (scope.assignedUserMode() != null) {
+            appendAssignedUserMode(where, scope);
+        }
+        if (scope.eventStatus() == null) {
+            appendEventDates(where, scope, EVENT_DATE);
+        } else if (scope.eventStatus().size() > 0 && scope.eventStartDate() != null && scope.eventEndDate() != null) {
+            String nowStr = QUERY_FORMAT.format(new Date());
+            WhereClauseBuilder statusListWhere = new WhereClauseBuilder();
+            for (EventStatus eventStatus : scope.eventStatus()) {
+                WhereClauseBuilder statusWhere = new WhereClauseBuilder();
+                switch (eventStatus) {
+                    case ACTIVE:
+                    case COMPLETED:
+                    case VISITED:
+                        statusWhere.appendKeyStringValue(dot(EVENT_ALIAS, EventTableInfo.Columns.STATUS), eventStatus);
+                        appendEventDates(statusWhere, scope, EVENT_DATE);
+                        break;
+                    case SCHEDULE:
+                        appendEventDates(statusWhere, scope, DUE_DATE);
+                        statusWhere.appendIsNullValue(EVENT_DATE);
+                        statusWhere.appendIsNotNullValue(dot(EVENT_ALIAS, EventTableInfo.Columns.STATUS));
+                        statusWhere.appendKeyGreaterOrEqStringValue(dot(EVENT_ALIAS, DUE_DATE), nowStr);
+                        break;
+                    case OVERDUE:
+                        appendEventDates(statusWhere, scope, DUE_DATE);
+                        statusWhere.appendIsNullValue(EVENT_DATE);
+                        statusWhere.appendIsNotNullValue(dot(EVENT_ALIAS, EventTableInfo.Columns.STATUS));
+                        statusWhere.appendKeyLessThanStringValue(dot(EVENT_ALIAS, DUE_DATE), nowStr);
+                        break;
+                    case SKIPPED:
+                        statusWhere.appendKeyStringValue(dot(EVENT_ALIAS, EventTableInfo.Columns.STATUS), eventStatus);
+                        appendEventDates(statusWhere, scope, DUE_DATE);
+                        break;
+                    default:
+                        break;
+                }
+                statusListWhere.appendOrComplexQuery(statusWhere.build());
+            }
+            where.appendComplexQuery(statusListWhere.build());
+        }
+        where.appendKeyOperatorValue(dot(EVENT_ALIAS, EventTableInfo.Columns.DELETED), "!=", "1");
+    }
+
+    private static void appendEventDates(WhereClauseBuilder where,
+                                         TrackedEntityInstanceQueryRepositoryScope scope,
+                                         String targetDate) {
+        if (scope.eventStartDate() != null) {
+            where.appendKeyGreaterOrEqStringValue(dot(EVENT_ALIAS, targetDate), scope.formattedEventStartDate());
+        }
+        if (scope.eventEndDate() != null) {
+            where.appendKeyLessThanOrEqStringValue(dot(EVENT_ALIAS, targetDate), scope.formattedEventEndDate());
+        }
+    }
+
     private static void appendAssignedUserMode(WhereClauseBuilder where,
                                                TrackedEntityInstanceQueryRepositoryScope scope) {
         AssignedUserMode mode = scope.assignedUserMode();
@@ -267,6 +358,107 @@ final class TrackedEntityInstanceLocalQueryHelper {
             default:
                 break;
         }
+        where.appendKeyOperatorValue(dot(EVENT_ALIAS, EventTableInfo.Columns.DELETED), "!=", "1");
+    }
+
+    @SuppressWarnings({
+            "PMD.CyclomaticComplexity",
+            "PMD.StdCyclomaticComplexity"})
+    private static String orderByClause(TrackedEntityInstanceQueryRepositoryScope scope) {
+        List<String> orderClauses = new ArrayList<>();
+        for (TrackedEntityInstanceQueryScopeOrderByItem item : scope.order()) {
+            switch (item.column().type()) {
+                case CREATED:
+                    if (hasProgram(scope)) {
+                        orderClauses.add(orderByEnrollmentField(scope.program(), CREATED, item.direction()));
+                    } else {
+                        orderClauses.add(dot(TEI_ALIAS, CREATED) + " " + item.direction().name());
+                    }
+                    break;
+                case LAST_UPDATED:
+                    if (hasProgram(scope)) {
+                        orderClauses.add(orderByEnrollmentField(scope.program(), LAST_UPDATED, item.direction()));
+                    } else {
+                        orderClauses.add(dot(TEI_ALIAS, LAST_UPDATED) + " " + item.direction().name());
+                    }
+                    break;
+                case ORGUNIT_NAME:
+                    orderClauses.add(dot(ORGUNIT_ALIAS, NAME) + " " + item.direction().name());
+                    break;
+                case ATTRIBUTE:
+                    // Trick to put null values at the end of the list
+                    String attOrder = String.format("IFNULL((SELECT %s FROM %s WHERE %s = %s AND %s = %s), 'zzzzzzzz')",
+                            TrackedEntityAttributeValueTableInfo.Columns.VALUE,
+                            TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(),
+                            TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
+                            CollectionsHelper.withSingleQuotationMarks(item.column().value()),
+                            TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
+                            dot(TEI_ALIAS, UID));
+                    orderClauses.add(attOrder + " " + item.direction().name());
+                    break;
+                case ENROLLMENT_DATE:
+                    orderClauses.add(orderByEnrollmentField(scope.program(), ENROLLMENT_DATE, item.direction()));
+                    break;
+                case INCIDENT_DATE:
+                    orderClauses.add(orderByEnrollmentField(scope.program(), INCIDENT_DATE, item.direction()));
+                    break;
+                case ENROLLMENT_STATUS:
+                    orderClauses.add(orderByEnrollmentField(scope.program(), EnrollmentTableInfo.Columns.STATUS,
+                            item.direction()));
+                    break;
+                case EVENT_DATE:
+                    String eventField =
+                            "IFNULL(" + EVENT_DATE + "," + DUE_DATE + ")";
+                    orderClauses.add(orderByEventField(scope.program(), eventField, item.direction()));
+                    break;
+                case COMPLETION_DATE:
+                    orderClauses.add(orderByEventField(scope.program(), EventTableInfo.Columns.COMPLETE_DATE,
+                            item.direction()));
+                    break;
+                default:
+                    break;
+            }
+        }
+        orderClauses.add(getOrderByLastUpdated());
+
+        return " ORDER BY " + Joiner.on(", ").join(orderClauses);
+    }
+
+    private static String getOrderByLastUpdated() {
+        // TODO In case a program uid is provided, the server orders by enrollmentStatus.
+        return TEI_LAST_UPDATED + " DESC ";
+    }
+
+    private static String orderByEnrollmentField(String program, String field, RepositoryScope.OrderByDirection dir) {
+        String programClause = program == null ? "" :
+                "AND " + EnrollmentTableInfo.Columns.PROGRAM + " = '" + program + "'";
+        return String.format(
+                "IFNULL((SELECT %s FROM %s WHERE %s = %s %s ORDER BY %s DESC LIMIT 1), 'zzzzz') %s",
+                field,
+                EnrollmentTableInfo.TABLE_INFO.name(),
+                EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
+                dot(TEI_ALIAS, UID),
+                programClause,
+                EnrollmentTableInfo.Columns.ENROLLMENT_DATE,
+                dir.name());
+    }
+
+    private static String orderByEventField(String program, String field, RepositoryScope.OrderByDirection dir) {
+        String programClause = program == null ? "" :
+                "AND " + EnrollmentTableInfo.Columns.PROGRAM + " = '" + program + "'";
+        return String.format(
+                "(SELECT %s FROM %s WHERE %s IN (SELECT %s FROM %s WHERE %s = %s %s) " +
+                        "ORDER BY IFNULL(%s, %s) DESC LIMIT 1) %s",
+                field,
+                EventTableInfo.TABLE_INFO.name(),
+                EventTableInfo.Columns.ENROLLMENT,
+                UID,
+                EnrollmentTableInfo.TABLE_INFO.name(),
+                EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
+                dot(TEI_ALIAS, UID),
+                programClause,
+                EVENT_DATE, DUE_DATE,
+                dir.name());
     }
 
     private static String dot(String item1, String item2) {

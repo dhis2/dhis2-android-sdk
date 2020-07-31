@@ -78,6 +78,9 @@ public class EventQueryBundleFactoryShould {
     @Mock
     private ProgramSettings programSettings;
 
+    @Mock
+    private EventLastUpdatedManager lastUpdatedManager;
+
     private String p1 = "program1", p2 = "program2", p3 = "program3";
 
     private String ou1 = "ou1", ou1c1 = "ou1.1", ou2 = "ou2";
@@ -104,8 +107,9 @@ public class EventQueryBundleFactoryShould {
         when(programStore.getUidsByProgramType(any())).thenReturn(getProgramList());
         when(programSettingsObjectRepository.blockingGet()).thenReturn(programSettings);
 
-        bundleFactory = new EventQueryBundleFactory(resourceHandler, userOrganisationUnitLinkStore,
-                organisationUnitProgramLinkLinkStore, programStore, programSettingsObjectRepository);
+        bundleFactory = new EventQueryBundleFactory(userOrganisationUnitLinkStore,
+                organisationUnitProgramLinkLinkStore, programStore, programSettingsObjectRepository,
+                lastUpdatedManager);
     }
 
     @Test

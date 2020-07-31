@@ -27,23 +27,17 @@
  */
 package org.hisp.dhis.android.core.organisationunit.internal;
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.resource.internal.Resource;
-import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserInternalAccessor;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -54,7 +48,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Callable;
+
+import io.reactivex.Single;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.any;
@@ -67,14 +62,7 @@ import static org.mockito.Mockito.when;
 public class OrganisationUnitCallUnitShould {
 
     @Mock
-    private DatabaseAdapter databaseAdapter;
-
-    @Mock
-    private APICallExecutor apiCallExecutor;
-
-    //Mock return value of the mock service:
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private retrofit2.Call<Payload<OrganisationUnit>> retrofitCall;
+    private Payload<OrganisationUnit> organisationUnitPayload;
 
     @Mock
     private OrganisationUnitService organisationUnitService;
@@ -99,8 +87,6 @@ public class OrganisationUnitCallUnitShould {
     @Mock
     private OrganisationUnit organisationUnit;
 
-    private List<OrganisationUnit> organisationUnits;
-
     @Mock
     private User user;
 
@@ -111,19 +97,13 @@ public class OrganisationUnitCallUnitShould {
     private Date lastUpdated;
 
     @Mock
-    private ResourceHandler resourceHandler;
-
-    @Mock
-    private GenericCallData genericCallData;
-
-    @Mock
     private OrganisationUnitHandler organisationUnitHandler;
 
     @Mock
     private OrganisationUnitDisplayPathTransformer organisationUnitDisplayPathTransformer;
 
     //the call we are testing:
-    private Callable<List<OrganisationUnit>> organisationUnitCall;
+    private Single<List<OrganisationUnit>> organisationUnitCall;
 
     @Before
     public void setUp() throws IOException {
@@ -169,32 +149,24 @@ public class OrganisationUnitCallUnitShould {
         when(user.phoneNumber()).thenReturn("user_phone_number");
         when(user.nationality()).thenReturn("user_nationality");
 
-        organisationUnitCall = new OrganisationUnitCallFactory(organisationUnitService, organisationUnitHandler,
-                organisationUnitDisplayPathTransformer, apiCallExecutor, resourceHandler)
-                .create(user);
+        organisationUnitCall = new OrganisationUnitCall(organisationUnitService, organisationUnitHandler,
+                organisationUnitDisplayPathTransformer)
+                .download(user);
 
         //Return only one organisationUnit.
-        organisationUnits = Collections.singletonList(organisationUnit);
+        List<OrganisationUnit> organisationUnits = Collections.singletonList(organisationUnit);
         when(UserInternalAccessor.accessOrganisationUnits(user)).thenReturn(new ArrayList<>(organisationUnits));
 
         when(organisationUnitService.getOrganisationUnits(
                 fieldsCaptor.capture(), filtersCaptor.capture(), pagingCaptor.capture(),
                 pageSizeCaptor.capture(), pageCaptor.capture()
-        )).thenReturn(retrofitCall);
-
-        when(genericCallData.resourceHandler()).thenReturn(resourceHandler);
-        when(genericCallData.databaseAdapter()).thenReturn(databaseAdapter);
-        when(resourceHandler.getLastUpdated(Resource.Type.ORGANISATION_UNIT)).thenReturn("lastUpdated");
+        )).thenReturn(Single.just(organisationUnitPayload));
+        when(organisationUnitPayload.items()).thenReturn(organisationUnits);
     }
 
     @Test
-    @SuppressWarnings("unchecked")
-    public void invoke_server_with_correct_parameters() throws Exception {
-        String date = "2014-11-25T09:37:53.358";
-        when(genericCallData.resourceHandler().getLastUpdated(Resource.Type.ORGANISATION_UNIT))
-                .thenReturn(date);
-
-        organisationUnitCall.call();
+    public void invoke_server_with_correct_parameters() {
+        organisationUnitCall.blockingGet();
 
         assertThat(fieldsCaptor.getValue()).isEqualTo(OrganisationUnitFields.allFields);
         assertThat(filtersCaptor.getValue().operator()).isEqualTo("like");
@@ -205,10 +177,8 @@ public class OrganisationUnitCallUnitShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void invoke_handler_if_request_succeeds() throws Exception {
-        when(apiCallExecutor.executePayloadCall(retrofitCall)).thenReturn(organisationUnits);
-
-        organisationUnitCall.call();
+    public void invoke_handler_if_request_succeeds() {
+        organisationUnitCall.blockingGet();
 
         verify(organisationUnitHandler,  times(1)).handleMany(anyCollectionOf(OrganisationUnit.class),
                 any(Transformer.class));
@@ -216,9 +186,9 @@ public class OrganisationUnitCallUnitShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void perform_call_twice_on_consecutive_calls() throws Exception {
-        organisationUnitCall.call();
-        organisationUnitCall.call();
+    public void perform_call_twice_on_consecutive_calls() {
+        organisationUnitCall.blockingGet();
+        organisationUnitCall.blockingGet();
 
         verify(organisationUnitHandler, times(2)).handleMany(anyCollectionOf(OrganisationUnit.class),
                 any(Transformer.class));

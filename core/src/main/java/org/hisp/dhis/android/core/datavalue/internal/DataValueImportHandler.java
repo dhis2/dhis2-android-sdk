@@ -28,14 +28,25 @@
 
 package org.hisp.dhis.android.core.datavalue.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary;
+import org.hisp.dhis.android.core.imports.internal.ImportConflict;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 
 @Reusable
@@ -50,16 +61,82 @@ final class DataValueImportHandler {
 
     void handleImportSummary(@NonNull DataValueSet dataValueSet,
                              @NonNull DataValueImportSummary dataValueImportSummary) {
-
         if (dataValueImportSummary == null || dataValueSet == null) {
             return;
         }
 
-        State newState =
-                (dataValueImportSummary.importStatus() == ImportStatus.ERROR) ? State.ERROR : State.SYNCED;
+        State state = (dataValueImportSummary.importStatus() == ImportStatus.ERROR) ? State.ERROR :
+                (dataValueImportSummary.importStatus() == ImportStatus.WARNING) ? State.WARNING : State.SYNCED;
 
-        for (DataValue dataValue : dataValueSet.dataValues) {
-            dataValueStore.setState(dataValue, newState);
+        if (state == State.WARNING) {
+            handleDataValueWarnings(dataValueSet, dataValueImportSummary);
+        } else {
+            setStateToDataValues(state, dataValueSet.dataValues);
+        }
+    }
+
+    private void handleDataValueWarnings(DataValueSet dataValueSet, DataValueImportSummary dataValueImportSummary) {
+        if (dataValueImportSummary.importConflicts() == null) {
+            setStateToDataValues(State.WARNING, dataValueSet.dataValues);
+        } else {
+            Set<DataValue> dataValueConflicts = new HashSet<>();
+            boolean setStateOnlyForConflicts = Boolean.TRUE;
+            for (ImportConflict importConflict : dataValueImportSummary.importConflicts()) {
+                List<DataValue> dataValues = getDataValues(importConflict, dataValueSet.dataValues);
+                if (dataValues.isEmpty()) {
+                    setStateOnlyForConflicts = Boolean.FALSE;
+                }
+                dataValueConflicts.addAll(dataValues);
+            }
+            setDataValueStates(dataValueSet, dataValueConflicts, setStateOnlyForConflicts);
+        }
+    }
+
+    private void setDataValueStates(DataValueSet dataValueSet,
+                                    Set<DataValue> dataValueConflicts,
+                                    boolean setStateOnlyForConflicts) {
+        if (setStateOnlyForConflicts) {
+            Iterator<DataValue> i = dataValueSet.dataValues.iterator();
+            while (i.hasNext()) {
+                if (dataValueConflicts.contains(i.next())) {
+                    i.remove();
+                }
+            }
+            setStateToDataValues(State.WARNING, dataValueConflicts);
+        }
+        setStateToDataValues(State.SYNCED, dataValueSet.dataValues);
+    }
+
+    private List<DataValue> getDataValues(ImportConflict importConflict, Collection<DataValue> dataValues)
+            throws IllegalArgumentException {
+        String patternStr = "(?<=:\\s)[a-zA-Z0-9]{11}";
+        Pattern pattern = Pattern.compile(patternStr);
+        Matcher matcher = pattern.matcher(importConflict.value());
+
+        List<DataValue> foundDataValues = new ArrayList<>();
+
+        if (matcher.find()) {
+            String value = importConflict.object();
+            String dataElementUid = matcher.group(0);
+            for (DataValue dataValue : dataValues) {
+                if (dataValue.value().equals(value) && dataValue.dataElement().equals(dataElementUid)) {
+                    foundDataValues.add(dataValue);
+                }
+            }
+        }
+
+        return foundDataValues;
+    }
+
+    private void setStateToDataValues(State state, Collection<DataValue> dataValues) {
+        for (DataValue dataValue : dataValues) {
+            if (dataValueStore.isDataValueBeingUpload(dataValue)) {
+                if (state == State.SYNCED && dataValueStore.isDeleted(dataValue)) {
+                    dataValueStore.deleteWhere(dataValue);
+                } else {
+                    dataValueStore.setState(dataValue, state);
+                }
+            }
         }
     }
 }

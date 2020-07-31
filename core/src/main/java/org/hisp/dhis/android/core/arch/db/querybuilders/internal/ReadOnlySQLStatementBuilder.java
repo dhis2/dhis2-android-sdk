@@ -46,4 +46,6 @@ public interface ReadOnlySQLStatementBuilder {
     String count();
 
     String countWhere(String whereClause);
+
+    String countAndGroupBy(String column);
 }

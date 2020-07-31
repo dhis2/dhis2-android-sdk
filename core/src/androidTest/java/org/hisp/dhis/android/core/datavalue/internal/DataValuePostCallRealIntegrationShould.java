@@ -52,7 +52,7 @@ public class DataValuePostCallRealIntegrationShould extends BaseRealIntegrationT
 
         d2 = D2Factory.forNewDatabase();
 
-        dataValueStore = DataValueStore.create(databaseAdapter());
+        dataValueStore = DataValueStore.create(d2.databaseAdapter());
     }
 
     // commented out since it is a flaky test that works against a real server.
@@ -97,23 +97,19 @@ public class DataValuePostCallRealIntegrationShould extends BaseRealIntegrationT
 
 
     private boolean insertToPostDataValue(DataValue dataValue){
-
         return (dataValueStore.insert(dataValue) > 0);
     }
 
     private DataValue getTestDataValueWith(State state, int value) {
-
-        DataValue dataValue =
-                DataValue.builder()
-                        .dataElement("Qb790K82yqZ")
-                        .categoryOptionCombo("Gmbgme7z9BF")
-                        .attributeOptionCombo("RgrNGmlMOAJ")
-                        .period("2018")
-                        .organisationUnit("s91COhdBQ23")
+        String cocUid = d2.categoryModule().categoryOptionCombos().one().blockingGet().uid();
+        return DataValue.builder()
+                        .dataElement(d2.dataElementModule().dataElements().one().blockingGet().uid())
+                        .categoryOptionCombo(cocUid)
+                        .attributeOptionCombo(cocUid)
+                        .period(d2.periodModule().periods().one().blockingGet().periodId())
+                        .organisationUnit(d2.organisationUnitModule().organisationUnits().one().blockingGet().uid())
                         .value(String.valueOf(value))
                         .state(state)
                         .build();
-
-        return dataValue;
     }
 }

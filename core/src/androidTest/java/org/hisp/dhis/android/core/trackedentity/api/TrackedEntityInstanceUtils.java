@@ -282,6 +282,7 @@ class TrackedEntityInstanceUtils {
                 .program(validProgramUid)
                 .enrollmentDate(refDate)
                 .incidentDate(refDate)
+                .completedDate(refDate)
                 .followUp(false)
                 .status(EnrollmentStatus.ACTIVE)
                 .trackedEntityInstance(teiUid)

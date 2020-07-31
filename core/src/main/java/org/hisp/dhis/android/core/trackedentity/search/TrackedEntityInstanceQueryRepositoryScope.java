@@ -39,6 +39,8 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMod
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
 import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
+import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 
 import java.util.Collections;
@@ -78,6 +80,18 @@ abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseScope {
     public abstract Date programEndDate();
 
     @Nullable
+    public abstract List<EnrollmentStatus> enrollmentStatus();
+
+    @Nullable
+    public abstract List<EventStatus> eventStatus();
+
+    @Nullable
+    public abstract Date eventStartDate();
+
+    @Nullable
+    public abstract Date eventEndDate();
+
+    @Nullable
     public abstract String trackedEntityType();
 
     @Nullable
@@ -89,21 +103,38 @@ abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseScope {
     @Nullable
     public abstract AssignedUserMode assignedUserMode();
 
+    @NonNull
+    public abstract List<TrackedEntityInstanceQueryScopeOrderByItem> order();
+
     public String formattedProgramStartDate() {
-        return programStartDate() == null ? null : QUERY_FORMAT.format(programStartDate());
+        return formatDate(programStartDate());
     }
 
     public String formattedProgramEndDate() {
-        return programEndDate() == null ? null : QUERY_FORMAT.format(programEndDate());
+        return formatDate(programEndDate());
+    }
+
+    public String formattedEventStartDate() {
+        return formatDate(eventStartDate());
+    }
+
+    public String formattedEventEndDate() {
+        return formatDate(eventEndDate());
+    }
+
+    private String formatDate(Date date) {
+        return date == null ? null : QUERY_FORMAT.format(date);
     }
 
     public abstract Builder toBuilder();
 
     public static Builder builder() {
+
         return new AutoValue_TrackedEntityInstanceQueryRepositoryScope.Builder()
                 .attribute(Collections.emptyList())
                 .filter(Collections.emptyList())
                 .orgUnits(Collections.emptyList())
+                .order(Collections.emptyList())
                 .mode(RepositoryMode.OFFLINE_ONLY)
                 .includeDeleted(false);
     }
@@ -133,6 +164,14 @@ abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseScope {
 
         public abstract Builder programEndDate(Date programEndDate);
 
+        public abstract Builder enrollmentStatus(List<EnrollmentStatus> programStatus);
+
+        public abstract Builder eventStatus(List<EventStatus> eventStatus);
+
+        public abstract Builder eventStartDate(Date eventStartDate);
+
+        public abstract Builder eventEndDate(Date eventEndDate);
+
         public abstract Builder trackedEntityType(String trackedEntityType);
 
         public abstract Builder includeDeleted(Boolean includeDeleted);
@@ -140,6 +179,8 @@ abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseScope {
         public abstract Builder states(List<State> states);
 
         public abstract Builder assignedUserMode(AssignedUserMode assignedUserMode);
+
+        public abstract Builder order(List<TrackedEntityInstanceQueryScopeOrderByItem> order);
 
         abstract TrackedEntityInstanceQueryRepositoryScope autoBuild();
 

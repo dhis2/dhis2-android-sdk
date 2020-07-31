@@ -27,44 +27,39 @@
  */
 package org.hisp.dhis.android.core.category.internal;
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
-import org.hisp.dhis.android.core.arch.modules.internal.MetadataModuleDownloader;
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
+import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
-import org.hisp.dhis.android.core.common.Unit;
-
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Completable;
+import io.reactivex.Single;
 
 @Reusable
-public class CategoryModuleDownloader implements MetadataModuleDownloader<Unit> {
+public class CategoryModuleDownloader implements UntypedModuleDownloader {
 
-    private final UidsCallFactory<Category> categoryCallFactory;
-    private final UidsCallFactory<CategoryCombo> categoryComboCallFactory;
+    private final UidsCall<Category> categoryCall;
+    private final UidsCall<CategoryCombo> categoryComboCall;
     private final CategoryComboUidsSeeker categoryComboUidsSeeker;
 
     @Inject
-    CategoryModuleDownloader(UidsCallFactory<Category> categoryCallFactory,
-                             UidsCallFactory<CategoryCombo> categoryComboCallFactory,
+    CategoryModuleDownloader(UidsCall<Category> categoryCall,
+                             UidsCall<CategoryCombo> categoryComboCall,
                              CategoryComboUidsSeeker categoryComboUidsSeeker) {
-        this.categoryCallFactory = categoryCallFactory;
-        this.categoryComboCallFactory = categoryComboCallFactory;
+        this.categoryCall = categoryCall;
+        this.categoryComboCall = categoryComboCall;
         this.categoryComboUidsSeeker = categoryComboUidsSeeker;
     }
 
     @Override
-    public Callable<Unit> downloadMetadata() {
-        return () -> {
-            Set<String> comboUids = categoryComboUidsSeeker.seekUids();
-            List<CategoryCombo> categoryCombos = categoryComboCallFactory.create(comboUids).call();
-            categoryCallFactory.create(CategoryParentUidsHelper.getCategoryUids(categoryCombos)).call();
-
-            return new Unit();
-        };
+    public Completable downloadMetadata() {
+        return Single.fromCallable(categoryComboUidsSeeker::seekUids)
+                .flatMap(categoryComboCall::download)
+                .flatMap(categoryCombos ->
+                        categoryCall.download(CategoryParentUidsHelper.getCategoryUids(categoryCombos)))
+                .ignoreElement();
     }
 }

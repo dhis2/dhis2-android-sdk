@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUidCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseReadOnlyWithUidCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
@@ -69,13 +70,14 @@ import static org.hisp.dhis.android.core.relationship.RelationshipHelper.areItem
 @Reusable
 @SuppressWarnings("PMD.ExcessiveImports")
 public class RelationshipCollectionRepository
-        extends ReadOnlyCollectionRepositoryImpl<Relationship, RelationshipCollectionRepository>
+        extends BaseReadOnlyWithUidCollectionRepositoryImpl<Relationship, RelationshipCollectionRepository>
         implements ReadWriteWithUidCollectionRepository<Relationship, Relationship> {
 
     private final RelationshipStore store;
     private final RelationshipHandler relationshipHandler;
     private final RelationshipItemStore relationshipItemStore;
     private final RelationshipItemElementStoreSelector storeSelector;
+    private final DataStatePropagator dataStatePropagator;
 
     @Inject
     RelationshipCollectionRepository(final RelationshipStore store,
@@ -83,14 +85,16 @@ public class RelationshipCollectionRepository
                                      final RepositoryScope scope,
                                      final RelationshipHandler relationshipHandler,
                                      final RelationshipItemStore relationshipItemStore,
-                                     final RelationshipItemElementStoreSelector storeSelector) {
+                                     final RelationshipItemElementStoreSelector storeSelector,
+                                     final DataStatePropagator dataStatePropagator) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 s -> new RelationshipCollectionRepository(store, childrenAppenders, s,
-                        relationshipHandler, relationshipItemStore, storeSelector)));
+                        relationshipHandler, relationshipItemStore, storeSelector, dataStatePropagator)));
         this.store = store;
         this.relationshipHandler = relationshipHandler;
         this.relationshipItemStore = relationshipItemStore;
         this.storeSelector = storeSelector;
+        this.dataStatePropagator = dataStatePropagator;
     }
 
     @Override
@@ -125,7 +129,7 @@ public class RelationshipCollectionRepository
                         .state(State.TO_POST)
                         .deleted(false)
                         .build());
-                setToUpdate(fromStore, fromState, from.elementUid());
+                dataStatePropagator.propagateRelationshipUpdate(from);
             } else {
                 throw D2Error
                         .builder()
@@ -143,17 +147,11 @@ public class RelationshipCollectionRepository
     @Override
     public ReadWriteObjectRepository<Relationship> uid(String uid) {
         RepositoryScope updatedScope = RepositoryScopeHelper.withUidFilterItem(scope, uid);
-        return new RelationshipObjectRepository(store, uid, childrenAppenders, updatedScope, storeSelector);
+        return new RelationshipObjectRepository(store, uid, childrenAppenders, updatedScope, dataStatePropagator);
     }
 
     private boolean isUpdatableState(State state) {
         return state != State.RELATIONSHIP;
-    }
-
-    private void setToUpdate(StoreWithState store, State state, String elementUid) {
-        if (state != State.TO_POST) {
-            store.setState(elementUid, State.TO_UPDATE);
-        }
     }
 
     public List<Relationship> getByItem(@NonNull RelationshipItem searchItem) {

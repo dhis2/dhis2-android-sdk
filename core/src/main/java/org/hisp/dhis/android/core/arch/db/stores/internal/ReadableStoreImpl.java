@@ -40,7 +40,9 @@ import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ReadableStoreImpl<M extends CoreObject> implements ReadableStore<M> {
     protected final DatabaseAdapter databaseAdapter;
@@ -128,6 +130,23 @@ public class ReadableStoreImpl<M extends CoreObject> implements ReadableStore<M>
     @Override
     public int countWhere(@NonNull String whereClause) {
         return processCount(databaseAdapter.rawQuery(builder.countWhere(whereClause)));
+    }
+
+    @Override
+    public Map<String, Integer> groupAndGetCountBy(@NonNull String column) {
+        Map<String, Integer> result = new HashMap<>();
+        try(Cursor cursor = databaseAdapter.rawQuery(builder.countAndGroupBy(column))) {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                do {
+                    String columnValue = cursor.getString(0);
+                    Integer countValue = cursor.getInt(1);
+                    result.put(columnValue, countValue);
+                }
+                while (cursor.moveToNext());
+            }
+        }
+        return result;
     }
 
     protected int processCount(Cursor cursor) {

@@ -65,22 +65,23 @@ final class DataSetCompleteRegistrationCallFactory extends QueryCallFactoryImpl<
 
     @Override
     protected CallFetcher<DataSetCompleteRegistration> fetcher(
-            final DataSetCompleteRegistrationQuery dataSetCompleteRegistrationQuery) {
+            final DataSetCompleteRegistrationQuery query) {
 
         return new DataSetCompleteRegistrationCallFetcher(
-                dataSetCompleteRegistrationQuery.dataSetUids(),
-                dataSetCompleteRegistrationQuery.periodIds(),
-                dataSetCompleteRegistrationQuery.rootOrgUnitUids(),
-                apiCallExecutor) {
+                query.dataSetUids(),
+                query.periodIds(),
+                query.rootOrgUnitUids(),
+                query.lastUpdatedStr(), apiCallExecutor) {
 
             @Override
             protected Call<DataSetCompleteRegistrationPayload> getCall(
-                    DataSetCompleteRegistrationQuery dataSetCompleteRegistrationQuery) {
+                    DataSetCompleteRegistrationQuery query) {
                 return service.getDataSetCompleteRegistrations(
                         DataSetCompleteRegistrationFields.allFields,
-                        commaSeparatedCollectionValues(dataSetCompleteRegistrationQuery.dataSetUids()),
-                        commaSeparatedCollectionValues(dataSetCompleteRegistrationQuery.periodIds()),
-                        commaSeparatedCollectionValues(dataSetCompleteRegistrationQuery.rootOrgUnitUids()),
+                        query.lastUpdatedStr(),
+                        commaSeparatedCollectionValues(query.dataSetUids()),
+                        commaSeparatedCollectionValues(query.periodIds()),
+                        commaSeparatedCollectionValues(query.rootOrgUnitUids()),
                         Boolean.TRUE,
                         Boolean.FALSE);
             }

@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.dataset.internal;
 
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.LinkCleaner;
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
@@ -66,6 +67,7 @@ final class DataSetHandler extends IdentifiableHandlerImpl<DataSet> {
     private final LinkHandler<DataSetElement, DataSetElement> dataSetElementLinkHandler;
     private final LinkHandler<Indicator, DataSetIndicatorLink> dataSetIndicatorLinkHandler;
     private final CollectionCleaner<DataSet> collectionCleaner;
+    private final LinkCleaner<DataSet> linkCleaner;
 
     @Inject
     DataSetHandler(IdentifiableObjectStore<DataSet> dataSetStore,
@@ -77,7 +79,7 @@ final class DataSetHandler extends IdentifiableHandlerImpl<DataSet> {
                    LinkHandler<DataInputPeriod, DataInputPeriod> dataInputPeriodHandler,
                    LinkHandler<DataSetElement, DataSetElement> dataSetElementLinkHandler,
                    LinkHandler<Indicator, DataSetIndicatorLink> dataSetIndicatorLinkHandler,
-                   CollectionCleaner<DataSet> collectionCleaner) {
+                   CollectionCleaner<DataSet> collectionCleaner, LinkCleaner<DataSet> linkCleaner) {
 
         super(dataSetStore);
         this.sectionHandler = sectionHandler;
@@ -88,6 +90,7 @@ final class DataSetHandler extends IdentifiableHandlerImpl<DataSet> {
         this.dataSetElementLinkHandler = dataSetElementLinkHandler;
         this.dataSetIndicatorLinkHandler = dataSetIndicatorLinkHandler;
         this.collectionCleaner = collectionCleaner;
+        this.linkCleaner = linkCleaner;
     }
 
     @Override
@@ -109,7 +112,7 @@ final class DataSetHandler extends IdentifiableHandlerImpl<DataSet> {
                 dataInputPeriod -> dataInputPeriod.toBuilder().dataSet(ObjectWithUid.create(dataSet.uid())).build());
 
         dataSetElementLinkHandler.handleMany(dataSet.uid(), dataSet.dataSetElements(),
-                dataSetElement -> dataSetElement);
+                dataSetElement -> dataSetElement.toBuilder().dataSet(ObjectWithUid.create(dataSet.uid())).build());
 
         dataSetIndicatorLinkHandler.handleMany(dataSet.uid(), dataSet.indicators(),
                 indicator -> DataSetIndicatorLink.builder().dataSet(dataSet.uid()).indicator(indicator.uid()).build());
@@ -122,5 +125,6 @@ final class DataSetHandler extends IdentifiableHandlerImpl<DataSet> {
     @Override
     protected void afterCollectionHandled(Collection<DataSet> dataSets) {
         collectionCleaner.deleteNotPresent(dataSets);
+        linkCleaner.deleteNotPresent(dataSets);
     }
 }

@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleaner;
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
@@ -64,8 +65,7 @@ final class RxAPICallExecutorImpl implements RxAPICallExecutor {
     }
 
     @Override
-    public <P> Observable<P> wrapObservableTransactionally(Observable<P> observable,
-                                                            boolean cleanForeignKeys) {
+    public <P> Observable<P> wrapObservableTransactionally(Observable<P> observable, boolean cleanForeignKeys) {
         return Observable.fromCallable(databaseAdapter::beginNewTransaction).flatMap(transaction -> observable
                 .doOnComplete(() -> {
                     if (cleanForeignKeys) {
@@ -76,6 +76,21 @@ final class RxAPICallExecutorImpl implements RxAPICallExecutor {
                 }).onErrorResumeNext(throwable -> {
                     transaction.end();
                     return Observable.error(mapAndStore(throwable, true));
+                }));
+    }
+
+    @Override
+    public Completable wrapCompletableTransactionally(Completable completable, boolean cleanForeignKeys) {
+        return Single.fromCallable(databaseAdapter::beginNewTransaction).flatMapCompletable(transaction -> completable
+                .doOnComplete(() -> {
+                    if (cleanForeignKeys) {
+                        foreignKeyCleaner.cleanForeignKeyErrors();
+                    }
+                    transaction.setSuccessful();
+                    transaction.end();
+                }).onErrorResumeNext(throwable -> {
+                    transaction.end();
+                    return Completable.error(mapAndStore(throwable, true));
                 }));
     }
 

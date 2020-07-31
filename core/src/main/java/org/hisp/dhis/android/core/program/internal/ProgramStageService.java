@@ -32,14 +32,14 @@ import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.program.ProgramStage;
 
-import retrofit2.Call;
+import io.reactivex.Single;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 interface ProgramStageService {
     @GET("programStages")
-    Call<Payload<ProgramStage>> getProgramStages(@Query("fields") @Which Fields<ProgramStage> fields,
-                                                 @Query("filter") String programUidsFilterString,
-                                                 @Query("filter") String accessDataReadFilter,
-                                                 @Query("paging") Boolean paging);
+    Single<Payload<ProgramStage>> getProgramStages(@Query("fields") @Which Fields<ProgramStage> fields,
+                                                   @Query("filter") String programUidsFilterString,
+                                                   @Query("filter") String accessDataReadFilter,
+                                                   @Query("paging") Boolean paging);
 }

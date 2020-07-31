@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.program.ProgramRuleVariable;
 import org.hisp.dhis.android.core.program.ProgramRuleVariableSourceType;
 
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate;
 
 public class ProgramRuleVariableSamples {
 
@@ -49,5 +50,19 @@ public class ProgramRuleVariableSamples {
                 .trackedEntityAttribute(ObjectWithUid.create("tracked_entity_attribute"))
                 .programRuleVariableSourceType(ProgramRuleVariableSourceType.DATAELEMENT_NEWEST_EVENT_PROGRAM);
         return builder.build();
+    }
+
+    public static ProgramRuleVariable getHemoglobin() {
+        return ProgramRuleVariable.builder()
+                .id(1L)
+                .uid("omrL0gtPpDL")
+                .created(parseDate("2016-04-12T15:57:18.645"))
+                .lastUpdated(parseDate("2017-05-23T00:29:24.356"))
+                .name("hemoglobin")
+                .displayName("hemoglobin")
+                .programRuleVariableSourceType(ProgramRuleVariableSourceType.DATAELEMENT_NEWEST_EVENT_PROGRAM)
+                .program(ObjectWithUid.create("lxAQ7Zs9VYR"))
+                .dataElement(ObjectWithUid.create("vANAXwtLwcT"))
+                .build();
     }
 }

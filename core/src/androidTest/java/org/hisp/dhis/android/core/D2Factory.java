@@ -72,7 +72,7 @@ public class D2Factory {
         return d2;
     }
 
-    private static D2Configuration d2Configuration(Context context) {
+    public static D2Configuration d2Configuration(Context context) {
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
         return D2Configuration.builder()

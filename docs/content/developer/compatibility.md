@@ -13,3 +13,4 @@ Compatibility table between DHIS2 Android SDK library, DHIS2 core and Android SD
 | 1.1.0    | 2.29 -> 2.34     | 19 - 28     |
 | 1.1.1    | 2.29 -> 2.34     | 19 - 28     |
 | 1.1.2    | 2.29 -> 2.34     | 19 - 28     |
+| 1.2.0    | 2.29 -> 2.34     | 19 - 28     |

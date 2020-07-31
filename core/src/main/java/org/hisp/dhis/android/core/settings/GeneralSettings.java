@@ -81,6 +81,8 @@ public abstract class GeneralSettings implements CoreObject {
         return $AutoValue_GeneralSettings.createFromCursor(cursor);
     }
 
+    public abstract Builder toBuilder();
+
     public static Builder builder() {
         return new $AutoValue_GeneralSettings.Builder();
     }

@@ -48,11 +48,12 @@ import javax.annotation.Nullable;
 import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.UID;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_DataElementOperand.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_DataElementOperand.Builder.class)
 public abstract class DataElementOperand extends BaseObject
         implements ObjectWithUidInterface, ObjectWithDeleteInterface {
 
     @Override
+    @Nullable
     @JsonProperty(UID)
     public abstract String uid();
 
@@ -79,7 +80,7 @@ public abstract class DataElementOperand extends BaseObject
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new AutoValue_DataElementOperand.Builder();
+        return new $$AutoValue_DataElementOperand.Builder();
     }
 
     @AutoValue.Builder

@@ -52,14 +52,14 @@ final class TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory {
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
     private final RelationshipStore relationshipStore;
     private final TrackedEntityInstanceService service;
-    private final TrackedEntityInstanceRelationshipPersistenceCallFactory persistenceCallFactory;
+    private final TrackedEntityInstancePersistenceCallFactory persistenceCallFactory;
 
     @Inject
     TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory(
             @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
             @NonNull RelationshipStore relationshipStore,
             @NonNull TrackedEntityInstanceService service,
-            @NonNull TrackedEntityInstanceRelationshipPersistenceCallFactory persistenceCallFactory) {
+            @NonNull TrackedEntityInstancePersistenceCallFactory persistenceCallFactory) {
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
         this.relationshipStore = relationshipStore;
         this.service = service;
@@ -91,7 +91,7 @@ final class TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory {
                 return Single.merge(singles)
                         .collect((Callable<List<TrackedEntityInstance>>) ArrayList::new,
                                 (teis, payload) -> teis.addAll(payload.items()))
-                        .doAfterSuccess(teis -> persistenceCallFactory.getCall(teis).call())
+                        .doAfterSuccess(teis -> persistenceCallFactory.persistRelationships(teis).blockingAwait())
                         .doAfterSuccess(teis -> cleanFailedRelationships(failedTeis));
             }
         });

@@ -43,6 +43,7 @@ interface DataApprovalService {
     @GET("dataApprovals/multiple")
     Call<List<DataApproval>> getDataApprovals(
             @Query("fields") @Which Fields<DataApproval> fields,
+            @Query("lastUpdated") String lastUpdated,
             @Query("wf") String workflow,
             @Query("pe") String startDate,
             @Query("ou") String organisationUnit,

@@ -64,8 +64,7 @@ final class DataApprovalCallFactory extends QueryCallFactoryImpl<DataApproval,
     }
 
     @Override
-    protected CallFetcher<DataApproval> fetcher(
-            final DataApprovalQuery dataApprovalQuery) {
+    protected CallFetcher<DataApproval> fetcher(final DataApprovalQuery query) {
 
         return new ListNoResourceCallFetcher<DataApproval>(apiCallExecutor) {
             @Override
@@ -73,10 +72,11 @@ final class DataApprovalCallFactory extends QueryCallFactoryImpl<DataApproval,
 
                 return service.getDataApprovals(
                         DataApprovalFields.allFields,
-                        commaSeparatedCollectionValues(dataApprovalQuery.workflowsUids()),
-                        commaSeparatedCollectionValues(dataApprovalQuery.periodIds()),
-                        commaSeparatedCollectionValues(dataApprovalQuery.organisationUnistUids()),
-                        commaSeparatedCollectionValues(dataApprovalQuery.attributeOptionCombosUids())
+                        query.lastUpdatedStr(),
+                        commaSeparatedCollectionValues(query.workflowsUids()),
+                        commaSeparatedCollectionValues(query.periodIds()),
+                        commaSeparatedCollectionValues(query.organisationUnistUids()),
+                        commaSeparatedCollectionValues(query.attributeOptionCombosUids())
                 );
             }
         };

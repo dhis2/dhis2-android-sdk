@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.LinkCleaner;
 import org.hisp.dhis.android.core.arch.cleaners.internal.ParentOrphanCleaner;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
@@ -58,6 +59,7 @@ final class ProgramHandler extends IdentifiableHandlerImpl<Program> {
     private final Handler<ProgramSection> programSectionHandler;
     private final ParentOrphanCleaner<Program> orphanCleaner;
     private final CollectionCleaner<Program> collectionCleaner;
+    private final LinkCleaner<Program> linkCleaner;
 
     @Inject
     ProgramHandler(ProgramStoreInterface programStore,
@@ -66,7 +68,8 @@ final class ProgramHandler extends IdentifiableHandlerImpl<Program> {
                    Handler<ProgramTrackedEntityAttribute> programTrackedEntityAttributeHandler,
                    Handler<ProgramSection> programSectionHandler,
                    ParentOrphanCleaner<Program> orphanCleaner,
-                   CollectionCleaner<Program> collectionCleaner) {
+                   CollectionCleaner<Program> collectionCleaner,
+                   LinkCleaner<Program> linkCleaner) {
         super(programStore);
         this.programRuleVariableHandler = programRuleVariableHandler;
         this.programIndicatorHandler = programIndicatorHandler;
@@ -74,6 +77,7 @@ final class ProgramHandler extends IdentifiableHandlerImpl<Program> {
         this.programSectionHandler = programSectionHandler;
         this.orphanCleaner = orphanCleaner;
         this.collectionCleaner = collectionCleaner;
+        this.linkCleaner = linkCleaner;
     }
 
     @Override
@@ -103,5 +107,6 @@ final class ProgramHandler extends IdentifiableHandlerImpl<Program> {
     @Override
     protected void afterCollectionHandled(Collection<Program> programs) {
         collectionCleaner.deleteNotPresent(programs);
+        linkCleaner.deleteNotPresent(programs);
     }
 }

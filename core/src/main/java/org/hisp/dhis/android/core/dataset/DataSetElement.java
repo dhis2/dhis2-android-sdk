@@ -48,7 +48,7 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 @JsonDeserialize(builder = AutoValue_DataSetElement.Builder.class)
 public abstract class DataSetElement implements CoreObject {
 
-    @NonNull
+    @Nullable
     @JsonProperty()
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid dataSet();

@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.dataapproval.internal;
 
+import androidx.annotation.Nullable;
+
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
@@ -45,13 +47,17 @@ public abstract class DataApprovalQuery extends BaseQuery {
 
     public abstract Collection<String> attributeOptionCombosUids();
 
+    @Nullable
+    public abstract String lastUpdatedStr();
+
     public static DataApprovalQuery create(Collection<String> workflowsUids,
                                            Collection<String> organisationUnitsUids,
                                            Collection<String> periodIds,
-                                           Collection<String> attributeOptionCombosUids) {
+                                           Collection<String> attributeOptionCombosUids,
+                                           String lastUpdatedStr) {
 
         return new AutoValue_DataApprovalQuery(1, BaseQuery.DEFAULT_PAGE_SIZE,
                 false, workflowsUids, organisationUnitsUids,
-                periodIds, attributeOptionCombosUids);
+                periodIds, attributeOptionCombosUids, lastUpdatedStr);
     }
 }

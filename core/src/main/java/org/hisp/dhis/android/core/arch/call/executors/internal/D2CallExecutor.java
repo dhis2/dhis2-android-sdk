@@ -61,12 +61,14 @@ public final class D2CallExecutor {
         this.errorStore = errorStore;
     }
 
-    public <C> C executeD2Call(Callable<C> call) throws D2Error {
+    public <C> C executeD2Call(Callable<C> call, boolean storeError) throws D2Error {
         try {
             return call.call();
-        } catch (D2Error d2e) {
-            throw d2e;
-
+        } catch (D2Error d2E) {
+            if (storeError) {
+                errorStore.insert(d2E);
+            }
+            throw d2E;
         } catch (Exception e) {
             Log.e(this.getClass().getSimpleName(), e.toString());
             throw exceptionBuilder.errorDescription("Unexpected error calling " + call).build();

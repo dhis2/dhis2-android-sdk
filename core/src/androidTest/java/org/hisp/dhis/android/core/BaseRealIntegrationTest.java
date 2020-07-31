@@ -36,24 +36,13 @@ import com.facebook.stetho.Stetho;
 
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
 import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent;
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
-import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
-import org.junit.After;
 import org.junit.Before;
 
 import java.io.IOException;
-import java.util.Date;
-
-import static com.google.common.truth.Truth.assertThat;
 
 public abstract class BaseRealIntegrationTest {
-    private DatabaseAdapter databaseAdapter;
-
-    protected Date serverDate = new Date();
-    protected ResourceHandler resourceHandler;
 
     protected String username = RealServerMother.username;
     protected String password = RealServerMother.password;
@@ -62,28 +51,13 @@ public abstract class BaseRealIntegrationTest {
     @Before
     public void setUp() throws IOException {
         Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
-
-        DatabaseAdapterFactory databaseAdapterFactory = DatabaseAdapterFactory.create(context, new InMemorySecureStore());
-        databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter();
-        databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, null, false);
-        resourceHandler = ResourceHandler.create(databaseAdapter);
-        resourceHandler.setServerDate(serverDate);
         Stetho.initializeWithDefaults(context);
-    }
-
-    @After
-    public void tearDown() throws IOException {
-        assertThat(databaseAdapter).isNotNull();
-        databaseAdapter.close();
-    }
-
-    protected DatabaseAdapter databaseAdapter() {
-        return databaseAdapter;
     }
 
     protected GenericCallData getGenericCallData(D2 d2) {
         return GenericCallData.create(
-                databaseAdapter(), d2.retrofit(), resourceHandler, d2.systemInfoModule().versionManager());
+                d2.databaseAdapter(), d2.retrofit(), ResourceHandler.create(d2.databaseAdapter()),
+                d2.systemInfoModule().versionManager());
     }
 
     protected D2DIComponent getD2DIComponent(D2 d2) {

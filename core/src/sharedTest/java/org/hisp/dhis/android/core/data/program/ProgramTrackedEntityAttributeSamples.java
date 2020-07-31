@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate;
 
 public class ProgramTrackedEntityAttributeSamples {
 
@@ -47,5 +48,25 @@ public class ProgramTrackedEntityAttributeSamples {
                 .program(ObjectWithUid.create("program"))
                 .sortOrder(1)
                 .searchable(Boolean.TRUE).build();
+    }
+
+    public static ProgramTrackedEntityAttribute getChildProgrammeGender() {
+        return ProgramTrackedEntityAttribute.builder()
+                .id(1L)
+                .created(parseDate("2016-10-11T10:41:40.401"))
+                .lastUpdated(parseDate("2016-10-11T10:41:40.401"))
+                .uid("YhqgQ6Iy4c4")
+                .name("Child Programme Gender")
+                .shortName("Child Programme Gender")
+                .displayName("Child Programme Gender")
+                .mandatory(true)
+                .displayShortName("Child Programme Gender")
+                .allowFutureDate(true)
+                .displayInList(true)
+                .sortOrder(1)
+                .searchable(false)
+                .program(ObjectWithUid.create("lxAQ7Zs9VYR"))
+                .trackedEntityAttribute(ObjectWithUid.create("cejWyOfXge6"))
+                .build();
     }
 }

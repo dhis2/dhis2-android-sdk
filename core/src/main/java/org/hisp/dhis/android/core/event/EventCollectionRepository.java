@@ -47,6 +47,7 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.event.internal.EventFields;
 import org.hisp.dhis.android.core.event.internal.EventPostCall;
 import org.hisp.dhis.android.core.event.internal.EventStore;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 
 import java.util.List;
 import java.util.Map;
@@ -221,6 +222,25 @@ public final class EventCollectionRepository
 
     public EventCollectionRepository orderByLastUpdatedAtClient(RepositoryScope.OrderByDirection direction) {
         return cf.withOrderBy(Columns.LAST_UPDATED_AT_CLIENT, direction);
+    }
+
+    public EventCollectionRepository orderByOrganisationUnitName(RepositoryScope.OrderByDirection direction) {
+        return cf.withExternalOrderBy(
+                OrganisationUnitTableInfo.TABLE_INFO.name(),
+                IdentifiableColumns.NAME,
+                IdentifiableColumns.UID,
+                Columns.ORGANISATION_UNIT,
+                direction);
+    }
+
+    public EventCollectionRepository orderByTimeline(RepositoryScope.OrderByDirection direction) {
+        return cf.withConditionalOrderBy(
+                Columns.STATUS,
+                String.format("IN ('%s', '%s', '%s')", EventStatus.ACTIVE, EventStatus.COMPLETED, EventStatus.VISITED),
+                Columns.EVENT_DATE,
+                Columns.DUE_DATE,
+                direction
+        );
     }
 
     public int countTrackedEntityInstances() {

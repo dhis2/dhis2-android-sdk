@@ -110,7 +110,8 @@ public final class CollectionsHelper {
      * @param values Array with the values to concatenate.
      * @return A {@link String} with the concatenated values.
      */
-    public static String commaAndSpaceSeparatedArrayValues(String... values) {
+    @SuppressWarnings("PMD.UseVarargs")
+    public static String commaAndSpaceSeparatedArrayValues(String[] values) {
         String withBrackets = Arrays.toString(values);
         return withBrackets.substring(1, withBrackets.length() - 1);
     }
@@ -121,8 +122,9 @@ public final class CollectionsHelper {
      * @param values Collection with the values to concatenate.
      * @return A {@link String} with the concatenated values.
      */
+    @SuppressWarnings("PMD.OptimizableToArrayCall")
     public static String commaAndSpaceSeparatedCollectionValues(Collection<String> values) {
-        return commaAndSpaceSeparatedArrayValues(values.toArray(new String[values.size()]));
+        return commaAndSpaceSeparatedArrayValues(values.toArray(new String[0]));
     }
 
     /**

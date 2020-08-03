@@ -125,6 +125,6 @@ object UidsHelper {
     @JvmStatic
     fun <O : ObjectWithUidInterface> commaSeparatedUidsWithSingleQuotationMarks(
             objects: Collection<O>): String {
-        return CollectionsHelper.commaAndSpaceSeparatedArrayValues(*getUidsArray(objects))
+        return CollectionsHelper.commaAndSpaceSeparatedArrayValues(getUidsArray(objects))
     }
 }

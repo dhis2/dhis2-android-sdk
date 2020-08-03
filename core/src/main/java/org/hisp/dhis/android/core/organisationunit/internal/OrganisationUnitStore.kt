@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
 
+@Suppress("MagicNumber")
 object OrganisationUnitStore {
     private val BINDER = object: NameableStatementBinder<OrganisationUnit>() {
         override fun bindToStatement(o: OrganisationUnit, w: StatementWrapper) {

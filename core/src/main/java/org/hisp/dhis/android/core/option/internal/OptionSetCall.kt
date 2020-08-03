@@ -25,41 +25,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.option.internal
 
-package org.hisp.dhis.android.core.option.internal;
-
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.option.OptionSet;
-
-import java.util.List;
-import java.util.Set;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Single;
+import dagger.Reusable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.option.OptionSet
+import javax.inject.Inject
 
 @Reusable
-final class OptionSetCall implements UidsCall<OptionSet> {
+internal class OptionSetCall @Inject constructor(
+        private val service: OptionSetService,
+        private val handler: Handler<OptionSet>,
+        private val apiDownloader: APIDownloader) : UidsCall<OptionSet?> {
 
-    private static final int MAX_UID_LIST_SIZE = 130;
+    val MAX_UID_LIST_SIZE = 130
 
-    private final OptionSetService service;
-    private final Handler<OptionSet> handler;
-    private final APIDownloader apiDownloader;
-
-    @Inject
-    OptionSetCall(OptionSetService service, Handler<OptionSet> handler, APIDownloader apiDownloader) {
-        this.service = service;
-        this.handler = handler;
-        this.apiDownloader = apiDownloader;
-    }
-
-    @Override
-    public Single<List<OptionSet>> download(Set<String> uids) {
-        return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler, partitionUids ->
-                service.optionSets(OptionSetFields.allFields, OptionSetFields.uid.in(partitionUids), Boolean.FALSE));
+    override fun download(uids: Set<String>): Single<MutableList<OptionSet?>>? {
+        return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler) { partitionUids: Set<String?>? ->
+            service.optionSets(OptionSetFields.allFields, OptionSetFields.uid.`in`(partitionUids), false)
+        }
     }
 }

@@ -8,6 +8,7 @@
 
     <!-- Files matching to pattern should be excluded -->
     <exclude-pattern>.*/R.java</exclude-pattern>
+    <exclude-pattern>.*/*.kt</exclude-pattern>
 
     <rule ref="rulesets/java/optimizations.xml">
         <!-- These rules will lead to source code cluttering with 'final'

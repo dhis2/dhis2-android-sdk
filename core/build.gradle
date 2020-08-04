@@ -51,7 +51,7 @@ ext {
             paging          : '2.1.2',
 
             // java
-            jackson         : "2.9.8",
+            jackson         : "2.11.2",
             autovalue       : "1.3",
             autovaluecursor : "1.0.1",
             retrofit        : "2.5.0",

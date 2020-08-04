@@ -18,21 +18,6 @@
         <exclude name="OneDeclarationPerLine"/>
         <exclude name="UseTryWithResources"/>
     </rule>
-    <rule ref="category/java/design.xml">
-        <exclude name="AbstractClassWithoutAnyMethod"/>
-        <exclude name="AvoidCatchingGenericException"/>
-        <exclude name="AvoidRethrowingException"/>
-        <exclude name="AvoidThrowingRawExceptionTypes"/>
-        <exclude name="AvoidUncheckedExceptionsInSignatures"/>
-        <exclude name="CyclomaticComplexity"/>
-        <exclude name="DataClass"/>
-        <exclude name="ExcessiveParameterList"/>
-        <exclude name="LawOfDemeter"/>
-        <exclude name="LoosePackageCoupling"/>
-        <exclude name="SignatureDeclareThrowsException"/>
-        <exclude name="TooManyMethods"/>
-        <exclude name="UseObjectForClearerAPI"/>
-    </rule>
     <rule ref="category/java/codestyle.xml">
         <exclude name="AtLeastOneConstructor"/>
         <exclude name="BooleanGetMethodName"/>
@@ -56,7 +41,23 @@
         <exclude name="UnnecessaryConstructor"/>
         <exclude name="UnnecessaryLocalBeforeReturn"/>
         <exclude name="UseUnderscoresInNumericLiterals"/>
-
-
+    </rule>
+    <rule ref="category/java/design.xml">
+        <exclude name="AbstractClassWithoutAnyMethod"/>
+        <exclude name="AvoidCatchingGenericException"/>
+        <exclude name="AvoidRethrowingException"/>
+        <exclude name="AvoidThrowingRawExceptionTypes"/>
+        <exclude name="AvoidUncheckedExceptionsInSignatures"/>
+        <exclude name="CyclomaticComplexity"/>
+        <exclude name="DataClass"/>
+        <exclude name="ExcessiveParameterList"/>
+        <exclude name="LawOfDemeter"/>
+        <exclude name="LoosePackageCoupling"/>
+        <exclude name="SignatureDeclareThrowsException"/>
+        <exclude name="TooManyMethods"/>
+        <exclude name="UseObjectForClearerAPI"/>
+    </rule>
+    <rule ref="category/java/multithreading.xml">
+        <exclude name="UseConcurrentHashMap"/>
     </rule>
 </ruleset>

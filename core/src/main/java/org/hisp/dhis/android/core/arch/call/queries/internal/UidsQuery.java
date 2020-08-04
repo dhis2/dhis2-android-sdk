@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.arch.call.queries.internal;
 
+import androidx.annotation.Nullable;
+
 import com.google.auto.value.AutoValue;
 
 import java.util.Set;
-
-import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class UidsQuery extends BaseQuery {

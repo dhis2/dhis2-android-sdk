@@ -28,9 +28,9 @@ package org.hisp.dhis.android.core.parser.internal.service.dataitem;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.google.auto.value.AutoValue;
+import androidx.annotation.Nullable;
 
-import javax.annotation.Nullable;
+import com.google.auto.value.AutoValue;
 
 import static org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemType.DATA_ELEMENT;
 import static org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemType.DATA_ELEMENT_OPERAND;

@@ -28,17 +28,16 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
+import androidx.annotation.VisibleForTesting;
+
 import javax.inject.Inject;
 
-import androidx.annotation.VisibleForTesting;
 import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @Reusable
 public final class UserInternalModule {
 
     @VisibleForTesting
-    @SuppressFBWarnings("URF_UNREAD_FIELD")
     final UserCall userCall;
 
     @Inject

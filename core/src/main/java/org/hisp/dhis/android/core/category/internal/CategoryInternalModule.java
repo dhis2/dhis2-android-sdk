@@ -36,17 +36,14 @@ import org.hisp.dhis.android.core.category.CategoryCombo;
 import javax.inject.Inject;
 
 import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @Reusable
 public final class CategoryInternalModule {
 
     @VisibleForTesting
-    @SuppressFBWarnings("URF_UNREAD_FIELD")
     final UidsCall<Category> categoryCall;
 
     @VisibleForTesting
-    @SuppressFBWarnings("URF_UNREAD_FIELD")
     final UidsCall<CategoryCombo> categoryComboCall;
 
     @Inject

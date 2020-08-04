@@ -34,7 +34,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import okio.ByteString;
 
 public final class UserHelper {
@@ -63,7 +62,6 @@ public final class UserHelper {
      * @param password The password of the user account.
      * @return A encoded MD5 {@link String}.
      */
-    @SuppressFBWarnings({"DM_CONVERT_CASE"})
     @SuppressWarnings({"PMD.UseLocaleWithCaseConversions"})
     public static String md5(String username, String password) {
         try {

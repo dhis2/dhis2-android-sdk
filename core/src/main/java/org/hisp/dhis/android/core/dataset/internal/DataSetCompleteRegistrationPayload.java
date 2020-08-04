@@ -35,9 +35,6 @@ import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
 class DataSetCompleteRegistrationPayload {
 
     @JsonProperty("completeDataSetRegistrations")

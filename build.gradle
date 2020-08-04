@@ -8,15 +8,7 @@ buildscript {
     }
 
     dependencies {
-        // android gradle plugin
         classpath "com.android.tools.build:gradle:4.0.1"
-
-        // method count plugin
-        classpath "com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.6.1"
-
-        // apt plugin for java
-        classpath "net.ltgt.gradle:gradle-apt-plugin:0.9"
-
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }

@@ -33,4 +33,30 @@
         <exclude name="TooManyMethods"/>
         <exclude name="UseObjectForClearerAPI"/>
     </rule>
+    <rule ref="category/java/codestyle.xml">
+        <exclude name="AtLeastOneConstructor"/>
+        <exclude name="BooleanGetMethodName"/>
+        <exclude name="CallSuperInConstructor"/>
+        <exclude name="ClassNamingConventions"/>
+        <exclude name="CommentDefaultAccessModifier"/>
+        <exclude name="DefaultPackage"/>
+        <exclude name="FieldNamingConventions"/>
+        <exclude name="GenericsNaming"/>
+        <exclude name="IdenticalCatchBranches"/>
+        <exclude name="LinguisticNaming"/>
+        <exclude name="LocalVariableCouldBeFinal"/>
+        <exclude name="MethodArgumentCouldBeFinal"/>
+        <exclude name="MethodNamingConventions"/>
+        <exclude name="LongVariable"/>
+        <exclude name="OnlyOneReturn"/>
+        <exclude name="PrematureDeclaration"/>
+        <exclude name="ShortClassName"/>
+        <exclude name="ShortMethodName"/>
+        <exclude name="ShortVariable"/>
+        <exclude name="UnnecessaryConstructor"/>
+        <exclude name="UnnecessaryLocalBeforeReturn"/>
+        <exclude name="UseUnderscoresInNumericLiterals"/>
+
+
+    </rule>
 </ruleset>

@@ -60,4 +60,9 @@
     <rule ref="category/java/multithreading.xml">
         <exclude name="UseConcurrentHashMap"/>
     </rule>
+    <rule ref="category/java/performance.xml">
+        <exclude name="AvoidCalendarDateCreation"/>
+        <exclude name="AvoidFileStream"/>
+        <exclude name="OptimizableToArrayCall"/>
+    </rule>
 </ruleset>

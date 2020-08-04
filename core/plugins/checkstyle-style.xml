@@ -37,6 +37,6 @@
         <module name="ArrayTypeStyle"/>
     </module>
     <module name="LineLength">
-        <property name="max" value="110"/>
+        <property name="max" value="120"/>
     </module>
 </module>

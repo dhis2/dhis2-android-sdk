@@ -57,7 +57,7 @@ ext {
             retrofit        : "2.5.0",
             okhttp          : "3.14.0",
             dagger          : "2.14.1",
-            rxjava          : "2.2.8",
+            rxjava          : "2.2.9",
             rxandroid       : "2.1.1",
             sqlcipher       : "4.2.0",
 
@@ -144,18 +144,15 @@ android {
 
 
 dependencies {
-
+    // RxJava
     api "io.reactivex.rxjava2:rxjava:${libraries.rxjava}"
     api "io.reactivex.rxjava2:rxandroid:${libraries.rxandroid}"
 
-    // Support libraries
+    // AndroidX
     api "androidx.annotation:annotation:${libraries.support}"
-
     api "androidx.paging:paging-runtime:${libraries.paging}"
 
-    // Google's auto-value. Annotations are used only during compilation time, as well as
-
-    // annotation processor which hoops up into compilation process
+    // Auto Value
     compileOnly "com.google.auto.value:auto-value:${libraries.autovalue}"
     annotationProcessor "com.google.auto.value:auto-value:${libraries.autovalue}"
 

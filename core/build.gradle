@@ -47,8 +47,8 @@ ext {
 
     libraries = [
             // android
-            support         : '1.0.0-beta01',
-            paging          : '2.1.0',
+            annotation      : '1.1.0',
+            paging          : '2.1.2',
 
             // java
             jackson         : "2.9.8",
@@ -149,7 +149,7 @@ dependencies {
     api "io.reactivex.rxjava2:rxandroid:${libraries.rxandroid}"
 
     // AndroidX
-    api "androidx.annotation:annotation:${libraries.support}"
+    api "androidx.annotation:annotation:${libraries.annotation}"
     api "androidx.paging:paging-runtime:${libraries.paging}"
 
     // Auto Value

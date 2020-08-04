@@ -65,4 +65,5 @@
         <exclude name="AvoidFileStream"/>
         <exclude name="OptimizableToArrayCall"/>
     </rule>
+    <rule ref="category/java/security.xml" />
 </ruleset>

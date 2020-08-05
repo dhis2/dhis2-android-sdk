@@ -62,6 +62,10 @@ ext {
             rxAndroid       : "2.1.1",
             sqlCipher       : "4.4.0",
             jexl            : "2.1.1",
+            jodaTime        : "2.10.6",
+            smsCompression  : "0.2.0",
+            antlr           : "4.8-1",
+            expressionParser: "1.0.7-SNAPSHOT",
 
             // test dependencies
             coreTesting     : "1.1.1",
@@ -155,6 +159,9 @@ dependencies {
     api "androidx.annotation:annotation:${libraries.annotation}"
     api "androidx.paging:paging-runtime:${libraries.paging}"
 
+    // Kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
     // Auto Value
     compileOnly "com.google.auto.value:auto-value:${libraries.autoValue}"
     annotationProcessor "com.google.auto.value:auto-value:${libraries.autoValue}"
@@ -180,16 +187,16 @@ dependencies {
     api("org.apache.commons:commons-jexl:${libraries.jexl}") {
         exclude group: 'commons-logging', module: 'commons-logging'
     }
-    testImplementation "commons-logging:commons-logging:${libraries.commonsLogging}"
 
     // Joda time
-    api "joda-time:joda-time:2.9.9"
+    api "joda-time:joda-time:${libraries.jodaTime}"
 
     // sms compression library
-    api 'com.github.dhis2:sms-compression:0.2.0'
+    api "com.github.dhis2:sms-compression:${libraries.smsCompression}"
 
     // DHIS 2 antlr expression parser
-    api "org.hisp.dhis.parser:dhis-antlr-expression-parser:1.0.7-SNAPSHOT"
+    api "org.antlr:antlr4-runtime:${libraries.antlr}"
+    api "org.hisp.dhis.parser:dhis-antlr-expression-parser:${libraries.expressionParser}"
 
     // Extension which generates mappers for work with cursor and content values
     api "com.gabrielittner.auto.value:auto-value-cursor-annotations:${libraries.autoValueCursor}"
@@ -197,7 +204,6 @@ dependencies {
 
     api "net.zetetic:android-database-sqlcipher:${libraries.sqlCipher}"
 
-    api "org.antlr:antlr4-runtime:4.7.2"
 
     api "com.squareup.okhttp3:mockwebserver:${libraries.okHttp}"
 
@@ -209,6 +215,7 @@ dependencies {
     testImplementation "nl.jqno.equalsverifier:equalsverifier:${libraries.equalsVerifier}"
     testImplementation "com.squareup.okhttp3:mockwebserver:${libraries.okHttp}"
     testImplementation "androidx.test:runner:${libraries.testRunner}"
+    testImplementation "commons-logging:commons-logging:${libraries.commonsLogging}"
 
     // Android test dependencies
     androidTestImplementation "commons-logging:commons-logging:1.2"
@@ -227,7 +234,6 @@ dependencies {
         exclude module: 'okhttp'
         exclude module: 'jsr305'
     }
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
 apply from: project.file("plugins/gradle-mvn-push.gradle")

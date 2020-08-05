@@ -51,31 +51,33 @@ ext {
             paging          : '2.1.2',
 
             // java
-            apachecommons   : "3.11",
+            apacheCommons   : "3.11",
             jackson         : "2.11.2",
-            autovalue       : "1.3",
-            autovaluecursor : "1.0.1",
+            autoValue       : "1.3",
+            autoValueCursor : "1.0.1",
             retrofit        : "2.9.0",
-            okhttp          : "4.8.0",
+            okHttp          : "4.8.0",
             dagger          : "2.28.3",
-            rxjava          : "2.2.9",
-            rxandroid       : "2.1.1",
-            sqlcipher       : "4.4.0",
+            rxJava          : "2.2.9",
+            rxAndroid       : "2.1.1",
+            sqlCipher       : "4.4.0",
+            jexl            : "2.1.1",
 
             // test dependencies
-            coretesting     : "1.1.1",
-            junit           : "4.12",
-            assertj         : "3.11.1",
+            coreTesting     : "1.1.1",
+            jUnit           : "4.12",
+            assertJ         : "3.11.1",
             mockito         : "2.24.5",
             mockitoKotlin   : "2.2.0",
             truth           : "0.30",
-            testrunner      : '1.1.0-alpha4',
-            equalsverifier  : "2.1.8",
+            testRunner      : '1.1.0-alpha4',
+            equalsVerifier  : "2.1.8",
             stetho          : "1.5.0",
-            livedatatesting : "1.1.0",
+            liveDataTesting : "1.1.0",
+            commonsLogging  : "1.2",
 
             // google
-            safetynet  : "16.0.0",
+            safetyNet  : "16.0.0",
     ]
 }
 
@@ -146,16 +148,16 @@ android {
 
 dependencies {
     // RxJava
-    api "io.reactivex.rxjava2:rxjava:${libraries.rxjava}"
-    api "io.reactivex.rxjava2:rxandroid:${libraries.rxandroid}"
+    api "io.reactivex.rxjava2:rxjava:${libraries.rxJava}"
+    api "io.reactivex.rxjava2:rxandroid:${libraries.rxAndroid}"
 
     // AndroidX
     api "androidx.annotation:annotation:${libraries.annotation}"
     api "androidx.paging:paging-runtime:${libraries.paging}"
 
     // Auto Value
-    compileOnly "com.google.auto.value:auto-value:${libraries.autovalue}"
-    annotationProcessor "com.google.auto.value:auto-value:${libraries.autovalue}"
+    compileOnly "com.google.auto.value:auto-value:${libraries.autoValue}"
+    annotationProcessor "com.google.auto.value:auto-value:${libraries.autoValue}"
 
     // Dagger
     api "com.google.dagger:dagger:${libraries.dagger}"
@@ -165,20 +167,20 @@ dependencies {
     api "com.fasterxml.jackson.core:jackson-databind:${libraries.jackson}"
 
     // Google's play services
-    api "com.google.android.gms:play-services-safetynet:${libraries.safetynet}"
+    api "com.google.android.gms:play-services-safetynet:${libraries.safetyNet}"
 
     // Square libraries
-    api "com.squareup.okhttp3:okhttp:${libraries.okhttp}"
+    api "com.squareup.okhttp3:okhttp:${libraries.okHttp}"
     api "com.squareup.retrofit2:retrofit:${libraries.retrofit}"
     api "com.squareup.retrofit2:converter-jackson:${libraries.retrofit}"
     api "com.squareup.retrofit2:adapter-rxjava2:${libraries.retrofit}"
 
     // Apache libraries
-    api "org.apache.commons:commons-lang3:${libraries.apachecommons}"
-    api("org.apache.commons:commons-jexl:2.1.1") {
+    api "org.apache.commons:commons-lang3:${libraries.apacheCommons}"
+    api("org.apache.commons:commons-jexl:${libraries.jexl}") {
         exclude group: 'commons-logging', module: 'commons-logging'
     }
-    testImplementation "commons-logging:commons-logging:1.2"
+    testImplementation "commons-logging:commons-logging:${libraries.commonsLogging}"
 
     // Joda time
     api "joda-time:joda-time:2.9.9"
@@ -190,31 +192,31 @@ dependencies {
     api "org.hisp.dhis.parser:dhis-antlr-expression-parser:1.0.7-SNAPSHOT"
 
     // Extension which generates mappers for work with cursor and content values
-    api "com.gabrielittner.auto.value:auto-value-cursor-annotations:${libraries.autovaluecursor}"
-    annotationProcessor "com.gabrielittner.auto.value:auto-value-cursor:${libraries.autovaluecursor}"
+    api "com.gabrielittner.auto.value:auto-value-cursor-annotations:${libraries.autoValueCursor}"
+    annotationProcessor "com.gabrielittner.auto.value:auto-value-cursor:${libraries.autoValueCursor}"
 
-    api "net.zetetic:android-database-sqlcipher:${libraries.sqlcipher}"
+    api "net.zetetic:android-database-sqlcipher:${libraries.sqlCipher}"
 
     api "org.antlr:antlr4-runtime:4.7.2"
 
-    api "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
+    api "com.squareup.okhttp3:mockwebserver:${libraries.okHttp}"
 
     // Java test dependencies
-    testImplementation "junit:junit:${libraries.junit}"
+    testImplementation "junit:junit:${libraries.jUnit}"
     testImplementation "org.mockito:mockito-core:${libraries.mockito}"
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${libraries.mockitoKotlin}"
-    testImplementation "org.assertj:assertj-core:${libraries.assertj}"
-    testImplementation "nl.jqno.equalsverifier:equalsverifier:${libraries.equalsverifier}"
-    testImplementation "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
-    testImplementation "androidx.test:runner:${libraries.testrunner}"
+    testImplementation "org.assertj:assertj-core:${libraries.assertJ}"
+    testImplementation "nl.jqno.equalsverifier:equalsverifier:${libraries.equalsVerifier}"
+    testImplementation "com.squareup.okhttp3:mockwebserver:${libraries.okHttp}"
+    testImplementation "androidx.test:runner:${libraries.testRunner}"
 
     // Android test dependencies
     androidTestImplementation "commons-logging:commons-logging:1.2"
     androidTestImplementation "org.mockito:mockito-core:${libraries.mockito}"
-    androidTestImplementation "android.arch.core:core-testing:${libraries.coretesting}"
-    androidTestImplementation "com.jraska.livedata:testing:${libraries.livedatatesting}"
-    androidTestImplementation "androidx.test:runner:${libraries.testrunner}"
-    androidTestImplementation "com.squareup.okhttp3:logging-interceptor:${libraries.okhttp}"
+    androidTestImplementation "android.arch.core:core-testing:${libraries.coreTesting}"
+    androidTestImplementation "com.jraska.livedata:testing:${libraries.liveDataTesting}"
+    androidTestImplementation "androidx.test:runner:${libraries.testRunner}"
+    androidTestImplementation "com.squareup.okhttp3:logging-interceptor:${libraries.okHttp}"
     androidTestImplementation("com.google.truth:truth:${libraries.truth}") {
         exclude group: 'junit' // Android has JUnit built in.
     }

@@ -76,8 +76,8 @@ ext {
             truth           : "1.0.1",
             testRunner      : "1.2.0",
             equalsVerifier  : "3.4.1",
-            stetho          : "1.5.0",
-            liveDataTesting : "1.1.0",
+            stetho          : "1.5.1",
+            liveDataTesting : "1.1.2",
             commonsLogging  : "1.2",
 
             // google
@@ -217,7 +217,7 @@ dependencies {
     testImplementation "commons-logging:commons-logging:${libraries.commonsLogging}"
 
     // Android test dependencies
-    androidTestImplementation "commons-logging:commons-logging:1.2"
+    androidTestImplementation "commons-logging:commons-logging:${libraries.commonsLogging}"
     androidTestImplementation "org.mockito:mockito-core:${libraries.mockito}"
     androidTestImplementation "android.arch.core:core-testing:${libraries.coreTesting}"
     androidTestImplementation "com.jraska.livedata:testing:${libraries.liveDataTesting}"

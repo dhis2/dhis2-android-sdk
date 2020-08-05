@@ -64,7 +64,7 @@ ext {
             jexl            : "2.1.1",
             jodaTime        : "2.10.6",
             smsCompression  : "0.2.0",
-            antlr           : "4.8-1",
+            antlr           : "4.7.2", // Upgrading throws a runtime warning
             expressionParser: "1.0.7-SNAPSHOT",
 
             // test dependencies
@@ -213,7 +213,6 @@ dependencies {
     testImplementation "org.assertj:assertj-core:${libraries.assertJ}"
     testImplementation "nl.jqno.equalsverifier:equalsverifier:${libraries.equalsVerifier}"
     testImplementation "com.squareup.okhttp3:mockwebserver:${libraries.okHttp}"
-    testImplementation "androidx.test:runner:${libraries.testRunner}"
     testImplementation "commons-logging:commons-logging:${libraries.commonsLogging}"
 
     // Android test dependencies
@@ -221,7 +220,6 @@ dependencies {
     androidTestImplementation "org.mockito:mockito-core:${libraries.mockito}"
     androidTestImplementation "android.arch.core:core-testing:${libraries.coreTesting}"
     androidTestImplementation "com.jraska.livedata:testing:${libraries.liveDataTesting}"
-    androidTestImplementation "androidx.test:runner:${libraries.testRunner}"
     androidTestImplementation "com.squareup.okhttp3:logging-interceptor:${libraries.okHttp}"
     androidTestImplementation("com.google.truth:truth:${libraries.truth}") {
         exclude group: 'junit' // Android has JUnit built in.

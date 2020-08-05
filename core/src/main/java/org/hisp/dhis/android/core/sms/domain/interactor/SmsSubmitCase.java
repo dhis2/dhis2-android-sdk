@@ -65,10 +65,10 @@ public class SmsSubmitCase {
     /**
      * Set an enrollment to send by SMS.
      * @param enrollmentUid Enrollment uid.
-     * @return {@code Single} with the number of SMS to send.
+     * @return {@code Single} with the message to send in the SMS.
      */
-    public Single<Integer> convertEnrollment(String enrollmentUid) {
-        return convert(new EnrollmentConverter(localDbRepository, dhisVersionManager, enrollmentUid));
+    public Single<String> convertEnrollment(String enrollmentUid) {
+        return convertToString(new EnrollmentConverter(localDbRepository, dhisVersionManager, enrollmentUid));
     }
 
     /**
@@ -124,6 +124,17 @@ public class SmsSubmitCase {
                     smsParts = parts;
                     return parts.size();
                 });
+    }
+
+    private Single<String> convertToString(Converter<?> converter) {
+        if (this.converter != null) {
+            return Single.error(new IllegalStateException("SMS submit case should be used once"));
+        }
+        this.converter = converter;
+        return checkPreconditions()
+                .andThen(localDbRepository.generateNextSubmissionId()
+                        .doOnSuccess(id -> submissionId = id)
+                ).flatMap(converter::readAndConvert);
     }
 
     /**

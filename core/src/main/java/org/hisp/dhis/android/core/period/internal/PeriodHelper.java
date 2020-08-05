@@ -67,11 +67,11 @@ public class PeriodHelper {
      * @param date Date contained in the period
      * @return Period
      *
-     * @deprecated Use {@link #getPeriodForPeriodTypeAndDate(PeriodType, Date)} instead.
+     * @deprecated Use {@link #getPeriodForPeriodTypeAndDate(PeriodType, Date, boolean)} instead.
      */
     @Deprecated
     public Period getPeriod(@NonNull PeriodType periodType, @NonNull Date date) {
-        return blockingGetPeriodForPeriodTypeAndDate(periodType, date);
+        return blockingGetPeriodForPeriodTypeAndDate(periodType, date,true);
     }
 
     /**
@@ -82,12 +82,14 @@ public class PeriodHelper {
      * @param date Date contained in the period
      * @return Period
      */
-    public Period blockingGetPeriodForPeriodTypeAndDate(@NonNull PeriodType periodType, @NonNull Date date) {
+    public Period blockingGetPeriodForPeriodTypeAndDate(@NonNull PeriodType periodType, @NonNull Date date, boolean persist) {
         Period period = periodStore.selectPeriodByTypeAndDate(periodType, date);
 
         if (period == null) {
             Period newPeriod = parentPeriodGenerator.generatePeriod(periodType, date);
-            periodStore.updateOrInsertWhere(newPeriod);
+            if(persist) {
+                periodStore.updateOrInsertWhere(newPeriod);
+            }
             return newPeriod;
         } else {
             return period;
@@ -103,8 +105,8 @@ public class PeriodHelper {
      *
      * @return {@code Single} with the generated period.
      * */
-    public Single<Period> getPeriodForPeriodTypeAndDate(@NonNull PeriodType periodType, @NonNull Date date) {
-        return Single.just(blockingGetPeriodForPeriodTypeAndDate(periodType, date));
+    public Single<Period> getPeriodForPeriodTypeAndDate(@NonNull PeriodType periodType, @NonNull Date date, boolean persist) {
+        return Single.just(blockingGetPeriodForPeriodTypeAndDate(periodType, date, persist));
     }
 
     /**
@@ -119,7 +121,7 @@ public class PeriodHelper {
         PeriodType periodType = PeriodType.periodTypeFromPeriodId(periodId);
         Date date = periodParser.parse(periodId, periodType);
 
-        return blockingGetPeriodForPeriodTypeAndDate(periodType, date);
+        return blockingGetPeriodForPeriodTypeAndDate(periodType, date, true);
     }
 
     /**

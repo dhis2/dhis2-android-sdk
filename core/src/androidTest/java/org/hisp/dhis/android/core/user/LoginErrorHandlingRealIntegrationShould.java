@@ -191,7 +191,7 @@ public class LoginErrorHandlingRealIntegrationShould extends BaseRealIntegration
         assertThatErrorCode("play.dhis2.org/android-current/").isEqualTo(D2ErrorCode.SERVER_URL_MALFORMED);
     }
 
-    private ComparableSubject<?, D2ErrorCode> assertThatErrorCode(String serverUrl) {
+    private ComparableSubject<D2ErrorCode> assertThatErrorCode(String serverUrl) {
         return assertThatErrorCode(username, password, serverUrl);
     }
 
@@ -201,7 +201,7 @@ public class LoginErrorHandlingRealIntegrationShould extends BaseRealIntegration
         testObserver.assertComplete();
     }
 
-    private ComparableSubject<?, D2ErrorCode> assertThatErrorCode(String username, String password, String serverUrl) {
+    private ComparableSubject<D2ErrorCode> assertThatErrorCode(String username, String password, String serverUrl) {
         TestObserver<User> testObserver = d2.userModule().logIn(username, password, serverUrl).test();
         testObserver.awaitTerminalEvent();
         testObserver.assertError(D2Error.class);

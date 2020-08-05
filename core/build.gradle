@@ -74,7 +74,7 @@ ext {
             mockito         : "3.4.6",
             mockitoKotlin   : "2.2.0",
             truth           : "1.0.1",
-            testRunner      : '1.1.0-alpha4',
+            testRunner      : '1.1.1',
             equalsVerifier  : "2.1.8",
             stetho          : "1.5.0",
             liveDataTesting : "1.1.0",
@@ -213,6 +213,7 @@ dependencies {
     testImplementation "org.assertj:assertj-core:${libraries.assertJ}"
     testImplementation "nl.jqno.equalsverifier:equalsverifier:${libraries.equalsVerifier}"
     testImplementation "com.squareup.okhttp3:mockwebserver:${libraries.okHttp}"
+    testImplementation "androidx.test:runner:${libraries.testRunner}"
     testImplementation "commons-logging:commons-logging:${libraries.commonsLogging}"
 
     // Android test dependencies
@@ -220,6 +221,7 @@ dependencies {
     androidTestImplementation "org.mockito:mockito-core:${libraries.mockito}"
     androidTestImplementation "android.arch.core:core-testing:${libraries.coreTesting}"
     androidTestImplementation "com.jraska.livedata:testing:${libraries.liveDataTesting}"
+    androidTestImplementation "androidx.test:runner:${libraries.testRunner}"
     androidTestImplementation "com.squareup.okhttp3:logging-interceptor:${libraries.okHttp}"
     androidTestImplementation("com.google.truth:truth:${libraries.truth}") {
         exclude group: 'junit' // Android has JUnit built in.

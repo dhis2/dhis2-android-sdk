@@ -26,19 +26,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: "com.android.library"
-apply plugin: "kotlin-android"
-apply plugin: "kotlin-android-extensions"
-apply plugin: "io.gitlab.arturbosch.detekt"
+plugins {
+    id "com.android.library"
+    id "kotlin-android"
+    id "kotlin-android-extensions"
+    id "io.gitlab.arturbosch.detekt" version "1.10.0"
+}
+
 apply from: project.file("plugins/android-checkstyle.gradle")
-apply from: project.file("plugins/android-findbugs.gradle")
 apply from: project.file("plugins/android-pmd.gradle")
 
 ext {
     configuration = [
-            buildToolsVersion: "28.0.3",
+            buildToolsVersion: "29.0.3",
             minSdkVersion    : 19,
-            targetSdkVersion : 28,
+            targetSdkVersion : 29,
             versionCode      : 220,
             versionName      : "1.2.0"
     ]

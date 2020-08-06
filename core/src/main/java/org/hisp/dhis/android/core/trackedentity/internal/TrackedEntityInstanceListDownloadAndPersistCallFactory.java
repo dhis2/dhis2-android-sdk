@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleaner;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipDownloadAndPersistCallFactory;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
@@ -52,8 +53,7 @@ import retrofit2.Call;
 public final class TrackedEntityInstanceListDownloadAndPersistCallFactory {
 
     private final ForeignKeyCleaner foreignKeyCleaner;
-    private final TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory
-            relationshipsCallFactory;
+    private final RelationshipDownloadAndPersistCallFactory relationshipDownloadAndPersistCallFactory;
     private final TrackedEntityInstancePersistenceCallFactory persistenceCallFactory;
     private final D2CallExecutor d2CallExecutor;
     private final APICallExecutor apiCallExecutor;
@@ -64,14 +64,14 @@ public final class TrackedEntityInstanceListDownloadAndPersistCallFactory {
     @Inject
     TrackedEntityInstanceListDownloadAndPersistCallFactory(
             ForeignKeyCleaner foreignKeyCleaner,
-            TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory relationshipsCallFactory,
+            RelationshipDownloadAndPersistCallFactory relationshipDownloadAndPersistCallFactory,
             TrackedEntityInstancePersistenceCallFactory persistenceCallFactory,
             D2CallExecutor d2CallExecutor,
             APICallExecutor apiCallExecutor,
             DHISVersionManager versionManager,
             TrackedEntityInstanceService trackedEntityInstanceService) {
         this.foreignKeyCleaner = foreignKeyCleaner;
-        this.relationshipsCallFactory = relationshipsCallFactory;
+        this.relationshipDownloadAndPersistCallFactory = relationshipDownloadAndPersistCallFactory;
         this.persistenceCallFactory = persistenceCallFactory;
         this.d2CallExecutor = d2CallExecutor;
         this.apiCallExecutor = apiCallExecutor;
@@ -103,7 +103,7 @@ public final class TrackedEntityInstanceListDownloadAndPersistCallFactory {
             persistenceCallFactory.persistTEIs(teis, true, false).blockingGet();
 
             if (!versionManager.is2_29()) {
-                relationshipsCallFactory.downloadAndPersist().blockingGet();
+                relationshipDownloadAndPersistCallFactory.downloadAndPersist().blockingGet();
             }
 
             foreignKeyCleaner.cleanForeignKeyErrors();

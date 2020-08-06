@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.arch.helpers.internal.BooleanWrapper;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams;
 import org.hisp.dhis.android.core.program.internal.ProgramOrganisationUnitLastUpdated;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipDownloadAndPersistCallFactory;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
@@ -52,6 +53,7 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
@@ -66,7 +68,8 @@ class TrackedEntityInstanceWithLimitCallFactory {
 
     private final TrackedEntityInstanceQueryBuilderFactory trackedEntityInstanceQueryBuilderFactory;
 
-    private final TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory relationshipDownloadCallFactory;
+    private final RelationshipDownloadAndPersistCallFactory relationshipDownloadAndPersistCallFactory;
+
     private final TrackedEntityInstancePersistenceCallFactory persistenceCallFactory;
     private final TrackedEntityInstancesEndpointCallFactory endpointCallFactory;
 
@@ -84,7 +87,7 @@ class TrackedEntityInstanceWithLimitCallFactory {
             UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
             ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
             TrackedEntityInstanceQueryBuilderFactory trackedEntityInstanceQueryBuilderFactory,
-            TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory relationshipDownloadCallFactory,
+            RelationshipDownloadAndPersistCallFactory relationshipDownloadAndPersistCallFactory,
             TrackedEntityInstancePersistenceCallFactory persistenceCallFactory,
             DHISVersionManager versionManager,
             TrackedEntityInstancesEndpointCallFactory endpointCallFactory,
@@ -94,11 +97,9 @@ class TrackedEntityInstanceWithLimitCallFactory {
         this.programOrganisationUnitLastUpdatedHandler = programOrganisationUnitLastUpdatedHandler;
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
         this.systemInfoRepository = systemInfoRepository;
+        this.relationshipDownloadAndPersistCallFactory = relationshipDownloadAndPersistCallFactory;
         this.versionManager = versionManager;
-
         this.trackedEntityInstanceQueryBuilderFactory = trackedEntityInstanceQueryBuilderFactory;
-
-        this.relationshipDownloadCallFactory = relationshipDownloadCallFactory;
         this.persistenceCallFactory = persistenceCallFactory;
         this.endpointCallFactory = endpointCallFactory;
         this.apiCallExecutor = apiCallExecutor;
@@ -116,7 +117,7 @@ class TrackedEntityInstanceWithLimitCallFactory {
                 return Observable.concat(
                         downloadSystemInfo(progressManager),
                         downloadTeis(progressManager, params, programOrganisationUnitSet),
-                        downloadRelationshipTeis(progressManager),
+                        downloadRelationships(progressManager),
                         updateResource(progressManager, programOrganisationUnitSet)
                 );
             }
@@ -155,13 +156,11 @@ class TrackedEntityInstanceWithLimitCallFactory {
                                 progressManager.increaseProgress(TrackedEntityInstance.class, false)));
     }
 
-    private Observable<D2Progress> downloadRelationshipTeis(D2ProgressManager progressManager) {
-        Observable<List<TrackedEntityInstance>> observable = versionManager.is2_29()
-                ? Observable.just(Collections.emptyList())
-                : relationshipDownloadCallFactory.downloadAndPersist().toObservable();
-
-        return observable.map(
-                trackedEntityInstances -> progressManager.increaseProgress(TrackedEntityInstance.class, true));
+    private Observable<D2Progress> downloadRelationships(D2ProgressManager progressManager) {
+        Completable completable = versionManager.is2_29() ? Completable.complete() :
+                this.relationshipDownloadAndPersistCallFactory.downloadAndPersist();
+        return completable.andThen(
+                Observable.just(progressManager.increaseProgress(TrackedEntityInstance.class, true)));
     }
 
     private Observable<List<TrackedEntityInstance>> getTrackedEntityInstancesWithPaging(
@@ -183,8 +182,7 @@ class TrackedEntityInstanceWithLimitCallFactory {
                                 return Single.just(new TeiListWithPaging(false, Collections.emptyList(), paging));
                             });
                 })
-                .takeUntil(res -> res.isSuccess && (res.paging.isLastPage() ||
-                        !res.paging.isLastPage() && res.teiList.size() < res.paging.pageSize()))
+                .takeUntil(res -> res.isSuccess && (res.paging.isLastPage() || res.teiList.size() < res.paging.pageSize()))
                 .map(tuple -> tuple.teiList)
                 .doOnComplete(() -> {
                     if (allOkay.get()) {

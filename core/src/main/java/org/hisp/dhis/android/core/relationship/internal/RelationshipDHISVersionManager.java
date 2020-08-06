@@ -300,16 +300,11 @@ public class RelationshipDHISVersionManager {
     private <O extends ObjectWithUidInterface & DeletableDataObject> void handleObject(
             O object, Transformer<O, O> transformer, IdentifiableDeletableDataObjectStore<O> store) {
         O oTransformed = transformer.transform(object);
-        deleteOrPersist(oTransformed, store);
-    }
-
-    private <O extends ObjectWithUidInterface & DeletableDataObject> void deleteOrPersist(
-            O o, IdentifiableDeletableDataObjectStore<O> store) {
-        String modelUid = o.uid();
-        if (isDeleted(o) && modelUid != null) {
+        String modelUid = oTransformed.uid();
+        if (isDeleted(oTransformed) && modelUid != null) {
             store.deleteIfExists(modelUid);
         } else {
-            store.updateOrInsert(o);
+            store.updateOrInsert(oTransformed);
         }
     }
 }

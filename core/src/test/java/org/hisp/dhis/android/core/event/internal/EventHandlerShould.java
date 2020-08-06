@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
+import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
@@ -36,6 +37,9 @@ import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.note.Note;
 import org.hisp.dhis.android.core.note.internal.NoteDHISVersionManager;
 import org.hisp.dhis.android.core.note.internal.NoteUniquenessManager;
+import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.junit.Before;
 import org.junit.Test;
@@ -78,6 +82,15 @@ public class EventHandlerShould {
     private NoteDHISVersionManager noteVersionManager;
 
     @Mock
+    private RelationshipDHISVersionManager relationshipVersionManager;
+
+    @Mock
+    private RelationshipHandler relationshipHandler;
+
+    @Mock
+    private OrphanCleaner<Event, Relationship> relationshipOrphanCleaner;
+
+    @Mock
     private Event event;
 
     // object to test
@@ -90,8 +103,9 @@ public class EventHandlerShould {
         when(event.uid()).thenReturn("test_event_uid");
         when(event.notes()).thenReturn(Collections.singletonList(note));
 
-        eventHandler = new EventHandler(eventStore, trackedEntityDataValueHandler, noteHandler, noteVersionManager,
-                noteUniquenessManager);
+        eventHandler = new EventHandler(relationshipVersionManager, relationshipHandler, eventStore,
+                trackedEntityDataValueHandler, noteHandler, noteVersionManager, noteUniquenessManager,
+                relationshipOrphanCleaner);
     }
 
     @Test

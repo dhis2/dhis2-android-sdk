@@ -120,7 +120,8 @@ public class TrackedEntityInstanceHandlerShould {
                 .thenReturn(Collections.singletonList(enrollment));
         when(TrackedEntityInstanceInternalAccessor.accessRelationships(trackedEntityInstance))
                 .thenReturn(Collections.singletonList(relationship229Compatible));
-        when(relationshipVersionManager.from229Compatible(relationship229Compatible)).thenReturn(relationship);
+        when(relationshipVersionManager.from229Compatible(Collections.singletonList(relationship229Compatible)))
+                .thenReturn(Collections.singletonList(relationship));
 
         when(relationship.relationshipType()).thenReturn(RELATIONSHIP_TYPE);
         when(relationship.from()).thenReturn(RelationshipHelper.teiItem(TEI_UID));
@@ -212,7 +213,9 @@ public class TrackedEntityInstanceHandlerShould {
         when(relativeBuilder.build()).thenReturn(relative);
 
         trackedEntityInstanceHandler.handle(trackedEntityInstance, false);
-        verify(relationshipHandler, times(2)).handleMany(anyList(), any());
+        verify(relationshipHandler, times(1)).handleMany(anyList(), any());
+        verify(relationshipVersionManager, times(1))
+                .createRelativesIfNotExist(Collections.singletonList(relationship));
     }
 
     @Test

@@ -40,6 +40,9 @@ import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.note.Note;
 import org.hisp.dhis.android.core.note.internal.NoteDHISVersionManager;
 import org.hisp.dhis.android.core.note.internal.NoteUniquenessManager;
+import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -88,6 +91,15 @@ public class EnrollmentHandlerShould {
     private NoteDHISVersionManager noteVersionManager;
 
     @Mock
+    private RelationshipDHISVersionManager relationshipVersionManager;
+
+    @Mock
+    private RelationshipHandler relationshipHandler;
+
+    @Mock
+    private OrphanCleaner<Enrollment, Relationship> relationshipOrphanCleaner;
+
+    @Mock
     private OrphanCleaner<Enrollment, Event> eventCleaner;
 
     // object to test
@@ -104,8 +116,9 @@ public class EnrollmentHandlerShould {
         List<String> emptyList = Collections.emptyList();
         when(enrollmentStore.selectUidsWhere(anyString())).thenReturn(emptyList);
 
-        enrollmentHandler = new EnrollmentHandler(noteVersionManager, enrollmentStore, eventHandler,
-                eventCleaner, noteHandler, noteUniquenessManager);
+        enrollmentHandler = new EnrollmentHandler(relationshipVersionManager, relationshipHandler, noteVersionManager,
+                enrollmentStore, eventHandler, eventCleaner, noteHandler, noteUniquenessManager,
+                relationshipOrphanCleaner);
     }
 
     @Test

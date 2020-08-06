@@ -29,9 +29,12 @@
 package org.hisp.dhis.android.core.relationship.internal;
 
 import org.hisp.dhis.android.core.data.relationship.RelationshipSamples;
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
+import org.hisp.dhis.android.core.event.internal.EventStore;
 import org.hisp.dhis.android.core.relationship.BaseRelationship;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -49,13 +52,22 @@ public class RelationshipDHISVersionManagerShould extends RelationshipSamples {
     @Mock
     private DHISVersionManager versionManager;
 
+    @Mock
+    private TrackedEntityInstanceStore teiStore;
+
+    @Mock
+    private EnrollmentStore enrollmentStore;
+
+    @Mock
+    private EventStore eventStore;
+
     private RelationshipDHISVersionManager relationshipDHISVersionManager;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-
-        relationshipDHISVersionManager = new RelationshipDHISVersionManager(versionManager);
+        relationshipDHISVersionManager = new RelationshipDHISVersionManager(versionManager, teiStore, enrollmentStore,
+                eventStore);
     }
 
     private void assertCommonFields(BaseRelationship relationship) {

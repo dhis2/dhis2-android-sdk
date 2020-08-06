@@ -66,7 +66,7 @@ import io.reactivex.CompletableEmitter;
 import io.reactivex.Single;
 
 @Reusable
-final class RelationshipDownloadAndPersistCallFactory {
+public final class RelationshipDownloadAndPersistCallFactory {
 
     private final RelationshipStore relationshipStore;
 
@@ -106,7 +106,7 @@ final class RelationshipDownloadAndPersistCallFactory {
         this.eventPersistenceCallFactory = eventPersistenceCallFactory;
     }
 
-    Completable downloadAndPersist() {
+    public Completable downloadAndPersist() {
         return Single.just(Collections.emptyList()).flatMapCompletable(emptyMap -> {
 
             List<String> eventRelationships = eventStore.queryMissingRelationshipsUids();

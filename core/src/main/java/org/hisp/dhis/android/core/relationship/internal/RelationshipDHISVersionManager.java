@@ -28,9 +28,11 @@
 
 package org.hisp.dhis.android.core.relationship.internal;
 
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
+import org.hisp.dhis.android.core.common.DeletableDataObject;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor;
@@ -57,6 +59,8 @@ import javax.inject.Inject;
 
 import dagger.Reusable;
 
+import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.isDeleted;
+
 @Reusable
 public class RelationshipDHISVersionManager {
 
@@ -64,25 +68,16 @@ public class RelationshipDHISVersionManager {
     private final TrackedEntityInstanceStore teiStore;
     private final EnrollmentStore enrollmentStore;
     private final EventStore eventStore;
-    private final IdentifiableDataHandler<TrackedEntityInstance> teiHandler;
-    private final IdentifiableDataHandler<Enrollment> enrollmentHandler;
-    private final IdentifiableDataHandler<Event> eventHandler;
 
     @Inject
     public RelationshipDHISVersionManager(DHISVersionManager versionManager,
                                           TrackedEntityInstanceStore teiStore,
                                           EnrollmentStore enrollmentStore,
-                                          EventStore eventStore,
-                                          IdentifiableDataHandler<Enrollment> enrollmentHandler,
-                                          IdentifiableDataHandler<TrackedEntityInstance> teiHandler,
-                                          IdentifiableDataHandler<Event> eventHandler) {
+                                          EventStore eventStore) {
         this.versionManager = versionManager;
         this.teiStore = teiStore;
         this.enrollmentStore = enrollmentStore;
         this.eventStore = eventStore;
-        this.enrollmentHandler = enrollmentHandler;
-        this.teiHandler = teiHandler;
-        this.eventHandler = eventHandler;
     }
 
     public List<Relationship> getOwnedRelationships(List<Relationship> relationships, String teiUid) {
@@ -243,19 +238,19 @@ public class RelationshipDHISVersionManager {
                     case RelationshipItemTableInfo.Columns.TRACKED_ENTITY_INSTANCE:
                         TrackedEntityInstance relativeTEI = getRelativeTEI(item);
                         if (relativeTEI != null && !teiStore.exists(relativeTEI.uid())) {
-                            teiHandler.handle(relativeTEI, trackedEntityInstanceTransformer(), false);
+                            handleObject(relativeTEI, trackedEntityInstanceTransformer(), teiStore);
                         }
                         break;
                     case RelationshipItemTableInfo.Columns.ENROLLMENT:
                         Enrollment relativeEnrollment = getRelativeEnrollment(item);
                         if (relativeEnrollment != null && !enrollmentStore.exists(relativeEnrollment.uid())) {
-                            enrollmentHandler.handle(relativeEnrollment, enrollmentTransformer(), false);
+                            handleObject(relativeEnrollment, enrollmentTransformer(), enrollmentStore);
                         }
                         break;
                     case RelationshipItemTableInfo.Columns.EVENT:
                         Event relativeEvent = getRelativeEvent(item);
                         if (relativeEvent != null && !eventStore.exists(relativeEvent.uid())) {
-                            eventHandler.handle(relativeEvent, eventTransformer(), false);
+                            handleObject(relativeEvent, eventTransformer(), eventStore);
                         }
                         break;
                 }
@@ -300,5 +295,21 @@ public class RelationshipDHISVersionManager {
                 }
             }
         };
+    }
+
+    private <O extends ObjectWithUidInterface & DeletableDataObject> void handleObject(
+            O object, Transformer<O, O> transformer, IdentifiableDeletableDataObjectStore<O> store) {
+        O oTransformed = transformer.transform(object);
+        deleteOrPersist(oTransformed, store);
+    }
+
+    private <O extends ObjectWithUidInterface & DeletableDataObject> void deleteOrPersist(
+            O o, IdentifiableDeletableDataObjectStore<O> store) {
+        String modelUid = o.uid();
+        if (isDeleted(o) && modelUid != null) {
+            store.deleteIfExists(modelUid);
+        } else {
+            store.updateOrInsert(o);
+        }
     }
 }

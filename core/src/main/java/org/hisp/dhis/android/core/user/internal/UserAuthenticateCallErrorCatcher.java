@@ -41,7 +41,6 @@ import java.net.HttpURLConnection;
 import javax.inject.Inject;
 
 import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import retrofit2.Response;
 
 @Reusable
@@ -60,7 +59,6 @@ class UserAuthenticateCallErrorCatcher implements APICallErrorCatcher {
     }
 
     @Override
-    @SuppressFBWarnings("REC_CATCH_EXCEPTION")
     public D2ErrorCode catchError(Response<?> response) {
         try {
             String errorBodyStr = response.errorBody().string();

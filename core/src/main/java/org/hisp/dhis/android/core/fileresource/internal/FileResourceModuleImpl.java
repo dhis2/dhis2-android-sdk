@@ -35,10 +35,8 @@ import org.hisp.dhis.android.core.fileresource.FileResourceModule;
 import javax.inject.Inject;
 
 import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.reactivex.Observable;
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
 @Reusable
 public final class FileResourceModuleImpl implements FileResourceModule {
 

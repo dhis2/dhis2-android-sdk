@@ -62,9 +62,6 @@ ext {
             rxandroid       : "2.1.1",
             sqlcipher       : "4.2.0",
 
-            // code checks
-            findbugs        : "3.0.0",
-
             // test dependencies
             coretesting     : "1.1.1",
             junit           : "4.12",
@@ -205,8 +202,6 @@ dependencies {
 
     api "net.zetetic:android-database-sqlcipher:${libraries.sqlcipher}"
 
-    api "com.google.code.findbugs:annotations:${libraries.findbugs}"
-
     api "org.antlr:antlr4-runtime:4.7.2"
 
     api "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
@@ -218,7 +213,6 @@ dependencies {
     testImplementation "org.assertj:assertj-core:${libraries.assertj}"
     testImplementation "nl.jqno.equalsverifier:equalsverifier:${libraries.equalsverifier}"
     testImplementation "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
-    testImplementation "com.google.code.findbugs:annotations:${libraries.findbugs}"
     testImplementation "androidx.test:runner:${libraries.testrunner}"
 
     // Android test dependencies

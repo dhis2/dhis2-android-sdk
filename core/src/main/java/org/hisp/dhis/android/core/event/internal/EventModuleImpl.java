@@ -28,15 +28,15 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
+import androidx.annotation.VisibleForTesting;
+
 import org.hisp.dhis.android.core.event.EventCollectionRepository;
 import org.hisp.dhis.android.core.event.EventDownloader;
 import org.hisp.dhis.android.core.event.EventModule;
 
 import javax.inject.Inject;
 
-import androidx.annotation.VisibleForTesting;
 import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @Reusable
 public final class EventModuleImpl implements EventModule {
@@ -45,7 +45,6 @@ public final class EventModuleImpl implements EventModule {
     private final EventDownloader eventDownloader;
 
     @VisibleForTesting
-    @SuppressFBWarnings("URF_UNREAD_FIELD")
     final EventPersistenceCallFactory eventPersistenceCallFactory;
 
     @Inject

@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.api.executors.internal;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
@@ -44,7 +45,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import dagger.Reusable;

@@ -29,18 +29,14 @@ package org.hisp.dhis.android.core.arch.handlers.internal;
 
 import org.hisp.dhis.android.core.common.DeletableDataObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives;
 
 import java.util.Collection;
 
 public interface IdentifiableDataHandler<O extends DeletableDataObject & ObjectWithUidInterface> {
 
-    void handle(O o, Boolean overwrite);
-
-    void handle(O o, Transformer<O, O> transformer, Boolean overwrite);
-
-    void handleMany(Collection<O> oCollection, Boolean overwrite);
-
     void handleMany(Collection<O> oCollection, Transformer<O, O> transformer, Boolean overwrite);
 
-    void handleMany(final Collection<O> oCollection, boolean asRelationship, boolean isFullUpdate, boolean overwrite);
+    void handleMany(final Collection<O> oCollection, boolean asRelationship, boolean isFullUpdate, boolean overwrite,
+                    RelationshipItemRelatives relatives);
 }

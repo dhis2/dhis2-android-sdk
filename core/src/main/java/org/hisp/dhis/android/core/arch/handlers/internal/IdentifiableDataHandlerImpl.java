@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -62,24 +63,6 @@ public abstract class IdentifiableDataHandlerImpl<O extends DeletableDataObject 
         this.relationshipHandler = relationshipHandler;
     }
 
-    @Override
-    public final void handle(O o, Boolean overwrite) {
-        if (o == null) {
-            return;
-        }
-        O object = beforeObjectHandled(o, overwrite);
-        HandleAction action = deleteOrPersist(object);
-        afterObjectHandled(object, action, overwrite);
-    }
-
-    @Override
-    public final void handle(O o, Transformer<O, O> transformer, Boolean overwrite) {
-        if (o == null) {
-            return;
-        }
-        handleInternal(o, transformer, overwrite);
-    }
-
     protected void handle(O o, Transformer<O, O> transformer, List<O> oTransformedCollection, Boolean overwrite) {
         if (o == null) {
             return;
@@ -88,23 +71,30 @@ public abstract class IdentifiableDataHandlerImpl<O extends DeletableDataObject 
         oTransformedCollection.add(oTransformed);
     }
 
+    protected void handle(O o, Transformer<O, O> transformer, List<O> oTransformedCollection, Boolean overwrite,
+                          RelationshipItemRelatives relatives) {
+        if (o == null) {
+            return;
+        }
+        O oTransformed = handleInternal(o, transformer, overwrite, relatives);
+        oTransformedCollection.add(oTransformed);
+    }
+
     private O handleInternal(O o, Transformer<O, O> transformer, Boolean overwrite) {
         O object = beforeObjectHandled(o, overwrite);
         O oTransformed = transformer.transform(object);
         HandleAction action = deleteOrPersist(oTransformed);
-        afterObjectHandled(oTransformed, action, overwrite);
+        afterObjectHandled(oTransformed, action, overwrite, null);
         return oTransformed;
     }
 
-    @Override
-    public final void handleMany(Collection<O> oCollection, Boolean overwrite) {
-        if (oCollection != null) {
-            Collection<O> preHandledCollection = beforeCollectionHandled(oCollection, overwrite);
-            for (O o : preHandledCollection) {
-                handle(o, overwrite);
-            }
-            afterCollectionHandled(preHandledCollection, overwrite);
-        }
+    private O handleInternal(O o, Transformer<O, O> transformer, Boolean overwrite,
+                             RelationshipItemRelatives relatives) {
+        O object = beforeObjectHandled(o, overwrite);
+        O oTransformed = transformer.transform(object);
+        HandleAction action = deleteOrPersist(oTransformed);
+        afterObjectHandled(oTransformed, action, overwrite, relatives);
+        return oTransformed;
     }
 
     @Override
@@ -119,8 +109,9 @@ public abstract class IdentifiableDataHandlerImpl<O extends DeletableDataObject 
         }
     }
 
+    @Override
     public void handleMany(final Collection<O> oCollection, boolean asRelationship, boolean isFullUpdate,
-                           boolean overwrite) {
+                           boolean overwrite, RelationshipItemRelatives relatives) {
         if (oCollection == null) {
             return;
         }
@@ -138,8 +129,7 @@ public abstract class IdentifiableDataHandlerImpl<O extends DeletableDataObject 
 
         for (O object : preHandledCollection) {
 
-
-            handle(object, transformer, transformedCollection, overwrite);
+            handle(object, transformer, transformedCollection, overwrite, relatives);
 
             if (isFullUpdate) {
                 deleteOrphans(object);
@@ -147,7 +137,6 @@ public abstract class IdentifiableDataHandlerImpl<O extends DeletableDataObject 
         }
 
         afterCollectionHandled(transformedCollection, overwrite);
-
     }
 
     protected Transformer<O, O> relationshipTransformer() {
@@ -161,8 +150,11 @@ public abstract class IdentifiableDataHandlerImpl<O extends DeletableDataObject 
         };
     }
 
-    protected void handleRelationships(Collection<Relationship> relationships) {
-        relationshipVersionManager.createRelativesIfNotExist(relationships);
+    protected void handleRelationships(Collection<Relationship> relationships, ObjectWithUidInterface parent,
+                                       RelationshipItemRelatives relatives) {
+        if (relatives != null) {
+            relationshipVersionManager.createRelativesIfNotExist(relationships, parent.uid(), relatives);
+        }
         relationshipHandler.handleMany(relationships, relationship -> relationship.toBuilder()
                 .state(State.SYNCED)
                 .deleted(false)
@@ -193,7 +185,8 @@ public abstract class IdentifiableDataHandlerImpl<O extends DeletableDataObject 
         return o;
     }
 
-    protected abstract void afterObjectHandled(O o, HandleAction action, Boolean overwrite);
+    protected abstract void afterObjectHandled(O o, HandleAction action, Boolean overwrite,
+                                               RelationshipItemRelatives relatives);
 
     protected Collection<O> beforeCollectionHandled(Collection<O> oCollection, Boolean overwrite) {
         if (overwrite) {

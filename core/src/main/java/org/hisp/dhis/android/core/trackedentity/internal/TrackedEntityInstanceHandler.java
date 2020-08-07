@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.internal.Relationship229Compatible;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
@@ -79,7 +80,7 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
 
     @Override
     protected void afterObjectHandled(final TrackedEntityInstance trackedEntityInstance, HandleAction action,
-                                      Boolean overwrite) {
+                                      Boolean overwrite, RelationshipItemRelatives relatives) {
         if (action != HandleAction.Delete) {
             trackedEntityAttributeValueHandler.handleMany(
                     trackedEntityInstance.trackedEntityAttributeValues(),
@@ -96,9 +97,9 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
 
             List<Relationship229Compatible> relationships =
                     TrackedEntityInstanceInternalAccessor.accessRelationships(trackedEntityInstance);
-            if (relationships != null) {
+            if (relationships != null && !relationships.isEmpty()) {
                 Collection<Relationship> relationshipsList = relationshipVersionManager.from229Compatible(relationships);
-                handleRelationships(relationshipsList);
+                handleRelationships(relationshipsList, trackedEntityInstance, relatives);
             }
         }
     }

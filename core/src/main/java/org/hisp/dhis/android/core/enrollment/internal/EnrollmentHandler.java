@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.note.internal.NoteUniquenessManager;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -100,7 +101,8 @@ final class EnrollmentHandler extends IdentifiableDataHandlerImpl<Enrollment> {
     }
 
     @Override
-    protected void afterObjectHandled(Enrollment enrollment, HandleAction action, Boolean overwrite) {
+    protected void afterObjectHandled(Enrollment enrollment, HandleAction action, Boolean overwrite,
+                                      RelationshipItemRelatives relatives) {
         if (action != HandleAction.Delete) {
             eventHandler.handleMany(EnrollmentInternalAccessor.accessEvents(enrollment),
                     event -> event.toBuilder()
@@ -119,8 +121,8 @@ final class EnrollmentHandler extends IdentifiableDataHandlerImpl<Enrollment> {
             noteHandler.handleMany(notesToSync);
 
             List<Relationship> relationships = EnrollmentInternalAccessor.accessRelationships(enrollment);
-            if (relationships != null) {
-                handleRelationships(relationships);
+            if (relationships != null && !relationships.isEmpty()) {
+                handleRelationships(relationships, enrollment, relatives);
             }
         }
 

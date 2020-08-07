@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.note.internal.NoteUniquenessManager;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 
 import java.util.ArrayList;
@@ -83,7 +84,8 @@ final class EventHandler extends IdentifiableDataHandlerImpl<Event> {
     }
 
     @Override
-    protected void afterObjectHandled(Event event, HandleAction action, Boolean overwrite) {
+    protected void afterObjectHandled(Event event, HandleAction action, Boolean overwrite,
+                                      RelationshipItemRelatives relatives) {
         final String eventUid = event.uid();
 
         if (action == HandleAction.Delete) {
@@ -103,8 +105,8 @@ final class EventHandler extends IdentifiableDataHandlerImpl<Event> {
             noteHandler.handleMany(notesToSync);
 
             List<Relationship> relationships = EventInternalAccessor.accessRelationships(event);
-            if (relationships != null) {
-                handleRelationships(relationships);
+            if (relationships != null && !relationships.isEmpty()) {
+                handleRelationships(relationships, event, relatives);
             }
         }
     }

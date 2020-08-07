@@ -58,7 +58,7 @@ public final class EnrollmentPersistenceCallFactory {
     private Completable persistEnrollmentsInternal(
             final List<Enrollment> enrollments, boolean asRelationship, boolean isFullUpdate, boolean overwrite) {
         return Completable.defer(() -> {
-            enrollmentHandler.handleMany(enrollments, asRelationship, isFullUpdate, overwrite);
+            enrollmentHandler.handleMany(enrollments, asRelationship, isFullUpdate, overwrite, null);
             return Completable.complete();
         });
     }

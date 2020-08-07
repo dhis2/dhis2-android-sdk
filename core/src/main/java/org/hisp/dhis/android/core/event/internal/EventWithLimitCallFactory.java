@@ -40,6 +40,9 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownl
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipDownloadAndPersistCallFactory;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 
 import java.util.List;
@@ -47,6 +50,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 
 @Reusable
@@ -62,7 +66,8 @@ public final class EventWithLimitCallFactory {
     private final EventEndpointCallFactory endpointCallFactory;
     private final EventPersistenceCallFactory persistenceCallFactory;
     private final EventLastUpdatedManager lastUpdatedManager;
-
+    private final DHISVersionManager versionManager;
+    private final RelationshipDownloadAndPersistCallFactory relationshipDownloadAndPersistCallFactory;
 
     @Inject
     EventWithLimitCallFactory(
@@ -72,7 +77,9 @@ public final class EventWithLimitCallFactory {
             @NonNull EventQueryBundleFactory eventQueryBundleFactory,
             @NonNull EventEndpointCallFactory endpointCallFactory,
             @NonNull EventPersistenceCallFactory persistenceCallFactory,
-            @NonNull EventLastUpdatedManager lastUpdatedManager) {
+            @NonNull EventLastUpdatedManager lastUpdatedManager,
+            @NonNull DHISVersionManager versionManager,
+            @NonNull RelationshipDownloadAndPersistCallFactory relationshipDownloadAndPersistCallFactory) {
         this.systemInfoRepository = systemInfoRepository;
         this.d2CallExecutor = d2CallExecutor;
         this.rxCallExecutor = rxCallExecutor;
@@ -80,17 +87,22 @@ public final class EventWithLimitCallFactory {
         this.endpointCallFactory = endpointCallFactory;
         this.persistenceCallFactory = persistenceCallFactory;
         this.lastUpdatedManager = lastUpdatedManager;
+        this.versionManager = versionManager;
+        this.relationshipDownloadAndPersistCallFactory = relationshipDownloadAndPersistCallFactory;
     }
 
     public Observable<D2Progress> downloadSingleEvents(ProgramDataDownloadParams params) {
-        D2ProgressManager progressManager = new D2ProgressManager(2);
+        D2ProgressManager progressManager = new D2ProgressManager(3);
+        RelationshipItemRelatives relatives = new RelationshipItemRelatives();
         return Observable.merge(
                 downloadSystemInfo(progressManager),
-                downloadEventsInternal(params, progressManager));
+                downloadEventsInternal(params, progressManager, relatives),
+                downloadRelationships(progressManager, relatives));
     }
 
     private Observable<D2Progress> downloadEventsInternal(ProgramDataDownloadParams params,
-                                                          D2ProgressManager progressManager) {
+                                                          D2ProgressManager progressManager,
+                                                          RelationshipItemRelatives relatives) {
         return Observable.create(emitter -> {
             boolean successfulSync = true;
 
@@ -116,7 +128,7 @@ public final class EventWithLimitCallFactory {
                                 .lastUpdatedStartDate(bundle.lastUpdatedStartDate());
 
                         EventsWithPagingResult result = getEventsForOrgUnitProgramCombination(eventQueryBuilder,
-                                bundle.limit() - eventsCount);
+                                bundle.limit() - eventsCount, relatives);
                         eventsCount = eventsCount + result.eventCount;
                         successfulSync = successfulSync && result.successfulSync;
                     }
@@ -130,6 +142,13 @@ public final class EventWithLimitCallFactory {
         });
     }
 
+    private Observable<D2Progress> downloadRelationships(D2ProgressManager progressManager,
+                                                         RelationshipItemRelatives relatives) {
+        Completable completable = versionManager.is2_29() ? Completable.complete() :
+                this.relationshipDownloadAndPersistCallFactory.downloadAndPersist(relatives);
+        return completable.andThen(Observable.just(progressManager.increaseProgress(Event.class, true)));
+    }
+
     private Observable<D2Progress> downloadSystemInfo(D2ProgressManager progressManager) {
         return systemInfoRepository.download()
                 .toSingle(() -> progressManager.increaseProgress(SystemInfo.class, false))
@@ -137,12 +156,13 @@ public final class EventWithLimitCallFactory {
     }
 
     private EventsWithPagingResult getEventsForOrgUnitProgramCombination(EventQuery.Builder eventQueryBuilder,
-                                                                         int combinationLimit) {
+                                                                         int combinationLimit,
+                                                                         RelationshipItemRelatives relatives) {
         int eventsCount = 0;
         boolean successfulSync = true;
 
         try {
-            eventsCount = getEventsWithPaging(eventQueryBuilder, combinationLimit);
+            eventsCount = getEventsWithPaging(eventQueryBuilder, combinationLimit, relatives);
         } catch (D2Error ignored) {
             successfulSync = false;
         }
@@ -150,7 +170,8 @@ public final class EventWithLimitCallFactory {
         return new EventsWithPagingResult(eventsCount, successfulSync);
     }
 
-    private int getEventsWithPaging(EventQuery.Builder eventQueryBuilder, int combinationLimit) throws D2Error {
+    private int getEventsWithPaging(EventQuery.Builder eventQueryBuilder, int combinationLimit,
+                                    RelationshipItemRelatives relatives) throws D2Error {
         int downloadedEventsForCombination = 0;
         EventQuery baseQuery = eventQueryBuilder.build();
 
@@ -165,8 +186,8 @@ public final class EventWithLimitCallFactory {
 
             List<Event> eventsToPersist = getEventsToPersist(paging, pageEvents);
 
-            rxCallExecutor.wrapCompletableTransactionally(persistenceCallFactory.persistEvents(eventsToPersist),
-                    true).blockingGet();
+            rxCallExecutor.wrapCompletableTransactionally(persistenceCallFactory
+                            .persistEvents(eventsToPersist, relatives), true).blockingGet();
 
             downloadedEventsForCombination += eventsToPersist.size();
 

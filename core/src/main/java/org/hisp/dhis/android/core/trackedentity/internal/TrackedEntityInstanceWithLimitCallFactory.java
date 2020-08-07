@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownl
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams;
 import org.hisp.dhis.android.core.program.internal.ProgramOrganisationUnitLastUpdated;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDownloadAndPersistCallFactory;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
@@ -114,10 +115,11 @@ class TrackedEntityInstanceWithLimitCallFactory {
                 return Observable.just(
                         progressManager.increaseProgress(TrackedEntityInstance.class, true));
             } else {
+                RelationshipItemRelatives relatives = new RelationshipItemRelatives();
                 return Observable.concat(
                         downloadSystemInfo(progressManager),
-                        downloadTeis(progressManager, params, programOrganisationUnitSet),
-                        downloadRelationships(progressManager),
+                        downloadTeis(progressManager, params, programOrganisationUnitSet, relatives),
+                        downloadRelationships(progressManager, relatives),
                         updateResource(progressManager, programOrganisationUnitSet)
                 );
             }
@@ -135,7 +137,8 @@ class TrackedEntityInstanceWithLimitCallFactory {
 
     private Observable<D2Progress> downloadTeis(D2ProgressManager progressManager,
                                                 ProgramDataDownloadParams params,
-                                                Set<ProgramOrganisationUnitLastUpdated> programOrganisationUnitSet) {
+                                                Set<ProgramOrganisationUnitLastUpdated> programOrganisationUnitSet,
+                                                RelationshipItemRelatives relatives) {
 
         List<TeiQuery.Builder> teiQueryBuilders = trackedEntityInstanceQueryBuilderFactory.getTeiQueryBuilders(params);
 
@@ -149,16 +152,17 @@ class TrackedEntityInstanceWithLimitCallFactory {
         boolean overwrite = params.overwrite();
 
         return teiDownloadObservable.flatMapSingle(
-                teiList -> persistenceCallFactory.persistTEIs(teiList, isFullUpdate, overwrite)
+                teiList -> persistenceCallFactory.persistTEIs(teiList, isFullUpdate, overwrite, relatives)
                         .doOnComplete(() -> programOrganisationUnitSet.addAll(
                                 TrackedEntityInstanceHelper.getProgramOrganisationUnitTuple(teiList, serverDate)))
                         .toSingle(() ->
                                 progressManager.increaseProgress(TrackedEntityInstance.class, false)));
     }
 
-    private Observable<D2Progress> downloadRelationships(D2ProgressManager progressManager) {
+    private Observable<D2Progress> downloadRelationships(D2ProgressManager progressManager,
+                                                         RelationshipItemRelatives relatives) {
         Completable completable = versionManager.is2_29() ? Completable.complete() :
-                this.relationshipDownloadAndPersistCallFactory.downloadAndPersist();
+                this.relationshipDownloadAndPersistCallFactory.downloadAndPersist(relatives);
         return completable.andThen(
                 Observable.just(progressManager.increaseProgress(TrackedEntityInstance.class, true)));
     }

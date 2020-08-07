@@ -32,10 +32,10 @@ import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler;
-import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -64,14 +64,18 @@ public final class EventPersistenceCallFactory {
         this.organisationUnitDownloader = organisationUnitDownloader;
     }
 
-    Completable persistEvents(final Collection<Event> events) {
-        return Completable.defer(() -> {
-            eventHandler.handleMany(events,
-                    event -> event.toBuilder()
-                            .state(State.SYNCED)
-                            .build(),
-                    false);
+    Completable persistEvents(final Collection<Event> events, RelationshipItemRelatives relatives) {
+        return persistEventsInternal(events, false, relatives);
+    }
 
+    public Completable persistRelationships(final List<Event> events) {
+        return persistEventsInternal(events, true, null);
+    }
+
+    private Completable persistEventsInternal(final Collection<Event> events, boolean asRelationship,
+                                              RelationshipItemRelatives relatives) {
+        return Completable.defer(() -> {
+            eventHandler.handleMany(events, asRelationship, false, false, relatives);
             Set<String> searchUnitUids = getMissingOrganisationUnitUids(events);
             return organisationUnitDownloader.downloadSearchOrganisationUnits(searchUnitUids);
         });
@@ -86,17 +90,5 @@ public final class EventPersistenceCallFactory {
         }
         uids.removeAll(organisationUnitStore.selectUids());
         return uids;
-    }
-
-    public Completable persistRelationships(final List<Event> events) {
-        return persistEventsInternal(events, true, false, false);
-    }
-
-    private Completable persistEventsInternal(
-            final List<Event> events, boolean asRelationship, boolean isFullUpdate, boolean overwrite) {
-        return Completable.defer(() -> {
-            eventHandler.handleMany(events, asRelationship, isFullUpdate, overwrite);
-            return Completable.complete();
-        });
     }
 }

@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDownloadAndPersistCallFactory;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
@@ -100,10 +101,12 @@ public final class TrackedEntityInstanceListDownloadAndPersistCallFactory {
                 teis.addAll(teiList);
             }
 
-            persistenceCallFactory.persistTEIs(teis, true, false).blockingGet();
+
+            RelationshipItemRelatives relatives = new RelationshipItemRelatives();
+            persistenceCallFactory.persistTEIs(teis, true, false, relatives).blockingGet();
 
             if (!versionManager.is2_29()) {
-                relationshipDownloadAndPersistCallFactory.downloadAndPersist().blockingGet();
+                relationshipDownloadAndPersistCallFactory.downloadAndPersist(relatives).blockingGet();
             }
 
             foreignKeyCleaner.cleanForeignKeyErrors();

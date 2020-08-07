@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.After;
@@ -59,7 +60,7 @@ public class EventEndpointCallMockIntegrationShould extends BaseMockIntegrationT
 
         List<Event> events = eventEndpointCall.call();
 
-        ((EventModuleImpl) d2.eventModule()).eventPersistenceCallFactory.persistEvents(events).blockingGet();
+        ((EventModuleImpl) d2.eventModule()).eventPersistenceCallFactory.persistEvents(events, new RelationshipItemRelatives()).blockingGet();
 
         assertThat(d2.eventModule().events().blockingCount()).isEqualTo(1);
     }
@@ -74,7 +75,7 @@ public class EventEndpointCallMockIntegrationShould extends BaseMockIntegrationT
 
         List<Event> events = eventEndpointCall.call();
 
-        ((EventModuleImpl) d2.eventModule()).eventPersistenceCallFactory.persistEvents(events).blockingGet();
+        ((EventModuleImpl) d2.eventModule()).eventPersistenceCallFactory.persistEvents(events, new RelationshipItemRelatives()).blockingGet();
 
         assertThat(d2.eventModule().events().blockingCount()).isEqualTo(pageSize);
     }
@@ -100,7 +101,7 @@ public class EventEndpointCallMockIntegrationShould extends BaseMockIntegrationT
         dhis2MockServer.enqueueMockResponse("event/events_1.json");
 
         List<Event> events = eventEndpointCall.call();
-        ((EventModuleImpl) d2.eventModule()).eventPersistenceCallFactory.persistEvents(events).blockingGet();
+        ((EventModuleImpl) d2.eventModule()).eventPersistenceCallFactory.persistEvents(events, new RelationshipItemRelatives()).blockingGet();
 
         Event event = events.get(0);
         assertThat(event.uid()).isEqualTo("V1CerIi3sdL");
@@ -109,7 +110,7 @@ public class EventEndpointCallMockIntegrationShould extends BaseMockIntegrationT
         EventStoreImpl.create(d2.databaseAdapter()).update(event.toBuilder()
                 .state(State.SYNCED).status(EventStatus.SKIPPED).build());
 
-        ((EventModuleImpl) d2.eventModule()).eventPersistenceCallFactory.persistEvents(events).blockingGet();
+        ((EventModuleImpl) d2.eventModule()).eventPersistenceCallFactory.persistEvents(events, new RelationshipItemRelatives()).blockingGet();
 
         Event event1 = d2.eventModule().events().one().blockingGet();
         assertThat(event1.uid()).isEqualTo("V1CerIi3sdL");
@@ -118,7 +119,7 @@ public class EventEndpointCallMockIntegrationShould extends BaseMockIntegrationT
         EventStoreImpl.create(d2.databaseAdapter()).update(event.toBuilder()
                 .state(State.TO_UPDATE).status(EventStatus.SKIPPED).build());
 
-        ((EventModuleImpl) d2.eventModule()).eventPersistenceCallFactory.persistEvents(events).blockingGet();
+        ((EventModuleImpl) d2.eventModule()).eventPersistenceCallFactory.persistEvents(events, new RelationshipItemRelatives()).blockingGet();
 
         Event event2 = d2.eventModule().events().one().blockingGet();
         assertThat(event2.uid()).isEqualTo("V1CerIi3sdL");
@@ -127,7 +128,7 @@ public class EventEndpointCallMockIntegrationShould extends BaseMockIntegrationT
         EventStoreImpl.create(d2.databaseAdapter()).update(event.toBuilder()
                 .state(State.ERROR).status(EventStatus.SKIPPED).build());
 
-        ((EventModuleImpl) d2.eventModule()).eventPersistenceCallFactory.persistEvents(events).blockingGet();
+        ((EventModuleImpl) d2.eventModule()).eventPersistenceCallFactory.persistEvents(events, new RelationshipItemRelatives()).blockingGet();
 
         Event event3 = d2.eventModule().events().one().blockingGet();
         assertThat(event3.uid()).isEqualTo("V1CerIi3sdL");
@@ -136,7 +137,7 @@ public class EventEndpointCallMockIntegrationShould extends BaseMockIntegrationT
         EventStoreImpl.create(d2.databaseAdapter()).update(event.toBuilder()
                 .state(State.TO_POST).status(EventStatus.SKIPPED).build());
 
-        ((EventModuleImpl) d2.eventModule()).eventPersistenceCallFactory.persistEvents(events).blockingGet();
+        ((EventModuleImpl) d2.eventModule()).eventPersistenceCallFactory.persistEvents(events, new RelationshipItemRelatives()).blockingGet();
 
         Event event4 = d2.eventModule().events().one().blockingGet();
         assertThat(event4.uid()).isEqualTo("V1CerIi3sdL");

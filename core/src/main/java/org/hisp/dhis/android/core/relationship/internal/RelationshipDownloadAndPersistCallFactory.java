@@ -35,12 +35,10 @@ import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentPersistenceCallFactory;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentService;
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.internal.EventFields;
 import org.hisp.dhis.android.core.event.internal.EventPersistenceCallFactory;
 import org.hisp.dhis.android.core.event.internal.EventService;
-import org.hisp.dhis.android.core.event.internal.EventStore;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipItem;
 import org.hisp.dhis.android.core.relationship.RelationshipItemEnrollment;
@@ -51,11 +49,11 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePersistenceCallFactory;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -70,46 +68,37 @@ public final class RelationshipDownloadAndPersistCallFactory {
 
     private final RelationshipStore relationshipStore;
 
-    private final TrackedEntityInstanceStore trackedEntityInstanceStore;
     private final TrackedEntityInstanceService trackedEntityInstanceService;
     private final TrackedEntityInstancePersistenceCallFactory teiPersistenceCallFactory;
 
-    private final EnrollmentStore enrollmentStore;
     private final EnrollmentService enrollmentService;
     private final EnrollmentPersistenceCallFactory enrollmentPersistenceCallFactory;
 
-    private final EventStore eventStore;
     private final EventService eventService;
     private final EventPersistenceCallFactory eventPersistenceCallFactory;
 
     @Inject
     RelationshipDownloadAndPersistCallFactory(
-            @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
             @NonNull RelationshipStore relationshipStore,
             @NonNull TrackedEntityInstanceService trackedEntityInstanceService,
             @NonNull TrackedEntityInstancePersistenceCallFactory teiPersistenceCallFactory,
-            @NonNull EnrollmentStore enrollmentStore,
             @NonNull EnrollmentService enrollmentService,
             @NonNull EnrollmentPersistenceCallFactory enrollmentPersistenceCallFactory,
-            @NonNull EventStore eventStore,
             @NonNull EventService eventService,
             @NonNull EventPersistenceCallFactory eventPersistenceCallFactory) {
-        this.trackedEntityInstanceStore = trackedEntityInstanceStore;
         this.relationshipStore = relationshipStore;
         this.trackedEntityInstanceService = trackedEntityInstanceService;
         this.teiPersistenceCallFactory = teiPersistenceCallFactory;
-        this.enrollmentStore = enrollmentStore;
         this.enrollmentService = enrollmentService;
         this.enrollmentPersistenceCallFactory = enrollmentPersistenceCallFactory;
-        this.eventStore = eventStore;
         this.eventService = eventService;
         this.eventPersistenceCallFactory = eventPersistenceCallFactory;
     }
 
-    public Completable downloadAndPersist() {
+    public Completable downloadAndPersist(RelationshipItemRelatives relatives) {
         return Single.just(Collections.emptyList()).flatMapCompletable(emptyMap -> {
 
-            List<String> eventRelationships = eventStore.queryMissingRelationshipsUids();
+            Set<String> eventRelationships = relatives.getRelativeEventUids();
             if (!eventRelationships.isEmpty()) {
                 List<Single<Event>> singles = new ArrayList<>();
                 List<String> failedEvents = new ArrayList<>();
@@ -131,7 +120,7 @@ public final class RelationshipDownloadAndPersistCallFactory {
                         }));
             }
 
-            List<String> enrollmentRelationships = enrollmentStore.queryMissingRelationshipsUids();
+            Set<String> enrollmentRelationships = relatives.getRelativeEnrollmentUids();
             if (!enrollmentRelationships.isEmpty()) {
                 List<Single<Enrollment>> singles = new ArrayList<>();
                 List<String> failedEnrollments = new ArrayList<>();
@@ -154,7 +143,7 @@ public final class RelationshipDownloadAndPersistCallFactory {
                         }));
             }
 
-            List<String> teiRelationships = trackedEntityInstanceStore.queryMissingRelationshipsUids();
+            Set<String> teiRelationships = relatives.getRelativeTrackedEntityInstanceUids();
             if (!teiRelationships.isEmpty()) {
                 List<Single<Payload<TrackedEntityInstance>>> singles = new ArrayList<>();
                 List<String> failedTeis = new ArrayList<>();

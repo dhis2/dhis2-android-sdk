@@ -28,18 +28,7 @@
 
 package org.hisp.dhis.android.core.relationship.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
-import org.hisp.dhis.android.core.common.DeletableDataObject;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor;
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.event.EventInternalAccessor;
-import org.hisp.dhis.android.core.event.internal.EventStore;
 import org.hisp.dhis.android.core.relationship.BaseRelationship;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipHelper;
@@ -48,7 +37,6 @@ import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -59,25 +47,14 @@ import javax.inject.Inject;
 
 import dagger.Reusable;
 
-import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.isDeleted;
-
 @Reusable
 public class RelationshipDHISVersionManager {
 
     private final DHISVersionManager versionManager;
-    private final TrackedEntityInstanceStore teiStore;
-    private final EnrollmentStore enrollmentStore;
-    private final EventStore eventStore;
 
     @Inject
-    public RelationshipDHISVersionManager(DHISVersionManager versionManager,
-                                          TrackedEntityInstanceStore teiStore,
-                                          EnrollmentStore enrollmentStore,
-                                          EventStore eventStore) {
+    public RelationshipDHISVersionManager(DHISVersionManager versionManager) {
         this.versionManager = versionManager;
-        this.teiStore = teiStore;
-        this.enrollmentStore = enrollmentStore;
-        this.eventStore = eventStore;
     }
 
     public List<Relationship> getOwnedRelationships(List<Relationship> relationships, String teiUid) {
@@ -196,30 +173,7 @@ public class RelationshipDHISVersionManager {
                 .build();
     }
 
-    public TrackedEntityInstance getRelativeTEI(RelationshipItem relationshipItem) {
-        return TrackedEntityInstanceInternalAccessor.insertRelationships(
-                TrackedEntityInstance.builder(), Collections.emptyList())
-                .uid(relationshipItem.elementUid())
-                .deleted(false)
-                .build();
-    }
-
-    public Enrollment getRelativeEnrollment(RelationshipItem relationshipItem) {
-        return EnrollmentInternalAccessor.insertRelationships(Enrollment.builder(), Collections.emptyList())
-                .uid(relationshipItem.elementUid())
-                .deleted(false)
-                .build();
-    }
-
-    public Event getRelativeEvent(RelationshipItem relationshipItem) {
-        return EventInternalAccessor.insertRelationships(Event.builder(), Collections.emptyList())
-                .uid(relationshipItem.elementUid())
-                .deleted(false)
-                .build();
-    }
-
-
-    public RelationshipItem getRelatedRelationshipItem(BaseRelationship baseRelationship, String relationshipUid) {
+    public RelationshipItem getRelatedRelationshipItem(BaseRelationship baseRelationship, String parentUid) {
         String fromUid = baseRelationship.from() == null ? null : baseRelationship.from().elementUid();
         String toUid = baseRelationship.to() == null ? null : baseRelationship.to().elementUid();
 
@@ -227,84 +181,26 @@ public class RelationshipDHISVersionManager {
             return null;
         }
 
-        return relationshipUid.equals(fromUid) ? baseRelationship.to() : baseRelationship.from();
+        return parentUid.equals(fromUid) ? baseRelationship.to() : baseRelationship.from();
     }
 
-    public void createRelativesIfNotExist(Collection<Relationship> relationships) {
+    public void createRelativesIfNotExist(Collection<Relationship> relationships, String parentUid,
+                                          RelationshipItemRelatives relatives) {
         for (BaseRelationship relationship : relationships) {
-            RelationshipItem item = getRelatedRelationshipItem(relationship, relationship.uid());
+            RelationshipItem item = getRelatedRelationshipItem(relationship, parentUid);
             if (item != null) {
                 switch (item.elementType()) {
                     case RelationshipItemTableInfo.Columns.TRACKED_ENTITY_INSTANCE:
-                        TrackedEntityInstance relativeTEI = getRelativeTEI(item);
-                        if (relativeTEI != null && !teiStore.exists(relativeTEI.uid())) {
-                            handleObject(relativeTEI, trackedEntityInstanceTransformer(), teiStore);
-                        }
+                        relatives.addTrackedEntityInstance(item.elementUid());
                         break;
                     case RelationshipItemTableInfo.Columns.ENROLLMENT:
-                        Enrollment relativeEnrollment = getRelativeEnrollment(item);
-                        if (relativeEnrollment != null && !enrollmentStore.exists(relativeEnrollment.uid())) {
-                            handleObject(relativeEnrollment, enrollmentTransformer(), enrollmentStore);
-                        }
+                        relatives.addEnrollment(item.elementUid());
                         break;
                     case RelationshipItemTableInfo.Columns.EVENT:
-                        Event relativeEvent = getRelativeEvent(item);
-                        if (relativeEvent != null && !eventStore.exists(relativeEvent.uid())) {
-                            handleObject(relativeEvent, eventTransformer(), eventStore);
-                        }
+                        relatives.addEvent(item.elementUid());
                         break;
                 }
             }
-        }
-    }
-
-    private Transformer<TrackedEntityInstance, TrackedEntityInstance> trackedEntityInstanceTransformer() {
-        return object -> {
-            {
-                State currentState = teiStore.getState(object.uid());
-                if (currentState == State.RELATIONSHIP || currentState == null) {
-                    return object.toBuilder().state(State.RELATIONSHIP).build();
-                } else {
-                    return object;
-                }
-            }
-        };
-    }
-
-    private Transformer<Enrollment, Enrollment> enrollmentTransformer() {
-        return object -> {
-            {
-                State currentState = enrollmentStore.getState(object.uid());
-                if (currentState == State.RELATIONSHIP || currentState == null) {
-                    return object.toBuilder().state(State.RELATIONSHIP).build();
-                } else {
-                    return object;
-                }
-            }
-        };
-    }
-
-    private Transformer<Event, Event> eventTransformer() {
-        return object -> {
-            {
-                State currentState = eventStore.getState(object.uid());
-                if (currentState == State.RELATIONSHIP || currentState == null) {
-                    return object.toBuilder().state(State.RELATIONSHIP).build();
-                } else {
-                    return object;
-                }
-            }
-        };
-    }
-
-    private <O extends ObjectWithUidInterface & DeletableDataObject> void handleObject(
-            O object, Transformer<O, O> transformer, IdentifiableDeletableDataObjectStore<O> store) {
-        O oTransformed = transformer.transform(object);
-        String modelUid = oTransformed.uid();
-        if (isDeleted(oTransformed) && modelUid != null) {
-            store.deleteIfExists(modelUid);
-        } else {
-            store.updateOrInsert(oTransformed);
         }
     }
 }

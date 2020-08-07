@@ -47,34 +47,41 @@ ext {
 
     libraries = [
             // android
-            support         : '1.0.0-beta01',
-            paging          : '2.1.0',
+            annotation      : '1.1.0',
+            paging          : '2.1.2',
 
             // java
-            jackson         : "2.9.8",
-            autovalue       : "1.3",
-            autovaluecursor : "1.0.1",
-            retrofit        : "2.5.0",
-            okhttp          : "3.14.0",
-            dagger          : "2.14.1",
-            rxjava          : "2.2.8",
-            rxandroid       : "2.1.1",
-            sqlcipher       : "4.2.0",
+            apacheCommons   : "3.3.7",
+            jackson         : "2.11.2",
+            autoValue       : "1.3",
+            autoValueCursor : "1.0.1",
+            retrofit        : "2.9.0",
+            okHttp          : "4.8.0",
+            dagger          : "2.28.3",
+            rxJava          : "2.2.9",
+            rxAndroid       : "2.1.1",
+            sqlCipher       : "4.4.0",
+            jexl            : "2.1.1",
+            jodaTime        : "2.10.6",
+            smsCompression  : "0.2.0",
+            antlr           : "4.7.2", // Upgrading throws a runtime warning
+            expressionParser: "1.0.7-SNAPSHOT",
 
             // test dependencies
-            coretesting     : "1.1.1",
-            junit           : "4.12",
-            assertj         : "3.11.1",
-            mockito         : "2.24.5",
+            coreTesting     : "1.1.1",
+            jUnit           : "4.13",
+            assertJ         : "3.16.1",
+            mockito         : "3.4.6",
             mockitoKotlin   : "2.2.0",
-            truth           : "0.30",
-            testrunner      : '1.1.0-alpha4',
-            equalsverifier  : "2.1.8",
-            stetho          : "1.5.0",
-            livedatatesting : "1.1.0",
+            truth           : "1.0.1",
+            testRunner      : "1.2.0",
+            equalsVerifier  : "3.4.1",
+            stetho          : "1.5.1",
+            liveDataTesting : "1.1.2",
+            commonsLogging  : "1.2",
 
             // google
-            safetynet  : "16.0.0",
+            safetyNet  : "17.0.0",
     ]
 }
 
@@ -144,20 +151,20 @@ android {
 
 
 dependencies {
+    // RxJava
+    api "io.reactivex.rxjava2:rxjava:${libraries.rxJava}"
+    api "io.reactivex.rxjava2:rxandroid:${libraries.rxAndroid}"
 
-    api "io.reactivex.rxjava2:rxjava:${libraries.rxjava}"
-    api "io.reactivex.rxjava2:rxandroid:${libraries.rxandroid}"
-
-    // Support libraries
-    api "androidx.annotation:annotation:${libraries.support}"
-
+    // AndroidX
+    api "androidx.annotation:annotation:${libraries.annotation}"
     api "androidx.paging:paging-runtime:${libraries.paging}"
 
-    // Google's auto-value. Annotations are used only during compilation time, as well as
+    // Kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
-    // annotation processor which hoops up into compilation process
-    compileOnly "com.google.auto.value:auto-value:${libraries.autovalue}"
-    annotationProcessor "com.google.auto.value:auto-value:${libraries.autovalue}"
+    // Auto Value
+    compileOnly "com.google.auto.value:auto-value:${libraries.autoValue}"
+    annotationProcessor "com.google.auto.value:auto-value:${libraries.autoValue}"
 
     // Dagger
     api "com.google.dagger:dagger:${libraries.dagger}"
@@ -167,56 +174,55 @@ dependencies {
     api "com.fasterxml.jackson.core:jackson-databind:${libraries.jackson}"
 
     // Google's play services
-    api "com.google.android.gms:play-services-safetynet:${libraries.safetynet}"
+    api "com.google.android.gms:play-services-safetynet:${libraries.safetyNet}"
 
     // Square libraries
-    api "com.squareup.okhttp3:okhttp:${libraries.okhttp}"
+    api "com.squareup.okhttp3:okhttp:${libraries.okHttp}"
     api "com.squareup.retrofit2:retrofit:${libraries.retrofit}"
     api "com.squareup.retrofit2:converter-jackson:${libraries.retrofit}"
     api "com.squareup.retrofit2:adapter-rxjava2:${libraries.retrofit}"
 
     // Apache libraries
-    api "org.apache.commons:commons-lang3:3.7"
-    api("org.apache.commons:commons-jexl:2.1.1") {
+    api "org.apache.commons:commons-lang3:${libraries.apacheCommons}"
+    api("org.apache.commons:commons-jexl:${libraries.jexl}") {
         exclude group: 'commons-logging', module: 'commons-logging'
     }
-    testImplementation "commons-logging:commons-logging:1.2"
 
     // Joda time
-    api "joda-time:joda-time:2.9.9"
+    api "joda-time:joda-time:${libraries.jodaTime}"
 
     // sms compression library
-    api 'com.github.dhis2:sms-compression:0.2.0'
+    api "com.github.dhis2:sms-compression:${libraries.smsCompression}"
 
     // DHIS 2 antlr expression parser
-    api "org.hisp.dhis.parser:dhis-antlr-expression-parser:1.0.7-SNAPSHOT"
+    api "org.antlr:antlr4-runtime:${libraries.antlr}"
+    api "org.hisp.dhis.parser:dhis-antlr-expression-parser:${libraries.expressionParser}"
 
     // Extension which generates mappers for work with cursor and content values
-    api "com.gabrielittner.auto.value:auto-value-cursor-annotations:${libraries.autovaluecursor}"
-    annotationProcessor "com.gabrielittner.auto.value:auto-value-cursor:${libraries.autovaluecursor}"
+    api "com.gabrielittner.auto.value:auto-value-cursor-annotations:${libraries.autoValueCursor}"
+    annotationProcessor "com.gabrielittner.auto.value:auto-value-cursor:${libraries.autoValueCursor}"
 
-    api "net.zetetic:android-database-sqlcipher:${libraries.sqlcipher}"
+    api "net.zetetic:android-database-sqlcipher:${libraries.sqlCipher}"
 
-    api "org.antlr:antlr4-runtime:4.7.2"
-
-    api "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
+    api "com.squareup.okhttp3:mockwebserver:${libraries.okHttp}"
 
     // Java test dependencies
-    testImplementation "junit:junit:${libraries.junit}"
+    testImplementation "junit:junit:${libraries.jUnit}"
     testImplementation "org.mockito:mockito-core:${libraries.mockito}"
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${libraries.mockitoKotlin}"
-    testImplementation "org.assertj:assertj-core:${libraries.assertj}"
-    testImplementation "nl.jqno.equalsverifier:equalsverifier:${libraries.equalsverifier}"
-    testImplementation "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
-    testImplementation "androidx.test:runner:${libraries.testrunner}"
+    testImplementation "org.assertj:assertj-core:${libraries.assertJ}"
+    testImplementation "nl.jqno.equalsverifier:equalsverifier:${libraries.equalsVerifier}"
+    testImplementation "com.squareup.okhttp3:mockwebserver:${libraries.okHttp}"
+    testImplementation "androidx.test:runner:${libraries.testRunner}"
+    testImplementation "commons-logging:commons-logging:${libraries.commonsLogging}"
 
     // Android test dependencies
-    androidTestImplementation "commons-logging:commons-logging:1.2"
+    androidTestImplementation "commons-logging:commons-logging:${libraries.commonsLogging}"
     androidTestImplementation "org.mockito:mockito-core:${libraries.mockito}"
-    androidTestImplementation "android.arch.core:core-testing:${libraries.coretesting}"
-    androidTestImplementation "com.jraska.livedata:testing:${libraries.livedatatesting}"
-    androidTestImplementation "androidx.test:runner:${libraries.testrunner}"
-    androidTestImplementation "com.squareup.okhttp3:logging-interceptor:${libraries.okhttp}"
+    androidTestImplementation "android.arch.core:core-testing:${libraries.coreTesting}"
+    androidTestImplementation "com.jraska.livedata:testing:${libraries.liveDataTesting}"
+    androidTestImplementation "androidx.test:runner:${libraries.testRunner}"
+    androidTestImplementation "com.squareup.okhttp3:logging-interceptor:${libraries.okHttp}"
     androidTestImplementation("com.google.truth:truth:${libraries.truth}") {
         exclude group: 'junit' // Android has JUnit built in.
     }
@@ -227,7 +233,6 @@ dependencies {
         exclude module: 'okhttp'
         exclude module: 'jsr305'
     }
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
 apply from: project.file("plugins/gradle-mvn-push.gradle")

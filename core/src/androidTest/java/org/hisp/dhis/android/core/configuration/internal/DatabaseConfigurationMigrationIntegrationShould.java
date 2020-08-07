@@ -124,7 +124,7 @@ public class DatabaseConfigurationMigrationIntegrationShould {
                 () -> "2014-06-06T20:44:21.375")
                 .setConfiguration(null, URL_STR, USERNAME, false);
         newConfigurationStore.set(newConfiguration);
-        assertThat(migration.apply()).isSameAs(newConfiguration);
+        assertThat(migration.apply()).isSameInstanceAs(newConfiguration);
     }
 
     @Test

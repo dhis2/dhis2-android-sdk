@@ -29,7 +29,7 @@
 apply plugin: "checkstyle"
 
 checkstyle {
-    toolVersion = "8.18"
+    toolVersion = "8.35"
     config = resources.text.fromFile("${projectDir}/plugins/checkstyle-style.xml")
     ignoreFailures = false
     showViolations false

@@ -123,13 +123,13 @@ public class EnrollmentHandlerShould {
 
     @Test
     public void do_nothing_when_passing_null_argument() {
-        enrollmentHandler.handle(null, false);
+        enrollmentHandler.handleMany(null, null, false);
 
         // verify that store or event handler is never called
         verify(enrollmentStore, never()).deleteIfExists(anyString());
         verify(enrollmentStore, never()).updateOrInsert(any(Enrollment.class));
 
-        verify(eventHandler, never()).handle(any(Event.class), anyBoolean());
+        verify(eventHandler, never()).handleMany(anyCollection(), any(), anyBoolean());
         verify(eventCleaner, never()).deleteOrphan(any(Enrollment.class), anyCollection());
         verify(noteHandler, never()).handleMany(anyCollection());
     }
@@ -138,7 +138,7 @@ public class EnrollmentHandlerShould {
     public void invoke_only_delete_when_a_enrollment_is_set_as_deleted() {
         when(enrollment.deleted()).thenReturn(Boolean.TRUE);
 
-        enrollmentHandler.handleMany(Collections.singletonList(enrollment), false);
+        enrollmentHandler.handleMany(Collections.singletonList(enrollment), o -> o, false);
 
         // verify that enrollment store is only invoked with delete
         verify(enrollmentStore, times(1)).deleteIfExists(anyString());
@@ -147,7 +147,7 @@ public class EnrollmentHandlerShould {
         verify(enrollmentStore, never()).updateOrInsert(any(Enrollment.class));
 
         // event handler should not be invoked
-        verify(eventHandler, never()).handle(any(Event.class), anyBoolean());
+        verify(eventHandler, never()).handleMany(anyCollection(), any(), anyBoolean());
         verify(eventCleaner, times(1)).deleteOrphan(any(Enrollment.class), anyCollection());
         verify(noteHandler, never()).handleMany(anyCollection());
     }
@@ -157,7 +157,7 @@ public class EnrollmentHandlerShould {
         when(enrollment.deleted()).thenReturn(Boolean.FALSE);
         when(enrollmentStore.updateOrInsert(any(Enrollment.class))).thenReturn(HandleAction.Update);
 
-        enrollmentHandler.handleMany(Collections.singletonList(enrollment), false);
+        enrollmentHandler.handleMany(Collections.singletonList(enrollment), o -> o, false);
 
         // verify that enrollment store is only invoked with update
         verify(enrollmentStore, times(1)).updateOrInsert(any(Enrollment.class));

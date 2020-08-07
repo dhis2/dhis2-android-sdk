@@ -110,7 +110,7 @@ public class EventHandlerShould {
 
     @Test
     public void do_nothing_when_passing_empty_list_argument() {
-        eventHandler.handleMany(new ArrayList<>(), false);
+        eventHandler.handleMany(new ArrayList<>(), null, false);
 
         // verify that store is never invoked
         verify(eventStore, never()).deleteIfExists(anyString());
@@ -123,7 +123,7 @@ public class EventHandlerShould {
     public void invoke_only_delete_when_a_event_is_set_as_deleted() {
         when(event.deleted()).thenReturn(Boolean.TRUE);
 
-        eventHandler.handle(event, false);
+        eventHandler.handleMany(Collections.singletonList(event), o -> o, false);
 
         // verify that delete is invoked once
         verify(eventStore, times(1)).deleteIfExists(event.uid());
@@ -143,7 +143,7 @@ public class EventHandlerShould {
         when(event.organisationUnit()).thenReturn("org_unit_uid");
         when(event.status()).thenReturn(EventStatus.SCHEDULE);
 
-        eventHandler.handle(event, false);
+        eventHandler.handleMany(Collections.singletonList(event), o -> o, false);
 
         // verify that update and insert is invoked, since we're updating before inserting
         verify(eventStore, times(1)).updateOrInsert(any(Event.class));

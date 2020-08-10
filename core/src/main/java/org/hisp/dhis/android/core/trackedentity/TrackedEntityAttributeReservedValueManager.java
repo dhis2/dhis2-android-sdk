@@ -326,11 +326,7 @@ public final class TrackedEntityAttributeReservedValueManager {
             if (remainingValues < minNumberToTryFill) {
                 Integer numberToReserve = fillUpTo - remainingValues;
 
-                return downloadValues(attribute, organisationUnit, numberToReserve, storeError).doOnComplete(() -> {
-                    if (pattern != null) {
-                        store.deleteIfOutdatedPattern(attribute, pattern);
-                    }
-                });
+                return downloadValues(attribute, organisationUnit, numberToReserve, pattern, storeError);
             } else {
                 return Completable.complete();
             }
@@ -340,20 +336,17 @@ public final class TrackedEntityAttributeReservedValueManager {
     private Completable downloadValues(String trackedEntityAttributeUid,
                                        OrganisationUnit organisationUnit,
                                        Integer numberToReserve,
+                                       String pattern,
                                        boolean storeError) {
 
         return Completable.fromAction(() -> {
-            String trackedEntityAttributePattern;
-            try {
-                trackedEntityAttributePattern =
-                        trackedEntityAttributeStore.selectByUid(trackedEntityAttributeUid).pattern();
-            } catch (Exception e) {
-                trackedEntityAttributePattern = "";
-            }
-
             executor.executeD2Call(reservedValueQueryCallFactory.create(
                     TrackedEntityAttributeReservedValueQuery.create(trackedEntityAttributeUid, numberToReserve,
-                            organisationUnit, trackedEntityAttributePattern)), storeError);
+                            organisationUnit, pattern)), storeError);
+        }).doOnComplete(() -> {
+            if (pattern != null) {
+                store.deleteIfOutdatedPattern(trackedEntityAttributeUid, pattern);
+            }
         });
     }
 

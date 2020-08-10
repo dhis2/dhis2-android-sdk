@@ -57,12 +57,13 @@ public final class TrackedEntityAttributeReservedValueStore
         w.bind(6, o.expiryDate());
         w.bind(7, o.organisationUnit());
         w.bind(8, o.temporalValidityDate());
+        w.bind(9, o.pattern());
     };
 
     private static final WhereStatementBinder<TrackedEntityAttributeReservedValue> WHERE_UPDATE_BINDER = (o, w) -> {
-        w.bind(9, o.ownerUid());
-        w.bind(10, o.value());
-        w.bind(11, o.organisationUnit());
+        w.bind(10, o.ownerUid());
+        w.bind(11, o.value());
+        w.bind(12, o.organisationUnit());
     };
 
     private static final WhereStatementBinder<TrackedEntityAttributeReservedValue> WHERE_DELETE_BINDER = (o, w) -> {

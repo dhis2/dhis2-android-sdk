@@ -84,6 +84,10 @@ public abstract class TrackedEntityAttributeReservedValue implements CoreObject 
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date temporalValidityDate();
 
+    @Nullable
+    @JsonIgnore()
+    public abstract String pattern();
+
     public static Builder builder() {
         return new $$AutoValue_TrackedEntityAttributeReservedValue.Builder();
     }
@@ -114,6 +118,8 @@ public abstract class TrackedEntityAttributeReservedValue implements CoreObject 
         public abstract Builder organisationUnit(String organisationUnit);
 
         public abstract Builder temporalValidityDate(Date temporalValidityDate);
+
+        public abstract Builder pattern(String value);
 
         public abstract TrackedEntityAttributeReservedValue build();
     }

@@ -108,7 +108,7 @@ The possible states are:
 
 Additionally, in `TrackedEntityInstance` we might have:
 
-- **RELATIONSHIP**. This TrackedEntityInstance has been downloaded with the sole purpose of fulfilling a relationship to another TEI. This `RELATIONSHIP` TEI only has basic information (uid, type, etc) and the list of TrackedEntityAttributes to be able to print meaningful information about the relationship. Other data such as enrollments, events or relationships is not downloaded for this TEI. Also, this TEI cannot be modified or uploaded to the server.
+- **RELATIONSHIP**. This TrackedEntityInstance has been downloaded with the sole purpose of fulfilling a relationship to another TEI. This `RELATIONSHIP` TEI only has basic information (uid, type, etc) and the list of TrackedEntityAttributes to be able to print meaningful information about the relationship. Other data such as enrollments, events or relationships are not downloaded for this TEI. Also, this TEI cannot be modified or uploaded to the server.
 
 ## Tracker data
 
@@ -151,7 +151,7 @@ d2.eventModule().eventDownloader()
     .download()
 ```
 
-Currently it is possible to specify the next filters:
+Currently, it is possible to specify the next filters:
 
 - `byProgramUid()`. Filters by program uid and downloads the not synced
   objects inside the program.
@@ -164,7 +164,7 @@ The downloader also allows to limit the number of downloaded objects.
 These limits can also be combined with each other.
 
 - `limit()`. Limit the maximum number of objects to download.
-- `limitByProgram()`. Take the established limit and apply it for each
+- `limitByProgram()`. Take the established limit and apply it to each
   program. The number of objects that will be downloaded will be the one
   obtained by multiplying the limit set by the number of user programs.
 - `limitByOrgunit()`. Take the established limit and apply it for each
@@ -276,7 +276,7 @@ Additionally, the repository offers different strategies to fetch data:
 - `byTrackedEntityType()`. Filter by TrackedEntityType. Only one type
   can be specified.
 - `byIncludeDeleted()`. Whether to include or not deleted tracked entity
-  instances. Currently this filter only applies to **offline**
+  instances. Currently, this filter only applies to **offline**
   instances.
 - `byStates()`. Filter by sync status. Using this filter forces
   **offline only** mode.
@@ -446,7 +446,7 @@ approval are:
 - `UNAPPROVED_WAITING`. Data could be approved for this selection, but
   is waiting for some lower-level approval before it is ready to be
   approved.
-- `UNAPPROVED_ELSEWHERE`. Data is unapproved, and is waiting for
+- `UNAPPROVED_ELSEWHERE`. Data is unapproved and is waiting for
   approval somewhere else (can not be approved here).
 - `UNAPPROVED_READY`. Data is unapproved, and is ready to be approved
   for this selection.
@@ -467,7 +467,7 @@ Data approvals are downloaded only for versions greater than 2.29.
 #### Periods
 
 In order to write data values or data set complete registrations, it's mandatory to provide a period id. Periods are stored in a table in the database and
-the provided period ids must be already present in that table, otherwise a Foreign Key error will be thrown. To prevent that situation, the `PeriodHelper` is
+the provided period ids must be already present in that table, otherwise, a Foreign Key error will be thrown. To prevent that situation, the `PeriodHelper` is
 exposed inside the `PeriodModule`. Before adding aggregated data related to a dataSet, the following method must be called:
 
 ```java
@@ -481,7 +481,7 @@ This will ensure that:
 
 #### Data value
 
-DataValueCollectionRepository has a `value()` method that gives access to edition methods. The parameters accepted by this method are the parameters that unambiguosly identify a value.
+DataValueCollectionRepository has a `value()` method that gives access to edition methods. The parameters accepted by this method are the parameters that unambiguously identify a value.
 
 ```java
 DataValueObjectRepository valueRepository = d2.dataValueModule().dataValues()
@@ -504,10 +504,10 @@ d2.dataSetModule().dataSetCompleteRegistrations()
     .add(dataSetCompleteRegistration);
 ```
 
-In order to remove them from the database the repository has a `value()`
+In order to remove them from the database, the repository has a `value()`
 method that gives access to deletion methods (`delete()` and
 `deleteIfExist()`). The parameters accepted by this method are the
-parameters that unambiguosly identify the data set complete
+parameters that unambiguously identify the data set complete
 registration.
 
 ```java
@@ -565,7 +565,7 @@ The `download()` method will search for the tracked entity attribute values â€‹â
 - **File resource collection repository**.
 Through this repository it is possible to request files, save new ones and upload them to the server. 
 
-  - **Get**. It behaves in a similiar fashion to any other Sdk repository. It allows to get collections by applying different filters if desired.
+  - **Get**. It behaves in a similar fashion to any other Sdk repository. It allows to get collections by applying different filters if desired.
   
     ```java
     d2.fileResourceModule().fileResources()

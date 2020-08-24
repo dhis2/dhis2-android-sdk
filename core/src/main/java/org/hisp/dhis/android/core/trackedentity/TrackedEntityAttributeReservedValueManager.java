@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBu
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeOrderByItem;
 import org.hisp.dhis.android.core.common.CoreColumns;
@@ -233,7 +234,7 @@ public final class TrackedEntityAttributeReservedValueManager {
      * @return The reserved value count by attribute or by attribute and organisation unit.
      */
     public int blockingCount(@NonNull String attributeUid, @Nullable String organisationUnitUid) {
-        return organisationUnitUid == null ? store.count(attributeUid) : store.count(attributeUid, organisationUnitUid);
+        return store.count(attributeUid, organisationUnitUid, null);
     }
 
     /**
@@ -313,16 +314,10 @@ public final class TrackedEntityAttributeReservedValueManager {
             // Using local date. It's not worth it to make a system info call
             store.deleteExpired(new Date());
 
-            // Delete reserved values if the pattern has changed
-            String pattern = trackedEntityAttributeStore.selectByUid(attribute).pattern();
-            if (pattern != null) {
-                store.deleteIfOutdatedPattern(attribute, pattern);
-            }
-
             Integer fillUpTo = getFillUpToValue(minNumberOfValuesToHave);
 
-            int remainingValues = organisationUnit == null ?
-                    store.count(attribute) : store.count(attribute, organisationUnit.uid());
+            String pattern = trackedEntityAttributeStore.selectByUid(attribute).pattern();
+            int remainingValues = store.count(attribute, UidsHelper.getUidOrNull(organisationUnit), pattern);
 
             // If number of values is explicitly specified, we use that value as threshold.
             int minNumberToTryFill = minNumberOfValuesToHave == null ?
@@ -331,7 +326,7 @@ public final class TrackedEntityAttributeReservedValueManager {
             if (remainingValues < minNumberToTryFill) {
                 Integer numberToReserve = fillUpTo - remainingValues;
 
-                return downloadValues(attribute, organisationUnit, numberToReserve, storeError);
+                return downloadValues(attribute, organisationUnit, numberToReserve, pattern, storeError);
             } else {
                 return Completable.complete();
             }
@@ -341,20 +336,17 @@ public final class TrackedEntityAttributeReservedValueManager {
     private Completable downloadValues(String trackedEntityAttributeUid,
                                        OrganisationUnit organisationUnit,
                                        Integer numberToReserve,
+                                       String pattern,
                                        boolean storeError) {
 
         return Completable.fromAction(() -> {
-            String trackedEntityAttributePattern;
-            try {
-                trackedEntityAttributePattern =
-                        trackedEntityAttributeStore.selectByUid(trackedEntityAttributeUid).pattern();
-            } catch (Exception e) {
-                trackedEntityAttributePattern = "";
-            }
-
             executor.executeD2Call(reservedValueQueryCallFactory.create(
                     TrackedEntityAttributeReservedValueQuery.create(trackedEntityAttributeUid, numberToReserve,
-                            organisationUnit, trackedEntityAttributePattern)), storeError);
+                            organisationUnit, pattern)), storeError);
+        }).doOnComplete(() -> {
+            if (pattern != null) {
+                store.deleteIfOutdatedPattern(trackedEntityAttributeUid, pattern);
+            }
         });
     }
 

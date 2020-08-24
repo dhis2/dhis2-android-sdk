@@ -59,6 +59,7 @@ public final class TrackedEntityAttributeReservedValueTableInfo {
         public final static String EXPIRY_DATE = "expiryDate";
         public final static String ORGANISATION_UNIT = "organisationUnit";
         public final static String TEMPORAL_VALIDITY_DATE = "temporalValidityDate";
+        public final static String PATTERN = "pattern";
 
         @Override
         public String[] all() {
@@ -70,7 +71,8 @@ public final class TrackedEntityAttributeReservedValueTableInfo {
                     CREATED,
                     EXPIRY_DATE,
                     ORGANISATION_UNIT,
-                    TEMPORAL_VALIDITY_DATE
+                    TEMPORAL_VALIDITY_DATE,
+                    PATTERN
             );
         }
 

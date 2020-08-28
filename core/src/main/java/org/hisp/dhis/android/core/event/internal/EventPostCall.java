@@ -176,7 +176,6 @@ public final class EventPostCall {
         }
         eventImportHandler.handleEventImportSummaries(
                 webResponse.response().importSummaries(),
-                TrackerImportConflict.builder(),
                 null,
                 null
         );

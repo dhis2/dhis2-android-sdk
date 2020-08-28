@@ -88,7 +88,7 @@ public class EventImportHandlerShould {
 
     @Test
     public void do_nothing_when_passing_null_argument() throws Exception {
-        eventImportHandler.handleEventImportSummaries(null, null, null, null);
+        eventImportHandler.handleEventImportSummaries(null, null, null);
 
         verify(eventStore, never()).setStateOrDelete(anyString(), any(State.class));
     }
@@ -99,7 +99,7 @@ public class EventImportHandlerShould {
         when(importSummary.reference()).thenReturn("test_event_uid");
 
         eventImportHandler.handleEventImportSummaries(Collections.singletonList(importSummary),
-                TrackerImportConflict.builder(), "test_enrollment_uid", "test_tei_uid");
+                "test_enrollment_uid", "test_tei_uid");
 
         verify(eventStore, times(1)).setStateOrDelete("test_event_uid", State.SYNCED);
     }
@@ -110,7 +110,7 @@ public class EventImportHandlerShould {
         when(importSummary.reference()).thenReturn("test_event_uid");
 
         eventImportHandler.handleEventImportSummaries(Collections.singletonList(importSummary),
-                TrackerImportConflict.builder(), "test_enrollment_uid", "test_tei_uid");
+                "test_enrollment_uid", "test_tei_uid");
 
         verify(eventStore, times(1)).setStateOrDelete("test_event_uid", State.ERROR);
     }

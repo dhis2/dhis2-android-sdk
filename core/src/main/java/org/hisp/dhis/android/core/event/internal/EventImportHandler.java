@@ -79,7 +79,6 @@ public class EventImportHandler {
     }
 
     public void handleEventImportSummaries(List<EventImportSummary> eventImportSummaries,
-                                           TrackerImportConflict.Builder trackerImportConflictBuilder,
                                            String enrollmentUid,
                                            String teiUid) {
         if (eventImportSummaries == null) {
@@ -108,7 +107,7 @@ public class EventImportHandler {
             if (handleAction != HandleAction.Delete) {
                 handleNoteImportSummary(eventImportSummary.reference(), state);
 
-                storeEventImportConflicts(eventImportSummary, trackerImportConflictBuilder);
+                storeEventImportConflicts(eventImportSummary, teiUid, enrollmentUid);
             }
         }
 
@@ -116,8 +115,11 @@ public class EventImportHandler {
     }
 
     private void storeEventImportConflicts(EventImportSummary eventImportSummary,
-                                           TrackerImportConflict.Builder trackerImportConflictBuilder) {
-        trackerImportConflictBuilder
+                                           String trackedEntityInstanceUid,
+                                           String enrollmentUid) {
+        TrackerImportConflict.Builder trackerImportConflictBuilder = TrackerImportConflict.builder()
+                .trackedEntityInstance(trackedEntityInstanceUid)
+                .enrollment(enrollmentUid)
                 .event(eventImportSummary.reference())
                 .tableReference(EventTableInfo.TABLE_INFO.name())
                 .status(eventImportSummary.status())

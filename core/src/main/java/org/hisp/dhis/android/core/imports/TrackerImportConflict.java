@@ -67,6 +67,9 @@ public abstract class TrackerImportConflict extends BaseObject {
     public abstract String errorCode();
 
     @Nullable
+    public abstract String displayDescription();
+
+    @Nullable
     @ColumnAdapter(ImportStatusColumnAdapter.class)
     public abstract ImportStatus status();
 
@@ -100,6 +103,8 @@ public abstract class TrackerImportConflict extends BaseObject {
         public abstract Builder tableReference(String tableReference);
 
         public abstract Builder errorCode(String errorCode);
+
+        public abstract Builder displayDescription(String displayDescription);
 
         public abstract Builder status(ImportStatus status);
 

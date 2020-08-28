@@ -60,6 +60,7 @@ public final class TrackerImportConflictTableInfo {
         final static String ERROR_CODE = "errorCode";
         final static String STATUS = "status";
         final static String CREATED = "created";
+        final static String DISPLAY_DESCRIPTION = "displayDescription";
 
         @Override
         public String[] all() {
@@ -72,7 +73,8 @@ public final class TrackerImportConflictTableInfo {
                     TABLE_REFERENCE,
                     ERROR_CODE,
                     STATUS,
-                    CREATED);
+                    CREATED,
+                    DISPLAY_DESCRIPTION);
         }
     }
 }

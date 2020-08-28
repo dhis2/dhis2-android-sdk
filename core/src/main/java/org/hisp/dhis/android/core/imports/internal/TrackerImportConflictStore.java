@@ -47,6 +47,7 @@ public final class TrackerImportConflictStore {
         w.bind(7, o.errorCode());
         w.bind(8, o.status());
         w.bind(9, o.created());
+        w.bind(10, o.displayDescription());
     };
 
     private TrackerImportConflictStore() {

@@ -61,6 +61,12 @@ public abstract class TrackerImportConflict extends BaseObject {
     public abstract String event();
 
     @Nullable
+    public abstract String trackedEntityAttribute();
+
+    @Nullable
+    public abstract String dataElement();
+
+    @Nullable
     public abstract String tableReference();
 
     @Nullable
@@ -83,7 +89,7 @@ public abstract class TrackerImportConflict extends BaseObject {
     }
 
     public static Builder builder() {
-        return new AutoValue_TrackerImportConflict.Builder();
+        return new $$AutoValue_TrackerImportConflict.Builder();
     }
 
     public abstract Builder toBuilder();
@@ -99,6 +105,10 @@ public abstract class TrackerImportConflict extends BaseObject {
         public abstract Builder enrollment(String enrollment);
 
         public abstract Builder event(String event);
+
+        public abstract Builder trackedEntityAttribute(String trackedEntityAttribute);
+
+        public abstract Builder dataElement(String dataElement);
 
         public abstract Builder tableReference(String tableReference);
 

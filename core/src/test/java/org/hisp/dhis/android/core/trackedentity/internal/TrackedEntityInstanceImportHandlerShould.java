@@ -150,6 +150,6 @@ public class TrackedEntityInstanceImportHandlerShould {
 
         verify(trackedEntityInstanceStore, times(1)).setStateOrDelete("test_tei_uid", State.SYNCED);
         verify(enrollmentImportHandler, times(1)).handleEnrollmentImportSummary(
-                eq(enrollmentSummaries), any(TrackerImportConflict.Builder.class), anyString());
+                eq(enrollmentSummaries), anyString());
     }
 }

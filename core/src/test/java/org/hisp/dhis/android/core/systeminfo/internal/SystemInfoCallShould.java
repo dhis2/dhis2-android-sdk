@@ -115,7 +115,7 @@ public class SystemInfoCallShould {
     @Test
     public void pass_correct_fields_to_service() {
         when(apiCallExecutor.wrapSingle(systemInfoSingle, true)).thenReturn(Single.just(systemInfo));
-        systemInfoSyncCall.getCompletable(true);
+        systemInfoSyncCall.getCompletable(true).subscribe();
         assertThat(filterCaptor.getValue()).isEqualTo(SystemInfoFields.allFields);
     }
 
@@ -129,7 +129,7 @@ public class SystemInfoCallShould {
     public void never_invoke_handlers_on_call_exception() {
         when(apiCallExecutor.wrapSingle(systemInfoSingle, true)).thenReturn(Single.error(d2Error));
 
-        systemInfoSyncCall.getCompletable(true).subscribe();
+        systemInfoSyncCall.getCompletable(true).onErrorComplete().subscribe();
 
         verify(databaseAdapter, never()).beginNewTransaction();
         verify(transaction, never()).setSuccessful();

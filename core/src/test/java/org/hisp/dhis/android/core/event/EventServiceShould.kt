@@ -35,6 +35,8 @@ import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramCollectionRepository
 import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentMatchers.any
@@ -72,7 +74,7 @@ class EventServiceShould {
         whenever(program.access()) doReturn writeDataAccess
         whenever(programStage.access()) doReturn writeDataAccess
 
-        assert(eventService.hasDataWriteAccess(event.uid()))
+        assertTrue(eventService.hasDataWriteAccess(event.uid()))
     }
 
     @Test
@@ -80,11 +82,11 @@ class EventServiceShould {
         whenever(program.access()) doReturn writeDataAccess
         whenever(programStage.access()) doReturn readDataAccess
 
-        assert(!eventService.hasDataWriteAccess(event.uid()))
+        assertFalse(eventService.hasDataWriteAccess(event.uid()))
 
         whenever(program.access()) doReturn readDataAccess
         whenever(programStage.access()) doReturn writeDataAccess
 
-        assert(!eventService.hasDataWriteAccess(event.uid()))
+        assertFalse(eventService.hasDataWriteAccess(event.uid()))
     }
 }

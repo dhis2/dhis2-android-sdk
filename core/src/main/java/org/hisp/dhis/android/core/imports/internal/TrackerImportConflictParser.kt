@@ -58,8 +58,8 @@ internal class TrackerImportConflictParser @Inject constructor(
         return evaluateConflicts(conflict, conflictBuilder, trackedEntityInstanceConflicts)
     }
 
-    fun getEnrollmentInstanceConflict(conflict: ImportConflict,
-                                      conflictBuilder: TrackerImportConflict.Builder): TrackerImportConflict {
+    fun getEnrollmentConflict(conflict: ImportConflict,
+                              conflictBuilder: TrackerImportConflict.Builder): TrackerImportConflict {
         return evaluateConflicts(conflict, conflictBuilder, enrollmentConflicts)
     }
 
@@ -76,6 +76,8 @@ internal class TrackerImportConflictParser @Inject constructor(
         if (conflictType != null) {
             conflictBuilder
                     .errorCode(conflictType.errorCode)
+                    .trackedEntityAttribute(conflictType.getTrackedEntityAttribute(conflict))
+                    .dataElement(conflictType.getDataElement(conflict))
                     .displayDescription(conflictType.getDisplayDescription(conflict, context))
         }
 

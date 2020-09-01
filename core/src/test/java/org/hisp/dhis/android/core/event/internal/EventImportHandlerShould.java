@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
 import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 import org.hisp.dhis.android.core.imports.internal.EventImportSummary;
+import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser;
 import org.hisp.dhis.android.core.note.Note;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
 import org.junit.Before;
@@ -73,6 +74,9 @@ public class EventImportHandlerShould {
     @Mock
     private ObjectStore<TrackerImportConflict> trackerImportConflictStore;
 
+    @Mock
+    private TrackerImportConflictParser trackerImportConflictParser;
+
     // object to test
     private EventImportHandler eventImportHandler;
 
@@ -83,7 +87,7 @@ public class EventImportHandlerShould {
         when(importSummary.status()).thenReturn(ImportStatus.SUCCESS);
 
         eventImportHandler = new EventImportHandler(eventStore, enrollmentStore, noteStore, trackedEntityInstanceStore,
-                trackerImportConflictStore);
+                trackerImportConflictStore, trackerImportConflictParser);
     }
 
     @Test

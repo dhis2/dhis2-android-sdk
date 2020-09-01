@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.imports.TrackerImportConflictTableInfo;
 import org.hisp.dhis.android.core.imports.internal.EnrollmentImportSummary;
 import org.hisp.dhis.android.core.imports.internal.EventImportSummaries;
 import org.hisp.dhis.android.core.imports.internal.ImportConflict;
+import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser;
 import org.hisp.dhis.android.core.note.Note;
 import org.hisp.dhis.android.core.note.NoteTableInfo;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
@@ -66,6 +67,7 @@ public class EnrollmentImportHandler {
     private final IdentifiableObjectStore<Note> noteStore;
     private final EventImportHandler eventImportHandler;
     private final ObjectStore<TrackerImportConflict> trackerImportConflictStore;
+    private final TrackerImportConflictParser trackerImportConflictParser;
     private final DataStatePropagator dataStatePropagator;
 
     @Inject
@@ -74,12 +76,14 @@ public class EnrollmentImportHandler {
                                    @NonNull IdentifiableObjectStore<Note> noteStore,
                                    @NonNull EventImportHandler eventImportHandler,
                                    @NonNull ObjectStore<TrackerImportConflict> trackerImportConflictStore,
+                                   @NonNull TrackerImportConflictParser trackerImportConflictParser,
                                    @NonNull DataStatePropagator dataStatePropagator) {
         this.enrollmentStore = enrollmentStore;
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
         this.noteStore = noteStore;
         this.eventImportHandler = eventImportHandler;
         this.trackerImportConflictStore = trackerImportConflictStore;
+        this.trackerImportConflictParser = trackerImportConflictParser;
         this.dataStatePropagator = dataStatePropagator;
     }
 
@@ -168,10 +172,8 @@ public class EnrollmentImportHandler {
 
         if (enrollmentImportSummary.conflicts() != null) {
             for (ImportConflict importConflict : enrollmentImportSummary.conflicts()) {
-                trackerImportConflicts.add(trackerImportConflictBuilder
-                        .conflict(importConflict.value())
-                        .value(importConflict.object())
-                        .build());
+                trackerImportConflicts.add(trackerImportConflictParser
+                        .getEnrollmentConflict(importConflict, trackerImportConflictBuilder));
             }
         }
 

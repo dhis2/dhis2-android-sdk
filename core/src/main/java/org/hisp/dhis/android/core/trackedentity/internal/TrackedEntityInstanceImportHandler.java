@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.imports.TrackerImportConflictTableInfo;
 import org.hisp.dhis.android.core.imports.internal.EnrollmentImportSummaries;
 import org.hisp.dhis.android.core.imports.internal.ImportConflict;
 import org.hisp.dhis.android.core.imports.internal.TEIImportSummary;
+import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
 import org.hisp.dhis.android.core.relationship.RelationshipHelper;
@@ -64,6 +65,7 @@ public final class TrackedEntityInstanceImportHandler {
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
     private final EnrollmentImportHandler enrollmentImportHandler;
     private final ObjectStore<TrackerImportConflict> trackerImportConflictStore;
+    private final TrackerImportConflictParser trackerImportConflictParser;
     private final RelationshipStore relationshipStore;
     private final DataStatePropagator dataStatePropagator;
     private final RelationshipDHISVersionManager relationshipDHISVersionManager;
@@ -73,6 +75,7 @@ public final class TrackedEntityInstanceImportHandler {
     TrackedEntityInstanceImportHandler(@NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
                                        @NonNull EnrollmentImportHandler enrollmentImportHandler,
                                        @NonNull ObjectStore<TrackerImportConflict> trackerImportConflictStore,
+                                       @NonNull TrackerImportConflictParser trackerImportConflictParser,
                                        @NonNull RelationshipStore relationshipStore,
                                        @NonNull DataStatePropagator dataStatePropagator,
                                        @NonNull RelationshipDHISVersionManager relationshipDHISVersionManager,
@@ -80,6 +83,7 @@ public final class TrackedEntityInstanceImportHandler {
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
         this.enrollmentImportHandler = enrollmentImportHandler;
         this.trackerImportConflictStore = trackerImportConflictStore;
+        this.trackerImportConflictParser = trackerImportConflictParser;
         this.relationshipStore = relationshipStore;
         this.dataStatePropagator = dataStatePropagator;
         this.relationshipDHISVersionManager = relationshipDHISVersionManager;
@@ -143,10 +147,8 @@ public final class TrackedEntityInstanceImportHandler {
 
         if (teiImportSummary.conflicts() != null) {
             for (ImportConflict importConflict : teiImportSummary.conflicts()) {
-                trackerImportConflicts.add(trackerImportConflictBuilder
-                        .conflict(importConflict.value())
-                        .value(importConflict.object())
-                        .build());
+                trackerImportConflicts.add(trackerImportConflictParser
+                        .getTrackedEntityInstanceConflict(importConflict, trackerImportConflictBuilder));
             }
         }
 

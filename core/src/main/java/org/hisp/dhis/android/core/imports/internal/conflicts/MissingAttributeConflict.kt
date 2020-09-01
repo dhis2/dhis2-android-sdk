@@ -40,13 +40,21 @@ internal object MissingAttributeConflict : TrackerImportConflictItem {
     }
 
     override fun getValue(conflict: ImportConflict): String? {
+        return null
+    }
+
+    override fun getTrackedEntityAttribute(conflict: ImportConflict): String? {
         return regex.find(conflict.value())?.groupValues?.get(1)
+    }
+
+    override fun getDataElement(conflict: ImportConflict): String? {
+        return null
     }
 
     override fun getDisplayDescription(conflict: ImportConflict,
                                        context: TrackerImportConflictItemContext): String {
 
-        getValue(conflict)?.let { attributeUid ->
+        getTrackedEntityAttribute(conflict)?.let { attributeUid ->
             context.attributeStore.selectByUid(attributeUid)?.let { attribute ->
                 return conflict.value().replace(attributeUid, attribute.displayFormName()!!, ignoreCase = true)
             }

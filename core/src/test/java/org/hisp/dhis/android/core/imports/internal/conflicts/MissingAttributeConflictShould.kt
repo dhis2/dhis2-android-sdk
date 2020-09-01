@@ -63,7 +63,7 @@ class MissingAttributeConflictShould {
 
     @Test
     fun `Should match attribute uid`() {
-        val value = MissingAttributeConflict.getValue(importConflict)
+        val value = MissingAttributeConflict.getTrackedEntityAttribute(importConflict)
         assert(value == attributeUid)
     }
 

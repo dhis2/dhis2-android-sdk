@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 import org.hisp.dhis.android.core.imports.internal.EnrollmentImportSummary;
 import org.hisp.dhis.android.core.imports.internal.EventImportSummaries;
 import org.hisp.dhis.android.core.imports.internal.EventImportSummary;
+import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser;
 import org.hisp.dhis.android.core.note.Note;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
 import org.junit.Before;
@@ -86,6 +87,9 @@ public class EnrollmentImportHandlerShould {
     private ObjectStore<TrackerImportConflict> trackerImportConflictStore;
 
     @Mock
+    private TrackerImportConflictParser trackerImportConflictParser;
+
+    @Mock
     private DataStatePropagator dataStatePropagator;
 
     // object to test
@@ -96,7 +100,7 @@ public class EnrollmentImportHandlerShould {
         MockitoAnnotations.initMocks(this);
 
         enrollmentImportHandler = new EnrollmentImportHandler(enrollmentStore, trackedEntityInstanceStore, noteStore,
-                eventImportHandler, trackerImportConflictStore, dataStatePropagator);
+                eventImportHandler, trackerImportConflictStore, trackerImportConflictParser, dataStatePropagator);
     }
 
     @Test

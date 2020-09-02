@@ -34,6 +34,8 @@ import org.hisp.dhis.android.core.parser.internal.expression.function.FunctionIf
 import org.hisp.dhis.android.core.parser.internal.expression.function.FunctionIsNotNull;
 import org.hisp.dhis.android.core.parser.internal.expression.function.FunctionIsNull;
 import org.hisp.dhis.android.core.parser.internal.expression.function.FunctionLeast;
+import org.hisp.dhis.android.core.parser.internal.expression.function.FunctionLog;
+import org.hisp.dhis.android.core.parser.internal.expression.function.FunctionLog10;
 import org.hisp.dhis.android.core.parser.internal.expression.operator.OperatorCompareEqual;
 import org.hisp.dhis.android.core.parser.internal.expression.operator.OperatorCompareGreaterThan;
 import org.hisp.dhis.android.core.parser.internal.expression.operator.OperatorCompareGreaterThanOrEqual;
@@ -76,6 +78,8 @@ import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.IS_NOT_NULL
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.IS_NULL;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.LEAST;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.LEQ;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.LOG;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.LOG10;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.LT;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.MINUS;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.MOD;
@@ -150,6 +154,9 @@ public final class ParserUtils {
         m.put(IS_NOT_NULL, new FunctionIsNotNull());
         m.put(IS_NULL, new FunctionIsNull());
         m.put(LEAST, new FunctionLeast());
+
+        m.put(LOG, new FunctionLog());
+        m.put(LOG10, new FunctionLog10());
 
         // Common variables
 

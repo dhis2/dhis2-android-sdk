@@ -41,7 +41,6 @@ import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper;
 import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 import org.hisp.dhis.android.core.imports.internal.EventWebResponse;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.note.Note;
@@ -176,7 +175,6 @@ public final class EventPostCall {
         }
         eventImportHandler.handleEventImportSummaries(
                 webResponse.response().importSummaries(),
-                TrackerImportConflict.builder(),
                 null,
                 null
         );

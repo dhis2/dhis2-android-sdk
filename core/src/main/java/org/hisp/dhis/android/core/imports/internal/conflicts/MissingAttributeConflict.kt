@@ -25,42 +25,42 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.imports.internal.conflicts
 
-package org.hisp.dhis.android.core.data.imports;
+import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.imports.ImportStatus;
-import org.hisp.dhis.android.core.imports.TrackerImportConflict;
+internal object MissingAttributeConflict : TrackerImportConflictItem {
 
-import java.text.ParseException;
-import java.util.Date;
+    private val regex: Regex = Regex("Missing mandatory attribute (\\w{11})")
+    private fun description(attributeName: String) = "Missing mandatory attribute: $attributeName"
 
-public class TrackerImportConflictSamples {
+    override val errorCode: String = "E1018"
 
-    public static TrackerImportConflict get() {
-        return TrackerImportConflict.builder()
-                .id(1L)
-                .conflict("conflict")
-                .value("value")
-                .trackedEntityInstance("tracked_entity_instance")
-                .enrollment("enrollment")
-                .event("event")
-                .trackedEntityAttribute("tracked_entity_attribute")
-                .dataElement("data_element")
-                .tableReference("table_reference")
-                .errorCode("error_code")
-                .status(ImportStatus.SUCCESS)
-                .created(getDate("2017-11-29T11:27:46.935"))
-                .displayDescription("display description")
-                .build();
+    override fun matches(conflict: ImportConflict): Boolean {
+        return regex.matches(conflict.value())
     }
 
-    private static Date getDate(String dateStr) {
-        try {
-            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
+    override fun getValue(conflict: ImportConflict): String? {
+        return null
+    }
+
+    override fun getTrackedEntityAttribute(conflict: ImportConflict): String? {
+        return regex.find(conflict.value())?.groupValues?.get(1)
+    }
+
+    override fun getDataElement(conflict: ImportConflict): String? {
+        return null
+    }
+
+    override fun getDisplayDescription(conflict: ImportConflict,
+                                       context: TrackerImportConflictItemContext): String {
+
+        return getTrackedEntityAttribute(conflict)?.let { attributeUid ->
+            context.attributeStore.selectByUid(attributeUid)?.let { attribute ->
+                val name = attribute.displayFormName() ?: attribute.displayName() ?: attributeUid
+                description(name)
+            }
+        } ?:
+        conflict.value()
     }
 }

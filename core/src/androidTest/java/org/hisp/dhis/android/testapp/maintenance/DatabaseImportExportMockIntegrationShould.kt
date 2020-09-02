@@ -25,46 +25,26 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.testapp.maintenance
 
-package org.hisp.dhis.android.core.configuration.internal;
+import androidx.test.platform.app.InstrumentationRegistry
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.Test
+import org.junit.runner.RunWith
+import java.io.File
 
-import javax.inject.Inject;
+@RunWith(D2JunitRunner::class)
+class DatabaseImportExportMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
 
-public final class DatabaseNameGenerator {
-
-    @Inject
-    DatabaseNameGenerator() {
-
-    }
-
-    public String getDatabaseName(String serverUrl, String username, boolean encrypt) {
-        String encryptedStr = encrypt ? "encrypted" : "unencrypted";
-        return processServerUrl(serverUrl) + "_" + username + "_" + encryptedStr + ".db";
-    }
-
-    private String processServerUrl(String serverUrl) {
-        String noHttps = removePrefix(serverUrl, "https://");
-        String noHttp = removePrefix(noHttps, "http://");
-        String noSlashSufix = removeSuffix(noHttp, "/");
-        String noAPISufix = removeSuffix(noSlashSufix, "/api");
-
-        String onlyAlphanumeric = noAPISufix.replaceAll("[^a-zA-Z0-9]", "-");
-        String withNoMultipleMinus = onlyAlphanumeric.replaceAll("-+", "-");
-        String withNoMinusAtTheBeginning = removePrefix(withNoMultipleMinus, "-");
-        return removeSuffix(withNoMinusAtTheBeginning, "-");
-    }
-
-    private String removePrefix(String s, String prefix) {
-        if (s.startsWith(prefix)) {
-            return s.substring(prefix.length());
-        }
-        return s;
-    }
-
-    private String removeSuffix(String s, String prefix) {
-        if (s.endsWith(prefix)) {
-            return s.substring(0, s.length() - prefix.length());
-        }
-        return s;
+    @Test
+    fun import_database_from_existing_database() {
+        val context = InstrumentationRegistry.getInstrumentation().context
+        val existingDbPath = context.databaseList()[0]
+        val existingDbFile = context.getDatabasePath(existingDbPath)
+        val copiedFileDir = existingDbFile.path.substring(0, existingDbFile.path.lastIndexOf("/"))
+        val copiedFile = File(copiedFileDir, "test-import.db")
+        existingDbFile.renameTo(copiedFile)
+        d2.maintenanceModule().databaseImportExport().importDatabase(copiedFile)
     }
 }

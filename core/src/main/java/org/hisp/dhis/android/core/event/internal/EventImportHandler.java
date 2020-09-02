@@ -118,29 +118,21 @@ public class EventImportHandler {
         updateParentState(parentState, teiUid, enrollmentUid);
     }
 
-    private void storeEventImportConflicts(EventImportSummary eventImportSummary,
-                                           String trackedEntityInstanceUid,
+    private void storeEventImportConflicts(EventImportSummary importSummary,
+                                           String teiUid,
                                            String enrollmentUid) {
-        TrackerImportConflict.Builder trackerImportConflictBuilder = TrackerImportConflict.builder()
-                .trackedEntityInstance(trackedEntityInstanceUid)
-                .enrollment(enrollmentUid)
-                .event(eventImportSummary.reference())
-                .tableReference(EventTableInfo.TABLE_INFO.name())
-                .status(eventImportSummary.status())
-                .created(new Date());
-
         List<TrackerImportConflict> trackerImportConflicts = new ArrayList<>();
-        if (eventImportSummary.description() != null) {
-            trackerImportConflicts.add(trackerImportConflictBuilder
-                    .conflict(eventImportSummary.description())
-                    .value(eventImportSummary.reference())
+        if (importSummary.description() != null) {
+            trackerImportConflicts.add(getConflictBuilder(teiUid, enrollmentUid, importSummary)
+                    .conflict(importSummary.description())
+                    .value(importSummary.reference())
                     .build());
         }
 
-        if (eventImportSummary.conflicts() != null) {
-            for (ImportConflict importConflict : eventImportSummary.conflicts()) {
+        if (importSummary.conflicts() != null) {
+            for (ImportConflict importConflict : importSummary.conflicts()) {
                 trackerImportConflicts.add(trackerImportConflictParser
-                        .getEventConflict(importConflict, trackerImportConflictBuilder));
+                        .getEventConflict(importConflict, getConflictBuilder(teiUid, enrollmentUid, importSummary)));
             }
 
         }
@@ -181,5 +173,17 @@ public class EventImportHandler {
         for (Note note : notes) {
             noteStore.update(note.toBuilder().state(newNoteState).build());
         }
+    }
+
+    private TrackerImportConflict.Builder getConflictBuilder(String trackedEntityInstanceUid,
+                                                             String enrollmentUid,
+                                                             EventImportSummary eventImportSummary) {
+        return TrackerImportConflict.builder()
+                .trackedEntityInstance(trackedEntityInstanceUid)
+                .enrollment(enrollmentUid)
+                .event(eventImportSummary.reference())
+                .tableReference(EventTableInfo.TABLE_INFO.name())
+                .status(eventImportSummary.status())
+                .created(new Date());
     }
 }

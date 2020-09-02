@@ -82,8 +82,8 @@ internal class TrackerImportConflictParser @Inject constructor(
         }
 
         return conflictBuilder
-                .conflict(conflict.`object`())
-                .value(conflict.value())
+                .conflict(conflict.value())
+                .value(conflict.`object`())
                 .build()
     }
 }

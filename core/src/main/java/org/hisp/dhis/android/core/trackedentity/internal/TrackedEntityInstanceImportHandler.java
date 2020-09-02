@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
-
 import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
@@ -131,15 +130,9 @@ public final class TrackedEntityInstanceImportHandler {
     }
 
     private void storeTEIImportConflicts(TEIImportSummary teiImportSummary) {
-        TrackerImportConflict.Builder trackerImportConflictBuilder = TrackerImportConflict.builder()
-                .trackedEntityInstance(teiImportSummary.reference())
-                .tableReference(TrackedEntityInstanceTableInfo.TABLE_INFO.name())
-                .status(teiImportSummary.status())
-                .created(new Date());
-
         List<TrackerImportConflict> trackerImportConflicts = new ArrayList<>();
         if (teiImportSummary.description() != null) {
-            trackerImportConflicts.add(trackerImportConflictBuilder
+            trackerImportConflicts.add(getConflictBuilder(teiImportSummary)
                     .conflict(teiImportSummary.description())
                     .value(teiImportSummary.reference())
                     .build());
@@ -148,7 +141,7 @@ public final class TrackedEntityInstanceImportHandler {
         if (teiImportSummary.conflicts() != null) {
             for (ImportConflict importConflict : teiImportSummary.conflicts()) {
                 trackerImportConflicts.add(trackerImportConflictParser
-                        .getTrackedEntityInstanceConflict(importConflict, trackerImportConflictBuilder));
+                        .getTrackedEntityInstanceConflict(importConflict, getConflictBuilder(teiImportSummary)));
             }
         }
 
@@ -177,5 +170,13 @@ public final class TrackedEntityInstanceImportHandler {
         for (Relationship relationship : ownedRelationships) {
             relationshipStore.setStateOrDelete(relationship.uid(), state);
         }
+    }
+
+    private TrackerImportConflict.Builder getConflictBuilder(TEIImportSummary teiImportSummary) {
+        return TrackerImportConflict.builder()
+                .trackedEntityInstance(teiImportSummary.reference())
+                .tableReference(TrackedEntityInstanceTableInfo.TABLE_INFO.name())
+                .status(teiImportSummary.status())
+                .created(new Date());
     }
 }

@@ -134,6 +134,7 @@ public final class TrackedEntityInstanceImportHandler {
         if (teiImportSummary.description() != null) {
             trackerImportConflicts.add(getConflictBuilder(teiImportSummary)
                     .conflict(teiImportSummary.description())
+                    .displayDescription(teiImportSummary.description())
                     .value(teiImportSummary.reference())
                     .build());
         }

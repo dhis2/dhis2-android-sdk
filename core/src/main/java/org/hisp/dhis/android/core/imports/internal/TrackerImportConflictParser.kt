@@ -49,7 +49,9 @@ internal class TrackerImportConflictParser @Inject constructor(
             MissingAttributeConflict
     )
 
-    private val enrollmentConflicts: List<TrackerImportConflictItem> = listOf()
+    private val enrollmentConflicts: List<TrackerImportConflictItem> = listOf(
+            MissingAttributeConflict
+    )
 
     private val eventConflicts: List<TrackerImportConflictItem> = listOf()
 
@@ -73,17 +75,19 @@ internal class TrackerImportConflictParser @Inject constructor(
                                   conflictTypes: List<TrackerImportConflictItem>): TrackerImportConflict {
         val conflictType = conflictTypes.find { it.matches(conflict) }
 
+        conflictBuilder
+                .conflict(conflict.value())
+                .displayDescription(conflict.value())
+                .value(conflict.`object`())
+
         if (conflictType != null) {
             conflictBuilder
                     .errorCode(conflictType.errorCode)
+                    .displayDescription(conflictType.getDisplayDescription(conflict, context))
                     .trackedEntityAttribute(conflictType.getTrackedEntityAttribute(conflict))
                     .dataElement(conflictType.getDataElement(conflict))
-                    .displayDescription(conflictType.getDisplayDescription(conflict, context))
         }
 
-        return conflictBuilder
-                .conflict(conflict.value())
-                .value(conflict.`object`())
-                .build()
+        return conflictBuilder.build()
     }
 }

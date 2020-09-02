@@ -159,6 +159,7 @@ public class EnrollmentImportHandler {
         if (enrollmentImportSummary.description() != null) {
             trackerImportConflicts.add(getConflictBuilder(teiUid, enrollmentImportSummary)
                     .conflict(enrollmentImportSummary.description())
+                    .displayDescription(enrollmentImportSummary.description())
                     .value(enrollmentImportSummary.reference())
                     .build());
         }

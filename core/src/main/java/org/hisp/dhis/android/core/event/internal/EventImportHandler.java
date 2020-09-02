@@ -125,6 +125,7 @@ public class EventImportHandler {
         if (importSummary.description() != null) {
             trackerImportConflicts.add(getConflictBuilder(teiUid, enrollmentUid, importSummary)
                     .conflict(importSummary.description())
+                    .displayDescription(importSummary.description())
                     .value(importSummary.reference())
                     .build());
         }

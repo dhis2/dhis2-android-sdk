@@ -32,8 +32,9 @@ import org.hisp.dhis.android.core.imports.internal.ImportConflict
 internal object MissingAttributeConflict : TrackerImportConflictItem {
 
     private val regex: Regex = Regex("Missing mandatory attribute (\\w{11})")
+    private fun description(attributeName: String) = "Missing mandatory attribute: $attributeName"
 
-    override val errorCode: String = ""
+    override val errorCode: String = "E1018"
 
     override fun matches(conflict: ImportConflict): Boolean {
         return regex.matches(conflict.value())
@@ -54,11 +55,12 @@ internal object MissingAttributeConflict : TrackerImportConflictItem {
     override fun getDisplayDescription(conflict: ImportConflict,
                                        context: TrackerImportConflictItemContext): String {
 
-        getTrackedEntityAttribute(conflict)?.let { attributeUid ->
+        return getTrackedEntityAttribute(conflict)?.let { attributeUid ->
             context.attributeStore.selectByUid(attributeUid)?.let { attribute ->
-                return conflict.value().replace(attributeUid, attribute.displayFormName()!!, ignoreCase = true)
+                val name = attribute.displayFormName() ?: attribute.displayName() ?: attributeUid
+                description(name)
             }
-        }
-        return conflict.value()
+        } ?:
+        conflict.value()
     }
 }

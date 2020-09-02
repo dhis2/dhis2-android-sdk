@@ -72,6 +72,6 @@ class MissingAttributeConflictShould {
         whenever(attribute.displayFormName()) doReturn "Attribute form name"
 
         val displayDescription = MissingAttributeConflict.getDisplayDescription(importConflict, context)
-        assert(displayDescription == "Missing mandatory attribute Attribute form name")
+        assert(displayDescription == "Missing mandatory attribute: Attribute form name")
     }
 }

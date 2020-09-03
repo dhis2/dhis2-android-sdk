@@ -53,11 +53,13 @@ public final class TrackedEntityTypeTableInfo {
 
     public static class Columns extends NameableWithStyleColumns {
         public final static String FEATURE_TYPE = "featureType";
+        public final static String ACCESS_DATA_WRITE = "accessDataWrite";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    FEATURE_TYPE
+                    FEATURE_TYPE,
+                    ACCESS_DATA_WRITE
             );
         }
     }

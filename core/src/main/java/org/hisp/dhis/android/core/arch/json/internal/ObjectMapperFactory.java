@@ -43,6 +43,7 @@ public final class ObjectMapperFactory {
         return new ObjectMapper()
                 .setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw())
                 .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE)
                 .setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 }

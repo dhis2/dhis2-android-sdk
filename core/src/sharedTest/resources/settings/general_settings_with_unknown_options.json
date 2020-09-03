@@ -1,8 +1,8 @@
 {
-  "dataSync": "24h",
+  "dataSync": "new_option",
   "encryptDB": false,
   "lastUpdated": "2020-01-13T16:52:05.144Z",
-  "metadataSync": "manual",
+  "metadataSync": "new_option",
   "reservedValues": 100,
   "numberSmsToSend": "98456123",
   "numberSmsConfirmation": "98456122"

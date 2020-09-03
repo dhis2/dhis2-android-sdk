@@ -32,6 +32,7 @@ import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.DatabaseImportExport
 import org.hisp.dhis.android.core.configuration.internal.DatabaseNameGenerator
+import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoStore
 import org.hisp.dhis.android.core.user.internal.UserCredentialsStoreImpl
 import java.io.File
@@ -40,7 +41,8 @@ import javax.inject.Inject
 @Reusable
 class DatabaseImportExportImpl @Inject constructor(
     private val context: Context,
-    private val nameGenerator: DatabaseNameGenerator) : DatabaseImportExport {
+    private val nameGenerator: DatabaseNameGenerator,
+    private val multiUserDatabaseManager: MultiUserDatabaseManager) : DatabaseImportExport {
 
     companion object {
         const val TmpDatabase = "tmp-database.db"
@@ -53,20 +55,26 @@ class DatabaseImportExportImpl @Inject constructor(
             file.copyTo(tmpDatabase)
 
             val openHelper = UnencryptedDatabaseOpenHelper(context, TmpDatabase, BaseDatabaseOpenHelper.VERSION)
-            databaseAdapter = UnencryptedDatabaseAdapter(openHelper.writableDatabase)
+            val database = openHelper.readableDatabase
+            databaseAdapter = UnencryptedDatabaseAdapter(database)
+
+            if (database.version > BaseDatabaseOpenHelper.VERSION) {
+                throw RuntimeException("Import database version higher than supported")
+            }
 
             val userCredentialsStore = UserCredentialsStoreImpl.create(databaseAdapter)
-            val userCredentials = userCredentialsStore.selectFirst()
+            val username = userCredentialsStore.selectFirst().username()
 
             val systemInfoStore = SystemInfoStore.create(databaseAdapter)
-            val systemInfo = systemInfoStore.selectFirst()
+            val serverUrl = systemInfoStore.selectFirst().contextPath()
 
-            val databaseName = nameGenerator.getDatabaseName(systemInfo.contextPath(),
-                userCredentials.username(), false)
+            val databaseName = nameGenerator.getDatabaseName(serverUrl, username, false)
 
             if (!context.databaseList().contains(databaseName)) {
-                // Copy database
-                // Ensure entry is kept in store
+                val destDatabase = context.getDatabasePath(databaseName)
+                file.copyTo(destDatabase)
+
+                multiUserDatabaseManager.createNew(serverUrl, username, false)
             }
         } finally {
             databaseAdapter?.close()

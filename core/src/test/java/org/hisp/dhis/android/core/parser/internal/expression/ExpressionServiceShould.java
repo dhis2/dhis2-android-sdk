@@ -272,6 +272,9 @@ public class ExpressionServiceShould {
 
         assertThat(service.getExpressionValue("least(5, 2, 7, 3)")).isEqualTo(2.0);
         assertThat(service.getExpressionValue("least(-5, -2, -7)")).isEqualTo(-7.0);
+
+        assertThat((double) service.getExpressionValue("log(100)")).isBetween(4.6, 4.7);
+        assertThat(service.getExpressionValue("log10(100)")).isEqualTo(2.0);
     }
 
     @Test

@@ -44,5 +44,8 @@ public enum DataSyncPeriod {
     EVERY_12_HOURS,
 
     @JsonProperty("24h")
-    EVERY_24_HOURS;
+    EVERY_24_HOURS,
+
+    @JsonProperty("manual")
+    MANUAL
 }

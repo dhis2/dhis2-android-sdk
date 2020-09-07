@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 import org.hisp.dhis.android.core.imports.TrackerImportConflictTableInfo;
 import org.hisp.dhis.android.core.imports.internal.EventImportSummary;
 import org.hisp.dhis.android.core.imports.internal.ImportConflict;
+import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser;
 import org.hisp.dhis.android.core.note.Note;
 import org.hisp.dhis.android.core.note.NoteTableInfo;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
@@ -64,22 +65,24 @@ public class EventImportHandler {
     private final IdentifiableObjectStore<Note> noteStore;
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
     private final ObjectStore<TrackerImportConflict> trackerImportConflictStore;
+    private final TrackerImportConflictParser trackerImportConflictParser;
 
     @Inject
     public EventImportHandler(@NonNull EventStore eventStore,
                               @NonNull EnrollmentStore enrollmentStore,
                               @NonNull IdentifiableObjectStore<Note> noteStore,
                               @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
-                              @NonNull ObjectStore<TrackerImportConflict> trackerImportConflictStore) {
+                              @NonNull ObjectStore<TrackerImportConflict> trackerImportConflictStore,
+                              @NonNull TrackerImportConflictParser trackerImportConflictParser) {
         this.eventStore = eventStore;
         this.enrollmentStore = enrollmentStore;
         this.noteStore = noteStore;
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
         this.trackerImportConflictStore = trackerImportConflictStore;
+        this.trackerImportConflictParser = trackerImportConflictParser;
     }
 
     public void handleEventImportSummaries(List<EventImportSummary> eventImportSummaries,
-                                           TrackerImportConflict.Builder trackerImportConflictBuilder,
                                            String enrollmentUid,
                                            String teiUid) {
         if (eventImportSummaries == null) {
@@ -108,35 +111,29 @@ public class EventImportHandler {
             if (handleAction != HandleAction.Delete) {
                 handleNoteImportSummary(eventImportSummary.reference(), state);
 
-                storeEventImportConflicts(eventImportSummary, trackerImportConflictBuilder);
+                storeEventImportConflicts(eventImportSummary, teiUid, enrollmentUid);
             }
         }
 
         updateParentState(parentState, teiUid, enrollmentUid);
     }
 
-    private void storeEventImportConflicts(EventImportSummary eventImportSummary,
-                                           TrackerImportConflict.Builder trackerImportConflictBuilder) {
-        trackerImportConflictBuilder
-                .event(eventImportSummary.reference())
-                .tableReference(EventTableInfo.TABLE_INFO.name())
-                .status(eventImportSummary.status())
-                .created(new Date());
-
+    private void storeEventImportConflicts(EventImportSummary importSummary,
+                                           String teiUid,
+                                           String enrollmentUid) {
         List<TrackerImportConflict> trackerImportConflicts = new ArrayList<>();
-        if (eventImportSummary.description() != null) {
-            trackerImportConflicts.add(trackerImportConflictBuilder
-                    .conflict(eventImportSummary.description())
-                    .value(eventImportSummary.reference())
+        if (importSummary.description() != null) {
+            trackerImportConflicts.add(getConflictBuilder(teiUid, enrollmentUid, importSummary)
+                    .conflict(importSummary.description())
+                    .displayDescription(importSummary.description())
+                    .value(importSummary.reference())
                     .build());
         }
 
-        if (eventImportSummary.conflicts() != null) {
-            for (ImportConflict importConflict : eventImportSummary.conflicts()) {
-                trackerImportConflicts.add(trackerImportConflictBuilder
-                        .conflict(importConflict.value())
-                        .value(importConflict.object())
-                        .build());
+        if (importSummary.conflicts() != null) {
+            for (ImportConflict importConflict : importSummary.conflicts()) {
+                trackerImportConflicts.add(trackerImportConflictParser
+                        .getEventConflict(importConflict, getConflictBuilder(teiUid, enrollmentUid, importSummary)));
             }
 
         }
@@ -177,5 +174,17 @@ public class EventImportHandler {
         for (Note note : notes) {
             noteStore.update(note.toBuilder().state(newNoteState).build());
         }
+    }
+
+    private TrackerImportConflict.Builder getConflictBuilder(String trackedEntityInstanceUid,
+                                                             String enrollmentUid,
+                                                             EventImportSummary eventImportSummary) {
+        return TrackerImportConflict.builder()
+                .trackedEntityInstance(trackedEntityInstanceUid)
+                .enrollment(enrollmentUid)
+                .event(eventImportSummary.reference())
+                .tableReference(EventTableInfo.TABLE_INFO.name())
+                .status(eventImportSummary.status())
+                .created(new Date());
     }
 }

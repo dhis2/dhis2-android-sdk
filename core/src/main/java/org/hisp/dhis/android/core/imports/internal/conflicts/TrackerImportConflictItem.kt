@@ -25,29 +25,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.imports.internal.conflicts
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
-import androidx.annotation.NonNull;
-
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
-
-import io.reactivex.Single;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
-
-public interface TrackedEntityTypeService {
-
-    @GET("trackedEntityTypes")
-    Single<Payload<TrackedEntityType>> getTrackedEntityTypes(
-            @NonNull @Query("fields") @Which Fields<TrackedEntityType> fields,
-            @NonNull @Query("filter") @Where Filter<TrackedEntityType, String> idFilter,
-            @NonNull @Query("filter") String accessDataReadFilter,
-            @NonNull @Query("paging") boolean paging
-    );
+internal interface TrackerImportConflictItem {
+    val errorCode: String
+    fun matches(conflict: ImportConflict): Boolean
+    fun getValue(conflict: ImportConflict): String?
+    fun getTrackedEntityAttribute(conflict: ImportConflict): String?
+    fun getDataElement(conflict: ImportConflict): String?
+    fun getDisplayDescription(conflict: ImportConflict, context: TrackerImportConflictItemContext): String
 }

@@ -28,12 +28,15 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
+import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeTableInfo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -67,5 +70,11 @@ public final class TrackedEntityTypeEntityDIModule implements IdentifiableStoreP
             put(TrackedEntityTypeFields.TRACKED_ENTITY_TYPE_ATTRIBUTES,
                     TrackedEntityTypeAttributeChildrenAppender.create(databaseAdapter)); 
         }};
+    }
+
+    @Provides
+    @Reusable
+    CollectionCleaner<TrackedEntityType> collectionCleaner(DatabaseAdapter databaseAdapter) {
+        return new CollectionCleanerImpl<>(TrackedEntityTypeTableInfo.TABLE_INFO.name(), databaseAdapter);
     }
 }

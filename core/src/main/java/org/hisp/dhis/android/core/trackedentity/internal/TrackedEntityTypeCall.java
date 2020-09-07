@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.common.internal.DataAccessFields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute;
 
@@ -62,10 +63,12 @@ public final class TrackedEntityTypeCall implements UidsCall<TrackedEntityType> 
 
     @Override
     public Single<List<TrackedEntityType>> download(Set<String> optionSetUids) {
+        String accessDataReadFilter = "access.data." + DataAccessFields.read.eq(true).generateString();
         return apiDownloader.downloadPartitioned(optionSetUids, MAX_UID_LIST_SIZE, handler, partitionUids ->
             service.getTrackedEntityTypes(
                     TrackedEntityTypeFields.allFields,
                     TrackedEntityTypeFields.uid.in(optionSetUids),
+                    accessDataReadFilter,
                     Boolean.FALSE), this::transform);
     }
 

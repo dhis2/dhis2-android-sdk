@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.data.trackedentity;
 
+import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
@@ -48,6 +49,7 @@ public class TrackedEntityTypeSamples {
                 .description("Person")
                 .displayDescription("Person")
                 .featureType(FeatureType.NONE)
+                .access(AccessHelper.createForDataWrite(true))
                 .build();
     }
 

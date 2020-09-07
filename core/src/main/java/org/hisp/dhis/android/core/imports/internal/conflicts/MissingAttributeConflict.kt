@@ -25,29 +25,42 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.imports.internal.conflicts
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
-import androidx.annotation.NonNull;
+internal object MissingAttributeConflict : TrackerImportConflictItem {
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
+    private val regex: Regex = Regex("Missing mandatory attribute (\\w{11})")
+    private fun description(attributeName: String) = "Missing mandatory attribute: $attributeName"
 
-import io.reactivex.Single;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
+    override val errorCode: String = "E1018"
 
-public interface TrackedEntityTypeService {
+    override fun matches(conflict: ImportConflict): Boolean {
+        return regex.matches(conflict.value())
+    }
 
-    @GET("trackedEntityTypes")
-    Single<Payload<TrackedEntityType>> getTrackedEntityTypes(
-            @NonNull @Query("fields") @Which Fields<TrackedEntityType> fields,
-            @NonNull @Query("filter") @Where Filter<TrackedEntityType, String> idFilter,
-            @NonNull @Query("filter") String accessDataReadFilter,
-            @NonNull @Query("paging") boolean paging
-    );
+    override fun getValue(conflict: ImportConflict): String? {
+        return null
+    }
+
+    override fun getTrackedEntityAttribute(conflict: ImportConflict): String? {
+        return regex.find(conflict.value())?.groupValues?.get(1)
+    }
+
+    override fun getDataElement(conflict: ImportConflict): String? {
+        return null
+    }
+
+    override fun getDisplayDescription(conflict: ImportConflict,
+                                       context: TrackerImportConflictItemContext): String {
+
+        return getTrackedEntityAttribute(conflict)?.let { attributeUid ->
+            context.attributeStore.selectByUid(attributeUid)?.let { attribute ->
+                val name = attribute.displayFormName() ?: attribute.displayName() ?: attributeUid
+                description(name)
+            }
+        } ?:
+        conflict.value()
+    }
 }

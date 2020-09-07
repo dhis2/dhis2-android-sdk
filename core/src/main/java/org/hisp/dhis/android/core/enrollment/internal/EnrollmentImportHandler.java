@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.imports.TrackerImportConflictTableInfo;
 import org.hisp.dhis.android.core.imports.internal.EnrollmentImportSummary;
 import org.hisp.dhis.android.core.imports.internal.EventImportSummaries;
 import org.hisp.dhis.android.core.imports.internal.ImportConflict;
+import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser;
 import org.hisp.dhis.android.core.note.Note;
 import org.hisp.dhis.android.core.note.NoteTableInfo;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
@@ -66,6 +67,7 @@ public class EnrollmentImportHandler {
     private final IdentifiableObjectStore<Note> noteStore;
     private final EventImportHandler eventImportHandler;
     private final ObjectStore<TrackerImportConflict> trackerImportConflictStore;
+    private final TrackerImportConflictParser trackerImportConflictParser;
     private final DataStatePropagator dataStatePropagator;
 
     @Inject
@@ -74,17 +76,18 @@ public class EnrollmentImportHandler {
                                    @NonNull IdentifiableObjectStore<Note> noteStore,
                                    @NonNull EventImportHandler eventImportHandler,
                                    @NonNull ObjectStore<TrackerImportConflict> trackerImportConflictStore,
+                                   @NonNull TrackerImportConflictParser trackerImportConflictParser,
                                    @NonNull DataStatePropagator dataStatePropagator) {
         this.enrollmentStore = enrollmentStore;
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
         this.noteStore = noteStore;
         this.eventImportHandler = eventImportHandler;
         this.trackerImportConflictStore = trackerImportConflictStore;
+        this.trackerImportConflictParser = trackerImportConflictParser;
         this.dataStatePropagator = dataStatePropagator;
     }
 
     public void handleEnrollmentImportSummary(List<EnrollmentImportSummary> enrollmentImportSummaries,
-                                              TrackerImportConflict.Builder trackerImportConflictBuilder,
                                               String teiUid) {
         if (enrollmentImportSummaries == null) {
             return;
@@ -113,9 +116,9 @@ public class EnrollmentImportHandler {
             if (handleAction != HandleAction.Delete) {
                 handleNoteImportSummary(enrollmentImportSummary.reference(), state);
 
-                storeEnrollmentImportConflicts(enrollmentImportSummary, trackerImportConflictBuilder);
+                storeEnrollmentImportConflicts(enrollmentImportSummary, teiUid);
 
-                handleEventImportSummaries(enrollmentImportSummary, trackerImportConflictBuilder, teiUid);
+                handleEventImportSummaries(enrollmentImportSummary, teiUid);
             }
         }
 
@@ -123,7 +126,6 @@ public class EnrollmentImportHandler {
     }
 
     private void handleEventImportSummaries(EnrollmentImportSummary enrollmentImportSummary,
-                                            TrackerImportConflict.Builder trackerImportConflictBuilder,
                                             String teiUid) {
 
         if (enrollmentImportSummary.events() != null) {
@@ -132,7 +134,6 @@ public class EnrollmentImportHandler {
             if (eventImportSummaries.importSummaries() != null) {
                 eventImportHandler.handleEventImportSummaries(
                         eventImportSummaries.importSummaries(),
-                        trackerImportConflictBuilder.enrollment(enrollmentImportSummary.reference()),
                         enrollmentImportSummary.reference(),
                         teiUid);
 
@@ -153,27 +154,20 @@ public class EnrollmentImportHandler {
     }
 
     private void storeEnrollmentImportConflicts(EnrollmentImportSummary enrollmentImportSummary,
-                                                TrackerImportConflict.Builder trackerImportConflictBuilder) {
-        trackerImportConflictBuilder
-                .enrollment(enrollmentImportSummary.reference())
-                .tableReference(EnrollmentTableInfo.TABLE_INFO.name())
-                .status(enrollmentImportSummary.status())
-                .created(new Date());
-
+                                                String teiUid) {
         List<TrackerImportConflict> trackerImportConflicts = new ArrayList<>();
         if (enrollmentImportSummary.description() != null) {
-            trackerImportConflicts.add(trackerImportConflictBuilder
+            trackerImportConflicts.add(getConflictBuilder(teiUid, enrollmentImportSummary)
                     .conflict(enrollmentImportSummary.description())
+                    .displayDescription(enrollmentImportSummary.description())
                     .value(enrollmentImportSummary.reference())
                     .build());
         }
 
         if (enrollmentImportSummary.conflicts() != null) {
             for (ImportConflict importConflict : enrollmentImportSummary.conflicts()) {
-                trackerImportConflicts.add(trackerImportConflictBuilder
-                        .conflict(importConflict.value())
-                        .value(importConflict.object())
-                        .build());
+                trackerImportConflicts.add(trackerImportConflictParser
+                        .getEnrollmentConflict(importConflict, getConflictBuilder(teiUid, enrollmentImportSummary)));
             }
         }
 
@@ -197,5 +191,15 @@ public class EnrollmentImportHandler {
                         EnrollmentTableInfo.TABLE_INFO.name())
                 .build();
         trackerImportConflictStore.deleteWhereIfExists(whereClause);
+    }
+
+    private TrackerImportConflict.Builder getConflictBuilder(String trackedEntityInstanceUid,
+                                                             EnrollmentImportSummary enrollmentImportSummary) {
+        return TrackerImportConflict.builder()
+                .trackedEntityInstance(trackedEntityInstanceUid)
+                .enrollment(enrollmentImportSummary.reference())
+                .tableReference(EnrollmentTableInfo.TABLE_INFO.name())
+                .status(enrollmentImportSummary.status())
+                .created(new Date());
     }
 }

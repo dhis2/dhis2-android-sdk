@@ -45,10 +45,13 @@ public class TrackerImportConflictSamples {
                 .trackedEntityInstance("tracked_entity_instance")
                 .enrollment("enrollment")
                 .event("event")
+                .trackedEntityAttribute("tracked_entity_attribute")
+                .dataElement("data_element")
                 .tableReference("table_reference")
                 .errorCode("error_code")
                 .status(ImportStatus.SUCCESS)
                 .created(getDate("2017-11-29T11:27:46.935"))
+                .displayDescription("display description")
                 .build();
     }
 

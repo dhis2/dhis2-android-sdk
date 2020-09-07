@@ -47,6 +47,7 @@ public final class TrackedEntityTypeStore {
         public void bindToStatement(@NonNull TrackedEntityType o, @NonNull StatementWrapper w) {
             super.bindToStatement(o, w);
             w.bind(13, o.featureType());
+            w.bind(14, o.access().data().write());
         }
     };
 

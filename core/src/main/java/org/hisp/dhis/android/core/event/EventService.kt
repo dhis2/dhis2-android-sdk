@@ -25,53 +25,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.event
 
-package org.hisp.dhis.android.core.event.internal;
-
-import androidx.annotation.VisibleForTesting;
-
-import org.hisp.dhis.android.core.event.EventCollectionRepository;
-import org.hisp.dhis.android.core.event.EventDownloader;
-import org.hisp.dhis.android.core.event.EventModule;
-import org.hisp.dhis.android.core.event.EventService;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.program.ProgramCollectionRepository
+import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
+import javax.inject.Inject
 
 @Reusable
-public final class EventModuleImpl implements EventModule {
+class EventService @Inject constructor(
+        private val eventRepository: EventCollectionRepository,
+        private val programRepository: ProgramCollectionRepository,
+        private val programStageRepository: ProgramStageCollectionRepository
+) {
 
-    private final EventCollectionRepository events;
-    private final EventDownloader eventDownloader;
-    private final EventService eventService;
+    fun blockingHasDataWriteAccess(eventUid: String): Boolean {
+        val event = eventRepository.uid(eventUid).blockingGet() ?: return false
 
-    @VisibleForTesting
-    final EventPersistenceCallFactory eventPersistenceCallFactory;
-
-    @Inject
-    EventModuleImpl(EventCollectionRepository events,
-                    EventPersistenceCallFactory eventPersistenceCallFactory,
-                    EventDownloader eventDownloader,
-                    EventService eventService) {
-        this.events = events;
-        this.eventPersistenceCallFactory = eventPersistenceCallFactory;
-        this.eventDownloader = eventDownloader;
-        this.eventService = eventService;
+        return programRepository.uid(event.program()).blockingGet()?.access()?.data()?.write() ?: false &&
+                programStageRepository.uid(event.programStage()).blockingGet()?.access()?.data()?.write() ?: false
     }
 
-    @Override
-    public EventCollectionRepository events() {
-        return events;
-    }
-
-    @Override
-    public EventDownloader eventDownloader() {
-        return eventDownloader;
-    }
-
-    @Override
-    public EventService eventService() {
-        return eventService;
+    fun hasDataWriteAccess(eventUid: String): Single<Boolean> {
+        return Single.fromCallable {
+            blockingHasDataWriteAccess(eventUid)
+        }
     }
 }

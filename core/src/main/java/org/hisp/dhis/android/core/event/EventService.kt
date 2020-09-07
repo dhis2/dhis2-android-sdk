@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.event
 
 import dagger.Reusable
+import io.reactivex.Single
 import org.hisp.dhis.android.core.program.ProgramCollectionRepository
 import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
 import javax.inject.Inject
@@ -39,10 +40,16 @@ class EventService @Inject constructor(
         private val programStageRepository: ProgramStageCollectionRepository
 ) {
 
-    fun hasDataWriteAccess(eventUid: String): Boolean {
+    fun blockingHasDataWriteAccess(eventUid: String): Boolean {
         val event = eventRepository.uid(eventUid).blockingGet() ?: return false
 
         return programRepository.uid(event.program()).blockingGet()?.access()?.data()?.write() ?: false &&
                 programStageRepository.uid(event.programStage()).blockingGet()?.access()?.data()?.write() ?: false
+    }
+
+    fun hasDataWriteAccess(eventUid: String): Single<Boolean> {
+        return Single.fromCallable {
+            blockingHasDataWriteAccess(eventUid)
+        }
     }
 }

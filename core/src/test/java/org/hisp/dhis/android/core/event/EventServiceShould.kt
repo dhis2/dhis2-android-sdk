@@ -74,7 +74,7 @@ class EventServiceShould {
         whenever(program.access()) doReturn writeDataAccess
         whenever(programStage.access()) doReturn writeDataAccess
 
-        assertTrue(eventService.hasDataWriteAccess(event.uid()))
+        assertTrue(eventService.blockingHasDataWriteAccess(event.uid()))
     }
 
     @Test
@@ -82,11 +82,11 @@ class EventServiceShould {
         whenever(program.access()) doReturn writeDataAccess
         whenever(programStage.access()) doReturn readDataAccess
 
-        assertFalse(eventService.hasDataWriteAccess(event.uid()))
+        assertFalse(eventService.blockingHasDataWriteAccess(event.uid()))
 
         whenever(program.access()) doReturn readDataAccess
         whenever(programStage.access()) doReturn writeDataAccess
 
-        assertFalse(eventService.hasDataWriteAccess(event.uid()))
+        assertFalse(eventService.blockingHasDataWriteAccess(event.uid()))
     }
 }

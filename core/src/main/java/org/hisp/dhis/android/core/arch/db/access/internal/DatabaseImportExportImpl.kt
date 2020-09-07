@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseImportExport
 import org.hisp.dhis.android.core.configuration.internal.DatabaseNameGenerator
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoStore
+import org.hisp.dhis.android.core.user.UserModule
 import org.hisp.dhis.android.core.user.internal.UserCredentialsStoreImpl
 import java.io.File
 import javax.inject.Inject
@@ -42,13 +43,18 @@ import javax.inject.Inject
 class DatabaseImportExportImpl @Inject constructor(
     private val context: Context,
     private val nameGenerator: DatabaseNameGenerator,
-    private val multiUserDatabaseManager: MultiUserDatabaseManager) : DatabaseImportExport {
+    private val multiUserDatabaseManager: MultiUserDatabaseManager,
+    private val userModule: UserModule) : DatabaseImportExport {
 
     companion object {
         const val TmpDatabase = "tmp-database.db"
     }
 
     override fun importDatabase(file: File) {
+        if (userModule.blockingIsLogged()) {
+            throw RuntimeException("Please log out to import database")
+        }
+
         var databaseAdapter: DatabaseAdapter? = null
         try {
             val tmpDatabase = context.getDatabasePath(TmpDatabase)

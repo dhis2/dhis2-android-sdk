@@ -31,6 +31,7 @@ import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramCollectionRepository
 import org.hisp.dhis.android.core.program.ProgramStage
@@ -56,8 +57,10 @@ class EventServiceShould {
     private val eventRepository: EventCollectionRepository = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val programRepository: ProgramCollectionRepository = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val programStageRepository: ProgramStageCollectionRepository = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
+    private val organisationUnitService: OrganisationUnitService = mock()
 
-    private val eventService: EventService = EventService(eventRepository, programRepository, programStageRepository)
+    private val eventService: EventService = EventService(eventRepository, programRepository,
+            programStageRepository, organisationUnitService)
 
 
     @Before

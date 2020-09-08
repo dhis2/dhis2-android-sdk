@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.event
 
 import dagger.Reusable
 import io.reactivex.Single
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService
 import org.hisp.dhis.android.core.program.ProgramCollectionRepository
 import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
 import javax.inject.Inject
@@ -37,7 +38,8 @@ import javax.inject.Inject
 class EventService @Inject constructor(
         private val eventRepository: EventCollectionRepository,
         private val programRepository: ProgramCollectionRepository,
-        private val programStageRepository: ProgramStageCollectionRepository
+        private val programStageRepository: ProgramStageCollectionRepository,
+        private val organisationUnitService: OrganisationUnitService
 ) {
 
     fun blockingHasDataWriteAccess(eventUid: String): Boolean {
@@ -48,8 +50,18 @@ class EventService @Inject constructor(
     }
 
     fun hasDataWriteAccess(eventUid: String): Single<Boolean> {
-        return Single.fromCallable {
-            blockingHasDataWriteAccess(eventUid)
-        }
+        return Single.fromCallable { blockingHasDataWriteAccess(eventUid) }
+    }
+
+    fun blockingIsInOrgunitRange(event: Event): Boolean {
+        return event.eventDate()?.let { eventDate ->
+            event.organisationUnit()?.let { orgunitUid ->
+                organisationUnitService.blockingIsDateInOrgunitRange(orgunitUid, eventDate)
+            }
+        } ?: true
+    }
+
+    fun isInOrgunitRange(event: Event): Single<Boolean> {
+        return Single.fromCallable { blockingIsInOrgunitRange(event) }
     }
 }

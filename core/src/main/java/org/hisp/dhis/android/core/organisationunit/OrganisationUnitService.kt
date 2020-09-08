@@ -45,9 +45,7 @@ class OrganisationUnitService @Inject constructor(
     }
 
     fun isDateInOrgunitRange(organisationUnitUid: String, date: Date): Single<Boolean> {
-        return Single.fromCallable {
-            blockingIsDateInOrgunitRange(organisationUnitUid, date)
-        }
+        return Single.fromCallable { blockingIsDateInOrgunitRange(organisationUnitUid, date) }
     }
 
 }

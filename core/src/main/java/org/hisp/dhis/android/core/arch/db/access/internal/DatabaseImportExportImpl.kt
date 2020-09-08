@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.DatabaseImportExport
 import org.hisp.dhis.android.core.configuration.internal.DatabaseNameGenerator
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
+import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoStore
 import org.hisp.dhis.android.core.user.UserModule
 import org.hisp.dhis.android.core.user.internal.UserCredentialsStoreImpl
@@ -57,6 +58,7 @@ class DatabaseImportExportImpl @Inject constructor(
 
         var databaseAdapter: DatabaseAdapter? = null
         try {
+            context.deleteDatabase(TmpDatabase)
             val tmpDatabase = context.getDatabasePath(TmpDatabase)
             file.copyTo(tmpDatabase)
 
@@ -72,7 +74,8 @@ class DatabaseImportExportImpl @Inject constructor(
             val username = userCredentialsStore.selectFirst().username()
 
             val systemInfoStore = SystemInfoStore.create(databaseAdapter)
-            val serverUrl = systemInfoStore.selectFirst().contextPath()
+            val contextPath = systemInfoStore.selectFirst().contextPath()!!
+            val serverUrl = ServerUrlParser.parse(contextPath).toString()
 
             val databaseName = nameGenerator.getDatabaseName(serverUrl, username, false)
 

@@ -34,6 +34,9 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseImportExport
 import org.hisp.dhis.android.core.configuration.internal.DatabaseNameGenerator
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
 import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoStore
 import org.hisp.dhis.android.core.user.UserModule
 import org.hisp.dhis.android.core.user.internal.UserCredentialsStoreImpl
@@ -51,9 +54,15 @@ class DatabaseImportExportImpl @Inject constructor(
         const val TmpDatabase = "tmp-database.db"
     }
 
+    val d2ErrorBuilder = D2Error.builder()
+        .errorComponent(D2ErrorComponent.SDK)
+
     override fun importDatabase(file: File) {
         if (userModule.blockingIsLogged()) {
-            throw RuntimeException("Please log out to import database")
+            throw d2ErrorBuilder
+                .errorDescription("Please log out to import database")
+                .errorCode(D2ErrorCode.DATABASE_IMPORT_LOGOUT_FIRST)
+                .build()
         }
 
         var databaseAdapter: DatabaseAdapter? = null
@@ -67,7 +76,10 @@ class DatabaseImportExportImpl @Inject constructor(
             databaseAdapter = UnencryptedDatabaseAdapter(database)
 
             if (database.version > BaseDatabaseOpenHelper.VERSION) {
-                throw RuntimeException("Import database version higher than supported")
+                throw d2ErrorBuilder
+                    .errorDescription("Import database version higher than supported")
+                    .errorCode(D2ErrorCode.DATABASE_IMPORT_VERSION_HIGHER_THAN_SUPPORTED)
+                    .build()
             }
 
             val userCredentialsStore = UserCredentialsStoreImpl.create(databaseAdapter)
@@ -85,7 +97,10 @@ class DatabaseImportExportImpl @Inject constructor(
 
                 multiUserDatabaseManager.createNew(serverUrl, username, false)
             } else {
-                throw RuntimeException("Database already exists")
+                throw d2ErrorBuilder
+                    .errorDescription("Import database already exists")
+                    .errorCode(D2ErrorCode.DATABASE_IMPORT_ALREADY_EXISTS)
+                    .build()
             }
         } finally {
             databaseAdapter?.close()

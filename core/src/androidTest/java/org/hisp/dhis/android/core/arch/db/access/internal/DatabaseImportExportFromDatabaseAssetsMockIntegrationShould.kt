@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.arch.db.access.internal
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.D2Factory
+import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.After
@@ -57,7 +58,7 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould {
 
         @AfterClass
         @JvmStatic
-        fun tearDownClass() {
+        fun temarDownClass() {
             server.shutdown()
         }
     }
@@ -80,7 +81,7 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould {
         assertThat(d2.programModule().programs().blockingCount()).isEqualTo(2)
     }
 
-    @Test(expected = RuntimeException::class)
+    @Test(expected = D2Error::class)
     fun fail_when_logged_in() {
         importer.copyDatabaseFromAssets()
 
@@ -91,7 +92,7 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould {
         d2.maintenanceModule().databaseImportExport().importDatabase(importer.databaseFile(context))
     }
 
-    @Test(expected = RuntimeException::class)
+    @Test(expected = D2Error::class)
     fun fail_when_database_exists() {
         importer.copyDatabaseFromAssets(expectedDatabaseName)
 

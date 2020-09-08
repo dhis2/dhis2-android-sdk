@@ -36,12 +36,16 @@ import org.hisp.dhis.android.core.imports.internal.conflicts.MissingAttributeCon
 import org.hisp.dhis.android.core.imports.internal.conflicts.TrackerImportConflictItem
 import org.hisp.dhis.android.core.imports.internal.conflicts.TrackerImportConflictItemContext
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueCollectionRepository
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueCollectionRepository
 import javax.inject.Inject
 
 @Reusable
 internal class TrackerImportConflictParser @Inject constructor(
         attributeStore: IdentifiableObjectStore<TrackedEntityAttribute>,
-        dataElementStore: IdentifiableObjectStore<DataElement>
+        dataElementStore: IdentifiableObjectStore<DataElement>,
+        private val trackedEntityAttributeValueRepository: TrackedEntityAttributeValueCollectionRepository,
+        private val trackedEntityInstanceDataValueRepository: TrackedEntityDataValueCollectionRepository
 ) {
 
     private val context = TrackerImportConflictItemContext(attributeStore, dataElementStore)
@@ -78,21 +82,38 @@ internal class TrackerImportConflictParser @Inject constructor(
                                   conflictTypes: List<TrackerImportConflictItem>): TrackerImportConflict {
         val conflictType = conflictTypes.find { it.matches(conflict) }
 
-        conflictBuilder.build()
-
-        conflictBuilder
-                .conflict(conflict.value())
-                .displayDescription(conflict.value())
-                .value(conflict.`object`())
-
         if (conflictType != null) {
             conflictBuilder
                     .errorCode(conflictType.errorCode)
                     .displayDescription(conflictType.getDisplayDescription(conflict, context))
                     .trackedEntityAttribute(conflictType.getTrackedEntityAttribute(conflict))
                     .dataElement(conflictType.getDataElement(conflict))
+        } else {
+            conflictBuilder
+                    .displayDescription(conflict.value())
         }
 
-        return conflictBuilder.build()
+        return conflictBuilder
+                .conflict(conflict.value())
+                .value(getConflictValue(conflictBuilder))
+                .build()
+    }
+
+    private fun getConflictValue(conflictBuilder: TrackerImportConflict.Builder): String? {
+        val auxConflict = conflictBuilder.build()
+
+        if (auxConflict.dataElement() != null && auxConflict.event() != null) {
+            return trackedEntityInstanceDataValueRepository
+                    .value(auxConflict.event(), auxConflict.dataElement())
+                    .blockingGet()?.value()
+        }
+
+        if (auxConflict.trackedEntityAttribute() != null && auxConflict.trackedEntityInstance() != null) {
+            return trackedEntityAttributeValueRepository
+                    .value(auxConflict.trackedEntityAttribute(), auxConflict.trackedEntityInstance())
+                    .blockingGet()?.value()
+        }
+
+        return null
     }
 }

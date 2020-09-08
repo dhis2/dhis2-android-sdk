@@ -32,30 +32,43 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.D2Factory
 import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.AfterClass
+import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould {
 
+    companion object LocalAnalyticsAggregatedLargeDataMockIntegrationShould {
+
+        val context = InstrumentationRegistry.getInstrumentation().context
+        val server = Dhis2MockServer(60809)
+
+        @BeforeClass
+        @JvmStatic
+        fun setUpClass() {
+            server.setRequestDispatcher()
+        }
+
+        @AfterClass
+        @JvmStatic
+        fun tearDownClass() {
+            server.shutdown()
+        }
+    }
+
     @Test
     fun import_database_when_not_logged() {
         val importer = TestDatabaseImporter()
         importer.copyDatabaseFromAssetsIfNeeded()
 
-        val context = InstrumentationRegistry.getInstrumentation().context
-
         val d2 = D2Factory.forNewDatabase()
 
         d2.maintenanceModule().databaseImportExport().importDatabase(importer.outputFile(context))
 
-        val server = Dhis2MockServer(60809)
-        server.setRequestDispatcher()
-
         d2.userModule().blockingLogIn("android", "Android123", "http://localhost:60809/")
 
         assertThat(d2.programModule().programs().blockingCount()).isEqualTo(2)
-
-        server.shutdown()
     }
 }

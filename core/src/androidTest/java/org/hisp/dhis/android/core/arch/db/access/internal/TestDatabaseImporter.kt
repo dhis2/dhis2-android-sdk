@@ -33,15 +33,15 @@ import java.io.*
 
 class TestDatabaseImporter {
 
-    fun copyDatabaseFromAssetsIfNeeded() {
+    fun copyDatabaseFromAssets(filename: String = FILESYSTEM_DB_NAME) {
         val context = InstrumentationRegistry.getInstrumentation().context
         val databasePath = context.applicationInfo?.dataDir + "/databases"
-        val outputFile = outputFile(context)
+        val outputFile = databaseFile(context, filename)
         if (outputFile.exists()) {
             return
         }
         val inputStream = context.assets.open("databases/$ASSETS_DB_NAME")
-        val outputStream = FileOutputStream("$databasePath/$FILESYSTEM_DB_NAME")
+        val outputStream = FileOutputStream("$databasePath/$filename")
         writeExtractedFileToDisk(inputStream, outputStream)
     }
 
@@ -59,9 +59,9 @@ class TestDatabaseImporter {
         input.close()
     }
 
-    fun outputFile(context: Context): File {
+    fun databaseFile(context: Context, filename: String = FILESYSTEM_DB_NAME): File {
         val databasePath = context.applicationInfo?.dataDir + "/databases"
-        return File("$databasePath/$FILESYSTEM_DB_NAME")
+        return File("$databasePath/$filename")
     }
 
     companion object {

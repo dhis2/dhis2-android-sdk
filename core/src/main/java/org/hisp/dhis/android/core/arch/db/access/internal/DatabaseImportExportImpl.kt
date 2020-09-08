@@ -84,6 +84,8 @@ class DatabaseImportExportImpl @Inject constructor(
                 file.copyTo(destDatabase)
 
                 multiUserDatabaseManager.createNew(serverUrl, username, false)
+            } else {
+                throw RuntimeException("Database already exists")
             }
         } finally {
             databaseAdapter?.close()

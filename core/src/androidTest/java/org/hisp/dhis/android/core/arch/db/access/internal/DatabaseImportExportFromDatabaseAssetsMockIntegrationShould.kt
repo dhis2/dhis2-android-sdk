@@ -32,6 +32,7 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.D2Factory
 import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.After
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.junit.Test
@@ -44,6 +45,9 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould {
 
         val context = InstrumentationRegistry.getInstrumentation().context
         val server = Dhis2MockServer(60809)
+        val importer = TestDatabaseImporter()
+
+        const val expectedDatabaseName = "localhost-60809_android_unencrypted.db"
 
         @BeforeClass
         @JvmStatic
@@ -58,17 +62,41 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould {
         }
     }
 
+    @After
+    fun tearDown() {
+        context.deleteDatabase(expectedDatabaseName)
+    }
+
     @Test
     fun import_database_when_not_logged() {
-        val importer = TestDatabaseImporter()
-        importer.copyDatabaseFromAssetsIfNeeded()
+        importer.copyDatabaseFromAssets()
 
         val d2 = D2Factory.forNewDatabase()
 
-        d2.maintenanceModule().databaseImportExport().importDatabase(importer.outputFile(context))
+        d2.maintenanceModule().databaseImportExport().importDatabase(importer.databaseFile(context))
 
         d2.userModule().blockingLogIn("android", "Android123", "http://localhost:60809/")
 
         assertThat(d2.programModule().programs().blockingCount()).isEqualTo(2)
+    }
+
+    @Test(expected = RuntimeException::class)
+    fun fail_when_logged_in() {
+        importer.copyDatabaseFromAssets()
+
+        val d2 = D2Factory.forNewDatabase()
+
+        d2.userModule().blockingLogIn("other", "Pw1010", "http://localhost:60809/")
+
+        d2.maintenanceModule().databaseImportExport().importDatabase(importer.databaseFile(context))
+    }
+
+    @Test(expected = RuntimeException::class)
+    fun fail_when_database_exists() {
+        importer.copyDatabaseFromAssets(expectedDatabaseName)
+
+        val d2 = D2Factory.forNewDatabase()
+
+        d2.maintenanceModule().databaseImportExport().importDatabase(importer.databaseFile(context, expectedDatabaseName))
     }
 }

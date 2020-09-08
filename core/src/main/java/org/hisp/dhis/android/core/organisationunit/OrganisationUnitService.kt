@@ -25,12 +25,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.organisationunit
 
-package org.hisp.dhis.android.core.organisationunit;
+import dagger.Reusable
+import io.reactivex.Single
+import java.util.*
+import javax.inject.Inject
 
-public interface OrganisationUnitModule {
-    OrganisationUnitCollectionRepository organisationUnits();
-    OrganisationUnitGroupCollectionRepository organisationUnitGroups();
-    OrganisationUnitLevelCollectionRepository organisationUnitLevels();
-    OrganisationUnitService organisationUnitService();
+@Reusable
+class OrganisationUnitService @Inject constructor(
+        private val organisationUnitRepository: OrganisationUnitCollectionRepository
+) {
+
+    fun blockingIsDateInOrgunitRange(organisationUnitUid: String, date: Date): Boolean {
+        val organisationUnit = organisationUnitRepository.uid(organisationUnitUid).blockingGet() ?: return true
+
+        return organisationUnit.openingDate()?.before(date) ?: true &&
+                organisationUnit.closedDate()?.after(date) ?: true
+    }
+
+    fun isDateInOrgunitRange(organisationUnitUid: String, date: Date): Single<Boolean> {
+        return Single.fromCallable {
+            blockingIsDateInOrgunitRange(organisationUnitUid, date)
+        }
+    }
+
 }

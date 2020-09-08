@@ -102,18 +102,16 @@ internal class TrackerImportConflictParser @Inject constructor(
     private fun getConflictValue(conflictBuilder: TrackerImportConflict.Builder): String? {
         val auxConflict = conflictBuilder.build()
 
-        if (auxConflict.dataElement() != null && auxConflict.event() != null) {
-            return trackedEntityInstanceDataValueRepository
+        return if (auxConflict.dataElement() != null && auxConflict.event() != null) {
+            trackedEntityInstanceDataValueRepository
                     .value(auxConflict.event(), auxConflict.dataElement())
                     .blockingGet()?.value()
-        }
-
-        if (auxConflict.trackedEntityAttribute() != null && auxConflict.trackedEntityInstance() != null) {
-            return trackedEntityAttributeValueRepository
+        } else if (auxConflict.trackedEntityAttribute() != null && auxConflict.trackedEntityInstance() != null) {
+            trackedEntityAttributeValueRepository
                     .value(auxConflict.trackedEntityAttribute(), auxConflict.trackedEntityInstance())
                     .blockingGet()?.value()
+        } else {
+            null
         }
-
-        return null
     }
 }

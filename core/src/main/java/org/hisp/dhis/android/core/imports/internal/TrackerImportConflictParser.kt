@@ -31,6 +31,7 @@ import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.imports.TrackerImportConflict
+import org.hisp.dhis.android.core.imports.internal.conflicts.InvalidDataValueConflict
 import org.hisp.dhis.android.core.imports.internal.conflicts.MissingAttributeConflict
 import org.hisp.dhis.android.core.imports.internal.conflicts.TrackerImportConflictItem
 import org.hisp.dhis.android.core.imports.internal.conflicts.TrackerImportConflictItemContext
@@ -53,7 +54,9 @@ internal class TrackerImportConflictParser @Inject constructor(
             MissingAttributeConflict
     )
 
-    private val eventConflicts: List<TrackerImportConflictItem> = listOf()
+    private val eventConflicts: List<TrackerImportConflictItem> = listOf(
+            InvalidDataValueConflict
+    )
 
     fun getTrackedEntityInstanceConflict(conflict: ImportConflict,
                                          conflictBuilder: TrackerImportConflict.Builder): TrackerImportConflict {
@@ -74,6 +77,8 @@ internal class TrackerImportConflictParser @Inject constructor(
                                   conflictBuilder: TrackerImportConflict.Builder,
                                   conflictTypes: List<TrackerImportConflictItem>): TrackerImportConflict {
         val conflictType = conflictTypes.find { it.matches(conflict) }
+
+        conflictBuilder.build()
 
         conflictBuilder
                 .conflict(conflict.value())

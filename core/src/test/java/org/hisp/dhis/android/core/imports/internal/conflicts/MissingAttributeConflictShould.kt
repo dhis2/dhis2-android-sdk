@@ -31,7 +31,6 @@ import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.imports.internal.ImportConflict
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.junit.Before
 import org.junit.Test
@@ -46,9 +45,7 @@ class MissingAttributeConflictShould {
 
     private val attribute: TrackedEntityAttribute = mock()
 
-    private val importConflict = ImportConflict.create(
-            "Attribute.attribute",
-            "Missing mandatory attribute $attributeUid")
+    private val importConflict = TrackedImportConflictSamples.missingMandatoryAttribute(attributeUid)
 
     @Before
     fun setUp() {

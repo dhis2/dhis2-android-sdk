@@ -24,9 +24,6 @@ build
 # OSX
 .DS_Store
 
-# Windows
-*.db
-
 # Android
 *.apk
 

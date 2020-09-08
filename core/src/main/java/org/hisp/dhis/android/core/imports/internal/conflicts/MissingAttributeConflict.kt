@@ -40,10 +40,6 @@ internal object MissingAttributeConflict : TrackerImportConflictItem {
         return regex.matches(conflict.value())
     }
 
-    override fun getValue(conflict: ImportConflict): String? {
-        return null
-    }
-
     override fun getTrackedEntityAttribute(conflict: ImportConflict): String? {
         return regex.find(conflict.value())?.groupValues?.get(1)
     }

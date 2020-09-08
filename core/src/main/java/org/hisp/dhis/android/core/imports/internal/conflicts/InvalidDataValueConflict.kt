@@ -29,10 +29,50 @@ package org.hisp.dhis.android.core.imports.internal.conflicts
 
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
-internal interface TrackerImportConflictItem {
-    val errorCode: String
-    fun matches(conflict: ImportConflict): Boolean
-    fun getTrackedEntityAttribute(conflict: ImportConflict): String?
-    fun getDataElement(conflict: ImportConflict): String?
-    fun getDisplayDescription(conflict: ImportConflict, context: TrackerImportConflictItemContext): String
+internal object InvalidDataValueConflict : TrackerImportConflictItem {
+
+    private val errorList: List<String> = listOf(
+            "value_not_numeric",
+            "value_not_unit_interval",
+            "value_not_percentage",
+            "value_not_integer",
+            "value_not_positive_integer",
+            "value_not_negative_integer",
+            "value_not_zero_or_positive_integer",
+            "value_not_bool",
+            "value_not_true_only",
+            "value_not_valid_date",
+            "value_not_valid_datetime",
+            "value_not_coordinate",
+            "value_not_url",
+            "value_not_valid_file_resource_uid"
+    )
+
+    private fun description(dataElementId: String) = "Invalid value type for dataElement: $dataElementId"
+
+    override val errorCode: String = ""
+
+    override fun matches(conflict: ImportConflict): Boolean {
+        return errorList.contains(conflict.value())
+    }
+
+    override fun getTrackedEntityAttribute(conflict: ImportConflict): String? {
+        return null
+    }
+
+    override fun getDataElement(conflict: ImportConflict): String? {
+        return conflict.`object`()
+    }
+
+    override fun getDisplayDescription(conflict: ImportConflict,
+                                       context: TrackerImportConflictItemContext): String {
+
+        return getDataElement(conflict)?.let { dataElementUid ->
+            context.dataElementStore.selectByUid(dataElementUid)?.let { dataElement ->
+                val name = dataElement.displayFormName() ?: dataElement.displayName() ?: dataElementUid
+                description(name)
+            }
+        } ?:
+        conflict.value()
+    }
 }

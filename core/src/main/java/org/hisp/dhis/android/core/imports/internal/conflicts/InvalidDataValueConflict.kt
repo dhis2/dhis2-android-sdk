@@ -56,10 +56,6 @@ internal object InvalidDataValueConflict : TrackerImportConflictItem {
         return errorList.contains(conflict.value())
     }
 
-    override fun getValue(conflict: ImportConflict): String? {
-        return null
-    }
-
     override fun getTrackedEntityAttribute(conflict: ImportConflict): String? {
         return null
     }

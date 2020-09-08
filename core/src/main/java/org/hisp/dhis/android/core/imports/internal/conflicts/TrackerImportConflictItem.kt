@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.imports.internal.ImportConflict
 internal interface TrackerImportConflictItem {
     val errorCode: String
     fun matches(conflict: ImportConflict): Boolean
-    fun getValue(conflict: ImportConflict): String?
     fun getTrackedEntityAttribute(conflict: ImportConflict): String?
     fun getDataElement(conflict: ImportConflict): String?
     fun getDisplayDescription(conflict: ImportConflict, context: TrackerImportConflictItemContext): String

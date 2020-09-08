@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.enrollment.internal;
 
 import org.hisp.dhis.android.core.enrollment.EnrollmentCollectionRepository;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
+import org.hisp.dhis.android.core.enrollment.EnrollmentService;
 
 import javax.inject.Inject;
 
@@ -39,14 +40,22 @@ import dagger.Reusable;
 public final class EnrollmentModuleImpl implements EnrollmentModule {
 
     private final EnrollmentCollectionRepository enrollments;
+    private final EnrollmentService enrollmentService;
 
     @Inject
-    EnrollmentModuleImpl(EnrollmentCollectionRepository enrollments) {
+    EnrollmentModuleImpl(EnrollmentCollectionRepository enrollments,
+                         EnrollmentService enrollmentService) {
         this.enrollments = enrollments;
+        this.enrollmentService = enrollmentService;
     }
 
     @Override
     public EnrollmentCollectionRepository enrollments() {
         return enrollments;
+    }
+
+    @Override
+    public EnrollmentService enrollmentService() {
+        return enrollmentService;
     }
 }

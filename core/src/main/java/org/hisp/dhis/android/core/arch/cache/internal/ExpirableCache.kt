@@ -27,20 +27,38 @@
  */
 package org.hisp.dhis.android.core.arch.cache.internal
 
-import kotlin.collections.HashMap
+import java.util.concurrent.TimeUnit
 
-internal class PerpetualCache<K, V> : D2Cache<K, V> {
+internal class ExpirableCache<K, V>(
+        private val flushInterval: Long = TimeUnit.MINUTES.toMillis(2)
+) : D2Cache<K, V> {
 
     private val cache = HashMap<K, V>()
+
+    private var lastFlushTime = System.nanoTime()
 
     override fun set(key: K, value: V) {
         this.cache[key] = value
     }
 
-    override fun get(key: K): V? = this.cache[key]
+    override fun get(key: K): V? {
+        removeIfExpired()
+        return this.cache[key]
+    }
 
-    override fun remove(key: K): V? = this.cache.remove(key)
+    override fun remove(key: K): V? {
+        removeIfExpired()
+        return this.cache.remove(key)
+    }
 
     override fun clear() = this.cache.clear()
 
+    private fun removeIfExpired() {
+        val now = System.nanoTime()
+        val shouldRemove = now - lastFlushTime >= TimeUnit.MILLISECONDS.toNanos(flushInterval)
+        if (shouldRemove) {
+            clear()
+            lastFlushTime = now
+        }
+    }
 }

@@ -33,7 +33,7 @@ import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
 
 import org.hisp.dhis.android.core.arch.cache.internal.D2Cache;
-import org.hisp.dhis.android.core.arch.cache.internal.PerpetualCache;
+import org.hisp.dhis.android.core.arch.cache.internal.ExpirableCache;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenSelection;
@@ -63,6 +63,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -84,7 +85,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     private final TrackedEntityInstanceQueryRepositoryScope scope;
 
     private final D2Cache<TrackedEntityInstanceQueryOnline, List<TrackedEntityInstance>> onlineCache =
-            new PerpetualCache<>();
+            new ExpirableCache<>(TimeUnit.MINUTES.toMillis(5));
 
     @Inject
     TrackedEntityInstanceQueryCollectionRepository(

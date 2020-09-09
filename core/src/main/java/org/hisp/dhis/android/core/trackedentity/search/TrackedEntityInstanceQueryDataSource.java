@@ -27,6 +27,9 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search;
 
+import androidx.annotation.NonNull;
+import androidx.paging.ItemKeyedDataSource;
+
 import org.hisp.dhis.android.core.arch.cache.internal.D2Cache;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor;
@@ -40,9 +43,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
-import androidx.annotation.NonNull;
-import androidx.paging.ItemKeyedDataSource;
 
 import static org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode.OFFLINE_FIRST;
 import static org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode.OFFLINE_ONLY;
@@ -76,10 +76,6 @@ public final class TrackedEntityInstanceQueryDataSource
         this.scope = scope;
         this.childrenAppenders = childrenAppenders;
         this.onlineCache = onlineCache;
-
-        if (!scope.allowOnlineCache()) {
-            onlineCache.clear();
-        }
     }
 
     @Override

@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.arch.cache.internal
 
-import java.util.*
+import kotlin.collections.HashMap
 
-internal class WeakCache<K, V> : D2Cache<K, V> {
+internal class PerpetualCache<K, V> : D2Cache<K, V> {
 
-    private val cache = WeakHashMap<K, V>()
+    private val cache = HashMap<K, V>()
 
     override fun set(key: K, value: V) {
         this.cache[key] = value

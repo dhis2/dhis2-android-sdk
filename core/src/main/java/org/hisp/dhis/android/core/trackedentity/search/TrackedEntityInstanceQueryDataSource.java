@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search;
 
+import org.hisp.dhis.android.core.arch.cache.internal.D2Cache;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenSelection;
@@ -54,6 +55,7 @@ public final class TrackedEntityInstanceQueryDataSource
     private final TrackedEntityInstanceQueryCallFactory onlineCallFactory;
     private final TrackedEntityInstanceQueryRepositoryScope scope;
     private final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders;
+    private final D2Cache<TrackedEntityInstanceQueryOnline, List<TrackedEntityInstance>> onlineCache;
 
     private final static int initialLoadSizeFactor = 3;
 
@@ -66,11 +68,18 @@ public final class TrackedEntityInstanceQueryDataSource
     TrackedEntityInstanceQueryDataSource(TrackedEntityInstanceStore store,
                                          TrackedEntityInstanceQueryCallFactory onlineCallFactory,
                                          TrackedEntityInstanceQueryRepositoryScope scope,
-                                         Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders) {
+                                         Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders,
+                                         D2Cache<TrackedEntityInstanceQueryOnline,
+                                                 List<TrackedEntityInstance>> onlineCache) {
         this.store = store;
         this.onlineCallFactory = onlineCallFactory;
         this.scope = scope;
         this.childrenAppenders = childrenAppenders;
+        this.onlineCache = onlineCache;
+
+        if (!scope.allowOnlineCache()) {
+            onlineCache.clear();
+        }
     }
 
     @Override
@@ -145,6 +154,11 @@ public final class TrackedEntityInstanceQueryDataSource
 
         try {
             List<TrackedEntityInstance> instances = new ArrayList<>();
+            List<TrackedEntityInstance> queryInstances = scope.allowOnlineCache() ? onlineCache.get(onlineQuery) : null;
+            if (queryInstances == null) {
+                queryInstances = onlineCallFactory.getCall(onlineQuery).call();
+                onlineCache.set(onlineQuery, queryInstances);
+            }
             for (TrackedEntityInstance instance : onlineCallFactory.getCall(onlineQuery).call()) {
                 if (!returnedUids.contains(instance.uid())) {
                     instances.add(instance);

@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity.search;
 
 import androidx.paging.ItemKeyedDataSource;
 
+import org.hisp.dhis.android.core.arch.cache.internal.D2Cache;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
@@ -77,6 +78,9 @@ public class TrackedEntityInstanceQueryDataSourceShould {
     @Mock
     private ItemKeyedDataSource.LoadInitialCallback<TrackedEntityInstance> initialCallback;
 
+    @Mock
+    private D2Cache<TrackedEntityInstanceQueryOnline, List<TrackedEntityInstance>> onlineCache;
+
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
@@ -104,7 +108,7 @@ public class TrackedEntityInstanceQueryDataSourceShould {
     public void get_initial_online_page() {
         TrackedEntityInstanceQueryRepositoryScope scope = emptyScope.toBuilder().mode(ONLINE_ONLY).build();
         TrackedEntityInstanceQueryDataSource dataSource =
-                new TrackedEntityInstanceQueryDataSource(store, onlineCallFactory, scope, childrenAppenders);
+                new TrackedEntityInstanceQueryDataSource(store, onlineCallFactory, scope, childrenAppenders, onlineCache);
         TrackedEntityInstanceQueryOnline onlineQuery = TrackedEntityInstanceQueryOnline.create(scope);
 
         dataSource.loadInitial(new ItemKeyedDataSource.LoadInitialParams<>(null, onlineQuery.pageSize(), false),
@@ -117,7 +121,7 @@ public class TrackedEntityInstanceQueryDataSourceShould {
     public void get_initial_offline_page() {
         TrackedEntityInstanceQueryRepositoryScope scope = emptyScope.toBuilder().mode(OFFLINE_ONLY).build();
         TrackedEntityInstanceQueryDataSource dataSource =
-                new TrackedEntityInstanceQueryDataSource(store, onlineCallFactory, scope, childrenAppenders);
+                new TrackedEntityInstanceQueryDataSource(store, onlineCallFactory, scope, childrenAppenders, onlineCache);
         TrackedEntityInstanceQueryOnline onlineQuery = TrackedEntityInstanceQueryOnline.create(scope);
 
         dataSource.loadInitial(new ItemKeyedDataSource.LoadInitialParams<>(null, onlineQuery.pageSize(), false),
@@ -130,7 +134,7 @@ public class TrackedEntityInstanceQueryDataSourceShould {
     public void query_online_when_offline_exhausted() {
         TrackedEntityInstanceQueryRepositoryScope scope = emptyScope.toBuilder().mode(OFFLINE_FIRST).build();
         TrackedEntityInstanceQueryDataSource dataSource =
-                new TrackedEntityInstanceQueryDataSource(store, onlineCallFactory, scope, childrenAppenders);
+                new TrackedEntityInstanceQueryDataSource(store, onlineCallFactory, scope, childrenAppenders, onlineCache);
 
         dataSource.loadInitial(new ItemKeyedDataSource.LoadInitialParams<>(null, 5, false),
                 initialCallback);
@@ -144,7 +148,7 @@ public class TrackedEntityInstanceQueryDataSourceShould {
     public void query_online_recursively_if_repeated_results() {
         TrackedEntityInstanceQueryRepositoryScope scope = emptyScope.toBuilder().mode(OFFLINE_FIRST).build();
         TrackedEntityInstanceQueryDataSource dataSource =
-                new TrackedEntityInstanceQueryDataSource(store, onlineCallFactory, scope, childrenAppenders);
+                new TrackedEntityInstanceQueryDataSource(store, onlineCallFactory, scope, childrenAppenders, onlineCache);
 
         dataSource.loadInitial(new ItemKeyedDataSource.LoadInitialParams<>(null, 10, false),
                 initialCallback);

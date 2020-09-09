@@ -32,4 +32,5 @@ public interface OrganisationUnitModule {
     OrganisationUnitCollectionRepository organisationUnits();
     OrganisationUnitGroupCollectionRepository organisationUnitGroups();
     OrganisationUnitLevelCollectionRepository organisationUnitLevels();
+    OrganisationUnitService organisationUnitService();
 }

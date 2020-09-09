@@ -25,43 +25,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.event
+package org.hisp.dhis.android.core.organisationunit
 
 import dagger.Reusable
 import io.reactivex.Single
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService
-import org.hisp.dhis.android.core.program.ProgramCollectionRepository
-import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
+import java.util.*
 import javax.inject.Inject
 
 @Reusable
-class EventService @Inject constructor(
-        private val eventRepository: EventCollectionRepository,
-        private val programRepository: ProgramCollectionRepository,
-        private val programStageRepository: ProgramStageCollectionRepository,
-        private val organisationUnitService: OrganisationUnitService
+class OrganisationUnitService @Inject constructor(
+        private val organisationUnitRepository: OrganisationUnitCollectionRepository
 ) {
 
-    fun blockingHasDataWriteAccess(eventUid: String): Boolean {
-        val event = eventRepository.uid(eventUid).blockingGet() ?: return false
+    fun blockingIsDateInOrgunitRange(organisationUnitUid: String, date: Date): Boolean {
+        val organisationUnit = organisationUnitRepository.uid(organisationUnitUid).blockingGet() ?: return true
 
-        return programRepository.uid(event.program()).blockingGet()?.access()?.data()?.write() ?: false &&
-                programStageRepository.uid(event.programStage()).blockingGet()?.access()?.data()?.write() ?: false
+        return organisationUnit.openingDate()?.before(date) ?: true &&
+                organisationUnit.closedDate()?.after(date) ?: true
     }
 
-    fun hasDataWriteAccess(eventUid: String): Single<Boolean> {
-        return Single.fromCallable { blockingHasDataWriteAccess(eventUid) }
+    fun isDateInOrgunitRange(organisationUnitUid: String, date: Date): Single<Boolean> {
+        return Single.fromCallable { blockingIsDateInOrgunitRange(organisationUnitUid, date) }
     }
 
-    fun blockingIsInOrgunitRange(event: Event): Boolean {
-        return event.eventDate()?.let { eventDate ->
-            event.organisationUnit()?.let { orgunitUid ->
-                organisationUnitService.blockingIsDateInOrgunitRange(orgunitUid, eventDate)
-            }
-        } ?: true
-    }
-
-    fun isInOrgunitRange(event: Event): Single<Boolean> {
-        return Single.fromCallable { blockingIsInOrgunitRange(event) }
-    }
 }

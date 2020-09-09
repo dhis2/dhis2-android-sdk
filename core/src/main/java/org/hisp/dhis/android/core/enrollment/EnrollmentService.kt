@@ -25,10 +25,26 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.enrollment
 
-package org.hisp.dhis.android.core.enrollment;
+import dagger.Reusable
+import io.reactivex.Single
+import javax.inject.Inject
 
-public interface EnrollmentModule {
-    EnrollmentCollectionRepository enrollments();
-    EnrollmentService enrollmentService();
+@Reusable
+class EnrollmentService @Inject constructor(
+        private val enrollmentRepository: EnrollmentCollectionRepository
+) {
+
+    fun blockingIsOpen(enrollmentUid: String): Boolean {
+        val enrollment = enrollmentRepository.uid(enrollmentUid).blockingGet() ?: return true
+
+        return enrollment.status()?.equals(EnrollmentStatus.ACTIVE) ?: false
+    }
+
+    fun isOpen(enrollmentUid: String): Single<Boolean> {
+        return Single.fromCallable {
+            blockingIsOpen(enrollmentUid)
+        }
+    }
 }

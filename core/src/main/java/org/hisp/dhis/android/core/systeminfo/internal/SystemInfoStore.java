@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoTableInfo;
 
-final class SystemInfoStore {
+public final class SystemInfoStore {
 
     private static final StatementBinder<SystemInfo> BINDER = (o, w) -> {
         w.bind(1, o.serverDate());
@@ -55,7 +55,7 @@ final class SystemInfoStore {
     private SystemInfoStore() {
     }
 
-    static ObjectWithoutUidStore<SystemInfo> create(DatabaseAdapter databaseAdapter) {
+    public static ObjectWithoutUidStore<SystemInfo> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, SystemInfoTableInfo.TABLE_INFO,
                 BINDER, WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER, SystemInfo::create);
     }

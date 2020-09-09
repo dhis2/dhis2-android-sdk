@@ -88,7 +88,7 @@ public class MultiUserDatabaseManager {
         }
     }
 
-    private void createNew(String serverUrl, String username, boolean encrypt) {
+    public void createNew(String serverUrl, String username, boolean encrypt) {
         DatabasesConfiguration configuration = databaseConfigurationSecureStore.get();
         int pairsCount = configurationHelper.countServerUserPairs(configuration);
         if (pairsCount == maxServerUserPairs) {

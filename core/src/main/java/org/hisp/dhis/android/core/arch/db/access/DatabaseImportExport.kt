@@ -25,46 +25,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.access
 
-package org.hisp.dhis.android.core.configuration.internal;
+import java.io.File
 
-import javax.inject.Inject;
-
-public final class DatabaseNameGenerator {
-
-    @Inject
-    DatabaseNameGenerator() {
-
-    }
-
-    public String getDatabaseName(String serverUrl, String username, boolean encrypt) {
-        String encryptedStr = encrypt ? "encrypted" : "unencrypted";
-        return processServerUrl(serverUrl) + "_" + username + "_" + encryptedStr + ".db";
-    }
-
-    private String processServerUrl(String serverUrl) {
-        String noHttps = removePrefix(serverUrl, "https://");
-        String noHttp = removePrefix(noHttps, "http://");
-        String noSlashSufix = removeSuffix(noHttp, "/");
-        String noAPISufix = removeSuffix(noSlashSufix, "/api");
-
-        String onlyAlphanumeric = noAPISufix.replaceAll("[^a-zA-Z0-9]", "-");
-        String withNoMultipleMinus = onlyAlphanumeric.replaceAll("-+", "-");
-        String withNoMinusAtTheBeginning = removePrefix(withNoMultipleMinus, "-");
-        return removeSuffix(withNoMinusAtTheBeginning, "-");
-    }
-
-    private String removePrefix(String s, String prefix) {
-        if (s.startsWith(prefix)) {
-            return s.substring(prefix.length());
-        }
-        return s;
-    }
-
-    private String removeSuffix(String s, String prefix) {
-        if (s.endsWith(prefix)) {
-            return s.substring(0, s.length() - prefix.length());
-        }
-        return s;
-    }
+interface DatabaseImportExport {
+    fun importDatabase(file: File)
 }

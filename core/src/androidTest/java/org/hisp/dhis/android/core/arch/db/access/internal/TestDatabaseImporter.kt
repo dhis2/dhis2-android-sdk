@@ -25,46 +25,47 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.access.internal
 
-package org.hisp.dhis.android.core.configuration.internal;
+import android.content.Context
+import androidx.test.platform.app.InstrumentationRegistry
+import java.io.*
 
-import javax.inject.Inject;
+class TestDatabaseImporter {
 
-public final class DatabaseNameGenerator {
-
-    @Inject
-    DatabaseNameGenerator() {
-
-    }
-
-    public String getDatabaseName(String serverUrl, String username, boolean encrypt) {
-        String encryptedStr = encrypt ? "encrypted" : "unencrypted";
-        return processServerUrl(serverUrl) + "_" + username + "_" + encryptedStr + ".db";
-    }
-
-    private String processServerUrl(String serverUrl) {
-        String noHttps = removePrefix(serverUrl, "https://");
-        String noHttp = removePrefix(noHttps, "http://");
-        String noSlashSufix = removeSuffix(noHttp, "/");
-        String noAPISufix = removeSuffix(noSlashSufix, "/api");
-
-        String onlyAlphanumeric = noAPISufix.replaceAll("[^a-zA-Z0-9]", "-");
-        String withNoMultipleMinus = onlyAlphanumeric.replaceAll("-+", "-");
-        String withNoMinusAtTheBeginning = removePrefix(withNoMultipleMinus, "-");
-        return removeSuffix(withNoMinusAtTheBeginning, "-");
-    }
-
-    private String removePrefix(String s, String prefix) {
-        if (s.startsWith(prefix)) {
-            return s.substring(prefix.length());
+    fun copyDatabaseFromAssets(filename: String = FILESYSTEM_DB_NAME) {
+        val context = InstrumentationRegistry.getInstrumentation().context
+        val databasePath = context.applicationInfo?.dataDir + "/databases"
+        val outputFile = databaseFile(context, filename)
+        if (outputFile.exists()) {
+            return
         }
-        return s;
+        val inputStream = context.assets.open("databases/$ASSETS_DB_NAME")
+        val outputStream = FileOutputStream("$databasePath/$filename")
+        writeExtractedFileToDisk(inputStream, outputStream)
     }
 
-    private String removeSuffix(String s, String prefix) {
-        if (s.endsWith(prefix)) {
-            return s.substring(0, s.length() - prefix.length());
+    @Throws(IOException::class)
+    private fun writeExtractedFileToDisk(input: InputStream, output: OutputStream) {
+        val buffer = ByteArray(1024)
+        var length: Int
+        length = input.read(buffer)
+        while (length > 0) {
+            output.write(buffer, 0, length)
+            length = input.read(buffer)
         }
-        return s;
+        output.flush()
+        output.close()
+        input.close()
+    }
+
+    fun databaseFile(context: Context, filename: String = FILESYSTEM_DB_NAME): File {
+        val databasePath = context.applicationInfo?.dataDir + "/databases"
+        return File("$databasePath/$filename")
+    }
+
+    companion object {
+        const val ASSETS_DB_NAME = "test-database.db"
+        const val FILESYSTEM_DB_NAME = "test-database.db"
     }
 }

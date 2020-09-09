@@ -29,11 +29,19 @@ package org.hisp.dhis.android.core.enrollment
 
 import dagger.Reusable
 import io.reactivex.Single
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRepository
+import org.hisp.dhis.android.core.program.AccessLevel
+import org.hisp.dhis.android.core.program.ProgramCollectionRepository
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCollectionRepository
 import javax.inject.Inject
 
 @Reusable
 class EnrollmentService @Inject constructor(
-        private val enrollmentRepository: EnrollmentCollectionRepository
+        private val enrollmentRepository: EnrollmentCollectionRepository,
+        private val trackedEntityInstanceRepository: TrackedEntityInstanceCollectionRepository,
+        private val programRepository: ProgramCollectionRepository,
+        private val organisationUnitRepository: OrganisationUnitCollectionRepository
 ) {
 
     fun blockingIsOpen(enrollmentUid: String): Boolean {
@@ -43,8 +51,38 @@ class EnrollmentService @Inject constructor(
     }
 
     fun isOpen(enrollmentUid: String): Single<Boolean> {
-        return Single.fromCallable {
-            blockingIsOpen(enrollmentUid)
+        return Single.fromCallable { blockingIsOpen(enrollmentUid) }
+    }
+
+    fun blockingGetEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): EnrollmentAccessLevel {
+        val program = programRepository.uid(programUid).blockingGet() ?: return EnrollmentAccessLevel.PROGRAM_ACCESS_DENIED
+
+        return when(program.accessLevel()) {
+            AccessLevel.OPEN, AccessLevel.AUDITED ->
+                if (program.access()?.data()?.write() == true) EnrollmentAccessLevel.OPEN_PROGRAM_OK
+                else EnrollmentAccessLevel.PROGRAM_ACCESS_DENIED
+            AccessLevel.PROTECTED ->
+                if (isTeiInCaptureScope(trackedEntityInstanceUid)) EnrollmentAccessLevel.PROTECTED_PROGRAM_OK
+                else EnrollmentAccessLevel.PROGRAM_ACCESS_DENIED
+            AccessLevel.CLOSED ->
+                if (isTeiInCaptureScope(trackedEntityInstanceUid)) EnrollmentAccessLevel.CLOSED_PROGRAM_OK
+                else EnrollmentAccessLevel.CLOSED_PROGRAM_DENIED
+            else ->
+                EnrollmentAccessLevel.PROGRAM_ACCESS_DENIED
         }
+    }
+
+    fun getEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): Single<EnrollmentAccessLevel> {
+        return Single.fromCallable{ blockingGetEnrollmentAccess(trackedEntityInstanceUid, programUid) }
+    }
+
+    private fun isTeiInCaptureScope(trackedEntityInstanceUid: String): Boolean {
+        val tei = trackedEntityInstanceRepository.uid(trackedEntityInstanceUid).blockingGet()
+
+        return organisationUnitRepository
+                .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
+                .byUid().eq(tei.organisationUnit())
+                .blockingGet()
+                .isNotEmpty()
     }
 }

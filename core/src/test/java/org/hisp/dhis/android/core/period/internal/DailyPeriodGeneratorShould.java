@@ -94,7 +94,16 @@ public class DailyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
         SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
         PeriodGenerator dailyGenerator = new DailyPeriodGenerator(calendar);
-        assertThat("20191230").isEqualTo(dailyGenerator.generatePeriod(dateFormatter.parse("2019-12-30")).periodId());
-        assertThat("20200102").isEqualTo(dailyGenerator.generatePeriod(dateFormatter.parse("2020-01-02")).periodId());
+        assertThat("20191230").isEqualTo(dailyGenerator.generatePeriod(dateFormatter.parse("2019-12-30"), 0).periodId());
+        assertThat("20200102").isEqualTo(dailyGenerator.generatePeriod(dateFormatter.parse("2020-01-02"), 0).periodId());
+    }
+
+    @Test
+    public void generate_period_id_with_offset() throws ParseException {
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        PeriodGenerator dailyGenerator = new DailyPeriodGenerator(calendar);
+        assertThat("20200101").isEqualTo(dailyGenerator.generatePeriod(dateFormatter.parse("2019-12-30"), 2).periodId());
+        assertThat("20191229").isEqualTo(dailyGenerator.generatePeriod(dateFormatter.parse("2020-01-02"), -4).periodId());
     }
 }

@@ -94,12 +94,25 @@ public class MonthlyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
         SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
         PeriodGenerator monthlyGenerator = new MonthlyPeriodGenerator(calendar);
-        assertThat("201906").isEqualTo(monthlyGenerator.generatePeriod(dateFormatter.parse("2019-06-30")).periodId());
-        assertThat("201907").isEqualTo(monthlyGenerator.generatePeriod(dateFormatter.parse("2019-07-01")).periodId());
+        assertThat("201906").isEqualTo(monthlyGenerator.generatePeriod(dateFormatter.parse("2019-06-30"),0).periodId());
+        assertThat("201907").isEqualTo(monthlyGenerator.generatePeriod(dateFormatter.parse("2019-07-01"), 0).periodId());
 
         PeriodGenerator biMonthlyGenerator = NMonthlyPeriodGeneratorFactory.biMonthly(calendar);
-        assertThat("201903B").isEqualTo(biMonthlyGenerator.generatePeriod(dateFormatter.parse("2019-06-30")).periodId());
-        assertThat("201904B").isEqualTo(biMonthlyGenerator.generatePeriod(dateFormatter.parse("2019-07-01")).periodId());
+        assertThat("201903B").isEqualTo(biMonthlyGenerator.generatePeriod(dateFormatter.parse("2019-06-30"), 0).periodId());
+        assertThat("201904B").isEqualTo(biMonthlyGenerator.generatePeriod(dateFormatter.parse("2019-07-01"), 0).periodId());
+    }
+
+    @Test
+    public void generate_period_id_with_offset() throws ParseException {
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        PeriodGenerator monthlyGenerator = new MonthlyPeriodGenerator(calendar);
+        assertThat("201908").isEqualTo(monthlyGenerator.generatePeriod(dateFormatter.parse("2019-06-30"),2).periodId());
+        assertThat("201905").isEqualTo(monthlyGenerator.generatePeriod(dateFormatter.parse("2019-07-01"), -2).periodId());
+
+        PeriodGenerator biMonthlyGenerator = NMonthlyPeriodGeneratorFactory.biMonthly(calendar);
+        assertThat("201905B").isEqualTo(biMonthlyGenerator.generatePeriod(dateFormatter.parse("2019-06-30"), 2).periodId());
+        assertThat("201903B").isEqualTo(biMonthlyGenerator.generatePeriod(dateFormatter.parse("2019-07-01"), -1).periodId());
     }
 
     @Override

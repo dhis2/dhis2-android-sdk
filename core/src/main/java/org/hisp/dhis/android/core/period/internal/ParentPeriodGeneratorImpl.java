@@ -85,13 +85,13 @@ class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
         }
     }
 
-    public Period generatePeriod(PeriodType periodType, Date date) {
+    public Period generatePeriod(PeriodType periodType, Date date, int periodOffset) {
         PeriodGenerator periodGenerator = getPeriodGenerator(periodType);
 
         if (periodGenerator == null) {
             return null;
         } else {
-            return periodGenerator.generatePeriod(date);
+            return periodGenerator.generatePeriod(date, periodOffset);
         }
     }
 

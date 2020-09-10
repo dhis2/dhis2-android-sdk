@@ -71,7 +71,7 @@ public class PeriodHelper {
      */
     @Deprecated
     public Period getPeriod(@NonNull PeriodType periodType, @NonNull Date date) {
-        return blockingGetPeriodForPeriodTypeAndDate(periodType, date);
+        return blockingGetPeriodForPeriodTypeAndDate(periodType, date, 0);
     }
 
     /**
@@ -83,10 +83,37 @@ public class PeriodHelper {
      * @return Period
      */
     public Period blockingGetPeriodForPeriodTypeAndDate(@NonNull PeriodType periodType, @NonNull Date date) {
+        return blockingGetPeriodForPeriodTypeAndDate(periodType, date, 0);
+    }
+
+    /**
+     * Get a period object specifying a periodType and a date in the period.
+     * If the period does not exist in the database, it is inserted.
+     *
+     * @param periodType Period type
+     * @param date Date contained in the period
+     *
+     * @return {@code Single} with the generated period.
+     */
+    public Single<Period> getPeriodForPeriodTypeAndDate(@NonNull PeriodType periodType, @NonNull Date date) {
+        return Single.just(blockingGetPeriodForPeriodTypeAndDate(periodType, date));
+    }
+
+    /**
+     * Get a period object specifying a periodType and a date in the period.
+     * If the period does not exist in the database, it is inserted.
+     *
+     * @param periodType Period type
+     * @param date Date contained in the period
+     * @param periodOffset Number of periods backwards or forwards relative to 'date'
+     * @return Period
+     */
+    public Period blockingGetPeriodForPeriodTypeAndDate(@NonNull PeriodType periodType, @NonNull Date date,
+                                                        @NonNull int periodOffset) {
         Period period = periodStore.selectPeriodByTypeAndDate(periodType, date);
 
         if (period == null) {
-            Period newPeriod = parentPeriodGenerator.generatePeriod(periodType, date);
+            Period newPeriod = parentPeriodGenerator.generatePeriod(periodType, date, periodOffset);
             periodStore.updateOrInsertWhere(newPeriod);
             return newPeriod;
         } else {
@@ -100,11 +127,13 @@ public class PeriodHelper {
      *
      * @param periodType Period type
      * @param date Date contained in the period
+     * @param periodOffset Number of periods backwards or forwards relative to 'date'
      *
      * @return {@code Single} with the generated period.
-     * */
-    public Single<Period> getPeriodForPeriodTypeAndDate(@NonNull PeriodType periodType, @NonNull Date date) {
-        return Single.just(blockingGetPeriodForPeriodTypeAndDate(periodType, date));
+     */
+    public Single<Period> getPeriodForPeriodTypeAndDate(@NonNull PeriodType periodType, @NonNull Date date,
+                                                        @NonNull int periodOffset) {
+        return Single.just(blockingGetPeriodForPeriodTypeAndDate(periodType, date, periodOffset));
     }
 
     /**

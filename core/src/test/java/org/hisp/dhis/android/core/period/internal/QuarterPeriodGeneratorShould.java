@@ -140,7 +140,16 @@ public class QuarterPeriodGeneratorShould extends PeriodGeneratorBaseShould {
         SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
         PeriodGenerator quarterGenerator = NMonthlyPeriodGeneratorFactory.quarter(calendar);
-        assertThat("2019Q2").isEqualTo(quarterGenerator.generatePeriod(dateFormatter.parse("2019-06-30")).periodId());
-        assertThat("2019Q3").isEqualTo(quarterGenerator.generatePeriod(dateFormatter.parse("2019-07-01")).periodId());
+        assertThat("2019Q2").isEqualTo(quarterGenerator.generatePeriod(dateFormatter.parse("2019-06-30"), 0).periodId());
+        assertThat("2019Q3").isEqualTo(quarterGenerator.generatePeriod(dateFormatter.parse("2019-07-01"), 0).periodId());
+    }
+
+    @Test
+    public void generate_period_id_with_offset() throws ParseException {
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        PeriodGenerator quarterGenerator = NMonthlyPeriodGeneratorFactory.quarter(calendar);
+        assertThat("2019Q3").isEqualTo(quarterGenerator.generatePeriod(dateFormatter.parse("2019-06-30"), 1).periodId());
+        assertThat("2019Q2").isEqualTo(quarterGenerator.generatePeriod(dateFormatter.parse("2019-07-01"), -1).periodId());
     }
 }

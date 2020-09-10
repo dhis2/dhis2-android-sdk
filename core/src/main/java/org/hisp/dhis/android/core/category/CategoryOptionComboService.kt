@@ -25,13 +25,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.core.category
 
-public interface CategoryModule {
-    CategoryCollectionRepository categories();
-    CategoryOptionCollectionRepository categoryOptions();
-    CategoryOptionComboCollectionRepository categoryOptionCombos();
-    CategoryComboCollectionRepository categoryCombos();
+import dagger.Reusable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper
+import java.util.*
+import javax.inject.Inject
 
-    CategoryOptionComboService categoryOptionComboService();
+@Reusable
+class CategoryOptionComboService @Inject constructor(
+        private val categoryOptionRepository: CategoryOptionCollectionRepository
+) {
+
+    fun blockingHasAccess(categoryOptionComboUid: String, date: Date?): Boolean {
+        val categoryOptions = categoryOptionRepository
+                .byCategoryOptionComboUid(categoryOptionComboUid)
+                .blockingGet()
+
+        return categoryOptions.none { it.access().data().write() == false } &&
+                date?.let { d -> categoryOptions.all { isInOptionRange(it, d) } } ?: true
+    }
+
+    fun hasAccess(categoryOptionComboUid: String, date: Date?): Single<Boolean> {
+        return Single.fromCallable { blockingHasAccess(categoryOptionComboUid, date) }
+    }
+
+    private fun isInOptionRange(option: CategoryOption, date: Date): Boolean {
+        return option.startDate()?.before(date) ?: true &&
+                option.endDate()?.after(date) ?: true
+    }
 }

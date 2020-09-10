@@ -155,7 +155,7 @@ public final class TrackedEntityInstanceQueryDataSource
                 queryInstances = onlineCallFactory.getCall(onlineQuery).call();
                 onlineCache.set(onlineQuery, queryInstances);
             }
-            for (TrackedEntityInstance instance : onlineCallFactory.getCall(onlineQuery).call()) {
+            for (TrackedEntityInstance instance : queryInstances) {
                 if (!returnedUids.contains(instance.uid())) {
                     instances.add(instance);
                 }

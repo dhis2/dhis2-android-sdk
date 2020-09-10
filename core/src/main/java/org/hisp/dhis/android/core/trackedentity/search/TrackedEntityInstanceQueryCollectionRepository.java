@@ -71,7 +71,7 @@ import dagger.Reusable;
 import io.reactivex.Single;
 
 @Reusable
-@SuppressWarnings({"PMD.GodClass", "PMD.ExcessiveImports"})
+@SuppressWarnings({"PMD.GodClass", "PMD.ExcessiveImports", "PMD.ExcessivePublicCount"})
 public final class TrackedEntityInstanceQueryCollectionRepository
         implements ReadOnlyCollectionRepository<TrackedEntityInstance> {
 
@@ -472,7 +472,8 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     }
 
     public DataSource<TrackedEntityInstance, TrackedEntityInstance> getDataSource() {
-        return new TrackedEntityInstanceQueryDataSource(store, onlineCallFactory, scope, childrenAppenders, onlineCache);
+        return new TrackedEntityInstanceQueryDataSource(store, onlineCallFactory, scope,
+                childrenAppenders, onlineCache);
     }
 
     @Override

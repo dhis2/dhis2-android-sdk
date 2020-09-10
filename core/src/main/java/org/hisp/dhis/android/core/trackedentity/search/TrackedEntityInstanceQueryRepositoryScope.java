@@ -48,6 +48,7 @@ import java.util.Date;
 import java.util.List;
 
 @AutoValue
+@SuppressWarnings({"PMD.ExcessivePublicCount"})
 abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseScope {
 
     private static final SafeDateFormat QUERY_FORMAT = new SafeDateFormat("yyyy-MM-dd");

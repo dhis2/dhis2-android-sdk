@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.trackedentity.search;
 import androidx.paging.ItemKeyedDataSource;
 
 import org.hisp.dhis.android.core.arch.cache.internal.D2Cache;
+import org.hisp.dhis.android.core.arch.cache.internal.ExpirableCache;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
@@ -78,8 +79,7 @@ public class TrackedEntityInstanceQueryDataSourceShould {
     @Mock
     private ItemKeyedDataSource.LoadInitialCallback<TrackedEntityInstance> initialCallback;
 
-    @Mock
-    private D2Cache<TrackedEntityInstanceQueryOnline, List<TrackedEntityInstance>> onlineCache;
+    private D2Cache<TrackedEntityInstanceQueryOnline, List<TrackedEntityInstance>> onlineCache = new ExpirableCache<>();
 
     @Before
     public void setUp() {
@@ -155,6 +155,25 @@ public class TrackedEntityInstanceQueryDataSourceShould {
         verify(store).selectRawQuery(anyString());
         verifyNoMoreInteractions(store);
         verify(onlineCallFactory, times(2)).getCall(any(TrackedEntityInstanceQueryOnline.class));
+        verifyNoMoreInteractions(onlineCallFactory);
+    }
+
+    @Test
+    public void get_initial_online_page_from_cache() {
+        TrackedEntityInstanceQueryRepositoryScope scope =
+                emptyScope.toBuilder().mode(ONLINE_ONLY).allowOnlineCache(true).build();
+        TrackedEntityInstanceQueryOnline onlineQuery = TrackedEntityInstanceQueryOnline.create(scope);
+
+        TrackedEntityInstanceQueryDataSource dataSource1 =
+                new TrackedEntityInstanceQueryDataSource(store, onlineCallFactory, scope, childrenAppenders, onlineCache);
+        dataSource1.loadInitial(new ItemKeyedDataSource.LoadInitialParams<>(null, onlineQuery.pageSize(), false),
+                initialCallback);
+        verify(onlineCallFactory, times(2)).getCall(any());
+
+        TrackedEntityInstanceQueryDataSource dataSource2 =
+                new TrackedEntityInstanceQueryDataSource(store, onlineCallFactory, scope, childrenAppenders, onlineCache);
+        dataSource2.loadInitial(new ItemKeyedDataSource.LoadInitialParams<>(null, onlineQuery.pageSize(), false),
+                initialCallback);
         verifyNoMoreInteractions(onlineCallFactory);
     }
 

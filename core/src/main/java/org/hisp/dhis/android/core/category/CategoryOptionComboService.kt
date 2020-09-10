@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.category
 
 import dagger.Reusable
 import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper
 import java.util.*
 import javax.inject.Inject
 

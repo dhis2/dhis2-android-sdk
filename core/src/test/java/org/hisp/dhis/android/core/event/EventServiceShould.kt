@@ -31,6 +31,8 @@ import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper
+import org.hisp.dhis.android.core.category.CategoryOptionComboService
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramCollectionRepository
@@ -46,6 +48,7 @@ import org.mockito.Mockito
 class EventServiceShould {
 
     private val eventUid: String = "eventUid"
+    private val attributeOptionComboUid = "attOptionComboUid"
 
     private val readDataAccess = AccessHelper.createForDataWrite(false)
     private val writeDataAccess = AccessHelper.createForDataWrite(true)
@@ -58,10 +61,12 @@ class EventServiceShould {
     private val programRepository: ProgramCollectionRepository = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val programStageRepository: ProgramStageCollectionRepository = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val organisationUnitService: OrganisationUnitService = mock()
+    private val categoryOptionComboService: CategoryOptionComboService = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
 
     private val eventService: EventService = EventService(eventRepository, programRepository,
-            programStageRepository, organisationUnitService)
+            programStageRepository, organisationUnitService, categoryOptionComboService)
 
+    private val firstJanuary = BaseIdentifiableObject.DATE_FORMAT.parse("2020-01-01T00:00:00.000")
 
     @Before
     fun setUp() {
@@ -70,6 +75,7 @@ class EventServiceShould {
         whenever(programStageRepository.uid(any()).blockingGet()) doReturn programStage
 
         whenever(event.uid()) doReturn eventUid
+        whenever(event.eventDate()) doReturn firstJanuary
     }
 
     @Test
@@ -91,5 +97,23 @@ class EventServiceShould {
         whenever(programStage.access()) doReturn writeDataAccess
 
         assertFalse(eventService.blockingHasDataWriteAccess(event.uid()))
+    }
+
+    @Test
+    fun `Should return true if has access to categoryCombo or attribute option combo is null`() {
+        whenever(event.attributeOptionCombo()) doReturn attributeOptionComboUid
+        whenever(categoryOptionComboService.blockingHasAccess(attributeOptionComboUid, firstJanuary)) doReturn  true
+        assertTrue(eventService.blockingHasCategoryComboAccess(event))
+
+        whenever(event.attributeOptionCombo()) doReturn null
+        whenever(categoryOptionComboService.blockingHasAccess(attributeOptionComboUid, firstJanuary)) doReturn  false
+        assertTrue(eventService.blockingHasCategoryComboAccess(event))
+    }
+
+    @Test
+    fun `Should return false if has not access to categoryCombo`() {
+        whenever(event.attributeOptionCombo()) doReturn attributeOptionComboUid
+        whenever(categoryOptionComboService.blockingHasAccess(attributeOptionComboUid, firstJanuary)) doReturn  false
+        assertFalse(eventService.blockingHasCategoryComboAccess(event))
     }
 }

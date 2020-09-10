@@ -107,4 +107,10 @@ object TrackedImportConflictSamples {
         return ImportConflict.create(dataElementId, "value_not_valid_file_resource_uid")
     }
 
+    //
+
+    fun missingRequiredDataElement(dataElementId: String): ImportConflict {
+        return ImportConflict.create(dataElementId, "value_required_but_not_provided")
+    }
+
 }

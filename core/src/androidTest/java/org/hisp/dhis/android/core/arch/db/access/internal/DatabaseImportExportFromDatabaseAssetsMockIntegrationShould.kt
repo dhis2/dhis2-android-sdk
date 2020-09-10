@@ -32,6 +32,7 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.D2Factory
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
+import org.hisp.dhis.android.core.systeminfo.SystemInfoTableInfo
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.After
 import org.junit.AfterClass
@@ -49,6 +50,7 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould {
         val importer = TestDatabaseImporter()
 
         const val expectedDatabaseName = "localhost-60809_android_unencrypted.db"
+        const val serverUrl = "http://localhost:60809/"
 
         @BeforeClass
         @JvmStatic
@@ -76,28 +78,83 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould {
 
         d2.maintenanceModule().databaseImportExport().importDatabase(importer.databaseFile(context))
 
-        d2.userModule().blockingLogIn("android", "Android123", "http://localhost:60809/")
+        d2.userModule().blockingLogIn("android", "Android123", serverUrl)
 
         assertThat(d2.programModule().programs().blockingCount()).isEqualTo(2)
     }
 
     @Test(expected = D2Error::class)
-    fun fail_when_logged_in() {
+    fun import_fail_when_logged_in() {
         importer.copyDatabaseFromAssets()
 
         val d2 = D2Factory.forNewDatabase()
 
-        d2.userModule().blockingLogIn("other", "Pw1010", "http://localhost:60809/")
+        d2.userModule().blockingLogIn("other", "Pw1010", serverUrl)
 
-        d2.maintenanceModule().databaseImportExport().importDatabase(importer.databaseFile(context))
+        try {
+            d2.maintenanceModule().databaseImportExport().importDatabase(importer.databaseFile(context))
+        } finally {
+            context.deleteDatabase("localhost-60809_other_unencrypted.db")
+        }
     }
 
     @Test(expected = D2Error::class)
-    fun fail_when_database_exists() {
+    fun import_fail_when_database_exists() {
         importer.copyDatabaseFromAssets(expectedDatabaseName)
 
         val d2 = D2Factory.forNewDatabase()
 
         d2.maintenanceModule().databaseImportExport().importDatabase(importer.databaseFile(context, expectedDatabaseName))
+    }
+
+    @Test
+    fun export_when_logged() {
+        val d2 = D2Factory.forNewDatabase()
+
+        d2.userModule().blockingLogIn("android", "Pw1010", serverUrl)
+
+        val exportedFile = d2.maintenanceModule().databaseImportExport().exportLoggedUserDatabase()
+
+        assertThat(exportedFile.path).isEqualTo("/data/user/0/org.hisp.dhis.android.test/databases/export-database.db")
+    }
+
+    @Test(expected = D2Error::class)
+    fun export_fail_when_not_logged() {
+        val d2 = D2Factory.forNewDatabase()
+        d2.maintenanceModule().databaseImportExport().exportLoggedUserDatabase()
+    }
+
+    @Test
+    fun export_and_reimport() {
+        var d2 = D2Factory.forNewDatabase()
+
+        d2.userModule().blockingLogIn("android", "Android123", serverUrl)
+
+        d2.metadataModule().blockingDownload()
+
+        assertThat(d2.programModule().programs().blockingCount()).isEqualTo(2)
+
+        val systemInfoWithExpectedContextPath = d2.systemInfoModule().systemInfo().blockingGet()
+            .toBuilder().contextPath(serverUrl).build()
+
+        d2.databaseAdapter().delete(SystemInfoTableInfo.TABLE_INFO.name())
+        d2.databaseAdapter().insert(SystemInfoTableInfo.TABLE_INFO.name(), null,
+            systemInfoWithExpectedContextPath.toContentValues())
+
+
+        val exportedFile = d2.maintenanceModule().databaseImportExport().exportLoggedUserDatabase()
+
+        d2.userModule().blockingLogOut()
+
+        context.deleteDatabase(expectedDatabaseName)
+
+        // We won't need to create a new D2 when we support database deletion (multi-user)
+        d2 = D2Factory.forNewDatabase()
+
+        d2.maintenanceModule().databaseImportExport().importDatabase(exportedFile)
+
+        d2.userModule().blockingLogIn("android", "Android123", serverUrl)
+
+        assertThat(d2.programModule().programs().blockingCount()).isEqualTo(2)
     }
 }

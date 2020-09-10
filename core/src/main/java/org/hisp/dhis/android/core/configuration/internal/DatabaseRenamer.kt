@@ -25,24 +25,25 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.configuration.internal
 
-package org.hisp.dhis.android.core.configuration.internal;
+import android.content.Context
+import dagger.Reusable
+import java.io.File
+import javax.inject.Inject
 
-import android.content.Context;
+@Reusable
+class DatabaseRenamer @Inject constructor(private val context: Context) {
 
-import java.io.File;
-
-final class DatabaseRenamer {
-
-    private final Context context;
-
-    DatabaseRenamer(Context context) {
-        this.context = context;
+    fun renameDatabase(from: String, to: String): Boolean {
+        val fromFile = context.getDatabasePath(from)
+        val toFile = File(fromFile.parentFile, to)
+        return fromFile.renameTo(toFile)
     }
 
-    boolean renameDatabase(String from, String to) {
-        File fromFile = context.getDatabasePath(from);
-        File toFile = new File(fromFile.getParentFile(), to);
-        return fromFile.renameTo(toFile);
+    fun copyDatabase(from: String, to: String): File {
+        val fromFile = context.getDatabasePath(from)
+        val toFile = File(fromFile.parentFile, to)
+        return fromFile.copyTo(toFile)
     }
 }

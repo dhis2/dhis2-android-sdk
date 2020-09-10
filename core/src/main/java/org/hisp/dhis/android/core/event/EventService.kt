@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.event
 
 import dagger.Reusable
 import io.reactivex.Single
+import org.hisp.dhis.android.core.category.CategoryOptionComboService
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService
 import org.hisp.dhis.android.core.program.ProgramCollectionRepository
 import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
@@ -39,7 +40,8 @@ class EventService @Inject constructor(
         private val eventRepository: EventCollectionRepository,
         private val programRepository: ProgramCollectionRepository,
         private val programStageRepository: ProgramStageCollectionRepository,
-        private val organisationUnitService: OrganisationUnitService
+        private val organisationUnitService: OrganisationUnitService,
+        private val categoryOptionComboService: CategoryOptionComboService
 ) {
 
     fun blockingHasDataWriteAccess(eventUid: String): Boolean {
@@ -63,5 +65,15 @@ class EventService @Inject constructor(
 
     fun isInOrgunitRange(event: Event): Single<Boolean> {
         return Single.fromCallable { blockingIsInOrgunitRange(event) }
+    }
+
+    fun blockingHasCategoryComboAccess(event: Event): Boolean {
+        return event.attributeOptionCombo()?.let {
+            categoryOptionComboService.blockingHasAccess(it, event.eventDate())
+        } ?: true
+    }
+
+    fun hasCategoryComboAccess(event: Event): Single<Boolean> {
+        return Single.fromCallable { blockingHasCategoryComboAccess(event) }
     }
 }

@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.category.CategoryComboCollectionRepository;
 import org.hisp.dhis.android.core.category.CategoryModule;
 import org.hisp.dhis.android.core.category.CategoryOptionCollectionRepository;
 import org.hisp.dhis.android.core.category.CategoryOptionComboCollectionRepository;
+import org.hisp.dhis.android.core.category.CategoryOptionComboService;
 
 import javax.inject.Inject;
 
@@ -45,16 +46,20 @@ public final class CategoryModuleImpl implements CategoryModule {
     private final CategoryOptionComboCollectionRepository categoryOptionCombos;
     private final CategoryComboCollectionRepository categoryCombos;
 
+    private final CategoryOptionComboService categoryOptionComboService;
+
     @Inject
     CategoryModuleImpl(
             CategoryCollectionRepository categories,
             CategoryOptionCollectionRepository categoryOptions,
             CategoryOptionComboCollectionRepository categoryOptionCombos,
-            CategoryComboCollectionRepository categoryCombos) {
+            CategoryComboCollectionRepository categoryCombos,
+            CategoryOptionComboService categoryOptionComboService) {
         this.categories = categories;
         this.categoryOptions = categoryOptions;
         this.categoryOptionCombos = categoryOptionCombos;
         this.categoryCombos = categoryCombos;
+        this.categoryOptionComboService = categoryOptionComboService;
     }
 
     @Override
@@ -75,5 +80,10 @@ public final class CategoryModuleImpl implements CategoryModule {
     @Override
     public CategoryComboCollectionRepository categoryCombos() {
         return categoryCombos;
+    }
+
+    @Override
+    public CategoryOptionComboService categoryOptionComboService() {
+        return categoryOptionComboService;
     }
 }

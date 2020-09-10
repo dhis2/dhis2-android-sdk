@@ -75,4 +75,13 @@ public final class CategoryOptionCollectionRepository
                 Collections.singletonList(categoryUid)
         );
     }
+
+    public CategoryOptionCollectionRepository byCategoryOptionComboUid(String categoryOptionComboUid) {
+        return cf.subQuery(IdentifiableColumns.UID).inLinkTable(
+                CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO.name(),
+                CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION,
+                CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION_COMBO,
+                Collections.singletonList(categoryOptionComboUid)
+        );
+    }
 }

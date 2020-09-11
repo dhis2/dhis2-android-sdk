@@ -53,11 +53,13 @@ internal class TrackerImportConflictParser @Inject constructor(
     private val context = TrackerImportConflictItemContext(attributeStore, dataElementStore)
 
     private val trackedEntityInstanceConflicts: List<TrackerImportConflictItem> = listOf(
-            MissingAttributeConflict
+            MissingAttributeConflict,
+            BadAttributePatternConflict
     )
 
     private val enrollmentConflicts: List<TrackerImportConflictItem> = listOf(
-            MissingAttributeConflict
+            MissingAttributeConflict,
+            BadAttributePatternConflict
     )
 
     private val eventConflicts: List<TrackerImportConflictItem> = listOf(

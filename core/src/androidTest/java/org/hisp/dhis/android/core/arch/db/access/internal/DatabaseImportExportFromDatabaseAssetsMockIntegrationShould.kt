@@ -60,7 +60,7 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould {
 
         @AfterClass
         @JvmStatic
-        fun temarDownClass() {
+        fun tearDownClass() {
             server.shutdown()
         }
     }
@@ -68,6 +68,7 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould {
     @After
     fun tearDown() {
         context.deleteDatabase(expectedDatabaseName)
+        context.databaseList().forEach { dbName -> context.deleteDatabase(dbName) }
     }
 
     @Test
@@ -91,11 +92,7 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould {
 
         d2.userModule().blockingLogIn("other", "Pw1010", serverUrl)
 
-        try {
-            d2.maintenanceModule().databaseImportExport().importDatabase(importer.databaseFile(context))
-        } finally {
-            context.deleteDatabase("localhost-60809_other_unencrypted.db")
-        }
+        d2.maintenanceModule().databaseImportExport().importDatabase(importer.databaseFile(context))
     }
 
     @Test(expected = D2Error::class)

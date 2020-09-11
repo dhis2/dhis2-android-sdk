@@ -33,6 +33,8 @@ import com.nhaarman.mockitokotlin2.whenever
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper
 import org.hisp.dhis.android.core.category.CategoryOptionComboService
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.enrollment.EnrollmentService
+import org.hisp.dhis.android.core.event.internal.EventDateUtils
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramCollectionRepository
@@ -60,11 +62,13 @@ class EventServiceShould {
     private val eventRepository: EventCollectionRepository = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val programRepository: ProgramCollectionRepository = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val programStageRepository: ProgramStageCollectionRepository = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
+    private val enrollmentService: EnrollmentService = mock()
     private val organisationUnitService: OrganisationUnitService = mock()
     private val categoryOptionComboService: CategoryOptionComboService = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
+    private val eventDateUtils: EventDateUtils = mock()
 
-    private val eventService: EventService = EventService(eventRepository, programRepository,
-            programStageRepository, organisationUnitService, categoryOptionComboService)
+    private val eventService: EventService = EventService(eventRepository, programRepository, programStageRepository,
+            enrollmentService, organisationUnitService, categoryOptionComboService, eventDateUtils)
 
     private val firstJanuary = BaseIdentifiableObject.DATE_FORMAT.parse("2020-01-01T00:00:00.000")
 

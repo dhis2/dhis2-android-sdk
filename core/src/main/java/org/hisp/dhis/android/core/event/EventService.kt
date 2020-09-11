@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.event
 import dagger.Reusable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.category.CategoryOptionComboService
+import org.hisp.dhis.android.core.enrollment.EnrollmentService
+import org.hisp.dhis.android.core.event.internal.EventDateUtils
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService
 import org.hisp.dhis.android.core.program.ProgramCollectionRepository
 import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
@@ -40,8 +42,10 @@ class EventService @Inject constructor(
         private val eventRepository: EventCollectionRepository,
         private val programRepository: ProgramCollectionRepository,
         private val programStageRepository: ProgramStageCollectionRepository,
+        private val enrollmentService: EnrollmentService,
         private val organisationUnitService: OrganisationUnitService,
-        private val categoryOptionComboService: CategoryOptionComboService
+        private val categoryOptionComboService: CategoryOptionComboService,
+        private val eventDateUtils: EventDateUtils
 ) {
 
     fun blockingHasDataWriteAccess(eventUid: String): Boolean {
@@ -52,7 +56,7 @@ class EventService @Inject constructor(
     }
 
     fun hasDataWriteAccess(eventUid: String): Single<Boolean> {
-        return Single.fromCallable { blockingHasDataWriteAccess(eventUid) }
+        return Single.just(blockingHasDataWriteAccess(eventUid))
     }
 
     fun blockingIsInOrgunitRange(event: Event): Boolean {
@@ -64,7 +68,7 @@ class EventService @Inject constructor(
     }
 
     fun isInOrgunitRange(event: Event): Single<Boolean> {
-        return Single.fromCallable { blockingIsInOrgunitRange(event) }
+        return Single.just(blockingIsInOrgunitRange(event))
     }
 
     fun blockingHasCategoryComboAccess(event: Event): Boolean {
@@ -74,6 +78,34 @@ class EventService @Inject constructor(
     }
 
     fun hasCategoryComboAccess(event: Event): Single<Boolean> {
-        return Single.fromCallable { blockingHasCategoryComboAccess(event) }
+        return Single.just(blockingHasCategoryComboAccess(event))
     }
+
+    fun blockingIsEditable(eventUid: String): Boolean {
+        val event = eventRepository.uid(eventUid).blockingGet()
+        val program = programRepository.uid(event.program()).blockingGet()
+        val programStage = programStageRepository.uid(event.programStage()).blockingGet()
+
+        val isBlocked = event.status() == EventStatus.COMPLETED && programStage.blockEntryForm() ?: false
+
+        val isExpired = eventDateUtils.isEventExpired(
+                event = event,
+                completeExpiryDays = program.completeEventsExpiryDays() ?: 0,
+                programPeriodType = programStage.periodType() ?: program.expiryPeriodType(),
+                expiryDays = program.expiryDays() ?: 0
+        )
+
+        return !isBlocked &&
+                !isExpired &&
+                blockingHasDataWriteAccess(eventUid) &&
+                blockingIsInOrgunitRange(event) &&
+                blockingHasCategoryComboAccess(event) &&
+                event.enrollment()?.let { enrollmentService.blockingIsOpen(it) } ?: true &&
+                event.organisationUnit()?.let { organisationUnitService.blockingIsInCaptureScope(it) } ?: true
+    }
+
+    fun isEditable(eventUid: String): Single<Boolean> {
+        return Single.just(blockingIsEditable(eventUid))
+    }
+
 }

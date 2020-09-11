@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.period.internal;
 import org.hisp.dhis.android.core.period.Period;
 import org.hisp.dhis.android.core.period.PeriodType;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -47,16 +48,19 @@ public class PeriodHelper {
     private final PeriodForDataSetManager periodForDataSetManager;
     private final ParentPeriodGenerator parentPeriodGenerator;
     private final PeriodParser periodParser;
+    private final CalendarProvider calendarProvider;
 
     @Inject
     PeriodHelper(PeriodStore periodStore,
                  PeriodForDataSetManager periodForDataSetManager,
                  ParentPeriodGenerator parentPeriodGenerator,
-                 PeriodParser periodParser) {
+                 PeriodParser periodParser,
+                 CalendarProvider calendarProvider) {
         this.periodStore = periodStore;
         this.periodForDataSetManager = periodForDataSetManager;
         this.parentPeriodGenerator = parentPeriodGenerator;
         this.periodParser = periodParser;
+        this.calendarProvider = calendarProvider;
     }
 
     /**
@@ -166,6 +170,14 @@ public class PeriodHelper {
 
     public Single<List<Period>> getPeriodsForDataSet(String dataSetUid) {
         return periodForDataSetManager.getPeriodsForDataSet(dataSetUid);
+    }
+
+    /**
+     * Get a calendar instance
+     * @return a calendar instance
+     */
+    public Calendar getCalendar() {
+        return calendarProvider.getCalendar();
     }
 
     public List<Period> blockingGetPeriodsForDataSet(String dataSetUid) {

@@ -27,37 +27,47 @@
  */
 package org.hisp.dhis.android.core.imports.internal.conflicts
 
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
+import org.junit.Before
+import org.junit.Test
 
-internal object MissingDataElementConflict : TrackerImportConflictItem {
+class MissingDataElementConflictShould {
 
-    private const val errorStr = "value_required_but_not_provided"
+    private val dataElementUid = "DI85uC13Bzo"
 
-    private fun description(dataElement: String) = "Missing mandatory data element: $dataElement"
+    private val context: TrackerImportConflictItemContext = mock()
 
-    override val errorCode: String = ""
+    private val dataElementStore: IdentifiableObjectStore<DataElement> = mock()
 
-    override fun matches(conflict: ImportConflict): Boolean {
-        return errorStr == conflict.value()
+    private val dataElement: DataElement = mock()
+
+    @Before
+    fun setUp() {
+        whenever(context.dataElementStore) doReturn dataElementStore
+        whenever(dataElementStore.selectByUid(dataElementUid)) doReturn dataElement
     }
 
-    override fun getTrackedEntityAttribute(conflict: ImportConflict): String? {
-        return null
+    @Test
+    fun `Should match error messages`() {
+        checkMatchAndDataElement(TrackedImportConflictSamples.missingRequiredDataElement(dataElementUid))
     }
 
-    override fun getDataElement(conflict: ImportConflict): String? {
-        return conflict.`object`()
+    @Test
+    fun `Should create display description`() {
+        whenever(dataElement.displayFormName()) doReturn "Data Element form name"
+
+        val conflict = TrackedImportConflictSamples.missingRequiredDataElement(dataElementUid)
+        val displayDescription = MissingDataElementConflict.getDisplayDescription(conflict, context)
+        assert(displayDescription == "Missing mandatory data element: Data Element form name")
     }
 
-    override fun getDisplayDescription(conflict: ImportConflict,
-                                       context: TrackerImportConflictItemContext): String {
-
-        return getDataElement(conflict)?.let { dataElementUid ->
-            context.dataElementStore.selectByUid(dataElementUid)?.let { dataElement ->
-                val name = dataElement.displayFormName() ?: dataElement.displayName() ?: dataElementUid
-                description(name)
-            }
-        } ?:
-        conflict.value()
+    private fun checkMatchAndDataElement(conflict: ImportConflict) {
+        assert(MissingDataElementConflict.matches(conflict))
+        assert(MissingDataElementConflict.getDataElement(conflict) == dataElementUid)
     }
 }

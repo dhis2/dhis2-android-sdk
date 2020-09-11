@@ -67,7 +67,8 @@ class EventDateUtils @Inject constructor(
      * @param expiryDays           extra days after period to edit event.
      * @return true or false
      */
-    fun isEventExpired(event: Event, completeExpiryDays: Int, programPeriodType: PeriodType?, expiryDays: Int): Boolean {
+    fun isEventExpired(event: Event, completeExpiryDays: Int,
+                       programPeriodType: PeriodType?, expiryDays: Int): Boolean {
         if (event.status() == EventStatus.COMPLETED && event.completedDate() == null) return false
 
         val expiredBecauseOfCompletion =

@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
 import javax.inject.Inject
 
 @Reusable
+@Suppress("LongParameterList")
 class EventService @Inject constructor(
         private val eventRepository: EventCollectionRepository,
         private val programRepository: ProgramCollectionRepository,
@@ -81,6 +82,7 @@ class EventService @Inject constructor(
         return Single.just(blockingHasCategoryComboAccess(event))
     }
 
+    @Suppress("ComplexMethod")
     fun blockingIsEditable(eventUid: String): Boolean {
         val event = eventRepository.uid(eventUid).blockingGet()
         val program = programRepository.uid(event.program()).blockingGet()

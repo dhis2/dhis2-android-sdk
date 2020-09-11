@@ -49,6 +49,12 @@ object TrackedImportConflictSamples {
                 "Value '$value' is not a valid numeric type for attribute $attributeUid")
     }
 
+    fun nonUniqueAttribute(attributeUid: String, value: String): ImportConflict {
+        return ImportConflict.create(
+                "Attribute.value",
+                "Non-unique attribute value '$value' for attribute $attributeUid")
+    }
+
     // Data value types
 
     fun valueNotNumeric(dataElementId: String): ImportConflict {
@@ -105,6 +111,12 @@ object TrackedImportConflictSamples {
 
     fun valueNotFileResourceUid(dataElementId: String): ImportConflict {
         return ImportConflict.create(dataElementId, "value_not_valid_file_resource_uid")
+    }
+
+    //
+
+    fun missingRequiredDataElement(dataElementId: String): ImportConflict {
+        return ImportConflict.create(dataElementId, "value_required_but_not_provided")
     }
 
 }

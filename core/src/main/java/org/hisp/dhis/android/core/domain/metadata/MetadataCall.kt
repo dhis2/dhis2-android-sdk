@@ -84,13 +84,12 @@ class MetadataCall @Inject internal constructor(
 
     fun download(): Observable<D2Progress> {
         val progressManager = D2ProgressManager(CALLS_COUNT)
-        return rxCallExecutor.wrapObservableTransactionally(Observable.merge(
-                changeEncryptionIfRequired().toObservable(),
+        return changeEncryptionIfRequired().andThen(rxCallExecutor.wrapObservableTransactionally(Observable.merge(
                 systemInfoDownloader.downloadMetadata().toSingle {
                     progressManager.increaseProgress(SystemInfo::class.java, false) }.toObservable(),
                 executeIndependentCalls(progressManager),
                 executeUserCallAndChildren(progressManager)
-        ), true)
+        ), true))
     }
 
     private fun executeIndependentCalls(progressManager: D2ProgressManager): Observable<D2Progress> {

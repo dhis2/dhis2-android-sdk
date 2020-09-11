@@ -32,11 +32,6 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.imports.TrackerImportConflict
 import org.hisp.dhis.android.core.imports.internal.conflicts.*
-import org.hisp.dhis.android.core.imports.internal.conflicts.InvalidDataValueConflict
-import org.hisp.dhis.android.core.imports.internal.conflicts.MissingAttributeConflict
-import org.hisp.dhis.android.core.imports.internal.conflicts.MissingDataElementConflict
-import org.hisp.dhis.android.core.imports.internal.conflicts.TrackerImportConflictItem
-import org.hisp.dhis.android.core.imports.internal.conflicts.TrackerImportConflictItemContext
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueCollectionRepository
@@ -54,12 +49,14 @@ internal class TrackerImportConflictParser @Inject constructor(
 
     private val trackedEntityInstanceConflicts: List<TrackerImportConflictItem> = listOf(
             MissingAttributeConflict,
-            BadAttributePatternConflict
+            BadAttributePatternConflict,
+            NonUniqueAttributeConflict
     )
 
     private val enrollmentConflicts: List<TrackerImportConflictItem> = listOf(
             MissingAttributeConflict,
-            BadAttributePatternConflict
+            BadAttributePatternConflict,
+            NonUniqueAttributeConflict
     )
 
     private val eventConflicts: List<TrackerImportConflictItem> = listOf(

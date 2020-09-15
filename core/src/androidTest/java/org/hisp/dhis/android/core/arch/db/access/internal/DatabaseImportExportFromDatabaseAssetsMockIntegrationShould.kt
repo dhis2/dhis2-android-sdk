@@ -40,10 +40,10 @@ import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner::class)
+// @RunWith(D2JunitRunner::class)
 class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould {
 
-    companion object LocalAnalyticsAggregatedLargeDataMockIntegrationShould {
+    /*companion object LocalAnalyticsAggregatedLargeDataMockIntegrationShould {
 
         val context = InstrumentationRegistry.getInstrumentation().context
         val server = Dhis2MockServer(60809)
@@ -153,5 +153,5 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould {
         d2.userModule().blockingLogIn("android", "Android123", serverUrl)
 
         assertThat(d2.programModule().programs().blockingCount()).isEqualTo(2)
-    }
+    }*/
 }

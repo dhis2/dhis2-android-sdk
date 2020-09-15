@@ -34,12 +34,21 @@ import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager;
 import org.hisp.dhis.android.core.configuration.internal.DatabaseUserConfiguration;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
 public class DatabaseAdapterFactory {
+
+    private static Map<String, UnencryptedDatabaseOpenHelper> unencryptedOpenHelpers = new HashMap<>();
+    private static Map<String, EncryptedDatabaseOpenHelper> encryptedOpenHelpers = new HashMap<>();
+    private static List<DatabaseAdapter> adaptersToPreventNotClosedError = new ArrayList<>();
 
     private final Context context;
     private final DatabaseEncryptionPasswordManager passwordManager;
@@ -64,6 +73,7 @@ public class DatabaseAdapterFactory {
         try {
             ParentDatabaseAdapter parentDatabaseAdapter = (ParentDatabaseAdapter) adapter;
             DatabaseAdapter internalAdapter = newInternalAdapter(databaseName, context, encrypt, version);
+            adaptersToPreventNotClosedError.add(internalAdapter);
             parentDatabaseAdapter.setAdapter(internalAdapter);
         } catch (ClassCastException cce) {
             // This ensures tests that mock DatabaseAdapter pass
@@ -82,20 +92,42 @@ public class DatabaseAdapterFactory {
     public void deleteDatabase(DatabaseUserConfiguration userConfiguration) {
         context.deleteDatabase(userConfiguration.databaseName());
         if (userConfiguration.encrypted()) {
+            encryptedOpenHelpers.remove(userConfiguration.databaseName());
             passwordManager.deletePassword(userConfiguration.databaseName());
+        } else {
+            unencryptedOpenHelpers.remove(userConfiguration.databaseName());
         }
     }
 
     private DatabaseAdapter newInternalAdapter(String databaseName, Context context,
                                                       boolean encrypt, int version) {
         if (encrypt) {
-            EncryptedDatabaseOpenHelper openHelper = new EncryptedDatabaseOpenHelper(context, databaseName, version);
+            EncryptedDatabaseOpenHelper openHelper = instantiateOpenHelper(databaseName, encryptedOpenHelpers,
+                    v -> new EncryptedDatabaseOpenHelper(context, databaseName, version));
             String password = passwordManager.getPassword(databaseName);
             return new EncryptedDatabaseAdapter(openHelper.getWritableDatabase(password));
         } else {
-            UnencryptedDatabaseOpenHelper openHelper = new UnencryptedDatabaseOpenHelper(context, databaseName, version);
+            UnencryptedDatabaseOpenHelper openHelper = instantiateOpenHelper(databaseName, unencryptedOpenHelpers,
+                    v -> new UnencryptedDatabaseOpenHelper(context, databaseName, version));
             return new UnencryptedDatabaseAdapter(openHelper.getWritableDatabase());
         }
+    }
+
+    private interface Function<I, O> {
+        O run(I i);
+    }
+
+    private <H> H instantiateOpenHelper(String databaseName, Map<String, H> helpers, Function<Void, H> helperCreator) {
+        H openHelper;
+        if (databaseName == null || !helpers.containsKey(databaseName)) {
+            openHelper = helperCreator.run(null);
+            if (databaseName != null) {
+                helpers.put(databaseName, openHelper);
+            }
+        } else {
+            openHelper = helpers.get(databaseName);
+        }
+        return openHelper;
     }
 
     @SuppressWarnings("PMD.EmptyCatchBlock")

@@ -27,12 +27,12 @@
  */
 package org.hisp.dhis.android.core.maintenance;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseImportExport;
-
 public interface MaintenanceModule {
     ForeignKeyViolationCollectionRepository foreignKeyViolations();
     D2ErrorCollectionRepository d2Errors();
     PerformanceHintsService getPerformanceHintsService(int organisationUnitThreshold,
                                                        int programRulesPerProgramThreshold);
-    DatabaseImportExport databaseImportExport();
+
+
+    // TODO restore when finished DatabaseImportExport databaseImportExport();
 }

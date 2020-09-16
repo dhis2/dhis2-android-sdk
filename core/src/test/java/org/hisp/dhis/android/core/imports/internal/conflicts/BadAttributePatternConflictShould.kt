@@ -27,26 +27,11 @@
  */
 package org.hisp.dhis.android.core.imports.internal.conflicts
 
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
-import org.junit.Before
 import org.junit.Test
 
-class BadAttributePatternConflictShould {
-
-    private val context: TrackerImportConflictItemContext = mock()
-
-    private val attributeStore: IdentifiableObjectStore<TrackedEntityAttribute> = mock()
+internal class BadAttributePatternConflictShould : BaseConflictShould() {
 
     private val importConflict = TrackedImportConflictSamples.badAttributePattern()
-
-    @Before
-    fun setUp() {
-        whenever(context.attributeStore) doReturn attributeStore
-    }
 
     @Test
     fun `Should match error messages`() {

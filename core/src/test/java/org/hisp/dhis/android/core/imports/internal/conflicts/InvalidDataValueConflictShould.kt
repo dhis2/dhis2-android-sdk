@@ -28,30 +28,12 @@
 package org.hisp.dhis.android.core.imports.internal.conflicts
 
 import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import junit.framework.Assert.assertTrue
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
-import org.junit.Before
 import org.junit.Test
 
-class InvalidDataValueConflictShould {
-
-    private val dataElementUid = "DI85uC13Bzo"
-
-    private val context: TrackerImportConflictItemContext = mock()
-
-    private val dataElementStore: IdentifiableObjectStore<DataElement> = mock()
-
-    private val dataElement: DataElement = mock()
-
-    @Before
-    fun setUp() {
-        whenever(context.dataElementStore) doReturn dataElementStore
-        whenever(dataElementStore.selectByUid(dataElementUid)) doReturn dataElement
-    }
+internal class InvalidDataValueConflictShould : BaseConflictShould() {
 
     @Test
     fun `Should match error messages`() {

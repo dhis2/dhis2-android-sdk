@@ -28,32 +28,12 @@
 package org.hisp.dhis.android.core.imports.internal.conflicts
 
 import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import junit.framework.Assert.assertTrue
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
-import org.junit.Before
 import org.junit.Test
 
-class InvalidAttributeValueTypeConflictShould {
-
-    private val context: TrackerImportConflictItemContext = mock()
-
-    private val attributeStore: IdentifiableObjectStore<TrackedEntityAttribute> = mock()
-
-    private val attribute: TrackedEntityAttribute = mock()
-
-    private val attributeUid = "DI85uC13Bzo"
-    private val value = "attribute value"
-    private val optionSetUid = "Q2nhc0pmcZ8"
-
-    @Before
-    fun setUp() {
-        whenever(context.attributeStore) doReturn attributeStore
-        whenever(attributeStore.selectByUid(attributeUid)) doReturn attribute
-    }
+internal class InvalidAttributeValueTypeConflictShould : BaseConflictShould() {
 
     @Test
     fun `Should match error message and trackedEntityAttribute`() {

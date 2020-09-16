@@ -28,29 +28,36 @@
 package org.hisp.dhis.android.core.imports.internal.conflicts
 
 import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import org.junit.Test
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
+import org.junit.Before
 
-internal class MissingAttributeConflictShould : BaseConflictShould()  {
+internal open class BaseConflictShould {
 
-    private val importConflict = TrackedImportConflictSamples.missingMandatoryAttribute(attributeUid)
+    protected val context: TrackerImportConflictItemContext = mock()
 
-    @Test
-    fun `Should match error message`() {
-        assert(MissingAttributeConflict.matches(importConflict))
+    protected val attributeStore: IdentifiableObjectStore<TrackedEntityAttribute> = mock()
+    protected val dataElementStore: IdentifiableObjectStore<DataElement> = mock()
+
+    protected val attribute: TrackedEntityAttribute = mock()
+    protected val dataElement: DataElement = mock()
+
+    protected val attributeUid = "DI85uC13Bzo"
+    protected val value = "attribute value"
+    protected val optionSetUid = "Q2nhc0pmcZ8"
+
+    protected val dataElementUid = "NTlMmRqGWCM"
+
+    @Before
+    fun setUp() {
+        whenever(context.attributeStore) doReturn attributeStore
+        whenever(context.dataElementStore) doReturn dataElementStore
+
+        whenever(attributeStore.selectByUid(attributeUid)) doReturn attribute
+        whenever(dataElementStore.selectByUid(dataElementUid)) doReturn dataElement
     }
 
-    @Test
-    fun `Should match attribute uid`() {
-        val value = MissingAttributeConflict.getTrackedEntityAttribute(importConflict)
-        assert(value == attributeUid)
-    }
-
-    @Test
-    fun `Should create display description`() {
-        whenever(attribute.displayFormName()) doReturn "Attribute form name"
-
-        val displayDescription = MissingAttributeConflict.getDisplayDescription(importConflict, context)
-        assert(displayDescription == "Missing mandatory attribute: Attribute form name")
-    }
 }

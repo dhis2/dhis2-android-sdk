@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.imports.internal.conflicts
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
+import junit.framework.Assert.assertTrue
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
@@ -76,11 +77,11 @@ class InvalidDataValueConflictShould {
 
         val conflict = TrackedImportConflictSamples.valueNotNumeric(dataElementUid)
         val displayDescription = InvalidDataValueConflict.getDisplayDescription(conflict, context)
-        assert(displayDescription == "Invalid value type for dataElement: Data Element form name")
+        assertTrue(displayDescription == "Invalid value type for dataElement: Data Element form name")
     }
 
     private fun checkMatchAndDataElement(conflict: ImportConflict) {
-        assert(InvalidDataValueConflict.matches(conflict))
-        assert(InvalidDataValueConflict.getDataElement(conflict) == dataElementUid)
+        assertTrue(InvalidDataValueConflict.matches(conflict))
+        assertTrue(InvalidDataValueConflict.getDataElement(conflict) == dataElementUid)
     }
 }

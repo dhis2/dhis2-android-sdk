@@ -43,7 +43,7 @@ object TrackedImportConflictSamples {
                 "Value does not match the attribute pattern")
     }
 
-    fun invalidAttributeType(attributeUid: String, value: String): ImportConflict {
+    fun invalidNumericAttribute(attributeUid: String, value: String): ImportConflict {
         return ImportConflict.create(
                 "Attribute.value",
                 "Value '$value' is not a valid numeric type for attribute $attributeUid")

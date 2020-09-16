@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.arch.db.access.internal;
 import android.content.Context;
 import android.database.Cursor;
 
-import androidx.test.InstrumentationRegistry;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore;
@@ -46,13 +46,13 @@ public class DatabaseAdapterFactoryIntegrationShould {
     
     @BeforeClass
     public static void setUpClass() {
-        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
+        Context context = InstrumentationRegistry.getInstrumentation().getContext();
         databaseAdapterFactory = DatabaseAdapterFactory.create(context, new InMemorySecureStore());
     }
     
     @AfterClass
     public static void tearDownClass() {
-        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
+        Context context = InstrumentationRegistry.getInstrumentation().getContext();
         context.deleteDatabase(DB_NAME + ".db");
     }
 

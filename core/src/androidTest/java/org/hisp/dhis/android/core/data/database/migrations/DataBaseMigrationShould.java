@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.data.database.migrations;
 
 import android.content.Context;
 
-import androidx.test.InstrumentationRegistry;
+import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
@@ -67,7 +67,7 @@ public class DataBaseMigrationShould {
             databaseAdapter.close();
         }
         if (dbName != null) {
-            InstrumentationRegistry.getContext().deleteDatabase(dbName);
+            InstrumentationRegistry.getInstrumentation().getContext().deleteDatabase(dbName);
         }
     }
 
@@ -90,7 +90,7 @@ public class DataBaseMigrationShould {
     }
 
     public DatabaseAdapter initCoreDataBase(int databaseVersion) {
-        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
+        Context context = InstrumentationRegistry.getInstrumentation().getContext();
         DatabaseAdapterFactory databaseAdapterFactory = DatabaseAdapterFactory.create(context, new InMemorySecureStore());
         databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter();
         databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, dbName, false, databaseVersion);

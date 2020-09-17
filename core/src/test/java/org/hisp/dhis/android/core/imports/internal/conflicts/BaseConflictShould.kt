@@ -59,5 +59,4 @@ internal open class BaseConflictShould {
         whenever(attributeStore.selectByUid(attributeUid)) doReturn attribute
         whenever(dataElementStore.selectByUid(dataElementUid)) doReturn dataElement
     }
-
 }

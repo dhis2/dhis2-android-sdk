@@ -73,5 +73,4 @@ class EnrollmentServiceShould {
         whenever(enrollment.status()) doReturn EnrollmentStatus.ACTIVE
         assertTrue(enrollmentService.blockingIsOpen(enrollmentUid))
     }
-
 }

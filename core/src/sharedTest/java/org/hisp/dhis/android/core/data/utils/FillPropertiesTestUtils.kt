@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.data.utils
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject
-import org.hisp.dhis.android.core.common.BaseNameableObject
 import java.text.ParseException
 import java.util.*
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.common.BaseNameableObject
 
 /**
  * A collection of convenience functions/abstractions to be used by the tests.
@@ -67,21 +67,21 @@ object FillPropertiesTestUtils {
     @JvmStatic
     fun fillIdentifiableProperties(builder: BaseIdentifiableObject.Builder<*>) {
         builder
-                .uid(UID)
-                .code(CODE)
-                .name(NAME)
-                .displayName(DISPLAY_NAME)
-                .created(CREATED)
-                .lastUpdated(LAST_UPDATED)
+            .uid(UID)
+            .code(CODE)
+            .name(NAME)
+            .displayName(DISPLAY_NAME)
+            .created(CREATED)
+            .lastUpdated(LAST_UPDATED)
     }
 
     @JvmStatic
     fun fillNameableProperties(builder: BaseNameableObject.Builder<*>) {
         fillIdentifiableProperties(builder)
         builder
-                .shortName(SHORT_NAME)
-                .displayShortName(DISPLAY_SHORT_NAME)
-                .description(DESCRIPTION)
-                .displayDescription(DISPLAY_DESCRIPTION)
+            .shortName(SHORT_NAME)
+            .displayShortName(DISPLAY_SHORT_NAME)
+            .description(DESCRIPTION)
+            .displayDescription(DISPLAY_DESCRIPTION)
     }
 }

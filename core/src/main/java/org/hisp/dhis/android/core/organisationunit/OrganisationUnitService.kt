@@ -34,18 +34,17 @@ import javax.inject.Inject
 
 @Reusable
 class OrganisationUnitService @Inject constructor(
-        private val organisationUnitRepository: OrganisationUnitCollectionRepository
+    private val organisationUnitRepository: OrganisationUnitCollectionRepository
 ) {
 
     fun blockingIsDateInOrgunitRange(organisationUnitUid: String, date: Date): Boolean {
         val organisationUnit = organisationUnitRepository.uid(organisationUnitUid).blockingGet() ?: return true
 
         return organisationUnit.openingDate()?.before(date) ?: true &&
-                organisationUnit.closedDate()?.after(date) ?: true
+            organisationUnit.closedDate()?.after(date) ?: true
     }
 
     fun isDateInOrgunitRange(organisationUnitUid: String, date: Date): Single<Boolean> {
         return Single.fromCallable { blockingIsDateInOrgunitRange(organisationUnitUid, date) }
     }
-
 }

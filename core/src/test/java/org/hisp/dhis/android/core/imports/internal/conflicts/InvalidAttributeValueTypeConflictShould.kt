@@ -46,8 +46,10 @@ internal class InvalidAttributeValueTypeConflictShould : BaseConflictShould() {
         checkMatchAndAttribute(TrackedImportConflictSamples.invalidAttributeOption(attributeUid, value, optionSetUid))
 
         assertTrue(InvalidAttributeValueTypeConflict.matches(TrackedImportConflictSamples.invalidFileAttribute(value)))
-        assertTrue(InvalidAttributeValueTypeConflict
-                .getTrackedEntityAttribute(TrackedImportConflictSamples.invalidFileAttribute(value)).isNullOrBlank())
+        assertTrue(
+            InvalidAttributeValueTypeConflict
+                .getTrackedEntityAttribute(TrackedImportConflictSamples.invalidFileAttribute(value)).isNullOrBlank()
+        )
     }
 
     @Test
@@ -61,7 +63,7 @@ internal class InvalidAttributeValueTypeConflictShould : BaseConflictShould() {
         checkDescription(TrackedImportConflictSamples.invalidAttributeOption(attributeUid, value, optionSetUid))
 
         val fileConflictDescription = InvalidAttributeValueTypeConflict
-                .getDisplayDescription(TrackedImportConflictSamples.invalidFileAttribute(value), context)
+            .getDisplayDescription(TrackedImportConflictSamples.invalidFileAttribute(value), context)
         assertTrue(fileConflictDescription == TrackedImportConflictSamples.invalidFileAttribute(value).value())
     }
 

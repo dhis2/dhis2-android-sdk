@@ -33,7 +33,7 @@ import javax.inject.Inject
 
 @Reusable
 class EnrollmentService @Inject constructor(
-        private val enrollmentRepository: EnrollmentCollectionRepository
+    private val enrollmentRepository: EnrollmentCollectionRepository
 ) {
 
     fun blockingIsOpen(enrollmentUid: String): Boolean {

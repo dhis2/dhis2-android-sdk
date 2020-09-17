@@ -240,3 +240,8 @@ repositories {
     mavenCentral()
     maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
 }
+
+detekt {
+    config = files("config/detekt.yml")
+    buildUponDefaultConfig = false
+}

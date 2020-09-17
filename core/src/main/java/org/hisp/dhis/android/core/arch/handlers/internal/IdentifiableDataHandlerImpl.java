@@ -153,7 +153,8 @@ public abstract class IdentifiableDataHandlerImpl<O extends DeletableDataObject 
     protected void handleRelationships(Collection<Relationship> relationships, ObjectWithUidInterface parent,
                                        RelationshipItemRelatives relatives) {
         if (relatives != null) {
-            relationshipVersionManager.createRelativesIfNotExist(relationships, parent.uid(), relatives);
+            relationshipVersionManager.saveRelativesIfNotExist(
+                    relationships, parent.uid(), relatives, relationshipHandler);
         }
         relationshipHandler.handleMany(relationships, relationship -> relationship.toBuilder()
                 .state(State.SYNCED)

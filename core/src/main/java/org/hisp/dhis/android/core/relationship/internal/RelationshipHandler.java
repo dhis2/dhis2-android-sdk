@@ -29,7 +29,9 @@ package org.hisp.dhis.android.core.relationship.internal;
 
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.RelationshipItem;
 
 public interface RelationshipHandler extends HandlerWithTransformer<Relationship> {
     boolean doesRelationshipExist(Relationship relationship);
+    boolean doesRelationshipItemExist(RelationshipItem item);
 }

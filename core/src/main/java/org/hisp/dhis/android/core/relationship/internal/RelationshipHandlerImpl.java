@@ -109,7 +109,8 @@ final class RelationshipHandlerImpl extends IdentifiableHandlerImpl<Relationship
         return getExistingRelationshipUid(relationship) != null;
     }
 
-    private boolean itemExists(RelationshipItem item) {
+    @Override
+    public boolean doesRelationshipItemExist(RelationshipItem item) {
         return storeSelector.getElementStore(item).exists(item.elementUid());
     }
 

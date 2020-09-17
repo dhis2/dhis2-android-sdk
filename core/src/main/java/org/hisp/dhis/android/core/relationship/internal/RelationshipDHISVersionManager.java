@@ -184,11 +184,13 @@ public class RelationshipDHISVersionManager {
         return parentUid.equals(fromUid) ? baseRelationship.to() : baseRelationship.from();
     }
 
-    public void createRelativesIfNotExist(Collection<Relationship> relationships, String parentUid,
-                                          RelationshipItemRelatives relatives) {
+    public void saveRelativesIfNotExist(Collection<Relationship> relationships,
+                                        String parentUid,
+                                        RelationshipItemRelatives relatives,
+                                        RelationshipHandler relationshipHandler) {
         for (BaseRelationship relationship : relationships) {
             RelationshipItem item = getRelatedRelationshipItem(relationship, parentUid);
-            if (item != null) {
+            if (item != null && !relationshipHandler.doesRelationshipItemExist(item)) {
                 switch (item.elementType()) {
                     case RelationshipItemTableInfo.Columns.TRACKED_ENTITY_INSTANCE:
                         relatives.addTrackedEntityInstance(item.elementUid());

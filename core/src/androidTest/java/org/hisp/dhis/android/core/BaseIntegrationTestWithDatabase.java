@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core;
 
 import android.content.Context;
 
-import androidx.test.InstrumentationRegistry;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
@@ -45,7 +45,7 @@ public abstract class BaseIntegrationTestWithDatabase {
 
     @Before
     public void setUp() throws IOException {
-        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
+        Context context = InstrumentationRegistry.getInstrumentation().getContext();
         DatabaseAdapterFactory databaseAdapterFactory = DatabaseAdapterFactory.create(context, new InMemorySecureStore());
         databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter();
         databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, null, false);

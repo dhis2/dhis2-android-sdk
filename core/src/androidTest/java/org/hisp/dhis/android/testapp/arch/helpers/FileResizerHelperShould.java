@@ -33,7 +33,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
-import androidx.test.InstrumentationRegistry;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper;
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper;
@@ -128,7 +128,7 @@ public class FileResizerHelperShould {
     }
 
     private static File getFile(Bitmap.CompressFormat compressFormat, Bitmap bitmap) {
-        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
+        Context context = InstrumentationRegistry.getInstrumentation().getContext();
         File imageFile = new File(FileResourceDirectoryHelper.getFileResourceDirectory(context), "image." +
                 compressFormat.name().toLowerCase());
         OutputStream os;

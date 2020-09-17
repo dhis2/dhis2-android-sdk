@@ -51,7 +51,6 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePe
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -60,7 +59,6 @@ import javax.inject.Inject;
 
 import dagger.Reusable;
 import io.reactivex.Completable;
-import io.reactivex.CompletableEmitter;
 import io.reactivex.Single;
 
 @Reusable
@@ -96,34 +94,51 @@ public final class RelationshipDownloadAndPersistCallFactory {
     }
 
     public Completable downloadAndPersist(RelationshipItemRelatives relatives) {
-        return Single.just(Collections.emptyList()).flatMapCompletable(emptyMap -> {
+        return downloadRelativeEvents(relatives).andThen(
+                downloadRelativeEnrolments(relatives).andThen(
+                        downloadRelativeTEIs(relatives)
+                )
+        );
+    }
 
+    private Completable downloadRelativeEvents(RelationshipItemRelatives relatives) {
+        return Completable.defer(() -> {
             Set<String> eventRelationships = relatives.getRelativeEventUids();
+            List<Single<Event>> singles = new ArrayList<>();
+            List<String> failedEvents = new ArrayList<>();
+
             if (!eventRelationships.isEmpty()) {
-                List<Single<Event>> singles = new ArrayList<>();
-                List<String> failedEvents = new ArrayList<>();
                 for (String uid : eventRelationships) {
                     Single<Event> single = eventService.getEventSingle(uid, EventFields.asRelationshipFields)
                             .onErrorResumeNext((err) -> {
                                 failedEvents.add(uid);
                                 return Single.error(err);
                             });
-
                     singles.add(single);
                 }
-
-                return Single.merge(singles)
-                        .collect((Callable<List<Event>>) ArrayList::new, List::add)
-                        .flatMapCompletable(events -> Completable.fromAction(() -> {
-                            eventPersistenceCallFactory.persistRelationships(events).blockingAwait();
-                            cleanFailedRelationships(failedEvents, RelationshipItemTableInfo.Columns.EVENT);
-                        }));
             }
 
+            return Single.merge(singles)
+                    .collect((Callable<List<Event>>) ArrayList::new, List::add)
+                    .flatMapCompletable(events -> Completable.fromAction(() -> {
+                        eventPersistenceCallFactory.persistAsRelationships(events).blockingAwait();
+                        for (Event event : events) {
+                            if (event.enrollment() != null) {
+                                relatives.addEnrollment(event.enrollment());
+                            }
+                        }
+                        cleanFailedRelationships(failedEvents, RelationshipItemTableInfo.Columns.EVENT);
+                    }));
+        });
+    }
+
+    private Completable downloadRelativeEnrolments(RelationshipItemRelatives relatives) {
+        return Completable.defer(() -> {
+            List<Single<Enrollment>> singles = new ArrayList<>();
+            List<String> failedEnrollments = new ArrayList<>();
             Set<String> enrollmentRelationships = relatives.getRelativeEnrollmentUids();
+
             if (!enrollmentRelationships.isEmpty()) {
-                List<Single<Enrollment>> singles = new ArrayList<>();
-                List<String> failedEnrollments = new ArrayList<>();
                 for (String uid : enrollmentRelationships) {
                     Single<Enrollment> single = enrollmentService.getEnrollmentSingle(uid,
                             EnrollmentFields.asRelationshipFields)
@@ -131,22 +146,31 @@ public final class RelationshipDownloadAndPersistCallFactory {
                                 failedEnrollments.add(uid);
                                 return Single.error(err);
                             });
-
                     singles.add(single);
                 }
-
-                return Single.merge(singles)
-                        .collect((Callable<List<Enrollment>>) ArrayList::new, List::add)
-                        .flatMapCompletable(enrollments -> Completable.fromAction(() -> {
-                            enrollmentPersistenceCallFactory.persistRelationships(enrollments).blockingAwait();
-                            cleanFailedRelationships(failedEnrollments, RelationshipItemTableInfo.Columns.ENROLLMENT);
-                        }));
             }
 
+            return Single.merge(singles)
+                    .collect((Callable<List<Enrollment>>) ArrayList::new, List::add)
+                    .flatMapCompletable(enrollments -> Completable.fromAction(() -> {
+                        enrollmentPersistenceCallFactory.persistAsRelationships(enrollments).blockingAwait();
+                        for (Enrollment enrollment : enrollments) {
+                            if (enrollment.trackedEntityInstance() != null) {
+                                relatives.addTrackedEntityInstance(enrollment.trackedEntityInstance());
+                            }
+                        }
+                        cleanFailedRelationships(failedEnrollments, RelationshipItemTableInfo.Columns.ENROLLMENT);
+                    }));
+        });
+    }
+
+    private Completable downloadRelativeTEIs(RelationshipItemRelatives relatives) {
+        return Completable.defer(() -> {
+            List<Single<Payload<TrackedEntityInstance>>> singles = new ArrayList<>();
+            List<String> failedTeis = new ArrayList<>();
             Set<String> teiRelationships = relatives.getRelativeTrackedEntityInstanceUids();
+
             if (!teiRelationships.isEmpty()) {
-                List<Single<Payload<TrackedEntityInstance>>> singles = new ArrayList<>();
-                List<String> failedTeis = new ArrayList<>();
                 for (String uid : teiRelationships) {
                     Single<Payload<TrackedEntityInstance>> single =
                             trackedEntityInstanceService.getTrackedEntityInstance(uid,
@@ -158,20 +182,16 @@ public final class RelationshipDownloadAndPersistCallFactory {
 
                     singles.add(single);
                 }
-
-                return Single.merge(singles)
-                        .collect((Callable<List<TrackedEntityInstance>>) ArrayList::new,
-                                (teis, payload) -> teis.addAll(payload.items()))
-                        .flatMapCompletable(teis -> Completable.fromAction(() -> {
-                            teiPersistenceCallFactory.persistRelationships(teis).blockingAwait();
-                            cleanFailedRelationships(failedTeis,
-                                    RelationshipItemTableInfo.Columns.TRACKED_ENTITY_INSTANCE);
-                        }));
             }
 
-            return Completable.create(CompletableEmitter::onComplete);
+            return Single.merge(singles)
+                    .collect((Callable<List<TrackedEntityInstance>>) ArrayList::new,
+                            (teis, payload) -> teis.addAll(payload.items()))
+                    .flatMapCompletable(teis -> Completable.fromAction(() -> {
+                        teiPersistenceCallFactory.persistRelationships(teis).blockingAwait();
+                        cleanFailedRelationships(failedTeis, RelationshipItemTableInfo.Columns.TRACKED_ENTITY_INSTANCE);
+                    }));
         });
-
     }
 
     private void cleanFailedRelationships(List<String> failedTeis, String elementType) {

@@ -94,7 +94,7 @@ public final class EventWithLimitCallFactory {
     public Observable<D2Progress> downloadSingleEvents(ProgramDataDownloadParams params) {
         D2ProgressManager progressManager = new D2ProgressManager(3);
         RelationshipItemRelatives relatives = new RelationshipItemRelatives();
-        return Observable.merge(
+        return Observable.concat(
                 downloadSystemInfo(progressManager),
                 downloadEventsInternal(params, progressManager, relatives),
                 downloadRelationships(progressManager, relatives));
@@ -144,9 +144,11 @@ public final class EventWithLimitCallFactory {
 
     private Observable<D2Progress> downloadRelationships(D2ProgressManager progressManager,
                                                          RelationshipItemRelatives relatives) {
-        Completable completable = versionManager.is2_29() ? Completable.complete() :
-                this.relationshipDownloadAndPersistCallFactory.downloadAndPersist(relatives);
-        return completable.andThen(Observable.just(progressManager.increaseProgress(Event.class, true)));
+        return Observable.defer(() -> {
+            Completable completable = versionManager.is2_29() ? Completable.complete() :
+                    this.relationshipDownloadAndPersistCallFactory.downloadAndPersist(relatives);
+            return completable.andThen(Observable.just(progressManager.increaseProgress(Event.class, true)));
+        });
     }
 
     private Observable<D2Progress> downloadSystemInfo(D2ProgressManager progressManager) {

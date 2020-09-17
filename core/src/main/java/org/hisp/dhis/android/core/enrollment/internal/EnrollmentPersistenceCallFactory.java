@@ -51,7 +51,7 @@ public final class EnrollmentPersistenceCallFactory {
         this.enrollmentHandler = enrollmentHandler;
     }
 
-    public Completable persistRelationships(final List<Enrollment> enrollments) {
+    public Completable persistAsRelationships(final List<Enrollment> enrollments) {
         return persistEnrollmentsInternal(enrollments, true, false, false);
     }
 

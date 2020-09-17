@@ -87,10 +87,6 @@ final class RelationshipHandlerImpl extends IdentifiableHandlerImpl<Relationship
             throw new RuntimeException("Only TEI to TEI relationships are supported in 2.29");
         }
 
-        if (!itemExists(relationship.from()) || !itemExists(relationship.to())) {
-            throw new RuntimeException("Trying to persist relationship for at least one item not present in database");
-        }
-
         String existingRelationshipUid = getExistingRelationshipUid(relationship);
 
         // Compatibility with 2.29. Relationships do not have uids and must be matched based on their items.

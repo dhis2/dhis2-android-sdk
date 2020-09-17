@@ -68,7 +68,7 @@ public final class EventPersistenceCallFactory {
         return persistEventsInternal(events, false, relatives);
     }
 
-    public Completable persistRelationships(final List<Event> events) {
+    public Completable persistAsRelationships(final List<Event> events) {
         return persistEventsInternal(events, true, null);
     }
 

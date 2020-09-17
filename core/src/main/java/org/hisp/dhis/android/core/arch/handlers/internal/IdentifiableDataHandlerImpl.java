@@ -49,7 +49,7 @@ import java.util.List;
 import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.isDeleted;
 
 public abstract class IdentifiableDataHandlerImpl<O extends DeletableDataObject & ObjectWithUidInterface>
-         implements IdentifiableDataHandler<O> {
+        implements IdentifiableDataHandler<O> {
 
     final IdentifiableDataObjectStore<O> store;
     private final RelationshipDHISVersionManager relationshipVersionManager;

@@ -139,32 +139,37 @@ class TrackedEntityInstanceWithLimitCallFactory {
                                                 ProgramDataDownloadParams params,
                                                 Set<ProgramOrganisationUnitLastUpdated> programOrganisationUnitSet,
                                                 RelationshipItemRelatives relatives) {
+        return Observable.defer(() -> {
+            List<TeiQuery.Builder> teiQueryBuilders = trackedEntityInstanceQueryBuilderFactory
+                    .getTeiQueryBuilders(params);
 
-        List<TeiQuery.Builder> teiQueryBuilders = trackedEntityInstanceQueryBuilderFactory.getTeiQueryBuilders(params);
+            Observable<List<TrackedEntityInstance>> teiDownloadObservable =
+                    Observable.fromIterable(teiQueryBuilders)
+                            .flatMap(this::getTrackedEntityInstancesWithPaging);
+            // TODO .subscribeOn(teiDownloadScheduler);
 
-        Observable<List<TrackedEntityInstance>> teiDownloadObservable =
-                Observable.fromIterable(teiQueryBuilders)
-                        .flatMap(this::getTrackedEntityInstancesWithPaging); // TODO .subscribeOn(teiDownloadScheduler);
+            Date serverDate = systemInfoRepository.blockingGet().serverDate();
 
-        Date serverDate = systemInfoRepository.blockingGet().serverDate();
+            boolean isFullUpdate = params.program() == null;
+            boolean overwrite = params.overwrite();
 
-        boolean isFullUpdate = params.program() == null;
-        boolean overwrite = params.overwrite();
-
-        return teiDownloadObservable.flatMapSingle(
-                teiList -> persistenceCallFactory.persistTEIs(teiList, isFullUpdate, overwrite, relatives)
-                        .doOnComplete(() -> programOrganisationUnitSet.addAll(
-                                TrackedEntityInstanceHelper.getProgramOrganisationUnitTuple(teiList, serverDate)))
-                        .toSingle(() ->
-                                progressManager.increaseProgress(TrackedEntityInstance.class, false)));
+            return teiDownloadObservable.flatMapSingle(
+                    teiList -> persistenceCallFactory.persistTEIs(teiList, isFullUpdate, overwrite, relatives)
+                            .doOnComplete(() -> programOrganisationUnitSet.addAll(
+                                    TrackedEntityInstanceHelper.getProgramOrganisationUnitTuple(teiList, serverDate)))
+                            .toSingle(() ->
+                                    progressManager.increaseProgress(TrackedEntityInstance.class, false)));
+        });
     }
 
     private Observable<D2Progress> downloadRelationships(D2ProgressManager progressManager,
                                                          RelationshipItemRelatives relatives) {
-        Completable completable = versionManager.is2_29() ? Completable.complete() :
-                this.relationshipDownloadAndPersistCallFactory.downloadAndPersist(relatives);
-        return completable.andThen(
-                Observable.just(progressManager.increaseProgress(TrackedEntityInstance.class, true)));
+        return Observable.defer(() -> {
+            Completable completable = versionManager.is2_29() ? Completable.complete() :
+                    this.relationshipDownloadAndPersistCallFactory.downloadAndPersist(relatives);
+            return completable.andThen(
+                    Observable.just(progressManager.increaseProgress(TrackedEntityInstance.class, true)));
+        });
     }
 
     private Observable<List<TrackedEntityInstance>> getTrackedEntityInstancesWithPaging(

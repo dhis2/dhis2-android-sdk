@@ -348,8 +348,9 @@ Server response is parsed to ensure that data has been correctly uploaded to the
 d2.importModule().trackerImportConflicts()
 ```
 
-Conflicts linked to a TrackedEntityInstance, Enrollment or Event are
-automatically removed after a successful upload of the object.
+Conflicts linked to a TrackedEntityInstance, Enrollment or Event are automatically removed after a successful upload of the object.
+
+The SDK tries to identify the confliction dataElement or attribute by parsing the server response. If so, it also stores the value of the element when the conflict happened so that the application can highlight the element in form when the value has not been fixed yet.
 
 ### Tracker data: reserved values
 

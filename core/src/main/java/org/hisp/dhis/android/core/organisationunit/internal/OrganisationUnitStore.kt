@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
 
 @Suppress("MagicNumber")
 object OrganisationUnitStore {
-    private val BINDER = object: NameableStatementBinder<OrganisationUnit>() {
+    private val BINDER = object : NameableStatementBinder<OrganisationUnit>() {
         override fun bindToStatement(o: OrganisationUnit, w: StatementWrapper) {
             super.bindToStatement(o, w)
             w.bind(11, o.path())
@@ -57,7 +57,9 @@ object OrganisationUnitStore {
 
     @JvmStatic
     fun create(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<OrganisationUnit> {
-        return StoreFactory.objectWithUidStore(databaseAdapter, OrganisationUnitTableInfo.TABLE_INFO, BINDER,
-                ObjectFactory { cursor: Cursor -> OrganisationUnit.create(cursor) })
+        return StoreFactory.objectWithUidStore(
+            databaseAdapter, OrganisationUnitTableInfo.TABLE_INFO, BINDER,
+            ObjectFactory { cursor: Cursor -> OrganisationUnit.create(cursor) }
+        )
     }
 }

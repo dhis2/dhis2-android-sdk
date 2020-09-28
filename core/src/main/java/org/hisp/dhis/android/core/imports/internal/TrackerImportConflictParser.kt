@@ -28,75 +28,94 @@
 package org.hisp.dhis.android.core.imports.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.imports.TrackerImportConflict
+import org.hisp.dhis.android.core.imports.internal.conflicts.BadAttributePatternConflict
+import org.hisp.dhis.android.core.imports.internal.conflicts.InvalidAttributeValueTypeConflict
 import org.hisp.dhis.android.core.imports.internal.conflicts.InvalidDataValueConflict
 import org.hisp.dhis.android.core.imports.internal.conflicts.MissingAttributeConflict
+import org.hisp.dhis.android.core.imports.internal.conflicts.MissingDataElementConflict
+import org.hisp.dhis.android.core.imports.internal.conflicts.NonUniqueAttributeConflict
 import org.hisp.dhis.android.core.imports.internal.conflicts.TrackerImportConflictItem
 import org.hisp.dhis.android.core.imports.internal.conflicts.TrackerImportConflictItemContext
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueCollectionRepository
-import javax.inject.Inject
 
 @Reusable
 internal class TrackerImportConflictParser @Inject constructor(
-        attributeStore: IdentifiableObjectStore<TrackedEntityAttribute>,
-        dataElementStore: IdentifiableObjectStore<DataElement>,
-        private val trackedEntityAttributeValueRepository: TrackedEntityAttributeValueCollectionRepository,
-        private val trackedEntityInstanceDataValueRepository: TrackedEntityDataValueCollectionRepository
+    attributeStore: IdentifiableObjectStore<TrackedEntityAttribute>,
+    dataElementStore: IdentifiableObjectStore<DataElement>,
+    private val trackedEntityAttributeValueRepository: TrackedEntityAttributeValueCollectionRepository,
+    private val trackedEntityInstanceDataValueRepository: TrackedEntityDataValueCollectionRepository
 ) {
 
     private val context = TrackerImportConflictItemContext(attributeStore, dataElementStore)
 
     private val trackedEntityInstanceConflicts: List<TrackerImportConflictItem> = listOf(
-            MissingAttributeConflict
+        InvalidAttributeValueTypeConflict,
+        MissingAttributeConflict,
+        BadAttributePatternConflict,
+        NonUniqueAttributeConflict
     )
 
     private val enrollmentConflicts: List<TrackerImportConflictItem> = listOf(
-            MissingAttributeConflict
+        InvalidAttributeValueTypeConflict,
+        MissingAttributeConflict,
+        BadAttributePatternConflict,
+        NonUniqueAttributeConflict
     )
 
     private val eventConflicts: List<TrackerImportConflictItem> = listOf(
-            InvalidDataValueConflict
+        InvalidDataValueConflict,
+        MissingDataElementConflict
     )
 
-    fun getTrackedEntityInstanceConflict(conflict: ImportConflict,
-                                         conflictBuilder: TrackerImportConflict.Builder): TrackerImportConflict {
+    fun getTrackedEntityInstanceConflict(
+        conflict: ImportConflict,
+        conflictBuilder: TrackerImportConflict.Builder
+    ): TrackerImportConflict {
         return evaluateConflicts(conflict, conflictBuilder, trackedEntityInstanceConflicts)
     }
 
-    fun getEnrollmentConflict(conflict: ImportConflict,
-                              conflictBuilder: TrackerImportConflict.Builder): TrackerImportConflict {
+    fun getEnrollmentConflict(
+        conflict: ImportConflict,
+        conflictBuilder: TrackerImportConflict.Builder
+    ): TrackerImportConflict {
         return evaluateConflicts(conflict, conflictBuilder, enrollmentConflicts)
     }
 
-    fun getEventConflict(conflict: ImportConflict,
-                         conflictBuilder: TrackerImportConflict.Builder): TrackerImportConflict {
+    fun getEventConflict(
+        conflict: ImportConflict,
+        conflictBuilder: TrackerImportConflict.Builder
+    ): TrackerImportConflict {
         return evaluateConflicts(conflict, conflictBuilder, eventConflicts)
     }
 
-    private fun evaluateConflicts(conflict: ImportConflict,
-                                  conflictBuilder: TrackerImportConflict.Builder,
-                                  conflictTypes: List<TrackerImportConflictItem>): TrackerImportConflict {
+    private fun evaluateConflicts(
+        conflict: ImportConflict,
+        conflictBuilder: TrackerImportConflict.Builder,
+        conflictTypes: List<TrackerImportConflictItem>
+    ): TrackerImportConflict {
         val conflictType = conflictTypes.find { it.matches(conflict) }
 
         if (conflictType != null) {
             conflictBuilder
-                    .errorCode(conflictType.errorCode)
-                    .displayDescription(conflictType.getDisplayDescription(conflict, context))
-                    .trackedEntityAttribute(conflictType.getTrackedEntityAttribute(conflict))
-                    .dataElement(conflictType.getDataElement(conflict))
+                .errorCode(conflictType.errorCode)
+                .displayDescription(conflictType.getDisplayDescription(conflict, context))
+                .trackedEntityAttribute(conflictType.getTrackedEntityAttribute(conflict))
+                .dataElement(conflictType.getDataElement(conflict))
         } else {
             conflictBuilder
-                    .displayDescription(conflict.value())
+                .displayDescription(conflict.value())
         }
 
         return conflictBuilder
-                .conflict(conflict.value())
-                .value(getConflictValue(conflictBuilder))
-                .build()
+            .conflict(conflict.value())
+            .value(getConflictValue(conflictBuilder))
+            .build()
     }
 
     private fun getConflictValue(conflictBuilder: TrackerImportConflict.Builder): String? {
@@ -104,12 +123,12 @@ internal class TrackerImportConflictParser @Inject constructor(
 
         return if (auxConflict.dataElement() != null && auxConflict.event() != null) {
             trackedEntityInstanceDataValueRepository
-                    .value(auxConflict.event(), auxConflict.dataElement())
-                    .blockingGet()?.value()
+                .value(auxConflict.event(), auxConflict.dataElement())
+                .blockingGet()?.value()
         } else if (auxConflict.trackedEntityAttribute() != null && auxConflict.trackedEntityInstance() != null) {
             trackedEntityAttributeValueRepository
-                    .value(auxConflict.trackedEntityAttribute(), auxConflict.trackedEntityInstance())
-                    .blockingGet()?.value()
+                .value(auxConflict.trackedEntityAttribute(), auxConflict.trackedEntityInstance())
+                .blockingGet()?.value()
         } else {
             null
         }

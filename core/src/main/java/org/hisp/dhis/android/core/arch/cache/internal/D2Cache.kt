@@ -36,5 +36,4 @@ internal interface D2Cache<K, V> {
     fun remove(key: K): V?
 
     fun clear()
-
 }

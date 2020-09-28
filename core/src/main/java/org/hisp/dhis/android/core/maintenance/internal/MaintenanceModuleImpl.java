@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.maintenance.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCollectionRepository;
-import org.hisp.dhis.android.core.arch.db.access.DatabaseImportExport;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationCollectionRepository;
 import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
 import org.hisp.dhis.android.core.maintenance.PerformanceHintsService;
@@ -44,16 +43,14 @@ public final class MaintenanceModuleImpl implements MaintenanceModule {
     private final DatabaseAdapter databaseAdapter;
     private final ForeignKeyViolationCollectionRepository foreignKeyViolations;
     private final D2ErrorCollectionRepository d2Errors;
-    private final DatabaseImportExport databaseImportExport;
 
     @Inject
     MaintenanceModuleImpl(DatabaseAdapter databaseAdapter,
                           ForeignKeyViolationCollectionRepository foreignKeyViolations,
-                          D2ErrorCollectionRepository d2Errors, DatabaseImportExport databaseImportExport) {
+                          D2ErrorCollectionRepository d2Errors) {
         this.databaseAdapter = databaseAdapter;
         this.foreignKeyViolations = foreignKeyViolations;
         this.d2Errors = d2Errors;
-        this.databaseImportExport = databaseImportExport;
     }
 
     @Override
@@ -71,10 +68,5 @@ public final class MaintenanceModuleImpl implements MaintenanceModule {
     @Override
     public D2ErrorCollectionRepository d2Errors() {
         return d2Errors;
-    }
-
-    @Override
-    public DatabaseImportExport databaseImportExport() {
-        return databaseImportExport;
     }
 }

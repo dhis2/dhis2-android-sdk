@@ -43,7 +43,8 @@ class OrganisationUnitServiceShould {
 
     private val organisationUnit: OrganisationUnit = mock()
 
-    private val organisationUnitRepository: OrganisationUnitCollectionRepository = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
+    private val organisationUnitRepository: OrganisationUnitCollectionRepository =
+        mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
 
     private val organisationUnitService = OrganisationUnitService(organisationUnitRepository)
 
@@ -51,7 +52,6 @@ class OrganisationUnitServiceShould {
     private val firstJanuary = BaseIdentifiableObject.DATE_FORMAT.parse("2020-01-01T00:00:00.000")
     private val secondJanuary = BaseIdentifiableObject.DATE_FORMAT.parse("2020-01-02T00:00:00.000")
     private val thirdJanuary = BaseIdentifiableObject.DATE_FORMAT.parse("2020-01-03T00:00:00.000")
-
 
     @Before
     fun setUp() {
@@ -88,7 +88,5 @@ class OrganisationUnitServiceShould {
         whenever(organisationUnit.openingDate()) doReturn null
         whenever(organisationUnit.closedDate()) doReturn firstJanuary
         assertFalse(organisationUnitService.blockingIsDateInOrgunitRange(organisationUnitUid, secondJanuary))
-
     }
-
 }

@@ -34,16 +34,16 @@ import javax.inject.Inject
 
 @Reusable
 class CategoryOptionComboService @Inject constructor(
-        private val categoryOptionRepository: CategoryOptionCollectionRepository
+    private val categoryOptionRepository: CategoryOptionCollectionRepository
 ) {
 
     fun blockingHasAccess(categoryOptionComboUid: String, date: Date?): Boolean {
         val categoryOptions = categoryOptionRepository
-                .byCategoryOptionComboUid(categoryOptionComboUid)
-                .blockingGet()
+            .byCategoryOptionComboUid(categoryOptionComboUid)
+            .blockingGet()
 
         return categoryOptions.none { it.access().data().write() == false } &&
-                date?.let { d -> categoryOptions.all { isInOptionRange(it, d) } } ?: true
+            date?.let { d -> categoryOptions.all { isInOptionRange(it, d) } } ?: true
     }
 
     fun hasAccess(categoryOptionComboUid: String, date: Date?): Single<Boolean> {
@@ -52,6 +52,6 @@ class CategoryOptionComboService @Inject constructor(
 
     private fun isInOptionRange(option: CategoryOption, date: Date): Boolean {
         return option.startDate()?.before(date) ?: true &&
-                option.endDate()?.after(date) ?: true
+            option.endDate()?.after(date) ?: true
     }
 }

@@ -33,7 +33,6 @@ import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
 
 import org.hisp.dhis.android.core.arch.cache.internal.D2Cache;
-import org.hisp.dhis.android.core.arch.cache.internal.ExpirableCache;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenSelection;
@@ -63,7 +62,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -84,8 +82,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
 
     private final TrackedEntityInstanceQueryRepositoryScope scope;
 
-    private final D2Cache<TrackedEntityInstanceQueryOnline, List<TrackedEntityInstance>> onlineCache =
-            new ExpirableCache<>(TimeUnit.MINUTES.toMillis(5));
+    private final D2Cache<TrackedEntityInstanceQueryOnline, List<TrackedEntityInstance>> onlineCache;
 
     @Inject
     TrackedEntityInstanceQueryCollectionRepository(
@@ -93,15 +90,17 @@ public final class TrackedEntityInstanceQueryCollectionRepository
             final TrackedEntityInstanceQueryCallFactory onlineCallFactory,
             final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders,
             final TrackedEntityInstanceQueryRepositoryScope scope,
-            final DHISVersionManager versionManager) {
+            final DHISVersionManager versionManager,
+            final D2Cache<TrackedEntityInstanceQueryOnline, List<TrackedEntityInstance>> onlineCache) {
         this.store = store;
         this.onlineCallFactory = onlineCallFactory;
         this.childrenAppenders = childrenAppenders;
         this.scope = scope;
         this.versionManager = versionManager;
+        this.onlineCache = onlineCache;
         this.connectorFactory = new ScopedFilterConnectorFactory<>(s ->
                 new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
-                        s, versionManager));
+                        s, versionManager, onlineCache));
     }
 
     /**
@@ -112,7 +111,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      */
     public TrackedEntityInstanceQueryCollectionRepository onlineOnly() {
         return new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
-                scope.toBuilder().mode(RepositoryMode.ONLINE_ONLY).build(), versionManager);
+                scope.toBuilder().mode(RepositoryMode.ONLINE_ONLY).build(), versionManager, onlineCache);
     }
 
     /**
@@ -122,7 +121,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      */
     public TrackedEntityInstanceQueryCollectionRepository offlineOnly() {
         return new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
-                scope.toBuilder().mode(RepositoryMode.OFFLINE_ONLY).build(), versionManager);
+                scope.toBuilder().mode(RepositoryMode.OFFLINE_ONLY).build(), versionManager, onlineCache);
     }
 
     /**
@@ -134,7 +133,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      */
     public TrackedEntityInstanceQueryCollectionRepository onlineFirst() {
         return new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
-                scope.toBuilder().mode(RepositoryMode.ONLINE_FIRST).build(), versionManager);
+                scope.toBuilder().mode(RepositoryMode.ONLINE_FIRST).build(), versionManager, onlineCache);
     }
 
     /**
@@ -146,7 +145,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      */
     public TrackedEntityInstanceQueryCollectionRepository offlineFirst() {
         return new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
-                scope.toBuilder().mode(RepositoryMode.OFFLINE_FIRST).build(), versionManager);
+                scope.toBuilder().mode(RepositoryMode.OFFLINE_FIRST).build(), versionManager, onlineCache);
     }
 
     /**

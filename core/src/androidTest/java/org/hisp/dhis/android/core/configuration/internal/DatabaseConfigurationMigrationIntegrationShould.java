@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.configuration.internal;
 
 import android.content.Context;
 
-import androidx.test.InstrumentationRegistry;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
@@ -57,7 +57,7 @@ import static org.hisp.dhis.android.core.configuration.internal.DatabaseConfigur
 @RunWith(D2JunitRunner.class)
 public class DatabaseConfigurationMigrationIntegrationShould {
 
-    private final Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
+    private final Context context = InstrumentationRegistry.getInstrumentation().getContext();
     private final DatabaseConfigurationTransformer transformer = new DatabaseConfigurationTransformer();
     private final DatabaseNameGenerator nameGenerator = new DatabaseNameGenerator();
     private final DatabaseRenamer renamer = new DatabaseRenamer(context);

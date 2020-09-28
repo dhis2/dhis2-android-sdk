@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.event.internal
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
+import java.util.Calendar
 import junit.framework.Assert.assertFalse
 import junit.framework.Assert.assertTrue
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
@@ -40,7 +41,6 @@ import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.junit.Before
 import org.junit.Test
-import java.util.*
 
 class EventDateUtilsShould {
 
@@ -58,7 +58,12 @@ class EventDateUtilsShould {
     @Before
     fun setUp() {
         whenever(periodHelper.calendar) doReturn getCalendar()
-        whenever(periodHelper.blockingGetPeriodForPeriodTypeAndDate(PeriodType.Monthly, thirdJanuary, 1)) doReturn february
+        whenever(
+            periodHelper.blockingGetPeriodForPeriodTypeAndDate(
+                PeriodType.Monthly, thirdJanuary,
+                1
+            )
+        ) doReturn february
         whenever(february.startDate()) doReturn firstFebruary
     }
 
@@ -94,7 +99,7 @@ class EventDateUtilsShould {
     private fun getCalendar(): Calendar {
         val calendar = Calendar.getInstance()
         calendar[Calendar.YEAR] = 2020
-        calendar[Calendar.MONTH] = 1    // February
+        calendar[Calendar.MONTH] = 1 // February
         calendar[Calendar.DATE] = 5
         return calendar
     }

@@ -50,9 +50,9 @@ class OrganisationUnitService @Inject constructor(
 
     fun blockingIsInCaptureScope(organisationUnitUid: String): Boolean {
         return organisationUnitRepository
-                .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
-                .byUid().eq(organisationUnitUid)
-                .blockingGet().isNotEmpty()
+            .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
+            .byUid().eq(organisationUnitUid)
+            .blockingGet().isNotEmpty()
     }
 
     fun isInCaptureScope(organisationUnitUid: String): Single<Boolean> {

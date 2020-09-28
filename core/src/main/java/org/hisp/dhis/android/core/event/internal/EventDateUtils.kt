@@ -28,17 +28,17 @@
 package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
+import java.util.*
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
-import java.util.*
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
 @Reusable
 class EventDateUtils @Inject constructor(
-        private val periodHelper: PeriodHelper
+    private val periodHelper: PeriodHelper
 ) {
 
     /**
@@ -52,8 +52,8 @@ class EventDateUtils @Inject constructor(
     fun isExpiredAfterCompletion(evaluationDate: Date?, completeDate: Date?, completeExpiryDays: Int): Boolean {
         val referenceDate = evaluationDate ?: getCalendar().time
         return completeDate != null &&
-                completeExpiryDays > 0 &&
-                completeDate.time + TimeUnit.DAYS.toMillis(completeExpiryDays.toLong()) < referenceDate.time
+            completeExpiryDays > 0 &&
+            completeDate.time + TimeUnit.DAYS.toMillis(completeExpiryDays.toLong()) < referenceDate.time
     }
 
     /**
@@ -67,20 +67,24 @@ class EventDateUtils @Inject constructor(
      * @param expiryDays           extra days after period to edit event.
      * @return true or false
      */
-    fun isEventExpired(event: Event, completeExpiryDays: Int,
-                       programPeriodType: PeriodType?, expiryDays: Int): Boolean {
+    fun isEventExpired(
+        event: Event,
+        completeExpiryDays: Int,
+        programPeriodType: PeriodType?,
+        expiryDays: Int
+    ): Boolean {
         if (event.status() == EventStatus.COMPLETED && event.completedDate() == null) return false
 
         val expiredBecauseOfCompletion =
-                if (event.status() == EventStatus.COMPLETED) {
-                    isExpiredAfterCompletion(null, event.completedDate(), completeExpiryDays)
-                } else {
-                    false
-                }
+            if (event.status() == EventStatus.COMPLETED) {
+                isExpiredAfterCompletion(null, event.completedDate(), completeExpiryDays)
+            } else {
+                false
+            }
 
         val expiredBecauseOfPeriod = programPeriodType?.let { periodType ->
             var nextPeriod = periodHelper
-                    .blockingGetPeriodForPeriodTypeAndDate(periodType, event.eventDate()!!, 1).startDate()!!
+                .blockingGetPeriodForPeriodTypeAndDate(periodType, event.eventDate()!!, 1).startDate()!!
             val currentDate: Date = getCalendar().time
             if (expiryDays > 0) {
                 val calendar: Calendar = getCalendar()

@@ -45,6 +45,17 @@ class OrganisationUnitService @Inject constructor(
     }
 
     fun isDateInOrgunitRange(organisationUnitUid: String, date: Date): Single<Boolean> {
-        return Single.fromCallable { blockingIsDateInOrgunitRange(organisationUnitUid, date) }
+        return Single.just(blockingIsDateInOrgunitRange(organisationUnitUid, date))
+    }
+
+    fun blockingIsInCaptureScope(organisationUnitUid: String): Boolean {
+        return organisationUnitRepository
+            .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
+            .byUid().eq(organisationUnitUid)
+            .blockingGet().isNotEmpty()
+    }
+
+    fun isInCaptureScope(organisationUnitUid: String): Single<Boolean> {
+        return Single.just(blockingIsInCaptureScope(organisationUnitUid))
     }
 }

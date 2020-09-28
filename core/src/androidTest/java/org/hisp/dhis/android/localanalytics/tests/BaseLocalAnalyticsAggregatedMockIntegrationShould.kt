@@ -52,14 +52,18 @@ internal abstract class BaseLocalAnalyticsAggregatedMockIntegrationShould : Base
     @Test
     fun count_data_values_for_data_element() {
         val firstDataValue = d2.dataValueModule().dataValues().one().blockingGet()
-        val dataValuesCount = d2.dataValueModule().dataValues().byDataElementUid().eq(firstDataValue.dataElement()).blockingCount()
+        val dataValuesCount = d2.dataValueModule().dataValues()
+            .byDataElementUid().eq(firstDataValue.dataElement())
+            .blockingCount()
         assertThat(dataValuesCount).isEqualTo(30 * SizeFactor)
     }
 
     @Test
     fun sum_data_values_for_data_element() {
         val dv = d2.dataValueModule().dataValues().one().blockingGet()
-        val dataValues = d2.dataValueModule().dataValues().byDataElementUid().eq(dv.dataElement()).blockingGet()
+        val dataValues = d2.dataValueModule().dataValues()
+            .byDataElementUid().eq(dv.dataElement())
+            .blockingGet()
         val sum = dataValues.sumByDouble { it.value()!!.toDouble() }
         assertThat(sum).isFinite()
     }
@@ -67,7 +71,9 @@ internal abstract class BaseLocalAnalyticsAggregatedMockIntegrationShould : Base
     @Test
     fun avg_data_values_for_data_element() {
         val dv = d2.dataValueModule().dataValues().one().blockingGet()
-        val dataValues = d2.dataValueModule().dataValues().byDataElementUid().eq(dv.dataElement()).blockingGet()
+        val dataValues = d2.dataValueModule().dataValues()
+            .byDataElementUid().eq(dv.dataElement())
+            .blockingGet()
         assertThat(getAvgValue(dataValues)).isFinite()
     }
 
@@ -79,14 +85,14 @@ internal abstract class BaseLocalAnalyticsAggregatedMockIntegrationShould : Base
     @Test
     fun count_data_values_for_data_element_for_ou_level_3() {
         val ou = d2.organisationUnitModule().organisationUnits()
-                .byLevel().eq(3)
-                .one().blockingGet()
+            .byLevel().eq(3)
+            .one().blockingGet()
         val firstDataValue = d2.dataValueModule().dataValues()
-                .one().blockingGet()
+            .one().blockingGet()
         val dataValuesCount = d2.dataValueModule().dataValues()
-                .byOrganisationUnitUid().eq(ou.uid())
-                .byDataElementUid().eq(firstDataValue.dataElement())
-                .blockingCount()
+            .byOrganisationUnitUid().eq(ou.uid())
+            .byDataElementUid().eq(firstDataValue.dataElement())
+            .blockingCount()
         assertThat(dataValuesCount).isEqualTo(10 * SizeFactor)
     }
 
@@ -130,30 +136,30 @@ internal abstract class BaseLocalAnalyticsAggregatedMockIntegrationShould : Base
 
     private fun dataValuesForDataElementForOuAndDescendentsRepository(level: Int): DataValueCollectionRepository {
         val ou3 = d2.organisationUnitModule().organisationUnits()
-                .byLevel().eq(3)
-                .one().blockingGet()
+            .byLevel().eq(3)
+            .one().blockingGet()
         val level2Uid = ou3.path()!!.split("/")[level]
         val ous2AndChildren = d2.organisationUnitModule().organisationUnits()
-                .byPath().like(level2Uid)
-                .blockingGet()
+            .byPath().like(level2Uid)
+            .blockingGet()
         val firstDataValue = d2.dataValueModule().dataValues()
-                .one().blockingGet()
+            .one().blockingGet()
         return d2.dataValueModule().dataValues()
-                .byOrganisationUnitUid().`in`(ous2AndChildren.map { it.uid() })
-                .byDataElementUid().eq(firstDataValue.dataElement())
+            .byOrganisationUnitUid().`in`(ous2AndChildren.map { it.uid() })
+            .byDataElementUid().eq(firstDataValue.dataElement())
     }
 
     @Test
     fun count_data_values_for_data_element_for_ou_level_3_per_period() {
         val ou = d2.organisationUnitModule().organisationUnits()
-                .byLevel().eq(3)
-                .one().blockingGet()
+            .byLevel().eq(3)
+            .one().blockingGet()
         val firstDataValue = d2.dataValueModule().dataValues()
-                .one().blockingGet()
+            .one().blockingGet()
         val dataValues = d2.dataValueModule().dataValues()
-                .byOrganisationUnitUid().eq(ou.uid())
-                .byDataElementUid().eq(firstDataValue.dataElement())
-                .blockingGet()
+            .byOrganisationUnitUid().eq(ou.uid())
+            .byDataElementUid().eq(firstDataValue.dataElement())
+            .blockingGet()
         val dataValuesPerPeriod = dataValues.groupBy { it.period() }
         assertThat(dataValuesPerPeriod.size).isEqualTo(10 * SizeFactor)
     }

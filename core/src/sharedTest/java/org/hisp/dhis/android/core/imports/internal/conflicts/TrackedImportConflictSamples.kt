@@ -32,76 +32,80 @@ import org.hisp.dhis.android.core.imports.internal.ImportConflict
 object TrackedImportConflictSamples {
 
     fun missingMandatoryAttribute(attributeUid: String): ImportConflict {
-       return ImportConflict.create(
-               "Attribute.attribute",
-               "Missing mandatory attribute $attributeUid")
+        return ImportConflict.create(
+            "Attribute.attribute",
+            "Missing mandatory attribute $attributeUid"
+        )
     }
 
     fun badAttributePattern(): ImportConflict {
         return ImportConflict.create(
-                "Attribute.value",
-                "Value does not match the attribute pattern")
+            "Attribute.value",
+            "Value does not match the attribute pattern"
+        )
     }
 
     fun invalidNumericAttribute(attributeUid: String, value: String): ImportConflict {
         return ImportConflict.create(
-                "Attribute.value",
-                "Value '$value' is not a valid numeric type for attribute $attributeUid")
+            "Attribute.value",
+            "Value '$value' is not a valid numeric type for attribute $attributeUid"
+        )
     }
 
     fun invalidBooleanAttribute(attributeUid: String, value: String): ImportConflict {
         return ImportConflict.create(
-                "Attribute.value",
-                "Value '$value' is not a valid boolean type for attribute $attributeUid"
+            "Attribute.value",
+            "Value '$value' is not a valid boolean type for attribute $attributeUid"
         )
     }
 
     fun invalidTrueOnlyAttribute(attributeUid: String, value: String): ImportConflict {
         return ImportConflict.create(
-                "Attribute.value",
-                "Value '$value' is not true (true-only type) for attribute $attributeUid"
+            "Attribute.value",
+            "Value '$value' is not true (true-only type) for attribute $attributeUid"
         )
     }
 
     fun invalidDateAttribute(attributeUid: String, value: String): ImportConflict {
         return ImportConflict.create(
-                "Attribute.value",
-                "Value '$value' is not a valid date for attribute $attributeUid"
+            "Attribute.value",
+            "Value '$value' is not a valid date for attribute $attributeUid"
         )
     }
 
     fun invalidDatetimeAttribute(attributeUid: String, value: String): ImportConflict {
         return ImportConflict.create(
-                "Attribute.value",
-                "Value '$value' is not a valid datetime for attribute $attributeUid"
+            "Attribute.value",
+            "Value '$value' is not a valid datetime for attribute $attributeUid"
         )
     }
 
     fun invalidUsernameAttribute(attributeUid: String, value: String): ImportConflict {
         return ImportConflict.create(
-                "Attribute.value",
-                "Value '$value' is not a valid username for attribute $attributeUid"
+            "Attribute.value",
+            "Value '$value' is not a valid username for attribute $attributeUid"
         )
     }
 
     fun invalidFileAttribute(value: String): ImportConflict {
         return ImportConflict.create(
-                "Attribute.value",
-                "Value '$value' is not the uid of a file"
+            "Attribute.value",
+            "Value '$value' is not the uid of a file"
         )
     }
 
     fun invalidAttributeOption(attributeUid: String, value: String, optionSetUid: String): ImportConflict {
         return ImportConflict.create(
-                "Attribute.value",
-                "Value '$value' is not a valid option for attribute $attributeUid and option set $optionSetUid"
+            "Attribute.value",
+            "Value '$value' is not a valid option for attribute $attributeUid and option set $optionSetUid"
         )
     }
 
     fun nonUniqueAttribute(attributeUid: String, value: String): ImportConflict {
         return ImportConflict.create(
-                "Attribute.value",
-                "Non-unique attribute value '$value' for attribute $attributeUid")
+            "Attribute.value",
+            "Non-unique attribute value '$value' for attribute $attributeUid"
+        )
     }
 
     // Data value types
@@ -167,5 +171,4 @@ object TrackedImportConflictSamples {
     fun missingRequiredDataElement(dataElementId: String): ImportConflict {
         return ImportConflict.create(dataElementId, "value_required_but_not_provided")
     }
-
 }

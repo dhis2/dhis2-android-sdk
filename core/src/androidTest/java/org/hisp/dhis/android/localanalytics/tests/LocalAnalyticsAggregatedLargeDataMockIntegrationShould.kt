@@ -36,14 +36,18 @@ import org.junit.runner.RunWith
 
 @Ignore("Tests for local analytics. Only to be executed on demand")
 @RunWith(D2JunitRunner::class)
-internal class LocalAnalyticsAggregatedLargeDataMockIntegrationShould : BaseLocalAnalyticsAggregatedMockIntegrationShould() {
+internal class LocalAnalyticsAggregatedLargeDataMockIntegrationShould :
+    BaseLocalAnalyticsAggregatedMockIntegrationShould() {
 
     companion object LocalAnalyticsAggregatedLargeDataMockIntegrationShould {
 
         @BeforeClass
         @JvmStatic
         fun setUpClass() {
-            setUpClass(LocalAnalyticsDataParams.LargeFactor, MockIntegrationTestDatabaseContent.LocalAnalyticsLargeDispatcher)
+            setUpClass(
+                LocalAnalyticsDataParams.LargeFactor,
+                MockIntegrationTestDatabaseContent.LocalAnalyticsLargeDispatcher
+            )
         }
     }
 }

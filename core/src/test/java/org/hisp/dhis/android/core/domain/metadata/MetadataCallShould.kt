@@ -93,34 +93,46 @@ class MetadataCallShould : BaseCallShould() {
         whenever(systemInfoDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(systemSettingDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(userDownloader.downloadMetadata()).thenReturn(Single.just(user))
-        whenever(programDownloader.downloadMetadata(ArgumentMatchers.anySet())).thenReturn(Single.just(Lists.emptyList()))
-        whenever(organisationUnitDownloader.downloadMetadata(ArgumentMatchers.same(user))).thenReturn(Single.just(Lists.emptyList()))
-        whenever(dataSetDownloader.downloadMetadata(ArgumentMatchers.anySet())).thenReturn(Single.just(Lists.emptyList()))
+        whenever(programDownloader.downloadMetadata(ArgumentMatchers.anySet())).thenReturn(
+            Single.just(Lists.emptyList())
+        )
+        whenever(organisationUnitDownloader.downloadMetadata(ArgumentMatchers.same(user))).thenReturn(
+            Single.just(Lists.emptyList())
+        )
+        whenever(dataSetDownloader.downloadMetadata(ArgumentMatchers.anySet())).thenReturn(
+            Single.just(Lists.emptyList())
+        )
         whenever(constantDownloader.downloadMetadata()).thenReturn(Single.just(Lists.emptyList()))
         whenever(categoryDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(smsModule.configCase()).thenReturn(configCase)
         whenever(configCase.refreshMetadataIdsCallable()).thenReturn(Completable.complete())
         whenever(generalSettingCall.isDatabaseEncrypted).thenReturn(Single.just(false))
         whenever(d2ErrorStore.insert(ArgumentMatchers.any(D2Error::class.java))).thenReturn(0L)
-        Mockito.`when`<Observable<D2Progress>>(rxAPICallExecutor.wrapObservableTransactionally(ArgumentMatchers.any(), ArgumentMatchers.anyBoolean()))
-                .then(AdditionalAnswers.returnsFirstArg<Any>())
+        Mockito.`when`<Observable<D2Progress>>(
+            rxAPICallExecutor.wrapObservableTransactionally(
+                ArgumentMatchers.any(),
+                ArgumentMatchers.anyBoolean()
+            )
+        )
+            .then(AdditionalAnswers.returnsFirstArg<Any>())
 
         // Metadata call
         metadataCall = MetadataCall(
-                rxAPICallExecutor,
-                systemInfoDownloader,
-                systemSettingDownloader,
-                userDownloader,
-                categoryDownloader,
-                programDownloader,
-                organisationUnitDownloader,
-                dataSetDownloader,
-                constantDownloader,
-                smsModule,
-                databaseAdapter,
-                generalSettingCall,
-                multiUserDatabaseManager,
-                credentialsSecureStore)
+            rxAPICallExecutor,
+            systemInfoDownloader,
+            systemSettingDownloader,
+            userDownloader,
+            categoryDownloader,
+            programDownloader,
+            organisationUnitDownloader,
+            dataSetDownloader,
+            constantDownloader,
+            smsModule,
+            databaseAdapter,
+            generalSettingCall,
+            multiUserDatabaseManager,
+            credentialsSecureStore
+        )
     }
 
     @Test
@@ -185,7 +197,10 @@ class MetadataCallShould : BaseCallShould() {
     @Test
     fun call_wrapObservableTransactionally() {
         metadataCall!!.blockingDownload()
-        Mockito.verify(rxAPICallExecutor).wrapObservableTransactionally<D2Progress>(ArgumentMatchers.any(), ArgumentMatchers.eq(true))
+        Mockito.verify(rxAPICallExecutor).wrapObservableTransactionally<D2Progress>(
+            ArgumentMatchers.any(),
+            ArgumentMatchers.eq(true)
+        )
     }
 
     @Test

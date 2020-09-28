@@ -31,6 +31,7 @@ plugins {
     id "kotlin-android"
     id "kotlin-android-extensions"
     id "io.gitlab.arturbosch.detekt" version "1.10.0"
+    id "org.jlleitschuh.gradle.ktlint"
 }
 
 apply from: project.file("plugins/android-checkstyle.gradle")
@@ -81,7 +82,7 @@ ext {
             commonsLogging  : "1.2",
 
             // google
-            safetyNet  : "17.0.0",
+            safetyNet       : "17.0.0",
     ]
 }
 
@@ -241,6 +242,11 @@ repositories {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
 }
 
+ktlint {
+    version = "0.37.2"
+    android = true
+    outputColorName = "RED"
+}
 detekt {
     config = files("config/detekt.yml")
     buildUponDefaultConfig = false

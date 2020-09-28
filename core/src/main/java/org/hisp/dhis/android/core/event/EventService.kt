@@ -29,26 +29,26 @@ package org.hisp.dhis.android.core.event
 
 import dagger.Reusable
 import io.reactivex.Single
+import javax.inject.Inject
 import org.hisp.dhis.android.core.category.CategoryOptionComboService
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService
 import org.hisp.dhis.android.core.program.ProgramCollectionRepository
 import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
-import javax.inject.Inject
 
 @Reusable
 class EventService @Inject constructor(
-        private val eventRepository: EventCollectionRepository,
-        private val programRepository: ProgramCollectionRepository,
-        private val programStageRepository: ProgramStageCollectionRepository,
-        private val organisationUnitService: OrganisationUnitService,
-        private val categoryOptionComboService: CategoryOptionComboService
+    private val eventRepository: EventCollectionRepository,
+    private val programRepository: ProgramCollectionRepository,
+    private val programStageRepository: ProgramStageCollectionRepository,
+    private val organisationUnitService: OrganisationUnitService,
+    private val categoryOptionComboService: CategoryOptionComboService
 ) {
 
     fun blockingHasDataWriteAccess(eventUid: String): Boolean {
         val event = eventRepository.uid(eventUid).blockingGet() ?: return false
 
         return programRepository.uid(event.program()).blockingGet()?.access()?.data()?.write() ?: false &&
-                programStageRepository.uid(event.programStage()).blockingGet()?.access()?.data()?.write() ?: false
+            programStageRepository.uid(event.programStage()).blockingGet()?.access()?.data()?.write() ?: false
     }
 
     fun hasDataWriteAccess(eventUid: String): Single<Boolean> {

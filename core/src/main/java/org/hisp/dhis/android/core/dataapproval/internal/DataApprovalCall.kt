@@ -29,31 +29,31 @@ package org.hisp.dhis.android.core.dataapproval.internal
 
 import dagger.Reusable
 import io.reactivex.Single
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedCollectionValues
 import org.hisp.dhis.android.core.dataapproval.DataApproval
-import javax.inject.Inject
 
 @Reusable
 internal class DataApprovalCall @Inject constructor(
     private val service: DataApprovalService,
     private val handler: Handler<DataApproval>,
-    private val apiDownloader: APIDownloader) : QueryCall<DataApproval, DataApprovalQuery> {
+    private val apiDownloader: APIDownloader
+) : QueryCall<DataApproval, DataApprovalQuery> {
 
     override fun download(query: DataApprovalQuery): Single<List<DataApproval>> {
-        return apiDownloader.downloadList(handler, service.getDataApprovals(
-            DataApprovalFields.allFields,
-            query.lastUpdatedStr(),
-            vs(query.workflowsUids()),
-            vs(query.periodIds()),
-            vs(query.organisationUnistUids()),
-            vs(query.attributeOptionCombosUids())
-        ))
-    }
-
-    private fun vs(values: MutableCollection<String>): String {
-        return CollectionsHelper.commaSeparatedCollectionValues(values);
+        return apiDownloader.downloadList(
+            handler,
+            service.getDataApprovals(
+                DataApprovalFields.allFields,
+                query.lastUpdatedStr(),
+                commaSeparatedCollectionValues(query.workflowsUids()),
+                commaSeparatedCollectionValues(query.periodIds()),
+                commaSeparatedCollectionValues(query.organisationUnistUids()),
+                commaSeparatedCollectionValues(query.attributeOptionCombosUids())
+            )
+        )
     }
 }

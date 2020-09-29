@@ -28,32 +28,48 @@
 package org.hisp.dhis.android.core.dataapproval.internal
 
 import dagger.Reusable
+import io.reactivex.Observable
 import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedCollectionValues
 import org.hisp.dhis.android.core.dataapproval.DataApproval
+import java.util.ArrayList
+import javax.inject.Inject
 
 @Reusable
 internal class DataApprovalCall @Inject constructor(
     private val service: DataApprovalService,
     private val handler: Handler<DataApproval>,
-    private val apiDownloader: APIDownloader
+    private val apiDownloader: APIDownloader,
+    private val multiDimensionalPartitioner: MultiDimensionalPartitioner
 ) : QueryCall<DataApproval, DataApprovalQuery> {
 
+    companion object {
+        const val MAX_UID_LIST_SIZE = 130
+    }
+
     override fun download(query: DataApprovalQuery): Single<List<DataApproval>> {
-        return apiDownloader.downloadList(
+        val partitions = multiDimensionalPartitioner.partition(
+            MAX_UID_LIST_SIZE, listOf(
+                query.workflowsUids().toList(),
+                query.periodIds().toList(),
+                query.organisationUnistUids().toList(),
+                query.attributeOptionCombosUids().toList()
+            )
+        )
+        return Observable.fromIterable(partitions).flatMapSingle { part ->  apiDownloader.downloadList(
             handler,
             service.getDataApprovals(
                 DataApprovalFields.allFields,
                 query.lastUpdatedStr(),
-                commaSeparatedCollectionValues(query.workflowsUids()),
-                commaSeparatedCollectionValues(query.periodIds()),
-                commaSeparatedCollectionValues(query.organisationUnistUids()),
-                commaSeparatedCollectionValues(query.attributeOptionCombosUids())
+                commaSeparatedCollectionValues(part[0]),
+                commaSeparatedCollectionValues(part[1]),
+                commaSeparatedCollectionValues(part[2]),
+                commaSeparatedCollectionValues(part[3])
             )
         )
+        }.reduce(ArrayList(), { t1, t2 -> t1 + t2 })
     }
 }

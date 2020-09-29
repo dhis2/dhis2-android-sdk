@@ -33,8 +33,8 @@ import javax.inject.Inject
 @Reusable
 internal class MultiDimensionalPartitioner @Inject constructor() {
 
-    fun partition(maxValues: Int, partitions: List<List<String>>): List<List<List<String>>> {
-        return partitionInternal(maxValues, listOf(partitions))
+    fun partition(maxValues: Int, vararg partitions: Collection<String>): List<List<List<String>>> {
+        return partitionInternal(maxValues, listOf(partitions.map { it.toList() }))
     }
 
     private fun partitionInternal(maxValues: Int, partitions: List<List<List<String>>>): List<List<List<String>>> {

@@ -52,24 +52,24 @@ internal class DataApprovalCall @Inject constructor(
 
     override fun download(query: DataApprovalQuery): Single<List<DataApproval>> {
         val partitions = multiDimensionalPartitioner.partition(
-            MAX_UID_LIST_SIZE, listOf(
-                query.workflowsUids().toList(),
-                query.periodIds().toList(),
-                query.organisationUnistUids().toList(),
-                query.attributeOptionCombosUids().toList()
-            )
+            MAX_UID_LIST_SIZE,
+            query.workflowsUids(),
+            query.periodIds(),
+            query.organisationUnistUids(),
+            query.attributeOptionCombosUids()
         )
-        return Observable.fromIterable(partitions).flatMapSingle { part ->  apiDownloader.downloadList(
-            handler,
-            service.getDataApprovals(
-                DataApprovalFields.allFields,
-                query.lastUpdatedStr(),
-                commaSeparatedCollectionValues(part[0]),
-                commaSeparatedCollectionValues(part[1]),
-                commaSeparatedCollectionValues(part[2]),
-                commaSeparatedCollectionValues(part[3])
+        return Observable.fromIterable(partitions).flatMapSingle { part ->
+            apiDownloader.downloadList(
+                handler,
+                service.getDataApprovals(
+                    DataApprovalFields.allFields,
+                    query.lastUpdatedStr(),
+                    commaSeparatedCollectionValues(part[0]),
+                    commaSeparatedCollectionValues(part[1]),
+                    commaSeparatedCollectionValues(part[2]),
+                    commaSeparatedCollectionValues(part[3])
+                )
             )
-        )
         }.reduce(ArrayList(), { t1, t2 -> t1 + t2 })
     }
 }

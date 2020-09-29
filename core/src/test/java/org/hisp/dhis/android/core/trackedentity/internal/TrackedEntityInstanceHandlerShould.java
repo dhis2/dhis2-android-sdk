@@ -228,7 +228,8 @@ public class TrackedEntityInstanceHandlerShould {
                 false, false, relatives);
         verify(relationshipHandler, times(1)).handleMany(anyList(), any());
         verify(relationshipVersionManager, times(1))
-                .createRelativesIfNotExist(Collections.singletonList(relationship), TEI_UID, relatives);
+                .saveRelativesIfNotExist(Collections.singletonList(relationship), TEI_UID, relatives,
+                        relationshipHandler);
     }
 
     @Test

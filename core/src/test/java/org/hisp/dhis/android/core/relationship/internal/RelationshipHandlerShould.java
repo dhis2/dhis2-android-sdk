@@ -112,18 +112,6 @@ public class RelationshipHandlerShould extends RelationshipSamples {
         relationshipHandler.handle(existingRelationship);
     }
 
-    @Test(expected = RuntimeException.class)
-    public void throw_exception_when_from_item_element_not_in_db() {
-        when(itemElementStore.exists(FROM_UID)).thenReturn(false);
-        relationshipHandler.handle(existingRelationship);
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void throw_exception_when_to_item_element_not_in_db() {
-        when(itemElementStore.exists(TO_UID)).thenReturn(false);
-        relationshipHandler.handle(existingRelationship);
-    }
-
     @Test()
     public void call_relationship_item_store_for_existing_relationship() {
         relationshipHandler.handle(existingRelationship);

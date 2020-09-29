@@ -25,33 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.call.factories.internal
 
-package org.hisp.dhis.android.core.dataapproval.internal;
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall;
-import org.hisp.dhis.android.core.dataapproval.DataApproval;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
-
-@Module(includes = {
-        DataApprovalEntityDIModule.class
-})
-
-public class DataApprovalPackageDIModule {
-
-    @Provides
-    @Reusable
-    QueryCall<DataApproval, DataApprovalQuery> dataApprovalCallFactory(DataApprovalCall dataApprovalCall) {
-        return dataApprovalCall;
-    }
-
-    @Provides
-    @Reusable
-    DataApprovalService dataApprovalService(Retrofit retrofit) {
-        return retrofit.create(DataApprovalService.class);
-    }
-
+interface QueryCall<P, Q : BaseQuery> {
+    fun download(query: Q): Single<List<P>>
 }

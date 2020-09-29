@@ -32,6 +32,7 @@ import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
+import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall;
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
@@ -72,7 +73,7 @@ final class AggregatedDataCall {
     private final QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory;
     private final QueryCallFactory<DataSetCompleteRegistration,
             DataSetCompleteRegistrationQuery> dataSetCompleteRegistrationCallFactory;
-    private final QueryCallFactory<DataApproval, DataApprovalQuery> dataApprovalCallFactory;
+    private final QueryCall<DataApproval, DataApprovalQuery> dataApprovalCall;
     private final CategoryOptionComboStore categoryOptionComboStore;
     private final RxAPICallExecutor rxCallExecutor;
     private final ObjectWithoutUidStore<AggregatedDataSync> aggregatedDataSyncStore;
@@ -87,7 +88,7 @@ final class AggregatedDataCall {
                        @NonNull QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory,
                        @NonNull QueryCallFactory<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery>
                                dataSetCompleteRegistrationCallFactory,
-                       @NonNull QueryCallFactory<DataApproval, DataApprovalQuery> dataApprovalCallFactory,
+                       @NonNull QueryCall<DataApproval, DataApprovalQuery> dataApprovalCall,
                        @NonNull CategoryOptionComboStore categoryOptionComboStore,
                        @NonNull RxAPICallExecutor rxCallExecutor,
                        @NonNull ObjectWithoutUidStore<AggregatedDataSync> aggregatedDataSyncStore,
@@ -98,7 +99,7 @@ final class AggregatedDataCall {
         this.dhisVersionManager = dhisVersionManager;
         this.dataValueCallFactory = dataValueCallFactory;
         this.dataSetCompleteRegistrationCallFactory = dataSetCompleteRegistrationCallFactory;
-        this.dataApprovalCallFactory = dataApprovalCallFactory;
+        this.dataApprovalCall = dataApprovalCall;
         this.categoryOptionComboStore = categoryOptionComboStore;
         this.rxCallExecutor = rxCallExecutor;
         this.aggregatedDataSyncStore = aggregatedDataSyncStore;
@@ -201,8 +202,7 @@ final class AggregatedDataCall {
                     bundle.allOrganisationUnitUidsSet(), bundle.periodIds(), attributeOptionComboUids,
                     bundle.key().lastUpdatedStr());
 
-            return Single.fromCallable(
-                    dataApprovalCallFactory.create(dataApprovalQuery)).map(dataApprovals ->
+            return dataApprovalCall.download(dataApprovalQuery).map(dataApprovals ->
                     progressManager.increaseProgress(DataApproval.class, false));
         }
     }

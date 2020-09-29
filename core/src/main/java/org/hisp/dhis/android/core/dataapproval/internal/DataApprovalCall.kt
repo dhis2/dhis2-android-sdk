@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedCollectionValues
+import org.hisp.dhis.android.core.arch.helpers.internal.MultiDimensionalPartitioner
 import org.hisp.dhis.android.core.dataapproval.DataApproval
 import java.util.ArrayList
 import javax.inject.Inject

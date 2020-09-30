@@ -37,54 +37,72 @@ class MultiDimensionalPartitionerShould {
     @Test
     fun `Should return same partition for one dimension under threshold`() {
         val values = listOf("A1", "A2")
-        assertPartition(partitioner.partition(4, values), """
+        assertPartition(
+            partitioner.partition(4, values),
+            """
             [[[A1,A2]]]
-        """)
+        """
+        )
     }
 
     @Test
     fun `Should return same partition for one dimension at threshold`() {
         val values = listOf("A1", "A2", "A3", "A4")
-        assertPartition(partitioner.partition(4, values), """
+        assertPartition(
+            partitioner.partition(4, values),
+            """
             [[[A1,A2,A3,A4]]]
-        """)
+        """
+        )
     }
 
     @Test
     fun `Should return two partitions for one dimension over threshold`() {
         val values = listOf("A1", "A2", "A3", "A4", "A5")
-        assertPartition(partitioner.partition(4, values), """
+        assertPartition(
+            partitioner.partition(4, values),
+            """
             [[[A1,A2]],
             [[A3,A4,A5]]]
-        """)
+        """
+        )
     }
 
     @Test
     fun `Should return same partition for two dimensions under threshold`() {
         val valuesA = listOf("A1", "A2")
         val valuesB = listOf("B1")
-        assertPartition(partitioner.partition(4, valuesA, valuesB), """
+        assertPartition(
+            partitioner.partition(4, valuesA, valuesB),
+            """
             [[[A1,A2],[B1]]]
-        """)
+        """
+        )
     }
 
     @Test
     fun `Should return same partition for two dimensions at threshold`() {
         val valuesA = listOf("A1", "A2")
         val valuesB = listOf("B1", "B2")
-        assertPartition(partitioner.partition(4, valuesA, valuesB), """
+        assertPartition(
+            partitioner.partition(4, valuesA, valuesB),
+            """
             [[[A1,A2],[B1,B2]]]
-        """)
+        """
+        )
     }
 
     @Test
     fun `Should partition by larger dimension for two dimensions over threshold`() {
         val valuesA = listOf("A1", "A2")
         val valuesB = listOf("B1", "B2", "B3")
-        assertPartition(partitioner.partition(4, valuesA, valuesB), """
+        assertPartition(
+            partitioner.partition(4, valuesA, valuesB),
+            """
             [[[A1,A2],[B1]],
             [[A1,A2],[B2,B3]]]
-        """)
+        """
+        )
     }
 
     @Test
@@ -92,7 +110,8 @@ class MultiDimensionalPartitionerShould {
         val valuesA = listOf("A1", "A2", "A3")
         val valuesB = listOf("B1", "B2", "B3")
         assertPartition(
-            partitioner.partition(4, valuesA, valuesB), """
+            partitioner.partition(4, valuesA, valuesB),
+            """
             [[[A1],[B1,B2,B3]],
             [[A2,A3],[B1]],
             [[A2,A3],[B2,B3]]]"""
@@ -104,7 +123,8 @@ class MultiDimensionalPartitionerShould {
         val valuesA = listOf("A1")
         val valuesB = listOf("B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8")
         assertPartition(
-            partitioner.partition(4, valuesA, valuesB), """
+            partitioner.partition(4, valuesA, valuesB),
+            """
                [[[A1],[B1,B2]],
                [[A1],[B3,B4]],
                [[A1],[B5,B6]],
@@ -118,7 +138,8 @@ class MultiDimensionalPartitionerShould {
         val valuesB = listOf("B1", "B2", "B3")
         val valuesC = listOf("C1", "C2", "C3")
         assertPartition(
-            partitioner.partition(4, valuesA, valuesB, valuesC), """
+            partitioner.partition(4, valuesA, valuesB, valuesC),
+            """
                     [[[A1], [B1], [C1]],
                     [[A1], [B1], [C2, C3]],
                     [[A1], [B2, B3], [C1]],

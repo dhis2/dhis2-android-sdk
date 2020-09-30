@@ -30,14 +30,14 @@ package org.hisp.dhis.android.core.dataapproval.internal
 import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.Single
+import java.util.ArrayList
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedCollectionValues
 import org.hisp.dhis.android.core.arch.helpers.internal.MultiDimensionalPartitioner
 import org.hisp.dhis.android.core.dataapproval.DataApproval
-import java.util.ArrayList
-import javax.inject.Inject
 
 @Reusable
 internal class DataApprovalCall @Inject constructor(

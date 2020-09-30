@@ -51,6 +51,7 @@ internal class DataApprovalCall @Inject constructor(
         const val MAX_UID_LIST_SIZE = 130
     }
 
+    @Suppress("MagicNumber")
     override fun download(query: DataApprovalQuery): Single<List<DataApproval>> {
         val partitions = multiDimensionalPartitioner.partition(
             MAX_UID_LIST_SIZE,

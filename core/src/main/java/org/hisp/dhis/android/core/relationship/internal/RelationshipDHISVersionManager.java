@@ -201,6 +201,8 @@ public class RelationshipDHISVersionManager {
                     case RelationshipItemTableInfo.Columns.EVENT:
                         relatives.addEvent(item.elementUid());
                         break;
+                    default:
+                        break;
                 }
             }
         }

@@ -209,6 +209,8 @@ public final class RelationshipDownloadAndPersistCallFactory {
                     builder.trackedEntityInstance(RelationshipItemTrackedEntityInstance.builder()
                             .trackedEntityInstance(uid).build());
                     break;
+                default:
+                    break;
             }
             corruptedRelationships.addAll(relationshipStore.getRelationshipsByItem(builder.build()));
         }

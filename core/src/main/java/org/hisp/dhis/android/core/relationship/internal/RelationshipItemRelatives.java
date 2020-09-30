@@ -33,9 +33,9 @@ import java.util.Set;
 
 public class RelationshipItemRelatives {
 
-    private Set<String> relativeTrackedEntityInstanceUids;
-    private Set<String> relativeEnrollmentUids;
-    private Set<String> relativeEventUids;
+    private final Set<String> relativeTrackedEntityInstanceUids;
+    private final Set<String> relativeEnrollmentUids;
+    private final Set<String> relativeEventUids;
 
     public RelationshipItemRelatives() {
         this.relativeTrackedEntityInstanceUids = new HashSet<>();

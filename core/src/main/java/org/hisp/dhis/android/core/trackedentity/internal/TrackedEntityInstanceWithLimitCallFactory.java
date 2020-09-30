@@ -191,7 +191,8 @@ class TrackedEntityInstanceWithLimitCallFactory {
                                 return Single.just(new TeiListWithPaging(false, Collections.emptyList(), paging));
                             });
                 })
-                .takeUntil(res -> res.isSuccess && (res.paging.isLastPage() || res.teiList.size() < res.paging.pageSize()))
+                .takeUntil(res -> res.isSuccess && (res.paging.isLastPage() ||
+                        res.teiList.size() < res.paging.pageSize()))
                 .map(tuple -> tuple.teiList)
                 .doOnComplete(() -> {
                     if (allOkay.get()) {

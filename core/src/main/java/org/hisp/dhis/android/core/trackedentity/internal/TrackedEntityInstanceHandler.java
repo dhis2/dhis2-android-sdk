@@ -98,7 +98,8 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
             List<Relationship229Compatible> relationships =
                     TrackedEntityInstanceInternalAccessor.accessRelationships(trackedEntityInstance);
             if (relationships != null && !relationships.isEmpty()) {
-                Collection<Relationship> relationshipsList = relationshipVersionManager.from229Compatible(relationships);
+                Collection<Relationship> relationshipsList =
+                        relationshipVersionManager.from229Compatible(relationships);
                 handleRelationships(relationshipsList, trackedEntityInstance, relatives);
             }
         }

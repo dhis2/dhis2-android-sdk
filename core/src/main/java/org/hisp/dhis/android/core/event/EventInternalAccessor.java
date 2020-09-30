@@ -37,8 +37,8 @@ public final class EventInternalAccessor {
     private EventInternalAccessor() {
     }
 
-    public static List<Relationship> accessRelationships(Event Event) {
-        return Event.relationships();
+    public static List<Relationship> accessRelationships(Event event) {
+        return event.relationships();
     }
 
     public static Event.Builder insertRelationships(Event.Builder builder,

@@ -56,7 +56,6 @@ import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.note.Note;
 import org.hisp.dhis.android.core.relationship.Relationship;
-import org.hisp.dhis.android.core.note.Note;
 
 import java.util.Date;
 import java.util.List;

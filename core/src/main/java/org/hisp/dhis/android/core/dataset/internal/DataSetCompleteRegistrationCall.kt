@@ -35,7 +35,6 @@ import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedCollectionValues
 import org.hisp.dhis.android.core.arch.helpers.internal.MultiDimensionalPartitioner
-import org.hisp.dhis.android.core.arch.helpers.internal.UrlLengthHelper
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 
 @Reusable
@@ -46,8 +45,9 @@ internal class DataSetCompleteRegistrationCall @Inject constructor(
 ) : QueryCall<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery> {
 
     companion object {
-        private const val QUERY_WITHOUT_UIDS_LENGTH = ("completeDataSetRegistrations?fields=period,dataSet," +
-            "organisationUnit,attributeOptionCombo,date,storedBy&dataSet=&period=&orgUnit&children=true&paging=false"
+        private const val QUERY_WITHOUT_UIDS_LENGTH = (
+            "completeDataSetRegistrations?fields=period,dataSet,organisationUnit,attributeOptionCombo,date,storedBy" +
+                "&dataSet=&period=&orgUnit&children=true&paging=false"
             ).length
     }
 
@@ -56,8 +56,8 @@ internal class DataSetCompleteRegistrationCall @Inject constructor(
     }
 
     private fun downloadInternal(query: DataSetCompleteRegistrationQuery): Single<List<DataSetCompleteRegistration>> {
-        val partitions = multiDimensionalPartitioner.partition(
-            UrlLengthHelper.getHowManyUidsFitInURL(QUERY_WITHOUT_UIDS_LENGTH),
+        val partitions = multiDimensionalPartitioner.partitionForSize(
+            QUERY_WITHOUT_UIDS_LENGTH,
             query.dataSetUids(),
             query.periodIds(),
             query.rootOrgUnitUids()

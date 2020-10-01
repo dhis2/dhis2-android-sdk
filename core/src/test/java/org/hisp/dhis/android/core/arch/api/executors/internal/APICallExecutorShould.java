@@ -47,7 +47,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -99,7 +99,7 @@ public class APICallExecutorShould {
     @Test
     public void return_object_when_object_api_call_succeeds() throws D2Error {
         User responseUser = apiCallExecutor.executeObjectCall(objectAPICall);
-        assertThat(responseUser).isSameAs(user);
+        assertThat(responseUser).isSameInstanceAs(user);
     }
 
     @Test
@@ -130,7 +130,7 @@ public class APICallExecutorShould {
     @Test
     public void return_list_when_payload_api_call_succeeds() throws D2Error {
         List<User> responseUsers = apiCallExecutor.executePayloadCall(payloadAPICall);
-        assertThat(responseUsers).isSameAs(users);
+        assertThat(responseUsers).isSameInstanceAs(users);
     }
 
     @Test

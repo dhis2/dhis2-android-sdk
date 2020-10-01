@@ -37,7 +37,7 @@ import org.junit.runners.JUnit4;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(JUnit4.class)
 public class TrackedEntityInstanceQueryOnlineShould {

@@ -46,8 +46,8 @@ import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 
+import static com.google.common.truth.Truth.assertThat;
 import static okhttp3.Credentials.basic;
-import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 // ToDo: Solve problem with INFO logs from MockWebServer being interpreted as errors in gradle

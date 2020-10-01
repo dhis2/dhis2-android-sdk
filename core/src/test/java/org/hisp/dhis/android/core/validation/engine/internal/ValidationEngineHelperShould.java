@@ -38,7 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.validation.engine.internal.ValidationEngineHelper.getValueMap;
 
 public class ValidationEngineHelperShould {

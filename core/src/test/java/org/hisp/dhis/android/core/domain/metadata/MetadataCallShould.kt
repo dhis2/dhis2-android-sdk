@@ -32,7 +32,6 @@ import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
-import org.assertj.core.util.Lists
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
@@ -94,15 +93,15 @@ class MetadataCallShould : BaseCallShould() {
         whenever(systemSettingDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(userDownloader.downloadMetadata()).thenReturn(Single.just(user))
         whenever(programDownloader.downloadMetadata(ArgumentMatchers.anySet())).thenReturn(
-            Single.just(Lists.emptyList())
+            Single.just(emptyList())
         )
         whenever(organisationUnitDownloader.downloadMetadata(ArgumentMatchers.same(user))).thenReturn(
-            Single.just(Lists.emptyList())
+            Single.just(emptyList())
         )
         whenever(dataSetDownloader.downloadMetadata(ArgumentMatchers.anySet())).thenReturn(
-            Single.just(Lists.emptyList())
+            Single.just(emptyList())
         )
-        whenever(constantDownloader.downloadMetadata()).thenReturn(Single.just(Lists.emptyList()))
+        whenever(constantDownloader.downloadMetadata()).thenReturn(Single.just(emptyList()))
         whenever(categoryDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(smsModule.configCase()).thenReturn(configCase)
         whenever(configCase.refreshMetadataIdsCallable()).thenReturn(Completable.complete())

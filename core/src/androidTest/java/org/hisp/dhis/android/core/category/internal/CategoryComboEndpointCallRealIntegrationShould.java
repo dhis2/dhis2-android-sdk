@@ -47,8 +47,7 @@ import java.util.List;
 
 import io.reactivex.Single;
 
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
+import static com.google.common.truth.Truth.assertThat;
 
 public class CategoryComboEndpointCallRealIntegrationShould extends BaseRealIntegrationTest {
 
@@ -68,14 +67,14 @@ public class CategoryComboEndpointCallRealIntegrationShould extends BaseRealInte
         d2.databaseAdapter().setForeignKeyConstraintsEnabled(false);
 
         assertNotCombosInDB();
-        assertTrue(getCategoryCategoryComboLinks().isEmpty());
+        assertThat(getCategoryCategoryComboLinks().isEmpty()).isTrue();
 
         Single<List<CategoryCombo>> categoryComboEndpointCall =
                 getD2DIComponent(d2).internalModules().category.categoryComboCall.download(
                         new HashSet<>(Lists.newArrayList("bjDvmb4bfuf")));
         List<CategoryCombo> categoryCombos = categoryComboEndpointCall.blockingGet();
 
-        assertFalse(categoryCombos.isEmpty());
+        assertThat(categoryCombos.isEmpty()).isFalse();
 
         downloadCategories();
 
@@ -84,7 +83,7 @@ public class CategoryComboEndpointCallRealIntegrationShould extends BaseRealInte
 
     private void assertDataIsProperlyParsedAndInsertedInTheDB() {
         assertThereAreCombosInDB();
-        assertFalse(getCategoryCategoryComboLinks().isEmpty());
+        assertThat(getCategoryCategoryComboLinks().isEmpty()).isFalse();
         assertThereAreCategoryOptionCombosInDB();
         assertThereAreCategoriesInDB();
     }
@@ -97,13 +96,13 @@ public class CategoryComboEndpointCallRealIntegrationShould extends BaseRealInte
     private void assertNotCombosInDB() {
         IdentifiableObjectStore<CategoryCombo> categoryComboStore = CategoryComboStore.create(d2.databaseAdapter());
         List<CategoryCombo> categoryCombos = categoryComboStore.selectAll();
-        assertTrue(categoryCombos.isEmpty());
+        assertThat(categoryCombos.isEmpty()).isTrue();
     }
 
     private void assertThereAreCombosInDB() {
         IdentifiableObjectStore<CategoryCombo> categoryComboStore = CategoryComboStore.create(d2.databaseAdapter());
         List<CategoryCombo> categoryCombos = categoryComboStore.selectAll();
-        assertTrue(categoryCombos.size() > 0);
+        assertThat(categoryCombos.size() > 0).isTrue();
     }
 
     private List<CategoryCategoryComboLink> getCategoryCategoryComboLinks() {
@@ -115,12 +114,12 @@ public class CategoryComboEndpointCallRealIntegrationShould extends BaseRealInte
     private void assertThereAreCategoryOptionCombosInDB() {
         IdentifiableObjectStore<CategoryOptionCombo> categoryOptionComboStore = CategoryOptionComboStoreImpl.create(d2.databaseAdapter());
         List<CategoryOptionCombo> categoryOptionCombos = categoryOptionComboStore.selectAll();
-        assertTrue(categoryOptionCombos.size() > 0);
+        assertThat(categoryOptionCombos.size() > 0).isTrue();
     }
 
     private void assertThereAreCategoriesInDB() {
         IdentifiableObjectStore<CategoryOption> categoryOptionStore = CategoryOptionStore.create(d2.databaseAdapter());
         List<String> categoryOptionUids = categoryOptionStore.selectUids();
-        assertTrue(categoryOptionUids.size() > 0);
+        assertThat(categoryOptionUids.size() > 0).isTrue();
     }
 }

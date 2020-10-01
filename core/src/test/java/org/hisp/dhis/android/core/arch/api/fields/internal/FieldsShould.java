@@ -35,7 +35,7 @@ import org.junit.runners.JUnit4;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 
-import static junit.framework.Assert.fail;
+import static org.junit.Assert.fail;
 
 @RunWith(JUnit4.class)
 public class FieldsShould {

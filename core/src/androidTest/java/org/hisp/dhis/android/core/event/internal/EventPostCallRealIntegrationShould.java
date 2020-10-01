@@ -50,7 +50,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import static com.google.common.truth.Truth.assertThat;
-import static junit.framework.Assert.assertTrue;
 
 public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest {
 
@@ -160,7 +159,7 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
     private void assertThatEventPushedIsDownloaded(Event pushedEvent) {
         List<Event> downloadedEvents = eventStore.querySingleEvents();
 
-        assertTrue(verifyPushedEventIsInPullList(pushedEvent, downloadedEvents));
+        assertThat(verifyPushedEventIsInPullList(pushedEvent, downloadedEvents)).isTrue();
     }
 
     private void downloadEvents() throws Exception {

@@ -49,16 +49,14 @@ internal class DataApprovalCall @Inject constructor(
 ) : QueryCall<DataApproval, DataApprovalQuery> {
 
     companion object {
-        /*
-        dataApprovals/multiple?fields=wf,ou,pe,aoc,state&wf=&pe=&ou&aoc=
-         */
-        private const val QUERY_WITHOUT_UIDS_LENGTH = 64
+        private const val QUERY_WITHOUT_UIDS_LENGTH = ("dataApprovals/multiple?" +
+            "fields=wf,ou,pe,aoc,state&wf=&pe=&ou&aoc=").length
     }
 
     @Suppress("MagicNumber")
     override fun download(query: DataApprovalQuery): Single<List<DataApproval>> {
         val partitions = multiDimensionalPartitioner.partition(
-            UrlLengthHelper.getHowMuchUidsFitInURL(QUERY_WITHOUT_UIDS_LENGTH),
+            UrlLengthHelper.getHowManyUidsFitInURL(QUERY_WITHOUT_UIDS_LENGTH),
             query.workflowsUids(),
             query.periodIds(),
             query.organisationUnistUids(),

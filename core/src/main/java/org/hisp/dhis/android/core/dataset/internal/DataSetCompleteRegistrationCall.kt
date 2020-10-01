@@ -46,12 +46,9 @@ internal class DataSetCompleteRegistrationCall @Inject constructor(
 ) : QueryCall<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery> {
 
     companion object {
-        /*
-        completeDataSetRegistrations?fields=period,dataSet,organisationUnit,
-        attributeOptionCombo,date,storedBy&dataSet=&period=&orgUnit&children=
-        true&paging=false
-        */
-        private const val QUERY_WITHOUT_UIDS_LENGTH = 154
+        private const val QUERY_WITHOUT_UIDS_LENGTH = ("completeDataSetRegistrations?fields=period,dataSet," +
+            "organisationUnit,attributeOptionCombo,date,storedBy&dataSet=&period=&orgUnit&children=true&paging=false"
+            ).length
     }
 
     override fun download(query: DataSetCompleteRegistrationQuery): Single<List<DataSetCompleteRegistration>> {
@@ -60,7 +57,7 @@ internal class DataSetCompleteRegistrationCall @Inject constructor(
 
     private fun downloadInternal(query: DataSetCompleteRegistrationQuery): Single<List<DataSetCompleteRegistration>> {
         val partitions = multiDimensionalPartitioner.partition(
-            UrlLengthHelper.getHowMuchUidsFitInURL(QUERY_WITHOUT_UIDS_LENGTH),
+            UrlLengthHelper.getHowManyUidsFitInURL(QUERY_WITHOUT_UIDS_LENGTH),
             query.dataSetUids(),
             query.periodIds(),
             query.rootOrgUnitUids()

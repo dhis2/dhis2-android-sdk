@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.dataset.internal
 
 import dagger.Reusable
-import java.util.ArrayList
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
@@ -43,7 +42,9 @@ internal class DataSetCompleteRegistrationCallProcessor @Inject internal constru
     internal fun process(objectList: List<DataSetCompleteRegistration>, query: DataSetCompleteRegistrationQuery) {
         if (objectList.isNotEmpty()) {
             removeExistingRegistersForQuery(query)
-            val objectsToImport = removeDeletedEntries(objectList)
+            val objectsToImport = objectList.filter {
+                !CollectionsHelper.isDeleted(it)
+            }
             handler.handleMany(objectsToImport)
         }
     }
@@ -56,19 +57,8 @@ internal class DataSetCompleteRegistrationCallProcessor @Inject internal constru
     private fun removeExistingRegistersForQuery(query: DataSetCompleteRegistrationQuery) {
         for (rootOrgUnitUid in query.rootOrgUnitUids()) {
             dataSetCompleteRegistrationStore.removeNotPresentAndSynced(
-                query.dataSetUids(),
-                query.periodIds(), rootOrgUnitUid
+                query.dataSetUids(), query.periodIds(), rootOrgUnitUid
             )
         }
-    }
-
-    private fun removeDeletedEntries(list: List<DataSetCompleteRegistration?>): List<DataSetCompleteRegistration?> {
-        val objectsToImport: MutableList<DataSetCompleteRegistration?> = ArrayList()
-        for (record in list) {
-            if (!CollectionsHelper.isDeleted(record!!)) {
-                objectsToImport.add(record)
-            }
-        }
-        return objectsToImport
     }
 }

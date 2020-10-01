@@ -33,7 +33,6 @@ import androidx.annotation.NonNull;
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall;
-import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
@@ -71,8 +70,8 @@ final class AggregatedDataCall {
     private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
     private final DHISVersionManager dhisVersionManager;
     private final QueryCall<DataValue, DataValueQuery> dataValueCall;
-    private final QueryCallFactory<DataSetCompleteRegistration,
-            DataSetCompleteRegistrationQuery> dataSetCompleteRegistrationCallFactory;
+    private final QueryCall<DataSetCompleteRegistration,
+            DataSetCompleteRegistrationQuery> dataSetCompleteRegistrationCall;
     private final QueryCall<DataApproval, DataApprovalQuery> dataApprovalCall;
     private final CategoryOptionComboStore categoryOptionComboStore;
     private final RxAPICallExecutor rxCallExecutor;
@@ -86,8 +85,8 @@ final class AggregatedDataCall {
     AggregatedDataCall(@NonNull ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
                        @NonNull DHISVersionManager dhisVersionManager,
                        @NonNull QueryCall<DataValue, DataValueQuery> dataValueCall,
-                       @NonNull QueryCallFactory<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery>
-                               dataSetCompleteRegistrationCallFactory,
+                       @NonNull QueryCall<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery>
+                               dataSetCompleteRegistrationCall,
                        @NonNull QueryCall<DataApproval, DataApprovalQuery> dataApprovalCall,
                        @NonNull CategoryOptionComboStore categoryOptionComboStore,
                        @NonNull RxAPICallExecutor rxCallExecutor,
@@ -98,7 +97,7 @@ final class AggregatedDataCall {
         this.systemInfoRepository = systemInfoRepository;
         this.dhisVersionManager = dhisVersionManager;
         this.dataValueCall = dataValueCall;
-        this.dataSetCompleteRegistrationCallFactory = dataSetCompleteRegistrationCallFactory;
+        this.dataSetCompleteRegistrationCall = dataSetCompleteRegistrationCall;
         this.dataApprovalCall = dataApprovalCall;
         this.categoryOptionComboStore = categoryOptionComboStore;
         this.rxCallExecutor = rxCallExecutor;
@@ -139,8 +138,8 @@ final class AggregatedDataCall {
                 DataSetCompleteRegistrationQuery.create(UidsHelper.getUids(bundle.dataSets()),
                         bundle.periodIds(), bundle.rootOrganisationUnitUids(), bundle.key().lastUpdatedStr());
 
-        Single<D2Progress> dataSetCompleteRegistrationSingle = Single.fromCallable(
-                dataSetCompleteRegistrationCallFactory.create(dataSetCompleteRegistrationQuery)).map(dscr ->
+        Single<D2Progress> dataSetCompleteRegistrationSingle = dataSetCompleteRegistrationCall
+                .download(dataSetCompleteRegistrationQuery).map(dscr ->
                 progressManager.increaseProgress(DataSetCompleteRegistration.class, false));
 
 

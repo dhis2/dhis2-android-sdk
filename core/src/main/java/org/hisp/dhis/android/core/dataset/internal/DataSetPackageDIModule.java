@@ -56,7 +56,7 @@ public final class DataSetPackageDIModule {
     @Provides
     @Reusable
     QueryCallFactory<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery>
-    dataSetCompleteRegistrationCallFactory(DataSetCompleteRegistrationCallFactory impl) {
+    dataSetCompleteRegistrationCallFactory(DataSetCompleteRegistrationCall impl) {
         return impl;
     }
 

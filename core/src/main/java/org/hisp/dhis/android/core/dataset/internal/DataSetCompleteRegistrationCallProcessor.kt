@@ -28,18 +28,19 @@
 package org.hisp.dhis.android.core.dataset.internal
 
 import dagger.Reusable
+import java.util.ArrayList
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
-import java.util.ArrayList
 
 @Reusable
-internal class DataSetCompleteRegistrationCallProcessor(
+internal class DataSetCompleteRegistrationCallProcessor @Inject internal constructor(
     private val dataSetCompleteRegistrationStore: DataSetCompleteRegistrationStore,
     private val handler: Handler<DataSetCompleteRegistration>
 ) {
 
-    fun process(objectList: List<DataSetCompleteRegistration>, query: DataSetCompleteRegistrationQuery) {
+    internal fun process(objectList: List<DataSetCompleteRegistration>, query: DataSetCompleteRegistrationQuery) {
         if (objectList.isNotEmpty()) {
             removeExistingRegistersForQuery(query)
             val objectsToImport = removeDeletedEntries(objectList)

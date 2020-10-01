@@ -30,13 +30,13 @@ package org.hisp.dhis.android.core.dataset.internal
 import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.Single
+import java.util.ArrayList
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedCollectionValues
 import org.hisp.dhis.android.core.arch.helpers.internal.MultiDimensionalPartitioner
-import org.hisp.dhis.android.core.dataapproval.internal.DataApprovalCall
+import org.hisp.dhis.android.core.arch.helpers.internal.UrlLengthHelper
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
-import java.util.ArrayList
-import javax.inject.Inject
 
 @Reusable
 internal class DataSetCompleteRegistrationCall @Inject constructor(
@@ -46,7 +46,12 @@ internal class DataSetCompleteRegistrationCall @Inject constructor(
 ) : QueryCall<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery> {
 
     companion object {
-        const val MAX_UID_LIST_SIZE = 130
+        /*
+        completeDataSetRegistrations?fields=period,dataSet,organisationUnit,
+        attributeOptionCombo,date,storedBy&dataSet=&period=&orgUnit&children=
+        true&paging=false
+        */
+        private const val QUERY_WITHOUT_UIDS_LENGTH = 154
     }
 
     override fun download(query: DataSetCompleteRegistrationQuery): Single<List<DataSetCompleteRegistration>> {
@@ -55,7 +60,7 @@ internal class DataSetCompleteRegistrationCall @Inject constructor(
 
     private fun downloadInternal(query: DataSetCompleteRegistrationQuery): Single<List<DataSetCompleteRegistration>> {
         val partitions = multiDimensionalPartitioner.partition(
-            DataApprovalCall.MAX_UID_LIST_SIZE,
+            UrlLengthHelper.getHowMuchUidsFitInURL(QUERY_WITHOUT_UIDS_LENGTH),
             query.dataSetUids(),
             query.periodIds(),
             query.rootOrgUnitUids()

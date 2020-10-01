@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedCollectionValues
 import org.hisp.dhis.android.core.arch.helpers.internal.MultiDimensionalPartitioner
+import org.hisp.dhis.android.core.arch.helpers.internal.UrlLengthHelper
 import org.hisp.dhis.android.core.dataapproval.DataApproval
 
 @Reusable
@@ -48,13 +49,16 @@ internal class DataApprovalCall @Inject constructor(
 ) : QueryCall<DataApproval, DataApprovalQuery> {
 
     companion object {
-        const val MAX_UID_LIST_SIZE = 130
+        /*
+        dataApprovals/multiple?fields=wf,ou,pe,aoc,state&wf=&pe=&ou&aoc=
+         */
+        private const val QUERY_WITHOUT_UIDS_LENGTH = 64
     }
 
     @Suppress("MagicNumber")
     override fun download(query: DataApprovalQuery): Single<List<DataApproval>> {
         val partitions = multiDimensionalPartitioner.partition(
-            MAX_UID_LIST_SIZE,
+            UrlLengthHelper.getHowMuchUidsFitInURL(QUERY_WITHOUT_UIDS_LENGTH),
             query.workflowsUids(),
             query.periodIds(),
             query.organisationUnistUids(),

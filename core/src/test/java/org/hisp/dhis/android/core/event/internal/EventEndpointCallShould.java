@@ -31,8 +31,8 @@ package org.hisp.dhis.android.core.event.internal;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl;
 import org.hisp.dhis.android.core.arch.api.testutils.RetrofitFactory;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer;
 import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -47,8 +47,7 @@ import java.util.concurrent.Callable;
 import okhttp3.mockwebserver.RecordedRequest;
 import retrofit2.Retrofit;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 public class EventEndpointCallShould {
 
@@ -85,7 +84,7 @@ public class EventEndpointCallShould {
 
         RecordedRequest request = mockWebServer.takeRequest();
 
-        assertThat(request.getPath(), containsString("paging=true&page=2&pageSize=32"));
+        assertThat(request.getPath()).contains("paging=true&page=2&pageSize=32");
     }
 
     @Test
@@ -98,8 +97,8 @@ public class EventEndpointCallShould {
 
         RecordedRequest request = mockWebServer.takeRequest();
 
-        assertThat(request.getPath(), containsString("orgUnit=OU"));
-        assertThat(request.getPath(), containsString("program=P"));
+        assertThat(request.getPath()).contains("orgUnit=OU");
+        assertThat(request.getPath()).contains("program=P");
     }
 
     private Callable<List<Event>> givenAEventCallByPagination(int page, int pageCount) {

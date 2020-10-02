@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.program.programindicatorengine.internal.funct
 
 import com.google.common.collect.Lists;
 
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.MatcherAssert;
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
 import org.junit.Test;
@@ -39,6 +37,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -63,7 +62,7 @@ public class D2ZpvcShould {
         when(visitor.castStringVisit(mockZero)).thenReturn("0");
         when(visitor.castStringVisit(mockPositive)).thenReturn("2");
 
-        MatcherAssert.assertThat(functionToTest.evaluate(context, visitor), CoreMatchers.<Object>is("2"));
+        assertThat(functionToTest.evaluate(context, visitor)).isEqualTo("2");
     }
 
     @Test(expected = IllegalArgumentException.class)

@@ -37,8 +37,7 @@ import org.junit.runner.RunWith;
 import java.text.ParseException;
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class RelationshipCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -49,7 +48,7 @@ public class RelationshipCollectionRepositoryMockIntegrationShould extends BaseM
                 d2.relationshipModule().relationships()
                         .blockingGet();
 
-        assertThat(relationships.size(), is(2));
+        assertThat(relationships.size()).isEqualTo(2);
     }
 
     @Test
@@ -59,7 +58,7 @@ public class RelationshipCollectionRepositoryMockIntegrationShould extends BaseM
                         .byUid().eq("AJOytZW7OaI")
                         .blockingGet();
 
-        assertThat(relationships.size(), is(1));
+        assertThat(relationships.size()).isEqualTo(1);
     }
 
     @Test
@@ -69,7 +68,7 @@ public class RelationshipCollectionRepositoryMockIntegrationShould extends BaseM
                         .byName().eq("Lab Sample to Person")
                         .blockingGet();
 
-        assertThat(relationships.size(), is(1));
+        assertThat(relationships.size()).isEqualTo(1);
     }
 
     @Test
@@ -79,7 +78,7 @@ public class RelationshipCollectionRepositoryMockIntegrationShould extends BaseM
                         .byCreated().eq(BaseNameableObject.DATE_FORMAT.parse("2019-02-07T08:06:28.369"))
                         .blockingGet();
 
-        assertThat(relationships.size(), is(1));
+        assertThat(relationships.size()).isEqualTo(1);
     }
 
     @Test
@@ -89,7 +88,7 @@ public class RelationshipCollectionRepositoryMockIntegrationShould extends BaseM
                         .byLastUpdated().eq(BaseNameableObject.DATE_FORMAT.parse("2018-02-07T08:06:28.369"))
                         .blockingGet();
 
-        assertThat(relationships.size(), is(1));
+        assertThat(relationships.size()).isEqualTo(1);
     }
 
     @Test
@@ -99,7 +98,7 @@ public class RelationshipCollectionRepositoryMockIntegrationShould extends BaseM
                         .byRelationshipType().eq("V2kkHafqs8G")
                         .blockingGet();
 
-        assertThat(relationships.size(), is(1));
+        assertThat(relationships.size()).isEqualTo(1);
     }
 
     @Test
@@ -107,7 +106,7 @@ public class RelationshipCollectionRepositoryMockIntegrationShould extends BaseM
         RelationshipItem item = RelationshipItem.builder().trackedEntityInstance(
                 RelationshipItemTrackedEntityInstance.builder().trackedEntityInstance("nWrB0TfWlvh").build()).build();
         List<Relationship> relationships = d2.relationshipModule().relationships().getByItem(item);
-        assertThat(relationships.size(), is(4));
+        assertThat(relationships.size()).isEqualTo(4);
     }
 
     @Test
@@ -117,7 +116,7 @@ public class RelationshipCollectionRepositoryMockIntegrationShould extends BaseM
                         .uid("AJOytZW7OaB")
                         .blockingGet();
 
-        assertThat(relationship.uid(), is("AJOytZW7OaB"));
+        assertThat(relationship.uid()).isEqualTo("AJOytZW7OaB");
     }
 
 }

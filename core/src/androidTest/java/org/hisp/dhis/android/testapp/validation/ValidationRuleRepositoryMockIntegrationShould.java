@@ -41,8 +41,7 @@ import org.junit.runner.RunWith;
 import java.util.Collections;
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class ValidationRuleRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -50,7 +49,7 @@ public class ValidationRuleRepositoryMockIntegrationShould extends BaseMockInteg
     @Test
     public void find_all() {
         List<ValidationRule> validationRule = d2.validationModule().validationRules().blockingGet();
-        assertThat(validationRule.size(), is(2));
+        assertThat(validationRule.size()).isEqualTo(2);
     }
 
     @Test
@@ -58,7 +57,7 @@ public class ValidationRuleRepositoryMockIntegrationShould extends BaseMockInteg
         List<ValidationRule> validationRule = d2.validationModule().validationRules()
                 .byInstruction().eq("PCV 2 cannot be higher than PCV 1 doses given")
                 .blockingGet();
-        assertThat(validationRule.size(), is(1));
+        assertThat(validationRule.size()).isEqualTo(1);
     }
 
     @Test
@@ -66,7 +65,7 @@ public class ValidationRuleRepositoryMockIntegrationShould extends BaseMockInteg
         List<ValidationRule> validationRule = d2.validationModule().validationRules()
                 .byImportance().eq(ValidationRuleImportance.LOW)
                 .blockingGet();
-        assertThat(validationRule.size(), is(1));
+        assertThat(validationRule.size()).isEqualTo(1);
     }
 
     @Test
@@ -74,7 +73,7 @@ public class ValidationRuleRepositoryMockIntegrationShould extends BaseMockInteg
         List<ValidationRule> validationRule = d2.validationModule().validationRules()
                 .byOperator().eq(ValidationRuleOperator.less_than)
                 .blockingGet();
-        assertThat(validationRule.size(), is(1));
+        assertThat(validationRule.size()).isEqualTo(1);
     }
 
     @Test
@@ -82,7 +81,7 @@ public class ValidationRuleRepositoryMockIntegrationShould extends BaseMockInteg
         List<ValidationRule> validationRule = d2.validationModule().validationRules()
                 .byPeriodType().eq(PeriodType.Monthly)
                 .blockingGet();
-        assertThat(validationRule.size(), is(2));
+        assertThat(validationRule.size()).isEqualTo(2);
     }
 
     @Test
@@ -90,7 +89,7 @@ public class ValidationRuleRepositoryMockIntegrationShould extends BaseMockInteg
         List<ValidationRule> validationRule = d2.validationModule().validationRules()
                 .bySkipFormValidation().eq(Boolean.TRUE)
                 .blockingGet();
-        assertThat(validationRule.size(), is(1));
+        assertThat(validationRule.size()).isEqualTo(1);
     }
 
     @Test
@@ -98,7 +97,7 @@ public class ValidationRuleRepositoryMockIntegrationShould extends BaseMockInteg
         List<ValidationRule> validationRule = d2.validationModule().validationRules()
                 .byLeftSideExpression().eq("#{GCGfEY82Wz6.psbwp3CQEhs}")
                 .blockingGet();
-        assertThat(validationRule.size(), is(1));
+        assertThat(validationRule.size()).isEqualTo(1);
     }
 
     @Test
@@ -106,7 +105,7 @@ public class ValidationRuleRepositoryMockIntegrationShould extends BaseMockInteg
         List<ValidationRule> validationRule = d2.validationModule().validationRules()
                 .byLeftSideDescription().eq("At Measles, Slept under LLITN last night, >=1 year Fixed")
                 .blockingGet();
-        assertThat(validationRule.size(), is(1));
+        assertThat(validationRule.size()).isEqualTo(1);
     }
 
     @Test
@@ -114,7 +113,7 @@ public class ValidationRuleRepositoryMockIntegrationShould extends BaseMockInteg
         List<ValidationRule> validationRule = d2.validationModule().validationRules()
                 .byLeftSideMissingValueStrategy().eq(MissingValueStrategy.SKIP_IF_ANY_VALUE_MISSING)
                 .blockingGet();
-        assertThat(validationRule.size(), is(1));
+        assertThat(validationRule.size()).isEqualTo(1);
     }
 
     @Test
@@ -122,7 +121,7 @@ public class ValidationRuleRepositoryMockIntegrationShould extends BaseMockInteg
         List<ValidationRule> validationRule = d2.validationModule().validationRules()
                 .byRightSideExpression().eq("#{YtbsuPPo010.psbwp3CQEhs}")
                 .blockingGet();
-        assertThat(validationRule.size(), is(1));
+        assertThat(validationRule.size()).isEqualTo(1);
     }
 
     @Test
@@ -130,7 +129,7 @@ public class ValidationRuleRepositoryMockIntegrationShould extends BaseMockInteg
         List<ValidationRule> validationRule = d2.validationModule().validationRules()
                 .byRightSideDescription().eq("Measles, >=1 year Fixed[34.291]")
                 .blockingGet();
-        assertThat(validationRule.size(), is(1));
+        assertThat(validationRule.size()).isEqualTo(1);
     }
 
     @Test
@@ -138,7 +137,7 @@ public class ValidationRuleRepositoryMockIntegrationShould extends BaseMockInteg
         List<ValidationRule> validationRule = d2.validationModule().validationRules()
                 .byRightSideMissingValueStrategy().eq(MissingValueStrategy.NEVER_SKIP)
                 .blockingGet();
-        assertThat(validationRule.size(), is(1));
+        assertThat(validationRule.size()).isEqualTo(1);
     }
 
     @Test
@@ -146,7 +145,7 @@ public class ValidationRuleRepositoryMockIntegrationShould extends BaseMockInteg
         List<ValidationRule> validationRule = d2.validationModule().validationRules()
                 .byOrganisationUnitLevels().like("3")
                 .blockingGet();
-        assertThat(validationRule.size(), is(1));
+        assertThat(validationRule.size()).isEqualTo(1);
     }
 
     @Test
@@ -154,6 +153,6 @@ public class ValidationRuleRepositoryMockIntegrationShould extends BaseMockInteg
         List<ValidationRule> validationRule = d2.validationModule().validationRules()
                 .byDataSetUids(Collections.singletonList("BfMAe6Itzgt"))
                 .blockingGet();
-        assertThat(validationRule.size(), is(2));
+        assertThat(validationRule.size()).isEqualTo(2);
     }
 }

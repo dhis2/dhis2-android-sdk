@@ -36,8 +36,7 @@ import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTest
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
@@ -57,8 +56,8 @@ public class DataSetCompleteRegistrationObjectRepositoryMockIntegrationShould ex
 
         DataSetCompleteRegistration dataSetCompleteRegistration = objectRepository().blockingGet();
 
-        assertThat(dataSetCompleteRegistration.deleted(), is(true));
-        assertThat(dataSetCompleteRegistration.state(), is(State.TO_UPDATE));
+        assertThat(dataSetCompleteRegistration.deleted()).isEqualTo(true);
+        assertThat(dataSetCompleteRegistration.state()).isEqualTo(State.TO_UPDATE);
     }
 
     @Test

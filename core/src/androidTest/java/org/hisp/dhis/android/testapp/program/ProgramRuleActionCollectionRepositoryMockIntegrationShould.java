@@ -37,8 +37,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class ProgramRuleActionCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -49,7 +48,7 @@ public class ProgramRuleActionCollectionRepositoryMockIntegrationShould extends 
                 d2.programModule().programRuleActions()
                         .blockingGet();
 
-        assertThat(programRuleActions.size(), is(3));
+        assertThat(programRuleActions.size()).isEqualTo(3);
     }
 
     @Test
@@ -60,7 +59,7 @@ public class ProgramRuleActionCollectionRepositoryMockIntegrationShould extends 
                         .eq("data")
                         .blockingGet();
 
-        assertThat(programRuleActions.size(), is(1));
+        assertThat(programRuleActions.size()).isEqualTo(1);
     }
 
     @Test
@@ -71,7 +70,7 @@ public class ProgramRuleActionCollectionRepositoryMockIntegrationShould extends 
                         .eq("The hemoglobin value cannot be above 99")
                         .blockingGet();
 
-        assertThat(programRuleActions.size(), is(1));
+        assertThat(programRuleActions.size()).isEqualTo(1);
     }
 
     @Test
@@ -82,7 +81,7 @@ public class ProgramRuleActionCollectionRepositoryMockIntegrationShould extends 
                         .eq("cejWyOfXge6")
                         .blockingGet();
 
-        assertThat(programRuleActions.size(), is(1));
+        assertThat(programRuleActions.size()).isEqualTo(1);
     }
 
     @Test
@@ -93,7 +92,7 @@ public class ProgramRuleActionCollectionRepositoryMockIntegrationShould extends 
                         .eq("GSae40Fyppf")
                         .blockingGet();
 
-        assertThat(programRuleActions.size(), is(1));
+        assertThat(programRuleActions.size()).isEqualTo(1);
     }
 
     @Test
@@ -104,7 +103,7 @@ public class ProgramRuleActionCollectionRepositoryMockIntegrationShould extends 
                         .eq("bbjzL5gp0NZ")
                         .blockingGet();
 
-        assertThat(programRuleActions.size(), is(1));
+        assertThat(programRuleActions.size()).isEqualTo(1);
     }
 
     @Test
@@ -115,7 +114,7 @@ public class ProgramRuleActionCollectionRepositoryMockIntegrationShould extends 
                         .eq(ProgramRuleActionType.SHOWWARNING)
                         .blockingGet();
 
-        assertThat(programRuleActions.size(), is(1));
+        assertThat(programRuleActions.size()).isEqualTo(1);
     }
 
     @Test
@@ -126,7 +125,7 @@ public class ProgramRuleActionCollectionRepositoryMockIntegrationShould extends 
                         .eq("dBwrot7S420")
                         .blockingGet();
 
-        assertThat(programRuleActions.size(), is(1));
+        assertThat(programRuleActions.size()).isEqualTo(1);
     }
 
     @Test
@@ -137,7 +136,7 @@ public class ProgramRuleActionCollectionRepositoryMockIntegrationShould extends 
                         .eq("Ok9OQpitjQr")
                         .blockingGet();
 
-        assertThat(programRuleActions.size(), is(1));
+        assertThat(programRuleActions.size()).isEqualTo(1);
     }
 
     @Test
@@ -148,7 +147,7 @@ public class ProgramRuleActionCollectionRepositoryMockIntegrationShould extends 
                         .eq("GC4gpdoSD4r")
                         .blockingGet();
 
-        assertThat(programRuleActions.size(), is(1));
+        assertThat(programRuleActions.size()).isEqualTo(1);
     }
 
     @Test
@@ -159,7 +158,7 @@ public class ProgramRuleActionCollectionRepositoryMockIntegrationShould extends 
                         .eq("egT1YqFWsVk")
                         .blockingGet();
 
-        assertThat(programRuleActions.size(), is(1));
+        assertThat(programRuleActions.size()).isEqualTo(1);
     }
 
     @Test
@@ -170,7 +169,7 @@ public class ProgramRuleActionCollectionRepositoryMockIntegrationShould extends 
                         .eq("j3JYGVCIEdz")
                         .blockingGet();
 
-        assertThat(programRuleActions.size(), is(1));
+        assertThat(programRuleActions.size()).isEqualTo(1);
     }
 
 }

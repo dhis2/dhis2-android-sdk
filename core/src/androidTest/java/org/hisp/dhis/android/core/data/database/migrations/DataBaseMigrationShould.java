@@ -43,9 +43,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.hamcrest.CoreMatchers.is;
+import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.arch.db.access.SqliteCheckerUtility.ifTableExist;
-import static org.junit.Assert.assertThat;
 
 @RunWith(AndroidJUnit4.class)
 public class DataBaseMigrationShould {
@@ -74,19 +73,19 @@ public class DataBaseMigrationShould {
     @Test
     public void have_user_table_after_migration_1() {
         initCoreDataBase(1);
-        assertThat(ifTableExist(UserTableInfo.TABLE_INFO.name(), databaseAdapter), is(true));
+        assertThat(ifTableExist(UserTableInfo.TABLE_INFO.name(), databaseAdapter)).isEqualTo(true);
     }
 
     @Test
     public void not_have_tracked_entity_attribute_reserved_value_table_after_migration_1() {
         initCoreDataBase(1);
-        assertThat(ifTableExist(TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO.name(), databaseAdapter), is(false));
+        assertThat(ifTableExist(TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO.name(), databaseAdapter)).isEqualTo(false);
     }
 
     @Test
     public void have_tracked_entity_attribute_reserved_value_table_after_first_migration_2() {
         initCoreDataBase(2);
-        assertThat(ifTableExist(TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO.name(), databaseAdapter), is(true));
+        assertThat(ifTableExist(TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO.name(), databaseAdapter)).isEqualTo(true);
     }
 
     public DatabaseAdapter initCoreDataBase(int databaseVersion) {

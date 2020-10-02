@@ -43,8 +43,7 @@ import org.junit.runner.RunWith;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class MaintenanceMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -52,7 +51,7 @@ public class MaintenanceMockIntegrationShould extends BaseMockIntegrationTestFul
     @Test
     public void allow_access_to_foreign_key_violations() {
         List<ForeignKeyViolation> violations = d2.maintenanceModule().foreignKeyViolations().blockingGet();
-        assertThat(violations.size(), is(3));
+        assertThat(violations.size()).isEqualTo(3);
 
         ForeignKeyViolation categoryOptionComboViolation = ForeignKeyViolation.builder()
                 .toTable(CategoryOptionTableInfo.TABLE_INFO.name())
@@ -76,25 +75,25 @@ public class MaintenanceMockIntegrationShould extends BaseMockIntegrationTestFul
             violationsToCompare.add(violation.toBuilder().id(null).created(null).fromObjectRow(null).build());
         }
 
-        assertThat(violationsToCompare.contains(categoryOptionComboViolation), is(true));
-        assertThat(violationsToCompare.contains(optionViolation), is(true));
+        assertThat(violationsToCompare.contains(categoryOptionComboViolation)).isEqualTo(true);
+        assertThat(violationsToCompare.contains(optionViolation)).isEqualTo(true);
     }
 
     @Test
     public void get_no_vulnerabilities_for_high_threshold() {
         assertThat(d2.maintenanceModule().getPerformanceHintsService(100,
-                100).areThereVulnerabilities(), is(false));
+                100).areThereVulnerabilities()).isEqualTo(false);
     }
 
     @Test
     public void get_vulnerabilities_for_low_threshold() {
         assertThat(d2.maintenanceModule().getPerformanceHintsService(1,
-                1).areThereVulnerabilities(), is(true));
+                1).areThereVulnerabilities()).isEqualTo(true);
     }
 
     @Test
     public void allow_access_to_d2_errors() {
         List<D2Error> d2Errors = d2.maintenanceModule().d2Errors().blockingGet();
-        assertThat(d2Errors.size(), is(2));
+        assertThat(d2Errors.size()).isEqualTo(2);
     }
 }

@@ -28,8 +28,6 @@ package org.hisp.dhis.android.core.program.programindicatorengine.internal.funct
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.MatcherAssert;
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
 import org.hisp.dhis.antlr.ParserExceptionWithoutContext;
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
@@ -39,6 +37,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -96,6 +95,6 @@ public class D2SplitShould {
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn(input);
         when(visitor.castStringVisit(mockedSecondExpr)).thenReturn(delimiter);
         when(visitor.castStringVisit(mockedThirdExpr)).thenReturn(index);
-        MatcherAssert.assertThat(functionToTest.evaluate(context, visitor), CoreMatchers.<Object>is((zScore)));
+        assertThat(functionToTest.evaluate(context, visitor)).isEqualTo((zScore));
     }
 }

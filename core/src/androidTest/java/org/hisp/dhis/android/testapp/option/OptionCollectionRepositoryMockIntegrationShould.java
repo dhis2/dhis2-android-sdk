@@ -37,8 +37,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class OptionCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -46,22 +45,22 @@ public class OptionCollectionRepositoryMockIntegrationShould extends BaseMockInt
     @Test
     public void find_all() {
         List<Option> options = d2.optionModule().options().blockingGet();
-        assertThat(options.size(), is(3));
+        assertThat(options.size()).isEqualTo(3);
     }
 
     @Test
     public void filter_by_sort_order() {
         List<Option> options = d2.optionModule().options()
                 .bySortOrder().eq(2).blockingGet();
-        assertThat(options.size(), is(1));
-        assertThat(options.get(0).uid(), is("egT1YqFWsVk"));
+        assertThat(options.size()).isEqualTo(1);
+        assertThat(options.get(0).uid()).isEqualTo("egT1YqFWsVk");
     }
 
     @Test
     public void filter_by_option_set_uid() {
         List<Option> options = d2.optionModule().options()
                 .byOptionSetUid().eq("VQ2lai3OfVG").blockingGet();
-        assertThat(options.size(), is(2));
+        assertThat(options.size()).isEqualTo(2);
     }
 
     @Test
@@ -69,7 +68,7 @@ public class OptionCollectionRepositoryMockIntegrationShould extends BaseMockInt
         List<Option> options = d2.optionModule().options()
                 .byColor().eq("#13f2dd")
                 .blockingGet();
-        assertThat(options.size(), is(1));
+        assertThat(options.size()).isEqualTo(1);
     }
 
     @Test
@@ -77,7 +76,7 @@ public class OptionCollectionRepositoryMockIntegrationShould extends BaseMockInt
         List<Option> options = d2.optionModule().options()
                 .byIcon().eq("woman_negative")
                 .blockingGet();
-        assertThat(options.size(), is(1));
+        assertThat(options.size()).isEqualTo(1);
     }
 
     @Test
@@ -86,7 +85,7 @@ public class OptionCollectionRepositoryMockIntegrationShould extends BaseMockInt
                 .byOptionSetUid().eq("VQ2lai3OfVG")
                 .orderBySortOrder(RepositoryScope.OrderByDirection.DESC)
                 .blockingGet();
-        assertThat(options.get(0).sortOrder(), is(2));
-        assertThat(options.get(1).sortOrder(), is(1));
+        assertThat(options.get(0).sortOrder()).isEqualTo(2);
+        assertThat(options.get(1).sortOrder()).isEqualTo(1);
     }
 }

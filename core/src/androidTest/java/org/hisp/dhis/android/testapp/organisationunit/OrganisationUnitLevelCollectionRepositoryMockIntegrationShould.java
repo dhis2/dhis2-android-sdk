@@ -36,8 +36,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class OrganisationUnitLevelCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -45,13 +44,13 @@ public class OrganisationUnitLevelCollectionRepositoryMockIntegrationShould exte
     @Test
     public void find_all() {
         List<OrganisationUnitLevel> organisationUnitLevels = d2.organisationUnitModule().organisationUnitLevels().blockingGet();
-        assertThat(organisationUnitLevels.size(), is(4));
+        assertThat(organisationUnitLevels.size()).isEqualTo(4);
     }
 
     @Test
     public void filter_by_short_name() {
         List<OrganisationUnitLevel> organisationUnitLevels = d2.organisationUnitModule().organisationUnitLevels()
                 .byLevel().eq(4).blockingGet();
-        assertThat(organisationUnitLevels.size(), is(1));
+        assertThat(organisationUnitLevels.size()).isEqualTo(1);
     }
 }

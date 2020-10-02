@@ -36,8 +36,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class OrganisationUnitGroupCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -45,20 +44,20 @@ public class OrganisationUnitGroupCollectionRepositoryMockIntegrationShould exte
     @Test
     public void find_all() {
         List<OrganisationUnitGroup> organisationUnitGroups = d2.organisationUnitModule().organisationUnitGroups().blockingGet();
-        assertThat(organisationUnitGroups.size(), is(1));
+        assertThat(organisationUnitGroups.size()).isEqualTo(1);
     }
 
     @Test
     public void filter_by_short_name() {
         List<OrganisationUnitGroup> organisationUnitGroups = d2.organisationUnitModule().organisationUnitGroups()
                 .byShortName().eq("CHC short").blockingGet();
-        assertThat(organisationUnitGroups.size(), is(1));
+        assertThat(organisationUnitGroups.size()).isEqualTo(1);
     }
 
     @Test
     public void filter_by_display_short_name() {
         List<OrganisationUnitGroup> organisationUnitGroups = d2.organisationUnitModule().organisationUnitGroups()
                 .byDisplayShortName().eq("CHC display short").blockingGet();
-        assertThat(organisationUnitGroups.size(), is(1));
+        assertThat(organisationUnitGroups.size()).isEqualTo(1);
     }
 }

@@ -28,8 +28,6 @@ package org.hisp.dhis.android.core.program.programindicatorengine.internal.funct
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.MatcherAssert;
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
 import org.junit.Before;
@@ -38,6 +36,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -85,7 +84,6 @@ public class D2ValidatePatternShould {
     private void assertValidatePattern(String input, String regex, String isPatternValid) {
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn(input);
         when(visitor.castStringVisit(mockedSecondExpr)).thenReturn(regex);
-        MatcherAssert
-                .assertThat(functionToTest.evaluate(context, visitor), CoreMatchers.<Object>is((isPatternValid)));
+        assertThat(functionToTest.evaluate(context, visitor)).isEqualTo(isPatternValid);
     }
 }

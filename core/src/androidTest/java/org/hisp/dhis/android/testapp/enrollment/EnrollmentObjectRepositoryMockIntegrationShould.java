@@ -43,10 +43,7 @@ import org.junit.runner.RunWith;
 
 import java.util.Date;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.core.IsNull.nullValue;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class EnrollmentObjectRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -59,7 +56,7 @@ public class EnrollmentObjectRepositoryMockIntegrationShould extends BaseMockInt
         EnrollmentObjectRepository repository = objectRepository();
 
         repository.setOrganisationUnitUid(orgUnitUid);
-        assertThat(repository.blockingGet().organisationUnit(), is(orgUnitUid));
+        assertThat(repository.blockingGet().organisationUnit()).isEqualTo(orgUnitUid);
 
         repository.blockingDelete();
         OrganisationUnitStore.create(databaseAdapter).delete(orgUnitUid);
@@ -85,7 +82,7 @@ public class EnrollmentObjectRepositoryMockIntegrationShould extends BaseMockInt
         EnrollmentObjectRepository repository = objectRepository();
 
         repository.setEnrollmentDate(enrollmentDate);
-        assertThat(repository.blockingGet().enrollmentDate(), is(enrollmentDate));
+        assertThat(repository.blockingGet().enrollmentDate()).isEqualTo(enrollmentDate);
 
         repository.blockingDelete();
     }
@@ -97,7 +94,7 @@ public class EnrollmentObjectRepositoryMockIntegrationShould extends BaseMockInt
         EnrollmentObjectRepository repository = objectRepository();
 
         repository.setIncidentDate(incidentDate);
-        assertThat(repository.blockingGet().incidentDate(), is(incidentDate));
+        assertThat(repository.blockingGet().incidentDate()).isEqualTo(incidentDate);
 
         repository.blockingDelete();
     }
@@ -109,7 +106,7 @@ public class EnrollmentObjectRepositoryMockIntegrationShould extends BaseMockInt
         EnrollmentObjectRepository repository = objectRepository();
 
         repository.setCompletedDate(completedDate);
-        assertThat(repository.blockingGet().completedDate(), is(completedDate));
+        assertThat(repository.blockingGet().completedDate()).isEqualTo(completedDate);
 
         repository.blockingDelete();
     }
@@ -119,7 +116,7 @@ public class EnrollmentObjectRepositoryMockIntegrationShould extends BaseMockInt
         EnrollmentObjectRepository repository = objectRepository();
 
         repository.setFollowUp(true);
-        assertThat(repository.blockingGet().followUp(), is(true));
+        assertThat(repository.blockingGet().followUp()).isEqualTo(true);
 
         repository.blockingDelete();
     }
@@ -131,8 +128,8 @@ public class EnrollmentObjectRepositoryMockIntegrationShould extends BaseMockInt
         EnrollmentObjectRepository repository = objectRepository();
 
         repository.setStatus(enrollmentStatus);
-        assertThat(repository.blockingGet().status(), is(enrollmentStatus));
-        assertThat(repository.blockingGet().completedDate(), notNullValue());
+        assertThat(repository.blockingGet().status()).isEqualTo(enrollmentStatus);
+        assertThat(repository.blockingGet().completedDate()).isNotNull();
 
         repository.blockingDelete();
     }
@@ -144,8 +141,8 @@ public class EnrollmentObjectRepositoryMockIntegrationShould extends BaseMockInt
         EnrollmentObjectRepository repository = objectRepository();
 
         repository.setStatus(enrollmentStatus);
-        assertThat(repository.blockingGet().status(), is(enrollmentStatus));
-        assertThat(repository.blockingGet().completedDate(), nullValue());
+        assertThat(repository.blockingGet().status()).isEqualTo(enrollmentStatus);
+        assertThat(repository.blockingGet().completedDate()).isNull();
 
         repository.blockingDelete();
     }
@@ -160,7 +157,7 @@ public class EnrollmentObjectRepositoryMockIntegrationShould extends BaseMockInt
         EnrollmentObjectRepository repository = objectRepository();
 
         repository.setGeometry(geometry);
-        assertThat(repository.blockingGet().geometry(), is(geometry));
+        assertThat(repository.blockingGet().geometry()).isEqualTo(geometry);
 
         repository.blockingDelete();
     }

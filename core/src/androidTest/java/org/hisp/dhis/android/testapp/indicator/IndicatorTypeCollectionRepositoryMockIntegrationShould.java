@@ -36,8 +36,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class IndicatorTypeCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -46,7 +45,7 @@ public class IndicatorTypeCollectionRepositoryMockIntegrationShould extends Base
     public void find_all() {
         List<IndicatorType> indicatorTypes = d2.indicatorModule().indicatorTypes()
                 .blockingGet();
-        assertThat(indicatorTypes.size(), is(1));
+        assertThat(indicatorTypes.size()).isEqualTo(1);
     }
 
     @Test
@@ -54,7 +53,7 @@ public class IndicatorTypeCollectionRepositoryMockIntegrationShould extends Base
         List<IndicatorType> indicatorTypes = d2.indicatorModule().indicatorTypes()
                 .byNumber().isFalse()
                 .blockingGet();
-        assertThat(indicatorTypes.size(), is(1));
+        assertThat(indicatorTypes.size()).isEqualTo(1);
     }
 
     @Test
@@ -62,6 +61,6 @@ public class IndicatorTypeCollectionRepositoryMockIntegrationShould extends Base
         List<IndicatorType> indicatorTypes = d2.indicatorModule().indicatorTypes()
                 .byFactor().eq(100)
                 .blockingGet();
-        assertThat(indicatorTypes.size(), is(1));
+        assertThat(indicatorTypes.size()).isEqualTo(1);
     }
 }

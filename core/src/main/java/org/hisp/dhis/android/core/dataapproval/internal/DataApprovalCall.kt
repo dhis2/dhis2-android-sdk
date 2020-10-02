@@ -25,33 +25,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataapproval.internal
 
-package org.hisp.dhis.android.core.datavalue.internal;
+import dagger.Reusable
+import io.reactivex.Single
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
+import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedCollectionValues
+import org.hisp.dhis.android.core.dataapproval.DataApproval
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.datavalue.DataValue;
-import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary;
+@Reusable
+internal class DataApprovalCall @Inject constructor(
+    private val service: DataApprovalService,
+    private val handler: Handler<DataApproval>,
+    private val apiDownloader: APIDownloader
+) : QueryCall<DataApproval, DataApprovalQuery> {
 
-import io.reactivex.Single;
-import retrofit2.Call;
-import retrofit2.http.Body;
-import retrofit2.http.GET;
-import retrofit2.http.POST;
-import retrofit2.http.Query;
-
-interface DataValueService {
-    @GET("dataValueSets")
-    Single<Payload<DataValue>> getDataValues(@Query("fields") @Which Fields<DataValue> fields,
-                                             @Query("lastUpdated") String lastUpdated,
-                                             @Query("dataSet") String dataSetUids,
-                                             @Query("period") String periodIds,
-                                             @Query("orgUnit") String orgUnitUids,
-                                             @Query("children") Boolean children,
-                                             @Query("paging") Boolean paging,
-                                             @Query("includeDeleted") Boolean includeDeleted);
-
-    @POST("dataValueSets")
-    Call<DataValueImportSummary> postDataValues(@Body DataValueSet dataValueSet);
+    override fun download(query: DataApprovalQuery): Single<List<DataApproval>> {
+        return apiDownloader.downloadList(
+            handler,
+            service.getDataApprovals(
+                DataApprovalFields.allFields,
+                query.lastUpdatedStr(),
+                commaSeparatedCollectionValues(query.workflowsUids()),
+                commaSeparatedCollectionValues(query.periodIds()),
+                commaSeparatedCollectionValues(query.organisationUnistUids()),
+                commaSeparatedCollectionValues(query.attributeOptionCombosUids())
+            )
+        )
+    }
 }

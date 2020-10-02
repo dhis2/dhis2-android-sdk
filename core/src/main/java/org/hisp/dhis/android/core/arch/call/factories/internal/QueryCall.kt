@@ -25,33 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.call.factories.internal
 
-package org.hisp.dhis.android.core.datavalue.internal;
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.datavalue.DataValue;
-import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary;
-
-import io.reactivex.Single;
-import retrofit2.Call;
-import retrofit2.http.Body;
-import retrofit2.http.GET;
-import retrofit2.http.POST;
-import retrofit2.http.Query;
-
-interface DataValueService {
-    @GET("dataValueSets")
-    Single<Payload<DataValue>> getDataValues(@Query("fields") @Which Fields<DataValue> fields,
-                                             @Query("lastUpdated") String lastUpdated,
-                                             @Query("dataSet") String dataSetUids,
-                                             @Query("period") String periodIds,
-                                             @Query("orgUnit") String orgUnitUids,
-                                             @Query("children") Boolean children,
-                                             @Query("paging") Boolean paging,
-                                             @Query("includeDeleted") Boolean includeDeleted);
-
-    @POST("dataValueSets")
-    Call<DataValueImportSummary> postDataValues(@Body DataValueSet dataValueSet);
+interface QueryCall<P, Q : BaseQuery> {
+    fun download(query: Q): Single<List<P>>
 }

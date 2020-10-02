@@ -32,6 +32,7 @@ import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
+import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall;
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
@@ -69,10 +70,10 @@ final class AggregatedDataCall {
 
     private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
     private final DHISVersionManager dhisVersionManager;
-    private final QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory;
+    private final QueryCall<DataValue, DataValueQuery> dataValueCall;
     private final QueryCallFactory<DataSetCompleteRegistration,
             DataSetCompleteRegistrationQuery> dataSetCompleteRegistrationCallFactory;
-    private final QueryCallFactory<DataApproval, DataApprovalQuery> dataApprovalCallFactory;
+    private final QueryCall<DataApproval, DataApprovalQuery> dataApprovalCall;
     private final CategoryOptionComboStore categoryOptionComboStore;
     private final RxAPICallExecutor rxCallExecutor;
     private final ObjectWithoutUidStore<AggregatedDataSync> aggregatedDataSyncStore;
@@ -84,10 +85,10 @@ final class AggregatedDataCall {
     @Inject
     AggregatedDataCall(@NonNull ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
                        @NonNull DHISVersionManager dhisVersionManager,
-                       @NonNull QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory,
+                       @NonNull QueryCall<DataValue, DataValueQuery> dataValueCall,
                        @NonNull QueryCallFactory<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery>
                                dataSetCompleteRegistrationCallFactory,
-                       @NonNull QueryCallFactory<DataApproval, DataApprovalQuery> dataApprovalCallFactory,
+                       @NonNull QueryCall<DataApproval, DataApprovalQuery> dataApprovalCall,
                        @NonNull CategoryOptionComboStore categoryOptionComboStore,
                        @NonNull RxAPICallExecutor rxCallExecutor,
                        @NonNull ObjectWithoutUidStore<AggregatedDataSync> aggregatedDataSyncStore,
@@ -96,9 +97,9 @@ final class AggregatedDataCall {
                        @NonNull AggregatedDataSyncHashHelper hashHelper) {
         this.systemInfoRepository = systemInfoRepository;
         this.dhisVersionManager = dhisVersionManager;
-        this.dataValueCallFactory = dataValueCallFactory;
+        this.dataValueCall = dataValueCall;
         this.dataSetCompleteRegistrationCallFactory = dataSetCompleteRegistrationCallFactory;
-        this.dataApprovalCallFactory = dataApprovalCallFactory;
+        this.dataApprovalCall = dataApprovalCall;
         this.categoryOptionComboStore = categoryOptionComboStore;
         this.rxCallExecutor = rxCallExecutor;
         this.aggregatedDataSyncStore = aggregatedDataSyncStore;
@@ -131,7 +132,7 @@ final class AggregatedDataCall {
                                                     D2Progress systemInfoProgress) {
         DataValueQuery dataValueQuery = DataValueQuery.create(bundle);
 
-        Single<D2Progress> dataValueSingle = Single.fromCallable(dataValueCallFactory.create(dataValueQuery))
+        Single<D2Progress> dataValueSingle = dataValueCall.download(dataValueQuery)
                 .map(dataValues -> progressManager.increaseProgress(DataValue.class, false));
 
         DataSetCompleteRegistrationQuery dataSetCompleteRegistrationQuery =
@@ -201,8 +202,7 @@ final class AggregatedDataCall {
                     bundle.allOrganisationUnitUidsSet(), bundle.periodIds(), attributeOptionComboUids,
                     bundle.key().lastUpdatedStr());
 
-            return Single.fromCallable(
-                    dataApprovalCallFactory.create(dataApprovalQuery)).map(dataApprovals ->
+            return dataApprovalCall.download(dataApprovalQuery).map(dataApprovals ->
                     progressManager.increaseProgress(DataApproval.class, false));
         }
     }

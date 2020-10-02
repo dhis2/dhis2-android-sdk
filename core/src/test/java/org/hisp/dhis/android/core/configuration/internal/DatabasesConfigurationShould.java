@@ -58,7 +58,7 @@ public class DatabasesConfigurationShould extends BaseObjectShould implements Ob
         DatabaseUserConfiguration user = server.users().get(0);
         assertThat(user.username()).isEqualTo("user");
         assertThat(user.databaseName()).isEqualTo("dbname.db");
-        assertThat(user.encrypted()).isEqualTo(true);
+        assertThat(user.encrypted()).isTrue();
     }
 
     @Test

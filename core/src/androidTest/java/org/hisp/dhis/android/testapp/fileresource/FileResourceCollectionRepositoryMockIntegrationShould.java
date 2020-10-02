@@ -163,7 +163,7 @@ public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseM
         assertThat(fileResources1.size()).isEqualTo(0);
 
         File file = getFile();
-        assertThat(file.exists()).isEqualTo(true);
+        assertThat(file.exists()).isTrue();
 
         String fileResourceUid = d2.fileResourceModule().fileResources().blockingAdd(file);
 
@@ -174,7 +174,7 @@ public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseM
         assertThat(fileResource.uid()).isEqualTo(fileResourceUid);
 
         File savedFile = new File(fileResource.path());
-        assertThat(savedFile.exists()).isEqualTo(true);
+        assertThat(savedFile.exists()).isTrue();
     }
 
     private File getFile() {

@@ -71,7 +71,7 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         File file = new File(fileResources.get(0).path());
 
-        assertThat(file.exists()).isEqualTo(true);
+        assertThat(file.exists()).isTrue();
     }
 
     //@Test
@@ -84,7 +84,7 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         File file = new File(fileResources.get(0).path());
 
-        assertThat(file.exists()).isEqualTo(true);
+        assertThat(file.exists()).isTrue();
 
         String valueUid = d2.fileResourceModule().fileResources().blockingAdd(file);
 
@@ -103,7 +103,7 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         File file2 = new File(fileResources2.get(1).path());
 
-        assertThat(file2.exists()).isEqualTo(true);
+        assertThat(file2.exists()).isTrue();
 
         d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
 
@@ -123,7 +123,7 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         File file = new File(fileResources.get(0).path());
 
-        assertThat(file.exists()).isEqualTo(true);
+        assertThat(file.exists()).isTrue();
 
         String valueUid = d2.fileResourceModule().fileResources().blockingAdd(file);
 
@@ -140,7 +140,7 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         File file2 = new File(fileResources2.get(1).path());
 
-        assertThat(file2.exists()).isEqualTo(true);
+        assertThat(file2.exists()).isTrue();
     }
 
     //@Test

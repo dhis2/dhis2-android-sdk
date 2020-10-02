@@ -52,8 +52,8 @@ public class CategoryModuleMockIntegrationShould extends BaseMockIntegrationTest
         List<CategoryCombo> combos = d2.categoryModule().categoryCombos().blockingGet();
         assertThat(combos.size()).isEqualTo(2);
         for (CategoryCombo combo : combos) {
-            assertThat(combo.categories() == null).isEqualTo(true);
-            assertThat(accessCategoryOptionCombos(combo) == null).isEqualTo(true);
+            assertThat(combo.categories() == null).isTrue();
+            assertThat(accessCategoryOptionCombos(combo) == null).isTrue();
         }
     }
 
@@ -62,7 +62,7 @@ public class CategoryModuleMockIntegrationShould extends BaseMockIntegrationTest
         List<CategoryCombo> combos = d2.categoryModule().categoryCombos().withCategoryOptionCombos().blockingGet();
         assertThat(combos.size()).isEqualTo(2);
         for (CategoryCombo combo : combos) {
-            assertThat(accessCategoryOptionCombos(combo) == null).isEqualTo(false);
+            assertThat(accessCategoryOptionCombos(combo) == null).isFalse();
         }
     }
 
@@ -71,7 +71,7 @@ public class CategoryModuleMockIntegrationShould extends BaseMockIntegrationTest
         List<CategoryCombo> combos = d2.categoryModule().categoryCombos().withCategories().blockingGet();
         assertThat(combos.size()).isEqualTo(2);
         for (CategoryCombo combo : combos) {
-            assertThat(combo.categories() == null).isEqualTo(false);
+            assertThat(combo.categories() == null).isFalse();
         }
     }
 
@@ -81,8 +81,8 @@ public class CategoryModuleMockIntegrationShould extends BaseMockIntegrationTest
         assertThat(combo.uid()).isEqualTo("m2jTvAj5kkm");
         assertThat(combo.code()).isEqualTo("BIRTHS");
         assertThat(combo.name()).isEqualTo("Births");
-        assertThat(combo.categories() == null).isEqualTo(true);
-        assertThat(accessCategoryOptionCombos(combo) == null).isEqualTo(true);
+        assertThat(combo.categories() == null).isTrue();
+        assertThat(accessCategoryOptionCombos(combo) == null).isTrue();
     }
 
     @Test
@@ -92,7 +92,7 @@ public class CategoryModuleMockIntegrationShould extends BaseMockIntegrationTest
         assertThat(combo.code()).isEqualTo("BIRTHS");
         assertThat(combo.name()).isEqualTo("Births");
         List<CategoryOptionCombo> optionCombos = accessCategoryOptionCombos(combo);
-        assertThat(optionCombos == null).isEqualTo(false);
+        assertThat(optionCombos == null).isFalse();
         assertThat(optionCombos.size()).isEqualTo(2);
         assertThat(optionCombos.iterator().next().name()).isEqualTo("Trained TBA, At PHU");
     }
@@ -100,14 +100,14 @@ public class CategoryModuleMockIntegrationShould extends BaseMockIntegrationTest
     @Test
     public void dont_fail_when_asking_for_combos_without_children_when_not_in_database() {
         CategoryCombo combo = d2.categoryModule().categoryCombos().uid("nonExistentId").blockingGet();
-        assertThat(combo == null).isEqualTo(true);
+        assertThat(combo == null).isTrue();
     }
 
     @Test
     public void dont_fail_when_asking_for_combos_with_children_when_not_in_database() {
         CategoryCombo combo = d2.categoryModule().categoryCombos().withCategories().withCategoryOptionCombos()
                 .uid("nonExistentId").blockingGet();
-        assertThat(combo == null).isEqualTo(true);
+        assertThat(combo == null).isTrue();
     }
 
     @Test
@@ -118,7 +118,7 @@ public class CategoryModuleMockIntegrationShould extends BaseMockIntegrationTest
         assertThat(combo.name()).isEqualTo("Births");
 
         List<Category> categories = combo.categories();
-        assertThat(categories == null).isEqualTo(false);
+        assertThat(categories == null).isFalse();
         assertThat(categories.size()).isEqualTo(2);
 
         Category category0 = categories.get(0);
@@ -149,7 +149,7 @@ public class CategoryModuleMockIntegrationShould extends BaseMockIntegrationTest
         List<Category> categories = d2.categoryModule().categories().withCategoryOptions().blockingGet();
         assertThat(categories.size()).isEqualTo(4);
         for (Category category : categories) {
-            assertThat(category.categoryOptions() == null).isEqualTo(false);
+            assertThat(category.categoryOptions() == null).isFalse();
         }
     }
 
@@ -161,7 +161,7 @@ public class CategoryModuleMockIntegrationShould extends BaseMockIntegrationTest
         assertThat(category.dataDimensionType()).isEqualTo("DISAGGREGATION");
 
         List<CategoryOption> categoryOptions = category.categoryOptions();
-        assertThat(categoryOptions == null).isEqualTo(false);
+        assertThat(categoryOptions == null).isFalse();
         assertThat(categoryOptions.size()).isEqualTo(3);
 
         CategoryOption categoryOption0 = categoryOptions.get(0);
@@ -188,7 +188,7 @@ public class CategoryModuleMockIntegrationShould extends BaseMockIntegrationTest
         List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos().withCategoryOptions().blockingGet();
         assertThat(categoryOptionCombos.size()).isEqualTo(4);
         for (CategoryOptionCombo categoryOptionCombo : categoryOptionCombos) {
-            assertThat(categoryOptionCombo.categoryOptions() == null).isEqualTo(false);
+            assertThat(categoryOptionCombo.categoryOptions() == null).isFalse();
         }
     }
 
@@ -207,7 +207,7 @@ public class CategoryModuleMockIntegrationShould extends BaseMockIntegrationTest
         assertThat(categoryOptionCombo.name()).isEqualTo("Trained TBA, At PHU");
 
         List<CategoryOption> categoryOptions = categoryOptionCombo.categoryOptions();
-        assertThat(categoryOptions == null).isEqualTo(false);
+        assertThat(categoryOptions == null).isFalse();
         assertThat(categoryOptions.size()).isEqualTo(2);
 
         Map<String, CategoryOption> categoryOptionsMap = UidsHelper.mapByUid(categoryOptions);

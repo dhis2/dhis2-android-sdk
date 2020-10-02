@@ -52,7 +52,7 @@ public class TrackedEntityInstanceCollectionRepositoryMockIntegrationShould exte
         TrackedEntityInstance trackedEntityInstance = trackedEntityInstances.get(0);
         assertThat(trackedEntityInstance.uid()).isEqualTo("nWrB0TfWlvh");
         assertThat(trackedEntityInstance.organisationUnit()).isEqualTo("DiszpKrYNg8");
-        assertThat(trackedEntityInstance.trackedEntityAttributeValues() == null).isEqualTo(true);
+        assertThat(trackedEntityInstance.trackedEntityAttributeValues() == null).isTrue();
 
     }
 
@@ -61,7 +61,7 @@ public class TrackedEntityInstanceCollectionRepositoryMockIntegrationShould exte
         TrackedEntityInstance tei = d2.trackedEntityModule().trackedEntityInstances().uid("nWrB0TfWlvh").blockingGet();
         assertThat(tei.uid()).isEqualTo("nWrB0TfWlvh");
         assertThat(tei.organisationUnit()).isEqualTo("DiszpKrYNg8");
-        assertThat(tei.trackedEntityAttributeValues() == null).isEqualTo(true);
+        assertThat(tei.trackedEntityAttributeValues() == null).isTrue();
     }
 
     @Test

@@ -57,6 +57,6 @@ public class TrackedEntityDataValueShould extends BaseObjectShould implements Ob
         assertThat(trackedEntityDataValue.storedBy()).isEqualTo("admin");
         assertThat(trackedEntityDataValue.dataElement()).isEqualTo("msodh3rEMJa");
         assertThat(trackedEntityDataValue.value()).isEqualTo("2013-05-18");
-        assertThat(trackedEntityDataValue.providedElsewhere()).isEqualTo(false);
+        assertThat(trackedEntityDataValue.providedElsewhere()).isFalse();
     }
 }

@@ -60,8 +60,8 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<String> programUids = d2.programModule().programs()
                 .blockingGetUids();
         assertThat(programUids.size()).isEqualTo(2);
-        assertThat(programUids.contains("IpHINAT79UW")).isEqualTo(true);
-        assertThat(programUids.contains("lxAQ7Zs9VYR")).isEqualTo(true);
+        assertThat(programUids.contains("IpHINAT79UW")).isTrue();
+        assertThat(programUids.contains("lxAQ7Zs9VYR")).isTrue();
     }
 
     @Test
@@ -98,8 +98,8 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
                 .byVersion().eq(3)
                 .blockingGetUids();
         assertThat(programUids.size()).isEqualTo(1);
-        assertThat(programUids.contains("IpHINAT79UW")).isEqualTo(false);
-        assertThat(programUids.contains("lxAQ7Zs9VYR")).isEqualTo(true);
+        assertThat(programUids.contains("IpHINAT79UW")).isFalse();
+        assertThat(programUids.contains("lxAQ7Zs9VYR")).isTrue();
     }
 
     @Test

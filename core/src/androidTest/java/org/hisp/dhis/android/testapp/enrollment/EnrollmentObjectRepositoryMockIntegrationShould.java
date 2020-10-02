@@ -116,7 +116,7 @@ public class EnrollmentObjectRepositoryMockIntegrationShould extends BaseMockInt
         EnrollmentObjectRepository repository = objectRepository();
 
         repository.setFollowUp(true);
-        assertThat(repository.blockingGet().followUp()).isEqualTo(true);
+        assertThat(repository.blockingGet().followUp()).isTrue();
 
         repository.blockingDelete();
     }

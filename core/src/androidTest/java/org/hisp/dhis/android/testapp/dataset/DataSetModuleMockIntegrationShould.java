@@ -51,14 +51,14 @@ public class DataSetModuleMockIntegrationShould extends BaseMockIntegrationTestF
         List<DataSet> dataSets = d2.dataSetModule().dataSets().blockingGet();
         assertThat(dataSets.size()).isEqualTo(2);
         for (DataSet dataSet : dataSets) {
-            assertThat(dataSet.dataSetElements() == null).isEqualTo(true);
+            assertThat(dataSet.dataSetElements() == null).isTrue();
         }
     }
 
     @Test
     public void allow_access_to_one_data_set_without_children() {
         DataSet dataSet = d2.dataSetModule().dataSets().uid("lyLU2wR22tC").blockingGet();
-        assertThat(dataSet.dataSetElements() == null).isEqualTo(true);
+        assertThat(dataSet.dataSetElements() == null).isTrue();
     }
 
     @Test
@@ -66,14 +66,14 @@ public class DataSetModuleMockIntegrationShould extends BaseMockIntegrationTestF
         List<DataSet> dataSets = d2.dataSetModule().dataSets().withDataSetElements().blockingGet();
         assertThat(dataSets.size()).isEqualTo(2);
         for (DataSet dataSet : dataSets) {
-            assertThat(dataSet.dataSetElements() == null).isEqualTo(false);
+            assertThat(dataSet.dataSetElements() == null).isFalse();
         }
     }
 
     @Test
     public void allow_access_to_one_data_set_with_children() {
         DataSet dataSet = d2.dataSetModule().dataSets().withDataSetElements().uid("lyLU2wR22tC").blockingGet();
-        assertThat(dataSet.dataSetElements() == null).isEqualTo(false);
+        assertThat(dataSet.dataSetElements() == null).isFalse();
     }
 
     @Test

@@ -446,7 +446,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
             }
         }
 
-        assertThat(deleted).isEqualTo(true);
+        assertThat(deleted).isTrue();
     }
 
     private void insertATei(String uid, TrackedEntityInstance tei, Geometry geometry) {

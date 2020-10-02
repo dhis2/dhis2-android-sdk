@@ -45,8 +45,8 @@ public class CategoryComboUidsSeekerMockIntegrationShould extends BaseMockIntegr
         Set<String> categories = new CategoryComboUidsSeeker(databaseAdapter).seekUids();
 
         assertThat(categories.size()).isEqualTo(2);
-        assertThat(categories.contains("m2jTvAj5kkm")).isEqualTo(true);
+        assertThat(categories.contains("m2jTvAj5kkm")).isTrue();
         // Default category combo (p0KPaWEg3cf).
-        assertThat(categories.contains("p0KPaWEg3cf")).isEqualTo(true);
+        assertThat(categories.contains("p0KPaWEg3cf")).isTrue();
     }
 }

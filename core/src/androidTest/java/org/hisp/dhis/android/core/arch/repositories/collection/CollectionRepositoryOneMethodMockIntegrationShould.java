@@ -71,7 +71,7 @@ public class CollectionRepositoryOneMethodMockIntegrationShould extends BaseMock
         CategoryCombo combo = d2.categoryModule().categoryCombos()
                 .byName().eq("Wrong name")
                 .one().blockingGet();
-        assertThat(combo == null).isEqualTo(true);
+        assertThat(combo == null).isTrue();
     }
 
     @Test

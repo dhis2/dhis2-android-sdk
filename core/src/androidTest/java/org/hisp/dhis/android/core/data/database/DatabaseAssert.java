@@ -59,13 +59,13 @@ public final class DatabaseAssert {
     }
 
     public DatabaseAssert isEmptyTable(String tableName) {
-        assertThat(tableCount(tableName) == 0).isEqualTo(true);
+        assertThat(tableCount(tableName) == 0).isTrue();
 
         return this;
     }
 
     public DatabaseAssert isNotEmptyTable(String tableName) {
-        assertThat(tableCount(tableName) == 0).isEqualTo(false);
+        assertThat(tableCount(tableName) == 0).isFalse();
 
         return this;
     }

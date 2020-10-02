@@ -84,7 +84,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends BaseMock
         List<CategoryCombo> combos = repositoryWithUpdatedScope.withCategories().blockingGet();
         assertThat(combos.size()).isEqualTo(1);
         assertThat(combos.get(0).uid()).isEqualTo(BIRTH_UID);
-        assertThat(combos.get(0).categories().isEmpty()).isEqualTo(false);
+        assertThat(combos.get(0).categories().isEmpty()).isFalse();
     }
 
     @Test
@@ -119,7 +119,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends BaseMock
         CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos()
                 .byName().eq("Deaths");
         List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
-        assertThat(combos.isEmpty()).isEqualTo(true);
+        assertThat(combos.isEmpty()).isTrue();
     }
 
     @Test
@@ -127,7 +127,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends BaseMock
         CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos()
                 .byCode().eq("DEATHS");
         List<CategoryCombo> combos = repositoryWithUpdatedScope.blockingGet();
-        assertThat(combos.isEmpty()).isEqualTo(true);
+        assertThat(combos.isEmpty()).isTrue();
     }
 
     @Test

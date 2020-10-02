@@ -73,19 +73,19 @@ public class DataBaseMigrationShould {
     @Test
     public void have_user_table_after_migration_1() {
         initCoreDataBase(1);
-        assertThat(ifTableExist(UserTableInfo.TABLE_INFO.name(), databaseAdapter)).isEqualTo(true);
+        assertThat(ifTableExist(UserTableInfo.TABLE_INFO.name(), databaseAdapter)).isTrue();
     }
 
     @Test
     public void not_have_tracked_entity_attribute_reserved_value_table_after_migration_1() {
         initCoreDataBase(1);
-        assertThat(ifTableExist(TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO.name(), databaseAdapter)).isEqualTo(false);
+        assertThat(ifTableExist(TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO.name(), databaseAdapter)).isFalse();
     }
 
     @Test
     public void have_tracked_entity_attribute_reserved_value_table_after_first_migration_2() {
         initCoreDataBase(2);
-        assertThat(ifTableExist(TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO.name(), databaseAdapter)).isEqualTo(true);
+        assertThat(ifTableExist(TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO.name(), databaseAdapter)).isTrue();
     }
 
     public DatabaseAdapter initCoreDataBase(int databaseVersion) {

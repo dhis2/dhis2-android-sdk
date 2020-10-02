@@ -75,20 +75,20 @@ public class MaintenanceMockIntegrationShould extends BaseMockIntegrationTestFul
             violationsToCompare.add(violation.toBuilder().id(null).created(null).fromObjectRow(null).build());
         }
 
-        assertThat(violationsToCompare.contains(categoryOptionComboViolation)).isEqualTo(true);
-        assertThat(violationsToCompare.contains(optionViolation)).isEqualTo(true);
+        assertThat(violationsToCompare.contains(categoryOptionComboViolation)).isTrue();
+        assertThat(violationsToCompare.contains(optionViolation)).isTrue();
     }
 
     @Test
     public void get_no_vulnerabilities_for_high_threshold() {
         assertThat(d2.maintenanceModule().getPerformanceHintsService(100,
-                100).areThereVulnerabilities()).isEqualTo(false);
+                100).areThereVulnerabilities()).isFalse();
     }
 
     @Test
     public void get_vulnerabilities_for_low_threshold() {
         assertThat(d2.maintenanceModule().getPerformanceHintsService(1,
-                1).areThereVulnerabilities()).isEqualTo(true);
+                1).areThereVulnerabilities()).isTrue();
     }
 
     @Test

@@ -55,8 +55,8 @@ public class SearchGridShould extends BaseObjectShould implements ObjectShould {
         assertThat(firstHeader.name()).isEqualTo("instance");
         assertThat(firstHeader.column()).isEqualTo("Instance");
         assertThat(firstHeader.type()).isEqualTo("java.lang.String");
-        assertThat(firstHeader.hidden()).isEqualTo(false);
-        assertThat(firstHeader.meta()).isEqualTo(false);
+        assertThat(firstHeader.hidden()).isFalse();
+        assertThat(firstHeader.meta()).isFalse();
 
         assertThat(searchGrid.width()).isEqualTo(9);
         assertThat(searchGrid.height()).isEqualTo(2);

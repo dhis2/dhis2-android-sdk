@@ -67,7 +67,7 @@ public class DataElementShould extends BaseObjectShould implements ObjectShould 
         assertThat(dataElement.displayFormName()).isEqualTo("ANC Visit");
 
         assertThat(dataElement.valueType()).isEqualTo(ValueType.TEXT);
-        assertThat(dataElement.zeroIsSignificant()).isEqualTo(false);
+        assertThat(dataElement.zeroIsSignificant()).isFalse();
         assertThat(dataElement.optionSetUid()).isEqualTo("fUS7fy2HbaI");
         assertThat(dataElement.categoryComboUid()).isEqualTo("p0KPaWEg3cf");
         assertThat(dataElement.domainType()).isEqualTo("TRACKER");

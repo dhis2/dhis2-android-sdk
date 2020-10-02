@@ -105,8 +105,8 @@ public class TrackedEntityInstanceUidHelperShould {
         when(tei2.organisationUnit()).thenReturn("ou4");
         Set<String> missingUids = uidHelper.getMissingOrganisationUnitUids(Lists.newArrayList(tei1, tei2));
         assertThat(missingUids.size()).isEqualTo(2);
-        assertThat(missingUids.contains("ou3")).isEqualTo(true);
-        assertThat(missingUids.contains("ou4")).isEqualTo(true);
+        assertThat(missingUids.contains("ou3")).isTrue();
+        assertThat(missingUids.contains("ou4")).isTrue();
     }
 
     @Test

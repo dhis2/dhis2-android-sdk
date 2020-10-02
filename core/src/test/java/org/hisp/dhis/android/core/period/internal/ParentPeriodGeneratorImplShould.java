@@ -192,7 +192,7 @@ public class ParentPeriodGeneratorImplShould {
     }
 
     private void assertChildAnswerInParentAnswer(Period period) {
-        assertThat(periodGenerator.generatePeriods().contains(period)).isEqualTo(true);
+        assertThat(periodGenerator.generatePeriods().contains(period)).isTrue();
     }
 
     @Test

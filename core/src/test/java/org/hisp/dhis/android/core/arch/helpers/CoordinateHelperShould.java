@@ -28,7 +28,8 @@
 
 package org.hisp.dhis.android.core.arch.helpers;
 
-import org.assertj.core.util.Lists;
+import com.google.common.collect.Lists;
+
 import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Geometry;

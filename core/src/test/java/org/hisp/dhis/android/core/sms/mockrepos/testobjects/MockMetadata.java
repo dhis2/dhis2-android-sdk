@@ -1,6 +1,7 @@
 package org.hisp.dhis.android.core.sms.mockrepos.testobjects;
 
-import org.assertj.core.util.Lists;
+import com.google.common.collect.Lists;
+
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.smscompression.models.SMSMetadata;

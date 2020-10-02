@@ -28,7 +28,8 @@
 
 package org.hisp.dhis.android.core.arch.helpers;
 
-import org.assertj.core.util.Lists;
+import com.google.common.collect.Lists;
+
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.junit.Test;

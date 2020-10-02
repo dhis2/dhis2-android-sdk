@@ -28,7 +28,8 @@
 
 package org.hisp.dhis.android.core.arch.db;
 
-import org.assertj.core.util.Lists;
+import com.google.common.collect.Lists;
+
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.junit.Test;
 

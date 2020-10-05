@@ -28,7 +28,8 @@
 
 package org.hisp.dhis.android.core.maintenance;
 
-import org.assertj.core.util.Lists;
+import com.google.common.collect.Lists;
+
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;

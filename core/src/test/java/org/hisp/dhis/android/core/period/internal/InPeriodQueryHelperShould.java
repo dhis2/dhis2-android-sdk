@@ -28,7 +28,8 @@
 
 package org.hisp.dhis.android.core.period.internal;
 
-import org.assertj.core.util.Lists;
+import com.google.common.collect.Lists;
+
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.period.DatePeriod;
 import org.junit.Test;

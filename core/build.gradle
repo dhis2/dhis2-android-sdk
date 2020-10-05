@@ -71,7 +71,6 @@ ext {
             // test dependencies
             coreTesting     : "1.1.1",
             jUnit           : "4.13",
-            assertJ         : "3.16.1",
             mockito         : "3.4.6",
             mockitoKotlin   : "2.2.0",
             truth           : "1.0.1",
@@ -211,7 +210,6 @@ dependencies {
     testImplementation "junit:junit:${libraries.jUnit}"
     testImplementation "org.mockito:mockito-core:${libraries.mockito}"
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${libraries.mockitoKotlin}"
-    testImplementation "org.assertj:assertj-core:${libraries.assertJ}"
     testImplementation("com.google.truth:truth:${libraries.truth}") {
         exclude group: 'junit' // Android has JUnit built in.
     }

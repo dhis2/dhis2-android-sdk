@@ -25,55 +25,55 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataapproval.internal
+package org.hisp.dhis.android.core.dataset.internal
 
 import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.Single
 import java.util.ArrayList
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedCollectionValues
 import org.hisp.dhis.android.core.arch.helpers.internal.MultiDimensionalPartitioner
-import org.hisp.dhis.android.core.dataapproval.DataApproval
+import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 
 @Reusable
-internal class DataApprovalCall @Inject constructor(
-    private val service: DataApprovalService,
-    private val handler: Handler<DataApproval>,
-    private val apiDownloader: APIDownloader,
-    private val multiDimensionalPartitioner: MultiDimensionalPartitioner
-) : QueryCall<DataApproval, DataApprovalQuery> {
+internal class DataSetCompleteRegistrationCall @Inject constructor(
+    private val service: DataSetCompleteRegistrationService,
+    private val multiDimensionalPartitioner: MultiDimensionalPartitioner,
+    private val processor: DataSetCompleteRegistrationCallProcessor
+) : QueryCall<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery> {
 
     companion object {
         private const val QUERY_WITHOUT_UIDS_LENGTH = (
-            "dataApprovals/multiple?fields=wf,ou,pe,aoc,state&wf=&pe=&ou&aoc="
+            "completeDataSetRegistrations?fields=period,dataSet,organisationUnit,attributeOptionCombo,date,storedBy" +
+                "&dataSet=&period=&orgUnit&children=true&paging=false"
             ).length
     }
 
-    @Suppress("MagicNumber")
-    override fun download(query: DataApprovalQuery): Single<List<DataApproval>> {
+    override fun download(query: DataSetCompleteRegistrationQuery): Single<List<DataSetCompleteRegistration>> {
+        return downloadInternal(query).doOnSuccess { registrations -> processor.process(registrations, query) }
+    }
+
+    private fun downloadInternal(query: DataSetCompleteRegistrationQuery): Single<List<DataSetCompleteRegistration>> {
         val partitions = multiDimensionalPartitioner.partitionForSize(
             QUERY_WITHOUT_UIDS_LENGTH,
-            query.workflowsUids(),
+            query.dataSetUids(),
             query.periodIds(),
-            query.organisationUnistUids(),
-            query.attributeOptionCombosUids()
+            query.rootOrgUnitUids()
         )
+
         return Observable.fromIterable(partitions).flatMapSingle { part ->
-            apiDownloader.downloadList(
-                handler,
-                service.getDataApprovals(
-                    DataApprovalFields.allFields,
-                    query.lastUpdatedStr(),
-                    commaSeparatedCollectionValues(part[0]),
-                    commaSeparatedCollectionValues(part[1]),
-                    commaSeparatedCollectionValues(part[2]),
-                    commaSeparatedCollectionValues(part[3])
-                )
+            service.getDataSetCompleteRegistrations(
+                DataSetCompleteRegistrationFields.allFields,
+                query.lastUpdatedStr(),
+                commaSeparatedCollectionValues(part[0]),
+                commaSeparatedCollectionValues(part[1]),
+                commaSeparatedCollectionValues(part[2]),
+                true,
+                false
             )
-        }.reduce(ArrayList(), { t1, t2 -> t1 + t2 })
+        }.map { it.dataSetCompleteRegistrations }
+            .reduce(ArrayList(), { t1, t2 -> t1 + t2 })
     }
 }

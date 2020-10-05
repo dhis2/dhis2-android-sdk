@@ -25,46 +25,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.helpers.internal
+package org.hisp.dhis.android.core.dataset.internal
 
 import dagger.Reusable
 import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 
 @Reusable
-internal class MultiDimensionalPartitioner @Inject constructor() {
+internal class DataSetCompleteRegistrationCallProcessor @Inject internal constructor(
+    private val dataSetCompleteRegistrationStore: DataSetCompleteRegistrationStore,
+    private val handler: Handler<DataSetCompleteRegistration>
+) {
 
-    fun partitionForSize(size: Int, vararg partitions: Collection<String>): List<List<List<String>>> {
-        return partitionInternal(
-            UrlLengthHelper.getHowManyUidsFitInURL(size),
-            listOf(partitions.map { it.toList() })
-        )
-    }
-
-    fun partition(maxValues: Int, vararg partitions: Collection<String>): List<List<List<String>>> {
-        return partitionInternal(
-            maxValues,
-            listOf(partitions.map { it.toList() })
-        )
-    }
-
-    private fun partitionInternal(maxValues: Int, partitions: List<List<List<String>>>): List<List<List<String>>> {
-        return partitions.flatMap { part ->
-            val count = part.map { it.size }.sum()
-            if (count <= maxValues) {
-                listOf(part)
-            } else {
-                val largerDimension = part.maxBy { it.size }!!
-                val lds = largerDimension.size
-                val largerDimensionPart1 = largerDimension.subList(0, lds / 2)
-                val largerDimensionPart2 = largerDimension.subList(lds / 2, lds)
-                val divided1 = replace(part, largerDimension, largerDimensionPart1)
-                val divided2 = replace(part, largerDimension, largerDimensionPart2)
-                partitionInternal(maxValues, listOf(divided1, divided2))
+    internal fun process(objectList: List<DataSetCompleteRegistration>, query: DataSetCompleteRegistrationQuery) {
+        if (objectList.isNotEmpty()) {
+            removeExistingRegistersForQuery(query)
+            val objectsToImport = objectList.filter {
+                !CollectionsHelper.isDeleted(it)
             }
+            handler.handleMany(objectsToImport)
         }
     }
 
-    private fun replace(parent: List<List<String>>, check: List<String>, repl: List<String>): List<List<String>> {
-        return parent.map { valueList -> if (valueList == check) repl else valueList }
+    /*
+     For versions lower than 2.32:
+     Records deleted in the server are not returned in the API. The strategy here is to remove all the records
+     linked to a particular query before storing the returned values. Only records in "SYNCED" state are removed.
+     */
+    private fun removeExistingRegistersForQuery(query: DataSetCompleteRegistrationQuery) {
+        for (rootOrgUnitUid in query.rootOrgUnitUids()) {
+            dataSetCompleteRegistrationStore.removeNotPresentAndSynced(
+                query.dataSetUids(), query.periodIds(), rootOrgUnitUid
+            )
+        }
     }
 }

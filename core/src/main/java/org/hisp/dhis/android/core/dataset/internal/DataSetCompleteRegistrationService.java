@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary;
 
+import io.reactivex.Single;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -44,7 +45,7 @@ import retrofit2.http.Query;
 interface DataSetCompleteRegistrationService {
 
     @GET("completeDataSetRegistrations")
-    Call<DataSetCompleteRegistrationPayload> getDataSetCompleteRegistrations(
+    Single<DataSetCompleteRegistrationPayload> getDataSetCompleteRegistrations(
             @Query("fields") @Which Fields<DataSetCompleteRegistration> fields,
             @Query("lastUpdated") String lastUpdated,
             @Query("dataSet") String dataSetUids,

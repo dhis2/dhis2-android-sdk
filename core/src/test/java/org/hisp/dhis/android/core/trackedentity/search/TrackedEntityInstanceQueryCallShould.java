@@ -54,7 +54,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 import retrofit2.Call;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Matchers.any;

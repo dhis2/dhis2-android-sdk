@@ -33,7 +33,7 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 public class DatabasesConfigurationHelperShould {
 
@@ -113,13 +113,13 @@ public class DatabasesConfigurationHelperShould {
 
     @Test
     public void get_logged_configuration_when_one_server_user() {
-        assertThat(helper.getLoggedUserConfiguration(SINGLE_SERVER_SINGLE_USER_CONFIG, USERNAME_1)).isSameAs(USER_CONFIG_11);
+        assertThat(helper.getLoggedUserConfiguration(SINGLE_SERVER_SINGLE_USER_CONFIG, USERNAME_1)).isSameInstanceAs(USER_CONFIG_11);
     }
 
     @Test
     public void get_logged_configuration_when_one_server_and_2_users() {
-        assertThat(helper.getLoggedUserConfiguration(SINGLE_SERVER_2_USERS_CONFIG, USERNAME_1)).isSameAs(USER_CONFIG_11);
-        assertThat(helper.getLoggedUserConfiguration(SINGLE_SERVER_2_USERS_CONFIG, USERNAME_2)).isSameAs(USER_CONFIG_12);
+        assertThat(helper.getLoggedUserConfiguration(SINGLE_SERVER_2_USERS_CONFIG, USERNAME_1)).isSameInstanceAs(USER_CONFIG_11);
+        assertThat(helper.getLoggedUserConfiguration(SINGLE_SERVER_2_USERS_CONFIG, USERNAME_2)).isSameInstanceAs(USER_CONFIG_12);
     }
 
     @Test
@@ -136,7 +136,7 @@ public class DatabasesConfigurationHelperShould {
                                 .build()
         )).build();
 
-        assertThat(helper.getLoggedUserConfiguration(configuration, USERNAME_1)).isSameAs(USER_CONFIG_11);
+        assertThat(helper.getLoggedUserConfiguration(configuration, USERNAME_1)).isSameInstanceAs(USER_CONFIG_11);
     }
 
     @Test(expected = RuntimeException.class)
@@ -146,8 +146,8 @@ public class DatabasesConfigurationHelperShould {
 
     @Test
     public void get_logged_configuration_when_2_servers_with_two_users_in_first() {
-        assertThat(helper.getLoggedUserConfiguration(TWO_SERVERS_TWO_USERS_FIRST, USERNAME_1)).isSameAs(USER_CONFIG_11);
-        assertThat(helper.getLoggedUserConfiguration(TWO_SERVERS_TWO_USERS_FIRST, USERNAME_2)).isSameAs(USER_CONFIG_12);
+        assertThat(helper.getLoggedUserConfiguration(TWO_SERVERS_TWO_USERS_FIRST, USERNAME_1)).isSameInstanceAs(USER_CONFIG_11);
+        assertThat(helper.getLoggedUserConfiguration(TWO_SERVERS_TWO_USERS_FIRST, USERNAME_2)).isSameInstanceAs(USER_CONFIG_12);
     }
 
     @Test

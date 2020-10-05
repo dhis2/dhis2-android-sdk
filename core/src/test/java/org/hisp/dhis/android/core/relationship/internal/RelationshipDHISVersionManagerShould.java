@@ -37,7 +37,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST_UPDATED;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.NAME;
@@ -103,7 +103,7 @@ public class RelationshipDHISVersionManagerShould extends RelationshipSamples {
         assert230Fields(compatible);
         assertThat(compatible.uid()).isEqualTo(UID);
         assertThat(compatible.relative()).isNull();
-        assertThat(compatible.state()).isEqualByComparingTo(STATE);
+        assertThat(compatible.state()).isEqualTo(STATE);
         assertThat(compatible.deleted()).isEqualTo(DELETED);
     }
 
@@ -122,7 +122,7 @@ public class RelationshipDHISVersionManagerShould extends RelationshipSamples {
         assertThat(compatible.trackedEntityInstanceA()).isEqualTo(FROM_UID);
         assertThat(compatible.trackedEntityInstanceB()).isEqualTo(TO_UID);
         assertThat(compatible.uid()).isEqualTo(TYPE);
-        assertThat(compatible.state()).isEqualByComparingTo(STATE);
+        assertThat(compatible.state()).isEqualTo(STATE);
         assertThat(compatible.deleted()).isEqualTo(DELETED);
     }
 

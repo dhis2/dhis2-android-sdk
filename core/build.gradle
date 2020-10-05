@@ -212,6 +212,9 @@ dependencies {
     testImplementation "org.mockito:mockito-core:${libraries.mockito}"
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${libraries.mockitoKotlin}"
     testImplementation "org.assertj:assertj-core:${libraries.assertJ}"
+    testImplementation("com.google.truth:truth:${libraries.truth}") {
+        exclude group: 'junit' // Android has JUnit built in.
+    }
     testImplementation "nl.jqno.equalsverifier:equalsverifier:${libraries.equalsVerifier}"
     testImplementation "com.squareup.okhttp3:mockwebserver:${libraries.okHttp}"
     testImplementation "androidx.test:runner:${libraries.testRunner}"

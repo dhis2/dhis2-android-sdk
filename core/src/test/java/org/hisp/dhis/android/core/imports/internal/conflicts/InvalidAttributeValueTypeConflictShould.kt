@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.imports.internal.conflicts
 
+import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.whenever
-import org.assertj.core.api.Assertions.assertThat
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
 import org.junit.Test
 

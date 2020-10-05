@@ -44,7 +44,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.Set;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 

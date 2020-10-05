@@ -51,7 +51,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
@@ -124,7 +124,7 @@ public class AggregatedDataCallBundleFactoryShould {
                 dataSetSettings, rootOrgUnits, allOrgUnits, new HashMap<>());
 
         assertThat(bundles.size()).isEqualTo(1);
-        assertThat(bundles.get(0).dataSets()).contains(dataSet1, dataSet2);
+        assertThat(bundles.get(0).dataSets()).containsExactly(dataSet1, dataSet2);
     }
 
     @Test

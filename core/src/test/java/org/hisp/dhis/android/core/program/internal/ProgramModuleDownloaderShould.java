@@ -55,7 +55,6 @@ import okhttp3.MediaType;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 
-import static junit.framework.Assert.assertTrue;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.when;
@@ -153,7 +152,7 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     @Test
     public void return_programs() {
         List<Program> programs = programModuleDownloader.downloadMetadata(anySet()).blockingGet();
-        assertTrue(!programs.isEmpty());
+        assertThat(!programs.isEmpty()).isTrue();
         assertThat(programs.get(0)).isEqualTo(program);
     }
 

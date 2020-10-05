@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.trackedentity.api;
 
-import junit.framework.Assert;
-
 import org.hisp.dhis.android.core.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2Factory;
@@ -51,6 +49,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAcc
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePayload;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService;
+import org.junit.Assert;
 import org.junit.Before;
 
 import java.io.IOException;

@@ -31,8 +31,7 @@ import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import java.util.Calendar
-import junit.framework.Assert.assertFalse
-import junit.framework.Assert.assertTrue
+import org.assertj.core.api.Assertions.assertThat
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventStatus
@@ -69,8 +68,8 @@ class EventDateUtilsShould {
 
     @Test
     fun `Should evaluate if is expired after completion`() {
-        assertFalse(eventDateUtils.isExpiredAfterCompletion(thirdJanuary, firstJanuary, 5))
-        assertTrue(eventDateUtils.isExpiredAfterCompletion(thirdJanuary, firstJanuary, 1))
+        assertThat(eventDateUtils.isExpiredAfterCompletion(thirdJanuary, firstJanuary, 5)).isFalse()
+        assertThat(eventDateUtils.isExpiredAfterCompletion(thirdJanuary, firstJanuary, 1)).isTrue()
     }
 
     @Test
@@ -78,7 +77,7 @@ class EventDateUtilsShould {
         whenever(event.status()) doReturn EventStatus.ACTIVE
         whenever(event.eventDate()) doReturn thirdJanuary
 
-        assertFalse(eventDateUtils.isEventExpired(event, 0, PeriodType.Monthly, 10))
+        assertThat(eventDateUtils.isEventExpired(event, 0, PeriodType.Monthly, 10)).isFalse()
     }
 
     @Test
@@ -86,14 +85,14 @@ class EventDateUtilsShould {
         whenever(event.status()) doReturn EventStatus.ACTIVE
         whenever(event.eventDate()) doReturn thirdJanuary
 
-        assertTrue(eventDateUtils.isEventExpired(event, 0, PeriodType.Monthly, 2))
+        assertThat(eventDateUtils.isEventExpired(event, 0, PeriodType.Monthly, 2)).isTrue()
     }
 
     @Test
     fun `Should return is not expired if no periodType provided`() {
         whenever(event.status()) doReturn EventStatus.ACTIVE
 
-        assertFalse(eventDateUtils.isEventExpired(event, 0, null, 2))
+        assertThat(eventDateUtils.isEventExpired(event, 0, null, 2)).isFalse()
     }
 
     private fun getCalendar(): Calendar {

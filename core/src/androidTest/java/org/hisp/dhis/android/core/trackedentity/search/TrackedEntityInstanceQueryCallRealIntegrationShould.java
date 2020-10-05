@@ -43,7 +43,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
-import static junit.framework.Assert.fail;
+import static org.junit.Assert.fail;
 
 public class TrackedEntityInstanceQueryCallRealIntegrationShould extends BaseRealIntegrationTest {
     private D2 d2;

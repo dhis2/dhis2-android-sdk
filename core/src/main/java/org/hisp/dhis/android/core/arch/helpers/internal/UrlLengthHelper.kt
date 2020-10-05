@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.arch.helpers.internal
 
 internal object UrlLengthHelper {
-    private const val MAX_ALLOWED_QUERY_LENGTH = 8192
+    private const val MAX_ALLOWED_QUERY_LENGTH = 2500
     private const val SERVER_URL_LENGTH = 200
     private const val UID_WITH_COMMA_LENGTH = 12 // Period id max 11. 12 will also be left for simplicity
 

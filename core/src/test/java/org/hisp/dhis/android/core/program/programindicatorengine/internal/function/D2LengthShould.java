@@ -28,7 +28,6 @@ package org.hisp.dhis.android.core.program.programindicatorengine.internal.funct
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.hamcrest.CoreMatchers;
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
 import org.junit.Before;
@@ -37,7 +36,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -62,13 +61,13 @@ public class D2LengthShould {
     public void return_length_of_argument() {
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn("");
 
-        assertThat(functionToTest.evaluate(context, visitor), CoreMatchers.<Object>is("0"));
+        assertThat(functionToTest.evaluate(context, visitor)).isEqualTo("0");
 
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn("abc");
-        assertThat(functionToTest.evaluate(context, visitor), CoreMatchers.<Object>is("3"));
+        assertThat(functionToTest.evaluate(context, visitor)).isEqualTo("3");
 
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn("abcdef");
-        assertThat(functionToTest.evaluate(context, visitor), CoreMatchers.<Object>is("6"));
+        assertThat(functionToTest.evaluate(context, visitor)).isEqualTo("6");
     }
 
     @Test(expected = NullPointerException.class)

@@ -30,10 +30,7 @@ package org.hisp.dhis.android.core.event.internal;
 
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 public class EventQueryShould {
 
@@ -43,6 +40,6 @@ public class EventQueryShould {
                 .pageSize(50)
                 .build();
 
-        assertThat(eventQuery, is(not(nullValue())));
+        assertThat(eventQuery).isNotNull();
     }
 }

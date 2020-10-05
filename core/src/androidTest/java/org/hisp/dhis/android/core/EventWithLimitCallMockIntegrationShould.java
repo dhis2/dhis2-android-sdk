@@ -38,8 +38,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class EventWithLimitCallMockIntegrationShould extends BaseMockIntegrationTestMetadataEnqueable {
@@ -57,6 +56,6 @@ public class EventWithLimitCallMockIntegrationShould extends BaseMockIntegration
 
         List<Event> downloadedEvents = eventStore.querySingleEvents();
 
-        assertThat(downloadedEvents.size(), is(eventLimitByOrgUnit));
+        assertThat(downloadedEvents.size()).isEqualTo(eventLimitByOrgUnit);
     }
 }

@@ -40,8 +40,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class TrackedEntityDataValueCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -49,7 +48,7 @@ public class TrackedEntityDataValueCollectionRepositoryMockIntegrationShould ext
     @Test
     public void allow_access_to_all_tracked_entity_data_values() {
         List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues().blockingGet();
-        assertThat(trackedEntityDataValues.size(), is(13));
+        assertThat(trackedEntityDataValues.size()).isEqualTo(13);
     }
 
     @Test
@@ -57,7 +56,7 @@ public class TrackedEntityDataValueCollectionRepositoryMockIntegrationShould ext
         List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues()
                 .byEvent().eq("single1")
                 .blockingGet();
-        assertThat(trackedEntityDataValues.size(), is(6));
+        assertThat(trackedEntityDataValues.size()).isEqualTo(6);
     }
 
     @Test
@@ -66,7 +65,7 @@ public class TrackedEntityDataValueCollectionRepositoryMockIntegrationShould ext
         List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues()
                 .byCreated().eq(date)
                 .blockingGet();
-        assertThat(trackedEntityDataValues.size(), is(1));
+        assertThat(trackedEntityDataValues.size()).isEqualTo(1);
     }
 
     @Test
@@ -75,7 +74,7 @@ public class TrackedEntityDataValueCollectionRepositoryMockIntegrationShould ext
         List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues()
                 .byLastUpdated().eq(date)
                 .blockingGet();
-        assertThat(trackedEntityDataValues.size(), is(1));
+        assertThat(trackedEntityDataValues.size()).isEqualTo(1);
     }
 
     @Test
@@ -83,7 +82,7 @@ public class TrackedEntityDataValueCollectionRepositoryMockIntegrationShould ext
         List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues()
                 .byDataElement().eq("bx6fsa0t90x")
                 .blockingGet();
-        assertThat(trackedEntityDataValues.size(), is(2));
+        assertThat(trackedEntityDataValues.size()).isEqualTo(2);
     }
 
     @Test
@@ -91,7 +90,7 @@ public class TrackedEntityDataValueCollectionRepositoryMockIntegrationShould ext
         List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues()
                 .byStoredBy().eq("storer")
                 .blockingGet();
-        assertThat(trackedEntityDataValues.size(), is(2));
+        assertThat(trackedEntityDataValues.size()).isEqualTo(2);
     }
 
     @Test
@@ -99,7 +98,7 @@ public class TrackedEntityDataValueCollectionRepositoryMockIntegrationShould ext
         List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues()
                 .byValue().eq("11")
                 .blockingGet();
-        assertThat(trackedEntityDataValues.size(), is(2));
+        assertThat(trackedEntityDataValues.size()).isEqualTo(2);
     }
 
     @Test
@@ -107,14 +106,14 @@ public class TrackedEntityDataValueCollectionRepositoryMockIntegrationShould ext
         List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues()
                 .byProvidedElsewhere().eq(true)
                 .blockingGet();
-        assertThat(trackedEntityDataValues.size(), is(2));
+        assertThat(trackedEntityDataValues.size()).isEqualTo(2);
     }
 
     @Test
     public void return_tracked_entity_data_value_object_repository() {
         TrackedEntityDataValueObjectRepository objectRepository = d2.trackedEntityModule().trackedEntityDataValues()
                 .value("single1", "g9eOBujte1U");
-        assertThat(objectRepository.blockingExists(), is(Boolean.TRUE));
-        assertThat(objectRepository.blockingGet().value(), is("1"));
+        assertThat(objectRepository.blockingExists()).isEqualTo(Boolean.TRUE);
+        assertThat(objectRepository.blockingGet().value()).isEqualTo("1");
     }
 }

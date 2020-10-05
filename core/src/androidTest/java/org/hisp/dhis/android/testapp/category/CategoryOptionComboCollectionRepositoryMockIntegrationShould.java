@@ -38,8 +38,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class CategoryOptionComboCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -48,7 +47,7 @@ public class CategoryOptionComboCollectionRepositoryMockIntegrationShould extend
     public void find_all() {
         List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos()
                 .withCategoryOptions().blockingGet();
-        assertThat(categoryOptionCombos.size(), is(4));
+        assertThat(categoryOptionCombos.size()).isEqualTo(4);
     }
 
     @Test
@@ -56,7 +55,7 @@ public class CategoryOptionComboCollectionRepositoryMockIntegrationShould extend
         List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos()
                 .byCategoryComboUid().eq("m2jTvAj5kkm")
                 .blockingGet();
-        assertThat(categoryOptionCombos.size(), is(2));
+        assertThat(categoryOptionCombos.size()).isEqualTo(2);
     }
 
     @Test
@@ -64,7 +63,7 @@ public class CategoryOptionComboCollectionRepositoryMockIntegrationShould extend
         List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos()
                 .byCategoryComboUid().eq("p0KPaWEg3cf")
                 .blockingGet();
-        assertThat(categoryOptionCombos.size(), is(2));
+        assertThat(categoryOptionCombos.size()).isEqualTo(2);
     }
 
     @Test
@@ -72,7 +71,7 @@ public class CategoryOptionComboCollectionRepositoryMockIntegrationShould extend
         List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos()
                 .byCategoryOptions(Lists.newArrayList("as6ygGvUGNg"))
                 .blockingGet();
-        assertThat(categoryOptionCombos.size(), is(1));
+        assertThat(categoryOptionCombos.size()).isEqualTo(1);
     }
 
     @Test
@@ -80,7 +79,7 @@ public class CategoryOptionComboCollectionRepositoryMockIntegrationShould extend
         List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos()
                 .byCategoryOptions(Lists.newArrayList("Fp4gVHbRvEV", "uZUnebiT5DI"))
                 .blockingGet();
-        assertThat(categoryOptionCombos.size(), is(1));
+        assertThat(categoryOptionCombos.size()).isEqualTo(1);
     }
 
     @Test
@@ -88,7 +87,7 @@ public class CategoryOptionComboCollectionRepositoryMockIntegrationShould extend
         List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos()
                 .byCategoryOptions(Lists.newArrayList("Fp4gVHbRvEV"))
                 .blockingGet();
-        assertThat(categoryOptionCombos.size(), is(0));
+        assertThat(categoryOptionCombos.size()).isEqualTo(0);
     }
 
     @Test
@@ -96,7 +95,7 @@ public class CategoryOptionComboCollectionRepositoryMockIntegrationShould extend
         List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos()
                 .byCategoryOptions(Lists.newArrayList("as6ygGvUGNg", "Fp4gVHbRvEV", "uZUnebiT5DI"))
                 .blockingGet();
-        assertThat(categoryOptionCombos.size(), is(0));
+        assertThat(categoryOptionCombos.size()).isEqualTo(0);
     }
 
     @Test
@@ -104,27 +103,27 @@ public class CategoryOptionComboCollectionRepositoryMockIntegrationShould extend
         List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos()
                 .byCategoryOptions(Lists.newArrayList("as6ygGvUGNg", "Fp4gVHbRvEV"))
                 .blockingGet();
-        assertThat(categoryOptionCombos.size(), is(0));
+        assertThat(categoryOptionCombos.size()).isEqualTo(0);
     }
 
     @Test
     public void include_category_options_as_children() {
         CategoryOptionCombo categoryOptionCombo = d2.categoryModule().categoryOptionCombos()
                 .withCategoryOptions().one().blockingGet();
-        assertThat(categoryOptionCombo.categoryOptions().get(0).name(), is("At PHU"));
+        assertThat(categoryOptionCombo.categoryOptions().get(0).name()).isEqualTo("At PHU");
     }
 
     @Test
     public void include_category_options_as_children_in_collection_repository_when_all_selected() {
         CategoryOptionCombo categoryOptionCombo = d2.categoryModule().categoryOptionCombos()
                 .withCategoryOptions().blockingGet().get(0);
-        assertThat(categoryOptionCombo.categoryOptions().get(0).name(), is("At PHU"));
+        assertThat(categoryOptionCombo.categoryOptions().get(0).name()).isEqualTo("At PHU");
     }
 
     @Test
     public void include_category_options_as_children_in_object_repository_when_all_selected() {
         CategoryOptionCombo categoryOptionCombo = d2.categoryModule().categoryOptionCombos()
                 .withCategoryOptions().one().blockingGet();
-        assertThat(categoryOptionCombo.categoryOptions().get(0).name(), is("At PHU"));
+        assertThat(categoryOptionCombo.categoryOptions().get(0).name()).isEqualTo("At PHU");
     }
 }

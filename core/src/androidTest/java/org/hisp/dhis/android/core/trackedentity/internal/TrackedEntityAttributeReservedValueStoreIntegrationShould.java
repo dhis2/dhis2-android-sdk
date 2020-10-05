@@ -43,8 +43,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate;
 
 @RunWith(JUnit4.class)
@@ -130,7 +129,7 @@ public class TrackedEntityAttributeReservedValueStoreIntegrationShould extends B
     public void pop_inserted_value() {
         store.insert(notExpiredValue);
         TrackedEntityAttributeReservedValue returnedValue = store.popOne(ownerUid, orgUnitUid);
-        assertThat(returnedValue.value(), is(notExpiredValue.value()));
+        assertThat(returnedValue.value()).isEqualTo(notExpiredValue.value());
     }
 
     @Test
@@ -142,6 +141,6 @@ public class TrackedEntityAttributeReservedValueStoreIntegrationShould extends B
 
     private void storeContains(TrackedEntityAttributeReservedValue value, Boolean contains) {
         List<TrackedEntityAttributeReservedValue> values = store.selectAll();
-        assertThat(values.contains(value), is(contains));
+        assertThat(values.contains(value)).isEqualTo(contains);
     }
 }

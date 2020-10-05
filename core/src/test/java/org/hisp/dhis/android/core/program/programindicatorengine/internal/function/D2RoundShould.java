@@ -28,8 +28,6 @@ package org.hisp.dhis.android.core.program.programindicatorengine.internal.funct
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.MatcherAssert;
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
 import org.junit.Before;
@@ -38,6 +36,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -61,28 +60,28 @@ public class D2RoundShould {
     @Test
     public void return_argument_rounded_up_to_nearest_whole_number() {
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn("0");
-        MatcherAssert.assertThat(round.evaluate(context, visitor), CoreMatchers.<Object>is("0"));
+        assertThat(round.evaluate(context, visitor)).isEqualTo("0");
 
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn("0.8");
-        MatcherAssert.assertThat(round.evaluate(context, visitor), CoreMatchers.<Object>is("1"));
+        assertThat(round.evaluate(context, visitor)).isEqualTo("1");
 
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn("0.4999");
-        MatcherAssert.assertThat(round.evaluate(context, visitor), CoreMatchers.<Object>is("0"));
+        assertThat(round.evaluate(context, visitor)).isEqualTo("0");
 
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn("0.5001");
-        MatcherAssert.assertThat(round.evaluate(context, visitor), CoreMatchers.<Object>is("1"));
+        assertThat(round.evaluate(context, visitor)).isEqualTo("1");
 
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn("-9.3");
-        MatcherAssert.assertThat(round.evaluate(context, visitor), CoreMatchers.<Object>is("-9"));
+        assertThat(round.evaluate(context, visitor)).isEqualTo("-9");
 
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn("-9.8");
-        MatcherAssert.assertThat(round.evaluate(context, visitor), CoreMatchers.<Object>is("-10"));
+        assertThat(round.evaluate(context, visitor)).isEqualTo("-10");
     }
 
     @Test
     public void return_zero_when_number_is_invalid() {
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn("not a number");
 
-        MatcherAssert.assertThat(round.evaluate(context, visitor), CoreMatchers.<Object>is("0"));
+        assertThat(round.evaluate(context, visitor)).isEqualTo("0");
     }
 }

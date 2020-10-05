@@ -36,8 +36,7 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsNull.notNullValue;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class SmsModuleMockIntegrationShould extends BaseMockIntegrationTest {
@@ -45,18 +44,18 @@ public class SmsModuleMockIntegrationShould extends BaseMockIntegrationTest {
     @Test
     public void access_submit_case() {
         SmsSubmitCase submitCase = d2.smsModule().smsSubmitCase();
-        assertThat(submitCase, notNullValue());
+        assertThat(submitCase).isNotNull();
     }
 
     @Test
     public void access_qr_case() {
         QrCodeCase qrCodeCase = d2.smsModule().qrCodeCase();
-        assertThat(qrCodeCase, notNullValue());
+        assertThat(qrCodeCase).isNotNull();
     }
 
     @Test
     public void access_config_case() {
         ConfigCase configCase = d2.smsModule().configCase();
-        assertThat(configCase, notNullValue());
+        assertThat(configCase).isNotNull();
     }
 }

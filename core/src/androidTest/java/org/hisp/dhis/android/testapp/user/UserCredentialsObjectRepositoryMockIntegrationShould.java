@@ -34,8 +34,7 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class UserCredentialsObjectRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -43,14 +42,14 @@ public class UserCredentialsObjectRepositoryMockIntegrationShould extends BaseMo
     @Test
     public void find_user() {
         UserCredentials userCredentials = d2.userModule().userCredentials().blockingGet();
-        assertThat(userCredentials.username(), is("android"));
-        assertThat(userCredentials.name(), is("John Barnes"));
+        assertThat(userCredentials.username()).isEqualTo("android");
+        assertThat(userCredentials.name()).isEqualTo("John Barnes");
     }
 
     @Test
     public void return_user_roles_as_children() {
         UserCredentials userCredentials = d2.userModule().userCredentials().withUserRoles().blockingGet();
-        assertThat(userCredentials.userRoles().size(), is(1));
-        assertThat(userCredentials.userRoles().get(0).name(), is("Superuser"));
+        assertThat(userCredentials.userRoles().size()).isEqualTo(1);
+        assertThat(userCredentials.userRoles().get(0).name()).isEqualTo("Superuser");
     }
 }

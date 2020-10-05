@@ -104,36 +104,36 @@ public class PerformanceHintsServiceShould {
 
     @Test
     public void no_organisation_unit_vulnerable_when_no_organisation_units() {
-        assertThat(performanceHintsService.areThereExcessiveOrganisationUnits()).isEqualTo(false);
-        assertThat(performanceHintsService.areThereVulnerabilities()).isEqualTo(false);
+        assertThat(performanceHintsService.areThereExcessiveOrganisationUnits()).isFalse();
+        assertThat(performanceHintsService.areThereVulnerabilities()).isFalse();
     }
 
     @Test
     public void no_organisation_unit_vulnerable_when_organisation_units_under_threshold() {
         when(organisationUnitStore.count()).thenReturn(1);
-        assertThat(performanceHintsService.areThereExcessiveOrganisationUnits()).isEqualTo(false);
-        assertThat(performanceHintsService.areThereVulnerabilities()).isEqualTo(false);
+        assertThat(performanceHintsService.areThereExcessiveOrganisationUnits()).isFalse();
+        assertThat(performanceHintsService.areThereVulnerabilities()).isFalse();
     }
 
     @Test
     public void no_organisation_unit_vulnerable_when_organisation_units_equal_to_threshold() {
         when(organisationUnitStore.count()).thenReturn(3);
-        assertThat(performanceHintsService.areThereExcessiveOrganisationUnits()).isEqualTo(false);
-        assertThat(performanceHintsService.areThereVulnerabilities()).isEqualTo(false);
+        assertThat(performanceHintsService.areThereExcessiveOrganisationUnits()).isFalse();
+        assertThat(performanceHintsService.areThereVulnerabilities()).isFalse();
     }
 
     @Test
     public void no_organisation_unit_vulnerable_when_organisation_units_over_threshold() {
         when(organisationUnitStore.count()).thenReturn(4);
-        assertThat(performanceHintsService.areThereExcessiveOrganisationUnits()).isEqualTo(true);
-        assertThat(performanceHintsService.areThereVulnerabilities()).isEqualTo(true);
+        assertThat(performanceHintsService.areThereExcessiveOrganisationUnits()).isTrue();
+        assertThat(performanceHintsService.areThereVulnerabilities()).isTrue();
     }
 
     @Test
     public void no_program_rule_vulnerable_when_no_programs_nor_program_rules() {
-        assertThat(performanceHintsService.areThereProgramsWithExcessiveProgramRules()).isEqualTo(false);
+        assertThat(performanceHintsService.areThereProgramsWithExcessiveProgramRules()).isFalse();
         assertThat(performanceHintsService.getProgramsWithExcessiveProgramRules().size()).isEqualTo(0);
-        assertThat(performanceHintsService.areThereVulnerabilities()).isEqualTo(false);
+        assertThat(performanceHintsService.areThereVulnerabilities()).isFalse();
     }
 
     @Test
@@ -141,9 +141,9 @@ public class PerformanceHintsServiceShould {
         when(programStore.selectAll()).thenReturn(Lists.newArrayList(program1));
         when(programRuleStore.selectAll()).thenReturn(Lists.newArrayList(programRule1));
 
-        assertThat(performanceHintsService.areThereProgramsWithExcessiveProgramRules()).isEqualTo(false);
+        assertThat(performanceHintsService.areThereProgramsWithExcessiveProgramRules()).isFalse();
         assertThat(performanceHintsService.getProgramsWithExcessiveProgramRules().size()).isEqualTo(0);
-        assertThat(performanceHintsService.areThereVulnerabilities()).isEqualTo(false);
+        assertThat(performanceHintsService.areThereVulnerabilities()).isFalse();
     }
 
     @Test
@@ -151,13 +151,13 @@ public class PerformanceHintsServiceShould {
         when(programStore.selectAll()).thenReturn(Lists.newArrayList(program1, program2));
         when(programRuleStore.selectAll()).thenReturn(Lists.newArrayList(programRule1, programRule2, programRule3, programRule4));
 
-        assertThat(performanceHintsService.areThereProgramsWithExcessiveProgramRules()).isEqualTo(true);
+        assertThat(performanceHintsService.areThereProgramsWithExcessiveProgramRules()).isTrue();
 
         List<Program> programs = performanceHintsService.getProgramsWithExcessiveProgramRules();
 
         assertThat(programs.size()).isEqualTo(1);
         assertThat(programs.get(0).uid()).isEqualTo("p2");
 
-        assertThat(performanceHintsService.areThereVulnerabilities()).isEqualTo(true);
+        assertThat(performanceHintsService.areThereVulnerabilities()).isTrue();
     }
 }

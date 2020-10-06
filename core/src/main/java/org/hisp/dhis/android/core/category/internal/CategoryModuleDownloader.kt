@@ -25,41 +25,28 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.category.internal;
+package org.hisp.dhis.android.core.category.internal
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader;
-import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.category.CategoryCombo;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Completable;
-import io.reactivex.Single;
+import dagger.Reusable
+import io.reactivex.Completable
+import io.reactivex.Single
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
+import org.hisp.dhis.android.core.category.Category
+import org.hisp.dhis.android.core.category.CategoryCombo
 
 @Reusable
-public class CategoryModuleDownloader implements UntypedModuleDownloader {
+class CategoryModuleDownloader @Inject internal constructor(
+    private val categoryCall: UidsCall<Category>,
+    private val categoryComboCall: UidsCall<CategoryCombo>,
+    private val categoryComboUidsSeeker: CategoryComboUidsSeeker
+) : UntypedModuleDownloader {
 
-    private final UidsCall<Category> categoryCall;
-    private final UidsCall<CategoryCombo> categoryComboCall;
-    private final CategoryComboUidsSeeker categoryComboUidsSeeker;
-
-    @Inject
-    CategoryModuleDownloader(UidsCall<Category> categoryCall,
-                             UidsCall<CategoryCombo> categoryComboCall,
-                             CategoryComboUidsSeeker categoryComboUidsSeeker) {
-        this.categoryCall = categoryCall;
-        this.categoryComboCall = categoryComboCall;
-        this.categoryComboUidsSeeker = categoryComboUidsSeeker;
-    }
-
-    @Override
-    public Completable downloadMetadata() {
-        return Single.fromCallable(categoryComboUidsSeeker::seekUids)
-                .flatMap(categoryComboCall::download)
-                .flatMap(categoryCombos ->
-                        categoryCall.download(CategoryParentUidsHelper.getCategoryUids(categoryCombos)))
-                .ignoreElement();
+    override fun downloadMetadata(): Completable {
+        return Single.fromCallable { categoryComboUidsSeeker.seekUids() }
+            .flatMap { categoryComboCall.download(it) }
+            .flatMap { categoryCall.download(CategoryParentUidsHelper.getCategoryUids(it)) }
+            .ignoreElement()
     }
 }

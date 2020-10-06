@@ -25,14 +25,38 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.arch.call.factories.internal;
+import dagger.Reusable
+import io.reactivex.Single
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.category.Category
 
-import java.util.List;
-import java.util.Set;
+@Reusable
+internal class CategoryCall @Inject constructor(
+    private val handler: Handler<Category>,
+    private val service: CategoryService,
+    private val apiDownloader: APIDownloader
+) : UidsCall<Category> {
 
-import io.reactivex.Single;
+    companion object {
+        private const val MAX_UID_LIST_SIZE = 90
+    }
 
-public interface UidsCall<P> {
-    Single<List<P>> download(Set<String> uids);
+    override fun download(uids: Set<String>): Single<List<Category>> {
+        return apiDownloader.downloadPartitioned(
+            uids,
+            MAX_UID_LIST_SIZE,
+            handler
+        ) { partitionUids: Set<String> ->
+            service.getCategories(
+                CategoryFields.allFields,
+                CategoryFields.uid.`in`(partitionUids),
+                false
+            )
+        }
+    }
 }

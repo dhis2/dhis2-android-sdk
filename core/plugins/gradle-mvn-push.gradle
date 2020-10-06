@@ -164,6 +164,7 @@ afterEvaluate { project ->
             classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
             exclude "org/hisp/dhis/android/core/**/internal/**"
             exclude "org/hisp/dhis/android/core/**/*InternalAccessor.java"
+            exclude "org/hisp/dhis/android/core/**/**.kt"
         }
 
         task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {

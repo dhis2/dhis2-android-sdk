@@ -25,42 +25,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.call.factories.internal
 
-package org.hisp.dhis.android.core.category.internal;
+import io.reactivex.Single
 
-
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.category.Category;
-
-import java.util.List;
-import java.util.Set;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Single;
-
-@Reusable
-final class CategoryCall implements UidsCall<Category> {
-
-    private static final int MAX_UID_LIST_SIZE = 90;
-
-    private final Handler<Category> handler;
-    private final CategoryService service;
-    private final APIDownloader apiDownloader;
-
-    @Inject
-    CategoryCall(Handler<Category> handler, CategoryService service, APIDownloader apiDownloader) {
-        this.handler = handler;
-        this.service = service;
-        this.apiDownloader = apiDownloader;
-    }
-
-    @Override
-    public Single<List<Category>> download(Set<String> optionSetUids) {
-        return apiDownloader.downloadPartitioned(optionSetUids, MAX_UID_LIST_SIZE, handler, partitionUids ->
-                service.getCategories(CategoryFields.allFields, CategoryFields.uid.in(partitionUids), Boolean.FALSE));
-    }
+interface UidsCall<P> {
+    fun download(uids: Set<String>): Single<List<P>>
 }

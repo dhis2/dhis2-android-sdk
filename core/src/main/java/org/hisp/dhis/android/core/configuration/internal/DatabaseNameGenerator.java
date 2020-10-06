@@ -28,12 +28,16 @@
 
 package org.hisp.dhis.android.core.configuration.internal;
 
-import androidx.annotation.VisibleForTesting;
+import javax.inject.Inject;
 
-@VisibleForTesting
 public final class DatabaseNameGenerator {
 
-    String getDatabaseName(String serverUrl, String username, boolean encrypt) {
+    @Inject
+    DatabaseNameGenerator() {
+
+    }
+
+    public String getDatabaseName(String serverUrl, String username, boolean encrypt) {
         String encryptedStr = encrypt ? "encrypted" : "unencrypted";
         return processServerUrl(serverUrl) + "_" + username + "_" + encryptedStr + ".db";
     }

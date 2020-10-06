@@ -43,10 +43,13 @@ public final class TrackerImportConflictStore {
         w.bind(3, o.trackedEntityInstance());
         w.bind(4, o.enrollment());
         w.bind(5, o.event());
-        w.bind(6, o.tableReference());
-        w.bind(7, o.errorCode());
-        w.bind(8, o.status());
-        w.bind(9, o.created());
+        w.bind(6, o.trackedEntityAttribute());
+        w.bind(7, o.dataElement());
+        w.bind(8, o.tableReference());
+        w.bind(9, o.errorCode());
+        w.bind(10, o.status());
+        w.bind(11, o.created());
+        w.bind(12, o.displayDescription());
     };
 
     private TrackerImportConflictStore() {

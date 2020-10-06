@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.validation;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -48,8 +50,6 @@ import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.List;
-
-import javax.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_ValidationRule.Builder.class)

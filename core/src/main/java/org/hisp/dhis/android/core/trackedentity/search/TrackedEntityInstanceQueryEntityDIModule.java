@@ -28,6 +28,13 @@
 
 package org.hisp.dhis.android.core.trackedentity.search;
 
+import org.hisp.dhis.android.core.arch.cache.internal.D2Cache;
+import org.hisp.dhis.android.core.arch.cache.internal.ExpirableCache;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
@@ -39,6 +46,12 @@ public final class TrackedEntityInstanceQueryEntityDIModule {
     @Reusable
     public TrackedEntityInstanceQueryRepositoryScope empty() {
         return TrackedEntityInstanceQueryRepositoryScope.empty();
+    }
+
+    @Provides
+    @Reusable
+    public D2Cache<TrackedEntityInstanceQueryOnline, List<TrackedEntityInstance>> onlineCache() {
+        return new ExpirableCache<>(TimeUnit.MINUTES.toMillis(5));
     }
 
 }

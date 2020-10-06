@@ -38,8 +38,11 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.AccessColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.FeatureTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreTrackedEntityTypeAttributeListColumnAdapter;
+import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
+import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.FeatureType;
@@ -63,6 +66,10 @@ public abstract class TrackedEntityType extends BaseNameableObject implements Co
     @ColumnAdapter(FeatureTypeColumnAdapter.class)
     public abstract FeatureType featureType();
 
+    @JsonProperty()
+    @ColumnAdapter(AccessColumnAdapter.class)
+    public abstract Access access();
+
     public static Builder builder() {
         return new $$AutoValue_TrackedEntityType.Builder();
     }
@@ -84,16 +91,25 @@ public abstract class TrackedEntityType extends BaseNameableObject implements Co
 
         public abstract Builder featureType(FeatureType featureType);
 
+        public abstract Builder access(Access access);
+
         abstract TrackedEntityType autoBuild();
 
         // Auxiliary fields
         abstract ObjectStyle style();
+        abstract Access access();
 
         public TrackedEntityType build() {
             try {
                 style();
             } catch (IllegalStateException e) {
                 style(ObjectStyle.builder().build());
+            }
+
+            try {
+                access();
+            } catch (IllegalStateException e) {
+                access(AccessHelper.defaultAccess());
             }
 
             return autoBuild();

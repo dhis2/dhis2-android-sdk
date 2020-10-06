@@ -47,6 +47,7 @@ public interface TrackedEntityTypeService {
     Single<Payload<TrackedEntityType>> getTrackedEntityTypes(
             @NonNull @Query("fields") @Which Fields<TrackedEntityType> fields,
             @NonNull @Query("filter") @Where Filter<TrackedEntityType, String> idFilter,
+            @NonNull @Query("filter") String accessDataReadFilter,
             @NonNull @Query("paging") boolean paging
     );
 }

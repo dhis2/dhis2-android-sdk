@@ -56,10 +56,13 @@ public final class TrackerImportConflictTableInfo {
         public final static String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
         public final static String ENROLLMENT = "enrollment";
         public final static String EVENT = "event";
+        public final static String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
+        public final static String DATA_ELEMENT = "dataElement";
         public final static String TABLE_REFERENCE = "tableReference";
         final static String ERROR_CODE = "errorCode";
         final static String STATUS = "status";
         final static String CREATED = "created";
+        final static String DISPLAY_DESCRIPTION = "displayDescription";
 
         @Override
         public String[] all() {
@@ -69,10 +72,13 @@ public final class TrackerImportConflictTableInfo {
                     TRACKED_ENTITY_INSTANCE,
                     ENROLLMENT,
                     EVENT,
+                    TRACKED_ENTITY_ATTRIBUTE,
+                    DATA_ELEMENT,
                     TABLE_REFERENCE,
                     ERROR_CODE,
                     STATUS,
-                    CREATED);
+                    CREATED,
+                    DISPLAY_DESCRIPTION);
         }
     }
 }

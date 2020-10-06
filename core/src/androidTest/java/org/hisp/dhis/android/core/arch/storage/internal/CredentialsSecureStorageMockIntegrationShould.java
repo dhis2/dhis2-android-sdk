@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.storage.internal;
 
-import androidx.test.InstrumentationRegistry;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
@@ -47,7 +47,7 @@ public class CredentialsSecureStorageMockIntegrationShould {
     public void setUp() throws D2Error {
         credentialsSecureStore =
                 new CredentialsSecureStoreImpl(
-                        new AndroidSecureStore(InstrumentationRegistry.getContext().getApplicationContext()));
+                        new AndroidSecureStore(InstrumentationRegistry.getInstrumentation().getContext()));
     }
 
     @Test

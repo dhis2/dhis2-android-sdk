@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.utils.integration.mock;
 
 import android.content.Context;
 
-import androidx.test.InstrumentationRegistry;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.facebook.stetho.Stetho;
 
@@ -57,7 +57,7 @@ public class TestDatabaseAdapterFactory {
     }
 
     private static DatabaseAdapter create() {
-        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
+        Context context = InstrumentationRegistry.getInstrumentation().getContext();
         Stetho.initializeWithDefaults(context);
         DatabaseAdapterFactory databaseAdapterFactory = DatabaseAdapterFactory.create(context,
                 new InMemorySecureStore());

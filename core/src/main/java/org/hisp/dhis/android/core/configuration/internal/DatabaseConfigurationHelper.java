@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.configuration.internal;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 
@@ -38,8 +39,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import javax.annotation.Nullable;
 
 public class DatabaseConfigurationHelper {
 

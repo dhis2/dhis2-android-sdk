@@ -163,7 +163,7 @@ public final class GeometryHelper {
                 .build();
     }
 
-    private static <T> T getGeometryObject(Geometry geometry, FeatureType type, TypeReference typeReference)
+    private static <T> T getGeometryObject(Geometry geometry, FeatureType type, TypeReference<T> typeReference)
             throws D2Error {
         if (geometry.type() != type) {
             throw d2Error(null, "The given geometry has not " + type.getGeometryType() + " type.");

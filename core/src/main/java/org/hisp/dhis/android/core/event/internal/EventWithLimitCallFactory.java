@@ -47,7 +47,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.reactivex.Observable;
 
 @Reusable
@@ -151,7 +150,6 @@ public final class EventWithLimitCallFactory {
         return new EventsWithPagingResult(eventsCount, successfulSync);
     }
 
-    @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED")
     private int getEventsWithPaging(EventQuery.Builder eventQueryBuilder, int combinationLimit) throws D2Error {
         int downloadedEventsForCombination = 0;
         EventQuery baseQuery = eventQueryBuilder.build();

@@ -30,12 +30,12 @@ package org.hisp.dhis.android.core.utils;
 
 import android.content.Context;
 
-import androidx.test.InstrumentationRegistry;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 public class DatabaseRemover {
 
     public static void removeAllDatabases() {
-        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
+        Context context = InstrumentationRegistry.getInstrumentation().getContext();
         for (String dbName : context.databaseList()) {
             context.deleteDatabase(dbName);
         }

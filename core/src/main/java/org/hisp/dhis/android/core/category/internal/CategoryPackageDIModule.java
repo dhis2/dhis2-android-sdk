@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryModule;
+import org.hisp.dhis.android.core.category.CategoryOption;
 
 import dagger.Module;
 import dagger.Provides;
@@ -57,6 +58,12 @@ public final class CategoryPackageDIModule {
 
     @Provides
     @Reusable
+    CategoryOptionService categoryOptionService(Retrofit retrofit) {
+        return retrofit.create(CategoryOptionService.class);
+    }
+
+    @Provides
+    @Reusable
     CategoryComboService categoryComboService(Retrofit retrofit) {
         return retrofit.create(CategoryComboService.class);
     }
@@ -64,6 +71,12 @@ public final class CategoryPackageDIModule {
     @Provides
     @Reusable
     UidsCall<Category> categoryCall(CategoryCall impl) {
+        return impl;
+    }
+
+    @Provides
+    @Reusable
+    UidsCall<CategoryOption> categoryOptionCall(CategoryOptionCall impl) {
         return impl;
     }
 

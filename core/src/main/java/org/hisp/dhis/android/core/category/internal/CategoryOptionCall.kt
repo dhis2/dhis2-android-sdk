@@ -25,30 +25,44 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.category.internal;
+package org.hisp.dhis.android.core.category.internal
 
-import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.category.CategoryCombo;
+import dagger.Reusable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.category.CategoryOption
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.common.internal.DataAccessFields
+import javax.inject.Inject
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+@Reusable
+internal class CategoryOptionCall @Inject constructor(
+    private val handler: Handler<CategoryOption>,
+    private val service: CategoryOptionService,
+    private val apiDownloader: APIDownloader
+) : UidsCall<CategoryOption> {
 
-final class CategoryParentUidsHelper {
-
-    private CategoryParentUidsHelper() {
+    companion object {
+        // TODO calculate dynamically
+        private const val MAX_UID_LIST_SIZE = 90
     }
 
-    static Set<String> getCategoryUids(List<CategoryCombo> categoryCombos) {
-        Set<String> uids = new HashSet<>();
-        for (CategoryCombo categoryCombo : categoryCombos) {
-            List<Category> categories = categoryCombo.categories();
-            if (categories != null) {
-                for (Category category : categories) {
-                    uids.add(category.uid());
-                }
-            }
+    override fun download(uids: Set<String>): Single<List<CategoryOption>> {
+        val accessDataReadFilter = "access.data." + DataAccessFields.read.eq(true).generateString()
+        return apiDownloader.downloadPartitioned<CategoryOption>(
+            uids,
+            MAX_UID_LIST_SIZE,
+            handler
+        ) { partitionUids: Set<String> ->
+            val categoryUidsFilterStr =
+                "category." + ObjectWithUid.uid.`in`(partitionUids).generateString()
+            service.getCategoryOptions(
+                CategoryOptionFields.allFields,
+                categoryUidsFilterStr,
+                accessDataReadFilter,
+                false)
         }
-        return uids;
     }
 }

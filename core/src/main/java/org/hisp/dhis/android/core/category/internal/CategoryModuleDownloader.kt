@@ -30,23 +30,30 @@ package org.hisp.dhis.android.core.category.internal
 import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.CategoryCombo
+import org.hisp.dhis.android.core.category.CategoryOption
+import javax.inject.Inject
 
 @Reusable
 class CategoryModuleDownloader @Inject internal constructor(
     private val categoryCall: UidsCall<Category>,
     private val categoryComboCall: UidsCall<CategoryCombo>,
+    private val categoryOptionCall: UidsCall<CategoryOption>,
     private val categoryComboUidsSeeker: CategoryComboUidsSeeker
 ) : UntypedModuleDownloader {
 
     override fun downloadMetadata(): Completable {
         return Single.fromCallable { categoryComboUidsSeeker.seekUids() }
             .flatMap { categoryComboCall.download(it) }
-            .flatMap { categoryCall.download(CategoryParentUidsHelper.getCategoryUids(it)) }
-            .ignoreElement()
+            .flatMapCompletable { comboUids ->
+                val categoryUids = CategoryParentUidsHelper.getCategoryUids(comboUids)
+                Single.merge(
+                    categoryCall.download(categoryUids),
+                    categoryOptionCall.download(categoryUids)
+                ).ignoreElements()
+            }
     }
 }

@@ -25,30 +25,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.category.internal;
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.category.CategoryOption
+import retrofit2.http.GET
+import retrofit2.http.Query
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.category.CategoryTableInfo;
+internal interface CategoryOptionService {
 
-public final class CategoryFields {
-
-    public static final String CATEGORY_OPTIONS = "categoryOptions";
-
-    private static final FieldsHelper<Category> fh = new FieldsHelper<>();
-
-    public static final Field<Category, String> uid = fh.uid();
-
-    public static final Fields<Category> allFields = Fields.<Category>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.nestedFieldWithUid(CATEGORY_OPTIONS),
-                    fh.<String>field(CategoryTableInfo.Columns.DATA_DIMENSION_TYPE)
-            ).build();
-
-    private CategoryFields() {
-    }
+    @GET("categoryOptions")
+    fun getCategoryOptions(
+        @Query("fields") @Which fields: Fields<CategoryOption>,
+        @Query("filter") categoryUidsFilterString: String,
+        @Query("filter") accessDataReadFilter: String,
+        @Query("paging") paging: Boolean
+    ): Single<Payload<CategoryOption>>
 }

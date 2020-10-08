@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.category.CategoryOption
-import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import javax.inject.Inject
 
@@ -56,11 +55,9 @@ internal class CategoryOptionCall @Inject constructor(
             MAX_UID_LIST_SIZE,
             handler
         ) { partitionUids: Set<String> ->
-            val categoryUidsFilterStr =
-                "category." + ObjectWithUid.uid.`in`(partitionUids).generateString()
             service.getCategoryOptions(
                 CategoryOptionFields.allFields,
-                categoryUidsFilterStr,
+                CategoryOptionFields.uid.`in`(partitionUids),
                 accessDataReadFilter,
                 false)
         }

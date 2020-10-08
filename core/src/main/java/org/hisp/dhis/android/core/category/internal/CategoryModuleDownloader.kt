@@ -52,7 +52,7 @@ class CategoryModuleDownloader @Inject internal constructor(
             .flatMapCompletable { comboUids ->
                 val categoryUids = CategoryParentUidsHelper.getCategoryUids(comboUids)
                 categoryCall.download(categoryUids).flatMap { categories ->
-                    categoryOptionCall.download(categoryUids).doOnSuccess { categoryOptions ->
+                    categoryOptionCall.download(CategoryParentUidsHelper.getCategoryOptionUids(categories)).doOnSuccess { categoryOptions ->
                         categoryOptionLinksHandler.handleMany(categories, categoryOptions)
                     }
                 }.ignoreElement()

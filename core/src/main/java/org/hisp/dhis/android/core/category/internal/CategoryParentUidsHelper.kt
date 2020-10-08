@@ -27,12 +27,19 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
+import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.CategoryCombo
 
 internal object CategoryParentUidsHelper {
     fun getCategoryUids(categoryCombos: List<CategoryCombo>): Set<String> {
         return categoryCombos.flatMap {
             it.categories()!!.map { c -> c.uid() }
+        }.toSet()
+    }
+
+    fun getCategoryOptionUids(categories: List<Category>): Set<String> {
+        return categories.flatMap {
+            it.categoryOptions()!!.map { c -> c.uid() }
         }.toSet()
     }
 }

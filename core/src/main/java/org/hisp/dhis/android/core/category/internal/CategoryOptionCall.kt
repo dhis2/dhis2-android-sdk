@@ -29,12 +29,13 @@ package org.hisp.dhis.android.core.category.internal
 
 import dagger.Reusable
 import io.reactivex.Single
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.arch.helpers.internal.UrlLengthHelper
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.common.internal.DataAccessFields
-import javax.inject.Inject
 
 @Reusable
 internal class CategoryOptionCall @Inject constructor(
@@ -44,22 +45,26 @@ internal class CategoryOptionCall @Inject constructor(
 ) : UidsCall<CategoryOption> {
 
     companion object {
-        // TODO calculate dynamically
-        private const val MAX_UID_LIST_SIZE = 90
+        private const val QUERY_WITHOUT_UIDS_LENGTH = (
+                "categoryOptions?fields=id,code,name,displayName,created,lastUpdated,deleted,shortName," +
+                "displayShortName,description,displayDescription,startDate,endDate,access[data[read,write]]" +
+                "&filter=id:in:[]&filter=access.data.read:eq:true&paging=false"
+            ).length
     }
 
     override fun download(uids: Set<String>): Single<List<CategoryOption>> {
         val accessDataReadFilter = "access.data." + DataAccessFields.read.eq(true).generateString()
         return apiDownloader.downloadPartitioned<CategoryOption>(
             uids,
-            MAX_UID_LIST_SIZE,
+            UrlLengthHelper.getHowManyUidsFitInURL(QUERY_WITHOUT_UIDS_LENGTH),
             handler
         ) { partitionUids: Set<String> ->
             service.getCategoryOptions(
                 CategoryOptionFields.allFields,
                 CategoryOptionFields.uid.`in`(partitionUids),
                 accessDataReadFilter,
-                false)
+                false
+            )
         }
     }
 }

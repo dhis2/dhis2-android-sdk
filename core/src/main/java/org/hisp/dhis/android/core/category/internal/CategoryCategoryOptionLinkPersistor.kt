@@ -28,15 +28,16 @@
 package org.hisp.dhis.android.core.category.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink
 import org.hisp.dhis.android.core.category.CategoryOption
-import javax.inject.Inject
 
 @Reusable
 internal class CategoryCategoryOptionLinkPersistor @Inject constructor(
-    private val categoryCategoryOptionLinkHandler: OrderedLinkHandler<CategoryOption, CategoryCategoryOptionLink>) {
+    private val categoryCategoryOptionLinkHandler: OrderedLinkHandler<CategoryOption, CategoryCategoryOptionLink>
+) {
 
     fun handleMany(categories: List<Category>, categoryOptions: List<CategoryOption>) {
         val categoryOptionsMap = categoryOptions.map { it.uid() to it }.toMap()

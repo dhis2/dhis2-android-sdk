@@ -46,7 +46,7 @@ internal class CategoryOptionCall @Inject constructor(
 
     companion object {
         private const val QUERY_WITHOUT_UIDS_LENGTH = (
-                "categoryOptions?fields=id,code,name,displayName,created,lastUpdated,deleted,shortName," +
+            "categoryOptions?fields=id,code,name,displayName,created,lastUpdated,deleted,shortName," +
                 "displayShortName,description,displayDescription,startDate,endDate,access[data[read,write]]" +
                 "&filter=id:in:[]&filter=access.data.read:eq:true&paging=false"
             ).length

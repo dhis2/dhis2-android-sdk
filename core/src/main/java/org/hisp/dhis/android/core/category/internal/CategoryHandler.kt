@@ -28,34 +28,34 @@
 package org.hisp.dhis.android.core.category.internal
 
 import dagger.Reusable
-import io.reactivex.Completable
-import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
+import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler
 import org.hisp.dhis.android.core.category.Category
-import org.hisp.dhis.android.core.category.CategoryCombo
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink
 import org.hisp.dhis.android.core.category.CategoryOption
 import javax.inject.Inject
 
 @Reusable
-class CategoryModuleDownloader @Inject internal constructor(
-    private val categoryCall: UidsCall<Category>,
-    private val categoryComboCall: UidsCall<CategoryCombo>,
-    private val categoryOptionCall: UidsCall<CategoryOption>,
-    private val categoryComboUidsSeeker: CategoryComboUidsSeeker,
-    private val categoryOptionLinksHandler: CategoryOptionLinksHandler
-) : UntypedModuleDownloader {
+internal class CategoryOptionLinksHandler @Inject constructor(
+    private val categoryCategoryOptionLinkHandler: OrderedLinkHandler<CategoryOption, CategoryCategoryOptionLink>) {
 
-    override fun downloadMetadata(): Completable {
-        return Single.fromCallable { categoryComboUidsSeeker.seekUids() }
-            .flatMap { categoryComboCall.download(it) }
-            .flatMapCompletable { comboUids ->
-                val categoryUids = CategoryParentUidsHelper.getCategoryUids(comboUids)
-                categoryCall.download(categoryUids).flatMap { categories ->
-                    categoryOptionCall.download(categoryUids).doOnSuccess { categoryOptions ->
-                        categoryOptionLinksHandler.handleMany(categories, categoryOptions)
-                    }
-                }.ignoreElement()
-            }
+    fun handleMany(categories: List<Category>, categoryOptions: List<CategoryOption>) {
+        categories.forEach { c -> handleCategory(c, categoryOptions.map { it.uid() to it }.toMap()) }
+    }
+
+    private fun handleCategory(category: Category, categoryOptions: Map<String, CategoryOption>) {
+        val categoryOptionsWithAccess = category.categoryOptions()!!.filter {
+            categoryOptions.containsKey(it.uid())
+        }
+
+        categoryCategoryOptionLinkHandler.handleMany(
+            category.uid(),
+            categoryOptionsWithAccess
+        ) { categoryOption: CategoryOption, sortOrder: Int ->
+            CategoryCategoryOptionLink.builder()
+                .category(category.uid())
+                .categoryOption(categoryOption.uid())
+                .sortOrder(sortOrder)
+                .build()
+        }
     }
 }

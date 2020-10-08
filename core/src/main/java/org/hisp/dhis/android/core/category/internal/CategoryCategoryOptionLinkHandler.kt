@@ -35,11 +35,12 @@ import org.hisp.dhis.android.core.category.CategoryOption
 import javax.inject.Inject
 
 @Reusable
-internal class CategoryOptionLinksHandler @Inject constructor(
+internal class CategoryCategoryOptionLinkPersistor @Inject constructor(
     private val categoryCategoryOptionLinkHandler: OrderedLinkHandler<CategoryOption, CategoryCategoryOptionLink>) {
 
     fun handleMany(categories: List<Category>, categoryOptions: List<CategoryOption>) {
-        categories.forEach { c -> handleCategory(c, categoryOptions.map { it.uid() to it }.toMap()) }
+        val categoryOptionsMap = categoryOptions.map { it.uid() to it }.toMap()
+        categories.forEach { handleCategory(it, categoryOptionsMap) }
     }
 
     private fun handleCategory(category: Category, categoryOptions: Map<String, CategoryOption>) {

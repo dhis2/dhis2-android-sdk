@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.common.internal.DataAccessFields
 
 object CategoryOptionFields {
     private const val ACCESS = "access"
-    private const val ORGANISATION_UNITS = "organisationUnits"
+    internal const val ORGANISATION_UNITS = "organisationUnits"
     private val fh = FieldsHelper<CategoryOption>()
     val uid = fh.uid()
     val allFields: Fields<CategoryOption> = Fields.builder<CategoryOption>()

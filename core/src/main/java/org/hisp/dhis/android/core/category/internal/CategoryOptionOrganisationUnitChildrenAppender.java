@@ -25,43 +25,44 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.category.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithUidChildStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.category.CategoryOption;
+import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLinkTableInfo;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 
-import java.util.Collections;
-import java.util.Map;
+final class CategoryOptionOrganisationUnitChildrenAppender extends ChildrenAppender<CategoryOption> {
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+    private static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
+            OrganisationUnitTableInfo.TABLE_INFO,
+            CategoryOptionOrganisationUnitLinkTableInfo.Columns.CATEGORY_OPTION,
+            CategoryOptionOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT);
 
-@Module
-public final class CategoryOptionEntityDIModule implements IdentifiableStoreProvider<CategoryOption> {
+    private final ObjectWithUidChildStore<CategoryOption> childStore;
+
+    private CategoryOptionOrganisationUnitChildrenAppender(ObjectWithUidChildStore<CategoryOption> childStore) {
+        this.childStore = childStore;
+    }
 
     @Override
-    @Provides
-    @Reusable
-    public IdentifiableObjectStore<CategoryOption> store(DatabaseAdapter databaseAdapter) {
-        return CategoryOptionStore.create(databaseAdapter);
+    protected CategoryOption appendChildren(CategoryOption categoryOption) {
+        CategoryOption.Builder builder = categoryOption.toBuilder();
+        builder.organisationUnits(childStore.getChildren(categoryOption));
+        return builder.build();
     }
 
-    @Provides
-    @Reusable
-    public Handler<CategoryOption> handler(CategoryOptionHandler impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<CategoryOption>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return Collections.singletonMap(CategoryOptionFields.ORGANISATION_UNITS,
-                CategoryOptionOrganisationUnitChildrenAppender.create(databaseAdapter));
+    static ChildrenAppender<CategoryOption> create(DatabaseAdapter databaseAdapter) {
+        return new CategoryOptionOrganisationUnitChildrenAppender(
+                StoreFactory.objectWithUidChildStore(
+                        databaseAdapter,
+                        CategoryOptionOrganisationUnitLinkTableInfo.TABLE_INFO,
+                        CHILD_PROJECTION
+                )
+        );
     }
 }

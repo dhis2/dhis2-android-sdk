@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilt
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.category.internal.CategoryOptionFields;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
 
 import java.util.Collections;
@@ -83,5 +84,9 @@ public final class CategoryOptionCollectionRepository
                 CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION_COMBO,
                 Collections.singletonList(categoryOptionComboUid)
         );
+    }
+
+    public CategoryOptionCollectionRepository withOrganisationUnits() {
+        return cf.withChild(CategoryOptionFields.ORGANISATION_UNITS);
     }
 }

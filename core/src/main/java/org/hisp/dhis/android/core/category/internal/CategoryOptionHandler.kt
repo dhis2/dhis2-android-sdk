@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.category.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
@@ -35,12 +36,12 @@ import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLink
 import org.hisp.dhis.android.core.common.ObjectWithUid
-import javax.inject.Inject
 
 @Reusable
 class CategoryOptionHandler @Inject constructor(
     categoryOptionStore: IdentifiableObjectStore<CategoryOption>,
-    private val categoryOptionOrganisationUnitLinkHandler: LinkHandler<ObjectWithUid, CategoryOptionOrganisationUnitLink>
+    private val categoryOptionOrganisationUnitLinkHandler:
+        LinkHandler<ObjectWithUid, CategoryOptionOrganisationUnitLink>
 ) : IdentifiableHandlerImpl<CategoryOption>(categoryOptionStore) {
 
     override fun afterObjectHandled(categoryOption: CategoryOption, action: HandleAction) {

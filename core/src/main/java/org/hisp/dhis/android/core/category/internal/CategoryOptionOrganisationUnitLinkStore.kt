@@ -44,10 +44,12 @@ internal object CategoryOptionOrganisationUnitLinkStore {
     }
 
     fun create(databaseAdapter: DatabaseAdapter): LinkStore<CategoryOptionOrganisationUnitLink> {
-        return StoreFactory.linkStore(databaseAdapter,
+        return StoreFactory.linkStore(
+            databaseAdapter,
             CategoryOptionOrganisationUnitLinkTableInfo.TABLE_INFO,
             CategoryOptionOrganisationUnitLinkTableInfo.Columns.CATEGORY_OPTION,
             BINDER,
-            ObjectFactory { cursor: Cursor -> CategoryOptionOrganisationUnitLink.create(cursor) })
+            ObjectFactory { cursor: Cursor -> CategoryOptionOrganisationUnitLink.create(cursor) }
+        )
     }
 }

@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.BaseNameableObject
 import org.hisp.dhis.android.core.common.ObjectWithUid
 
+@Suppress("TooManyFunctions")
 class FieldsHelper<O> {
     fun <T> field(fieldName: String): Property<O, T> {
         return Field.create(fieldName)

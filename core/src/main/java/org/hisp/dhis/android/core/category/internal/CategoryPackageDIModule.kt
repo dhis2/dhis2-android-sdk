@@ -25,71 +25,71 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.category.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
+import org.hisp.dhis.android.core.category.Category
+import org.hisp.dhis.android.core.category.CategoryCombo
+import org.hisp.dhis.android.core.category.CategoryModule
+import org.hisp.dhis.android.core.category.CategoryOption
+import retrofit2.Retrofit
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.category.CategoryCombo;
-import org.hisp.dhis.android.core.category.CategoryModule;
-import org.hisp.dhis.android.core.category.CategoryOption;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
-
-@Module(includes = {
-        CategoryEntityDIModule.class,
-        CategoryCategoryComboEntityDIModule.class,
-        CategoryCategoryOptionEntityDIModule.class,
-        CategoryComboEntityDIModule.class,
-        CategoryOptionEntityDIModule.class,
-        CategoryOptionOrganisationUnitEntityDIModule.class,
-        CategoryOptionComboEntityDIModule.class,
-        CategoryOptionComboCategoryOptionEntityDIModule.class
-})
-public final class CategoryPackageDIModule {
+@Module(
+    includes = [
+        CategoryEntityDIModule::class,
+        CategoryCategoryComboEntityDIModule::class,
+        CategoryCategoryOptionEntityDIModule::class,
+        CategoryComboEntityDIModule::class,
+        CategoryOptionEntityDIModule::class,
+        CategoryOptionOrganisationUnitEntityDIModule::class,
+        CategoryOptionComboEntityDIModule::class,
+        CategoryOptionComboCategoryOptionEntityDIModule::class
+    ]
+)
+internal class CategoryPackageDIModule {
 
     @Provides
     @Reusable
-    CategoryService categoryService(Retrofit retrofit) {
-        return retrofit.create(CategoryService.class);
+    fun categoryService(retrofit: Retrofit): CategoryService {
+        return retrofit.create(CategoryService::class.java)
     }
 
     @Provides
     @Reusable
-    CategoryOptionService categoryOptionService(Retrofit retrofit) {
-        return retrofit.create(CategoryOptionService.class);
+    fun categoryOptionService(retrofit: Retrofit): CategoryOptionService {
+        return retrofit.create(CategoryOptionService::class.java)
     }
 
     @Provides
     @Reusable
-    CategoryComboService categoryComboService(Retrofit retrofit) {
-        return retrofit.create(CategoryComboService.class);
+    fun categoryComboService(retrofit: Retrofit): CategoryComboService {
+        return retrofit.create(CategoryComboService::class.java)
     }
 
     @Provides
     @Reusable
-    UidsCall<Category> categoryCall(CategoryCall impl) {
-        return impl;
+    fun categoryCall(impl: CategoryCall): UidsCall<Category> {
+        return impl
     }
 
     @Provides
     @Reusable
-    UidsCall<CategoryOption> categoryOptionCall(CategoryOptionCall impl) {
-        return impl;
+    fun categoryOptionCall(impl: CategoryOptionCall): UidsCall<CategoryOption> {
+        return impl
     }
 
     @Provides
     @Reusable
-    UidsCall<CategoryCombo> categoryComboCall(CategoryComboCall impl) {
-        return impl;
+    fun categoryComboCall(impl: CategoryComboCall): UidsCall<CategoryCombo> {
+        return impl
     }
 
     @Provides
     @Reusable
-    CategoryModule module(CategoryModuleImpl impl) {
-        return impl;
+    fun module(impl: CategoryModuleImpl): CategoryModule {
+        return impl
     }
 }

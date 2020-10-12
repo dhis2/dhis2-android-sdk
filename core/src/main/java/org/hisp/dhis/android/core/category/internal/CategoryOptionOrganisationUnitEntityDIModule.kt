@@ -48,8 +48,8 @@ class CategoryOptionOrganisationUnitEntityDIModule {
 
     @Provides
     @Reusable
-    fun handler(store: LinkStore<CategoryOptionOrganisationUnitLink>)
-        : LinkHandler<ObjectWithUid, CategoryOptionOrganisationUnitLink> {
-        return LinkHandlerImpl(store)
-    }
+    fun handler(store: LinkStore<CategoryOptionOrganisationUnitLink>):
+        LinkHandler<ObjectWithUid, CategoryOptionOrganisationUnitLink> {
+            return LinkHandlerImpl(store)
+        }
 }

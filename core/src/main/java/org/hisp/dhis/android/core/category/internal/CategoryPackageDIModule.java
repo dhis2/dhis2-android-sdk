@@ -45,6 +45,7 @@ import retrofit2.Retrofit;
         CategoryCategoryOptionEntityDIModule.class,
         CategoryComboEntityDIModule.class,
         CategoryOptionEntityDIModule.class,
+        CategoryOptionOrganisationUnitEntityDIModule.class,
         CategoryOptionComboEntityDIModule.class,
         CategoryOptionComboCategoryOptionEntityDIModule.class
 })

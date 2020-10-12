@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.common.internal.DataAccessFields
 
 object CategoryOptionFields {
     private const val ACCESS = "access"
+    private const val ORGANISATION_UNITS = "organisationUnits"
     private val fh = FieldsHelper<CategoryOption>()
     val uid = fh.uid()
     val allFields: Fields<CategoryOption> = Fields.builder<CategoryOption>()
@@ -44,6 +45,7 @@ object CategoryOptionFields {
         .fields(
             fh.field<String>(CategoryOptionTableInfo.Columns.START_DATE),
             fh.field<String>(CategoryOptionTableInfo.Columns.END_DATE),
+            fh.field<String>(ORGANISATION_UNITS),
             fh.nestedField<Access>(ACCESS).with(AccessFields.data.with(DataAccessFields.allFields))
         ).build()
 }

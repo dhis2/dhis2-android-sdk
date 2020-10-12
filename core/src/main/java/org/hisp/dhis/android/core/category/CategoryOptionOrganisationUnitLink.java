@@ -26,44 +26,44 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.category;
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+import android.database.Cursor;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import androidx.annotation.NonNull;
 
-class BaseDatabaseOpenHelper {
+import com.google.auto.value.AutoValue;
 
-    static final int VERSION = 85;
+import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.CoreObject;
 
-    private final AssetManager assetManager;
-    private final int targetVersion;
+@AutoValue
+public abstract class CategoryOptionOrganisationUnitLink implements CoreObject {
 
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    @NonNull
+    public abstract String categoryOption();
+
+    @NonNull
+    public abstract String organisationUnit();
+
+    public static Builder builder() {
+        return new $$AutoValue_CategoryOptionOrganisationUnitLink.Builder();
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
+    public abstract Builder toBuilder();
 
-        databaseAdapter.enableWriteAheadLogging();
+    public static CategoryOptionOrganisationUnitLink create(Cursor cursor) {
+        return $AutoValue_CategoryOptionOrganisationUnitLink.createFromCursor(cursor);
     }
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseObject.Builder<Builder> {
+        public abstract Builder id(Long id);
 
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
+        public abstract Builder categoryOption(String categoryOption);
 
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+        public abstract Builder organisationUnit(String organisationUnit);
+
+        public abstract CategoryOptionOrganisationUnitLink build();
     }
 }

@@ -63,7 +63,8 @@ internal class CategoryOptionCall @Inject constructor(
                 CategoryOptionFields.allFields,
                 CategoryOptionFields.uid.`in`(partitionUids),
                 accessDataReadFilter,
-                false
+                paging = false,
+                restrictToCaptureScope = true
             )
         }
     }

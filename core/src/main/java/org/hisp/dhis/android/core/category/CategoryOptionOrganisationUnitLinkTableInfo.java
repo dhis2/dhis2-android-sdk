@@ -38,7 +38,7 @@ public final class CategoryOptionOrganisationUnitLinkTableInfo {
 
         @Override
         public String name() {
-            return "CategoryOptionOrganisationUnit";
+            return "CategoryOptionOrganisationUnitLink";
         }
 
         @Override

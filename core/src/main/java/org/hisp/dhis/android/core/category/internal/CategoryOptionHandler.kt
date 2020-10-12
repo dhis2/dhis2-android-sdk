@@ -25,42 +25,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.category.internal;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
+import org.hisp.dhis.android.core.category.CategoryOption
+import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLink
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import javax.inject.Inject
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.category.CategoryOption;
+@Reusable
+class CategoryOptionHandler @Inject constructor(
+    categoryOptionStore: IdentifiableObjectStore<CategoryOption>,
+    private val categoryOptionOrganisationUnitLinkHandler: LinkHandler<ObjectWithUid, CategoryOptionOrganisationUnitLink>
+) : IdentifiableHandlerImpl<CategoryOption>(categoryOptionStore) {
 
-import java.util.Collections;
-import java.util.Map;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-
-@Module
-public final class CategoryOptionEntityDIModule implements IdentifiableStoreProvider<CategoryOption> {
-
-    @Override
-    @Provides
-    @Reusable
-    public IdentifiableObjectStore<CategoryOption> store(DatabaseAdapter databaseAdapter) {
-        return CategoryOptionStore.create(databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    public Handler<CategoryOption> handler(CategoryOptionHandler impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<CategoryOption>> childrenAppenders() {
-        return Collections.emptyMap();
+    override fun afterObjectHandled(categoryOption: CategoryOption, action: HandleAction) {
+        categoryOptionOrganisationUnitLinkHandler.handleMany(
+            categoryOption.uid(), categoryOption.organisationUnits()
+        ) { organisationUnits: ObjectWithUid ->
+            CategoryOptionOrganisationUnitLink.builder()
+                .categoryOption(categoryOption.uid())
+                .organisationUnit(organisationUnits.uid())
+                .build()
+        }
     }
 }

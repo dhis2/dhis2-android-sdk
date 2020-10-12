@@ -25,43 +25,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.category.internal;
-
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.category.CategoryOption;
-
-import java.util.Collections;
-import java.util.Map;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.category.CategoryOption
+import java.util.Collections
 
 @Module
-public final class CategoryOptionEntityDIModule implements IdentifiableStoreProvider<CategoryOption> {
+class CategoryOptionEntityDIModule : IdentifiableStoreProvider<CategoryOption> {
 
-    @Override
     @Provides
     @Reusable
-    public IdentifiableObjectStore<CategoryOption> store(DatabaseAdapter databaseAdapter) {
-        return CategoryOptionStore.create(databaseAdapter);
+    override fun store(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<CategoryOption> {
+        return CategoryOptionStore.create(databaseAdapter)
     }
 
     @Provides
     @Reusable
-    public Handler<CategoryOption> handler(CategoryOptionHandler impl) {
-        return impl;
+    fun handler(impl: CategoryOptionHandler): Handler<CategoryOption> {
+        return impl
     }
 
     @Provides
     @Reusable
-    Map<String, ChildrenAppender<CategoryOption>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return Collections.singletonMap(CategoryOptionFields.ORGANISATION_UNITS,
-                CategoryOptionOrganisationUnitChildrenAppender.create(databaseAdapter));
+    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<CategoryOption>> {
+        return Collections.singletonMap(
+            CategoryOptionFields.ORGANISATION_UNITS,
+            CategoryOptionOrganisationUnitChildrenAppender.create(databaseAdapter)
+        )
     }
 }

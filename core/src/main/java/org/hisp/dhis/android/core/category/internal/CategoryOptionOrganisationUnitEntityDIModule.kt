@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLink
 import org.hisp.dhis.android.core.common.ObjectWithUid
 
 @Module
-class CategoryOptionOrganisationUnitEntityDIModule {
+internal class CategoryOptionOrganisationUnitEntityDIModule {
 
     @Provides
     @Reusable

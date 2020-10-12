@@ -27,38 +27,40 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import java.util.Collections
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithUidChildStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.category.CategoryOption
+import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLinkTableInfo
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
 
-@Module
-internal class CategoryOptionEntityDIModule : IdentifiableStoreProvider<CategoryOption> {
+internal class CategoryOptionOrganisationUnitChildrenAppender
+private constructor(private val childStore: ObjectWithUidChildStore<CategoryOption>) :
+    ChildrenAppender<CategoryOption>() {
 
-    @Provides
-    @Reusable
-    override fun store(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<CategoryOption> {
-        return CategoryOptionStore.create(databaseAdapter)
+    override fun appendChildren(categoryOption: CategoryOption): CategoryOption {
+        val builder = categoryOption.toBuilder()
+        builder.organisationUnits(childStore.getChildren(categoryOption))
+        return builder.build()
     }
 
-    @Provides
-    @Reusable
-    fun handler(impl: CategoryOptionHandler): Handler<CategoryOption> {
-        return impl
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<CategoryOption>> {
-        return Collections.singletonMap(
-            CategoryOptionFields.ORGANISATION_UNITS,
-            CategoryOptionOrganisationUnitChildrenAppender.create(databaseAdapter)
+    companion object {
+        private val CHILD_PROJECTION = LinkTableChildProjection(
+            OrganisationUnitTableInfo.TABLE_INFO,
+            CategoryOptionOrganisationUnitLinkTableInfo.Columns.CATEGORY_OPTION,
+            CategoryOptionOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT
         )
+
+        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<CategoryOption> {
+            return CategoryOptionOrganisationUnitChildrenAppender(
+                StoreFactory.objectWithUidChildStore(
+                    databaseAdapter,
+                    CategoryOptionOrganisationUnitLinkTableInfo.TABLE_INFO,
+                    CHILD_PROJECTION
+                )
+            )
+        }
     }
 }

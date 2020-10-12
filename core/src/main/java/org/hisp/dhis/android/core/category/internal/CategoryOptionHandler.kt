@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLink
 import org.hisp.dhis.android.core.common.ObjectWithUid
 
 @Reusable
-class CategoryOptionHandler @Inject constructor(
+internal class CategoryOptionHandler @Inject constructor(
     categoryOptionStore: IdentifiableObjectStore<CategoryOption>,
     private val categoryOptionOrganisationUnitLinkHandler:
         LinkHandler<ObjectWithUid, CategoryOptionOrganisationUnitLink>

@@ -57,7 +57,7 @@ internal class CategoryOptionCall @Inject constructor(
 
     override fun download(uids: Set<String>): Single<List<CategoryOption>> {
         val accessDataReadFilter = "access.data." + DataAccessFields.read.eq(true).generateString()
-        val askForOrgUnits = versionManager.isGreaterThan(DHISVersion.V2_35)
+        val askForOrgUnits = versionManager.isGreaterOrEqualThan(DHISVersion.V2_35)
         return apiDownloader.downloadPartitioned<CategoryOption>(
             uids,
             UrlLengthHelper.getHowManyUidsFitInURL(QUERY_WITHOUT_UIDS_LENGTH),

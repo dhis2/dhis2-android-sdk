@@ -39,7 +39,7 @@ import org.mockito.MockitoAnnotations;
 
 import io.reactivex.Single;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)

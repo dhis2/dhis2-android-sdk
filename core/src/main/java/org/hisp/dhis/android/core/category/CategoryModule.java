@@ -32,4 +32,6 @@ public interface CategoryModule {
     CategoryOptionCollectionRepository categoryOptions();
     CategoryOptionComboCollectionRepository categoryOptionCombos();
     CategoryComboCollectionRepository categoryCombos();
+
+    CategoryOptionComboService categoryOptionComboService();
 }

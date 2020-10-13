@@ -36,8 +36,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class ProgramRuleCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -48,7 +47,7 @@ public class ProgramRuleCollectionRepositoryMockIntegrationShould extends BaseMo
                 d2.programModule().programRules()
                         .blockingGet();
         
-        assertThat(rules.size(), is(3));
+        assertThat(rules.size()).isEqualTo(3);
     }
 
     @Test
@@ -59,7 +58,7 @@ public class ProgramRuleCollectionRepositoryMockIntegrationShould extends BaseMo
                         .eq(2)
                         .blockingGet();
 
-        assertThat(rules.size(), is(2));
+        assertThat(rules.size()).isEqualTo(2);
     }
 
     @Test
@@ -70,7 +69,7 @@ public class ProgramRuleCollectionRepositoryMockIntegrationShould extends BaseMo
                         .eq("#{hemoglobin} < 9")
                         .blockingGet();
 
-        assertThat(rules.size(), is(1));
+        assertThat(rules.size()).isEqualTo(1);
     }
 
     @Test
@@ -81,7 +80,7 @@ public class ProgramRuleCollectionRepositoryMockIntegrationShould extends BaseMo
                         .eq("lxAQ7Zs9VYR")
                         .blockingGet();
 
-        assertThat(rules.size(), is(3));
+        assertThat(rules.size()).isEqualTo(3);
     }
 
     @Test
@@ -92,14 +91,14 @@ public class ProgramRuleCollectionRepositoryMockIntegrationShould extends BaseMo
                         .eq("dBwrot7S420")
                         .blockingGet();
 
-        assertThat(rules.size(), is(1));
+        assertThat(rules.size()).isEqualTo(1);
     }
 
     @Test
     public void include_program_rule_actions_as_children() {
         ProgramRule programRule = d2.programModule().programRules()
                 .withProgramRuleActions().one().blockingGet();
-        assertThat(programRule.programRuleActions().size(), is(1));
-        assertThat(programRule.programRuleActions().get(0).content(), is("The hemoglobin value cannot be above 99"));
+        assertThat(programRule.programRuleActions().size()).isEqualTo(1);
+        assertThat(programRule.programRuleActions().get(0).content()).isEqualTo("The hemoglobin value cannot be above 99");
     }
 }

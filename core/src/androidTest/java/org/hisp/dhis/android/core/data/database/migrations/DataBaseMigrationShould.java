@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.data.database.migrations;
 
 import android.content.Context;
 
-import androidx.test.InstrumentationRegistry;
+import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
@@ -43,9 +43,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.hamcrest.CoreMatchers.is;
+import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.arch.db.access.SqliteCheckerUtility.ifTableExist;
-import static org.junit.Assert.assertThat;
 
 @RunWith(AndroidJUnit4.class)
 public class DataBaseMigrationShould {
@@ -67,30 +66,30 @@ public class DataBaseMigrationShould {
             databaseAdapter.close();
         }
         if (dbName != null) {
-            InstrumentationRegistry.getContext().deleteDatabase(dbName);
+            InstrumentationRegistry.getInstrumentation().getContext().deleteDatabase(dbName);
         }
     }
 
     @Test
     public void have_user_table_after_migration_1() {
         initCoreDataBase(1);
-        assertThat(ifTableExist(UserTableInfo.TABLE_INFO.name(), databaseAdapter), is(true));
+        assertThat(ifTableExist(UserTableInfo.TABLE_INFO.name(), databaseAdapter)).isTrue();
     }
 
     @Test
     public void not_have_tracked_entity_attribute_reserved_value_table_after_migration_1() {
         initCoreDataBase(1);
-        assertThat(ifTableExist(TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO.name(), databaseAdapter), is(false));
+        assertThat(ifTableExist(TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO.name(), databaseAdapter)).isFalse();
     }
 
     @Test
     public void have_tracked_entity_attribute_reserved_value_table_after_first_migration_2() {
         initCoreDataBase(2);
-        assertThat(ifTableExist(TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO.name(), databaseAdapter), is(true));
+        assertThat(ifTableExist(TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO.name(), databaseAdapter)).isTrue();
     }
 
     public DatabaseAdapter initCoreDataBase(int databaseVersion) {
-        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
+        Context context = InstrumentationRegistry.getInstrumentation().getContext();
         DatabaseAdapterFactory databaseAdapterFactory = DatabaseAdapterFactory.create(context, new InMemorySecureStore());
         databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter();
         databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, dbName, false, databaseVersion);

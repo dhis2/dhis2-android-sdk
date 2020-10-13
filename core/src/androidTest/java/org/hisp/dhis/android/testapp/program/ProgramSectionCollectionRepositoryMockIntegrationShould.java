@@ -36,8 +36,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class ProgramSectionCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -48,7 +47,7 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Bas
                 d2.programModule().programSections()
                         .blockingGet();
 
-        assertThat(programSections.size(), is(2));
+        assertThat(programSections.size()).isEqualTo(2);
     }
 
     @Test
@@ -58,7 +57,7 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Bas
                         .withAttributes()
                         .one().blockingGet();
 
-        assertThat(programSection.attributes().size(), is(1));
+        assertThat(programSection.attributes().size()).isEqualTo(1);
     }
 
     @Test
@@ -69,7 +68,7 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Bas
                         .eq("Description")
                         .blockingGet();
 
-        assertThat(programSections.size(), is(1));
+        assertThat(programSections.size()).isEqualTo(1);
     }
 
     @Test
@@ -80,7 +79,7 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Bas
                         .eq("lxAQ7Zs9VYR")
                         .blockingGet();
 
-        assertThat(programSections.size(), is(2));
+        assertThat(programSections.size()).isEqualTo(2);
     }
 
     @Test
@@ -91,7 +90,7 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Bas
                         .eq(1)
                         .blockingGet();
 
-        assertThat(programSections.size(), is(1));
+        assertThat(programSections.size()).isEqualTo(1);
     }
 
     @Test
@@ -102,7 +101,7 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Bas
                         .eq("formName")
                         .blockingGet();
 
-        assertThat(programSections.size(), is(1));
+        assertThat(programSections.size()).isEqualTo(1);
     }
 
     @Test
@@ -111,7 +110,7 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Bas
                 d2.programModule().programSections()
                         .byColor().eq("#555")
                 .blockingGet();
-        assertThat(programSections.size(), is(1));
+        assertThat(programSections.size()).isEqualTo(1);
     }
 
     @Test
@@ -120,7 +119,7 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Bas
                 d2.programModule().programSections()
                 .byIcon().eq("section-icon")
                 .blockingGet();
-        assertThat(programSections.size(), is(1));
+        assertThat(programSections.size()).isEqualTo(1);
     }
 
 }

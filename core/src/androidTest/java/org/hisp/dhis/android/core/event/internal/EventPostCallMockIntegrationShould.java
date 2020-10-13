@@ -153,7 +153,7 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
 
         assertThat(events.size()).isEqualTo(3);
         assertThat(UidsHelper.getUidsList(events).containsAll(Lists.newArrayList(event1, event2, event3)))
-                .isEqualTo(true);
+                .isTrue();
     }
 
     @Test

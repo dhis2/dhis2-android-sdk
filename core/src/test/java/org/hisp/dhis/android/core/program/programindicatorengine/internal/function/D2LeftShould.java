@@ -28,8 +28,6 @@ package org.hisp.dhis.android.core.program.programindicatorengine.internal.funct
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.MatcherAssert;
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
 import org.hisp.dhis.antlr.ParserExceptionWithoutContext;
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
@@ -39,6 +37,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -67,38 +66,38 @@ public class D2LeftShould {
     public void return_empty_string_for_null_input() {
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn(null);
         when(visitor.castStringVisit(mockedSecondExpr)).thenReturn("0");
-        MatcherAssert.assertThat(left.evaluate(context, visitor), CoreMatchers.<Object>is(""));
+        assertThat(left.evaluate(context, visitor)).isEqualTo("");
 
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn(null);
         when(visitor.castStringVisit(mockedSecondExpr)).thenReturn("10");
-        MatcherAssert.assertThat(left.evaluate(context, visitor), CoreMatchers.<Object>is(""));
+        assertThat(left.evaluate(context, visitor)).isEqualTo("");
 
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn(null);
         when(visitor.castStringVisit(mockedSecondExpr)).thenReturn("-10");
-        MatcherAssert.assertThat(left.evaluate(context, visitor), CoreMatchers.<Object>is(""));
+        assertThat(left.evaluate(context, visitor)).isEqualTo("");
     }
 
     @Test
     public void return_substring_of_first_argument_from_the_beginning() {
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn("000");
         when(visitor.castStringVisit(mockedSecondExpr)).thenReturn("2");
-        MatcherAssert.assertThat(left.evaluate(context, visitor), CoreMatchers.<Object>is("00"));
+        assertThat(left.evaluate(context, visitor)).isEqualTo("00");
 
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn("abcdef");
         when(visitor.castStringVisit(mockedSecondExpr)).thenReturn("0");
-        MatcherAssert.assertThat(left.evaluate(context, visitor), CoreMatchers.<Object>is(""));
+        assertThat(left.evaluate(context, visitor)).isEqualTo("");
 
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn("abcdef");
         when(visitor.castStringVisit(mockedSecondExpr)).thenReturn("-5");
-        MatcherAssert.assertThat(left.evaluate(context, visitor), CoreMatchers.<Object>is("a"));
+        assertThat(left.evaluate(context, visitor)).isEqualTo("a");
 
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn("abcdef");
         when(visitor.castStringVisit(mockedSecondExpr)).thenReturn("2");
-        MatcherAssert.assertThat(left.evaluate(context, visitor), CoreMatchers.<Object>is("ab"));
+        assertThat(left.evaluate(context, visitor)).isEqualTo("ab");
 
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn("abcdef");
         when(visitor.castStringVisit(mockedSecondExpr)).thenReturn("30");
-        MatcherAssert.assertThat(left.evaluate(context, visitor), CoreMatchers.<Object>is("abcdef"));
+        assertThat(left.evaluate(context, visitor)).isEqualTo("abcdef");
     }
 
     @Test(expected = ParserExceptionWithoutContext.class)

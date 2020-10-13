@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.category.internal;
 
-import org.hisp.dhis.android.core.category.internal.CategoryComboUidsSeeker;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
@@ -36,8 +35,7 @@ import org.junit.runner.RunWith;
 
 import java.util.Set;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class CategoryComboUidsSeekerMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -46,9 +44,9 @@ public class CategoryComboUidsSeekerMockIntegrationShould extends BaseMockIntegr
     public void seek_category_combos_uids() {
         Set<String> categories = new CategoryComboUidsSeeker(databaseAdapter).seekUids();
 
-        assertThat(categories.size(), is(2));
-        assertThat(categories.contains("m2jTvAj5kkm"), is(true));
+        assertThat(categories.size()).isEqualTo(2);
+        assertThat(categories.contains("m2jTvAj5kkm")).isTrue();
         // Default category combo (p0KPaWEg3cf).
-        assertThat(categories.contains("p0KPaWEg3cf"), is(true));
+        assertThat(categories.contains("p0KPaWEg3cf")).isTrue();
     }
 }

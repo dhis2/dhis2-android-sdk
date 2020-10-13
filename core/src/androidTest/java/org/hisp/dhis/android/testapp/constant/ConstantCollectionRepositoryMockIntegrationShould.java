@@ -36,8 +36,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class ConstantCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -45,7 +44,7 @@ public class ConstantCollectionRepositoryMockIntegrationShould extends BaseMockI
     @Test
     public void find_all() {
         List<Constant> constants = d2.constantModule().constants().blockingGet();
-        assertThat(constants.size(), is(2));
+        assertThat(constants.size()).isEqualTo(2);
     }
 
     @Test
@@ -53,6 +52,6 @@ public class ConstantCollectionRepositoryMockIntegrationShould extends BaseMockI
         List<Constant> constants = d2.constantModule().constants()
                 .byValue().eq(3.14)
                 .blockingGet();
-        assertThat(constants.size(), is(1));
+        assertThat(constants.size()).isEqualTo(1);
     }
 }

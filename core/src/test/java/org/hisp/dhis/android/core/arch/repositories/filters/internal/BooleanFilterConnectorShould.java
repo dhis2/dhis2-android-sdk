@@ -41,7 +41,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.verify;
 
 @RunWith(JUnit4.class)

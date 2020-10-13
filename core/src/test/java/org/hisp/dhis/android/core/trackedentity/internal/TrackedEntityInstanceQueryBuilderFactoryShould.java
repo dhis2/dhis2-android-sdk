@@ -51,7 +51,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -117,7 +117,7 @@ public class TrackedEntityInstanceQueryBuilderFactoryShould {
 
         TeiQuery bundle = builders.get(0).build();
         assertThat(bundle.orgUnits()).isEqualTo(rootOrgUnits);
-        assertThat(bundle.ouMode()).isEqualByComparingTo(OrganisationUnitMode.DESCENDANTS);
+        assertThat(bundle.ouMode()).isEqualTo(OrganisationUnitMode.DESCENDANTS);
         assertThat(bundle.program()).isNull();
     }
 

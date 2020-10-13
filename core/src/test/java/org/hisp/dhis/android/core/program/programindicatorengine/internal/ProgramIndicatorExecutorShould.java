@@ -39,8 +39,6 @@ import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorContext;
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorExecutor;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
@@ -58,7 +56,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)

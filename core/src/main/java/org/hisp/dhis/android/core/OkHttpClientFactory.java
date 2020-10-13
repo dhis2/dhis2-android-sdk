@@ -104,7 +104,7 @@ final class OkHttpClientFactory {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             try {
 
-                SSLContext sc = SSLContext.getInstance("TLS" /*"TLSv1.2"*/);
+                SSLContext sc = SSLContext.getInstance(TlsVersion.TLS_1_2.javaName());
                 sc.init(null, null, null);
 
                 TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(

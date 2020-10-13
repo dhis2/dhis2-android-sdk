@@ -51,7 +51,7 @@ import java.util.List;
 
 import io.reactivex.Single;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Mockito.times;

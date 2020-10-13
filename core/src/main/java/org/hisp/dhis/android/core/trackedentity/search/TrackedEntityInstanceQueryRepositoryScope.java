@@ -48,6 +48,7 @@ import java.util.Date;
 import java.util.List;
 
 @AutoValue
+@SuppressWarnings({"PMD.ExcessivePublicCount"})
 abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseScope {
 
     private static final SafeDateFormat QUERY_FORMAT = new SafeDateFormat("yyyy-MM-dd");
@@ -94,7 +95,7 @@ abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseScope {
     @Nullable
     public abstract String trackedEntityType();
 
-    @Nullable
+    @NonNull
     public abstract Boolean includeDeleted();
 
     @Nullable
@@ -105,6 +106,9 @@ abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseScope {
 
     @NonNull
     public abstract List<TrackedEntityInstanceQueryScopeOrderByItem> order();
+
+    @NonNull
+    public abstract Boolean allowOnlineCache();
 
     public String formattedProgramStartDate() {
         return formatDate(programStartDate());
@@ -129,14 +133,14 @@ abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseScope {
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-
         return new AutoValue_TrackedEntityInstanceQueryRepositoryScope.Builder()
                 .attribute(Collections.emptyList())
                 .filter(Collections.emptyList())
                 .orgUnits(Collections.emptyList())
                 .order(Collections.emptyList())
                 .mode(RepositoryMode.OFFLINE_ONLY)
-                .includeDeleted(false);
+                .includeDeleted(false)
+                .allowOnlineCache(false);
     }
 
     public static TrackedEntityInstanceQueryRepositoryScope empty() {
@@ -181,6 +185,8 @@ abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseScope {
         public abstract Builder assignedUserMode(AssignedUserMode assignedUserMode);
 
         public abstract Builder order(List<TrackedEntityInstanceQueryScopeOrderByItem> order);
+
+        public abstract Builder allowOnlineCache(Boolean allowOnlineCache);
 
         abstract TrackedEntityInstanceQueryRepositoryScope autoBuild();
 

@@ -29,29 +29,35 @@ package org.hisp.dhis.android.core.arch.db.access.internal
 
 import android.content.Context
 import dagger.Reusable
+import java.io.File
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.DatabaseImportExport
-import org.hisp.dhis.android.core.configuration.internal.DatabaseNameGenerator
-import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
-import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser
+import org.hisp.dhis.android.core.arch.storage.internal.Credentials
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
+import org.hisp.dhis.android.core.configuration.internal.*
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoStore
 import org.hisp.dhis.android.core.user.UserModule
 import org.hisp.dhis.android.core.user.internal.UserCredentialsStoreImpl
-import java.io.File
-import javax.inject.Inject
 
 @Reusable
 class DatabaseImportExportImpl @Inject constructor(
     private val context: Context,
     private val nameGenerator: DatabaseNameGenerator,
     private val multiUserDatabaseManager: MultiUserDatabaseManager,
-    private val userModule: UserModule) : DatabaseImportExport {
+    private val userModule: UserModule,
+    private val credentialsStore: ObjectKeyValueStore<Credentials>,
+    private val databaseConfigurationSecureStore: ObjectKeyValueStore<DatabasesConfiguration>,
+    private val databaseRenamer: DatabaseRenamer,
+    private val databaseAdapter: DatabaseAdapter
+) : DatabaseImportExport {
 
     companion object {
         const val TmpDatabase = "tmp-database.db"
+        const val ExportDatabase = "export-database.db"
     }
 
     val d2ErrorBuilder = D2Error.builder()
@@ -106,5 +112,35 @@ class DatabaseImportExportImpl @Inject constructor(
             databaseAdapter?.close()
             context.deleteDatabase(TmpDatabase)
         }
+    }
+
+    override fun exportLoggedUserDatabase(): File {
+        context.deleteDatabase(ExportDatabase)
+
+        if (!userModule.blockingIsLogged()) {
+            throw d2ErrorBuilder
+                .errorDescription("Please log in to export database")
+                .errorCode(D2ErrorCode.DATABASE_EXPORT_LOGIN_FIRST)
+                .build()
+        }
+
+        val username = credentialsStore.get().username()
+        val databasesConfiguration = databaseConfigurationSecureStore.get()
+        val serverUrl = databasesConfiguration.loggedServerUrl()
+        val serverConfiguration = databasesConfiguration.servers()
+            .find { it.serverUrl() == serverUrl }
+        val userConfiguration = serverConfiguration!!.users().find { it.username() == username }!!
+
+        if (userConfiguration.encrypted()) {
+            throw d2ErrorBuilder
+                .errorDescription("Database export of encrypted database not supported")
+                .errorCode(D2ErrorCode.DATABASE_EXPORT_ENCRYPTED_NOT_SUPPORTED)
+                .build()
+        }
+
+        databaseAdapter.close()
+
+        val databaseName = userConfiguration.databaseName()
+        return databaseRenamer.copyDatabase(databaseName, ExportDatabase)
     }
 }

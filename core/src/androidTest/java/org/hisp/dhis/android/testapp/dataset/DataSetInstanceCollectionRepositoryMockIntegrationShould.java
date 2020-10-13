@@ -39,10 +39,7 @@ import org.junit.runner.RunWith;
 import java.text.ParseException;
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.core.IsNull.nullValue;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class DataSetInstanceCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -51,7 +48,7 @@ public class DataSetInstanceCollectionRepositoryMockIntegrationShould extends Ba
     public void find_all() {
         List<DataSetInstance> dataSetInstances = d2.dataSetModule().dataSetInstances()
                 .blockingGet();
-        assertThat(dataSetInstances.size(), is(4));
+        assertThat(dataSetInstances.size()).isEqualTo(4);
     }
 
     @Test
@@ -59,7 +56,7 @@ public class DataSetInstanceCollectionRepositoryMockIntegrationShould extends Ba
         List<DataSetInstance> dataSetInstances = d2.dataSetModule().dataSetInstances()
                 .byDataSetUid().eq("lyLU2wR22tC")
                 .blockingGet();
-        assertThat(dataSetInstances.size(), is(4));
+        assertThat(dataSetInstances.size()).isEqualTo(4);
     }
 
     @Test
@@ -67,7 +64,7 @@ public class DataSetInstanceCollectionRepositoryMockIntegrationShould extends Ba
         List<DataSetInstance> dataSetInstances = d2.dataSetModule().dataSetInstances()
                 .byPeriod().eq("2018")
                 .blockingGet();
-        assertThat(dataSetInstances.size(), is(1));
+        assertThat(dataSetInstances.size()).isEqualTo(1);
     }
 
     @Test
@@ -75,7 +72,7 @@ public class DataSetInstanceCollectionRepositoryMockIntegrationShould extends Ba
         List<DataSetInstance> dataSetInstances = d2.dataSetModule().dataSetInstances()
                 .byPeriodType().eq(PeriodType.Yearly)
                 .blockingGet();
-        assertThat(dataSetInstances.size(), is(3));
+        assertThat(dataSetInstances.size()).isEqualTo(3);
     }
 
     @Test
@@ -83,7 +80,7 @@ public class DataSetInstanceCollectionRepositoryMockIntegrationShould extends Ba
         List<DataSetInstance> dataSetInstances = d2.dataSetModule().dataSetInstances()
                 .byPeriodStartDate().after(BaseIdentifiableObject.parseDate("2018-07-15T00:00:00.000"))
                 .blockingGet();
-        assertThat(dataSetInstances.size(), is(1));
+        assertThat(dataSetInstances.size()).isEqualTo(1);
     }
 
     @Test
@@ -91,7 +88,7 @@ public class DataSetInstanceCollectionRepositoryMockIntegrationShould extends Ba
         List<DataSetInstance> dataSetInstances = d2.dataSetModule().dataSetInstances()
                 .byPeriodEndDate().after(BaseIdentifiableObject.parseDate("2018-07-15T00:00:00.000"))
                 .blockingGet();
-        assertThat(dataSetInstances.size(), is(2));
+        assertThat(dataSetInstances.size()).isEqualTo(2);
     }
 
     @Test
@@ -99,7 +96,7 @@ public class DataSetInstanceCollectionRepositoryMockIntegrationShould extends Ba
         List<DataSetInstance> dataSetInstances = d2.dataSetModule().dataSetInstances()
                 .byOrganisationUnitUid().eq("DiszpKrYNg8")
                 .blockingGet();
-        assertThat(dataSetInstances.size(), is(4));
+        assertThat(dataSetInstances.size()).isEqualTo(4);
     }
 
     @Test
@@ -107,14 +104,14 @@ public class DataSetInstanceCollectionRepositoryMockIntegrationShould extends Ba
         List<DataSetInstance> dataSetInstanceCompleted = d2.dataSetModule().dataSetInstances()
                 .byPeriod().eq("2018")
                 .blockingGet();
-        assertThat(dataSetInstanceCompleted.get(0).completed(), is(true));
-        assertThat(dataSetInstanceCompleted.get(0).completionDate(), is(notNullValue()));
+        assertThat(dataSetInstanceCompleted.get(0).completed()).isTrue();
+        assertThat(dataSetInstanceCompleted.get(0).completionDate()).isNotNull();
 
         List<DataSetInstance> dataSetInstanceUncompleted = d2.dataSetModule().dataSetInstances()
                 .byPeriod().eq("201907")
                 .blockingGet();
-        assertThat(dataSetInstanceUncompleted.get(0).completed(), is(false));
-        assertThat(dataSetInstanceUncompleted.get(0).completionDate(), is(nullValue()));
+        assertThat(dataSetInstanceUncompleted.get(0).completed()).isFalse();
+        assertThat(dataSetInstanceUncompleted.get(0).completionDate()).isNull();
     }
 
     @Test
@@ -122,8 +119,8 @@ public class DataSetInstanceCollectionRepositoryMockIntegrationShould extends Ba
         List<DataSetInstance> dataSetInstances = d2.dataSetModule().dataSetInstances()
                 .byPeriod().eq("201907")
                 .blockingGet();
-        assertThat(dataSetInstances.size(), is(1));
-        assertThat(dataSetInstances.get(0).valueCount(), is(1));
+        assertThat(dataSetInstances.size()).isEqualTo(1);
+        assertThat(dataSetInstances.get(0).valueCount()).isEqualTo(1);
     }
 
 }

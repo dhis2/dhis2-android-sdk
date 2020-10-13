@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core;
 
 import android.content.Context;
 
-import androidx.test.InstrumentationRegistry;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.facebook.stetho.Stetho;
 
@@ -50,7 +50,7 @@ public abstract class BaseRealIntegrationTest {
 
     @Before
     public void setUp() throws IOException {
-        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
+        Context context = InstrumentationRegistry.getInstrumentation().getContext();
         Stetho.initializeWithDefaults(context);
     }
 

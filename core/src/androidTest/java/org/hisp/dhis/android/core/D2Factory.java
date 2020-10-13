@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core;
 
 import android.content.Context;
 
-import androidx.test.InstrumentationRegistry;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 
@@ -53,12 +53,12 @@ public class D2Factory {
     }
 
     public static D2 forNewDatabaseWithAndroidSecureStore() throws D2Error {
-        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
+        Context context = InstrumentationRegistry.getInstrumentation().getContext();
         return forNewDatabaseInternal(new AndroidSecureStore(context), new AndroidInsecureStore(context));
     }
 
     private static D2 forNewDatabaseInternal(SecureStore secureStore, InsecureStore insecureStore) {
-        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
+        Context context = InstrumentationRegistry.getInstrumentation().getContext();
 
         D2Configuration d2Configuration = d2Configuration(context);
 

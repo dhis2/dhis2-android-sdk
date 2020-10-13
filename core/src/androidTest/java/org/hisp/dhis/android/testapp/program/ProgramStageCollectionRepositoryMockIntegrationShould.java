@@ -40,8 +40,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -52,7 +51,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                 d2.programModule().programStages()
                         .blockingGet();
 
-        assertThat(programStages.size(), is(2));
+        assertThat(programStages.size()).isEqualTo(2);
     }
 
     @Test
@@ -63,7 +62,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                         .eq("Description")
                         .blockingGet();
 
-        assertThat(programStages.size(), is(1));
+        assertThat(programStages.size()).isEqualTo(1);
     }
 
     @Test
@@ -74,7 +73,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                         .eq("Display Description")
                         .blockingGet();
 
-        assertThat(programStages.size(), is(1));
+        assertThat(programStages.size()).isEqualTo(1);
     }
 
     @Test
@@ -85,7 +84,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                         .eq("Visit date")
                         .blockingGet();
 
-        assertThat(programStages.size(), is(1));
+        assertThat(programStages.size()).isEqualTo(1);
     }
 
     @Test
@@ -96,7 +95,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                         .isFalse()
                         .blockingGet();
 
-        assertThat(programStages.size(), is(1));
+        assertThat(programStages.size()).isEqualTo(1);
     }
 
     @Test
@@ -107,7 +106,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                         .isTrue()
                         .blockingGet();
 
-        assertThat(programStages.size(), is(1));
+        assertThat(programStages.size()).isEqualTo(1);
     }
 
     @Test
@@ -118,7 +117,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                         .eq("report_date_to_use")
                         .blockingGet();
 
-        assertThat(programStages.size(), is(1));
+        assertThat(programStages.size()).isEqualTo(1);
     }
 
     @Test
@@ -129,7 +128,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                         .isFalse()
                         .blockingGet();
 
-        assertThat(programStages.size(), is(1));
+        assertThat(programStages.size()).isEqualTo(1);
     }
 
     @Test
@@ -140,7 +139,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                         .isFalse()
                         .blockingGet();
 
-        assertThat(programStages.size(), is(1));
+        assertThat(programStages.size()).isEqualTo(1);
     }
 
     @Test
@@ -151,7 +150,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                         .eq(FeatureType.POINT)
                         .blockingGet();
 
-        assertThat(programStages.size(), is(1));
+        assertThat(programStages.size()).isEqualTo(1);
     }
 
     @Test
@@ -162,7 +161,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                         .eq(FormType.DEFAULT)
                         .blockingGet();
 
-        assertThat(programStages.size(), is(1));
+        assertThat(programStages.size()).isEqualTo(1);
     }
 
     @Test
@@ -173,7 +172,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                         .isFalse()
                         .blockingGet();
 
-        assertThat(programStages.size(), is(1));
+        assertThat(programStages.size()).isEqualTo(1);
     }
 
     @Test
@@ -184,7 +183,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                         .isFalse()
                         .blockingGet();
 
-        assertThat(programStages.size(), is(1));
+        assertThat(programStages.size()).isEqualTo(1);
     }
 
     @Test
@@ -195,7 +194,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                         .isTrue()
                         .blockingGet();
 
-        assertThat(programStages.size(), is(1));
+        assertThat(programStages.size()).isEqualTo(1);
     }
 
     @Test
@@ -206,7 +205,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                         .eq(1)
                         .blockingGet();
 
-        assertThat(programStages.size(), is(1));
+        assertThat(programStages.size()).isEqualTo(1);
     }
 
     @Test
@@ -217,7 +216,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                         .isFalse()
                         .blockingGet();
 
-        assertThat(programStages.size(), is(1));
+        assertThat(programStages.size()).isEqualTo(1);
     }
 
     @Test
@@ -228,7 +227,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                         .isTrue()
                         .blockingGet();
 
-        assertThat(programStages.size(), is(1));
+        assertThat(programStages.size()).isEqualTo(1);
     }
 
     @Test
@@ -239,7 +238,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                         .eq(0)
                         .blockingGet();
 
-        assertThat(programStages.size(), is(1));
+        assertThat(programStages.size()).isEqualTo(1);
     }
 
     @Test
@@ -250,7 +249,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                         .eq(0)
                         .blockingGet();
 
-        assertThat(programStages.size(), is(1));
+        assertThat(programStages.size()).isEqualTo(1);
     }
 
     @Test
@@ -260,7 +259,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                         .byEnableUserAssignment().isFalse()
                         .blockingGet();
 
-        assertThat(programStages.size(), is(1));
+        assertThat(programStages.size()).isEqualTo(1);
     }
 
     @Test
@@ -271,7 +270,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                         .eq(PeriodType.Monthly)
                         .blockingGet();
 
-        assertThat(programStages.size(), is(1));
+        assertThat(programStages.size()).isEqualTo(1);
     }
 
     @Test
@@ -282,7 +281,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                         .eq("lxAQ7Zs9VYR")
                         .blockingGet();
 
-        assertThat(programStages.size(), is(2));
+        assertThat(programStages.size()).isEqualTo(2);
     }
 
     @Test
@@ -293,7 +292,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                         .isTrue()
                         .blockingGet();
 
-        assertThat(programStages.size(), is(1));
+        assertThat(programStages.size()).isEqualTo(1);
     }
 
     @Test
@@ -304,7 +303,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
                         .isTrue()
                         .blockingGet();
 
-        assertThat(programStages.size(), is(1));
+        assertThat(programStages.size()).isEqualTo(1);
     }
 
     @Test
@@ -312,7 +311,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
         List<ProgramStage> programStages = d2.programModule().programStages()
                 .byColor().eq("#444")
                 .blockingGet();
-        assertThat(programStages.size(), is(1));
+        assertThat(programStages.size()).isEqualTo(1);
     }
 
     @Test
@@ -320,7 +319,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
         List<ProgramStage> programStages = d2.programModule().programStages()
                 .byIcon().eq("program-stage-icon")
                 .blockingGet();
-        assertThat(programStages.size(), is(1));
+        assertThat(programStages.size()).isEqualTo(1);
     }
 
     @Test
@@ -328,10 +327,10 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
         List<ProgramStage> programStages = d2.programModule().programStages()
                 .orderBySortOrder(RepositoryScope.OrderByDirection.DESC)
                 .blockingGet();
-        assertThat(programStages.get(0).uid(), is("dBwrot7S421"));
-        assertThat(programStages.get(0).sortOrder(), is(2));
-        assertThat(programStages.get(1).uid(), is("dBwrot7S420"));
-        assertThat(programStages.get(1).sortOrder(), is(1));
+        assertThat(programStages.get(0).uid()).isEqualTo("dBwrot7S421");
+        assertThat(programStages.get(0).sortOrder()).isEqualTo(2);
+        assertThat(programStages.get(1).uid()).isEqualTo("dBwrot7S420");
+        assertThat(programStages.get(1).sortOrder()).isEqualTo(1);
     }
 
 }

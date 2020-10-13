@@ -40,7 +40,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 public class ProgramStageShould  extends BaseObjectShould implements ObjectShould {
 
@@ -80,9 +80,9 @@ public class ProgramStageShould  extends BaseObjectShould implements ObjectShoul
         assertThat(programStage.standardInterval()).isNull();
         assertThat(ProgramStageInternalAccessor.accessProgramStageSections(programStage)).isEmpty();
         assertThat(programStage.periodType()).isEqualTo(PeriodType.Monthly);
-        assertThat(programStage.remindCompleted()).isEqualTo(false);
+        assertThat(programStage.remindCompleted()).isFalse();
         assertThat(programStage.featureType()).isEqualTo(FeatureType.POINT);
-        assertThat(programStage.enableUserAssignment()).isEqualTo(true);
+        assertThat(programStage.enableUserAssignment()).isTrue();
 
         List<ProgramStageDataElement> dataElements =
                 ProgramStageInternalAccessor.accessProgramStageDataElements(programStage);

@@ -29,24 +29,25 @@ package org.hisp.dhis.android.core.option.internal
 
 import dagger.Reusable
 import io.reactivex.Single
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.option.OptionSet
-import javax.inject.Inject
 
 @Reusable
 internal class OptionSetCall @Inject constructor(
-        private val service: OptionSetService,
-        private val handler: Handler<OptionSet>,
-        private val apiDownloader: APIDownloader) : UidsCall<OptionSet?> {
+    private val service: OptionSetService,
+    private val handler: Handler<OptionSet>,
+    private val apiDownloader: APIDownloader
+) : UidsCall<OptionSet> {
 
     companion object {
         const val MAX_UID_LIST_SIZE = 130
     }
 
-    override fun download(uids: Set<String>): Single<MutableList<OptionSet?>>? {
-        return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler) { partitionUids: Set<String?>? ->
+    override fun download(uids: Set<String>): Single<List<OptionSet>> {
+        return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler) { partitionUids: Set<String> ->
             service.optionSets(OptionSetFields.allFields, OptionSetFields.uid.`in`(partitionUids), false)
         }
     }

@@ -1,7 +1,5 @@
 package org.hisp.dhis.android.core.program.programindicatorengine.internal.function;
 
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.MatcherAssert;
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
 import org.junit.Before;
@@ -10,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -74,7 +73,6 @@ public class D2WeeksBetweenShould {
     private void assertWeeksBetween(String startDate, String endDate, String weeksBetween) {
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn(startDate);
         when(visitor.castStringVisit(mockedSecondExpr)).thenReturn(endDate);
-        MatcherAssert
-                .assertThat(functionToTest.evaluate(context, visitor), CoreMatchers.<Object>is((weeksBetween)));
+        assertThat(functionToTest.evaluate(context, visitor)).isEqualTo(weeksBetween);
     }
 }

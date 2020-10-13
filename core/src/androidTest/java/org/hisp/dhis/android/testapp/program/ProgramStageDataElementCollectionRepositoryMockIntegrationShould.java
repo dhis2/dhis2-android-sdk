@@ -38,8 +38,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class ProgramStageDataElementCollectionRepositoryMockIntegrationShould 
@@ -51,7 +50,7 @@ public class ProgramStageDataElementCollectionRepositoryMockIntegrationShould
                 d2.programModule().programStageDataElements()
                         .blockingGet();
 
-        assertThat(programStageDataElements.size(), is(6));
+        assertThat(programStageDataElements.size()).isEqualTo(6);
     }
 
     @Test
@@ -62,7 +61,7 @@ public class ProgramStageDataElementCollectionRepositoryMockIntegrationShould
                         .isFalse()
                         .blockingGet();
 
-        assertThat(programStageDataElements.size(), is(5));
+        assertThat(programStageDataElements.size()).isEqualTo(5);
     }
 
     @Test
@@ -73,7 +72,7 @@ public class ProgramStageDataElementCollectionRepositoryMockIntegrationShould
                         .isTrue()
                         .blockingGet();
 
-        assertThat(programStageDataElements.size(), is(2));
+        assertThat(programStageDataElements.size()).isEqualTo(2);
     }
 
     @Test
@@ -84,7 +83,7 @@ public class ProgramStageDataElementCollectionRepositoryMockIntegrationShould
                         .isTrue()
                         .blockingGet();
 
-        assertThat(programStageDataElements.size(), is(1));
+        assertThat(programStageDataElements.size()).isEqualTo(1);
     }
 
     @Test
@@ -95,7 +94,7 @@ public class ProgramStageDataElementCollectionRepositoryMockIntegrationShould
                         .biggerThan(1)
                         .blockingGet();
 
-        assertThat(programStageDataElements.size(), is(2));
+        assertThat(programStageDataElements.size()).isEqualTo(2);
     }
 
     @Test
@@ -106,7 +105,7 @@ public class ProgramStageDataElementCollectionRepositoryMockIntegrationShould
                         .isTrue()
                         .blockingGet();
 
-        assertThat(programStageDataElements.size(), is(1));
+        assertThat(programStageDataElements.size()).isEqualTo(1);
     }
 
     @Test
@@ -117,7 +116,7 @@ public class ProgramStageDataElementCollectionRepositoryMockIntegrationShould
                         .eq("Ok9OQpitjQr")
                         .blockingGet();
 
-        assertThat(programStageDataElements.size(), is(2));
+        assertThat(programStageDataElements.size()).isEqualTo(2);
     }
 
     @Test
@@ -128,7 +127,7 @@ public class ProgramStageDataElementCollectionRepositoryMockIntegrationShould
                         .eq("dBwrot7S420")
                         .blockingGet();
 
-        assertThat(programStageDataElements.size(), is(3));
+        assertThat(programStageDataElements.size()).isEqualTo(3);
     }
 
     @Test
@@ -139,10 +138,10 @@ public class ProgramStageDataElementCollectionRepositoryMockIntegrationShould
                         .withRenderType()
                         .one().blockingGet();
 
-        assertThat(programStageDataElement.renderType().mobile().type(),
-                is(ValueTypeRenderingType.SHARED_HEADER_RADIOBUTTONS));
-        assertThat(programStageDataElement.renderType().desktop().type(),
-                is(ValueTypeRenderingType.VERTICAL_RADIOBUTTONS));
+        assertThat(programStageDataElement.renderType().mobile().type())
+                .isEqualTo(ValueTypeRenderingType.SHARED_HEADER_RADIOBUTTONS);
+        assertThat(programStageDataElement.renderType().desktop().type())
+                .isEqualTo(ValueTypeRenderingType.VERTICAL_RADIOBUTTONS);
     }
 
     @Test
@@ -153,12 +152,12 @@ public class ProgramStageDataElementCollectionRepositoryMockIntegrationShould
                         .orderBySortOrder(RepositoryScope.OrderByDirection.DESC)
                 .blockingGet();
 
-        assertThat(programStageDataElements.get(0).uid(), is("QgGD234oA8i"));
-        assertThat(programStageDataElements.get(0).sortOrder(), is(2));
-        assertThat(programStageDataElements.get(1).uid(), is("ZD8pd21Dt4i"));
-        assertThat(programStageDataElements.get(1).sortOrder(), is(1));
-        assertThat(programStageDataElements.get(2).uid(), is("eM6beRIqUnM"));
-        assertThat(programStageDataElements.get(2).sortOrder(), is(0));
+        assertThat(programStageDataElements.get(0).uid()).isEqualTo("QgGD234oA8i");
+        assertThat(programStageDataElements.get(0).sortOrder()).isEqualTo(2);
+        assertThat(programStageDataElements.get(1).uid()).isEqualTo("ZD8pd21Dt4i");
+        assertThat(programStageDataElements.get(1).sortOrder()).isEqualTo(1);
+        assertThat(programStageDataElements.get(2).uid()).isEqualTo("eM6beRIqUnM");
+        assertThat(programStageDataElements.get(2).sortOrder()).isEqualTo(0);
     }
 
 }

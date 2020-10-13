@@ -37,7 +37,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 public class GeneralSettingsShould extends BaseObjectShould implements ObjectShould {
 
@@ -50,10 +50,10 @@ public class GeneralSettingsShould extends BaseObjectShould implements ObjectSho
     public void map_from_json_string() throws IOException, ParseException {
         GeneralSettings generalSettings = objectMapper.readValue(jsonStream, GeneralSettings.class);
 
-        assertThat(generalSettings.dataSync()).isEqualByComparingTo(DataSyncPeriod.EVERY_24_HOURS);
+        assertThat(generalSettings.dataSync()).isEqualTo(DataSyncPeriod.EVERY_24_HOURS);
         assertThat(generalSettings.encryptDB()).isFalse();
         assertThat(generalSettings.lastUpdated()).isEqualTo(BaseIdentifiableObject.parseDate("2020-01-13T16:52:05.144Z"));
-        assertThat(generalSettings.metadataSync()).isEqualByComparingTo(MetadataSyncPeriod.MANUAL);
+        assertThat(generalSettings.metadataSync()).isEqualTo(MetadataSyncPeriod.MANUAL);
         assertThat(generalSettings.reservedValues()).isEqualTo(100);
         assertThat(generalSettings.numberSmsToSend()).isEqualTo("98456123");
         assertThat(generalSettings.numberSmsConfirmation()).isEqualTo("98456122");
@@ -65,7 +65,7 @@ public class GeneralSettingsShould extends BaseObjectShould implements ObjectSho
         InputStream jsonStream = this.getClass().getClassLoader().getResourceAsStream(jsonPath);
         GeneralSettings generalSettings = objectMapper.readValue(jsonStream, GeneralSettings.class);
 
-        assertThat(generalSettings.dataSync()).isEqualByComparingTo(DataSyncPeriod.EVERY_24_HOURS);
-        assertThat(generalSettings.metadataSync()).isEqualByComparingTo(MetadataSyncPeriod.EVERY_24_HOURS);
+        assertThat(generalSettings.dataSync()).isEqualTo(DataSyncPeriod.EVERY_24_HOURS);
+        assertThat(generalSettings.metadataSync()).isEqualTo(MetadataSyncPeriod.EVERY_24_HOURS);
     }
 }

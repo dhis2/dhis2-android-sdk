@@ -35,7 +35,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.text.ParseException;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 public class DatabasesConfigurationShould extends BaseObjectShould implements ObjectShould {
 
@@ -58,7 +58,7 @@ public class DatabasesConfigurationShould extends BaseObjectShould implements Ob
         DatabaseUserConfiguration user = server.users().get(0);
         assertThat(user.username()).isEqualTo("user");
         assertThat(user.databaseName()).isEqualTo("dbname.db");
-        assertThat(user.encrypted()).isEqualTo(true);
+        assertThat(user.encrypted()).isTrue();
     }
 
     @Test

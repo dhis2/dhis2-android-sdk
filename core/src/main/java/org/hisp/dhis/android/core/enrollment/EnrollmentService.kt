@@ -38,7 +38,7 @@ import javax.inject.Inject
 
 @Reusable
 class EnrollmentService @Inject constructor(
-        private val enrollmentRepository: EnrollmentCollectionRepository,
+    private val enrollmentRepository: EnrollmentCollectionRepository,
         private val trackedEntityInstanceRepository: TrackedEntityInstanceCollectionRepository,
         private val programRepository: ProgramCollectionRepository,
         private val organisationUnitRepository: OrganisationUnitCollectionRepository

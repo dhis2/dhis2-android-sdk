@@ -35,7 +35,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 public class OrganisationUnitTreeShould {
     //Assigned uid's:

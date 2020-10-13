@@ -40,8 +40,7 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class TrackedEntityInstanceObjectRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -54,7 +53,7 @@ public class TrackedEntityInstanceObjectRepositoryMockIntegrationShould extends 
         TrackedEntityInstanceObjectRepository repository = objectRepository();
 
         repository.setOrganisationUnitUid(orgUnitUid);
-        assertThat(repository.blockingGet().organisationUnit(), is(orgUnitUid));
+        assertThat(repository.blockingGet().organisationUnit()).isEqualTo(orgUnitUid);
 
         repository.blockingDelete();
         OrganisationUnitStore.create(databaseAdapter).delete(orgUnitUid);
@@ -83,7 +82,7 @@ public class TrackedEntityInstanceObjectRepositoryMockIntegrationShould extends 
         TrackedEntityInstanceObjectRepository repository = objectRepository();
 
         repository.setGeometry(geometry);
-        assertThat(repository.blockingGet().geometry(), is(geometry));
+        assertThat(repository.blockingGet().geometry()).isEqualTo(geometry);
 
         repository.blockingDelete();
     }

@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core;
 import android.content.Context;
 import android.util.Log;
 
-import androidx.test.InstrumentationRegistry;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.facebook.stetho.Stetho;
 
@@ -59,7 +59,7 @@ public class MockIntegrationTestObjects {
     public MockIntegrationTestObjects(MockIntegrationTestDatabaseContent content) throws Exception {
         this.content = content;
 
-        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
+        Context context = InstrumentationRegistry.getInstrumentation().getContext();
         Stetho.initializeWithDefaults(context);
 
         dhis2MockServer = new Dhis2MockServer(0);

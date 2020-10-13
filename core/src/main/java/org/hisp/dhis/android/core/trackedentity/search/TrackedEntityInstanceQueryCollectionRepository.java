@@ -32,6 +32,7 @@ import androidx.paging.DataSource;
 import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
 
+import org.hisp.dhis.android.core.arch.cache.internal.D2Cache;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenSelection;
@@ -68,7 +69,7 @@ import dagger.Reusable;
 import io.reactivex.Single;
 
 @Reusable
-@SuppressWarnings({"PMD.GodClass", "PMD.ExcessiveImports"})
+@SuppressWarnings({"PMD.GodClass", "PMD.ExcessiveImports", "PMD.ExcessivePublicCount"})
 public final class TrackedEntityInstanceQueryCollectionRepository
         implements ReadOnlyCollectionRepository<TrackedEntityInstance> {
 
@@ -81,21 +82,25 @@ public final class TrackedEntityInstanceQueryCollectionRepository
 
     private final TrackedEntityInstanceQueryRepositoryScope scope;
 
+    private final D2Cache<TrackedEntityInstanceQueryOnline, List<TrackedEntityInstance>> onlineCache;
+
     @Inject
     TrackedEntityInstanceQueryCollectionRepository(
             final TrackedEntityInstanceStore store,
             final TrackedEntityInstanceQueryCallFactory onlineCallFactory,
             final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders,
             final TrackedEntityInstanceQueryRepositoryScope scope,
-            final DHISVersionManager versionManager) {
+            final DHISVersionManager versionManager,
+            final D2Cache<TrackedEntityInstanceQueryOnline, List<TrackedEntityInstance>> onlineCache) {
         this.store = store;
         this.onlineCallFactory = onlineCallFactory;
         this.childrenAppenders = childrenAppenders;
         this.scope = scope;
         this.versionManager = versionManager;
+        this.onlineCache = onlineCache;
         this.connectorFactory = new ScopedFilterConnectorFactory<>(s ->
                 new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
-                        s, versionManager));
+                        s, versionManager, onlineCache));
     }
 
     /**
@@ -106,7 +111,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      */
     public TrackedEntityInstanceQueryCollectionRepository onlineOnly() {
         return new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
-                scope.toBuilder().mode(RepositoryMode.ONLINE_ONLY).build(), versionManager);
+                scope.toBuilder().mode(RepositoryMode.ONLINE_ONLY).build(), versionManager, onlineCache);
     }
 
     /**
@@ -116,7 +121,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      */
     public TrackedEntityInstanceQueryCollectionRepository offlineOnly() {
         return new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
-                scope.toBuilder().mode(RepositoryMode.OFFLINE_ONLY).build(), versionManager);
+                scope.toBuilder().mode(RepositoryMode.OFFLINE_ONLY).build(), versionManager, onlineCache);
     }
 
     /**
@@ -128,7 +133,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      */
     public TrackedEntityInstanceQueryCollectionRepository onlineFirst() {
         return new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
-                scope.toBuilder().mode(RepositoryMode.ONLINE_FIRST).build(), versionManager);
+                scope.toBuilder().mode(RepositoryMode.ONLINE_FIRST).build(), versionManager, onlineCache);
     }
 
     /**
@@ -140,7 +145,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      */
     public TrackedEntityInstanceQueryCollectionRepository offlineFirst() {
         return new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
-                scope.toBuilder().mode(RepositoryMode.OFFLINE_FIRST).build(), versionManager);
+                scope.toBuilder().mode(RepositoryMode.OFFLINE_FIRST).build(), versionManager, onlineCache);
     }
 
     /**
@@ -349,8 +354,19 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     }
 
     /**
+     * Whether to allow or not cached results for online queries. Its value is 'false' by default.
+     *
+     * @return Repository connector
+     */
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+            TrackedEntityInstanceQueryRepositoryScope, Boolean> allowOnlineCache() {
+        return connectorFactory.eqConnector(bool -> scope.toBuilder().allowOnlineCache(bool).build());
+    }
+
+    /**
      * Order by created date. If a program is provided, it takes the created of most recent enrollment.
      * Otherwise it takes the value of the tracked entity instance.
+     *
      * @return Repository connector
      */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
@@ -361,6 +377,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     /**
      * Order by last updated date. If a program is provided, it takes the last updated of most recent enrollment.
      * Otherwise it takes the value of the tracked entity instance.
+     *
      * @return Repository connector
      */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
@@ -370,6 +387,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
 
     /**
      * Order by tracked entity instance attribute value.
+     *
      * @return Repository connector
      */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
@@ -379,6 +397,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
 
     /**
      * Order by organisation unit name of the tracked entity instance.
+     *
      * @return Repository connector
      */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
@@ -388,6 +407,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
 
     /**
      * Order by enrollment date of most recent enrollment. This order only applies to local results.
+     *
      * @return Repository connector
      */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
@@ -397,6 +417,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
 
     /**
      * Order by incident date of most recent enrollment. This order only applies to local results.
+     *
      * @return Repository connector
      */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
@@ -407,6 +428,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     /**
      * Order by most recent event. It takes the event date and, if it is null, it fallbacks to due date. This order
      * only applies to local results.
+     *
      * @return Repository connector
      */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
@@ -416,6 +438,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
 
     /**
      * Order by completion date of the most recent event. This order only applies to local results.
+     *
      * @return Repository connector
      */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
@@ -425,6 +448,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
 
     /**
      * Order by enrollment status.
+     *
      * @return Repository connector
      */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
@@ -447,7 +471,8 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     }
 
     public DataSource<TrackedEntityInstance, TrackedEntityInstance> getDataSource() {
-        return new TrackedEntityInstanceQueryDataSource(store, onlineCallFactory, scope, childrenAppenders);
+        return new TrackedEntityInstanceQueryDataSource(store, onlineCallFactory, scope,
+                childrenAppenders, onlineCache);
     }
 
     @Override
@@ -526,7 +551,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
 
     private EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
             TrackedEntityInstanceQueryRepositoryScope, RepositoryScope.OrderByDirection> orderConnector(
-                    TrackedEntityInstanceQueryScopeOrderColumn col) {
+            TrackedEntityInstanceQueryScopeOrderColumn col) {
         return connectorFactory.eqConnector(direction -> {
             List<TrackedEntityInstanceQueryScopeOrderByItem> order = new ArrayList<>(scope.order());
             order.add(TrackedEntityInstanceQueryScopeOrderByItem.builder().column(col).direction(direction).build());

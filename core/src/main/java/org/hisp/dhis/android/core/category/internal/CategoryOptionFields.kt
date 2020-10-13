@@ -40,12 +40,20 @@ internal object CategoryOptionFields {
     internal const val ORGANISATION_UNITS = "organisationUnits"
     private val fh = FieldsHelper<CategoryOption>()
     val uid = fh.uid()
-    val allFields: Fields<CategoryOption> = Fields.builder<CategoryOption>()
-        .fields(fh.getNameableFields())
-        .fields(
-            fh.field<String>(CategoryOptionTableInfo.Columns.START_DATE),
-            fh.field<String>(CategoryOptionTableInfo.Columns.END_DATE),
-            fh.field<String>(ORGANISATION_UNITS),
-            fh.nestedField<Access>(ACCESS).with(AccessFields.data.with(DataAccessFields.allFields))
-        ).build()
+
+    fun allFields(includeOUs: Boolean): Fields<CategoryOption> {
+        val fb = Fields.builder<CategoryOption>()
+            .fields(fh.getNameableFields())
+            .fields(
+                fh.field<String>(CategoryOptionTableInfo.Columns.START_DATE),
+                fh.field<String>(CategoryOptionTableInfo.Columns.END_DATE),
+                fh.nestedField<Access>(ACCESS).with(AccessFields.data.with(DataAccessFields.allFields))
+            )
+
+        return if (includeOUs) {
+            fb.fields(fh.nestedFieldWithUid(ORGANISATION_UNITS)).build()
+        } else {
+            fb.build()
+        }
+    }
 }

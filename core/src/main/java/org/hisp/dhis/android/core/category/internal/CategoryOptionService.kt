@@ -45,6 +45,6 @@ internal interface CategoryOptionService {
         @Query("filter") @Where uids: Filter<CategoryOption, String>,
         @Query("filter") accessDataReadFilter: String,
         @Query("paging") paging: Boolean,
-        @Query("restrictToCaptureScope") restrictToCaptureScope: Boolean
+        @Query("restrictToCaptureScope") restrictToCaptureScope: Boolean?
     ): Single<Payload<CategoryOption>>
 }

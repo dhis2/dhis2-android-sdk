@@ -25,44 +25,39 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.category.internal;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler
+import org.hisp.dhis.android.core.category.Category
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink
+import org.hisp.dhis.android.core.category.CategoryOption
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.di.internal.IdentifiableEntityDIModule;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.category.CategoryOption;
+@Reusable
+internal class CategoryCategoryOptionLinkPersistor @Inject constructor(
+    private val categoryCategoryOptionLinkHandler: OrderedLinkHandler<CategoryOption, CategoryCategoryOptionLink>
+) {
 
-import java.util.Collections;
-import java.util.Map;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-
-@Module
-public final class CategoryOptionEntityDIModule implements IdentifiableEntityDIModule<CategoryOption> {
-
-    @Override
-    @Provides
-    @Reusable
-    public IdentifiableObjectStore<CategoryOption> store(DatabaseAdapter databaseAdapter) {
-        return CategoryOptionStore.create(databaseAdapter);
+    fun handleMany(categories: List<Category>, categoryOptions: List<CategoryOption>) {
+        val categoryOptionsMap = categoryOptions.map { it.uid() to it }.toMap()
+        categories.forEach { handleCategory(it, categoryOptionsMap) }
     }
 
-    @Override
-    @Provides
-    @Reusable
-    public Handler<CategoryOption> handler(IdentifiableObjectStore<CategoryOption> store) {
-        return new IdentifiableHandlerImpl<>(store);
-    }
+    private fun handleCategory(category: Category, categoryOptions: Map<String, CategoryOption>) {
+        val categoryOptionsWithAccess = category.categoryOptions()!!.filter {
+            categoryOptions.containsKey(it.uid())
+        }
 
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<CategoryOption>> childrenAppenders() {
-        return Collections.emptyMap();
+        categoryCategoryOptionLinkHandler.handleMany(
+            category.uid(),
+            categoryOptionsWithAccess
+        ) { categoryOption: CategoryOption, sortOrder: Int ->
+            CategoryCategoryOptionLink.builder()
+                .category(category.uid())
+                .categoryOption(categoryOption.uid())
+                .sortOrder(sortOrder)
+                .build()
+        }
     }
 }

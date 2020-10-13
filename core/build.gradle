@@ -30,6 +30,7 @@ plugins {
     id "com.android.library"
     id "kotlin-android"
     id "kotlin-android-extensions"
+    id "kotlin-kapt"
     id "io.gitlab.arturbosch.detekt" version "1.10.0"
     id "org.jlleitschuh.gradle.ktlint"
 }
@@ -164,11 +165,11 @@ dependencies {
 
     // Auto Value
     compileOnly "com.google.auto.value:auto-value:${libraries.autoValue}"
-    annotationProcessor "com.google.auto.value:auto-value:${libraries.autoValue}"
+    kapt "com.google.auto.value:auto-value:${libraries.autoValue}"
 
     // Dagger
     api "com.google.dagger:dagger:${libraries.dagger}"
-    annotationProcessor "com.google.dagger:dagger-compiler:${libraries.dagger}"
+    kapt "com.google.dagger:dagger-compiler:${libraries.dagger}"
 
     // Jackson
     api "com.fasterxml.jackson.core:jackson-databind:${libraries.jackson}"
@@ -200,7 +201,7 @@ dependencies {
 
     // Extension which generates mappers for work with cursor and content values
     api "com.gabrielittner.auto.value:auto-value-cursor-annotations:${libraries.autoValueCursor}"
-    annotationProcessor "com.gabrielittner.auto.value:auto-value-cursor:${libraries.autoValueCursor}"
+    kapt "com.gabrielittner.auto.value:auto-value-cursor:${libraries.autoValueCursor}"
 
     api "net.zetetic:android-database-sqlcipher:${libraries.sqlCipher}"
 

@@ -25,30 +25,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.category.internal;
+package org.hisp.dhis.android.core.category.internal
 
-import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.category.CategoryCombo;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
+import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLink
+import org.hisp.dhis.android.core.common.ObjectWithUid
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+@Module
+internal class CategoryOptionOrganisationUnitEntityDIModule {
 
-final class CategoryParentUidsHelper {
-
-    private CategoryParentUidsHelper() {
+    @Provides
+    @Reusable
+    fun store(databaseAdapter: DatabaseAdapter): LinkStore<CategoryOptionOrganisationUnitLink> {
+        return CategoryOptionOrganisationUnitLinkStore.create(databaseAdapter)
     }
 
-    static Set<String> getCategoryUids(List<CategoryCombo> categoryCombos) {
-        Set<String> uids = new HashSet<>();
-        for (CategoryCombo categoryCombo : categoryCombos) {
-            List<Category> categories = categoryCombo.categories();
-            if (categories != null) {
-                for (Category category : categories) {
-                    uids.add(category.uid());
-                }
-            }
+    @Provides
+    @Reusable
+    fun handler(store: LinkStore<CategoryOptionOrganisationUnitLink>):
+        LinkHandler<ObjectWithUid, CategoryOptionOrganisationUnitLink> {
+            return LinkHandlerImpl(store)
         }
-        return uids;
-    }
 }

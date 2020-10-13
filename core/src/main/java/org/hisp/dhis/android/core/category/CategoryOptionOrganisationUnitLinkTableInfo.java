@@ -26,33 +26,44 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.category.internal;
+package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.category.CategoryOption;
-import org.hisp.dhis.android.core.category.CategoryOptionTableInfo;
-import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.internal.AccessFields;
-import org.hisp.dhis.android.core.common.internal.DataAccessFields;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
-public final class CategoryOptionFields {
+public final class CategoryOptionOrganisationUnitLinkTableInfo {
 
-    public static final String ACCESS = "access";
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    private static final FieldsHelper<CategoryOption> fh = new FieldsHelper<>();
+        @Override
+        public String name() {
+            return "CategoryOptionOrganisationUnitLink";
+        }
 
-    public static final Field<CategoryOption, String> uid = fh.uid();
+        @Override
+        public Columns columns() {
+            return new Columns();
+        }
+    };
 
-    public static final Fields<CategoryOption> allFields = Fields.<CategoryOption>builder()
-            .fields(fh.getNameableFields())
-            .fields(
-                    fh.<String>field(CategoryOptionTableInfo.Columns.START_DATE),
-                    fh.<String>field(CategoryOptionTableInfo.Columns.END_DATE),
-                    fh.<Access>nestedField(ACCESS).with(AccessFields.data.with(DataAccessFields.allFields))
-            ).build();
+    private CategoryOptionOrganisationUnitLinkTableInfo() {
+    }
 
-    private CategoryOptionFields() {
+    public static class Columns extends CoreColumns {
+
+        public static final String CATEGORY_OPTION = "categoryOption";
+        public static final String ORGANISATION_UNIT = "organisationUnit";
+
+        @Override
+        public String[] all() {
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    CATEGORY_OPTION, ORGANISATION_UNIT);
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return all();
+        }
     }
 }

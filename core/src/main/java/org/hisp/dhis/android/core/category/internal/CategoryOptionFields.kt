@@ -25,45 +25,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.category.CategoryOption
+import org.hisp.dhis.android.core.category.CategoryOptionTableInfo
+import org.hisp.dhis.android.core.common.Access
+import org.hisp.dhis.android.core.common.internal.AccessFields
+import org.hisp.dhis.android.core.common.internal.DataAccessFields
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+internal object CategoryOptionFields {
+    private const val ACCESS = "access"
+    internal const val ORGANISATION_UNITS = "organisationUnits"
+    private val fh = FieldsHelper<CategoryOption>()
+    val uid = fh.uid()
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+    fun allFields(includeOUs: Boolean): Fields<CategoryOption> {
+        val fb = Fields.builder<CategoryOption>()
+            .fields(fh.getNameableFields())
+            .fields(
+                fh.field<String>(CategoryOptionTableInfo.Columns.START_DATE),
+                fh.field<String>(CategoryOptionTableInfo.Columns.END_DATE),
+                fh.nestedField<Access>(ACCESS).with(AccessFields.data.with(DataAccessFields.allFields))
+            )
 
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 85;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
-    }
-
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
+        return if (includeOUs) {
+            fb.fields(fh.nestedFieldWithUid(ORGANISATION_UNITS)).build()
+        } else {
+            fb.build()
         }
-
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
     }
 }

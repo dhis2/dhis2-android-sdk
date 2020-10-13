@@ -30,6 +30,7 @@ package org.hisp.dhis.android.testapp.category;
 
 import com.google.common.collect.Lists;
 
+import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
@@ -125,5 +126,16 @@ public class CategoryOptionComboCollectionRepositoryMockIntegrationShould extend
         CategoryOptionCombo categoryOptionCombo = d2.categoryModule().categoryOptionCombos()
                 .withCategoryOptions().one().blockingGet();
         assertThat(categoryOptionCombo.categoryOptions().get(0).name()).isEqualTo("At PHU");
+    }
+
+    @Test
+    public void include_organisation_units_as_children() {
+        CategoryOption categoryOption = d2.categoryModule().categoryOptions()
+                .withOrganisationUnits()
+                .uid("as6ygGvUGNg")
+                .blockingGet();
+
+        assertThat(categoryOption.organisationUnits().size()).isEqualTo(1);
+        assertThat(categoryOption.organisationUnits().get(0).uid()).isEqualTo("DiszpKrYNg8");
     }
 }

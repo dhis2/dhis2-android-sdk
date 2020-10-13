@@ -27,36 +27,69 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
+import dagger.Module
+import dagger.Provides
 import dagger.Reusable
-import io.reactivex.Completable
-import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.CategoryCombo
+import org.hisp.dhis.android.core.category.CategoryModule
 import org.hisp.dhis.android.core.category.CategoryOption
+import retrofit2.Retrofit
 
-@Reusable
-class CategoryModuleDownloader @Inject internal constructor(
-    private val categoryCall: UidsCall<Category>,
-    private val categoryComboCall: UidsCall<CategoryCombo>,
-    private val categoryOptionCall: UidsCall<CategoryOption>,
-    private val categoryComboUidsSeeker: CategoryComboUidsSeeker,
-    private val categoryCategoryOptionLinkPersistor: CategoryCategoryOptionLinkPersistor
-) : UntypedModuleDownloader {
+@Module(
+    includes = [
+        CategoryEntityDIModule::class,
+        CategoryCategoryComboEntityDIModule::class,
+        CategoryCategoryOptionEntityDIModule::class,
+        CategoryComboEntityDIModule::class,
+        CategoryOptionEntityDIModule::class,
+        CategoryOptionOrganisationUnitEntityDIModule::class,
+        CategoryOptionComboEntityDIModule::class,
+        CategoryOptionComboCategoryOptionEntityDIModule::class
+    ]
+)
+internal class CategoryPackageDIModule {
 
-    override fun downloadMetadata(): Completable {
-        return Single.fromCallable { categoryComboUidsSeeker.seekUids() }
-            .flatMap { categoryComboCall.download(it) }
-            .flatMapCompletable { comboUids ->
-                val categoryUids = CategoryParentUidsHelper.getCategoryUids(comboUids)
-                categoryCall.download(categoryUids).flatMap { categories ->
-                    categoryOptionCall.download(CategoryParentUidsHelper.getCategoryOptionUids(categories))
-                        .doOnSuccess { categoryOptions ->
-                            categoryCategoryOptionLinkPersistor.handleMany(categories, categoryOptions)
-                        }
-                }.ignoreElement()
-            }
+    @Provides
+    @Reusable
+    fun categoryService(retrofit: Retrofit): CategoryService {
+        return retrofit.create(CategoryService::class.java)
+    }
+
+    @Provides
+    @Reusable
+    fun categoryOptionService(retrofit: Retrofit): CategoryOptionService {
+        return retrofit.create(CategoryOptionService::class.java)
+    }
+
+    @Provides
+    @Reusable
+    fun categoryComboService(retrofit: Retrofit): CategoryComboService {
+        return retrofit.create(CategoryComboService::class.java)
+    }
+
+    @Provides
+    @Reusable
+    fun categoryCall(impl: CategoryCall): UidsCall<Category> {
+        return impl
+    }
+
+    @Provides
+    @Reusable
+    fun categoryOptionCall(impl: CategoryOptionCall): UidsCall<CategoryOption> {
+        return impl
+    }
+
+    @Provides
+    @Reusable
+    fun categoryComboCall(impl: CategoryComboCall): UidsCall<CategoryCombo> {
+        return impl
+    }
+
+    @Provides
+    @Reusable
+    fun module(impl: CategoryModuleImpl): CategoryModule {
+        return impl
     }
 }

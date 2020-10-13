@@ -25,57 +25,26 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.category.internal;
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
+import org.hisp.dhis.android.core.arch.api.filters.internal.Where
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.category.CategoryOption
+import retrofit2.http.GET
+import retrofit2.http.Query
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.category.CategoryCombo;
-import org.hisp.dhis.android.core.category.CategoryModule;
+internal interface CategoryOptionService {
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
-
-@Module(includes = {
-        CategoryEntityDIModule.class,
-        CategoryCategoryComboEntityDIModule.class,
-        CategoryCategoryOptionEntityDIModule.class,
-        CategoryComboEntityDIModule.class,
-        CategoryOptionEntityDIModule.class,
-        CategoryOptionComboEntityDIModule.class,
-        CategoryOptionComboCategoryOptionEntityDIModule.class
-})
-public final class CategoryPackageDIModule {
-
-    @Provides
-    @Reusable
-    CategoryService categoryService(Retrofit retrofit) {
-        return retrofit.create(CategoryService.class);
-    }
-
-    @Provides
-    @Reusable
-    CategoryComboService categoryComboService(Retrofit retrofit) {
-        return retrofit.create(CategoryComboService.class);
-    }
-
-    @Provides
-    @Reusable
-    UidsCall<Category> categoryCall(CategoryCall impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    UidsCall<CategoryCombo> categoryComboCall(CategoryComboCall impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    CategoryModule module(CategoryModuleImpl impl) {
-        return impl;
-    }
+    @GET("categoryOptions")
+    fun getCategoryOptions(
+        @Query("fields") @Which fields: Fields<CategoryOption>,
+        @Query("filter") @Where uids: Filter<CategoryOption, String>,
+        @Query("filter") accessDataReadFilter: String,
+        @Query("paging") paging: Boolean,
+        @Query("restrictToCaptureScope") restrictToCaptureScope: Boolean?
+    ): Single<Payload<CategoryOption>>
 }

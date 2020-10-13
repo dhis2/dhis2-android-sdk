@@ -27,11 +27,10 @@
  */
 package org.hisp.dhis.android.core.enrollment
 
-enum class EnrollmentAccessLevel {
-    OPEN_PROGRAM_OK,
-    PROTECTED_PROGRAM_OK,
+enum class EnrollmentAccess {
+    NO_ACCESS,
+    READ_ACCESS,
+    WRITE_ACCESS,
     PROTECTED_PROGRAM_DENIED,
-    CLOSED_PROGRAM_OK,
-    CLOSED_PROGRAM_DENIED,
-    PROGRAM_ACCESS_DENIED
+    CLOSED_PROGRAM_DENIED
 }

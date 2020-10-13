@@ -54,26 +54,27 @@ class EnrollmentService @Inject constructor(
         return Single.fromCallable { blockingIsOpen(enrollmentUid) }
     }
 
-    fun blockingGetEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): EnrollmentAccessLevel {
-        val program = programRepository.uid(programUid).blockingGet() ?: return EnrollmentAccessLevel.PROGRAM_ACCESS_DENIED
+    fun blockingGetEnrollmentWriteAccess(trackedEntityInstanceUid: String, programUid: String): EnrollmentAccess {
+        val program = programRepository.uid(programUid).blockingGet() ?: return EnrollmentAccess.NO_ACCESS
+
+        val dataAccess =
+                if (program.access()?.data()?.write() == true) EnrollmentAccess.WRITE_ACCESS
+                else EnrollmentAccess.READ_ACCESS
 
         return when(program.accessLevel()) {
-            AccessLevel.OPEN, AccessLevel.AUDITED ->
-                if (program.access()?.data()?.write() == true) EnrollmentAccessLevel.OPEN_PROGRAM_OK
-                else EnrollmentAccessLevel.PROGRAM_ACCESS_DENIED
             AccessLevel.PROTECTED ->
-                if (isTeiInCaptureScope(trackedEntityInstanceUid)) EnrollmentAccessLevel.PROTECTED_PROGRAM_OK
-                else EnrollmentAccessLevel.PROGRAM_ACCESS_DENIED
+                if (isTeiInCaptureScope(trackedEntityInstanceUid)) dataAccess
+                else EnrollmentAccess.PROTECTED_PROGRAM_DENIED
             AccessLevel.CLOSED ->
-                if (isTeiInCaptureScope(trackedEntityInstanceUid)) EnrollmentAccessLevel.CLOSED_PROGRAM_OK
-                else EnrollmentAccessLevel.CLOSED_PROGRAM_DENIED
+                if (isTeiInCaptureScope(trackedEntityInstanceUid)) dataAccess
+                else EnrollmentAccess.CLOSED_PROGRAM_DENIED
             else ->
-                EnrollmentAccessLevel.PROGRAM_ACCESS_DENIED
+                dataAccess
         }
     }
 
-    fun getEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): Single<EnrollmentAccessLevel> {
-        return Single.fromCallable{ blockingGetEnrollmentAccess(trackedEntityInstanceUid, programUid) }
+    fun getEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): Single<EnrollmentAccess> {
+        return Single.fromCallable{ blockingGetEnrollmentWriteAccess(trackedEntityInstanceUid, programUid) }
     }
 
     private fun isTeiInCaptureScope(trackedEntityInstanceUid: String): Boolean {

@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.arch.db.stores.internal
 
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
-interface LinkChildStore<P : ObjectWithUidInterface, C : ObjectWithUidInterface> {
+
+internal interface LinkChildStore<P : ObjectWithUidInterface, C : ObjectWithUidInterface> {
     fun getChildren(p: P): List<C>
     fun getChildrenWhere(p: P, whereClause: String?): List<C>
 }

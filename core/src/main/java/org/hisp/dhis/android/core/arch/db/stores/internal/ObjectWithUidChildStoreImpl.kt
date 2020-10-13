@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+
 internal class ObjectWithUidChildStoreImpl<P : ObjectWithUidInterface>(
     private val linkTableChildProjection: LinkTableChildProjection,
     private val databaseAdapter: DatabaseAdapter,

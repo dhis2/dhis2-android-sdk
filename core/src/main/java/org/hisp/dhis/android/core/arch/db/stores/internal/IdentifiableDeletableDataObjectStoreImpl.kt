@@ -35,7 +35,8 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinde
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.*
-open class IdentifiableDeletableDataObjectStoreImpl<O>(
+
+internal open class IdentifiableDeletableDataObjectStoreImpl<O>(
     databaseAdapter: DatabaseAdapter,
     builder: SQLStatementBuilder, binder: StatementBinder<O>,
     objectFactory: ObjectFactory<O>

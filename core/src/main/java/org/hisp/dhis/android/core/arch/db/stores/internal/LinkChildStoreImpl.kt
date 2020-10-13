@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorExecutor
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+
 internal class LinkChildStoreImpl<P : ObjectWithUidInterface, C : ObjectWithUidInterface>(
     private val linkTableChildProjection: LinkTableChildProjection,
     private val databaseAdapter: DatabaseAdapter,

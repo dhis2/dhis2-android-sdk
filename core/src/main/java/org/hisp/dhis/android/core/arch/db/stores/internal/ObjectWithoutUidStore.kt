@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.arch.db.stores.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-interface ObjectWithoutUidStore<O> : ObjectStore<O> {
+
+internal interface ObjectWithoutUidStore<O> : ObjectStore<O> {
     @Throws(RuntimeException::class)
     fun updateWhere(o: O)
 

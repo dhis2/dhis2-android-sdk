@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.imports.ImportStatus
 /**
  * Provides helper functions to handle null checks and type conversions.
  */
-object StoreUtils {
+internal object StoreUtils {
     /**
      * Takes the import status and converts it to the state which indicates if it was imported, had errors or warning.
      *

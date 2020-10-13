@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.arch.db.stores.internal
 
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
-interface SingleParentChildStore<P : ObjectWithUidInterface, C> {
+
+internal interface SingleParentChildStore<P : ObjectWithUidInterface, C> {
     fun getChildren(p: P): List<C>
 }

@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.db.stores.internal
 
-interface ObjectStore<O> : ReadableStore<O> {
+internal interface ObjectStore<O> : ReadableStore<O> {
     @Throws(RuntimeException::class)
     fun selectStringColumnsWhereClause(column: String, clause: String): List<String>
 

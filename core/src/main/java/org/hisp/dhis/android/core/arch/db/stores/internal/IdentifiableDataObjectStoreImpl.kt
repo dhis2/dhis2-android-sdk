@@ -36,20 +36,19 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinde
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.common.*
 
-open class IdentifiableDataObjectStoreImpl<M>(
+internal open class IdentifiableDataObjectStoreImpl<O>(
     databaseAdapter: DatabaseAdapter,
     builder: SQLStatementBuilder,
-    binder: StatementBinder<M>,
-    objectFactory: ObjectFactory<M>
-) : IdentifiableObjectStoreImpl<M>(databaseAdapter, builder, binder, objectFactory),
-    IdentifiableDataObjectStore<M> where M : ObjectWithUidInterface, M : DataObject {
+    binder: StatementBinder<O>,
+    objectFactory: ObjectFactory<O>
+) : IdentifiableObjectStoreImpl<O>(databaseAdapter, builder, binder, objectFactory),
+    IdentifiableDataObjectStore<O> where O : ObjectWithUidInterface, O : DataObject {
     
     private var selectStateQuery: String? = null
     private var existsQuery: String? = null
     private var setStateStatement: StatementWrapper? = null
     val tableName: String = builder.tableName
     private var adapterHashCode: Int? = null
-
     
     private fun compileStatements() {
         resetStatementsIfDbChanged()

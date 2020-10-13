@@ -35,7 +35,8 @@ import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType
 import org.hisp.dhis.android.core.common.CoreObject
 import java.util.ArrayList
 import java.util.HashMap
-open class ReadableStoreImpl<O : CoreObject>(
+
+internal open class ReadableStoreImpl<O : CoreObject>(
     protected val databaseAdapter: DatabaseAdapter,
     protected open val builder: ReadOnlySQLStatementBuilder,
     val objectFactory: ObjectFactory<O>

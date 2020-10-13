@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBui
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+
 internal class SingleParentChildStoreImpl<P : ObjectWithUidInterface, C>(
     private val childProjection: SingleParentChildProjection,
     private val databaseAdapter: DatabaseAdapter,

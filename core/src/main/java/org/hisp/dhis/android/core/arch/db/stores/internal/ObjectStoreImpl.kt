@@ -35,7 +35,8 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapp
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.CoreColumns
 import org.hisp.dhis.android.core.common.CoreObject
-open class ObjectStoreImpl<O : CoreObject> internal constructor(
+
+internal open class ObjectStoreImpl<O : CoreObject> internal constructor(
     databaseAdapter: DatabaseAdapter,
     override val builder: SQLStatementBuilder,
     protected val binder: StatementBinder<O>,

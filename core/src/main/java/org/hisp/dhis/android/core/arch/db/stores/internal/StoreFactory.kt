@@ -39,7 +39,8 @@ import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SinglePare
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
-object StoreFactory {
+
+internal object StoreFactory {
 
     @JvmStatic
     fun <O> objectWithUidStore(

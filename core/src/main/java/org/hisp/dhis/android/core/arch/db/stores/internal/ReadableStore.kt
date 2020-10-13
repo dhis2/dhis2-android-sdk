@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.arch.db.stores.internal
 
 import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType
-interface ReadableStore<O> {
+
+internal interface ReadableStore<O> {
     fun selectAll(): List<O>
     fun selectWhere(whereClause: String): List<O>
     fun selectWhere(filterWhereClause: String, orderByClause: String): List<O>

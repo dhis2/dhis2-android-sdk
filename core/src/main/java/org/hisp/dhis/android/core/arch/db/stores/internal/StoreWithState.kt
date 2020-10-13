@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.arch.db.stores.internal
 
 import org.hisp.dhis.android.core.common.State
-interface StoreWithState {
+
+internal interface StoreWithState {
     fun setState(uid: String, state: State): Int
     fun setState(uids: List<String>, state: State): Int
     fun getState(uid: String): State?

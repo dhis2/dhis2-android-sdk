@@ -32,7 +32,8 @@ import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.common.CoreObject
-open class LinkStoreImpl<O : CoreObject>(
+
+internal open class LinkStoreImpl<O : CoreObject>(
     databaseAdapter: DatabaseAdapter,
     builder: SQLStatementBuilder,
     private val masterColumn: String,

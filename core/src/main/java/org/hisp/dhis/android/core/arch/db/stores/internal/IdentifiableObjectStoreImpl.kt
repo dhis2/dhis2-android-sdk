@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
-open class IdentifiableObjectStoreImpl<O>(
+internal open class IdentifiableObjectStoreImpl<O>(
     databaseAdapter: DatabaseAdapter,
     builder: SQLStatementBuilder, binder: StatementBinder<O>,
     objectFactory: ObjectFactory<O>

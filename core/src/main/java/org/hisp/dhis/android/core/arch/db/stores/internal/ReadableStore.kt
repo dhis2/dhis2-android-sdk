@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.arch.db.stores.internal
 
 import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType
 
+@Suppress("TooManyFunctions")
 internal interface ReadableStore<O> {
     fun selectAll(): List<O>
     fun selectWhere(whereClause: String): List<O>

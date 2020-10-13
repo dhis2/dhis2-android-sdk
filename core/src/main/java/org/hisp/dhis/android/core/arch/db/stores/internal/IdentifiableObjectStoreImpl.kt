@@ -37,9 +37,12 @@ import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+
+@Suppress("TooManyFunctions")
 internal open class IdentifiableObjectStoreImpl<O>(
     databaseAdapter: DatabaseAdapter,
-    builder: SQLStatementBuilder, binder: StatementBinder<O>,
+    builder: SQLStatementBuilder,
+    binder: StatementBinder<O>,
     objectFactory: ObjectFactory<O>
 ) : ObjectStoreImpl<O>(databaseAdapter, builder, binder, objectFactory),
     IdentifiableObjectStore<O> where O : CoreObject, O : ObjectWithUidInterface {
@@ -87,6 +90,7 @@ internal open class IdentifiableObjectStoreImpl<O>(
     }
 
     @Throws(RuntimeException::class)
+    @Suppress("TooGenericExceptionCaught")
     override fun deleteIfExists(uid: String) {
         try {
             delete(uid)
@@ -107,6 +111,7 @@ internal open class IdentifiableObjectStoreImpl<O>(
     }
 
     @Throws(RuntimeException::class)
+    @Suppress("TooGenericExceptionCaught")
     override fun updateOrInsert(o: O): HandleAction {
         return try {
             update(o)

@@ -44,7 +44,9 @@ internal object StoreFactory {
 
     @JvmStatic
     fun <O> objectWithUidStore(
-        databaseAdapter: DatabaseAdapter, tableInfo: TableInfo, binder: StatementBinder<O>,
+        databaseAdapter: DatabaseAdapter,
+        tableInfo: TableInfo,
+        binder: StatementBinder<O>,
         objectFactory: ObjectFactory<O>
     ): IdentifiableObjectStore<O> where O : CoreObject, O : ObjectWithUidInterface {
         val statementBuilder: SQLStatementBuilder =
@@ -64,11 +66,15 @@ internal object StoreFactory {
         return ObjectStoreImpl(databaseAdapter, statementBuilder, binder, objectFactory)
     }
 
+    @Suppress("LongParameterList")
     @JvmStatic
     fun <O : CoreObject> objectWithoutUidStore(
-        databaseAdapter: DatabaseAdapter, tableInfo: TableInfo, binder: StatementBinder<O>,
+        databaseAdapter: DatabaseAdapter,
+        tableInfo: TableInfo,
+        binder: StatementBinder<O>,
         whereUpdateBinder: WhereStatementBinder<O>,
-        whereDeleteBinder: WhereStatementBinder<O>, objectFactory: ObjectFactory<O>
+        whereDeleteBinder: WhereStatementBinder<O>,
+        objectFactory: ObjectFactory<O>
     ): ObjectWithoutUidStore<O> {
         val statementBuilder: SQLStatementBuilder = SQLStatementBuilderImpl(
             tableInfo.name(), tableInfo.columns().all(),
@@ -82,7 +88,10 @@ internal object StoreFactory {
 
     @JvmStatic
     fun <O : CoreObject> linkStore(
-        databaseAdapter: DatabaseAdapter, tableInfo: TableInfo, masterColumn: String, binder: StatementBinder<O>,
+        databaseAdapter: DatabaseAdapter,
+        tableInfo: TableInfo,
+        masterColumn: String,
+        binder: StatementBinder<O>,
         objectFactory: ObjectFactory<O>
     ): LinkStore<O> {
         val statementBuilder: SQLStatementBuilder = SQLStatementBuilderImpl(

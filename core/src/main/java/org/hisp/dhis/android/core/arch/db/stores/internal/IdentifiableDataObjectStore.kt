@@ -30,5 +30,6 @@ package org.hisp.dhis.android.core.arch.db.stores.internal
 import org.hisp.dhis.android.core.common.DataObject
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
-internal interface IdentifiableDataObjectStore<O> : IdentifiableObjectStore<O>,
+internal interface IdentifiableDataObjectStore<O> :
+    IdentifiableObjectStore<O>,
     StoreWithState where O : ObjectWithUidInterface, O : DataObject

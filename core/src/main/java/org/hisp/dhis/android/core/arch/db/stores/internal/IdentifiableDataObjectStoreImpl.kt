@@ -43,13 +43,13 @@ internal open class IdentifiableDataObjectStoreImpl<O>(
     objectFactory: ObjectFactory<O>
 ) : IdentifiableObjectStoreImpl<O>(databaseAdapter, builder, binder, objectFactory),
     IdentifiableDataObjectStore<O> where O : ObjectWithUidInterface, O : DataObject {
-    
+
     private var selectStateQuery: String? = null
     private var existsQuery: String? = null
     private var setStateStatement: StatementWrapper? = null
     val tableName: String = builder.tableName
     private var adapterHashCode: Int? = null
-    
+
     private fun compileStatements() {
         resetStatementsIfDbChanged()
         if (setStateStatement == null) {

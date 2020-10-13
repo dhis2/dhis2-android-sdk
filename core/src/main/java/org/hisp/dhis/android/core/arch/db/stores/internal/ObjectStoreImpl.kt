@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.CoreColumns
 import org.hisp.dhis.android.core.common.CoreObject
 
+@Suppress("TooManyFunctions")
 internal open class ObjectStoreImpl<O : CoreObject> internal constructor(
     databaseAdapter: DatabaseAdapter,
     override val builder: SQLStatementBuilder,
@@ -47,6 +48,7 @@ internal open class ObjectStoreImpl<O : CoreObject> internal constructor(
     private var adapterHashCode: Int? = null
 
     @Throws(RuntimeException::class)
+    @Suppress("TooGenericExceptionThrown")
     override fun insert(o: O): Long {
         CollectionsHelper.isNull(o)
         compileStatements()
@@ -96,6 +98,7 @@ internal open class ObjectStoreImpl<O : CoreObject> internal constructor(
     }
 
     @Throws(RuntimeException::class)
+    @Suppress("TooGenericExceptionThrown")
     fun executeUpdateDelete(statement: StatementWrapper) {
         val numberOfAffectedRows = databaseAdapter.executeUpdateDelete(statement)
         statement.clearBindings()
@@ -123,6 +126,7 @@ internal open class ObjectStoreImpl<O : CoreObject> internal constructor(
     }
 
     @Throws(RuntimeException::class)
+    @Suppress("TooGenericExceptionCaught")
     override fun deleteWhereIfExists(whereClause: String) {
         try {
             deleteWhere(whereClause)

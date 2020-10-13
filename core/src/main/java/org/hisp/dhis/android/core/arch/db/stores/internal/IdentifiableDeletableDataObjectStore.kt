@@ -30,5 +30,6 @@ package org.hisp.dhis.android.core.arch.db.stores.internal
 import org.hisp.dhis.android.core.common.DeletableDataObject
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
-internal interface IdentifiableDeletableDataObjectStore<O> : IdentifiableDataObjectStore<O>,
+internal interface IdentifiableDeletableDataObjectStore<O> :
+    IdentifiableDataObjectStore<O>,
     DeletableStoreWithState where O : ObjectWithUidInterface, O : DeletableDataObject

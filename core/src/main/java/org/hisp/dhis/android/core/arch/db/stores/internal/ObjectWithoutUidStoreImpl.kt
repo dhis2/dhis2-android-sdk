@@ -90,6 +90,7 @@ internal open class ObjectWithoutUidStoreImpl<O : CoreObject>(
     }
 
     @Throws(RuntimeException::class)
+    @Suppress("TooGenericExceptionCaught")
     override fun deleteWhereIfExists(o: O) {
         try {
             deleteWhere(o)
@@ -101,6 +102,7 @@ internal open class ObjectWithoutUidStoreImpl<O : CoreObject>(
     }
 
     @Throws(RuntimeException::class)
+    @Suppress("TooGenericExceptionCaught")
     override fun updateOrInsertWhere(o: O): HandleAction {
         return try {
             updateWhere(o)

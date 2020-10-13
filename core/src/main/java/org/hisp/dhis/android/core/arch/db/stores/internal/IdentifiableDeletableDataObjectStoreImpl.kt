@@ -38,7 +38,8 @@ import org.hisp.dhis.android.core.common.*
 
 internal open class IdentifiableDeletableDataObjectStoreImpl<O>(
     databaseAdapter: DatabaseAdapter,
-    builder: SQLStatementBuilder, binder: StatementBinder<O>,
+    builder: SQLStatementBuilder,
+    binder: StatementBinder<O>,
     objectFactory: ObjectFactory<O>
 ) : IdentifiableDataObjectStoreImpl<O>(databaseAdapter, builder, binder, objectFactory),
     IdentifiableDeletableDataObjectStore<O> where O : ObjectWithUidInterface, O : DeletableDataObject {

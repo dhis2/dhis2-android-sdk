@@ -25,29 +25,28 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.stores.internal
 
-package org.hisp.dhis.android.core.arch.db.stores.internal;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorExecutor
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+internal class LinkChildStoreImpl<P : ObjectWithUidInterface, C : ObjectWithUidInterface>(
+    private val linkTableChildProjection: LinkTableChildProjection,
+    private val databaseAdapter: DatabaseAdapter,
+    private val statementBuilder: SQLStatementBuilder,
+    private val cursorExecutor: CursorExecutor<C>
+) : LinkChildStore<P, C> {
 
-import androidx.annotation.NonNull;
+    override fun getChildren(p: P): List<C> {
+        return getChildrenWhere(p, null)
+    }
 
-import java.util.Collection;
-import java.util.List;
-
-public interface ObjectStore<M> extends ReadableStore<M> {
-
-    List<String> selectStringColumnsWhereClause(String column, String clause) throws RuntimeException;
-
-    long insert(@NonNull M m) throws RuntimeException;
-
-    void insert(@NonNull Collection<M> objects) throws RuntimeException;
-
-    int delete();
-
-    boolean deleteById(@NonNull M m);
-
-    boolean deleteWhere(String whereClause);
-
-    void deleteWhereIfExists(@NonNull String whereClause) throws RuntimeException;
-
-    boolean isReady();
+    override fun getChildrenWhere(p: P, whereClause: String?): List<C> {
+        val selectStatement = statementBuilder.selectChildrenWithLinkTable(
+            linkTableChildProjection, p.uid(), whereClause
+        )
+        return cursorExecutor.getObjects(databaseAdapter.rawQuery(selectStatement))
+    }
 }

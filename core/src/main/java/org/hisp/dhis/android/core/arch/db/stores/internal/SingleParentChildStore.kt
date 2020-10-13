@@ -25,22 +25,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.stores.internal
 
-package org.hisp.dhis.android.core.arch.db.stores.internal;
-
-import androidx.annotation.NonNull;
-
-import org.hisp.dhis.android.core.common.State;
-
-import java.util.List;
-
-public interface StoreWithState {
-
-    int setState(@NonNull String uid, @NonNull State state);
-
-    int setState(@NonNull List<String> uids, @NonNull State state);
-
-    State getState(@NonNull String uid);
-
-    Boolean exists(@NonNull String uid);
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+interface SingleParentChildStore<P : ObjectWithUidInterface, C> {
+    fun getChildren(p: P): List<C>
 }

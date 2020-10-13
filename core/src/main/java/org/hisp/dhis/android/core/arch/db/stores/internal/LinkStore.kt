@@ -25,20 +25,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.stores.internal
 
-package org.hisp.dhis.android.core.arch.db.stores.internal;
-
-import androidx.annotation.NonNull;
-
-import org.hisp.dhis.android.core.common.CoreObject;
-
-import java.util.List;
-
-public interface LinkStore<M extends CoreObject> extends ObjectStore<M> {
-
-    void deleteLinksForMasterUid(@NonNull String masterUid) throws RuntimeException;
-
-    int deleteAllLinks();
-
-    List<String> selectDistinctSlaves(@NonNull String slaveColumn);
+import org.hisp.dhis.android.core.common.CoreObject
+interface LinkStore<O : CoreObject> : ObjectStore<O> {
+    @Throws(RuntimeException::class)
+    fun deleteLinksForMasterUid(masterUid: String)
+    fun deleteAllLinks(): Int
+    fun selectDistinctSlaves(slaveColumn: String): List<String>
 }

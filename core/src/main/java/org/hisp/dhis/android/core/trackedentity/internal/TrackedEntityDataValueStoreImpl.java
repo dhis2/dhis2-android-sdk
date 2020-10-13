@@ -94,7 +94,7 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
                 .appendNotInKeyStringValues(TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT, dataElementUids)
                 .build();
 
-        return databaseAdapter.delete(TrackedEntityDataValueTableInfo.TABLE_INFO.name(), whereClause, null);
+        return getDatabaseAdapter().delete(TrackedEntityDataValueTableInfo.TABLE_INFO.name(), whereClause, null);
     }
 
     @Override
@@ -136,7 +136,7 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
     private Map<String, List<TrackedEntityDataValue>> queryTrackedEntityDataValues(String queryStatement) {
 
         List<TrackedEntityDataValue> dataValueList = new ArrayList<>();
-        Cursor cursor = databaseAdapter.rawQuery(queryStatement);
+        Cursor cursor = getDatabaseAdapter().rawQuery(queryStatement);
         addObjectsToCollection(cursor, dataValueList);
 
         Map<String, List<TrackedEntityDataValue>> dataValuesMap = new HashMap<>();

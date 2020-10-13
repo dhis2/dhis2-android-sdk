@@ -25,35 +25,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.stores.internal
 
-package org.hisp.dhis.android.core.arch.db.stores.internal;
-
-import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType;
-
-import java.util.List;
-import java.util.Map;
-
-public interface ReadableStore<M> {
-
-    List<M> selectAll();
-
-    List<M> selectWhere(String whereClause);
-
-    List<M> selectWhere(String filterWhereClause, String orderByClause);
-
-    List<M> selectWhere(String filterWhereClause, String orderByClause, int limit);
-
-    M selectOneOrderedBy(String orderingColumName, SQLOrderType orderingType);
-
-    List<M> selectRawQuery(String sqlRawQuery);
-
-    M selectOneWhere(String whereClause);
-
-    M selectFirst();
-
-    int count();
-
-    int countWhere(String whereClause);
-
-    Map<String, Integer> groupAndGetCountBy(String column);
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+interface ObjectWithUidChildStore<P : ObjectWithUidInterface> {
+    fun getChildren(p: P): List<ObjectWithUid>
 }

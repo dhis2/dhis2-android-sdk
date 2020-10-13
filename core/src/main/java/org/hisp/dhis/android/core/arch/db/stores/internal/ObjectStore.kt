@@ -25,12 +25,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.stores.internal;
+package org.hisp.dhis.android.core.arch.db.stores.internal
 
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+interface ObjectStore<O> : ReadableStore<O> {
+    @Throws(RuntimeException::class)
+    fun selectStringColumnsWhereClause(column: String, clause: String): List<String>
 
-import java.util.List;
+    @Throws(RuntimeException::class)
+    fun insert(o: O): Long
 
-public interface SingleParentChildStore<P extends ObjectWithUidInterface, C> {
-    List<C> getChildren(P p);
+    @Throws(RuntimeException::class)
+    fun insert(objects: Collection<O>)
+    fun delete(): Int
+    fun deleteById(o: O): Boolean
+    fun deleteWhere(clause: String): Boolean
+
+    @Throws(RuntimeException::class)
+    fun deleteWhereIfExists(whereClause: String)
+    val isReady: Boolean
 }

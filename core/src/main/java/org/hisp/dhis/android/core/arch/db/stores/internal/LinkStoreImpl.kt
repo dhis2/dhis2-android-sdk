@@ -25,47 +25,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.stores.internal
 
-package org.hisp.dhis.android.core.arch.db.stores.internal;
-
-import android.database.Cursor;
-
-import androidx.annotation.NonNull;
-
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.common.CoreObject;
-
-import java.util.List;
-
-public class LinkStoreImpl<M extends CoreObject> extends ObjectStoreImpl<M> implements LinkStore<M> {
-
-    private final String masterColumn;
-
-    protected LinkStoreImpl(DatabaseAdapter databaseAdapter,
-                            SQLStatementBuilder builder,
-                            String masterColumn,
-                            StatementBinder<M> binder,
-                            ObjectFactory<M> objectFactory) {
-        super(databaseAdapter, builder, binder, objectFactory);
-        this.masterColumn = masterColumn;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.common.CoreObject
+open class LinkStoreImpl<O : CoreObject>(
+    databaseAdapter: DatabaseAdapter,
+    builder: SQLStatementBuilder,
+    private val masterColumn: String,
+    binder: StatementBinder<O>,
+    objectFactory: ObjectFactory<O>
+) : ObjectStoreImpl<O>(databaseAdapter, builder, binder, objectFactory), LinkStore<O> {
+    @Throws(RuntimeException::class)
+    override fun deleteLinksForMasterUid(masterUid: String) {
+        deleteWhere("$masterColumn='$masterUid';")
     }
 
-    @Override
-    public void deleteLinksForMasterUid(@NonNull String masterUid) throws RuntimeException {
-        deleteWhere(masterColumn + "='" + masterUid + "';");
+    override fun deleteAllLinks(): Int {
+        return delete()
     }
 
-    @Override
-    public int deleteAllLinks() {
-        return delete();
-    }
-
-    @Override
-    public List<String> selectDistinctSlaves(@NonNull String slaveColumn) {
-        Cursor cursor = databaseAdapter.rawQuery(builder.selectDistinct(slaveColumn));
-        return mapStringColumnSetFromCursor(cursor);
+    override fun selectDistinctSlaves(slaveColumn: String): List<String> {
+        val cursor = databaseAdapter.rawQuery(builder.selectDistinct(slaveColumn))
+        return mapStringColumnSetFromCursor(cursor)
     }
 }

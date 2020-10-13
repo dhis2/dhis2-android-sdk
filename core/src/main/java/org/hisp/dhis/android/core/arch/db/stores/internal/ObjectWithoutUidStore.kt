@@ -25,13 +25,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.stores.internal;
+package org.hisp.dhis.android.core.arch.db.stores.internal
 
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+interface ObjectWithoutUidStore<O> : ObjectStore<O> {
+    @Throws(RuntimeException::class)
+    fun updateWhere(o: O)
 
-import java.util.List;
+    @Throws(RuntimeException::class)
+    fun deleteWhere(o: O)
 
-public interface LinkChildStore<P extends ObjectWithUidInterface, C extends ObjectWithUidInterface> {
-    List<C> getChildren(P p);
-    List<C> getChildrenWhere(P p, String whereClause);
+    @Throws(RuntimeException::class)
+    fun deleteWhereIfExists(o: O)
+
+    @Throws(RuntimeException::class)
+    fun updateOrInsertWhere(o: O): HandleAction
 }

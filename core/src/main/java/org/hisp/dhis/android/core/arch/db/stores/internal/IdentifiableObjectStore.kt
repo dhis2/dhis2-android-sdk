@@ -25,20 +25,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.stores.internal
 
-package org.hisp.dhis.android.core.arch.db.stores.internal;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+interface IdentifiableObjectStore<O : ObjectWithUidInterface> : ObjectStore<O> {
+    @Throws(RuntimeException::class)
+    fun delete(uid: String)
 
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
+    @Throws(RuntimeException::class)
+    fun deleteIfExists(uid: String)
 
-import androidx.annotation.NonNull;
+    @Throws(RuntimeException::class)
+    fun update(o: O)
 
-public interface ObjectWithoutUidStore<M> extends ObjectStore<M> {
+    @Throws(RuntimeException::class)
+    fun updateOrInsert(o: O): HandleAction
 
-    void updateWhere(@NonNull M m) throws RuntimeException;
+    @Throws(RuntimeException::class)
+    fun selectUids(): List<String>
 
-    void deleteWhere(@NonNull M m) throws RuntimeException;
+    @Throws(RuntimeException::class)
+    fun selectUidsWhere(whereClause: String): List<String>
 
-    void deleteWhereIfExists(@NonNull M m) throws RuntimeException;
+    @Throws(RuntimeException::class)
+    fun selectUidsWhere(whereClause: String, orderByClause: String): List<String>
 
-    HandleAction updateOrInsertWhere(@NonNull M m) throws RuntimeException;
+    @Throws(RuntimeException::class)
+    fun selectByUid(uid: String): O?
 }

@@ -25,13 +25,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.stores.internal;
+package org.hisp.dhis.android.core.arch.db.stores.internal
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-
-import java.util.List;
-
-public interface ObjectWithUidChildStore<P extends ObjectWithUidInterface> {
-    List<ObjectWithUid> getChildren(P p);
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+interface LinkChildStore<P : ObjectWithUidInterface, C : ObjectWithUidInterface> {
+    fun getChildren(p: P): List<C>
+    fun getChildrenWhere(p: P, whereClause: String?): List<C>
 }

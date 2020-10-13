@@ -25,17 +25,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.stores.internal
 
-package org.hisp.dhis.android.core.arch.db.stores.internal;
+import org.hisp.dhis.android.core.common.DeletableDataObject
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
-import androidx.annotation.NonNull;
-
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.common.State;
-
-public interface DeletableStoreWithState extends StoreWithState {
-
-    HandleAction setStateOrDelete(@NonNull String uid, @NonNull State state);
-
-    int setDeleted(@NonNull String uid);
-}
+interface IdentifiableDeletableDataObjectStore<O> : IdentifiableDataObjectStore<O>,
+    DeletableStoreWithState where O : ObjectWithUidInterface, O : DeletableDataObject

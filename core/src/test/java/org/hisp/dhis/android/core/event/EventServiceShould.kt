@@ -33,6 +33,8 @@ import com.nhaarman.mockitokotlin2.whenever
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper
 import org.hisp.dhis.android.core.category.CategoryOptionComboService
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.enrollment.Enrollment
+import org.hisp.dhis.android.core.enrollment.EnrollmentCollectionRepository
 import org.hisp.dhis.android.core.enrollment.EnrollmentService
 import org.hisp.dhis.android.core.event.internal.EventDateUtils
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService
@@ -49,29 +51,33 @@ import org.mockito.Mockito
 
 class EventServiceShould {
 
+    private val enrollmentUid: String = "enrollmentUid"
     private val eventUid: String = "eventUid"
+    private val programStageUid: String = "programStageUid"
     private val attributeOptionComboUid = "attOptionComboUid"
 
     private val readDataAccess = AccessHelper.createForDataWrite(false)
     private val writeDataAccess = AccessHelper.createForDataWrite(true)
 
+    private val enrollment: Enrollment = mock()
     private val event: Event = mock()
     private val program: Program = mock()
     private val programStage: ProgramStage = mock()
 
+    private val enrollmentRepository: EnrollmentCollectionRepository = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val eventRepository: EventCollectionRepository = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val programRepository: ProgramCollectionRepository = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val programStageRepository: ProgramStageCollectionRepository =
-        mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
+            mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val enrollmentService: EnrollmentService = mock()
     private val organisationUnitService: OrganisationUnitService = mock()
     private val categoryOptionComboService: CategoryOptionComboService =
-        mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
+            mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val eventDateUtils: EventDateUtils = mock()
 
     private val eventService: EventService = EventService(
-        eventRepository, programRepository, programStageRepository,
-        enrollmentService, organisationUnitService, categoryOptionComboService, eventDateUtils
+            enrollmentRepository, eventRepository, programRepository, programStageRepository,
+            enrollmentService, organisationUnitService, categoryOptionComboService, eventDateUtils
     )
 
     private val firstJanuary = BaseIdentifiableObject.DATE_FORMAT.parse("2020-01-01T00:00:00.000")
@@ -79,6 +85,7 @@ class EventServiceShould {
     @Before
     fun setUp() {
         whenever(eventRepository.uid(any()).blockingGet()) doReturn event
+        whenever(enrollmentRepository.uid(any()).blockingGet()) doReturn enrollment
         whenever(programRepository.uid(any()).blockingGet()) doReturn program
         whenever(programStageRepository.uid(any()).blockingGet()) doReturn programStage
 

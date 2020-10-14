@@ -38,7 +38,7 @@ import javax.inject.Inject
 
 @Reusable
 class EnrollmentService @Inject constructor(
-    private val enrollmentRepository: EnrollmentCollectionRepository,
+        private val enrollmentRepository: EnrollmentCollectionRepository,
         private val trackedEntityInstanceRepository: TrackedEntityInstanceCollectionRepository,
         private val programRepository: ProgramCollectionRepository,
         private val organisationUnitRepository: OrganisationUnitCollectionRepository
@@ -54,14 +54,14 @@ class EnrollmentService @Inject constructor(
         return Single.fromCallable { blockingIsOpen(enrollmentUid) }
     }
 
-    fun blockingGetEnrollmentWriteAccess(trackedEntityInstanceUid: String, programUid: String): EnrollmentAccess {
+    fun blockingGetEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): EnrollmentAccess {
         val program = programRepository.uid(programUid).blockingGet() ?: return EnrollmentAccess.NO_ACCESS
 
         val dataAccess =
                 if (program.access()?.data()?.write() == true) EnrollmentAccess.WRITE_ACCESS
                 else EnrollmentAccess.READ_ACCESS
 
-        return when(program.accessLevel()) {
+        return when (program.accessLevel()) {
             AccessLevel.PROTECTED ->
                 if (isTeiInCaptureScope(trackedEntityInstanceUid)) dataAccess
                 else EnrollmentAccess.PROTECTED_PROGRAM_DENIED
@@ -74,7 +74,7 @@ class EnrollmentService @Inject constructor(
     }
 
     fun getEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): Single<EnrollmentAccess> {
-        return Single.fromCallable{ blockingGetEnrollmentWriteAccess(trackedEntityInstanceUid, programUid) }
+        return Single.fromCallable { blockingGetEnrollmentAccess(trackedEntityInstanceUid, programUid) }
     }
 
     private fun isTeiInCaptureScope(trackedEntityInstanceUid: String): Boolean {
@@ -82,8 +82,7 @@ class EnrollmentService @Inject constructor(
 
         return organisationUnitRepository
                 .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
-                .byUid().eq(tei.organisationUnit())
-                .blockingGet()
-                .isNotEmpty()
+                .uid(tei.organisationUnit())
+                .blockingExists()
     }
 }

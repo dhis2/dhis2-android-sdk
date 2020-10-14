@@ -25,17 +25,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.stores.internal
 
-package org.hisp.dhis.android.core.arch.db.stores.internal;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 
-import androidx.annotation.NonNull;
+internal interface ObjectWithoutUidStore<O> : ObjectStore<O> {
+    @Throws(RuntimeException::class)
+    fun updateWhere(o: O)
 
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.common.State;
+    @Throws(RuntimeException::class)
+    fun deleteWhere(o: O)
 
-public interface DeletableStoreWithState extends StoreWithState {
+    @Throws(RuntimeException::class)
+    fun deleteWhereIfExists(o: O)
 
-    HandleAction setStateOrDelete(@NonNull String uid, @NonNull State state);
-
-    int setDeleted(@NonNull String uid);
+    @Throws(RuntimeException::class)
+    fun updateOrInsertWhere(o: O): HandleAction
 }

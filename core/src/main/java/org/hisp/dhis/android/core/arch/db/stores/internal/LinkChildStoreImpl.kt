@@ -25,13 +25,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.stores.internal;
+package org.hisp.dhis.android.core.arch.db.stores.internal
 
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorExecutor
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
-import java.util.List;
+internal class LinkChildStoreImpl<P : ObjectWithUidInterface, C : ObjectWithUidInterface>(
+    private val linkTableChildProjection: LinkTableChildProjection,
+    private val databaseAdapter: DatabaseAdapter,
+    private val statementBuilder: SQLStatementBuilder,
+    private val cursorExecutor: CursorExecutor<C>
+) : LinkChildStore<P, C> {
 
-public interface LinkChildStore<P extends ObjectWithUidInterface, C extends ObjectWithUidInterface> {
-    List<C> getChildren(P p);
-    List<C> getChildrenWhere(P p, String whereClause);
+    override fun getChildren(p: P): List<C> {
+        return getChildrenWhere(p, null)
+    }
+
+    override fun getChildrenWhere(p: P, whereClause: String?): List<C> {
+        val selectStatement = statementBuilder.selectChildrenWithLinkTable(
+            linkTableChildProjection, p.uid(), whereClause
+        )
+        return cursorExecutor.getObjects(databaseAdapter.rawQuery(selectStatement))
+    }
 }

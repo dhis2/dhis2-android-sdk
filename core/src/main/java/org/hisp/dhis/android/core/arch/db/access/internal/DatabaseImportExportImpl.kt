@@ -89,10 +89,10 @@ class DatabaseImportExportImpl @Inject constructor(
             }
 
             val userCredentialsStore = UserCredentialsStoreImpl.create(databaseAdapter)
-            val username = userCredentialsStore.selectFirst().username()
+            val username = userCredentialsStore.selectFirst()!!.username()
 
             val systemInfoStore = SystemInfoStore.create(databaseAdapter)
-            val contextPath = systemInfoStore.selectFirst().contextPath()!!
+            val contextPath = systemInfoStore.selectFirst()!!.contextPath()!!
             val serverUrl = ServerUrlParser.parse(contextPath).toString()
 
             val databaseName = nameGenerator.getDatabaseName(serverUrl, username, false)

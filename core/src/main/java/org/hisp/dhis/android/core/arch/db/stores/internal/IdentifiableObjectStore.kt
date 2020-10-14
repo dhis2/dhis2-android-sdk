@@ -25,47 +25,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.stores.internal
 
-package org.hisp.dhis.android.core.arch.db.stores.internal;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+internal interface IdentifiableObjectStore<O : ObjectWithUidInterface> : ObjectStore<O> {
+    @Throws(RuntimeException::class)
+    fun delete(uid: String)
 
-import android.database.Cursor;
+    @Throws(RuntimeException::class)
+    fun deleteIfExists(uid: String)
 
-import androidx.annotation.NonNull;
+    @Throws(RuntimeException::class)
+    fun update(o: O)
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.common.CoreObject;
+    @Throws(RuntimeException::class)
+    fun updateOrInsert(o: O): HandleAction
 
-import java.util.List;
+    @Throws(RuntimeException::class)
+    fun selectUids(): List<String>
 
-public class LinkStoreImpl<M extends CoreObject> extends ObjectStoreImpl<M> implements LinkStore<M> {
+    @Throws(RuntimeException::class)
+    fun selectUidsWhere(whereClause: String): List<String>
 
-    private final String masterColumn;
+    @Throws(RuntimeException::class)
+    fun selectUidsWhere(whereClause: String, orderByClause: String): List<String>
 
-    protected LinkStoreImpl(DatabaseAdapter databaseAdapter,
-                            SQLStatementBuilder builder,
-                            String masterColumn,
-                            StatementBinder<M> binder,
-                            ObjectFactory<M> objectFactory) {
-        super(databaseAdapter, builder, binder, objectFactory);
-        this.masterColumn = masterColumn;
-    }
-
-    @Override
-    public void deleteLinksForMasterUid(@NonNull String masterUid) throws RuntimeException {
-        deleteWhere(masterColumn + "='" + masterUid + "';");
-    }
-
-    @Override
-    public int deleteAllLinks() {
-        return delete();
-    }
-
-    @Override
-    public List<String> selectDistinctSlaves(@NonNull String slaveColumn) {
-        Cursor cursor = databaseAdapter.rawQuery(builder.selectDistinct(slaveColumn));
-        return mapStringColumnSetFromCursor(cursor);
-    }
+    @Throws(RuntimeException::class)
+    fun selectByUid(uid: String): O?
 }

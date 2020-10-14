@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.relationship.internal;
 
 import android.database.Cursor;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
@@ -44,8 +46,6 @@ import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo.Columns
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.annotation.NonNull;
 
 public final class RelationshipItemStoreImpl extends ObjectWithoutUidStoreImpl<RelationshipItem>
         implements RelationshipItemStore {
@@ -146,7 +146,7 @@ public final class RelationshipItemStoreImpl extends ObjectWithoutUidStoreImpl<R
                 "FROM " + RelationshipItemTableInfo.TABLE_INFO.name() +
                 " GROUP BY " + RelationshipItemTableInfo.Columns.RELATIONSHIP;
 
-        return this.databaseAdapter.rawQuery(query);
+        return this.getDatabaseAdapter().rawQuery(query);
     }
 
     private String getItemElementColumn(RelationshipItem item) {

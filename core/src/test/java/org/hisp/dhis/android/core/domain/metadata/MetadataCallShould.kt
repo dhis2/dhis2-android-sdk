@@ -34,7 +34,6 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.category.internal.CategoryModuleDownloader
@@ -73,7 +72,6 @@ class MetadataCallShould : BaseCallShould() {
     private val organisationUnitDownloader: OrganisationUnitModuleDownloader = mock()
     private val dataSetDownloader: DataSetModuleDownloader = mock()
     private val constantDownloader: ConstantModuleDownloader = mock()
-    private val d2ErrorStore: ObjectStore<D2Error> = mock()
     private val smsModule: SmsModule = mock()
     private val configCase: ConfigCase = mock()
     private val generalSettingCall: GeneralSettingCall = mock()
@@ -106,7 +104,6 @@ class MetadataCallShould : BaseCallShould() {
         whenever(smsModule.configCase()).thenReturn(configCase)
         whenever(configCase.refreshMetadataIdsCallable()).thenReturn(Completable.complete())
         whenever(generalSettingCall.isDatabaseEncrypted).thenReturn(Single.just(false))
-        whenever(d2ErrorStore.insert(ArgumentMatchers.any(D2Error::class.java))).thenReturn(0L)
         Mockito.`when`<Observable<D2Progress>>(
             rxAPICallExecutor.wrapObservableTransactionally(
                 ArgumentMatchers.any(),

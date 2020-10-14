@@ -25,29 +25,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.stores.internal
 
-package org.hisp.dhis.android.core.arch.db.stores.internal;
+import org.hisp.dhis.android.core.common.State
 
-import androidx.annotation.NonNull;
-
-import java.util.Collection;
-import java.util.List;
-
-public interface ObjectStore<M> extends ReadableStore<M> {
-
-    List<String> selectStringColumnsWhereClause(String column, String clause) throws RuntimeException;
-
-    long insert(@NonNull M m) throws RuntimeException;
-
-    void insert(@NonNull Collection<M> objects) throws RuntimeException;
-
-    int delete();
-
-    boolean deleteById(@NonNull M m);
-
-    boolean deleteWhere(String whereClause);
-
-    void deleteWhereIfExists(@NonNull String whereClause) throws RuntimeException;
-
-    boolean isReady();
+internal interface StoreWithState {
+    fun setState(uid: String, state: State): Int
+    fun setState(uids: List<String>, state: State): Int
+    fun getState(uid: String): State?
+    fun exists(uid: String): Boolean
 }

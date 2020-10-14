@@ -25,31 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.stores.internal
 
-package org.hisp.dhis.android.core.arch.db.stores.internal;
+import org.hisp.dhis.android.core.common.DeletableDataObject
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-
-import java.util.List;
-
-import androidx.annotation.NonNull;
-
-public interface IdentifiableObjectStore<O extends ObjectWithUidInterface> extends ObjectStore<O> {
-
-    void delete(@NonNull String uid) throws RuntimeException;
-
-    void deleteIfExists(@NonNull String uid) throws RuntimeException;
-
-    void update(@NonNull O o) throws RuntimeException;
-
-    HandleAction updateOrInsert(@NonNull O o) throws RuntimeException;
-
-    List<String> selectUids() throws RuntimeException;
-
-    List<String> selectUidsWhere(String whereClause) throws RuntimeException;
-
-    List<String> selectUidsWhere(String whereClause, String orderByClause) throws RuntimeException;
-
-    O selectByUid(String uid) throws RuntimeException;
-}
+internal interface IdentifiableDeletableDataObjectStore<O> :
+    IdentifiableDataObjectStore<O>,
+    DeletableStoreWithState where O : ObjectWithUidInterface, O : DeletableDataObject

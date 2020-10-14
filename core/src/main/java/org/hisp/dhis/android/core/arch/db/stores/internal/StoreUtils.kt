@@ -25,12 +25,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.stores.internal
 
-package org.hisp.dhis.android.core.arch.db.stores.internal;
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.imports.ImportStatus
 
-import org.hisp.dhis.android.core.common.DeletableDataObject;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-
-public interface IdentifiableDeletableDataObjectStore<O extends ObjectWithUidInterface & DeletableDataObject>
-        extends IdentifiableDataObjectStore<O>, DeletableStoreWithState {
+/**
+ * Provides helper functions to handle null checks and type conversions.
+ */
+internal object StoreUtils {
+    /**
+     * Takes the import status and converts it to the state which indicates if it was imported, had errors or warning.
+     *
+     * @param importStatus
+     * @return the state from the ImportStatus
+     */
+    @JvmStatic
+    fun getState(importStatus: ImportStatus): State {
+        return when (importStatus) {
+            ImportStatus.ERROR -> State.ERROR
+            ImportStatus.SUCCESS -> State.SYNCED
+            ImportStatus.WARNING -> State.WARNING
+        }
+    }
 }

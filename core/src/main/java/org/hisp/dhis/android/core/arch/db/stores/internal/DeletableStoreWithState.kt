@@ -25,13 +25,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.stores.internal;
+package org.hisp.dhis.android.core.arch.db.stores.internal
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.common.State
 
-import java.util.List;
-
-public interface ObjectWithUidChildStore<P extends ObjectWithUidInterface> {
-    List<ObjectWithUid> getChildren(P p);
+internal interface DeletableStoreWithState : StoreWithState {
+    fun setStateOrDelete(uid: String, state: State): HandleAction
+    fun setDeleted(uid: String): Int
 }

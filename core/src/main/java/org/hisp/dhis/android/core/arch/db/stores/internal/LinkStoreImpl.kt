@@ -25,20 +25,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.stores.internal
 
-package org.hisp.dhis.android.core.arch.db.stores.internal;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import androidx.annotation.NonNull;
+internal open class LinkStoreImpl<O : CoreObject>(
+    databaseAdapter: DatabaseAdapter,
+    builder: SQLStatementBuilder,
+    private val masterColumn: String,
+    binder: StatementBinder<O>,
+    objectFactory: ObjectFactory<O>
+) : ObjectStoreImpl<O>(databaseAdapter, builder, binder, objectFactory), LinkStore<O> {
+    @Throws(RuntimeException::class)
+    override fun deleteLinksForMasterUid(masterUid: String) {
+        deleteWhere("$masterColumn='$masterUid';")
+    }
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    override fun deleteAllLinks(): Int {
+        return delete()
+    }
 
-import java.util.List;
-
-public interface LinkStore<M extends CoreObject> extends ObjectStore<M> {
-
-    void deleteLinksForMasterUid(@NonNull String masterUid) throws RuntimeException;
-
-    int deleteAllLinks();
-
-    List<String> selectDistinctSlaves(@NonNull String slaveColumn);
+    override fun selectDistinctSlaves(slaveColumn: String): List<String> {
+        val cursor = databaseAdapter.rawQuery(builder.selectDistinct(slaveColumn))
+        return mapStringColumnSetFromCursor(cursor)
+    }
 }

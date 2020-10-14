@@ -25,20 +25,21 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.stores.internal
 
-package org.hisp.dhis.android.core.arch.db.stores.internal;
+import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType
 
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-
-import androidx.annotation.NonNull;
-
-public interface ObjectWithoutUidStore<M> extends ObjectStore<M> {
-
-    void updateWhere(@NonNull M m) throws RuntimeException;
-
-    void deleteWhere(@NonNull M m) throws RuntimeException;
-
-    void deleteWhereIfExists(@NonNull M m) throws RuntimeException;
-
-    HandleAction updateOrInsertWhere(@NonNull M m) throws RuntimeException;
+@Suppress("TooManyFunctions")
+internal interface ReadableStore<O> {
+    fun selectAll(): List<O>
+    fun selectWhere(whereClause: String): List<O>
+    fun selectWhere(filterWhereClause: String, orderByClause: String): List<O>
+    fun selectWhere(filterWhereClause: String, orderByClause: String, limit: Int): List<O>
+    fun selectOneOrderedBy(orderingColumName: String, orderingType: SQLOrderType): O?
+    fun selectRawQuery(sqlRawQuery: String): List<O>
+    fun selectOneWhere(whereClause: String): O?
+    fun selectFirst(): O?
+    fun count(): Int
+    fun countWhere(whereClause: String): Int
+    fun groupAndGetCountBy(column: String): Map<String, Int>
 }

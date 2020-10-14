@@ -25,12 +25,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.stores.internal
 
-package org.hisp.dhis.android.core.arch.db.stores.internal;
+import android.database.Cursor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorExecutorImpl
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
-import org.hisp.dhis.android.core.common.DataObject;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+internal class ObjectWithUidChildStoreImpl<P : ObjectWithUidInterface>(
+    private val linkTableChildProjection: LinkTableChildProjection,
+    private val databaseAdapter: DatabaseAdapter,
+    private val statementBuilder: SQLStatementBuilder
+) : ObjectWithUidChildStore<P> {
 
-public interface IdentifiableDataObjectStore<O extends ObjectWithUidInterface & DataObject>
-        extends IdentifiableObjectStore<O>, StoreWithState {
+    override fun getChildren(p: P): List<ObjectWithUid> {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(linkTableChildProjection.parentColumn, p.uid())
+            .build()
+        val selectStatement = statementBuilder.selectWhere(whereClause)
+        val cursorExecutor = CursorExecutorImpl { cursor: Cursor ->
+            val idColumnIndex = cursor.getColumnIndex(linkTableChildProjection.childColumn)
+            ObjectWithUid.create(cursor.getString(idColumnIndex))
+        }
+        return cursorExecutor.getObjects(databaseAdapter.rawQuery(selectStatement))
+    }
 }

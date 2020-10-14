@@ -68,16 +68,16 @@ class EventServiceShould {
     private val eventRepository: EventCollectionRepository = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val programRepository: ProgramCollectionRepository = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val programStageRepository: ProgramStageCollectionRepository =
-            mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
+        mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val enrollmentService: EnrollmentService = mock()
     private val organisationUnitService: OrganisationUnitService = mock()
     private val categoryOptionComboService: CategoryOptionComboService =
-            mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
+        mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val eventDateUtils: EventDateUtils = mock()
 
     private val eventService: EventService = EventService(
-            enrollmentRepository, eventRepository, programRepository, programStageRepository,
-            enrollmentService, organisationUnitService, categoryOptionComboService, eventDateUtils
+        enrollmentRepository, eventRepository, programRepository, programStageRepository,
+        enrollmentService, organisationUnitService, categoryOptionComboService, eventDateUtils
     )
 
     private val firstJanuary = BaseIdentifiableObject.DATE_FORMAT.parse("2020-01-01T00:00:00.000")

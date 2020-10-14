@@ -29,19 +29,19 @@ package org.hisp.dhis.android.core.enrollment
 
 import dagger.Reusable
 import io.reactivex.Single
+import javax.inject.Inject
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRepository
 import org.hisp.dhis.android.core.program.AccessLevel
 import org.hisp.dhis.android.core.program.ProgramCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCollectionRepository
-import javax.inject.Inject
 
 @Reusable
 class EnrollmentService @Inject constructor(
-        private val enrollmentRepository: EnrollmentCollectionRepository,
-        private val trackedEntityInstanceRepository: TrackedEntityInstanceCollectionRepository,
-        private val programRepository: ProgramCollectionRepository,
-        private val organisationUnitRepository: OrganisationUnitCollectionRepository
+    private val enrollmentRepository: EnrollmentCollectionRepository,
+    private val trackedEntityInstanceRepository: TrackedEntityInstanceCollectionRepository,
+    private val programRepository: ProgramCollectionRepository,
+    private val organisationUnitRepository: OrganisationUnitCollectionRepository
 ) {
 
     fun blockingIsOpen(enrollmentUid: String): Boolean {
@@ -58,8 +58,8 @@ class EnrollmentService @Inject constructor(
         val program = programRepository.uid(programUid).blockingGet() ?: return EnrollmentAccess.NO_ACCESS
 
         val dataAccess =
-                if (program.access()?.data()?.write() == true) EnrollmentAccess.WRITE_ACCESS
-                else EnrollmentAccess.READ_ACCESS
+            if (program.access()?.data()?.write() == true) EnrollmentAccess.WRITE_ACCESS
+            else EnrollmentAccess.READ_ACCESS
 
         return when (program.accessLevel()) {
             AccessLevel.PROTECTED ->
@@ -81,8 +81,8 @@ class EnrollmentService @Inject constructor(
         val tei = trackedEntityInstanceRepository.uid(trackedEntityInstanceUid).blockingGet()
 
         return organisationUnitRepository
-                .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
-                .uid(tei.organisationUnit())
-                .blockingExists()
+            .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
+            .uid(tei.organisationUnit())
+            .blockingExists()
     }
 }

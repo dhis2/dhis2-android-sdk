@@ -57,17 +57,24 @@ class EnrollmentServiceShould {
     private val organisationUnit: OrganisationUnit = mock()
 
     private val enrollmentRepository: EnrollmentCollectionRepository = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
-    private val trackedEntityInstanceRepository: TrackedEntityInstanceCollectionRepository = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
+    private val trackedEntityInstanceRepository: TrackedEntityInstanceCollectionRepository =
+        mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val programRepository: ProgramCollectionRepository = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
-    private val organisationUnitRepository: OrganisationUnitCollectionRepository = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
+    private val organisationUnitRepository: OrganisationUnitCollectionRepository =
+        mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
 
-    private val enrollmentService = EnrollmentService(enrollmentRepository, trackedEntityInstanceRepository,
-            programRepository, organisationUnitRepository)
+    private val enrollmentService = EnrollmentService(
+        enrollmentRepository, trackedEntityInstanceRepository,
+        programRepository, organisationUnitRepository
+    )
 
     @Before
     fun setUp() {
         whenever(enrollmentRepository.uid(enrollmentUid).blockingGet()) doReturn enrollment
-        whenever(trackedEntityInstanceRepository.uid(trackedEntityInstanceUid).blockingGet()) doReturn trackedEntityInstance
+        whenever(
+            trackedEntityInstanceRepository
+                .uid(trackedEntityInstanceUid).blockingGet()
+        ) doReturn trackedEntityInstance
         whenever(programRepository.uid(programUid).blockingGet()) doReturn program
 
         whenever(enrollment.uid()) doReturn enrollmentUid
@@ -108,34 +115,41 @@ class EnrollmentServiceShould {
         whenever(program.accessLevel()) doReturn AccessLevel.OPEN
 
         whenever(program.access()) doReturn AccessHelper.createForDataWrite(false)
-        assert(enrollmentService.blockingGetEnrollmentAccess(trackedEntityInstanceUid, programUid) == EnrollmentAccess.READ_ACCESS)
+        val accessRead = enrollmentService.blockingGetEnrollmentAccess(trackedEntityInstanceUid, programUid)
+        assert(accessRead == EnrollmentAccess.READ_ACCESS)
 
         whenever(program.access()) doReturn AccessHelper.createForDataWrite(true)
-        assert(enrollmentService.blockingGetEnrollmentAccess(trackedEntityInstanceUid, programUid) == EnrollmentAccess.WRITE_ACCESS)
+        val accessWrite = enrollmentService.blockingGetEnrollmentAccess(trackedEntityInstanceUid, programUid)
+        assert(accessWrite == EnrollmentAccess.WRITE_ACCESS)
     }
 
     @Test
     fun `GetEnrollmentAccess should return data access if protected program in capture scope`() {
         whenever(program.accessLevel()) doReturn AccessLevel.PROTECTED
         whenever(program.access()) doReturn AccessHelper.createForDataWrite(true)
-        whenever(organisationUnitRepository
+        whenever(
+            organisationUnitRepository
                 .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
                 .uid(organisationUnitId)
-                .blockingExists()) doReturn true
+                .blockingExists()
+        ) doReturn true
 
-        assert(enrollmentService.blockingGetEnrollmentAccess(trackedEntityInstanceUid, programUid) == EnrollmentAccess.WRITE_ACCESS)
+        val access = enrollmentService.blockingGetEnrollmentAccess(trackedEntityInstanceUid, programUid)
+        assert(access == EnrollmentAccess.WRITE_ACCESS)
     }
 
     @Test
     fun `GetEnrollmentAccess should return access denied if protected program not in capture scope`() {
         whenever(program.accessLevel()) doReturn AccessLevel.PROTECTED
         whenever(program.access()) doReturn AccessHelper.createForDataWrite(true)
-        whenever(organisationUnitRepository
+        whenever(
+            organisationUnitRepository
                 .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
                 .uid(organisationUnitId)
-                .blockingExists()) doReturn false
+                .blockingExists()
+        ) doReturn false
 
-        assert(enrollmentService.blockingGetEnrollmentAccess(trackedEntityInstanceUid, programUid) == EnrollmentAccess.PROTECTED_PROGRAM_DENIED)
+        val access = enrollmentService.blockingGetEnrollmentAccess(trackedEntityInstanceUid, programUid)
+        assert(access == EnrollmentAccess.PROTECTED_PROGRAM_DENIED)
     }
-
 }

@@ -31,15 +31,18 @@ import dagger.Reusable
 import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.category.CategoryOptionComboService
+import org.hisp.dhis.android.core.enrollment.EnrollmentCollectionRepository
 import org.hisp.dhis.android.core.enrollment.EnrollmentService
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.internal.EventDateUtils
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService
 import org.hisp.dhis.android.core.program.ProgramCollectionRepository
 import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
 
 @Reusable
-@Suppress("LongParameterList")
+@Suppress("LongParameterList", "TooManyFunctions")
 class EventService @Inject constructor(
+    private val enrollmentRepository: EnrollmentCollectionRepository,
     private val eventRepository: EventCollectionRepository,
     private val programRepository: ProgramCollectionRepository,
     private val programStageRepository: ProgramStageCollectionRepository,
@@ -108,5 +111,34 @@ class EventService @Inject constructor(
 
     fun isEditable(eventUid: String): Single<Boolean> {
         return Single.just(blockingIsEditable(eventUid))
+    }
+
+    fun blockingCanAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Boolean {
+        val enrollment = enrollmentRepository.uid(enrollmentUid).blockingGet()
+        val programStage = programStageRepository.uid(programStageUid).blockingGet()
+
+        if (enrollment == null || programStage == null) {
+            return false
+        }
+
+        val isActiveEnrollment = enrollment.status() == EnrollmentStatus.ACTIVE
+
+        val acceptMoreEvents =
+            if (programStage.repeatable() == true) true
+            else getEventCount(enrollmentUid, programStageUid) == 0
+
+        return isActiveEnrollment && acceptMoreEvents
+    }
+
+    fun canAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Single<Boolean> {
+        return Single.just(blockingCanAddEventToEnrollment(enrollmentUid, programStageUid))
+    }
+
+    private fun getEventCount(enrollmentUid: String, programStageUid: String): Int {
+        return eventRepository
+            .byEnrollmentUid().eq(enrollmentUid)
+            .byProgramStageUid().eq(programStageUid)
+            .byDeleted().isFalse
+            .blockingCount()
     }
 }

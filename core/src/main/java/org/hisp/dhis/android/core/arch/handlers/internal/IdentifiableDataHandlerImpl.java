@@ -44,6 +44,7 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.isDeleted;
@@ -100,7 +101,7 @@ public abstract class IdentifiableDataHandlerImpl<O extends DeletableDataObject 
     @Override
     public final void handleMany(Collection<O> oCollection, Transformer<O, O> transformer, Boolean overwrite) {
         if (oCollection != null) {
-            Collection<O> preHandledCollection = beforeCollectionHandled(oCollection, overwrite);
+            Collection<O> preHandledCollection = beforeCollectionHandled(oCollection, overwrite, false);
             List<O> oTransformedCollection = new ArrayList<>(oCollection.size());
             for (O o : preHandledCollection) {
                 handle(o, transformer, oTransformedCollection, overwrite);
@@ -123,7 +124,7 @@ public abstract class IdentifiableDataHandlerImpl<O extends DeletableDataObject 
             transformer = this::addSyncedState;
         }
 
-        Collection<O> preHandledCollection = beforeCollectionHandled(oCollection, overwrite);
+        Collection<O> preHandledCollection = beforeCollectionHandled(oCollection, overwrite, asRelationship);
 
         List<O> transformedCollection = new ArrayList<>(preHandledCollection.size());
 
@@ -189,11 +190,16 @@ public abstract class IdentifiableDataHandlerImpl<O extends DeletableDataObject 
     protected abstract void afterObjectHandled(O o, HandleAction action, Boolean overwrite,
                                                RelationshipItemRelatives relatives);
 
-    protected Collection<O> beforeCollectionHandled(Collection<O> oCollection, Boolean overwrite) {
+    protected Collection<O> beforeCollectionHandled(Collection<O> oCollection,
+                                                    Boolean overwrite,
+                                                    Boolean asRelationship) {
         if (overwrite) {
             return oCollection;
+        } if (asRelationship) {
+            return removeAllowedExistingObjects(oCollection, Collections.singletonList(State.RELATIONSHIP.name()));
         } else {
-            return removeExistingNotSyncedObjects(oCollection);
+            return removeAllowedExistingObjects(oCollection,
+                    Arrays.asList(State.SYNCED.name(), State.RELATIONSHIP.name(), State.SYNCED_VIA_SMS.name()));
         }
     }
 
@@ -204,13 +210,13 @@ public abstract class IdentifiableDataHandlerImpl<O extends DeletableDataObject 
          */
     }
 
-    private Collection<O> removeExistingNotSyncedObjects(Collection<O> os) {
+    private Collection<O> removeAllowedExistingObjects(Collection<O> os, List<String> allowedStates) {
         List<String> storedObjectUids = storedObjectUids(os);
-        List<String> syncedObjectUids = syncedObjectUids(storedObjectUids);
+        List<String> allowedObjectUids = objectWithStatesUids(storedObjectUids, allowedStates);
 
         List<O> objectsToStore = new ArrayList<>();
         for (O object : os) {
-            if (!storedObjectUids.contains(object.uid()) || syncedObjectUids.contains(object.uid())
+            if (!storedObjectUids.contains(object.uid()) || allowedObjectUids.contains(object.uid())
                     || isDeleted(object)) {
                 objectsToStore.add(object);
             }
@@ -227,12 +233,11 @@ public abstract class IdentifiableDataHandlerImpl<O extends DeletableDataObject 
         return store.selectUidsWhere(storedObjectUidsWhereClause);
     }
 
-    private List<String> syncedObjectUids(List<String> storedObjectUids) {
+    private List<String> objectWithStatesUids(List<String> storedObjectUids, List<String> states) {
         if (!storedObjectUids.isEmpty()) {
             String syncedObjectUidsWhereClause2 = new WhereClauseBuilder()
                     .appendInKeyStringValues(IdentifiableColumns.UID, storedObjectUids)
-                    .appendInKeyStringValues(DataColumns.STATE,
-                            Arrays.asList(State.SYNCED.name(), State.RELATIONSHIP.name(), State.SYNCED_VIA_SMS.name()))
+                    .appendInKeyStringValues(DataColumns.STATE, states)
                     .build();
             return store.selectUidsWhere(syncedObjectUidsWhereClause2);
         }

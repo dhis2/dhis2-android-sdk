@@ -114,15 +114,13 @@ public class PeriodHelper {
      */
     public Period blockingGetPeriodForPeriodTypeAndDate(@NonNull PeriodType periodType, @NonNull Date date,
                                                         @NonNull int periodOffset) {
-        Period period = periodStore.selectPeriodByTypeAndDate(periodType, date);
+        Period period = parentPeriodGenerator.generatePeriod(periodType, date, periodOffset);
 
-        if (period == null) {
-            Period newPeriod = parentPeriodGenerator.generatePeriod(periodType, date, periodOffset);
-            periodStore.updateOrInsertWhere(newPeriod);
-            return newPeriod;
-        } else {
-            return period;
+        if (periodStore.selectByPeriodId(period.periodId()) == null) {
+            periodStore.updateOrInsertWhere(period);
         }
+
+        return period;
     }
 
     /**

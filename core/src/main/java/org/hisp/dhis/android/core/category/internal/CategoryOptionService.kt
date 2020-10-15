@@ -29,8 +29,6 @@ package org.hisp.dhis.android.core.category.internal
 
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
-import org.hisp.dhis.android.core.arch.api.filters.internal.Filter
-import org.hisp.dhis.android.core.arch.api.filters.internal.Where
 import org.hisp.dhis.android.core.arch.api.filters.internal.Which
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.category.CategoryOption
@@ -42,7 +40,7 @@ internal interface CategoryOptionService {
     @GET("categoryOptions")
     fun getCategoryOptions(
         @Query("fields") @Which fields: Fields<CategoryOption>,
-        @Query("filter") @Where uids: Filter<CategoryOption, String>,
+        @Query("filter") categoryUidsFilterString: String,
         @Query("filter") accessDataReadFilter: String,
         @Query("paging") paging: Boolean,
         @Query("restrictToCaptureScope") restrictToCaptureScope: Boolean?

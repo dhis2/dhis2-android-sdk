@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.helpers.internal.UrlLengthHelper
 import org.hisp.dhis.android.core.category.CategoryOption
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
@@ -65,7 +66,7 @@ internal class CategoryOptionCall @Inject constructor(
         ) { partitionUids: Set<String> ->
             service.getCategoryOptions(
                 CategoryOptionFields.allFields(askForOrgUnits),
-                CategoryOptionFields.uid.`in`(partitionUids),
+                "categories." + ObjectWithUid.uid.`in`(partitionUids).generateString(),
                 accessDataReadFilter,
                 paging = false,
                 restrictToCaptureScope = if (askForOrgUnits) true else null

@@ -54,6 +54,7 @@ public interface EventService {
     String EVENTS = "events";
     String STRATEGY = "strategy";
     String EVENT_UID = "eventUid";
+    String EVENT = "event";
     String LAST_UPDATED_START_DATE = "lastUpdatedStartDate";
     String INCLUDE_DELETED = "includeDeleted";
 
@@ -77,8 +78,8 @@ public interface EventService {
             @Path(EVENT_UID) String eventUid,
             @Query(FIELDS) @Which Fields<Event> fields);
 
-    @GET(EVENTS + "/{" + EVENT_UID + "}")
+    @GET(EVENTS)
     Single<Event> getEventSingle(
-            @Path(EVENT_UID) String eventUid,
+            @Query(EVENT) String eventUid,
             @Query(FIELDS) @Which Fields<Event> fields);
 }

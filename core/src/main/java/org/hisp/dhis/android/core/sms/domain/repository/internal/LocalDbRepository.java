@@ -27,9 +27,13 @@ public interface LocalDbRepository {
 
     Completable setWaitingResultTimeout(Integer timeoutSeconds);
 
+    Completable deleteWaitingResultTimeout();
+
     Single<String> getConfirmationSenderNumber();
 
     Completable setConfirmationSenderNumber(String number);
+
+    Completable deleteConfirmationSenderNumber();
 
     Single<SMSMetadata> getMetadataIds();
 

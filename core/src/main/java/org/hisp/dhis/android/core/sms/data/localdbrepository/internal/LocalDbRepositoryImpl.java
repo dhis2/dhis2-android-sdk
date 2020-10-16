@@ -148,6 +148,11 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     }
 
     @Override
+    public Completable deleteWaitingResultTimeout() {
+        return deleteKey(KEY_WAITING_RESULT_TIMEOUT);
+    }
+
+    @Override
     public Single<String> getConfirmationSenderNumber() {
         return Single.fromCallable(() ->
                 prefs().getString(KEY_CONFIRMATION_SENDER, "")
@@ -162,6 +167,11 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
                 throw new IOException("Failed writing confirmation sender number to local storage");
             }
         });
+    }
+
+    @Override
+    public Completable deleteConfirmationSenderNumber() {
+        return deleteKey(KEY_CONFIRMATION_SENDER);
     }
 
     @Override
@@ -251,9 +261,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     public Completable setMetadataDownloadConfig(WebApiRepository.GetMetadataIdsConfig config) {
         return Completable.fromAction(() -> {
             String value = ObjectMapperFactory.objectMapper().writeValueAsString(config);
-            SharedPreferences.Editor editor = context
-                    .getSharedPreferences(CONFIG_FILE, Context.MODE_PRIVATE)
-                    .edit().putString(KEY_METADATA_CONFIG, value);
+            SharedPreferences.Editor editor = prefs().edit().putString(KEY_METADATA_CONFIG, value);
             if (!editor.commit()) {
                 throw new IOException("Failed writing SMS metadata config to local storage");
             }

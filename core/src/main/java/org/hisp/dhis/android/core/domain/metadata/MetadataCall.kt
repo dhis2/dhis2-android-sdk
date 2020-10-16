@@ -131,7 +131,7 @@ class MetadataCall @Inject internal constructor(
                         progressManager.increaseProgress(Program::class.java, false)
                     },
                     dataSetDownloader.downloadMetadata(
-                        MetadataHelper.getOrgUnitsDataSetUids(orgUnits)
+                        MetadataHelper.getOrgUnitsDataSetUids(user, orgUnits)
                     ).map {
                         progressManager.increaseProgress(DataSet::class.java, false)
                     },

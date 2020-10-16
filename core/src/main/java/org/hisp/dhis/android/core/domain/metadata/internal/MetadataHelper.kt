@@ -27,13 +27,22 @@
  */
 package org.hisp.dhis.android.core.domain.metadata.internal
 
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getChildrenUids
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree
+import org.hisp.dhis.android.core.user.User
+import org.hisp.dhis.android.core.user.UserInternalAccessor
 
 internal object MetadataHelper {
 
-    fun getOrgUnitsDataSetUids(organisationUnits: Collection<OrganisationUnit>): Set<String> {
-        val dataSets = organisationUnits.flatMap { ou -> ou.dataSets()!! }
-        return getUids(dataSets)
+    fun getOrgUnitsDataSetUids(user: User, organisationUnits: Collection<OrganisationUnit>): Set<String> {
+        val dataCaptureParentsOrgUnitSet = getUids(UserInternalAccessor.accessOrganisationUnits(user))
+        val dataCaptureOrgUnits = organisationUnits
+            .filter { ou ->
+                val pathIds = ou.path()!!.split(OrganisationUnitTree.DELIMITER)
+                dataCaptureParentsOrgUnitSet.any { pathIds.contains(it) }
+            }
+        return getChildrenUids(dataCaptureOrgUnits) { it.dataSets()!! }
     }
 }

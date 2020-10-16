@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.category.Category
@@ -125,12 +126,12 @@ class MetadataCall @Inject internal constructor(
                     Single.just(progressManager.increaseProgress(User::class.java, false)),
                     Single.just(progressManager.increaseProgress(OrganisationUnit::class.java, false)),
                     programDownloader.downloadMetadata(
-                        MetadataHelper.getOrgUnitsProgramUids(orgUnits)
+                        UidsHelper.getChildrenUids(orgUnits) { it.programs()!! }
                     ).map {
                         progressManager.increaseProgress(Program::class.java, false)
                     },
                     dataSetDownloader.downloadMetadata(
-                        MetadataHelper.getOrgUnitsDataSetUids(orgUnits)
+                        MetadataHelper.getOrgUnitsDataSetUids(user, orgUnits)
                     ).map {
                         progressManager.increaseProgress(DataSet::class.java, false)
                     },

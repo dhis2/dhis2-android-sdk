@@ -72,6 +72,14 @@ public class ConfigCase {
     }
 
     /**
+     * Delete the gateway number to send the SMS.
+     * @return {@code Completable} that completes when the configuration is changed.
+     */
+    public Completable deleteGatewayNumber() {
+        return localDbRepository.deleteGatewayNumber();
+    }
+
+    /**
      * Set if SMS Module is enabled or not. It is required to enable it before using it.
      * @param enabled If the module is enabled or not
      * @return {@code Completable} that completes when the configuration is changed.

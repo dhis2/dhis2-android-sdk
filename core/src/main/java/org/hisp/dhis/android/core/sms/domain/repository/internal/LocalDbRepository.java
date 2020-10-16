@@ -21,6 +21,8 @@ public interface LocalDbRepository {
 
     Completable setGatewayNumber(String number);
 
+    Completable deleteGatewayNumber();
+
     Single<Integer> getWaitingResultTimeout();
 
     Completable setWaitingResultTimeout(Integer timeoutSeconds);

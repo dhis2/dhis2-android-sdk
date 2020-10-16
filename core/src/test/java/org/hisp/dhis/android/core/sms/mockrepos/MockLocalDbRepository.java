@@ -11,7 +11,6 @@ import org.hisp.dhis.android.core.sms.mockrepos.testobjects.MockMetadata;
 import org.hisp.dhis.android.core.sms.mockrepos.testobjects.MockObjects;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.smscompression.models.SMSMetadata;
-import org.mockito.Mock;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -47,6 +46,11 @@ public class MockLocalDbRepository implements LocalDbRepository {
     @Override
     public Completable setGatewayNumber(String number) {
         return Completable.fromAction(() -> gatewayNumber = number);
+    }
+
+    @Override
+    public Completable deleteGatewayNumber() {
+        return Completable.fromAction(() -> gatewayNumber = null);
     }
 
     @Override

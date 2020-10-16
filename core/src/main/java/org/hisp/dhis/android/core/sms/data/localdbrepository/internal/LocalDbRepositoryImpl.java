@@ -119,6 +119,21 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     }
 
     @Override
+    public Completable deleteGatewayNumber() {
+        return deleteKey(KEY_GATEWAY);
+    }
+
+    private Completable deleteKey(String key) {
+        return Completable.fromAction(() -> {
+            boolean result = context.getSharedPreferences(CONFIG_FILE, Context.MODE_PRIVATE)
+                    .edit().remove(key).commit();
+            if (!result) {
+                throw new IOException("Failed deleting value from local storage for key: " + key);
+            }
+        });
+    }
+
+    @Override
     public Single<Integer> getWaitingResultTimeout() {
         return Single.fromCallable(() ->
                 context.getSharedPreferences(CONFIG_FILE, Context.MODE_PRIVATE)

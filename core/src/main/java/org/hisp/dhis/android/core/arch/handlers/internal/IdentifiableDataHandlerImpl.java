@@ -195,7 +195,7 @@ public abstract class IdentifiableDataHandlerImpl<O extends DeletableDataObject 
                                                     Boolean asRelationship) {
         if (overwrite) {
             return oCollection;
-        } if (asRelationship) {
+        } else if (asRelationship) {
             return removeAllowedExistingObjects(oCollection, Collections.singletonList(State.RELATIONSHIP.name()));
         } else {
             return removeAllowedExistingObjects(oCollection,

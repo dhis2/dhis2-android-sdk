@@ -25,39 +25,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.domain.metadata.internal;
+package org.hisp.dhis.android.core.domain.metadata.internal
 
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+internal object MetadataHelper {
 
-public final class MetadataHelper {
-
-    private MetadataHelper() {}
-
-    public static Set<String> getOrgUnitsProgramUids(Collection<OrganisationUnit> organisationUnits) {
-        Set<ObjectWithUid> programs = new HashSet<>();
-        for (OrganisationUnit organisationUnit : organisationUnits) {
-            if (organisationUnit.programs() != null) {
-                programs.addAll(organisationUnit.programs());
-            }
-        }
-
-        return UidsHelper.getUids(programs);
-    }
-
-    public static Set<String> getOrgUnitsDataSetUids(Collection<OrganisationUnit> organisationUnits) {
-        Set<ObjectWithUid> dataSets = new HashSet<>();
-        for (OrganisationUnit organisationUnit : organisationUnits) {
-            if (organisationUnit.dataSets() != null) {
-                dataSets.addAll(organisationUnit.dataSets());
-            }
-        }
-
-        return UidsHelper.getUids(dataSets);
+    fun getOrgUnitsDataSetUids(organisationUnits: Collection<OrganisationUnit>): Set<String> {
+        val dataSets = organisationUnits.flatMap { ou -> ou.dataSets()!! }
+        return getUids(dataSets)
     }
 }

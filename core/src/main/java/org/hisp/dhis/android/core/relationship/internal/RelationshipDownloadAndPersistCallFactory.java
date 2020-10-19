@@ -104,12 +104,12 @@ public final class RelationshipDownloadAndPersistCallFactory {
     private Completable downloadRelativeEvents(RelationshipItemRelatives relatives) {
         return Completable.defer(() -> {
             Set<String> eventRelationships = relatives.getRelativeEventUids();
-            List<Single<Event>> singles = new ArrayList<>();
+            List<Single<Payload<Event>>> singles = new ArrayList<>();
             List<String> failedEvents = new ArrayList<>();
 
             if (!eventRelationships.isEmpty()) {
                 for (String uid : eventRelationships) {
-                    Single<Event> single = eventService.getEventSingle(uid, EventFields.asRelationshipFields)
+                    Single<Payload<Event>> single = eventService.getEventSingle(uid, EventFields.asRelationshipFields)
                             .onErrorResumeNext((err) -> {
                                 failedEvents.add(uid);
                                 return Single.error(err);
@@ -119,8 +119,12 @@ public final class RelationshipDownloadAndPersistCallFactory {
             }
 
             return Single.merge(singles)
-                    .collect((Callable<List<Event>>) ArrayList::new, List::add)
-                    .flatMapCompletable(events -> Completable.fromAction(() -> {
+                    .collect((Callable<List<Payload<Event>>>) ArrayList::new, List::add)
+                    .flatMapCompletable(eventPayloads -> Completable.fromAction(() -> {
+                        List<Event> events = new ArrayList<>();
+                        for (Payload<Event> eventPayload : eventPayloads) {
+                            events.addAll(eventPayload.items());
+                        }
                         eventPersistenceCallFactory.persistAsRelationships(events).blockingAwait();
                         for (Event event : events) {
                             if (event.enrollment() != null) {

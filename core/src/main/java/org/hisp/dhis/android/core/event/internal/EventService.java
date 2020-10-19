@@ -79,7 +79,7 @@ public interface EventService {
             @Query(FIELDS) @Which Fields<Event> fields);
 
     @GET(EVENTS)
-    Single<Event> getEventSingle(
+    Single<Payload<Event>> getEventSingle(
             @Query(EVENT) String eventUid,
             @Query(FIELDS) @Which Fields<Event> fields);
 }

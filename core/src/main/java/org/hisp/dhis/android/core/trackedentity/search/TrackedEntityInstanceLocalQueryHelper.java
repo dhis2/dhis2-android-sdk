@@ -53,7 +53,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.hisp.dhis.android.core.common.CoreColumns.ID;
 import static org.hisp.dhis.android.core.common.IdentifiableColumns.CREATED;
 import static org.hisp.dhis.android.core.common.IdentifiableColumns.LAST_UPDATED;
 import static org.hisp.dhis.android.core.common.IdentifiableColumns.NAME;

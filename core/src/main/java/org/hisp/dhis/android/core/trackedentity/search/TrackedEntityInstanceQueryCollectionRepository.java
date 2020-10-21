@@ -32,15 +32,12 @@ import androidx.paging.DataSource;
 import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
 
-import com.google.common.collect.Lists;
-
 import org.hisp.dhis.android.core.arch.cache.internal.D2Cache;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenSelection;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqLikeItemFilterConnector;
@@ -63,7 +60,6 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFi
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -547,7 +543,9 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     public ReadOnlyObjectRepository<TrackedEntityInstance> uid(String uid) {
         return objectRepository(list -> {
             for (TrackedEntityInstance instance : list) {
-                if (instance.uid() == uid) return instance;
+                if (uid.equals(instance.uid())) {
+                    return instance;
+                }
             }
             return null;
         });

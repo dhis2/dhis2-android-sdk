@@ -51,4 +51,14 @@ public class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould
 
         assertThat(trackedEntityInstances.size()).isEqualTo(2);
     }
+
+    @Test
+    public void find_uids_by_program() {
+        List<String> trackedEntityInstanceUids =
+                d2.trackedEntityModule().trackedEntityInstanceQuery()
+                        .byProgram().eq("lxAQ7Zs9VYR")
+                        .blockingGetUids();
+
+        assertThat(trackedEntityInstanceUids.size()).isEqualTo(2);
+    }
 }

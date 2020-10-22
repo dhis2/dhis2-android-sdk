@@ -91,10 +91,23 @@ final class TrackedEntityInstanceLocalQueryHelper {
     private TrackedEntityInstanceLocalQueryHelper() {
     }
 
-    @SuppressWarnings({"PMD.UseStringBufferForStringAppends", "PMD.CyclomaticComplexity", "PMD.NPathComplexity"})
     static String getSqlQuery(TrackedEntityInstanceQueryRepositoryScope scope, List<String> excludeList, int limit) {
+        return getSqlQuery(scope, excludeList, limit, TEI_ALL);
+    }
 
-        String queryStr = "SELECT DISTINCT " + TEI_ALL + " FROM " +
+    static String getUidsWhereClause(TrackedEntityInstanceQueryRepositoryScope scope, List<String> excludeList,
+                                     int limit) {
+        String selectSubQuery = getSqlQuery(scope, excludeList, limit, TEI_UID);
+        return new WhereClauseBuilder()
+                .appendInSubQuery(UID, selectSubQuery)
+                .build();
+    }
+
+    @SuppressWarnings({"PMD.UseStringBufferForStringAppends", "PMD.CyclomaticComplexity", "PMD.NPathComplexity"})
+    private static String getSqlQuery(TrackedEntityInstanceQueryRepositoryScope scope, List<String> excludeList,
+                                      int limit, String columns) {
+
+        String queryStr = "SELECT DISTINCT " + columns + " FROM " +
                 TrackedEntityInstanceTableInfo.TABLE_INFO.name() + " " + TEI_ALIAS;
 
         WhereClauseBuilder where = new WhereClauseBuilder();

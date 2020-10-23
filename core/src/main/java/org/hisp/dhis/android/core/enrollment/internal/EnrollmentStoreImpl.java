@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
+import org.hisp.dhis.android.core.event.EventTableInfo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -89,6 +90,16 @@ public final class EnrollmentStoreImpl
         }
 
         return enrollmentMap;
+    }
+
+    @Override
+    public List<String> queryMissingRelationshipsUids() {
+        String whereRelationshipsClause = new WhereClauseBuilder()
+                .appendKeyStringValue(DataColumns.STATE, State.RELATIONSHIP)
+                .appendIsNullValue(EventTableInfo.Columns.ORGANISATION_UNIT)
+                .build();
+
+        return selectUidsWhere(whereRelationshipsClause);
     }
 
     private void addEnrollmentToMap(Map<String, List<Enrollment>> enrollmentMap, Enrollment enrollment) {

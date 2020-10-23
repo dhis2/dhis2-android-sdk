@@ -37,4 +37,6 @@ import java.util.Map;
 public interface EnrollmentStore extends IdentifiableDeletableDataObjectStore<Enrollment> {
 
     Map<String, List<Enrollment>> queryEnrollmentsToPost();
+
+    List<String> queryMissingRelationshipsUids();
 }

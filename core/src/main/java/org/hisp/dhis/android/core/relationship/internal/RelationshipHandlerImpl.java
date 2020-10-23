@@ -34,8 +34,6 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipItem;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -68,27 +66,9 @@ final class RelationshipHandlerImpl extends IdentifiableHandlerImpl<Relationship
     }
 
     @Override
-    protected Collection<Relationship> beforeCollectionHandled(Collection<Relationship> relationships) {
-        Collection<Relationship> supportedRelationships = new ArrayList<>();
-
-        for (Relationship relationship : relationships) {
-            // Only TEI - TEI relationships are supported so far
-            if (relationship.from().hasTrackedEntityInstance() && relationship.to().hasTrackedEntityInstance()) {
-                supportedRelationships.add(relationship);
-            }
-        }
-
-        return supportedRelationships;
-    }
-
-    @Override
     protected Relationship beforeObjectHandled(Relationship relationship) {
         if (!versionManager.isRelationshipSupported(relationship)) {
             throw new RuntimeException("Only TEI to TEI relationships are supported in 2.29");
-        }
-
-        if (!itemExists(relationship.from()) || !itemExists(relationship.to())) {
-            throw new RuntimeException("Trying to persist relationship for at least one item not present in database");
         }
 
         String existingRelationshipUid = getExistingRelationshipUid(relationship);
@@ -113,7 +93,8 @@ final class RelationshipHandlerImpl extends IdentifiableHandlerImpl<Relationship
         return getExistingRelationshipUid(relationship) != null;
     }
 
-    private boolean itemExists(RelationshipItem item) {
+    @Override
+    public boolean doesRelationshipItemExist(RelationshipItem item) {
         return storeSelector.getElementStore(item).exists(item.elementUid());
     }
 

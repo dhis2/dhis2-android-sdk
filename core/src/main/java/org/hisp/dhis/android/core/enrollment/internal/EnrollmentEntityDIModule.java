@@ -40,6 +40,8 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventTableInfo;
 import org.hisp.dhis.android.core.note.internal.NoteForEnrollmentChildrenAppender;
+import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.internal.EnrollmentRelationshipOrphanCleanerImpl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -76,6 +78,12 @@ public final class EnrollmentEntityDIModule {
         return new HashMap<String, ChildrenAppender<Enrollment>>() {{
             put(EnrollmentFields.NOTES, NoteForEnrollmentChildrenAppender.create(databaseAdapter));
         }};
+    }
+
+    @Provides
+    @Reusable
+    OrphanCleaner<Enrollment, Relationship> relationshipOrphanCleaner(EnrollmentRelationshipOrphanCleanerImpl impl) {
+        return impl;
     }
 
     @Provides

@@ -74,5 +74,8 @@ public class EnrollmentShould extends BaseObjectShould implements ObjectShould {
 
         assertThat(enrollment.notes().get(0).uid()).isEqualTo("enrollmentNote1");
         assertThat(enrollment.notes().get(1).uid()).isEqualTo("enrollmentNote2");
+
+        assertThat(enrollment.relationships().get(0).uid()).isEqualTo("hm6qYjPfnzn");
+        assertThat(enrollment.relationships().get(0).from().enrollment().enrollment()).isEqualTo("BVJQIxoM2o4");
     }
 }

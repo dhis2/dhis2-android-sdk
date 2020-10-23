@@ -26,32 +26,44 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.relationship.internal;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
+import java.util.HashSet;
+import java.util.Set;
 
-import androidx.annotation.NonNull;
+public class RelationshipItemRelatives {
 
-@AutoValue
-@JsonDeserialize(builder = AutoValue_RelationshipItemEnrollment.Builder.class)
-public abstract class RelationshipItemEnrollment {
+    private final Set<String> relativeTrackedEntityInstanceUids;
+    private final Set<String> relativeEnrollmentUids;
+    private final Set<String> relativeEventUids;
 
-    @NonNull
-    @JsonProperty()
-    public abstract String enrollment();
-
-    public static Builder builder() {
-        return new AutoValue_RelationshipItemEnrollment.Builder();
+    public RelationshipItemRelatives() {
+        this.relativeTrackedEntityInstanceUids = new HashSet<>();
+        this.relativeEnrollmentUids = new HashSet<>();
+        this.relativeEventUids = new HashSet<>();
     }
 
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-        public abstract Builder enrollment(String enrollment);
+    public void addTrackedEntityInstance(String uid) {
+        this.relativeTrackedEntityInstanceUids.add(uid);
+    }
 
-        public abstract RelationshipItemEnrollment build();
+    public void addEnrollment(String uid) {
+        this.relativeEnrollmentUids.add(uid);
+    }
+
+    public void addEvent(String uid) {
+        this.relativeEventUids.add(uid);
+    }
+
+    public Set<String> getRelativeTrackedEntityInstanceUids() {
+        return relativeTrackedEntityInstanceUids;
+    }
+
+    public Set<String> getRelativeEnrollmentUids() {
+        return relativeEnrollmentUids;
+    }
+
+    public Set<String> getRelativeEventUids() {
+        return relativeEventUids;
     }
 }

@@ -26,32 +26,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.event;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.core.relationship.Relationship;
 
-import androidx.annotation.NonNull;
+import java.util.List;
 
-@AutoValue
-@JsonDeserialize(builder = AutoValue_RelationshipItemEnrollment.Builder.class)
-public abstract class RelationshipItemEnrollment {
+public final class EventInternalAccessor {
 
-    @NonNull
-    @JsonProperty()
-    public abstract String enrollment();
-
-    public static Builder builder() {
-        return new AutoValue_RelationshipItemEnrollment.Builder();
+    private EventInternalAccessor() {
     }
 
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-        public abstract Builder enrollment(String enrollment);
+    public static List<Relationship> accessRelationships(Event event) {
+        return event.relationships();
+    }
 
-        public abstract RelationshipItemEnrollment build();
+    public static Event.Builder insertRelationships(Event.Builder builder,
+                                                    List<Relationship> relationships) {
+        return builder.relationships(relationships);
     }
 }

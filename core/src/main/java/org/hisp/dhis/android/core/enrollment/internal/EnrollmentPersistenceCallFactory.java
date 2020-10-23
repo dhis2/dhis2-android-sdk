@@ -26,32 +26,40 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
+package org.hisp.dhis.android.core.enrollment.internal;
 
 import androidx.annotation.NonNull;
 
-@AutoValue
-@JsonDeserialize(builder = AutoValue_RelationshipItemEnrollment.Builder.class)
-public abstract class RelationshipItemEnrollment {
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
 
-    @NonNull
-    @JsonProperty()
-    public abstract String enrollment();
+import java.util.List;
 
-    public static Builder builder() {
-        return new AutoValue_RelationshipItemEnrollment.Builder();
+import javax.inject.Inject;
+
+import dagger.Reusable;
+import io.reactivex.Completable;
+
+@Reusable
+public final class EnrollmentPersistenceCallFactory {
+
+    private final IdentifiableDataHandler<Enrollment> enrollmentHandler;
+
+    @Inject
+    EnrollmentPersistenceCallFactory(
+            @NonNull IdentifiableDataHandler<Enrollment> enrollmentHandler) {
+        this.enrollmentHandler = enrollmentHandler;
     }
 
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-        public abstract Builder enrollment(String enrollment);
+    public Completable persistAsRelationships(final List<Enrollment> enrollments) {
+        return persistEnrollmentsInternal(enrollments, true, false, false);
+    }
 
-        public abstract RelationshipItemEnrollment build();
+    private Completable persistEnrollmentsInternal(
+            final List<Enrollment> enrollments, boolean asRelationship, boolean isFullUpdate, boolean overwrite) {
+        return Completable.defer(() -> {
+            enrollmentHandler.handleMany(enrollments, asRelationship, isFullUpdate, overwrite, null);
+            return Completable.complete();
+        });
     }
 }

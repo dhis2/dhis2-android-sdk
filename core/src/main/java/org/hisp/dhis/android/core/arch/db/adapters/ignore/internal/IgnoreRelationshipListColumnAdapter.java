@@ -26,32 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.core.relationship.Relationship;
 
-import androidx.annotation.NonNull;
+import java.util.List;
 
-@AutoValue
-@JsonDeserialize(builder = AutoValue_RelationshipItemEnrollment.Builder.class)
-public abstract class RelationshipItemEnrollment {
-
-    @NonNull
-    @JsonProperty()
-    public abstract String enrollment();
-
-    public static Builder builder() {
-        return new AutoValue_RelationshipItemEnrollment.Builder();
-    }
-
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-        public abstract Builder enrollment(String enrollment);
-
-        public abstract RelationshipItemEnrollment build();
-    }
+public final class IgnoreRelationshipListColumnAdapter
+        extends IgnoreColumnAdapter<List<Relationship>> {
 }

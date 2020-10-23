@@ -29,46 +29,39 @@
 package org.hisp.dhis.android.core.arch.handlers.internal;
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.DeletableDataObject;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.isDeleted;
 
-public class IdentifiableDataHandlerImpl<O extends DeletableDataObject & ObjectWithUidInterface>
-         implements IdentifiableDataHandler<O> {
+public abstract class IdentifiableDataHandlerImpl<O extends DeletableDataObject & ObjectWithUidInterface>
+        implements IdentifiableDataHandler<O> {
 
-    final IdentifiableObjectStore<O> store;
+    final IdentifiableDataObjectStore<O> store;
+    private final RelationshipDHISVersionManager relationshipVersionManager;
+    private final RelationshipHandler relationshipHandler;
 
-    public IdentifiableDataHandlerImpl(IdentifiableObjectStore<O> store) {
+    public IdentifiableDataHandlerImpl(IdentifiableDataObjectStore<O> store,
+                                       RelationshipDHISVersionManager relationshipVersionManager,
+                                       RelationshipHandler relationshipHandler) {
         this.store = store;
-    }
-
-    @Override
-    public final void handle(O o, Boolean overwrite) {
-        if (o == null) {
-            return;
-        }
-        O object = beforeObjectHandled(o, overwrite);
-        HandleAction action = deleteOrPersist(object);
-        afterObjectHandled(object, action, overwrite);
-    }
-
-    @Override
-    public final void handle(O o, Transformer<O, O> transformer, Boolean overwrite) {
-        if (o == null) {
-            return;
-        }
-        handleInternal(o, transformer, overwrite);
+        this.relationshipVersionManager = relationshipVersionManager;
+        this.relationshipHandler = relationshipHandler;
     }
 
     protected void handle(O o, Transformer<O, O> transformer, List<O> oTransformedCollection, Boolean overwrite) {
@@ -79,29 +72,36 @@ public class IdentifiableDataHandlerImpl<O extends DeletableDataObject & ObjectW
         oTransformedCollection.add(oTransformed);
     }
 
+    protected void handle(O o, Transformer<O, O> transformer, List<O> oTransformedCollection, Boolean overwrite,
+                          RelationshipItemRelatives relatives) {
+        if (o == null) {
+            return;
+        }
+        O oTransformed = handleInternal(o, transformer, overwrite, relatives);
+        oTransformedCollection.add(oTransformed);
+    }
+
     private O handleInternal(O o, Transformer<O, O> transformer, Boolean overwrite) {
         O object = beforeObjectHandled(o, overwrite);
         O oTransformed = transformer.transform(object);
         HandleAction action = deleteOrPersist(oTransformed);
-        afterObjectHandled(oTransformed, action, overwrite);
+        afterObjectHandled(oTransformed, action, overwrite, null);
         return oTransformed;
     }
 
-    @Override
-    public final void handleMany(Collection<O> oCollection, Boolean overwrite) {
-        if (oCollection != null) {
-            Collection<O> preHandledCollection = beforeCollectionHandled(oCollection, overwrite);
-            for (O o : preHandledCollection) {
-                handle(o, overwrite);
-            }
-            afterCollectionHandled(preHandledCollection, overwrite);
-        }
+    private O handleInternal(O o, Transformer<O, O> transformer, Boolean overwrite,
+                             RelationshipItemRelatives relatives) {
+        O object = beforeObjectHandled(o, overwrite);
+        O oTransformed = transformer.transform(object);
+        HandleAction action = deleteOrPersist(oTransformed);
+        afterObjectHandled(oTransformed, action, overwrite, relatives);
+        return oTransformed;
     }
 
     @Override
     public final void handleMany(Collection<O> oCollection, Transformer<O, O> transformer, Boolean overwrite) {
         if (oCollection != null) {
-            Collection<O> preHandledCollection = beforeCollectionHandled(oCollection, overwrite);
+            Collection<O> preHandledCollection = beforeCollectionHandled(oCollection, overwrite, false);
             List<O> oTransformedCollection = new ArrayList<>(oCollection.size());
             for (O o : preHandledCollection) {
                 handle(o, transformer, oTransformedCollection, overwrite);
@@ -109,6 +109,65 @@ public class IdentifiableDataHandlerImpl<O extends DeletableDataObject & ObjectW
             afterCollectionHandled(oTransformedCollection, overwrite);
         }
     }
+
+    @Override
+    public void handleMany(final Collection<O> oCollection, boolean asRelationship, boolean isFullUpdate,
+                           boolean overwrite, RelationshipItemRelatives relatives) {
+        if (oCollection == null) {
+            return;
+        }
+
+        Transformer<O, O> transformer;
+        if (asRelationship) {
+            transformer = relationshipTransformer();
+        } else {
+            transformer = this::addSyncedState;
+        }
+
+        Collection<O> preHandledCollection = beforeCollectionHandled(oCollection, overwrite, asRelationship);
+
+        List<O> transformedCollection = new ArrayList<>(preHandledCollection.size());
+
+        for (O object : preHandledCollection) {
+
+            handle(object, transformer, transformedCollection, overwrite, relatives);
+
+            if (isFullUpdate) {
+                deleteOrphans(object);
+            }
+        }
+
+        afterCollectionHandled(transformedCollection, overwrite);
+    }
+
+    protected Transformer<O, O> relationshipTransformer() {
+        return object -> {
+            State currentState = store.getState(object.uid());
+            if (currentState == State.RELATIONSHIP || currentState == null) {
+                return addRelationshipState(object);
+            } else {
+                return object;
+            }
+        };
+    }
+
+    protected void handleRelationships(Collection<Relationship> relationships, ObjectWithUidInterface parent,
+                                       RelationshipItemRelatives relatives) {
+        if (relatives != null) {
+            relationshipVersionManager.saveRelativesIfNotExist(
+                    relationships, parent.uid(), relatives, relationshipHandler);
+        }
+        relationshipHandler.handleMany(relationships, relationship -> relationship.toBuilder()
+                .state(State.SYNCED)
+                .deleted(false)
+                .build());
+    }
+
+    protected abstract O addRelationshipState(O object);
+
+    protected abstract O addSyncedState(O object);
+
+    protected abstract void deleteOrphans(O object);
 
     protected HandleAction deleteOrPersist(O o) {
         String modelUid = o.uid();
@@ -128,18 +187,19 @@ public class IdentifiableDataHandlerImpl<O extends DeletableDataObject & ObjectW
         return o;
     }
 
-    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
-    protected void afterObjectHandled(O o, HandleAction action, Boolean overwrite) {
-        /* Method is not abstract since empty action is the default action and we don't want it to
-         * be unnecessarily written in every child.
-         */
-    }
+    protected abstract void afterObjectHandled(O o, HandleAction action, Boolean overwrite,
+                                               RelationshipItemRelatives relatives);
 
-    protected Collection<O> beforeCollectionHandled(Collection<O> oCollection, Boolean overwrite) {
+    protected Collection<O> beforeCollectionHandled(Collection<O> oCollection,
+                                                    Boolean overwrite,
+                                                    Boolean asRelationship) {
         if (overwrite) {
             return oCollection;
+        } else if (asRelationship) {
+            return removeAllowedExistingObjects(oCollection, Collections.singletonList(State.RELATIONSHIP.name()));
         } else {
-            return removeExistingNotSyncedObjects(oCollection);
+            return removeAllowedExistingObjects(oCollection,
+                    Arrays.asList(State.SYNCED.name(), State.RELATIONSHIP.name(), State.SYNCED_VIA_SMS.name()));
         }
     }
 
@@ -150,13 +210,13 @@ public class IdentifiableDataHandlerImpl<O extends DeletableDataObject & ObjectW
          */
     }
 
-    private Collection<O> removeExistingNotSyncedObjects(Collection<O> os) {
+    private Collection<O> removeAllowedExistingObjects(Collection<O> os, List<String> allowedStates) {
         List<String> storedObjectUids = storedObjectUids(os);
-        List<String> syncedObjectUids = syncedObjectUids(storedObjectUids);
+        List<String> allowedObjectUids = objectWithStatesUids(storedObjectUids, allowedStates);
 
         List<O> objectsToStore = new ArrayList<>();
         for (O object : os) {
-            if (!storedObjectUids.contains(object.uid()) || syncedObjectUids.contains(object.uid())
+            if (!storedObjectUids.contains(object.uid()) || allowedObjectUids.contains(object.uid())
                     || isDeleted(object)) {
                 objectsToStore.add(object);
             }
@@ -173,12 +233,11 @@ public class IdentifiableDataHandlerImpl<O extends DeletableDataObject & ObjectW
         return store.selectUidsWhere(storedObjectUidsWhereClause);
     }
 
-    private List<String> syncedObjectUids(List<String> storedObjectUids) {
+    private List<String> objectWithStatesUids(List<String> storedObjectUids, List<String> states) {
         if (!storedObjectUids.isEmpty()) {
             String syncedObjectUidsWhereClause2 = new WhereClauseBuilder()
                     .appendInKeyStringValues(IdentifiableColumns.UID, storedObjectUids)
-                    .appendInKeyStringValues(DataColumns.STATE,
-                            Arrays.asList(State.SYNCED.name(), State.RELATIONSHIP.name(), State.SYNCED_VIA_SMS.name()))
+                    .appendInKeyStringValues(DataColumns.STATE, states)
                     .build();
             return store.selectUidsWhere(syncedObjectUidsWhereClause2);
         }

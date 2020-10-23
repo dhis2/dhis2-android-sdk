@@ -26,32 +26,41 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.relationship.internal;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
+import org.hisp.dhis.android.core.relationship.RelationshipHelper;
+import org.hisp.dhis.android.core.relationship.RelationshipItem;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
-import androidx.annotation.NonNull;
+import java.util.Collection;
 
-@AutoValue
-@JsonDeserialize(builder = AutoValue_RelationshipItemEnrollment.Builder.class)
-public abstract class RelationshipItemEnrollment {
+import javax.inject.Inject;
 
-    @NonNull
-    @JsonProperty()
-    public abstract String enrollment();
+import dagger.Reusable;
 
-    public static Builder builder() {
-        return new AutoValue_RelationshipItemEnrollment.Builder();
+@Reusable
+public class TEIRelationshipOrphanCleanerImpl
+        extends RelationshipOrphanCleanerImpl<TrackedEntityInstance, Relationship229Compatible> {
+
+    private final RelationshipDHISVersionManager relationshipDHISVersionManager;
+
+    @Inject
+    TEIRelationshipOrphanCleanerImpl(RelationshipStore relationshipStore,
+                                     RelationshipCollectionRepository relationshipRepository,
+                                     RelationshipDHISVersionManager relationshipDHISVersionManager) {
+        super(relationshipStore, relationshipRepository);
+        this.relationshipDHISVersionManager = relationshipDHISVersionManager;
     }
 
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-        public abstract Builder enrollment(String enrollment);
+    @Override
+    public RelationshipItem getItem(String uid) {
+        return RelationshipHelper.teiItem(uid);
+    }
 
-        public abstract RelationshipItemEnrollment build();
+    @Override
+    public Collection<Relationship> relationships(Collection<Relationship229Compatible> relationships) {
+        return relationshipDHISVersionManager.from229Compatible(relationships);
     }
 }

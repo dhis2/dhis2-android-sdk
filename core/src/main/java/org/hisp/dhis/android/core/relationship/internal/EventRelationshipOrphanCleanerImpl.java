@@ -26,32 +26,36 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.relationship.internal;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
+import org.hisp.dhis.android.core.relationship.RelationshipHelper;
+import org.hisp.dhis.android.core.relationship.RelationshipItem;
 
-import androidx.annotation.NonNull;
+import java.util.Collection;
 
-@AutoValue
-@JsonDeserialize(builder = AutoValue_RelationshipItemEnrollment.Builder.class)
-public abstract class RelationshipItemEnrollment {
+import javax.inject.Inject;
 
-    @NonNull
-    @JsonProperty()
-    public abstract String enrollment();
+import dagger.Reusable;
 
-    public static Builder builder() {
-        return new AutoValue_RelationshipItemEnrollment.Builder();
+@Reusable
+public class EventRelationshipOrphanCleanerImpl extends RelationshipOrphanCleanerImpl<Event, Relationship> {
+
+    @Inject
+    EventRelationshipOrphanCleanerImpl(RelationshipStore relationshipStore,
+                                       RelationshipCollectionRepository relationshipRepository) {
+        super(relationshipStore, relationshipRepository);
     }
 
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-        public abstract Builder enrollment(String enrollment);
+    @Override
+    public RelationshipItem getItem(String uid) {
+        return RelationshipHelper.eventItem(uid);
+    }
 
-        public abstract RelationshipItemEnrollment build();
+    @Override
+    public Collection<Relationship> relationships(Collection<Relationship> relationships) {
+        return relationships;
     }
 }

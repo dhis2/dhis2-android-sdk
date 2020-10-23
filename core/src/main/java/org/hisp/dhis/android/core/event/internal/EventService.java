@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.imports.internal.EventWebResponse;
 
+import io.reactivex.Single;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -41,7 +42,7 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-interface EventService {
+public interface EventService {
     String ORG_UNIT = "orgUnit";
     String OU_MODE = "ouMode";
     String PROGRAM = "program";
@@ -53,6 +54,7 @@ interface EventService {
     String EVENTS = "events";
     String STRATEGY = "strategy";
     String EVENT_UID = "eventUid";
+    String EVENT = "event";
     String LAST_UPDATED_START_DATE = "lastUpdatedStartDate";
     String INCLUDE_DELETED = "includeDeleted";
 
@@ -74,5 +76,10 @@ interface EventService {
     @GET(EVENTS + "/{" + EVENT_UID + "}")
     Call<Event> getEvent(
             @Path(EVENT_UID) String eventUid,
+            @Query(FIELDS) @Which Fields<Event> fields);
+
+    @GET(EVENTS)
+    Single<Payload<Event>> getEventSingle(
+            @Query(EVENT) String eventUid,
             @Query(FIELDS) @Which Fields<Event> fields);
 }

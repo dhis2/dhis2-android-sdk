@@ -48,7 +48,7 @@ public class RelationshipCollectionRepositoryMockIntegrationShould extends BaseM
                 d2.relationshipModule().relationships()
                         .blockingGet();
 
-        assertThat(relationships.size()).isEqualTo(2);
+        assertThat(relationships.size()).isEqualTo(3);
     }
 
     @Test

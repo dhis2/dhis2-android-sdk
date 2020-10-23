@@ -54,7 +54,6 @@ public class RelationshipDHISVersionManagerShould extends RelationshipSamples {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-
         relationshipDHISVersionManager = new RelationshipDHISVersionManager(versionManager);
     }
 

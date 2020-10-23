@@ -26,32 +26,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.enrollment.internal;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
 
-import androidx.annotation.NonNull;
+import io.reactivex.Single;
+import retrofit2.http.GET;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 
-@AutoValue
-@JsonDeserialize(builder = AutoValue_RelationshipItemEnrollment.Builder.class)
-public abstract class RelationshipItemEnrollment {
+public interface EnrollmentService {
+    String ENROLLMENTS = "enrollments";
+    String ENROLLMENT_UID = "enrollmentUid";
+    String FIELDS = "fields";
 
-    @NonNull
-    @JsonProperty()
-    public abstract String enrollment();
-
-    public static Builder builder() {
-        return new AutoValue_RelationshipItemEnrollment.Builder();
-    }
-
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-        public abstract Builder enrollment(String enrollment);
-
-        public abstract RelationshipItemEnrollment build();
-    }
+    @GET(ENROLLMENTS + "/{" + ENROLLMENT_UID + "}")
+    Single<Enrollment> getEnrollmentSingle(@Path(ENROLLMENT_UID) String trackedEntityInstanceUid,
+                                           @Query(FIELDS) @Which Fields<Enrollment> fields);
 }

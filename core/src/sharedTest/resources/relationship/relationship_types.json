@@ -17,6 +17,24 @@
       "displayName": "Sibling",
       "bIsToA": "Sibling",
       "aIsToB": "Sibling"
+    },
+    {
+      "created": "2014-04-14T13:53:38.659",
+      "lastUpdated": "2014-04-14T13:53:41.066",
+      "name": "Event-Event",
+      "id": "eventsRelationshipType",
+      "displayName": "Event-Event",
+      "bIsToA": "Child event",
+      "aIsToB": "Parent event"
+    },
+    {
+      "created": "2014-04-14T13:53:38.659",
+      "lastUpdated": "2014-04-14T13:53:41.066",
+      "name": "Enrollment-Event",
+      "id": "enrollmentEventRelationshipType",
+      "displayName": "Enrollment-Event",
+      "bIsToA": "Related event",
+      "aIsToB": "Related enrollment"
     }
   ]
 }

@@ -63,7 +63,6 @@ public final class EventWithLimitCallFactory {
     private final EventPersistenceCallFactory persistenceCallFactory;
     private final EventLastUpdatedManager lastUpdatedManager;
 
-
     @Inject
     EventWithLimitCallFactory(
             @NonNull ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
@@ -165,8 +164,8 @@ public final class EventWithLimitCallFactory {
 
             List<Event> eventsToPersist = getEventsToPersist(paging, pageEvents);
 
-            rxCallExecutor.wrapCompletableTransactionally(persistenceCallFactory.persistEvents(eventsToPersist),
-                    true).blockingGet();
+            rxCallExecutor.wrapCompletableTransactionally(persistenceCallFactory
+                            .persistEvents(eventsToPersist, null), true).blockingGet();
 
             downloadedEventsForCombination += eventsToPersist.size();
 

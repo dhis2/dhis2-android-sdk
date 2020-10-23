@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.relationship;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
@@ -39,6 +40,7 @@ import androidx.annotation.NonNull;
 public abstract class RelationshipItemEvent {
 
     @NonNull
+    @JsonProperty()
     public abstract String event();
 
     public static Builder builder() {

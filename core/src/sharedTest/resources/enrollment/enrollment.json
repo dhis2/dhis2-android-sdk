@@ -31,5 +31,25 @@
       "storedBy": "android",
       "value": "Enrollment note 2"
     }
+  ],
+  "relationships": [
+    {
+      "lastUpdated": "2020-06-11T15:08:37.523",
+      "created": "2020-06-11T15:08:37.523",
+      "relationshipName": "Relationship test (Enrollment - Event)",
+      "bidirectional": true,
+      "relationshipType": "gdLhJxtWrIo",
+      "relationship": "hm6qYjPfnzn",
+      "from": {
+        "enrollment": {
+          "enrollment": "BVJQIxoM2o4"
+        }
+      },
+      "to": {
+        "event": {
+          "event": "ypPwI8s2nqK"
+        }
+      }
+    }
   ]
 }

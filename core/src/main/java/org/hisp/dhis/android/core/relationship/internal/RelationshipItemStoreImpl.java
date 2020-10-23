@@ -126,7 +126,7 @@ public final class RelationshipItemStoreImpl extends ObjectWithoutUidStoreImpl<R
 
         String whereToClause = new WhereClauseBuilder()
                 .appendInKeyStringValues(Columns.RELATIONSHIP, relationshipUids)
-                .appendKeyStringValue(Columns.RELATIONSHIP_ITEM_TYPE , RelationshipConstraintType.TO)
+                .appendKeyStringValue(Columns.RELATIONSHIP_ITEM_TYPE, RelationshipConstraintType.TO)
                 .appendIsNotNullValue(Columns.TRACKED_ENTITY_INSTANCE)
                 .build();
         List<RelationshipItem> relatedRelationshipItems = selectWhere(whereToClause);

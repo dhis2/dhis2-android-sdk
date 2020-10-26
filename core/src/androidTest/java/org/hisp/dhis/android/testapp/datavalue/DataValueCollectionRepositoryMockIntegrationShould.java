@@ -196,6 +196,16 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
     }
 
     @Test
+    public void filter_by_dataset() {
+        List<DataValue> dataValues =
+                d2.dataValueModule().dataValues()
+                        .byDataSetUid("lyLU2wR22tC")
+                        .blockingGet();
+
+        assertThat(dataValues.size()).isEqualTo(4);
+    }
+
+    @Test
     public void return_data_value_object_repository() {
         DataValueObjectRepository objectRepository = d2.dataValueModule().dataValues()
                 .value("2018", "DiszpKrYNg8", "g9eOBujte1U",

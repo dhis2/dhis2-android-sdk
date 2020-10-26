@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.datavalue
 
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo
 import org.hisp.dhis.android.core.dataelement.DataElementTableInfo
 import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkTableInfo
@@ -38,24 +39,30 @@ internal object DataValueByDataSetQueryHelper {
     private const val DE_ALIAS = "de"
     private const val COC_ALIAS = "coc"
 
-    private const val DSE_CATEGORYCOMBO = "$DSE_ALIAS.${DataSetDataElementLinkTableInfo.Columns.CATEGORY_COMBO}"
     private const val DSE_DATASET = "$DSE_ALIAS.${DataSetDataElementLinkTableInfo.Columns.DATA_SET}"
+    private const val DSE_DATAELEMENT = "$DSE_ALIAS.${DataSetDataElementLinkTableInfo.Columns.DATA_ELEMENT}"
+    private const val DSE_CATEGORYCOMBO = "$DSE_ALIAS.${DataSetDataElementLinkTableInfo.Columns.CATEGORY_COMBO}"
+
+    private const val DE_UID = "$DE_ALIAS.${DataElementTableInfo.Columns.UID}"
     private const val DE_CATEGORYCOMBO = "$DE_ALIAS.${DataElementTableInfo.Columns.CATEGORY_COMBO}"
 
-    private const val DE_UID = "$DSE_ALIAS.${DataSetElementLinkTableInfo.Columns.DATA_ELEMENT}"
     private const val COC_UID = "$COC_ALIAS.${CategoryOptionComboTableInfo.Columns.UID}"
+    private const val COC_CATEGORYCOMBO = "$COC_ALIAS.${CategoryOptionComboTableInfo.Columns.CATEGORY_COMBO}"
 
+    const val key = "(${DataValueTableInfo.Columns.DATA_ELEMENT}, ${DataValueTableInfo.Columns.CATEGORY_OPTION_COMBO})"
+
+    @JvmStatic
+    val operator = FilterItemOperator.IN
+
+    @JvmStatic
     fun whereClause(dataSetUid: String): String = """
-        (${DataValueTableInfo.Columns.DATA_ELEMENT}, ${DataValueTableInfo.Columns.CATEGORY_OPTION_COMBO}) 
-        IN
-        (SELECT $DE_UID, $COC_UID 
+        SELECT $DSE_DATAELEMENT, $COC_UID 
             FROM ${DataSetDataElementLinkTableInfo.TABLE_INFO.name()} $DSE_ALIAS
             INNER JOIN ${DataElementTableInfo.TABLE_INFO.name()} $DE_ALIAS
-                ON ${DataElementTableInfo.Columns.UID} = ${DataSetDataElementLinkTableInfo.Columns.DATA_ELEMENT}
+                ON $DE_UID = $DSE_DATAELEMENT
             INNER JOIN ${CategoryOptionComboTableInfo.TABLE_INFO.name()} $COC_ALIAS
-                ON ${CategoryOptionComboTableInfo.Columns.CATEGORY_COMBO} = 
+                ON $COC_CATEGORYCOMBO = 
                     (CASE WHEN $DSE_CATEGORYCOMBO IS NOT NULL THEN $DSE_CATEGORYCOMBO ELSE $DE_CATEGORYCOMBO END)
-            WHERE $DSE_DATASET = '${dataSetUid}'
-        )
+            WHERE $DSE_DATASET = '${dataSetUid}'    
         """.trimIndent().replace("\n", " ")
 }

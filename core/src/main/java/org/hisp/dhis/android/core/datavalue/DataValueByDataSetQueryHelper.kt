@@ -31,7 +31,6 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOpe
 import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo
 import org.hisp.dhis.android.core.dataelement.DataElementTableInfo
 import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkTableInfo
-import org.hisp.dhis.android.core.dataset.DataSetElementLinkTableInfo
 
 internal object DataValueByDataSetQueryHelper {
 
@@ -55,14 +54,14 @@ internal object DataValueByDataSetQueryHelper {
     val operator = FilterItemOperator.IN
 
     @JvmStatic
-    fun whereClause(dataSetUid: String): String = """
-        SELECT $DSE_DATAELEMENT, $COC_UID 
+    fun whereClause(dataSetUid: String): String =
+        """SELECT $DSE_DATAELEMENT, $COC_UID 
             FROM ${DataSetDataElementLinkTableInfo.TABLE_INFO.name()} $DSE_ALIAS
             INNER JOIN ${DataElementTableInfo.TABLE_INFO.name()} $DE_ALIAS
                 ON $DE_UID = $DSE_DATAELEMENT
             INNER JOIN ${CategoryOptionComboTableInfo.TABLE_INFO.name()} $COC_ALIAS
                 ON $COC_CATEGORYCOMBO = 
                     (CASE WHEN $DSE_CATEGORYCOMBO IS NOT NULL THEN $DSE_CATEGORYCOMBO ELSE $DE_CATEGORYCOMBO END)
-            WHERE $DSE_DATASET = '${dataSetUid}'    
+            WHERE $DSE_DATASET = '$dataSetUid'
         """.trimIndent().replace("\n", " ")
 }

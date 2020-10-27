@@ -83,16 +83,20 @@ class ExpressionHelperShould {
             .build()
     }
 
-    private fun assertContainsEntry(valueMap: Map<DimensionalItemObject, Double>,
-                                    dataElementId: String,
-                                    value: Double) {
+    private fun assertContainsEntry(
+        valueMap: Map<DimensionalItemObject, Double>,
+        dataElementId: String,
+        value: Double
+    ) {
         assertContainsEntry(valueMap, dataElementId, null, value)
     }
 
-    private fun assertContainsEntry(valueMap: Map<DimensionalItemObject, Double>,
-                                    dataElementId: String,
-                                    categoryOptionComboId: String?,
-                                    value: Double) {
+    private fun assertContainsEntry(
+        valueMap: Map<DimensionalItemObject, Double>,
+        dataElementId: String,
+        categoryOptionComboId: String?,
+        value: Double
+    ) {
         val key =
             if (categoryOptionComboId == null) DataElementObject.create(dataElementId)
             else DataElementOperandObject.create(dataElementId, categoryOptionComboId)

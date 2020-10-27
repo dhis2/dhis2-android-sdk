@@ -5,21 +5,18 @@
 # Adapted from https://coderwall.com/p/9b_lfq and
 # http://benlimmer.com/2013/12/26/automatically-publish-javadoc-to-gh-pages-with-travis-ci/
 
-SLUG="dhis2/dhis2-android-sdk"
-JDK="oraclejdk8"
+SLUG="dhis2-android-sdk"
 MASTER_BRANCH="master"
 MASTERDEV_BRANCH="master-dev"
 
 set -e
 
-if [ "$TRAVIS_REPO_SLUG" != "$SLUG" ]; then
-  echo "Skipping snapshot deployment: wrong repository. Expected '$SLUG' but was '$TRAVIS_REPO_SLUG'."
-elif [ "$TRAVIS_JDK_VERSION" != "$JDK" ]; then
-  echo "Skipping snapshot deployment: wrong JDK. Expected '$JDK' but was '$TRAVIS_JDK_VERSION'."
-elif [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
+if [ "$BITRISEIO_GIT_REPOSITORY_SLUG" != "$SLUG" ]; then
+  echo "Skipping snapshot deployment: wrong repository. Expected '$SLUG' but was '$BITRISEIO_GIT_REPOSITORY_SLUG'."
+elif [ -n "$BITRISE_PULL_REQUEST" ]; then
   echo "Skipping snapshot deployment: was pull request."
-elif [ "$TRAVIS_BRANCH" != "$MASTER_BRANCH" ]; then
-  echo "Skipping snapshot deployment: wrong branch. Expected '$MASTER_BRANCH' or '$MASTERDEV_BRANCH' but was '$TRAVIS_BRANCH'."
+elif [ "$BITRISE_GIT_BRANCH" != "$MASTER_BRANCH" ]; then
+  echo "Skipping snapshot deployment: wrong branch. Expected '$MASTER_BRANCH' or '$MASTERDEV_BRANCH' but was '$BITRISE_GIT_BRANCH'."
 else
   echo "Deploying snapshot..."
 

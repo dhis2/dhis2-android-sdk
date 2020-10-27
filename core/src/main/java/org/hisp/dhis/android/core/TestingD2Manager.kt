@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManage
 data class D2TestingConfig(
     val databaseName: String? = null,
     val username: String? = null,
-    val okHttpClient: OkHttpClient? = null,
     val secureStore: SecureStore = InMemorySecureStore(),
     val insecureStore: InsecureStore = InMemoryUnsecureStore()
 )
@@ -104,10 +103,8 @@ object TestingD2Manager {
                 multiUserDatabaseManager.loadIfLogged(credentialsSecureStore.get())
             }
 
-            val okHttpClient = testConfig.okHttpClient
-                ?: OkHttpClientFactory.okHttpClient(d2Configuration, credentialsSecureStore)
             d2 = D2(
-                RetrofitFactory.retrofit(okHttpClient),
+                RetrofitFactory.retrofit(OkHttpClientFactory.okHttpClient(d2Configuration, credentialsSecureStore)),
                 databaseAdapter,
                 d2Configuration.context(),
                 testConfig.secureStore,

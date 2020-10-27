@@ -50,6 +50,7 @@ data class D2TestingConfig(
 @VisibleForTesting
 object TestingD2Manager {
     private var d2: D2? = null
+    private var okHttpClient: OkHttpClient? = null
 
     /**
      * Returns the D2 instance, given that it has already been initialized using the
@@ -60,10 +61,26 @@ object TestingD2Manager {
     @Throws(IllegalStateException::class)
     @JvmStatic
     fun getD2(): D2 {
-        return if (d2 == null) {
+        exceptionIfD2NotInstantiated()
+        return d2!!
+    }
+
+    /**
+     * Returns the OkHttpClient used in D2.
+     * @return the OkHttpClient instance
+     * @throws IllegalStateException if the D2 object wasn't instantiated
+     */
+    @Throws(IllegalStateException::class)
+    @JvmStatic
+    fun getOkHttpClient(): OkHttpClient {
+        exceptionIfD2NotInstantiated()
+        return okHttpClient!!
+    }
+
+    @Throws(IllegalStateException::class)
+    private fun exceptionIfD2NotInstantiated() {
+        if (d2 == null) {
             throw IllegalStateException("D2 is not instantiated yet")
-        } else {
-            d2!!
         }
     }
 
@@ -103,8 +120,10 @@ object TestingD2Manager {
                 multiUserDatabaseManager.loadIfLogged(credentialsSecureStore.get())
             }
 
+            okHttpClient = OkHttpClientFactory.okHttpClient(d2Configuration, credentialsSecureStore)
+
             d2 = D2(
-                RetrofitFactory.retrofit(OkHttpClientFactory.okHttpClient(d2Configuration, credentialsSecureStore)),
+                RetrofitFactory.retrofit(okHttpClient),
                 databaseAdapter,
                 d2Configuration.context(),
                 testConfig.secureStore,

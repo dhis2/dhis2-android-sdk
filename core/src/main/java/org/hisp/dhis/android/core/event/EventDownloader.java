@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.event;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.UnwrappedEqInFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.event.internal.EventWithLimitCallFactory;
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams;
@@ -72,6 +73,10 @@ public final class EventDownloader extends BaseRepositoryImpl<EventDownloader> {
 
     public void blockingDownload() {
         download().blockingSubscribe();
+    }
+
+    public UnwrappedEqInFilterConnector<EventDownloader> byUid() {
+        return cf.unwrappedEqIn(QueryParams.UID);
     }
 
     public EventDownloader byProgramUid(String programUid) {

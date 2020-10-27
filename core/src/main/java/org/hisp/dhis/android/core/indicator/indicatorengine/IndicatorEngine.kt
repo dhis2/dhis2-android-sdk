@@ -31,15 +31,19 @@ import io.reactivex.Single
 
 interface IndicatorEngine {
 
-    fun evaluateInDataSet(indicatorUid: String,
-                          dataSetUid: String,
-                          periodId: String,
-                          orgUnitUid: String,
-                          attributeOptionComboUid: String): Single<Double>
+    fun evaluateInDataSet(
+        indicatorUid: String,
+        dataSetUid: String,
+        periodId: String,
+        orgUnitUid: String,
+        attributeOptionComboUid: String
+    ): Single<Double>
 
-    fun blockingEvaluateInDataSet(indicatorUid: String,
-                                  dataSetUid: String,
-                                  periodId: String,
-                                  orgUnitUid: String,
-                                  attributeOptionComboUid: String): Double
+    fun blockingEvaluateInDataSet(
+        indicatorUid: String,
+        dataSetUid: String,
+        periodId: String,
+        orgUnitUid: String,
+        attributeOptionComboUid: String
+    ): Double
 }

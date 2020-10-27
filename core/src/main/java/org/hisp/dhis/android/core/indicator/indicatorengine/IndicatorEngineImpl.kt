@@ -29,6 +29,8 @@ package org.hisp.dhis.android.core.indicator.indicatorengine
 
 import dagger.Reusable
 import io.reactivex.Single
+import java.util.*
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.mapByUid
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.constant.ConstantCollectionRepository
@@ -42,8 +44,6 @@ import org.hisp.dhis.android.core.parser.internal.service.ExpressionService
 import org.hisp.dhis.android.core.parser.internal.service.dataobject.DimensionalItemObject
 import org.hisp.dhis.android.core.parser.internal.service.utils.ExpressionHelper
 import org.hisp.dhis.android.core.validation.MissingValueStrategy
-import java.util.*
-import javax.inject.Inject
 
 @Reusable
 class IndicatorEngineImpl @Inject constructor(
@@ -55,40 +55,52 @@ class IndicatorEngineImpl @Inject constructor(
     private val expressionService: ExpressionService
 ) : IndicatorEngine {
 
-    override fun evaluateInDataSet(indicatorUid: String,
-                                   dataSetUid: String,
-                                   periodId: String,
-                                   orgUnitUid: String,
-                                   attributeOptionComboUid: String): Single<Double> {
+    override fun evaluateInDataSet(
+        indicatorUid: String,
+        dataSetUid: String,
+        periodId: String,
+        orgUnitUid: String,
+        attributeOptionComboUid: String
+    ): Single<Double> {
         return Single.fromCallable {
             blockingEvaluateInDataSet(indicatorUid, dataSetUid, periodId, orgUnitUid, attributeOptionComboUid)
         }
     }
 
-    override fun blockingEvaluateInDataSet(indicatorUid: String,
-                                           dataSetUid: String,
-                                           periodId: String,
-                                           orgUnitUid: String,
-                                           attributeOptionComboUid: String): Double {
+    override fun blockingEvaluateInDataSet(
+        indicatorUid: String,
+        dataSetUid: String,
+        periodId: String,
+        orgUnitUid: String,
+        attributeOptionComboUid: String
+    ): Double {
         val indicator = indicatorRepository.uid(indicatorUid).blockingGet()
         val indicatorType = indicatorTypeRepository.uid(indicator.indicatorType()?.uid()).blockingGet()
 
         val valueMap = getValueMap(dataSetUid, attributeOptionComboUid, orgUnitUid, periodId)
         val constantMap = getConstantMap()
 
-        val numerator = expressionService.getExpressionValue(indicator.numerator(), valueMap, constantMap,
-            emptyMap(), 0, MissingValueStrategy.NEVER_SKIP) as Double
+        val numerator = expressionService.getExpressionValue(
+            indicator.numerator(), valueMap, constantMap,
+            emptyMap(), 0, MissingValueStrategy.NEVER_SKIP
+        ) as Double
 
-        val denominator = expressionService.getExpressionValue(indicator.denominator(), valueMap, constantMap,
-            emptyMap(), 0, MissingValueStrategy.NEVER_SKIP) as Double
+        val denominator = expressionService.getExpressionValue(
+            indicator.denominator(), valueMap, constantMap,
+            emptyMap(), 0, MissingValueStrategy.NEVER_SKIP
+        ) as Double
 
         val formula = "$numerator * ${indicatorType.factor() ?: 1} / $denominator"
 
         return expressionService.getExpressionValue(formula) as Double
     }
 
-    private fun getValueMap(dataSetUid: String, attributeOptionComboUid: String,
-                            orgUnitUid: String, periodId: String): Map<DimensionalItemObject, Double> {
+    private fun getValueMap(
+        dataSetUid: String,
+        attributeOptionComboUid: String,
+        orgUnitUid: String,
+        periodId: String
+    ): Map<DimensionalItemObject, Double> {
         val dataSet: DataSet = dataSetRepository
             .byUid().eq(dataSetUid)
             .withDataSetElements()

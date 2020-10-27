@@ -27,12 +27,12 @@
  */
 package org.hisp.dhis.android.core.parser.internal.service.utils
 
+import java.util.*
 import org.apache.commons.lang3.math.NumberUtils
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.parser.internal.service.dataobject.DataElementObject
 import org.hisp.dhis.android.core.parser.internal.service.dataobject.DataElementOperandObject
 import org.hisp.dhis.android.core.parser.internal.service.dataobject.DimensionalItemObject
-import java.util.*
 
 internal object ExpressionHelper {
 
@@ -50,9 +50,11 @@ internal object ExpressionHelper {
         return valueMap
     }
 
-    private fun addDimensionalItemValueToMap(item: DimensionalItemObject,
-                                             value: String?,
-                                             valueMap: MutableMap<DimensionalItemObject, Double>) {
+    private fun addDimensionalItemValueToMap(
+        item: DimensionalItemObject,
+        value: String?,
+        valueMap: MutableMap<DimensionalItemObject, Double>
+    ) {
         val existingValue = valueMap[item]
         val newValue = NumberUtils.createDouble(value)
         val result = (existingValue ?: 0.0) + newValue

@@ -28,7 +28,10 @@
 
 package org.hisp.dhis.android.core.indicator;
 
+import org.hisp.dhis.android.core.indicator.indicatorengine.IndicatorEngine;
+
 public interface IndicatorModule {
     IndicatorCollectionRepository indicators();
     IndicatorTypeCollectionRepository indicatorTypes();
+    IndicatorEngine indicatorEngine();
 }

@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.indicator.indicatorengine
 
+import dagger.Reusable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.mapByUid
 import org.hisp.dhis.android.core.constant.Constant
@@ -44,7 +45,8 @@ import org.hisp.dhis.android.core.validation.MissingValueStrategy
 import java.util.*
 import javax.inject.Inject
 
-internal class IndicatorEngineImpl @Inject constructor(
+@Reusable
+class IndicatorEngineImpl @Inject constructor(
     private val indicatorRepository: IndicatorCollectionRepository,
     private val indicatorTypeRepository: IndicatorTypeCollectionRepository,
     private val dataValueRepository: DataValueCollectionRepository,

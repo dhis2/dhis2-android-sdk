@@ -26,54 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.indicator.internal;
-
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
-import org.hisp.dhis.android.core.indicator.Indicator;
-import org.hisp.dhis.android.core.indicator.IndicatorModule;
-import org.hisp.dhis.android.core.indicator.IndicatorType;
-import org.hisp.dhis.android.core.indicator.indicatorengine.IndicatorEngineEntityDIModule;
+package org.hisp.dhis.android.core.indicator.indicatorengine;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
-import retrofit2.Retrofit;
 
-@Module(includes = {
-        DataSetIndicatorEntityDIModule.class,
-        IndicatorEntityDIModule.class,
-        IndicatorTypeEntityDIModule.class,
-        IndicatorEngineEntityDIModule.class
-})
-public final class IndicatorPackageDIModule {
+@Module
+public final class IndicatorEngineEntityDIModule {
 
     @Provides
     @Reusable
-    UidsCallFactory<Indicator> indicatorCallFactory(IndicatorEndpointCallFactory impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    UidsCallFactory<IndicatorType> indicatorTypeCallFactory(IndicatorTypeEndpointCallFactory impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    IndicatorService indicatorService(Retrofit retrofit) {
-        return retrofit.create(IndicatorService.class);
-    }
-
-    @Provides
-    @Reusable
-    IndicatorTypeService indicatorTypeService(Retrofit retrofit) {
-        return retrofit.create(IndicatorTypeService.class);
-    }
-
-    @Provides
-    @Reusable
-    IndicatorModule module(IndicatorModuleImpl impl) {
+    public IndicatorEngine engine(IndicatorEngineImpl impl) {
         return impl;
     }
 }

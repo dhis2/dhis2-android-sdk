@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.indicator.internal;
 import org.hisp.dhis.android.core.indicator.IndicatorCollectionRepository;
 import org.hisp.dhis.android.core.indicator.IndicatorModule;
 import org.hisp.dhis.android.core.indicator.IndicatorTypeCollectionRepository;
+import org.hisp.dhis.android.core.indicator.indicatorengine.IndicatorEngine;
 
 import javax.inject.Inject;
 
@@ -42,11 +43,15 @@ public final class IndicatorModuleImpl implements IndicatorModule {
     private final IndicatorCollectionRepository indicators;
     private final IndicatorTypeCollectionRepository indicatorTypes;
 
+    private final IndicatorEngine indicatorEngine;
+
     @Inject
     IndicatorModuleImpl(IndicatorCollectionRepository indicators,
-                        IndicatorTypeCollectionRepository indicatorTypes) {
+                        IndicatorTypeCollectionRepository indicatorTypes,
+                        IndicatorEngine indicatorEngine) {
         this.indicators = indicators;
         this.indicatorTypes = indicatorTypes;
+        this.indicatorEngine = indicatorEngine;
     }
 
     @Override
@@ -57,5 +62,10 @@ public final class IndicatorModuleImpl implements IndicatorModule {
     @Override
     public IndicatorTypeCollectionRepository indicatorTypes() {
         return indicatorTypes;
+    }
+
+    @Override
+    public IndicatorEngine indicatorEngine() {
+        return indicatorEngine;
     }
 }

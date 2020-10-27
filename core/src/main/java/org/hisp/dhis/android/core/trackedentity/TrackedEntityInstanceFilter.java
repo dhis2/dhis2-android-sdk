@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 
 import androidx.annotation.Nullable;
@@ -46,7 +45,6 @@ import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectW
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
@@ -112,10 +110,6 @@ public abstract class TrackedEntityInstanceFilter extends BaseIdentifiableObject
             implements ObjectWithStyle.Builder<TrackedEntityInstanceFilter, Builder> {
 
         public abstract Builder id(Long id);
-
-        public abstract Builder toContentValues(ContentValues toContentValues);
-
-        public abstract Builder style(ObjectStyle style);
 
         public abstract Builder program(ObjectWithUid program);
 

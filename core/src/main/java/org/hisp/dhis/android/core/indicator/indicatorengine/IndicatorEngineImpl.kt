@@ -79,7 +79,7 @@ class IndicatorEngineImpl @Inject constructor(
         val numerator = expressionService.getExpressionValue(indicator.numerator(), valueMap, constantMap,
             emptyMap(), 0, MissingValueStrategy.NEVER_SKIP) as Double
 
-        val denominator = expressionService.getExpressionValue(indicator.numerator(), valueMap, constantMap,
+        val denominator = expressionService.getExpressionValue(indicator.denominator(), valueMap, constantMap,
             emptyMap(), 0, MissingValueStrategy.NEVER_SKIP) as Double
 
         val formula = "$numerator * ${indicatorType.factor() ?: 1} / $denominator"

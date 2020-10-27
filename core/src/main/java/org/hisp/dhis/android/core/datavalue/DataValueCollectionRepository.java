@@ -122,7 +122,7 @@ public final class DataValueCollectionRepository
     }
 
     public DataValueCollectionRepository byDataSetUid(String dataSetUid) {
-        return cf.subQuery(DataValueByDataSetQueryHelper.key)
+        return cf.subQuery(DataValueByDataSetQueryHelper.getKey())
                 .rawSubQuery(DataValueByDataSetQueryHelper.getOperator(),
                         DataValueByDataSetQueryHelper.whereClause(dataSetUid));
     }

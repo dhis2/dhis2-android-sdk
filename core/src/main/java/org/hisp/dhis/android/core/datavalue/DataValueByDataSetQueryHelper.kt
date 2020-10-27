@@ -48,14 +48,15 @@ internal object DataValueByDataSetQueryHelper {
     private const val COC_UID = "$COC_ALIAS.${CategoryOptionComboTableInfo.Columns.UID}"
     private const val COC_CATEGORYCOMBO = "$COC_ALIAS.${CategoryOptionComboTableInfo.Columns.CATEGORY_COMBO}"
 
-    const val key = "(${DataValueTableInfo.Columns.DATA_ELEMENT}, ${DataValueTableInfo.Columns.CATEGORY_OPTION_COMBO})"
+    @JvmStatic
+    val key = buildKey(DataValueTableInfo.Columns.DATA_ELEMENT, DataValueTableInfo.Columns.CATEGORY_OPTION_COMBO)
 
     @JvmStatic
     val operator = FilterItemOperator.IN
 
     @JvmStatic
     fun whereClause(dataSetUid: String): String =
-        """SELECT $DSE_DATAELEMENT, $COC_UID 
+        """SELECT ${buildKey(DSE_DATAELEMENT, COC_UID)} 
             FROM ${DataSetDataElementLinkTableInfo.TABLE_INFO.name()} $DSE_ALIAS
             INNER JOIN ${DataElementTableInfo.TABLE_INFO.name()} $DE_ALIAS
                 ON $DE_UID = $DSE_DATAELEMENT
@@ -64,4 +65,18 @@ internal object DataValueByDataSetQueryHelper {
                     (CASE WHEN $DSE_CATEGORYCOMBO IS NOT NULL THEN $DSE_CATEGORYCOMBO ELSE $DE_CATEGORYCOMBO END)
             WHERE $DSE_DATASET = '$dataSetUid'
         """.trimIndent().replace("\n", " ")
+
+    /*
+     The initial approach was to use row values instead of an auxiliary key. The SQL would be something like:
+
+     WHERE (dataElement, categoryOptionCombo) IN (SELECT dse.dataElement, coc.uid FROM ...)
+
+     But row values were added to SQL in version 3.15.0, which means Android 8.0 (API 26)
+     https://www.sqlite.org/rowvalue.html
+
+     This solution using an auxiliary key is a workaround for that.
+     */
+    private fun buildKey(dataElementTag: String, categoryOptionComboTag: String): String {
+        return "$dataElementTag || '.' || $categoryOptionComboTag"
+    }
 }

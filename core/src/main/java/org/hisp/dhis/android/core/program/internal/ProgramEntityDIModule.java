@@ -67,7 +67,6 @@ public final class ProgramEntityDIModule {
     @Reusable
     @SuppressWarnings("PMD.NonStaticInitializer")
     Map<String, ChildrenAppender<Program>> childrenAppenders(
-            DatabaseAdapter databaseAdapter,
             ProgramTrackedEntityTypeChildrenAppender trackedEntityTypeChildrenAppender) {
 
         return new HashMap<String, ChildrenAppender<Program>>() {{

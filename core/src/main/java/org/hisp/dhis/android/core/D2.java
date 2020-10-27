@@ -77,7 +77,9 @@ public final class D2 {
     private final D2Modules modules;
     final D2DIComponent d2DIComponent;
 
-    D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter, @NonNull Context context,
+    D2(@NonNull Retrofit retrofit,
+       @NonNull DatabaseAdapter databaseAdapter,
+       @NonNull Context context,
        @NonNull SecureStore secureStore,
        @NonNull InsecureStore insecureStore,
        @NonNull ObjectKeyValueStore<Credentials> credentialsSecureStore) {

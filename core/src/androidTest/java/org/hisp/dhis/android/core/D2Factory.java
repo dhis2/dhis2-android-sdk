@@ -59,17 +59,8 @@ public class D2Factory {
 
     private static D2 forNewDatabaseInternal(SecureStore secureStore, InsecureStore insecureStore) {
         Context context = InstrumentationRegistry.getInstrumentation().getContext();
-
-        D2Configuration d2Configuration = d2Configuration(context);
-
-        D2Manager.setTestMode(true);
-        D2Manager.setTestingSecureStore(secureStore);
-        D2Manager.setTestingInsecureStore(insecureStore);
-        D2 d2 = D2Manager.blockingInstantiateD2(d2Configuration);
-
-        D2Manager.clear();
-
-        return d2;
+        return TestingD2Manager.blockingInstantiateD2(d2Configuration(context),
+                new D2TestingConfig(null, null, null, secureStore, insecureStore));
     }
 
     public static D2Configuration d2Configuration(Context context) {

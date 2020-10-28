@@ -31,12 +31,16 @@ package org.hisp.dhis.android.core.configuration.internal;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+
+import java.util.Date;
 
 public class MultiUserDatabaseManagerForD2Manager {
 
@@ -74,5 +78,17 @@ public class MultiUserDatabaseManagerForD2Manager {
                     databaseConfiguration, credentials.username());
             databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, userConfiguration);
         }
+    }
+
+    @VisibleForTesting
+    public void loadDbForTesting(String name, boolean encrypt, String username) {
+        DatabaseUserConfiguration config = DatabaseUserConfiguration.builder()
+                .databaseName(name)
+                .encrypted(encrypt)
+                .username(username)
+                .databaseCreationDate(BaseIdentifiableObject.dateToDateStr(new Date()))
+                .build();
+
+        databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, config);
     }
 }

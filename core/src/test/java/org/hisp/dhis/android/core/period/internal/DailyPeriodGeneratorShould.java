@@ -27,7 +27,8 @@
  */
 package org.hisp.dhis.android.core.period.internal;
 
-import org.assertj.core.util.Lists;
+import com.google.common.collect.Lists;
+
 import org.hisp.dhis.android.core.period.Period;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.junit.Test;
@@ -39,7 +40,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(JUnit4.class)
 public class DailyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
@@ -94,7 +95,16 @@ public class DailyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
         SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
         PeriodGenerator dailyGenerator = new DailyPeriodGenerator(calendar);
-        assertThat("20191230").isEqualTo(dailyGenerator.generatePeriod(dateFormatter.parse("2019-12-30")).periodId());
-        assertThat("20200102").isEqualTo(dailyGenerator.generatePeriod(dateFormatter.parse("2020-01-02")).periodId());
+        assertThat("20191230").isEqualTo(dailyGenerator.generatePeriod(dateFormatter.parse("2019-12-30"), 0).periodId());
+        assertThat("20200102").isEqualTo(dailyGenerator.generatePeriod(dateFormatter.parse("2020-01-02"), 0).periodId());
+    }
+
+    @Test
+    public void generate_period_id_with_offset() throws ParseException {
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        PeriodGenerator dailyGenerator = new DailyPeriodGenerator(calendar);
+        assertThat("20200101").isEqualTo(dailyGenerator.generatePeriod(dateFormatter.parse("2019-12-30"), 2).periodId());
+        assertThat("20191229").isEqualTo(dailyGenerator.generatePeriod(dateFormatter.parse("2020-01-02"), -4).periodId());
     }
 }

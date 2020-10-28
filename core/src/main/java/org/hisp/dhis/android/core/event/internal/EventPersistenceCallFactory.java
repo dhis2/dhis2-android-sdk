@@ -31,73 +31,54 @@ package org.hisp.dhis.android.core.event.internal;
 import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler;
-import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader;
-import org.hisp.dhis.android.core.user.AuthenticatedUser;
-import org.hisp.dhis.android.core.user.User;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Completable;
 
 @Reusable
 public final class EventPersistenceCallFactory {
 
     private final IdentifiableDataHandler<Event> eventHandler;
-    private final ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
     private final IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
     private final OrganisationUnitModuleDownloader organisationUnitDownloader;
-    private final ForeignKeyCleaner foreignKeyCleaner;
 
     @Inject
     EventPersistenceCallFactory(
             @NonNull IdentifiableDataHandler<Event> eventHandler,
-            @NonNull ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore,
             @NonNull IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
-            @NonNull OrganisationUnitModuleDownloader organisationUnitDownloader,
-            @NonNull ForeignKeyCleaner foreignKeyCleaner) {
+            @NonNull OrganisationUnitModuleDownloader organisationUnitDownloader) {
         this.eventHandler = eventHandler;
-        this.authenticatedUserStore = authenticatedUserStore;
         this.organisationUnitStore = organisationUnitStore;
         this.organisationUnitDownloader = organisationUnitDownloader;
-        this.foreignKeyCleaner = foreignKeyCleaner;
     }
 
-    public Callable<Void> getCall(final Collection<Event> events) {
+    Completable persistEvents(final Collection<Event> events, RelationshipItemRelatives relatives) {
+        return persistEventsInternal(events, false, relatives);
+    }
 
-        return () -> {
-            eventHandler.handleMany(events,
-                    event -> event.toBuilder()
-                            .state(State.SYNCED)
-                            .build(),
-                    false);
+    public Completable persistAsRelationships(final List<Event> events) {
+        return persistEventsInternal(events, true, null);
+    }
 
-            Set<String> searchOrgUnitUids = getMissingOrganisationUnitUids(events);
-
-            if (!searchOrgUnitUids.isEmpty()) {
-                AuthenticatedUser authenticatedUser = authenticatedUserStore.selectFirst();
-
-                Callable<List<OrganisationUnit>> organisationUnitCall =
-                        organisationUnitDownloader.downloadSearchOrganisationUnits(
-                            searchOrgUnitUids, User.builder().uid(authenticatedUser.user()).build());
-                organisationUnitCall.call();
-            }
-
-            foreignKeyCleaner.cleanForeignKeyErrors();
-
-            return null;
-        };
+    private Completable persistEventsInternal(final Collection<Event> events, boolean asRelationship,
+                                              RelationshipItemRelatives relatives) {
+        return Completable.defer(() -> {
+            eventHandler.handleMany(events, asRelationship, false, false, relatives);
+            Set<String> searchUnitUids = getMissingOrganisationUnitUids(events);
+            return organisationUnitDownloader.downloadSearchOrganisationUnits(searchUnitUids);
+        });
     }
 
     private Set<String> getMissingOrganisationUnitUids(Collection<Event> events) {

@@ -42,9 +42,14 @@ import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.note.Note;
 import org.hisp.dhis.android.core.note.internal.NoteDHISVersionManager;
 import org.hisp.dhis.android.core.note.internal.NoteUniquenessManager;
+import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -58,24 +63,46 @@ final class EnrollmentHandler extends IdentifiableDataHandlerImpl<Enrollment> {
     private final Handler<Note> noteHandler;
     private final NoteUniquenessManager noteUniquenessManager;
     private final OrphanCleaner<Enrollment, Event> eventOrphanCleaner;
+    private final OrphanCleaner<Enrollment, Relationship> relationshipOrphanCleaner;
 
     @Inject
-    EnrollmentHandler(@NonNull NoteDHISVersionManager noteVersionManager,
-                      @NonNull EnrollmentStore enrollmentStore,
-                      @NonNull IdentifiableDataHandler<Event> eventHandler,
-                      @NonNull OrphanCleaner<Enrollment, Event> eventOrphanCleaner,
-                      @NonNull Handler<Note> noteHandler,
-                      @NonNull NoteUniquenessManager noteUniquenessManager) {
-        super(enrollmentStore);
+    EnrollmentHandler(
+            @NonNull RelationshipDHISVersionManager relationshipVersionManager,
+            @NonNull RelationshipHandler relationshipHandler,
+            @NonNull NoteDHISVersionManager noteVersionManager,
+            @NonNull EnrollmentStore enrollmentStore,
+            @NonNull IdentifiableDataHandler<Event> eventHandler,
+            @NonNull OrphanCleaner<Enrollment, Event> eventOrphanCleaner,
+            @NonNull Handler<Note> noteHandler,
+            @NonNull NoteUniquenessManager noteUniquenessManager,
+            @NonNull OrphanCleaner<Enrollment, Relationship> relationshipOrphanCleaner) {
+        super(enrollmentStore, relationshipVersionManager, relationshipHandler);
         this.noteVersionManager = noteVersionManager;
         this.eventHandler = eventHandler;
         this.noteHandler = noteHandler;
         this.noteUniquenessManager = noteUniquenessManager;
         this.eventOrphanCleaner = eventOrphanCleaner;
+        this.relationshipOrphanCleaner = relationshipOrphanCleaner;
     }
 
     @Override
-    protected void afterObjectHandled(Enrollment enrollment, HandleAction action, Boolean overwrite) {
+    protected Enrollment addRelationshipState(Enrollment object) {
+        return object.toBuilder().state(State.RELATIONSHIP).build();
+    }
+
+    @Override
+    protected Enrollment addSyncedState(Enrollment object) {
+        return object.toBuilder().state(State.SYNCED).build();
+    }
+
+    @Override
+    protected void deleteOrphans(Enrollment object) {
+        relationshipOrphanCleaner.deleteOrphan(object, EnrollmentInternalAccessor.accessRelationships(object));
+    }
+
+    @Override
+    protected void afterObjectHandled(Enrollment enrollment, HandleAction action, Boolean overwrite,
+                                      RelationshipItemRelatives relatives) {
         if (action != HandleAction.Delete) {
             eventHandler.handleMany(EnrollmentInternalAccessor.accessEvents(enrollment),
                     event -> event.toBuilder()
@@ -92,6 +119,11 @@ final class EnrollmentHandler extends IdentifiableDataHandlerImpl<Enrollment> {
             Set<Note> notesToSync = noteUniquenessManager.buildUniqueCollection(
                     notes, Note.NoteType.ENROLLMENT_NOTE, enrollment.uid());
             noteHandler.handleMany(notesToSync);
+
+            List<Relationship> relationships = EnrollmentInternalAccessor.accessRelationships(enrollment);
+            if (relationships != null && !relationships.isEmpty()) {
+                handleRelationships(relationships, enrollment, relatives);
+            }
         }
 
         eventOrphanCleaner.deleteOrphan(enrollment, EnrollmentInternalAccessor.accessEvents(enrollment));

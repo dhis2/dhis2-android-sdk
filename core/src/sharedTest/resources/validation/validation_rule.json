@@ -1,0 +1,79 @@
+{
+  "code": "Malaria outbreak",
+  "lastUpdated": "2017-05-29T16:43:31.137",
+  "id": "kgh54Xb9LSE",
+  "href": "https://play.dhis2.org/android-current/api/validationRules/kgh54Xb9LSE",
+  "created": "2017-01-26T19:16:58.712",
+  "name": "Malaria outbreak",
+  "importance": "MEDIUM",
+  "displayName": "Malaria outbreak",
+  "publicAccess": "rw------",
+  "instruction": "Instruction",
+  "description": "Malaria outbreak",
+  "operator": "greater_than",
+  "externalAccess": false,
+  "displayDescription": "Malaria outbreak",
+  "dimensionItem": "kgh54Xb9LSE",
+  "periodType": "Monthly",
+  "skipFormValidation": false,
+  "favorite": false,
+  "access": {
+    "read": true,
+    "update": true,
+    "externalize": false,
+    "delete": true,
+    "write": true,
+    "manage": true
+  },
+  "leftSide": {
+    "expression": "10",
+    "description": "Malaria threshold",
+    "missingValueStrategy": "NEVER_SKIP",
+    "slidingWindow": false
+  },
+  "lastUpdatedBy": {
+    "id": "GOLswS44mh8"
+  },
+  "rightSide": {
+    "expression": "I{nFICjJluo74}",
+    "description": "Malaria case count",
+    "missingValueStrategy": "NEVER_SKIP",
+    "slidingWindow": false
+  },
+  "user": {
+    "id": "GOLswS44mh8"
+  },
+  "validationRuleGroups": [
+    {
+      "id": "zlaSof6qLqF"
+    }
+  ],
+  "favorites": [
+
+  ],
+  "organisationUnitLevels": [
+    2,
+    3,
+    4
+  ],
+  "notificationTemplates": [
+    {
+      "id": "DdcMQqp3WdL"
+    }
+  ],
+  "translations": [
+
+  ],
+  "userGroupAccesses": [
+
+  ],
+  "attributeValues": [
+
+  ],
+  "userAccesses": [
+
+  ],
+  "legendSets": [
+
+  ]
+}

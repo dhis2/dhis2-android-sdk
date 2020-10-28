@@ -28,13 +28,12 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreWithState;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadWriteWithUidDataObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.relationship.internal.RelationshipItemElementStoreSelector;
+import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore;
 
 import java.util.Collections;
@@ -43,16 +42,16 @@ import java.util.Map;
 final class RelationshipObjectRepository
         extends ReadWriteWithUidDataObjectRepositoryImpl<Relationship, RelationshipObjectRepository> {
 
-    private final RelationshipItemElementStoreSelector storeSelector;
+    private final DataStatePropagator dataStatePropagator;
 
     RelationshipObjectRepository(final RelationshipStore store,
                                  final String uid,
                                  final Map<String, ChildrenAppender<Relationship>> childrenAppenders,
                                  final RepositoryScope scope,
-                                 final RelationshipItemElementStoreSelector storeSelector) {
+                                 final DataStatePropagator dataStatePropagator) {
         super(store, childrenAppenders, scope,
-                s -> new RelationshipObjectRepository(store, uid, childrenAppenders, s, storeSelector));
-        this.storeSelector = storeSelector;
+                s -> new RelationshipObjectRepository(store, uid, childrenAppenders, s, dataStatePropagator));
+        this.dataStatePropagator = dataStatePropagator;
     }
 
     @Override
@@ -64,7 +63,6 @@ final class RelationshipObjectRepository
                             RelationshipFields.ITEMS)));
             fromItem = withChildren.from();
         }
-        StoreWithState elementStore = storeSelector.getElementStore(fromItem);
-        elementStore.setStateForUpdate(fromItem.elementUid());
+        dataStatePropagator.propagateRelationshipUpdate(fromItem);
     }
 }

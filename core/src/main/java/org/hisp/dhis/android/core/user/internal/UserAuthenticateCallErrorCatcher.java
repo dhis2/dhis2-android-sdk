@@ -28,14 +28,30 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
+import android.util.Log;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher;
+import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 
-import java.io.IOException;
+import java.net.HttpURLConnection;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
 import retrofit2.Response;
 
-final class UserAuthenticateCallErrorCatcher implements APICallErrorCatcher {
+@Reusable
+class UserAuthenticateCallErrorCatcher implements APICallErrorCatcher {
+
+    private final ObjectMapper objectMapper;
+
+    @Inject
+    UserAuthenticateCallErrorCatcher(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
     @Override
     public Boolean mustBeStored() {
@@ -43,21 +59,21 @@ final class UserAuthenticateCallErrorCatcher implements APICallErrorCatcher {
     }
 
     @Override
-    public D2ErrorCode catchError(Response<?> response) throws IOException {
-
-        String errorResponse = response.errorBody().string();
-
-        if (errorResponse.contains("LDAP authentication is not configured") ||
-                errorResponse.contains("Bad credentials")) {
-            return D2ErrorCode.BAD_CREDENTIALS;
-        } else if (errorResponse.contains("User is disabled")) {
-            return D2ErrorCode.USER_ACCOUNT_DISABLED;
-        } else if (errorResponse.contains("User account is locked")) {
-            return D2ErrorCode.USER_ACCOUNT_LOCKED;
-        } else if (response.code() == 404) {
-            return D2ErrorCode.URL_NOT_FOUND;
+    public D2ErrorCode catchError(Response<?> response) {
+        try {
+            String errorBodyStr = response.errorBody().string();
+            HttpMessageResponse errorResponse = objectMapper.readValue(errorBodyStr, HttpMessageResponse.class);
+            boolean isUnauthorized = response.code() == HttpURLConnection.HTTP_UNAUTHORIZED;
+            if (isUnauthorized && errorResponse.message().contains("Account locked")) {
+                return D2ErrorCode.USER_ACCOUNT_LOCKED;
+            } else if (isUnauthorized) {
+                return D2ErrorCode.BAD_CREDENTIALS;
+            } else {
+                return D2ErrorCode.NO_DHIS2_SERVER;
+            }
+        } catch (Exception e) {
+            Log.e(UserAuthenticateCallErrorCatcher.class.getSimpleName(), e.getClass().getSimpleName(), e);
+            return D2ErrorCode.NO_DHIS2_SERVER;
         }
-
-        return null;
     }
 }

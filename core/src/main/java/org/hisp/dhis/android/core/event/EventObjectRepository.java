@@ -65,7 +65,8 @@ public final class EventObjectRepository
     }
 
     public Unit setStatus(EventStatus eventStatus) throws D2Error {
-        return updateObject(updateBuilder().status(eventStatus).build());
+        Date completedDate = eventStatus.equals(EventStatus.COMPLETED) ? new Date() : null;
+        return updateObject(updateBuilder().status(eventStatus).completedDate(completedDate).build());
     }
 
     public Unit setCompletedDate(Date completedDate) throws D2Error {

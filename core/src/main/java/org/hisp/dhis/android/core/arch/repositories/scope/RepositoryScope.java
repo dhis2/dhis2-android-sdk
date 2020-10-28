@@ -45,7 +45,18 @@ import java.util.List;
 public abstract class RepositoryScope {
 
     public enum OrderByDirection {
-        ASC, DESC
+        ASC("asc"),
+        DESC("desc");
+
+        private String api;
+
+        OrderByDirection(String api) {
+            this.api = api;
+        }
+
+        public String getApi() {
+            return api;
+        }
     }
 
     @NonNull

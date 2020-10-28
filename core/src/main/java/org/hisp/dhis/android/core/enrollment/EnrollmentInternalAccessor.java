@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.enrollment;
 
 import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.relationship.Relationship;
 
 import java.util.List;
 
@@ -45,5 +46,13 @@ public final class EnrollmentInternalAccessor {
             Enrollment.Builder builder,
             List<Event> events) {
         return builder.events(events);
+    }
+
+    public static List<Relationship> accessRelationships(Enrollment enrollment) {
+        return enrollment.relationships();
+    }
+
+    public static Enrollment.Builder insertRelationships(Enrollment.Builder builder, List<Relationship> relationships) {
+        return builder.relationships(relationships);
     }
 }

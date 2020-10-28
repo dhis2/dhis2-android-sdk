@@ -46,4 +46,10 @@ public class APIExecutorsDIModule {
     RxAPICallExecutor rxApiCallExecutor(RxAPICallExecutorImpl impl) {
         return impl;
     }
+
+    @Provides
+    @Reusable
+    APIDownloader apiDownloader(APIDownloaderImpl impl) {
+        return impl;
+    }
 }

@@ -38,8 +38,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class TrackedEntityDataValueObjectRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -51,7 +50,7 @@ public class TrackedEntityDataValueObjectRepositoryMockIntegrationShould extends
         TrackedEntityDataValueObjectRepository repository = objectRepository();
 
         repository.blockingSet(value);
-        assertThat(repository.blockingGet().value(), is(value));
+        assertThat(repository.blockingGet().value()).isEqualTo(value);
 
         repository.blockingDelete();
     }
@@ -61,20 +60,20 @@ public class TrackedEntityDataValueObjectRepositoryMockIntegrationShould extends
         TrackedEntityDataValueObjectRepository repository = objectRepository();
 
         repository.blockingSet("value");
-        assertThat(repository.blockingExists(), is(Boolean.TRUE));
+        assertThat(repository.blockingExists()).isEqualTo(Boolean.TRUE);
         repository.blockingDelete();
-        assertThat(repository.blockingExists(), is(Boolean.FALSE));
+        assertThat(repository.blockingExists()).isEqualTo(Boolean.FALSE);
     }
 
     @Test
     public void return_that_a_value_exists_only_if_it_has_been_created() {
         assertThat(d2.trackedEntityModule().trackedEntityDataValues()
-                .value("no_event", "no_data_element").blockingExists(), is(Boolean.FALSE));
+                .value("no_event", "no_data_element").blockingExists()).isEqualTo(Boolean.FALSE);
 
         List<TrackedEntityDataValue> d = d2.trackedEntityModule().trackedEntityDataValues().blockingGet();
 
         assertThat(d2.trackedEntityModule().trackedEntityDataValues()
-                .value("single1", "jDx8LZlznYu").blockingExists(), is(Boolean.TRUE));
+                .value("single1", "jDx8LZlznYu").blockingExists()).isEqualTo(Boolean.TRUE);
     }
 
     private TrackedEntityDataValueObjectRepository objectRepository() {

@@ -4,7 +4,7 @@
 
 ## Build
 
-There is `build.sh` script that builds the project, runs the test suite and performs additional code checks (PMD, CheckStyle, FindBugs). It takes longer than routine builds, but it is recommended to execute it before creating a Pull Request because it is used by the CI platform (Travis) to validate the Pull Requests.
+There is `build.sh` script that builds the project, runs the test suite and performs additional code checks (PMD, CheckStyle, Detekt). It takes longer than routine builds, but it is recommended to execute it before creating a Pull Request because it is used by the CI platform (Travis) to validate the Pull Requests.
 
 ## Testing
 

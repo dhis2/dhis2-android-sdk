@@ -61,8 +61,8 @@ import io.reactivex.Completable;
 import io.reactivex.Single;
 import io.reactivex.observers.TestObserver;
 
+import static com.google.common.truth.Truth.assertThat;
 import static okhttp3.Credentials.basic;
-import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.hisp.dhis.android.core.arch.helpers.UserHelper.md5;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -139,6 +139,9 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     @Mock
     private GeneralSettingCall generalSettingCall;
 
+    @Mock
+    private UserAuthenticateCallErrorCatcher apiCallErrorCatcher;
+
     // call we are testing
     private Single<User> logInSingle;
 
@@ -181,6 +184,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
 
         when(d2Error.errorCode()).thenReturn(D2ErrorCode.SOCKET_TIMEOUT);
+        when(d2Error.isOffline()).thenReturn(true);
         when(generalSettingCall.isDatabaseEncrypted()).thenReturn(Single.just(false));
 
         logInSingle = instantiateCall(USERNAME, PASSWORD, serverUrl);
@@ -189,7 +193,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private Single<User> instantiateCall(String username, String password, String serverUrl) {
         return new UserAuthenticateCallFactory(databaseAdapter, apiCallExecutor,
                 userService, credentialsSecureStore, userHandler, resourceHandler, authenticatedUserStore,
-                systemInfoRepository, userStore, wipeModule, multiUserDatabaseManager, generalSettingCall).logIn(username, password, serverUrl);
+                systemInfoRepository, userStore, wipeModule, multiUserDatabaseManager, generalSettingCall, apiCallErrorCatcher).logIn(username, password, serverUrl);
     }
 
     private OngoingStubbing<User> whenAPICall() throws D2Error {
@@ -286,6 +290,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     public void wipe_db_when_account_disabled() throws Exception {
         whenAPICall().thenThrow(d2Error);
         when(d2Error.errorCode()).thenReturn(D2ErrorCode.USER_ACCOUNT_DISABLED);
+        when(d2Error.isOffline()).thenReturn(false);
 
         TestObserver<User> testObserver = logInSingle.test();
         testObserver.awaitTerminalEvent();

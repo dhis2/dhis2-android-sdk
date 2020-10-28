@@ -31,6 +31,7 @@ public class MockObjects {
     public static String enrollmentUidWithoutGeometry = "e5xQ7RriVpK";
     public static Date enrollmentDate = sampleDate;
     public static Date incidentDate = sampleDate;
+    public static Date completedDate = sampleDate;
     public static EnrollmentStatus enrollmentStatus = EnrollmentStatus.ACTIVE;
     public static float latitude = 1.234F;
     public static float longitude = -0.123F;
@@ -64,6 +65,7 @@ public class MockObjects {
                 .program(program)
                 .enrollmentDate(enrollmentDate)
                 .incidentDate(incidentDate)
+                .completedDate(completedDate)
                 .status(enrollmentStatus)
                 .trackedEntityInstance(teiUid)
                 .id(341L);

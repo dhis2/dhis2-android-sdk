@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
-import retrofit2.Call;
+import io.reactivex.Single;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
@@ -49,7 +49,7 @@ interface OrganisationUnitService {
     String PAGE_SIZE = "pageSize";
 
     @GET(ORGANISATION_UNITS)
-    Call<Payload<OrganisationUnit>> getOrganisationUnits(
+    Single<Payload<OrganisationUnit>> getOrganisationUnits(
             @Query(FIELDS) @Which Fields<OrganisationUnit> fields,
             @Query(FILTER) @Where Filter<OrganisationUnit, String> filter,
             @Query(PAGING) Boolean paging,
@@ -58,7 +58,7 @@ interface OrganisationUnitService {
     );
 
     @GET(ORGANISATION_UNITS)
-    Call<Payload<OrganisationUnit>> getSearchOrganisationUnits(
+    Single<Payload<OrganisationUnit>> getSearchOrganisationUnits(
             @Query(FIELDS) @Which Fields<OrganisationUnit> fields,
             @Query(FILTER) @Where Filter<OrganisationUnit, String> filter,
             @Query(PAGING) Boolean paging

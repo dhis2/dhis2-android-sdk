@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.program.internal;
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallFactory;
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
+import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall;
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.arch.modules.internal.MetadataModuleByUidDownloader;
 import org.hisp.dhis.android.core.option.Option;
@@ -39,86 +39,72 @@ import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Single;
 
 @Reusable
 public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<List<Program>> {
 
-    private final UidsCallFactory<Program> programCallFactory;
-    private final UidsCallFactory<ProgramStage> programStageCallFactory;
-    private final UidsCallFactory<ProgramRule> programRuleCallFactory;
-    private final UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory;
-    private final UidsCallFactory<TrackedEntityAttribute> trackedEntityAttributeCallFactory;
-    private final ListCallFactory<RelationshipType> relationshipTypeCallFactory;
-    private final UidsCallFactory<OptionSet> optionSetCallFactory;
-    private final UidsCallFactory<Option> optionCallFactory;
-    private final UidsCallFactory<OptionGroup> optionGroupCallFactory;
-    private final DHISVersionManager versionManager;
+    private final UidsCall<Program> programCall;
+    private final UidsCall<ProgramStage> programStageCall;
+    private final UidsCall<ProgramRule> programRuleCall;
+    private final UidsCall<TrackedEntityType> trackedEntityTypeCall;
+    private final UidsCall<TrackedEntityAttribute> trackedEntityAttributeCall;
+    private final ListCall<RelationshipType> relationshipTypeCall;
+    private final UidsCall<OptionSet> optionSetCall;
+    private final UidsCall<Option> optionCall;
+    private final UidsCall<OptionGroup> optionGroupCall;
 
     @Inject
-    ProgramModuleDownloader(UidsCallFactory<Program> programCallFactory,
-                            UidsCallFactory<ProgramStage> programStageCallFactory,
-                            UidsCallFactory<ProgramRule> programRuleCallFactory,
-                            UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory,
-                            UidsCallFactory<TrackedEntityAttribute> trackedEntityAttributeCallFactory,
-                            ListCallFactory<RelationshipType> relationshipTypeCallFactory,
-                            UidsCallFactory<OptionSet> optionSetCallFactory,
-                            UidsCallFactory<Option> optionCallFactory,
-                            UidsCallFactory<OptionGroup> optionGroupCallFactory,
-                            DHISVersionManager versionManager) {
-        this.programCallFactory = programCallFactory;
-        this.programStageCallFactory = programStageCallFactory;
-        this.programRuleCallFactory = programRuleCallFactory;
-        this.trackedEntityTypeCallFactory = trackedEntityTypeCallFactory;
-        this.trackedEntityAttributeCallFactory = trackedEntityAttributeCallFactory;
-        this.relationshipTypeCallFactory = relationshipTypeCallFactory;
-        this.optionSetCallFactory = optionSetCallFactory;
-        this.optionCallFactory = optionCallFactory;
-        this.optionGroupCallFactory = optionGroupCallFactory;
-        this.versionManager = versionManager;
+    ProgramModuleDownloader(UidsCall<Program> programCall,
+                            UidsCall<ProgramStage> programStageCall,
+                            UidsCall<ProgramRule> programRuleCall,
+                            UidsCall<TrackedEntityType> trackedEntityTypeCall,
+                            UidsCall<TrackedEntityAttribute> trackedEntityAttributeCall,
+                            ListCall<RelationshipType> relationshipTypeCall,
+                            UidsCall<OptionSet> optionSetCall,
+                            UidsCall<Option> optionCall,
+                            UidsCall<OptionGroup> optionGroupCall) {
+        this.programCall = programCall;
+        this.programStageCall = programStageCall;
+        this.programRuleCall = programRuleCall;
+        this.trackedEntityTypeCall = trackedEntityTypeCall;
+        this.trackedEntityAttributeCall = trackedEntityAttributeCall;
+        this.relationshipTypeCall = relationshipTypeCall;
+        this.optionSetCall = optionSetCall;
+        this.optionCall = optionCall;
+        this.optionGroupCall = optionGroupCall;
     }
 
     @Override
-    public Callable<List<Program>> downloadMetadata(Set<String> orgUnitProgramUids) {
-        return () -> {
-            List<Program> programs = programCallFactory.create(orgUnitProgramUids).call();
-
+    public Single<List<Program>> downloadMetadata(Set<String> orgUnitProgramUids) {
+        return programCall.download(orgUnitProgramUids).flatMap(programs -> {
             Set<String> programUids = UidsHelper.getUids(programs);
-            List<ProgramStage> programStages = programStageCallFactory.create(programUids).call();
-
-            programRuleCallFactory.create(programUids).call();
-
-            Set<String> trackedEntityUids = ProgramParentUidsHelper.getAssignedTrackedEntityUids(programs);
-
-            List<TrackedEntityType> trackedEntityTypes = trackedEntityTypeCallFactory.create(trackedEntityUids).call();
-
-            Set<String> attributeUids = ProgramParentUidsHelper.getAssignedTrackedEntityAttributeUids(programs,
-                    trackedEntityTypes);
-
-            List<TrackedEntityAttribute> attributes = trackedEntityAttributeCallFactory.create(attributeUids).call();
-
-            relationshipTypeCallFactory.create().call();
-
-            Set<String> optionSetUids = ProgramParentUidsHelper.getAssignedOptionSetUids(attributes, programStages);
-            optionSetCallFactory.create(optionSetUids).call();
-
-            optionCallFactory.create(optionSetUids).call();
-
-            if (!versionManager.is2_29()) {
-                optionGroupCallFactory.create(optionSetUids).call();
-            }
-
-            return programs;
-        };
+            return programStageCall.download(programUids).flatMap(programStages -> {
+                Set<String> trackedEntityUids = ProgramParentUidsHelper.getAssignedTrackedEntityUids(programs);
+                return trackedEntityTypeCall.download(trackedEntityUids).flatMap(trackedEntityTypes ->
+                        trackedEntityAttributeCall.download(ProgramParentUidsHelper
+                                .getAssignedTrackedEntityAttributeUids(programs, trackedEntityTypes)))
+                        .flatMap(attributes -> {
+                            Set<String> optionSetUids = ProgramParentUidsHelper.getAssignedOptionSetUids(
+                                    attributes, programStages);
+                            return Single.merge(
+                                    programRuleCall.download(programUids),
+                                    relationshipTypeCall.download(),
+                                    optionSetCall.download(optionSetUids),
+                                    optionCall.download(optionSetUids)
+                            ).ignoreElements()
+                                    .andThen(optionGroupCall.download(optionSetUids)).map(toIgnore -> programs);
+                });
+            });
+        });
     }
 }

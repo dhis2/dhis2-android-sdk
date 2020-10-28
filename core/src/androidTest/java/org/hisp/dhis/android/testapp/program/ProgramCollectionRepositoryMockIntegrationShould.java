@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.testapp.program;
 
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.period.PeriodType;
@@ -42,8 +43,7 @@ import org.junit.runner.RunWith;
 import java.util.Collections;
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -52,7 +52,36 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void find_all() {
         List<Program> programs = d2.programModule().programs()
                 .blockingGet();
-        assertThat(programs.size(), is(2));
+        assertThat(programs.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void find_uids() {
+        List<String> programUids = d2.programModule().programs()
+                .blockingGetUids();
+        assertThat(programUids.size()).isEqualTo(2);
+        assertThat(programUids.contains("IpHINAT79UW")).isTrue();
+        assertThat(programUids.contains("lxAQ7Zs9VYR")).isTrue();
+    }
+
+    @Test
+    public void find_uids_order_by_name_asc() {
+        List<String> programUids = d2.programModule().programs()
+                .orderByName(RepositoryScope.OrderByDirection.ASC)
+                .blockingGetUids();
+        assertThat(programUids.size()).isEqualTo(2);
+        assertThat(programUids.get(0)).isEqualTo("lxAQ7Zs9VYR");
+        assertThat(programUids.get(1)).isEqualTo("IpHINAT79UW");
+    }
+
+    @Test
+    public void find_uids_order_by_name_desc() {
+        List<String> programUids = d2.programModule().programs()
+                .orderByName(RepositoryScope.OrderByDirection.DESC)
+                .blockingGetUids();
+        assertThat(programUids.size()).isEqualTo(2);
+        assertThat(programUids.get(0)).isEqualTo("IpHINAT79UW");
+        assertThat(programUids.get(1)).isEqualTo("lxAQ7Zs9VYR");
     }
 
     @Test
@@ -60,7 +89,17 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<Program> programs = d2.programModule().programs()
                 .byVersion().eq(3)
                 .blockingGet();
-        assertThat(programs.size(), is(1));
+        assertThat(programs.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void find_uids_with_filter_by_version() {
+        List<String> programUids = d2.programModule().programs()
+                .byVersion().eq(3)
+                .blockingGetUids();
+        assertThat(programUids.size()).isEqualTo(1);
+        assertThat(programUids.contains("IpHINAT79UW")).isFalse();
+        assertThat(programUids.contains("lxAQ7Zs9VYR")).isTrue();
     }
 
     @Test
@@ -68,7 +107,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<Program> programs = d2.programModule().programs()
                 .byOnlyEnrollOnce().isFalse()
                 .blockingGet();
-        assertThat(programs.size(), is(1));
+        assertThat(programs.size()).isEqualTo(1);
     }
 
     @Test
@@ -76,7 +115,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<Program> programs = d2.programModule().programs()
                 .byEnrollmentDateLabel().eq("Enrollment Date")
                 .blockingGet();
-        assertThat(programs.size(), is(1));
+        assertThat(programs.size()).isEqualTo(1);
     }
 
     @Test
@@ -84,7 +123,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<Program> programs = d2.programModule().programs()
                 .byDisplayIncidentDate().isFalse()
                 .blockingGet();
-        assertThat(programs.size(), is(1));
+        assertThat(programs.size()).isEqualTo(1);
     }
 
     @Test
@@ -92,7 +131,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<Program> programs = d2.programModule().programs()
                 .byIncidentDateLabel().eq("Incident Date")
                 .blockingGet();
-        assertThat(programs.size(), is(1));
+        assertThat(programs.size()).isEqualTo(1);
     }
 
     @Test
@@ -100,7 +139,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<Program> programs = d2.programModule().programs()
                 .byRegistration().isFalse()
                 .blockingGet();
-        assertThat(programs.size(), is(1));
+        assertThat(programs.size()).isEqualTo(1);
     }
 
     @Test
@@ -108,7 +147,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<Program> programs = d2.programModule().programs()
                 .bySelectEnrollmentDatesInFuture().isFalse()
                 .blockingGet();
-        assertThat(programs.size(), is(1));
+        assertThat(programs.size()).isEqualTo(1);
     }
 
     @Test
@@ -116,7 +155,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<Program> programs = d2.programModule().programs()
                 .byDataEntryMethod().isTrue()
                 .blockingGet();
-        assertThat(programs.size(), is(1));
+        assertThat(programs.size()).isEqualTo(1);
     }
 
     @Test
@@ -124,7 +163,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<Program> programs = d2.programModule().programs()
                 .byIgnoreOverdueEvents().isTrue()
                 .blockingGet();
-        assertThat(programs.size(), is(1));
+        assertThat(programs.size()).isEqualTo(1);
     }
 
     @Test
@@ -132,7 +171,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<Program> programs = d2.programModule().programs()
                 .bySelectIncidentDatesInFuture().isFalse()
                 .blockingGet();
-        assertThat(programs.size(), is(1));
+        assertThat(programs.size()).isEqualTo(1);
     }
 
     @Test
@@ -140,7 +179,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<Program> programs = d2.programModule().programs()
                 .byFeatureType().eq(FeatureType.NONE)
                 .blockingGet();
-        assertThat(programs.size(), is(1));
+        assertThat(programs.size()).isEqualTo(1);
     }
 
     @Test
@@ -148,7 +187,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<Program> programs = d2.programModule().programs()
                 .byAccessLevel().eq(AccessLevel.PROTECTED)
                 .blockingGet();
-        assertThat(programs.size(), is(1));
+        assertThat(programs.size()).isEqualTo(1);
     }
 
     @Test
@@ -156,7 +195,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<Program> programs = d2.programModule().programs()
                 .byColor().eq("#333")
                 .blockingGet();
-        assertThat(programs.size(), is(1));
+        assertThat(programs.size()).isEqualTo(1);
     }
 
     @Test
@@ -164,7 +203,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<Program> programs = d2.programModule().programs()
                 .byIcon().eq("program-icon")
                 .blockingGet();
-        assertThat(programs.size(), is(1));
+        assertThat(programs.size()).isEqualTo(1);
     }
 
     @Test
@@ -172,7 +211,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<Program> programs = d2.programModule().programs()
                 .byUseFirstStageDuringRegistration().isTrue()
                 .blockingGet();
-        assertThat(programs.size(), is(1));
+        assertThat(programs.size()).isEqualTo(1);
     }
 
     @Test
@@ -180,7 +219,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<Program> programs = d2.programModule().programs()
                 .byDisplayFrontPageList().isFalse()
                 .blockingGet();
-        assertThat(programs.size(), is(1));
+        assertThat(programs.size()).isEqualTo(1);
     }
 
     @Test
@@ -188,7 +227,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<Program> programs = d2.programModule().programs()
                 .byProgramType().eq(ProgramType.WITHOUT_REGISTRATION)
                 .blockingGet();
-        assertThat(programs.size(), is(1));
+        assertThat(programs.size()).isEqualTo(1);
     }
 
     @Test
@@ -196,7 +235,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<Program> programs = d2.programModule().programs()
                 .byRelatedProgramUid().eq("lxAQ7Zs9VYR")
                 .blockingGet();
-        assertThat(programs.size(), is(1));
+        assertThat(programs.size()).isEqualTo(1);
     }
 
     @Test
@@ -204,7 +243,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<Program> programs = d2.programModule().programs()
                 .byTrackedEntityTypeUid().eq("nEenWmSyUEp")
                 .blockingGet();
-        assertThat(programs.size(), is(2));
+        assertThat(programs.size()).isEqualTo(2);
     }
 
     @Test
@@ -212,7 +251,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<Program> programs = d2.programModule().programs()
                 .byCategoryComboUid().eq("m2jTvAj5kkm")
                 .blockingGet();
-        assertThat(programs.size(), is(2));
+        assertThat(programs.size()).isEqualTo(2);
     }
 
     @Test
@@ -220,7 +259,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<Program> programs = d2.programModule().programs()
                 .byAccessDataWrite().isTrue()
                 .blockingGet();
-        assertThat(programs.size(), is(2));
+        assertThat(programs.size()).isEqualTo(2);
     }
 
     @Test
@@ -228,7 +267,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<Program> programs = d2.programModule().programs()
                 .byExpiryDays().eq(2)
                 .blockingGet();
-        assertThat(programs.size(), is(1));
+        assertThat(programs.size()).isEqualTo(1);
     }
 
     @Test
@@ -236,7 +275,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<Program> programs = d2.programModule().programs()
                 .byCompleteEventsExpiryDays().eq(4)
                 .blockingGet();
-        assertThat(programs.size(), is(1));
+        assertThat(programs.size()).isEqualTo(1);
     }
 
     @Test
@@ -244,7 +283,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<Program> programs = d2.programModule().programs()
                 .byExpiryPeriodType().eq(PeriodType.BiMonthly)
                 .blockingGet();
-        assertThat(programs.size(), is(1));
+        assertThat(programs.size()).isEqualTo(1);
     }
 
     @Test
@@ -252,7 +291,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<Program> programs = d2.programModule().programs()
                 .byMinAttributesRequiredToSearch().eq(7)
                 .blockingGet();
-        assertThat(programs.size(), is(1));
+        assertThat(programs.size()).isEqualTo(1);
     }
 
     @Test
@@ -260,7 +299,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<Program> programs = d2.programModule().programs()
                 .byMaxTeiCountToReturn().eq(20)
                 .blockingGet();
-        assertThat(programs.size(), is(1));
+        assertThat(programs.size()).isEqualTo(1);
     }
 
 
@@ -269,7 +308,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<Program> programs = d2.programModule().programs()
                 .byOrganisationUnitUid("DiszpKrYNg8")
                 .blockingGet();
-        assertThat(programs.size(), is(2));
+        assertThat(programs.size()).isEqualTo(2);
     }
 
     @Test
@@ -277,7 +316,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<Program> programs = d2.programModule().programs()
                 .byOrganisationUnitList(Collections.singletonList("DiszpKrYNg8"))
                 .blockingGet();
-        assertThat(programs.size(), is(2));
+        assertThat(programs.size()).isEqualTo(2);
     }
 
     @Test
@@ -285,32 +324,32 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<Program> programCapture = d2.programModule().programs()
                 .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
                 .blockingGet();
-        assertThat(programCapture.size(), is(2));
+        assertThat(programCapture.size()).isEqualTo(2);
 
         List<Program> programSearch = d2.programModule().programs()
                 .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH)
                 .blockingGet();
-        assertThat(programSearch.size(), is(0));
+        assertThat(programSearch.size()).isEqualTo(0);
     }
 
     @Test
     public void include_category_combo_as_object_with_uid() {
         Program program = d2.programModule().programs()
                 .one().blockingGet();
-        assertThat(program.categoryCombo().uid(), is("m2jTvAj5kkm"));
+        assertThat(program.categoryCombo().uid()).isEqualTo("m2jTvAj5kkm");
     }
 
     @Test
     public void include_related_program_as_object_with_uid() {
         Program program = d2.programModule().programs()
                 .one().blockingGet();
-        assertThat(program.relatedProgram().uid(), is("lxAQ7Zs9VYR"));
+        assertThat(program.relatedProgram().uid()).isEqualTo("lxAQ7Zs9VYR");
     }
 
     @Test
     public void include_tracked_entity_type_as_children() {
         Program program = d2.programModule().programs()
                 .withTrackedEntityType().one().blockingGet();
-        assertThat(program.trackedEntityType().name(), is("Person"));
+        assertThat(program.trackedEntityType().name()).isEqualTo("Person");
     }
 }

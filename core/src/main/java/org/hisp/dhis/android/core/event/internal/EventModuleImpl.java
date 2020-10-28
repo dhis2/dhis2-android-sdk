@@ -28,33 +28,36 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
+import androidx.annotation.VisibleForTesting;
+
 import org.hisp.dhis.android.core.event.EventCollectionRepository;
 import org.hisp.dhis.android.core.event.EventDownloader;
 import org.hisp.dhis.android.core.event.EventModule;
+import org.hisp.dhis.android.core.event.EventService;
 
 import javax.inject.Inject;
 
-import androidx.annotation.VisibleForTesting;
 import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @Reusable
 public final class EventModuleImpl implements EventModule {
 
     private final EventCollectionRepository events;
     private final EventDownloader eventDownloader;
+    private final EventService eventService;
 
     @VisibleForTesting
-    @SuppressFBWarnings("URF_UNREAD_FIELD")
     final EventPersistenceCallFactory eventPersistenceCallFactory;
 
     @Inject
     EventModuleImpl(EventCollectionRepository events,
                     EventPersistenceCallFactory eventPersistenceCallFactory,
-                    EventDownloader eventDownloader) {
+                    EventDownloader eventDownloader,
+                    EventService eventService) {
         this.events = events;
         this.eventPersistenceCallFactory = eventPersistenceCallFactory;
         this.eventDownloader = eventDownloader;
+        this.eventService = eventService;
     }
 
     @Override
@@ -65,5 +68,10 @@ public final class EventModuleImpl implements EventModule {
     @Override
     public EventDownloader eventDownloader() {
         return eventDownloader;
+    }
+
+    @Override
+    public EventService eventService() {
+        return eventService;
     }
 }

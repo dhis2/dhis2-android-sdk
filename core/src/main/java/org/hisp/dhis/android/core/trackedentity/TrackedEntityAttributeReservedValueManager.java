@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBu
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
-import org.hisp.dhis.android.core.arch.helpers.internal.BooleanWrapper;
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeOrderByItem;
 import org.hisp.dhis.android.core.common.CoreColumns;
@@ -53,7 +53,6 @@ import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo;
 import org.hisp.dhis.android.core.settings.GeneralSettingObjectRepository;
 import org.hisp.dhis.android.core.settings.GeneralSettings;
-import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoCall;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueQuery;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueStoreInterface;
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
@@ -86,7 +85,6 @@ public final class TrackedEntityAttributeReservedValueManager {
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
     private final GeneralSettingObjectRepository generalSettingObjectRepository;
     private final D2CallExecutor executor;
-    private final SystemInfoCall systemInfoCall;
     private final QueryCallFactory<TrackedEntityAttributeReservedValue,
             TrackedEntityAttributeReservedValueQuery> reservedValueQueryCallFactory;
 
@@ -102,7 +100,6 @@ public final class TrackedEntityAttributeReservedValueManager {
             UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
             GeneralSettingObjectRepository generalSettingObjectRepository,
             D2CallExecutor executor,
-            SystemInfoCall systemInfoCall,
             QueryCallFactory<TrackedEntityAttributeReservedValue,
                     TrackedEntityAttributeReservedValueQuery> reservedValueQueryCallFactory) {
         this.store = store;
@@ -113,7 +110,6 @@ public final class TrackedEntityAttributeReservedValueManager {
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
         this.generalSettingObjectRepository = generalSettingObjectRepository;
         this.executor = executor;
-        this.systemInfoCall = systemInfoCall;
         this.reservedValueQueryCallFactory = reservedValueQueryCallFactory;
     }
 
@@ -138,8 +134,7 @@ public final class TrackedEntityAttributeReservedValueManager {
      */
     public Single<String> getValue(@NonNull String attributeUid, @NonNull String organisationUnitUid) {
         Completable optionalDownload = downloadValuesIfBelowThreshold(
-                attributeUid, getOrganisationUnit(organisationUnitUid), null, new BooleanWrapper(false),
-                false
+                attributeUid, getOrganisationUnit(organisationUnitUid), null, false
         ).onErrorComplete();
 
         return optionalDownload.andThen(Single.create(emitter -> {
@@ -188,7 +183,7 @@ public final class TrackedEntityAttributeReservedValueManager {
     public Observable<D2Progress> downloadReservedValues(@NonNull String attributeUid,
                                                          Integer numberOfValuesToFillUp) {
 
-        return downloadValuesForOrgUnits(attributeUid, numberOfValuesToFillUp, new BooleanWrapper(false));
+        return downloadValuesForOrgUnits(attributeUid, numberOfValuesToFillUp);
     }
 
     /**
@@ -209,12 +204,11 @@ public final class TrackedEntityAttributeReservedValueManager {
      */
     public Observable<D2Progress> downloadAllReservedValues(Integer numberOfValuesToFillUp) {
         List<Observable<D2Progress>> observables = new ArrayList<>();
-        BooleanWrapper systemInfoDownloaded = new BooleanWrapper(false);
 
         List<TrackedEntityAttribute> generatedAttributes = getGeneratedAttributes();
 
         for (TrackedEntityAttribute attribute : generatedAttributes) {
-            observables.add(downloadValuesForOrgUnits(attribute.uid(), numberOfValuesToFillUp, systemInfoDownloaded));
+            observables.add(downloadValuesForOrgUnits(attribute.uid(), numberOfValuesToFillUp));
         }
 
         return Observable.merge(observables);
@@ -240,7 +234,7 @@ public final class TrackedEntityAttributeReservedValueManager {
      * @return The reserved value count by attribute or by attribute and organisation unit.
      */
     public int blockingCount(@NonNull String attributeUid, @Nullable String organisationUnitUid) {
-        return organisationUnitUid == null ? store.count(attributeUid) : store.count(attributeUid, organisationUnitUid);
+        return store.count(attributeUid, organisationUnitUid, null);
     }
 
     /**
@@ -294,21 +288,18 @@ public final class TrackedEntityAttributeReservedValueManager {
     }
 
     private Observable<D2Progress> downloadValuesForOrgUnits(@NonNull String attribute,
-                                                             Integer numberOfValuesToFillUp,
-                                                             BooleanWrapper systemInfoDownloaded) {
+                                                             Integer numberOfValuesToFillUp) {
 
         String pattern = trackedEntityAttributeStore.selectByUid(attribute).pattern();
 
         if (isOrgunitDependent(pattern)) {
             List<OrganisationUnit> organisationUnits = getOrgUnitsLinkedToAttribute(attribute);
             return Observable.fromIterable(organisationUnits).flatMapSingle(organisationUnit ->
-                    downloadValuesIfBelowThreshold(
-                            attribute, organisationUnit, numberOfValuesToFillUp, systemInfoDownloaded, true)
+                    downloadValuesIfBelowThreshold(attribute, organisationUnit, numberOfValuesToFillUp, true)
                             .onErrorComplete()
                             .toSingle(this::increaseProgress));
         } else {
-            return downloadValuesIfBelowThreshold(attribute, null, numberOfValuesToFillUp, systemInfoDownloaded,
-                    true)
+            return downloadValuesIfBelowThreshold(attribute, null, numberOfValuesToFillUp, true)
                     .onErrorComplete()
                     .toSingle(this::increaseProgress)
                     .toObservable();
@@ -318,25 +309,24 @@ public final class TrackedEntityAttributeReservedValueManager {
     private Completable downloadValuesIfBelowThreshold(String attribute,
                                                        OrganisationUnit organisationUnit,
                                                        Integer minNumberOfValuesToHave,
-                                                       BooleanWrapper systemInfoDownloaded,
                                                        boolean storeError) {
         return Completable.defer(() -> {
-            // TODO use server date
+            // Using local date. It's not worth it to make a system info call
             store.deleteExpired(new Date());
 
             Integer fillUpTo = getFillUpToValue(minNumberOfValuesToHave);
 
-            Integer remainingValues = organisationUnit == null ?
-                    store.count(attribute) : store.count(attribute, organisationUnit.uid());
+            String pattern = trackedEntityAttributeStore.selectByUid(attribute).pattern();
+            int remainingValues = store.count(attribute, UidsHelper.getUidOrNull(organisationUnit), pattern);
 
             // If number of values is explicitly specified, we use that value as threshold.
-            Integer minNumberToTryFill = minNumberOfValuesToHave == null ?
+            int minNumberToTryFill = minNumberOfValuesToHave == null ?
                     (int) (fillUpTo * FACTOR_TO_REFILL) : minNumberOfValuesToHave;
 
             if (remainingValues < minNumberToTryFill) {
                 Integer numberToReserve = fillUpTo - remainingValues;
 
-                return downloadValues(attribute, organisationUnit, numberToReserve, systemInfoDownloaded, storeError);
+                return downloadValues(attribute, organisationUnit, numberToReserve, pattern, storeError);
             } else {
                 return Completable.complete();
             }
@@ -346,26 +336,18 @@ public final class TrackedEntityAttributeReservedValueManager {
     private Completable downloadValues(String trackedEntityAttributeUid,
                                        OrganisationUnit organisationUnit,
                                        Integer numberToReserve,
-                                       BooleanWrapper systemInfoDownloaded,
+                                       String pattern,
                                        boolean storeError) {
 
-        Completable downloadSystemInfo = systemInfoDownloaded.get() ? Completable.complete() :
-                systemInfoCall.getCompletable(storeError).andThen(
-                        Completable.fromAction(() -> systemInfoDownloaded.set(true)));
-
-        return downloadSystemInfo.andThen(Completable.fromAction(() -> {
-            String trackedEntityAttributePattern;
-            try {
-                trackedEntityAttributePattern =
-                        trackedEntityAttributeStore.selectByUid(trackedEntityAttributeUid).pattern();
-            } catch (Exception e) {
-                trackedEntityAttributePattern = "";
-            }
-
+        return Completable.fromAction(() -> {
             executor.executeD2Call(reservedValueQueryCallFactory.create(
                     TrackedEntityAttributeReservedValueQuery.create(trackedEntityAttributeUid, numberToReserve,
-                            organisationUnit, trackedEntityAttributePattern)));
-        }));
+                            organisationUnit, pattern)), storeError);
+        }).doOnComplete(() -> {
+            if (pattern != null) {
+                store.deleteIfOutdatedPattern(trackedEntityAttributeUid, pattern);
+            }
+        });
     }
 
     private List<OrganisationUnit> getOrgUnitsLinkedToAttribute(String attribute) {

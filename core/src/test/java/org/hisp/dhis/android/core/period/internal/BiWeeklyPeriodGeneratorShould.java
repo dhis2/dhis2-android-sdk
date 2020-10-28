@@ -27,7 +27,8 @@
  */
 package org.hisp.dhis.android.core.period.internal;
 
-import org.assertj.core.util.Lists;
+import com.google.common.collect.Lists;
+
 import org.hisp.dhis.android.core.period.Period;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.junit.Test;
@@ -39,7 +40,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(JUnit4.class)
 public class BiWeeklyPeriodGeneratorShould {
@@ -108,8 +109,17 @@ public class BiWeeklyPeriodGeneratorShould {
         SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
         PeriodGenerator biWeeklyGenerator = new BiWeeklyPeriodGenerator(calendar);
-        assertThat("2019BiW26").isEqualTo(biWeeklyGenerator.generatePeriod(dateFormatter.parse("2019-12-23")).periodId());
-        assertThat("2020BiW1").isEqualTo(biWeeklyGenerator.generatePeriod(dateFormatter.parse("2020-01-02")).periodId());
+        assertThat("2019BiW26").isEqualTo(biWeeklyGenerator.generatePeriod(dateFormatter.parse("2019-12-23"), 0).periodId());
+        assertThat("2020BiW1").isEqualTo(biWeeklyGenerator.generatePeriod(dateFormatter.parse("2020-01-02"), 0).periodId());
+    }
+
+    @Test
+    public void generate_period_id_with_offset() throws ParseException {
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        PeriodGenerator biWeeklyGenerator = new BiWeeklyPeriodGenerator(calendar);
+        assertThat("2020BiW2").isEqualTo(biWeeklyGenerator.generatePeriod(dateFormatter.parse("2019-12-23"), 2).periodId());
+        assertThat("2019BiW25").isEqualTo(biWeeklyGenerator.generatePeriod(dateFormatter.parse("2020-01-02"), -2).periodId());
     }
 
     private Period generateExpectedPeriod(String id, Calendar cal, int weekStartDay, PeriodType periodType) {

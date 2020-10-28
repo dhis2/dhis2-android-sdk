@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
 import org.hisp.dhis.android.core.arch.api.filters.internal.Where;
@@ -35,19 +37,17 @@ import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import retrofit2.Call;
+import io.reactivex.Single;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 public interface TrackedEntityTypeService {
 
     @GET("trackedEntityTypes")
-    Call<Payload<TrackedEntityType>> getTrackedEntityTypes(
+    Single<Payload<TrackedEntityType>> getTrackedEntityTypes(
             @NonNull @Query("fields") @Which Fields<TrackedEntityType> fields,
             @NonNull @Query("filter") @Where Filter<TrackedEntityType, String> idFilter,
-            @Nullable @Query("filter") @Where Filter<TrackedEntityType, String> lastUpdated,
+            @NonNull @Query("filter") String accessDataReadFilter,
             @NonNull @Query("paging") boolean paging
     );
 }

@@ -36,21 +36,22 @@ import org.junit.Test;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.Callable;
 
-import static junit.framework.Assert.assertFalse;
+import io.reactivex.Single;
+
+import static com.google.common.truth.Truth.assertThat;
 
 public class CategoryEndpointCallShould extends BaseMockIntegrationTestEmptyEnqueable {
 
     @Test
-    public void download_category_successfully() throws Exception {
-        Callable<List<Category>> callEndpoint =
-                objects.d2DIComponent.internalModules().category.categoryCallFactory.create(new HashSet<>(
+    public void download_category_successfully() {
+        Single<List<Category>> categoriesSingle =
+                objects.d2DIComponent.internalModules().category.categoryCall.download(new HashSet<>(
                         Lists.newArrayList("vGs6omsRekv", "KfdsGBcoiCa", "cX5k9anHEHd", "x3uo8LqiTBk")));
 
         dhis2MockServer.enqueueMockResponse("category/categories.json");
 
-        List<Category> categories = callEndpoint.call();
-        assertFalse(categories.isEmpty());
+        List<Category> categories = categoriesSingle.blockingGet();
+        assertThat(categories.isEmpty()).isFalse();
     }
 }

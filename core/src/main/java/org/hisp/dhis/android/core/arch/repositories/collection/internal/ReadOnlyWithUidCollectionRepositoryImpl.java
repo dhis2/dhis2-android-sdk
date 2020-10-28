@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.arch.repositories.collection.internal;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryFinalImpl;
@@ -43,17 +42,13 @@ import java.util.Map;
 
 public class ReadOnlyWithUidCollectionRepositoryImpl<M extends CoreObject & ObjectWithUidInterface,
         R extends ReadOnlyCollectionRepository<M>>
-        extends ReadOnlyCollectionRepositoryImpl<M, R>
-        implements ReadOnlyWithUidCollectionRepository<M> {
-
-    protected final IdentifiableObjectStore<M> store;
+        extends BaseReadOnlyWithUidCollectionRepositoryImpl<M, R> {
 
     ReadOnlyWithUidCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
                                             Map<String, ChildrenAppender<M>> childrenAppenders,
                                             RepositoryScope scope,
                                             FilterConnectorFactory<R> cf) {
         super(store, childrenAppenders, scope, cf);
-        this.store = store;
     }
 
     /**

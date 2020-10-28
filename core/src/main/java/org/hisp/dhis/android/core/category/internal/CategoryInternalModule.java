@@ -27,31 +27,29 @@
  */
 package org.hisp.dhis.android.core.category.internal;
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
+import androidx.annotation.VisibleForTesting;
+
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 
 import javax.inject.Inject;
 
-import androidx.annotation.VisibleForTesting;
 import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @Reusable
 public final class CategoryInternalModule {
 
     @VisibleForTesting
-    @SuppressFBWarnings("URF_UNREAD_FIELD")
-    final UidsCallFactory<Category> categoryCallFactory;
+    final UidsCall<Category> categoryCall;
 
     @VisibleForTesting
-    @SuppressFBWarnings("URF_UNREAD_FIELD")
-    final UidsCallFactory<CategoryCombo> categoryComboCallFactory;
+    final UidsCall<CategoryCombo> categoryComboCall;
 
     @Inject
-    CategoryInternalModule(UidsCallFactory<Category> categoryCallFactory,
-                           UidsCallFactory<CategoryCombo> categoryComboCallFactory) {
-        this.categoryCallFactory = categoryCallFactory;
-        this.categoryComboCallFactory = categoryComboCallFactory;
+    CategoryInternalModule(UidsCall<Category> categoryCall,
+                           UidsCall<CategoryCombo> categoryComboCall) {
+        this.categoryCall = categoryCall;
+        this.categoryComboCall = categoryComboCall;
     }
 }

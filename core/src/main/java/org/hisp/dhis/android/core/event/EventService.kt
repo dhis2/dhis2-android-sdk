@@ -1,0 +1,144 @@
+/*
+ * Copyright (c) 2004-2019, University of Oslo
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ * Neither the name of the HISP project nor the names of its contributors may
+ * be used to endorse or promote products derived from this software without
+ * specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+package org.hisp.dhis.android.core.event
+
+import dagger.Reusable
+import io.reactivex.Single
+import javax.inject.Inject
+import org.hisp.dhis.android.core.category.CategoryOptionComboService
+import org.hisp.dhis.android.core.enrollment.EnrollmentCollectionRepository
+import org.hisp.dhis.android.core.enrollment.EnrollmentService
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
+import org.hisp.dhis.android.core.event.internal.EventDateUtils
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService
+import org.hisp.dhis.android.core.program.ProgramCollectionRepository
+import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
+
+@Reusable
+@Suppress("LongParameterList", "TooManyFunctions")
+class EventService @Inject constructor(
+    private val enrollmentRepository: EnrollmentCollectionRepository,
+    private val eventRepository: EventCollectionRepository,
+    private val programRepository: ProgramCollectionRepository,
+    private val programStageRepository: ProgramStageCollectionRepository,
+    private val enrollmentService: EnrollmentService,
+    private val organisationUnitService: OrganisationUnitService,
+    private val categoryOptionComboService: CategoryOptionComboService,
+    private val eventDateUtils: EventDateUtils
+) {
+
+    fun blockingHasDataWriteAccess(eventUid: String): Boolean {
+        val event = eventRepository.uid(eventUid).blockingGet() ?: return false
+
+        return programRepository.uid(event.program()).blockingGet()?.access()?.data()?.write() ?: false &&
+            programStageRepository.uid(event.programStage()).blockingGet()?.access()?.data()?.write() ?: false
+    }
+
+    fun hasDataWriteAccess(eventUid: String): Single<Boolean> {
+        return Single.just(blockingHasDataWriteAccess(eventUid))
+    }
+
+    fun blockingIsInOrgunitRange(event: Event): Boolean {
+        return event.eventDate()?.let { eventDate ->
+            event.organisationUnit()?.let { orgunitUid ->
+                organisationUnitService.blockingIsDateInOrgunitRange(orgunitUid, eventDate)
+            }
+        } ?: true
+    }
+
+    fun isInOrgunitRange(event: Event): Single<Boolean> {
+        return Single.just(blockingIsInOrgunitRange(event))
+    }
+
+    fun blockingHasCategoryComboAccess(event: Event): Boolean {
+        return event.attributeOptionCombo()?.let {
+            categoryOptionComboService.blockingHasAccess(it, event.eventDate())
+        } ?: true
+    }
+
+    fun hasCategoryComboAccess(event: Event): Single<Boolean> {
+        return Single.just(blockingHasCategoryComboAccess(event))
+    }
+
+    @Suppress("ComplexMethod")
+    fun blockingIsEditable(eventUid: String): Boolean {
+        val event = eventRepository.uid(eventUid).blockingGet()
+        val program = programRepository.uid(event.program()).blockingGet()
+        val programStage = programStageRepository.uid(event.programStage()).blockingGet()
+
+        val isBlocked = event.status() == EventStatus.COMPLETED && programStage.blockEntryForm() ?: false
+
+        val isExpired = eventDateUtils.isEventExpired(
+            event = event,
+            completeExpiryDays = program.completeEventsExpiryDays() ?: 0,
+            programPeriodType = programStage.periodType() ?: program.expiryPeriodType(),
+            expiryDays = program.expiryDays() ?: 0
+        )
+
+        return !isBlocked &&
+            !isExpired &&
+            blockingHasDataWriteAccess(eventUid) &&
+            blockingIsInOrgunitRange(event) &&
+            blockingHasCategoryComboAccess(event) &&
+            event.enrollment()?.let { enrollmentService.blockingIsOpen(it) } ?: true &&
+            event.organisationUnit()?.let { organisationUnitService.blockingIsInCaptureScope(it) } ?: true
+    }
+
+    fun isEditable(eventUid: String): Single<Boolean> {
+        return Single.just(blockingIsEditable(eventUid))
+    }
+
+    fun blockingCanAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Boolean {
+        val enrollment = enrollmentRepository.uid(enrollmentUid).blockingGet()
+        val programStage = programStageRepository.uid(programStageUid).blockingGet()
+
+        if (enrollment == null || programStage == null) {
+            return false
+        }
+
+        val isActiveEnrollment = enrollment.status() == EnrollmentStatus.ACTIVE
+
+        val acceptMoreEvents =
+            if (programStage.repeatable() == true) true
+            else getEventCount(enrollmentUid, programStageUid) == 0
+
+        return isActiveEnrollment && acceptMoreEvents
+    }
+
+    fun canAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Single<Boolean> {
+        return Single.just(blockingCanAddEventToEnrollment(enrollmentUid, programStageUid))
+    }
+
+    private fun getEventCount(enrollmentUid: String, programStageUid: String): Int {
+        return eventRepository
+            .byEnrollmentUid().eq(enrollmentUid)
+            .byProgramStageUid().eq(programStageUid)
+            .byDeleted().isFalse
+            .blockingCount()
+    }
+}

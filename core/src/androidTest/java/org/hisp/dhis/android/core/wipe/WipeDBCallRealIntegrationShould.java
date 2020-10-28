@@ -61,11 +61,11 @@ public class WipeDBCallRealIntegrationShould extends BaseRealIntegrationTest {
 
         d2.metadataModule().blockingDownload();
 
-        DatabaseAssert.assertThatDatabase(databaseAdapter()).isNotEmpty();
+        DatabaseAssert.assertThatDatabase(d2.databaseAdapter()).isNotEmpty();
 
         d2.wipeModule().wipeEverything();
 
-        DatabaseAssert.assertThatDatabase(databaseAdapter()).isEmpty();
+        DatabaseAssert.assertThatDatabase(d2.databaseAdapter()).isEmpty();
     }
 
     //@Test
@@ -78,11 +78,11 @@ public class WipeDBCallRealIntegrationShould extends BaseRealIntegrationTest {
 
         eventCall.call();
 
-        DatabaseAssert.assertThatDatabase(databaseAdapter()).isNotEmpty();
+        DatabaseAssert.assertThatDatabase(d2.databaseAdapter()).isNotEmpty();
 
         d2.wipeModule().wipeEverything();
 
-        DatabaseAssert.assertThatDatabase(databaseAdapter()).isEmpty();
+        DatabaseAssert.assertThatDatabase(d2.databaseAdapter()).isEmpty();
     }
 
     //@Test
@@ -91,11 +91,11 @@ public class WipeDBCallRealIntegrationShould extends BaseRealIntegrationTest {
 
         d2.metadataModule().blockingDownload();
 
-        DatabaseAssert.assertThatDatabase(databaseAdapter()).isNotEmpty();
+        DatabaseAssert.assertThatDatabase(d2.databaseAdapter()).isNotEmpty();
 
         d2.wipeModule().wipeMetadata();
 
-        DatabaseAssert.assertThatDatabase(databaseAdapter()).isEmpty();
+        DatabaseAssert.assertThatDatabase(d2.databaseAdapter()).isEmpty();
     }
 
     //@Test
@@ -107,7 +107,7 @@ public class WipeDBCallRealIntegrationShould extends BaseRealIntegrationTest {
         d2.trackedEntityModule().trackedEntityInstanceDownloader().limit(5).blockingDownload();
 
         TrackedEntityInstanceStore trackedEntityInstanceStore =
-                TrackedEntityInstanceStoreImpl.create(databaseAdapter());
+                TrackedEntityInstanceStoreImpl.create(d2.databaseAdapter());
 
         boolean hasTrackedEntities = trackedEntityInstanceStore.count() > 0;
 

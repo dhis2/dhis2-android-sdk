@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 
 import androidx.annotation.NonNull;
@@ -52,31 +51,14 @@ public final class CursorAssert {
 
     @NonNull
     public CursorAssert hasRow(@NonNull Object... values) {
-        assertThat(cursor.moveToNext()).named("row " + (row + 1) + " exists").isTrue();
+        assertThat(cursor.moveToNext()).isTrue();
         row = row + 1;
 
-        assertThat(cursor.getColumnCount()).named("column count").isEqualTo(values.length);
+        assertThat(cursor.getColumnCount()).isEqualTo(values.length);
         for (int index = 0; index < values.length; index++) {
             assertThat(cursor.getString(index))
-                    .named("row " + row + " column '" + cursor.getColumnName(index) + "'")
                     .isEqualTo(values[index] == null ? values[index] : String.valueOf(values[index]));
         }
-
-        return this;
-    }
-
-    @NonNull
-    public CursorAssert hasRow(@NonNull String[] projection, @NonNull ContentValues contentValues) {
-        assertThat(projection.length)
-                .named("Projection size does not match size of content values")
-                .isEqualTo(contentValues.size());
-
-        Object[] values = new Object[projection.length];
-        for (int index = 0; index < projection.length; index++) {
-            values[index] = contentValues.get(projection[index]);
-        }
-
-        hasRow(values);
 
         return this;
     }

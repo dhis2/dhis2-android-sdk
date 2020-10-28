@@ -28,7 +28,8 @@
 
 package org.hisp.dhis.android.core.arch.helpers;
 
-import org.assertj.core.util.Lists;
+import com.google.common.collect.Lists;
+
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.junit.Test;
@@ -37,7 +38,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 public class GeometryHelperShould {
 
@@ -103,5 +104,15 @@ public class GeometryHelperShould {
         List<List<List<List<Double>>>> multiPolygon = GeometryHelper.getMultiPolygon(geometry);
 
         assertThat(multiPolygon).isEqualTo(coordinates);
+    }
+
+    @Test
+    public void should_build_coordinates_without_spaces() {
+        List<Double> coordinates = Lists.newArrayList(longitude1, latitude1);
+
+        Geometry geometry = GeometryHelper.createPointGeometry(coordinates);
+
+        String expectedCoordinates = "[" + longitude1 + "," + latitude1 + "]";
+        assertThat(geometry.coordinates()).isEqualTo(expectedCoordinates);
     }
 }

@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.arch.db.access.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseImportExport;
 
 import dagger.Module;
 import dagger.Provides;
@@ -45,5 +46,10 @@ public class DatabaseDIModule {
     @Provides
     DatabaseAdapter databaseAdapter() {
         return databaseAdapter;
+    }
+
+    @Provides
+    DatabaseImportExport databaseImportExport(DatabaseImportExportImpl impl) {
+        return impl;
     }
 }

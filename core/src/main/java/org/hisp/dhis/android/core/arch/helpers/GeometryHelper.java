@@ -131,7 +131,7 @@ public final class GeometryHelper {
     public static Geometry createPointGeometry(List<Double> point) {
         return Geometry.builder()
                 .type(FeatureType.POINT)
-                .coordinates(point.toString())
+                .coordinates(pointListToCoordinates(point))
                 .build();
     }
 
@@ -145,7 +145,7 @@ public final class GeometryHelper {
     public static Geometry createPolygonGeometry(List<List<List<Double>>> polygon) {
         return Geometry.builder()
                 .type(FeatureType.POLYGON)
-                .coordinates(polygon.toString())
+                .coordinates(pointListToCoordinates(polygon))
                 .build();
     }
 
@@ -159,11 +159,11 @@ public final class GeometryHelper {
     public static Geometry createMultiPolygonGeometry(List<List<List<List<Double>>>> multiPolygon) {
         return Geometry.builder()
                 .type(FeatureType.MULTI_POLYGON)
-                .coordinates(multiPolygon.toString())
+                .coordinates(pointListToCoordinates(multiPolygon))
                 .build();
     }
 
-    private static <T> T getGeometryObject(Geometry geometry, FeatureType type, TypeReference typeReference)
+    private static <T> T getGeometryObject(Geometry geometry, FeatureType type, TypeReference<T> typeReference)
             throws D2Error {
         if (geometry.type() != type) {
             throw d2Error(null, "The given geometry has not " + type.getGeometryType() + " type.");
@@ -188,5 +188,9 @@ public final class GeometryHelper {
                 .errorDescription(errorDescription)
                 .originalException(e)
                 .build();
+    }
+
+    private static String pointListToCoordinates(List<?> list) {
+        return list.toString().replace(", ", ",");
     }
 }

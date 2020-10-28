@@ -37,10 +37,13 @@ import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventTableInfo;
 import org.hisp.dhis.android.core.event.internal.EventStore;
 import org.hisp.dhis.android.core.note.Note;
+import org.hisp.dhis.android.core.relationship.RelationshipItem;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -65,22 +68,22 @@ public final class DataStatePropagatorImpl implements DataStatePropagator {
 
     @Override
     public void propagateEnrollmentUpdate(Enrollment enrollment) {
-        setTeiStateForUpdate(enrollment.trackedEntityInstance());
-    }
-
-    @Override
-    public void propagateEventUpdate(Event event) {
-        if (event.enrollment() != null) {
-            Enrollment enrollment = enrollmentStore.selectByUid(event.enrollment());
-            enrollmentStore.setStateForUpdate(enrollment.uid());
+        if (enrollment != null) {
             setTeiStateForUpdate(enrollment.trackedEntityInstance());
         }
     }
 
     @Override
+    public void propagateEventUpdate(Event event) {
+        if (event != null && event.enrollment() != null) {
+            Enrollment enrollment = setEnrollmentStateForUpdate(event.enrollment());
+            propagateEnrollmentUpdate(enrollment);
+        }
+    }
+
+    @Override
     public void propagateTrackedEntityDataValueUpdate(TrackedEntityDataValue dataValue) {
-        Event event = eventStore.selectByUid(dataValue.event());
-        eventStore.setStateForUpdate(event.uid());
+        Event event = setEventStateForUpdate(dataValue.event());
         propagateEventUpdate(event);
     }
 
@@ -92,18 +95,72 @@ public final class DataStatePropagatorImpl implements DataStatePropagator {
     @Override
     public void propagateNoteCreation(Note note) {
         if (note.noteType() == Note.NoteType.ENROLLMENT_NOTE) {
-            Enrollment enrollment = enrollmentStore.selectByUid(note.enrollment());
-            enrollmentStore.setStateForUpdate(enrollment.uid());
-            setTeiStateForUpdate(enrollment.trackedEntityInstance());
+            Enrollment enrollment = setEnrollmentStateForUpdate(note.enrollment());
+            propagateEnrollmentUpdate(enrollment);
         } else if (note.noteType() == Note.NoteType.EVENT_NOTE) {
-            Event event = eventStore.selectByUid(note.event());
-            eventStore.setStateForUpdate(event.uid());
+            Event event = setEventStateForUpdate(note.event());
             propagateEventUpdate(event);
         }
     }
 
-    private void setTeiStateForUpdate(String trackedEntityInstanceUid) {
-        trackedEntityInstanceStore.setStateForUpdate(trackedEntityInstanceUid);
+    @Override
+    public void propagateRelationshipUpdate(RelationshipItem item) {
+        if (item != null) {
+            if (item.hasTrackedEntityInstance()) {
+                setTeiStateForUpdate(item.trackedEntityInstance().trackedEntityInstance());
+            } else if (item.hasEnrollment()) {
+                Enrollment enrollment = setEnrollmentStateForUpdate(item.enrollment().enrollment());
+                propagateEnrollmentUpdate(enrollment);
+            } else if (item.hasEvent()) {
+                Event event = setEventStateForUpdate(item.event().event());
+                propagateEventUpdate(event);
+            }
+        }
+    }
+
+    private TrackedEntityInstance setTeiStateForUpdate(String trackedEntityInstanceUid) {
+        TrackedEntityInstance instance = trackedEntityInstanceStore.selectByUid(trackedEntityInstanceUid);
+        if (instance != null) {
+            Date now = new Date();
+            TrackedEntityInstance updatedTEI = instance.toBuilder()
+                    .state(getStateForUpdate(instance.state()))
+                    .lastUpdated(getMaxDate(instance.lastUpdated(), now))
+                    .lastUpdatedAtClient(getMaxDate(instance.lastUpdatedAtClient(), now))
+                    .build();
+            trackedEntityInstanceStore.update(updatedTEI);
+            instance = updatedTEI;
+        }
+        return instance;
+    }
+
+    private Enrollment setEnrollmentStateForUpdate(String enrollmentUid) {
+        Enrollment enrollment = enrollmentStore.selectByUid(enrollmentUid);
+        if (enrollment != null) {
+            Date now = new Date();
+            Enrollment updatedEnrollment = enrollment.toBuilder()
+                    .state(getStateForUpdate(enrollment.state()))
+                    .lastUpdated(getMaxDate(enrollment.lastUpdated(), now))
+                    .lastUpdatedAtClient(getMaxDate(enrollment.lastUpdatedAtClient(), now))
+                    .build();
+            enrollmentStore.update(updatedEnrollment);
+            enrollment = updatedEnrollment;
+        }
+        return enrollment;
+    }
+
+    private Event setEventStateForUpdate(String eventUid) {
+        Event event = eventStore.selectByUid(eventUid);
+        if (event != null) {
+            Date now = new Date();
+            Event updatedEvent = event.toBuilder()
+                    .state(getStateForUpdate(event.state()))
+                    .lastUpdated(getMaxDate(event.lastUpdated(), now))
+                    .lastUpdatedAtClient(getMaxDate(event.lastUpdatedAtClient(), now))
+                    .build();
+            eventStore.update(updatedEvent);
+            event = updatedEvent;
+        }
+        return event;
     }
 
     public void resetUploadingEnrollmentAndEventStates(String trackedEntityInstanceUid) {
@@ -138,6 +195,24 @@ public final class DataStatePropagatorImpl implements DataStatePropagator {
             if (State.UPLOADING.equals(event.state())) {
                 eventStore.setState(event.uid(), State.TO_UPDATE);
             }
+        }
+    }
+
+    private Date getMaxDate(Date existing, Date today) {
+        if (existing == null) {
+            return today;
+        } else if (today == null || existing.after(today)) {
+            return existing;
+        } else {
+            return today;
+        }
+    }
+
+    private State getStateForUpdate(State existingState) {
+        if (State.TO_POST.equals(existingState) || State.RELATIONSHIP.equals(existingState)) {
+            return existingState;
+        } else {
+            return State.TO_UPDATE;
         }
     }
 }

@@ -21,13 +21,19 @@ public interface LocalDbRepository {
 
     Completable setGatewayNumber(String number);
 
+    Completable deleteGatewayNumber();
+
     Single<Integer> getWaitingResultTimeout();
 
     Completable setWaitingResultTimeout(Integer timeoutSeconds);
 
+    Completable deleteWaitingResultTimeout();
+
     Single<String> getConfirmationSenderNumber();
 
     Completable setConfirmationSenderNumber(String number);
+
+    Completable deleteConfirmationSenderNumber();
 
     Single<SMSMetadata> getMetadataIds();
 

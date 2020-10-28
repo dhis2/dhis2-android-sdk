@@ -28,15 +28,14 @@
 
 package org.hisp.dhis.android.testapp.settings;
 
-import org.hisp.dhis.android.core.settings.GeneralSettings;
 import org.hisp.dhis.android.core.settings.DataSyncPeriod;
+import org.hisp.dhis.android.core.settings.GeneralSettings;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class GeneralSettingsObjectRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -44,6 +43,6 @@ public class GeneralSettingsObjectRepositoryMockIntegrationShould extends BaseMo
     @Test
     public void find_android_setting() {
         GeneralSettings generalSettings = d2.settingModule().generalSetting().blockingGet();
-        assertThat(generalSettings.dataSync(), is(DataSyncPeriod.EVERY_24_HOURS));
+        assertThat(generalSettings.dataSync()).isEqualTo(DataSyncPeriod.EVERY_24_HOURS);
     }
 }

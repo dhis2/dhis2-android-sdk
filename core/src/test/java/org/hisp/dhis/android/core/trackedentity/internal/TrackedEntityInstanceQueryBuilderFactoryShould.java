@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams;
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface;
-import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.settings.DownloadPeriod;
 import org.hisp.dhis.android.core.settings.ProgramSetting;
 import org.hisp.dhis.android.core.settings.ProgramSettings;
@@ -52,16 +51,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class TrackedEntityInstanceQueryBuilderFactoryShould {
-
-    @Mock
-    private ResourceHandler resourceHandler;
 
     @Mock
     private UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
@@ -77,6 +73,10 @@ public class TrackedEntityInstanceQueryBuilderFactoryShould {
 
     @Mock
     private ProgramSettings programSettings;
+
+    @Mock
+    private TrackedEntityInstanceLastUpdatedManager lastUpdatedManager;
+
 
     private String p1 = "program1", p2 = "program2", p3 = "program3";
 
@@ -97,15 +97,14 @@ public class TrackedEntityInstanceQueryBuilderFactoryShould {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        when(resourceHandler.getLastUpdated(any())).thenReturn(null);
         when(userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids()).thenReturn(rootOrgUnits);
         when(userOrganisationUnitLinkStore.queryOrganisationUnitUidsByScope(any())).thenReturn(captureOrgUnits);
         when(organisationUnitProgramLinkLinkStore.selectWhere(anyString())).thenReturn(links);
         when(programStore.getUidsByProgramType(any())).thenReturn(getProgramList());
         when(programSettingsObjectRepository.blockingGet()).thenReturn(programSettings);
 
-        builderFactory = new TrackedEntityInstanceQueryBuilderFactory(resourceHandler, userOrganisationUnitLinkStore,
-                organisationUnitProgramLinkLinkStore, programStore, programSettingsObjectRepository);
+        builderFactory = new TrackedEntityInstanceQueryBuilderFactory(userOrganisationUnitLinkStore,
+                organisationUnitProgramLinkLinkStore, programStore, programSettingsObjectRepository, lastUpdatedManager);
     }
 
     @Test
@@ -118,7 +117,7 @@ public class TrackedEntityInstanceQueryBuilderFactoryShould {
 
         TeiQuery bundle = builders.get(0).build();
         assertThat(bundle.orgUnits()).isEqualTo(rootOrgUnits);
-        assertThat(bundle.ouMode()).isEqualByComparingTo(OrganisationUnitMode.DESCENDANTS);
+        assertThat(bundle.ouMode()).isEqualTo(OrganisationUnitMode.DESCENDANTS);
         assertThat(bundle.program()).isNull();
     }
 

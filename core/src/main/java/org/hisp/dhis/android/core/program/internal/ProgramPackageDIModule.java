@@ -28,11 +28,12 @@
 
 package org.hisp.dhis.android.core.program.internal;
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramModule;
 import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramStage;
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorEngineEntityDIModule;
 
 import dagger.Module;
 import dagger.Provides;
@@ -41,6 +42,7 @@ import retrofit2.Retrofit;
 
 @Module(includes = {
         ProgramEntityDIModule.class,
+        ProgramIndicatorEngineEntityDIModule.class,
         ProgramIndicatorEntityDIModule.class,
         ProgramIndicatorLegendSetEntityDIModule.class,
         ProgramRuleActionEntityDIModule.class,
@@ -60,19 +62,19 @@ public final class ProgramPackageDIModule {
 
     @Provides
     @Reusable
-    UidsCallFactory<Program> programCallFactory(ProgramEndpointCallFactory impl) {
+    UidsCall<Program> programCall(ProgramCall impl) {
         return impl;
     }
 
     @Provides
     @Reusable
-    UidsCallFactory<ProgramRule> programRuleCallFactory(ProgramRuleEndpointCallFactory impl) {
+    UidsCall<ProgramRule> programRuleCall(ProgramRuleCall impl) {
         return impl;
     }
 
     @Provides
     @Reusable
-    UidsCallFactory<ProgramStage> programStageCallFactory(ProgramStageEndpointCallFactory impl) {
+    UidsCall<ProgramStage> programStageCall(ProgramStageCall impl) {
         return impl;
     }
 

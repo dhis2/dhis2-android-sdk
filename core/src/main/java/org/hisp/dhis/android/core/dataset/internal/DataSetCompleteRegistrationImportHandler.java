@@ -28,19 +28,20 @@
 
 package org.hisp.dhis.android.core.dataset.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
+import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary;
 import org.hisp.dhis.android.core.imports.internal.ImportConflict;
 import org.hisp.dhis.android.core.imports.internal.ImportCount;
-import org.hisp.dhis.android.core.imports.ImportStatus;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import dagger.Reusable;
 
 @Reusable
@@ -59,25 +60,17 @@ final class DataSetCompleteRegistrationImportHandler {
             @NonNull DataValueImportSummary dataValueImportSummary,
             @NonNull List<DataSetCompleteRegistration> deletedDataSetCompleteRegistrations,
             @NonNull List<DataSetCompleteRegistration> withErrorDataSetCompleteRegistrations) {
-        State newState =
-                dataValueImportSummary.importStatus() == ImportStatus.ERROR ||
-                        !withErrorDataSetCompleteRegistrations.isEmpty() ? State.ERROR : State.SYNCED;
+        State newState = dataValueImportSummary.importStatus() == ImportStatus.ERROR ? State.ERROR : State.SYNCED;
 
         for (DataSetCompleteRegistration dataSetCompleteRegistration :
                 dataSetCompleteRegistrationPayload.dataSetCompleteRegistrations) {
-            dataSetCompleteRegistrationStore.setState(dataSetCompleteRegistration, newState);
+            if (dataSetCompleteRegistrationStore.isBeingUpload(dataSetCompleteRegistration)) {
+                dataSetCompleteRegistrationStore.setState(dataSetCompleteRegistration, newState);
+            }
         }
 
-        List<ImportConflict> conflicts = new ArrayList<>();
-        for (DataSetCompleteRegistration dataSetCompleteRegistration : withErrorDataSetCompleteRegistrations) {
-            dataSetCompleteRegistrationStore.setState(dataSetCompleteRegistration, State.ERROR);
-            conflicts.add(ImportConflict.create(
-                    dataSetCompleteRegistration.toString(), "Error marking as incomplete"));
-        }
-
-        for (DataSetCompleteRegistration dataSetCompleteRegistration : deletedDataSetCompleteRegistrations) {
-            dataSetCompleteRegistrationStore.deleteById(dataSetCompleteRegistration);
-        }
+        List<ImportConflict> conflicts = handleDeletedDataSetCompleteRegistrations(deletedDataSetCompleteRegistrations,
+                withErrorDataSetCompleteRegistrations);
 
         if (dataValueImportSummary.importConflicts() != null) {
             conflicts.addAll(dataValueImportSummary.importConflicts());
@@ -85,6 +78,27 @@ final class DataSetCompleteRegistrationImportHandler {
 
         return recreateDataValueImportSummary(dataValueImportSummary, conflicts,
                 deletedDataSetCompleteRegistrations.size());
+    }
+
+    private List<ImportConflict> handleDeletedDataSetCompleteRegistrations(
+            @NonNull List<DataSetCompleteRegistration> deletedDataSetCompleteRegistrations,
+            @NonNull List<DataSetCompleteRegistration> withErrorDataSetCompleteRegistrations) {
+
+        List<ImportConflict> conflicts = new ArrayList<>();
+        for (DataSetCompleteRegistration dataSetCompleteRegistration : withErrorDataSetCompleteRegistrations) {
+            if (dataSetCompleteRegistrationStore.isBeingUpload(dataSetCompleteRegistration)) {
+                dataSetCompleteRegistrationStore.setState(dataSetCompleteRegistration, State.ERROR);
+                conflicts.add(ImportConflict.create(
+                        dataSetCompleteRegistration.toString(), "Error marking as incomplete"));
+            }
+        }
+
+        for (DataSetCompleteRegistration dataSetCompleteRegistration : deletedDataSetCompleteRegistrations) {
+            if (dataSetCompleteRegistrationStore.isBeingUpload(dataSetCompleteRegistration)) {
+                dataSetCompleteRegistrationStore.deleteById(dataSetCompleteRegistration);
+            }
+        }
+        return conflicts;
     }
 
     private DataValueImportSummary recreateDataValueImportSummary(DataValueImportSummary dataValueImportSummary,

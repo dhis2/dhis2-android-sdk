@@ -45,6 +45,7 @@ class TrackedEntityAttributeReservedValueCallProcessor implements CallProcessor<
     private final Handler<TrackedEntityAttributeReservedValue> handler;
     private final String organisationUnitUid;
     private final Date temporalValidityDate;
+    private final String pattern;
 
     TrackedEntityAttributeReservedValueCallProcessor(DatabaseAdapter databaseAdapter,
                                                      Handler<TrackedEntityAttributeReservedValue> handler,
@@ -53,6 +54,7 @@ class TrackedEntityAttributeReservedValueCallProcessor implements CallProcessor<
             this.databaseAdapter = databaseAdapter;
             this.handler = handler;
             this.organisationUnitUid = organisationUnit == null ? null : organisationUnit.uid();
+            this.pattern = pattern;
             this.temporalValidityDate = fillTemporalValidityDate(pattern);
     }
 
@@ -63,6 +65,7 @@ class TrackedEntityAttributeReservedValueCallProcessor implements CallProcessor<
 
                 for (TrackedEntityAttributeReservedValue trackedEntityAttributeReservedValue : objectList) {
                     handler.handle(trackedEntityAttributeReservedValue.toBuilder()
+                            .pattern(pattern)
                             .organisationUnit(organisationUnitUid)
                             .temporalValidityDate(temporalValidityDate)
                             .build());
@@ -74,13 +77,10 @@ class TrackedEntityAttributeReservedValueCallProcessor implements CallProcessor<
     }
 
     private Date fillTemporalValidityDate(String pattern) {
-        Date temporalValidityDate;
         try {
-            temporalValidityDate = new TrackedEntityAttributeReservedValueValidatorHelper().getExpiryDateCode(pattern);
+            return new TrackedEntityAttributeReservedValueValidatorHelper().getExpiryDateCode(pattern);
         } catch (IllegalStateException e) {
-            temporalValidityDate = null;
+            return null;
         }
-
-        return temporalValidityDate;
     }
 }

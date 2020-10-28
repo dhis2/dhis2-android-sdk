@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -112,23 +113,28 @@ public final class APICallExecutorImpl implements APICallExecutor {
             } else if (errorClass != null && acceptedErrorCodes.contains(response.code())) {
                 return ObjectMapperFactory.objectMapper().readValue(response.errorBody().string(), errorClass);
             } else if (errorCatcher != null) {
-                D2ErrorCode d2ErrorCode = errorCatcher.catchError(response);
-
-                if (d2ErrorCode != null) {
-                    D2Error d2error = errorMapper.responseException(errorBuilder, response, d2ErrorCode);
-
-                    if (errorCatcher.mustBeStored()) {
-                        throw storeAndReturn(d2error);
-                    } else {
-                        throw d2error;
-                    }
-                }
+                this.catchAndThrow(errorCatcher, errorBuilder, response);
             }
             throw storeAndReturn(errorMapper.responseException(errorBuilder, response));
         } catch (D2Error d2Error) {
             throw d2Error;
         } catch (Throwable t) {
             throw storeAndReturn(errorMapper.mapRetrofitException(t, errorBuilder));
+        }
+    }
+
+    private <P> void catchAndThrow(APICallErrorCatcher errorCatcher, D2Error.Builder errorBuilder,
+                                   Response<P> response) throws IOException, D2Error {
+        D2ErrorCode d2ErrorCode = errorCatcher.catchError(response);
+
+        if (d2ErrorCode != null) {
+            D2Error d2error = errorMapper.responseException(errorBuilder, response, d2ErrorCode);
+
+            if (errorCatcher.mustBeStored()) {
+                throw storeAndReturn(d2error);
+            } else {
+                throw d2error;
+            }
         }
     }
 

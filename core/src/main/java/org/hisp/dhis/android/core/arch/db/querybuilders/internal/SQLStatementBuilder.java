@@ -40,6 +40,8 @@ public interface SQLStatementBuilder extends ReadOnlySQLStatementBuilder {
 
     String selectUidsWhere(String whereClause);
 
+    String selectUidsWhere(String whereClause, String orderByClause);
+
     String selectColumnWhere(String column, String whereClause);
 
     String selectChildrenWithLinkTable(LinkTableChildProjection projection, String parentUid, String whereClause);

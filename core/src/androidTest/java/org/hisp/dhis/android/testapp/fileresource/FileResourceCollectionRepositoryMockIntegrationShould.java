@@ -30,7 +30,7 @@ package org.hisp.dhis.android.testapp.fileresource;
 
 import android.content.Context;
 
-import androidx.test.InstrumentationRegistry;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.apache.commons.io.FileUtils;
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper;
@@ -54,8 +54,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -68,7 +67,7 @@ public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseM
                 d2.fileResourceModule().fileResources()
                         .blockingGet();
 
-        assertThat(fileResources.size(), is(1));
+        assertThat(fileResources.size()).isEqualTo(1);
     }
 
     @Test
@@ -80,7 +79,7 @@ public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseM
                         .byUid().eq(fileUid)
                         .blockingGet();
 
-        assertThat(fileResources.size(), is(1));
+        assertThat(fileResources.size()).isEqualTo(1);
     }
 
     @Test
@@ -92,7 +91,7 @@ public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseM
                         .byName().eq(fileUid+ ".png")
                         .blockingGet();
 
-        assertThat(fileResources.size(), is(1));
+        assertThat(fileResources.size()).isEqualTo(1);
     }
     @Test
     public void filter_by_last_updated() throws D2Error, IOException, ParseException {
@@ -106,7 +105,7 @@ public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseM
                         .byLastUpdated().after(created)
                         .blockingGet();
 
-        assertThat(fileResources.size(), is(1));
+        assertThat(fileResources.size()).isEqualTo(1);
     }
 
     @Test
@@ -118,7 +117,7 @@ public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseM
                         .byContentType().eq("image/png")
                         .blockingGet();
 
-        assertThat(fileResources.size(), is(1));
+        assertThat(fileResources.size()).isEqualTo(1);
     }
 
     @Test
@@ -130,7 +129,7 @@ public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseM
                         .byPath().like("files/sdk_resources")
                         .blockingGet();
 
-        assertThat(fileResources.size(), is(1));
+        assertThat(fileResources.size()).isEqualTo(1);
     }
 
     @Test
@@ -142,7 +141,7 @@ public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseM
                         .byState().eq(State.TO_POST)
                         .blockingGet();
 
-        assertThat(fileResources.size(), is(1));
+        assertThat(fileResources.size()).isEqualTo(1);
     }
 
     @Test
@@ -154,39 +153,39 @@ public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseM
                         .byContentLength().eq(1024L)
                         .blockingGet();
 
-        assertThat(fileResources.size(), is(1));
+        assertThat(fileResources.size()).isEqualTo(1);
     }
 
     @Test
     public void add_fileResources_to_the_repository() throws D2Error, IOException {
         cleanFileResources();
         List<FileResource> fileResources1 = d2.fileResourceModule().fileResources().blockingGet();
-        assertThat(fileResources1.size(), is(0));
+        assertThat(fileResources1.size()).isEqualTo(0);
 
         File file = getFile();
-        assertThat(file.exists(), is(true));
+        assertThat(file.exists()).isTrue();
 
         String fileResourceUid = d2.fileResourceModule().fileResources().blockingAdd(file);
 
         List<FileResource> fileResources2 = d2.fileResourceModule().fileResources().blockingGet();
-        assertThat(fileResources2.size(), is(1));
+        assertThat(fileResources2.size()).isEqualTo(1);
 
         FileResource fileResource = d2.fileResourceModule().fileResources().uid(fileResourceUid).blockingGet();
-        assertThat(fileResource.uid(), is(fileResourceUid));
+        assertThat(fileResource.uid()).isEqualTo(fileResourceUid);
 
         File savedFile = new File(fileResource.path());
-        assertThat(savedFile.exists(), is(true));
+        assertThat(savedFile.exists()).isTrue();
     }
 
     private File getFile() {
         InputStream inputStream = new RandomGeneratedInputStream(1024);
-        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
+        Context context = InstrumentationRegistry.getInstrumentation().getContext();
         File destinationFile = new File(FileResourceDirectoryHelper.getFileResourceDirectory(context), "file1.png");
         return FileResourceUtil.writeInputStream(inputStream, destinationFile, 1024);
     }
 
     private void cleanFileResources() throws IOException {
-        Context context = InstrumentationRegistry.getTargetContext().getApplicationContext();
+        Context context = InstrumentationRegistry.getInstrumentation().getContext();
         FileUtils.cleanDirectory(FileResourceDirectoryHelper.getFileResourceDirectory(context));
         new TableWiper(databaseAdapter).wipeTable(FileResourceTableInfo.TABLE_INFO);
     }

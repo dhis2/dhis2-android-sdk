@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.user.internal;
 
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
@@ -76,11 +77,12 @@ public class UserHandlerShould {
         userCredentials = UserCredentials.builder().uid("credentialsUid").build();
         when(UserInternalAccessor.accessUserCredentials(user)).thenReturn(userCredentials);
         when(user.uid()).thenReturn("userUid");
+        when(userStore.updateOrInsert(user)).thenReturn(HandleAction.Insert);
     }
 
     @Test
     public void extend_identifiable_sync_handler_impl() {
-        IdentifiableHandlerImpl<User> genericHandler = new UserHandler(null, null, null, null);
+        IdentifiableHandlerImpl<User> genericHandler = new UserHandler(userStore, userCredentialsHandler, userRoleHandler, userRoleCollectionCleaner);
     }
 
     @Test

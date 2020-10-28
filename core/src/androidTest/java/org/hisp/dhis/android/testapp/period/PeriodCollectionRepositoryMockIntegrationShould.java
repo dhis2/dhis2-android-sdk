@@ -39,8 +39,7 @@ import org.junit.runner.RunWith;
 import java.text.ParseException;
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class PeriodCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -50,7 +49,7 @@ public class PeriodCollectionRepositoryMockIntegrationShould extends BaseMockInt
         List<Period> periods = d2.periodModule().periods()
                 .byPeriodId()
                 .eq("2018").blockingGet();
-        assertThat(periods.size(), is(1));
+        assertThat(periods.size()).isEqualTo(1);
     }
 
     @Test
@@ -58,7 +57,7 @@ public class PeriodCollectionRepositoryMockIntegrationShould extends BaseMockInt
         List<Period> periods = d2.periodModule().periods()
                 .byPeriodType()
                 .eq(PeriodType.Quarterly).blockingGet();
-        assertThat(periods.size(), is(5));
+        assertThat(periods.size()).isEqualTo(5);
     }
 
     @Test
@@ -68,6 +67,6 @@ public class PeriodCollectionRepositoryMockIntegrationShould extends BaseMockInt
                 .eq(BaseIdentifiableObject.parseDate("2017-10-01T00:00:00.000"))
                 .byEndDate()
                 .eq(BaseIdentifiableObject.parseDate("2018-09-30T23:59:59.999")).blockingGet();
-        assertThat(periods.size(), is(1));
+        assertThat(periods.size()).isEqualTo(1);
     }
 }

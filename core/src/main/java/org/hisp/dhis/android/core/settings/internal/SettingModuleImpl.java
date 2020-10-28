@@ -28,11 +28,12 @@
 
 package org.hisp.dhis.android.core.settings.internal;
 
-import org.hisp.dhis.android.core.settings.GeneralSettingObjectRepository;
 import org.hisp.dhis.android.core.settings.DataSetSettingsObjectRepository;
+import org.hisp.dhis.android.core.settings.GeneralSettingObjectRepository;
 import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository;
 import org.hisp.dhis.android.core.settings.SettingModule;
 import org.hisp.dhis.android.core.settings.SystemSettingCollectionRepository;
+import org.hisp.dhis.android.core.settings.UserSettingsObjectRepository;
 
 import javax.inject.Inject;
 
@@ -46,16 +47,19 @@ public final class SettingModuleImpl implements SettingModule {
     private final GeneralSettingObjectRepository generalSetting;
     private final DataSetSettingsObjectRepository dataSetSetting;
     private final ProgramSettingsObjectRepository programSetting;
+    private final UserSettingsObjectRepository userSettings;
 
     @Inject
     SettingModuleImpl(SystemSettingCollectionRepository systemSettingRepository,
                       GeneralSettingObjectRepository generalSetting,
                       DataSetSettingsObjectRepository dataSetSetting,
-                      ProgramSettingsObjectRepository programSetting) {
+                      ProgramSettingsObjectRepository programSetting,
+                      UserSettingsObjectRepository userSettings) {
         this.systemSetting = systemSettingRepository;
         this.generalSetting = generalSetting;
         this.dataSetSetting = dataSetSetting;
         this.programSetting = programSetting;
+        this.userSettings = userSettings;
     }
 
     @Override
@@ -76,5 +80,10 @@ public final class SettingModuleImpl implements SettingModule {
     @Override
     public ProgramSettingsObjectRepository programSetting() {
         return programSetting;
+    }
+
+    @Override
+    public UserSettingsObjectRepository userSettings() {
+        return userSettings;
     }
 }

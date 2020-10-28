@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.LinkCleaner;
 import org.hisp.dhis.android.core.arch.cleaners.internal.ParentOrphanCleaner;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
@@ -85,6 +86,9 @@ public class ProgramHandlerShould {
     private CollectionCleaner<Program> collectionCleaner;
 
     @Mock
+    private LinkCleaner<Program> linkCleaner;
+
+    @Mock
     private Program program;
 
     @Mock
@@ -124,7 +128,7 @@ public class ProgramHandlerShould {
         programHandler = new ProgramHandler(
                 programStore, programRuleVariableHandler, programIndicatorHandler,
                 programTrackedEntityAttributeHandler, programSectionHandler, orphanCleaner,
-                collectionCleaner);
+                collectionCleaner, linkCleaner);
 
         when(program.uid()).thenReturn("test_program_uid");
         when(program.code()).thenReturn("test_program_code");

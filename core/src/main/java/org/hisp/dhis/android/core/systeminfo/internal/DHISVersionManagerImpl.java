@@ -88,37 +88,47 @@ public class DHISVersionManagerImpl implements DHISVersionManager {
 
     @Override
     public boolean is2_29() {
-        return version == DHISVersion.V2_29;
+        return getVersion() == DHISVersion.V2_29;
     }
 
     @Override
     public boolean is2_30() {
-        return version == DHISVersion.V2_30;
+        return getVersion() == DHISVersion.V2_30;
     }
 
     @Override
     public boolean is2_31() {
-        return version == DHISVersion.V2_31;
+        return getVersion() == DHISVersion.V2_31;
     }
 
     @Override
     public boolean is2_32() {
-        return version == DHISVersion.V2_32;
+        return getVersion() == DHISVersion.V2_32;
     }
 
     @Override
     public boolean is2_33() {
-        return version == DHISVersion.V2_33;
+        return getVersion() == DHISVersion.V2_33;
     }
 
     @Override
     public boolean is2_34() {
-        return version == DHISVersion.V2_34;
+        return getVersion() == DHISVersion.V2_34;
+    }
+
+    @Override
+    public boolean is2_35() {
+        return getVersion() == DHISVersion.V2_35;
     }
 
     @Override
     public boolean isGreaterThan(DHISVersion version) {
         return version.compareTo(getVersion()) < 0;
+    }
+
+    @Override
+    public boolean isGreaterOrEqualThan(DHISVersion version) {
+        return version.compareTo(getVersion()) <= 0;
     }
 
     void setVersion(String versionStr) {

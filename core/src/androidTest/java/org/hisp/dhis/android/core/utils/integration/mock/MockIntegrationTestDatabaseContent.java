@@ -33,5 +33,8 @@ public enum MockIntegrationTestDatabaseContent {
     EmptyDispatcher,
     FullDispatcher,
     MetadataEnqueable,
-    MetadataDispatcher
+    MetadataDispatcher,
+    LocalAnalyticsDefaultDispatcher,
+    LocalAnalyticsLargeDispatcher,
+    LocalAnalyticsSuperLargeDispatcher
 }

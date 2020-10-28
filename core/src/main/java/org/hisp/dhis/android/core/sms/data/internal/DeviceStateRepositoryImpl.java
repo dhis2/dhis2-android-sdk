@@ -19,6 +19,7 @@ import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
+@SuppressLint("MissingPermission")
 public class DeviceStateRepositoryImpl implements DeviceStateRepository {
     private final Context context;
 
@@ -34,7 +35,6 @@ public class DeviceStateRepositoryImpl implements DeviceStateRepository {
             return Single.just(false);
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            @SuppressLint("MissingPermission")
             ServiceState serviceState = telephonyManager.getServiceState();
             if (serviceState != null) {
                 return Single.just(serviceState.getState() == ServiceState.STATE_IN_SERVICE);

@@ -47,4 +47,16 @@ public class LegendSamples {
                 .legendSet(ObjectWithUid.create("legend_set_uid"));
         return legendBuilder.build();
     }
+
+    public static Legend get45To60() {
+        return Legend.builder()
+                .id(1L)
+                .uid("BzQkRWHS7lu")
+                .name("45 - 60")
+                .startValue(45.0)
+                .endValue(60.0)
+                .color("#F38026")
+                .legendSet(ObjectWithUid.create("TiOkbpGEud4"))
+                .build();
+    }
 }

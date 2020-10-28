@@ -61,6 +61,7 @@ Based on that, metadata sync includes the following elements:
 |-----------------------|-------------|
 | System info           | All |
 | System settings       | KeyFlag, KeyStyle |
+| User settings         | KeyDbLocale, KeyUiLocale |
 | User                  | Only authenticated user |
 | UserRole              | Roles assigned to authenticated user |
 | Authority             | Authorities assigned to authenticated user |
@@ -68,6 +69,7 @@ Based on that, metadata sync includes the following elements:
 | RelationshipTypes     | All |
 | OptionGroups          | Only if server is greater than 2.29 |
 | DataSet               | DataSets that user has (at least) read data access to and that are assigned to any orgunit visible by the user |
+| Validation rules      | Validation rules associated to the dataSets |
 | Indicators            | Indicators assigned to downloaded dataSets |
 | OrganisationUnit      | OrganisationUnits in CAPTURE or SEARCH scope (descendants included) |
 | OrganisationUnitGroup | Groups assigned to downloaded organisationUnits |
@@ -113,6 +115,10 @@ Additionally, in `TrackedEntityInstance` we might have:
 <!--DHIS2-SECTION-ID:tracker_data-->
 
 ### Tracker data download
+
+> **Important**
+>
+> See [Settings App](#settings_app) section to know how this application can be used to control synchronization parameters.
 
 By default, the SDK only downloads TrackedEntityInstances and Events
 that are located in user capture scope, but it is also possible to
@@ -286,7 +292,9 @@ d2.trackedEntityModule().trackedEntityInstanceQuery()
                 .offlineFirst()
 ```
 
-> ***Important***: trackedEntityInstances retrieved using this repository are not persisted in the database. It is possible
+> **Important**
+>
+> TrackedEntityInstances retrieved using this repository are not persisted in the database. It is possible
 to fully download them using the `byUid()` filter of the `TrackedEntityInstanceDownloader` within the tracked entity instance module.
 
 [//]: # (Include glass protected download)
@@ -340,8 +348,9 @@ Server response is parsed to ensure that data has been correctly uploaded to the
 d2.importModule().trackerImportConflicts()
 ```
 
-Conflicts linked to a TrackedEntityInstance, Enrollment or Event are
-automatically removed after a successful upload of the object.
+Conflicts linked to a TrackedEntityInstance, Enrollment or Event are automatically removed after a successful upload of the object.
+
+The SDK tries to identify the confliction dataElement or attribute by parsing the server response. If so, it also stores the value of the element when the conflict happened so that the application can highlight the element in form when the value has not been fixed yet.
 
 ### Tracker data: reserved values
 
@@ -365,11 +374,42 @@ Reserved values can be obtained by:
 d2.trackedEntityModule().reservedValueManager().getValue("attributeUid", "orgunitUid")
 ```
 
+### Tracker data: relationships
+
+Currently the SDK only supports relatinships from TEI to TEI. They accessed by using the relationships module.
+
+Query relationships associated to a TEI.
+
+```java
+d2.relationshipModule().relationships().getByItem(
+    RelationshipHelper.teiItem("trackedEntityInstanceUid")
+)
+```
+
+In the same module you can create new relationships using this method:
+
+```java
+Relationship relationship = RelationshipHelper.teiToTeiRelationship("fromTEIUid", "toTEIUid", "relationshipTypeUid");
+
+d2.relationshipModule().relationships().add(relationship);
+```
+
+If the related trackedEntityInstance does not exist yet and there are attribute values that must be inherited, you can use the following method to inherit attribute values from one TEI to another in the context of a certain program. Only those attribute marked as `inherit` will be inherited.
+
+```java
+d2.trackedEntityModule().trackedEntityInstanceService()
+    .inheritAttributes("fromTeiUid", "toTeiUid", "programUid");
+```
+
 ## Aggregated data
 
 <!--DHIS2-SECTION-ID:aggregated_data-->
 
 ### Aggregated data download
+
+> **Important**
+>
+> See [Settings App](#settings_app) section to know how this application can be used to control synchronization parameters.
 
 ```java
 d2.aggregatedModule().data().download()
@@ -501,6 +541,8 @@ d2.dataSetModule().dataSetInstances()
     .byPeriod().in("201901", "201902")
     .get();
 ```
+
+If you only need a high level overview of the aggregated data status, you can use the repository `DataSetInstanceSummary`. It accepts the same filters and returns a count of `DataSetInstance` for each combination.
 
 ## Dealing with FileResources
 

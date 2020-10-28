@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRep
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroupCollectionRepository;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevelCollectionRepository;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModule;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService;
 
 import javax.inject.Inject;
 
@@ -43,14 +44,17 @@ public final class OrganisationUnitModuleImpl implements OrganisationUnitModule 
     private final OrganisationUnitCollectionRepository organisationUnits;
     private final OrganisationUnitGroupCollectionRepository organisationUnitGroups;
     private final OrganisationUnitLevelCollectionRepository organisationUnitLevels;
+    private final OrganisationUnitService organisationUnitService;
 
     @Inject
     OrganisationUnitModuleImpl(OrganisationUnitCollectionRepository organisationUnits,
                                OrganisationUnitGroupCollectionRepository organisationUnitGroups,
-                               OrganisationUnitLevelCollectionRepository organisationUnitLevels) {
+                               OrganisationUnitLevelCollectionRepository organisationUnitLevels,
+                               OrganisationUnitService organisationUnitService) {
         this.organisationUnits = organisationUnits;
         this.organisationUnitGroups = organisationUnitGroups;
         this.organisationUnitLevels = organisationUnitLevels;
+        this.organisationUnitService = organisationUnitService;
     }
 
     @Override
@@ -66,5 +70,10 @@ public final class OrganisationUnitModuleImpl implements OrganisationUnitModule 
     @Override
     public OrganisationUnitLevelCollectionRepository organisationUnitLevels() {
         return organisationUnitLevels;
+    }
+
+    @Override
+    public OrganisationUnitService organisationUnitService() {
+        return organisationUnitService;
     }
 }

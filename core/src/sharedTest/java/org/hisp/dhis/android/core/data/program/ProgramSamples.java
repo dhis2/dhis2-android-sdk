@@ -28,16 +28,21 @@
 
 package org.hisp.dhis.android.core.data.program;
 
+import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
+import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.FeatureType;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.program.AccessLevel;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate;
 
 public class ProgramSamples {
 
@@ -72,5 +77,54 @@ public class ProgramSamples {
                 .accessLevel(AccessLevel.PROTECTED)
                 .build();
         return builder.build();
+    }
+
+    public static Program getAntenatalProgram() {
+        return Program.builder()
+                .uid("lxAQ7Zs9VYR")
+                .name("Antenatal care visit")
+                .displayName("Antenatal care visit")
+                .created(parseDate("2016-04-12T15:30:43.783"))
+                .lastUpdated(parseDate("2017-01-19T14:32:05.307"))
+                .shortName("Antenatal care")
+                .displayShortName("Antenatal care")
+                .version(3)
+                .onlyEnrollOnce(false)
+                .enrollmentDateLabel("Enrollment Date")
+                .displayIncidentDate(false)
+                .incidentDateLabel("Incident Date")
+                .registration(false)
+                .selectEnrollmentDatesInFuture(false)
+                .dataEntryMethod(true)
+                .ignoreOverdueEvents(true)
+                .selectIncidentDatesInFuture(false)
+                .useFirstStageDuringRegistration(true)
+                .displayFrontPageList(false)
+                .programType(ProgramType.WITHOUT_REGISTRATION)
+                .trackedEntityType(TrackedEntityType.builder().uid("nEenWmSyUEp").build())
+                .categoryCombo(ObjectWithUid.create("m2jTvAj5kkm"))
+                .access(Access.create(true, true, DataAccess.create(true, true)))
+                .accessLevel(AccessLevel.PROTECTED)
+                .style(ObjectStyle.builder().color("#333").icon("program-icon").build())
+                .relatedProgram(ObjectWithUid.create("lxAQ7Zs9VYR"))
+                .expiryDays(2)
+                .completeEventsExpiryDays(4)
+                .expiryPeriodType(PeriodType.BiMonthly)
+                .minAttributesRequiredToSearch(7)
+                .featureType(FeatureType.NONE)
+                .maxTeiCountToReturn(20)
+
+                .build();
+    }
+
+    public static Program getProgram(String name, ProgramType type, CategoryCombo categoryCombo) {
+        return getProgram().toBuilder()
+                .name(name)
+                .uid(new UidGeneratorImpl().generate())
+                .trackedEntityType(null)
+                .categoryCombo(ObjectWithUid.create(categoryCombo.uid()))
+                .relatedProgram(null)
+                .programType(type)
+                .build();
     }
 }

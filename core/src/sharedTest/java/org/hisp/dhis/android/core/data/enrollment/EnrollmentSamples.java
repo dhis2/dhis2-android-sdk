@@ -40,21 +40,28 @@ import java.util.Date;
 
 public class EnrollmentSamples {
 
+
     public static Enrollment get() {
+        return get("enrollment_uid", "organisation_unit", "program",
+                "tracked_entity_instance", getDate("2014-08-20T12:28:56.409"));
+    }
+
+    public static Enrollment get(String uid, String organisationUnit, String program, String tei, Date date) {
         return Enrollment.builder()
                 .id(1L)
-                .uid("enrollment_uid")
+                .uid(uid)
                 .created(getDate("2014-08-20T12:28:56.409"))
                 .lastUpdated(getDate("2015-10-14T13:36:53.063"))
                 .createdAtClient(getDate("2014-10-14T13:36:53.063"))
                 .lastUpdatedAtClient(getDate("2014-11-11T10:10:50.123"))
-                .organisationUnit("organisation_unit")
-                .program("program")
-                .enrollmentDate(getDate("2014-08-20T12:28:56.409"))
-                .incidentDate(getDate("2014-08-20T12:28:56.409"))
+                .organisationUnit(organisationUnit)
+                .program(program)
+                .enrollmentDate(date)
+                .incidentDate(date)
+                .completedDate(date)
                 .followUp(Boolean.FALSE)
                 .status(EnrollmentStatus.ACTIVE)
-                .trackedEntityInstance("tracked_entity_instance")
+                .trackedEntityInstance(tei)
                 .geometry(Geometry.builder()
                         .type(FeatureType.POINT)
                         .coordinates("[21.21, 23.23]").build())

@@ -58,6 +58,7 @@ public class Dhis2MockServer {
     private static final String GENERAL_SETTINGS_JSON = "settings/general_settings.json";
     private static final String DATASET_SETTINGS_JSON = "settings/dataset_settings.json";
     private static final String PROGRAM_SETTINGS_JSON = "settings/program_settings.json";
+    private static final String USER_SETTINGS_JSON = "settings/user_settings.json";
     private static final String PROGRAMS_JSON = "program/programs.json";
     private static final String PROGRAM_STAGES_JSON = "program/program_stages.json";
     private static final String PROGRAM_RULES_JSON = "program/program_rules.json";
@@ -67,12 +68,15 @@ public class Dhis2MockServer {
     private static final String OPTION_SETS_JSON = "option/option_sets.json";
     private static final String OPTIONS_JSON = "option/options.json";
     private static final String OPTION_GROUPS_JSON = "option/option_groups.json";
+    private static final String VALIDATION_RULE_UIDS_JSON = "validation/validation_rule_uids.json";
+    private static final String VALIDATION_RULES_JSON = "validation/validation_rules.json";
     private static final String DATA_SETS_JSON = "dataset/data_sets.json";
     private static final String DATA_ELEMENTS_JSON = "dataelement/data_elements.json";
     private static final String INDICATORS_JSON = "indicators/indicators.json";
     private static final String INDICATOR_TYPES_JSON = "indicators/indicator_types.json";
     private static final String CATEGORY_COMBOS_JSON = "category/category_combos.json";
     private static final String CATEGORIES_JSON = "category/categories.json";
+    private static final String CATEGORY_OPTIONS_JSON = "category/category_options.json";
     private static final String ORGANISATION_UNIT_LEVELS_JSON = "organisationunit/organisation_unit_levels.json";
     private static final String CONSTANTS_JSON = "constant/constants.json";
     private static final String USER_JSON = "user/user.json";
@@ -161,6 +165,8 @@ public class Dhis2MockServer {
                     return createMockResponse(DATASET_SETTINGS_JSON);
                 } else if (path.startsWith("/api/dataStore/ANDROID_SETTING_APP/program_settings")) {
                     return createMockResponse(PROGRAM_SETTINGS_JSON);
+                } else if (path.startsWith("/api/userSettings?")) {
+                    return createMockResponse(USER_SETTINGS_JSON);
                 } else if (path.startsWith("/api/programs?")) {
                     return createMockResponse(PROGRAMS_JSON);
                 } else if (path.startsWith("/api/programStages?")) {
@@ -179,6 +185,10 @@ public class Dhis2MockServer {
                     return createMockResponse(OPTIONS_JSON);
                 } else if (path.startsWith("/api/optionGroups?")) {
                     return createMockResponse(OPTION_GROUPS_JSON);
+                } else if (path.startsWith("/api/validationRules?dataSet")) {
+                    return createMockResponse(VALIDATION_RULE_UIDS_JSON);
+                } else if (path.startsWith("/api/validationRules?")) {
+                    return createMockResponse(VALIDATION_RULES_JSON);
                 } else if (path.startsWith("/api/dataSets?")) {
                     return createMockResponse(DATA_SETS_JSON);
                 } else if (path.startsWith("/api/dataElements?")) {
@@ -191,6 +201,8 @@ public class Dhis2MockServer {
                     return createMockResponse(CATEGORY_COMBOS_JSON);
                 } else if (path.startsWith("/api/categories?")) {
                     return createMockResponse(CATEGORIES_JSON);
+                } else if (path.startsWith("/api/categoryOptions?")) {
+                    return createMockResponse(CATEGORY_OPTIONS_JSON);
                 } else if (path.startsWith("/api/organisationUnits?")) {
                     return createMockResponse(ORGANISATION_UNITS_JSON);
                 } else if (path.startsWith("/api/organisationUnitLevels?")) {
@@ -226,19 +238,21 @@ public class Dhis2MockServer {
     public void enqueueMetadataResponses() {
         enqueueMockResponse(GENERAL_SETTINGS_JSON);
         enqueueMockResponse(SYSTEM_INFO_JSON);
-        enqueueMockResponse(SYSTEM_SETTINGS_JSON);
         enqueueMockResponse(GENERAL_SETTINGS_JSON);
         enqueueMockResponse(DATASET_SETTINGS_JSON);
-        enqueueMockResponse(PROGRAM_SETTINGS_JSON);
+        server.enqueue(getErrorResponse());
+        enqueueMockResponse(USER_SETTINGS_JSON);
+        enqueueMockResponse(SYSTEM_SETTINGS_JSON);
+        enqueueMockResponse(CONSTANTS_JSON);
         enqueueMockResponse(USER_JSON);
         enqueueMockResponse(AUTHORITIES_JSON);
-        enqueueMockResponse(ORGANISATION_UNITS_JSON);
         enqueueMockResponse(ORGANISATION_UNIT_LEVELS_JSON);
+        enqueueMockResponse(ORGANISATION_UNITS_JSON);
         enqueueMockResponse(PROGRAMS_JSON);
         enqueueMockResponse(PROGRAM_STAGES_JSON);
-        enqueueMockResponse(PROGRAM_RULES_JSON);
         enqueueMockResponse(TRACKED_ENTITY_TYPES_JSON);
         enqueueMockResponse(TRACKED_ENTITY_ATTRIBUTES_JSON);
+        enqueueMockResponse(PROGRAM_RULES_JSON);
         enqueueMockResponse(RELATIONSHIP_TYPES_JSON);
         enqueueMockResponse(OPTION_SETS_JSON);
         enqueueMockResponse(OPTIONS_JSON);
@@ -247,9 +261,12 @@ public class Dhis2MockServer {
         enqueueMockResponse(DATA_ELEMENTS_JSON);
         enqueueMockResponse(INDICATORS_JSON);
         enqueueMockResponse(INDICATOR_TYPES_JSON);
+        enqueueMockResponse(VALIDATION_RULE_UIDS_JSON);
+        enqueueMockResponse(VALIDATION_RULE_UIDS_JSON);
+        enqueueMockResponse(VALIDATION_RULES_JSON);
         enqueueMockResponse(CATEGORY_COMBOS_JSON);
         enqueueMockResponse(CATEGORIES_JSON);
-        enqueueMockResponse(CONSTANTS_JSON);
+        enqueueMockResponse(CATEGORY_OPTIONS_JSON);
     }
 
     @NonNull
@@ -263,6 +280,10 @@ public class Dhis2MockServer {
         } catch (IOException e) {
             return new MockResponse().setResponseCode(500).setBody("Error reading JSON file for MockServer");
         }
+    }
+
+    private MockResponse getErrorResponse() {
+        return new MockResponse().setResponseCode(500).setBody("Error");
     }
 
     public void enqueueMockResponse(String fileName, Date dateHeader) {

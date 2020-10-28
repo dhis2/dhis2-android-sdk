@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.datavalue.internal;
 
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo;
+import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataSyncTableInfo;
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
 import org.hisp.dhis.android.core.wipe.internal.TableWiper;
 
@@ -53,6 +54,9 @@ public final class DataValueModuleWiper implements ModuleWiper {
 
     @Override
     public void wipeData() {
-        tableWiper.wipeTable(DataValueTableInfo.TABLE_INFO);
+        tableWiper.wipeTables(
+                DataValueTableInfo.TABLE_INFO,
+                AggregatedDataSyncTableInfo.TABLE_INFO
+        );
     }
 }

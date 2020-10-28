@@ -39,8 +39,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class NameableCollectionFiltersMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -50,7 +49,7 @@ public class NameableCollectionFiltersMockIntegrationShould extends BaseMockInte
         List<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions()
                 .byUid().eq("as6ygGvUGNg")
                 .blockingGet();
-        assertThat(categoryOptions.size(), is(1));
+        assertThat(categoryOptions.size()).isEqualTo(1);
     }
 
     @Test
@@ -58,7 +57,7 @@ public class NameableCollectionFiltersMockIntegrationShould extends BaseMockInte
         List<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions()
                 .byCode().eq("default code")
                 .blockingGet();
-        assertThat(categoryOptions.size(), is(1));
+        assertThat(categoryOptions.size()).isEqualTo(1);
     }
 
     @Test
@@ -66,7 +65,7 @@ public class NameableCollectionFiltersMockIntegrationShould extends BaseMockInte
         List<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions()
                 .byName().eq("default name")
                 .blockingGet();
-        assertThat(categoryOptions.size(), is(1));
+        assertThat(categoryOptions.size()).isEqualTo(1);
     }
 
     @Test
@@ -74,7 +73,7 @@ public class NameableCollectionFiltersMockIntegrationShould extends BaseMockInte
         List<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions()
                 .byDisplayName().eq("default display name")
                 .blockingGet();
-        assertThat(categoryOptions.size(), is(1));
+        assertThat(categoryOptions.size()).isEqualTo(1);
     }
 
     @Test
@@ -83,7 +82,7 @@ public class NameableCollectionFiltersMockIntegrationShould extends BaseMockInte
         List<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions()
                 .byCreated().eq(created)
                 .blockingGet();
-        assertThat(categoryOptions.size(), is(1));
+        assertThat(categoryOptions.size()).isEqualTo(1);
     }
 
     @Test
@@ -92,7 +91,7 @@ public class NameableCollectionFiltersMockIntegrationShould extends BaseMockInte
         List<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions()
                 .byLastUpdated().eq(lastUpdated)
                 .blockingGet();
-        assertThat(categoryOptions.size(), is(1));
+        assertThat(categoryOptions.size()).isEqualTo(1);
     }
 
     @Test
@@ -100,7 +99,7 @@ public class NameableCollectionFiltersMockIntegrationShould extends BaseMockInte
         List<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions()
                 .byShortName().eq("default short name")
                 .blockingGet();
-        assertThat(categoryOptions.size(), is(1));
+        assertThat(categoryOptions.size()).isEqualTo(1);
     }
 
     @Test
@@ -108,7 +107,7 @@ public class NameableCollectionFiltersMockIntegrationShould extends BaseMockInte
         List<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions()
                 .byDisplayShortName().eq("default display short name")
                 .blockingGet();
-        assertThat(categoryOptions.size(), is(1));
+        assertThat(categoryOptions.size()).isEqualTo(1);
     }
 
     @Test
@@ -116,7 +115,7 @@ public class NameableCollectionFiltersMockIntegrationShould extends BaseMockInte
         List<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions()
                 .byDescription().eq("default description")
                 .blockingGet();
-        assertThat(categoryOptions.size(), is(1));
+        assertThat(categoryOptions.size()).isEqualTo(1);
     }
 
     @Test
@@ -124,7 +123,7 @@ public class NameableCollectionFiltersMockIntegrationShould extends BaseMockInte
         List<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions()
                 .byDisplayDescription().eq("default display description")
                 .blockingGet();
-        assertThat(categoryOptions.size(), is(1));
+        assertThat(categoryOptions.size()).isEqualTo(1);
     }
 
     @Test
@@ -133,7 +132,7 @@ public class NameableCollectionFiltersMockIntegrationShould extends BaseMockInte
                 .byName().eq("default name")
                 .byDisplayDescription().eq("default display description")
                 .blockingGet();
-        assertThat(categoryOptions.size(), is(1));
+        assertThat(categoryOptions.size()).isEqualTo(1);
     }
 
     @Test
@@ -142,6 +141,6 @@ public class NameableCollectionFiltersMockIntegrationShould extends BaseMockInte
                 .byDisplayDescription().eq("default display description")
                 .byName().eq("default name")
                 .blockingGet();
-        assertThat(categoryOptions.size(), is(1));
+        assertThat(categoryOptions.size()).isEqualTo(1);
     }
 }

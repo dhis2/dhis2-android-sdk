@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.data.legendset;
 import org.hisp.dhis.android.core.legendset.LegendSet;
 
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate;
 
 public class LegendSetSamples {
 
@@ -43,5 +44,18 @@ public class LegendSetSamples {
                 .symbolizer("color")
                 .legends(null);
         return legendSetBuilder.build();
+    }
+
+    public static LegendSet getAge15yInterval() {
+        return LegendSet.builder()
+                .id(1L)
+                .uid("TiOkbpGEud4")
+                .code("AGE15YINT")
+                .created(parseDate("2017-06-02T11:40:33.452"))
+                .lastUpdated(parseDate("2017-06-02T11:41:01.999"))
+                .name("Age 15y interval")
+                .displayName("Age 15y interval")
+                .symbolizer("color")
+                .build();
     }
 }

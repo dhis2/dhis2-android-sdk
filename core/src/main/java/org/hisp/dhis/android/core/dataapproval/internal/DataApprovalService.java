@@ -34,17 +34,18 @@ import org.hisp.dhis.android.core.dataapproval.DataApproval;
 
 import java.util.List;
 
-import retrofit2.Call;
+import io.reactivex.Single;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 interface DataApprovalService {
 
     @GET("dataApprovals/multiple")
-    Call<List<DataApproval>> getDataApprovals(
+    Single<List<DataApproval>> getDataApprovals(
             @Query("fields") @Which Fields<DataApproval> fields,
+            @Query("lastUpdated") String lastUpdated,
             @Query("wf") String workflow,
-            @Query("pe") String startDate,
+            @Query("pe") String periods,
             @Query("ou") String organisationUnit,
             @Query("aoc") String attributeOptionCombo
     );

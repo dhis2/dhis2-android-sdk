@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
+import org.hisp.dhis.android.core.event.EventTableInfo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,13 +59,14 @@ public final class EnrollmentStoreImpl
         w.bind(7, o.program());
         w.bind(8, o.enrollmentDate());
         w.bind(9, o.incidentDate());
-        w.bind(10, o.followUp());
-        w.bind(11, o.status());
-        w.bind(12, o.trackedEntityInstance());
-        w.bind(13, o.geometry() == null ? null : o.geometry().type());
-        w.bind(14, o.geometry() == null ? null : o.geometry().coordinates());
-        w.bind(15, o.state());
-        w.bind(16, o.deleted());
+        w.bind(10, o.completedDate());
+        w.bind(11, o.followUp());
+        w.bind(12, o.status());
+        w.bind(13, o.trackedEntityInstance());
+        w.bind(14, o.geometry() == null ? null : o.geometry().type());
+        w.bind(15, o.geometry() == null ? null : o.geometry().coordinates());
+        w.bind(16, o.state());
+        w.bind(17, o.deleted());
     };
 
     private EnrollmentStoreImpl(DatabaseAdapter databaseAdapter,
@@ -77,7 +79,8 @@ public final class EnrollmentStoreImpl
     @Override
     public Map<String, List<Enrollment>> queryEnrollmentsToPost() {
         String enrollmentsToPostQuery = new WhereClauseBuilder()
-                .appendInKeyStringValues(DataColumns.STATE, EnumHelper.asStringList(State.uploadableStates())).build();
+                .appendInKeyStringValues(DataColumns.STATE,
+                        EnumHelper.asStringList(State.uploadableStatesIncludingError())).build();
 
         List<Enrollment> enrollmentList = selectWhere(enrollmentsToPostQuery);
 
@@ -87,6 +90,16 @@ public final class EnrollmentStoreImpl
         }
 
         return enrollmentMap;
+    }
+
+    @Override
+    public List<String> queryMissingRelationshipsUids() {
+        String whereRelationshipsClause = new WhereClauseBuilder()
+                .appendKeyStringValue(DataColumns.STATE, State.RELATIONSHIP)
+                .appendIsNullValue(EventTableInfo.Columns.ORGANISATION_UNIT)
+                .build();
+
+        return selectUidsWhere(whereRelationshipsClause);
     }
 
     private void addEnrollmentToMap(Map<String, List<Enrollment>> enrollmentMap, Enrollment enrollment) {

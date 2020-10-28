@@ -37,8 +37,7 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -50,7 +49,7 @@ public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockInte
         DataValueObjectRepository repository = objectRepository();
 
         repository.blockingSet(value);
-        assertThat(repository.blockingGet().value(), is(value));
+        assertThat(repository.blockingGet().value()).isEqualTo(value);
 
         repository.blockingDelete();
     }
@@ -62,7 +61,7 @@ public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockInte
         DataValueObjectRepository repository = objectRepository();
 
         repository.setFollowUp(followUp);
-        assertThat(repository.blockingGet().followUp(), is(followUp));
+        assertThat(repository.blockingGet().followUp()).isEqualTo(followUp);
 
         repository.blockingDelete();
     }
@@ -74,7 +73,7 @@ public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockInte
         DataValueObjectRepository repository = objectRepository();
 
         repository.setComment(comment);
-        assertThat(repository.blockingGet().comment(), is(comment));
+        assertThat(repository.blockingGet().comment()).isEqualTo(comment);
 
         repository.blockingDelete();
     }
@@ -84,10 +83,10 @@ public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockInte
         DataValueObjectRepository repository = objectRepository();
 
         repository.blockingSet("value");
-        assertThat(repository.blockingExists(), is(Boolean.TRUE));
-        assertThat(repository.blockingGet().state(), is(State.TO_POST));
+        assertThat(repository.blockingExists()).isEqualTo(Boolean.TRUE);
+        assertThat(repository.blockingGet().state()).isEqualTo(State.TO_POST);
         repository.blockingDelete();
-        assertThat(repository.blockingExists(), is(Boolean.FALSE));
+        assertThat(repository.blockingExists()).isEqualTo(Boolean.FALSE);
     }
 
     @Test
@@ -96,22 +95,38 @@ public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockInte
 
         repository.blockingSet("value");
         DataValueStore.create(databaseAdapter).setState(repository.blockingGet(), State.ERROR);
-        assertThat(repository.blockingExists(), is(Boolean.TRUE));
-        assertThat(repository.blockingGet().state(), is(State.ERROR));
+        assertThat(repository.blockingExists()).isEqualTo(Boolean.TRUE);
+        assertThat(repository.blockingGet().state()).isEqualTo(State.ERROR);
         repository.blockingDelete();
-        assertThat(repository.blockingExists(), is(Boolean.TRUE));
-        assertThat(repository.blockingGet().deleted(), is(Boolean.TRUE));
-        assertThat(repository.blockingGet().state(), is(State.TO_UPDATE));
+        assertThat(repository.blockingExists()).isEqualTo(Boolean.TRUE);
+        assertThat(repository.blockingGet().deleted()).isEqualTo(Boolean.TRUE);
+        assertThat(repository.blockingGet().state()).isEqualTo(State.TO_UPDATE);
+    }
+
+    @Test
+    public void set_not_deleted_when_updating_deleted_value() throws D2Error {
+        DataValueObjectRepository repository = objectRepository();
+
+        repository.blockingSet("value");
+        DataValueStore.create(databaseAdapter).setState(repository.blockingGet(), State.TO_UPDATE);
+
+        repository.blockingDelete();
+        assertThat(repository.blockingGet().state()).isEqualTo(State.TO_UPDATE);
+        assertThat(repository.blockingGet().deleted()).isEqualTo(Boolean.TRUE);
+
+        repository.blockingSet("new_value");
+        assertThat(repository.blockingGet().state()).isEqualTo(State.TO_UPDATE);
+        assertThat(repository.blockingGet().deleted()).isEqualTo(Boolean.FALSE);
     }
 
     @Test
     public void return_that_a_value_exists_only_if_it_has_been_created() {
         assertThat(d2.dataValueModule().dataValues()
                 .value("no_period", "no_org_unit", "no_data_element",
-                        "no_category", "no_attribute").blockingExists(), is(Boolean.FALSE));
+                        "no_category", "no_attribute").blockingExists()).isEqualTo(Boolean.FALSE);
         assertThat(d2.dataValueModule().dataValues()
                 .value("2018", "DiszpKrYNg8", "g9eOBujte1U",
-                        "Gmbgme7z9BF", "bRowv6yZOF2").blockingExists(), is(Boolean.TRUE));
+                        "Gmbgme7z9BF", "bRowv6yZOF2").blockingExists()).isEqualTo(Boolean.TRUE);
     }
 
     private DataValueObjectRepository objectRepository() {

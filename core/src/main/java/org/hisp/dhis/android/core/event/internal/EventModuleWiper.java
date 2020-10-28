@@ -53,5 +53,6 @@ public final class EventModuleWiper implements ModuleWiper {
     @Override
     public void wipeData() {
         tableWiper.wipeTable(EventTableInfo.TABLE_INFO);
+        tableWiper.wipeTable(EventSyncTableInfo.TABLE_INFO);
     }
 }

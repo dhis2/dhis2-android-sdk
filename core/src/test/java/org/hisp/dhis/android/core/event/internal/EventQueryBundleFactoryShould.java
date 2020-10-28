@@ -52,7 +52,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -77,6 +77,9 @@ public class EventQueryBundleFactoryShould {
 
     @Mock
     private ProgramSettings programSettings;
+
+    @Mock
+    private EventLastUpdatedManager lastUpdatedManager;
 
     private String p1 = "program1", p2 = "program2", p3 = "program3";
 
@@ -104,8 +107,9 @@ public class EventQueryBundleFactoryShould {
         when(programStore.getUidsByProgramType(any())).thenReturn(getProgramList());
         when(programSettingsObjectRepository.blockingGet()).thenReturn(programSettings);
 
-        bundleFactory = new EventQueryBundleFactory(resourceHandler, userOrganisationUnitLinkStore,
-                organisationUnitProgramLinkLinkStore, programStore, programSettingsObjectRepository);
+        bundleFactory = new EventQueryBundleFactory(userOrganisationUnitLinkStore,
+                organisationUnitProgramLinkLinkStore, programStore, programSettingsObjectRepository,
+                lastUpdatedManager);
     }
 
     @Test
@@ -119,7 +123,7 @@ public class EventQueryBundleFactoryShould {
         EventQueryBundle bundle = bundles.get(0);
         assertThat(bundle.orgUnitList()).isEqualTo(rootOrgUnits);
         assertThat(bundle.programList()).isEqualTo(getProgramList());
-        assertThat(bundle.ouMode()).isEqualByComparingTo(OrganisationUnitMode.DESCENDANTS);
+        assertThat(bundle.ouMode()).isEqualTo(OrganisationUnitMode.DESCENDANTS);
     }
 
     @Test

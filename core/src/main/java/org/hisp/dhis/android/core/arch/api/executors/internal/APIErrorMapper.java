@@ -42,7 +42,6 @@ import javax.inject.Inject;
 import javax.net.ssl.SSLException;
 
 import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.HttpException;
@@ -147,7 +146,6 @@ final class APIErrorMapper {
         return getUrl(call.request());
     }
 
-    @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE")
     private String getUrl(Request request) {
         if (request == null || request.url() == null) {
             return null;
@@ -166,7 +164,7 @@ final class APIErrorMapper {
         return errorBuilder
                 .errorCode(errorCode)
                 .httpErrorCode(response.code())
-                .errorDescription("API call failed, response: " + serverMessage)
+                .errorDescription("API call failed, server message: " + serverMessage)
                 .build();
     }
 

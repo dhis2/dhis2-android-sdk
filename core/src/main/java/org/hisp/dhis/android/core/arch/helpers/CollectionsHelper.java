@@ -32,6 +32,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -109,7 +110,8 @@ public final class CollectionsHelper {
      * @param values Array with the values to concatenate.
      * @return A {@link String} with the concatenated values.
      */
-    public static String commaAndSpaceSeparatedArrayValues(String... values) {
+    @SuppressWarnings("PMD.UseVarargs")
+    public static String commaAndSpaceSeparatedArrayValues(String[] values) {
         String withBrackets = Arrays.toString(values);
         return withBrackets.substring(1, withBrackets.length() - 1);
     }
@@ -120,8 +122,9 @@ public final class CollectionsHelper {
      * @param values Collection with the values to concatenate.
      * @return A {@link String} with the concatenated values.
      */
+    @SuppressWarnings("PMD.OptimizableToArrayCall")
     public static String commaAndSpaceSeparatedCollectionValues(Collection<String> values) {
-        return commaAndSpaceSeparatedArrayValues(values.toArray(new String[values.size()]));
+        return commaAndSpaceSeparatedArrayValues(values.toArray(new String[0]));
     }
 
     /**
@@ -167,6 +170,16 @@ public final class CollectionsHelper {
      */
     public static String commaSeparatedCollectionValues(Collection<String> values) {
         return commaSeparatedArrayValues(values.toArray(new String[values.size()]));
+    }
+
+    /**
+     * Build a {@link String} with the uids of the objects separated by commas.
+     *
+     * @param objectsWithUid Collection with the objects to concatenate.
+     * @return A {@link String} with the concatenated uids.
+     */
+    public static <O extends ObjectWithUidInterface> String commaSeparatedUids(Collection<O> objectsWithUid) {
+        return commaSeparatedCollectionValues(UidsHelper.getUids(objectsWithUid));
     }
 
     /**

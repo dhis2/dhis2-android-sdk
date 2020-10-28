@@ -34,7 +34,10 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilt
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.category.internal.CategoryOptionFields;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 
+import java.util.Collections;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -63,5 +66,27 @@ public final class CategoryOptionCollectionRepository
 
     public BooleanFilterConnector<CategoryOptionCollectionRepository> byAccessDataWrite() {
         return cf.bool(CategoryOptionTableInfo.Columns.ACCESS_DATA_WRITE);
+    }
+
+    public CategoryOptionCollectionRepository byCategoryUid(String categoryUid) {
+        return cf.subQuery(IdentifiableColumns.UID).inLinkTable(
+                CategoryCategoryOptionLinkTableInfo.TABLE_INFO.name(),
+                CategoryCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION,
+                CategoryCategoryOptionLinkTableInfo.Columns.CATEGORY,
+                Collections.singletonList(categoryUid)
+        );
+    }
+
+    public CategoryOptionCollectionRepository byCategoryOptionComboUid(String categoryOptionComboUid) {
+        return cf.subQuery(IdentifiableColumns.UID).inLinkTable(
+                CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO.name(),
+                CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION,
+                CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION_COMBO,
+                Collections.singletonList(categoryOptionComboUid)
+        );
+    }
+
+    public CategoryOptionCollectionRepository withOrganisationUnits() {
+        return cf.withChild(CategoryOptionFields.ORGANISATION_UNITS);
     }
 }

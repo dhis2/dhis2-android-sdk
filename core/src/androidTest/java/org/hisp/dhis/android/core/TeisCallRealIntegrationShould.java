@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core;
 import android.util.Log;
 
 import org.hisp.dhis.android.core.arch.call.D2Progress;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl;
 import org.junit.Before;
 
 import java.io.IOException;
@@ -64,10 +63,8 @@ public class TeisCallRealIntegrationShould extends BaseRealIntegrationTest {
 
         testObserver.awaitTerminalEvent();
 
-        int count = TrackedEntityInstanceStoreImpl.create(databaseAdapter()).count();
+        int count = d2.trackedEntityModule().trackedEntityInstances().blockingCount();
 
         assertThat(count >= 5).isTrue();
-
-        testObserver.dispose();
     }
 }

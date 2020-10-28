@@ -6,8 +6,8 @@ android:
   components:
   - tools
   - platform-tools
-  - build-tools-28.0.3
-  - android-28
+  - build-tools-29.0.3
+  - android-29
   - android-22
   - extra-google-google_play_services
   - extra-google-m2repository
@@ -28,8 +28,8 @@ branches:
   only:
   - master
   - develop
-  - master-sms
   - master-dev
+  - validation-rules
 script:
 - travis_wait 70 "./build.sh"
 before_script:

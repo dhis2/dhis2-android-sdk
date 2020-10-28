@@ -28,7 +28,8 @@
 
 package org.hisp.dhis.android.core.program.internal;
 
-import org.assertj.core.util.Lists;
+import com.google.common.collect.Lists;
+
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;

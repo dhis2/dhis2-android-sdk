@@ -29,16 +29,23 @@
 package org.hisp.dhis.android.core.enrollment.internal;
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Property;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo.Columns;
-import org.hisp.dhis.android.core.note.Note;
-import org.hisp.dhis.android.core.note.internal.NoteFields;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.internal.EventFields;
+import org.hisp.dhis.android.core.note.Note;
+import org.hisp.dhis.android.core.note.internal.NoteFields;
+import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.RelationshipFields;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public final class EnrollmentFields {
 
@@ -49,26 +56,39 @@ public final class EnrollmentFields {
     private static final String EVENTS = "events";
     public static final String NOTES = "notes";
     private final static String GEOMETRY = "geometry";
+    public static final String RELATIONSHIPS = "relationships";
 
     private static FieldsHelper<Enrollment> fh = new FieldsHelper<>();
 
     public static final Fields<Enrollment> allFields = Fields.<Enrollment>builder()
-            .fields(fh.<String>field(UID),
-                    fh.<String>field(Columns.CREATED),
-                    fh.<String>field(Columns.LAST_UPDATED),
-                    fh.<String>field(ORGANISATION_UNIT),
-                    fh.<String>field(Columns.PROGRAM),
-                    fh.<String>field(Columns.ENROLLMENT_DATE),
-                    fh.<String>field(Columns.INCIDENT_DATE),
-                    fh.<String>field(Columns.FOLLOW_UP),
-                    fh.<EnrollmentStatus>field(Columns.STATUS),
-                    fh.<Boolean>field(DELETED),
-                    fh.<String>field(Columns.TRACKED_ENTITY_INSTANCE),
-                    fh.<Coordinates>field(COORDINATE),
-                    fh.<Geometry>field(GEOMETRY),
+            .fields(getCommonFields())
+            .fields(
                     fh.<Event>nestedField(EVENTS).with(EventFields.allFields),
-                    fh.<Note>nestedField(NOTES).with(NoteFields.all)
-    ).build();
+                    fh.<Note>nestedField(NOTES).with(NoteFields.all),
+                    fh.<Relationship>nestedField(RELATIONSHIPS).with(RelationshipFields.allNewModelFields)
+            ).build();
+
+    public static final Fields<Enrollment> asRelationshipFields = Fields.<Enrollment>builder()
+            .fields(getCommonFields()).build();
+
+    private static List<Property<Enrollment, ?>> getCommonFields() {
+        return new ArrayList<>(Arrays.asList(
+                fh.<String>field(UID),
+                fh.<String>field(Columns.CREATED),
+                fh.<String>field(Columns.LAST_UPDATED),
+                fh.<String>field(ORGANISATION_UNIT),
+                fh.<String>field(Columns.PROGRAM),
+                fh.<String>field(Columns.ENROLLMENT_DATE),
+                fh.<String>field(Columns.INCIDENT_DATE),
+                fh.<String>field(Columns.COMPLETED_DATE),
+                fh.<String>field(Columns.FOLLOW_UP),
+                fh.<EnrollmentStatus>field(Columns.STATUS),
+                fh.<Boolean>field(DELETED),
+                fh.<String>field(Columns.TRACKED_ENTITY_INSTANCE),
+                fh.<Coordinates>field(COORDINATE),
+                fh.<Geometry>field(GEOMETRY)
+        ));
+    }
 
     private EnrollmentFields() {}
 }

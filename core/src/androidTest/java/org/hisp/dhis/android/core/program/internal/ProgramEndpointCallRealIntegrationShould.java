@@ -37,7 +37,8 @@ import org.mockito.internal.util.collections.Sets;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.Callable;
+
+import io.reactivex.Single;
 
 public class ProgramEndpointCallRealIntegrationShould extends BaseRealIntegrationTest {
     /**
@@ -45,7 +46,7 @@ public class ProgramEndpointCallRealIntegrationShould extends BaseRealIntegratio
      * metadataSyncCall. It works against the demo server.
      */
     private D2 d2;
-    private Callable<List<Program>> programCall;
+    private Single<List<Program>> programCall;
 
     @Before
     @Override
@@ -55,8 +56,8 @@ public class ProgramEndpointCallRealIntegrationShould extends BaseRealIntegratio
         programCall = createCall();
     }
 
-    private Callable<List<Program>> createCall() {
-        return getD2DIComponent(d2).programCallFactory().create(Sets.newSet("lxAQ7Zs9VYR", "AwNmMxxakEo"));
+    private Single<List<Program>> createCall() {
+        return getD2DIComponent(d2).programCall().download(Sets.newSet("lxAQ7Zs9VYR", "AwNmMxxakEo"));
     }
 
     // @Test
@@ -71,6 +72,6 @@ public class ProgramEndpointCallRealIntegrationShould extends BaseRealIntegratio
             DbOpenHelper.java replacing 'foreign_keys = ON' with 'foreign_keys = OFF' and
             uncomment the @Test tag */
 
-        programCall.call();
+        programCall.blockingGet();
     }
 }

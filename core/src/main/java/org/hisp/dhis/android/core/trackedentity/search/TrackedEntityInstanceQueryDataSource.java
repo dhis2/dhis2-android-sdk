@@ -27,6 +27,10 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search;
 
+import androidx.annotation.NonNull;
+import androidx.paging.ItemKeyedDataSource;
+
+import org.hisp.dhis.android.core.arch.cache.internal.D2Cache;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenSelection;
@@ -40,9 +44,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import androidx.annotation.NonNull;
-import androidx.paging.ItemKeyedDataSource;
-
 import static org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode.OFFLINE_FIRST;
 import static org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode.OFFLINE_ONLY;
 import static org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode.ONLINE_FIRST;
@@ -54,6 +55,7 @@ public final class TrackedEntityInstanceQueryDataSource
     private final TrackedEntityInstanceQueryCallFactory onlineCallFactory;
     private final TrackedEntityInstanceQueryRepositoryScope scope;
     private final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders;
+    private final D2Cache<TrackedEntityInstanceQueryOnline, List<TrackedEntityInstance>> onlineCache;
 
     private final static int initialLoadSizeFactor = 3;
 
@@ -66,11 +68,14 @@ public final class TrackedEntityInstanceQueryDataSource
     TrackedEntityInstanceQueryDataSource(TrackedEntityInstanceStore store,
                                          TrackedEntityInstanceQueryCallFactory onlineCallFactory,
                                          TrackedEntityInstanceQueryRepositoryScope scope,
-                                         Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders) {
+                                         Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders,
+                                         D2Cache<TrackedEntityInstanceQueryOnline,
+                                                 List<TrackedEntityInstance>> onlineCache) {
         this.store = store;
         this.onlineCallFactory = onlineCallFactory;
         this.scope = scope;
         this.childrenAppenders = childrenAppenders;
+        this.onlineCache = onlineCache;
     }
 
     @Override
@@ -145,7 +150,12 @@ public final class TrackedEntityInstanceQueryDataSource
 
         try {
             List<TrackedEntityInstance> instances = new ArrayList<>();
-            for (TrackedEntityInstance instance : onlineCallFactory.getCall(onlineQuery).call()) {
+            List<TrackedEntityInstance> queryInstances = scope.allowOnlineCache() ? onlineCache.get(onlineQuery) : null;
+            if (queryInstances == null) {
+                queryInstances = onlineCallFactory.getCall(onlineQuery).call();
+                onlineCache.set(onlineQuery, queryInstances);
+            }
+            for (TrackedEntityInstance instance : queryInstances) {
                 if (!returnedUids.contains(instance.uid())) {
                     instances.add(instance);
                 }

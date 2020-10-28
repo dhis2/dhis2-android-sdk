@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
@@ -40,9 +43,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedVa
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueTableInfo.Columns;
 
 import java.util.Date;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 public final class TrackedEntityAttributeReservedValueStore
         extends ObjectWithoutUidStoreImpl<TrackedEntityAttributeReservedValue>
@@ -57,12 +57,13 @@ public final class TrackedEntityAttributeReservedValueStore
         w.bind(6, o.expiryDate());
         w.bind(7, o.organisationUnit());
         w.bind(8, o.temporalValidityDate());
+        w.bind(9, o.pattern());
     };
 
     private static final WhereStatementBinder<TrackedEntityAttributeReservedValue> WHERE_UPDATE_BINDER = (o, w) -> {
-        w.bind(9, o.ownerUid());
-        w.bind(10, o.value());
-        w.bind(11, o.organisationUnit());
+        w.bind(10, o.ownerUid());
+        w.bind(11, o.value());
+        w.bind(12, o.organisationUnit());
     };
 
     private static final WhereStatementBinder<TrackedEntityAttributeReservedValue> WHERE_DELETE_BINDER = (o, w) -> {
@@ -90,34 +91,39 @@ public final class TrackedEntityAttributeReservedValueStore
     }
 
     @Override
-    public TrackedEntityAttributeReservedValue popOne(@NonNull String ownerUid,
-                                                      @Nullable String organisationUnitUid) {
-        String where = organisationUnitUid == null ? where(ownerUid) : where(ownerUid, organisationUnitUid);
-        return popOneWhere(where);
+    public void deleteIfOutdatedPattern(@NonNull String ownerUid, @NonNull String pattern) {
+        String deleteWhereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(Columns.OWNER_UID, ownerUid)
+                .appendNotKeyStringValue(Columns.PATTERN, pattern)
+                .build();
+
+        super.deleteWhere(deleteWhereClause);
     }
 
     @Override
-    public int count(@NonNull String ownerUid, @NonNull String organisationUnitUid) {
-        return countWhere(where(ownerUid, organisationUnitUid));
+    public TrackedEntityAttributeReservedValue popOne(@NonNull String ownerUid, @Nullable String organisationUnitUid) {
+        return popOneWhere(where(ownerUid, organisationUnitUid, null));
     }
 
     @Override
-    public int count(@NonNull String ownerUid) {
-        return countWhere(where(ownerUid));
+    public int count(@NonNull String ownerUid, @Nullable String organisationUnitUid, @Nullable String pattern) {
+        return countWhere(where(ownerUid, organisationUnitUid, pattern));
     }
 
     private String where(@NonNull String ownerUid,
-                         @NonNull String organisationUnitUid) {
-        return new WhereClauseBuilder()
-                .appendKeyStringValue(Columns.OWNER_UID, ownerUid)
-                .appendKeyStringValue(Columns.ORGANISATION_UNIT, organisationUnitUid)
-                .build();
-    }
+                         @Nullable String organisationUnit,
+                         @Nullable String pattern) {
+        WhereClauseBuilder builder = new WhereClauseBuilder()
+                .appendKeyStringValue(Columns.OWNER_UID, ownerUid);
 
-    private String where(@NonNull String ownerUid) {
-        return new WhereClauseBuilder()
-                .appendKeyStringValue(Columns.OWNER_UID, ownerUid)
-                .build();
+        if (organisationUnit != null) {
+            builder.appendKeyStringValue(Columns.ORGANISATION_UNIT, organisationUnit);
+        }
+        if (pattern != null) {
+            builder.appendKeyStringValue(Columns.PATTERN, pattern);
+        }
+
+        return builder.build();
     }
 
     public static TrackedEntityAttributeReservedValueStoreInterface create(DatabaseAdapter databaseAdapter) {

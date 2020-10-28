@@ -28,12 +28,15 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
+import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute;
+
+import java.util.Collection;
 
 import javax.inject.Inject;
 
@@ -43,13 +46,16 @@ import dagger.Reusable;
 final class TrackedEntityTypeHandler extends IdentifiableHandlerImpl<TrackedEntityType> {
 
     private final OrderedLinkHandler<TrackedEntityTypeAttribute, TrackedEntityTypeAttribute> attributeHandler;
+    private final CollectionCleaner<TrackedEntityType> collectionCleaner;
 
     @Inject
     TrackedEntityTypeHandler(IdentifiableObjectStore<TrackedEntityType> trackedEntityTypeStore,
                              OrderedLinkHandler<TrackedEntityTypeAttribute, TrackedEntityTypeAttribute>
-                                     attributeHandler) {
+                                     attributeHandler,
+                             CollectionCleaner<TrackedEntityType> collectionCleaner) {
         super(trackedEntityTypeStore);
         this.attributeHandler = attributeHandler;
+        this.collectionCleaner = collectionCleaner;
     }
 
     @Override
@@ -57,5 +63,10 @@ final class TrackedEntityTypeHandler extends IdentifiableHandlerImpl<TrackedEnti
         attributeHandler.handleMany(trackedEntityType.uid(), trackedEntityType.trackedEntityTypeAttributes(),
                 (trackedEntityTypeAttribute, sortOrder) ->
                         trackedEntityTypeAttribute.toBuilder().sortOrder(sortOrder).build());
+    }
+
+    @Override
+    protected void afterCollectionHandled(Collection<TrackedEntityType> trackedEntityTypes) {
+        collectionCleaner.deleteNotPresent(trackedEntityTypes);
     }
 }

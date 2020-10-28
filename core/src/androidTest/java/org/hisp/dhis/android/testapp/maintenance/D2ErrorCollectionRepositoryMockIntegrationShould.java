@@ -44,8 +44,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class D2ErrorCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -54,35 +53,35 @@ public class D2ErrorCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void filter_d2_error_by_url() {
         List<D2Error> d2Errors = d2.maintenanceModule().d2Errors()
                 .byUrl().like("http://dhis2.org/api/programs/uid").blockingGet();
-        assertThat(d2Errors.size(), is(1));
+        assertThat(d2Errors.size()).isEqualTo(1);
     }
 
     @Test
     public void filter_d2_error_by_d2_error_code() {
         List<D2Error> d2Errors = d2.maintenanceModule().d2Errors()
                 .byD2ErrorCode().eq(D2ErrorCode.BAD_CREDENTIALS).blockingGet();
-        assertThat(d2Errors.size(), is(1));
+        assertThat(d2Errors.size()).isEqualTo(1);
     }
 
     @Test
     public void filter_d2_error_by_d2_error_component() {
         List<D2Error> d2Errors = d2.maintenanceModule().d2Errors()
                 .byD2ErrorComponent().eq(D2ErrorComponent.Server).blockingGet();
-        assertThat(d2Errors.size(), is(1));
+        assertThat(d2Errors.size()).isEqualTo(1);
     }
 
     @Test
     public void filter_d2_error_by_error_description() {
         List<D2Error> d2Errors = d2.maintenanceModule().d2Errors()
                 .byErrorDescription().eq("Error processing response").blockingGet();
-        assertThat(d2Errors.size(), is(1));
+        assertThat(d2Errors.size()).isEqualTo(1);
     }
 
     @Test
     public void filter_d2_error_by_http_error_code() {
         List<D2Error> d2Errors = d2.maintenanceModule().d2Errors()
                 .byHttpErrorCode().eq(402).blockingGet();
-        assertThat(d2Errors.size(), is(1));
+        assertThat(d2Errors.size()).isEqualTo(1);
     }
 
     @Test
@@ -105,6 +104,6 @@ public class D2ErrorCollectionRepositoryMockIntegrationShould extends BaseMockIn
                 .build();
         List<D2Error> d2Errors = d2.maintenanceModule().d2Errors()
                 .byCreated().inPeriods(Lists.newArrayList(todayPeriod)).blockingGet();
-        assertThat(d2Errors.size(), is(2));
+        assertThat(d2Errors.size()).isEqualTo(2);
     }
 }

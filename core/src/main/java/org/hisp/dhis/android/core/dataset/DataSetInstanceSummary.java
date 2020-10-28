@@ -36,10 +36,13 @@ import androidx.annotation.Nullable;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.StateColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.State;
+
+import java.util.Date;
 
 @AutoValue
 public abstract class DataSetInstanceSummary implements CoreObject {
@@ -56,9 +59,13 @@ public abstract class DataSetInstanceSummary implements CoreObject {
     @NonNull
     public abstract Integer dataSetInstanceCount();
 
-    @Nullable
+    @NonNull
     @ColumnAdapter(StateColumnAdapter.class)
     public abstract State state();
+
+    @Nullable
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date lastUpdated();
 
     @NonNull
     public static DataSetInstanceSummary create(Cursor cursor) {
@@ -84,6 +91,8 @@ public abstract class DataSetInstanceSummary implements CoreObject {
         public abstract Builder dataSetInstanceCount(Integer dataSetInstanceCount);
 
         public abstract Builder state(State state);
+
+        public abstract Builder lastUpdated(Date lastUpdated);
 
         public abstract DataSetInstanceSummary build();
     }

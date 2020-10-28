@@ -45,8 +45,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTest {
 
@@ -68,11 +67,11 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         List<FileResource> fileResources = d2.fileResourceModule().fileResources().blockingGet();
 
-        assertThat(fileResources.size(), is(2));
+        assertThat(fileResources.size()).isEqualTo(2);
 
         File file = new File(fileResources.get(0).path());
 
-        assertThat(file.exists(), is(true));
+        assertThat(file.exists()).isTrue();
     }
 
     //@Test
@@ -85,7 +84,7 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         File file = new File(fileResources.get(0).path());
 
-        assertThat(file.exists(), is(true));
+        assertThat(file.exists()).isTrue();
 
         String valueUid = d2.fileResourceModule().fileResources().blockingAdd(file);
 
@@ -104,14 +103,14 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         File file2 = new File(fileResources2.get(1).path());
 
-        assertThat(file2.exists(), is(true));
+        assertThat(file2.exists()).isTrue();
 
         d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
 
         TrackedEntityInstance trackedEntityInstance2 =
                 d2.trackedEntityModule().trackedEntityInstances().blockingGet().get(0);
 
-        assertThat(trackedEntityInstance2.state(), is(State.SYNCED));
+        assertThat(trackedEntityInstance2.state()).isEqualTo(State.SYNCED);
     }
 
     //@Test
@@ -124,7 +123,7 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         File file = new File(fileResources.get(0).path());
 
-        assertThat(file.exists(), is(true));
+        assertThat(file.exists()).isTrue();
 
         String valueUid = d2.fileResourceModule().fileResources().blockingAdd(file);
 
@@ -141,7 +140,7 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         File file2 = new File(fileResources2.get(1).path());
 
-        assertThat(file2.exists(), is(true));
+        assertThat(file2.exists()).isTrue();
     }
 
     //@Test
@@ -156,7 +155,7 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         List<FileResource> fileResources2 = d2.fileResourceModule().fileResources().blockingGet();
 
-        assertThat(fileResources.size(), is(fileResources2.size()));
+        assertThat(fileResources.size()).isEqualTo(fileResources2.size());
     }
 
     private void syncDataAndMetadata() throws Exception {

@@ -36,8 +36,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould
@@ -50,6 +49,16 @@ public class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould
                         .byProgram().eq("lxAQ7Zs9VYR")
                         .blockingGet();
 
-        assertThat(trackedEntityInstances.size(), is(2));
+        assertThat(trackedEntityInstances.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void find_uids_by_program() {
+        List<String> trackedEntityInstanceUids =
+                d2.trackedEntityModule().trackedEntityInstanceQuery()
+                        .byProgram().eq("lxAQ7Zs9VYR")
+                        .blockingGetUids();
+
+        assertThat(trackedEntityInstanceUids.size()).isEqualTo(2);
     }
 }

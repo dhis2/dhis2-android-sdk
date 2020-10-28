@@ -46,14 +46,16 @@ import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EnrollmentStat
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreCoordinatesColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreEventListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNoteListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreRelationshipListColumnAdapter;
 import org.hisp.dhis.android.core.arch.helpers.CoordinateHelper;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
-import org.hisp.dhis.android.core.note.Note;
 import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.note.Note;
+import org.hisp.dhis.android.core.relationship.Relationship;
 
 import java.util.Date;
 import java.util.List;
@@ -105,6 +107,11 @@ public abstract class Enrollment extends BaseDeletableDataObject implements Obje
     public abstract Date incidentDate();
 
     @Nullable
+    @JsonProperty()
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date completedDate();
+
+    @Nullable
     @JsonProperty(EnrollmentTableInfo.Columns.FOLLOW_UP)
     @ColumnName(EnrollmentTableInfo.Columns.FOLLOW_UP)
     public abstract Boolean followUp();
@@ -142,6 +149,11 @@ public abstract class Enrollment extends BaseDeletableDataObject implements Obje
     @ColumnAdapter(IgnoreNoteListColumnAdapter.class)
     public abstract List<Note> notes();
 
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(IgnoreRelationshipListColumnAdapter.class)
+    abstract List<Relationship> relationships();
+
     public static Builder builder() {
         return new $$AutoValue_Enrollment.Builder();
     }
@@ -177,6 +189,8 @@ public abstract class Enrollment extends BaseDeletableDataObject implements Obje
 
         public abstract Builder incidentDate(Date incidentDate);
 
+        public abstract Builder completedDate(Date completedDate);
+
         @JsonProperty(EnrollmentTableInfo.Columns.FOLLOW_UP)
         public abstract Builder followUp(Boolean followUp);
 
@@ -194,6 +208,8 @@ public abstract class Enrollment extends BaseDeletableDataObject implements Obje
         abstract Builder events(List<Event> events);
 
         public abstract Builder notes(List<Note> notes);
+
+        public abstract Builder relationships(List<Relationship> relationships);
 
         abstract Enrollment autoBuild();
 

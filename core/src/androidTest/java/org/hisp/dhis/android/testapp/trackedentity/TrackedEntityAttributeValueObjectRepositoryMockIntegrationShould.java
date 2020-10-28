@@ -35,8 +35,7 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class TrackedEntityAttributeValueObjectRepositoryMockIntegrationShould
@@ -49,7 +48,7 @@ public class TrackedEntityAttributeValueObjectRepositoryMockIntegrationShould
         TrackedEntityAttributeValueObjectRepository repository = objectRepository();
 
         repository.blockingSet(value);
-        assertThat(repository.blockingGet().value(), is(value));
+        assertThat(repository.blockingGet().value()).isEqualTo(value);
 
         repository.blockingDelete();
     }
@@ -59,17 +58,17 @@ public class TrackedEntityAttributeValueObjectRepositoryMockIntegrationShould
         TrackedEntityAttributeValueObjectRepository repository = objectRepository();
 
         repository.blockingSet("value");
-        assertThat(repository.blockingExists(), is(Boolean.TRUE));
+        assertThat(repository.blockingExists()).isEqualTo(Boolean.TRUE);
         repository.blockingDelete();
-        assertThat(repository.blockingExists(), is(Boolean.FALSE));
+        assertThat(repository.blockingExists()).isEqualTo(Boolean.FALSE);
     }
 
     @Test
     public void return_that_a_value_exists_only_if_it_has_been_created() {
         assertThat(d2.trackedEntityModule().trackedEntityAttributeValues()
-                .value("no_attribute", "no_instance").blockingExists(), is(Boolean.FALSE));
+                .value("no_attribute", "no_instance").blockingExists()).isEqualTo(Boolean.FALSE);
         assertThat(d2.trackedEntityModule().trackedEntityAttributeValues()
-                .value("cejWyOfXge6", "nWrB0TfWlvh").blockingExists(), is(Boolean.TRUE));
+                .value("cejWyOfXge6", "nWrB0TfWlvh").blockingExists()).isEqualTo(Boolean.TRUE);
     }
 
     private TrackedEntityAttributeValueObjectRepository objectRepository() {

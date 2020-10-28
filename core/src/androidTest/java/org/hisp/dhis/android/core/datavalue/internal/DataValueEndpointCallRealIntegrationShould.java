@@ -31,18 +31,23 @@ package org.hisp.dhis.android.core.datavalue.internal;
 import org.hisp.dhis.android.core.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2Factory;
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloaderImpl;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
 import org.hisp.dhis.android.core.datavalue.DataValue;
+import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataCallBundle;
+import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataCallBundleKey;
+import org.hisp.dhis.android.core.period.PeriodType;
+import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.junit.Before;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.Callable;
 
-import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.getDataSetUids;
+import io.reactivex.Single;
+
+import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.getDataSets;
 import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.getOrgUnitUids;
 import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.getPeriodIds;
 
@@ -52,22 +57,35 @@ public class DataValueEndpointCallRealIntegrationShould extends BaseRealIntegrat
      * metadataSyncCall. It works against the demo server.
      */
     private D2 d2;
-    private Callable<List<DataValue>> dataValueCall;
 
     @Before
     @Override
     public void setUp() throws IOException {
         super.setUp();
         d2 = D2Factory.forNewDatabase();
-        dataValueCall = createCall();
     }
 
-    private Callable<List<DataValue>> createCall() {
-        APICallExecutor apiCallExecutor = APICallExecutorImpl.create(d2.databaseAdapter());
+    private Single<List<DataValue>> download() {
         Handler<DataValue> dataValueHandler =  new ObjectWithoutUidHandlerImpl<>(
-                DataValueStore.create(databaseAdapter()));
-        return new DataValueEndpointCallFactory(getGenericCallData(d2), apiCallExecutor, dataValueHandler).create(
-                DataValueQuery.create(getDataSetUids(), getPeriodIds(), getOrgUnitUids()));
+                DataValueStore.create(d2.databaseAdapter()));
+        AggregatedDataCallBundleKey key = AggregatedDataCallBundleKey.builder()
+                .periodType(PeriodType.Daily)
+                .futurePeriods(0)
+                .pastPeriods(30)
+                .lastUpdated(null)
+                .build();
+        AggregatedDataCallBundle bundle = AggregatedDataCallBundle.builder()
+                .key(key)
+                .dataSets(getDataSets())
+                .periodIds(getPeriodIds())
+                .rootOrganisationUnitUids(getOrgUnitUids())
+                .build();
+
+        ResourceHandler resourceHandler = getGenericCallData(d2).resourceHandler();
+        APIDownloader apiDownloader = new APIDownloaderImpl(resourceHandler);
+        DataValueService dataValueService = d2.retrofit().create(DataValueService.class);
+        return new DataValueCall(dataValueService, dataValueHandler, apiDownloader).download(
+                DataValueQuery.create(bundle));
     }
 
     // @Test
@@ -82,6 +100,6 @@ public class DataValueEndpointCallRealIntegrationShould extends BaseRealIntegrat
             DbOpenHelper.java replacing 'foreign_keys = ON' with 'foreign_keys = OFF' and
             uncomment the @Test tag */
 
-        dataValueCall.call();
+        download().blockingGet();
     }
 }

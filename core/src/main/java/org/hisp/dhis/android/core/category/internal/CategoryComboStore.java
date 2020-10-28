@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
 
 import androidx.annotation.NonNull;
 
-final class CategoryComboStore {
+public final class CategoryComboStore {
 
     private CategoryComboStore() {}
 

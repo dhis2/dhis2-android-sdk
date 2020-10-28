@@ -15,7 +15,11 @@
     "externalize": false,
     "delete": true,
     "write": true,
-    "manage": false
+    "manage": false,
+    "data": {
+      "read": true,
+      "write": true
+    }
   },
   "userGroupAccesses": [],
   "attributeValues": [],

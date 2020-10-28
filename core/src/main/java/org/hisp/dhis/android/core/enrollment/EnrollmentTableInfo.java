@@ -60,6 +60,7 @@ public final class EnrollmentTableInfo {
         public static final String PROGRAM = "program";
         public static final String ENROLLMENT_DATE = "enrollmentDate";
         public static final String INCIDENT_DATE = "incidentDate";
+        public static final String COMPLETED_DATE = "completedDate";
         public static final String FOLLOW_UP = "followup";
         public static final String STATUS = "status";
         public static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
@@ -78,6 +79,7 @@ public final class EnrollmentTableInfo {
                     PROGRAM,
                     ENROLLMENT_DATE,
                     INCIDENT_DATE,
+                    COMPLETED_DATE,
                     FOLLOW_UP,
                     STATUS,
                     TRACKED_ENTITY_INSTANCE,

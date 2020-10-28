@@ -30,4 +30,5 @@ package org.hisp.dhis.android.core.enrollment;
 
 public interface EnrollmentModule {
     EnrollmentCollectionRepository enrollments();
+    EnrollmentService enrollmentService();
 }

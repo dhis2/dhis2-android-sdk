@@ -36,7 +36,8 @@ import dagger.Reusable;
 import retrofit2.Retrofit;
 
 @Module(includes = {
-        EventEntityDIModule.class
+        EventEntityDIModule.class,
+        EventSyncEntityDIModule.class
 })
 public final class EventPackageDIModule {
 

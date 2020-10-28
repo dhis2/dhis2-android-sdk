@@ -38,8 +38,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -52,7 +51,7 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
                 d2.dataSetModule().dataSetCompleteRegistrations()
                         .blockingGet();
 
-        assertThat(dataSetCompleteRegistrations.size(), is(3));
+        assertThat(dataSetCompleteRegistrations.size()).isEqualTo(3);
     }
 
     @Test
@@ -63,7 +62,7 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
                         .eq("2018")
                         .blockingGet();
 
-        assertThat(dataSetCompleteRegistrations.size(), is(1));
+        assertThat(dataSetCompleteRegistrations.size()).isEqualTo(1);
     }
 
     @Test
@@ -74,7 +73,7 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
                         .eq("lyLU2wR22tC")
                         .blockingGet();
 
-        assertThat(dataSetCompleteRegistrations.size(), is(3));
+        assertThat(dataSetCompleteRegistrations.size()).isEqualTo(3);
     }
 
     @Test
@@ -85,7 +84,7 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
                         .eq("DiszpKrYNg8")
                         .blockingGet();
 
-        assertThat(dataSetCompleteRegistrations.size(), is(3));
+        assertThat(dataSetCompleteRegistrations.size()).isEqualTo(3);
     }
 
     @Test
@@ -95,7 +94,7 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
                         .byAttributeOptionComboUid()
                         .eq("bRowv6yZOF2").blockingGet();
 
-        assertThat(dataSetCompleteRegistrations.size(), is(3));
+        assertThat(dataSetCompleteRegistrations.size()).isEqualTo(3);
     }
 
     @Test
@@ -106,7 +105,7 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
                         .after(simpleDateFormat.parse("2010-08-03"))
                         .blockingGet();
 
-        assertThat(dataSetCompleteRegistrations.size(), is(1));
+        assertThat(dataSetCompleteRegistrations.size()).isEqualTo(1);
     }
 
     @Test
@@ -117,7 +116,7 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
                         .before(simpleDateFormat.parse("2010-08-03"))
                         .blockingGet();
 
-        assertThat(dataSetCompleteRegistrations.size(), is(2));
+        assertThat(dataSetCompleteRegistrations.size()).isEqualTo(2);
     }
 
     @Test
@@ -128,7 +127,7 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
                         .eq("imported")
                         .blockingGet();
 
-        assertThat(dataSetCompleteRegistrations.size(), is(2));
+        assertThat(dataSetCompleteRegistrations.size()).isEqualTo(2);
     }
 
     @Test
@@ -138,7 +137,7 @@ public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShoul
                         .byDeleted().isFalse()
                         .blockingGet();
 
-        assertThat(dataSetCompleteRegistrations.size(), is(3));
+        assertThat(dataSetCompleteRegistrations.size()).isEqualTo(3);
     }
 
 }

@@ -34,10 +34,8 @@ import org.hisp.dhis.android.core.user.internal.UserInternalModule;
 import javax.inject.Inject;
 
 import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @Reusable
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
 public final class D2InternalModules {
     public final CategoryInternalModule category;
     public final UserInternalModule user;

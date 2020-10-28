@@ -45,4 +45,6 @@ public interface TrackedEntityModule {
     TrackedEntityAttributeReservedValueManager reservedValueManager();
 
     TrackedEntityInstanceDownloader trackedEntityInstanceDownloader();
+
+    TrackedEntityInstanceService trackedEntityInstanceService();
 }

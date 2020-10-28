@@ -43,8 +43,7 @@ import org.junit.runner.RunWith;
 import java.text.ParseException;
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class TrackedEntityCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -55,7 +54,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                 d2.trackedEntityModule().trackedEntityInstances()
                         .blockingGet();
 
-        assertThat(trackedEntityInstances.size(), is(2));
+        assertThat(trackedEntityInstances.size()).isEqualTo(2);
     }
 
     @Test
@@ -65,7 +64,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                         .byUid().eq("nWrB0TfWlvD")
                         .blockingGet();
 
-        assertThat(trackedEntityInstances.size(), is(1));
+        assertThat(trackedEntityInstances.size()).isEqualTo(1);
     }
 
     @Test
@@ -75,7 +74,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                         .byCreated().eq(BaseNameableObject.DATE_FORMAT.parse("2019-01-10T13:40:27.987"))
                         .blockingGet();
 
-        assertThat(trackedEntityInstances.size(), is(1));
+        assertThat(trackedEntityInstances.size()).isEqualTo(1);
     }
 
     @Test
@@ -85,7 +84,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                         .byLastUpdated().eq(BaseNameableObject.DATE_FORMAT.parse("2018-01-10T13:40:28.592"))
                         .blockingGet();
 
-        assertThat(trackedEntityInstances.size(), is(1));
+        assertThat(trackedEntityInstances.size()).isEqualTo(1);
     }
 
     @Test
@@ -95,17 +94,17 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                         .byCreatedAtClient().eq("2019-01-22T18:38:15.845")
                         .blockingGet();
 
-        assertThat(trackedEntityInstances.size(), is(1));
+        assertThat(trackedEntityInstances.size()).isEqualTo(1);
     }
 
     @Test
     public void filter_by_last_updated_at_client() {
         List<TrackedEntityInstance> trackedEntityInstances =
                 d2.trackedEntityModule().trackedEntityInstances()
-                        .byLastUpdatedAtClient().eq("2019-01-22T18:38:15.845")
+                        .byLastUpdatedAtClient().isNotNull()
                         .blockingGet();
 
-        assertThat(trackedEntityInstances.size(), is(1));
+        assertThat(trackedEntityInstances.size()).isEqualTo(2);
     }
 
     @Test
@@ -115,7 +114,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                         .byOrganisationUnitUid().eq("DiszpKrYNg8")
                         .blockingGet();
 
-        assertThat(trackedEntityInstances.size(), is(2));
+        assertThat(trackedEntityInstances.size()).isEqualTo(2);
     }
 
     @Test
@@ -125,7 +124,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                         .byTrackedEntityType().eq("nEenWmSyUEp")
                         .blockingGet();
 
-        assertThat(trackedEntityInstances.size(), is(2));
+        assertThat(trackedEntityInstances.size()).isEqualTo(2);
     }
 
     @Test
@@ -135,7 +134,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                         .byGeometryType().eq(FeatureType.POINT)
                         .blockingGet();
 
-        assertThat(trackedEntityInstances.size(), is(1));
+        assertThat(trackedEntityInstances.size()).isEqualTo(1);
     }
 
     @Test
@@ -145,7 +144,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                         .byGeometryCoordinates().eq("[9.0, 9.0]")
                         .blockingGet();
 
-        assertThat(trackedEntityInstances.size(), is(1));
+        assertThat(trackedEntityInstances.size()).isEqualTo(1);
     }
 
     @Test
@@ -155,8 +154,8 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                         .byState().eq(State.SYNCED)
                         .blockingGet();
 
-        // TODO set to assertThat(trackedEntityInstances.size(), is(2)); after moving write tests to another db
-        assertThat(trackedEntityInstances.size(), is(1));
+        // TODO set to assertThat(trackedEntityInstances.size()).isEqualTo(2); after moving write tests to another db
+        assertThat(trackedEntityInstances.size()).isEqualTo(1);
     }
 
     @Test
@@ -166,7 +165,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                         .byDeleted().isFalse()
                         .blockingGet();
 
-        assertThat(trackedEntityInstances.size(), is(2));
+        assertThat(trackedEntityInstances.size()).isEqualTo(2);
     }
 
     @Test
@@ -176,7 +175,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                         .byProgramUids(Lists.newArrayList("lxAQ7Zs9VYR"))
                         .blockingGet();
 
-        assertThat(trackedEntityInstances.size(), is(2));
+        assertThat(trackedEntityInstances.size()).isEqualTo(2);
     }
 
     @Test
@@ -185,8 +184,8 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                         .orderByCreated(RepositoryScope.OrderByDirection.ASC)
                         .blockingGet();
 
-        assertThat(trackedEntityInstances.get(0).uid(), is("nWrB0TfWlvD"));
-        assertThat(trackedEntityInstances.get(1).uid(), is("nWrB0TfWlvh"));
+        assertThat(trackedEntityInstances.get(0).uid()).isEqualTo("nWrB0TfWlvD");
+        assertThat(trackedEntityInstances.get(1).uid()).isEqualTo("nWrB0TfWlvh");
     }
 
     @Test
@@ -195,8 +194,8 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                         .orderByCreatedAtClient(RepositoryScope.OrderByDirection.ASC)
                         .blockingGet();
 
-        assertThat(trackedEntityInstances.get(0).uid(), is("nWrB0TfWlvh"));
-        assertThat(trackedEntityInstances.get(1).uid(), is("nWrB0TfWlvD"));
+        assertThat(trackedEntityInstances.get(0).uid()).isEqualTo("nWrB0TfWlvD");
+        assertThat(trackedEntityInstances.get(1).uid()).isEqualTo("nWrB0TfWlvh");
     }
 
     @Test
@@ -205,8 +204,8 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                         .orderByLastUpdated(RepositoryScope.OrderByDirection.ASC)
                         .blockingGet();
 
-        assertThat(trackedEntityInstances.get(0).uid(), is("nWrB0TfWlvD"));
-        assertThat(trackedEntityInstances.get(1).uid(), is("nWrB0TfWlvh"));
+        assertThat(trackedEntityInstances.get(0).uid()).isEqualTo("nWrB0TfWlvD");
+        assertThat(trackedEntityInstances.get(1).uid()).isEqualTo("nWrB0TfWlvh");
     }
 
     @Test
@@ -215,7 +214,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                         .orderByLastUpdatedAtClient(RepositoryScope.OrderByDirection.ASC)
                         .blockingGet();
 
-        assertThat(trackedEntityInstances.get(0).uid(), is("nWrB0TfWlvh"));
-        assertThat(trackedEntityInstances.get(1).uid(), is("nWrB0TfWlvD"));
+        assertThat(trackedEntityInstances.get(0).uid()).isEqualTo("nWrB0TfWlvD");
+        assertThat(trackedEntityInstances.get(1).uid()).isEqualTo("nWrB0TfWlvh");
     }
 }

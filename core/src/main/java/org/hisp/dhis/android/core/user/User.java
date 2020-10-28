@@ -144,11 +144,11 @@ public abstract class User extends BaseIdentifiableObject implements CoreObject 
 
         public abstract Builder nationality(String nationality);
 
-        abstract Builder userCredentials(UserCredentials userCredentials);
+        public abstract Builder userCredentials(UserCredentials userCredentials);
 
-        abstract Builder organisationUnits(List<OrganisationUnit> organisationUnits);
+        public abstract Builder organisationUnits(List<OrganisationUnit> organisationUnits);
 
-        abstract Builder teiSearchOrganisationUnits(List<OrganisationUnit> teiSearchOrganisationUnits);
+        public abstract Builder teiSearchOrganisationUnits(List<OrganisationUnit> teiSearchOrganisationUnits);
 
         public abstract User build();
     }

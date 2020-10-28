@@ -32,8 +32,7 @@ import android.database.Cursor;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 public final class DatabaseAssert {
 
@@ -60,13 +59,13 @@ public final class DatabaseAssert {
     }
 
     public DatabaseAssert isEmptyTable(String tableName) {
-        assertThat(tableCount(tableName) == 0, is(true));
+        assertThat(tableCount(tableName) == 0).isTrue();
 
         return this;
     }
 
     public DatabaseAssert isNotEmptyTable(String tableName) {
-        assertThat(tableCount(tableName) == 0, is(false));
+        assertThat(tableCount(tableName) == 0).isFalse();
 
         return this;
     }
@@ -90,7 +89,7 @@ public final class DatabaseAssert {
             }
         }
         cursor.close();
-        assertThat(isEmpty, is(expectedEmpty));
+        assertThat(isEmpty).isEqualTo(expectedEmpty);
     }
 
     private int tableCount(String tableName) {

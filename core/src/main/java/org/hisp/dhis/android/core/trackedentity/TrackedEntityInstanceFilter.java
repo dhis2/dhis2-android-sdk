@@ -36,7 +36,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.AccessColumnAdapter;
@@ -51,7 +50,7 @@ import org.hisp.dhis.android.core.common.FilterPeriod;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterFields;
 
 import java.util.List;
 
@@ -79,8 +78,7 @@ public abstract class TrackedEntityInstanceFilter extends BaseIdentifiableObject
     public abstract EnrollmentStatus status();
 
     @Nullable
-    @JsonProperty(EnrollmentTableInfo.Columns.FOLLOW_UP)
-    @ColumnName(EnrollmentTableInfo.Columns.FOLLOW_UP)
+    @JsonProperty(TrackedEntityInstanceFilterFields.FOLLOW_UP)
     public abstract Boolean followUp();
 
     @Nullable

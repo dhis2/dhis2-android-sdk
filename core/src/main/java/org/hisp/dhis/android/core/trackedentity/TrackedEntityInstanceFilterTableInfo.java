@@ -57,7 +57,6 @@ public final class TrackedEntityInstanceFilterTableInfo {
         public final static String SORT_ORDER = "sortOrder";
         public final static String STATUS = "status";
         public final static String FOLLOW_UP = "followUp";
-        public final static String ENROLLMENT_CREATED_PERIOD = "enrollmentCreatedPeriod";
         public static final String PERIOD_FROM = "periodFrom";
         public static final String PERIOD_TO = "periodTo";
         public static final String ACCESS_DATA_WRITE = "accessDataWrite";
@@ -70,7 +69,6 @@ public final class TrackedEntityInstanceFilterTableInfo {
                     SORT_ORDER,
                     STATUS,
                     FOLLOW_UP,
-                    ENROLLMENT_CREATED_PERIOD,
                     PERIOD_FROM,
                     PERIOD_TO,
                     ACCESS_DATA_WRITE

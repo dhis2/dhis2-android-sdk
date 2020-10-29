@@ -38,13 +38,10 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.AccessColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.FilterPeriodColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EnrollmentStatusColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreTrackedEntityInstanceEventFilterListColumnAdapter;
-import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
-import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.FilterPeriod;
@@ -57,7 +54,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFi
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_TrackedEntityType.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_TrackedEntityInstanceFilter.Builder.class)
 public abstract class TrackedEntityInstanceFilter extends BaseIdentifiableObject implements CoreObject,
         ObjectWithStyle<TrackedEntityInstanceFilter, TrackedEntityInstanceFilter.Builder> {
 
@@ -77,7 +74,7 @@ public abstract class TrackedEntityInstanceFilter extends BaseIdentifiableObject
     @Nullable
     @JsonProperty()
     @ColumnAdapter(EnrollmentStatusColumnAdapter.class)
-    public abstract EnrollmentStatus status();
+    public abstract EnrollmentStatus enrollmentStatus();
 
     @Nullable
     @JsonProperty(TrackedEntityInstanceFilterFields.FOLLOW_UP)
@@ -92,10 +89,6 @@ public abstract class TrackedEntityInstanceFilter extends BaseIdentifiableObject
     @JsonProperty()
     @ColumnAdapter(IgnoreTrackedEntityInstanceEventFilterListColumnAdapter.class)
     public abstract List<TrackedEntityInstanceEventFilter> eventFilters();
-
-    @JsonProperty()
-    @ColumnAdapter(AccessColumnAdapter.class)
-    public abstract Access access();
 
     public static Builder builder() {
         return new $$AutoValue_TrackedEntityInstanceFilter.Builder();
@@ -120,29 +113,21 @@ public abstract class TrackedEntityInstanceFilter extends BaseIdentifiableObject
 
         public abstract Builder sortOrder(Integer sortOrder);
 
-        public abstract Builder status(EnrollmentStatus status);
+        public abstract Builder enrollmentStatus(EnrollmentStatus enrollmentStatus);
 
+        @JsonProperty(TrackedEntityInstanceFilterFields.FOLLOW_UP)
         public abstract Builder followUp(Boolean followUp);
 
         public abstract Builder enrollmentCreatedPeriod(FilterPeriod enrollmentCreatedPeriod);
 
         public abstract Builder eventFilters(List<TrackedEntityInstanceEventFilter> eventFilters);
 
-        public abstract Builder access(Access access);
-
         abstract TrackedEntityInstanceFilter autoBuild();
 
         // Auxiliary fields
-        abstract Access access();
         abstract ObjectStyle style();
 
         public TrackedEntityInstanceFilter build() {
-            try {
-                access();
-            } catch (IllegalStateException e) {
-                access(AccessHelper.defaultAccess());
-            }
-
             try {
                 style();
             } catch (IllegalStateException e) {

@@ -50,11 +50,10 @@ public final class TrackedEntityInstanceFilterStore {
             w.bind(9, UidsHelper.getUidOrNull(o.program()));
             w.bind(10, o.description());
             w.bind(11, o.sortOrder());
-            w.bind(12, o.status());
+            w.bind(12, o.enrollmentStatus());
             w.bind(13, o.followUp());
             w.bind(14, o.enrollmentCreatedPeriod() == null ? null : o.enrollmentCreatedPeriod().periodFrom());
             w.bind(15, o.enrollmentCreatedPeriod() == null ? null : o.enrollmentCreatedPeriod().periodTo());
-            w.bind(16, o.access().data().write());
         }
     };
 

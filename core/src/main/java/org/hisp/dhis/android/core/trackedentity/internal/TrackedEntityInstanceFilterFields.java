@@ -31,11 +31,8 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.FilterPeriod;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.internal.AccessFields;
-import org.hisp.dhis.android.core.common.internal.DataAccessFields;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
@@ -46,7 +43,6 @@ public final class TrackedEntityInstanceFilterFields {
     public final static String ENROLLMENT_CREATED_PERIOD = "enrollmentCreatedPeriod";
     public final static String FOLLOW_UP = "followup";
     public final static String EVENT_FILTERS = "eventFilters";
-    private static final String ACCESS = "access";
 
     private static final FieldsHelper<TrackedEntityInstanceFilter> fh = new FieldsHelper<>();
 
@@ -58,12 +54,11 @@ public final class TrackedEntityInstanceFilterFields {
                     fh.<ObjectWithUid>field(Columns.PROGRAM),
                     fh.<String>field(Columns.DESCRIPTION),
                     fh.<Integer>field(Columns.SORT_ORDER),
-                    fh.<EnrollmentStatus>field(Columns.STATUS),
+                    fh.<EnrollmentStatus>field(Columns.ENROLLMENT_STATUS),
                     fh.<Boolean>field(FOLLOW_UP),
                     fh.<FilterPeriod>field(ENROLLMENT_CREATED_PERIOD),
                     fh.<TrackedEntityInstanceEventFilter>nestedField(EVENT_FILTERS)
-                            .with(TrackedEntityInstanceEventFilterFields.allFields),
-                    fh.<Access>nestedField(ACCESS).with(AccessFields.data.with(DataAccessFields.allFields))
+                            .with(TrackedEntityInstanceEventFilterFields.allFields)
             ).build();
 
     private TrackedEntityInstanceFilterFields() {

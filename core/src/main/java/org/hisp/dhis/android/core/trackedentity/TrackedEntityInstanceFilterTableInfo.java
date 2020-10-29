@@ -55,11 +55,10 @@ public final class TrackedEntityInstanceFilterTableInfo {
         public final static String PROGRAM = "program";
         public final static String DESCRIPTION = "description";
         public final static String SORT_ORDER = "sortOrder";
-        public final static String STATUS = "status";
+        public final static String ENROLLMENT_STATUS = "enrollmentStatus";
         public final static String FOLLOW_UP = "followUp";
         public static final String PERIOD_FROM = "periodFrom";
         public static final String PERIOD_TO = "periodTo";
-        public static final String ACCESS_DATA_WRITE = "accessDataWrite";
 
         @Override
         public String[] all() {
@@ -67,11 +66,10 @@ public final class TrackedEntityInstanceFilterTableInfo {
                     PROGRAM,
                     DESCRIPTION,
                     SORT_ORDER,
-                    STATUS,
+                    ENROLLMENT_STATUS,
                     FOLLOW_UP,
                     PERIOD_FROM,
-                    PERIOD_TO,
-                    ACCESS_DATA_WRITE
+                    PERIOD_TO
             );
         }
     }

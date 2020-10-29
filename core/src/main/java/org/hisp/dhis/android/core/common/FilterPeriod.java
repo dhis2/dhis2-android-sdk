@@ -32,9 +32,12 @@ import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
+@JsonDeserialize(builder = AutoValue_FilterPeriod.Builder.class)
 public abstract class FilterPeriod {
 
     @Nullable
@@ -58,6 +61,7 @@ public abstract class FilterPeriod {
     }
 
     @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
         public abstract Builder periodFrom(Integer periodFrom);
 

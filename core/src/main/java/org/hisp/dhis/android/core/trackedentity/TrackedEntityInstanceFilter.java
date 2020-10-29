@@ -43,10 +43,12 @@ import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.FilterPeriodC
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EnrollmentStatusColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreTrackedEntityInstanceEventFilterListColumnAdapter;
+import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.FilterPeriod;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
@@ -128,6 +130,26 @@ public abstract class TrackedEntityInstanceFilter extends BaseIdentifiableObject
 
         public abstract Builder access(Access access);
 
-        public abstract TrackedEntityInstanceFilter build();
+        abstract TrackedEntityInstanceFilter autoBuild();
+
+        // Auxiliary fields
+        abstract Access access();
+        abstract ObjectStyle style();
+
+        public TrackedEntityInstanceFilter build() {
+            try {
+                access();
+            } catch (IllegalStateException e) {
+                access(AccessHelper.defaultAccess());
+            }
+
+            try {
+                style();
+            } catch (IllegalStateException e) {
+                style(ObjectStyle.builder().build());
+            }
+
+            return autoBuild();
+        }
     }
 }

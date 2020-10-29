@@ -25,7 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.indicator.indicatorengine
+package org.hisp.dhis.android.core.indicator.datasetindicatorengine
 
 import dagger.Module
 import dagger.Provides
@@ -36,7 +36,7 @@ internal class IndicatorEngineEntityDIModule {
 
     @Provides
     @Reusable
-    fun engine(impl: IndicatorEngineImpl): IndicatorEngine {
+    fun engine(impl: DataSetIndicatorEngineImpl): DataSetIndicatorEngine {
         return impl
     }
 }

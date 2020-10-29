@@ -25,7 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.indicator.indicatorengine
+package org.hisp.dhis.android.core.indicator.datasetindicatorengine
 
 import dagger.Reusable
 import io.reactivex.Single
@@ -39,26 +39,24 @@ import org.hisp.dhis.android.core.indicator.IndicatorCollectionRepository
 import org.hisp.dhis.android.core.indicator.IndicatorTypeCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLink
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo
-import org.hisp.dhis.android.core.parser.internal.service.ExpressionService
 import org.hisp.dhis.android.core.parser.internal.service.dataobject.DimensionalItemObject
 import org.hisp.dhis.android.core.parser.internal.service.utils.ExpressionHelper
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
-import org.hisp.dhis.android.core.validation.MissingValueStrategy
 import javax.inject.Inject
 
 @Reusable
-internal class IndicatorEngineImpl @Inject constructor(
+internal class DataSetIndicatorEngineImpl @Inject constructor(
     private val indicatorRepository: IndicatorCollectionRepository,
     private val indicatorTypeRepository: IndicatorTypeCollectionRepository,
     private val dataValueRepository: DataValueCollectionRepository,
     private val constantRepository: ConstantCollectionRepository,
     private val orgunitGroupLinkStore: LinkStore<OrganisationUnitOrganisationUnitGroupLink>,
     private val periodHelper: PeriodHelper,
-    private val expressionService: ExpressionService
-) : IndicatorEngine {
+    private val dataSetIndicatorEvaluator: DataSetIndicatorEvaluator
+) : DataSetIndicatorEngine {
 
-    override fun evaluateInDataSet(
+    override fun evaluate(
         indicatorUid: String,
         dataSetUid: String,
         periodId: String,
@@ -66,11 +64,11 @@ internal class IndicatorEngineImpl @Inject constructor(
         attributeOptionComboUid: String
     ): Single<Double> {
         return Single.fromCallable {
-            blockingEvaluateInDataSet(indicatorUid, dataSetUid, periodId, orgUnitUid, attributeOptionComboUid)
+            blockingEvaluate(indicatorUid, dataSetUid, periodId, orgUnitUid, attributeOptionComboUid)
         }
     }
 
-    override fun blockingEvaluateInDataSet(
+    override fun blockingEvaluate(
         indicatorUid: String,
         dataSetUid: String,
         periodId: String,
@@ -84,21 +82,15 @@ internal class IndicatorEngineImpl @Inject constructor(
         val constantMap = getConstantMap()
         val orgunitGroupCountMap = getOrgunitGroupMap()
         val period = getPeriod(periodId)
-        val days = PeriodHelper.getDays(period)
 
-        val numerator = expressionService.getExpressionValue(
-            indicator.numerator(), valueMap, constantMap,
-            orgunitGroupCountMap, days, MissingValueStrategy.NEVER_SKIP
-        ) as Double
-
-        val denominator = expressionService.getExpressionValue(
-            indicator.denominator(), valueMap, constantMap,
-            orgunitGroupCountMap, days, MissingValueStrategy.NEVER_SKIP
-        ) as Double
-
-        val formula = "$numerator * ${indicatorType.factor() ?: 1} / $denominator"
-
-        return expressionService.getExpressionValue(formula) as Double
+        return dataSetIndicatorEvaluator.evaluate(
+            indicator = indicator,
+            indicatorType = indicatorType,
+            valueMap = valueMap,
+            constantMap = constantMap,
+            orgUnitCountMap = orgunitGroupCountMap,
+            days = PeriodHelper.getDays(period)
+        )
     }
 
     private fun getValueMap(
@@ -123,7 +115,7 @@ internal class IndicatorEngineImpl @Inject constructor(
         return mapByUid(constants)
     }
 
-    private fun getOrgunitGroupMap(): Map<String, Int>? {
+    private fun getOrgunitGroupMap(): Map<String, Int> {
         return orgunitGroupLinkStore.groupAndGetCountBy(
             OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT_GROUP)
     }

@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.indicator.datasetindicatorengine
 
 import dagger.Reusable
 import io.reactivex.Single
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.mapByUid
 import org.hisp.dhis.android.core.constant.Constant
@@ -43,7 +44,6 @@ import org.hisp.dhis.android.core.parser.internal.service.dataobject.Dimensional
 import org.hisp.dhis.android.core.parser.internal.service.utils.ExpressionHelper
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
-import javax.inject.Inject
 
 @Reusable
 internal class DataSetIndicatorEngineImpl @Inject constructor(
@@ -117,7 +117,8 @@ internal class DataSetIndicatorEngineImpl @Inject constructor(
 
     private fun getOrgunitGroupMap(): Map<String, Int> {
         return orgunitGroupLinkStore.groupAndGetCountBy(
-            OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT_GROUP)
+            OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT_GROUP
+        )
     }
 
     private fun getPeriod(periodId: String): Period {

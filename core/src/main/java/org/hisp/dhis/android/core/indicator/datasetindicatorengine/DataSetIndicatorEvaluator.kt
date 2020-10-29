@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.indicator.datasetindicatorengine
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.indicator.IndicatorType
@@ -35,11 +36,11 @@ import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 import org.hisp.dhis.android.core.parser.internal.service.ExpressionService
 import org.hisp.dhis.android.core.parser.internal.service.dataobject.DimensionalItemObject
 import org.hisp.dhis.android.core.validation.MissingValueStrategy
-import javax.inject.Inject
 
 @Reusable
 internal class DataSetIndicatorEvaluator @Inject constructor(private val expressionService: ExpressionService) {
 
+    @Suppress("LongParameterList")
     fun evaluate(
         indicator: Indicator,
         indicatorType: IndicatorType,

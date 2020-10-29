@@ -75,7 +75,6 @@ class DataSetIndicatorEvaluatorShould {
         orgunitGroupMap = mapOf()
     }
 
-
     @Test
     fun evaluate_indicator_factor() {
         valueMap = mapOf(
@@ -97,7 +96,6 @@ class DataSetIndicatorEvaluatorShould {
         assertThat(
             evaluator.evaluate(indicator, indicatorType, valueMap, constantMap, orgunitGroupMap, days)
         ).isEqualTo(-5)
-
     }
 
     @Test

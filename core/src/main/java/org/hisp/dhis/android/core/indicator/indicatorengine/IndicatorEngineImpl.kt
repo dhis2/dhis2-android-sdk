@@ -29,29 +29,32 @@ package org.hisp.dhis.android.core.indicator.indicatorengine
 
 import dagger.Reusable
 import io.reactivex.Single
-import java.util.*
-import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.mapByUid
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.constant.ConstantCollectionRepository
-import org.hisp.dhis.android.core.dataset.DataSet
-import org.hisp.dhis.android.core.dataset.DataSetCollectionRepository
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueCollectionRepository
 import org.hisp.dhis.android.core.indicator.IndicatorCollectionRepository
 import org.hisp.dhis.android.core.indicator.IndicatorTypeCollectionRepository
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLink
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo
 import org.hisp.dhis.android.core.parser.internal.service.ExpressionService
 import org.hisp.dhis.android.core.parser.internal.service.dataobject.DimensionalItemObject
 import org.hisp.dhis.android.core.parser.internal.service.utils.ExpressionHelper
+import org.hisp.dhis.android.core.period.Period
+import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.hisp.dhis.android.core.validation.MissingValueStrategy
+import javax.inject.Inject
 
 @Reusable
-class IndicatorEngineImpl @Inject constructor(
+internal class IndicatorEngineImpl @Inject constructor(
     private val indicatorRepository: IndicatorCollectionRepository,
     private val indicatorTypeRepository: IndicatorTypeCollectionRepository,
     private val dataValueRepository: DataValueCollectionRepository,
-    private val dataSetRepository: DataSetCollectionRepository,
     private val constantRepository: ConstantCollectionRepository,
+    private val orgunitGroupLinkStore: LinkStore<OrganisationUnitOrganisationUnitGroupLink>,
+    private val periodHelper: PeriodHelper,
     private val expressionService: ExpressionService
 ) : IndicatorEngine {
 
@@ -79,15 +82,18 @@ class IndicatorEngineImpl @Inject constructor(
 
         val valueMap = getValueMap(dataSetUid, attributeOptionComboUid, orgUnitUid, periodId)
         val constantMap = getConstantMap()
+        val orgunitGroupCountMap = getOrgunitGroupMap()
+        val period = getPeriod(periodId)
+        val days = PeriodHelper.getDays(period)
 
         val numerator = expressionService.getExpressionValue(
             indicator.numerator(), valueMap, constantMap,
-            emptyMap(), 0, MissingValueStrategy.NEVER_SKIP
+            orgunitGroupCountMap, days, MissingValueStrategy.NEVER_SKIP
         ) as Double
 
         val denominator = expressionService.getExpressionValue(
             indicator.denominator(), valueMap, constantMap,
-            emptyMap(), 0, MissingValueStrategy.NEVER_SKIP
+            orgunitGroupCountMap, days, MissingValueStrategy.NEVER_SKIP
         ) as Double
 
         val formula = "$numerator * ${indicatorType.factor() ?: 1} / $denominator"
@@ -101,28 +107,28 @@ class IndicatorEngineImpl @Inject constructor(
         orgUnitUid: String,
         periodId: String
     ): Map<DimensionalItemObject, Double> {
-        val dataSet: DataSet = dataSetRepository
-            .byUid().eq(dataSetUid)
-            .withDataSetElements()
-            .one().blockingGet()
-        val dataElementUids: MutableList<String> = ArrayList()
-        if (dataSet != null && dataSet.dataSetElements() != null) {
-            for (dataSetElement in dataSet.dataSetElements()!!) {
-                dataElementUids.add(dataSetElement.dataElement().uid())
-            }
-        }
         val dataValues: List<DataValue> = dataValueRepository
-            .byDataElementUid().`in`(dataElementUids)
-            .byAttributeOptionComboUid().eq(attributeOptionComboUid)
-            .byOrganisationUnitUid().eq(orgUnitUid)
+            .byDataSetUid(dataSetUid)
             .byPeriod().eq(periodId)
-            .byDeleted().isFalse()
+            .byOrganisationUnitUid().eq(orgUnitUid)
+            .byAttributeOptionComboUid().eq(attributeOptionComboUid)
+            .byDeleted().isFalse
             .blockingGet()
+
         return ExpressionHelper.getValueMap(dataValues)
     }
 
     private fun getConstantMap(): Map<String, Constant> {
         val constants: List<Constant> = constantRepository.blockingGet()
         return mapByUid(constants)
+    }
+
+    private fun getOrgunitGroupMap(): Map<String, Int>? {
+        return orgunitGroupLinkStore.groupAndGetCountBy(
+            OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT_GROUP)
+    }
+
+    private fun getPeriod(periodId: String): Period {
+        return periodHelper.blockingGetPeriodForPeriodId(periodId)
     }
 }

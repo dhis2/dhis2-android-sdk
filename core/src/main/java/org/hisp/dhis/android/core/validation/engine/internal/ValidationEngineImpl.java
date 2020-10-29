@@ -32,9 +32,6 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.constant.Constant;
 import org.hisp.dhis.android.core.constant.ConstantCollectionRepository;
-import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.dataset.DataSetCollectionRepository;
-import org.hisp.dhis.android.core.dataset.DataSetElement;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.datavalue.DataValueCollectionRepository;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
@@ -67,8 +64,6 @@ class ValidationEngineImpl implements ValidationEngine {
 
     private final DataValueCollectionRepository dataValueRepository;
 
-    private final DataSetCollectionRepository dataSetRepository;
-
     private final ConstantCollectionRepository constantRepository;
 
     private final OrganisationUnitCollectionRepository organisationUnitRepository;
@@ -81,7 +76,6 @@ class ValidationEngineImpl implements ValidationEngine {
     ValidationEngineImpl(ValidationExecutor validationExecutor,
                          ValidationRuleCollectionRepository validationRuleRepository,
                          DataValueCollectionRepository dataValueRepository,
-                         DataSetCollectionRepository dataSetRepository,
                          ConstantCollectionRepository constantRepository,
                          OrganisationUnitCollectionRepository organisationUnitRepository,
                          PeriodHelper periodHelper,
@@ -89,7 +83,6 @@ class ValidationEngineImpl implements ValidationEngine {
         this.validationExecutor = validationExecutor;
         this.validationRuleRepository = validationRuleRepository;
         this.dataValueRepository = dataValueRepository;
-        this.dataSetRepository = dataSetRepository;
         this.constantRepository = constantRepository;
         this.organisationUnitRepository = organisationUnitRepository;
         this.periodHelper = periodHelper;
@@ -143,20 +136,8 @@ class ValidationEngineImpl implements ValidationEngine {
 
     private Map<DimensionalItemObject, Double> getValueMap(String dataSetUid, String attributeOptionComboUid,
                                                            String orgUnitUid, String periodId) {
-        DataSet dataSet = dataSetRepository
-                .byUid().eq(dataSetUid)
-                .withDataSetElements()
-                .one().blockingGet();
-
-        List<String> dataElementUids = new ArrayList<>();
-        if (dataSet != null && dataSet.dataSetElements() != null) {
-            for (DataSetElement dataSetElement : dataSet.dataSetElements()) {
-                dataElementUids.add(dataSetElement.dataElement().uid());
-            }
-        }
-
         List<DataValue> dataValues = dataValueRepository
-                .byDataElementUid().in(dataElementUids)
+                .byDataSetUid(dataSetUid)
                 .byAttributeOptionComboUid().eq(attributeOptionComboUid)
                 .byOrganisationUnitUid().eq(orgUnitUid)
                 .byPeriod().eq(periodId)

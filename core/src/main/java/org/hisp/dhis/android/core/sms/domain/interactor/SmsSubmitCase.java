@@ -49,8 +49,8 @@ public class SmsSubmitCase {
      * @param eventUid Event uid.
      * @return {@code Single} with the number of SMS to send.
      */
-    public Single<Integer> convertTrackerEvent(String eventUid) {
-        return convert(new TrackerEventConverter(localDbRepository, dhisVersionManager, eventUid));
+    public Single<String> convertTrackerEvent(String eventUid) {
+        return convertToString(new TrackerEventConverter(localDbRepository, dhisVersionManager, eventUid));
     }
 
     /**
@@ -58,8 +58,8 @@ public class SmsSubmitCase {
      * @param eventUid Event uid.
      * @return {@code Single} with the number of SMS to send.
      */
-    public Single<Integer> convertSimpleEvent(String eventUid) {
-        return convert(new SimpleEventConverter(localDbRepository, dhisVersionManager, eventUid));
+    public Single<String> convertSimpleEvent(String eventUid) {
+        return convertToString(new SimpleEventConverter(localDbRepository, dhisVersionManager, eventUid));
     }
 
     /**
@@ -79,11 +79,11 @@ public class SmsSubmitCase {
      * @param attributeOptionComboUid Attribute option combo uid.
      * @return {@code Single} with the number of SMS to send.
      */
-    public Single<Integer> convertDataSet(String dataSet,
+    public Single<String> convertDataSet(String dataSet,
                                           String orgUnit,
                                           String period,
                                           String attributeOptionComboUid) {
-        return convert(new DatasetConverter(
+        return convertToString(new DatasetConverter(
                 localDbRepository,
                 dhisVersionManager,
                 dataSet,
@@ -97,8 +97,8 @@ public class SmsSubmitCase {
      * @param relationshipUid Relationship uid.
      * @return {@code Single} with the number of SMS to send.
      */
-    public Single<Integer> convertRelationship(String relationshipUid) {
-        return convert(new RelationshipConverter(localDbRepository, dhisVersionManager, relationshipUid));
+    public Single<String> convertRelationship(String relationshipUid) {
+        return convertToString(new RelationshipConverter(localDbRepository, dhisVersionManager, relationshipUid));
     }
 
     /**
@@ -106,8 +106,8 @@ public class SmsSubmitCase {
      * @param itemToDeleteUid Event uid.
      * @return {@code Single} with the number of SMS to send.
      */
-    public Single<Integer> convertDeletion(String itemToDeleteUid) {
-        return convert(new DeletionConverter(localDbRepository, dhisVersionManager, itemToDeleteUid));
+    public Single<String> convertDeletion(String itemToDeleteUid) {
+        return convertToString(new DeletionConverter(localDbRepository, dhisVersionManager, itemToDeleteUid));
     }
 
     private Single<Integer> convert(Converter<?> converter) {

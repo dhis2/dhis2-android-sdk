@@ -112,7 +112,8 @@ public final class EventWithLimitCallFactory {
                                 .orgUnit(orgunitUid)
                                 .ouMode(bundle.ouMode())
                                 .program(programUid)
-                                .lastUpdatedStartDate(bundle.lastUpdatedStartDate());
+                                .lastUpdatedStartDate(bundle.lastUpdatedStartDate())
+                                .uids(params.uids());
 
                         EventsWithPagingResult result = getEventsForOrgUnitProgramCombination(eventQueryBuilder,
                                 bundle.limit() - eventsCount);

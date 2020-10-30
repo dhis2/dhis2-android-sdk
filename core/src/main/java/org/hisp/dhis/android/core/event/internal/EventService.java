@@ -71,7 +71,8 @@ public interface EventService {
             @Query(PAGE) int page,
             @Query(PAGE_SIZE) int pageSize,
             @Query(LAST_UPDATED_START_DATE) String lastUpdatedStartDate,
-            @Query(INCLUDE_DELETED) Boolean includeDeleted);
+            @Query(INCLUDE_DELETED) Boolean includeDeleted,
+            @Query(EVENT) String eventUid);
 
     @GET(EVENTS + "/{" + EVENT_UID + "}")
     Call<Event> getEvent(

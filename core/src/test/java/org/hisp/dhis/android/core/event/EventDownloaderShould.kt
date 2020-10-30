@@ -1,8 +1,8 @@
 package org.hisp.dhis.android.core.event
 
+import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
-import org.assertj.core.api.Java6Assertions.assertThat
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.event.internal.EventWithLimitCallFactory
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams

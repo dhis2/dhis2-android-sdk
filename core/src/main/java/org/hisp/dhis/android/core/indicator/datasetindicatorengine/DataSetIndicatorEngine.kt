@@ -25,13 +25,25 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.indicator.datasetindicatorengine
 
-package org.hisp.dhis.android.core.indicator;
+import io.reactivex.Single
 
-import org.hisp.dhis.android.core.indicator.datasetindicatorengine.DataSetIndicatorEngine;
+interface DataSetIndicatorEngine {
 
-public interface IndicatorModule {
-    IndicatorCollectionRepository indicators();
-    IndicatorTypeCollectionRepository indicatorTypes();
-    DataSetIndicatorEngine dataSetIndicatorEngine();
+    fun evaluate(
+        indicatorUid: String,
+        dataSetUid: String,
+        periodId: String,
+        orgUnitUid: String,
+        attributeOptionComboUid: String
+    ): Single<Double>
+
+    fun blockingEvaluate(
+        indicatorUid: String,
+        dataSetUid: String,
+        periodId: String,
+        orgUnitUid: String,
+        attributeOptionComboUid: String
+    ): Double
 }

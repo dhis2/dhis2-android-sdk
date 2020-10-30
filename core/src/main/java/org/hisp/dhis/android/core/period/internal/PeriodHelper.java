@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.period.PeriodType;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -61,6 +62,11 @@ public class PeriodHelper {
         this.parentPeriodGenerator = parentPeriodGenerator;
         this.periodParser = periodParser;
         this.calendarProvider = calendarProvider;
+    }
+
+    public static Integer getDays(Period period) {
+        long diff = period.endDate().getTime() - period.startDate().getTime();
+        return (int) TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
     }
 
     /**

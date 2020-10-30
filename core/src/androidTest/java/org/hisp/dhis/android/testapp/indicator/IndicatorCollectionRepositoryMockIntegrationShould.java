@@ -103,4 +103,12 @@ public class IndicatorCollectionRepositoryMockIntegrationShould extends BaseMock
                 .blockingGet();
         assertThat(indicators.size()).isEqualTo(1);
     }
+
+    @Test
+    public void filter_by_dataSetUid() {
+        List<Indicator> indicators = d2.indicatorModule().indicators()
+                .byDataSetUid("lyLU2wR22tC")
+                .blockingGet();
+        assertThat(indicators.size()).isEqualTo(1);
+    }
 }

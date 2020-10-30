@@ -31,8 +31,8 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.FilterPeriod;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
@@ -46,12 +46,13 @@ public final class TrackedEntityInstanceFilterFields {
 
     private static final FieldsHelper<TrackedEntityInstanceFilter> fh = new FieldsHelper<>();
 
-    public static final Field<TrackedEntityInstanceFilter, String> uid = fh.uid();
+    public static final Field<TrackedEntityInstanceFilter, String> programUid =
+            Field.create(Columns.PROGRAM + "." + BaseIdentifiableObject.UID);
 
     public static final Fields<TrackedEntityInstanceFilter> allFields = Fields.<TrackedEntityInstanceFilter>builder()
             .fields(fh.getIdentifiableFields())
             .fields(
-                    fh.<ObjectWithUid>field(Columns.PROGRAM),
+                    fh.nestedFieldWithUid(Columns.PROGRAM),
                     fh.<String>field(Columns.DESCRIPTION),
                     fh.<Integer>field(Columns.SORT_ORDER),
                     fh.<EnrollmentStatus>field(Columns.ENROLLMENT_STATUS),

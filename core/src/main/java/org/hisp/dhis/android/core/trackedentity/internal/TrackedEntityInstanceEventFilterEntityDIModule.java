@@ -32,7 +32,12 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -51,5 +56,15 @@ public final class TrackedEntityInstanceEventFilterEntityDIModule {
     @Reusable
     Handler<TrackedEntityInstanceEventFilter> handler(ObjectWithoutUidStore<TrackedEntityInstanceEventFilter> store) {
         return new ObjectWithoutUidHandlerImpl<>(store);
+    }
+
+    @Provides
+    @Reusable
+    @SuppressWarnings("PMD.NonStaticInitializer")
+    Map<String, ChildrenAppender<TrackedEntityInstanceFilter>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        return new HashMap<String, ChildrenAppender<TrackedEntityInstanceFilter>>() {{
+            put(TrackedEntityInstanceFilterFields.EVENT_FILTERS,
+                    TrackedEntityInstanceFilterEvenFilterChildrenAppender.create(databaseAdapter));
+        }};
     }
 }

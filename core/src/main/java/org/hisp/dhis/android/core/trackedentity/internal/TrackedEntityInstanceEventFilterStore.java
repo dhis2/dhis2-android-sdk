@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinde
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilterTableInfo;
 
@@ -65,6 +66,10 @@ final class TrackedEntityInstanceEventFilterStore {
         w.bind(5, o.eventCreatedPeriod() == null ? null : o.eventCreatedPeriod().periodTo());
         w.bind(6, o.assignedUserMode());
     };
+
+    static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
+            TrackedEntityInstanceEventFilterTableInfo.TABLE_INFO,
+            TrackedEntityInstanceEventFilterTableInfo.Columns.TRACKED_ENTITY_INSTANCE_FILTER);
 
     private TrackedEntityInstanceEventFilterStore() {}
 

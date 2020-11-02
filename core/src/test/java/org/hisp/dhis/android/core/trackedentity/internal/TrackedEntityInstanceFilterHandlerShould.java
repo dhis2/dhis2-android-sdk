@@ -32,8 +32,9 @@ import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
@@ -47,6 +48,8 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
 @RunWith(JUnit4.class)
@@ -59,7 +62,7 @@ public class TrackedEntityInstanceFilterHandlerShould {
     private ObjectStyle objectStyle;
 
     @Mock
-    private Handler<TrackedEntityInstanceEventFilter> trackedEntityInstanceEventFilterHandler;
+    private HandlerWithTransformer<TrackedEntityInstanceEventFilter> trackedEntityInstanceEventFilterHandler;
 
     @Mock
     private ObjectWithoutUidStore<TrackedEntityInstanceEventFilter> trackedEntityInstanceEventFilterStore;
@@ -103,6 +106,6 @@ public class TrackedEntityInstanceFilterHandlerShould {
     @Test
     public void handle_event_filters() {
         trackedEntityInstanceFilterHandler.handleMany(trackedEntityInstanceFilters);
-        verify(trackedEntityInstanceEventFilterHandler).handleMany(eventFilters);
+        verify(trackedEntityInstanceEventFilterHandler).handleMany(eq(eventFilters), any(Transformer.class));
     }
 }

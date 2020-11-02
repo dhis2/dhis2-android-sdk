@@ -121,6 +121,7 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
         returnEmptyList(optionSetCall);
         returnEmptyList(optionCall);
         returnEmptyList(optionGroupCall);
+        returnEmptyList(trackedEntityInstanceFilterCall);
         returnEmptyList(programRuleCall);
         returnEmptyList(programStageCall);
 

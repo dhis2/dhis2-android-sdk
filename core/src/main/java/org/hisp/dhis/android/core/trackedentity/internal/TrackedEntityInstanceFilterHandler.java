@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
@@ -45,13 +45,13 @@ import dagger.Reusable;
 @Reusable
 final class TrackedEntityInstanceFilterHandler extends IdentifiableHandlerImpl<TrackedEntityInstanceFilter> {
 
-    private final Handler<TrackedEntityInstanceEventFilter> trackedEntityInstanceEventFilterHandler;
+    private final HandlerWithTransformer<TrackedEntityInstanceEventFilter> trackedEntityInstanceEventFilterHandler;
     private final ObjectWithoutUidStore<TrackedEntityInstanceEventFilter> trackedEntityInstanceEventFilterStore;
 
     @Inject
     TrackedEntityInstanceFilterHandler(
             IdentifiableObjectStore<TrackedEntityInstanceFilter> TrackedEntityInstanceFilterStore,
-            Handler<TrackedEntityInstanceEventFilter> trackedEntityInstanceEventFilterHandler,
+            HandlerWithTransformer<TrackedEntityInstanceEventFilter> trackedEntityInstanceEventFilterHandler,
             ObjectWithoutUidStore<TrackedEntityInstanceEventFilter> trackedEntityInstanceEventFilterStore) {
         super(TrackedEntityInstanceFilterStore);
         this.trackedEntityInstanceEventFilterHandler = trackedEntityInstanceEventFilterHandler;
@@ -68,7 +68,8 @@ final class TrackedEntityInstanceFilterHandler extends IdentifiableHandlerImpl<T
     @Override
     protected void afterObjectHandled(TrackedEntityInstanceFilter teiFilter, HandleAction action) {
         if (action != HandleAction.Delete) {
-            this.trackedEntityInstanceEventFilterHandler.handleMany(teiFilter.eventFilters());
+            this.trackedEntityInstanceEventFilterHandler.handleMany(teiFilter.eventFilters(), o ->
+                    o.toBuilder().trackedEntityInstanceFilter(teiFilter.uid()).build());
         }
     }
 }

@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter;
 
@@ -49,7 +49,8 @@ public final class TrackedEntityInstanceEventFilterEntityDIModule {
 
     @Provides
     @Reusable
-    Handler<TrackedEntityInstanceEventFilter> handler(ObjectWithoutUidStore<TrackedEntityInstanceEventFilter> store) {
+    HandlerWithTransformer<TrackedEntityInstanceEventFilter> handler(
+            ObjectWithoutUidStore<TrackedEntityInstanceEventFilter> store) {
         return new ObjectWithoutUidHandlerImpl<>(store);
     }
 }

@@ -25,30 +25,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.event.internal
 
-package org.hisp.dhis.android.core.event.internal;
+import java.util.concurrent.Callable
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.event.Event
+import retrofit2.Retrofit
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl;
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.event.Event;
+object EventCallFactory {
+    @JvmStatic
+    fun create(
+        retrofit: Retrofit,
+        databaseAdapter: DatabaseAdapter?,
+        orgUnit: String?,
+        pageSize: Int,
+        uids: Collection<String>? = emptyList()
 
-import java.util.List;
-import java.util.concurrent.Callable;
+    ): Callable<List<Event>> {
 
-import retrofit2.Retrofit;
+        val eventQuery = EventQuery.builder()
+            .orgUnit(orgUnit)
+            .pageSize(pageSize)
+            .uids(uids)
+            .build()
 
-public class EventCallFactory {
-    public static Callable<List<Event>> create(Retrofit retrofit,
-                                               DatabaseAdapter databaseAdapter,
-                                               String orgUnit,
-                                               int pageSize) {
-
-        EventQuery eventQuery = EventQuery.builder()
-                .orgUnit(orgUnit)
-                .pageSize(pageSize)
-                .build();
-
-        return new EventEndpointCallFactory(retrofit.create(EventService.class),
-                APICallExecutorImpl.create(databaseAdapter)).getCall(eventQuery);
+        return EventEndpointCallFactory(
+            retrofit.create(EventService::class.java),
+            APICallExecutorImpl.create(databaseAdapter)
+        ).getCall(eventQuery)
     }
 }

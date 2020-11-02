@@ -68,7 +68,8 @@ public class Dhis2MockServer {
     private static final String OPTION_SETS_JSON = "option/option_sets.json";
     private static final String OPTIONS_JSON = "option/options.json";
     private static final String OPTION_GROUPS_JSON = "option/option_groups.json";
-    private static final String TRACKED_ENTITY_INSTANCE_FILTERS_JSON = "trackedentity/tracked_entity_instance_filters.json";
+    private static final String TRACKED_ENTITY_INSTANCE_FILTERS_JSON =
+            "trackedentity/tracked_entity_instance_filters.json";
     private static final String VALIDATION_RULE_UIDS_JSON = "validation/validation_rule_uids.json";
     private static final String VALIDATION_RULES_JSON = "validation/validation_rules.json";
     private static final String DATA_SETS_JSON = "dataset/data_sets.json";

@@ -50,10 +50,10 @@ final class TrackedEntityInstanceFilterHandler extends IdentifiableHandlerImpl<T
 
     @Inject
     TrackedEntityInstanceFilterHandler(
-            IdentifiableObjectStore<TrackedEntityInstanceFilter> TrackedEntityInstanceFilterStore,
+            IdentifiableObjectStore<TrackedEntityInstanceFilter> trackedEntityInstanceFilterStore,
             HandlerWithTransformer<TrackedEntityInstanceEventFilter> trackedEntityInstanceEventFilterHandler,
             ObjectWithoutUidStore<TrackedEntityInstanceEventFilter> trackedEntityInstanceEventFilterStore) {
-        super(TrackedEntityInstanceFilterStore);
+        super(trackedEntityInstanceFilterStore);
         this.trackedEntityInstanceEventFilterHandler = trackedEntityInstanceEventFilterHandler;
         this.trackedEntityInstanceEventFilterStore = trackedEntityInstanceEventFilterStore;
     }

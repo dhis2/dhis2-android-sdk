@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import dagger.Module;
@@ -60,7 +60,11 @@ public final class TrackedEntityInstanceFilterEntityDIModule
 
     @Provides
     @Reusable
-    Map<String, ChildrenAppender<TrackedEntityInstanceFilter>> childrenAppenders() {
-        return Collections.emptyMap();
+    @SuppressWarnings("PMD.NonStaticInitializer")
+    Map<String, ChildrenAppender<TrackedEntityInstanceFilter>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        return new HashMap<String, ChildrenAppender<TrackedEntityInstanceFilter>>() {{
+            put(TrackedEntityInstanceFilterFields.EVENT_FILTERS,
+                    TrackedEntityInstanceFilterEvenFilterChildrenAppender.create(databaseAdapter));
+        }};
     }
 }

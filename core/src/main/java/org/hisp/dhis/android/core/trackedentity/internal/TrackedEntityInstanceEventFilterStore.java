@@ -49,23 +49,9 @@ final class TrackedEntityInstanceEventFilterStore {
         w.bind(6, o.assignedUserMode());
     };
 
-    private static final WhereStatementBinder<TrackedEntityInstanceEventFilter> WHERE_UPDATE_BINDER = (o, w) -> {
-        w.bind(7, o.trackedEntityInstanceFilter());
-        w.bind(8, o.programStage());
-        w.bind(9, o.eventStatus());
-        w.bind(10, o.eventCreatedPeriod() == null ? null : o.eventCreatedPeriod().periodFrom());
-        w.bind(11, o.eventCreatedPeriod() == null ? null : o.eventCreatedPeriod().periodTo());
-        w.bind(12, o.assignedUserMode());
-    };
+    private static final WhereStatementBinder<TrackedEntityInstanceEventFilter> WHERE_UPDATE_BINDER = (o, w) -> {};
 
-    private static final WhereStatementBinder<TrackedEntityInstanceEventFilter> WHERE_DELETE_BINDER = (o, w) -> {
-        w.bind(1, o.trackedEntityInstanceFilter());
-        w.bind(2, o.programStage());
-        w.bind(3, o.eventStatus());
-        w.bind(4, o.eventCreatedPeriod() == null ? null : o.eventCreatedPeriod().periodFrom());
-        w.bind(5, o.eventCreatedPeriod() == null ? null : o.eventCreatedPeriod().periodTo());
-        w.bind(6, o.assignedUserMode());
-    };
+    private static final WhereStatementBinder<TrackedEntityInstanceEventFilter> WHERE_DELETE_BINDER = (o, w) -> {};
 
     static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
             TrackedEntityInstanceEventFilterTableInfo.TABLE_INFO,

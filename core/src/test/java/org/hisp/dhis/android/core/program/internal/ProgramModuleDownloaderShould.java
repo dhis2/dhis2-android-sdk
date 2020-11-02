@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.junit.Before;
 import org.junit.Test;
@@ -86,6 +87,9 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     private UidsCall<TrackedEntityAttribute> trackedEntityAttributeCall;
 
     @Mock
+    private UidsCall<TrackedEntityInstanceFilter> trackedEntityInstanceFilterCall;
+
+    @Mock
     private ListCall<RelationshipType> relationshipTypeCall;
 
     @Mock
@@ -126,6 +130,7 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
                 programRuleCall,
                 trackedEntityTypeCall,
                 trackedEntityAttributeCall,
+                trackedEntityInstanceFilterCall,
                 relationshipTypeCall,
                 optionSetCall,
                 optionCall,
@@ -183,6 +188,12 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     @Test(expected = Exception.class)
     public void fail_when_tracked_entity_attributes_call_fails() {
         returnError(trackedEntityAttributeCall);
+        programModuleDownloader.downloadMetadata(anySet()).blockingGet();
+    }
+
+    @Test(expected = Exception.class)
+    public void fail_when_tracked_entity_instance_filters_call_fails() {
+        returnError(trackedEntityInstanceFilterCall);
         programModuleDownloader.downloadMetadata(anySet()).blockingGet();
     }
 

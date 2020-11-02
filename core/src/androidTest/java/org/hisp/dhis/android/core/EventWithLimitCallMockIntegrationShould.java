@@ -31,8 +31,10 @@ package org.hisp.dhis.android.core;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.internal.EventStore;
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -42,6 +44,11 @@ import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class EventWithLimitCallMockIntegrationShould extends BaseMockIntegrationTestMetadataEnqueable {
+
+    @After
+    public void tearDown() throws D2Error {
+        d2.wipeModule().wipeData();
+    }
 
     @Test
     public void download_events() {

@@ -43,15 +43,23 @@ public class FilterPeriodColumnAdapter implements ColumnTypeAdapter<FilterPeriod
     @Override
     public FilterPeriod fromCursor(Cursor cursor, String columnName) {
         int fromColumnIndex = cursor.getColumnIndex(PERIOD_FROM);
+        boolean isFromNull = cursor.isNull(fromColumnIndex);
         int periodFrom = cursor.getInt(fromColumnIndex);
         int toColumnIndex = cursor.getColumnIndex(PERIOD_TO);
+        boolean isToNull = cursor.isNull(toColumnIndex);
         int periodTo = cursor.getInt(toColumnIndex);
-        return FilterPeriod.create(periodFrom, periodTo);
+        if (isFromNull && isToNull) {
+            return null;
+        } else {
+            return FilterPeriod.create(isFromNull ? null : periodFrom, isToNull ? null : periodTo);
+        }
     }
 
     @Override
     public void toContentValues(ContentValues values, String columnName, FilterPeriod value) {
-        values.put(PERIOD_FROM, value.periodFrom());
-        values.put(PERIOD_TO, value.periodTo());
+        if (value != null) {
+            values.put(PERIOD_FROM, value.periodFrom());
+            values.put(PERIOD_TO, value.periodTo());
+        }
     }
 }

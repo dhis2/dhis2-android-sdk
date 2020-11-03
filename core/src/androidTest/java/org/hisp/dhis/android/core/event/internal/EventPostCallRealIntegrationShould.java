@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueS
 import org.junit.Before;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -164,7 +165,7 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
 
     private void downloadEvents() throws Exception {
         Callable<List<Event>> eventEndpointCall = EventCallFactory.create(
-                d2.retrofit(), d2.databaseAdapter(), orgUnitUid, 50);
+                d2.retrofit(), d2.databaseAdapter(), orgUnitUid, 50, Collections.emptyList());
 
         List<Event> events = eventEndpointCall.call();
 
@@ -178,8 +179,8 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
     private Event getEventFromDB() {
         Event event = null;
         List<Event> storedEvents = eventStore.selectAll();
-        for(Event storedEvent : storedEvents) {
-            if(storedEvent.uid().equals(eventUid1)) {
+        for (Event storedEvent : storedEvents) {
+            if (storedEvent.uid().equals(eventUid1)) {
                 event = storedEvent;
             }
         }
@@ -203,9 +204,9 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
     }
 
     private boolean verifyPushedEventIsInPullList(Event event, List<Event> eventList) {
-        for(Event pullEvent : eventList){
+        for (Event pullEvent : eventList) {
             if (event.uid().equals(pullEvent.uid()) &&
-                    event.attributeOptionCombo().equals(pullEvent.attributeOptionCombo())){
+                    event.attributeOptionCombo().equals(pullEvent.attributeOptionCombo())) {
                 return true;
             }
         }

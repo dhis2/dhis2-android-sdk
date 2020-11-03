@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueS
 import org.junit.Before;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -63,7 +64,7 @@ public class EventEndpointCallRealIntegrationShould extends BaseRealIntegrationT
 
         d2.metadataModule().blockingDownload();
 
-        Callable<List<Event>> eventEndpointCall = EventCallFactory.create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", 0);
+        Callable<List<Event>> eventEndpointCall = EventCallFactory.create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", 0, Collections.emptyList());
 
         List<Event> events = eventEndpointCall.call();
         assertThat(events.isEmpty()).isFalse();
@@ -80,7 +81,7 @@ public class EventEndpointCallRealIntegrationShould extends BaseRealIntegrationT
 
         d2.metadataModule().blockingDownload();
 
-        Callable<List<Event>> eventEndpointCall = EventCallFactory.create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", 0);
+        Callable<List<Event>> eventEndpointCall = EventCallFactory.create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", 0, Collections.emptyList());
 
         eventEndpointCall.call();
 
@@ -91,7 +92,7 @@ public class EventEndpointCallRealIntegrationShould extends BaseRealIntegrationT
         EventStore eventStore = EventStoreImpl.create(d2.databaseAdapter());
 
         List<Event> downloadedEvents = eventStore.querySingleEvents();
-        for(Event event : downloadedEvents){
+        for (Event event : downloadedEvents) {
             if (event.attributeOptionCombo() != null) {
                 return true;
             }

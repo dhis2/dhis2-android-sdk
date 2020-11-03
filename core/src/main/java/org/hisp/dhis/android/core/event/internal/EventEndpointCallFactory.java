@@ -32,6 +32,7 @@ import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.event.Event;
 
@@ -60,7 +61,8 @@ final class EventEndpointCallFactory {
 
             Call<Payload<Event>> call = service.getEvents(eventQuery.orgUnit(), eventQuery.ouMode().name(),
                     eventQuery.program(), EventFields.allFields, Boolean.TRUE,
-                    eventQuery.page(), eventQuery.pageSize(), getLastUpdated(eventQuery), true);
+                    eventQuery.page(), eventQuery.pageSize(), getLastUpdated(eventQuery), true,
+                    getUidStr(eventQuery));
 
             return apiCallExecutor.executePayloadCall(call);
         };
@@ -69,5 +71,10 @@ final class EventEndpointCallFactory {
     private String getLastUpdated(EventQuery query) {
         return query.lastUpdatedStartDate() == null ? null :
                 BaseIdentifiableObject.dateToDateStr(query.lastUpdatedStartDate());
+    }
+
+    private String getUidStr(EventQuery query) {
+        return query.uids().isEmpty() ? null :
+                CollectionsHelper.joinCollectionWithSeparator(query.uids(), ";");
     }
 }

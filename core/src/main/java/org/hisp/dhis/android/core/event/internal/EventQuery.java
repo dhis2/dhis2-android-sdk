@@ -36,6 +36,8 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 
 @AutoValue
@@ -56,12 +58,16 @@ abstract class EventQuery extends BaseQuery {
     @Nullable
     abstract String eventStartDate();
 
+    @NonNull
+    abstract Collection<String> uids();
+
     static Builder builder() {
         return new AutoValue_EventQuery.Builder()
                 .page(1)
                 .pageSize(DEFAULT_PAGE_SIZE)
                 .paging(true)
-                .ouMode(OrganisationUnitMode.SELECTED);
+                .ouMode(OrganisationUnitMode.SELECTED)
+                .uids(Collections.emptyList());
     }
 
     @AutoValue.Builder
@@ -75,6 +81,8 @@ abstract class EventQuery extends BaseQuery {
         abstract Builder lastUpdatedStartDate(Date lastUpdatedStartDate);
 
         abstract Builder eventStartDate(String eventStartDate);
+
+        abstract Builder uids(Collection<String> uIds);
 
         abstract EventQuery build();
     }

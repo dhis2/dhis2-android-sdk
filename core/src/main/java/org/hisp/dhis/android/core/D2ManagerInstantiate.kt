@@ -13,7 +13,5 @@ interface D2ManagerInstantiate {
                 D2ManagerInstantiatorType.PROD -> D2ManagerInstantiator()
                 D2ManagerInstantiatorType.TESTING -> D2ManagerTestingInstantiator(testingConfig)
             }
-        const val DB_TO_IMPORT = "127-0-0-1-8080_android_unencrypted.db"
-        const val USERNAME = "android"
     }
 }

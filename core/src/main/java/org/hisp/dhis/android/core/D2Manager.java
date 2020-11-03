@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core;
 
+import androidx.annotation.VisibleForTesting;
+
 import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
 
@@ -38,6 +40,7 @@ import io.reactivex.annotations.NonNull;
 public final class D2Manager {
 
     private static D2ManagerInstantiate d2ManagerInstantiator;
+    private static D2TestingConfig testingConfig;
 
     private D2Manager() {
     }
@@ -71,7 +74,7 @@ public final class D2Manager {
      * @return the D2 instance wrapped in a RxJava Single
      */
     public static Single<D2> instantiateD2(@NonNull D2Configuration d2Config, D2ManagerInstantiatorType type) {
-        d2ManagerInstantiator = D2ManagerInstantiator.Companion.createFromType(type);
+        d2ManagerInstantiator = D2ManagerInstantiator.Companion.createFromType(type, testingConfig);
         return d2ManagerInstantiator.instantiateD2(d2Config);
     }
 
@@ -83,5 +86,9 @@ public final class D2Manager {
      */
     public static D2 blockingInstantiateD2(@NonNull D2Configuration d2Config, D2ManagerInstantiatorType type) {
         return instantiateD2(d2Config, type).blockingGet();
+    }
+
+    public static void setTestingConfig(D2TestingConfig d2TestingConfig){
+        testingConfig = d2TestingConfig;
     }
 }

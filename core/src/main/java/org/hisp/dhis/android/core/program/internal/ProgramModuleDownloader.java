@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -100,16 +101,15 @@ public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<Li
                         .flatMap(attributes -> {
                             Set<String> optionSetUids = ProgramParentUidsHelper.getAssignedOptionSetUids(
                                     attributes, programStages);
-                            return Single.merge(
+                            return Single.merge(Arrays.asList(
                                     programRuleCall.download(programUids),
+                                    trackedEntityInstanceFilterCall.download(programUids),
                                     relationshipTypeCall.download(),
                                     optionSetCall.download(optionSetUids),
-                                    optionCall.download(optionSetUids)
-                            ).ignoreElements()
-                                    .andThen(optionGroupCall.download(optionSetUids)).ignoreElement()
-                                    .andThen(trackedEntityInstanceFilterCall.download(programUids))
-                                    .map(toIgnore -> programs);
-                });
+                                    optionCall.download(optionSetUids),
+                                    optionGroupCall.download(optionSetUids))
+                            ).ignoreElements().toSingle(() -> programs);
+                        });
             });
         });
     }

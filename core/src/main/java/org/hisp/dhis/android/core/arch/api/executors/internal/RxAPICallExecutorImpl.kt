@@ -57,13 +57,8 @@ internal class RxAPICallExecutorImpl @Inject constructor(
         return Observable.fromCallable { databaseAdapter.beginNewTransaction() }
             .flatMap { transaction: Transaction ->
                 observable
-                    .doOnComplete {
-                        if (cleanForeignKeys) {
-                            foreignKeyCleaner.cleanForeignKeyErrors()
-                        }
-                        transaction.setSuccessful()
-                        transaction.end()
-                    }.onErrorResumeNext { throwable: Throwable ->
+                    .doOnComplete { finishTransaction(transaction, cleanForeignKeys) }
+                    .onErrorResumeNext { throwable: Throwable ->
                         transaction.end()
                         Observable.error(mapAndStore(throwable, true))
                     }
@@ -74,17 +69,20 @@ internal class RxAPICallExecutorImpl @Inject constructor(
         return Single.fromCallable { databaseAdapter.beginNewTransaction() }
             .flatMapCompletable { transaction: Transaction ->
                 completable
-                    .doOnComplete {
-                        if (cleanForeignKeys) {
-                            foreignKeyCleaner.cleanForeignKeyErrors()
-                        }
-                        transaction.setSuccessful()
-                        transaction.end()
-                    }.onErrorResumeNext { throwable: Throwable ->
+                    .doOnComplete { finishTransaction(transaction, cleanForeignKeys) }
+                    .onErrorResumeNext { throwable: Throwable ->
                         transaction.end()
                         Completable.error(mapAndStore(throwable, true))
                     }
             }
+    }
+
+    private fun finishTransaction(t: Transaction, cleanForeignKeys: Boolean) {
+        if (cleanForeignKeys) {
+            foreignKeyCleaner.cleanForeignKeyErrors()
+        }
+        t.setSuccessful()
+        t.end()
     }
 
     private fun mapAndStore(throwable: Throwable, storeError: Boolean): D2Error {

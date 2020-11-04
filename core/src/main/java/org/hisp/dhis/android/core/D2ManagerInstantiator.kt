@@ -2,6 +2,7 @@ package org.hisp.dhis.android.core
 
 import android.util.Log
 import io.reactivex.Single
+import org.hisp.dhis.android.core.D2ManagerInstantiate.Companion.d2
 import org.hisp.dhis.android.core.arch.api.ssl.internal.SSLContextInitializer
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.storage.internal.AndroidInsecureStore
@@ -14,8 +15,6 @@ import org.hisp.dhis.android.core.arch.storage.internal.SecureStore
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManagerForD2Manager
 
 class D2ManagerInstantiator() : D2ManagerInstantiate {
-
-    override var d2: D2? = null
 
     override fun instantiateD2(d2Config: D2Configuration): Single<D2?>? {
         return Single.fromCallable {

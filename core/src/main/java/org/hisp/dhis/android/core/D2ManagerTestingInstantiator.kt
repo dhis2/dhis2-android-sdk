@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.util.Log
 import io.reactivex.Single
 import okhttp3.OkHttpClient
+import org.hisp.dhis.android.core.D2ManagerInstantiate.Companion.d2
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreImpl
@@ -13,7 +14,6 @@ import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManage
 class D2ManagerTestingInstantiator(val testConfig: D2TestingConfig) : D2ManagerInstantiate {
 
     var okHttpClient: OkHttpClient? = null
-    override var d2: D2? = null
 
     @SuppressLint("VisibleForTests")
     override fun instantiateD2(d2Config: D2Configuration): Single<D2?>? {

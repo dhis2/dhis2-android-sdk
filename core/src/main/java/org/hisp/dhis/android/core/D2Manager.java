@@ -52,10 +52,10 @@ public final class D2Manager {
      * @throws IllegalStateException if the D2 object wasn't instantiated
      */
     public static D2 getD2() throws IllegalStateException {
-        if (d2ManagerInstantiator.getD2() == null) {
+        if (d2ManagerInstantiator.Companion.getD2() == null) {
             throw new IllegalStateException("D2 is not instantiated yet");
         } else {
-            return d2ManagerInstantiator.getD2();
+            return d2ManagerInstantiator.Companion.getD2();
         }
     }
 
@@ -64,7 +64,7 @@ public final class D2Manager {
      * @return if D2 has already been instantiated
      */
     public static boolean isD2Instantiated() {
-        return d2ManagerInstantiator.getD2() != null;
+        return d2ManagerInstantiator.Companion.getD2() != null;
     }
 
     /**
@@ -88,6 +88,7 @@ public final class D2Manager {
         return instantiateD2(d2Config).blockingGet();
     }
 
+    @VisibleForTesting
     public static void setTestingConfig(D2TestingConfig d2TestingConfig){
         testingConfig = d2TestingConfig;
     }

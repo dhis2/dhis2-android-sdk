@@ -7,10 +7,7 @@ interface D2ManagerInstantiate {
 
     companion object {
         var d2: D2? = null
-        fun createFromType(testingConfig: D2TestingConfig?) =
-            when (testingConfig) {
-                null -> D2ManagerInstantiator()
-                else -> D2ManagerTestingInstantiator(testingConfig)
-            }
+        fun createFrom(testingConfig: D2TestingConfig?) =
+            testingConfig?.let { D2ManagerTestingInstantiator(it) } ?: D2ManagerInstantiator()
     }
 }

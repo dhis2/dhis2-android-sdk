@@ -74,7 +74,7 @@ public final class D2Manager {
      * @return the D2 instance wrapped in a RxJava Single
      */
     public static Single<D2> instantiateD2(@NonNull D2Configuration d2Config) {
-        d2ManagerInstantiator = D2ManagerInstantiator.Companion.createFromType(testingConfig);
+        d2ManagerInstantiator = D2ManagerInstantiator.Companion.createFrom(testingConfig);
         return d2ManagerInstantiator.instantiateD2(d2Config);
     }
 

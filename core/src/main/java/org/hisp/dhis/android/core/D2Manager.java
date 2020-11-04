@@ -73,8 +73,8 @@ public final class D2Manager {
      * @param d2Config the configuration
      * @return the D2 instance wrapped in a RxJava Single
      */
-    public static Single<D2> instantiateD2(@NonNull D2Configuration d2Config, D2ManagerInstantiatorType type) {
-        d2ManagerInstantiator = D2ManagerInstantiator.Companion.createFromType(type, testingConfig);
+    public static Single<D2> instantiateD2(@NonNull D2Configuration d2Config) {
+        d2ManagerInstantiator = D2ManagerInstantiator.Companion.createFromType(testingConfig);
         return d2ManagerInstantiator.instantiateD2(d2Config);
     }
 
@@ -84,8 +84,8 @@ public final class D2Manager {
      * @param d2Config the configuration
      * @return the D2 instance
      */
-    public static D2 blockingInstantiateD2(@NonNull D2Configuration d2Config, D2ManagerInstantiatorType type) {
-        return instantiateD2(d2Config, type).blockingGet();
+    public static D2 blockingInstantiateD2(@NonNull D2Configuration d2Config) {
+        return instantiateD2(d2Config).blockingGet();
     }
 
     public static void setTestingConfig(D2TestingConfig d2TestingConfig){

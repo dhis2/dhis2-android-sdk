@@ -25,17 +25,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.executors.internal
 
-package org.hisp.dhis.android.core.arch.api.executors.internal;
+import io.reactivex.Completable
+import io.reactivex.Observable
+import io.reactivex.Single
 
-import io.reactivex.Completable;
-import io.reactivex.Observable;
-import io.reactivex.Single;
-
-public interface RxAPICallExecutor {
-    <P> Single<P> wrapSingle(Single<P> single, boolean storeError);
-
-    <P> Observable<P> wrapObservableTransactionally(Observable<P> observable, boolean cleanForeignKeys);
-
-    Completable wrapCompletableTransactionally(Completable completable, boolean cleanForeignKeys);
+internal interface RxAPICallExecutor {
+    fun <P> wrapSingle(single: Single<P>, storeError: Boolean): Single<P>
+    fun <P> wrapObservableTransactionally(observable: Observable<P>, cleanForeignKeys: Boolean): Observable<P>
+    fun wrapCompletableTransactionally(completable: Completable, cleanForeignKeys: Boolean): Completable
 }

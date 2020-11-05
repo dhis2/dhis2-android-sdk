@@ -27,8 +27,7 @@
  */
 package org.hisp.dhis.android.core.domain.metadata
 
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
+import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -57,7 +56,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.AdditionalAnswers
-import org.mockito.ArgumentMatchers
 import org.mockito.Mockito
 
 @RunWith(JUnit4::class)
@@ -90,13 +88,13 @@ class MetadataCallShould : BaseCallShould() {
         whenever(systemInfoDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(systemSettingDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(userDownloader.downloadMetadata()).thenReturn(Single.just(user))
-        whenever(programDownloader.downloadMetadata(ArgumentMatchers.anySet())).thenReturn(
+        whenever(programDownloader.downloadMetadata(any())).thenReturn(
             Single.just(emptyList())
         )
-        whenever(organisationUnitDownloader.downloadMetadata(ArgumentMatchers.same(user))).thenReturn(
+        whenever(organisationUnitDownloader.downloadMetadata(same(user))).thenReturn(
             Single.just(emptyList())
         )
-        whenever(dataSetDownloader.downloadMetadata(ArgumentMatchers.anySet())).thenReturn(
+        whenever(dataSetDownloader.downloadMetadata(any())).thenReturn(
             Single.just(emptyList())
         )
         whenever(constantDownloader.downloadMetadata()).thenReturn(Single.just(emptyList()))
@@ -106,8 +104,8 @@ class MetadataCallShould : BaseCallShould() {
         whenever(generalSettingCall.isDatabaseEncrypted).thenReturn(Single.just(false))
         Mockito.`when`<Observable<D2Progress>>(
             rxAPICallExecutor.wrapObservableTransactionally(
-                ArgumentMatchers.any(),
-                ArgumentMatchers.anyBoolean()
+                any(),
+                any()
             )
         )
             .then(AdditionalAnswers.returnsFirstArg<Any>())
@@ -168,7 +166,7 @@ class MetadataCallShould : BaseCallShould() {
 
     @Test
     fun fail_when_program_call_fail() {
-        whenever(programDownloader.downloadMetadata(ArgumentMatchers.anySet())).thenReturn(Single.error(d2Error))
+        whenever(programDownloader.downloadMetadata(any())).thenReturn(Single.error(d2Error))
         downloadAndAssertError()
     }
 
@@ -180,7 +178,7 @@ class MetadataCallShould : BaseCallShould() {
 
     @Test
     fun fail_when_dataset_parent_call_fail() {
-        whenever(dataSetDownloader.downloadMetadata(ArgumentMatchers.anySet())).thenReturn(Single.error(d2Error))
+        whenever(dataSetDownloader.downloadMetadata(any())).thenReturn(Single.error(d2Error))
         downloadAndAssertError()
     }
 
@@ -194,8 +192,8 @@ class MetadataCallShould : BaseCallShould() {
     fun call_wrapObservableTransactionally() {
         metadataCall!!.blockingDownload()
         Mockito.verify(rxAPICallExecutor).wrapObservableTransactionally<D2Progress>(
-            ArgumentMatchers.any(),
-            ArgumentMatchers.eq(true)
+            any(),
+            eq(true)
         )
     }
 

@@ -34,8 +34,8 @@ object TrackedEntityInstanceFilterHelper {
 
     @JvmStatic
     fun groupFiltersByProgram(
-            trackedEntityInstanceFilters: Collection<TrackedEntityInstanceFilter>):
-            Map<ObjectWithUid, List<TrackedEntityInstanceFilter>> {
+        trackedEntityInstanceFilters: Collection<TrackedEntityInstanceFilter>
+    ): Map<ObjectWithUid, List<TrackedEntityInstanceFilter>> {
         return trackedEntityInstanceFilters.groupBy { it.program()!! }
     }
 }

@@ -25,41 +25,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-package org.hisp.dhis.android.core.arch.db.adapters.custom.internal;
+import android.content.ContentValues
+import android.database.Cursor
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
+import org.hisp.dhis.android.core.common.FilterPeriod
 
-import android.content.ContentValues;
-import android.database.Cursor;
+class FilterPeriodColumnAdapter : ColumnTypeAdapter<FilterPeriod?> {
+    override fun fromCursor(cursor: Cursor, columnName: String): FilterPeriod? {
+        val periodFrom = period(cursor, PERIOD_FROM)
+        val periodTo = period(cursor, PERIOD_TO)
 
-import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
+        return if (periodFrom == null && periodTo == null) null else FilterPeriod.create(periodFrom, periodTo)
+    }
 
-import org.hisp.dhis.android.core.common.FilterPeriod;
-
-public class FilterPeriodColumnAdapter implements ColumnTypeAdapter<FilterPeriod> {
-
-    private static final String PERIOD_FROM = "periodFrom";
-    private static final String PERIOD_TO = "periodTo";
-
-    @Override
-    public FilterPeriod fromCursor(Cursor cursor, String columnName) {
-        int fromColumnIndex = cursor.getColumnIndex(PERIOD_FROM);
-        boolean isFromNull = cursor.isNull(fromColumnIndex);
-        int periodFrom = cursor.getInt(fromColumnIndex);
-        int toColumnIndex = cursor.getColumnIndex(PERIOD_TO);
-        boolean isToNull = cursor.isNull(toColumnIndex);
-        int periodTo = cursor.getInt(toColumnIndex);
-        if (isFromNull && isToNull) {
-            return null;
-        } else {
-            return FilterPeriod.create(isFromNull ? null : periodFrom, isToNull ? null : periodTo);
+    override fun toContentValues(values: ContentValues, columnName: String, value: FilterPeriod?) {
+        if (value != null) {
+            values.put(PERIOD_FROM, value.periodFrom())
+            values.put(PERIOD_TO, value.periodTo())
         }
     }
 
-    @Override
-    public void toContentValues(ContentValues values, String columnName, FilterPeriod value) {
-        if (value != null) {
-            values.put(PERIOD_FROM, value.periodFrom());
-            values.put(PERIOD_TO, value.periodTo());
-        }
+    private fun period(cursor: Cursor, column: String): Int? {
+        val toColumnIndex = cursor.getColumnIndex(column)
+        return if (cursor.isNull(toColumnIndex)) null else cursor.getInt(toColumnIndex)
+    }
+
+    companion object {
+        private const val PERIOD_FROM = "periodFrom"
+        private const val PERIOD_TO = "periodTo"
     }
 }

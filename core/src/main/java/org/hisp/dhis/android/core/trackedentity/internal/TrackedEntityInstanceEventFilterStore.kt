@@ -25,42 +25,47 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+import android.database.Cursor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithoutUidStore
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilterTableInfo
 
+@Suppress("MagicNumber")
+internal object TrackedEntityInstanceEventFilterStore {
+    private val BINDER = StatementBinder { o: TrackedEntityInstanceEventFilter, w: StatementWrapper ->
+        w.bind(1, o.trackedEntityInstanceFilter())
+        w.bind(2, o.programStage())
+        w.bind(3, o.eventStatus())
+        w.bind(4, o.eventCreatedPeriod()?.periodFrom())
+        w.bind(5, o.eventCreatedPeriod()?.periodTo())
+        w.bind(6, o.assignedUserMode())
+    }
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilterTableInfo;
+    private val WHERE_UPDATE_BINDER = WhereStatementBinder { _: TrackedEntityInstanceEventFilter, _ -> }
+    private val WHERE_DELETE_BINDER = WhereStatementBinder { _: TrackedEntityInstanceEventFilter, _ -> }
 
-final class TrackedEntityInstanceEventFilterStore {
+    @JvmField
+    val CHILD_PROJECTION = SingleParentChildProjection(
+        TrackedEntityInstanceEventFilterTableInfo.TABLE_INFO,
+        TrackedEntityInstanceEventFilterTableInfo.Columns.TRACKED_ENTITY_INSTANCE_FILTER
+    )
 
-    private static final StatementBinder<TrackedEntityInstanceEventFilter> BINDER = (o, w) -> {
-        w.bind(1, o.trackedEntityInstanceFilter());
-        w.bind(2, o.programStage());
-        w.bind(3, o.eventStatus());
-        w.bind(4, o.eventCreatedPeriod() == null ? null : o.eventCreatedPeriod().periodFrom());
-        w.bind(5, o.eventCreatedPeriod() == null ? null : o.eventCreatedPeriod().periodTo());
-        w.bind(6, o.assignedUserMode());
-    };
-
-    private static final WhereStatementBinder<TrackedEntityInstanceEventFilter> WHERE_UPDATE_BINDER = (o, w) -> {};
-
-    private static final WhereStatementBinder<TrackedEntityInstanceEventFilter> WHERE_DELETE_BINDER = (o, w) -> {};
-
-    static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
+    @JvmStatic
+    fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<TrackedEntityInstanceEventFilter> {
+        return objectWithoutUidStore(
+            databaseAdapter,
             TrackedEntityInstanceEventFilterTableInfo.TABLE_INFO,
-            TrackedEntityInstanceEventFilterTableInfo.Columns.TRACKED_ENTITY_INSTANCE_FILTER);
-
-    private TrackedEntityInstanceEventFilterStore() {}
-
-    public static ObjectWithoutUidStore<TrackedEntityInstanceEventFilter> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, TrackedEntityInstanceEventFilterTableInfo.TABLE_INFO,
-                BINDER, WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER, TrackedEntityInstanceEventFilter::create);
+            BINDER, WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER,
+            ObjectFactory { cursor: Cursor -> TrackedEntityInstanceEventFilter.create(cursor) }
+        )
     }
 }

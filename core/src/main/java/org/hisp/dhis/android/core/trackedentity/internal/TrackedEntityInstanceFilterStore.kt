@@ -25,42 +25,39 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+import android.database.Cursor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableWithStyleStatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithUidStore
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterTableInfo
 
-import androidx.annotation.NonNull;
-
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableWithStyleStatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterTableInfo;
-
-public final class TrackedEntityInstanceFilterStore {
-
-    private static StatementBinder<TrackedEntityInstanceFilter> BINDER =
-            new IdentifiableWithStyleStatementBinder<TrackedEntityInstanceFilter>() {
-        @Override
-        public void bindToStatement(@NonNull TrackedEntityInstanceFilter o, @NonNull StatementWrapper w) {
-            super.bindToStatement(o, w);
-            w.bind(9, UidsHelper.getUidOrNull(o.program()));
-            w.bind(10, o.description());
-            w.bind(11, o.sortOrder());
-            w.bind(12, o.enrollmentStatus());
-            w.bind(13, o.followUp());
-            w.bind(14, o.enrollmentCreatedPeriod() == null ? null : o.enrollmentCreatedPeriod().periodFrom());
-            w.bind(15, o.enrollmentCreatedPeriod() == null ? null : o.enrollmentCreatedPeriod().periodTo());
+@Suppress("MagicNumber")
+internal object TrackedEntityInstanceFilterStore {
+    private val BINDER = object : IdentifiableWithStyleStatementBinder<TrackedEntityInstanceFilter>() {
+        override fun bindToStatement(o: TrackedEntityInstanceFilter, w: StatementWrapper) {
+            super.bindToStatement(o, w)
+            w.bind(9, getUidOrNull(o.program()))
+            w.bind(10, o.description())
+            w.bind(11, o.sortOrder())
+            w.bind(12, o.enrollmentStatus())
+            w.bind(13, o.followUp())
+            w.bind(14, o.enrollmentCreatedPeriod()?.periodFrom())
+            w.bind(15, o.enrollmentCreatedPeriod()?.periodTo())
         }
-    };
+    }
 
-    private TrackedEntityInstanceFilterStore() {}
-
-    public static IdentifiableObjectStore<TrackedEntityInstanceFilter> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, TrackedEntityInstanceFilterTableInfo.TABLE_INFO,
-                BINDER, TrackedEntityInstanceFilter::create);
+    @JvmStatic
+    fun create(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<TrackedEntityInstanceFilter> {
+        return objectWithUidStore(
+            databaseAdapter, TrackedEntityInstanceFilterTableInfo.TABLE_INFO,
+            BINDER, ObjectFactory { cursor: Cursor -> TrackedEntityInstanceFilter.create(cursor) }
+        )
     }
 }

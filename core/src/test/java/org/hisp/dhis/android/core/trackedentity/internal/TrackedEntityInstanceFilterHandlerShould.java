@@ -30,12 +30,13 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 
 import com.google.common.collect.Lists;
 
+import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
 import org.junit.Before;
@@ -65,7 +66,7 @@ public class TrackedEntityInstanceFilterHandlerShould {
     private HandlerWithTransformer<TrackedEntityInstanceEventFilter> trackedEntityInstanceEventFilterHandler;
 
     @Mock
-    private ObjectWithoutUidStore<TrackedEntityInstanceEventFilter> trackedEntityInstanceEventFilterStore;
+    private OrphanCleaner<ObjectWithUid, TrackedEntityInstanceFilter> orphanCleaner;
 
     @Mock
     private TrackedEntityInstanceEventFilter eventFilter;
@@ -81,7 +82,7 @@ public class TrackedEntityInstanceFilterHandlerShould {
         trackedEntityInstanceFilterHandler = new TrackedEntityInstanceFilterHandler(
                 trackedEntityInstanceFilterStore,
                 trackedEntityInstanceEventFilterHandler,
-                trackedEntityInstanceEventFilterStore);
+                orphanCleaner);
 
         eventFilters = Lists.newArrayList(eventFilter);
 

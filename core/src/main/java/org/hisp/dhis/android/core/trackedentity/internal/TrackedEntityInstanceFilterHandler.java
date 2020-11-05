@@ -28,15 +28,18 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
+import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -46,22 +49,26 @@ import dagger.Reusable;
 final class TrackedEntityInstanceFilterHandler extends IdentifiableHandlerImpl<TrackedEntityInstanceFilter> {
 
     private final HandlerWithTransformer<TrackedEntityInstanceEventFilter> trackedEntityInstanceEventFilterHandler;
-    private final ObjectWithoutUidStore<TrackedEntityInstanceEventFilter> trackedEntityInstanceEventFilterStore;
+    private final OrphanCleaner<ObjectWithUid, TrackedEntityInstanceFilter> orphanCleaner;
 
     @Inject
     TrackedEntityInstanceFilterHandler(
             IdentifiableObjectStore<TrackedEntityInstanceFilter> trackedEntityInstanceFilterStore,
             HandlerWithTransformer<TrackedEntityInstanceEventFilter> trackedEntityInstanceEventFilterHandler,
-            ObjectWithoutUidStore<TrackedEntityInstanceEventFilter> trackedEntityInstanceEventFilterStore) {
+            OrphanCleaner<ObjectWithUid, TrackedEntityInstanceFilter> orphanCleaner) {
         super(trackedEntityInstanceFilterStore);
         this.trackedEntityInstanceEventFilterHandler = trackedEntityInstanceEventFilterHandler;
-        this.trackedEntityInstanceEventFilterStore = trackedEntityInstanceEventFilterStore;
+        this.orphanCleaner = orphanCleaner;
     }
 
     @Override
     protected Collection<TrackedEntityInstanceFilter> beforeCollectionHandled(
             Collection<TrackedEntityInstanceFilter> trackedEntityInstanceFilters) {
-        this.trackedEntityInstanceEventFilterStore.delete();
+        for (Map.Entry<ObjectWithUid, List<TrackedEntityInstanceFilter>> entry :
+                TrackedEntityInstanceFilterHelper.groupFiltersByProgram(trackedEntityInstanceFilters).entrySet()) {
+            this.orphanCleaner.deleteOrphan(entry.getKey(), entry.getValue());
+        }
+
         return super.beforeCollectionHandled(trackedEntityInstanceFilters);
     }
 

@@ -88,6 +88,7 @@ public class TrackedEntityInstanceFilterHandlerShould {
 
         TrackedEntityInstanceFilter trackedEntityInstanceFilter = TrackedEntityInstanceFilter.builder()
                 .uid("test_tracked_entity_attribute_uid")
+                .program(ObjectWithUid.create("program_uid"))
                 .style(objectStyle)
                 .name("name")
                 .displayName("display_name")

@@ -16,7 +16,7 @@ import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManage
 
 class D2ManagerInstantiator() : D2ManagerInstantiate {
 
-    override fun instantiateD2(d2Config: D2Configuration): Single<D2?>? {
+    override fun instantiateD2(d2Config: D2Configuration): Single<D2> {
         return Single.fromCallable {
             val startTime = System.currentTimeMillis()
             val secureStore: SecureStore = AndroidSecureStore(d2Config.context())

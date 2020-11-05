@@ -16,7 +16,7 @@ class D2ManagerTestingInstantiator(val testConfig: D2TestingConfig) : D2ManagerI
     var okHttpClient: OkHttpClient? = null
 
     @SuppressLint("VisibleForTests")
-    override fun instantiateD2(d2Config: D2Configuration): Single<D2?>? {
+    override fun instantiateD2(d2Config: D2Configuration): Single<D2> {
         return Single.fromCallable {
             val startTime = System.currentTimeMillis()
             val databaseAdapterFactory = DatabaseAdapterFactory.create(

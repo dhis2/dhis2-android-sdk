@@ -26,26 +26,47 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceDownloader;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository;
+import androidx.annotation.Nullable;
 
-public interface TrackedEntityModule {
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-    TrackedEntityTypeCollectionRepository trackedEntityTypes();
-    TrackedEntityInstanceCollectionRepository trackedEntityInstances();
-    TrackedEntityDataValueCollectionRepository trackedEntityDataValues();
-    TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValues();
-    TrackedEntityAttributeCollectionRepository trackedEntityAttributes();
-    TrackedEntityTypeAttributeCollectionRepository trackedEntityTypeAttributes();
-    TrackedEntityInstanceFilterCollectionRepository trackedEntityInstanceFilters();
+@AutoValue
+@JsonDeserialize(builder = AutoValue_FilterPeriod.Builder.class)
+public abstract class FilterPeriod {
 
-    TrackedEntityInstanceQueryCollectionRepository trackedEntityInstanceQuery();
+    @Nullable
+    @JsonProperty()
+    public abstract Integer periodFrom();
 
-    TrackedEntityAttributeReservedValueManager reservedValueManager();
+    @Nullable
+    @JsonProperty()
+    public abstract Integer periodTo();
 
-    TrackedEntityInstanceDownloader trackedEntityInstanceDownloader();
+    @JsonCreator
+    public static FilterPeriod create(Integer periodFrom, Integer periodTo) {
+        return builder()
+                .periodFrom(periodFrom)
+                .periodTo(periodTo)
+                .build();
+    }
 
-    TrackedEntityInstanceService trackedEntityInstanceService();
+    public static Builder builder() {
+        return new AutoValue_FilterPeriod.Builder();
+    }
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder {
+        public abstract Builder periodFrom(Integer periodFrom);
+
+        public abstract Builder periodTo(Integer periodTo);
+
+        public abstract FilterPeriod build();
+    }
 }

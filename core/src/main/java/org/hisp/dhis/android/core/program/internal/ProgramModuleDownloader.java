@@ -40,8 +40,10 @@ import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -58,6 +60,7 @@ public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<Li
     private final UidsCall<ProgramRule> programRuleCall;
     private final UidsCall<TrackedEntityType> trackedEntityTypeCall;
     private final UidsCall<TrackedEntityAttribute> trackedEntityAttributeCall;
+    private final UidsCall<TrackedEntityInstanceFilter> trackedEntityInstanceFilterCall;
     private final ListCall<RelationshipType> relationshipTypeCall;
     private final UidsCall<OptionSet> optionSetCall;
     private final UidsCall<Option> optionCall;
@@ -69,6 +72,7 @@ public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<Li
                             UidsCall<ProgramRule> programRuleCall,
                             UidsCall<TrackedEntityType> trackedEntityTypeCall,
                             UidsCall<TrackedEntityAttribute> trackedEntityAttributeCall,
+                            UidsCall<TrackedEntityInstanceFilter> trackedEntityInstanceFilterCall,
                             ListCall<RelationshipType> relationshipTypeCall,
                             UidsCall<OptionSet> optionSetCall,
                             UidsCall<Option> optionCall,
@@ -78,6 +82,7 @@ public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<Li
         this.programRuleCall = programRuleCall;
         this.trackedEntityTypeCall = trackedEntityTypeCall;
         this.trackedEntityAttributeCall = trackedEntityAttributeCall;
+        this.trackedEntityInstanceFilterCall = trackedEntityInstanceFilterCall;
         this.relationshipTypeCall = relationshipTypeCall;
         this.optionSetCall = optionSetCall;
         this.optionCall = optionCall;
@@ -96,14 +101,15 @@ public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<Li
                         .flatMap(attributes -> {
                             Set<String> optionSetUids = ProgramParentUidsHelper.getAssignedOptionSetUids(
                                     attributes, programStages);
-                            return Single.merge(
+                            return Single.merge(Arrays.asList(
                                     programRuleCall.download(programUids),
+                                    trackedEntityInstanceFilterCall.download(programUids),
                                     relationshipTypeCall.download(),
                                     optionSetCall.download(optionSetUids),
-                                    optionCall.download(optionSetUids)
-                            ).ignoreElements()
-                                    .andThen(optionGroupCall.download(optionSetUids)).map(toIgnore -> programs);
-                });
+                                    optionCall.download(optionSetUids),
+                                    optionGroupCall.download(optionSetUids))
+                            ).ignoreElements().toSingle(() -> programs);
+                        });
             });
         });
     }

@@ -26,26 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
 
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceDownloader;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter;
 
-public interface TrackedEntityModule {
+import java.util.List;
 
-    TrackedEntityTypeCollectionRepository trackedEntityTypes();
-    TrackedEntityInstanceCollectionRepository trackedEntityInstances();
-    TrackedEntityDataValueCollectionRepository trackedEntityDataValues();
-    TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValues();
-    TrackedEntityAttributeCollectionRepository trackedEntityAttributes();
-    TrackedEntityTypeAttributeCollectionRepository trackedEntityTypeAttributes();
-    TrackedEntityInstanceFilterCollectionRepository trackedEntityInstanceFilters();
-
-    TrackedEntityInstanceQueryCollectionRepository trackedEntityInstanceQuery();
-
-    TrackedEntityAttributeReservedValueManager reservedValueManager();
-
-    TrackedEntityInstanceDownloader trackedEntityInstanceDownloader();
-
-    TrackedEntityInstanceService trackedEntityInstanceService();
+public final class IgnoreTrackedEntityInstanceEventFilterListColumnAdapter
+        extends IgnoreColumnAdapter<List<TrackedEntityInstanceEventFilter>> {
 }

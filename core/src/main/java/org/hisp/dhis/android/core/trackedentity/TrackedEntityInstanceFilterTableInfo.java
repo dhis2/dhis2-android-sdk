@@ -28,24 +28,49 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceDownloader;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.common.IdentifiableWithStyleColumns;
 
-public interface TrackedEntityModule {
+public final class TrackedEntityInstanceFilterTableInfo {
 
-    TrackedEntityTypeCollectionRepository trackedEntityTypes();
-    TrackedEntityInstanceCollectionRepository trackedEntityInstances();
-    TrackedEntityDataValueCollectionRepository trackedEntityDataValues();
-    TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValues();
-    TrackedEntityAttributeCollectionRepository trackedEntityAttributes();
-    TrackedEntityTypeAttributeCollectionRepository trackedEntityTypeAttributes();
-    TrackedEntityInstanceFilterCollectionRepository trackedEntityInstanceFilters();
+    private TrackedEntityInstanceFilterTableInfo() {
+    }
 
-    TrackedEntityInstanceQueryCollectionRepository trackedEntityInstanceQuery();
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    TrackedEntityAttributeReservedValueManager reservedValueManager();
+        @Override
+        public String name() {
+            return "TrackedEntityInstanceFilter";
+        }
 
-    TrackedEntityInstanceDownloader trackedEntityInstanceDownloader();
+        @Override
+        public CoreColumns columns() {
+            return new Columns();
+        }
+    };
 
-    TrackedEntityInstanceService trackedEntityInstanceService();
+    public static class Columns extends IdentifiableWithStyleColumns {
+        public final static String PROGRAM = "program";
+        public final static String DESCRIPTION = "description";
+        public final static String SORT_ORDER = "sortOrder";
+        public final static String ENROLLMENT_STATUS = "enrollmentStatus";
+        public final static String FOLLOW_UP = "followUp";
+        public static final String PERIOD_FROM = "periodFrom";
+        public static final String PERIOD_TO = "periodTo";
+
+        @Override
+        public String[] all() {
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    PROGRAM,
+                    DESCRIPTION,
+                    SORT_ORDER,
+                    ENROLLMENT_STATUS,
+                    FOLLOW_UP,
+                    PERIOD_FROM,
+                    PERIOD_TO
+            );
+        }
+    }
 }

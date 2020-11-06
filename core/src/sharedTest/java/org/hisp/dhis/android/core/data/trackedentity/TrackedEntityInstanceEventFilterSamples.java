@@ -26,26 +26,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.data.trackedentity;
 
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceDownloader;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository;
+import org.hisp.dhis.android.core.common.AssignedUserMode;
+import org.hisp.dhis.android.core.common.FilterPeriod;
+import org.hisp.dhis.android.core.event.EventStatus;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter;
 
-public interface TrackedEntityModule {
+public class TrackedEntityInstanceEventFilterSamples {
 
-    TrackedEntityTypeCollectionRepository trackedEntityTypes();
-    TrackedEntityInstanceCollectionRepository trackedEntityInstances();
-    TrackedEntityDataValueCollectionRepository trackedEntityDataValues();
-    TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValues();
-    TrackedEntityAttributeCollectionRepository trackedEntityAttributes();
-    TrackedEntityTypeAttributeCollectionRepository trackedEntityTypeAttributes();
-    TrackedEntityInstanceFilterCollectionRepository trackedEntityInstanceFilters();
-
-    TrackedEntityInstanceQueryCollectionRepository trackedEntityInstanceQuery();
-
-    TrackedEntityAttributeReservedValueManager reservedValueManager();
-
-    TrackedEntityInstanceDownloader trackedEntityInstanceDownloader();
-
-    TrackedEntityInstanceService trackedEntityInstanceService();
+    public static TrackedEntityInstanceEventFilter get() {
+        return TrackedEntityInstanceEventFilter.builder()
+                .id(1L)
+                .trackedEntityInstanceFilter("tei_filter")
+                .eventStatus(EventStatus.ACTIVE)
+                .assignedUserMode(AssignedUserMode.CURRENT)
+                .programStage("program_stage_uid")
+                .eventCreatedPeriod(FilterPeriod.create(-11,11))
+                .build();
+    }
 }

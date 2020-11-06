@@ -26,26 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.trackedentity.internal;
 
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceDownloader;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityInstanceFilterSamples;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterTableInfo;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.runner.RunWith;
 
-public interface TrackedEntityModule {
+@RunWith(D2JunitRunner.class)
+public class TrackedEntityInstanceFilterStoreIntegrationShould
+        extends IdentifiableObjectStoreAbstractIntegrationShould<TrackedEntityInstanceFilter> {
 
-    TrackedEntityTypeCollectionRepository trackedEntityTypes();
-    TrackedEntityInstanceCollectionRepository trackedEntityInstances();
-    TrackedEntityDataValueCollectionRepository trackedEntityDataValues();
-    TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValues();
-    TrackedEntityAttributeCollectionRepository trackedEntityAttributes();
-    TrackedEntityTypeAttributeCollectionRepository trackedEntityTypeAttributes();
-    TrackedEntityInstanceFilterCollectionRepository trackedEntityInstanceFilters();
+    public TrackedEntityInstanceFilterStoreIntegrationShould() {
+        super(TrackedEntityInstanceFilterStore.create(TestDatabaseAdapterFactory.get()),
+                TrackedEntityInstanceFilterTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+    }
 
-    TrackedEntityInstanceQueryCollectionRepository trackedEntityInstanceQuery();
+    @Override
+    protected TrackedEntityInstanceFilter buildObject() {
+        return TrackedEntityInstanceFilterSamples.get();
+    }
 
-    TrackedEntityAttributeReservedValueManager reservedValueManager();
-
-    TrackedEntityInstanceDownloader trackedEntityInstanceDownloader();
-
-    TrackedEntityInstanceService trackedEntityInstanceService();
+    @Override
+    protected TrackedEntityInstanceFilter buildObjectToUpdate() {
+        return TrackedEntityInstanceFilterSamples.get().toBuilder()
+                .description("new_description")
+                .build();
+    }
 }

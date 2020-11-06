@@ -26,26 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.arch.db.adapters.enums.internal;
 
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceDownloader;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository;
+import org.hisp.dhis.android.core.common.AssignedUserMode;
 
-public interface TrackedEntityModule {
-
-    TrackedEntityTypeCollectionRepository trackedEntityTypes();
-    TrackedEntityInstanceCollectionRepository trackedEntityInstances();
-    TrackedEntityDataValueCollectionRepository trackedEntityDataValues();
-    TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValues();
-    TrackedEntityAttributeCollectionRepository trackedEntityAttributes();
-    TrackedEntityTypeAttributeCollectionRepository trackedEntityTypeAttributes();
-    TrackedEntityInstanceFilterCollectionRepository trackedEntityInstanceFilters();
-
-    TrackedEntityInstanceQueryCollectionRepository trackedEntityInstanceQuery();
-
-    TrackedEntityAttributeReservedValueManager reservedValueManager();
-
-    TrackedEntityInstanceDownloader trackedEntityInstanceDownloader();
-
-    TrackedEntityInstanceService trackedEntityInstanceService();
+public class AssignedUserModeColumnAdapter extends EnumColumnAdapter<AssignedUserMode> {
+    @Override
+    protected Class<AssignedUserMode> getEnumClass() {
+        return AssignedUserMode.class;
+    }
 }

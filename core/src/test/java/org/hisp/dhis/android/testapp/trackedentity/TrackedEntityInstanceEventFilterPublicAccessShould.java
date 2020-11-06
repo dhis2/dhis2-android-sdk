@@ -26,26 +26,35 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.testapp.trackedentity;
 
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceDownloader;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter;
+import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
+import org.mockito.Mock;
 
-public interface TrackedEntityModule {
+public class TrackedEntityInstanceEventFilterPublicAccessShould
+        extends BasePublicAccessShould<TrackedEntityInstanceEventFilter> {
 
-    TrackedEntityTypeCollectionRepository trackedEntityTypes();
-    TrackedEntityInstanceCollectionRepository trackedEntityInstances();
-    TrackedEntityDataValueCollectionRepository trackedEntityDataValues();
-    TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValues();
-    TrackedEntityAttributeCollectionRepository trackedEntityAttributes();
-    TrackedEntityTypeAttributeCollectionRepository trackedEntityTypeAttributes();
-    TrackedEntityInstanceFilterCollectionRepository trackedEntityInstanceFilters();
+    @Mock
+    private TrackedEntityInstanceEventFilter object;
 
-    TrackedEntityInstanceQueryCollectionRepository trackedEntityInstanceQuery();
+    @Override
+    public TrackedEntityInstanceEventFilter object() {
+        return object;
+    }
 
-    TrackedEntityAttributeReservedValueManager reservedValueManager();
+    @Override
+    public void has_public_create_method() {
+        TrackedEntityInstanceEventFilter.create(null);
+    }
 
-    TrackedEntityInstanceDownloader trackedEntityInstanceDownloader();
+    @Override
+    public void has_public_builder_method() {
+        TrackedEntityInstanceEventFilter.builder();
+    }
 
-    TrackedEntityInstanceService trackedEntityInstanceService();
+    @Override
+    public void has_public_to_builder_method() {
+        object().toBuilder();
+    }
 }

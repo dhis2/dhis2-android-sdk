@@ -25,27 +25,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-package org.hisp.dhis.android.core.trackedentity;
+import android.content.ContentValues
+import android.database.Cursor
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
+import org.hisp.dhis.android.core.common.FilterPeriod
 
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceDownloader;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository;
+class FilterPeriodColumnAdapter : ColumnTypeAdapter<FilterPeriod?> {
+    override fun fromCursor(cursor: Cursor, columnName: String): FilterPeriod? {
+        val periodFrom = period(cursor, PERIOD_FROM)
+        val periodTo = period(cursor, PERIOD_TO)
 
-public interface TrackedEntityModule {
+        return if (periodFrom == null && periodTo == null) null else FilterPeriod.create(periodFrom, periodTo)
+    }
 
-    TrackedEntityTypeCollectionRepository trackedEntityTypes();
-    TrackedEntityInstanceCollectionRepository trackedEntityInstances();
-    TrackedEntityDataValueCollectionRepository trackedEntityDataValues();
-    TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValues();
-    TrackedEntityAttributeCollectionRepository trackedEntityAttributes();
-    TrackedEntityTypeAttributeCollectionRepository trackedEntityTypeAttributes();
-    TrackedEntityInstanceFilterCollectionRepository trackedEntityInstanceFilters();
+    override fun toContentValues(values: ContentValues, columnName: String, value: FilterPeriod?) {
+        if (value != null) {
+            values.put(PERIOD_FROM, value.periodFrom())
+            values.put(PERIOD_TO, value.periodTo())
+        }
+    }
 
-    TrackedEntityInstanceQueryCollectionRepository trackedEntityInstanceQuery();
+    private fun period(cursor: Cursor, column: String): Int? {
+        val toColumnIndex = cursor.getColumnIndex(column)
+        return if (cursor.isNull(toColumnIndex)) null else cursor.getInt(toColumnIndex)
+    }
 
-    TrackedEntityAttributeReservedValueManager reservedValueManager();
-
-    TrackedEntityInstanceDownloader trackedEntityInstanceDownloader();
-
-    TrackedEntityInstanceService trackedEntityInstanceService();
+    companion object {
+        private const val PERIOD_FROM = "periodFrom"
+        private const val PERIOD_TO = "periodTo"
+    }
 }

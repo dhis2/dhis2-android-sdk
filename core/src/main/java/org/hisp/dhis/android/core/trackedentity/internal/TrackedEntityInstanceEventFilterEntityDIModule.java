@@ -26,26 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.trackedentity.internal;
 
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceDownloader;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter;
 
-public interface TrackedEntityModule {
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-    TrackedEntityTypeCollectionRepository trackedEntityTypes();
-    TrackedEntityInstanceCollectionRepository trackedEntityInstances();
-    TrackedEntityDataValueCollectionRepository trackedEntityDataValues();
-    TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValues();
-    TrackedEntityAttributeCollectionRepository trackedEntityAttributes();
-    TrackedEntityTypeAttributeCollectionRepository trackedEntityTypeAttributes();
-    TrackedEntityInstanceFilterCollectionRepository trackedEntityInstanceFilters();
+@Module
+public final class TrackedEntityInstanceEventFilterEntityDIModule {
 
-    TrackedEntityInstanceQueryCollectionRepository trackedEntityInstanceQuery();
+    @Provides
+    @Reusable
+    ObjectWithoutUidStore<TrackedEntityInstanceEventFilter> store(DatabaseAdapter databaseAdapter) {
+        return TrackedEntityInstanceEventFilterStore.create(databaseAdapter);
+    }
 
-    TrackedEntityAttributeReservedValueManager reservedValueManager();
-
-    TrackedEntityInstanceDownloader trackedEntityInstanceDownloader();
-
-    TrackedEntityInstanceService trackedEntityInstanceService();
+    @Provides
+    @Reusable
+    HandlerWithTransformer<TrackedEntityInstanceEventFilter> handler(
+            ObjectWithoutUidStore<TrackedEntityInstanceEventFilter> store) {
+        return new ObjectWithoutUidHandlerImpl<>(store);
+    }
 }

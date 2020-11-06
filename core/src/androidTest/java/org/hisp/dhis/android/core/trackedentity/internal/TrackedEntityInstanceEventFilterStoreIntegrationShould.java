@@ -26,26 +26,27 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.trackedentity.internal;
 
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceDownloader;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository;
+import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityInstanceEventFilterSamples;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilterTableInfo;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.runner.RunWith;
 
-public interface TrackedEntityModule {
+@RunWith(D2JunitRunner.class)
+public class TrackedEntityInstanceEventFilterStoreIntegrationShould
+        extends ObjectStoreAbstractIntegrationShould<TrackedEntityInstanceEventFilter> {
 
-    TrackedEntityTypeCollectionRepository trackedEntityTypes();
-    TrackedEntityInstanceCollectionRepository trackedEntityInstances();
-    TrackedEntityDataValueCollectionRepository trackedEntityDataValues();
-    TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValues();
-    TrackedEntityAttributeCollectionRepository trackedEntityAttributes();
-    TrackedEntityTypeAttributeCollectionRepository trackedEntityTypeAttributes();
-    TrackedEntityInstanceFilterCollectionRepository trackedEntityInstanceFilters();
+    public TrackedEntityInstanceEventFilterStoreIntegrationShould() {
+        super(TrackedEntityInstanceEventFilterStore.create(TestDatabaseAdapterFactory.get()),
+                TrackedEntityInstanceEventFilterTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+    }
 
-    TrackedEntityInstanceQueryCollectionRepository trackedEntityInstanceQuery();
-
-    TrackedEntityAttributeReservedValueManager reservedValueManager();
-
-    TrackedEntityInstanceDownloader trackedEntityInstanceDownloader();
-
-    TrackedEntityInstanceService trackedEntityInstanceService();
+    @Override
+    protected TrackedEntityInstanceEventFilter buildObject() {
+        return TrackedEntityInstanceEventFilterSamples.get();
+    }
 }

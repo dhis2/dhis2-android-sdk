@@ -28,24 +28,46 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceDownloader;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
-public interface TrackedEntityModule {
+public final class TrackedEntityInstanceEventFilterTableInfo {
 
-    TrackedEntityTypeCollectionRepository trackedEntityTypes();
-    TrackedEntityInstanceCollectionRepository trackedEntityInstances();
-    TrackedEntityDataValueCollectionRepository trackedEntityDataValues();
-    TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValues();
-    TrackedEntityAttributeCollectionRepository trackedEntityAttributes();
-    TrackedEntityTypeAttributeCollectionRepository trackedEntityTypeAttributes();
-    TrackedEntityInstanceFilterCollectionRepository trackedEntityInstanceFilters();
+    private TrackedEntityInstanceEventFilterTableInfo() {
+    }
 
-    TrackedEntityInstanceQueryCollectionRepository trackedEntityInstanceQuery();
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    TrackedEntityAttributeReservedValueManager reservedValueManager();
+        @Override
+        public String name() {
+            return "TrackedEntityInstanceEventFilter";
+        }
 
-    TrackedEntityInstanceDownloader trackedEntityInstanceDownloader();
+        @Override
+        public CoreColumns columns() {
+            return new Columns();
+        }
+    };
 
-    TrackedEntityInstanceService trackedEntityInstanceService();
+    public static class Columns extends CoreColumns {
+        public final static String TRACKED_ENTITY_INSTANCE_FILTER = "trackedEntityInstanceFilter";
+        public final static String PROGRAM_STAGE = "programStage";
+        public final static String EVENT_STATUS = "eventStatus";
+        public static final String PERIOD_FROM = "periodFrom";
+        public static final String PERIOD_TO = "periodTo";
+        public static final String ASSIGNED_USER_MODE = "assignedUserMode";
+
+        @Override
+        public String[] all() {
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    TRACKED_ENTITY_INSTANCE_FILTER,
+                    PROGRAM_STAGE,
+                    EVENT_STATUS,
+                    PERIOD_FROM,
+                    PERIOD_TO,
+                    ASSIGNED_USER_MODE
+            );
+        }
+    }
 }

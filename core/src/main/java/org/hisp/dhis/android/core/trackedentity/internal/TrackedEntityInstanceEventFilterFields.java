@@ -26,26 +26,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.trackedentity.internal;
 
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceDownloader;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import org.hisp.dhis.android.core.common.AssignedUserMode;
+import org.hisp.dhis.android.core.common.FilterPeriod;
+import org.hisp.dhis.android.core.event.EventStatus;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter;
 
-public interface TrackedEntityModule {
+import static org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilterTableInfo.Columns;
 
-    TrackedEntityTypeCollectionRepository trackedEntityTypes();
-    TrackedEntityInstanceCollectionRepository trackedEntityInstances();
-    TrackedEntityDataValueCollectionRepository trackedEntityDataValues();
-    TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValues();
-    TrackedEntityAttributeCollectionRepository trackedEntityAttributes();
-    TrackedEntityTypeAttributeCollectionRepository trackedEntityTypeAttributes();
-    TrackedEntityInstanceFilterCollectionRepository trackedEntityInstanceFilters();
+public final class TrackedEntityInstanceEventFilterFields {
 
-    TrackedEntityInstanceQueryCollectionRepository trackedEntityInstanceQuery();
+    private final static String EVENT_CREATED_PERIOD = "eventCreatedPeriod";
 
-    TrackedEntityAttributeReservedValueManager reservedValueManager();
+    private static final FieldsHelper<TrackedEntityInstanceEventFilter> fh = new FieldsHelper<>();
 
-    TrackedEntityInstanceDownloader trackedEntityInstanceDownloader();
+    public static final Fields<TrackedEntityInstanceEventFilter> allFields =
+            Fields.<TrackedEntityInstanceEventFilter>builder()
+            .fields(
+                    fh.<String>field(Columns.PROGRAM_STAGE),
+                    fh.<EventStatus>field(Columns.EVENT_STATUS),
+                    fh.<FilterPeriod>field(EVENT_CREATED_PERIOD),
+                    fh.<AssignedUserMode>field(Columns.ASSIGNED_USER_MODE)
+            ).build();
 
-    TrackedEntityInstanceService trackedEntityInstanceService();
+    private TrackedEntityInstanceEventFilterFields() {
+    }
 }

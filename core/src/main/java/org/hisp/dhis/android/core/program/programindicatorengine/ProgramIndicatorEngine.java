@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.program.programindicatorengine;
 
+import androidx.annotation.NonNull;
+
 public interface ProgramIndicatorEngine {
 
     /**
@@ -41,5 +43,9 @@ public interface ProgramIndicatorEngine {
      * @return Program indicator evaluation
      */
     String getProgramIndicatorValue(String enrollmentUid, String eventUid, String programIndicatorUid);
+
+    String getEnrollmentProgramIndicatorValue(@NonNull String enrollmentUid, @NonNull String programIndicatorUid);
+
+    String getEventProgramIndicatorValue(@NonNull String eventUid, @NonNull String programIndicatorUid);
 
 }

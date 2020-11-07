@@ -85,7 +85,12 @@ internal class ProgramIndicatorEngineImpl @Inject constructor(
     override fun getEventProgramIndicatorValue(eventUid: String, programIndicatorUid: String): String? {
         val programIndicator = programIndicatorStore.selectByUid(programIndicatorUid) ?: return null
 
-        val event = eventRepository.uid(eventUid).blockingGet()
+        val event = eventRepository
+            .withTrackedEntityDataValues()
+            .byDeleted().isFalse
+            .uid(eventUid)
+            .blockingGet()
+
         val enrollment = event.enrollment()?.let {
             enrollmentStore.selectByUid(it)
         }

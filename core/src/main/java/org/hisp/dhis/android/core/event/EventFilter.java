@@ -35,8 +35,10 @@ import androidx.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.EventQueryCriteriaColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 
@@ -58,8 +60,8 @@ public abstract class EventFilter extends BaseIdentifiableObject implements Core
 
     @Nullable
     @JsonProperty()
+    @ColumnAdapter(EventQueryCriteriaColumnAdapter.class)
     public abstract EventQueryCriteria eventQueryCriteria();
-
 
     public static Builder builder() {
         return new $$AutoValue_EventFilter.Builder();

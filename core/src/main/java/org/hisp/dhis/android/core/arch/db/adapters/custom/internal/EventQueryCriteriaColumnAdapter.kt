@@ -34,10 +34,10 @@ import org.hisp.dhis.android.core.event.EventQueryCriteria
 
 class EventQueryCriteriaColumnAdapter : ColumnTypeAdapter<EventQueryCriteria> {
     override fun fromCursor(cursor: Cursor, columnName: String): EventQueryCriteria? {
-        return null
+        return EventQueryCriteria.create(cursor)
     }
 
     override fun toContentValues(values: ContentValues, columnName: String, value: EventQueryCriteria?) {
-
+        value?.toContentValues()
     }
 }

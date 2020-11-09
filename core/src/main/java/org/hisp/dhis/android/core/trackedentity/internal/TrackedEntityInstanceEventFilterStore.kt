@@ -27,9 +27,7 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
@@ -64,8 +62,7 @@ internal object TrackedEntityInstanceEventFilterStore {
         return objectWithoutUidStore(
             databaseAdapter,
             TrackedEntityInstanceEventFilterTableInfo.TABLE_INFO,
-            BINDER, WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER,
-            ObjectFactory { cursor: Cursor -> TrackedEntityInstanceEventFilter.create(cursor) }
-        )
+            BINDER, WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER
+        ) { TrackedEntityInstanceEventFilter.create(it) }
     }
 }

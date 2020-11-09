@@ -27,9 +27,7 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableWithStyleStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
@@ -56,8 +54,7 @@ internal object TrackedEntityInstanceFilterStore {
     @JvmStatic
     fun create(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<TrackedEntityInstanceFilter> {
         return objectWithUidStore(
-            databaseAdapter, TrackedEntityInstanceFilterTableInfo.TABLE_INFO,
-            BINDER, ObjectFactory { cursor: Cursor -> TrackedEntityInstanceFilter.create(cursor) }
-        )
+            databaseAdapter, TrackedEntityInstanceFilterTableInfo.TABLE_INFO, BINDER
+        ) { TrackedEntityInstanceFilter.create(it) }
     }
 }

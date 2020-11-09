@@ -25,41 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.cursors.internal;
+package org.hisp.dhis.android.core.arch.db.cursors.internal
 
-import android.database.Cursor;
+import android.database.Cursor
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-public class CursorExecutorImpl<M> implements CursorExecutor<M> {
-
-    private final ObjectFactory<M> objectFactory;
-
-    public CursorExecutorImpl(ObjectFactory<M> objectFactory) {
-        this.objectFactory = objectFactory;
-    }
-
-    @Override
-    public void addObjectsToCollection(Cursor cursor, Collection<M> collection) {
-        try {
-            if (cursor.getCount() > 0) {
-                cursor.moveToFirst();
-                do {
-                    collection.add(objectFactory.fromCursor(cursor));
-                }
-                while (cursor.moveToNext());
-            }
-        } finally {
-            cursor.close();
-        }
-    }
-
-    @Override
-    public List<M> getObjects(Cursor cursor) {
-        List<M> list = new ArrayList<>();
-        addObjectsToCollection(cursor, list);
-        return list;
-    }
+interface CursorExecutor<M> {
+    fun addObjectsToCollection(cursor: Cursor, collection: MutableCollection<M>)
+    fun getObjects(cursor: Cursor): List<M>
 }

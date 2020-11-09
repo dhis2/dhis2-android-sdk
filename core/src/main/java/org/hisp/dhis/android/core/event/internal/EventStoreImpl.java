@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.event.internal;
 import android.database.Cursor;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
@@ -50,6 +49,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import kotlin.jvm.functions.Function1;
 
 public final class EventStoreImpl extends IdentifiableDeletableDataObjectStoreImpl<Event> implements EventStore {
 
@@ -80,7 +81,7 @@ public final class EventStoreImpl extends IdentifiableDeletableDataObjectStoreIm
     private EventStoreImpl(DatabaseAdapter databaseAdapter,
                            SQLStatementBuilderImpl builder,
                            StatementBinder<Event> binder,
-                           ObjectFactory<Event> objectFactory) {
+                           Function1<Cursor, Event> objectFactory) {
         super(databaseAdapter, builder, binder, objectFactory);
     }
 

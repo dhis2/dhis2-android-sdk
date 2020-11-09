@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.arch.db.stores.internal
 
+import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
@@ -43,7 +43,7 @@ internal open class ObjectWithoutUidStoreImpl<O : CoreObject>(
     binder: StatementBinder<O>,
     private val whereUpdateBinder: WhereStatementBinder<O>,
     private val whereDeleteBinder: WhereStatementBinder<O>,
-    objectFactory: ObjectFactory<O>
+    objectFactory: (Cursor) -> O
 ) : ObjectStoreImpl<O>(databaseAdapter, builder, binder, objectFactory), ObjectWithoutUidStore<O> {
     private var updateWhereStatement: StatementWrapper? = null
     private var deleteWhereStatement: StatementWrapper? = null

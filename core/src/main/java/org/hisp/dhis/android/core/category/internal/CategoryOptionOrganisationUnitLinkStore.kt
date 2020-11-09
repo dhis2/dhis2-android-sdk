@@ -27,9 +27,7 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
-import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
@@ -48,8 +46,7 @@ internal object CategoryOptionOrganisationUnitLinkStore {
             databaseAdapter,
             CategoryOptionOrganisationUnitLinkTableInfo.TABLE_INFO,
             CategoryOptionOrganisationUnitLinkTableInfo.Columns.CATEGORY_OPTION,
-            BINDER,
-            ObjectFactory { cursor: Cursor -> CategoryOptionOrganisationUnitLink.create(cursor) }
-        )
+            BINDER
+        ) { CategoryOptionOrganisationUnitLink.create(it) }
     }
 }

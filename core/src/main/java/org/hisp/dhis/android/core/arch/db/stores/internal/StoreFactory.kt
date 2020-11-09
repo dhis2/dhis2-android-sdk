@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.arch.db.stores.internal
 
+import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorExecutorImpl
-import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
@@ -47,7 +47,7 @@ internal object StoreFactory {
         databaseAdapter: DatabaseAdapter,
         tableInfo: TableInfo,
         binder: StatementBinder<O>,
-        objectFactory: ObjectFactory<O>
+        objectFactory: (Cursor) -> O
     ): IdentifiableObjectStore<O> where O : CoreObject, O : ObjectWithUidInterface {
         val statementBuilder: SQLStatementBuilder =
             SQLStatementBuilderImpl(tableInfo.name(), tableInfo.columns().all(), arrayOf())
@@ -59,7 +59,7 @@ internal object StoreFactory {
         databaseAdapter: DatabaseAdapter,
         tableInfo: TableInfo,
         binder: StatementBinder<O>,
-        objectFactory: ObjectFactory<O>
+        objectFactory: (Cursor) -> O
     ): ObjectStore<O> {
         val statementBuilder: SQLStatementBuilder =
             SQLStatementBuilderImpl(tableInfo.name(), tableInfo.columns().all(), arrayOf())
@@ -74,7 +74,7 @@ internal object StoreFactory {
         binder: StatementBinder<O>,
         whereUpdateBinder: WhereStatementBinder<O>,
         whereDeleteBinder: WhereStatementBinder<O>,
-        objectFactory: ObjectFactory<O>
+        objectFactory: (Cursor) -> O
     ): ObjectWithoutUidStore<O> {
         val statementBuilder: SQLStatementBuilder = SQLStatementBuilderImpl(
             tableInfo.name(), tableInfo.columns().all(),
@@ -92,7 +92,7 @@ internal object StoreFactory {
         tableInfo: TableInfo,
         masterColumn: String,
         binder: StatementBinder<O>,
-        objectFactory: ObjectFactory<O>
+        objectFactory: (Cursor) -> O
     ): LinkStore<O> {
         val statementBuilder: SQLStatementBuilder = SQLStatementBuilderImpl(
             tableInfo.name(), tableInfo.columns().all(),
@@ -106,7 +106,7 @@ internal object StoreFactory {
         databaseAdapter: DatabaseAdapter,
         linkTableInfo: TableInfo,
         linkTableChildProjection: LinkTableChildProjection,
-        childFactory: ObjectFactory<C>
+        childFactory: (Cursor) -> C
     ): LinkChildStore<P, C> {
         return LinkChildStoreImpl(
             linkTableChildProjection,
@@ -120,7 +120,7 @@ internal object StoreFactory {
     fun <P : ObjectWithUidInterface, C> singleParentChildStore(
         databaseAdapter: DatabaseAdapter,
         childProjection: SingleParentChildProjection,
-        childFactory: ObjectFactory<C>
+        childFactory: (Cursor) -> C
     ): SingleParentChildStore<P, C> {
         return SingleParentChildStoreImpl(
             childProjection,

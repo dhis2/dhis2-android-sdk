@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.db.stores.internal
 
+import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder
@@ -41,7 +42,7 @@ internal open class ObjectStoreImpl<O : CoreObject> internal constructor(
     databaseAdapter: DatabaseAdapter,
     override val builder: SQLStatementBuilder,
     protected val binder: StatementBinder<O>,
-    objectFactory: ObjectFactory<O>
+    objectFactory: (Cursor) -> O
 ) : ReadableStoreImpl<O>(databaseAdapter, builder, objectFactory), ObjectStore<O> {
 
     private var insertStatement: StatementWrapper? = null

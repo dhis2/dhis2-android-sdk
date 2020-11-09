@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.organisationunit.internal
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringArrayColumnAdapter
-import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
@@ -58,8 +57,7 @@ internal object OrganisationUnitStore {
     @JvmStatic
     fun create(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<OrganisationUnit> {
         return StoreFactory.objectWithUidStore(
-            databaseAdapter, OrganisationUnitTableInfo.TABLE_INFO, BINDER,
-            ObjectFactory { cursor: Cursor -> OrganisationUnit.create(cursor) }
-        )
+            databaseAdapter, OrganisationUnitTableInfo.TABLE_INFO, BINDER
+        ) { cursor: Cursor -> OrganisationUnit.create(cursor) }
     }
 }

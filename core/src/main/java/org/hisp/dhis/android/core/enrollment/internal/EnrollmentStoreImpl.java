@@ -28,8 +28,9 @@
 
 package org.hisp.dhis.android.core.enrollment.internal;
 
+import android.database.Cursor;
+
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
@@ -45,6 +46,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import kotlin.jvm.functions.Function1;
 
 public final class EnrollmentStoreImpl
         extends IdentifiableDeletableDataObjectStoreImpl<Enrollment> implements EnrollmentStore {
@@ -72,7 +75,7 @@ public final class EnrollmentStoreImpl
     private EnrollmentStoreImpl(DatabaseAdapter databaseAdapter,
                                 SQLStatementBuilderImpl builder,
                                 StatementBinder<Enrollment> binder,
-                                ObjectFactory<Enrollment> objectFactory) {
+                                Function1<Cursor, Enrollment> objectFactory) {
         super(databaseAdapter, builder, binder, objectFactory);
     }
 

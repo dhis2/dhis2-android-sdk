@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.arch.db.stores.internal
 
 import android.content.ContentValues
+import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
@@ -40,7 +40,7 @@ internal open class IdentifiableDataObjectStoreImpl<O>(
     databaseAdapter: DatabaseAdapter,
     builder: SQLStatementBuilder,
     binder: StatementBinder<O>,
-    objectFactory: ObjectFactory<O>
+    objectFactory: (Cursor) -> O
 ) : IdentifiableObjectStoreImpl<O>(databaseAdapter, builder, binder, objectFactory),
     IdentifiableDataObjectStore<O> where O : ObjectWithUidInterface, O : DataObject {
 

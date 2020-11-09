@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.arch.db.stores.internal
 
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper

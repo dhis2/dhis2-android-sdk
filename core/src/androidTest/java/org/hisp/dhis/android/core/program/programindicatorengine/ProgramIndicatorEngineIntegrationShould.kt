@@ -234,7 +234,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         insertTrackedEntityDataValue(event2, dataElement2, "1.5")
         insertTrackedEntityAttributeValue(attribute1, "2")
         setProgramIndicatorExpressionAsAvg(
-            "(${de(programStage1, dataElement1)} + ${de(programStage1, dataElement2)})" +
+            "(${de(programStage1, dataElement1)} + ${de(programStage2, dataElement2)})" +
                 " / ${att(attribute1)}"
         )
         val enrollmentValue = programIndicatorEngine!!.getEnrollmentProgramIndicatorValue(
@@ -269,7 +269,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         insertTrackedEntityDataValue(event1, dataElement1, "4.8")
         insertTrackedEntityDataValue(event1, dataElement2, "3")
         setProgramIndicatorExpressionAsAvg(
-            "d2:round(${de(programStage1, dataElement1)} + ${de(programStage1, dataElement2)})"
+            "d2:round(${de(programStage1, dataElement1)}) * ${de(programStage1, dataElement2)}"
         )
         val result = programIndicatorEngine!!.getEnrollmentProgramIndicatorValue(enrollmentUid, programIndicatorUid)
         assertThat(result).isEqualTo("15")

@@ -30,19 +30,19 @@ package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 import android.content.ContentValues
 import android.database.Cursor
 import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.core.type.TypeReference
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
 import com.google.common.collect.Lists
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
-import java.io.IOException
 
 internal abstract class JSONObjectListColumnAdapter<O> : ColumnTypeAdapter<List<O>> {
+    protected abstract fun getObjectClass(): Class<List<O>>
+
     override fun fromCursor(cursor: Cursor, columnName: String): List<O> {
         val columnIndex = cursor.getColumnIndex(columnName)
         val str = cursor.getString(columnIndex)
         return try {
-            ObjectMapperFactory.objectMapper().readValue(str, object : TypeReference<List<O>>() {})
-        } catch (e: IOException) {
+            ObjectMapperFactory.objectMapper().readValue(str, getObjectClass())
+        } catch (e: Exception) {
             Lists.newArrayList<O>()
         }
     }

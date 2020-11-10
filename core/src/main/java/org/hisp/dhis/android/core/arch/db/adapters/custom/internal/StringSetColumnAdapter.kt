@@ -27,5 +27,10 @@
  */
 package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
+import java.util.*
+
 internal class StringSetColumnAdapter : JSONObjectSetColumnAdapter<String>() {
+    override fun getObjectClass(): Class<Set<String>> {
+        return HashSet<String>().javaClass
+    }
 }

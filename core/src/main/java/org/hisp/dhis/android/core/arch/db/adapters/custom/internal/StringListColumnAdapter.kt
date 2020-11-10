@@ -28,4 +28,7 @@
 package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
 internal class StringListColumnAdapter : JSONObjectListColumnAdapter<String>() {
+    override fun getObjectClass(): Class<List<String>> {
+        return ArrayList<String>().javaClass
+    }
 }

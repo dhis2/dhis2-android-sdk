@@ -30,18 +30,23 @@ package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 import android.content.ContentValues
 import android.database.Cursor
 import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
-import java.io.IOException
 
 internal abstract class JSONObjectColumnAdapter<O> : ColumnTypeAdapter<O> {
+    protected abstract fun getEnumClass(): Class<O>
+
+    open fun objectMapper(): ObjectMapper {
+        return ObjectMapperFactory.objectMapper()
+    }
+
     override fun fromCursor(cursor: Cursor, columnName: String): O? {
         val columnIndex = cursor.getColumnIndex(columnName)
         val str = cursor.getString(columnIndex)
         return try {
-            ObjectMapperFactory.objectMapper().readValue(str, object : TypeReference<O>() {})
-        } catch (e: IOException) {
+            objectMapper().readValue(str, getEnumClass())
+        } catch (e: Exception) {
             null
         }
     }

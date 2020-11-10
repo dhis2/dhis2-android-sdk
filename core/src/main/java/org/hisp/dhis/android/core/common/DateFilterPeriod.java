@@ -35,11 +35,14 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat;
+
 import java.util.Date;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_DateFilterPeriod.Builder.class)
 public abstract class DateFilterPeriod {
+    public static final SafeDateFormat DATE_FORMAT = new SafeDateFormat("yyyy-MM-dd");
 
     @Nullable
     @JsonProperty()

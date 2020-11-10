@@ -59,7 +59,7 @@ public final class EventFilterTableInfo {
         public final static String ORGANISATION_UNIT = "organisationUnit";
         public final static String OU_MODE = "ouMode";
         public final static String ASSIGNED_USER_MODE = "assignedUserMode";
-        public final static String ORDER = "order";
+        public final static String ORDER = "orderProperty";
         public final static String DISPLAY_COLUMN_ORDER = "displayColumnOrder";
         public final static String EVENTS = "events";
         public final static String EVENT_STATUS = "eventStatus";

@@ -36,6 +36,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DateFilterPeriodColumnAdapter;
@@ -104,6 +105,7 @@ public abstract class EventDataFilter implements CoreObject {
     @Nullable
     @JsonProperty()
     @ColumnAdapter(StringSetColumnAdapter.class)
+    @ColumnName(EventDataFilterTableInfo.Columns.IN)
     public abstract Set<String> in();
 
     /**

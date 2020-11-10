@@ -25,16 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.cursors.internal;
+package org.hisp.dhis.android.core.arch.db.cursors.internal
 
-import android.database.Cursor;
+import android.database.Cursor
 
-import java.util.Collection;
-import java.util.List;
-
-public interface CursorExecutor<M> {
-
-    void addObjectsToCollection(Cursor cursor, Collection<M> collection);
-
-    List<M> getObjects(Cursor cursor);
+interface CursorExecutor<M> {
+    fun addObjectsToCollection(cursor: Cursor, collection: MutableCollection<M>)
+    fun getObjects(cursor: Cursor): List<M>
 }

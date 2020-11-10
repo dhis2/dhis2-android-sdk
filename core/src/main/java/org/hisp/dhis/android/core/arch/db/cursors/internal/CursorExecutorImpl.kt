@@ -25,11 +25,26 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.cursors.internal
 
-package org.hisp.dhis.android.core.arch.db.cursors.internal;
+import android.database.Cursor
+import java.util.ArrayList
 
-import android.database.Cursor;
+class CursorExecutorImpl<M>(private val objectFactory: (Cursor) -> M) : CursorExecutor<M> {
+    override fun addObjectsToCollection(cursor: Cursor, collection: MutableCollection<M>) {
+        cursor.use { c ->
+            if (c.count > 0) {
+                c.moveToFirst()
+                do {
+                    collection.add(objectFactory(c))
+                } while (c.moveToNext())
+            }
+        }
+    }
 
-public interface ObjectFactory<M> {
-    M fromCursor(Cursor cursor);
+    override fun getObjects(cursor: Cursor): List<M> {
+        val list: MutableList<M> = ArrayList()
+        addObjectsToCollection(cursor, list)
+        return list
+    }
 }

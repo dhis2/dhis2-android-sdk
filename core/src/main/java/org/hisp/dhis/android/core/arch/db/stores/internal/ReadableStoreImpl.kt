@@ -31,7 +31,6 @@ import android.database.Cursor
 import java.util.ArrayList
 import java.util.HashMap
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.ReadOnlySQLStatementBuilder
 import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType
 import org.hisp.dhis.android.core.common.CoreObject
@@ -40,7 +39,7 @@ import org.hisp.dhis.android.core.common.CoreObject
 internal open class ReadableStoreImpl<O : CoreObject>(
     protected val databaseAdapter: DatabaseAdapter,
     protected open val builder: ReadOnlySQLStatementBuilder,
-    val objectFactory: ObjectFactory<O>
+    val objectFactory: (Cursor) -> O
 ) : ReadableStore<O> {
 
     override fun selectAll(): List<O> {
@@ -89,7 +88,7 @@ internal open class ReadableStoreImpl<O : CoreObject>(
         return cursor.use { c ->
             if (c.count >= 1) {
                 c.moveToFirst()
-                objectFactory.fromCursor(c)
+                objectFactory(c)
             } else {
                 null
             }
@@ -131,7 +130,7 @@ internal open class ReadableStoreImpl<O : CoreObject>(
             if (c.count > 0) {
                 c.moveToFirst()
                 do {
-                    collection.add(objectFactory.fromCursor(c))
+                    collection.add(objectFactory(c))
                 } while (c.moveToNext())
             }
         }

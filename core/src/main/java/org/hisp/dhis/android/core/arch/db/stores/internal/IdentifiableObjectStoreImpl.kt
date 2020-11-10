@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.arch.db.stores.internal
 
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
@@ -43,7 +42,7 @@ internal open class IdentifiableObjectStoreImpl<O>(
     databaseAdapter: DatabaseAdapter,
     builder: SQLStatementBuilder,
     binder: StatementBinder<O>,
-    objectFactory: ObjectFactory<O>
+    objectFactory: (Cursor) -> O
 ) : ObjectStoreImpl<O>(databaseAdapter, builder, binder, objectFactory),
     IdentifiableObjectStore<O> where O : CoreObject, O : ObjectWithUidInterface {
 
@@ -147,13 +146,12 @@ internal open class IdentifiableObjectStoreImpl<O>(
     }
 
     private fun mapObjectFromCursor(cursor: Cursor): O? {
-        var o: O? = null
         cursor.use { c ->
             if (c.count > 0) {
                 c.moveToFirst()
-                o = objectFactory.fromCursor(c)
+                return objectFactory(c)
             }
         }
-        return o
+        return null
     }
 }

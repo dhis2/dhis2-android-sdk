@@ -30,8 +30,9 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 
 import android.database.Cursor;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
@@ -49,7 +50,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import androidx.annotation.NonNull;
+import kotlin.jvm.functions.Function1;
 
 public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStoreImpl<TrackedEntityDataValue>
         implements TrackedEntityDataValueStore {
@@ -82,7 +83,7 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
                                             StatementBinder<TrackedEntityDataValue> binder,
                                             WhereStatementBinder<TrackedEntityDataValue> whereUpdateBinder,
                                             WhereStatementBinder<TrackedEntityDataValue> whereDeleteBinder,
-                                            ObjectFactory<TrackedEntityDataValue> objectFactory) {
+                                            Function1<Cursor, TrackedEntityDataValue> objectFactory) {
         super(databaseAdapter, builder, binder, whereUpdateBinder, whereDeleteBinder, objectFactory);
     }
 

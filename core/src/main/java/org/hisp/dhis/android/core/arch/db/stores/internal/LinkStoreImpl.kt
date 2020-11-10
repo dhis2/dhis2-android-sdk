@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.arch.db.stores.internal
 
+import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.common.CoreObject
@@ -38,7 +38,7 @@ internal open class LinkStoreImpl<O : CoreObject>(
     builder: SQLStatementBuilder,
     private val masterColumn: String,
     binder: StatementBinder<O>,
-    objectFactory: ObjectFactory<O>
+    objectFactory: (Cursor) -> O
 ) : ObjectStoreImpl<O>(databaseAdapter, builder, binder, objectFactory), LinkStore<O> {
     @Throws(RuntimeException::class)
     override fun deleteLinksForMasterUid(masterUid: String) {

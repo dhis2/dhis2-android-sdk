@@ -28,18 +28,42 @@
 
 package org.hisp.dhis.android.core.program.programindicatorengine;
 
+import androidx.annotation.NonNull;
+
 public interface ProgramIndicatorEngine {
 
     /**
-     * Evaluates a program indicator in the context of an enrollment or event. This is only intended to evaluate the
-     * called "inline program indicator" (those indicators that appear at data entry). Either {@code enrollmentUid}
-     * or {@code eventUid} must be non-null, but not both.
+     * @deprecated
+     * Use {@link #getEnrollmentProgramIndicatorValue(String, String)} or
+     * {@link #getEventProgramIndicatorValue(String, String)} instead.
      *
      * @param enrollmentUid Enrollment uid to evaluate the program indicator
      * @param eventUid Single event to evaluate the program indicator
      * @param programIndicatorUid Program indicator to evaluate
      * @return Program indicator evaluation
      */
+    @Deprecated
     String getProgramIndicatorValue(String enrollmentUid, String eventUid, String programIndicatorUid);
+
+    /**
+     * Evaluates a program indicator in the context of an enrollment. This is only intended to evaluate the
+     * called "inline program indicator" (those indicators that appear at data entry) or line-list indicators.
+     *
+     * @param enrollmentUid Enrollment to evaluate
+     * @param programIndicatorUid Program indicator to evaluate
+     * @return Program indicator evaluation
+     */
+    String getEnrollmentProgramIndicatorValue(@NonNull String enrollmentUid, @NonNull String programIndicatorUid);
+
+    /**
+     * Evaluates a program indicator in the context of an event (single or tracker). This is only intended to
+     * evaluate the called "inline program indicator" (those indicators that appear at data entry) or line-list
+     * indicators.
+     *
+     * @param eventUid Event to evaluate
+     * @param programIndicatorUid Program indicator to evaluate
+     * @return Program indicator evaluation
+     */
+    String getEventProgramIndicatorValue(@NonNull String eventUid, @NonNull String programIndicatorUid);
 
 }

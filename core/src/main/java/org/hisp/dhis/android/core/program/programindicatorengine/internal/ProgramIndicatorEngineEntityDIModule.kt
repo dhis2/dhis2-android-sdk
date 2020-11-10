@@ -25,22 +25,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.programindicatorengine.internal
 
-package org.hisp.dhis.android.core.program.programindicatorengine.internal;
-
-import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicatorEngine;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicatorEngine
 
 @Module
-public final class ProgramIndicatorEngineEntityDIModule {
+internal class ProgramIndicatorEngineEntityDIModule {
 
     @Provides
     @Reusable
-    public ProgramIndicatorEngine programIndicatorEngine(ProgramIndicatorEngineImpl impl) {
-        return impl;
+    fun programIndicatorEngine(impl: ProgramIndicatorEngineImpl): ProgramIndicatorEngine {
+        return impl
     }
-
 }

@@ -52,4 +52,3 @@ data class Filter(
     val operator: FilterItemOperator,
     val value: String
 )
-

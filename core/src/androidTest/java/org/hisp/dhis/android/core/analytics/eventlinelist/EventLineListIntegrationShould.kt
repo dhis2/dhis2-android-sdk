@@ -133,16 +133,19 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         val eventListParams = EventLineListParams(
             programStage = program1Stage2.uid(),
             trackedEntityInstance = trackedEntityInstance.uid(),
-            dataElements = listOf(LineListItem(dataElement1.uid())))
+            dataElements = listOf(LineListItem(dataElement1.uid()))
+        )
 
         val result = eventLineListService.evaluate(eventListParams)
 
         assertThat(result.size).isEqualTo(3)
-        result.forEach { when(it.uid) {
-            event1.uid() -> assertThat(it.period.periodId()).isEqualTo("20200801")
-            event2.uid() -> assertThat(it.period.periodId()).isEqualTo("20200902")
-            event3.uid() -> assertThat(it.period.periodId()).isEqualTo("20201003")
-        } }
+        result.forEach {
+            when (it.uid) {
+                event1.uid() -> assertThat(it.period.periodId()).isEqualTo("20200801")
+                event2.uid() -> assertThat(it.period.periodId()).isEqualTo("20200902")
+                event3.uid() -> assertThat(it.period.periodId()).isEqualTo("20201003")
+            }
+        }
 
         assertThat(result.all { it.organisationUnit == organisationUnit1.uid() }).isTrue()
         assertThat(result.all { it.organisationUnitName == organisationUnit1.displayName() }).isTrue()
@@ -151,11 +154,13 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         assertThat(result.all { it.values[0].uid == dataElement1.uid() }).isTrue()
         assertThat(result.all { it.values[0].displayName == dataElement1.displayName() }).isTrue()
 
-        result.forEach { when(it.uid) {
-            event1.uid() -> assertThat(it.values[0].value).isEqualTo("1.0")
-            event2.uid() -> assertThat(it.values[0].value).isEqualTo("2.0")
-            event3.uid() -> assertThat(it.values[0].value).isEqualTo("3.0")
-        } }
+        result.forEach {
+            when (it.uid) {
+                event1.uid() -> assertThat(it.values[0].value).isEqualTo("1.0")
+                event2.uid() -> assertThat(it.values[0].value).isEqualTo("2.0")
+                event3.uid() -> assertThat(it.values[0].value).isEqualTo("3.0")
+            }
+        }
     }
 
     @Test
@@ -171,7 +176,8 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         val eventListParams = EventLineListParams(
             programStage = program1Stage2.uid(),
             trackedEntityInstance = trackedEntityInstance.uid(),
-            dataElements = listOf(LineListItem(dataElement1.uid()), LineListItem(dataElement2.uid())))
+            dataElements = listOf(LineListItem(dataElement1.uid()), LineListItem(dataElement2.uid()))
+        )
 
         val result = eventLineListService.evaluate(eventListParams)
 
@@ -191,7 +197,8 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         val eventListParams = EventLineListParams(
             programStage = program1Stage2.uid(),
             trackedEntityInstance = trackedEntityInstance.uid(),
-            dataElements = listOf(LineListItem(dataElement1.uid()), LineListItem(dataElement2.uid())))
+            dataElements = listOf(LineListItem(dataElement1.uid()), LineListItem(dataElement2.uid()))
+        )
 
         val result = eventLineListService.evaluate(eventListParams)
 
@@ -212,21 +219,25 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         createDataValue(event2.uid(), dataElement2.uid(), "20.5")
 
         val programIndicator = createProgramIndicator(
-            "#{${program1Stage2.uid()}.${dataElement1.uid()}} + #{${program1Stage2.uid()}.${dataElement2.uid()}}")
+            "#{${program1Stage2.uid()}.${dataElement1.uid()}} + #{${program1Stage2.uid()}.${dataElement2.uid()}}"
+        )
 
         val eventListParams = EventLineListParams(
             programStage = program1Stage2.uid(),
             trackedEntityInstance = trackedEntityInstance.uid(),
-            programIndicators = listOf(LineListItem(programIndicator.uid())))
+            programIndicators = listOf(LineListItem(programIndicator.uid()))
+        )
 
         val result = eventLineListService.evaluate(eventListParams)
 
         assertThat(result.size).isEqualTo(2)
         assertThat(result.all { it.values.size == 1 }).isTrue()
-        result.forEach { when(it.uid) {
-            event1.uid() -> assertThat(it.values[0].value).isEqualTo("11")
-            event2.uid() -> assertThat(it.values[0].value).isEqualTo("22.5")
-        } }
+        result.forEach {
+            when (it.uid) {
+                event1.uid() -> assertThat(it.values[0].value).isEqualTo("11")
+                event2.uid() -> assertThat(it.values[0].value).isEqualTo("22.5")
+            }
+        }
     }
 
     @Test
@@ -241,16 +252,19 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         val eventListParams = EventLineListParams(
             programStage = program1Stage2.uid(),
             trackedEntityInstance = trackedEntityInstance.uid(),
-            dataElements = listOf(LineListItem(dataElement1.uid())))
+            dataElements = listOf(LineListItem(dataElement1.uid()))
+        )
 
         val result = eventLineListService.evaluate(eventListParams)
 
         assertThat(result.size).isEqualTo(3)
-        result.forEach { when(it.uid) {
-            event1.uid() -> assertThat(it.period.periodId()).isEqualTo("202008")
-            event2.uid() -> assertThat(it.period.periodId()).isEqualTo("202009")
-            event3.uid() -> assertThat(it.period.periodId()).isEqualTo("202010")
-        } }
+        result.forEach {
+            when (it.uid) {
+                event1.uid() -> assertThat(it.period.periodId()).isEqualTo("202008")
+                event2.uid() -> assertThat(it.period.periodId()).isEqualTo("202009")
+                event3.uid() -> assertThat(it.period.periodId()).isEqualTo("202010")
+            }
+        }
     }
 
     private fun createTei() {

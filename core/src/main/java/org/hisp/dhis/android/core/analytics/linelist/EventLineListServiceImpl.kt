@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.analytics.linelist
 
+import javax.inject.Inject
 import org.hisp.dhis.android.core.dataelement.DataElementCollectionRepository
 import org.hisp.dhis.android.core.event.EventCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRepository
@@ -37,7 +38,6 @@ import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
 import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicatorEngine
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueCollectionRepository
-import javax.inject.Inject
 
 internal class EventLineListServiceImpl @Inject constructor(
     private val eventRepository: EventCollectionRepository,
@@ -74,8 +74,10 @@ internal class EventLineListServiceImpl @Inject constructor(
 
         val events = repoBuilder.blockingGet()
 
-        val metadataMap = getMetadataMap(params.dataElements, params.programIndicators,
-            events.map { it.organisationUnit()!! }.toHashSet())
+        val metadataMap = getMetadataMap(
+            params.dataElements, params.programIndicators,
+            events.map { it.organisationUnit()!! }.toHashSet()
+        )
 
         val dataElementValues = if (params.dataElements.isNotEmpty()) {
             dataValueRepository
@@ -95,7 +97,8 @@ internal class EventLineListServiceImpl @Inject constructor(
                 LineListResponseValue(
                     uid = de.uid,
                     displayName = metadataMap[de.uid] ?: de.uid,
-                    value = dv?.value())
+                    value = dv?.value()
+                )
             }
 
             val programIndicatorValues = params.programIndicators.map { pi ->
@@ -103,7 +106,8 @@ internal class EventLineListServiceImpl @Inject constructor(
                 LineListResponseValue(
                     uid = pi.uid,
                     displayName = metadataMap[pi.uid] ?: pi.uid,
-                    value = value)
+                    value = value
+                )
             }
 
             LineListResponse(
@@ -147,5 +151,4 @@ internal class EventLineListServiceImpl @Inject constructor(
 
         return dataElementNameMap + programIndicatorNameMap + organisationUnitNameMap
     }
-
 }

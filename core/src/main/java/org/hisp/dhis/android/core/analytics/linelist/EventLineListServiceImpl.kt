@@ -37,8 +37,9 @@ import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
 import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicatorEngine
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueCollectionRepository
+import javax.inject.Inject
 
-internal class EventLineListServiceImpl(
+internal class EventLineListServiceImpl @Inject constructor(
     private val eventRepository: EventCollectionRepository,
     private val dataValueRepository: TrackedEntityDataValueCollectionRepository,
     private val trackedEntityAttributeValueRepository: TrackedEntityAttributeValueCollectionRepository,
@@ -55,9 +56,11 @@ internal class EventLineListServiceImpl(
     }
 
     private fun evaluateEvents(params: EventLineListParams): List<LineListResponse> {
-        var repoBuilder = eventRepository
-            .byProgramStageUid().eq(params.programStage)
-            .byOrganisationUnitUid().`in`(params.organisationUnits)
+        var repoBuilder = eventRepository.byProgramStageUid().eq(params.programStage)
+
+        if (params.organisationUnits.isNotEmpty()) {
+            repoBuilder = repoBuilder.byOrganisationUnitUid().`in`(params.organisationUnits)
+        }
 
         if (params.trackedEntityInstance != null) {
             repoBuilder = repoBuilder.byTrackedEntityInstanceUids(listOf(params.trackedEntityInstance))
@@ -96,7 +99,7 @@ internal class EventLineListServiceImpl(
             }
 
             val programIndicatorValues = params.programIndicators.map { pi ->
-                val value = programIndicatorEngine.getProgramIndicatorValue(null, it.uid(), pi.uid)
+                val value = programIndicatorEngine.getEventProgramIndicatorValue(it.uid(), pi.uid)
                 LineListResponseValue(
                     uid = pi.uid,
                     displayName = metadataMap[pi.uid] ?: pi.uid,

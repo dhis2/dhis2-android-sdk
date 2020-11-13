@@ -31,23 +31,21 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOpe
 
 data class EventLineListParams(
     val programStage: String,
-    val dataElements: List<LineListItem>,
-    val trackedEntityAttributes: List<LineListItem>,
-    val programIndicators: List<LineListItem>,
+    val dataElements: List<LineListItem> = listOf(),
+    val programIndicators: List<LineListItem> = listOf(),
 
-    val trackedEntityInstance: String?,
+    val trackedEntityInstance: String? = null,
 
-    val period: Any?,
-    val startDate: String,
-    val endDate: String,
+    val period: Any? = null,
+    val startDate: String? = null,
+    val endDate: String? = null,
 
-    val organisationUnits: List<String>
+    val organisationUnits: List<String> = listOf()
 )
 
 data class LineListItem(
     val uid: String,
-    val legendSet: String?,
-    val filter: Filter?
+    val legendSet: String? = null
 )
 
 data class Filter(

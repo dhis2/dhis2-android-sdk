@@ -27,19 +27,18 @@
  */
 package org.hisp.dhis.android.core.analytics.linelist
 
-import dagger.Reusable
-import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector
 
-@Reusable
-class EventLineListRepository @Inject constructor() {
+interface EventLineListRepository : BaseRepository {
 
-    //fun byTrackedEntityInstance()
+    fun byTrackedEntityInstance(): EqFilterConnector<EventLineListRepository, String>
 
-    //fun byProgramStage()
+    fun byProgramStage(): EqFilterConnector<EventLineListRepository, String>
 
-    //fun withDataElement(dataElementUid: String, legend: String?)
+    fun withDataElement(dataElementUid: String, legend: String?): EventLineListRepository
 
-    //fun withProgramIndicator(programIndicatorUid: String)
+    fun withProgramIndicator(programIndicatorUid: String): EventLineListRepository
 
-    //fun evaluate(): List<LineListResponse>
+    fun evaluate(): List<LineListResponse>
 }

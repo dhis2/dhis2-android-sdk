@@ -39,4 +39,16 @@ internal class LineListEntityDIModule {
     fun eventLineListService(impl: EventLineListServiceImpl): EventLineListService {
         return impl
     }
+
+    @Provides
+    @Reusable
+    fun eventLineListRepository(impl: EventLineListRepositoryImpl): EventLineListRepository {
+        return impl
+    }
+
+    @Provides
+    @Reusable
+    fun eventLineListParams(): EventLineListParams {
+        return EventLineListParams()
+    }
 }

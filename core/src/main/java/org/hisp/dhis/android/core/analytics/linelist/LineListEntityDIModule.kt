@@ -27,19 +27,16 @@
  */
 package org.hisp.dhis.android.core.analytics.linelist
 
+import dagger.Module
+import dagger.Provides
 import dagger.Reusable
-import javax.inject.Inject
 
-@Reusable
-class EventLineListRepository @Inject constructor() {
+@Module
+internal class LineListEntityDIModule {
 
-    //fun byTrackedEntityInstance()
-
-    //fun byProgramStage()
-
-    //fun withDataElement(dataElementUid: String, legend: String?)
-
-    //fun withProgramIndicator(programIndicatorUid: String)
-
-    //fun evaluate(): List<LineListResponse>
+    @Provides
+    @Reusable
+    fun eventLineListService(impl: EventLineListServiceImpl): EventLineListService {
+        return impl
+    }
 }

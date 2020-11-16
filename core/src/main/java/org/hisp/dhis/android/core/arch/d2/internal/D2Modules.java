@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.d2.internal;
 
+import org.hisp.dhis.android.core.analytics.AnalyticsModule;
 import org.hisp.dhis.android.core.category.CategoryModule;
 import org.hisp.dhis.android.core.constant.ConstantModule;
 import org.hisp.dhis.android.core.dataelement.DataElementModule;
@@ -61,6 +62,7 @@ import dagger.Reusable;
 @Reusable
 public final class D2Modules {
 
+    public final AnalyticsModule analytics;
     public final CategoryModule category;
     public final ConstantModule constant;
     public final DataElementModule dataElement;
@@ -87,7 +89,8 @@ public final class D2Modules {
     public final SmsModule sms;
 
     @Inject
-    public D2Modules(CategoryModule category,
+    public D2Modules(AnalyticsModule analytics,
+                     CategoryModule category,
                      ConstantModule constant,
                      DataElementModule dataElement,
                      DataSetModule dataSet,
@@ -111,6 +114,7 @@ public final class D2Modules {
                      UserModule user,
                      ValidationModule validation,
                      SmsModule sms) {
+        this.analytics = analytics;
         this.category = category;
         this.constant = constant;
         this.dataElement = dataElement;

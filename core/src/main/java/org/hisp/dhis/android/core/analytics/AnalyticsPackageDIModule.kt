@@ -25,21 +25,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.analytics.linelist
+package org.hisp.dhis.android.core.analytics
 
+import dagger.Module
+import dagger.Provides
 import dagger.Reusable
-import javax.inject.Inject
+import org.hisp.dhis.android.core.analytics.linelist.LineListEntityDIModule
 
-@Reusable
-class EventLineListRepository @Inject constructor() {
+@Module(
+    includes = [
+        LineListEntityDIModule::class
+    ]
+)
+internal class AnalyticsPackageDIModule {
 
-    //fun byTrackedEntityInstance()
-
-    //fun byProgramStage()
-
-    //fun withDataElement(dataElementUid: String, legend: String?)
-
-    //fun withProgramIndicator(programIndicatorUid: String)
-
-    //fun evaluate(): List<LineListResponse>
+    @Provides
+    @Reusable
+    fun module(impl: AnalyticsModuleImpl): AnalyticsModule {
+        return impl
+    }
 }

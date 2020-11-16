@@ -25,21 +25,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.analytics.linelist
+package org.hisp.dhis.android.core.analytics
 
 import dagger.Reusable
+import org.hisp.dhis.android.core.analytics.linelist.EventLineListRepository
 import javax.inject.Inject
 
 @Reusable
-class EventLineListRepository @Inject constructor() {
+internal class AnalyticsModuleImpl @Inject constructor(
+    private val eventLineListRepository: EventLineListRepository
+) : AnalyticsModule {
 
-    //fun byTrackedEntityInstance()
-
-    //fun byProgramStage()
-
-    //fun withDataElement(dataElementUid: String, legend: String?)
-
-    //fun withProgramIndicator(programIndicatorUid: String)
-
-    //fun evaluate(): List<LineListResponse>
+    override fun eventLineList(): EventLineListRepository = eventLineListRepository
 }

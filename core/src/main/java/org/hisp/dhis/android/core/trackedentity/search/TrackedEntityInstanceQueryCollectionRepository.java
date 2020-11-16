@@ -353,7 +353,8 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      *
      * @return Repository connector
      */
-    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, RepositoryScope.OrderByDirection> orderByCreated() {
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+            RepositoryScope.OrderByDirection> orderByCreated() {
         return orderConnector(TrackedEntityInstanceQueryScopeOrderColumn.CREATED);
     }
 

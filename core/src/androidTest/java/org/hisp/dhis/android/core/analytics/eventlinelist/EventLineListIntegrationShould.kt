@@ -73,7 +73,6 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
     private val eventLineListService: EventLineListService = EventLineListServiceImpl(
         eventRepository = d2.eventModule().events(),
         dataValueRepository = d2.trackedEntityModule().trackedEntityDataValues(),
-        trackedEntityAttributeValueRepository = d2.trackedEntityModule().trackedEntityAttributeValues(),
         dataElementRepository = d2.dataElementModule().dataElements(),
         programIndicatorRepository = d2.programModule().programIndicators(),
         organisationUnitRepository = d2.organisationUnitModule().organisationUnits(),

@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.analytics.linelist
 
+import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector
 
@@ -36,9 +37,11 @@ interface EventLineListRepository : BaseRepository {
 
     fun byProgramStage(): EqFilterConnector<EventLineListRepository, String>
 
-    fun withDataElement(dataElementUid: String, legend: String?): EventLineListRepository
+    fun withDataElement(dataElementUid: String): EventLineListRepository
 
     fun withProgramIndicator(programIndicatorUid: String): EventLineListRepository
 
-    fun evaluate(): List<LineListResponse>
+    fun evaluate(): Single<List<LineListResponse>>
+
+    fun blockingEvaluate(): List<LineListResponse>
 }

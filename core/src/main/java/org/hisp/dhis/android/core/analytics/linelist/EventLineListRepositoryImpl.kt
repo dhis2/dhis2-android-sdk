@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.analytics.linelist
 
 import dagger.Reusable
+import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ScopedFilterConnectorFactory
 import javax.inject.Inject
@@ -54,8 +55,8 @@ internal class EventLineListRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun withDataElement(dataElementUid: String, legend: String?): EventLineListRepository {
-        val updatedDataElements = eventLineListParams.dataElements + LineListItem(dataElementUid, legend)
+    override fun withDataElement(dataElementUid: String): EventLineListRepository {
+        val updatedDataElements = eventLineListParams.dataElements + LineListItem(dataElementUid)
         return EventLineListRepositoryImpl(
             eventLineListService,
             eventLineListParams.copy(dataElements = updatedDataElements)
@@ -70,7 +71,11 @@ internal class EventLineListRepositoryImpl @Inject constructor(
         )
     }
 
-    override fun evaluate(): List<LineListResponse> {
+    override fun evaluate(): Single<List<LineListResponse>> {
+        return Single.fromCallable { blockingEvaluate() }
+    }
+
+    override fun blockingEvaluate(): List<LineListResponse> {
         return eventLineListService.evaluate(eventLineListParams)
     }
 }

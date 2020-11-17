@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.analytics.linelist
 
 import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 
 internal data class EventLineListParams(
     val programStage: String? = null,
@@ -47,9 +46,4 @@ internal data class EventLineListParams(
 internal data class LineListItem(
     val uid: String,
     val legendSet: String? = null
-)
-
-internal data class Filter(
-    val operator: FilterItemOperator,
-    val value: String
 )

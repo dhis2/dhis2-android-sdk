@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.analytics
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.analytics.linelist.EventLineListRepository
 import javax.inject.Inject
+import org.hisp.dhis.android.core.analytics.linelist.EventLineListRepository
 
 @Reusable
 internal class AnalyticsModuleImpl @Inject constructor(

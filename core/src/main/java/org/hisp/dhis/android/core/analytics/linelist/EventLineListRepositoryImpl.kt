@@ -29,9 +29,9 @@ package org.hisp.dhis.android.core.analytics.linelist
 
 import dagger.Reusable
 import io.reactivex.Single
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ScopedFilterConnectorFactory
-import javax.inject.Inject
 
 @Reusable
 internal class EventLineListRepositoryImpl @Inject constructor(
@@ -39,19 +39,20 @@ internal class EventLineListRepositoryImpl @Inject constructor(
     private val eventLineListParams: EventLineListParams
 ) : EventLineListRepository {
 
-    private val connectorFactory = ScopedFilterConnectorFactory<EventLineListRepository, EventLineListParams> {
-        params -> EventLineListRepositoryImpl(eventLineListService, params)
-    }
+    private val connectorFactory: ScopedFilterConnectorFactory<EventLineListRepository, EventLineListParams> =
+        ScopedFilterConnectorFactory { params ->
+            EventLineListRepositoryImpl(eventLineListService, params)
+        }
 
     override fun byTrackedEntityInstance(): EqFilterConnector<EventLineListRepository, String> {
-        return connectorFactory.eqConnector {
-            trackedEntityInstanceId -> eventLineListParams.copy(trackedEntityInstance = trackedEntityInstanceId)
+        return connectorFactory.eqConnector { trackedEntityInstanceId ->
+            eventLineListParams.copy(trackedEntityInstance = trackedEntityInstanceId)
         }
     }
 
     override fun byProgramStage(): EqFilterConnector<EventLineListRepository, String> {
-        return connectorFactory.eqConnector {
-            programStageId -> eventLineListParams.copy(programStage = programStageId)
+        return connectorFactory.eqConnector { programStageId ->
+            eventLineListParams.copy(programStage = programStageId)
         }
     }
 

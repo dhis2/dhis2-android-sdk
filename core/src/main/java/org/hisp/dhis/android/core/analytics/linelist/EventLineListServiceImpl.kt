@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.analytics.linelist
 
+import javax.inject.Inject
 import org.hisp.dhis.android.core.dataelement.DataElementCollectionRepository
 import org.hisp.dhis.android.core.event.EventCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRepository
@@ -36,7 +37,6 @@ import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
 import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
 import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicatorEngine
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueCollectionRepository
-import javax.inject.Inject
 
 internal class EventLineListServiceImpl @Inject constructor(
     private val eventRepository: EventCollectionRepository,

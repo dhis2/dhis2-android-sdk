@@ -44,16 +44,16 @@ public class ScopedFilterConnectorFactory<R extends BaseRepository, S extends Ba
         this.repositoryFactory = repositoryFactory;
     }
 
-    public <T> EqFilterConnector<R, S, T> eqConnector(BaseScopeFactory<S, T> baseScopeFactory) {
-        return new EqFilterConnector<>(repositoryFactory, baseScopeFactory);
+    public <T> EqFilterConnector<R, T> eqConnector(BaseScopeFactory<S, T> baseScopeFactory) {
+        return new EqFilterConnector<>(value -> repositoryFactory.updated(baseScopeFactory.updated(value)));
     }
 
-    public <T> ListFilterConnector<R, S, T> listConnector(BaseScopeFactory<S, List<T>> baseScopeFactory) {
-        return new ListFilterConnector<>(repositoryFactory, baseScopeFactory);
+    public <T> ListFilterConnector<R, T> listConnector(BaseScopeFactory<S, List<T>> baseScopeFactory) {
+        return new ListFilterConnector<>(list -> repositoryFactory.updated(baseScopeFactory.updated(list)));
     }
 
-    public EqLikeItemFilterConnector<R, S> eqLikeItemC(String key, BaseScopeFactory<S,
+    public EqLikeItemFilterConnector<R> eqLikeItemC(String key, BaseScopeFactory<S,
             RepositoryScopeFilterItem> baseScopeFactory) {
-        return new EqLikeItemFilterConnector<>(repositoryFactory, baseScopeFactory, key);
+        return new EqLikeItemFilterConnector<>(key, item -> repositoryFactory.updated(baseScopeFactory.updated(item)));
     }
 }

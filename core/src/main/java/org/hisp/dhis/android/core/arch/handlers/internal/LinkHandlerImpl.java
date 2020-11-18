@@ -29,8 +29,11 @@ package org.hisp.dhis.android.core.arch.handlers.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.common.CoreObject;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+
+import kotlin.jvm.functions.Function1;
 
 public class LinkHandlerImpl<S, O extends CoreObject> implements LinkHandler<S, O> {
 
@@ -41,11 +44,11 @@ public class LinkHandlerImpl<S, O extends CoreObject> implements LinkHandler<S, 
     }
 
     @Override
-    public void handleMany(String masterUid, Collection<S> slaves, Transformer<S, O> transformer) {
+    public void handleMany(String masterUid, Collection<S> slaves, @NotNull Function1<S, O> transformer) {
         store.deleteLinksForMasterUid(masterUid);
         if (slaves != null) {
             for (S slave : slaves) {
-                O oTransformed = transformer.transform(slave);
+                O oTransformed = transformer.invoke(slave);
                 store.insert(oTransformed);
             }
         }

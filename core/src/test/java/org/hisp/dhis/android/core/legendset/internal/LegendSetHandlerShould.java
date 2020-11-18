@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.legendset.Legend;
 import org.hisp.dhis.android.core.legendset.LegendSet;
 import org.junit.Before;
@@ -93,7 +92,7 @@ public class LegendSetHandlerShould {
     @Test
     public void call_style_handler() {
         legendSetHandler.handle(legendSet);
-        verify(legendHandler).handleMany(eq(legendSet.legends()), any(Transformer.class));
+        verify(legendHandler).handleMany(eq(legendSet.legends()), any());
     }
 
     @Test

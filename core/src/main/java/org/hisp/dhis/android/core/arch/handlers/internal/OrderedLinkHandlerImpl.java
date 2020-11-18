@@ -29,8 +29,12 @@ package org.hisp.dhis.android.core.arch.handlers.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.common.CoreObject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+
+import kotlin.jvm.functions.Function2;
 
 public class OrderedLinkHandlerImpl<S, M extends CoreObject> implements OrderedLinkHandler<S, M> {
 
@@ -41,11 +45,11 @@ public class OrderedLinkHandlerImpl<S, M extends CoreObject> implements OrderedL
     }
 
     @Override
-    public void handleMany(String masterUid, List<S> slaves, OrderedLinkTransformer<S, M> transformer) {
+    public void handleMany(@NotNull String masterUid, @Nullable List<S> slaves, @NotNull Function2<S, Integer, M> transformer) {
         store.deleteLinksForMasterUid(masterUid);
         if (slaves != null) {
             for (int i = 0; i < slaves.size(); i++) {
-                store.insert(transformer.transform(slaves.get(i), i + 1));
+                store.insert(transformer.invoke(slaves.get(i), i + 1));
             }
         }
     }

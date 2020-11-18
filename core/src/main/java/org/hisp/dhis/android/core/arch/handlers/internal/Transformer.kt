@@ -25,13 +25,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.handlers.internal;
+package org.hisp.dhis.android.core.arch.handlers.internal
 
-import org.hisp.dhis.android.core.common.CoreObject;
-
-import java.util.Collection;
-
-public interface LinkHandler<S, O extends CoreObject> {
-    void handleMany(String masterUid, Collection<S> slaves, Transformer<S, O> transformer);
-    void resetAllLinks();
+interface Transformer<O, T> {
+    fun transform(o: O): T
 }

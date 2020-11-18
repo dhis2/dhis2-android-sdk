@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.relationship.Relationship;
@@ -151,7 +150,7 @@ public class TrackedEntityInstanceHandlerShould {
         verify(trackedEntityInstanceStore, never()).deleteIfExists(anyString());
         verify(trackedEntityInstanceStore, never()).updateOrInsert(any(TrackedEntityInstance.class));
         verify(trackedEntityAttributeValueHandler, never()).handleMany(
-                anyCollection(), any(Transformer.class));
+                anyCollection(), any());
         verify(enrollmentHandler, never()).handleMany(anyCollection(), any(), anyBoolean());
         verify(enrollmentCleaner, never()).deleteOrphan(any(TrackedEntityInstance.class), anyCollection());
         verify(relationshipCleaner, never()).deleteOrphan(any(TrackedEntityInstance.class), anyCollection());
@@ -168,7 +167,7 @@ public class TrackedEntityInstanceHandlerShould {
 
         verify(trackedEntityInstanceStore, never()).updateOrInsert(any(TrackedEntityInstance.class));
         verify(trackedEntityAttributeValueHandler, never()).handleMany(
-                anyCollection(), any(Transformer.class));
+                anyCollection(), any());
 
         // verify that enrollment handler is never called
         verify(enrollmentHandler, never()).handleMany(anyCollection(), any(), anyBoolean());
@@ -187,10 +186,10 @@ public class TrackedEntityInstanceHandlerShould {
         verify(trackedEntityInstanceStore, never()).deleteIfExists(anyString());
 
         verify(trackedEntityAttributeValueHandler, times(1)).handleMany(
-                anyCollection(), any(Transformer.class));
+                anyCollection(), any());
 
         // verify that enrollment handler is called once
-        verify(enrollmentHandler, times(1)).handleMany(anyCollection(), any(Transformer.class), anyBoolean());
+        verify(enrollmentHandler, times(1)).handleMany(anyCollection(), any(), anyBoolean());
     }
 
     @Test

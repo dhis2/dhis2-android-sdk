@@ -32,8 +32,6 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkTransformer;
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.hisp.dhis.android.core.dataset.Section;
@@ -115,8 +113,8 @@ public class SectionHandlerShould {
     public void handlingSection_shouldHandleLinkedDataElements() {
         sectionHandler.handle(section);
         verify(sectionDataElementLinkHandler).handleMany(eq(section.uid()), eq(dataElements),
-                any(OrderedLinkTransformer.class));
+                any());
         verify(sectionGreyedFieldsLinkHandler).handleMany(eq(section.uid()), anyListOf(DataElementOperand.class),
-                any(Transformer.class));
+                any());
     }
 }

@@ -34,8 +34,6 @@ import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkTransformer;
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLink;
 import org.hisp.dhis.android.core.category.CategoryCombo;
@@ -102,14 +100,14 @@ public class CategoryComboHandlerShould {
     @Test
     public void handle_option_combos() {
         categoryComboHandler.handle(combo);
-        verify(optionComboHandler).handleMany(eq(optionCombos), any(Transformer.class));
+        verify(optionComboHandler).handleMany(eq(optionCombos), any());
     }
 
     @Test
     public void handle_category_category_combo_links() {
         categoryComboHandler.handle(combo);
         verify(categoryCategoryComboLinkHandler).handleMany(same(comboUid), eq(categories),
-                any(OrderedLinkTransformer.class));
+                any());
     }
 
     @Test

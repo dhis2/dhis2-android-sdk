@@ -25,9 +25,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.handlers.internal
 
-package org.hisp.dhis.android.core.arch.handlers.internal;
+import org.hisp.dhis.android.core.common.CoreObject
 
-public interface Transformer<O, T> {
-    T transform(O object);
+interface LinkHandler<S, O : CoreObject> {
+    @JvmSuppressWildcards
+    fun handleMany(masterUid: String, slaves: Collection<S>?, transformer: (S) -> O)
+    fun resetAllLinks()
 }

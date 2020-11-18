@@ -25,9 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.handlers.internal
 
-package org.hisp.dhis.android.core.arch.handlers.internal;
+import org.hisp.dhis.android.core.common.CoreObject
 
-public interface OrderedLinkTransformer<S, M> {
-    M transform(S object, Integer sortOrder);
+interface OrderedLinkHandler<S, M : CoreObject> {
+    @JvmSuppressWildcards
+    fun handleMany(masterUid: String, slaveCollection: List<S>?, transformer: (S, Int) -> M)
 }

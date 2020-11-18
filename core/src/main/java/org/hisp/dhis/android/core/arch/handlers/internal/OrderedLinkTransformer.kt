@@ -25,12 +25,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.handlers.internal;
+package org.hisp.dhis.android.core.arch.handlers.internal
 
-import org.hisp.dhis.android.core.common.CoreObject;
-
-import java.util.List;
-
-public interface OrderedLinkHandler<S, M extends CoreObject> {
-    void handleMany(String masterUid, List<S> slaveCollection, OrderedLinkTransformer<S, M> transformer);
+interface OrderedLinkTransformer<S, M> {
+    fun transform(o: S, sortOrder: Int): M
 }

@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.organisationunit.internal;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserInternalAccessor;
@@ -181,7 +180,7 @@ public class OrganisationUnitCallUnitShould {
         organisationUnitCall.blockingGet();
 
         verify(organisationUnitHandler,  times(1)).handleMany(anyCollectionOf(OrganisationUnit.class),
-                any(Transformer.class));
+                any());
     }
 
     @Test
@@ -191,6 +190,6 @@ public class OrganisationUnitCallUnitShould {
         organisationUnitCall.blockingGet();
 
         verify(organisationUnitHandler, times(2)).handleMany(anyCollectionOf(OrganisationUnit.class),
-                any(Transformer.class));
+                any());
     }
 }

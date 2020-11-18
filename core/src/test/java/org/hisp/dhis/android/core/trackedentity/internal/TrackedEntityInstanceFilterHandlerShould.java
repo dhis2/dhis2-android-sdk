@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter;
@@ -108,6 +107,6 @@ public class TrackedEntityInstanceFilterHandlerShould {
     @Test
     public void handle_event_filters() {
         trackedEntityInstanceFilterHandler.handleMany(trackedEntityInstanceFilters);
-        verify(trackedEntityInstanceEventFilterHandler).handleMany(eq(eventFilters), any(Transformer.class));
+        verify(trackedEntityInstanceEventFilterHandler).handleMany(eq(eventFilters), any());
     }
 }

@@ -27,9 +27,7 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
@@ -66,8 +64,7 @@ internal object EventFilterStore {
     @JvmStatic
     fun create(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<EventFilter> {
         return objectWithUidStore(
-            databaseAdapter, EventFilterTableInfo.TABLE_INFO, BINDER,
-            ObjectFactory { cursor: Cursor -> EventFilter.create(cursor) }
-        )
+                databaseAdapter, EventFilterTableInfo.TABLE_INFO, BINDER
+        ) { EventFilter.create(it) }
     }
 }

@@ -25,8 +25,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.handlers.internal;
+package org.hisp.dhis.android.core.arch.handlers.internal
 
-public interface DictionaryTableHandler<P> {
-    void handle(P pojo, String uid, String objectTable);
+enum class HandleAction {
+    Insert, Update, Delete
 }

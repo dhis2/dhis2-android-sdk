@@ -25,9 +25,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.handlers.internal
 
-package org.hisp.dhis.android.core.arch.handlers.internal;
-
-public enum HandleAction {
-    Insert, Update, Delete
+interface DictionaryTableHandler<O> {
+    fun handle(o: O?, uid: String, objectTable: String)
 }

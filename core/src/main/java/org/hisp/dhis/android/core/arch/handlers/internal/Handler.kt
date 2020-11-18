@@ -25,13 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.handlers.internal;
+package org.hisp.dhis.android.core.arch.handlers.internal
 
-import java.util.Collection;
+interface Handler<O> {
+    fun handle(o: O)
 
-public interface Handler<O> {
-
-    void handle(O o);
-
-    void handleMany(Collection<O> oCollection);
+    @JvmSuppressWildcards
+    fun handleMany(oCollection: Collection<O>?)
 }

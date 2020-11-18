@@ -99,7 +99,7 @@ public abstract class IdentifiableDataHandlerImpl<O extends DeletableDataObject 
     }
 
     @Override
-    public final void handleMany(Collection<O> oCollection, Transformer<O, O> transformer, Boolean overwrite) {
+    public final void handleMany(Collection<O> oCollection, Transformer<O, O> transformer, boolean overwrite) {
         if (oCollection != null) {
             Collection<O> preHandledCollection = beforeCollectionHandled(oCollection, overwrite, false);
             List<O> oTransformedCollection = new ArrayList<>(oCollection.size());

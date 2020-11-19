@@ -1,0 +1,99 @@
+{
+  "created": "2019-09-27T00:19:06.590",
+  "lastUpdated": "2019-09-27T00:19:06.590",
+  "id": "event_filter_uid",
+  "code": "tb_events",
+  "publicAccess": "rw------",
+  "program": "program_uid",
+  "programStage": "program_stage_uid",
+  "description": "Simple Filter for TB events",
+  "name": "TB events",
+  "displayName": "TB events",
+  "externalAccess": false,
+  "favorite": false,
+  "lastUpdatedBy": {
+    "displayName": "John Traore",
+    "id": "xE7jOejl9FI",
+    "username": "admin"
+  },
+  "eventQueryCriteria": {
+    "assignedUserMode": "CURRENT",
+    "organisationUnit": "orgUnitUid",
+    "eventStatus": "ACTIVE",
+    "order": "dueDate:asc,createdDate:desc",
+    "followUp": false,
+    "programStatus": "ACTIVE",
+    "ouMode": "ACCESSIBLE",
+    "assignedUsers": [
+      "a3kGcGDCuk7",
+      "a3kGcGDCuk8"
+    ],
+    "trackedEntityInstance": "a3kGcGDCuk6",
+    "eventDate": {
+      "startDate": "2014-05-01",
+      "endDate": "2014-05-01",
+      "type": "ABSOLUTE"
+    },
+    "dueDate": {
+      "period": "LAST_2_SIXMONTHS",
+      "type": "RELATIVE"
+    },
+    "lastUpdatedDate": {
+      "startBuffer": -5,
+      "endBuffer": 5,
+      "type": "RELATIVE"
+    },
+    "completedDate": {
+      "period": "TODAY",
+      "type": "RELATIVE"
+    },
+    "displayColumnOrder": [
+      "eventDate",
+      "status",
+      "assignedUser",
+      "qrur9Dvnyt5",
+      "oZg33kd9taw"
+    ],
+    "events": [
+      "event1Uid",
+      "event2Uid"
+    ],
+    "dataFilters": [
+      {
+        "dataItem": "abcDataElementUid",
+        "le": "20",
+        "ge": "10",
+        "lt": "20",
+        "gt": "10",
+        "in": [
+          "India",
+          "Norway"
+        ],
+        "like": "abc"
+      },
+      {
+        "dataItem": "dateDataElementUid",
+        "dateFilter": {
+          "startDate": "2014-05-01",
+          "endDate": "2019-03-20",
+          "type": "ABSOLUTE"
+        }
+      },
+      {
+        "dataItem": "anotherDateDataElementUid",
+        "dateFilter": {
+          "startBuffer": -5,
+          "endBuffer": 5,
+          "type": "RELATIVE"
+        }
+      },
+      {
+        "dataItem": "yetAnotherDateDataElementUid",
+        "dateFilter": {
+          "period": "LAST_WEEK",
+          "type": "RELATIVE"
+        }
+      }
+    ]
+  }
+}

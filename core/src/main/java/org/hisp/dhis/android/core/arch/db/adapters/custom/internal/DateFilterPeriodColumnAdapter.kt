@@ -27,15 +27,9 @@
  */
 package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.hisp.dhis.android.core.common.DateFilterPeriod
 
 internal class DateFilterPeriodColumnAdapter : JSONObjectColumnAdapter<DateFilterPeriod>() {
-    override fun objectMapper(): ObjectMapper {
-        return super.objectMapper()
-                .setDateFormat(DateFilterPeriod.DATE_FORMAT.raw())
-    }
-
     override fun getEnumClass(): Class<DateFilterPeriod> {
         return DateFilterPeriod::class.java
     }

@@ -32,6 +32,7 @@ import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher;
 import org.junit.AfterClass;
+import org.junit.Test;
 
 import java.util.List;
 
@@ -40,7 +41,7 @@ import static com.google.common.truth.Truth.assertThat;
 public class PeriodParserMockIntegrationShould extends BaseMockIntegrationTestEmptyDispatcher {
 
     private final List<String> PERIOD_ID_LIST = Lists.newArrayList(
-            "20200315", "2020W10", "2020W53", "2020WedW5",
+            "20200315", "2019W34", "2020W10", "2020W53", "2020WedW5",
             "2020ThuW6", "2020SatW7", "2020SunW8", "2020BiW1", "202003","202012",
             "202001B", "2020Q1","2020Q4", "2020S1", "2020AprilS1", "2020NovS1", "2020NovS2", "2020",
             "2020April", "2020July", "2020Oct", "2020Nov");
@@ -50,7 +51,7 @@ public class PeriodParserMockIntegrationShould extends BaseMockIntegrationTestEm
         d2.databaseAdapter().delete(PeriodTableInfo.TABLE_INFO.name());
     }
 
-    //@Test
+    @Test
     public void get_period_passing_period_id() {
         for (String periodId : PERIOD_ID_LIST) {
             Period period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId(periodId);

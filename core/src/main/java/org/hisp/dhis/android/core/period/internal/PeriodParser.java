@@ -32,7 +32,13 @@ import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.period.PeriodType;
 
-import java.util.Calendar;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.temporal.WeekFields;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -47,12 +53,8 @@ import javax.inject.Singleton;
 @Singleton
 public class PeriodParser {
 
-    private final CalendarProvider calendarProvider;
-
     @Inject
-    PeriodParser(CalendarProvider calendarProvider) {
-        this.calendarProvider = calendarProvider;
-    }
+    PeriodParser() { }
 
     public Date parse(@NonNull String periodId) throws IllegalArgumentException {
         PeriodType periodType = PeriodType.periodTypeFromPeriodId(periodId);
@@ -84,7 +86,6 @@ public class PeriodParser {
     }
 
     private Date getDateFromPeriodId(Matcher matcher, PeriodType periodType) {
-        Calendar calendar = calendarProvider.getCalendar();
         int year = Integer.parseInt(matcher.group(1));
         int month;
         int semester;
@@ -95,48 +96,47 @@ public class PeriodParser {
                 month = Integer.parseInt(matcher.group(2));
                 int day = Integer.parseInt(matcher.group(3));
 
-                calendar.set(year, month - 1, day);
-                return calendar.getTime();
+                LocalDate localDate = LocalDate.of(year, month, day);
+                return localDateToDate(localDate);
             case Weekly:
             case WeeklyWednesday:
             case WeeklyThursday:
             case WeeklySaturday:
             case WeeklySunday:
                 week = Integer.parseInt(matcher.group(2));
-                return getDateTimeFromWeek(year, week, calendar, PeriodType.firstDayOfTheWeek(periodType));
+                return getDateTimeFromWeek(year, week, PeriodType.firstDayOfTheWeek(periodType));
             case BiWeekly:
                 week = Integer.parseInt(matcher.group(2)) * 2 - 1;
-                return getDateTimeFromWeek(year, week, calendar, PeriodType.firstDayOfTheWeek(periodType));
+                return getDateTimeFromWeek(year, week, PeriodType.firstDayOfTheWeek(periodType));
             case Monthly:
                 month = Integer.parseInt(matcher.group(2));
-                return getDateTimeFromMonth(year, month - 1, calendar);
+                return getDateTimeFromMonth(year, Month.of(month));
             case BiMonthly:
                 int biMonth = Integer.parseInt(matcher.group(2));
-                return getDateTimeFromMonth(year, biMonth * 2 - 2, calendar);
+                return getDateTimeFromMonth(year, Month.of(biMonth  * 2 - 1));
             case Quarterly:
                 int quarter = Integer.parseInt(matcher.group(2));
-                return getDateTimeFromMonth(year, quarter * 3 - 3, calendar);
+                return getDateTimeFromMonth(year, Month.of(quarter * 3 - 2));
             case SixMonthly:
                 semester = Integer.parseInt(matcher.group(2));
-                return getDateTimeFromMonth(year, semester * 6 - 6, calendar);
+                return getDateTimeFromMonth(year, Month.of(semester * 6 - 5));
             case SixMonthlyApril:
                 semester = Integer.parseInt(matcher.group(2));
-                return getDateTimeFromMonth(year, semester * 6 - 3, calendar);
+                return getDateTimeFromMonth(year, Month.of(semester * 6 - 2));
             case SixMonthlyNov:
                 semester = Integer.parseInt(matcher.group(2));
                 return getDateTimeFromMonth(semester == 1 ? year - 1 : year,
-                        semester == 1 ? Calendar.NOVEMBER :
-                                semester == 2 ? Calendar.MAY : -1, calendar);
+                        semester == 1 ? Month.NOVEMBER : Month.MAY);
             case Yearly:
-                return getDateTimeFromMonth(year, Calendar.JANUARY, calendar);
+                return getDateTimeFromMonth(year, Month.JANUARY);
             case FinancialApril:
-                return getDateTimeFromMonth(year, Calendar.APRIL, calendar);
+                return getDateTimeFromMonth(year, Month.APRIL);
             case FinancialJuly:
-                return getDateTimeFromMonth(year, Calendar.JULY, calendar);
+                return getDateTimeFromMonth(year, Month.JULY);
             case FinancialOct:
-                return getDateTimeFromMonth(year, Calendar.OCTOBER, calendar);
+                return getDateTimeFromMonth(year, Month.OCTOBER);
             case FinancialNov:
-                return getDateTimeFromMonth(year - 1, Calendar.NOVEMBER, calendar);
+                return getDateTimeFromMonth(year - 1, Month.NOVEMBER);
             default:
                 return null;
         }
@@ -147,24 +147,23 @@ public class PeriodParser {
      *
      * @param year           The year of the date
      * @param week           The week of the date
-     * @param calendar       The calendar used to calculate the date
      * @param firstDayOfWeek The first day of the week
      * @return The Date of the week
      */
-    private Date getDateTimeFromWeek(int year, int week, Calendar calendar, Integer firstDayOfWeek)
+    private Date getDateTimeFromWeek(int year, int week, DayOfWeek firstDayOfWeek)
             throws IllegalArgumentException {
         if (week < 1 || week > 53) {
             throw new IllegalArgumentException("The week number is outside the year week range.");
         }
 
-        calendar.setFirstDayOfWeek(firstDayOfWeek);
-        calendar.setMinimalDaysInFirstWeek(4);
-        calendar.set(Calendar.YEAR, year);
-        calendar.set(Calendar.WEEK_OF_YEAR, week);
-        calendar.set(Calendar.DAY_OF_WEEK, firstDayOfWeek);
-        calendar.set(Calendar.HOUR_OF_DAY, 10);
+        WeekFields weekFields = WeekFields.of(firstDayOfWeek, 4);
 
-        return calendar.getTime();
+        LocalDate localDate = LocalDate.now()
+                .withYear(year)
+                .with(weekFields.weekOfYear(), week)
+                .with(weekFields.dayOfWeek(), 2);
+
+        return localDateToDate(localDate);
     }
 
     /**
@@ -172,17 +171,16 @@ public class PeriodParser {
      *
      * @param year              The year of the date
      * @param month             The month of the date
-     * @param calendar          The calendar used to calculate the date
      * @return The first Date of the month
      */
-    private Date getDateTimeFromMonth(int year, int month, Calendar calendar) throws IllegalArgumentException {
-        if (month < 0 || month > 11) {
-            throw new IllegalArgumentException("The periodId does not match a real date.");
-        }
+    private Date getDateTimeFromMonth(int year, Month month) throws IllegalArgumentException {
+        LocalDate localDate = LocalDate.of(year, month, 2);
 
-        calendar.set(year, month, 1);
-        calendar.set(Calendar.HOUR_OF_DAY, 10);
+        return localDateToDate(localDate);
+    }
 
-        return calendar.getTime();
+    private Date localDateToDate(LocalDate localDate) {
+        ZoneOffset defaultZoneId = ZoneId.systemDefault().getRules().getOffset(LocalDateTime.now());
+        return Date.from(localDate.atTime(10, 0).toInstant(defaultZoneId));
     }
 }

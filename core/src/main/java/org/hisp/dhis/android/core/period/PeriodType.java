@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.period;
 
-import java.util.Calendar;
+import java.time.DayOfWeek;
 
 public enum PeriodType {
     Daily(59, 1, "\\b(\\d{4})(\\d{2})(\\d{2})\\b"),
@@ -84,18 +84,18 @@ public enum PeriodType {
         throw new IllegalArgumentException("The period id does not match any period type");
     }
 
-    public static Integer firstDayOfTheWeek(PeriodType periodType) {
+    public static DayOfWeek firstDayOfTheWeek(PeriodType periodType) {
         switch (periodType) {
             case WeeklySunday:
-                return Calendar.SUNDAY;
+                return DayOfWeek.SUNDAY;
             case WeeklyWednesday:
-                return Calendar.WEDNESDAY;
+                return DayOfWeek.WEDNESDAY;
             case WeeklyThursday:
-                return Calendar.THURSDAY;
+                return DayOfWeek.THURSDAY;
             case WeeklySaturday:
-                return Calendar.SATURDAY;
+                return DayOfWeek.SATURDAY;
             default:
-                return Calendar.MONDAY;
+                return DayOfWeek.MONDAY;
         }
     }
 }

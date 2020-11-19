@@ -27,6 +27,7 @@
  */
 
 plugins {
+    id 'maven-publish'
     id "com.android.library"
     id "kotlin-android"
     id "kotlin-android-extensions"
@@ -232,6 +233,16 @@ dependencies {
     androidTestImplementation("com.facebook.stetho:stetho-okhttp3:${libraries.stetho}") {
         exclude module: 'okhttp'
         exclude module: 'jsr305'
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = GROUP
+            artifactId = POM_ARTIFACT_ID
+            version = VERSION_NAME
+        }
     }
 }
 

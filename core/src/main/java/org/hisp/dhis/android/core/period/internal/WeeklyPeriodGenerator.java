@@ -45,7 +45,7 @@ final class WeeklyPeriodGenerator extends AbstractPeriodGenerator {
 
     @Override
     protected void moveToStartOfCurrentPeriod() {
-        // TODO 
+        // TODO
         calendar.getTime();
         calendar.setFirstDayOfWeek(weekStartDay);
         calendar.setMinimalDaysInFirstWeek(4);

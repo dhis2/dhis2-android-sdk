@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.data.event;
 
 import com.google.common.collect.Lists;
 
-import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat;
 import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.DateFilterPeriod;
@@ -42,7 +41,6 @@ import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 
 import java.text.ParseException;
-import java.util.Collections;
 import java.util.Date;
 
 public class EventFilterSamples {
@@ -54,8 +52,8 @@ public class EventFilterSamples {
                 .code("tb_events")
                 .name("TB events")
                 .displayName("TB events")
-                .created(getDate("2019-09-27T00:19:06.590", BaseIdentifiableObject.DATE_FORMAT))
-                .lastUpdated(getDate("2019-09-27T00:19:06.590", BaseIdentifiableObject.DATE_FORMAT))
+                .created(getDate("2019-09-27T00:19:06.590"))
+                .lastUpdated(getDate("2019-09-27T00:19:06.590"))
                 .program("program_uid")
                 .programStage("program_stage_uid")
                 .description("Simple Filter for TB events")
@@ -67,12 +65,12 @@ public class EventFilterSamples {
                         .order("dueDate:asc,createdDate:desc")
                         .displayColumnOrder(Lists.newArrayList(
                                 "eventDate","status","assignedUser","qrur9Dvnyt5","oZg33kd9taw"))
-                        .dataFilters(Collections.emptyList())
+                        .dataFilters(EventDataFilterSamples.getEventDataFilters())
                         .events(Lists.newArrayList("event1Uid","event2Uid"))
                         .eventStatus(EventStatus.ACTIVE)
                         .eventDate(DateFilterPeriod.builder()
-                                .startDate(getDate("2014-05-01", DateFilterPeriod.DATE_FORMAT))
-                                .endDate(getDate("2014-05-01", DateFilterPeriod.DATE_FORMAT))
+                                .startDate("2014-05-01")
+                                .endDate("2014-05-01")
                                 .type(DatePeriodType.ABSOLUTE)
                                 .build())
                         .dueDate(DateFilterPeriod.builder()
@@ -92,9 +90,9 @@ public class EventFilterSamples {
                 .build();
     }
 
-    private static Date getDate(String dateStr, SafeDateFormat format) {
+    private static Date getDate(String dateStr) {
         try {
-            return format.parse(dateStr);
+            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
         } catch (ParseException e) {
             e.printStackTrace();
             return null;

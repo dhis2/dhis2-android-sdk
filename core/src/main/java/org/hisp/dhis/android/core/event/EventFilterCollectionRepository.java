@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterC
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.event.EventFilterTableInfo.Columns;
 import org.hisp.dhis.android.core.event.internal.EventQueryCriteriaFields;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
@@ -83,7 +84,7 @@ public final class EventFilterCollectionRepository
         return cf.enumC(Columns.OU_MODE);
     }
 
-    public EnumFilterConnector<EventFilterCollectionRepository, OrganisationUnitMode> byAssignedUserMode() {
+    public EnumFilterConnector<EventFilterCollectionRepository, AssignedUserMode> byAssignedUserMode() {
         return cf.enumC(Columns.ASSIGNED_USER_MODE);
     }
 

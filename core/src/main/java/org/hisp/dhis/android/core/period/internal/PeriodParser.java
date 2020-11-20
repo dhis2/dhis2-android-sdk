@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.period.internal;
 import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.period.PeriodType;
+import org.joda.time.LocalDate;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -161,7 +162,7 @@ public class PeriodParser {
         calendar.setMinimalDaysInFirstWeek(4);
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.WEEK_OF_YEAR, week);
-        calendar.set(Calendar.DAY_OF_WEEK, firstDayOfWeek);
+        CalendarUtils.setDayOfWeek(calendar, firstDayOfWeek);
         calendar.set(Calendar.HOUR_OF_DAY, 10);
 
         return calendar.getTime();

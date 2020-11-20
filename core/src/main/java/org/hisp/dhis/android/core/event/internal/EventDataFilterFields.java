@@ -28,30 +28,29 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.event.EventFilter;
-import org.hisp.dhis.android.core.event.EventFilterTableInfo.Columns;
-import org.hisp.dhis.android.core.event.EventQueryCriteria;
+import org.hisp.dhis.android.core.event.EventDataFilter;
+import org.hisp.dhis.android.core.event.EventDataFilterTableInfo.Columns;
 
-public final class EventFilterFields {
 
-        public final static String EVENT_QUERY_CRITERIA = "eventQueryCriteria";
+public final class EventDataFilterFields {
 
-    private static final FieldsHelper<EventFilter> fh = new FieldsHelper<>();
+    private static final FieldsHelper<EventDataFilter> fh = new FieldsHelper<>();
 
-    public static final Field<EventFilter, String> programUid = Field.create(Columns.PROGRAM);
-
-    public static final Fields<EventFilter> allFields = Fields.<EventFilter>builder()
-            .fields(fh.getIdentifiableFields())
+    public static final Fields<EventDataFilter> allFields = Fields.<EventDataFilter>builder()
             .fields(
-                    fh.<String>field(Columns.PROGRAM),
-                    fh.<String>field(Columns.PROGRAM_STAGE),
-                    fh.<String>field(Columns.DESCRIPTION),
-                    fh.<EventQueryCriteria>nestedField(EVENT_QUERY_CRITERIA).with(EventQueryCriteriaFields.allFields)
+                    fh.<String>field(Columns.DATA_ITEM),
+                    fh.<String>field(Columns.LE),
+                    fh.<String>field(Columns.GE),
+                    fh.<String>field(Columns.GT),
+                    fh.<String>field(Columns.LT),
+                    fh.<String>field(Columns.EQ),
+                    fh.<String>field(Columns.IN),
+                    fh.<String>field(Columns.LIKE),
+                    fh.<String>field(Columns.DATE_FILTER)
             ).build();
 
-    private EventFilterFields() {
+    private EventDataFilterFields() {
     }
 }

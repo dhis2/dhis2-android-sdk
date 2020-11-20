@@ -28,30 +28,33 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.event.EventFilter;
-import org.hisp.dhis.android.core.event.EventFilterTableInfo.Columns;
-import org.hisp.dhis.android.core.event.EventQueryCriteria;
+import org.hisp.dhis.android.core.common.DateFilterPeriod;
+import org.hisp.dhis.android.core.common.DatePeriodType;
+import org.hisp.dhis.android.core.common.RelativePeriod;
 
-public final class EventFilterFields {
+public final class DateFilterPeriodFields {
 
-        public final static String EVENT_QUERY_CRITERIA = "eventQueryCriteria";
+        public final static String START_BUFFER = "startBuffer";
+        public final static String END_BUFFER = "endBuffer";
+        public final static String START_DATE = "startDate";
+        public final static String END_DATE = "endDate";
+        public final static String PERIOD = "period";
+        public final static String TYPE = "type";
 
-    private static final FieldsHelper<EventFilter> fh = new FieldsHelper<>();
+    private static final FieldsHelper<DateFilterPeriod> fh = new FieldsHelper<>();
 
-    public static final Field<EventFilter, String> programUid = Field.create(Columns.PROGRAM);
-
-    public static final Fields<EventFilter> allFields = Fields.<EventFilter>builder()
-            .fields(fh.getIdentifiableFields())
+    public static final Fields<DateFilterPeriod> allFields = Fields.<DateFilterPeriod>builder()
             .fields(
-                    fh.<String>field(Columns.PROGRAM),
-                    fh.<String>field(Columns.PROGRAM_STAGE),
-                    fh.<String>field(Columns.DESCRIPTION),
-                    fh.<EventQueryCriteria>nestedField(EVENT_QUERY_CRITERIA).with(EventQueryCriteriaFields.allFields)
+                    fh.<Integer>field(START_BUFFER),
+                    fh.<Integer>field(END_BUFFER),
+                    fh.<String>field(START_DATE),
+                    fh.<String>field(END_DATE),
+                    fh.<RelativePeriod>field(PERIOD),
+                    fh.<DatePeriodType>field(TYPE)
             ).build();
 
-    private EventFilterFields() {
+    private DateFilterPeriodFields() {
     }
 }

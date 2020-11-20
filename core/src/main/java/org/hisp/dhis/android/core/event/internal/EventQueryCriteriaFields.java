@@ -28,30 +28,39 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.event.EventFilter;
+import org.hisp.dhis.android.core.common.AssignedUserMode;
+import org.hisp.dhis.android.core.common.DateFilterPeriod;
+import org.hisp.dhis.android.core.event.EventDataFilter;
 import org.hisp.dhis.android.core.event.EventFilterTableInfo.Columns;
 import org.hisp.dhis.android.core.event.EventQueryCriteria;
+import org.hisp.dhis.android.core.event.EventStatus;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 
-public final class EventFilterFields {
+public final class EventQueryCriteriaFields {
 
-        public final static String EVENT_QUERY_CRITERIA = "eventQueryCriteria";
+        public final static String DATA_FILTERS = "dataFilters";
 
-    private static final FieldsHelper<EventFilter> fh = new FieldsHelper<>();
+    private static final FieldsHelper<EventQueryCriteria> fh = new FieldsHelper<>();
 
-    public static final Field<EventFilter, String> programUid = Field.create(Columns.PROGRAM);
-
-    public static final Fields<EventFilter> allFields = Fields.<EventFilter>builder()
-            .fields(fh.getIdentifiableFields())
+    public static final Fields<EventQueryCriteria> allFields = Fields.<EventQueryCriteria>builder()
             .fields(
-                    fh.<String>field(Columns.PROGRAM),
-                    fh.<String>field(Columns.PROGRAM_STAGE),
-                    fh.<String>field(Columns.DESCRIPTION),
-                    fh.<EventQueryCriteria>nestedField(EVENT_QUERY_CRITERIA).with(EventQueryCriteriaFields.allFields)
+                    fh.<Boolean>field(Columns.FOLLOW_UP),
+                    fh.<String>field(Columns.ORGANISATION_UNIT),
+                    fh.<OrganisationUnitMode>field(Columns.OU_MODE),
+                    fh.<AssignedUserMode>field(Columns.ASSIGNED_USER_MODE),
+                    fh.<String>field(Columns.ORDER),
+                    fh.<String>nestedField(Columns.DISPLAY_COLUMN_ORDER),
+                    fh.<EventDataFilter>nestedField(DATA_FILTERS).with(EventDataFilterFields.allFields),
+                    fh.<String>field(Columns.EVENTS),
+                    fh.<EventStatus>field(Columns.EVENT_STATUS),
+                    fh.<DateFilterPeriod>nestedField(Columns.EVENT_DATE).with(DateFilterPeriodFields.allFields),
+                    fh.<DateFilterPeriod>nestedField(Columns.DUE_DATE).with(DateFilterPeriodFields.allFields),
+                    fh.<DateFilterPeriod>nestedField(Columns.LAST_UPDATED_DATE).with(DateFilterPeriodFields.allFields),
+                    fh.<DateFilterPeriod>nestedField(Columns.COMPLETED_DATE).with(DateFilterPeriodFields.allFields)
             ).build();
 
-    private EventFilterFields() {
+    private EventQueryCriteriaFields() {
     }
 }

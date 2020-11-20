@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.period.internal;
 import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.period.PeriodType;
-import org.joda.time.LocalDate;
 
 import java.util.Calendar;
 import java.util.Date;

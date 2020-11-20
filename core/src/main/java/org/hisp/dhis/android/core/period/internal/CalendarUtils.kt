@@ -31,12 +31,14 @@ import java.util.Calendar
 
 internal object CalendarUtils {
 
+    private const val WEEK_DAYS = 7
+
     @JvmStatic
     fun setDayOfWeek(calendar: Calendar, targetDayOfWeek: Int) {
         val firstDayOfWeek = calendar.firstDayOfWeek
         val currentDay = calendar[Calendar.DAY_OF_WEEK]
-        val diff =
-            (targetDayOfWeek - firstDayOfWeek + 7) % 7 - (currentDay - firstDayOfWeek + 7) % 7
+        val diff = (targetDayOfWeek - firstDayOfWeek + WEEK_DAYS) % WEEK_DAYS -
+            (currentDay - firstDayOfWeek + WEEK_DAYS) % WEEK_DAYS
 
         calendar.add(Calendar.DATE, diff)
     }

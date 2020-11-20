@@ -25,24 +25,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.organisationunit.internal
 
-package org.hisp.dhis.android.core.organisationunit.internal;
-
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-
-import java.util.List;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 
 @Reusable
-class OrganisationUnitDisplayPathTransformer implements Transformer<OrganisationUnit, OrganisationUnit> {
+internal class OrganisationUnitDisplayPathTransformer : Function1<OrganisationUnit, OrganisationUnit> {
 
-    @Override
-    public OrganisationUnit transform(OrganisationUnit organisationUnit) {
-        List<String> path = OrganisationUnitDisplayPathGenerator.generateDisplayPath(organisationUnit);
-        OrganisationUnit.Builder builder = organisationUnit.toBuilder();
-        builder.displayNamePath(path);
-        return builder.build();
+    override operator fun invoke(organisationUnit: OrganisationUnit): OrganisationUnit {
+        val path = OrganisationUnitDisplayPathGenerator.generateDisplayPath(organisationUnit)
+        val builder = organisationUnit.toBuilder()
+        builder.displayNamePath(path)
+        return builder.build()
     }
 }

@@ -122,17 +122,17 @@ final class EventHandler extends IdentifiableDataHandlerImpl<Event> {
     }
 
     @Override
-    protected Event addRelationshipState(Event object) {
-        return object.toBuilder().state(State.RELATIONSHIP).build();
+    protected Event addRelationshipState(Event o) {
+        return o.toBuilder().state(State.RELATIONSHIP).build();
     }
 
     @Override
-    protected Event addSyncedState(Event object) {
-        return object.toBuilder().state(State.SYNCED).build();
+    protected Event addSyncedState(Event o) {
+        return o.toBuilder().state(State.SYNCED).build();
     }
 
     @Override
-    protected void deleteOrphans(Event object) {
-        relationshipOrphanCleaner.deleteOrphan(object, EventInternalAccessor.accessRelationships(object));
+    protected void deleteOrphans(Event o) {
+        relationshipOrphanCleaner.deleteOrphan(o, EventInternalAccessor.accessRelationships(o));
     }
 }

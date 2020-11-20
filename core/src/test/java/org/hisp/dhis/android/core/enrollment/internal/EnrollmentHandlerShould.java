@@ -122,7 +122,7 @@ public class EnrollmentHandlerShould {
 
     @Test
     public void do_nothing_when_passing_null_argument() {
-        enrollmentHandler.handleMany(null, null, false);
+        enrollmentHandler.handleMany(null, e -> e, false);
 
         // verify that store or event handler is never called
         verify(enrollmentStore, never()).deleteIfExists(anyString());

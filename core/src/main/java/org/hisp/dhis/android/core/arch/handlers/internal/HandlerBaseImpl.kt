@@ -39,7 +39,7 @@ internal abstract class HandlerBaseImpl<O> : HandlerWithTransformer<O> {
         afterObjectHandled(o2, action)
     }
 
-    override fun handle(o: O?, transformer: Transformer<O, O>) {
+    override fun handle(o: O?, transformer: (O) -> O) {
         if (o == null) {
             return
         }
@@ -47,7 +47,7 @@ internal abstract class HandlerBaseImpl<O> : HandlerWithTransformer<O> {
     }
 
     @JvmSuppressWildcards
-    protected fun handle(o: O?, transformer: Transformer<O, O>, oTransformedCollection: MutableList<O>) {
+    protected fun handle(o: O?, transformer: (O) -> O, oTransformedCollection: MutableList<O>) {
         if (o == null) {
             return
         }
@@ -55,9 +55,9 @@ internal abstract class HandlerBaseImpl<O> : HandlerWithTransformer<O> {
         oTransformedCollection.add(oTransformed)
     }
 
-    private fun handleInternal(o: O, transformer: Transformer<O, O>): O {
+    private fun handleInternal(o: O, transformer: (O) -> O): O {
         val o2 = beforeObjectHandled(o)
-        val o3 = transformer.transform(o2)
+        val o3 = transformer(o2)
         val action = deleteOrPersist(o3)
         afterObjectHandled(o3, action)
         return o3
@@ -75,7 +75,7 @@ internal abstract class HandlerBaseImpl<O> : HandlerWithTransformer<O> {
     }
 
     @JvmSuppressWildcards
-    override fun handleMany(oCollection: Collection<O>?, transformer: Transformer<O, O>) {
+    override fun handleMany(oCollection: Collection<O>?, transformer: (O) -> O) {
         if (oCollection != null) {
             val preHandledCollection = beforeCollectionHandled(oCollection)
             val oTransformedCollection: MutableList<O> = ArrayList(oCollection.size)

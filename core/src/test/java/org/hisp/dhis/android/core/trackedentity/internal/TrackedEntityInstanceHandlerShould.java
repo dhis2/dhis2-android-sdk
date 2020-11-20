@@ -137,6 +137,8 @@ public class TrackedEntityInstanceHandlerShould {
         when(relationship.to()).thenReturn(RelationshipHelper.teiItem(RELATIVE_UID));
         when(relative.uid()).thenReturn(RELATIVE_UID);
 
+        when(trackedEntityInstanceStore.updateOrInsert(any())).thenReturn(HandleAction.Insert);
+
         trackedEntityInstanceHandler = new TrackedEntityInstanceHandler(
                 relationshipVersionManager, relationshipHandler, trackedEntityInstanceStore,
                 trackedEntityAttributeValueHandler, enrollmentHandler, enrollmentCleaner, relationshipCleaner);
@@ -144,7 +146,7 @@ public class TrackedEntityInstanceHandlerShould {
 
     @Test
     public void do_nothing_when_passing_null_argument() {
-        trackedEntityInstanceHandler.handleMany(null,null, false);
+        trackedEntityInstanceHandler.handleMany(null, tei -> tei, false);
 
         // verify that tracked entity instance store is never called
         verify(trackedEntityInstanceStore, never()).deleteIfExists(anyString());

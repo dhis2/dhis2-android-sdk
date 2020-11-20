@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.arch.handlers.internal
 
 interface HandlerWithTransformer<O> : Handler<O> {
-    fun handle(o: O?, transformer: Transformer<O, O>)
+    fun handle(o: O?, transformer: (O) -> O)
 
     @JvmSuppressWildcards
-    fun handleMany(oCollection: Collection<O>?, transformer: Transformer<O, O>)
+    fun handleMany(oCollection: Collection<O>?, transformer: (O) -> O)
 }

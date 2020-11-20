@@ -33,7 +33,6 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
 import com.google.common.collect.Sets
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
-import java.io.IOException
 
 internal abstract class JSONObjectSetColumnAdapter<O> : ColumnTypeAdapter<Set<O>> {
     protected abstract fun getObjectClass(): Class<Set<O>>
@@ -43,7 +42,7 @@ internal abstract class JSONObjectSetColumnAdapter<O> : ColumnTypeAdapter<Set<O>
         val str = cursor.getString(columnIndex)
         return try {
             ObjectMapperFactory.objectMapper().readValue(str, getObjectClass())
-        } catch (e: IOException) {
+        } catch (e: Exception) {
             Sets.newHashSet<O>()
         }
     }

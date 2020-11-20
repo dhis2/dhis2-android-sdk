@@ -31,5 +31,5 @@ import org.hisp.dhis.android.core.common.CoreObject
 
 interface OrderedLinkHandler<S, M : CoreObject> {
     @JvmSuppressWildcards
-    fun handleMany(masterUid: String, slaveCollection: List<S>?, transformer: (S, Int) -> M)
+    fun handleMany(masterUid: String, slaves: List<S>?, transformer: (S, Int) -> M)
 }

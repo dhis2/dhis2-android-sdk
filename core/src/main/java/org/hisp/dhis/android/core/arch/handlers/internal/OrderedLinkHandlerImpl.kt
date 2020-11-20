@@ -25,31 +25,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.handlers.internal;
+package org.hisp.dhis.android.core.arch.handlers.internal
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.common.CoreObject
 
-import java.util.List;
+internal class OrderedLinkHandlerImpl<S, M : CoreObject>(private val store: LinkStore<M>) : OrderedLinkHandler<S, M> {
 
-import kotlin.jvm.functions.Function2;
-
-public class OrderedLinkHandlerImpl<S, M extends CoreObject> implements OrderedLinkHandler<S, M> {
-
-    private final LinkStore<M> store;
-
-    public OrderedLinkHandlerImpl(LinkStore<M> store) {
-        this.store = store;
-    }
-
-    @Override
-    public void handleMany(@NotNull String masterUid, @Nullable List<S> slaves, @NotNull Function2<S, Integer, M> transformer) {
-        store.deleteLinksForMasterUid(masterUid);
+    override fun handleMany(masterUid: String, slaves: List<S>?, transformer: Function2<S, Int, M>) {
+        store.deleteLinksForMasterUid(masterUid)
         if (slaves != null) {
-            for (int i = 0; i < slaves.size(); i++) {
-                store.insert(transformer.invoke(slaves.get(i), i + 1));
+            for (i in slaves.indices) {
+                store.insert(transformer.invoke(slaves[i], i + 1))
             }
         }
     }

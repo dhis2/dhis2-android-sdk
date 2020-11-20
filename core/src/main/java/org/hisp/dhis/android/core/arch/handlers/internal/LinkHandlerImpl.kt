@@ -25,37 +25,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.handlers.internal;
+package org.hisp.dhis.android.core.arch.handlers.internal
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.jetbrains.annotations.NotNull;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.common.CoreObject
 
-import java.util.Collection;
+internal class LinkHandlerImpl<S, O : CoreObject>(private val store: LinkStore<O>) : LinkHandler<S, O> {
 
-import kotlin.jvm.functions.Function1;
-
-public class LinkHandlerImpl<S, O extends CoreObject> implements LinkHandler<S, O> {
-
-    private final LinkStore<O> store;
-
-    public LinkHandlerImpl(LinkStore<O> store) {
-        this.store = store;
-    }
-
-    @Override
-    public void handleMany(String masterUid, Collection<S> slaves, @NotNull Function1<S, O> transformer) {
-        store.deleteLinksForMasterUid(masterUid);
+    override fun handleMany(masterUid: String, slaves: Collection<S>?, transformer: Function1<S, O>) {
+        store.deleteLinksForMasterUid(masterUid)
         if (slaves != null) {
-            for (S slave : slaves) {
-                O oTransformed = transformer.invoke(slave);
-                store.insert(oTransformed);
+            for (slave in slaves) {
+                val oTransformed = transformer.invoke(slave)
+                store.insert(oTransformed)
             }
         }
     }
 
-    @Override
-    public void resetAllLinks() {
-        store.deleteAllLinks();
+    override fun resetAllLinks() {
+        store.deleteAllLinks()
     }
 }

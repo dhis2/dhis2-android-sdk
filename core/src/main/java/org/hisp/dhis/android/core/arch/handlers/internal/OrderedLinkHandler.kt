@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.arch.handlers.internal
 
 import org.hisp.dhis.android.core.common.CoreObject
 
-interface OrderedLinkHandler<S, M : CoreObject> {
+internal interface OrderedLinkHandler<S, M : CoreObject> {
     @JvmSuppressWildcards
     fun handleMany(masterUid: String, slaves: List<S>?, transformer: (S, Int) -> M)
 }

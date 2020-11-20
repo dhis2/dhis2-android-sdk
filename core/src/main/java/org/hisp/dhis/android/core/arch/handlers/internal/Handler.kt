@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.handlers.internal
 
-interface Handler<O> {
+internal interface Handler<O> {
     fun handle(o: O)
 
     @JvmSuppressWildcards

@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.arch.handlers.internal
 
 import java.util.ArrayList
 
-abstract class HandlerBaseImpl<O> : HandlerWithTransformer<O> {
+internal abstract class HandlerBaseImpl<O> : HandlerWithTransformer<O> {
     override fun handle(o: O) {
         if (o == null) {
             return

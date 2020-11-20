@@ -27,6 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.handlers.internal
 
-enum class HandleAction {
+internal enum class HandleAction {
     Insert, Update, Delete
 }

@@ -27,6 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.handlers.internal
 
-interface DictionaryTableHandler<O> {
+internal interface DictionaryTableHandler<O> {
     fun handle(o: O?, uid: String, objectTable: String)
 }

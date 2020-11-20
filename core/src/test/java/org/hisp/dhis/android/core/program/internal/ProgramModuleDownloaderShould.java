@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.program.internal;
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
 import org.hisp.dhis.android.core.common.BaseCallShould;
+import org.hisp.dhis.android.core.event.EventFilter;
 import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.option.OptionGroup;
 import org.hisp.dhis.android.core.option.OptionSet;
@@ -90,6 +91,9 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     private UidsCall<TrackedEntityInstanceFilter> trackedEntityInstanceFilterCall;
 
     @Mock
+    private UidsCall<EventFilter> eventFilterCall;
+
+    @Mock
     private ListCall<RelationshipType> relationshipTypeCall;
 
     @Mock
@@ -122,6 +126,7 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
         returnEmptyList(optionCall);
         returnEmptyList(optionGroupCall);
         returnEmptyList(trackedEntityInstanceFilterCall);
+        returnEmptyList(eventFilterCall);
         returnEmptyList(programRuleCall);
         returnEmptyList(programStageCall);
 
@@ -132,6 +137,7 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
                 trackedEntityTypeCall,
                 trackedEntityAttributeCall,
                 trackedEntityInstanceFilterCall,
+                eventFilterCall,
                 relationshipTypeCall,
                 optionSetCall,
                 optionCall,
@@ -195,6 +201,12 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     @Test(expected = Exception.class)
     public void fail_when_tracked_entity_instance_filters_call_fails() {
         returnError(trackedEntityInstanceFilterCall);
+        programModuleDownloader.downloadMetadata(anySet()).blockingGet();
+    }
+
+    @Test(expected = Exception.class)
+    public void fail_when_event_filters_call_fails() {
+        returnError(eventFilterCall);
         programModuleDownloader.downloadMetadata(anySet()).blockingGet();
     }
 

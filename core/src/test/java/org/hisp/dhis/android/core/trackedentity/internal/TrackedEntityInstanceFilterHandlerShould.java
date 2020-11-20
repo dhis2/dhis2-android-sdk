@@ -101,7 +101,7 @@ public class TrackedEntityInstanceFilterHandlerShould {
     @Test
     public void extend_identifiable_handler_impl() {
         IdentifiableHandlerImpl<TrackedEntityInstanceFilter> genericHandler =
-                new TrackedEntityInstanceFilterHandler(null, null, null);
+                new TrackedEntityInstanceFilterHandler(trackedEntityInstanceFilterStore, null, null);
     }
 
     @Test

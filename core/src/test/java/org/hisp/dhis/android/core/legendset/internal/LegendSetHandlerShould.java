@@ -86,7 +86,7 @@ public class LegendSetHandlerShould {
     @Test
     public void extend_identifiable_sync_handler_impl() {
         IdentifiableHandlerImpl<LegendSet> genericHandler = new LegendSetHandler
-                (null, null, null);
+                (legendSetStore, null, null);
     }
 
     @Test

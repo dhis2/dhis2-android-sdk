@@ -84,6 +84,6 @@ public class OptionHandlerShould {
 
     @Test
     public void extend_identifiable_handler_impl() {
-        IdentifiableHandlerImpl<Option> genericHandler = new OptionHandler(null, null);
+        IdentifiableHandlerImpl<Option> genericHandler = new OptionHandler(optionStore, null);
     }
 }

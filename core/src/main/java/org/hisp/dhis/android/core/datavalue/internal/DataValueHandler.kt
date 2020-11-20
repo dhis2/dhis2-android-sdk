@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.datavalue.internal
 
+import java.util.ArrayList
+import java.util.Arrays
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
@@ -35,8 +37,6 @@ import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
-import java.util.ArrayList
-import java.util.Arrays
 
 internal class DataValueHandler(store: ObjectWithoutUidStore<DataValue>) : ObjectWithoutUidHandlerImpl<DataValue>(
     store
@@ -64,7 +64,12 @@ internal class DataValueHandler(store: ObjectWithoutUidStore<DataValue>) : Objec
     private fun containsDataValue(dataValues: Collection<DataValue>, target: DataValue): Boolean {
         return try {
             for (item in dataValues) {
-                if (item.dataElement() == target.dataElement() && item.organisationUnit() == target.organisationUnit() && item.period() == target.period() && item.attributeOptionCombo() == target.attributeOptionCombo() && item.categoryOptionCombo() == target.categoryOptionCombo()) {
+                if (item.dataElement() == target.dataElement() &&
+                    item.organisationUnit() == target.organisationUnit() &&
+                    item.period() == target.period() &&
+                    item.attributeOptionCombo() == target.attributeOptionCombo() &&
+                    item.categoryOptionCombo() == target.categoryOptionCombo()
+                ) {
                     return true
                 }
             }

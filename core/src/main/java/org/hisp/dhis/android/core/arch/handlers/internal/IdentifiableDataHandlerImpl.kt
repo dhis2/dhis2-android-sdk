@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.handlers.internal
 
+import java.util.ArrayList
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
@@ -36,7 +37,6 @@ import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager
 import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
-import java.util.ArrayList
 
 internal abstract class IdentifiableDataHandlerImpl<O>(
     val store: IdentifiableDataObjectStore<O>,
@@ -60,7 +60,10 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
 
     @JvmSuppressWildcards
     protected fun handle(
-        o: O?, transformer: (O) -> O, oTransformedCollection: MutableList<O>, overwrite: Boolean,
+        o: O?,
+        transformer: (O) -> O,
+        oTransformedCollection: MutableList<O>,
+        overwrite: Boolean,
         relatives: RelationshipItemRelatives?
     ) {
         if (o == null) {
@@ -79,7 +82,9 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
     }
 
     private fun handleInternal(
-        o: O, transformer: (O) -> O, overwrite: Boolean,
+        o: O,
+        transformer: (O) -> O,
+        overwrite: Boolean,
         relatives: RelationshipItemRelatives?
     ): O {
         val o2 = beforeObjectHandled(o, overwrite)
@@ -103,18 +108,21 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
 
     @JvmSuppressWildcards
     override fun handleMany(
-        oCollection: Collection<O>?, asRelationship: Boolean, isFullUpdate: Boolean,
-        overwrite: Boolean, relatives: RelationshipItemRelatives?
+        oCollection: Collection<O>?,
+        asRelationship: Boolean,
+        isFullUpdate: Boolean,
+        overwrite: Boolean,
+        relatives: RelationshipItemRelatives?
     ) {
         if (oCollection == null) {
             return
         }
         val transformer =
-        if (asRelationship) {
-            relationshipTransformer()
-        } else {
-            { o: O -> addSyncedState(o) }
-        }
+            if (asRelationship) {
+                relationshipTransformer()
+            } else {
+                { o: O -> addSyncedState(o) }
+            }
         val preHandledCollection = beforeCollectionHandled(oCollection, overwrite, asRelationship)
         val transformedCollection: MutableList<O> = ArrayList(preHandledCollection.size)
         for (o in preHandledCollection) {
@@ -139,7 +147,8 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
 
     @JvmSuppressWildcards
     protected fun handleRelationships(
-        relationships: Collection<Relationship>, parent: ObjectWithUidInterface,
+        relationships: Collection<Relationship>,
+        parent: ObjectWithUidInterface,
         relatives: RelationshipItemRelatives?
     ) {
         if (relatives != null) {
@@ -179,7 +188,9 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
     }
 
     protected abstract fun afterObjectHandled(
-        o: O, action: HandleAction?, overwrite: Boolean?,
+        o: O,
+        action: HandleAction?,
+        overwrite: Boolean?,
         relatives: RelationshipItemRelatives?
     )
 
@@ -222,8 +233,8 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
         val allowedObjectUids = objectWithStatesUids(storedObjectUids, allowedStates)
         val objectsToStore: MutableList<O> = ArrayList()
         for (o in os) {
-            if (!storedObjectUids.contains(o.uid()) || allowedObjectUids.contains(o.uid())
-                || CollectionsHelper.isDeleted(o)
+            if (!storedObjectUids.contains(o.uid()) || allowedObjectUids.contains(o.uid()) ||
+                CollectionsHelper.isDeleted(o)
             ) {
                 objectsToStore.add(o)
             }

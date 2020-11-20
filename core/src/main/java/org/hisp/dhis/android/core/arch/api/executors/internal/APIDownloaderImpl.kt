@@ -32,6 +32,7 @@ import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.functions.Consumer
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
@@ -39,7 +40,6 @@ import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.resource.internal.Resource
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
-import javax.inject.Inject
 
 @Reusable
 @VisibleForTesting

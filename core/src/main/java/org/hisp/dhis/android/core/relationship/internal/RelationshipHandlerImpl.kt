@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.relationship.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
@@ -35,7 +36,6 @@ import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import org.hisp.dhis.android.core.relationship.RelationshipItem
-import javax.inject.Inject
 
 @Reusable
 internal class RelationshipHandlerImpl @Inject constructor(
@@ -86,7 +86,9 @@ internal class RelationshipHandlerImpl @Inject constructor(
         )
         for (existingRelationshipUid in existingRelationshipUidsForPair) {
             val existingRelationship = store.selectByUid(existingRelationshipUid)
-            if (existingRelationship != null && relationship.relationshipType() == existingRelationship.relationshipType()) {
+            if (existingRelationship != null && relationship.relationshipType()
+                == existingRelationship.relationshipType()
+            ) {
                 return existingRelationship.uid()
             }
         }

@@ -28,53 +28,28 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.event.EventFilter;
-import org.hisp.dhis.android.core.event.EventFilterTableInfo;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
+import org.hisp.dhis.android.core.event.EventDataFilter;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class EventFilterEntityDIModule implements IdentifiableStoreProvider<EventFilter> {
+public final class EventDataFilterEntityDIModule {
 
     @Provides
     @Reusable
-    public IdentifiableObjectStore<EventFilter> store(DatabaseAdapter databaseAdapter) {
-        return EventFilterStore.create(databaseAdapter);
+    ObjectWithoutUidStore<EventDataFilter> store(DatabaseAdapter databaseAdapter) {
+        return EventDataFilterStore.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    Handler<EventFilter> handler(EventFilterHandler impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    OrphanCleaner<ObjectWithUid, EventFilter> orphanCleaner(DatabaseAdapter databaseAdapter) {
-        return new OrphanCleanerImpl<>(EventFilterTableInfo.TABLE_INFO.name(),
-                EventFilterTableInfo.Columns.PROGRAM, databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    @SuppressWarnings("PMD.NonStaticInitializer")
-    Map<String, ChildrenAppender<EventFilter>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return new HashMap<String, ChildrenAppender<EventFilter>>() {{
-            put(EventQueryCriteriaFields.DATA_FILTERS,
-                    EventFilterEventDataFilterChildrenAppender.create(databaseAdapter));
-        }};
+    HandlerWithTransformer<EventDataFilter> handler(ObjectWithoutUidStore<EventDataFilter> store) {
+        return new ObjectWithoutUidHandlerImpl<>(store);
     }
 }

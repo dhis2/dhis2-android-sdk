@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.event.EventQueryCriteria;
 
 public final class EventFilterFields {
 
-        public final static String EVENT_QUERY_CRITERIA = "eventQueryCriteria";
+    public final static String EVENT_QUERY_CRITERIA = "eventQueryCriteria";
 
     private static final FieldsHelper<EventFilter> fh = new FieldsHelper<>();
 

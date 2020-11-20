@@ -25,22 +25,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings.internal
 
-package org.hisp.dhis.android.core.settings.internal;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
+import org.hisp.dhis.android.core.settings.ProgramSetting
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
-import org.hisp.dhis.android.core.settings.UserSettings;
+internal class ProgramSettingHandler(store: ObjectWithoutUidStore<ProgramSetting>) :
+    ObjectWithoutUidHandlerImpl<ProgramSetting>(store) {
 
-class UserSettingsHandler extends ObjectWithoutUidHandlerImpl<UserSettings> {
-
-    UserSettingsHandler(ObjectWithoutUidStore<UserSettings> store) {
-        super(store);
-    }
-
-    @Override
-    protected UserSettings beforeObjectHandled(UserSettings o) {
-        store.delete();
-        return super.beforeObjectHandled(o);
+    override fun beforeCollectionHandled(oCollection: Collection<ProgramSetting>): Collection<ProgramSetting> {
+        store.delete()
+        return oCollection
     }
 }

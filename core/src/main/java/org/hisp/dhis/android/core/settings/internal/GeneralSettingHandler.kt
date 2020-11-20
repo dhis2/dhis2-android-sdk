@@ -25,21 +25,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.handlers.internal;
+package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
+import org.hisp.dhis.android.core.settings.GeneralSettings
 
-public class ObjectWithoutUidHandlerImpl<O extends CoreObject> extends HandlerBaseImpl<O> {
+internal class GeneralSettingHandler(store: ObjectWithoutUidStore<GeneralSettings>) :
+    ObjectWithoutUidHandlerImpl<GeneralSettings>(store) {
 
-    protected final ObjectWithoutUidStore<O> store;
-
-    public ObjectWithoutUidHandlerImpl(ObjectWithoutUidStore<O> store) {
-        this.store = store;
-    }
-
-    @Override
-    protected HandleAction deleteOrPersist(O o) {
-        return store.updateOrInsertWhere(o);
+    override fun beforeCollectionHandled(oCollection: Collection<GeneralSettings>): Collection<GeneralSettings> {
+        store.delete()
+        return oCollection
     }
 }

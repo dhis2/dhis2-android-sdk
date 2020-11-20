@@ -25,24 +25,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.handlers.internal
 
-package org.hisp.dhis.android.core.settings.internal;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.common.CoreObject
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
-import org.hisp.dhis.android.core.settings.DataSetSetting;
+internal open class ObjectWithoutUidHandlerImpl<O : CoreObject?>(protected val store: ObjectWithoutUidStore<O>) :
+    HandlerBaseImpl<O>() {
 
-import java.util.Collection;
-
-class DataSetSettingHandler extends ObjectWithoutUidHandlerImpl<DataSetSetting> {
-
-    DataSetSettingHandler(ObjectWithoutUidStore<DataSetSetting> store) {
-        super(store);
-    }
-
-    @Override
-    protected Collection<DataSetSetting> beforeCollectionHandled(Collection<DataSetSetting> oCollection) {
-        store.delete();
-        return oCollection;
+    override fun deleteOrPersist(o: O): HandleAction {
+        return store.updateOrInsertWhere(o)
     }
 }

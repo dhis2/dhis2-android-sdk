@@ -131,10 +131,10 @@ public class BiWeeklyPeriodGeneratorShould {
         startCalendar.getTime();
         startCalendar.setFirstDayOfWeek(weekStartDay);
         startCalendar.setMinimalDaysInFirstWeek(4);
-        startCalendar.set(Calendar.DAY_OF_WEEK, weekStartDay);
+        CalendarUtils.setDayOfWeek(startCalendar, weekStartDay);
 
         Calendar cal = (Calendar) startCalendar.clone();
-        cal.set(Calendar.DAY_OF_WEEK, weekStartDay + 3);
+        CalendarUtils.setDayOfWeek(cal, weekStartDay + 3);
         Integer weekOfYear = cal.get(Calendar.WEEK_OF_YEAR);
         Boolean secondWeekOfBiWeek = (weekOfYear % 2) == 0;
         if (secondWeekOfBiWeek) {

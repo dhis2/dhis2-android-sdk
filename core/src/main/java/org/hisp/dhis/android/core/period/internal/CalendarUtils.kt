@@ -25,39 +25,21 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.period.internal
 
-package org.hisp.dhis.android.core.period;
+import java.util.Calendar
 
-import com.google.common.collect.Lists;
+internal object CalendarUtils {
 
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher;
-import org.junit.AfterClass;
-import org.junit.Test;
+    private const val WEEK_DAYS = 7
 
-import java.util.List;
+    @JvmStatic
+    fun setDayOfWeek(calendar: Calendar, targetDayOfWeek: Int) {
+        val firstDayOfWeek = calendar.firstDayOfWeek
+        val currentDay = calendar[Calendar.DAY_OF_WEEK]
+        val diff = (targetDayOfWeek - firstDayOfWeek + WEEK_DAYS) % WEEK_DAYS -
+            (currentDay - firstDayOfWeek + WEEK_DAYS) % WEEK_DAYS
 
-import static com.google.common.truth.Truth.assertThat;
-
-public class PeriodParserMockIntegrationShould extends BaseMockIntegrationTestEmptyDispatcher {
-
-    private final List<String> PERIOD_ID_LIST = Lists.newArrayList(
-            "20200315", "2019W40", "2020W1", "2020W10", "2020W53",
-            "2020WedW5", "2020ThuW6", "2020SatW7", "2020SunW8",
-            "2020BiW1", "2019BiW15", "2020BiW25",
-            "202003","202012", "202001B", "2020Q1","2020Q4",
-            "2020S1", "2020AprilS1", "2020NovS1", "2020NovS2", "2020",
-            "2020April", "2020July", "2020Oct", "2020Nov");
-
-    @AfterClass
-    public static void tearDown() {
-        d2.databaseAdapter().delete(PeriodTableInfo.TABLE_INFO.name());
-    }
-
-    @Test
-    public void get_period_passing_period_id() {
-        for (String periodId : PERIOD_ID_LIST) {
-            Period period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId(periodId);
-            assertThat(period.periodId()).isEqualTo(periodId);
-        }
+        calendar.add(Calendar.DATE, diff)
     }
 }

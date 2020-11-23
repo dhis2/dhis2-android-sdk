@@ -161,7 +161,7 @@ public class PeriodParser {
         calendar.setMinimalDaysInFirstWeek(4);
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.WEEK_OF_YEAR, week);
-        calendar.set(Calendar.DAY_OF_WEEK, firstDayOfWeek);
+        CalendarUtils.setDayOfWeek(calendar, firstDayOfWeek);
         calendar.set(Calendar.HOUR_OF_DAY, 10);
 
         return calendar.getTime();

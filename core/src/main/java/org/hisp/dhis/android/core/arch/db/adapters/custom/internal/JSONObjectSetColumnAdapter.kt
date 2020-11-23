@@ -47,6 +47,10 @@ internal abstract class JSONObjectSetColumnAdapter<O> : ColumnTypeAdapter<Set<O>
             Sets.newHashSet<O>()
         } catch (e: JsonMappingException) {
             Sets.newHashSet<O>()
+        } catch (e: IllegalArgumentException) {
+            Sets.newHashSet<O>()
+        } catch (e: IllegalStateException) {
+            Sets.newHashSet<O>()
         }
     }
 

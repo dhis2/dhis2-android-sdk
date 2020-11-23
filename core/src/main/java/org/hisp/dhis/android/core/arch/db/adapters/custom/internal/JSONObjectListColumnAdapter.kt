@@ -47,6 +47,10 @@ internal abstract class JSONObjectListColumnAdapter<O> : ColumnTypeAdapter<List<
             Lists.newArrayList<O>()
         } catch (e: JsonMappingException) {
             Lists.newArrayList<O>()
+        } catch (e: IllegalArgumentException) {
+            Lists.newArrayList<O>()
+        } catch (e: IllegalStateException) {
+            Lists.newArrayList<O>()
         }
     }
 

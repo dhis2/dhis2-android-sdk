@@ -46,6 +46,10 @@ internal abstract class JSONObjectColumnAdapter<O> : ColumnTypeAdapter<O> {
             null
         } catch (e: JsonMappingException) {
             null
+        } catch (e: IllegalArgumentException) {
+            null
+        } catch (e: IllegalStateException) {
+            null
         }
     }
 

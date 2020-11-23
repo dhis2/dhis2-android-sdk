@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 import android.content.ContentValues
 import android.database.Cursor
 import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.JsonMappingException
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
 import com.google.common.collect.Sets
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
@@ -42,7 +43,9 @@ internal abstract class JSONObjectSetColumnAdapter<O> : ColumnTypeAdapter<Set<O>
         val str = cursor.getString(columnIndex)
         return try {
             ObjectMapperFactory.objectMapper().readValue(str, getObjectClass())
-        } catch (e: Exception) {
+        } catch (e: JsonProcessingException) {
+            Sets.newHashSet<O>()
+        } catch (e: JsonMappingException) {
             Sets.newHashSet<O>()
         }
     }

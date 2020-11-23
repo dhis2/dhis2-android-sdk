@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.event.EventDataFilterTableInfo
 @Suppress("MagicNumber")
 internal object EventDataFilterStore {
     private val BINDER = StatementBinder { o: EventDataFilter, w: StatementWrapper ->
-        val mapper = ObjectMapperFactory.objectMapper();
+        val mapper = ObjectMapperFactory.objectMapper()
         w.bind(1, o.eventFilter())
         w.bind(2, o.dataItem())
         w.bind(3, o.le())

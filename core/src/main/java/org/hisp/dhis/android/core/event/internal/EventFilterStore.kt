@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 import org.hisp.dhis.android.core.event.EventFilter
 import org.hisp.dhis.android.core.event.EventFilterTableInfo
 
-
 @Suppress("MagicNumber")
 internal object EventFilterStore {
     private val BINDER = object : IdentifiableStatementBinder<EventFilter>() {
@@ -64,7 +63,7 @@ internal object EventFilterStore {
     @JvmStatic
     fun create(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<EventFilter> {
         return objectWithUidStore(
-                databaseAdapter, EventFilterTableInfo.TABLE_INFO, BINDER
+            databaseAdapter, EventFilterTableInfo.TABLE_INFO, BINDER
         ) { EventFilter.create(it) }
     }
 }

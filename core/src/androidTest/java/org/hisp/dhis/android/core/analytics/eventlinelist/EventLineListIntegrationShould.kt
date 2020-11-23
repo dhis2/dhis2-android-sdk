@@ -198,7 +198,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         assertThat(result.all { it.values.size == 2 }).isTrue()
     }
 
-    //@Test
+    @Test
     fun should_return_missing_data_elements_in_repeatable_stage() {
         val event1 = createEvent(program1Stage2.uid(), "2020-08-01T00:00:00.000")
         val event2 = createEvent(program1Stage2.uid(), "2020-09-02T00:00:00.000")
@@ -215,10 +215,20 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
 
         val result = eventLineListService.evaluate(eventListParams)
 
-        // TODO Return null / empty string ?
         assertThat(result.size).isEqualTo(2)
-        assertThat(result[0].values.size).isEqualTo(1)
-        assertThat(result[1].values.size).isEqualTo(2)
+        assertThat(result.all { it.values.size == 2 }).isTrue()
+        result.forEach {
+            when (it.uid) {
+                event1.uid() -> {
+                    assertThat(it.values[0].value).isEqualTo("1.0")
+                    assertThat(it.values[1].value).isNull()
+                }
+                event2.uid() -> {
+                    assertThat(it.values[0].value).isEqualTo("2.0")
+                    assertThat(it.values[1].value).isEqualTo("20.0")
+                }
+            }
+        }
     }
 
     @Test

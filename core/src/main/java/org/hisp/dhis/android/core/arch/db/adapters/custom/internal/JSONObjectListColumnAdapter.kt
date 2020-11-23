@@ -32,7 +32,6 @@ import android.database.Cursor
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.JsonMappingException
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
-import com.google.common.collect.Lists
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 
 internal abstract class JSONObjectListColumnAdapter<O> : ColumnTypeAdapter<List<O>> {
@@ -44,13 +43,13 @@ internal abstract class JSONObjectListColumnAdapter<O> : ColumnTypeAdapter<List<
         return try {
             ObjectMapperFactory.objectMapper().readValue(str, getObjectClass())
         } catch (e: JsonProcessingException) {
-            Lists.newArrayList<O>()
+            listOf()
         } catch (e: JsonMappingException) {
-            Lists.newArrayList<O>()
+            listOf()
         } catch (e: IllegalArgumentException) {
-            Lists.newArrayList<O>()
+            listOf()
         } catch (e: IllegalStateException) {
-            Lists.newArrayList<O>()
+            listOf()
         }
     }
 

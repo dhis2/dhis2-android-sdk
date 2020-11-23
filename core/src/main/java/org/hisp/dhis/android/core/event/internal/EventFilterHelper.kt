@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.event.internal
 
 import org.hisp.dhis.android.core.event.EventFilter
 
-object EventFilterHelper {
+internal object EventFilterHelper {
 
     @JvmStatic
     fun groupFiltersByProgram(

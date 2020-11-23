@@ -32,7 +32,6 @@ import android.database.Cursor
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.JsonMappingException
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
-import com.google.common.collect.Sets
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 
 internal abstract class JSONObjectSetColumnAdapter<O> : ColumnTypeAdapter<Set<O>> {
@@ -44,13 +43,13 @@ internal abstract class JSONObjectSetColumnAdapter<O> : ColumnTypeAdapter<Set<O>
         return try {
             ObjectMapperFactory.objectMapper().readValue(str, getObjectClass())
         } catch (e: JsonProcessingException) {
-            Sets.newHashSet<O>()
+            setOf()
         } catch (e: JsonMappingException) {
-            Sets.newHashSet<O>()
+            setOf()
         } catch (e: IllegalArgumentException) {
-            Sets.newHashSet<O>()
+            setOf()
         } catch (e: IllegalStateException) {
-            Sets.newHashSet<O>()
+            setOf()
         }
     }
 

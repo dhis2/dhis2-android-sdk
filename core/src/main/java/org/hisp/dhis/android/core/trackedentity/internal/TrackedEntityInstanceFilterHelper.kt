@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 
-object TrackedEntityInstanceFilterHelper {
+internal object TrackedEntityInstanceFilterHelper {
 
     @JvmStatic
     fun groupFiltersByProgram(

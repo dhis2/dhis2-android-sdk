@@ -104,12 +104,12 @@ public class EventFilterHandlerShould {
     @Test
     public void extend_identifiable_handler_impl() {
         IdentifiableHandlerImpl<EventFilter> genericHandler =
-                new EventFilterHandler(null, null, null);
+                new EventFilterHandler(eventFilterStore, null, null);
     }
 
     @Test
     public void handle_event_filters() {
         eventFilterHandler.handleMany(eventFilters);
-        verify(eventDataFilterHandler).handleMany(eq(eventDataFilters), any(Transformer.class));
+        verify(eventDataFilterHandler).handleMany(eq(eventDataFilters), any());
     }
 }

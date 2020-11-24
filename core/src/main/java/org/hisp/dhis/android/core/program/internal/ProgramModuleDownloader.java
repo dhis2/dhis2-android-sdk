@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.arch.modules.internal.MetadataModuleByUidDownloader;
+import org.hisp.dhis.android.core.event.EventFilter;
 import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.option.OptionGroup;
 import org.hisp.dhis.android.core.option.OptionSet;
@@ -61,6 +62,7 @@ public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<Li
     private final UidsCall<TrackedEntityType> trackedEntityTypeCall;
     private final UidsCall<TrackedEntityAttribute> trackedEntityAttributeCall;
     private final UidsCall<TrackedEntityInstanceFilter> trackedEntityInstanceFilterCall;
+    private final UidsCall<EventFilter> eventFilterCall;
     private final ListCall<RelationshipType> relationshipTypeCall;
     private final UidsCall<OptionSet> optionSetCall;
     private final UidsCall<Option> optionCall;
@@ -73,6 +75,7 @@ public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<Li
                             UidsCall<TrackedEntityType> trackedEntityTypeCall,
                             UidsCall<TrackedEntityAttribute> trackedEntityAttributeCall,
                             UidsCall<TrackedEntityInstanceFilter> trackedEntityInstanceFilterCall,
+                            UidsCall<EventFilter> eventFilterCall,
                             ListCall<RelationshipType> relationshipTypeCall,
                             UidsCall<OptionSet> optionSetCall,
                             UidsCall<Option> optionCall,
@@ -83,6 +86,7 @@ public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<Li
         this.trackedEntityTypeCall = trackedEntityTypeCall;
         this.trackedEntityAttributeCall = trackedEntityAttributeCall;
         this.trackedEntityInstanceFilterCall = trackedEntityInstanceFilterCall;
+        this.eventFilterCall = eventFilterCall;
         this.relationshipTypeCall = relationshipTypeCall;
         this.optionSetCall = optionSetCall;
         this.optionCall = optionCall;
@@ -104,6 +108,7 @@ public class ProgramModuleDownloader implements MetadataModuleByUidDownloader<Li
                             return Single.merge(Arrays.asList(
                                     programRuleCall.download(programUids),
                                     trackedEntityInstanceFilterCall.download(programUids),
+                                    eventFilterCall.download(programUids),
                                     relationshipTypeCall.download(),
                                     optionSetCall.download(optionSetUids),
                                     optionCall.download(optionSetUids),

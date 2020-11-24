@@ -25,17 +25,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+package org.hisp.dhis.android.core.event.internal;
 
-internal object TrackedEntityInstanceFilterHelper {
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.event.EventFilterSamples;
+import org.hisp.dhis.android.core.event.EventFilter;
+import org.hisp.dhis.android.core.event.EventFilterTableInfo;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.runner.RunWith;
 
-    @JvmStatic
-    fun groupFiltersByProgram(
-        trackedEntityInstanceFilters: Collection<TrackedEntityInstanceFilter>
-    ): Map<ObjectWithUid, List<TrackedEntityInstanceFilter>> {
-        return trackedEntityInstanceFilters.groupBy { it.program()!! }
+@RunWith(D2JunitRunner.class)
+public class EventFilterStoreIntegrationShould
+        extends IdentifiableObjectStoreAbstractIntegrationShould<EventFilter> {
+
+    public EventFilterStoreIntegrationShould() {
+        super(EventFilterStore.create(TestDatabaseAdapterFactory.get()),
+                EventFilterTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+    }
+
+    @Override
+    protected EventFilter buildObject() {
+        return EventFilterSamples.get();
+    }
+
+    @Override
+    protected EventFilter buildObjectToUpdate() {
+        return EventFilterSamples.get().toBuilder()
+                .description("new_description")
+                .build();
     }
 }

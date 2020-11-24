@@ -25,17 +25,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+package org.hisp.dhis.android.core.event;
 
-internal object TrackedEntityInstanceFilterHelper {
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.hisp.dhis.android.core.data.event.EventFilterSamples;
+import org.junit.Test;
 
-    @JvmStatic
-    fun groupFiltersByProgram(
-        trackedEntityInstanceFilters: Collection<TrackedEntityInstanceFilter>
-    ): Map<ObjectWithUid, List<TrackedEntityInstanceFilter>> {
-        return trackedEntityInstanceFilters.groupBy { it.program()!! }
+import java.io.IOException;
+import java.text.ParseException;
+
+import static com.google.common.truth.Truth.assertThat;
+
+public class EventFilterShould extends BaseObjectShould implements ObjectShould {
+
+    public EventFilterShould() {
+        super("event/event_filter.json");
+    }
+
+    @Override
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        EventFilter eventFilter = objectMapper.readValue(jsonStream, EventFilter.class);
+
+        EventFilter expectedEventFilter = EventFilterSamples.get().toBuilder().id(null).build();
+        assertThat(eventFilter).isEqualTo(expectedEventFilter);
     }
 }

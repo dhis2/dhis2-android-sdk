@@ -25,17 +25,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+package org.hisp.dhis.android.testapp.event;
 
-internal object TrackedEntityInstanceFilterHelper {
+import org.hisp.dhis.android.core.event.EventFilter;
+import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
+import org.mockito.Mock;
 
-    @JvmStatic
-    fun groupFiltersByProgram(
-        trackedEntityInstanceFilters: Collection<TrackedEntityInstanceFilter>
-    ): Map<ObjectWithUid, List<TrackedEntityInstanceFilter>> {
-        return trackedEntityInstanceFilters.groupBy { it.program()!! }
+public class EventFilterPublicAccessShould extends BasePublicAccessShould<EventFilter> {
+
+    @Mock
+    private EventFilter object;
+
+    @Override
+    public EventFilter object() {
+        return object;
+    }
+
+    @Override
+    public void has_public_create_method() {
+        EventFilter.create(null);
+    }
+
+    @Override
+    public void has_public_builder_method() {
+        EventFilter.builder();
+    }
+
+    @Override
+    public void has_public_to_builder_method() {
+        object().toBuilder();
     }
 }

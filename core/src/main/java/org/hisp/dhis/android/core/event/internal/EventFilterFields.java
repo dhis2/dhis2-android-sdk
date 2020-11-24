@@ -25,17 +25,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+package org.hisp.dhis.android.core.event.internal;
 
-internal object TrackedEntityInstanceFilterHelper {
+import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import org.hisp.dhis.android.core.event.EventFilter;
+import org.hisp.dhis.android.core.event.EventFilterTableInfo.Columns;
+import org.hisp.dhis.android.core.event.EventQueryCriteria;
 
-    @JvmStatic
-    fun groupFiltersByProgram(
-        trackedEntityInstanceFilters: Collection<TrackedEntityInstanceFilter>
-    ): Map<ObjectWithUid, List<TrackedEntityInstanceFilter>> {
-        return trackedEntityInstanceFilters.groupBy { it.program()!! }
+public final class EventFilterFields {
+
+    public final static String EVENT_QUERY_CRITERIA = "eventQueryCriteria";
+
+    private static final FieldsHelper<EventFilter> fh = new FieldsHelper<>();
+
+    public static final Field<EventFilter, String> programUid = Field.create(Columns.PROGRAM);
+
+    public static final Fields<EventFilter> allFields = Fields.<EventFilter>builder()
+            .fields(fh.getIdentifiableFields())
+            .fields(
+                    fh.<String>field(Columns.PROGRAM),
+                    fh.<String>field(Columns.PROGRAM_STAGE),
+                    fh.<String>field(Columns.DESCRIPTION),
+                    fh.<EventQueryCriteria>nestedField(EVENT_QUERY_CRITERIA).with(EventQueryCriteriaFields.allFields)
+            ).build();
+
+    private EventFilterFields() {
     }
 }

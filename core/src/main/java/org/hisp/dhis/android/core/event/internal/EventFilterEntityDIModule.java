@@ -28,44 +28,53 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
+import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleanerImpl;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.event.EventFilter;
-import org.hisp.dhis.android.core.event.EventModule;
+import org.hisp.dhis.android.core.event.EventFilterTableInfo;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
-import retrofit2.Retrofit;
 
-@Module(includes = {
-        EventEntityDIModule.class,
-        EventFilterEntityDIModule.class,
-        EventDataFilterEntityDIModule.class,
-        EventSyncEntityDIModule.class
-})
-public final class EventPackageDIModule {
+@Module
+public final class EventFilterEntityDIModule implements IdentifiableStoreProvider<EventFilter> {
 
     @Provides
     @Reusable
-    EventService service(Retrofit retrofit) {
-        return retrofit.create(EventService.class);
+    public IdentifiableObjectStore<EventFilter> store(DatabaseAdapter databaseAdapter) {
+        return EventFilterStore.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    EventModule module(EventModuleImpl impl) {
+    Handler<EventFilter> handler(EventFilterHandler impl) {
         return impl;
     }
 
     @Provides
     @Reusable
-    UidsCall<EventFilter> trackedEntityInstanceFilterCall(EventFilterCall impl) {
-        return impl;
+    OrphanCleaner<ObjectWithUid, EventFilter> orphanCleaner(DatabaseAdapter databaseAdapter) {
+        return new OrphanCleanerImpl<>(EventFilterTableInfo.TABLE_INFO.name(),
+                EventFilterTableInfo.Columns.PROGRAM, databaseAdapter);
     }
 
     @Provides
     @Reusable
-    EventFilterService eventFilterService(Retrofit retrofit) {
-        return retrofit.create(EventFilterService.class);
+    @SuppressWarnings("PMD.NonStaticInitializer")
+    Map<String, ChildrenAppender<EventFilter>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        return new HashMap<String, ChildrenAppender<EventFilter>>() {{
+            put(EventQueryCriteriaFields.DATA_FILTERS,
+                    EventFilterEventDataFilterChildrenAppender.create(databaseAdapter));
+        }};
     }
 }

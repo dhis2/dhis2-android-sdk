@@ -25,45 +25,41 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-package org.hisp.dhis.android.core.arch.db.access.internal;
-
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+package org.hisp.dhis.android.core.event.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
+import org.hisp.dhis.android.core.event.EventDataFilter;
+import org.hisp.dhis.android.core.event.EventFilter;
+import org.hisp.dhis.android.core.event.EventQueryCriteria;
 
-class BaseDatabaseOpenHelper {
+public final class EventFilterEventDataFilterChildrenAppender extends ChildrenAppender<EventFilter> {
 
-    static final int VERSION = 87;
+    private final SingleParentChildStore<EventFilter, EventDataFilter> childStore;
 
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    private EventFilterEventDataFilterChildrenAppender(
+            SingleParentChildStore<EventFilter, EventDataFilter> childStore) {
+        this.childStore = childStore;
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
+    @Override
+    protected EventFilter appendChildren(EventFilter eventFilter) {
+        if (eventFilter.eventQueryCriteria() != null) {
+            EventQueryCriteria.Builder criteriaBuilder = eventFilter.eventQueryCriteria().toBuilder();
+            criteriaBuilder.dataFilters(childStore.getChildren(eventFilter));
+            return eventFilter.toBuilder().eventQueryCriteria(criteriaBuilder.build()).build();
         }
-
-        databaseAdapter.enableWriteAheadLogging();
+        return EventFilter.builder().build();
     }
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    public static ChildrenAppender<EventFilter> create(DatabaseAdapter databaseAdapter) {
+        return new EventFilterEventDataFilterChildrenAppender(
+                StoreFactory.singleParentChildStore(
+                        databaseAdapter,
+                        EventDataFilterStore.CHILD_PROJECTION,
+                        EventDataFilter::create)
+        );
     }
 }

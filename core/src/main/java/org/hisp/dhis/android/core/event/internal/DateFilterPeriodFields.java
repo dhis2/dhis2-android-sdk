@@ -25,17 +25,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+package org.hisp.dhis.android.core.event.internal;
 
-internal object TrackedEntityInstanceFilterHelper {
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import org.hisp.dhis.android.core.common.DateFilterPeriod;
+import org.hisp.dhis.android.core.common.DatePeriodType;
+import org.hisp.dhis.android.core.common.RelativePeriod;
 
-    @JvmStatic
-    fun groupFiltersByProgram(
-        trackedEntityInstanceFilters: Collection<TrackedEntityInstanceFilter>
-    ): Map<ObjectWithUid, List<TrackedEntityInstanceFilter>> {
-        return trackedEntityInstanceFilters.groupBy { it.program()!! }
+public final class DateFilterPeriodFields {
+
+        public final static String START_BUFFER = "startBuffer";
+        public final static String END_BUFFER = "endBuffer";
+        public final static String START_DATE = "startDate";
+        public final static String END_DATE = "endDate";
+        public final static String PERIOD = "period";
+        public final static String TYPE = "type";
+
+    private static final FieldsHelper<DateFilterPeriod> fh = new FieldsHelper<>();
+
+    public static final Fields<DateFilterPeriod> allFields = Fields.<DateFilterPeriod>builder()
+            .fields(
+                    fh.<Integer>field(START_BUFFER),
+                    fh.<Integer>field(END_BUFFER),
+                    fh.<String>field(START_DATE),
+                    fh.<String>field(END_DATE),
+                    fh.<RelativePeriod>field(PERIOD),
+                    fh.<DatePeriodType>field(TYPE)
+            ).build();
+
+    private DateFilterPeriodFields() {
     }
 }

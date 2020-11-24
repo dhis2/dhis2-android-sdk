@@ -25,17 +25,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal
+package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+import android.content.ContentValues
+import android.database.Cursor
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
+import org.hisp.dhis.android.core.event.EventQueryCriteria
 
-internal object TrackedEntityInstanceFilterHelper {
+class EventQueryCriteriaColumnAdapter : ColumnTypeAdapter<EventQueryCriteria> {
+    override fun fromCursor(cursor: Cursor, columnName: String): EventQueryCriteria? {
+        return EventQueryCriteria.create(cursor)
+    }
 
-    @JvmStatic
-    fun groupFiltersByProgram(
-        trackedEntityInstanceFilters: Collection<TrackedEntityInstanceFilter>
-    ): Map<ObjectWithUid, List<TrackedEntityInstanceFilter>> {
-        return trackedEntityInstanceFilters.groupBy { it.program()!! }
+    override fun toContentValues(values: ContentValues, columnName: String, value: EventQueryCriteria?) {
+        value?.toContentValues()
     }
 }

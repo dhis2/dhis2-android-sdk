@@ -26,44 +26,56 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.event;
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+public final class EventDataFilterTableInfo {
 
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 87;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    private EventDataFilterTableInfo() {
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "EventDataFilter";
         }
 
-        databaseAdapter.enableWriteAheadLogging();
-    }
+        @Override
+        public CoreColumns columns() {
+            return new Columns();
+        }
+    };
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
+    public static class Columns extends CoreColumns {
+        public final static String EVENT_FILTER = "eventFilter";
+        public final static String DATA_ITEM = "dataItem";
+        public final static String LE = "le";
+        public static final String GE = "ge";
+        public static final String GT = "gt";
+        public static final String LT = "lt";
+        public static final String EQ = "eq";
+        public static final String IN = "inProperty";
+        public static final String LIKE = "like";
+        public static final String DATE_FILTER = "dateFilter";
 
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+        @Override
+        public String[] all() {
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    EVENT_FILTER,
+                    DATA_ITEM,
+                    LE,
+                    GE,
+                    GT,
+                    LT,
+                    EQ,
+                    IN,
+                    LIKE,
+                    DATE_FILTER
+            );
+        }
     }
 }

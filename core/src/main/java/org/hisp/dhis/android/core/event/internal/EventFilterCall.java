@@ -28,59 +28,46 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
-import androidx.annotation.VisibleForTesting;
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.common.internal.DataAccessFields;
+import org.hisp.dhis.android.core.event.EventFilter;
 
-import org.hisp.dhis.android.core.event.EventCollectionRepository;
-import org.hisp.dhis.android.core.event.EventDownloader;
-import org.hisp.dhis.android.core.event.EventFilterCollectionRepository;
-import org.hisp.dhis.android.core.event.EventModule;
-import org.hisp.dhis.android.core.event.EventService;
+import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Single;
 
 @Reusable
-public final class EventModuleImpl implements EventModule {
+public final class EventFilterCall implements UidsCall<EventFilter> {
 
-    private final EventCollectionRepository events;
-    private final EventFilterCollectionRepository eventFilters;
-    private final EventDownloader eventDownloader;
-    private final EventService eventService;
+    private static final int MAX_UID_LIST_SIZE = 50;
 
-    @VisibleForTesting
-    final EventPersistenceCallFactory eventPersistenceCallFactory;
+    private final EventFilterService service;
+    private final Handler<EventFilter> handler;
+    private final APIDownloader apiDownloader;
 
     @Inject
-    EventModuleImpl(EventCollectionRepository events,
-                    EventFilterCollectionRepository eventFilters,
-                    EventPersistenceCallFactory eventPersistenceCallFactory,
-                    EventDownloader eventDownloader,
-                    EventService eventService) {
-        this.events = events;
-        this.eventFilters = eventFilters;
-        this.eventPersistenceCallFactory = eventPersistenceCallFactory;
-        this.eventDownloader = eventDownloader;
-        this.eventService = eventService;
+    EventFilterCall(EventFilterService service,
+                    Handler<EventFilter> handler,
+                    APIDownloader apiDownloader) {
+        this.service = service;
+        this.handler = handler;
+        this.apiDownloader = apiDownloader;
     }
 
     @Override
-    public EventCollectionRepository events() {
-        return events;
-    }
-
-    @Override
-    public EventFilterCollectionRepository eventFilters() {
-        return eventFilters;
-    }
-
-    @Override
-    public EventDownloader eventDownloader() {
-        return eventDownloader;
-    }
-
-    @Override
-    public EventService eventService() {
-        return eventService;
+    public Single<List<EventFilter>> download(Set<String> programUids) {
+        String accessDataReadFilter = "access." + DataAccessFields.read.eq(true).generateString();
+        return apiDownloader.downloadPartitioned(programUids, MAX_UID_LIST_SIZE, handler, partitionUids ->
+                service.getEventFilters(
+                        EventFilterFields.programUid.in(partitionUids),
+                        accessDataReadFilter,
+                        EventFilterFields.allFields,
+                        Boolean.FALSE));
     }
 }

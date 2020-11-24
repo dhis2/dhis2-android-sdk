@@ -25,17 +25,42 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal
+package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+import android.content.ContentValues
+import android.database.Cursor
+import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.JsonMappingException
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 
-internal object TrackedEntityInstanceFilterHelper {
+internal abstract class JSONObjectSetColumnAdapter<O> : ColumnTypeAdapter<Set<O>> {
+    protected abstract fun getObjectClass(): Class<Set<O>>
 
-    @JvmStatic
-    fun groupFiltersByProgram(
-        trackedEntityInstanceFilters: Collection<TrackedEntityInstanceFilter>
-    ): Map<ObjectWithUid, List<TrackedEntityInstanceFilter>> {
-        return trackedEntityInstanceFilters.groupBy { it.program()!! }
+    override fun fromCursor(cursor: Cursor, columnName: String): Set<O> {
+        val columnIndex = cursor.getColumnIndex(columnName)
+        val str = cursor.getString(columnIndex)
+        return try {
+            ObjectMapperFactory.objectMapper().readValue(str, getObjectClass())
+        } catch (e: JsonProcessingException) {
+            setOf()
+        } catch (e: JsonMappingException) {
+            setOf()
+        } catch (e: IllegalArgumentException) {
+            setOf()
+        } catch (e: IllegalStateException) {
+            setOf()
+        }
+    }
+
+    override fun toContentValues(contentValues: ContentValues, columnName: String, o: Set<O>?) {
+        if (o != null) {
+            try {
+                val oStr = ObjectMapperFactory.objectMapper().writeValueAsString(o)
+                contentValues.put(columnName, oStr)
+            } catch (e: JsonProcessingException) {
+                e.printStackTrace()
+            }
+        }
     }
 }

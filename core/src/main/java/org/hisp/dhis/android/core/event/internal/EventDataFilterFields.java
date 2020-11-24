@@ -25,17 +25,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+package org.hisp.dhis.android.core.event.internal;
 
-internal object TrackedEntityInstanceFilterHelper {
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import org.hisp.dhis.android.core.event.EventDataFilter;
+import org.hisp.dhis.android.core.event.EventDataFilterTableInfo.Columns;
 
-    @JvmStatic
-    fun groupFiltersByProgram(
-        trackedEntityInstanceFilters: Collection<TrackedEntityInstanceFilter>
-    ): Map<ObjectWithUid, List<TrackedEntityInstanceFilter>> {
-        return trackedEntityInstanceFilters.groupBy { it.program()!! }
+
+public final class EventDataFilterFields {
+
+    private static final FieldsHelper<EventDataFilter> fh = new FieldsHelper<>();
+
+    public static final Fields<EventDataFilter> allFields = Fields.<EventDataFilter>builder()
+            .fields(
+                    fh.<String>field(Columns.DATA_ITEM),
+                    fh.<String>field(Columns.LE),
+                    fh.<String>field(Columns.GE),
+                    fh.<String>field(Columns.GT),
+                    fh.<String>field(Columns.LT),
+                    fh.<String>field(Columns.EQ),
+                    fh.<String>field(Columns.IN),
+                    fh.<String>field(Columns.LIKE),
+                    fh.<String>field(Columns.DATE_FILTER)
+            ).build();
+
+    private EventDataFilterFields() {
     }
 }

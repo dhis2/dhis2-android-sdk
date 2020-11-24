@@ -25,17 +25,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+package org.hisp.dhis.android.core.event.internal;
 
-internal object TrackedEntityInstanceFilterHelper {
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
+import org.hisp.dhis.android.core.event.EventDataFilter;
 
-    @JvmStatic
-    fun groupFiltersByProgram(
-        trackedEntityInstanceFilters: Collection<TrackedEntityInstanceFilter>
-    ): Map<ObjectWithUid, List<TrackedEntityInstanceFilter>> {
-        return trackedEntityInstanceFilters.groupBy { it.program()!! }
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
+
+@Module
+public final class EventDataFilterEntityDIModule {
+
+    @Provides
+    @Reusable
+    ObjectWithoutUidStore<EventDataFilter> store(DatabaseAdapter databaseAdapter) {
+        return EventDataFilterStore.create(databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    HandlerWithTransformer<EventDataFilter> handler(ObjectWithoutUidStore<EventDataFilter> store) {
+        return new ObjectWithoutUidHandlerImpl<>(store);
     }
 }

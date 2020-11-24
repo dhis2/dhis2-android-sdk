@@ -25,17 +25,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal
+package org.hisp.dhis.android.core.event.internal;
 
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Where;
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
+import org.hisp.dhis.android.core.event.EventFilter;
 
-internal object TrackedEntityInstanceFilterHelper {
+import io.reactivex.Single;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
 
-    @JvmStatic
-    fun groupFiltersByProgram(
-        trackedEntityInstanceFilters: Collection<TrackedEntityInstanceFilter>
-    ): Map<ObjectWithUid, List<TrackedEntityInstanceFilter>> {
-        return trackedEntityInstanceFilters.groupBy { it.program()!! }
-    }
+public interface EventFilterService {
+    @GET("eventFilters")
+    Single<Payload<EventFilter>> getEventFilters(
+            @Query("filter") @Where Filter<EventFilter, String> uids,
+            @Query("filter") String accessDataReadFilter,
+            @Query("fields") @Which Fields<EventFilter> fields,
+            @Query("paging") Boolean paging);
 }

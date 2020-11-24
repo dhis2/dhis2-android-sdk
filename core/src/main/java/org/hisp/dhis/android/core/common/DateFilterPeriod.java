@@ -25,17 +25,63 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+package org.hisp.dhis.android.core.common;
 
-internal object TrackedEntityInstanceFilterHelper {
+import androidx.annotation.Nullable;
 
-    @JvmStatic
-    fun groupFiltersByProgram(
-        trackedEntityInstanceFilters: Collection<TrackedEntityInstanceFilter>
-    ): Map<ObjectWithUid, List<TrackedEntityInstanceFilter>> {
-        return trackedEntityInstanceFilters.groupBy { it.program()!! }
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
+
+@AutoValue
+@JsonDeserialize(builder = AutoValue_DateFilterPeriod.Builder.class)
+public abstract class DateFilterPeriod {
+
+    @Nullable
+    @JsonProperty()
+    public abstract Integer startBuffer();
+
+    @Nullable
+    @JsonProperty()
+    public abstract Integer endBuffer();
+
+    @Nullable
+    @JsonProperty()
+    public abstract String startDate();
+
+    @Nullable
+    @JsonProperty()
+    public abstract String endDate();
+
+    @Nullable
+    @JsonProperty()
+    public abstract RelativePeriod period();
+
+    @Nullable
+    @JsonProperty()
+    public abstract DatePeriodType type();
+
+    public static Builder builder() {
+        return new AutoValue_DateFilterPeriod.Builder();
+    }
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder {
+        public abstract Builder startBuffer(Integer startBuffer);
+
+        public abstract Builder endBuffer(Integer endBuffer);
+
+        public abstract Builder startDate(String startDate);
+
+        public abstract Builder endDate(String endDate);
+
+        public abstract Builder period(RelativePeriod period);
+
+        public abstract Builder type(DatePeriodType type);
+
+        public abstract DateFilterPeriod build();
     }
 }

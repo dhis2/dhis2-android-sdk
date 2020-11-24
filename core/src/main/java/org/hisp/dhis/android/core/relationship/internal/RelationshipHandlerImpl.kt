@@ -48,6 +48,7 @@ internal class RelationshipHandlerImpl @Inject constructor(
 
     override fun beforeObjectHandled(o: Relationship): Relationship {
         if (!versionManager.isRelationshipSupported(o)) {
+            @Suppress("TooGenericExceptionThrown")
             throw RuntimeException("Only TEI to TEI relationships are supported in 2.29")
         }
         val existingRelationshipUid = getExistingRelationshipUid(o)

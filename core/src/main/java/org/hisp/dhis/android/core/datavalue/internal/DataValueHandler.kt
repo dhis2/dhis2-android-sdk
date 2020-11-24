@@ -61,9 +61,11 @@ internal class DataValueHandler(store: ObjectWithoutUidStore<DataValue>) : Objec
         return dataValuesToUpdate
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private fun containsDataValue(dataValues: Collection<DataValue>, target: DataValue): Boolean {
         return try {
             for (item in dataValues) {
+                @Suppress("ComplexCondition")
                 if (item.dataElement() == target.dataElement() &&
                     item.organisationUnit() == target.organisationUnit() &&
                     item.period() == target.period() &&

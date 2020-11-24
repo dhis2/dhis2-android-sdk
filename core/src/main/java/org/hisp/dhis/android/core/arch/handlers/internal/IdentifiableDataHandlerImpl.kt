@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionM
 import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
 
+@Suppress("TooManyFunctions")
 internal abstract class IdentifiableDataHandlerImpl<O>(
     val store: IdentifiableDataObjectStore<O>,
     private val relationshipVersionManager: RelationshipDHISVersionManager,

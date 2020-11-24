@@ -45,8 +45,6 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
@@ -54,7 +52,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import dagger.Reusable;
-import kotlin.jvm.functions.Function1;
 
 @Reusable
 final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<TrackedEntityInstance> {

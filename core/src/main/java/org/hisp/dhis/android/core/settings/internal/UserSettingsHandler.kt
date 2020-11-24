@@ -36,6 +36,6 @@ internal class UserSettingsHandler(store: ObjectWithoutUidStore<UserSettings>) :
 
     override fun beforeObjectHandled(o: UserSettings): UserSettings {
         store.delete()
-        return super.beforeObjectHandled(o)!!
+        return super.beforeObjectHandled(o)
     }
 }

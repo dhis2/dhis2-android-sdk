@@ -28,16 +28,12 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.event.EventFilter;
-import org.hisp.dhis.android.core.event.EventFilterTableInfo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -59,13 +55,6 @@ public final class EventFilterEntityDIModule implements IdentifiableStoreProvide
     @Reusable
     Handler<EventFilter> handler(EventFilterHandler impl) {
         return impl;
-    }
-
-    @Provides
-    @Reusable
-    OrphanCleaner<ObjectWithUid, EventFilter> orphanCleaner(DatabaseAdapter databaseAdapter) {
-        return new OrphanCleanerImpl<>(EventFilterTableInfo.TABLE_INFO.name(),
-                EventFilterTableInfo.Columns.PROGRAM, databaseAdapter);
     }
 
     @Provides

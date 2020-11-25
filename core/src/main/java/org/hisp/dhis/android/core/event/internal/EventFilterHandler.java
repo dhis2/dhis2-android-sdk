@@ -28,18 +28,14 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.event.EventDataFilter;
 import org.hisp.dhis.android.core.event.EventFilter;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -49,25 +45,18 @@ import dagger.Reusable;
 final class EventFilterHandler extends IdentifiableHandlerImpl<EventFilter> {
 
     private final HandlerWithTransformer<EventDataFilter> eventDataFilterHandler;
-    private final OrphanCleaner<ObjectWithUid, EventFilter> orphanCleaner;
 
     @Inject
     EventFilterHandler(
             IdentifiableObjectStore<EventFilter> eventFilterStore,
-            HandlerWithTransformer<EventDataFilter> eventDataFilterHandler,
-            OrphanCleaner<ObjectWithUid, EventFilter> orphanCleaner) {
+            HandlerWithTransformer<EventDataFilter> eventDataFilterHandler) {
         super(eventFilterStore);
         this.eventDataFilterHandler = eventDataFilterHandler;
-        this.orphanCleaner = orphanCleaner;
     }
 
     @Override
     protected Collection<EventFilter> beforeCollectionHandled(Collection<EventFilter> eventFilters) {
-        for (Map.Entry<String, List<EventFilter>> entry :
-                EventFilterHelper.groupFiltersByProgram(eventFilters).entrySet()) {
-            this.orphanCleaner.deleteOrphan(ObjectWithUid.create(entry.getKey()), entry.getValue());
-        }
-
+        this.store.delete();
         return super.beforeCollectionHandled(eventFilters);
     }
 

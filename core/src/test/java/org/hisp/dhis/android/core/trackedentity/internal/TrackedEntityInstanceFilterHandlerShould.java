@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 
 import com.google.common.collect.Lists;
 
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
@@ -66,9 +65,6 @@ public class TrackedEntityInstanceFilterHandlerShould {
     private HandlerWithTransformer<TrackedEntityInstanceEventFilter> trackedEntityInstanceEventFilterHandler;
 
     @Mock
-    private OrphanCleaner<ObjectWithUid, TrackedEntityInstanceFilter> orphanCleaner;
-
-    @Mock
     private TrackedEntityInstanceEventFilter eventFilter;
 
     // object to test
@@ -81,8 +77,7 @@ public class TrackedEntityInstanceFilterHandlerShould {
         MockitoAnnotations.initMocks(this);
         trackedEntityInstanceFilterHandler = new TrackedEntityInstanceFilterHandler(
                 trackedEntityInstanceFilterStore,
-                trackedEntityInstanceEventFilterHandler,
-                orphanCleaner);
+                trackedEntityInstanceEventFilterHandler);
 
         eventFilters = Lists.newArrayList(eventFilter);
 
@@ -102,7 +97,7 @@ public class TrackedEntityInstanceFilterHandlerShould {
     @Test
     public void extend_identifiable_handler_impl() {
         IdentifiableHandlerImpl<TrackedEntityInstanceFilter> genericHandler =
-                new TrackedEntityInstanceFilterHandler(null, null, null);
+                new TrackedEntityInstanceFilterHandler(null, null);
     }
 
     @Test

@@ -93,7 +93,7 @@ public class ProgramTrackedEntityAttributeHandlerShould {
     @Test
     public void extend_identifiable_handler_impl() {
         IdentifiableHandlerImpl<ProgramTrackedEntityAttribute> syncHandler =
-                new ProgramTrackedEntityAttributeHandler(null, null);
+                new ProgramTrackedEntityAttributeHandler(store, null);
     }
 
     @Test

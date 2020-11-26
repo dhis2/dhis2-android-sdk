@@ -25,8 +25,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.handlers.internal;
+package org.hisp.dhis.android.core.arch.handlers.internal
 
-public interface DictionaryTableHandler<P> {
-    void handle(P pojo, String uid, String objectTable);
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.common.CoreObject
+
+internal class OrderedLinkHandlerImpl<S, M : CoreObject>(private val store: LinkStore<M>) : OrderedLinkHandler<S, M> {
+
+    override fun handleMany(masterUid: String, slaves: List<S>?, transformer: Function2<S, Int, M>) {
+        store.deleteLinksForMasterUid(masterUid)
+        if (slaves != null) {
+            for (i in slaves.indices) {
+                store.insert(transformer.invoke(slaves[i], i + 1))
+            }
+        }
+    }
 }

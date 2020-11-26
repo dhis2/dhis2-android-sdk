@@ -46,12 +46,11 @@ internal class UserHandler @Inject constructor(
     private val userCredentialsHandler: Handler<UserCredentials>,
     private val userRoleHandler: Handler<UserRole>,
     private val userRoleCollectionCleaner: CollectionCleaner<UserRole>
-) :
-    IdentifiableHandlerImpl<User>(userStore) {
+) : IdentifiableHandlerImpl<User>(userStore) {
 
-    override fun afterObjectHandled(user: User, action: HandleAction) {
-        val credentials: UserCredentials = UserInternalAccessor.accessUserCredentials(user)
-        val credentialsWithUser = credentials.toBuilder().user(ObjectWithUid.create(user.uid())).build()
+    override fun afterObjectHandled(o: User, action: HandleAction) {
+        val credentials: UserCredentials = UserInternalAccessor.accessUserCredentials(o)
+        val credentialsWithUser = credentials.toBuilder().user(ObjectWithUid.create(o.uid())).build()
         userCredentialsHandler.handle(credentialsWithUser)
         userRoleCollectionCleaner.deleteNotPresent(credentialsWithUser.userRoles())
         userRoleHandler.handleMany(credentialsWithUser.userRoles())

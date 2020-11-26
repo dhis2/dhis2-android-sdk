@@ -25,21 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.handlers.internal;
+package org.hisp.dhis.android.core.arch.handlers.internal
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.common.CoreObject;
+internal interface Handler<O> {
+    fun handle(o: O)
 
-public class ObjectWithoutUidHandlerImpl<O extends CoreObject> extends HandlerBaseImpl<O> {
-
-    protected final ObjectWithoutUidStore<O> store;
-
-    public ObjectWithoutUidHandlerImpl(ObjectWithoutUidStore<O> store) {
-        this.store = store;
-    }
-
-    @Override
-    protected HandleAction deleteOrPersist(O o) {
-        return store.updateOrInsertWhere(o);
-    }
+    @JvmSuppressWildcards
+    fun handleMany(oCollection: Collection<O>?)
 }

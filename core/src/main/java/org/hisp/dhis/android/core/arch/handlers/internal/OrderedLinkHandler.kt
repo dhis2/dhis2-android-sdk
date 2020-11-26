@@ -25,9 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.handlers.internal
 
-package org.hisp.dhis.android.core.arch.handlers.internal;
+import org.hisp.dhis.android.core.common.CoreObject
 
-public enum HandleAction {
-    Insert, Update, Delete
+internal interface OrderedLinkHandler<S, M : CoreObject> {
+    @JvmSuppressWildcards
+    fun handleMany(masterUid: String, slaves: List<S>?, transformer: (S, Int) -> M)
 }

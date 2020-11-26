@@ -86,18 +86,18 @@ final class EnrollmentHandler extends IdentifiableDataHandlerImpl<Enrollment> {
     }
 
     @Override
-    protected Enrollment addRelationshipState(Enrollment object) {
-        return object.toBuilder().state(State.RELATIONSHIP).build();
+    protected Enrollment addRelationshipState(Enrollment o) {
+        return o.toBuilder().state(State.RELATIONSHIP).build();
     }
 
     @Override
-    protected Enrollment addSyncedState(Enrollment object) {
-        return object.toBuilder().state(State.SYNCED).build();
+    protected Enrollment addSyncedState(Enrollment o) {
+        return o.toBuilder().state(State.SYNCED).build();
     }
 
     @Override
-    protected void deleteOrphans(Enrollment object) {
-        relationshipOrphanCleaner.deleteOrphan(object, EnrollmentInternalAccessor.accessRelationships(object));
+    protected void deleteOrphans(Enrollment o) {
+        relationshipOrphanCleaner.deleteOrphan(o, EnrollmentInternalAccessor.accessRelationships(o));
     }
 
     @Override

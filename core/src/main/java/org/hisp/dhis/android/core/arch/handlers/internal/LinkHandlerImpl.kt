@@ -25,24 +25,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.handlers.internal
 
-package org.hisp.dhis.android.core.settings.internal;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.common.CoreObject
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
-import org.hisp.dhis.android.core.settings.ProgramSetting;
+internal class LinkHandlerImpl<S, O : CoreObject>(private val store: LinkStore<O>) : LinkHandler<S, O> {
 
-import java.util.Collection;
-
-class ProgramSettingHandler extends ObjectWithoutUidHandlerImpl<ProgramSetting> {
-
-    ProgramSettingHandler(ObjectWithoutUidStore<ProgramSetting> store) {
-        super(store);
+    override fun handleMany(masterUid: String, slaves: Collection<S>?, transformer: Function1<S, O>) {
+        store.deleteLinksForMasterUid(masterUid)
+        if (slaves != null) {
+            for (slave in slaves) {
+                val oTransformed = transformer.invoke(slave)
+                store.insert(oTransformed)
+            }
+        }
     }
 
-    @Override
-    protected Collection<ProgramSetting> beforeCollectionHandled(Collection<ProgramSetting> oCollection) {
-        store.delete();
-        return oCollection;
+    override fun resetAllLinks() {
+        store.deleteAllLinks()
     }
 }

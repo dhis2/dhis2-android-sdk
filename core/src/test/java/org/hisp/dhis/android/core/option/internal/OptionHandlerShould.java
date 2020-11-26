@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.option.internal;
 
 import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleaner;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.option.Option;
@@ -72,6 +73,7 @@ public class OptionHandlerShould {
         when(option.uid()).thenReturn("test_option_uid");
         options = Collections.singletonList(option);
         when(option.style()).thenReturn(style);
+        when(optionStore.updateOrInsert(option)).thenReturn(HandleAction.Insert);
     }
 
     @Test
@@ -82,6 +84,6 @@ public class OptionHandlerShould {
 
     @Test
     public void extend_identifiable_handler_impl() {
-        IdentifiableHandlerImpl<Option> genericHandler = new OptionHandler(null, null);
+        IdentifiableHandlerImpl<Option> genericHandler = new OptionHandler(optionStore, null);
     }
 }

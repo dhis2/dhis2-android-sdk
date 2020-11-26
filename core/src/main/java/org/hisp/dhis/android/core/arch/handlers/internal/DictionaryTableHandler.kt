@@ -25,24 +25,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.handlers.internal
 
-package org.hisp.dhis.android.core.organisationunit.internal;
-
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-
-import java.util.List;
-
-import dagger.Reusable;
-
-@Reusable
-class OrganisationUnitDisplayPathTransformer implements Transformer<OrganisationUnit, OrganisationUnit> {
-
-    @Override
-    public OrganisationUnit transform(OrganisationUnit organisationUnit) {
-        List<String> path = OrganisationUnitDisplayPathGenerator.generateDisplayPath(organisationUnit);
-        OrganisationUnit.Builder builder = organisationUnit.toBuilder();
-        builder.displayNamePath(path);
-        return builder.build();
-    }
+internal interface DictionaryTableHandler<O> {
+    fun handle(o: O?, uid: String, objectTable: String)
 }

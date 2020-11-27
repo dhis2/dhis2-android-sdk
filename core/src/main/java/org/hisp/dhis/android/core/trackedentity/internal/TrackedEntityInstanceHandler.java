@@ -106,21 +106,21 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
     }
 
     @Override
-    protected TrackedEntityInstance addRelationshipState(TrackedEntityInstance object) {
-        return object.toBuilder().state(State.RELATIONSHIP).build();
+    protected TrackedEntityInstance addRelationshipState(TrackedEntityInstance o) {
+        return o.toBuilder().state(State.RELATIONSHIP).build();
     }
 
     @Override
-    protected TrackedEntityInstance addSyncedState(TrackedEntityInstance object) {
-        return object.toBuilder().state(State.SYNCED).build();
+    protected TrackedEntityInstance addSyncedState(TrackedEntityInstance o) {
+        return o.toBuilder().state(State.SYNCED).build();
     }
 
     @Override
-    protected void deleteOrphans(TrackedEntityInstance object) {
-        enrollmentOrphanCleaner.deleteOrphan(object,
-                TrackedEntityInstanceInternalAccessor.accessEnrollments(object));
+    protected void deleteOrphans(TrackedEntityInstance o) {
+        enrollmentOrphanCleaner.deleteOrphan(o,
+                TrackedEntityInstanceInternalAccessor.accessEnrollments(o));
 
-        relationshipOrphanCleaner.deleteOrphan(object,
-                TrackedEntityInstanceInternalAccessor.accessRelationships(object));
+        relationshipOrphanCleaner.deleteOrphan(o,
+                TrackedEntityInstanceInternalAccessor.accessRelationships(o));
     }
 }

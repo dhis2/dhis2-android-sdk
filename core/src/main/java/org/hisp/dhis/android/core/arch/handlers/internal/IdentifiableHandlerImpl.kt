@@ -25,18 +25,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.handlers.internal;
+package org.hisp.dhis.android.core.arch.handlers.internal
 
-import org.hisp.dhis.android.core.common.DeletableDataObject;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
-import java.util.Collection;
+internal open class IdentifiableHandlerImpl<O>(protected val store: IdentifiableObjectStore<O>) :
+    HandlerBaseImpl<O>() where O : ObjectWithUidInterface, O : ObjectWithDeleteInterface {
 
-public interface IdentifiableDataHandler<O extends DeletableDataObject & ObjectWithUidInterface> {
+    override fun deleteOrPersist(o: O): HandleAction {
+        val modelUid = o.uid()
+        return if ((CollectionsHelper.isDeleted(o) || deleteIfCondition(o)) && modelUid != null) {
+            store.deleteIfExists(modelUid)
+            HandleAction.Delete
+        } else {
+            store.updateOrInsert(o)
+        }
+    }
 
-    void handleMany(Collection<O> oCollection, Transformer<O, O> transformer, Boolean overwrite);
-
-    void handleMany(Collection<O> oCollection, boolean asRelationship, boolean isFullUpdate, boolean overwrite,
-                    RelationshipItemRelatives relatives);
+    protected open fun deleteIfCondition(o: O): Boolean {
+        return false
+    }
 }

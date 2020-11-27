@@ -25,28 +25,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.handlers.internal;
+package org.hisp.dhis.android.core.arch.handlers.internal
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
-import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
-import java.util.List;
+internal class IdentifiableWithoutDeleteInterfaceHandlerImpl<O : ObjectWithUidInterface>(
+    val store: IdentifiableObjectStore<O>
+) :
+    HandlerBaseImpl<O>() {
 
-public class OrderedLinkHandlerImpl<S, M extends CoreObject> implements OrderedLinkHandler<S, M> {
-
-    private final LinkStore<M> store;
-
-    public OrderedLinkHandlerImpl(LinkStore<M> store) {
-        this.store = store;
-    }
-
-    @Override
-    public void handleMany(String masterUid, List<S> slaves, OrderedLinkTransformer<S, M> transformer) {
-        store.deleteLinksForMasterUid(masterUid);
-        if (slaves != null) {
-            for (int i = 0; i < slaves.size(); i++) {
-                store.insert(transformer.transform(slaves.get(i), i + 1));
-            }
-        }
+    override fun deleteOrPersist(o: O): HandleAction {
+        return store.updateOrInsert(o)
     }
 }

@@ -25,24 +25,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings.internal
 
-package org.hisp.dhis.android.core.settings.internal;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
+import org.hisp.dhis.android.core.settings.GeneralSettings
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
-import org.hisp.dhis.android.core.settings.DataSetSetting;
+internal class GeneralSettingHandler(store: ObjectWithoutUidStore<GeneralSettings>) :
+    ObjectWithoutUidHandlerImpl<GeneralSettings>(store) {
 
-import java.util.Collection;
-
-class DataSetSettingHandler extends ObjectWithoutUidHandlerImpl<DataSetSetting> {
-
-    DataSetSettingHandler(ObjectWithoutUidStore<DataSetSetting> store) {
-        super(store);
-    }
-
-    @Override
-    protected Collection<DataSetSetting> beforeCollectionHandled(Collection<DataSetSetting> oCollection) {
-        store.delete();
-        return oCollection;
+    override fun beforeCollectionHandled(oCollection: Collection<GeneralSettings>): Collection<GeneralSettings> {
+        store.delete()
+        return oCollection
     }
 }

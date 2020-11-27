@@ -25,13 +25,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.handlers.internal;
+package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
+import org.hisp.dhis.android.core.settings.UserSettings
 
-import java.util.Collection;
+internal class UserSettingsHandler(store: ObjectWithoutUidStore<UserSettings>) :
+    ObjectWithoutUidHandlerImpl<UserSettings>(store) {
 
-public interface LinkHandler<S, O extends CoreObject> {
-    void handleMany(String masterUid, Collection<S> slaves, Transformer<S, O> transformer);
-    void resetAllLinks();
+    override fun beforeObjectHandled(o: UserSettings): UserSettings {
+        store.delete()
+        return super.beforeObjectHandled(o)
+    }
 }

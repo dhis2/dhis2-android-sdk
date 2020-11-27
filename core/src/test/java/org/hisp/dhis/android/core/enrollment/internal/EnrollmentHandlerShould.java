@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor;
@@ -123,7 +122,7 @@ public class EnrollmentHandlerShould {
 
     @Test
     public void do_nothing_when_passing_null_argument() {
-        enrollmentHandler.handleMany(null, null, false);
+        enrollmentHandler.handleMany(null, e -> e, false);
 
         // verify that store or event handler is never called
         verify(enrollmentStore, never()).deleteIfExists(anyString());
@@ -165,7 +164,7 @@ public class EnrollmentHandlerShould {
         verify(enrollmentStore, never()).deleteIfExists(anyString());
 
         // event handler should be invoked once
-        verify(eventHandler, times(1)).handleMany(anyList(), any(Transformer.class), eq(false));
+        verify(eventHandler, times(1)).handleMany(anyList(), any(), eq(false));
         verify(eventCleaner, times(1)).deleteOrphan(any(Enrollment.class), anyCollection());
         verify(noteHandler, times(1)).handleMany(anyCollection());
     }

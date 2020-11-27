@@ -25,13 +25,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.handlers.internal;
+package org.hisp.dhis.android.core.arch.handlers.internal
 
-import java.util.Collection;
+import org.hisp.dhis.android.core.common.DeletableDataObject
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
 
-public interface Handler<O> {
+internal interface IdentifiableDataHandler<O> where O : DeletableDataObject, O : ObjectWithUidInterface {
+    @JvmSuppressWildcards
+    fun handleMany(oCollection: Collection<O>?, transformer: (O) -> O, overwrite: Boolean)
 
-    void handle(O o);
-
-    void handleMany(Collection<O> oCollection);
+    @JvmSuppressWildcards
+    fun handleMany(
+        oCollection: Collection<O>?,
+        asRelationship: Boolean,
+        isFullUpdate: Boolean,
+        overwrite: Boolean,
+        relatives: RelationshipItemRelatives?
+    )
 }

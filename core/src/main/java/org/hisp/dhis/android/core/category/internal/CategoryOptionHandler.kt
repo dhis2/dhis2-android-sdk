@@ -44,12 +44,12 @@ internal class CategoryOptionHandler @Inject constructor(
         LinkHandler<ObjectWithUid, CategoryOptionOrganisationUnitLink>
 ) : IdentifiableHandlerImpl<CategoryOption>(categoryOptionStore) {
 
-    override fun afterObjectHandled(categoryOption: CategoryOption, action: HandleAction) {
+    override fun afterObjectHandled(o: CategoryOption, action: HandleAction) {
         categoryOptionOrganisationUnitLinkHandler.handleMany(
-            categoryOption.uid(), categoryOption.organisationUnits()
+            o.uid(), o.organisationUnits()
         ) { organisationUnits: ObjectWithUid ->
             CategoryOptionOrganisationUnitLink.builder()
-                .categoryOption(categoryOption.uid())
+                .categoryOption(o.uid())
                 .organisationUnit(organisationUnits.uid())
                 .build()
         }

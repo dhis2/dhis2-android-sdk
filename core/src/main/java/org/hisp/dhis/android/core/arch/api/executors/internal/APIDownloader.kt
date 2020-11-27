@@ -62,7 +62,7 @@ internal interface APIDownloader {
         masterUid: String,
         handler: LinkHandler<P, O>,
         downloader: (String) -> Single<Payload<P>>,
-        transform: ((P) -> O)?
+        transform: ((P) -> O)
     ): Single<List<P>>
 
     fun <P> downloadWithLastUpdated(

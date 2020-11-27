@@ -91,6 +91,6 @@ public class ProgramSectionHandlerShould {
     @Test
     public void extend_identifiable_handler_impl() {
         IdentifiableHandlerImpl<ProgramSection> genericHandler = new ProgramSectionHandler(
-                null,null);
+                programSectionStore,null);
     }
 }

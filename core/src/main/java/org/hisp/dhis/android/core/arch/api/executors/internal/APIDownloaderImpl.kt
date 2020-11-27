@@ -110,7 +110,7 @@ internal class APIDownloaderImpl @Inject constructor(private val resourceHandler
         masterUid: String,
         handler: LinkHandler<P, O>,
         downloader: (String) -> Single<Payload<P>>,
-        transform: ((P) -> O)?
+        transform: (P) -> O
     ): Single<List<P>> {
         return Single.just(masterUid)
             .flatMap(downloader)

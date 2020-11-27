@@ -33,7 +33,6 @@ import com.google.common.collect.Lists;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.event.EventDataFilter;
 import org.hisp.dhis.android.core.event.EventFilter;
 import org.hisp.dhis.android.core.event.EventQueryCriteria;
@@ -98,12 +97,12 @@ public class EventFilterHandlerShould {
     @Test
     public void extend_identifiable_handler_impl() {
         IdentifiableHandlerImpl<EventFilter> genericHandler =
-                new EventFilterHandler(null, null);
+                new EventFilterHandler(eventFilterStore, null);
     }
 
     @Test
     public void handle_event_filters() {
         eventFilterHandler.handleMany(eventFilters);
-        verify(eventDataFilterHandler).handleMany(eq(eventDataFilters), any(Transformer.class));
+        verify(eventDataFilterHandler).handleMany(eq(eventDataFilters), any());
     }
 }

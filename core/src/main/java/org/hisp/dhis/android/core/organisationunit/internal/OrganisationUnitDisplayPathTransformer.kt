@@ -25,34 +25,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.handlers.internal;
+package org.hisp.dhis.android.core.organisationunit.internal
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
-import org.hisp.dhis.android.core.common.CoreObject;
+import dagger.Reusable
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 
-import java.util.Collection;
+@Reusable
+internal class OrganisationUnitDisplayPathTransformer : Function1<OrganisationUnit, OrganisationUnit> {
 
-public class LinkHandlerImpl<S, O extends CoreObject> implements LinkHandler<S, O> {
-
-    private final LinkStore<O> store;
-
-    public LinkHandlerImpl(LinkStore<O> store) {
-        this.store = store;
-    }
-
-    @Override
-    public void handleMany(String masterUid, Collection<S> slaves, Transformer<S, O> transformer) {
-        store.deleteLinksForMasterUid(masterUid);
-        if (slaves != null) {
-            for (S slave : slaves) {
-                O oTransformed = transformer.transform(slave);
-                store.insert(oTransformed);
-            }
-        }
-    }
-
-    @Override
-    public void resetAllLinks() {
-        store.deleteAllLinks();
+    override operator fun invoke(organisationUnit: OrganisationUnit): OrganisationUnit {
+        val path = OrganisationUnitDisplayPathGenerator.generateDisplayPath(organisationUnit)
+        val builder = organisationUnit.toBuilder()
+        builder.displayNamePath(path)
+        return builder.build()
     }
 }

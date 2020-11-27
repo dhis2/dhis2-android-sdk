@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.common.valuetype.rendering.internal;
 
 import org.hisp.dhis.android.core.arch.handlers.internal.DictionaryTableHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.junit.Before;
@@ -77,8 +76,8 @@ public class ValueTypeRenderingHandlerShould {
     @Test
     public void call_device_handler_when_render_type_not_null() throws Exception {
         renderTypeHandler.handle(renderType, UID, TABLE);
-        verify(deviceRenderingHandler).handle(eq(desktopRenderType), any(Transformer.class));
-        verify(deviceRenderingHandler).handle(eq(mobileRenderType), any(Transformer.class));
+        verify(deviceRenderingHandler).handle(eq(desktopRenderType), any());
+        verify(deviceRenderingHandler).handle(eq(mobileRenderType), any());
         verifyNoMoreInteractions(deviceRenderingHandler);
     }
 

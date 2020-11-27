@@ -28,16 +28,12 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterTableInfo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -60,14 +56,6 @@ public final class TrackedEntityInstanceFilterEntityDIModule
     @Reusable
     Handler<TrackedEntityInstanceFilter> handler(TrackedEntityInstanceFilterHandler impl) {
         return impl;
-    }
-
-    @Provides
-    @Reusable
-    OrphanCleaner<ObjectWithUid, TrackedEntityInstanceFilter> trackedEntityInstanceOrphanCleaner(
-            DatabaseAdapter databaseAdapter) {
-        return new OrphanCleanerImpl<>(TrackedEntityInstanceFilterTableInfo.TABLE_INFO.name(),
-                TrackedEntityInstanceFilterTableInfo.Columns.PROGRAM, databaseAdapter);
     }
 
     @Provides

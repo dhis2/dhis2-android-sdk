@@ -30,12 +30,9 @@ package org.hisp.dhis.android.core.event.internal;
 
 import com.google.common.collect.Lists;
 
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.event.EventDataFilter;
 import org.hisp.dhis.android.core.event.EventFilter;
 import org.hisp.dhis.android.core.event.EventQueryCriteria;
@@ -64,9 +61,6 @@ public class EventFilterHandlerShould {
     private HandlerWithTransformer<EventDataFilter> eventDataFilterHandler;
 
     @Mock
-    private OrphanCleaner<ObjectWithUid, EventFilter> orphanCleaner;
-
-    @Mock
     private EventQueryCriteria eventQueryCriteria;
 
     @Mock
@@ -82,8 +76,7 @@ public class EventFilterHandlerShould {
         MockitoAnnotations.initMocks(this);
         eventFilterHandler = new EventFilterHandler(
                 eventFilterStore,
-                eventDataFilterHandler,
-                orphanCleaner);
+                eventDataFilterHandler);
 
         eventDataFilters = Lists.newArrayList(eventDataFilter);
         when(eventQueryCriteria.dataFilters()).thenReturn(eventDataFilters);
@@ -104,7 +97,7 @@ public class EventFilterHandlerShould {
     @Test
     public void extend_identifiable_handler_impl() {
         IdentifiableHandlerImpl<EventFilter> genericHandler =
-                new EventFilterHandler(eventFilterStore, null, null);
+                new EventFilterHandler(eventFilterStore, null);
     }
 
     @Test

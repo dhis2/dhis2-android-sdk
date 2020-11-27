@@ -92,7 +92,7 @@ public abstract class CategoryOption extends BaseNameableObject implements CoreO
 
         public abstract Builder endDate(@Nullable Date endDate);
 
-        public abstract Builder access(@Nullable Access access);
+        public abstract Builder access(Access access);
 
         public abstract Builder organisationUnits(@Nullable List<ObjectWithUid> organisationUnits);
 

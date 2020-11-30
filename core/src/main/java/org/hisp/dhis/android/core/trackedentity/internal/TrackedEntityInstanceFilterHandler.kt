@@ -25,46 +25,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.event.internal;
-
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.event.EventDataFilter;
-import org.hisp.dhis.android.core.event.EventFilter;
-
-import java.util.Collection;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 
 @Reusable
-final class EventFilterHandler extends IdentifiableHandlerImpl<EventFilter> {
+internal class TrackedEntityInstanceFilterHandler @Inject constructor(
+    trackedEntityInstanceFilterStore: IdentifiableObjectStore<TrackedEntityInstanceFilter>,
+    private val trackedEntityInstanceEventFilterHandler: HandlerWithTransformer<TrackedEntityInstanceEventFilter>
+) : IdentifiableHandlerImpl<TrackedEntityInstanceFilter>(trackedEntityInstanceFilterStore) {
 
-    private final HandlerWithTransformer<EventDataFilter> eventDataFilterHandler;
-
-    @Inject
-    EventFilterHandler(
-            IdentifiableObjectStore<EventFilter> eventFilterStore,
-            HandlerWithTransformer<EventDataFilter> eventDataFilterHandler) {
-        super(eventFilterStore);
-        this.eventDataFilterHandler = eventDataFilterHandler;
+    override fun beforeCollectionHandled(
+        oCollection: Collection<TrackedEntityInstanceFilter>
+    ): Collection<TrackedEntityInstanceFilter> {
+        store.delete()
+        return super.beforeCollectionHandled(oCollection)
     }
 
-    @Override
-    protected Collection<EventFilter> beforeCollectionHandled(Collection<EventFilter> eventFilters) {
-        this.store.delete();
-        return super.beforeCollectionHandled(eventFilters);
-    }
-
-    @Override
-    protected void afterObjectHandled(EventFilter eventFilter, HandleAction action) {
-        if (action != HandleAction.Delete && eventFilter.eventQueryCriteria() != null) {
-            this.eventDataFilterHandler.handleMany(eventFilter.eventQueryCriteria().dataFilters(), o ->
-                    o.toBuilder().eventFilter(eventFilter.uid()).build());
+    override fun afterObjectHandled(o: TrackedEntityInstanceFilter, action: HandleAction) {
+        if (action !== HandleAction.Delete) {
+            trackedEntityInstanceEventFilterHandler.handleMany(o.eventFilters()) {
+                ef: TrackedEntityInstanceEventFilter ->
+                ef.toBuilder().trackedEntityInstanceFilter(o.uid()).build()
+            }
         }
     }
 }

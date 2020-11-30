@@ -105,7 +105,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         val categoryCombo = CreateCategoryComboUtils.create(1L, CategoryCombo.DEFAULT_UID)
         databaseAdapter.insert(CategoryComboTableInfo.TABLE_INFO.name(), null, categoryCombo)
 
-        val access = Access.create(true, null, DataAccess.create(true, true))
+        val access = Access.create(true, false, DataAccess.create(true, true))
         val program = Program.builder().uid(programUid)
             .access(access)
             .trackedEntityType(TrackedEntityType.builder().uid(teiTypeUid).build())

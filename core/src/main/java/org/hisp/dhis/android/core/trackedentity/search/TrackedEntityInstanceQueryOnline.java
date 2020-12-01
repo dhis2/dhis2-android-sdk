@@ -35,7 +35,7 @@ import com.google.auto.value.AutoValue;
 import com.google.common.base.Joiner;
 
 import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
-import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat;
+import org.hisp.dhis.android.core.arch.helpers.DateUtils;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
 import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
@@ -50,8 +50,6 @@ import java.util.Map;
 
 @AutoValue
 abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
-
-    private static final SafeDateFormat QUERY_FORMAT = new SafeDateFormat("yyyy-MM-dd");
 
     @NonNull
     abstract List<String> orgUnits();
@@ -119,7 +117,7 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
     }
 
     private String formatDate(Date date) {
-        return date == null ? null : QUERY_FORMAT.format(date);
+        return date == null ? null : DateUtils.SIMPLE_DATE_FORMAT.format(date);
     }
 
     abstract Builder toBuilder();

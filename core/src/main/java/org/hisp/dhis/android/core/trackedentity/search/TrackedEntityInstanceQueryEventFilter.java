@@ -26,36 +26,66 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.trackedentity.search;
 
-import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat;
+import androidx.annotation.Nullable;
+
+import com.google.auto.value.AutoValue;
+
 import org.hisp.dhis.android.core.arch.helpers.DateUtils;
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+import org.hisp.dhis.android.core.common.AssignedUserMode;
+import org.hisp.dhis.android.core.event.EventStatus;
 
-import java.io.IOException;
-import java.text.ParseException;
+import java.util.Date;
+import java.util.List;
 
-import static com.google.common.truth.Truth.assertThat;
+@AutoValue
+abstract class TrackedEntityInstanceQueryEventFilter {
 
-public class DataInputPeriodShould extends BaseObjectShould implements ObjectShould {
+    @Nullable
+    public abstract String programStage();
 
-    public static final SafeDateFormat dateFormat = DateUtils.DATE_FORMAT;
+    @Nullable
+    public abstract List<EventStatus> eventStatus();
 
-    public DataInputPeriodShould() {
-        super("dataset/data_input_period.json");
+    @Nullable
+    public abstract AssignedUserMode assignedUserMode();
+
+    @Nullable
+    public abstract Date eventStartDate();
+
+    @Nullable
+    public abstract Date eventEndDate();
+
+    public String formattedEventStartDate() {
+        return formatDate(eventStartDate());
     }
 
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
+    public String formattedEventEndDate() {
+        return formatDate(eventEndDate());
+    }
 
-        DataInputPeriod dataInputPeriod = objectMapper.readValue(jsonStream, DataInputPeriod.class);
+    private String formatDate(Date date) {
+        return date == null ? null : DateUtils.SIMPLE_DATE_FORMAT.format(date);
+    }
 
-        assertThat(UidsHelper.getUidOrNull(dataInputPeriod.period())).isEqualTo("201801");
-        assertThat(dataInputPeriod.openingDate()).isEqualTo(dateFormat.parse("2017-12-31T23:00:00.000"));
-        assertThat(dataInputPeriod.closingDate()).isEqualTo(dateFormat.parse("2018-01-09T23:00:00.000"));
+    public static Builder builder() {
+        return new AutoValue_TrackedEntityInstanceQueryEventFilter.Builder();
+    }
+
+    @AutoValue.Builder
+    abstract static class Builder {
+
+        public abstract Builder programStage(String programStage);
+
+        public abstract Builder eventStatus(List<EventStatus> eventStatus);
+
+        public abstract Builder eventStartDate(Date eventStartDate);
+
+        public abstract Builder eventEndDate(Date eventEndDate);
+
+        public abstract Builder assignedUserMode(AssignedUserMode assignedUserMode);
+
+        public abstract TrackedEntityInstanceQueryEventFilter build();
     }
 }

@@ -30,9 +30,9 @@ package org.hisp.dhis.android.core.trackedentity.search;
 
 import com.google.common.base.Joiner;
 
-import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.arch.helpers.DateUtils;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
@@ -67,8 +67,6 @@ import static org.hisp.dhis.android.core.event.EventTableInfo.Columns.EVENT_DATE
         "PMD.CyclomaticComplexity",
         "PMD.StdCyclomaticComplexity"})
 final class TrackedEntityInstanceLocalQueryHelper {
-
-    private static final SafeDateFormat QUERY_FORMAT = new SafeDateFormat("yyyy-MM-dd");
 
     private static String TEI_ALIAS = "tei";
     private static String ENROLLMENT_ALIAS = "en";
@@ -299,7 +297,7 @@ final class TrackedEntityInstanceLocalQueryHelper {
         if (scope.eventStatus() == null) {
             appendEventDates(where, scope, EVENT_DATE);
         } else if (scope.eventStatus().size() > 0 && scope.eventStartDate() != null && scope.eventEndDate() != null) {
-            String nowStr = QUERY_FORMAT.format(new Date());
+            String nowStr = DateUtils.SIMPLE_DATE_FORMAT.format(new Date());
             WhereClauseBuilder statusListWhere = new WhereClauseBuilder();
             for (EventStatus eventStatus : scope.eventStatus()) {
                 WhereClauseBuilder statusWhere = new WhereClauseBuilder();

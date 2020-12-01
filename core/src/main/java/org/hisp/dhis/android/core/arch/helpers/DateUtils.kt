@@ -25,37 +25,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.helpers
 
-package org.hisp.dhis.android.core.dataset;
+import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat
 
-import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat;
-import org.hisp.dhis.android.core.arch.helpers.DateUtils;
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+object DateUtils {
 
-import java.io.IOException;
-import java.text.ParseException;
+    @JvmField
+    val DATE_FORMAT = SafeDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
 
-import static com.google.common.truth.Truth.assertThat;
+    @JvmField
+    val SPACE_DATE_FORMAT = SafeDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
 
-public class DataInputPeriodShould extends BaseObjectShould implements ObjectShould {
+    @JvmField
+    val SIMPLE_DATE_FORMAT = SafeDateFormat("yyyy-MM-dd")
 
-    public static final SafeDateFormat dateFormat = DateUtils.DATE_FORMAT;
-
-    public DataInputPeriodShould() {
-        super("dataset/data_input_period.json");
-    }
-
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-
-        DataInputPeriod dataInputPeriod = objectMapper.readValue(jsonStream, DataInputPeriod.class);
-
-        assertThat(UidsHelper.getUidOrNull(dataInputPeriod.period())).isEqualTo("201801");
-        assertThat(dataInputPeriod.openingDate()).isEqualTo(dateFormat.parse("2017-12-31T23:00:00.000"));
-        assertThat(dataInputPeriod.closingDate()).isEqualTo(dateFormat.parse("2018-01-09T23:00:00.000"));
-    }
 }

@@ -25,39 +25,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.cleaners.internal
 
-package org.hisp.dhis.android.core.arch.cleaners.internal;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper.commaSeparatedUidsWithSingleQuotationMarks
+import org.hisp.dhis.android.core.common.IdentifiableColumns
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
-import org.hisp.dhis.android.core.common.IdentifiableColumns;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+class OrphanCleanerImpl<P : ObjectWithUidInterface, C : ObjectWithUidInterface>(
+    private val tableName: String,
+    private val parentColumn: String,
+    private val databaseAdapter: DatabaseAdapter
+) : OrphanCleaner<P, C> {
 
-import java.util.Collection;
-
-public class OrphanCleanerImpl<P extends ObjectWithUidInterface, C extends ObjectWithUidInterface>
-        implements OrphanCleaner<P, C> {
-
-    private final String tableName;
-    private final String parentColumn;
-    private final DatabaseAdapter databaseAdapter;
-
-    public OrphanCleanerImpl(String tableName, String parentColumn, DatabaseAdapter databaseAdapter) {
-        this.tableName = tableName;
-        this.parentColumn = parentColumn;
-        this.databaseAdapter = databaseAdapter;
-    }
-
-    public boolean deleteOrphan(P parent, Collection<C> children) {
+    override fun deleteOrphan(parent: P?, children: Collection<C>?): Boolean {
         if (parent == null || children == null) {
-            return false;
+            return false
         }
-
-        String childrenUids = UidsHelper.commaSeparatedUidsWithSingleQuotationMarks(children);
-        String clause =
-                parentColumn + "='" + parent.uid() + "'"
-                + " AND "
-                + IdentifiableColumns.UID + " NOT IN (" + childrenUids + ");";
-        return databaseAdapter.delete(tableName, clause, null) > 0;
+        val childrenUids = commaSeparatedUidsWithSingleQuotationMarks(children)
+        val clause = (parentColumn + "='" + parent.uid() + "'"
+            + " AND "
+            + IdentifiableColumns.UID + " NOT IN (" + childrenUids + ");")
+        return databaseAdapter.delete(tableName, clause, null) > 0
     }
 }

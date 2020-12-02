@@ -25,11 +25,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.cleaners.internal
 
-package org.hisp.dhis.android.core.arch.cleaners.internal;
+import org.hisp.dhis.android.core.common.IdentifiableObject
 
-import org.hisp.dhis.android.core.common.IdentifiableObject;
-
-public interface ParentOrphanCleaner<P extends IdentifiableObject> {
-    void deleteOrphan(P parent);
+interface ParentOrphanCleaner<P : IdentifiableObject> {
+    fun deleteOrphan(parent: P?)
 }

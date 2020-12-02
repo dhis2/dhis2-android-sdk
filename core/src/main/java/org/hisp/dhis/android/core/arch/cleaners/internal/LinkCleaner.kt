@@ -25,13 +25,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.cleaners.internal
 
-package org.hisp.dhis.android.core.arch.cleaners.internal;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-
-import java.util.Collection;
-
-public interface LinkCleaner<P extends ObjectWithUidInterface> {
-    boolean deleteNotPresent(Collection<P> objects);
+interface LinkCleaner<P : ObjectWithUidInterface> {
+    fun deleteNotPresent(objects: Collection<P>?): Boolean
 }

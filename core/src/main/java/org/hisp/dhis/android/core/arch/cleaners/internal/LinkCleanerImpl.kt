@@ -25,35 +25,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.cleaners.internal
 
-package org.hisp.dhis.android.core.arch.cleaners.internal;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper.commaSeparatedUidsWithSingleQuotationMarks
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+class LinkCleanerImpl<P : ObjectWithUidInterface>(
+    private val tableName: String,
+    private val applicableColumn: String,
+    private val databaseAdapter: DatabaseAdapter
+) : LinkCleaner<P> {
 
-import java.util.Collection;
-
-public class LinkCleanerImpl<P extends ObjectWithUidInterface> implements LinkCleaner<P> {
-
-    private final String tableName;
-    private final String applicableColumn;
-    private final DatabaseAdapter databaseAdapter;
-
-    public LinkCleanerImpl(String tableName, String applicableColumn, DatabaseAdapter databaseAdapter) {
-        this.tableName = tableName;
-        this.databaseAdapter = databaseAdapter;
-        this.applicableColumn = applicableColumn;
-    }
-
-    @Override
-    public boolean deleteNotPresent(Collection<P> objects) {
+    override fun deleteNotPresent(objects: Collection<P>?): Boolean {
         if (objects == null) {
-            return false;
+            return false
         }
-
-        String objectUids = UidsHelper.commaSeparatedUidsWithSingleQuotationMarks(objects);
-        String clause = applicableColumn + " NOT IN (" + objectUids + ");";
-        return databaseAdapter.delete(tableName, clause, null) > 0;
+        val objectUids = commaSeparatedUidsWithSingleQuotationMarks(objects)
+        val clause = "$applicableColumn NOT IN ($objectUids);"
+        return databaseAdapter.delete(tableName, clause, null) > 0
     }
 }

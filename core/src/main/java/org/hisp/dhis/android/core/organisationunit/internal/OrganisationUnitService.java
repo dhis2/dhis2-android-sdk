@@ -41,10 +41,10 @@ import retrofit2.http.Query;
 interface OrganisationUnitService {
     String ORGANISATION_UNITS = "organisationUnits";
 
-    String UID = "uid";
     String FIELDS = "fields";
     String FILTER = "filter";
     String PAGING = "paging";
+    String ORDER = "order";
     String PAGE = "page";
     String PAGE_SIZE = "pageSize";
 
@@ -52,6 +52,7 @@ interface OrganisationUnitService {
     Single<Payload<OrganisationUnit>> getOrganisationUnits(
             @Query(FIELDS) @Which Fields<OrganisationUnit> fields,
             @Query(FILTER) @Where Filter<OrganisationUnit, String> filter,
+            @Query(ORDER) String order,
             @Query(PAGING) Boolean paging,
             @Query(PAGE_SIZE) Integer pageSize,
             @Query(PAGE) Integer page
@@ -61,6 +62,7 @@ interface OrganisationUnitService {
     Single<Payload<OrganisationUnit>> getSearchOrganisationUnits(
             @Query(FIELDS) @Which Fields<OrganisationUnit> fields,
             @Query(FILTER) @Where Filter<OrganisationUnit, String> filter,
+            @Query(ORDER) String order,
             @Query(PAGING) Boolean paging
     );
 }

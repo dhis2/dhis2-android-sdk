@@ -25,13 +25,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.cleaners.internal
 
-package org.hisp.dhis.android.core.arch.cleaners.internal;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper.commaSeparatedUidsWithSingleQuotationMarks
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper.mapByParentUid
+import org.hisp.dhis.android.core.common.IdentifiableColumns
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+class SubCollectionCleanerImpl<P : ObjectWithUidInterface>(
+    private val tableName: String,
+    private val parentColumn: String,
+    private val databaseAdapter: DatabaseAdapter,
+    private val keyExtractor: Transformer<P, String>
+) : SubCollectionCleaner<P> {
 
-import java.util.Collection;
-
-public interface SubCollectionCleaner<P extends ObjectWithUidInterface> {
-    boolean deleteNotPresent(Collection<P> objects);
+    override fun deleteNotPresent(objects: Collection<P>?): Boolean {
+        if (objects == null) {
+            return false
+        }
+        val subLists: Map<String, List<P>> = mapByParentUid(objects, keyExtractor)
+        var result = false
+        for ((key, value) in subLists) {
+            val childrenUids = commaSeparatedUidsWithSingleQuotationMarks(value)
+            val clause = (parentColumn + "='" + key + "'"
+                + " AND "
+                + IdentifiableColumns.UID + " NOT IN (" + childrenUids + ");")
+            result = result || databaseAdapter.delete(tableName, clause, null) > 0
+        }
+        return result
+    }
 }

@@ -49,9 +49,11 @@ internal class SubCollectionCleanerImpl<P : ObjectWithUidInterface>(
         var result = false
         for ((key, value) in subLists) {
             val childrenUids = commaSeparatedUidsWithSingleQuotationMarks(value)
-            val clause = (parentColumn + "='" + key + "'"
-                + " AND "
-                + IdentifiableColumns.UID + " NOT IN (" + childrenUids + ");")
+            val clause = (
+                parentColumn + "='" + key + "'" +
+                    " AND " +
+                    IdentifiableColumns.UID + " NOT IN (" + childrenUids + ");"
+                )
             result = result || databaseAdapter.delete(tableName, clause, null) > 0
         }
         return result

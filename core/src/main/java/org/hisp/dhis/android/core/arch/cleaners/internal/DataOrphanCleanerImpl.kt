@@ -34,7 +34,9 @@ import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 import org.hisp.dhis.android.core.common.State
 
 internal class DataOrphanCleanerImpl<P : ObjectWithUidInterface, C : ObjectWithUidInterface>(
-    private val tableName: String, private val parentColumn: String, private val stateColumn: String,
+    private val tableName: String,
+    private val parentColumn: String,
+    private val stateColumn: String,
     private val databaseAdapter: DatabaseAdapter
 ) : OrphanCleaner<P, C> {
 
@@ -43,11 +45,13 @@ internal class DataOrphanCleanerImpl<P : ObjectWithUidInterface, C : ObjectWithU
             return false
         }
         val childrenUids = commaSeparatedUidsWithSingleQuotationMarks(children)
-        val clause = (parentColumn + "='" + parent.uid() + "'"
-            + " AND "
-            + stateColumn + " IN ('" + State.SYNCED + "','" + State.SYNCED_VIA_SMS + "')"
-            + " AND "
-            + IdentifiableColumns.UID + " NOT IN (" + childrenUids + ");")
+        val clause = (
+            parentColumn + "='" + parent.uid() + "'" +
+                " AND " +
+                stateColumn + " IN ('" + State.SYNCED + "','" + State.SYNCED_VIA_SMS + "')" +
+                " AND " +
+                IdentifiableColumns.UID + " NOT IN (" + childrenUids + ");"
+            )
         return databaseAdapter.delete(tableName, clause, null) > 0
     }
 }

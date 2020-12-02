@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.arch.cleaners.internal
 
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
-interface SubCollectionCleaner<P : ObjectWithUidInterface> {
+internal interface SubCollectionCleaner<P : ObjectWithUidInterface> {
 
     @JvmSuppressWildcards
     fun deleteNotPresent(objects: Collection<P>?): Boolean

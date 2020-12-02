@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.helpers.UidsHelper.commaSeparatedUidsWith
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
-class OrphanCleanerImpl<P : ObjectWithUidInterface, C : ObjectWithUidInterface>(
+internal class OrphanCleanerImpl<P : ObjectWithUidInterface, C : ObjectWithUidInterface>(
     private val tableName: String,
     private val parentColumn: String,
     private val databaseAdapter: DatabaseAdapter

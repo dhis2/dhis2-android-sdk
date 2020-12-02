@@ -115,6 +115,7 @@ abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseScope {
                 .attribute(Collections.emptyList())
                 .filter(Collections.emptyList())
                 .orgUnits(Collections.emptyList())
+                .eventFilters(Collections.emptyList())
                 .order(Collections.emptyList())
                 .mode(RepositoryMode.OFFLINE_ONLY)
                 .includeDeleted(false)

@@ -33,20 +33,25 @@ import androidx.paging.ItemKeyedDataSource;
 import org.hisp.dhis.android.core.arch.cache.internal.D2Cache;
 import org.hisp.dhis.android.core.arch.cache.internal.ExpirableCache;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
+import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode.OFFLINE_FIRST;
 import static org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode.OFFLINE_ONLY;
 import static org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode.ONLINE_ONLY;
@@ -61,7 +66,7 @@ import static org.mockito.Mockito.when;
 @RunWith(JUnit4.class)
 public class TrackedEntityInstanceQueryDataSourceShould {
 
-    private TrackedEntityInstanceQueryRepositoryScope emptyScope = TrackedEntityInstanceQueryRepositoryScope.empty();
+    private TrackedEntityInstanceQueryRepositoryScope singleEventFilterScope, multipleEventFilterScope;
 
     @Mock
     private TrackedEntityInstanceStore store;
@@ -69,9 +74,10 @@ public class TrackedEntityInstanceQueryDataSourceShould {
     @Mock
     private TrackedEntityInstanceQueryCallFactory onlineCallFactory;
 
-    private List<TrackedEntityInstance> offlineObjects;
+    private List<TrackedEntityInstance> offlineObjects, onlineObjects1, onlineObjects2;
 
-    private List<TrackedEntityInstance> onlineObjects;
+    @Captor
+    ArgumentCaptor<List<TrackedEntityInstance>> captureInstances;
 
     @Mock
     private Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders;
@@ -79,7 +85,7 @@ public class TrackedEntityInstanceQueryDataSourceShould {
     @Mock
     private ItemKeyedDataSource.LoadInitialCallback<TrackedEntityInstance> initialCallback;
 
-    private D2Cache<TrackedEntityInstanceQueryOnline, List<TrackedEntityInstance>> onlineCache = new ExpirableCache<>();
+    private final D2Cache<TrackedEntityInstanceQueryOnline, List<TrackedEntityInstance>> onlineCache = new ExpirableCache<>();
 
     @Before
     public void setUp() {
@@ -90,39 +96,50 @@ public class TrackedEntityInstanceQueryDataSourceShould {
                 TrackedEntityInstance.builder().uid("offline2").build(),
                 TrackedEntityInstance.builder().uid("offline3").build());
 
-        onlineObjects = Arrays.asList(
+        onlineObjects1 = Arrays.asList(
                 TrackedEntityInstance.builder().uid("online1").build(),
                 TrackedEntityInstance.builder().uid("online2").build(),
                 TrackedEntityInstance.builder().uid("online3").build(),
                 TrackedEntityInstance.builder().uid("online4").build(),
                 TrackedEntityInstance.builder().uid("online5").build());
 
+        onlineObjects2 = Arrays.asList(
+                TrackedEntityInstance.builder().uid("online1").build(),
+                TrackedEntityInstance.builder().uid("online6").build());
+
         when(store.selectRawQuery(anyString())).thenReturn(offlineObjects);
-        when(onlineCallFactory.getCall(argThat(new QueryPageMatcher(1)))).thenReturn(() -> onlineObjects);
-        when(onlineCallFactory.getCall(argThat(new QueryPageMatcher(4)))).thenReturn(Collections::emptyList);
+
+        singleEventFilterScope = emptyScopeWithModes(AssignedUserMode.ANY);
+        multipleEventFilterScope = emptyScopeWithModes(AssignedUserMode.ANY, AssignedUserMode.CURRENT);
+
+        when(onlineCallFactory.getCall(argThat(new QueryPageUserModeMatcher(1, AssignedUserMode.ANY)))).thenReturn(() -> onlineObjects1);
+        when(onlineCallFactory.getCall(argThat(new QueryPageUserModeMatcher(4, AssignedUserMode.ANY)))).thenReturn(Collections::emptyList);
+
+        when(onlineCallFactory.getCall(argThat(new QueryPageUserModeMatcher(1, AssignedUserMode.CURRENT)))).thenReturn(() -> onlineObjects2);
+        when(onlineCallFactory.getCall(argThat(new QueryPageUserModeMatcher(4, AssignedUserMode.CURRENT)))).thenReturn(Collections::emptyList);
 
         when(childrenAppenders.get(anyString())).thenReturn(identityAppender());
     }
 
     @Test
     public void get_initial_online_page() {
-        TrackedEntityInstanceQueryRepositoryScope scope = emptyScope.toBuilder().mode(ONLINE_ONLY).build();
+        TrackedEntityInstanceQueryRepositoryScope scope = singleEventFilterScope.toBuilder().mode(ONLINE_ONLY).build();
         TrackedEntityInstanceQueryDataSource dataSource =
                 new TrackedEntityInstanceQueryDataSource(store, onlineCallFactory, scope, childrenAppenders, onlineCache);
-        TrackedEntityInstanceQueryOnline onlineQuery = TrackedEntityInstanceQueryOnline.create(scope);
+        TrackedEntityInstanceQueryOnline onlineQuery = TrackedEntityInstanceQueryOnlineHelper.fromScope(scope).get(0);
 
         dataSource.loadInitial(new ItemKeyedDataSource.LoadInitialParams<>(null, onlineQuery.pageSize(), false),
                 initialCallback);
         verify(onlineCallFactory).getCall(onlineQuery);
-        verify(initialCallback).onResult(onlineObjects);
+        verify(initialCallback).onResult(onlineObjects1);
     }
 
     @Test
     public void get_initial_offline_page() {
-        TrackedEntityInstanceQueryRepositoryScope scope = emptyScope.toBuilder().mode(OFFLINE_ONLY).build();
+        TrackedEntityInstanceQueryRepositoryScope scope = singleEventFilterScope.toBuilder().mode(OFFLINE_ONLY).build();
         TrackedEntityInstanceQueryDataSource dataSource =
                 new TrackedEntityInstanceQueryDataSource(store, onlineCallFactory, scope, childrenAppenders, onlineCache);
-        TrackedEntityInstanceQueryOnline onlineQuery = TrackedEntityInstanceQueryOnline.create(scope);
+        TrackedEntityInstanceQueryOnline onlineQuery = TrackedEntityInstanceQueryOnlineHelper.fromScope(scope).get(0);
 
         dataSource.loadInitial(new ItemKeyedDataSource.LoadInitialParams<>(null, onlineQuery.pageSize(), false),
                 initialCallback);
@@ -132,7 +149,7 @@ public class TrackedEntityInstanceQueryDataSourceShould {
 
     @Test
     public void query_online_when_offline_exhausted() {
-        TrackedEntityInstanceQueryRepositoryScope scope = emptyScope.toBuilder().mode(OFFLINE_FIRST).build();
+        TrackedEntityInstanceQueryRepositoryScope scope = singleEventFilterScope.toBuilder().mode(OFFLINE_FIRST).build();
         TrackedEntityInstanceQueryDataSource dataSource =
                 new TrackedEntityInstanceQueryDataSource(store, onlineCallFactory, scope, childrenAppenders, onlineCache);
 
@@ -145,36 +162,58 @@ public class TrackedEntityInstanceQueryDataSourceShould {
     }
 
     @Test
-    public void query_online_recursively_if_repeated_results() {
-        TrackedEntityInstanceQueryRepositoryScope scope = emptyScope.toBuilder().mode(OFFLINE_FIRST).build();
+    public void query_online_again_if_not_exhausted() {
+        TrackedEntityInstanceQueryRepositoryScope scope = singleEventFilterScope.toBuilder().mode(OFFLINE_FIRST).build();
         TrackedEntityInstanceQueryDataSource dataSource =
                 new TrackedEntityInstanceQueryDataSource(store, onlineCallFactory, scope, childrenAppenders, onlineCache);
 
-        dataSource.loadInitial(new ItemKeyedDataSource.LoadInitialParams<>(null, 10, false),
+        dataSource.loadInitial(new ItemKeyedDataSource.LoadInitialParams<>(null, 5, false),
                 initialCallback);
         verify(store).selectRawQuery(anyString());
         verifyNoMoreInteractions(store);
+
+        dataSource.loadAfter(new ItemKeyedDataSource.LoadParams<>(null, 5), initialCallback);
+
         verify(onlineCallFactory, times(2)).getCall(any(TrackedEntityInstanceQueryOnline.class));
-        verifyNoMoreInteractions(onlineCallFactory);
     }
 
     @Test
     public void get_initial_online_page_from_cache() {
         TrackedEntityInstanceQueryRepositoryScope scope =
-                emptyScope.toBuilder().mode(ONLINE_ONLY).allowOnlineCache(true).build();
-        TrackedEntityInstanceQueryOnline onlineQuery = TrackedEntityInstanceQueryOnline.create(scope);
+                singleEventFilterScope.toBuilder().mode(ONLINE_ONLY).allowOnlineCache(true).build();
+        TrackedEntityInstanceQueryOnline onlineQuery = TrackedEntityInstanceQueryOnlineHelper.fromScope(scope).get(0);
 
         TrackedEntityInstanceQueryDataSource dataSource1 =
                 new TrackedEntityInstanceQueryDataSource(store, onlineCallFactory, scope, childrenAppenders, onlineCache);
         dataSource1.loadInitial(new ItemKeyedDataSource.LoadInitialParams<>(null, onlineQuery.pageSize(), false),
                 initialCallback);
-        verify(onlineCallFactory, times(2)).getCall(any());
+        verify(onlineCallFactory).getCall(any());
 
         TrackedEntityInstanceQueryDataSource dataSource2 =
                 new TrackedEntityInstanceQueryDataSource(store, onlineCallFactory, scope, childrenAppenders, onlineCache);
         dataSource2.loadInitial(new ItemKeyedDataSource.LoadInitialParams<>(null, onlineQuery.pageSize(), false),
                 initialCallback);
         verifyNoMoreInteractions(onlineCallFactory);
+    }
+
+    @Test
+    public void get_multiple_event_filter_queries() {
+        TrackedEntityInstanceQueryRepositoryScope scope = multipleEventFilterScope.toBuilder().mode(OFFLINE_FIRST).build();
+
+        TrackedEntityInstanceQueryDataSource dataSource =
+                new TrackedEntityInstanceQueryDataSource(store, onlineCallFactory, scope, childrenAppenders, onlineCache);
+
+        dataSource.loadInitial(new ItemKeyedDataSource.LoadInitialParams<>(null, 20, false),
+                initialCallback);
+
+        verify(store).selectRawQuery(anyString());
+        verifyNoMoreInteractions(store);
+        verify(onlineCallFactory).getCall(argThat(new QueryUserModeMatcher(AssignedUserMode.ANY)));
+        verify(onlineCallFactory).getCall(argThat(new QueryUserModeMatcher(AssignedUserMode.CURRENT)));
+        verifyNoMoreInteractions(onlineCallFactory);
+
+        verify(initialCallback).onResult(captureInstances.capture());
+        assertThat(captureInstances.getValue().size()).isEqualTo(9);
     }
 
     private ChildrenAppender<TrackedEntityInstance> identityAppender() {
@@ -184,5 +223,13 @@ public class TrackedEntityInstanceQueryDataSourceShould {
                 return m;
             }
         };
+    }
+
+    private TrackedEntityInstanceQueryRepositoryScope emptyScopeWithModes(AssignedUserMode ...assignedUserModes) {
+        List<TrackedEntityInstanceQueryEventFilter> eventFilters = new ArrayList<>();
+        for (AssignedUserMode mode : assignedUserModes) {
+            eventFilters.add(TrackedEntityInstanceQueryEventFilter.builder().assignedUserMode(mode).build());
+        }
+        return TrackedEntityInstanceQueryRepositoryScope.builder().eventFilters(eventFilters).build();
     }
 }

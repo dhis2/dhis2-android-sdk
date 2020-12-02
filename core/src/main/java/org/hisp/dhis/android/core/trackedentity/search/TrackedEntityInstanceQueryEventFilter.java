@@ -69,6 +69,8 @@ abstract class TrackedEntityInstanceQueryEventFilter {
         return date == null ? null : DateUtils.SIMPLE_DATE_FORMAT.format(date);
     }
 
+    abstract TrackedEntityInstanceQueryEventFilter.Builder toBuilder();
+
     public static Builder builder() {
         return new AutoValue_TrackedEntityInstanceQueryEventFilter.Builder();
     }

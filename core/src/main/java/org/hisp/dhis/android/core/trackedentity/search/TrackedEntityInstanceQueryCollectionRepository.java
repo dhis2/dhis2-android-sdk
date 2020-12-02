@@ -64,6 +64,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -270,7 +271,8 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @return Repository connector
      */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, Date> byEventStartDate() {
-        return connectorFactory.eqConnector(date -> scope.toBuilder().eventStartDate(date).build());
+        return connectorFactory.eqConnector(date ->
+                TrackedEntityInstanceQueryRepositoryScopeHelper.setEventStartDate(scope, date));
     }
 
     /**
@@ -279,7 +281,8 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @return Repository connector
      */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, Date> byEventEndDate() {
-        return connectorFactory.eqConnector(date -> scope.toBuilder().eventEndDate(date).build());
+        return connectorFactory.eqConnector(date ->
+                TrackedEntityInstanceQueryRepositoryScopeHelper.setEventEndDate(scope, date));
     }
 
     /**
@@ -290,7 +293,8 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @return Repository connector
      */
     public ListFilterConnector<TrackedEntityInstanceQueryCollectionRepository, EventStatus> byEventStatus() {
-        return connectorFactory.listConnector(statusList -> scope.toBuilder().eventStatus(statusList).build());
+        return connectorFactory.listConnector(statusList ->
+                TrackedEntityInstanceQueryRepositoryScopeHelper.setEventStatus(scope, statusList));
     }
 
     /**
@@ -331,7 +335,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, AssignedUserMode> byAssignedUserMode() {
         return connectorFactory.eqConnector(mode -> {
             if (versionManager.isGreaterThan(DHISVersion.V2_31)) {
-                return scope.toBuilder().assignedUserMode(mode).build();
+                return TrackedEntityInstanceQueryRepositoryScopeHelper.setAssignedUserMode(scope, mode);
             } else {
                 return scope;
             }
@@ -462,7 +466,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     @Override
     public List<TrackedEntityInstance> blockingGet() {
         if (scope.mode().equals(RepositoryMode.OFFLINE_ONLY) || scope.mode().equals(RepositoryMode.OFFLINE_FIRST)) {
-            String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(scope, Collections.emptyList(),
+            String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(scope, Collections.emptySet(),
                     -1);
             List<TrackedEntityInstance> instances = store.selectRawQuery(sqlQuery);
             return ChildrenAppenderExecutor.appendInObjectCollection(instances, childrenAppenders,
@@ -470,9 +474,23 @@ public final class TrackedEntityInstanceQueryCollectionRepository
                             TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES)));
         } else {
             try {
-                TrackedEntityInstanceQueryOnline noPagingQuery = TrackedEntityInstanceQueryOnline.create(scope)
-                        .toBuilder().paging(false).build();
-                return onlineCallFactory.getCall(noPagingQuery).call();
+                List<TrackedEntityInstance> instances = new ArrayList<>();
+
+                List<TrackedEntityInstanceQueryOnline> onlineQueries =
+                        TrackedEntityInstanceQueryOnlineHelper.fromScope(scope);
+
+                for (TrackedEntityInstanceQueryOnline onlineQuery : onlineQueries) {
+                    TrackedEntityInstanceQueryOnline noPagingQuery = onlineQuery.toBuilder().paging(false).build();
+                    List<TrackedEntityInstance> pageInstances = onlineCallFactory.getCall(noPagingQuery).call();
+
+                    Set<String> returnedUids = UidsHelper.getUids(instances);
+                    for (TrackedEntityInstance instance : pageInstances) {
+                        if (!returnedUids.contains(instance.uid())) {
+                            instances.add(instance);
+                        }
+                    }
+                }
+                return instances;
             } catch (D2Error e) {
                 return Collections.emptyList();
             } catch (Exception e) {
@@ -541,7 +559,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     @Override
     public List<String> blockingGetUids() {
         if (scope.mode().equals(RepositoryMode.OFFLINE_ONLY) || scope.mode().equals(RepositoryMode.OFFLINE_FIRST)) {
-            String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getUidsWhereClause(scope, Collections.emptyList(),
+            String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getUidsWhereClause(scope, Collections.emptySet(),
                     -1);
             return store.selectUidsWhere(sqlQuery);
         } else {

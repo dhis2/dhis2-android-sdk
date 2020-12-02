@@ -36,11 +36,12 @@ import org.junit.runners.JUnit4;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(JUnit4.class)
-public class TrackedEntityInstanceQueryOnlineShould {
+public class TrackedEntityInstanceQueryOnlineHelperShould {
 
     private TrackedEntityInstanceQueryRepositoryScope.Builder queryBuilder;
 
@@ -56,9 +57,10 @@ public class TrackedEntityInstanceQueryOnlineShould {
                 .query(RepositoryScopeFilterItem.builder().key("").operator(FilterItemOperator.LIKE).value("filter").build())
                 .build();
 
-        TrackedEntityInstanceQueryOnline onlineQuery = TrackedEntityInstanceQueryOnline.create(scope);
+        List<TrackedEntityInstanceQueryOnline> onlineQueries = TrackedEntityInstanceQueryOnlineHelper.fromScope(scope);
 
-        assertThat(onlineQuery.query()).isEqualTo("LIKE:filter");
+        assertThat(onlineQueries.size()).isEqualTo(1);
+        assertThat(onlineQueries.get(0).query()).isEqualTo("LIKE:filter");
     }
 
     @Test
@@ -75,12 +77,13 @@ public class TrackedEntityInstanceQueryOnlineShould {
                                 .key("attribute2").operator(FilterItemOperator.LIKE).value("filter22").build()
                 )).build();
 
-        TrackedEntityInstanceQueryOnline onlineQuery = TrackedEntityInstanceQueryOnline.create(scope);
+        List<TrackedEntityInstanceQueryOnline> onlineQueries = TrackedEntityInstanceQueryOnlineHelper.fromScope(scope);
 
-        assertThat(onlineQuery.attribute().size()).isEqualTo(3);
-        assertThat(onlineQuery.attribute()).contains("attribute1:EQ:filter1");
-        assertThat(onlineQuery.attribute()).contains("attribute2:EQ:filter21:LIKE:filter22");
-        assertThat(onlineQuery.attribute()).contains("attribute3:LIKE:filter31");
+        assertThat(onlineQueries.size()).isEqualTo(1);
+        assertThat(onlineQueries.get(0).attribute().size()).isEqualTo(3);
+        assertThat(onlineQueries.get(0).attribute()).contains("attribute1:EQ:filter1");
+        assertThat(onlineQueries.get(0).attribute()).contains("attribute2:EQ:filter21:LIKE:filter22");
+        assertThat(onlineQueries.get(0).attribute()).contains("attribute3:LIKE:filter31");
     }
 
     @Test
@@ -97,11 +100,12 @@ public class TrackedEntityInstanceQueryOnlineShould {
                                 .key("filterItem3").operator(FilterItemOperator.EQ).value("filter32").build()
                 )).build();
 
-        TrackedEntityInstanceQueryOnline onlineQuery = TrackedEntityInstanceQueryOnline.create(scope);
+        List<TrackedEntityInstanceQueryOnline> onlineQueries = TrackedEntityInstanceQueryOnlineHelper.fromScope(scope);
 
-        assertThat(onlineQuery.filter().size()).isEqualTo(3);
-        assertThat(onlineQuery.filter()).contains("filterItem1:EQ:filter1");
-        assertThat(onlineQuery.filter()).contains("filterItem2:LIKE:filter21");
-        assertThat(onlineQuery.filter()).contains("filterItem3:LIKE:filter31:EQ:filter32");
+        assertThat(onlineQueries.size()).isEqualTo(1);
+        assertThat(onlineQueries.get(0).filter().size()).isEqualTo(3);
+        assertThat(onlineQueries.get(0).filter()).contains("filterItem1:EQ:filter1");
+        assertThat(onlineQueries.get(0).filter()).contains("filterItem2:LIKE:filter21");
+        assertThat(onlineQueries.get(0).filter()).contains("filterItem3:LIKE:filter31:EQ:filter32");
     }
 }

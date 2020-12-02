@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.event.internal;
 import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.event.EventDataFilter;
@@ -89,6 +90,7 @@ public class EventFilterHandlerShould {
                 .eventQueryCriteria(eventQueryCriteria)
                 .build();
 
+        when(eventFilterStore.updateOrInsert(any())).thenReturn(HandleAction.Insert);
 
         eventFilters = new ArrayList<>();
         eventFilters.add(eventFilter);
@@ -97,7 +99,7 @@ public class EventFilterHandlerShould {
     @Test
     public void extend_identifiable_handler_impl() {
         IdentifiableHandlerImpl<EventFilter> genericHandler =
-                new EventFilterHandler(eventFilterStore, null);
+                new EventFilterHandler(eventFilterStore, eventDataFilterHandler);
     }
 
     @Test

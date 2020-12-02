@@ -25,13 +25,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.cleaners.internal
 
-package org.hisp.dhis.android.core.arch.cleaners.internal;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper.commaSeparatedUidsWithSingleQuotationMarks
+import org.hisp.dhis.android.core.common.IdentifiableColumns
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+class CollectionCleanerImpl<P : ObjectWithUidInterface>(
+    private val tableName: String,
+    private val databaseAdapter: DatabaseAdapter
+) : CollectionCleaner<P> {
 
-import java.util.Collection;
-
-public interface CollectionCleaner<P extends ObjectWithUidInterface> {
-    boolean deleteNotPresent(Collection<P> objects);
+    override fun deleteNotPresent(objects: Collection<P>?): Boolean {
+        if (objects == null) {
+            return false
+        }
+        val objectUids = commaSeparatedUidsWithSingleQuotationMarks(objects)
+        val clause = IdentifiableColumns.UID + " NOT IN (" + objectUids + ");"
+        return databaseAdapter.delete(tableName, clause, null) > 0
+    }
 }

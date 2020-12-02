@@ -25,34 +25,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.cleaners.internal
 
-package org.hisp.dhis.android.core.arch.cleaners.internal;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
-import org.hisp.dhis.android.core.common.IdentifiableColumns;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-
-import java.util.Collection;
-
-public class CollectionCleanerImpl<P extends ObjectWithUidInterface> implements CollectionCleaner<P> {
-
-    private final String tableName;
-    private final DatabaseAdapter databaseAdapter;
-
-    public CollectionCleanerImpl(String tableName, DatabaseAdapter databaseAdapter) {
-        this.tableName = tableName;
-        this.databaseAdapter = databaseAdapter;
-    }
-
-    @Override
-    public boolean deleteNotPresent(Collection<P> objects) {
-        if (objects == null) {
-            return false;
-        }
-
-        String objectUids = UidsHelper.commaSeparatedUidsWithSingleQuotationMarks(objects);
-        String clause = IdentifiableColumns.UID + " NOT IN (" + objectUids + ");";
-        return databaseAdapter.delete(tableName, clause, null) > 0;
-    }
+interface CollectionCleaner<P : ObjectWithUidInterface> {
+    fun deleteNotPresent(objects: Collection<P>?): Boolean
 }

@@ -25,11 +25,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.cleaners.internal
 
-package org.hisp.dhis.android.core.arch.cleaners.internal;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper.commaSeparatedUidsWithSingleQuotationMarks
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
-import org.hisp.dhis.android.core.common.IdentifiableObject;
+internal class LinkCleanerImpl<P : ObjectWithUidInterface>(
+    private val tableName: String,
+    private val applicableColumn: String,
+    private val databaseAdapter: DatabaseAdapter
+) : LinkCleaner<P> {
 
-public interface ParentOrphanCleaner<P extends IdentifiableObject> {
-    void deleteOrphan(P parent);
+    override fun deleteNotPresent(objects: Collection<P>?): Boolean {
+        if (objects == null) {
+            return false
+        }
+        val objectUids = commaSeparatedUidsWithSingleQuotationMarks(objects)
+        val clause = "$applicableColumn NOT IN ($objectUids);"
+        return databaseAdapter.delete(tableName, clause, null) > 0
+    }
 }

@@ -25,39 +25,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.cleaners.internal
 
-package org.hisp.dhis.android.core.arch.cleaners.internal;
+import org.hisp.dhis.android.core.common.IdentifiableObject
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
-import org.hisp.dhis.android.core.common.IdentifiableColumns;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-
-import java.util.Collection;
-
-public class OrphanCleanerImpl<P extends ObjectWithUidInterface, C extends ObjectWithUidInterface>
-        implements OrphanCleaner<P, C> {
-
-    private final String tableName;
-    private final String parentColumn;
-    private final DatabaseAdapter databaseAdapter;
-
-    public OrphanCleanerImpl(String tableName, String parentColumn, DatabaseAdapter databaseAdapter) {
-        this.tableName = tableName;
-        this.parentColumn = parentColumn;
-        this.databaseAdapter = databaseAdapter;
-    }
-
-    public boolean deleteOrphan(P parent, Collection<C> children) {
-        if (parent == null || children == null) {
-            return false;
-        }
-
-        String childrenUids = UidsHelper.commaSeparatedUidsWithSingleQuotationMarks(children);
-        String clause =
-                parentColumn + "='" + parent.uid() + "'"
-                + " AND "
-                + IdentifiableColumns.UID + " NOT IN (" + childrenUids + ");";
-        return databaseAdapter.delete(tableName, clause, null) > 0;
-    }
+internal interface ParentOrphanCleaner<P : IdentifiableObject> {
+    fun deleteOrphan(parent: P?)
 }

@@ -25,13 +25,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.cleaners.internal
 
-package org.hisp.dhis.android.core.arch.cleaners.internal;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+internal interface OrphanCleaner<P : ObjectWithUidInterface, C : ObjectWithUidInterface> {
 
-import java.util.Collection;
-
-public interface SubCollectionCleaner<P extends ObjectWithUidInterface> {
-    boolean deleteNotPresent(Collection<P> objects);
+    @JvmSuppressWildcards
+    fun deleteOrphan(parent: P?, children: Collection<C>?): Boolean
 }

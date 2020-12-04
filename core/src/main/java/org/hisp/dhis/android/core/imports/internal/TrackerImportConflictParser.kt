@@ -28,21 +28,14 @@
 package org.hisp.dhis.android.core.imports.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.imports.TrackerImportConflict
-import org.hisp.dhis.android.core.imports.internal.conflicts.BadAttributePatternConflict
-import org.hisp.dhis.android.core.imports.internal.conflicts.InvalidAttributeValueTypeConflict
-import org.hisp.dhis.android.core.imports.internal.conflicts.InvalidDataValueConflict
-import org.hisp.dhis.android.core.imports.internal.conflicts.MissingAttributeConflict
-import org.hisp.dhis.android.core.imports.internal.conflicts.MissingDataElementConflict
-import org.hisp.dhis.android.core.imports.internal.conflicts.NonUniqueAttributeConflict
-import org.hisp.dhis.android.core.imports.internal.conflicts.TrackerImportConflictItem
-import org.hisp.dhis.android.core.imports.internal.conflicts.TrackerImportConflictItemContext
+import org.hisp.dhis.android.core.imports.internal.conflicts.*
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueCollectionRepository
+import javax.inject.Inject
 
 @Reusable
 internal class TrackerImportConflictParser @Inject constructor(
@@ -58,14 +51,16 @@ internal class TrackerImportConflictParser @Inject constructor(
         InvalidAttributeValueTypeConflict,
         MissingAttributeConflict,
         BadAttributePatternConflict,
-        NonUniqueAttributeConflict
+        NonUniqueAttributeConflict,
+        LackingEnrollmentCascadeDeleteAuthorityConflict
     )
 
     private val enrollmentConflicts: List<TrackerImportConflictItem> = listOf(
         InvalidAttributeValueTypeConflict,
         MissingAttributeConflict,
         BadAttributePatternConflict,
-        NonUniqueAttributeConflict
+        NonUniqueAttributeConflict,
+        LackingEnrollmentCascadeDeleteAuthorityConflict
     )
 
     private val eventConflicts: List<TrackerImportConflictItem> = listOf(
@@ -104,7 +99,7 @@ internal class TrackerImportConflictParser @Inject constructor(
         if (conflictType != null) {
             conflictBuilder
                 .errorCode(conflictType.errorCode)
-                .displayDescription(conflictType.getDisplayDescription(conflict, context))
+                .displayDescription(conflictType.getDisplayDescription(conflict, conflictBuilder, context))
                 .trackedEntityAttribute(conflictType.getTrackedEntityAttribute(conflict))
                 .dataElement(conflictType.getDataElement(conflict))
         } else {

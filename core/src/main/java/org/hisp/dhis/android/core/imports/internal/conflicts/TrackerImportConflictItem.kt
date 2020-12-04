@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.imports.internal.conflicts
 
+import org.hisp.dhis.android.core.imports.TrackerImportConflict
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
 internal interface TrackerImportConflictItem {
@@ -34,5 +35,7 @@ internal interface TrackerImportConflictItem {
     fun matches(conflict: ImportConflict): Boolean
     fun getTrackedEntityAttribute(conflict: ImportConflict): String?
     fun getDataElement(conflict: ImportConflict): String?
-    fun getDisplayDescription(conflict: ImportConflict, context: TrackerImportConflictItemContext): String
+    fun getEnrollment(conflict: ImportConflict): String?
+    fun getDisplayDescription(conflict: ImportConflict, conflictBuilder: TrackerImportConflict.Builder,
+                              context: TrackerImportConflictItemContext): String
 }

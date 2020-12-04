@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.imports.internal.conflicts
 
+import org.hisp.dhis.android.core.imports.TrackerImportConflict
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
 internal object InvalidDataValueConflict : TrackerImportConflictItem {
@@ -64,8 +65,13 @@ internal object InvalidDataValueConflict : TrackerImportConflictItem {
         return conflict.`object`()
     }
 
+    override fun getEnrollment(conflict: ImportConflict): String? {
+        return null
+    }
+
     override fun getDisplayDescription(
         conflict: ImportConflict,
+        conflictBuilder: TrackerImportConflict.Builder,
         context: TrackerImportConflictItemContext
     ): String {
 

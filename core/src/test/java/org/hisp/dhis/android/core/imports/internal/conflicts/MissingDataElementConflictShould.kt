@@ -44,7 +44,7 @@ internal class MissingDataElementConflictShould : BaseConflictShould() {
         whenever(dataElement.displayFormName()) doReturn "Data Element form name"
 
         val conflict = TrackedImportConflictSamples.missingRequiredDataElement(dataElementUid)
-        val displayDescription = MissingDataElementConflict.getDisplayDescription(conflict, context)
+        val displayDescription = MissingDataElementConflict.getDisplayDescription(conflict, conflictBuilder, context)
         assert(displayDescription == "Missing mandatory data element: Data Element form name")
     }
 

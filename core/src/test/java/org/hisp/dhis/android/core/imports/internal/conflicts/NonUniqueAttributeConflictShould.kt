@@ -50,7 +50,7 @@ internal class NonUniqueAttributeConflictShould : BaseConflictShould() {
     fun `Should create display description`() {
         whenever(attribute.displayFormName()) doReturn "Attribute form name"
 
-        val displayDescription = NonUniqueAttributeConflict.getDisplayDescription(importConflict, context)
+        val displayDescription = NonUniqueAttributeConflict.getDisplayDescription(importConflict, conflictBuilder, context)
         assert(displayDescription == "Non-unique attribute value: Attribute form name")
     }
 }

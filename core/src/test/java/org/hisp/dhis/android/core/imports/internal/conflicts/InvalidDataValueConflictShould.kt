@@ -58,7 +58,7 @@ internal class InvalidDataValueConflictShould : BaseConflictShould() {
         whenever(dataElement.displayFormName()) doReturn "Data Element form name"
 
         val conflict = TrackedImportConflictSamples.valueNotNumeric(dataElementUid)
-        val displayDescription = InvalidDataValueConflict.getDisplayDescription(conflict, context)
+        val displayDescription = InvalidDataValueConflict.getDisplayDescription(conflict, conflictBuilder, context)
         assertThat(displayDescription == "Invalid value type for dataElement: Data Element form name").isTrue()
     }
 

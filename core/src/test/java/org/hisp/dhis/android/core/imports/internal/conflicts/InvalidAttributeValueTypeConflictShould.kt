@@ -64,7 +64,7 @@ internal class InvalidAttributeValueTypeConflictShould : BaseConflictShould() {
         checkDescription(TrackedImportConflictSamples.invalidAttributeOption(attributeUid, value, optionSetUid))
 
         val fileConflictDescription = InvalidAttributeValueTypeConflict
-            .getDisplayDescription(TrackedImportConflictSamples.invalidFileAttribute(value), context)
+            .getDisplayDescription(TrackedImportConflictSamples.invalidFileAttribute(value), conflictBuilder, context)
         assertThat(fileConflictDescription == TrackedImportConflictSamples.invalidFileAttribute(value).value()).isTrue()
     }
 
@@ -75,7 +75,7 @@ internal class InvalidAttributeValueTypeConflictShould : BaseConflictShould() {
 
     private fun checkDescription(conflict: ImportConflict) {
         whenever(attribute.displayFormName()) doReturn "Attribute form name"
-        val description = InvalidAttributeValueTypeConflict.getDisplayDescription(conflict, context)
+        val description = InvalidAttributeValueTypeConflict.getDisplayDescription(conflict, conflictBuilder, context)
         assertThat(description == "Invalid value type for attribute: Attribute form name").isTrue()
     }
 }

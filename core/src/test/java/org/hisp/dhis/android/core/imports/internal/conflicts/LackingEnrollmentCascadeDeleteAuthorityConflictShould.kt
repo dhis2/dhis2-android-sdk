@@ -27,30 +27,26 @@
  */
 package org.hisp.dhis.android.core.imports.internal.conflicts
 
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.whenever
 import org.junit.Test
 
-internal class MissingAttributeConflictShould : BaseConflictShould() {
+internal class LackingEnrollmentCascadeDeleteAuthorityConflictShould : BaseConflictShould() {
 
-    private val importConflict = TrackedImportConflictSamples.missingMandatoryAttribute(attributeUid)
+    private val importConflict = TrackedImportConflictSamples.userIsLackingEnrollmentCascadeDeleteAuthority(enrollmentUid)
 
     @Test
     fun `Should match error message`() {
-        assert(MissingAttributeConflict.matches(importConflict))
+        assert(LackingEnrollmentCascadeDeleteAuthorityConflict.matches(importConflict))
     }
 
     @Test
-    fun `Should match attribute uid`() {
-        val value = MissingAttributeConflict.getTrackedEntityAttribute(importConflict)
-        assert(value == attributeUid)
+    fun `Should match enrollment uid`() {
+        val value = LackingEnrollmentCascadeDeleteAuthorityConflict.getEnrollment(importConflict)
+        assert(value == enrollmentUid)
     }
 
     @Test
     fun `Should create display description`() {
-        whenever(attribute.displayFormName()) doReturn "Attribute form name"
-
-        val displayDescription = MissingAttributeConflict.getDisplayDescription(importConflict, conflictBuilder, context)
-        assert(displayDescription == "Missing mandatory attribute: Attribute form name")
+        val displayDescription = LackingEnrollmentCascadeDeleteAuthorityConflict.getDisplayDescription(importConflict, conflictBuilder, context)
+        assert(displayDescription == "You lack the authority to delete the enrollment: $enrollmentUid")
     }
 }

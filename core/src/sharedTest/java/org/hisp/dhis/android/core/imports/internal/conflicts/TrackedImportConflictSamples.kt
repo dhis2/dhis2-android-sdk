@@ -108,6 +108,11 @@ object TrackedImportConflictSamples {
         )
     }
 
+    fun userIsLackingEnrollmentCascadeDeleteAuthority(enrollmentUid: String): ImportConflict {
+        return ImportConflict.create(enrollmentUid,
+        "Enrollment $enrollmentUid cannot be deleted as it has associated events and user does not have authority: F_ENROLLMENT_CASCADE_DELETE")
+    }
+
     // Data value types
 
     fun valueNotNumeric(dataElementId: String): ImportConflict {

@@ -27,9 +27,10 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search
 
+import java.util.*
+import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
 import org.hisp.dhis.android.core.event.EventStatus
-import java.util.*
 
 internal object TrackedEntityInstanceQueryOnlineHelper {
 
@@ -76,7 +77,7 @@ internal object TrackedEntityInstanceQueryOnlineHelper {
             .includeDeleted(false)
             .order(toAPIOrderFormat(scope.order()))
             .page(1)
-            .pageSize(50)
+            .pageSize(BaseQuery.DEFAULT_PAGE_SIZE)
             .paging(true)
     }
 
@@ -85,7 +86,8 @@ internal object TrackedEntityInstanceQueryOnlineHelper {
         // Additionally, it requires that eventStartDate and eventEndDate are defined.
         val eventStatus = eventFilter.eventStatus()
         return if (!eventStatus.isNullOrEmpty() &&
-            eventFilter.eventStartDate() != null && eventFilter.eventEndDate() != null) {
+            eventFilter.eventStartDate() != null && eventFilter.eventEndDate() != null
+        ) {
             eventStatus[0]
         } else null
     }

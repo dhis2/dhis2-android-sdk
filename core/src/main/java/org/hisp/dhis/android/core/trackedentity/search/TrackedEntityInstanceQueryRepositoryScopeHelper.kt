@@ -27,15 +27,17 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search
 
+import java.util.Date
 import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.event.EventStatus
-import java.util.Date
 
 internal object TrackedEntityInstanceQueryRepositoryScopeHelper {
 
     @JvmStatic
-    fun setEventStartDate(scope: TrackedEntityInstanceQueryRepositoryScope,
-                          startDate: Date): TrackedEntityInstanceQueryRepositoryScope {
+    fun setEventStartDate(
+        scope: TrackedEntityInstanceQueryRepositoryScope,
+        startDate: Date
+    ): TrackedEntityInstanceQueryRepositoryScope {
 
         val eventFilters = getScopeEventFiltersOrInitial(scope).map {
             it.toBuilder().eventStartDate(startDate).build()
@@ -44,8 +46,10 @@ internal object TrackedEntityInstanceQueryRepositoryScopeHelper {
     }
 
     @JvmStatic
-    fun setEventEndDate(scope: TrackedEntityInstanceQueryRepositoryScope,
-                        endDate: Date): TrackedEntityInstanceQueryRepositoryScope {
+    fun setEventEndDate(
+        scope: TrackedEntityInstanceQueryRepositoryScope,
+        endDate: Date
+    ): TrackedEntityInstanceQueryRepositoryScope {
 
         val eventFilters = getScopeEventFiltersOrInitial(scope).map {
             it.toBuilder().eventEndDate(endDate).build()
@@ -54,8 +58,10 @@ internal object TrackedEntityInstanceQueryRepositoryScopeHelper {
     }
 
     @JvmStatic
-    fun setAssignedUserMode(scope: TrackedEntityInstanceQueryRepositoryScope,
-                            assignedUserMode: AssignedUserMode): TrackedEntityInstanceQueryRepositoryScope {
+    fun setAssignedUserMode(
+        scope: TrackedEntityInstanceQueryRepositoryScope,
+        assignedUserMode: AssignedUserMode
+    ): TrackedEntityInstanceQueryRepositoryScope {
 
         val eventFilters = getScopeEventFiltersOrInitial(scope).map {
             it.toBuilder().assignedUserMode(assignedUserMode).build()
@@ -64,8 +70,10 @@ internal object TrackedEntityInstanceQueryRepositoryScopeHelper {
     }
 
     @JvmStatic
-    fun setEventStatus(scope: TrackedEntityInstanceQueryRepositoryScope,
-                       eventStatus: List<EventStatus>): TrackedEntityInstanceQueryRepositoryScope {
+    fun setEventStatus(
+        scope: TrackedEntityInstanceQueryRepositoryScope,
+        eventStatus: List<EventStatus>
+    ): TrackedEntityInstanceQueryRepositoryScope {
 
         val eventFilters = getScopeEventFiltersOrInitial(scope).map {
             it.toBuilder().eventStatus(eventStatus).build()

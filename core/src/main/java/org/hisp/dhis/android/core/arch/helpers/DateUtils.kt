@@ -39,5 +39,4 @@ object DateUtils {
 
     @JvmField
     val SIMPLE_DATE_FORMAT = SafeDateFormat("yyyy-MM-dd")
-
 }

@@ -60,8 +60,6 @@ public final class TrackedEntityInstanceQueryDataSource
     private final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders;
     private final D2Cache<TrackedEntityInstanceQueryOnline, List<TrackedEntityInstance>> onlineCache;
 
-    private final static int initialLoadSizeFactor = 3;
-
     private Set<String> returnedUidsOffline = new HashSet<>();
     private Set<String> returnedUidsOnline = new HashSet<>();
 
@@ -158,15 +156,16 @@ public final class TrackedEntityInstanceQueryDataSource
                     continue;
                 }
 
+                int page = (status.requestedItems / requestLoadSize) + 1;
                 TrackedEntityInstanceQueryOnline onlineQuery = baseOnlineQuery.toBuilder()
-                        .page(status.currentPage + 1)
+                        .page(page)
                         .pageSize(requestLoadSize)
                         .paging(true).build();
 
                 List<TrackedEntityInstance> queryInstances = queryOnline(onlineQuery);
 
                 // If first page, the requestedSize is three times the original. Increment in three.
-                status.currentPage += isInitial ? initialLoadSizeFactor : 1;
+                status.requestedItems += requestLoadSize;
                 status.isExhausted = queryInstances.size() < requestLoadSize;
 
                 for (TrackedEntityInstance instance : queryInstances) {
@@ -219,6 +218,6 @@ public final class TrackedEntityInstanceQueryDataSource
 }
 
 class OnlineQueryStatus {
-    int currentPage = 0;
+    int requestedItems = 0;
     boolean isExhausted = false;
 }

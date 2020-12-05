@@ -290,6 +290,28 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         }
     }
 
+    @Test
+    fun should_consider_due_events() {
+        val event1 = createEvent(program1Stage2.uid(), "2020-08-01T00:00:00.000")
+        val event2 = createDueEvent(program1Stage2.uid(), "2020-09-02T00:00:00.000")
+
+        val eventListParams = EventLineListParams(
+            programStage = program1Stage2.uid(),
+            trackedEntityInstance = trackedEntityInstance.uid(),
+            dataElements = listOf(LineListItem(dataElement1.uid()))
+        )
+
+        val result = eventLineListService.evaluate(eventListParams)
+
+        assertThat(result.size).isEqualTo(2)
+        result.forEach {
+            when (it.uid) {
+                event1.uid() -> assertThat(it.period.periodId()).isEqualTo("20200801")
+                event2.uid() -> assertThat(it.period.periodId()).isEqualTo("20200902")
+            }
+        }
+    }
+
     private fun createTei() {
         trackedEntityInstanceStore.insert(trackedEntityInstance)
     }
@@ -300,6 +322,12 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
 
     private fun createEvent(programStageId: String, eventDate: String): Event {
         val event = EventLineListSamples.event(programStageId, BaseIdentifiableObject.parseDate(eventDate))
+        eventStore.insert(event)
+        return event
+    }
+
+    private fun createDueEvent(programStageId: String, dueDate: String): Event {
+        val event = EventLineListSamples.dueEvent(programStageId, BaseIdentifiableObject.parseDate(dueDate))
         eventStore.insert(event)
         return event
     }

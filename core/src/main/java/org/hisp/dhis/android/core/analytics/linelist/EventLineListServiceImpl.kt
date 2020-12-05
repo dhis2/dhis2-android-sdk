@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.analytics.linelist
 
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import javax.inject.Inject
 import org.hisp.dhis.android.core.dataelement.DataElementCollectionRepository
 import org.hisp.dhis.android.core.event.EventCollectionRepository
@@ -54,7 +55,9 @@ internal class EventLineListServiceImpl @Inject constructor(
     }
 
     private fun evaluateEvents(params: EventLineListParams): List<LineListResponse> {
-        var repoBuilder = eventRepository.byProgramStageUid().eq(params.programStage)
+        var repoBuilder = eventRepository
+            .byProgramStageUid().eq(params.programStage)
+            .orderByTimeline(RepositoryScope.OrderByDirection.ASC)
 
         if (params.organisationUnits.isNotEmpty()) {
             repoBuilder = repoBuilder.byOrganisationUnitUid().`in`(params.organisationUnits)
@@ -86,36 +89,38 @@ internal class EventLineListServiceImpl @Inject constructor(
             listOf()
         }
 
-        return events.map {
-            val periodType = programStage.periodType() ?: PeriodType.Daily
-            val eventPeriod = periodHelper.blockingGetPeriodForPeriodTypeAndDate(periodType, it.eventDate()!!)
+        return events.mapNotNull {
+            (it.eventDate() ?: it.dueDate())?.let { referenceDate ->
+                val periodType = programStage.periodType() ?: PeriodType.Daily
+                val eventPeriod = periodHelper.blockingGetPeriodForPeriodTypeAndDate(periodType, referenceDate)
 
-            val eventDataValues = params.dataElements.map { de ->
-                val dv = dataElementValues.find { dv -> dv.event() == it.uid() && dv.dataElement() == de.uid }
-                LineListResponseValue(
-                    uid = de.uid,
-                    displayName = metadataMap[de.uid] ?: de.uid,
-                    value = dv?.value()
+                val eventDataValues = params.dataElements.map { de ->
+                    val dv = dataElementValues.find { dv -> dv.event() == it.uid() && dv.dataElement() == de.uid }
+                    LineListResponseValue(
+                        uid = de.uid,
+                        displayName = metadataMap[de.uid] ?: de.uid,
+                        value = dv?.value()
+                    )
+                }
+
+                val programIndicatorValues = params.programIndicators.map { pi ->
+                    val value = programIndicatorEngine.getEventProgramIndicatorValue(it.uid(), pi.uid)
+                    LineListResponseValue(
+                        uid = pi.uid,
+                        displayName = metadataMap[pi.uid] ?: pi.uid,
+                        value = value
+                    )
+                }
+
+                LineListResponse(
+                    uid = it.uid(),
+                    date = referenceDate,
+                    period = eventPeriod,
+                    organisationUnit = it.organisationUnit()!!,
+                    organisationUnitName = metadataMap[it.organisationUnit()!!] ?: it.organisationUnit()!!,
+                    values = eventDataValues + programIndicatorValues
                 )
             }
-
-            val programIndicatorValues = params.programIndicators.map { pi ->
-                val value = programIndicatorEngine.getEventProgramIndicatorValue(it.uid(), pi.uid)
-                LineListResponseValue(
-                    uid = pi.uid,
-                    displayName = metadataMap[pi.uid] ?: pi.uid,
-                    value = value
-                )
-            }
-
-            LineListResponse(
-                uid = it.uid(),
-                date = it.eventDate()!!,
-                period = eventPeriod,
-                organisationUnit = it.organisationUnit()!!,
-                organisationUnitName = metadataMap[it.organisationUnit()!!] ?: it.organisationUnit()!!,
-                values = eventDataValues + programIndicatorValues
-            )
         }
     }
 

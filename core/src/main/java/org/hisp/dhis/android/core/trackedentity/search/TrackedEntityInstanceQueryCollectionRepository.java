@@ -56,6 +56,8 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.systeminfo.DHISVersion;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterCollectionRepository;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
 
@@ -82,6 +84,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     private final ScopedFilterConnectorFactory<TrackedEntityInstanceQueryCollectionRepository,
             TrackedEntityInstanceQueryRepositoryScope> connectorFactory;
     private final DHISVersionManager versionManager;
+    private final TrackedEntityInstanceFilterCollectionRepository filtersRepository;
 
     private final TrackedEntityInstanceQueryRepositoryScope scope;
 
@@ -94,16 +97,18 @@ public final class TrackedEntityInstanceQueryCollectionRepository
             final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders,
             final TrackedEntityInstanceQueryRepositoryScope scope,
             final DHISVersionManager versionManager,
+            final TrackedEntityInstanceFilterCollectionRepository filtersRepository,
             final D2Cache<TrackedEntityInstanceQueryOnline, List<TrackedEntityInstance>> onlineCache) {
         this.store = store;
         this.onlineCallFactory = onlineCallFactory;
         this.childrenAppenders = childrenAppenders;
         this.scope = scope;
         this.versionManager = versionManager;
+        this.filtersRepository = filtersRepository;
         this.onlineCache = onlineCache;
         this.connectorFactory = new ScopedFilterConnectorFactory<>(s ->
                 new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
-                        s, versionManager, onlineCache));
+                        s, versionManager, filtersRepository, onlineCache));
     }
 
     /**
@@ -113,8 +118,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @return
      */
     public TrackedEntityInstanceQueryCollectionRepository onlineOnly() {
-        return new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
-                scope.toBuilder().mode(RepositoryMode.ONLINE_ONLY).build(), versionManager, onlineCache);
+        return connectorFactory.eqConnector(v -> scope.toBuilder().mode(RepositoryMode.ONLINE_ONLY).build()).eq(null);
     }
 
     /**
@@ -123,8 +127,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @return
      */
     public TrackedEntityInstanceQueryCollectionRepository offlineOnly() {
-        return new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
-                scope.toBuilder().mode(RepositoryMode.OFFLINE_ONLY).build(), versionManager, onlineCache);
+        return connectorFactory.eqConnector(v -> scope.toBuilder().mode(RepositoryMode.OFFLINE_ONLY).build()).eq(null);
     }
 
     /**
@@ -135,8 +138,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @return
      */
     public TrackedEntityInstanceQueryCollectionRepository onlineFirst() {
-        return new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
-                scope.toBuilder().mode(RepositoryMode.ONLINE_FIRST).build(), versionManager, onlineCache);
+        return connectorFactory.eqConnector(v -> scope.toBuilder().mode(RepositoryMode.ONLINE_FIRST).build()).eq(null);
     }
 
     /**
@@ -147,8 +149,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @return
      */
     public TrackedEntityInstanceQueryCollectionRepository offlineFirst() {
-        return new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
-                scope.toBuilder().mode(RepositoryMode.OFFLINE_FIRST).build(), versionManager, onlineCache);
+        return connectorFactory.eqConnector(v -> scope.toBuilder().mode(RepositoryMode.OFFLINE_FIRST).build()).eq(null);
     }
 
     /**
@@ -349,6 +350,20 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, Boolean> allowOnlineCache() {
         return connectorFactory.eqConnector(bool -> scope.toBuilder().allowOnlineCache(bool).build());
+    }
+
+    /**
+     * Apply the filters defined in a {@link TrackedEntityInstanceFilter}. It will overwrite previous filters in case
+     * they overlap. In the same way, they could be overwritten by subsequent filters.
+     *
+     * @return Repository connector
+     */
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, String> byTrackedEntityInstanceFilter() {
+        return connectorFactory.eqConnector(id -> {
+            TrackedEntityInstanceFilter filter =
+                    filtersRepository.byUid().eq(id).withTrackedEntityInstanceEventFilters().one().blockingGet();
+            return TrackedEntityInstanceQueryRepositoryScopeHelper.addTrackedEntityInstanceFilter(scope, filter);
+        });
     }
 
     /**

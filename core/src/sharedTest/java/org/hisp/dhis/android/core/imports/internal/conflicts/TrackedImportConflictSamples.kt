@@ -113,6 +113,10 @@ object TrackedImportConflictSamples {
         "Enrollment $enrollmentUid cannot be deleted as it has associated events and user does not have authority: F_ENROLLMENT_CASCADE_DELETE")
     }
 
+    fun teiNotFound(teiUid: String, relationshipUid: String): ImportConflict {
+        return ImportConflict.create(relationshipUid, "TrackedEntityInstance '$teiUid' not found.")
+    }
+
     // Data value types
 
     fun valueNotNumeric(dataElementId: String): ImportConflict {

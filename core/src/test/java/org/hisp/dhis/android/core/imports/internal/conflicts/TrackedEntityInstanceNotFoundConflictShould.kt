@@ -27,16 +27,26 @@
  */
 package org.hisp.dhis.android.core.imports.internal.conflicts
 
-import org.hisp.dhis.android.core.imports.TrackerImportConflict
-import org.hisp.dhis.android.core.imports.internal.ImportConflict
+import org.junit.Test
 
-internal interface TrackerImportConflictItem {
-    val errorCode: String
-    fun matches(conflict: ImportConflict): Boolean
-    fun getTrackedEntityAttribute(conflict: ImportConflict): String? { return null }
-    fun getDataElement(conflict: ImportConflict): String? { return null }
-    fun getEnrollment(conflict: ImportConflict): String? { return null }
-    fun getTrackedEntityInstance(conflict: ImportConflict): String? { return null }
-    fun getDisplayDescription(conflict: ImportConflict, conflictBuilder: TrackerImportConflict.Builder,
-                              context: TrackerImportConflictItemContext): String
+internal class TrackedEntityInstanceNotFoundConflictShould : BaseConflictShould() {
+
+    private val importConflict = TrackedImportConflictSamples.teiNotFound(relatedTeiUid, relationshipUid)
+
+    @Test
+    fun `Should match error message`() {
+        assert(TrackedEntityInstanceNotFoundConflict.matches(importConflict))
+    }
+
+    @Test
+    fun `Should match enrollment uid`() {
+        val value = TrackedEntityInstanceNotFoundConflict.getTrackedEntityInstance(importConflict)
+        assert(value == relatedTeiUid)
+    }
+
+    @Test
+    fun `Should create display description`() {
+        val displayDescription = TrackedEntityInstanceNotFoundConflict.getDisplayDescription(importConflict, conflictBuilder, context)
+        assert(displayDescription == "The tracked entity instance $relatedTeiUid does not exist in the server")
+    }
 }

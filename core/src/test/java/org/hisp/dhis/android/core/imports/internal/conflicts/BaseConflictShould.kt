@@ -54,6 +54,9 @@ internal open class BaseConflictShould {
 
     protected val dataElementUid = "NTlMmRqGWCM"
     protected val enrollmentUid = "tliijiEnCp5"
+    protected val relatedTeiUid = "QGyxOe1zewj"
+
+    protected val relationshipUid = "AJOytZW7OaI"
 
     @Before
     fun setUp() {

@@ -42,16 +42,8 @@ internal object MissingDataElementConflict : TrackerImportConflictItem {
         return errorStr == conflict.value()
     }
 
-    override fun getTrackedEntityAttribute(conflict: ImportConflict): String? {
-        return null
-    }
-
     override fun getDataElement(conflict: ImportConflict): String? {
         return conflict.`object`()
-    }
-
-    override fun getEnrollment(conflict: ImportConflict): String? {
-        return null
     }
 
     override fun getDisplayDescription(

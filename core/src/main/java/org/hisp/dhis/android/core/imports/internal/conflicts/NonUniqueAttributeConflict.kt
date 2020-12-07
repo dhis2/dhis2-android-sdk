@@ -45,14 +45,6 @@ internal object NonUniqueAttributeConflict : TrackerImportConflictItem {
         return regex.find(conflict.value())?.groupValues?.get(1)
     }
 
-    override fun getDataElement(conflict: ImportConflict): String? {
-        return null
-    }
-
-    override fun getEnrollment(conflict: ImportConflict): String? {
-        return null
-    }
-
     override fun getDisplayDescription(
         conflict: ImportConflict,
         conflictBuilder: TrackerImportConflict.Builder,

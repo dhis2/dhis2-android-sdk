@@ -55,14 +55,6 @@ internal object InvalidAttributeValueTypeConflict : TrackerImportConflictItem {
         return errorRegex.find { it.matches(conflict.value()) }?.find(conflict.value())?.groupValues?.getOrNull(1)
     }
 
-    override fun getDataElement(conflict: ImportConflict): String? {
-        return null
-    }
-
-    override fun getEnrollment(conflict: ImportConflict): String? {
-        return null
-    }
-
     override fun getDisplayDescription(
         conflict: ImportConflict,
         conflictBuilder: TrackerImportConflict.Builder,

@@ -27,26 +27,33 @@
  */
 package org.hisp.dhis.android.core.imports.internal.conflicts
 
-import org.junit.Test
+import org.hisp.dhis.android.core.imports.TrackerImportConflict
+import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
-internal class TrackedEntityInstanceNotFoundConflictShould : BaseConflictShould() {
+internal object InvalidTrackedEntityTypeConflict : TrackerImportConflictItem {
 
-    private val importConflict = TrackedImportConflictSamples.teiNotFound(relatedTeiUid, relationshipUid)
+    private val regex: Regex = Regex("TrackedEntityInstance '(\\w{11})' has invalid TrackedEntityType.")
+    private fun description(trackedEntityInstanceUid: String) =
+            "Your entity $trackedEntityInstanceUid has an invalid type of entity"
 
-    @Test
-    fun `Should match error message`() {
-        assert(TrackedEntityInstanceNotFoundConflict.matches(importConflict))
+    override val errorCode: String = "E1005"
+
+    override fun matches(conflict: ImportConflict): Boolean {
+        return regex.matches(conflict.value())
     }
 
-    @Test
-    fun `Should match enrollment uid`() {
-        val value = TrackedEntityInstanceNotFoundConflict.getTrackedEntityInstance(importConflict)
-        assert(value == relatedTeiUid)
+    override fun getTrackedEntityInstance(conflict: ImportConflict): String? {
+        return regex.find(conflict.value())?.groupValues?.get(1)
     }
 
-    @Test
-    fun `Should create display description`() {
-        val displayDescription = TrackedEntityInstanceNotFoundConflict.getDisplayDescription(importConflict, conflictBuilder, context)
-        assert(displayDescription == "Your entity $relatedTeiUid does not exist in the server")
+    override fun getDisplayDescription(
+            conflict: ImportConflict,
+            conflictBuilder: TrackerImportConflict.Builder,
+            context: TrackerImportConflictItemContext
+    ): String {
+        return getTrackedEntityInstance(conflict)?.let { trackedEntityInstanceUid ->
+            description(trackedEntityInstanceUid)
+        } ?:
+        conflict.value()
     }
 }

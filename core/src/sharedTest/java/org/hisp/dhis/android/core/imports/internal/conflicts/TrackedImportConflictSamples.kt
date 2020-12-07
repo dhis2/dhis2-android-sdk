@@ -117,6 +117,10 @@ object TrackedImportConflictSamples {
         return ImportConflict.create(relationshipUid, "TrackedEntityInstance '$teiUid' not found.")
     }
 
+    fun teiHasInvalidType(teiUid: String, relationshipUid: String): ImportConflict {
+        return ImportConflict.create(relationshipUid, "TrackedEntityInstance '$teiUid' has invalid TrackedEntityType.")
+    }
+
     // Data value types
 
     fun valueNotNumeric(dataElementId: String): ImportConflict {

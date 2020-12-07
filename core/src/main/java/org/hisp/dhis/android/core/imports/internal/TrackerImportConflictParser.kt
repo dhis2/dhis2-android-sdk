@@ -52,7 +52,9 @@ internal class TrackerImportConflictParser @Inject constructor(
         MissingAttributeConflict,
         BadAttributePatternConflict,
         NonUniqueAttributeConflict,
-        LackingEnrollmentCascadeDeleteAuthorityConflict
+        LackingEnrollmentCascadeDeleteAuthorityConflict,
+        TrackedEntityInstanceNotFoundConflict,
+        InvalidTrackedEntityTypeConflict
     )
 
     private val enrollmentConflicts: List<TrackerImportConflictItem> = listOf(

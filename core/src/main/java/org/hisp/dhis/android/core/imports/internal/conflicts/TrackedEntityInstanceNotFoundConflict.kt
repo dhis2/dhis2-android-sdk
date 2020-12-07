@@ -33,8 +33,8 @@ import org.hisp.dhis.android.core.imports.internal.ImportConflict
 internal object TrackedEntityInstanceNotFoundConflict : TrackerImportConflictItem {
 
     private val regex: Regex = Regex("TrackedEntityInstance '(\\w{11})' not found.")
-    private fun description(trackedEntityInstanceUid: String) = "The tracked entity instance " +
-            "$trackedEntityInstanceUid does not exist in the server"
+    private fun description(trackedEntityInstanceUid: String) =
+            "Your entity $trackedEntityInstanceUid does not exist in the server"
 
     override val errorCode: String = "E1063"
 

@@ -29,24 +29,24 @@ package org.hisp.dhis.android.core.imports.internal.conflicts
 
 import org.junit.Test
 
-internal class TrackedEntityInstanceNotFoundConflictShould : BaseConflictShould() {
+internal class InvalidTrackedEntityTypeConflictShould : BaseConflictShould() {
 
-    private val importConflict = TrackedImportConflictSamples.teiNotFound(relatedTeiUid, relationshipUid)
+    private val importConflict = TrackedImportConflictSamples.teiHasInvalidType(relatedTeiUid, relationshipUid)
 
     @Test
     fun `Should match error message`() {
-        assert(TrackedEntityInstanceNotFoundConflict.matches(importConflict))
+        assert(InvalidTrackedEntityTypeConflict.matches(importConflict))
     }
 
     @Test
     fun `Should match enrollment uid`() {
-        val value = TrackedEntityInstanceNotFoundConflict.getTrackedEntityInstance(importConflict)
+        val value = InvalidTrackedEntityTypeConflict.getTrackedEntityInstance(importConflict)
         assert(value == relatedTeiUid)
     }
 
     @Test
     fun `Should create display description`() {
-        val displayDescription = TrackedEntityInstanceNotFoundConflict.getDisplayDescription(importConflict, conflictBuilder, context)
-        assert(displayDescription == "Your entity $relatedTeiUid does not exist in the server")
+        val displayDescription = InvalidTrackedEntityTypeConflict.getDisplayDescription(importConflict, conflictBuilder, context)
+        assert(displayDescription == "Your entity $relatedTeiUid has an invalid type of entity")
     }
 }

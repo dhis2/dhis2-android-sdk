@@ -49,6 +49,7 @@ internal class BasicAuthenticator(private val credentialsSecureStore: ObjectKeyV
     }
 
     private var cookieValue: String? = null
+    private var testCounter = 0
 
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -120,7 +121,12 @@ internal class BasicAuthenticator(private val credentialsSecureStore: ObjectKeyV
     }
 
     private fun addCookieHeader(builder: Request.Builder): Request.Builder {
-        return builder.addHeader(COOKIE_KEY, cookieValue!!)
+        testCounter++
+        if (testCounter % 2 == 0) {
+            return builder.addHeader(COOKIE_KEY, "JSESSIONID=36D5636F3806F36F76F9D451BC198652; Path=/android-current; SameSite=Lax; HttpOnly")
+        } else {
+            return builder.addHeader(COOKIE_KEY, cookieValue!!)
+        }
     }
 
     private fun removeCookie() {

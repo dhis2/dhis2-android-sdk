@@ -32,7 +32,7 @@ import android.os.Build;
 import android.util.Log;
 
 import org.hisp.dhis.android.BuildConfig;
-import org.hisp.dhis.android.core.arch.api.authentication.internal.BasicAuthenticatorFactory;
+import org.hisp.dhis.android.core.arch.api.authentication.internal.BasicAuthenticator;
 import org.hisp.dhis.android.core.arch.api.internal.DynamicServerURLInterceptor;
 import org.hisp.dhis.android.core.arch.api.internal.PreventURLDecodeInterceptor;
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLVersionRedirectionInterceptor;
@@ -65,7 +65,7 @@ final class OkHttpClientFactory {
         OkHttpClient.Builder client = new OkHttpClient.Builder()
                 .addInterceptor(new DynamicServerURLInterceptor())
                 .addNetworkInterceptor(new ServerURLVersionRedirectionInterceptor())
-                .addInterceptor(BasicAuthenticatorFactory.create(credentialsSecureStore))
+                .addInterceptor(new BasicAuthenticator(credentialsSecureStore))
                 .addInterceptor(new PreventURLDecodeInterceptor())
                 .addInterceptor(chain -> {
                     Request originalRequest = chain.request();

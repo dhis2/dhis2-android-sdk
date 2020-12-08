@@ -37,7 +37,7 @@ import java.io.IOException
 import java.util.Locale
 
 internal class BasicAuthenticator(private val credentialsSecureStore: ObjectKeyValueStore<Credentials>) :
-    Authenticator {
+    Interceptor {
 
     companion object {
         private const val AUTHORIZATION_KEY = "Authorization"
@@ -64,7 +64,7 @@ internal class BasicAuthenticator(private val credentialsSecureStore: ObjectKeyV
             return if (credentials == null) {
                 chain.proceed(req)
             } else {
-                addAuthenticationHeaderOrCookie(chain, credentials)
+                handleRegularCall(chain, credentials)
             }
         }
     }
@@ -83,7 +83,7 @@ internal class BasicAuthenticator(private val credentialsSecureStore: ObjectKeyV
         }
     }
 
-    private fun addAuthenticationHeaderOrCookie(chain: Interceptor.Chain, credentials: Credentials): Response {
+    private fun handleRegularCall(chain: Interceptor.Chain, credentials: Credentials): Response {
         val req = chain.request()
         val builder = req.newBuilder()
         val useCookie = cookieValue != null

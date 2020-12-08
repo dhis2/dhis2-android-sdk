@@ -92,9 +92,10 @@ internal class BasicAuthenticator(private val credentialsSecureStore: ObjectKeyV
         val res = chain.proceed(builderWithAuthentication.build())
 
         val finalRes = if (useCookie && hasAuthenticationFailed(res)) {
+            res.close()
             removeCookie()
             val newReqWithBasicAuth = addAuthorizationHeader(req.newBuilder(), credentials).build()
-            return chain.proceed(newReqWithBasicAuth)
+            chain.proceed(newReqWithBasicAuth)
         } else {
             res
         }

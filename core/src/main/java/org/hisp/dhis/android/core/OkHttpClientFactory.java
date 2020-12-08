@@ -76,7 +76,8 @@ final class OkHttpClientFactory {
                 })
                 .readTimeout(d2Configuration.readTimeoutInSeconds(), TimeUnit.SECONDS)
                 .connectTimeout(d2Configuration.connectTimeoutInSeconds(), TimeUnit.SECONDS)
-                .writeTimeout(d2Configuration.writeTimeoutInSeconds(), TimeUnit.SECONDS);
+                .writeTimeout(d2Configuration.writeTimeoutInSeconds(), TimeUnit.SECONDS)
+                .followRedirects(false);
 
         for (Interceptor interceptor : d2Configuration.networkInterceptors()) {
             client.addNetworkInterceptor(interceptor);

@@ -29,10 +29,12 @@ package org.hisp.dhis.android.core.program.programindicatorengine.internal.datai
  */
 
 import org.hisp.dhis.android.core.common.AggregationType;
+import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramExpressionItem;
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.TrackedEntityDataValueAggregationHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
 
@@ -42,6 +44,8 @@ import java.util.List;
 @SuppressWarnings({"PMD.CyclomaticComplexity"})
 public class ProgramItemStageElement
         extends ProgramExpressionItem {
+
+    private TrackedEntityDataValueAggregationHandler aggregationHandler = new TrackedEntityDataValueAggregationHandler();
 
     @Override
     public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
@@ -54,16 +58,11 @@ public class ProgramItemStageElement
 
         if (eventList != null) {
             List<TrackedEntityDataValue> candidates = getCandidates(eventList, dataElementId);
-
+            ValueType valueType = visitor.getDataElementStore().selectByUid(dataElementId).valueType();
             AggregationType aggregationType = visitor.getProgramIndicatorContext().programIndicator().aggregationType();
 
             if (!candidates.isEmpty()) {
-                if (AggregationType.LAST.equals(aggregationType) ||
-                        AggregationType.LAST_AVERAGE_ORG_UNIT.equals(aggregationType)) {
-                    value = candidates.get(candidates.size() - 1).value();
-                } else {
-                    value = candidates.get(0).value();
-                }
+                value = aggregationHandler.getValue(candidates, aggregationType, valueType);
             }
         }
 

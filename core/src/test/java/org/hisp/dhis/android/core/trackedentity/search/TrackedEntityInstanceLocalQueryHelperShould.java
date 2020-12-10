@@ -128,6 +128,17 @@ public class TrackedEntityInstanceLocalQueryHelperShould {
     }
 
     @Test
+    public void build_sql_query_with_follow_up() {
+        TrackedEntityInstanceQueryRepositoryScope scope = queryBuilder
+                .program(programUid)
+                .followUp(true)
+                .build();
+
+        String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(scope, Collections.emptySet(), 50);
+        assertThat(sqlQuery).contains("followup = 1");
+    }
+
+    @Test
     public void build_sql_query_with_assigned_user_mode() {
         TrackedEntityInstanceQueryEventFilter eventFilter =
                 TrackedEntityInstanceQueryEventFilter.builder().assignedUserMode(AssignedUserMode.ANY).build();

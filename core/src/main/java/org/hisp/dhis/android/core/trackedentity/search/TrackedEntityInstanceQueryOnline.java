@@ -74,6 +74,9 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
     abstract EnrollmentStatus enrollmentStatus();
 
     @Nullable
+    abstract Boolean followUp();
+
+    @Nullable
     abstract EventStatus eventStatus();
 
     @Nullable
@@ -140,6 +143,8 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
         abstract Builder programEndDate(Date programEndDate);
 
         abstract Builder enrollmentStatus(EnrollmentStatus programStatus);
+
+        abstract Builder followUp(Boolean followUp);
 
         abstract Builder eventStatus(EventStatus eventStatus);
 

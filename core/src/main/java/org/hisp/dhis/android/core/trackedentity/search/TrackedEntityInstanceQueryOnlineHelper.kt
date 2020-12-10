@@ -73,6 +73,7 @@ internal object TrackedEntityInstanceQueryOnlineHelper {
             .programStartDate(scope.programStartDate())
             .programEndDate(scope.programEndDate())
             .enrollmentStatus(enrollmentStatus)
+            .followUp(scope.followUp())
             .trackedEntityType(scope.trackedEntityType())
             .includeDeleted(false)
             .order(toAPIOrderFormat(scope.order()))

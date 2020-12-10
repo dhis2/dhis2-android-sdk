@@ -29,35 +29,28 @@
 package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ScopedRepositoryFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.BaseScopeFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
 
-import java.util.List;
+public final class BoolFilterConnector<R  extends BaseRepository> {
 
-public class ScopedFilterConnectorFactory<R extends BaseRepository, S extends BaseScope> {
+    private final ScopedRepositoryFilterFactory<R, Boolean> repositoryFactory;
 
-    public final ScopedRepositoryFactory<R, S> repositoryFactory;
-
-    public ScopedFilterConnectorFactory(ScopedRepositoryFactory<R, S> repositoryFactory) {
+    BoolFilterConnector(ScopedRepositoryFilterFactory<R, Boolean> repositoryFactory) {
         this.repositoryFactory = repositoryFactory;
     }
 
-    public <T> EqFilterConnector<R, T> eqConnector(BaseScopeFactory<S, T> baseScopeFactory) {
-        return new EqFilterConnector<>(value -> repositoryFactory.updated(baseScopeFactory.updated(value)));
+    /**
+     * Returns a new repository whose scope that checks if the given field has a true value.
+     * @return the new repository
+     */
+    public R isTrue() {
+        return repositoryFactory.updated(true);
     }
 
-    public <T> ListFilterConnector<R, T> listConnector(BaseScopeFactory<S, List<T>> baseScopeFactory) {
-        return new ListFilterConnector<>(list -> repositoryFactory.updated(baseScopeFactory.updated(list)));
-    }
-
-    public BoolFilterConnector<R> booleanConnector(BaseScopeFactory<S, Boolean> baseScopeFactory) {
-        return new BoolFilterConnector<>(bool -> repositoryFactory.updated(baseScopeFactory.updated(bool)));
-    }
-
-    public EqLikeItemFilterConnector<R> eqLikeItemC(String key, BaseScopeFactory<S,
-            RepositoryScopeFilterItem> baseScopeFactory) {
-        return new EqLikeItemFilterConnector<>(key, item -> repositoryFactory.updated(baseScopeFactory.updated(item)));
+    /**
+     * Returns a new repository whose scope that checks if the given field has a false value.
+     * @return the new repository
+     */
+    public R isFalse() {
+        return repositoryFactory.updated(false);
     }
 }

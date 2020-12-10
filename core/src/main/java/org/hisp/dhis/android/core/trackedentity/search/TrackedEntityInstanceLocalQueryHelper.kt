@@ -181,6 +181,10 @@ internal object TrackedEntityInstanceLocalQueryHelper {
         if (!scope.includeDeleted()) {
             where.appendKeyOperatorValue(dot(ENROLLMENT_ALIAS, EnrollmentTableInfo.Columns.DELETED), "!=", "1")
         }
+        if (scope.followUp() != null) {
+            val value = if (scope.followUp() == true) 1 else 0
+            where.appendKeyNumberValue(dot(ENROLLMENT_ALIAS, EnrollmentTableInfo.Columns.FOLLOW_UP), value)
+        }
     }
 
     private fun hasOrgunits(scope: TrackedEntityInstanceQueryRepositoryScope): Boolean {

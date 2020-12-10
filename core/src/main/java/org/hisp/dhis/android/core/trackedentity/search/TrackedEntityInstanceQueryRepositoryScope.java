@@ -87,6 +87,9 @@ abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseScope {
     @Nullable
     public abstract List<State> states();
 
+    @Nullable
+    public abstract Boolean followUp();
+
     @NonNull
     public abstract List<TrackedEntityInstanceQueryEventFilter> eventFilters();
 
@@ -154,6 +157,8 @@ abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseScope {
         public abstract Builder includeDeleted(Boolean includeDeleted);
 
         public abstract Builder states(List<State> states);
+
+        public abstract Builder followUp(Boolean followUp);
 
         public abstract Builder eventFilters(List<TrackedEntityInstanceQueryEventFilter> eventFilters);
 

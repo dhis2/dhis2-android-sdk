@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BoolFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqLikeItemFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ListFilterConnector;
@@ -325,6 +326,15 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      */
     public ListFilterConnector<TrackedEntityInstanceQueryCollectionRepository, State> byStates() {
         return connectorFactory.listConnector(states -> scope.toBuilder().states(states).build());
+    }
+
+    /**
+     * Filter by follow up status. It only applies if a program has been specified in {@link #byProgram()}.
+     *
+     * @return Repository connector
+     */
+    public BoolFilterConnector<TrackedEntityInstanceQueryCollectionRepository> byFollowUp() {
+        return connectorFactory.booleanConnector(followUp -> scope.toBuilder().followUp(followUp).build());
     }
 
     /**

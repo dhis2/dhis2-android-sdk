@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.arch.api.internal
 
+import java.io.IOException
 import okhttp3.Interceptor
 import okhttp3.Response
 import org.hisp.dhis.android.core.arch.api.authentication.internal.BasicAuthenticator
-import java.io.IOException
 
 internal class ServerURLVersionRedirectionInterceptor : Interceptor {
 
@@ -38,16 +38,12 @@ internal class ServerURLVersionRedirectionInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
         val response = chain.proceed(request)
-        if (response.code() == 302) {
+        if (response.isRedirect) {
             val location = response.header(BasicAuthenticator.LOCATION_KEY)
-
-            // TODO maybe it's not necessary
-            if (location != null && !location.contains(BasicAuthenticator.LOGIN_ACTION)) {
-                ServerURLWrapper.setServerUrl(location)
-                response.close()
-                val redirectReq = DynamicServerURLInterceptor.transformRequest(request)
-                return chain.proceed(redirectReq)
-            }
+            ServerURLWrapper.setServerUrl(location)
+            response.close()
+            val redirectReq = DynamicServerURLInterceptor.transformRequest(request)
+            return chain.proceed(redirectReq)
         }
         return response
     }

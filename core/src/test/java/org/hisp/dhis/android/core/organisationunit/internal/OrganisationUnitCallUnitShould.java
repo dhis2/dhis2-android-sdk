@@ -82,6 +82,8 @@ public class OrganisationUnitCallUnitShould {
     @Captor
     private ArgumentCaptor<Integer> pageSizeCaptor;
 
+    @Captor
+    private ArgumentCaptor<String> orderCaptor;
 
     @Mock
     private OrganisationUnit organisationUnit;
@@ -157,7 +159,7 @@ public class OrganisationUnitCallUnitShould {
         when(UserInternalAccessor.accessOrganisationUnits(user)).thenReturn(new ArrayList<>(organisationUnits));
 
         when(organisationUnitService.getOrganisationUnits(
-                fieldsCaptor.capture(), filtersCaptor.capture(), pagingCaptor.capture(),
+                fieldsCaptor.capture(), filtersCaptor.capture(), orderCaptor.capture(), pagingCaptor.capture(),
                 pageSizeCaptor.capture(), pageCaptor.capture()
         )).thenReturn(Single.just(organisationUnitPayload));
         when(organisationUnitPayload.items()).thenReturn(organisationUnits);
@@ -170,6 +172,7 @@ public class OrganisationUnitCallUnitShould {
         assertThat(fieldsCaptor.getValue()).isEqualTo(OrganisationUnitFields.allFields);
         assertThat(filtersCaptor.getValue().operator()).isEqualTo("like");
         assertThat(filtersCaptor.getValue().field()).isEqualTo(OrganisationUnitFields.path);
+        assertThat(orderCaptor.getValue()).isEqualTo(OrganisationUnitFields.ASC_ORDER);
         assertThat(pagingCaptor.getValue()).isTrue();
         assertThat(pageCaptor.getValue()).isEqualTo(1);
     }

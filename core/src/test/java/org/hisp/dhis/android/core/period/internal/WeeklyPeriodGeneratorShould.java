@@ -198,7 +198,7 @@ public class WeeklyPeriodGeneratorShould {
         startCalendar.getTime();
         startCalendar.setFirstDayOfWeek(weekStartDay);
         startCalendar.setMinimalDaysInFirstWeek(4);
-        startCalendar.set(Calendar.DAY_OF_WEEK, weekStartDay);
+        CalendarUtils.setDayOfWeek(startCalendar, weekStartDay);
 
     }
 }

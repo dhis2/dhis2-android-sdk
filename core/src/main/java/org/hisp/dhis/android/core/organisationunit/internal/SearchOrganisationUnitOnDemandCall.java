@@ -87,6 +87,6 @@ final class SearchOrganisationUnitOnDemandCall implements UidsCall<OrganisationU
             handler.handleMany(items, pathTransformer);
         }, partitionUids ->
                 service.getSearchOrganisationUnits(OrganisationUnitFields.allFields,
-                        OrganisationUnitFields.uid.in(partitionUids), Boolean.FALSE));
+                        OrganisationUnitFields.uid.in(partitionUids), OrganisationUnitFields.ASC_ORDER, Boolean.FALSE));
     }
 }

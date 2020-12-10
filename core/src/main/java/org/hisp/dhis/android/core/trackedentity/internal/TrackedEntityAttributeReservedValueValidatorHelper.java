@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal;
 
+import org.hisp.dhis.android.core.period.internal.CalendarUtils;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -88,7 +90,7 @@ public final class TrackedEntityAttributeReservedValueValidatorHelper {
         if (weekly) {
             cal.setFirstDayOfWeek(Calendar.MONDAY);
             cal.add(Calendar.WEEK_OF_YEAR, 1);
-            cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+            CalendarUtils.setDayOfWeek(cal, Calendar.MONDAY);
         } else if (monthly) {
             cal.add(Calendar.MONTH, 1);
             cal.set(Calendar.DAY_OF_MONTH, 1);

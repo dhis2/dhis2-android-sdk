@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal;
 
+import org.hisp.dhis.android.core.period.internal.CalendarUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -74,7 +75,7 @@ public class TrackedEntityAttributeReservedValueValidatorHelperShould {
         Calendar cal = setCalendarToDayInit();
         cal.setFirstDayOfWeek(Calendar.MONDAY);
         cal.add(Calendar.WEEK_OF_YEAR, 1);
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        CalendarUtils.setDayOfWeek(cal, Calendar.MONDAY);
 
         assertThat(date).isEqualTo(cal.getTime());
     }

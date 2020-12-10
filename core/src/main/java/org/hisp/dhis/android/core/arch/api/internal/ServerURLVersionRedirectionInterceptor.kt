@@ -25,38 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.internal
 
-package org.hisp.dhis.android.core.arch.api.internal;
+import okhttp3.Interceptor
+import okhttp3.Response
+import org.hisp.dhis.android.core.arch.api.authentication.internal.BasicAuthenticator
+import java.io.IOException
 
-import java.io.IOException;
+internal class ServerURLVersionRedirectionInterceptor : Interceptor {
 
-import okhttp3.Interceptor;
-import okhttp3.Request;
-import okhttp3.Response;
-
-public class ServerURLVersionRedirectionInterceptor implements Interceptor {
-
-    private Request previousUpdateRedirectionRequest;
-
-    @Override
-    public Response intercept(Chain chain) throws IOException {
-        Request request = fixedRedirectionRequest(chain.request());
-        previousUpdateRedirectionRequest = null;
-        Response response = chain.proceed(request);
+    @Throws(IOException::class)
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val request = chain.request()
+        val response = chain.proceed(request)
         if (response.code() == 302) {
-            ServerURLWrapper.setServerUrl(response.header("Location"));
-            if (!request.method().equals("GET")) {
-                this.previousUpdateRedirectionRequest = request;
+            val location = response.header(BasicAuthenticator.LOCATION_KEY)
+
+            // TODO maybe it's not necessary
+            if (location != null && !location.contains(BasicAuthenticator.LOGIN_ACTION)) {
+                ServerURLWrapper.setServerUrl(location)
+                response.close()
+                val redirectReq = DynamicServerURLInterceptor.transformRequest(request)
+                return chain.proceed(redirectReq)
             }
         }
-        return response;
-    }
-
-    private Request fixedRedirectionRequest(Request request) {
-        if (previousUpdateRedirectionRequest == null) {
-            return request;
-        } else {
-            return DynamicServerURLInterceptor.transformRequest(previousUpdateRedirectionRequest);
-        }
+        return response
     }
 }

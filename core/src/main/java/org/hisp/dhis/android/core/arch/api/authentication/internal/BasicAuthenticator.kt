@@ -43,9 +43,10 @@ internal class BasicAuthenticator(private val credentialsSecureStore: ObjectKeyV
         private const val AUTHORIZATION_KEY = "Authorization"
         private const val COOKIE_KEY = "Cookie"
         private const val SET_COOKIE_KEY = "set-cookie"
-        private const val LOCATION_KEY = "Location"
+        const val LOCATION_KEY = "Location"
 
         private const val BASIC_CREDENTIALS = "Basic %s"
+        const val LOGIN_ACTION = "login.action"
     }
 
     private var cookieValue: String? = null
@@ -106,7 +107,7 @@ internal class BasicAuthenticator(private val credentialsSecureStore: ObjectKeyV
 
     private fun hasAuthenticationFailed(res: Response): Boolean {
         val location = res.header(LOCATION_KEY)
-        return res.isRedirect && location != null && location.contains("login.action")
+        return res.isRedirect && location != null && location.contains(LOGIN_ACTION)
     }
 
     private fun addAuthorizationHeader(builder: Request.Builder, credentials: Credentials): Request.Builder {

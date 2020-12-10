@@ -64,7 +64,7 @@ final class OkHttpClientFactory {
 
         OkHttpClient.Builder client = new OkHttpClient.Builder()
                 .addInterceptor(new DynamicServerURLInterceptor())
-                //.addNetworkInterceptor(new ServerURLVersionRedirectionInterceptor())
+                .addInterceptor(new ServerURLVersionRedirectionInterceptor())
                 .addInterceptor(new BasicAuthenticator(credentialsSecureStore))
                 .addInterceptor(new PreventURLDecodeInterceptor())
                 .addInterceptor(chain -> {

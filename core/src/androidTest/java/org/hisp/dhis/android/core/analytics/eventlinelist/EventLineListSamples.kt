@@ -137,4 +137,17 @@ object EventLineListSamples {
             .deleted(false)
             .build()
     }
+
+    fun dueEvent(programStage: String, dueDate: Date): Event {
+        return Event.builder()
+            .uid(generator.generate())
+            .program(program1.uid())
+            .programStage(programStage)
+            .dueDate(dueDate)
+            .enrollment(enrollment.uid())
+            .organisationUnit(organisationUnit1.uid())
+            .attributeOptionCombo(categoryOptionCombo.uid())
+            .deleted(false)
+            .build()
+    }
 }

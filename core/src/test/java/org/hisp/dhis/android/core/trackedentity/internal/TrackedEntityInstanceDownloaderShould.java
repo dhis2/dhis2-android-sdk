@@ -45,7 +45,7 @@ import static org.mockito.Mockito.verify;
 public class TrackedEntityInstanceDownloaderShould {
 
     @Mock
-    private TrackedEntityInstanceWithLimitCallFactory callFactory;
+    private TrackedEntityInstanceDownloadCall callFactory;
 
     private ArgumentCaptor<ProgramDataDownloadParams> paramsCapture =
             ArgumentCaptor.forClass(ProgramDataDownloadParams.class);

@@ -488,6 +488,10 @@ public final class TrackedEntityInstanceQueryCollectionRepository
                 childrenAppenders, onlineCache);
     }
 
+    public TrackedEntityInstanceQueryRepositoryScope getScope() {
+        return scope;
+    }
+
     @Override
     public List<TrackedEntityInstance> blockingGet() {
         if (scope.mode().equals(RepositoryMode.OFFLINE_ONLY) || scope.mode().equals(RepositoryMode.OFFLINE_FIRST)) {

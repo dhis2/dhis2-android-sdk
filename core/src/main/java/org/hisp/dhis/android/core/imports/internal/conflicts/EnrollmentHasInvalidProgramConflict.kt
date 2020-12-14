@@ -27,26 +27,32 @@
  */
 package org.hisp.dhis.android.core.imports.internal.conflicts
 
-import org.junit.Test
+import org.hisp.dhis.android.core.imports.TrackerImportConflict
+import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
-internal class EnrollmentNotFoundConflictShould : BaseConflictShould() {
+internal object EnrollmentHasInvalidProgramConflict : TrackerImportConflictItem {
 
-    private val importConflict = TrackedImportConflictSamples.enrollmentNotFound(enrollmentUid, relationshipUid)
+    private val regex: Regex = Regex("ProgramInstance '(\\w{11})' has invalid Program.")
+    private fun description(enrollmentUid: String) = "Your enrollment $enrollmentUid has an invalid program"
 
-    @Test
-    fun `Should match error message`() {
-        assert(EnrollmentNotFoundConflict.matches(importConflict))
+    override val errorCode: String = "E1069"
+
+    override fun matches(conflict: ImportConflict): Boolean {
+        return regex.matches(conflict.value())
     }
 
-    @Test
-    fun `Should match enrollment uid`() {
-        val value = EnrollmentNotFoundConflict.getEnrollment(importConflict)
-        assert(value == enrollmentUid)
+    override fun getEnrollment(conflict: ImportConflict): String? {
+        return regex.find(conflict.value())?.groupValues?.get(1)
     }
 
-    @Test
-    fun `Should create display description`() {
-        val displayDescription = EnrollmentNotFoundConflict.getDisplayDescription(importConflict, conflictBuilder, context)
-        assert(displayDescription == "Your enrollment $enrollmentUid does not exist in the server")
+    override fun getDisplayDescription(
+            conflict: ImportConflict,
+            conflictBuilder: TrackerImportConflict.Builder,
+            context: TrackerImportConflictItemContext
+    ): String {
+        return getEnrollment(conflict)?.let { enrollmentUid ->
+            description(enrollmentUid)
+        } ?:
+        conflict.value()
     }
 }

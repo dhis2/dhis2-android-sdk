@@ -29,24 +29,25 @@ package org.hisp.dhis.android.core.imports.internal.conflicts
 
 import org.junit.Test
 
-internal class EnrollmentNotFoundConflictShould : BaseConflictShould() {
+internal class EnrollmentHasInvalidProgramConflictShould : BaseConflictShould() {
 
-    private val importConflict = TrackedImportConflictSamples.enrollmentNotFound(enrollmentUid, relationshipUid)
+    private val importConflict = TrackedImportConflictSamples.enrollmentHasInvalidProgram(enrollmentUid, relationshipUid)
 
     @Test
     fun `Should match error message`() {
-        assert(EnrollmentNotFoundConflict.matches(importConflict))
+        assert(EnrollmentHasInvalidProgramConflict.matches(importConflict))
     }
 
     @Test
     fun `Should match enrollment uid`() {
-        val value = EnrollmentNotFoundConflict.getEnrollment(importConflict)
+        val value = EnrollmentHasInvalidProgramConflict.getEnrollment(importConflict)
         assert(value == enrollmentUid)
     }
 
     @Test
     fun `Should create display description`() {
-        val displayDescription = EnrollmentNotFoundConflict.getDisplayDescription(importConflict, conflictBuilder, context)
-        assert(displayDescription == "Your enrollment $enrollmentUid does not exist in the server")
+        val displayDescription = EnrollmentHasInvalidProgramConflict
+                .getDisplayDescription(importConflict, conflictBuilder, context)
+        assert(displayDescription == "Your enrollment $enrollmentUid has an invalid program")
     }
 }

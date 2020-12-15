@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import com.google.common.truth.Truth
 import com.nhaarman.mockitokotlin2.mock
+import java.util.HashMap
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
@@ -46,18 +47,17 @@ import org.junit.runners.JUnit4
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
-import java.util.HashMap
 
 @RunWith(JUnit4::class)
 class TrackedEntityInstanceQueryBuilderFactoryShould {
-    
+
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore = mock()
     private val organisationUnitProgramLinkLinkStore: LinkStore<OrganisationUnitProgramLink> = mock()
     private val programStore: ProgramStoreInterface = mock()
     private val programSettingsObjectRepository: ProgramSettingsObjectRepository = mock()
     private val programSettings: ProgramSettings = mock()
     private val lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager = mock()
-    
+
     private val p1 = "program1"
     private val p2 = "program2"
     private val p3 = "program3"
@@ -89,11 +89,14 @@ class TrackedEntityInstanceQueryBuilderFactoryShould {
         Mockito.`when`(programSettingsObjectRepository.blockingGet()).thenReturn(programSettings)
 
         val commonHelper = TrackedEntityInstanceQueryCommonHelper(
-            userOrganisationUnitLinkStore, organisationUnitProgramLinkLinkStore)
+            userOrganisationUnitLinkStore, organisationUnitProgramLinkLinkStore
+        )
         val globalHelper = TrackedEntityInstanceQueryGlobalHelper(
-            lastUpdatedManager, commonHelper)
+            lastUpdatedManager, commonHelper
+        )
         val perProgramHelper = TrackedEntityInstanceQueryPerProgramHelper(
-            lastUpdatedManager, commonHelper)
+            lastUpdatedManager, commonHelper
+        )
         builderFactory = TrackedEntityInstanceQueryBuilderFactory(
             programStore, programSettingsObjectRepository, lastUpdatedManager, globalHelper, perProgramHelper
         )

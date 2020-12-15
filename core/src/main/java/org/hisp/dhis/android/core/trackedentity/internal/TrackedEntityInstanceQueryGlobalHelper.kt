@@ -28,11 +28,11 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
+import java.util.ArrayList
+import javax.inject.Inject
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.settings.ProgramSettings
-import java.util.ArrayList
-import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstanceQueryGlobalHelper @Inject constructor(

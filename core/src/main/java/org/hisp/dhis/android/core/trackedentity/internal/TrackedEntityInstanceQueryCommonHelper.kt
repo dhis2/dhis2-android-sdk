@@ -28,6 +28,9 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
+import java.util.ArrayList
+import java.util.Date
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
@@ -38,9 +41,6 @@ import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.settings.LimitScope
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
-import java.util.ArrayList
-import java.util.Date
-import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstanceQueryCommonHelper @Inject constructor(
@@ -85,8 +85,10 @@ internal class TrackedEntityInstanceQueryCommonHelper @Inject constructor(
         return linkedOrgunits
     }
 
+    @Suppress("ReturnCount")
     fun hasLimitByOrgUnit(
-        params: ProgramDataDownloadParams, programSettings: ProgramSettings?,
+        params: ProgramDataDownloadParams,
+        programSettings: ProgramSettings?,
         programUid: String?
     ): Boolean {
         if (params.limitByOrgunit() != null) {
@@ -110,6 +112,7 @@ internal class TrackedEntityInstanceQueryCommonHelper @Inject constructor(
         return false
     }
 
+    @Suppress("ReturnCount")
     fun getLimit(
         params: ProgramDataDownloadParams,
         programSettings: ProgramSettings?,

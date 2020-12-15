@@ -28,14 +28,14 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
+import java.util.ArrayList
+import javax.inject.Inject
 import org.hisp.dhis.android.core.program.ProgramType
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
 import org.hisp.dhis.android.core.settings.LimitScope
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository
-import java.util.ArrayList
-import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstanceQueryBuilderFactory @Inject constructor(
@@ -46,6 +46,7 @@ internal class TrackedEntityInstanceQueryBuilderFactory @Inject constructor(
     private val perProgramHelper: TrackedEntityInstanceQueryPerProgramHelper
 ) {
 
+    @Suppress("NestedBlockDepth")
     fun getTeiQueryBuilders(params: ProgramDataDownloadParams): List<TeiQuery.Builder> {
         val programSettings = programSettingsObjectRepository.blockingGet()
         lastUpdatedManager.prepare(programSettings, params)
@@ -71,6 +72,7 @@ internal class TrackedEntityInstanceQueryBuilderFactory @Inject constructor(
         return builders
     }
 
+    @Suppress("ReturnCount")
     private fun hasLimitByProgram(params: ProgramDataDownloadParams, programSettings: ProgramSettings?): Boolean {
         if (params.limitByProgram() != null) {
             return params.limitByProgram()!!

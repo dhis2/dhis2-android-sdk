@@ -28,6 +28,9 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
+import java.util.ArrayList
+import java.util.Date
+import javax.inject.Inject
 import org.apache.commons.lang3.time.DateUtils
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
@@ -37,9 +40,6 @@ import org.hisp.dhis.android.core.settings.DownloadPeriod
 import org.hisp.dhis.android.core.settings.EnrollmentScope
 import org.hisp.dhis.android.core.settings.ProgramSetting
 import org.hisp.dhis.android.core.settings.ProgramSettings
-import java.util.ArrayList
-import java.util.Date
-import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstanceQueryPerProgramHelper @Inject constructor(
@@ -93,6 +93,7 @@ internal class TrackedEntityInstanceQueryPerProgramHelper @Inject constructor(
         return builders
     }
 
+    @Suppress("ReturnCount")
     private fun getProgramStatus(
         params: ProgramDataDownloadParams,
         programSettings: ProgramSettings?,

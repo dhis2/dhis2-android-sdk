@@ -85,7 +85,8 @@ class MetadataCallShould : BaseCallShould() {
         super.setUp()
 
         // Calls
-        whenever(systemInfoDownloader.downloadMetadata()).thenReturn(Completable.complete())
+        whenever(systemInfoDownloader.downloadWithProgressManager(any()))
+            .thenReturn(Observable.just(D2Progress.empty(10)))
         whenever(systemSettingDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(userDownloader.downloadMetadata()).thenReturn(Single.just(user))
         whenever(programDownloader.downloadMetadata(any())).thenReturn(
@@ -136,7 +137,7 @@ class MetadataCallShould : BaseCallShould() {
 
     @Test
     fun fail_when_system_info_call_fail() {
-        whenever(systemInfoDownloader.downloadMetadata()).thenReturn(Completable.error(d2Error))
+        whenever(systemInfoDownloader.downloadWithProgressManager(any())).thenReturn(Observable.error(d2Error))
         downloadAndAssertError()
     }
 

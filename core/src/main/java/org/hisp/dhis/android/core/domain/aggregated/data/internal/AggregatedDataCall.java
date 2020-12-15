@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore;
 import org.hisp.dhis.android.core.dataapproval.DataApproval;
@@ -49,7 +48,7 @@ import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.datavalue.internal.DataValueQuery;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
-import org.hisp.dhis.android.core.systeminfo.SystemInfo;
+import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -67,7 +66,7 @@ import io.reactivex.Single;
 @SuppressWarnings({"PMD.ExcessiveImports"})
 final class AggregatedDataCall {
 
-    private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
+    private final SystemInfoModuleDownloader systemInfoModuleDownloader;
     private final DHISVersionManager dhisVersionManager;
     private final QueryCall<DataValue, DataValueQuery> dataValueCall;
     private final QueryCall<DataSetCompleteRegistration,
@@ -82,7 +81,7 @@ final class AggregatedDataCall {
 
 
     @Inject
-    AggregatedDataCall(@NonNull ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
+    AggregatedDataCall(@NonNull SystemInfoModuleDownloader systemInfoModuleDownloader,
                        @NonNull DHISVersionManager dhisVersionManager,
                        @NonNull QueryCall<DataValue, DataValueQuery> dataValueCall,
                        @NonNull QueryCall<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery>
@@ -94,7 +93,7 @@ final class AggregatedDataCall {
                        @NonNull AggregatedDataCallBundleFactory aggregatedDataCallBundleFactory,
                        @NonNull ResourceHandler resourceHandler,
                        @NonNull AggregatedDataSyncHashHelper hashHelper) {
-        this.systemInfoRepository = systemInfoRepository;
+        this.systemInfoModuleDownloader = systemInfoModuleDownloader;
         this.dhisVersionManager = dhisVersionManager;
         this.dataValueCall = dataValueCall;
         this.dataSetCompleteRegistrationCall = dataSetCompleteRegistrationCall;
@@ -111,9 +110,8 @@ final class AggregatedDataCall {
     Observable<D2Progress> download() {
         D2ProgressManager progressManager = new D2ProgressManager(null);
 
-        Observable<D2Progress> observable = systemInfoRepository.download()
-                .toSingle(() -> progressManager.increaseProgress(SystemInfo.class, false))
-                .flatMapObservable(progress -> selectDataSetsAndDownload(progressManager, progress));
+        Observable<D2Progress> observable = systemInfoModuleDownloader.downloadWithProgressManager(progressManager)
+                .flatMap(progress -> selectDataSetsAndDownload(progressManager, progress));
         return rxCallExecutor.wrapObservableTransactionally(observable, true);
     }
 

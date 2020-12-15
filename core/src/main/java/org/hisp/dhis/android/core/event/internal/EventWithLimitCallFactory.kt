@@ -37,15 +37,14 @@ import org.hisp.dhis.android.core.arch.api.paging.internal.Paging
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
-import org.hisp.dhis.android.core.systeminfo.SystemInfo
+import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
 
 @Reusable
 class EventWithLimitCallFactory @Inject internal constructor(
-    private val systemInfoRepository: ReadOnlyWithDownloadObjectRepository<SystemInfo>,
+    private val systemInfoModuleDownloader: SystemInfoModuleDownloader,
     private val d2CallExecutor: D2CallExecutor,
     private val rxCallExecutor: RxAPICallExecutor,
     private val eventQueryBundleFactory: EventQueryBundleFactory,
@@ -58,7 +57,7 @@ class EventWithLimitCallFactory @Inject internal constructor(
 
         val progressManager = D2ProgressManager(2)
         return Observable.merge(
-            downloadSystemInfo(progressManager),
+            systemInfoModuleDownloader.downloadWithProgressManager(progressManager),
             downloadEventsInternal(params, progressManager)
         )
     }
@@ -103,16 +102,6 @@ class EventWithLimitCallFactory @Inject internal constructor(
             emitter.onNext(progressManager.increaseProgress(Event::class.java, true))
             emitter.onComplete()
         }
-    }
-
-    private fun downloadSystemInfo(progressManager: D2ProgressManager): Observable<D2Progress> {
-        return systemInfoRepository.download()
-            .toSingle {
-                progressManager.increaseProgress(
-                    SystemInfo::class.java, false
-                )
-            }
-            .toObservable()
     }
 
     private fun getEventsForOrgUnitProgramCombination(

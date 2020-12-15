@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.analytics.linelist
 
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.dataelement.DataElementCollectionRepository
 import org.hisp.dhis.android.core.event.EventCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRepository

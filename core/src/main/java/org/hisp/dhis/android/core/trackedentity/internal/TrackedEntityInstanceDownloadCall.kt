@@ -46,6 +46,7 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipDownloadAndP
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.systeminfo.SystemInfo
+import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 
@@ -55,6 +56,7 @@ internal class TrackedEntityInstanceDownloadCall @Inject constructor(
     private val rxCallExecutor: RxAPICallExecutor,
     private val programOrganisationUnitLastUpdatedHandler: Handler<ProgramOrganisationUnitLastUpdated>,
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
+    private val systemInfoModuleDownloader: SystemInfoModuleDownloader,
     private val systemInfoRepository: ReadOnlyWithDownloadObjectRepository<SystemInfo>,
     private val trackedEntityInstanceQueryBuilderFactory: TrackedEntityInstanceQueryBuilderFactory,
     private val relationshipDownloadAndPersistCallFactory: RelationshipDownloadAndPersistCallFactory,
@@ -79,7 +81,7 @@ internal class TrackedEntityInstanceDownloadCall @Inject constructor(
             } else {
                 val relatives = RelationshipItemRelatives()
                 return@defer Observable.concat(
-                    downloadSystemInfo(progressManager),
+                    systemInfoModuleDownloader.downloadWithProgressManager(progressManager),
                     downloadTeis(progressManager, params, programOrganisationUnitSet, relatives),
                     downloadRelationships(progressManager, relatives),
                     updateResource(progressManager, programOrganisationUnitSet)
@@ -87,16 +89,6 @@ internal class TrackedEntityInstanceDownloadCall @Inject constructor(
             }
         }
         return rxCallExecutor.wrapObservableTransactionally(observable, true)
-    }
-
-    private fun downloadSystemInfo(progressManager: D2ProgressManager): Observable<D2Progress> {
-        return systemInfoRepository.download()
-            .toSingle {
-                progressManager.increaseProgress(
-                    SystemInfo::class.java, false
-                )
-            }
-            .toObservable()
     }
 
     private fun downloadTeis(

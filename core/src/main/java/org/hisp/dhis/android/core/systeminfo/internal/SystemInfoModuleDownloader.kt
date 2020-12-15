@@ -25,29 +25,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo.internal;
+package org.hisp.dhis.android.core.systeminfo.internal
 
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
-import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Completable;
+import dagger.Reusable
+import io.reactivex.Completable
+import io.reactivex.Observable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
+import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
+import org.hisp.dhis.android.core.systeminfo.SystemInfo
 
 @Reusable
-public class SystemInfoModuleDownloader implements UntypedModuleDownloader {
+class SystemInfoModuleDownloader @Inject internal constructor(
+    private val systemInfoRepository: ReadOnlyWithDownloadObjectRepository<SystemInfo>
+) : UntypedModuleDownloader {
 
-    private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
-
-    @Inject
-    SystemInfoModuleDownloader(ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository) {
-        this.systemInfoRepository = systemInfoRepository;
+    override fun downloadMetadata(): Completable {
+        return systemInfoRepository.download()
     }
 
-    @Override
-    public Completable downloadMetadata() {
-        return systemInfoRepository.download();
+    fun downloadWithProgressManager(progressManager: D2ProgressManager): Observable<D2Progress> {
+        return systemInfoRepository.download()
+            .toSingle {
+                progressManager.increaseProgress(
+                    SystemInfo::class.java, false
+                )
+            }.toObservable()
     }
 }

@@ -117,6 +117,10 @@ object TrackedImportConflictSamples {
         return ImportConflict.create(relationshipUid, "ProgramStageInstance '$eventUid' not found.")
     }
 
+    fun eventHasInvalidProgram(eventUid: String, relationshipUid: String): ImportConflict {
+        return ImportConflict.create(relationshipUid, "ProgramStageInstance '$eventUid' has invalid Program.")
+    }
+
     fun enrollmentNotFound(enrollmentUid: String, relationshipUid: String): ImportConflict {
         return ImportConflict.create(relationshipUid, "ProgramInstance '$enrollmentUid' not found.")
     }

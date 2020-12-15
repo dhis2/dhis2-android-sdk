@@ -27,17 +27,26 @@
  */
 package org.hisp.dhis.android.core.imports.internal.conflicts
 
-import org.hisp.dhis.android.core.imports.TrackerImportConflict
-import org.hisp.dhis.android.core.imports.internal.ImportConflict
+import org.junit.Test
 
-internal interface TrackerImportConflictItem {
-    val errorCode: String
-    fun matches(conflict: ImportConflict): Boolean
-    fun getTrackedEntityAttribute(conflict: ImportConflict): String? { return null }
-    fun getDataElement(conflict: ImportConflict): String? { return null }
-    fun getEvent(conflict: ImportConflict): String? { return null }
-    fun getEnrollment(conflict: ImportConflict): String? { return null }
-    fun getTrackedEntityInstance(conflict: ImportConflict): String? { return null }
-    fun getDisplayDescription(conflict: ImportConflict, conflictBuilder: TrackerImportConflict.Builder,
-                              context: TrackerImportConflictItemContext): String
+internal class EventNotFoundConflictShould : BaseConflictShould() {
+
+    private val importConflict = TrackedImportConflictSamples.eventNotFound(eventUid, relationshipUid)
+
+    @Test
+    fun `Should match error message`() {
+        assert(EventNotFoundConflict.matches(importConflict))
+    }
+
+    @Test
+    fun `Should match event uid`() {
+        val value = EventNotFoundConflict.getEvent(importConflict)
+        assert(value == eventUid)
+    }
+
+    @Test
+    fun `Should create display description`() {
+        val displayDescription = EventNotFoundConflict.getDisplayDescription(importConflict, conflictBuilder, context)
+        assert(displayDescription == "Your event $eventUid does not exist in the server")
+    }
 }

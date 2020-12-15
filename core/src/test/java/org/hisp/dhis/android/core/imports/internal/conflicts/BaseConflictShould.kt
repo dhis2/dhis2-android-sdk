@@ -53,6 +53,7 @@ internal open class BaseConflictShould {
     protected val optionSetUid = "Q2nhc0pmcZ8"
 
     protected val dataElementUid = "NTlMmRqGWCM"
+    protected val eventUid = "ohAH6BXIMad"
     protected val enrollmentUid = "tliijiEnCp5"
     protected val relatedTeiUid = "QGyxOe1zewj"
 

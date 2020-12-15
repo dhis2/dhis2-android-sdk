@@ -30,14 +30,29 @@ package org.hisp.dhis.android.core.imports.internal.conflicts
 import org.hisp.dhis.android.core.imports.TrackerImportConflict
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
-internal interface TrackerImportConflictItem {
-    val errorCode: String
-    fun matches(conflict: ImportConflict): Boolean
-    fun getTrackedEntityAttribute(conflict: ImportConflict): String? { return null }
-    fun getDataElement(conflict: ImportConflict): String? { return null }
-    fun getEvent(conflict: ImportConflict): String? { return null }
-    fun getEnrollment(conflict: ImportConflict): String? { return null }
-    fun getTrackedEntityInstance(conflict: ImportConflict): String? { return null }
-    fun getDisplayDescription(conflict: ImportConflict, conflictBuilder: TrackerImportConflict.Builder,
-                              context: TrackerImportConflictItemContext): String
+internal object EventNotFoundConflict : TrackerImportConflictItem {
+
+    private val regex: Regex = Regex("ProgramStageInstance '(\\w{11})' not found.")
+    private fun description(eventUid: String) = "Your event $eventUid does not exist in the server"
+
+    override val errorCode: String = "E1032"
+
+    override fun matches(conflict: ImportConflict): Boolean {
+        return regex.matches(conflict.value())
+    }
+
+    override fun getEvent(conflict: ImportConflict): String? {
+        return regex.find(conflict.value())?.groupValues?.get(1)
+    }
+
+    override fun getDisplayDescription(
+            conflict: ImportConflict,
+            conflictBuilder: TrackerImportConflict.Builder,
+            context: TrackerImportConflictItemContext
+    ): String {
+        return getEvent(conflict)?.let { eventUid ->
+            description(eventUid)
+        } ?:
+        conflict.value()
+    }
 }

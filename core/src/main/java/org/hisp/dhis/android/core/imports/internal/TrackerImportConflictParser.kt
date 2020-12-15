@@ -54,6 +54,7 @@ internal class TrackerImportConflictParser @Inject constructor(
         NonUniqueAttributeConflict,
         LackingEnrollmentCascadeDeleteAuthorityConflict,
         TrackedEntityInstanceNotFoundConflict,
+        EventNotFoundConflict,
         EnrollmentNotFoundConflict,
         EnrollmentHasInvalidProgramConflict,
         InvalidTrackedEntityTypeConflict

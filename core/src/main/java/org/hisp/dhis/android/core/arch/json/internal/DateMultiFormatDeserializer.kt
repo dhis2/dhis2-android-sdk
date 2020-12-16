@@ -50,6 +50,7 @@ class DateMultiFormatDeserializer @JvmOverloads constructor(vc: Class<*>? = null
             try {
                 return SimpleDateFormat(DATE_FORMAT, Locale.US).parse(date)!!
             } catch (e: ParseException) {
+                continue
             }
         }
         throw JsonParseException(jp, "Unparseable date: \"$date\".")

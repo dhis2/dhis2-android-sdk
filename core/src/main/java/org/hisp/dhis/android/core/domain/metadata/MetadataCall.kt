@@ -89,9 +89,7 @@ class MetadataCall @Inject internal constructor(
         return changeEncryptionIfRequired().andThen(
             rxCallExecutor.wrapObservableTransactionally(
                 Observable.merge(
-                    systemInfoDownloader.downloadMetadata().toSingle {
-                        progressManager.increaseProgress(SystemInfo::class.java, false)
-                    }.toObservable(),
+                    systemInfoDownloader.downloadWithProgressManager(progressManager),
                     executeIndependentCalls(progressManager),
                     executeUserCallAndChildren(progressManager)
                 ),

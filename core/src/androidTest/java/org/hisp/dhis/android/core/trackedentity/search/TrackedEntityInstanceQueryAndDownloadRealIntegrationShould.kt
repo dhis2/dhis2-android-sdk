@@ -28,12 +28,12 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import com.google.common.truth.Truth.assertThat
+import java.io.IOException
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.D2
 import org.hisp.dhis.android.core.D2Factory
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.junit.Before
-import java.io.IOException
 
 class TrackedEntityInstanceQueryAndDownloadRealIntegrationShould : BaseRealIntegrationTest() {
     private var d2: D2? = null
@@ -45,7 +45,7 @@ class TrackedEntityInstanceQueryAndDownloadRealIntegrationShould : BaseRealInteg
         d2 = D2Factory.forNewDatabase()
     }
 
-    //@Test
+    // @Test
     fun query_and_download_tracked_entity_instances() {
         d2!!.userModule().logIn(username, password, url).blockingGet()
         d2!!.metadataModule().blockingDownload()

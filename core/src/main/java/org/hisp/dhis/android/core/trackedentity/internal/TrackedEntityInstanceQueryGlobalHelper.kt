@@ -1,0 +1,79 @@
+/*
+ * Copyright (c) 2004-2019, University of Oslo
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ * Neither the name of the HISP project nor the names of its contributors may
+ * be used to endorse or promote products derived from this software without
+ * specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+package org.hisp.dhis.android.core.trackedentity.internal
+
+import dagger.Reusable
+import java.util.ArrayList
+import javax.inject.Inject
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
+import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
+import org.hisp.dhis.android.core.settings.ProgramSettings
+
+@Reusable
+internal class TrackedEntityInstanceQueryGlobalHelper @Inject constructor(
+    private val lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager,
+    private val commonHelper: TrackedEntityInstanceQueryCommonHelper
+) {
+
+    fun queryGlobal(
+        params: ProgramDataDownloadParams,
+        programSettings: ProgramSettings?
+    ): List<TeiQuery.Builder> {
+        val limit = commonHelper.getLimit(params, programSettings, null)
+        if (limit == 0) {
+            return emptyList()
+        }
+        val lastUpdated = lastUpdatedManager.getLastUpdated(null, limit)
+        val ouMode: OrganisationUnitMode
+        val orgUnits: List<String>
+        val hasLimitByOrgUnit = commonHelper.hasLimitByOrgUnit(params, programSettings, null)
+        when {
+            params.orgUnits().size > 0 -> {
+                ouMode = OrganisationUnitMode.SELECTED
+                orgUnits = params.orgUnits()
+            }
+            hasLimitByOrgUnit -> {
+                ouMode = OrganisationUnitMode.SELECTED
+                orgUnits = commonHelper.getCaptureOrgUnitUids()
+            }
+            else -> {
+                ouMode = OrganisationUnitMode.DESCENDANTS
+                orgUnits = commonHelper.getRootCaptureOrgUnitUids()
+            }
+        }
+        val builders: MutableList<TeiQuery.Builder> = ArrayList()
+        if (hasLimitByOrgUnit) {
+            for (orgUnitUid in orgUnits) {
+                builders.add(commonHelper.getBuilderFor(lastUpdated, listOf(orgUnitUid), ouMode, params, limit))
+            }
+        } else {
+            builders.add(commonHelper.getBuilderFor(lastUpdated, orgUnits, ouMode, params, limit))
+        }
+        return builders
+    }
+}

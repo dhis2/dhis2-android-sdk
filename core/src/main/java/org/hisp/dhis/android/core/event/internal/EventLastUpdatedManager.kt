@@ -25,35 +25,26 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.event.internal
 
-package org.hisp.dhis.android.core.event.internal;
-
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackerSyncLastUpdatedManager;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.resource.internal.ResourceHandler
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerSyncLastUpdatedManager
+import javax.inject.Inject
 
 @Reusable
-class EventLastUpdatedManager extends TrackerSyncLastUpdatedManager<EventSync> {
+internal class EventLastUpdatedManager @Inject constructor(
+    store: ObjectWithoutUidStore<EventSync>,
+    private val resourceHandler: ResourceHandler
+) : TrackerSyncLastUpdatedManager<EventSync>(store) {
 
-    private final ResourceHandler resourceHandler;
-
-    @Inject
-    EventLastUpdatedManager(ObjectWithoutUidStore<EventSync> store,
-                            ResourceHandler resourceHandler) {
-        super(store);
-        this.resourceHandler = resourceHandler;
-    }
-
-    public void update(String program, int limit) {
-        EventSync sync = EventSync.builder()
-                .program(program)
-                .downloadLimit(limit)
-                .lastUpdated(resourceHandler.getServerDate())
-                .build();
-        super.update(sync);
+    fun update(program: String?, limit: Int) {
+        val sync = EventSync.builder()
+            .program(program)
+            .downloadLimit(limit)
+            .lastUpdated(resourceHandler.serverDate)
+            .build()
+        super.update(sync)
     }
 }

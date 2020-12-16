@@ -25,34 +25,25 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.trackedentity.internal;
-
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.resource.internal.ResourceHandler
+import javax.inject.Inject
 
 @Reusable
-class TrackedEntityInstanceLastUpdatedManager extends TrackerSyncLastUpdatedManager<TrackedEntityInstanceSync> {
+internal class TrackedEntityInstanceLastUpdatedManager @Inject constructor(
+    store: ObjectWithoutUidStore<TrackedEntityInstanceSync>,
+    private val resourceHandler: ResourceHandler
+) : TrackerSyncLastUpdatedManager<TrackedEntityInstanceSync>(store) {
 
-    private final ResourceHandler resourceHandler;
-
-    @Inject
-    TrackedEntityInstanceLastUpdatedManager(ObjectWithoutUidStore<TrackedEntityInstanceSync> store,
-                                            ResourceHandler resourceHandler) {
-        super(store);
-        this.resourceHandler = resourceHandler;
-    }
-
-    public void update(TeiQuery teiQuery) {
-        TrackedEntityInstanceSync sync = TrackedEntityInstanceSync.builder()
-                .program(teiQuery.program())
-                .downloadLimit(teiQuery.limit())
-                .lastUpdated(resourceHandler.getServerDate())
-                .build();
-        super.update(sync);
+    fun update(teiQuery: TeiQuery) {
+        val sync = TrackedEntityInstanceSync.builder()
+            .program(teiQuery.program())
+            .downloadLimit(teiQuery.limit())
+            .lastUpdated(resourceHandler.serverDate)
+            .build()
+        super.update(sync)
     }
 }

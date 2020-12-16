@@ -26,36 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 
-import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat;
-import org.hisp.dhis.android.core.arch.helpers.DateUtils;
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
 
-import java.io.IOException;
-import java.text.ParseException;
+public final class BoolFilterConnector<R  extends BaseRepository> {
 
-import static com.google.common.truth.Truth.assertThat;
+    private final ScopedRepositoryFilterFactory<R, Boolean> repositoryFactory;
 
-public class DataInputPeriodShould extends BaseObjectShould implements ObjectShould {
-
-    public static final SafeDateFormat dateFormat = DateUtils.DATE_FORMAT;
-
-    public DataInputPeriodShould() {
-        super("dataset/data_input_period.json");
+    BoolFilterConnector(ScopedRepositoryFilterFactory<R, Boolean> repositoryFactory) {
+        this.repositoryFactory = repositoryFactory;
     }
 
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
+    /**
+     * Returns a new repository whose scope that checks if the given field has a true value.
+     * @return the new repository
+     */
+    public R isTrue() {
+        return repositoryFactory.updated(true);
+    }
 
-        DataInputPeriod dataInputPeriod = objectMapper.readValue(jsonStream, DataInputPeriod.class);
-
-        assertThat(UidsHelper.getUidOrNull(dataInputPeriod.period())).isEqualTo("201801");
-        assertThat(dataInputPeriod.openingDate()).isEqualTo(dateFormat.parse("2017-12-31T23:00:00.000"));
-        assertThat(dataInputPeriod.closingDate()).isEqualTo(dateFormat.parse("2018-01-09T23:00:00.000"));
+    /**
+     * Returns a new repository whose scope that checks if the given field has a false value.
+     * @return the new repository
+     */
+    public R isFalse() {
+        return repositoryFactory.updated(false);
     }
 }

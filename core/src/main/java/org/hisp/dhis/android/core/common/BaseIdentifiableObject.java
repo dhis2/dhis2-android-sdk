@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.android.core.common;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
@@ -35,18 +38,16 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreBooleanColumnAdapter;
+import org.hisp.dhis.android.core.arch.helpers.DateUtils;
 
 import java.text.ParseException;
 import java.util.Date;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 public abstract class BaseIdentifiableObject implements IdentifiableObject, ObjectWithDeleteInterface {
     /* date format which should be used for all Date instances
     within models which extend BaseIdentifiableObject */
-    public static final SafeDateFormat DATE_FORMAT = new SafeDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-    public static final SafeDateFormat SPACE_DATE_FORMAT = new SafeDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    public static final SafeDateFormat DATE_FORMAT = DateUtils.DATE_FORMAT;
+    public static final SafeDateFormat SPACE_DATE_FORMAT = DateUtils.SPACE_DATE_FORMAT;
 
     public static final String UID = "id";
     public static final String CODE = "code";

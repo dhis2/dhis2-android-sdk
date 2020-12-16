@@ -25,21 +25,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.search
 
-package org.hisp.dhis.android.core.trackedentity.search;
+import org.hisp.dhis.android.core.common.AssignedUserMode
+import org.mockito.ArgumentMatcher
 
-import org.mockito.ArgumentMatcher;
+internal class QueryPageUserModeMatcher(
+    private val page: Int,
+    private val pageSize: Int,
+    private val assignedUserMode: AssignedUserMode
+) : ArgumentMatcher<TrackedEntityInstanceQueryOnline> {
 
-class QueryPageMatcher implements ArgumentMatcher<TrackedEntityInstanceQueryOnline> {
-
-    private final int page;
-
-    QueryPageMatcher(int page) {
-        this.page = page;
-    }
-
-    @Override
-    public boolean matches(TrackedEntityInstanceQueryOnline query) {
-        return query != null && query.page() == page;
+    override fun matches(query: TrackedEntityInstanceQueryOnline?): Boolean {
+        return query?.let {
+            it.page() == page && it.pageSize() == pageSize && it.assignedUserMode() == assignedUserMode
+        } ?: false
     }
 }

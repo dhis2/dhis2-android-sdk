@@ -32,94 +32,48 @@ import io.reactivex.*
 import java.util.HashSet
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.api.paging.internal.ApiPagingEngine
-import org.hisp.dhis.android.core.arch.api.paging.internal.Paging
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.arch.helpers.internal.BooleanWrapper
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.program.internal.ProgramOrganisationUnitLastUpdated
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDownloadAndPersistCallFactory
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import org.hisp.dhis.android.core.systeminfo.SystemInfo
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 
-@Suppress("LongParameterList")
 @Reusable
 internal class TrackedEntityInstanceDownloadCall @Inject constructor(
     private val rxCallExecutor: RxAPICallExecutor,
     private val programOrganisationUnitLastUpdatedHandler: Handler<ProgramOrganisationUnitLastUpdated>,
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
     private val systemInfoModuleDownloader: SystemInfoModuleDownloader,
-    private val systemInfoRepository: ReadOnlyWithDownloadObjectRepository<SystemInfo>,
-    private val trackedEntityInstanceQueryBuilderFactory: TrackedEntityInstanceQueryBuilderFactory,
     private val relationshipDownloadAndPersistCallFactory: RelationshipDownloadAndPersistCallFactory,
-    private val persistenceCallFactory: TrackedEntityInstancePersistenceCallFactory,
     private val versionManager: DHISVersionManager,
-    private val endpointCallFactory: TrackedEntityInstancesEndpointCallFactory,
-    private val apiCallExecutor: RxAPICallExecutor,
-    private val lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager
+    private val internalCall: TrackedEntityInstanceDownloadInternalCall
 ) {
-
-    // TODO use scheduler for parallel download
-    // private final Scheduler teiDownloadScheduler = Schedulers.from(Executors.newFixedThreadPool(6));
 
     fun download(params: ProgramDataDownloadParams): Observable<D2Progress> {
         val observable = Observable.defer {
             val progressManager = D2ProgressManager(null)
-            val programOrganisationUnitSet: MutableSet<ProgramOrganisationUnitLastUpdated> = HashSet()
             if (userOrganisationUnitLinkStore.count() == 0) {
                 return@defer Observable.just(
                     progressManager.increaseProgress(TrackedEntityInstance::class.java, true)
                 )
             } else {
+                val programOrganisationUnitSet: MutableSet<ProgramOrganisationUnitLastUpdated> = HashSet()
                 val relatives = RelationshipItemRelatives()
                 return@defer Observable.concat(
                     systemInfoModuleDownloader.downloadWithProgressManager(progressManager),
-                    downloadTeis(progressManager, params, programOrganisationUnitSet, relatives),
+                    internalCall.downloadTeis(progressManager, params, programOrganisationUnitSet, relatives),
                     downloadRelationships(progressManager, relatives),
                     updateResource(progressManager, programOrganisationUnitSet)
                 )
             }
         }
         return rxCallExecutor.wrapObservableTransactionally(observable, true)
-    }
-
-    private fun downloadTeis(
-        progressManager: D2ProgressManager,
-        params: ProgramDataDownloadParams,
-        programOrganisationUnitSet: MutableSet<ProgramOrganisationUnitLastUpdated>,
-        relatives: RelationshipItemRelatives
-    ): Observable<D2Progress> {
-        return Observable.defer {
-            val teiQueryBuilders = trackedEntityInstanceQueryBuilderFactory
-                .getTeiQueryBuilders(params)
-            val teiDownloadObservable = Observable.fromIterable(teiQueryBuilders)
-                .flatMap { teiQueryBuilder: TeiQuery.Builder -> getTrackedEntityInstancesWithPaging(teiQueryBuilder) }
-            // TODO .subscribeOn(teiDownloadScheduler);
-            val serverDate = systemInfoRepository.blockingGet().serverDate()
-            val isFullUpdate = params.program() == null
-            val overwrite = params.overwrite()
-            teiDownloadObservable.flatMapSingle { teiList: List<TrackedEntityInstance> ->
-                persistenceCallFactory.persistTEIs(teiList, isFullUpdate, overwrite, relatives)
-                    .doOnComplete {
-                        programOrganisationUnitSet.addAll(
-                            TrackedEntityInstanceHelper.getProgramOrganisationUnitTuple(teiList, serverDate)
-                        )
-                    }
-                    .toSingle {
-                        progressManager.increaseProgress(
-                            TrackedEntityInstance::class.java, false
-                        )
-                    }
-            }
-        }
     }
 
     private fun downloadRelationships(
@@ -140,60 +94,6 @@ internal class TrackedEntityInstanceDownloadCall @Inject constructor(
         }
     }
 
-    private fun getTrackedEntityInstancesWithPaging(
-        teiQueryBuilder: TeiQuery.Builder
-    ): Observable<List<TrackedEntityInstance>> {
-        val baseQuery = teiQueryBuilder.build()
-        val pagingList = ApiPagingEngine.getPaginationList(baseQuery.pageSize(), baseQuery.limit())
-        val allOkay = BooleanWrapper(true)
-        return Observable
-            .fromIterable(pagingList)
-            .flatMapSingle { paging: Paging ->
-                teiQueryBuilder.page(paging.page()).pageSize(paging.pageSize())
-                apiCallExecutor.wrapSingle(endpointCallFactory.getCall(teiQueryBuilder.build()), true)
-                    .map { payload: Payload<TrackedEntityInstance> ->
-                        TeiListWithPaging(
-                            true,
-                            limitTeisForPage(payload.items(), paging),
-                            paging
-                        )
-                    }
-                    .onErrorResumeNext {
-                        allOkay.set(false)
-                        Single.just(TeiListWithPaging(false, emptyList(), paging))
-                    }
-            }
-            .takeUntil { res: TeiListWithPaging ->
-                res.isSuccess && (
-                    res.paging.isLastPage ||
-                        res.teiList.size < res.paging.pageSize()
-                    )
-            }
-            .map { tuple: TeiListWithPaging -> tuple.teiList }
-            .doOnComplete {
-                if (allOkay.get()) {
-                    lastUpdatedManager.update(teiQueryBuilder.build())
-                }
-            }
-    }
-
-    private fun limitTeisForPage(
-        pageTrackedEntityInstances: List<TrackedEntityInstance>,
-        paging: Paging
-    ): List<TrackedEntityInstance> {
-        return if (paging.isLastPage &&
-            pageTrackedEntityInstances.size > paging.previousItemsToSkipCount()
-        ) {
-            val toIndex = Math.min(
-                pageTrackedEntityInstances.size,
-                paging.pageSize() - paging.posteriorItemsToSkipCount()
-            )
-            pageTrackedEntityInstances.subList(paging.previousItemsToSkipCount(), toIndex)
-        } else {
-            pageTrackedEntityInstances
-        }
-    }
-
     private fun updateResource(
         progressManager: D2ProgressManager,
         programOrganisationUnitSet: Set<ProgramOrganisationUnitLastUpdated>
@@ -203,10 +103,4 @@ internal class TrackedEntityInstanceDownloadCall @Inject constructor(
             progressManager.increaseProgress(TrackedEntityInstance::class.java, true)
         }.toObservable()
     }
-
-    private data class TeiListWithPaging constructor(
-        val isSuccess: Boolean,
-        val teiList: List<TrackedEntityInstance>,
-        val paging: Paging
-    )
 }

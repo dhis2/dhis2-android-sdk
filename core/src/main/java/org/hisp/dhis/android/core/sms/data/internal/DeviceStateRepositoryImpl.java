@@ -27,6 +27,7 @@ public class DeviceStateRepositoryImpl implements DeviceStateRepository {
     }
 
     @Override
+    @SuppressLint("MissingPermission")
     public Single<Boolean> isNetworkConnected() {
         //permission should be checked earlier
         TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
@@ -34,7 +35,6 @@ public class DeviceStateRepositoryImpl implements DeviceStateRepository {
             return Single.just(false);
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            @SuppressLint("MissingPermission")
             ServiceState serviceState = telephonyManager.getServiceState();
             if (serviceState != null) {
                 return Single.just(serviceState.getState() == ServiceState.STATE_IN_SERVICE);

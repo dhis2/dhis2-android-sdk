@@ -25,25 +25,45 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.json.internal
 
-package org.hisp.dhis.android.core.arch.json.internal;
+import com.fasterxml.jackson.core.JsonParseException
+import com.fasterxml.jackson.core.JsonParser
+import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.DeserializationContext
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import java.io.IOException
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+class DateMultiFormatDeserializer @JvmOverloads constructor(vc: Class<*>? = null) : StdDeserializer<Date>(vc) {
+    @Throws(IOException::class, JsonProcessingException::class)
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-
-public final class ObjectMapperFactory {
-
-    private ObjectMapperFactory() {
+    override fun deserialize(jp: JsonParser, ctxt: DeserializationContext): Date {
+        val node = jp.codec.readTree<JsonNode>(jp)
+        val date = node.textValue()
+        for (DATE_FORMAT in DATE_FORMATS) {
+            try {
+                return SimpleDateFormat(DATE_FORMAT, Locale.US).parse(date)!!
+            } catch (e: ParseException) {
+                continue
+            }
+        }
+        throw JsonParseException(jp, "Unparseable date: \"$date\".")
     }
 
-    public static ObjectMapper objectMapper() {
-        return new ObjectMapper()
-                .setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw())
-                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-                .enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE)
-                .setSerializationInclusion(JsonInclude.Include.NON_NULL);
+    companion object {
+        private val DATE_FORMATS = arrayOf(
+            "yyyy-MM-dd'T'HH:mm:ss.SSS",
+            "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
+            "yyyy-MM-dd'T'HH:mm:ss",
+            "yyyy-MM-dd'T'HH:mm:ssZ",
+            "yyyy-MM-dd'T'HH:mm",
+            "yyyy-MM-dd'T'HH:mmZ",
+            "yyyy-MM-dd")
     }
 }

@@ -29,14 +29,11 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
 import io.reactivex.*
-import java.util.HashSet
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
-import org.hisp.dhis.android.core.program.internal.ProgramOrganisationUnitLastUpdated
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDownloadAndPersistCallFactory
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
@@ -47,7 +44,6 @@ import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 @Reusable
 internal class TrackedEntityInstanceDownloadCall @Inject constructor(
     private val rxCallExecutor: RxAPICallExecutor,
-    private val programOrganisationUnitLastUpdatedHandler: Handler<ProgramOrganisationUnitLastUpdated>,
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
     private val systemInfoModuleDownloader: SystemInfoModuleDownloader,
     private val relationshipDownloadAndPersistCallFactory: RelationshipDownloadAndPersistCallFactory,
@@ -63,13 +59,11 @@ internal class TrackedEntityInstanceDownloadCall @Inject constructor(
                     progressManager.increaseProgress(TrackedEntityInstance::class.java, true)
                 )
             } else {
-                val programOrganisationUnitSet: MutableSet<ProgramOrganisationUnitLastUpdated> = HashSet()
                 val relatives = RelationshipItemRelatives()
                 return@defer Observable.concat(
                     systemInfoModuleDownloader.downloadWithProgressManager(progressManager),
-                    internalCall.downloadTeis(progressManager, params, programOrganisationUnitSet, relatives),
-                    downloadRelationships(progressManager, relatives),
-                    updateResource(progressManager, programOrganisationUnitSet)
+                    internalCall.downloadTeis(progressManager, params, relatives),
+                    downloadRelationships(progressManager, relatives)
                 )
             }
         }
@@ -92,15 +86,5 @@ internal class TrackedEntityInstanceDownloadCall @Inject constructor(
                 )
             )
         }
-    }
-
-    private fun updateResource(
-        progressManager: D2ProgressManager,
-        programOrganisationUnitSet: Set<ProgramOrganisationUnitLastUpdated>
-    ): Observable<D2Progress> {
-        return Single.fromCallable {
-            programOrganisationUnitLastUpdatedHandler.handleMany(programOrganisationUnitSet)
-            progressManager.increaseProgress(TrackedEntityInstance::class.java, true)
-        }.toObservable()
     }
 }

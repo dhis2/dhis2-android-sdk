@@ -38,16 +38,12 @@ import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.helpers.internal.BooleanWrapper
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
-import org.hisp.dhis.android.core.program.internal.ProgramOrganisationUnitLastUpdated
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
-import org.hisp.dhis.android.core.systeminfo.SystemInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
 @Reusable
 internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
-    private val systemInfoRepository: ReadOnlyWithDownloadObjectRepository<SystemInfo>,
     private val trackedEntityInstanceQueryBuilderFactory: TrackedEntityInstanceQueryBuilderFactory,
     private val persistenceCallFactory: TrackedEntityInstancePersistenceCallFactory,
     private val endpointCallFactory: TrackedEntityInstancesEndpointCallFactory,
@@ -58,7 +54,6 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
     fun downloadTeis(
         progressManager: D2ProgressManager,
         params: ProgramDataDownloadParams,
-        programOrganisationUnitSet: MutableSet<ProgramOrganisationUnitLastUpdated>,
         relatives: RelationshipItemRelatives
     ): Observable<D2Progress> {
         return Observable.defer {
@@ -67,16 +62,10 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
             val teiDownloadObservable = Observable.fromIterable(teiQueryBuilders)
                 .flatMap { teiQueryBuilder: TeiQuery.Builder -> getTrackedEntityInstancesWithPaging(teiQueryBuilder) }
             // TODO .subscribeOn(teiDownloadScheduler);
-            val serverDate = systemInfoRepository.blockingGet().serverDate()
             val isFullUpdate = params.program() == null
             val overwrite = params.overwrite()
             teiDownloadObservable.flatMapSingle { teiList: List<TrackedEntityInstance> ->
                 persistenceCallFactory.persistTEIs(teiList, isFullUpdate, overwrite, relatives)
-                    .doOnComplete {
-                        programOrganisationUnitSet.addAll(
-                            TrackedEntityInstanceHelper.getProgramOrganisationUnitTuple(teiList, serverDate)
-                        )
-                    }
                     .toSingle {
                         progressManager.increaseProgress(
                             TrackedEntityInstance::class.java, false

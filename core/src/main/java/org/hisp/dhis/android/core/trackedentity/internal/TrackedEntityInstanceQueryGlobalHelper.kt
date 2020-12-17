@@ -28,11 +28,10 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import java.util.ArrayList
-import javax.inject.Inject
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.settings.ProgramSettings
+import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstanceQueryGlobalHelper @Inject constructor(
@@ -49,31 +48,19 @@ internal class TrackedEntityInstanceQueryGlobalHelper @Inject constructor(
             return emptyList()
         }
         val lastUpdated = lastUpdatedManager.getLastUpdated(null, limit)
-        val ouMode: OrganisationUnitMode
-        val orgUnits: List<String>
         val hasLimitByOrgUnit = commonHelper.hasLimitByOrgUnit(params, programSettings, null)
-        when {
-            params.orgUnits().size > 0 -> {
-                ouMode = OrganisationUnitMode.SELECTED
-                orgUnits = params.orgUnits()
-            }
-            hasLimitByOrgUnit -> {
-                ouMode = OrganisationUnitMode.SELECTED
-                orgUnits = commonHelper.getCaptureOrgUnitUids()
-            }
-            else -> {
-                ouMode = OrganisationUnitMode.DESCENDANTS
-                orgUnits = commonHelper.getRootCaptureOrgUnitUids()
-            }
+        val (ouMode, orgUnits) = when {
+            params.orgUnits().size > 0 ->
+                Pair(OrganisationUnitMode.SELECTED, params.orgUnits())
+            hasLimitByOrgUnit ->
+                Pair(OrganisationUnitMode.SELECTED, commonHelper.getCaptureOrgUnitUids())
+            else ->
+                Pair(OrganisationUnitMode.DESCENDANTS, commonHelper.getRootCaptureOrgUnitUids())
         }
-        val builders: MutableList<TeiQuery.Builder> = ArrayList()
-        if (hasLimitByOrgUnit) {
-            for (orgUnitUid in orgUnits) {
-                builders.add(commonHelper.getBuilderFor(lastUpdated, listOf(orgUnitUid), ouMode, params, limit))
-            }
+        return if (hasLimitByOrgUnit) {
+            orgUnits.map { commonHelper.getBuilderFor(lastUpdated, listOf(it), ouMode, params, limit) }
         } else {
-            builders.add(commonHelper.getBuilderFor(lastUpdated, orgUnits, ouMode, params, limit))
+            listOf(commonHelper.getBuilderFor(lastUpdated, orgUnits, ouMode, params, limit))
         }
-        return builders
     }
 }

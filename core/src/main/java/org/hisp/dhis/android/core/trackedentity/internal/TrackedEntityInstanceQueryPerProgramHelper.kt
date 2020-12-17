@@ -28,9 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import java.util.ArrayList
-import java.util.Date
-import javax.inject.Inject
 import org.apache.commons.lang3.time.DateUtils
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
@@ -40,6 +37,8 @@ import org.hisp.dhis.android.core.settings.DownloadPeriod
 import org.hisp.dhis.android.core.settings.EnrollmentScope
 import org.hisp.dhis.android.core.settings.ProgramSetting
 import org.hisp.dhis.android.core.settings.ProgramSettings
+import java.util.Date
+import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstanceQueryPerProgramHelper @Inject constructor(
@@ -59,38 +58,23 @@ internal class TrackedEntityInstanceQueryPerProgramHelper @Inject constructor(
         val programStatus = getProgramStatus(params, programSettings, programUid)
         val programStartDate = getProgramStartDate(programSettings, programUid)
         val lastUpdated = lastUpdatedManager.getLastUpdated(programUid, limit)
-        val ouMode: OrganisationUnitMode
-        val orgUnits: List<String>
         val hasLimitByOrgUnit = commonHelper.hasLimitByOrgUnit(params, programSettings, programUid)
-        when {
-            params.orgUnits().size > 0 -> {
-                ouMode = OrganisationUnitMode.SELECTED
-                orgUnits = params.orgUnits()
-            }
-            hasLimitByOrgUnit -> {
-                ouMode = OrganisationUnitMode.SELECTED
-                orgUnits = commonHelper.getLinkedCaptureOrgUnitUids(programUid)
-            }
-            else -> {
-                ouMode = OrganisationUnitMode.DESCENDANTS
-                orgUnits = commonHelper.getRootCaptureOrgUnitUids()
-            }
+        val (ouMode, orgUnits) = when {
+            params.orgUnits().size > 0 ->
+                Pair(OrganisationUnitMode.SELECTED, params.orgUnits())
+            hasLimitByOrgUnit ->
+                Pair(OrganisationUnitMode.SELECTED, commonHelper.getLinkedCaptureOrgUnitUids(programUid))
+            else ->
+                Pair(OrganisationUnitMode.DESCENDANTS, commonHelper.getRootCaptureOrgUnitUids())
+
         }
-        val builders: MutableList<TeiQuery.Builder> = ArrayList()
-        if (hasLimitByOrgUnit) {
-            for (orgUnitUid in orgUnits) {
-                builders.add(
-                    commonHelper.getBuilderFor(lastUpdated, listOf(orgUnitUid), ouMode, params, limit)
-                        .program(programUid).programStatus(programStatus).programStartDate(programStartDate)
-                )
-            }
+        return if (hasLimitByOrgUnit) {
+            orgUnits.map {  commonHelper.getBuilderFor(lastUpdated, listOf(it), ouMode, params, limit)
+                .program(programUid).programStatus(programStatus).programStartDate(programStartDate)}
         } else {
-            builders.add(
-                commonHelper.getBuilderFor(lastUpdated, orgUnits, ouMode, params, limit)
-                    .program(programUid).programStatus(programStatus).programStartDate(programStartDate)
-            )
+            listOf(commonHelper.getBuilderFor(lastUpdated, orgUnits, ouMode, params, limit)
+                .program(programUid).programStatus(programStatus).programStartDate(programStartDate))
         }
-        return builders
     }
 
     @Suppress("ReturnCount")

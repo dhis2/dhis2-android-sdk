@@ -28,14 +28,13 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import java.util.ArrayList
-import javax.inject.Inject
 import org.hisp.dhis.android.core.program.ProgramType
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
 import org.hisp.dhis.android.core.settings.LimitScope
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository
+import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstanceQueryBuilderFactory @Inject constructor(
@@ -50,26 +49,20 @@ internal class TrackedEntityInstanceQueryBuilderFactory @Inject constructor(
     fun getTeiQueryBuilders(params: ProgramDataDownloadParams): List<TeiQuery.Builder> {
         val programSettings = programSettingsObjectRepository.blockingGet()
         lastUpdatedManager.prepare(programSettings, params)
-        val builders: MutableList<TeiQuery.Builder> = ArrayList()
-        if (params.program() == null) {
+        return if (params.program() == null) {
             val trackerPrograms = programStore.getUidsByProgramType(ProgramType.WITH_REGISTRATION)
             if (hasLimitByProgram(params, programSettings)) {
-                for (programUid in trackerPrograms) {
-                    builders.addAll(perProgramHelper.queryPerProgram(params, programSettings, programUid))
-                }
+                trackerPrograms.flatMap { perProgramHelper.queryPerProgram(params, programSettings, it)  }
             } else {
                 val specificSettings = if (programSettings == null) emptyMap() else programSettings.specificSettings()
-                for ((programUid) in specificSettings) {
-                    if (trackerPrograms.contains(programUid)) {
-                        builders.addAll(perProgramHelper.queryPerProgram(params, programSettings, programUid))
-                    }
-                }
-                builders.addAll(globalHelper.queryGlobal(params, programSettings))
+                specificSettings
+                    .filterKeys { trackerPrograms.contains(it) }
+                    .flatMap { perProgramHelper.queryPerProgram(params, programSettings, it.key) } +
+                    globalHelper.queryGlobal(params, programSettings)
             }
         } else {
-            builders.addAll(perProgramHelper.queryPerProgram(params, programSettings, params.program()))
+            perProgramHelper.queryPerProgram(params, programSettings, params.program())
         }
-        return builders
     }
 
     @Suppress("ReturnCount")

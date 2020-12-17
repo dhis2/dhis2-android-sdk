@@ -317,7 +317,10 @@ public final class TrackedEntityAttributeReservedValueManager {
             Integer fillUpTo = getFillUpToValue(minNumberOfValuesToHave);
 
             String pattern = trackedEntityAttributeStore.selectByUid(attribute).pattern();
-            int remainingValues = store.count(attribute, UidsHelper.getUidOrNull(organisationUnit), pattern);
+            int remainingValues = store.count(
+                    attribute,
+                    isOrgunitDependent(pattern) ? UidsHelper.getUidOrNull(organisationUnit) : null,
+                    pattern);
 
             // If number of values is explicitly specified, we use that value as threshold.
             int minNumberToTryFill = minNumberOfValuesToHave == null ?

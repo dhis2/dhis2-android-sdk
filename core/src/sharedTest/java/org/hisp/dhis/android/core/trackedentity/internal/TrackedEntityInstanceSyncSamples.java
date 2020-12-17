@@ -36,6 +36,7 @@ public class TrackedEntityInstanceSyncSamples {
         return TrackedEntityInstanceSync.builder()
                 .id(1L)
                 .program("program")
+                .organisationUnitIdsHash("hasy")
                 .downloadLimit(500)
                 .lastUpdated(parseDate("2017-11-29T11:27:46.935"))
                 .build();

@@ -36,17 +36,22 @@ import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.LAST_UPDA
 public class TrackerBaseSyncColumns extends CoreColumns {
     public static final String PROGRAM = "program";
     public static final String DOWNLOAD_LIMIT = "downloadLimit";
+    public static final String ORGANISATION_UNIT_IDS_HASH = "organisationUnitIdsHash";
 
     @Override
     public String[] all() {
         return CollectionsHelper.appendInNewArray(super.all(),
                 PROGRAM,
+                ORGANISATION_UNIT_IDS_HASH,
                 DOWNLOAD_LIMIT,
                 LAST_UPDATED);
     }
 
     @Override
     public String[] whereUpdate() {
-        return new String[]{PROGRAM};
+        return new String[]{
+                PROGRAM,
+                ORGANISATION_UNIT_IDS_HASH
+        };
     }
 }

@@ -45,7 +45,7 @@ public abstract class TrackerBaseSync extends BaseObject {
     public abstract String program();
 
     @Nullable
-    public abstract String organisationUnitIdsHash();
+    public abstract Integer organisationUnitIdsHash();
 
     @NonNull
     public abstract Integer downloadLimit();
@@ -59,7 +59,7 @@ public abstract class TrackerBaseSync extends BaseObject {
 
         public abstract T program(String program);
 
-        public abstract T organisationUnitIdsHash(String organisationUnitIdsHash);
+        public abstract T organisationUnitIdsHash(Integer organisationUnitIdsHash);
 
         public abstract T downloadLimit(Integer limit);
 

@@ -40,8 +40,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShould
@@ -51,7 +50,7 @@ public class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShoul
     public void allow_access_to_all_tracked_entity_data_values() {
         List<TrackedEntityAttributeValue> trackedEntityAttributeValues =
                 d2.trackedEntityModule().trackedEntityAttributeValues().blockingGet();
-        assertThat(trackedEntityAttributeValues.size(), is(3));
+        assertThat(trackedEntityAttributeValues.size()).isEqualTo(3);
     }
 
     @Test
@@ -60,7 +59,7 @@ public class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShoul
                 d2.trackedEntityModule().trackedEntityAttributeValues()
                 .byTrackedEntityAttribute().eq("cejWyOfXge6")
                 .blockingGet();
-        assertThat(trackedEntityAttributeValues.size(), is(2));
+        assertThat(trackedEntityAttributeValues.size()).isEqualTo(2);
     }
 
     @Test
@@ -69,7 +68,7 @@ public class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShoul
                 d2.trackedEntityModule().trackedEntityAttributeValues()
                 .byValue().eq("4081507")
                 .blockingGet();
-        assertThat(trackedEntityAttributeValues.size(), is(1));
+        assertThat(trackedEntityAttributeValues.size()).isEqualTo(1);
     }
 
     @Test
@@ -79,7 +78,7 @@ public class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShoul
                 d2.trackedEntityModule().trackedEntityAttributeValues()
                 .byCreated().eq(date)
                 .blockingGet();
-        assertThat(trackedEntityAttributeValues.size(), is(1));
+        assertThat(trackedEntityAttributeValues.size()).isEqualTo(1);
     }
 
     @Test
@@ -89,7 +88,7 @@ public class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShoul
                 d2.trackedEntityModule().trackedEntityAttributeValues()
                 .byLastUpdated().eq(date)
                 .blockingGet();
-        assertThat(trackedEntityAttributeValues.size(), is(1));
+        assertThat(trackedEntityAttributeValues.size()).isEqualTo(1);
     }
 
     @Test
@@ -98,14 +97,14 @@ public class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShoul
                 d2.trackedEntityModule().trackedEntityAttributeValues()
                         .byTrackedEntityInstance().eq("nWrB0TfWlvh")
                         .blockingGet();
-        assertThat(trackedEntityAttributeValues.size(), is(1));
+        assertThat(trackedEntityAttributeValues.size()).isEqualTo(1);
     }
 
     @Test
     public void return_tracked_entity_attribute_value_object_repository() {
         TrackedEntityAttributeValueObjectRepository objectRepository = d2.trackedEntityModule().trackedEntityAttributeValues()
                 .value("cejWyOfXge6", "nWrB0TfWlvh");
-        assertThat(objectRepository.blockingExists(), is(Boolean.TRUE));
-        assertThat(objectRepository.blockingGet().value(), is("4081507"));
+        assertThat(objectRepository.blockingExists()).isEqualTo(Boolean.TRUE);
+        assertThat(objectRepository.blockingGet().value()).isEqualTo("4081507");
     }
 }

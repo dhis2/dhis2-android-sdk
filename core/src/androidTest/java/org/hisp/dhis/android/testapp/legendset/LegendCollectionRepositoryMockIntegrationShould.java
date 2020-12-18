@@ -36,8 +36,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class LegendCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -46,7 +45,7 @@ public class LegendCollectionRepositoryMockIntegrationShould extends BaseMockInt
     public void find_all() {
         List<Legend> legends = d2.legendSetModule().legends()
                 .blockingGet();
-        assertThat(legends.size(), is(2));
+        assertThat(legends.size()).isEqualTo(2);
     }
 
     @Test
@@ -54,7 +53,7 @@ public class LegendCollectionRepositoryMockIntegrationShould extends BaseMockInt
         List<Legend> legends = d2.legendSetModule().legends()
                 .byStartValue().eq(15.0)
                 .blockingGet();
-        assertThat(legends.size(), is(1));
+        assertThat(legends.size()).isEqualTo(1);
     }
 
     @Test
@@ -62,7 +61,7 @@ public class LegendCollectionRepositoryMockIntegrationShould extends BaseMockInt
         List<Legend> legends = d2.legendSetModule().legends()
                 .byEndValue().eq(30.0)
                 .blockingGet();
-        assertThat(legends.size(), is(1));
+        assertThat(legends.size()).isEqualTo(1);
     }
 
     @Test
@@ -71,7 +70,7 @@ public class LegendCollectionRepositoryMockIntegrationShould extends BaseMockInt
                 .byStartValue().smallerThan(20.0)
                 .byEndValue().biggerThan(20.0)
                 .blockingGet();
-        assertThat(legends.size(), is(1));
+        assertThat(legends.size()).isEqualTo(1);
     }
 
     @Test
@@ -79,7 +78,7 @@ public class LegendCollectionRepositoryMockIntegrationShould extends BaseMockInt
         List<Legend> legends = d2.legendSetModule().legends()
                 .byColor().eq("#E6AE5E")
                 .blockingGet();
-        assertThat(legends.size(), is(1));
+        assertThat(legends.size()).isEqualTo(1);
     }
 
     @Test
@@ -87,6 +86,6 @@ public class LegendCollectionRepositoryMockIntegrationShould extends BaseMockInt
         List<Legend> legends = d2.legendSetModule().legends()
                 .byLegendSet().eq("TiOkbpGEud4")
                 .blockingGet();
-        assertThat(legends.size(), is(2));
+        assertThat(legends.size()).isEqualTo(2);
     }
 }

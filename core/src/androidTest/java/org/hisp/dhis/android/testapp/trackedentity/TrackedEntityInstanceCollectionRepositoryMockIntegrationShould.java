@@ -39,8 +39,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class TrackedEntityInstanceCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -48,21 +47,21 @@ public class TrackedEntityInstanceCollectionRepositoryMockIntegrationShould exte
     @Test
     public void allow_access_to_all_teis_without_children() {
         List<TrackedEntityInstance> trackedEntityInstances = d2.trackedEntityModule().trackedEntityInstances().blockingGet();
-        assertThat(trackedEntityInstances.size(), is(2));
+        assertThat(trackedEntityInstances.size()).isEqualTo(2);
 
         TrackedEntityInstance trackedEntityInstance = trackedEntityInstances.get(0);
-        assertThat(trackedEntityInstance.uid(), is("nWrB0TfWlvh"));
-        assertThat(trackedEntityInstance.organisationUnit(), is("DiszpKrYNg8"));
-        assertThat(trackedEntityInstance.trackedEntityAttributeValues() == null, is(true));
+        assertThat(trackedEntityInstance.uid()).isEqualTo("nWrB0TfWlvh");
+        assertThat(trackedEntityInstance.organisationUnit()).isEqualTo("DiszpKrYNg8");
+        assertThat(trackedEntityInstance.trackedEntityAttributeValues() == null).isTrue();
 
     }
 
     @Test
     public void allow_access_to_one_tei_without_children() {
         TrackedEntityInstance tei = d2.trackedEntityModule().trackedEntityInstances().uid("nWrB0TfWlvh").blockingGet();
-        assertThat(tei.uid(), is("nWrB0TfWlvh"));
-        assertThat(tei.organisationUnit(), is("DiszpKrYNg8"));
-        assertThat(tei.trackedEntityAttributeValues() == null, is(true));
+        assertThat(tei.uid()).isEqualTo("nWrB0TfWlvh");
+        assertThat(tei.organisationUnit()).isEqualTo("DiszpKrYNg8");
+        assertThat(tei.trackedEntityAttributeValues() == null).isTrue();
     }
 
     @Test
@@ -72,26 +71,26 @@ public class TrackedEntityInstanceCollectionRepositoryMockIntegrationShould exte
 
         List<TrackedEntityAttributeValue> tea = d2.trackedEntityModule().trackedEntityAttributeValues().blockingGet();
 
-        assertThat(tei.trackedEntityAttributeValues().size(), is(2));
+        assertThat(tei.trackedEntityAttributeValues().size()).isEqualTo(2);
 
 
-        assertThat(tei.trackedEntityAttributeValues().get(0).trackedEntityAttribute(), is("aejWyOfXge6"));
-        assertThat(tei.trackedEntityAttributeValues().get(0).value(), is("123456"));
+        assertThat(tei.trackedEntityAttributeValues().get(0).trackedEntityAttribute()).isEqualTo("aejWyOfXge6");
+        assertThat(tei.trackedEntityAttributeValues().get(0).value()).isEqualTo("123456");
     }
 
     @Test
     public void add_tracked_entity_instances_to_the_repository() throws D2Error {
         List<TrackedEntityInstance> trackedEntityInstances1 = d2.trackedEntityModule().trackedEntityInstances().blockingGet();
-        assertThat(trackedEntityInstances1.size(), is(2));
+        assertThat(trackedEntityInstances1.size()).isEqualTo(2);
 
         String teiUid = d2.trackedEntityModule().trackedEntityInstances().blockingAdd(
                 TrackedEntityInstanceCreateProjection.create("DiszpKrYNg8", "nEenWmSyUEp"));
 
         List<TrackedEntityInstance> trackedEntityInstances2 = d2.trackedEntityModule().trackedEntityInstances().blockingGet();
-        assertThat(trackedEntityInstances2.size(), is(3));
+        assertThat(trackedEntityInstances2.size()).isEqualTo(3);
 
         TrackedEntityInstance trackedEntityInstance = d2.trackedEntityModule().trackedEntityInstances().uid(teiUid).blockingGet();
-        assertThat(trackedEntityInstance.uid(), is(teiUid));
+        assertThat(trackedEntityInstance.uid()).isEqualTo(teiUid);
 
         d2.trackedEntityModule().trackedEntityInstances().uid(teiUid).blockingDelete();
     }

@@ -28,7 +28,8 @@
 
 package org.hisp.dhis.android.core.program.internal;
 
-import org.assertj.core.util.Lists;
+import com.google.common.collect.Lists;
+
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
@@ -90,6 +91,6 @@ public class ProgramSectionHandlerShould {
     @Test
     public void extend_identifiable_handler_impl() {
         IdentifiableHandlerImpl<ProgramSection> genericHandler = new ProgramSectionHandler(
-                null,null);
+                programSectionStore,null);
     }
 }

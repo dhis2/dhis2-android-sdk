@@ -37,8 +37,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class ProgramRuleVariableCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -49,7 +48,7 @@ public class ProgramRuleVariableCollectionRepositoryMockIntegrationShould extend
                 d2.programModule().programRuleVariables()
                         .blockingGet();
 
-        assertThat(ruleVariables.size(), is(2));
+        assertThat(ruleVariables.size()).isEqualTo(2);
     }
 
     @Test
@@ -60,7 +59,7 @@ public class ProgramRuleVariableCollectionRepositoryMockIntegrationShould extend
                         .isFalse()
                         .blockingGet();
 
-        assertThat(ruleVariables.size(), is(1));
+        assertThat(ruleVariables.size()).isEqualTo(1);
     }
 
     @Test
@@ -71,7 +70,7 @@ public class ProgramRuleVariableCollectionRepositoryMockIntegrationShould extend
                         .eq("lxAQ7Zs9VYR")
                         .blockingGet();
 
-        assertThat(ruleVariables.size(), is(2));
+        assertThat(ruleVariables.size()).isEqualTo(2);
     }
 
     @Test
@@ -82,7 +81,7 @@ public class ProgramRuleVariableCollectionRepositoryMockIntegrationShould extend
                         .eq("dBwrot7S420")
                         .blockingGet();
 
-        assertThat(ruleVariables.size(), is(1));
+        assertThat(ruleVariables.size()).isEqualTo(1);
     }
 
     @Test
@@ -93,7 +92,7 @@ public class ProgramRuleVariableCollectionRepositoryMockIntegrationShould extend
                         .eq("sWoqcoByYmD")
                         .blockingGet();
 
-        assertThat(ruleVariables.size(), is(1));
+        assertThat(ruleVariables.size()).isEqualTo(1);
     }
 
     @Test
@@ -104,7 +103,7 @@ public class ProgramRuleVariableCollectionRepositoryMockIntegrationShould extend
                         .eq("cejWyOfXge6")
                         .blockingGet();
 
-        assertThat(ruleVariables.size(), is(1));
+        assertThat(ruleVariables.size()).isEqualTo(1);
     }
 
     @Test
@@ -115,6 +114,6 @@ public class ProgramRuleVariableCollectionRepositoryMockIntegrationShould extend
                         .eq(ProgramRuleVariableSourceType.DATAELEMENT_NEWEST_EVENT_PROGRAM)
                         .blockingGet();
 
-        assertThat(ruleVariables.size(), is(2));
+        assertThat(ruleVariables.size()).isEqualTo(2);
     }
 }

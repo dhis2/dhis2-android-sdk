@@ -126,6 +126,11 @@ public class DHISVersionManagerImpl implements DHISVersionManager {
         return version.compareTo(getVersion()) < 0;
     }
 
+    @Override
+    public boolean isGreaterOrEqualThan(DHISVersion version) {
+        return version.compareTo(getVersion()) <= 0;
+    }
+
     void setVersion(String versionStr) {
         this.version = DHISVersion.getValue(versionStr);
         this.patchVersion = DHISPatchVersion.getValue(versionStr);

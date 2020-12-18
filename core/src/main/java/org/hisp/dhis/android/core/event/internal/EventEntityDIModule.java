@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
+import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
@@ -35,6 +36,8 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventCreateProjection;
 import org.hisp.dhis.android.core.note.internal.NoteForEventChildrenAppender;
+import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.internal.EventRelationshipOrphanCleanerImpl;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueChildrenAppender;
 
 import java.util.HashMap;
@@ -63,6 +66,12 @@ public final class EventEntityDIModule {
     @Reusable
     Transformer<EventCreateProjection, Event> transformer() {
         return new EventProjectionTransformer();
+    }
+
+    @Provides
+    @Reusable
+    OrphanCleaner<Event, Relationship> relationshipOrphanCleaner(EventRelationshipOrphanCleanerImpl impl) {
+        return impl;
     }
 
     @Provides

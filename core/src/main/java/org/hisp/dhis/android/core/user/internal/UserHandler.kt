@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.user.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
@@ -38,18 +39,18 @@ import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserCredentials
 import org.hisp.dhis.android.core.user.UserInternalAccessor
 import org.hisp.dhis.android.core.user.UserRole
-import javax.inject.Inject
 
 @Reusable
-internal class UserHandler @Inject constructor(userStore: IdentifiableObjectStore<User>,
-                                               private val userCredentialsHandler: Handler<UserCredentials>,
-                                               private val userRoleHandler: Handler<UserRole>,
-                                               private val userRoleCollectionCleaner: CollectionCleaner<UserRole>)
-    : IdentifiableHandlerImpl<User>(userStore) {
+internal class UserHandler @Inject constructor(
+    userStore: IdentifiableObjectStore<User>,
+    private val userCredentialsHandler: Handler<UserCredentials>,
+    private val userRoleHandler: Handler<UserRole>,
+    private val userRoleCollectionCleaner: CollectionCleaner<UserRole>
+) : IdentifiableHandlerImpl<User>(userStore) {
 
-    override fun afterObjectHandled(user: User, action: HandleAction) {
-        val credentials: UserCredentials = UserInternalAccessor.accessUserCredentials(user)
-        val credentialsWithUser = credentials.toBuilder().user(ObjectWithUid.create(user.uid())).build()
+    override fun afterObjectHandled(o: User, action: HandleAction) {
+        val credentials: UserCredentials = UserInternalAccessor.accessUserCredentials(o)
+        val credentialsWithUser = credentials.toBuilder().user(ObjectWithUid.create(o.uid())).build()
         userCredentialsHandler.handle(credentialsWithUser)
         userRoleCollectionCleaner.deleteNotPresent(credentialsWithUser.userRoles())
         userRoleHandler.handleMany(credentialsWithUser.userRoles())

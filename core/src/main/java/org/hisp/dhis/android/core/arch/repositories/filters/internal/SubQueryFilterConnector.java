@@ -90,4 +90,8 @@ public final class SubQueryFilterConnector<R extends BaseRepository>
                 "SELECT %s FROM %s WHERE 1 GROUP BY %s HAVING COUNT(*) = %s ",
                 linkParent, linkTable, linkParent, children.size()) + ")", repositoryScope);
     }
+
+    public R rawSubQuery(FilterItemOperator operator, String subQuery) {
+        return newWithWrappedScope(operator, "(" + subQuery + ")");
+    }
 }

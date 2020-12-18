@@ -68,7 +68,7 @@ public class ProgramSamples {
                 .relatedProgram(ObjectWithUid.create("program_uid"))
                 .trackedEntityType(TrackedEntityType.builder().uid("tracked_entity_type").build())
                 .categoryCombo(ObjectWithUid.create("category_combo_uid"))
-                .access(Access.create(null, null, DataAccess.create(true, true)))
+                .access(Access.create(false, false, DataAccess.create(true, true)))
                 .expiryDays(2)
                 .completeEventsExpiryDays(3)
                 .minAttributesRequiredToSearch(1)

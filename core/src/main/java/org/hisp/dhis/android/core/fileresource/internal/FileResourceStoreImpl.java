@@ -28,13 +28,16 @@
 
 package org.hisp.dhis.android.core.fileresource.internal;
 
+import android.database.Cursor;
+
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStoreImpl;
 import org.hisp.dhis.android.core.fileresource.FileResource;
 import org.hisp.dhis.android.core.fileresource.FileResourceTableInfo;
+
+import kotlin.jvm.functions.Function1;
 
 public final class FileResourceStoreImpl extends IdentifiableDataObjectStoreImpl<FileResource> {
 
@@ -52,7 +55,7 @@ public final class FileResourceStoreImpl extends IdentifiableDataObjectStoreImpl
     private FileResourceStoreImpl(DatabaseAdapter databaseAdapter,
                                   SQLStatementBuilderImpl builder,
                                   StatementBinder<FileResource> binder,
-                                  ObjectFactory<FileResource> objectFactory) {
+                                  Function1<Cursor, FileResource> objectFactory) {
         super(databaseAdapter, builder, binder, objectFactory);
     }
 

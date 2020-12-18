@@ -38,8 +38,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class ProgramTrackedEntityAttributeCollectionRepositoryMockIntegrationShould 
@@ -51,7 +50,7 @@ public class ProgramTrackedEntityAttributeCollectionRepositoryMockIntegrationSho
                 d2.programModule().programTrackedEntityAttributes()
                         .blockingGet();
 
-        assertThat(programTrackedEntityAttributes.size(), is(2));
+        assertThat(programTrackedEntityAttributes.size()).isEqualTo(2);
     }
 
     @Test
@@ -62,7 +61,7 @@ public class ProgramTrackedEntityAttributeCollectionRepositoryMockIntegrationSho
                         .isFalse()
                         .blockingGet();
 
-        assertThat(programTrackedEntityAttributes.size(), is(1));
+        assertThat(programTrackedEntityAttributes.size()).isEqualTo(1);
     }
 
     @Test
@@ -73,7 +72,7 @@ public class ProgramTrackedEntityAttributeCollectionRepositoryMockIntegrationSho
                         .eq("cejWyOfXge6")
                         .blockingGet();
 
-        assertThat(programTrackedEntityAttributes.size(), is(1));
+        assertThat(programTrackedEntityAttributes.size()).isEqualTo(1);
     }
 
     @Test
@@ -84,7 +83,7 @@ public class ProgramTrackedEntityAttributeCollectionRepositoryMockIntegrationSho
                         .isTrue()
                         .blockingGet();
 
-        assertThat(programTrackedEntityAttributes.size(), is(1));
+        assertThat(programTrackedEntityAttributes.size()).isEqualTo(1);
     }
 
     @Test
@@ -95,7 +94,7 @@ public class ProgramTrackedEntityAttributeCollectionRepositoryMockIntegrationSho
                         .isTrue()
                         .blockingGet();
 
-        assertThat(programTrackedEntityAttributes.size(), is(1));
+        assertThat(programTrackedEntityAttributes.size()).isEqualTo(1);
     }
 
     @Test
@@ -106,7 +105,7 @@ public class ProgramTrackedEntityAttributeCollectionRepositoryMockIntegrationSho
                         .eq("lxAQ7Zs9VYR")
                         .blockingGet();
 
-        assertThat(programTrackedEntityAttributes.size(), is(2));
+        assertThat(programTrackedEntityAttributes.size()).isEqualTo(2);
     }
 
     @Test
@@ -117,7 +116,7 @@ public class ProgramTrackedEntityAttributeCollectionRepositoryMockIntegrationSho
                         .biggerThan(1)
                         .blockingGet();
 
-        assertThat(programTrackedEntityAttributes.size(), is(1));
+        assertThat(programTrackedEntityAttributes.size()).isEqualTo(1);
     }
 
     @Test
@@ -128,7 +127,7 @@ public class ProgramTrackedEntityAttributeCollectionRepositoryMockIntegrationSho
                         .isTrue()
                         .blockingGet();
 
-        assertThat(programTrackedEntityAttributes.size(), is(1));
+        assertThat(programTrackedEntityAttributes.size()).isEqualTo(1);
     }
 
     @Test
@@ -139,10 +138,10 @@ public class ProgramTrackedEntityAttributeCollectionRepositoryMockIntegrationSho
                         .withRenderType()
                         .one().blockingGet();
 
-        assertThat(programTrackedEntityAttribute.renderType().mobile().type(),
-                is(ValueTypeRenderingType.SHARED_HEADER_RADIOBUTTONS));
-        assertThat(programTrackedEntityAttribute.renderType().desktop().type(),
-                is(ValueTypeRenderingType.VERTICAL_RADIOBUTTONS));
+        assertThat(programTrackedEntityAttribute.renderType().mobile().type())
+                .isEqualTo(ValueTypeRenderingType.SHARED_HEADER_RADIOBUTTONS);
+        assertThat(programTrackedEntityAttribute.renderType().desktop().type())
+                .isEqualTo(ValueTypeRenderingType.VERTICAL_RADIOBUTTONS);
     }
 
     @Test
@@ -152,9 +151,9 @@ public class ProgramTrackedEntityAttributeCollectionRepositoryMockIntegrationSho
                         .orderBySortOrder(RepositoryScope.OrderByDirection.DESC)
                 .blockingGet();
 
-        assertThat(programTrackedEntityAttributes.get(0).uid(), is("QhqgQ6Iy4c4"));
-        assertThat(programTrackedEntityAttributes.get(0).sortOrder(), is(2));
-        assertThat(programTrackedEntityAttributes.get(1).uid(), is("YhqgQ6Iy4c4"));
-        assertThat(programTrackedEntityAttributes.get(1).sortOrder(), is(1));
+        assertThat(programTrackedEntityAttributes.get(0).uid()).isEqualTo("QhqgQ6Iy4c4");
+        assertThat(programTrackedEntityAttributes.get(0).sortOrder()).isEqualTo(2);
+        assertThat(programTrackedEntityAttributes.get(1).uid()).isEqualTo("YhqgQ6Iy4c4");
+        assertThat(programTrackedEntityAttributes.get(1).sortOrder()).isEqualTo(1);
     }
 }

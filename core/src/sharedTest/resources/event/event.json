@@ -99,5 +99,25 @@
       "storedBy": "android",
       "value": "Event note 2"
     }
+  ],
+  "relationships": [
+    {
+      "lastUpdated": "2020-06-11T14:48:36.246",
+      "created": "2020-06-11T14:48:36.246",
+      "relationshipName": "Relationship test (Event - Event)",
+      "bidirectional": true,
+      "relationshipType": "kzVbqkDFME5",
+      "relationship": "ZLrITbZfdnv",
+      "from": {
+        "event": {
+          "event": "hnaWBxMw5j3"
+        }
+      },
+      "to": {
+        "event": {
+          "event": "ypPwI8s2nqK"
+        }
+      }
+    }
   ]
 }

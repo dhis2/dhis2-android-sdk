@@ -34,9 +34,7 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class ProgramSettingObjectRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -45,7 +43,7 @@ public class ProgramSettingObjectRepositoryMockIntegrationShould extends BaseMoc
     public void find_program_setting() {
         ProgramSettings programSetting = d2.settingModule().programSetting().blockingGet();
 
-        assertThat(programSetting.globalSettings(), notNullValue());
-        assertThat(programSetting.specificSettings().size(), is(2));
+        assertThat(programSetting.globalSettings()).isNotNull();
+        assertThat(programSetting.specificSettings().size()).isEqualTo(2);
     }
 }

@@ -36,8 +36,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class ProgramStageSectionCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -48,7 +47,7 @@ public class ProgramStageSectionCollectionRepositoryMockIntegrationShould extend
                 d2.programModule().programStageSections()
                         .blockingGet();
 
-        assertThat(stageSections.size(), is(2));
+        assertThat(stageSections.size()).isEqualTo(2);
     }
 
     @Test
@@ -58,7 +57,7 @@ public class ProgramStageSectionCollectionRepositoryMockIntegrationShould extend
                         .withProgramIndicators()
                         .one().blockingGet();
 
-        assertThat(stageSections.programIndicators().size(), is(1));
+        assertThat(stageSections.programIndicators().size()).isEqualTo(1);
     }
 
     @Test
@@ -68,8 +67,8 @@ public class ProgramStageSectionCollectionRepositoryMockIntegrationShould extend
                         .withDataElements()
                         .one().blockingGet();
 
-        assertThat(stageSections.dataElements().size(), is(1));
-        assertThat(stageSections.dataElements().get(0).name(), is("MCH ANC Visit"));
+        assertThat(stageSections.dataElements().size()).isEqualTo(1);
+        assertThat(stageSections.dataElements().get(0).name()).isEqualTo("MCH ANC Visit");
     }
 
     @Test
@@ -80,7 +79,7 @@ public class ProgramStageSectionCollectionRepositoryMockIntegrationShould extend
                         .eq(1)
                         .blockingGet();
 
-        assertThat(stageSections.size(), is(1));
+        assertThat(stageSections.size()).isEqualTo(1);
     }
 
     @Test
@@ -91,7 +90,7 @@ public class ProgramStageSectionCollectionRepositoryMockIntegrationShould extend
                         .eq("dBwrot7S421")
                         .blockingGet();
 
-        assertThat(stageSections.size(), is(1));
+        assertThat(stageSections.size()).isEqualTo(1);
     }
 
     @Test
@@ -102,7 +101,7 @@ public class ProgramStageSectionCollectionRepositoryMockIntegrationShould extend
                         .eq("LISTING")
                         .blockingGet();
 
-        assertThat(stageSections.size(), is(1));
+        assertThat(stageSections.size()).isEqualTo(1);
     }
 
     @Test
@@ -113,7 +112,7 @@ public class ProgramStageSectionCollectionRepositoryMockIntegrationShould extend
                         .eq("LISTING")
                         .blockingGet();
 
-        assertThat(stageSections.size(), is(1));
+        assertThat(stageSections.size()).isEqualTo(1);
     }
 
 }

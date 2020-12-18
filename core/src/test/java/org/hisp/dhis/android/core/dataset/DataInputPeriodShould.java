@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat;
+import org.hisp.dhis.android.core.arch.helpers.DateUtils;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.hisp.dhis.android.core.common.ObjectShould;
@@ -37,11 +38,11 @@ import org.junit.Test;
 import java.io.IOException;
 import java.text.ParseException;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 public class DataInputPeriodShould extends BaseObjectShould implements ObjectShould {
 
-    public static final SafeDateFormat dateFormat = new SafeDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+    public static final SafeDateFormat dateFormat = DateUtils.DATE_FORMAT;
 
     public DataInputPeriodShould() {
         super("dataset/data_input_period.json");

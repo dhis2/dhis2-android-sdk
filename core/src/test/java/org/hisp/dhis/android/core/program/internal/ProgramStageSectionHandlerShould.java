@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.program.internal;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkTransformer;
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.program.ProgramStageSection;
@@ -104,13 +102,13 @@ public class ProgramStageSectionHandlerShould {
     public void handle_program_stage_section_data_element_links() {
         programStageSectionHandler.handle(programStageSection);
         verify(programStageSectionDataElementLinkHandler).handleMany(any(String.class),
-                anyList(), any(OrderedLinkTransformer.class));
+                anyList(), any());
     }
 
     @Test
     public void handle_program_stage_section_program_indicator_links() {
         programStageSectionHandler.handle(programStageSection);
         verify(programStageSectionProgramIndicatorLinkHandler).handleMany(any(String.class),
-                anyList(), any(Transformer.class));
+                anyList(), any());
     }
 }

@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.relationship.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreWithState;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.relationship.RelationshipSamples;
@@ -78,11 +79,11 @@ public class RelationshipHandlerShould extends RelationshipSamples {
     private final RelationshipItem tei3Item = RelationshipHelper.teiItem(TEI_3_UID);
     private final RelationshipItem tei4Item = RelationshipHelper.teiItem(TEI_4_UID);
 
-    private Relationship existingRelationship = get230();
+    private final Relationship existingRelationship = get230();
 
-    private Relationship existingRelationshipWithNewUid = get230().toBuilder().uid(NEW_UID).build();
+    private final Relationship existingRelationshipWithNewUid = get230().toBuilder().uid(NEW_UID).build();
 
-    private Relationship newRelationship = get230(NEW_UID, TEI_3_UID, TEI_4_UID);
+    private final Relationship newRelationship = get230(NEW_UID, TEI_3_UID, TEI_4_UID);
 
 
     // object to test
@@ -104,23 +105,13 @@ public class RelationshipHandlerShould extends RelationshipSamples {
         when(relationshipItemStore.getRelationshipUidsForItems(tei3Item, tei4Item)).thenReturn(Collections.emptyList());
         when(relationshipStore.selectByUid(UID)).thenReturn(get230());
         when(versionManager.isRelationshipSupported(any(Relationship.class))).thenReturn(true);
+
+        when(relationshipStore.updateOrInsert(any())).thenReturn(HandleAction.Insert);
     }
 
     @Test(expected = RuntimeException.class)
     public void throw_exception_when_relationship_is_no_compatible() {
         when(versionManager.isRelationshipSupported(existingRelationship)).thenReturn(false);
-        relationshipHandler.handle(existingRelationship);
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void throw_exception_when_from_item_element_not_in_db() {
-        when(itemElementStore.exists(FROM_UID)).thenReturn(false);
-        relationshipHandler.handle(existingRelationship);
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void throw_exception_when_to_item_element_not_in_db() {
-        when(itemElementStore.exists(TO_UID)).thenReturn(false);
         relationshipHandler.handle(existingRelationship);
     }
 

@@ -72,7 +72,7 @@ public final class RelationshipStoreImpl extends IdentifiableDeletableDataObject
                 "WHERE " + whereClause + ";";
 
         List<Relationship> relationships = new ArrayList<>();
-        addObjectsToCollection(databaseAdapter.rawQuery(queryStatement), relationships);
+        addObjectsToCollection(getDatabaseAdapter().rawQuery(queryStatement), relationships);
 
         return relationships;
     }

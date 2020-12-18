@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.organisationunit.internal;
 
-import org.assertj.core.util.Lists;
+import com.google.common.collect.Lists;
+
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
@@ -145,7 +145,7 @@ public class OrganisationUnitHandlerShould {
         organisationUnitHandler.setData(user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE);
         organisationUnitHandler.handleMany(organisationUnits, pathTransformer);
         verify(organisationUnitProgramLinkHandler).handleMany(anyString(), anyListOf(ObjectWithUid.class),
-                any(Transformer.class));
+                any());
     }
 
     @Test
@@ -170,7 +170,7 @@ public class OrganisationUnitHandlerShould {
         organisationUnitHandler.handleMany(organisationUnits, pathTransformer);
 
         verify(organisationUnitGroupLinkHandler).handleMany(anyString(), anyListOf(OrganisationUnitGroup.class),
-                any(Transformer.class));
+                any());
     }
 
     @Test
@@ -180,6 +180,6 @@ public class OrganisationUnitHandlerShould {
         organisationUnitHandler.handleMany(Lists.newArrayList(organisationUnitWithoutGroups), pathTransformer);
 
         verify(organisationUnitGroupLinkHandler, never()).handleMany(anyString(),
-                anyListOf(OrganisationUnitGroup.class), any(Transformer.class));
+                anyListOf(OrganisationUnitGroup.class), any());
     }
 }

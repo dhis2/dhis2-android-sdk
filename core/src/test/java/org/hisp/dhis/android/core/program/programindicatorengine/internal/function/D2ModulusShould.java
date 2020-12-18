@@ -28,8 +28,6 @@ package org.hisp.dhis.android.core.program.programindicatorengine.internal.funct
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.MatcherAssert;
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
 import org.junit.Before;
@@ -38,6 +36,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -66,29 +65,29 @@ public class D2ModulusShould {
     public void return_argument_rounded_down_to_nearest_whole_number() {
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn("0");
         when(visitor.castStringVisit(mockedSecondExpr)).thenReturn("2");
-        MatcherAssert.assertThat(modulus.evaluate(context, visitor), CoreMatchers.<Object>is("0.0"));
+        assertThat(modulus.evaluate(context, visitor)).isEqualTo("0.0");
 
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn("11");
         when(visitor.castStringVisit(mockedSecondExpr)).thenReturn("3");
-        MatcherAssert.assertThat(modulus.evaluate(context, visitor), CoreMatchers.<Object>is("2.0"));
+        assertThat(modulus.evaluate(context, visitor)).isEqualTo("2.0");
 
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn("-11");
         when(visitor.castStringVisit(mockedSecondExpr)).thenReturn("3");
-        MatcherAssert.assertThat(modulus.evaluate(context, visitor), CoreMatchers.<Object>is("-2.0"));
+        assertThat(modulus.evaluate(context, visitor)).isEqualTo("-2.0");
     }
 
     @Test
     public void return_NaN_when_invalid_operations() {
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn("2");
         when(visitor.castStringVisit(mockedSecondExpr)).thenReturn("0");
-        MatcherAssert.assertThat(modulus.evaluate(context, visitor), CoreMatchers.<Object>is("NaN"));
+        assertThat(modulus.evaluate(context, visitor)).isEqualTo("NaN");
 
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn("bad number");
         when(visitor.castStringVisit(mockedSecondExpr)).thenReturn("bad number");
-        MatcherAssert.assertThat(modulus.evaluate(context, visitor), CoreMatchers.<Object>is("NaN"));
+        assertThat(modulus.evaluate(context, visitor)).isEqualTo("NaN");
 
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn(null);
         when(visitor.castStringVisit(mockedSecondExpr)).thenReturn(null);
-        MatcherAssert.assertThat(modulus.evaluate(context, visitor), CoreMatchers.<Object>is("NaN"));
+        assertThat(modulus.evaluate(context, visitor)).isEqualTo("NaN");
     }
 }

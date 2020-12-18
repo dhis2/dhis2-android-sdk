@@ -62,6 +62,9 @@ public class Dhis2MockServer {
     private static final String PROGRAMS_JSON = "program/programs.json";
     private static final String PROGRAM_STAGES_JSON = "program/program_stages.json";
     private static final String PROGRAM_RULES_JSON = "program/program_rules.json";
+    private static final String TRACKED_ENTITY_INSTANCE_FILTERS_JSON =
+            "trackedentity/tracked_entity_instance_filters.json";
+    private static final String EVENT_FILTERS_JSON = "event/event_filters.json";
     private static final String TRACKED_ENTITY_TYPES_JSON = "trackedentity/tracked_entity_types.json";
     private static final String TRACKED_ENTITY_ATTRIBUTES_JSON = "trackedentity/tracked_entity_attributes.json";
     private static final String RELATIONSHIP_TYPES_JSON = "relationship/relationship_types.json";
@@ -76,6 +79,7 @@ public class Dhis2MockServer {
     private static final String INDICATOR_TYPES_JSON = "indicators/indicator_types.json";
     private static final String CATEGORY_COMBOS_JSON = "category/category_combos.json";
     private static final String CATEGORIES_JSON = "category/categories.json";
+    private static final String CATEGORY_OPTIONS_JSON = "category/category_options.json";
     private static final String ORGANISATION_UNIT_LEVELS_JSON = "organisationunit/organisation_unit_levels.json";
     private static final String CONSTANTS_JSON = "constant/constants.json";
     private static final String USER_JSON = "user/user.json";
@@ -170,12 +174,16 @@ public class Dhis2MockServer {
                     return createMockResponse(PROGRAMS_JSON);
                 } else if (path.startsWith("/api/programStages?")) {
                     return createMockResponse(PROGRAM_STAGES_JSON);
-                } else if (path.startsWith("/api/programRules?")) {
-                    return createMockResponse(PROGRAM_RULES_JSON);
                 } else if (path.startsWith("/api/trackedEntityTypes?")) {
                     return createMockResponse(TRACKED_ENTITY_TYPES_JSON);
                 } else if (path.startsWith("/api/trackedEntityAttributes?")) {
                     return createMockResponse(TRACKED_ENTITY_ATTRIBUTES_JSON);
+                } else if (path.startsWith("/api/programRules?")) {
+                    return createMockResponse(PROGRAM_RULES_JSON);
+                } else if (path.startsWith("/api/trackedEntityInstanceFilters?")) {
+                    return createMockResponse(TRACKED_ENTITY_INSTANCE_FILTERS_JSON);
+                } else if (path.startsWith("/api/eventFilters?")) {
+                    return createMockResponse(EVENT_FILTERS_JSON);
                 } else if (path.startsWith("/api/relationshipTypes?")) {
                     return createMockResponse(RELATIONSHIP_TYPES_JSON);
                 } else if (path.startsWith("/api/optionSets?")) {
@@ -200,6 +208,8 @@ public class Dhis2MockServer {
                     return createMockResponse(CATEGORY_COMBOS_JSON);
                 } else if (path.startsWith("/api/categories?")) {
                     return createMockResponse(CATEGORIES_JSON);
+                } else if (path.startsWith("/api/categoryOptions?")) {
+                    return createMockResponse(CATEGORY_OPTIONS_JSON);
                 } else if (path.startsWith("/api/organisationUnits?")) {
                     return createMockResponse(ORGANISATION_UNITS_JSON);
                 } else if (path.startsWith("/api/organisationUnitLevels?")) {
@@ -250,6 +260,8 @@ public class Dhis2MockServer {
         enqueueMockResponse(TRACKED_ENTITY_TYPES_JSON);
         enqueueMockResponse(TRACKED_ENTITY_ATTRIBUTES_JSON);
         enqueueMockResponse(PROGRAM_RULES_JSON);
+        enqueueMockResponse(TRACKED_ENTITY_INSTANCE_FILTERS_JSON);
+        enqueueMockResponse(EVENT_FILTERS_JSON);
         enqueueMockResponse(RELATIONSHIP_TYPES_JSON);
         enqueueMockResponse(OPTION_SETS_JSON);
         enqueueMockResponse(OPTIONS_JSON);
@@ -263,6 +275,7 @@ public class Dhis2MockServer {
         enqueueMockResponse(VALIDATION_RULES_JSON);
         enqueueMockResponse(CATEGORY_COMBOS_JSON);
         enqueueMockResponse(CATEGORIES_JSON);
+        enqueueMockResponse(CATEGORY_OPTIONS_JSON);
     }
 
     @NonNull

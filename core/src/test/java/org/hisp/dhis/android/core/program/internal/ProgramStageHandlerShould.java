@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.FeatureType;
@@ -148,7 +147,7 @@ public class ProgramStageHandlerShould {
     @Test
     public void call_program_stage_section_handler() throws Exception {
         programStageHandler.handle(programStage);
-        verify(programStageSectionHandler).handleMany(eq(programStageSections), any(Transformer.class));
+        verify(programStageSectionHandler).handleMany(eq(programStageSections), any());
     }
 
     @Test

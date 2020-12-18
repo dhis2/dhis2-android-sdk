@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.dataset.internal;
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
+import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
@@ -55,8 +55,8 @@ public final class DataSetPackageDIModule {
 
     @Provides
     @Reusable
-    QueryCallFactory<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery>
-    dataSetCompleteRegistrationCallFactory(DataSetCompleteRegistrationCallFactory impl) {
+    QueryCall<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery>
+    dataSetCompleteRegistrationCallFactory(DataSetCompleteRegistrationCall impl) {
         return impl;
     }
 

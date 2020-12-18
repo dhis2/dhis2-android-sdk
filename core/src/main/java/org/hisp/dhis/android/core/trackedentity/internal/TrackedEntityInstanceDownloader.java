@@ -47,14 +47,14 @@ public final class TrackedEntityInstanceDownloader extends BaseRepositoryImpl<Tr
 
     private final RepositoryScope scope;
 
-    private final TrackedEntityInstanceWithLimitCallFactory callFactory;
+    private final TrackedEntityInstanceDownloadCall downloadCall;
 
     @Inject
     TrackedEntityInstanceDownloader(final RepositoryScope scope,
-                                    final TrackedEntityInstanceWithLimitCallFactory callFactory) {
-        super(scope, new FilterConnectorFactory<>(scope, s -> new TrackedEntityInstanceDownloader(s, callFactory)));
+                                    final TrackedEntityInstanceDownloadCall downloadCall) {
+        super(scope, new FilterConnectorFactory<>(scope, s -> new TrackedEntityInstanceDownloader(s, downloadCall)));
         this.scope = scope;
-        this.callFactory = callFactory;
+        this.downloadCall = downloadCall;
     }
 
     /**
@@ -68,7 +68,7 @@ public final class TrackedEntityInstanceDownloader extends BaseRepositoryImpl<Tr
      */
     public Observable<D2Progress> download() {
         ProgramDataDownloadParams params = ProgramDataDownloadParams.fromRepositoryScope(scope);
-        return this.callFactory.download(params);
+        return this.downloadCall.download(params);
     }
 
     public void blockingDownload() {

@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
+import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
@@ -36,6 +37,9 @@ import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.note.Note;
 import org.hisp.dhis.android.core.note.internal.NoteDHISVersionManager;
 import org.hisp.dhis.android.core.note.internal.NoteUniquenessManager;
+import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.junit.Before;
 import org.junit.Test;
@@ -78,6 +82,15 @@ public class EventHandlerShould {
     private NoteDHISVersionManager noteVersionManager;
 
     @Mock
+    private RelationshipDHISVersionManager relationshipVersionManager;
+
+    @Mock
+    private RelationshipHandler relationshipHandler;
+
+    @Mock
+    private OrphanCleaner<Event, Relationship> relationshipOrphanCleaner;
+
+    @Mock
     private Event event;
 
     // object to test
@@ -90,13 +103,14 @@ public class EventHandlerShould {
         when(event.uid()).thenReturn("test_event_uid");
         when(event.notes()).thenReturn(Collections.singletonList(note));
 
-        eventHandler = new EventHandler(eventStore, trackedEntityDataValueHandler, noteHandler, noteVersionManager,
-                noteUniquenessManager);
+        eventHandler = new EventHandler(relationshipVersionManager, relationshipHandler, eventStore,
+                trackedEntityDataValueHandler, noteHandler, noteVersionManager, noteUniquenessManager,
+                relationshipOrphanCleaner);
     }
 
     @Test
     public void do_nothing_when_passing_empty_list_argument() {
-        eventHandler.handleMany(new ArrayList<>(), false);
+        eventHandler.handleMany(new ArrayList<>(), event -> event, false);
 
         // verify that store is never invoked
         verify(eventStore, never()).deleteIfExists(anyString());
@@ -109,7 +123,7 @@ public class EventHandlerShould {
     public void invoke_only_delete_when_a_event_is_set_as_deleted() {
         when(event.deleted()).thenReturn(Boolean.TRUE);
 
-        eventHandler.handle(event, false);
+        eventHandler.handleMany(Collections.singletonList(event), o -> o, false);
 
         // verify that delete is invoked once
         verify(eventStore, times(1)).deleteIfExists(event.uid());
@@ -129,7 +143,7 @@ public class EventHandlerShould {
         when(event.organisationUnit()).thenReturn("org_unit_uid");
         when(event.status()).thenReturn(EventStatus.SCHEDULE);
 
-        eventHandler.handle(event, false);
+        eventHandler.handleMany(Collections.singletonList(event), o -> o, false);
 
         // verify that update and insert is invoked, since we're updating before inserting
         verify(eventStore, times(1)).updateOrInsert(any(Event.class));

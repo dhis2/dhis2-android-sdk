@@ -43,6 +43,21 @@ object UidsHelper {
     }
 
     /**
+     * Returns a [Set] of uids of the children selected by a lambda function.
+     *
+     * @param objects A collection of objects with children with uid.
+     * @param childExtractor The lambda to extract the child list from the parent
+     * @return A [Set] with the uids of the children
+     */
+    @JvmStatic
+    fun <P, C : ObjectWithUidInterface> getChildrenUids(
+        parentList: Collection<P>,
+        childExtractor: (P) -> List<C>
+    ): Set<String> {
+        return getUids(parentList.flatMap { childExtractor(it) })
+    }
+
+    /**
      * Return the uid of the object if the object is not null. If it is null, return null.
      *
      * @param o A object with uid.
@@ -100,7 +115,9 @@ object UidsHelper {
      */
     @JvmStatic
     fun <O : ObjectWithUidInterface> mapByParentUid(
-            objects: Collection<O>, parentExtractor: Transformer<O, String>): Map<String, List<O>> {
+        objects: Collection<O>,
+        parentExtractor: Transformer<O, String>
+    ): Map<String, List<O>> {
         return objects.groupBy { o -> parentExtractor.transform(o) }
     }
 
@@ -124,7 +141,8 @@ object UidsHelper {
      */
     @JvmStatic
     fun <O : ObjectWithUidInterface> commaSeparatedUidsWithSingleQuotationMarks(
-            objects: Collection<O>): String {
+        objects: Collection<O>
+    ): String {
         return CollectionsHelper.commaAndSpaceSeparatedArrayValues(getUidsArray(objects))
     }
 }

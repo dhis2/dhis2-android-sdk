@@ -39,7 +39,7 @@ import java.util.List;
 
 import io.reactivex.Single;
 
-import static junit.framework.Assert.assertFalse;
+import static com.google.common.truth.Truth.assertThat;
 
 public class CategoryEndpointCallShould extends BaseMockIntegrationTestEmptyEnqueable {
 
@@ -52,6 +52,6 @@ public class CategoryEndpointCallShould extends BaseMockIntegrationTestEmptyEnqu
         dhis2MockServer.enqueueMockResponse("category/categories.json");
 
         List<Category> categories = categoriesSingle.blockingGet();
-        assertFalse(categories.isEmpty());
+        assertThat(categories.isEmpty()).isFalse();
     }
 }

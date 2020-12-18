@@ -38,14 +38,14 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.verify;
 
 @RunWith(JUnit4.class)
 public class TrackedEntityInstanceDownloaderShould {
 
     @Mock
-    private TrackedEntityInstanceWithLimitCallFactory callFactory;
+    private TrackedEntityInstanceDownloadCall callFactory;
 
     private ArgumentCaptor<ProgramDataDownloadParams> paramsCapture =
             ArgumentCaptor.forClass(ProgramDataDownloadParams.class);
@@ -76,7 +76,7 @@ public class TrackedEntityInstanceDownloaderShould {
         assertThat(params.limitByOrgunit()).isTrue();
         assertThat(params.limitByProgram()).isTrue();
         assertThat(params.limit()).isEqualTo(500);
-        assertThat(params.programStatus()).isEqualByComparingTo(EnrollmentScope.ONLY_ACTIVE);
+        assertThat(params.programStatus()).isEqualTo(EnrollmentScope.ONLY_ACTIVE);
         assertThat(params.overwrite()).isTrue();
     }
 

@@ -31,10 +31,12 @@ import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.category.Category
@@ -58,25 +60,25 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfo
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.UserModuleDownloader
-import javax.inject.Inject
 
 @Suppress("LongParameterList")
 @Reusable
 class MetadataCall @Inject internal constructor(
-        private val rxCallExecutor: RxAPICallExecutor,
-        private val systemInfoDownloader: SystemInfoModuleDownloader,
-        private val systemSettingDownloader: SettingModuleDownloader,
-        private val userModuleDownloader: UserModuleDownloader,
-        private val categoryDownloader: CategoryModuleDownloader,
-        private val programDownloader: ProgramModuleDownloader,
-        private val organisationUnitModuleDownloader: OrganisationUnitModuleDownloader,
-        private val dataSetDownloader: DataSetModuleDownloader,
-        private val constantModuleDownloader: ConstantModuleDownloader,
-        private val smsModule: SmsModule,
-        private val databaseAdapter: DatabaseAdapter,
-        private val generalSettingCall: GeneralSettingCall,
-        private val multiUserDatabaseManager: MultiUserDatabaseManager,
-        private val credentialsSecureStore: ObjectKeyValueStore<Credentials>) {
+    private val rxCallExecutor: RxAPICallExecutor,
+    private val systemInfoDownloader: SystemInfoModuleDownloader,
+    private val systemSettingDownloader: SettingModuleDownloader,
+    private val userModuleDownloader: UserModuleDownloader,
+    private val categoryDownloader: CategoryModuleDownloader,
+    private val programDownloader: ProgramModuleDownloader,
+    private val organisationUnitModuleDownloader: OrganisationUnitModuleDownloader,
+    private val dataSetDownloader: DataSetModuleDownloader,
+    private val constantModuleDownloader: ConstantModuleDownloader,
+    private val smsModule: SmsModule,
+    private val databaseAdapter: DatabaseAdapter,
+    private val generalSettingCall: GeneralSettingCall,
+    private val multiUserDatabaseManager: MultiUserDatabaseManager,
+    private val credentialsSecureStore: ObjectKeyValueStore<Credentials>
+) {
 
     companion object {
         const val CALLS_COUNT = 9
@@ -84,26 +86,33 @@ class MetadataCall @Inject internal constructor(
 
     fun download(): Observable<D2Progress> {
         val progressManager = D2ProgressManager(CALLS_COUNT)
-        return changeEncryptionIfRequired().andThen(rxCallExecutor.wrapObservableTransactionally(Observable.merge(
-                systemInfoDownloader.downloadMetadata().toSingle {
-                    progressManager.increaseProgress(SystemInfo::class.java, false) }.toObservable(),
-                executeIndependentCalls(progressManager),
-                executeUserCallAndChildren(progressManager)
-        ), true))
+        return changeEncryptionIfRequired().andThen(
+            rxCallExecutor.wrapObservableTransactionally(
+                Observable.merge(
+                    systemInfoDownloader.downloadWithProgressManager(progressManager),
+                    executeIndependentCalls(progressManager),
+                    executeUserCallAndChildren(progressManager)
+                ),
+                true
+            )
+        )
     }
 
     private fun executeIndependentCalls(progressManager: D2ProgressManager): Observable<D2Progress> {
         return Single.merge(
-                Single.fromCallable {
-                    databaseAdapter.delete(ForeignKeyViolationTableInfo.TABLE_INFO.name())
-                    progressManager.increaseProgress(SystemInfo::class.java, false)
-                },
-                systemSettingDownloader.downloadMetadata().toSingle {
-                    progressManager.increaseProgress(SystemSetting::class.java, false) },
-                constantModuleDownloader.downloadMetadata().map {
-                    progressManager.increaseProgress(Constant::class.java, false) },
-                smsModule.configCase().refreshMetadataIdsCallable().toSingle {
-                    progressManager.increaseProgress(SmsModule::class.java, false) }
+            Single.fromCallable {
+                databaseAdapter.delete(ForeignKeyViolationTableInfo.TABLE_INFO.name())
+                progressManager.increaseProgress(SystemInfo::class.java, false)
+            },
+            systemSettingDownloader.downloadMetadata().toSingle {
+                progressManager.increaseProgress(SystemSetting::class.java, false)
+            },
+            constantModuleDownloader.downloadMetadata().map {
+                progressManager.increaseProgress(Constant::class.java, false)
+            },
+            smsModule.configCase().refreshMetadataIdsCallable().toSingle {
+                progressManager.increaseProgress(SmsModule::class.java, false)
+            }
         ).toObservable()
     }
 
@@ -112,19 +121,21 @@ class MetadataCall @Inject internal constructor(
             organisationUnitModuleDownloader.downloadMetadata(user).flatMapObservable {
                 orgUnits: List<OrganisationUnit> ->
                 Single.concatArray(
-                        Single.just(progressManager.increaseProgress(User::class.java, false)),
-                        Single.just(progressManager.increaseProgress(OrganisationUnit::class.java, false)),
-                        programDownloader.downloadMetadata(
-                                MetadataHelper.getOrgUnitsProgramUids(orgUnits)).map {
-                            progressManager.increaseProgress(Program::class.java, false)
-                        },
-                        dataSetDownloader.downloadMetadata(
-                                MetadataHelper.getOrgUnitsDataSetUids(orgUnits)).map {
-                            progressManager.increaseProgress(DataSet::class.java, false)
-                        },
-                        categoryDownloader.downloadMetadata().toSingle {
-                            progressManager.increaseProgress(Category::class.java, false)
-                        }
+                    Single.just(progressManager.increaseProgress(User::class.java, false)),
+                    Single.just(progressManager.increaseProgress(OrganisationUnit::class.java, false)),
+                    programDownloader.downloadMetadata(
+                        UidsHelper.getChildrenUids(orgUnits) { it.programs()!! }
+                    ).map {
+                        progressManager.increaseProgress(Program::class.java, false)
+                    },
+                    dataSetDownloader.downloadMetadata(
+                        MetadataHelper.getOrgUnitsDataSetUids(user, orgUnits)
+                    ).map {
+                        progressManager.increaseProgress(DataSet::class.java, false)
+                    },
+                    categoryDownloader.downloadMetadata().toSingle {
+                        progressManager.increaseProgress(Category::class.java, false)
+                    }
                 ).toObservable()
             }
         }
@@ -132,10 +143,11 @@ class MetadataCall @Inject internal constructor(
 
     private fun changeEncryptionIfRequired(): Completable {
         return generalSettingCall.isDatabaseEncrypted
-                .doOnSuccess { encrypt: Boolean ->
-                    multiUserDatabaseManager.changeEncryptionIfRequired(credentialsSecureStore.get(), encrypt) }
-                .ignoreElement()
-                .onErrorComplete()
+            .doOnSuccess { encrypt: Boolean ->
+                multiUserDatabaseManager.changeEncryptionIfRequired(credentialsSecureStore.get(), encrypt)
+            }
+            .ignoreElement()
+            .onErrorComplete()
     }
 
     fun blockingDownload() {

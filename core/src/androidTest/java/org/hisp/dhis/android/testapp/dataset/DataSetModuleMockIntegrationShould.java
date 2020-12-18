@@ -41,8 +41,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class DataSetModuleMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -50,77 +49,77 @@ public class DataSetModuleMockIntegrationShould extends BaseMockIntegrationTestF
     @Test
     public void allow_access_to_all_data_sets_without_children() {
         List<DataSet> dataSets = d2.dataSetModule().dataSets().blockingGet();
-        assertThat(dataSets.size(), is(2));
+        assertThat(dataSets.size()).isEqualTo(2);
         for (DataSet dataSet : dataSets) {
-            assertThat(dataSet.dataSetElements() == null, is(true));
+            assertThat(dataSet.dataSetElements() == null).isTrue();
         }
     }
 
     @Test
     public void allow_access_to_one_data_set_without_children() {
         DataSet dataSet = d2.dataSetModule().dataSets().uid("lyLU2wR22tC").blockingGet();
-        assertThat(dataSet.dataSetElements() == null, is(true));
+        assertThat(dataSet.dataSetElements() == null).isTrue();
     }
 
     @Test
     public void allow_access_to_all_data_sets_with_children() {
         List<DataSet> dataSets = d2.dataSetModule().dataSets().withDataSetElements().blockingGet();
-        assertThat(dataSets.size(), is(2));
+        assertThat(dataSets.size()).isEqualTo(2);
         for (DataSet dataSet : dataSets) {
-            assertThat(dataSet.dataSetElements() == null, is(false));
+            assertThat(dataSet.dataSetElements() == null).isFalse();
         }
     }
 
     @Test
     public void allow_access_to_one_data_set_with_children() {
         DataSet dataSet = d2.dataSetModule().dataSets().withDataSetElements().uid("lyLU2wR22tC").blockingGet();
-        assertThat(dataSet.dataSetElements() == null, is(false));
+        assertThat(dataSet.dataSetElements() == null).isFalse();
     }
 
     @Test
     public void allow_access_to_compulsory_data_element_operands() {
         DataSet dataSet = d2.dataSetModule().dataSets().withCompulsoryDataElementOperands().uid("lyLU2wR22tC").blockingGet();
         List<DataElementOperand> dataElementOperands = dataSet.compulsoryDataElementOperands();
-        assertThat(dataElementOperands.size(), is(1));
+        assertThat(dataElementOperands.size()).isEqualTo(1);
 
         DataElementOperand operand = dataElementOperands.get(0);
-        assertThat(operand.uid(), is("g9eOBujte1U.Gmbgme7z9BF"));
-        assertThat(operand.dataElement().uid(), is("g9eOBujte1U"));
-        assertThat(operand.categoryOptionCombo().uid(), is("Gmbgme7z9BF"));
+        assertThat(operand.uid()).isEqualTo("g9eOBujte1U.Gmbgme7z9BF");
+        assertThat(operand.dataElement().uid()).isEqualTo("g9eOBujte1U");
+        assertThat(operand.categoryOptionCombo().uid()).isEqualTo("Gmbgme7z9BF");
     }
 
     @Test
     public void allow_access_data_input_periods() {
         DataSet dataSet = d2.dataSetModule().dataSets().withDataInputPeriods().uid("lyLU2wR22tC").blockingGet();
         List<DataInputPeriod> dataInputPeriods = dataSet.dataInputPeriods();
-        assertThat(dataInputPeriods.size(), is(1));
+        assertThat(dataInputPeriods.size()).isEqualTo(1);
 
         DataInputPeriod diPeriod = dataInputPeriods.get(0);
-        assertThat(diPeriod.period().uid(), is("2019"));
-        assertThat(BaseIdentifiableObject.dateToDateStr(diPeriod.openingDate()), is("2017-12-31T23:00:00.000"));
-        assertThat(BaseIdentifiableObject.dateToDateStr(diPeriod.closingDate()), is("2018-01-09T23:00:00.000"));
+        assertThat(diPeriod.period().uid()).isEqualTo("2019");
+        assertThat(BaseIdentifiableObject.dateToDateStr(diPeriod.openingDate())).isEqualTo("2017-12-31T23:00:00.000");
+        assertThat(BaseIdentifiableObject.dateToDateStr(diPeriod.closingDate())).isEqualTo("2018-01-09T23:00:00.000");
     }
 
     @Test
     public void allow_access_data_set_elements() {
         DataSet dataSet = d2.dataSetModule().dataSets().withDataSetElements().uid("lyLU2wR22tC").blockingGet();
         List<DataSetElement> dataSetElements = dataSet.dataSetElements();
-        assertThat(dataSetElements.size(), is(1));
+        assertThat(dataSetElements.size()).isEqualTo(1);
 
         DataSetElement dataSetElement = dataSetElements.get(0);
-        assertThat(dataSetElement.dataSet().uid(), is("lyLU2wR22tC"));
-        assertThat(dataSetElement.dataElement().uid(), is("g9eOBujte1U"));
-        assertThat(dataSetElement.categoryCombo().uid(), is("m2jTvAj5kkm"));
+        assertThat(dataSetElement.dataSet().uid()).isEqualTo("lyLU2wR22tC");
+        assertThat(dataSetElement.dataElement().uid()).isEqualTo("g9eOBujte1U");
+        assertThat(dataSetElement.categoryCombo().uid()).isEqualTo("m2jTvAj5kkm");
     }
 
     @Test
     public void allow_access_indicators() {
         DataSet dataSet = d2.dataSetModule().dataSets().withIndicators().uid("lyLU2wR22tC").blockingGet();
         List<Indicator> indicators = dataSet.indicators();
-        assertThat(indicators.size(), is(1));
+        assertThat(indicators.size()).isEqualTo(1);
 
         Indicator indicator = indicators.get(0);
-        assertThat(indicator.uid(), is("ReUHfIn0pTQ"));
-        assertThat(indicator.name(), is("ANC 1-3 Dropout Rate"));
+        assertThat(indicator.uid()).isEqualTo("ReUHfIn0pTQ");
+        assertThat(indicator.name()).isEqualTo("ANC 1-3 Dropout Rate");
     }
 }

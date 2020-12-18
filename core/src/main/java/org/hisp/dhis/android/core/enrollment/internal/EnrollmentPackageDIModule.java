@@ -33,11 +33,18 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
+import retrofit2.Retrofit;
 
 @Module(includes = {
         EnrollmentEntityDIModule.class
 })
 public final class EnrollmentPackageDIModule {
+
+    @Provides
+    @Reusable
+    EnrollmentService service(Retrofit retrofit) {
+        return retrofit.create(EnrollmentService.class);
+    }
 
     @Provides
     @Reusable

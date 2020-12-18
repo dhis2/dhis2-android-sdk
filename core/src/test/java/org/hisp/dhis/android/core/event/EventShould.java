@@ -37,7 +37,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.text.ParseException;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 public class EventShould extends BaseObjectShould implements ObjectShould {
 
@@ -81,5 +81,7 @@ public class EventShould extends BaseObjectShould implements ObjectShould {
 
         assertThat(event.notes().get(0).uid()).isEqualTo("eventNote1");
         assertThat(event.notes().get(1).uid()).isEqualTo("eventNote2");
+
+        assertThat(event.relationships().get(0).uid()).isEqualTo("ZLrITbZfdnv");
     }
 }

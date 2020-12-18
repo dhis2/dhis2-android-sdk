@@ -32,26 +32,19 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.base.Joiner;
 
 import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
-import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
+import org.hisp.dhis.android.core.arch.helpers.DateUtils;
 import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @AutoValue
 abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
-
-    private static final SafeDateFormat QUERY_FORMAT = new SafeDateFormat("yyyy-MM-dd");
 
     @NonNull
     abstract List<String> orgUnits();
@@ -79,6 +72,9 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
 
     @Nullable
     abstract EnrollmentStatus enrollmentStatus();
+
+    @Nullable
+    abstract Boolean followUp();
 
     @Nullable
     abstract EventStatus eventStatus();
@@ -119,86 +115,13 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
     }
 
     private String formatDate(Date date) {
-        return date == null ? null : QUERY_FORMAT.format(date);
+        return date == null ? null : DateUtils.SIMPLE_DATE_FORMAT.format(date);
     }
 
     abstract Builder toBuilder();
 
     static Builder builder() {
         return new AutoValue_TrackedEntityInstanceQueryOnline.Builder();
-    }
-
-    static TrackedEntityInstanceQueryOnline create(TrackedEntityInstanceQueryRepositoryScope scope) {
-        String query = null;
-        if (scope.query() != null) {
-            query = scope.query().operator().getApiUpperOperator() + ":" + scope.query().value();
-        }
-
-        // EnrollmentStatus does not accepts a list of status but a single value in web API.
-        EnrollmentStatus enrollmentStatus = scope.enrollmentStatus() == null || scope.enrollmentStatus().isEmpty() ?
-                null : scope.enrollmentStatus().get(0);
-
-        EventStatus eventStatus = getEventStatus(scope);
-
-        return TrackedEntityInstanceQueryOnline.builder()
-                .query(query)
-                .attribute(toAPIFilterFormat(scope.attribute()))
-                .filter(toAPIFilterFormat(scope.filter()))
-                .orgUnits(scope.orgUnits())
-                .orgUnitMode(scope.orgUnitMode())
-                .program(scope.program())
-                .programStartDate(scope.programStartDate())
-                .programEndDate(scope.programEndDate())
-                .enrollmentStatus(enrollmentStatus)
-                .eventStatus(eventStatus)
-                .eventStartDate(scope.eventStartDate())
-                .eventEndDate(scope.eventEndDate())
-                .trackedEntityType(scope.trackedEntityType())
-                .includeDeleted(false)
-                .assignedUserMode(scope.assignedUserMode())
-                .order(toAPIOrderFormat(scope.order()))
-                .page(1)
-                .pageSize(50)
-                .paging(true)
-                .build();
-    }
-
-    private static List<String> toAPIFilterFormat(List<RepositoryScopeFilterItem> items) {
-        Map<String, String> itemMap = new HashMap<>();
-        for (RepositoryScopeFilterItem item : items) {
-            String filterClause = ":" + item.operator().getApiUpperOperator() + ":" + item.value();
-            String existingClause = itemMap.get(item.key());
-            String newClause = (existingClause == null ? "" : existingClause) + filterClause;
-
-            itemMap.put(item.key(), newClause);
-        }
-
-        List<String> itemList = new ArrayList<>();
-        for (Map.Entry<String, String> entry : itemMap.entrySet()) {
-            itemList.add(entry.getKey() + entry.getValue());
-        }
-        return itemList;
-    }
-
-    private static String toAPIOrderFormat(List<TrackedEntityInstanceQueryScopeOrderByItem> orders) {
-        List<String> orderList = new ArrayList<>();
-        for (TrackedEntityInstanceQueryScopeOrderByItem order : orders) {
-            String apiString  = order.toAPIString();
-            if (apiString != null) {
-                orderList.add(apiString);
-            }
-        }
-        return Joiner.on(',').join(orderList);
-    }
-
-    private static EventStatus getEventStatus(TrackedEntityInstanceQueryRepositoryScope scope) {
-        // EventStatus does not accepts a list of status but a single value in web API.
-        // Additionally, it requires that eventStartDate and eventEndDate are defined.
-        if (scope.eventStatus() != null && scope.eventStatus().size() > 0 &&
-                scope.eventStartDate() != null && scope.eventEndDate() != null) {
-            return scope.eventStatus().get(0);
-        }
-        return null;
     }
 
     @AutoValue.Builder
@@ -220,6 +143,8 @@ abstract class TrackedEntityInstanceQueryOnline extends BaseQuery {
         abstract Builder programEndDate(Date programEndDate);
 
         abstract Builder enrollmentStatus(EnrollmentStatus programStatus);
+
+        abstract Builder followUp(Boolean followUp);
 
         abstract Builder eventStatus(EventStatus eventStatus);
 

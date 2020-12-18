@@ -69,6 +69,7 @@ public enum D2ErrorCode {
     SOCKET_TIMEOUT,
     RELATIONSHIPS_CANT_BE_UPDATED,
     TOO_MANY_ORG_UNITS,
+    @Deprecated
     TOO_MANY_PERIODS,
     UNEXPECTED,
     UNKNOWN_HOST,

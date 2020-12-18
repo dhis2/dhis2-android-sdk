@@ -38,7 +38,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.text.ParseException;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 public class ProgramTrackedEntityAttributeShould extends BaseObjectShould implements ObjectShould {
 
@@ -69,11 +69,11 @@ public class ProgramTrackedEntityAttributeShould extends BaseObjectShould implem
         assertThat(programTrackedEntityAttribute.shortName()).isEqualTo("Child Programme Gender");
         assertThat(programTrackedEntityAttribute.displayShortName()).isEqualTo("Child Programme Gender");
 
-        assertThat(programTrackedEntityAttribute.mandatory()).isEqualTo(false);
+        assertThat(programTrackedEntityAttribute.mandatory()).isFalse();
         assertThat(programTrackedEntityAttribute.trackedEntityAttribute().uid()).isEqualTo("cejWyOfXge6");
         assertThat(programTrackedEntityAttribute.program().uid()).isEqualTo("IpHINAT79UW");
-        assertThat(programTrackedEntityAttribute.allowFutureDate()).isEqualTo(false);
-        assertThat(programTrackedEntityAttribute.displayInList()).isEqualTo(false);
+        assertThat(programTrackedEntityAttribute.allowFutureDate()).isFalse();
+        assertThat(programTrackedEntityAttribute.displayInList()).isFalse();
         assertThat(programTrackedEntityAttribute.sortOrder()).isEqualTo(1);
         assertThat(programTrackedEntityAttribute.renderType().desktop()).isEqualTo(desktopRendering);
         assertThat(programTrackedEntityAttribute.renderType().mobile()).isEqualTo(mobileRendering);

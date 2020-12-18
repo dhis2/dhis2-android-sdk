@@ -34,8 +34,7 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class UserObjectRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -43,7 +42,7 @@ public class UserObjectRepositoryMockIntegrationShould extends BaseMockIntegrati
     @Test
     public void find_user() {
         User user = d2.userModule().user().blockingGet();
-        assertThat(user.uid(), is("DXyJmlo9rge"));
-        assertThat(user.firstName(), is("John"));
+        assertThat(user.uid()).isEqualTo("DXyJmlo9rge");
+        assertThat(user.firstName()).isEqualTo("John");
     }
 }

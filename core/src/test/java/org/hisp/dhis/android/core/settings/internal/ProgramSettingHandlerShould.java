@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.settings.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.settings.ProgramSetting;
 import org.junit.Before;
@@ -39,8 +40,10 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class ProgramSettingHandlerShould {
 
@@ -60,6 +63,7 @@ public class ProgramSettingHandlerShould {
 
         programSettings = new ArrayList<>();
         programSettings.add(programSetting);
+        when(programSettingStore.updateOrInsertWhere(any())).thenReturn(HandleAction.Insert);
 
         programSettingHandler = new ProgramSettingHandler(programSettingStore);
     }

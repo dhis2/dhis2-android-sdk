@@ -29,22 +29,16 @@
 package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ScopedRepositoryFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.BaseScopeFactory;
 
-public final class EqFilterConnector<R  extends BaseRepository, S extends BaseScope, T> {
+public final class EqFilterConnector<R  extends BaseRepository, T> {
 
-    private final ScopedRepositoryFactory<R, S> repositoryFactory;
-    private final BaseScopeFactory<S, T> baseScopeFactory;
+    private final ScopedRepositoryFilterFactory<R, T> repositoryFactory;
 
-    EqFilterConnector(ScopedRepositoryFactory<R, S> repositoryFactory,
-                      BaseScopeFactory<S, T> baseScopeFactory) {
+    EqFilterConnector(ScopedRepositoryFilterFactory<R, T> repositoryFactory) {
         this.repositoryFactory = repositoryFactory;
-        this.baseScopeFactory = baseScopeFactory;
     }
 
     public R eq(T value) {
-        return repositoryFactory.updated(baseScopeFactory.updated(value));
+        return repositoryFactory.updated(value);
     }
 }

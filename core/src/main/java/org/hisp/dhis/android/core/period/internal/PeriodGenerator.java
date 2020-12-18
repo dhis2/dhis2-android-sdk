@@ -35,5 +35,5 @@ import java.util.List;
 
 interface PeriodGenerator {
     List<Period> generatePeriods(int past, int future) throws RuntimeException;
-    Period generatePeriod(Date date);
+    Period generatePeriod(Date date, int periodOffset);
 }

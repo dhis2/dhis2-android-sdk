@@ -68,7 +68,7 @@ public class ProgramStageSamples {
                 .standardInterval(1)
                 .periodType(PeriodType.BiMonthly)
                 .program(ObjectWithUid.create("program_uid"))
-                .access(Access.create(null, null, DataAccess.create(true, true)))
+                .access(Access.create(false, false, DataAccess.create(true, true)))
                 .remindCompleted(Boolean.FALSE).build();
     }
 

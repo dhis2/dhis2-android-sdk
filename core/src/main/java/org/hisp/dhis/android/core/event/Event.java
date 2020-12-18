@@ -44,6 +44,7 @@ import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryCol
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EventStatusColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreCoordinatesColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNoteListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreRelationshipListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreTrackedEntityDataValueListColumnAdapter;
 import org.hisp.dhis.android.core.arch.helpers.CoordinateHelper;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
@@ -52,6 +53,7 @@ import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.event.internal.EventFields;
 import org.hisp.dhis.android.core.note.Note;
+import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 
 import java.util.Date;
@@ -154,6 +156,11 @@ public abstract class Event extends BaseDeletableDataObject implements ObjectWit
     @ColumnAdapter(IgnoreTrackedEntityDataValueListColumnAdapter.class)
     public abstract List<TrackedEntityDataValue> trackedEntityDataValues();
 
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(IgnoreRelationshipListColumnAdapter.class)
+    abstract List<Relationship> relationships();
+
     public static Builder builder() {
         return new $$AutoValue_Event.Builder();
     }
@@ -212,6 +219,8 @@ public abstract class Event extends BaseDeletableDataObject implements ObjectWit
 
         @JsonProperty(EventFields.TRACKED_ENTITY_DATA_VALUES)
         public abstract Builder trackedEntityDataValues(List<TrackedEntityDataValue> trackedEntityDataValues);
+
+        public abstract Builder relationships(List<Relationship> relationships);
 
         abstract Event autoBuild();
 

@@ -32,6 +32,7 @@ import android.content.Context;
 
 import androidx.annotation.VisibleForTesting;
 
+import org.hisp.dhis.android.core.analytics.AnalyticsPackageDIModule;
 import org.hisp.dhis.android.core.arch.api.internal.APIClientDIModule;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
@@ -108,6 +109,7 @@ import retrofit2.Retrofit;
         RepositoriesDIModule.class,
 
         AggregatedDataPackageDIModule.class,
+        AnalyticsPackageDIModule.class,
         CategoryPackageDIModule.class,
         CommonPackageDIModule.class,
         ConfigurationPackageDIModule.class,
@@ -182,6 +184,7 @@ public interface D2DIComponent {
         Builder wipeDIModule(WipeDIModule wipeDIModule);
         Builder repositoriesDIModule(RepositoriesDIModule repositoriesDIModule);
 
+        Builder analyticsPackageDIModule(AnalyticsPackageDIModule analyticsPackageDIModule);
         Builder categoryPackageDIModule(CategoryPackageDIModule categoryPackageDIModule);
         Builder commonPackageDIModule(CommonPackageDIModule commonPackageDIModule);
         Builder configurationPackageDIModule(ConfigurationPackageDIModule configurationPackageDIModule);

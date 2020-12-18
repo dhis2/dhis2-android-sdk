@@ -36,7 +36,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.text.ParseException;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 public class TrackedEntityDataValueShould extends BaseObjectShould implements ObjectShould {
 
@@ -57,6 +57,6 @@ public class TrackedEntityDataValueShould extends BaseObjectShould implements Ob
         assertThat(trackedEntityDataValue.storedBy()).isEqualTo("admin");
         assertThat(trackedEntityDataValue.dataElement()).isEqualTo("msodh3rEMJa");
         assertThat(trackedEntityDataValue.value()).isEqualTo("2013-05-18");
-        assertThat(trackedEntityDataValue.providedElsewhere()).isEqualTo(false);
+        assertThat(trackedEntityDataValue.providedElsewhere()).isFalse();
     }
 }

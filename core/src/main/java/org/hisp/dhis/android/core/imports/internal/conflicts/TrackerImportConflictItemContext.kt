@@ -32,6 +32,6 @@ import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 
 internal class TrackerImportConflictItemContext(
-        val attributeStore: IdentifiableObjectStore<TrackedEntityAttribute>,
-        val dataElementStore: IdentifiableObjectStore<DataElement>
+    val attributeStore: IdentifiableObjectStore<TrackedEntityAttribute>,
+    val dataElementStore: IdentifiableObjectStore<DataElement>
 )

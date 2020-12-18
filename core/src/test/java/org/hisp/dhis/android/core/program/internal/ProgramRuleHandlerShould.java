@@ -89,7 +89,7 @@ public class ProgramRuleHandlerShould {
 
     @Test
     public void extend_identifiable_sync_handler_impl() {
-        IdentifiableHandlerImpl<ProgramRule> genericHandler = new ProgramRuleHandler(null, null, null, null);
+        IdentifiableHandlerImpl<ProgramRule> genericHandler = new ProgramRuleHandler(programRuleStore, null, null, null);
     }
 
     @Test

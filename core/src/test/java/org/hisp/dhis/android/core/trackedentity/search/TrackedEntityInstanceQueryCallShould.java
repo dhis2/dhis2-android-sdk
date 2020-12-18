@@ -54,8 +54,8 @@ import javax.net.ssl.HttpsURLConnection;
 
 import retrofit2.Call;
 
-import static junit.framework.Assert.fail;
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
@@ -108,7 +108,8 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
 
         query = TrackedEntityInstanceQueryOnline.builder().
                 orgUnits(orgUnits).orgUnitMode(OrganisationUnitMode.ACCESSIBLE).program("program")
-                .programStartDate(new Date()).programEndDate(new Date()).enrollmentStatus(EnrollmentStatus.ACTIVE)
+                .programStartDate(new Date()).programEndDate(new Date())
+                .enrollmentStatus(EnrollmentStatus.ACTIVE).followUp(true)
                 .eventStartDate(new Date()).eventEndDate(new Date()).eventStatus(EventStatus.OVERDUE)
                 .trackedEntityType("teiTypeStr").query("queryStr").attribute(attribute).filter(filter)
                 .includeDeleted(false).order("lastupdated:desc").assignedUserMode(AssignedUserMode.ANY)
@@ -146,6 +147,7 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
                 eq(query.formattedProgramStartDate()),
                 eq(query.formattedProgramEndDate()),
                 eq(query.enrollmentStatus().toString()),
+                eq(query.followUp()),
                 eq(query.formattedEventStartDate()),
                 eq(query.formattedEventEndDate()),
                 eq(query.eventStatus().toString()),
@@ -188,7 +190,7 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
 
     private OngoingStubbing<Call<SearchGrid>> whenServiceQuery() {
         return when(service.query(anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString(), anyString(), anyList(), anyList(),
+                anyBoolean(), anyString(), anyString(), anyString(), anyString(), anyString(), anyList(), anyList(),
                 anyString(), anyString(), anyBoolean(), anyInt(), anyInt()));
     }
 }

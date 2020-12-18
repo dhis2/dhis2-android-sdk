@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.event;
 
 public interface EventModule {
     EventCollectionRepository events();
+    EventFilterCollectionRepository eventFilters();
     EventDownloader eventDownloader();
     EventService eventService();
 }

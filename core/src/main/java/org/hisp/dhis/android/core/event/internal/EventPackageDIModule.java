@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
+import org.hisp.dhis.android.core.event.EventFilter;
 import org.hisp.dhis.android.core.event.EventModule;
 
 import dagger.Module;
@@ -37,6 +39,8 @@ import retrofit2.Retrofit;
 
 @Module(includes = {
         EventEntityDIModule.class,
+        EventFilterEntityDIModule.class,
+        EventDataFilterEntityDIModule.class,
         EventSyncEntityDIModule.class
 })
 public final class EventPackageDIModule {
@@ -51,5 +55,17 @@ public final class EventPackageDIModule {
     @Reusable
     EventModule module(EventModuleImpl impl) {
         return impl;
+    }
+
+    @Provides
+    @Reusable
+    UidsCall<EventFilter> trackedEntityInstanceFilterCall(EventFilterCall impl) {
+        return impl;
+    }
+
+    @Provides
+    @Reusable
+    EventFilterService eventFilterService(Retrofit retrofit) {
+        return retrofit.create(EventFilterService.class);
     }
 }

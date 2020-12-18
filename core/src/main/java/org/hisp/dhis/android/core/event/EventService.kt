@@ -29,30 +29,38 @@ package org.hisp.dhis.android.core.event
 
 import dagger.Reusable
 import io.reactivex.Single
+import javax.inject.Inject
 import org.hisp.dhis.android.core.category.CategoryOptionComboService
+import org.hisp.dhis.android.core.enrollment.EnrollmentCollectionRepository
+import org.hisp.dhis.android.core.enrollment.EnrollmentService
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
+import org.hisp.dhis.android.core.event.internal.EventDateUtils
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService
 import org.hisp.dhis.android.core.program.ProgramCollectionRepository
 import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
-import javax.inject.Inject
 
 @Reusable
+@Suppress("LongParameterList", "TooManyFunctions")
 class EventService @Inject constructor(
-        private val eventRepository: EventCollectionRepository,
-        private val programRepository: ProgramCollectionRepository,
-        private val programStageRepository: ProgramStageCollectionRepository,
-        private val organisationUnitService: OrganisationUnitService,
-        private val categoryOptionComboService: CategoryOptionComboService
+    private val enrollmentRepository: EnrollmentCollectionRepository,
+    private val eventRepository: EventCollectionRepository,
+    private val programRepository: ProgramCollectionRepository,
+    private val programStageRepository: ProgramStageCollectionRepository,
+    private val enrollmentService: EnrollmentService,
+    private val organisationUnitService: OrganisationUnitService,
+    private val categoryOptionComboService: CategoryOptionComboService,
+    private val eventDateUtils: EventDateUtils
 ) {
 
     fun blockingHasDataWriteAccess(eventUid: String): Boolean {
         val event = eventRepository.uid(eventUid).blockingGet() ?: return false
 
         return programRepository.uid(event.program()).blockingGet()?.access()?.data()?.write() ?: false &&
-                programStageRepository.uid(event.programStage()).blockingGet()?.access()?.data()?.write() ?: false
+            programStageRepository.uid(event.programStage()).blockingGet()?.access()?.data()?.write() ?: false
     }
 
     fun hasDataWriteAccess(eventUid: String): Single<Boolean> {
-        return Single.fromCallable { blockingHasDataWriteAccess(eventUid) }
+        return Single.just(blockingHasDataWriteAccess(eventUid))
     }
 
     fun blockingIsInOrgunitRange(event: Event): Boolean {
@@ -64,7 +72,7 @@ class EventService @Inject constructor(
     }
 
     fun isInOrgunitRange(event: Event): Single<Boolean> {
-        return Single.fromCallable { blockingIsInOrgunitRange(event) }
+        return Single.just(blockingIsInOrgunitRange(event))
     }
 
     fun blockingHasCategoryComboAccess(event: Event): Boolean {
@@ -74,6 +82,63 @@ class EventService @Inject constructor(
     }
 
     fun hasCategoryComboAccess(event: Event): Single<Boolean> {
-        return Single.fromCallable { blockingHasCategoryComboAccess(event) }
+        return Single.just(blockingHasCategoryComboAccess(event))
+    }
+
+    @Suppress("ComplexMethod")
+    fun blockingIsEditable(eventUid: String): Boolean {
+        val event = eventRepository.uid(eventUid).blockingGet()
+        val program = programRepository.uid(event.program()).blockingGet()
+        val programStage = programStageRepository.uid(event.programStage()).blockingGet()
+
+        val isBlocked = event.status() == EventStatus.COMPLETED && programStage.blockEntryForm() ?: false
+
+        val isExpired = eventDateUtils.isEventExpired(
+            event = event,
+            completeExpiryDays = program.completeEventsExpiryDays() ?: 0,
+            programPeriodType = programStage.periodType() ?: program.expiryPeriodType(),
+            expiryDays = program.expiryDays() ?: 0
+        )
+
+        return !isBlocked &&
+            !isExpired &&
+            blockingHasDataWriteAccess(eventUid) &&
+            blockingIsInOrgunitRange(event) &&
+            blockingHasCategoryComboAccess(event) &&
+            event.enrollment()?.let { enrollmentService.blockingIsOpen(it) } ?: true &&
+            event.organisationUnit()?.let { organisationUnitService.blockingIsInCaptureScope(it) } ?: true
+    }
+
+    fun isEditable(eventUid: String): Single<Boolean> {
+        return Single.just(blockingIsEditable(eventUid))
+    }
+
+    fun blockingCanAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Boolean {
+        val enrollment = enrollmentRepository.uid(enrollmentUid).blockingGet()
+        val programStage = programStageRepository.uid(programStageUid).blockingGet()
+
+        if (enrollment == null || programStage == null) {
+            return false
+        }
+
+        val isActiveEnrollment = enrollment.status() == EnrollmentStatus.ACTIVE
+
+        val acceptMoreEvents =
+            if (programStage.repeatable() == true) true
+            else getEventCount(enrollmentUid, programStageUid) == 0
+
+        return isActiveEnrollment && acceptMoreEvents
+    }
+
+    fun canAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Single<Boolean> {
+        return Single.just(blockingCanAddEventToEnrollment(enrollmentUid, programStageUid))
+    }
+
+    private fun getEventCount(enrollmentUid: String, programStageUid: String): Int {
+        return eventRepository
+            .byEnrollmentUid().eq(enrollmentUid)
+            .byProgramStageUid().eq(programStageUid)
+            .byDeleted().isFalse
+            .blockingCount()
     }
 }

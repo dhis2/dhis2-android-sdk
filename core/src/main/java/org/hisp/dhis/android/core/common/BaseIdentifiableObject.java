@@ -46,8 +46,8 @@ import java.util.Date;
 public abstract class BaseIdentifiableObject implements IdentifiableObject, ObjectWithDeleteInterface {
     /* date format which should be used for all Date instances
     within models which extend BaseIdentifiableObject */
-    public static final SafeDateFormat DATE_FORMAT = DateUtils.DATE_FORMAT;
-    public static final SafeDateFormat SPACE_DATE_FORMAT = DateUtils.SPACE_DATE_FORMAT;
+    public static SafeDateFormat DATE_FORMAT = DateUtils.DATE_FORMAT;
+    public static SafeDateFormat SPACE_DATE_FORMAT = DateUtils.SPACE_DATE_FORMAT;
 
     public static final String UID = "id";
     public static final String CODE = "code";

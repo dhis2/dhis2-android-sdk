@@ -39,10 +39,11 @@ internal class EventLastUpdatedManager @Inject constructor(
     private val resourceHandler: ResourceHandler
 ) : TrackerSyncLastUpdatedManager<EventSync>(store) {
 
-    fun update(program: String?, limit: Int) {
+    fun update(bundle: EventQueryBundle) {
         val sync = EventSync.builder()
-            .program(program)
-            .downloadLimit(limit)
+            .program(bundle.program())
+            .organisationUnitIdsHash(bundle.orgUnitList().toSet().hashCode())
+            .downloadLimit(bundle.limit())
             .lastUpdated(resourceHandler.serverDate)
             .build()
         super.update(sync)

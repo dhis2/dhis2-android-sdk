@@ -47,7 +47,7 @@ internal class TrackedEntityInstanceQueryGlobalHelper @Inject constructor(
         if (limit == 0) {
             return emptyList()
         }
-        val lastUpdated = lastUpdatedManager.getLastUpdated(null, limit)
+        val lastUpdated = lastUpdatedManager.getLastUpdated(null, params.orgUnits().toSet(), limit)
         val hasLimitByOrgUnit = commonHelper.hasLimitByOrgUnit(params, programSettings, null)
         val (ouMode, orgUnits) = when {
             params.orgUnits().size > 0 ->

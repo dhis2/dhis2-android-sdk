@@ -36,28 +36,29 @@ import org.hisp.dhis.android.core.settings.ProgramSettings
 import java.util.Date
 
 internal open class TrackerSyncLastUpdatedManager<S : TrackerBaseSync>(private val store: ObjectWithoutUidStore<S>) {
-    private var byProgram: Map<String?, S>? = null
+    private var syncMap: Map<Pair<String?, Int>, S>? = null
     private var programSettings: ProgramSettings? = null
     private var params: ProgramDataDownloadParams? = null
 
     fun prepare(programSettings: ProgramSettings?, params: ProgramDataDownloadParams?) {
         this.programSettings = programSettings
         this.params = params
-        byProgram = store.selectAll()
-            .map { it.program() to it }
+        this.syncMap = store.selectAll()
+            .map { Pair(it.program(), it.organisationUnitIdsHash()) to it }
             .toMap()
     }
 
-    fun getLastUpdated(programId: String?, limit: Int): Date? {
+    fun getLastUpdated(programId: String?, organisationUnits: Set<String>, limit: Int): Date? {
+        val orgUnitHashCode = organisationUnits.toSet().hashCode()
         return if (params!!.uids().isEmpty()) {
             if (programId != null) {
-                val programSync = byProgram!![programId]
+                val programSync = syncMap!![Pair(programId, orgUnitHashCode)]
                 val programLastUpdated = getLastUpdatedIfValid(programSync, limit)
                 if (programLastUpdated != null) {
                     return programLastUpdated
                 }
             }
-            val programSync = byProgram!![null]
+            val programSync = syncMap!![Pair(null, orgUnitHashCode)]
             val generalLastUpdated = getLastUpdatedIfValid(programSync, limit)
             generalLastUpdated ?: getDefaultLastUpdated(programId)
         } else {

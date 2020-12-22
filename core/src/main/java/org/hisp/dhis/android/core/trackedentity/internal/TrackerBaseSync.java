@@ -44,7 +44,7 @@ public abstract class TrackerBaseSync extends BaseObject {
     @Nullable
     public abstract String program();
 
-    @Nullable
+    @NonNull
     public abstract Integer organisationUnitIdsHash();
 
     @NonNull

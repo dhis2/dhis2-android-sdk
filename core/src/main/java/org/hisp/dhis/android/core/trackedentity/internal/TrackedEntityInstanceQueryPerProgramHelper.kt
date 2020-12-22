@@ -57,7 +57,7 @@ internal class TrackedEntityInstanceQueryPerProgramHelper @Inject constructor(
         }
         val programStatus = getProgramStatus(params, programSettings, programUid)
         val programStartDate = getProgramStartDate(programSettings, programUid)
-        val lastUpdated = lastUpdatedManager.getLastUpdated(programUid, limit)
+        val lastUpdated = lastUpdatedManager.getLastUpdated(programUid, params.orgUnits().toSet(), limit)
         val hasLimitByOrgUnit = commonHelper.hasLimitByOrgUnit(params, programSettings, programUid)
         val (ouMode, orgUnits) = when {
             params.orgUnits().size > 0 ->

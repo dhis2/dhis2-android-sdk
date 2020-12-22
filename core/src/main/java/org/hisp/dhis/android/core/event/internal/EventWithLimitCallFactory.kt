@@ -97,7 +97,7 @@ class EventWithLimitCallFactory @Inject internal constructor(
                         successfulSync = successfulSync && result.successfulSync
                     }
                 }
-                lastUpdatedManager.update(bundle.program(), bundle.limit())
+                lastUpdatedManager.update(bundle)
             }
             emitter.onNext(progressManager.increaseProgress(Event::class.java, true))
             emitter.onComplete()

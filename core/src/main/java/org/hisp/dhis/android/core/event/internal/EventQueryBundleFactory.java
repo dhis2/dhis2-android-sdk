@@ -49,6 +49,7 @@ import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -121,7 +122,7 @@ class EventQueryBundleFactory {
             return Collections.emptyList();
         }
 
-        Date lastUpdated = lastUpdatedManager.getLastUpdated(programUid, limit);
+        Date lastUpdated = lastUpdatedManager.getLastUpdated(programUid, new HashSet<>(), limit);
 
         String eventStartDate = getEventStartDate(programSettings, programUid);
         List<String> programs = Collections.singletonList(programUid);
@@ -164,7 +165,7 @@ class EventQueryBundleFactory {
             return Collections.emptyList();
         }
 
-        Date lastUpdated = lastUpdatedManager.getLastUpdated(null, limit);
+        Date lastUpdated = lastUpdatedManager.getLastUpdated(null, new HashSet<>(params.orgUnits()), limit);
 
         String eventStartDate = getEventStartDate(programSettings, null);
         OrganisationUnitMode ouMode;

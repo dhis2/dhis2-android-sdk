@@ -28,11 +28,13 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.apache.commons.lang3.time.DateUtils
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.settings.DownloadPeriod
 import org.hisp.dhis.android.core.settings.ProgramSetting
 import org.hisp.dhis.android.core.settings.ProgramSettings
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceSyncTableInfo.Columns
 import java.util.Date
 
 internal open class TrackerSyncLastUpdatedManager<S : TrackerBaseSync>(private val store: ObjectWithoutUidStore<S>) {
@@ -97,8 +99,12 @@ internal open class TrackerSyncLastUpdatedManager<S : TrackerBaseSync>(private v
     }
 
     fun update(sync: S) {
-        val whereClause = if (sync.program() == null) " IS NULL" else "='" + sync.program() + "'"
-        store.deleteWhere(TrackedEntityInstanceSyncTableInfo.Columns.PROGRAM + whereClause)
+        val builder = WhereClauseBuilder().appendKeyNumberValue(Columns.ORGANISATION_UNIT_IDS_HASH,
+            sync.organisationUnitIdsHash())
+        val finalBuilder =
+            if (sync.program() == null) builder.appendIsNullValue(Columns.PROGRAM)
+            else builder.appendKeyStringValue(Columns.PROGRAM, sync.program())
+        store.deleteWhere(finalBuilder.build())
         store.insert(sync)
     }
 }

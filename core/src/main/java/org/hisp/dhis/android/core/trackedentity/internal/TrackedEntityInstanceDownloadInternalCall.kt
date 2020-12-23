@@ -44,7 +44,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
 @Reusable
 internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
-    private val trackedEntityInstanceQueryBuilderFactory: TrackedEntityInstanceQueryBuilderFactory,
+    private val queryBuilderFactory: TrackedEntityInstanceQueryBuilderFactory,
     private val persistenceCallFactory: TrackedEntityInstancePersistenceCallFactory,
     private val endpointCallFactory: TrackedEntityInstancesEndpointCallFactory,
     private val apiCallExecutor: RxAPICallExecutor,
@@ -57,10 +57,9 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
         relatives: RelationshipItemRelatives
     ): Observable<D2Progress> {
         return Observable.defer {
-            val teiQueryBuilders = trackedEntityInstanceQueryBuilderFactory
-                .getTeiQueryBuilders(params)
+            val teiQueryBuilders = queryBuilderFactory.getTeiQueryBuilders(params)
             val teiDownloadObservable = Observable.fromIterable(teiQueryBuilders)
-                .flatMap { teiQueryBuilder: TeiQuery.Builder -> getTrackedEntityInstancesWithPaging(teiQueryBuilder) }
+                .flatMap { getTrackedEntityInstancesWithPaging(it) }
             // TODO .subscribeOn(teiDownloadScheduler);
             val isFullUpdate = params.program() == null
             val overwrite = params.overwrite()

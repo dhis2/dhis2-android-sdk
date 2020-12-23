@@ -28,9 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import java.util.ArrayList
-import java.util.Date
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
@@ -41,11 +38,14 @@ import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.settings.LimitScope
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
+import java.util.ArrayList
+import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstanceQueryCommonHelper @Inject constructor(
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
-    private val organisationUnitProgramLinkStore: LinkStore<OrganisationUnitProgramLink>
+    private val organisationUnitProgramLinkStore: LinkStore<OrganisationUnitProgramLink>,
+    private val lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager
 ) {
 
     fun getRootCaptureOrgUnitUids(): List<String> {
@@ -58,12 +58,13 @@ internal class TrackedEntityInstanceQueryCommonHelper @Inject constructor(
     }
 
     fun getBuilderFor(
-        lastUpdated: Date?,
+        programId: String?,
         organisationUnits: List<String>,
         organisationUnitMode: OrganisationUnitMode,
         params: ProgramDataDownloadParams,
         limit: Int
     ): TeiQuery.Builder {
+        val lastUpdated = lastUpdatedManager.getLastUpdated(programId, organisationUnits.toSet(), limit)
         return TeiQuery.builder()
             .lastUpdatedStartDate(lastUpdated)
             .orgUnits(organisationUnits)

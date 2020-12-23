@@ -42,7 +42,6 @@ import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstanceQueryPerProgramHelper @Inject constructor(
-    private val lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager,
     private val commonHelper: TrackedEntityInstanceQueryCommonHelper
 ) {
 
@@ -57,7 +56,6 @@ internal class TrackedEntityInstanceQueryPerProgramHelper @Inject constructor(
         }
         val programStatus = getProgramStatus(params, programSettings, programUid)
         val programStartDate = getProgramStartDate(programSettings, programUid)
-        val lastUpdated = lastUpdatedManager.getLastUpdated(programUid, params.orgUnits().toSet(), limit)
         val hasLimitByOrgUnit = commonHelper.hasLimitByOrgUnit(params, programSettings, programUid)
         val (ouMode, orgUnits) = when {
             params.orgUnits().size > 0 ->
@@ -66,15 +64,12 @@ internal class TrackedEntityInstanceQueryPerProgramHelper @Inject constructor(
                 Pair(OrganisationUnitMode.SELECTED, commonHelper.getLinkedCaptureOrgUnitUids(programUid))
             else ->
                 Pair(OrganisationUnitMode.DESCENDANTS, commonHelper.getRootCaptureOrgUnitUids())
-
         }
         return if (hasLimitByOrgUnit) {
-            orgUnits.map {  commonHelper.getBuilderFor(lastUpdated, listOf(it), ouMode, params, limit)
-                .program(programUid).programStatus(programStatus).programStartDate(programStartDate)}
+            orgUnits.map { commonHelper.getBuilderFor(programUid, listOf(it), ouMode, params, limit) }
         } else {
-            listOf(commonHelper.getBuilderFor(lastUpdated, orgUnits, ouMode, params, limit)
-                .program(programUid).programStatus(programStatus).programStartDate(programStartDate))
-        }
+            listOf(commonHelper.getBuilderFor(programUid, orgUnits, ouMode, params, limit))
+        }.map { it.program(programUid).programStatus(programStatus).programStartDate(programStartDate)  }
     }
 
     @Suppress("ReturnCount")

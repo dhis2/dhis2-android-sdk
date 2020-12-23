@@ -35,7 +35,6 @@ import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstanceQueryGlobalHelper @Inject constructor(
-    private val lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager,
     private val commonHelper: TrackedEntityInstanceQueryCommonHelper
 ) {
 
@@ -47,7 +46,6 @@ internal class TrackedEntityInstanceQueryGlobalHelper @Inject constructor(
         if (limit == 0) {
             return emptyList()
         }
-        val lastUpdated = lastUpdatedManager.getLastUpdated(null, params.orgUnits().toSet(), limit)
         val hasLimitByOrgUnit = commonHelper.hasLimitByOrgUnit(params, programSettings, null)
         val (ouMode, orgUnits) = when {
             params.orgUnits().size > 0 ->
@@ -58,9 +56,9 @@ internal class TrackedEntityInstanceQueryGlobalHelper @Inject constructor(
                 Pair(OrganisationUnitMode.DESCENDANTS, commonHelper.getRootCaptureOrgUnitUids())
         }
         return if (hasLimitByOrgUnit) {
-            orgUnits.map { commonHelper.getBuilderFor(lastUpdated, listOf(it), ouMode, params, limit) }
+            orgUnits.map { commonHelper.getBuilderFor(null, listOf(it), ouMode, params, limit) }
         } else {
-            listOf(commonHelper.getBuilderFor(lastUpdated, orgUnits, ouMode, params, limit))
+            listOf(commonHelper.getBuilderFor(null, orgUnits, ouMode, params, limit))
         }
     }
 }

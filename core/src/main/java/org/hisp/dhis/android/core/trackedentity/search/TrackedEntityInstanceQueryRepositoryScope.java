@@ -46,7 +46,7 @@ import java.util.Date;
 import java.util.List;
 
 @AutoValue
-abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseScope {
+public abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseScope {
 
     @NonNull
     public abstract RepositoryMode mode();

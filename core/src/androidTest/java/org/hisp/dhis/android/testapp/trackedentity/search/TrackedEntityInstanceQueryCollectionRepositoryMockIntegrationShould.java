@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.testapp.trackedentity.search;
 
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryRepositoryScope;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
@@ -60,5 +61,13 @@ public class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould
                         .blockingGetUids();
 
         assertThat(trackedEntityInstanceUids.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void get_scope() {
+        TrackedEntityInstanceQueryRepositoryScope scope =
+                d2.trackedEntityModule().trackedEntityInstanceQuery().getScope();
+
+        assertThat(scope.attribute()).isNotNull();
     }
 }

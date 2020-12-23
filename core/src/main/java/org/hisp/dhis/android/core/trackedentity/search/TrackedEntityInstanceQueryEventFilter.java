@@ -40,7 +40,7 @@ import java.util.Date;
 import java.util.List;
 
 @AutoValue
-abstract class TrackedEntityInstanceQueryEventFilter {
+public abstract class TrackedEntityInstanceQueryEventFilter {
 
     @Nullable
     public abstract String programStage();
@@ -71,7 +71,7 @@ abstract class TrackedEntityInstanceQueryEventFilter {
 
     abstract TrackedEntityInstanceQueryEventFilter.Builder toBuilder();
 
-    public static Builder builder() {
+    static Builder builder() {
         return new AutoValue_TrackedEntityInstanceQueryEventFilter.Builder();
     }
 

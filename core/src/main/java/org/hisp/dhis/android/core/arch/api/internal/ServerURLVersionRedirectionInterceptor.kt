@@ -25,10 +25,26 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.internal
 
-package org.hisp.dhis.android.core.arch.api.authentication.internal;
+import java.io.IOException
+import okhttp3.Interceptor
+import okhttp3.Response
+import org.hisp.dhis.android.core.arch.api.authentication.internal.BasicAuthenticator
 
-import okhttp3.Interceptor;
+internal class ServerURLVersionRedirectionInterceptor : Interceptor {
 
-interface Authenticator extends Interceptor {
+    @Throws(IOException::class)
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val request = chain.request()
+        val response = chain.proceed(request)
+        if (response.isRedirect) {
+            val location = response.header(BasicAuthenticator.LOCATION_KEY)
+            ServerURLWrapper.setServerUrl(location)
+            response.close()
+            val redirectReq = DynamicServerURLInterceptor.transformRequest(request)
+            return chain.proceed(redirectReq)
+        }
+        return response
+    }
 }

@@ -122,8 +122,6 @@ class EventQueryBundleFactory {
             return Collections.emptyList();
         }
 
-        Date lastUpdated = lastUpdatedManager.getLastUpdated(programUid, new HashSet<>(), limit);
-
         String eventStartDate = getEventStartDate(programSettings, programUid);
         List<String> programs = Collections.singletonList(programUid);
         OrganisationUnitMode ouMode;
@@ -141,6 +139,9 @@ class EventQueryBundleFactory {
             ouMode = OrganisationUnitMode.DESCENDANTS;
             orgUnits = getRootCaptureOrgUnitUids();
         }
+
+        Date lastUpdated = lastUpdatedManager.getLastUpdated(programUid, new HashSet<>(orgUnits), limit);
+
 
         List<EventQueryBundle> builders = new ArrayList<>();
 
@@ -165,8 +166,6 @@ class EventQueryBundleFactory {
             return Collections.emptyList();
         }
 
-        Date lastUpdated = lastUpdatedManager.getLastUpdated(null, new HashSet<>(params.orgUnits()), limit);
-
         String eventStartDate = getEventStartDate(programSettings, null);
         OrganisationUnitMode ouMode;
         List<String> orgUnits;
@@ -183,6 +182,8 @@ class EventQueryBundleFactory {
             ouMode = OrganisationUnitMode.DESCENDANTS;
             orgUnits = getRootCaptureOrgUnitUids();
         }
+
+        Date lastUpdated = lastUpdatedManager.getLastUpdated(null, new HashSet<>(orgUnits), limit);
 
         List<EventQueryBundle> builders = new ArrayList<>();
 

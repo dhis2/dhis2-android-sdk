@@ -28,13 +28,13 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.program.ProgramType
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
 import org.hisp.dhis.android.core.settings.LimitScope
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository
-import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstanceQueryBuilderFactory @Inject constructor(
@@ -52,7 +52,7 @@ internal class TrackedEntityInstanceQueryBuilderFactory @Inject constructor(
         return if (params.program() == null) {
             val trackerPrograms = programStore.getUidsByProgramType(ProgramType.WITH_REGISTRATION)
             if (hasLimitByProgram(params, programSettings)) {
-                trackerPrograms.flatMap { perProgramHelper.queryPerProgram(params, programSettings, it)  }
+                trackerPrograms.flatMap { perProgramHelper.queryPerProgram(params, programSettings, it) }
             } else {
                 val specificSettings = if (programSettings == null) emptyMap() else programSettings.specificSettings()
                 specificSettings

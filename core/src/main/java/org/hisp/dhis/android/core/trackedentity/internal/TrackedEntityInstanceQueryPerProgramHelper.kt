@@ -49,13 +49,12 @@ internal class TrackedEntityInstanceQueryPerProgramHelper @Inject constructor(
         params: ProgramDataDownloadParams,
         programSettings: ProgramSettings?,
         programUid: String?
-    ): List<TeiQuery.Builder> {
+    ): List<TeiQuery> {
         val limit = commonHelper.getLimit(params, programSettings, programUid)
         if (limit == 0) {
             return emptyList()
         }
-        val programStatus = getProgramStatus(params, programSettings, programUid)
-        val programStartDate = getProgramStartDate(programSettings, programUid)
+
         val hasLimitByOrgUnit = commonHelper.hasLimitByOrgUnit(params, programSettings, programUid)
         val (ouMode, orgUnits) = when {
             params.orgUnits().size > 0 ->
@@ -65,11 +64,20 @@ internal class TrackedEntityInstanceQueryPerProgramHelper @Inject constructor(
             else ->
                 Pair(OrganisationUnitMode.DESCENDANTS, commonHelper.getRootCaptureOrgUnitUids())
         }
+
+        val builder = TeiQuery.builder()
+            .program(programUid)
+            .ouMode(ouMode)
+            .uids(params.uids())
+            .limit(limit)
+            .programStatus(getProgramStatus(params, programSettings, programUid))
+            .programStartDate(getProgramStartDate(programSettings, programUid))
+
         return if (hasLimitByOrgUnit) {
-            orgUnits.map { commonHelper.getBuilderFor(programUid, listOf(it), ouMode, params, limit) }
+            orgUnits.map { builder.orgUnits(listOf(it)).build() }
         } else {
-            listOf(commonHelper.getBuilderFor(programUid, orgUnits, ouMode, params, limit))
-        }.map { it.program(programUid).programStatus(programStatus).programStartDate(programStartDate) }
+            listOf(builder.orgUnits(orgUnits).build())
+        }
     }
 
     @Suppress("ReturnCount")

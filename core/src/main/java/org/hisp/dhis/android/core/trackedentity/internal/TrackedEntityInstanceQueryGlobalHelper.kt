@@ -41,7 +41,7 @@ internal class TrackedEntityInstanceQueryGlobalHelper @Inject constructor(
     fun queryGlobal(
         params: ProgramDataDownloadParams,
         programSettings: ProgramSettings?
-    ): List<TeiQuery.Builder> {
+    ): List<TeiQuery> {
         val limit = commonHelper.getLimit(params, programSettings, null)
         if (limit == 0) {
             return emptyList()
@@ -55,10 +55,17 @@ internal class TrackedEntityInstanceQueryGlobalHelper @Inject constructor(
             else ->
                 Pair(OrganisationUnitMode.DESCENDANTS, commonHelper.getRootCaptureOrgUnitUids())
         }
+
+        val builder = TeiQuery.builder()
+            .program(null)
+            .ouMode(ouMode)
+            .uids(params.uids())
+            .limit(limit)
+
         return if (hasLimitByOrgUnit) {
-            orgUnits.map { commonHelper.getBuilderFor(null, listOf(it), ouMode, params, limit) }
+            orgUnits.map { builder.orgUnits(listOf(it)).build() }
         } else {
-            listOf(commonHelper.getBuilderFor(null, orgUnits, ouMode, params, limit))
+            listOf(builder.orgUnits(orgUnits).build())
         }
     }
 }

@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository
 
 @Reusable
-internal class TrackedEntityInstanceQueryBuilderFactory @Inject constructor(
+internal class TrackedEntityInstanceQueryFactory @Inject constructor(
     private val programStore: ProgramStoreInterface,
     private val programSettingsObjectRepository: ProgramSettingsObjectRepository,
     private val lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager,
@@ -46,7 +46,7 @@ internal class TrackedEntityInstanceQueryBuilderFactory @Inject constructor(
 ) {
 
     @Suppress("NestedBlockDepth")
-    fun getTeiQueryBuilders(params: ProgramDataDownloadParams): List<TeiQuery.Builder> {
+    fun getTeiQueries(params: ProgramDataDownloadParams): List<TeiQuery> {
         val programSettings = programSettingsObjectRepository.blockingGet()
         lastUpdatedManager.prepare(programSettings, params)
         return if (params.program() == null) {

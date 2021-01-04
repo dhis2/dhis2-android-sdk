@@ -28,24 +28,22 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import java.util.ArrayList
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.settings.LimitScope
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
+import java.util.ArrayList
+import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstanceQueryCommonHelper @Inject constructor(
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
-    private val organisationUnitProgramLinkStore: LinkStore<OrganisationUnitProgramLink>,
-    private val lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager
+    private val organisationUnitProgramLinkStore: LinkStore<OrganisationUnitProgramLink>
 ) {
 
     fun getRootCaptureOrgUnitUids(): List<String> {
@@ -55,22 +53,6 @@ internal class TrackedEntityInstanceQueryCommonHelper @Inject constructor(
     fun getCaptureOrgUnitUids(): List<String> {
         return userOrganisationUnitLinkStore
             .queryOrganisationUnitUidsByScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
-    }
-
-    fun getBuilderFor(
-        programId: String?,
-        organisationUnits: List<String>,
-        organisationUnitMode: OrganisationUnitMode,
-        params: ProgramDataDownloadParams,
-        limit: Int
-    ): TeiQuery.Builder {
-        val lastUpdated = lastUpdatedManager.getLastUpdated(programId, organisationUnits.toSet(), limit)
-        return TeiQuery.builder()
-            .lastUpdatedStartDate(lastUpdated)
-            .orgUnits(organisationUnits)
-            .ouMode(organisationUnitMode)
-            .uids(params.uids())
-            .limit(limit)
     }
 
     fun getLinkedCaptureOrgUnitUids(programUid: String?): List<String> {

@@ -83,7 +83,7 @@ internal class EventQueryBundleFactory @Inject constructor(
         programSettings: ProgramSettings?,
         programUid: String?
     ): List<EventQueryBundle> {
-        val limit = getLimit(params, programSettings, programUid)
+        val limit = commonHelper.getLimit(params, programSettings, programUid) { it?.eventsDownload() }
         if (limit == 0) {
             return emptyList()
         }
@@ -124,7 +124,7 @@ internal class EventQueryBundleFactory @Inject constructor(
         programSettings: ProgramSettings?,
         programList: List<String>
     ): List<EventQueryBundle> {
-        val limit = getLimit(params, programSettings, null)
+        val limit = commonHelper.getLimit(params, programSettings, null) { it?.eventsDownload() }
         if (limit == 0) {
             return emptyList()
         }
@@ -231,32 +231,6 @@ internal class EventQueryBundleFactory @Inject constructor(
         return false
     }
 
-    private fun getLimit(
-        params: ProgramDataDownloadParams,
-        programSettings: ProgramSettings?,
-        programUid: String?
-    ): Int {
-        if (params.limit() != null && isGlobalOrUserDefinedProgram(params, programUid)) {
-            return params.limit()!!
-        }
-        if (programUid != null && programSettings != null) {
-            val specificSetting = programSettings.specificSettings()[programUid]
-            if (specificSetting?.eventsDownload() != null) {
-                return specificSetting.eventsDownload()!!
-            }
-        }
-        if (params.limit() != null && params.limitByProgram() != null && params.limitByProgram()!!) {
-            return params.limit()!!
-        }
-        if (programSettings != null) {
-            val globalSetting = programSettings.globalSettings()
-            if (globalSetting?.eventsDownload() != null) {
-                return globalSetting.eventsDownload()!!
-            }
-        }
-        return ProgramDataDownloadParams.DEFAULT_LIMIT
-    }
-
     private fun getEventStartDate(programSettings: ProgramSettings?, programUid: String?): String? {
         var period: DownloadPeriod? = null
         if (programSettings != null) {
@@ -278,9 +252,5 @@ internal class EventQueryBundleFactory @Inject constructor(
 
     private fun hasEventDateDownload(programSetting: ProgramSetting?): Boolean {
         return programSetting?.eventDateDownload() != null
-    }
-
-    private fun isGlobalOrUserDefinedProgram(params: ProgramDataDownloadParams, programUid: String?): Boolean {
-        return programUid == null || programUid == params.program()
     }
 }

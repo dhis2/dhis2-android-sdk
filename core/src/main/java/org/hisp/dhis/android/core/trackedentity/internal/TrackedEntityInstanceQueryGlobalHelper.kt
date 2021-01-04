@@ -41,7 +41,7 @@ internal class TrackedEntityInstanceQueryGlobalHelper @Inject constructor(
         params: ProgramDataDownloadParams,
         programSettings: ProgramSettings?
     ): List<TeiQuery> {
-        val limit = commonHelper.getLimit(params, programSettings, null)
+        val limit = commonHelper.getLimit(params, programSettings, null) { it?.teiDownload() }
         if (limit == 0) {
             return emptyList()
         }

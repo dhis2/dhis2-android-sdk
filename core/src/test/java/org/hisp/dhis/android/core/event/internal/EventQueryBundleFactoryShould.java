@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.settings.DownloadPeriod;
 import org.hisp.dhis.android.core.settings.ProgramSetting;
 import org.hisp.dhis.android.core.settings.ProgramSettings;
 import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository;
-import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceQueryCommonHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -64,7 +64,7 @@ public class EventQueryBundleFactoryShould {
     private ResourceHandler resourceHandler;
 
     @Mock
-    private UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
+    private TrackedEntityInstanceQueryCommonHelper commonHelper;
 
     @Mock
     private LinkStore<OrganisationUnitProgramLink> organisationUnitProgramLinkLinkStore;
@@ -101,13 +101,14 @@ public class EventQueryBundleFactoryShould {
         MockitoAnnotations.initMocks(this);
 
         when(resourceHandler.getLastUpdated(any())).thenReturn(null);
-        when(userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids()).thenReturn(rootOrgUnits);
-        when(userOrganisationUnitLinkStore.queryOrganisationUnitUidsByScope(any())).thenReturn(captureOrgUnits);
+        when(commonHelper.getRootCaptureOrgUnitUids()).thenReturn(rootOrgUnits);
+        when(commonHelper.getCaptureOrgUnitUids()).thenReturn(captureOrgUnits);
+        when(commonHelper.getLimit(any(), any(), any(), any())).thenReturn(100).thenReturn(5000);
         when(organisationUnitProgramLinkLinkStore.selectWhere(anyString())).thenReturn(links);
         when(programStore.getUidsByProgramType(any())).thenReturn(getProgramList());
         when(programSettingsObjectRepository.blockingGet()).thenReturn(programSettings);
 
-        bundleFactory = new EventQueryBundleFactory(userOrganisationUnitLinkStore,
+        bundleFactory = new EventQueryBundleFactory(commonHelper,
                 organisationUnitProgramLinkLinkStore, programStore, programSettingsObjectRepository,
                 lastUpdatedManager);
     }
@@ -126,6 +127,7 @@ public class EventQueryBundleFactoryShould {
         assertThat(bundle.ouMode()).isEqualTo(OrganisationUnitMode.DESCENDANTS);
     }
 
+    // TODO refactor tests
     @Test
     public void create_separate_bundle_for_program_if_has_specific_settings() {
         ProgramDataDownloadParams params = ProgramDataDownloadParams.builder().build();

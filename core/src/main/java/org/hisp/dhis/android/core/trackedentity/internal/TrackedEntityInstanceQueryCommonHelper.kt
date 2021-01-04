@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.settings.LimitScope
+import org.hisp.dhis.android.core.settings.ProgramSetting
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 import java.util.ArrayList
@@ -111,7 +112,8 @@ internal class TrackedEntityInstanceQueryCommonHelper @Inject constructor(
     fun getLimit(
         params: ProgramDataDownloadParams,
         programSettings: ProgramSettings?,
-        programUid: String?
+        programUid: String?,
+        downloadExtractor: (ProgramSetting?) -> Int?
     ): Int {
         val uidsCount = params.uids().size
         if (uidsCount > 0) {
@@ -122,8 +124,9 @@ internal class TrackedEntityInstanceQueryCommonHelper @Inject constructor(
         }
         if (programUid != null && programSettings != null) {
             val specificSetting = programSettings.specificSettings()[programUid]
-            if (specificSetting?.teiDownload() != null) {
-                return specificSetting.teiDownload()!!
+            val download = downloadExtractor.invoke(specificSetting)
+            if (download != null) {
+                return download
             }
         }
         if (params.limit() != null && params.limitByProgram() != null && params.limitByProgram()!!) {
@@ -131,8 +134,9 @@ internal class TrackedEntityInstanceQueryCommonHelper @Inject constructor(
         }
         if (programSettings != null) {
             val globalSetting = programSettings.globalSettings()
-            if (globalSetting?.teiDownload() != null) {
-                return globalSetting.teiDownload()!!
+            val download = downloadExtractor.invoke(globalSetting)
+            if (download != null) {
+                return download
             }
         }
         return ProgramDataDownloadParams.DEFAULT_LIMIT

@@ -58,7 +58,7 @@ internal class EventQueryBundleFactory @Inject constructor(
         val builders: MutableList<EventQueryBundle> = ArrayList()
         if (params.program() == null) {
             val eventPrograms = programStore.getUidsByProgramType(ProgramType.WITHOUT_REGISTRATION)
-            if (hasLimitByProgram(params, programSettings)) {
+            if (commonHelper.hasLimitByProgram(params, programSettings)) {
                 for (programUid in eventPrograms) {
                     builders.addAll(queryPerProgram(params, programSettings, programUid))
                 }
@@ -191,19 +191,6 @@ internal class EventQueryBundleFactory @Inject constructor(
             .appendInKeyStringValues(OrganisationUnitProgramLinkTableInfo.Columns.ORGANISATION_UNIT, ous)
             .build()
         return organisationUnitProgramLinkStore.selectWhere(whereClause).map { it.organisationUnit()!! }
-    }
-
-    private fun hasLimitByProgram(params: ProgramDataDownloadParams, programSettings: ProgramSettings?): Boolean {
-        if (params.limitByProgram() != null) {
-            return params.limitByProgram()!!
-        }
-        if (programSettings?.globalSettings() != null) {
-            val scope = programSettings.globalSettings()!!.settingDownload()
-            if (scope != null) {
-                return scope == LimitScope.PER_OU_AND_PROGRAM || scope == LimitScope.PER_PROGRAM
-            }
-        }
-        return false
     }
 
     private fun getEventStartDate(programSettings: ProgramSettings?, programUid: String?): String? {

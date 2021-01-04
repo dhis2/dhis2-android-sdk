@@ -146,4 +146,18 @@ internal class TrackedEntityInstanceQueryCommonHelper @Inject constructor(
     fun isGlobalOrUserDefinedProgram(params: ProgramDataDownloadParams, programUid: String?): Boolean {
         return programUid == null || programUid == params.program()
     }
+
+    @Suppress("ReturnCount")
+    fun hasLimitByProgram(params: ProgramDataDownloadParams, programSettings: ProgramSettings?): Boolean {
+        if (params.limitByProgram() != null) {
+            return params.limitByProgram()!!
+        }
+        if (programSettings?.globalSettings() != null) {
+            val scope = programSettings.globalSettings()!!.settingDownload()
+            if (scope != null) {
+                return scope == LimitScope.PER_OU_AND_PROGRAM || scope == LimitScope.PER_PROGRAM
+            }
+        }
+        return false
+    }
 }

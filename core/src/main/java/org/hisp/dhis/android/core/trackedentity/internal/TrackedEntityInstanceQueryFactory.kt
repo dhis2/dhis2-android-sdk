@@ -28,19 +28,18 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.program.ProgramType
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
-import org.hisp.dhis.android.core.settings.LimitScope
-import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository
+import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstanceQueryFactory @Inject constructor(
     private val programStore: ProgramStoreInterface,
     private val programSettingsObjectRepository: ProgramSettingsObjectRepository,
     private val lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager,
+    private val commonHelper: TrackedEntityInstanceQueryCommonHelper,
     private val globalHelper: TrackedEntityInstanceQueryGlobalHelper,
     private val perProgramHelper: TrackedEntityInstanceQueryPerProgramHelper
 ) {
@@ -51,7 +50,7 @@ internal class TrackedEntityInstanceQueryFactory @Inject constructor(
         lastUpdatedManager.prepare(programSettings, params)
         return if (params.program() == null) {
             val trackerPrograms = programStore.getUidsByProgramType(ProgramType.WITH_REGISTRATION)
-            if (hasLimitByProgram(params, programSettings)) {
+            if (commonHelper.hasLimitByProgram(params, programSettings)) {
                 trackerPrograms.flatMap { perProgramHelper.queryPerProgram(params, programSettings, it) }
             } else {
                 val specificSettings = if (programSettings == null) emptyMap() else programSettings.specificSettings()
@@ -63,19 +62,5 @@ internal class TrackedEntityInstanceQueryFactory @Inject constructor(
         } else {
             perProgramHelper.queryPerProgram(params, programSettings, params.program())
         }
-    }
-
-    @Suppress("ReturnCount")
-    private fun hasLimitByProgram(params: ProgramDataDownloadParams, programSettings: ProgramSettings?): Boolean {
-        if (params.limitByProgram() != null) {
-            return params.limitByProgram()!!
-        }
-        if (programSettings?.globalSettings() != null) {
-            val scope = programSettings.globalSettings()!!.settingDownload()
-            if (scope != null) {
-                return scope == LimitScope.PER_OU_AND_PROGRAM || scope == LimitScope.PER_PROGRAM
-            }
-        }
-        return false
     }
 }

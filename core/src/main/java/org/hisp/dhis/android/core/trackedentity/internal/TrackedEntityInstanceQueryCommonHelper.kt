@@ -85,7 +85,8 @@ internal class TrackedEntityInstanceQueryCommonHelper @Inject constructor(
     fun hasLimitByOrgUnit(
         params: ProgramDataDownloadParams,
         programSettings: ProgramSettings?,
-        programUid: String?
+        programUid: String?,
+        specificSettingScope: LimitScope
     ): Boolean {
         if (params.limitByOrgunit() != null) {
             return params.limitByOrgunit()!!
@@ -95,7 +96,7 @@ internal class TrackedEntityInstanceQueryCommonHelper @Inject constructor(
             if (specificSetting != null) {
                 val scope = specificSetting.settingDownload()
                 if (scope != null) {
-                    return scope == LimitScope.PER_ORG_UNIT
+                    return scope == specificSettingScope
                 }
             }
             if (programSettings.globalSettings() != null) {

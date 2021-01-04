@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
+import org.hisp.dhis.android.core.settings.LimitScope
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import javax.inject.Inject
 
@@ -46,7 +47,8 @@ internal class TrackedEntityInstanceQueryGlobalHelper @Inject constructor(
             return emptyList()
         }
 
-        val hasLimitByOrgUnit = commonHelper.hasLimitByOrgUnit(params, programSettings, null)
+        val hasLimitByOrgUnit = commonHelper.hasLimitByOrgUnit(params, programSettings, null,
+            LimitScope.PER_ORG_UNIT)
         val (ouMode, orgUnits) = commonHelper.getOrganisationUnits(
             params, hasLimitByOrgUnit) { commonHelper.getCaptureOrgUnitUids() }
 

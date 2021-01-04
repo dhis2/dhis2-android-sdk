@@ -32,10 +32,7 @@ import org.apache.commons.lang3.time.DateUtils
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
-import org.hisp.dhis.android.core.settings.DownloadPeriod
-import org.hisp.dhis.android.core.settings.EnrollmentScope
-import org.hisp.dhis.android.core.settings.ProgramSetting
-import org.hisp.dhis.android.core.settings.ProgramSettings
+import org.hisp.dhis.android.core.settings.*
 import java.util.Date
 import javax.inject.Inject
 
@@ -54,7 +51,8 @@ internal class TrackedEntityInstanceQueryPerProgramHelper @Inject constructor(
             return emptyList()
         }
 
-        val hasLimitByOrgUnit = commonHelper.hasLimitByOrgUnit(params, programSettings, null)
+        val hasLimitByOrgUnit = commonHelper.hasLimitByOrgUnit(params, programSettings, null,
+            LimitScope.PER_ORG_UNIT)
         val (ouMode, orgUnits) = commonHelper.getOrganisationUnits(
             params, hasLimitByOrgUnit) { commonHelper.getLinkedCaptureOrgUnitUids(programUid) }
 

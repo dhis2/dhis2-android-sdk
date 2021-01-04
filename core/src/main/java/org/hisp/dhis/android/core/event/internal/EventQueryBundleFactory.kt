@@ -91,7 +91,7 @@ internal class EventQueryBundleFactory @Inject constructor(
         val programs = listOf(programUid)
         val ouMode: OrganisationUnitMode
         val orgUnits: List<String>
-        val hasLimitByOrgunit = hasLimitByOrgUnit(params, programSettings, programUid)
+        val hasLimitByOrgunit = commonHelper.hasLimitByOrgUnit(params, programSettings, programUid, LimitScope.ALL_ORG_UNITS)
         if (params.orgUnits().size > 0) {
             ouMode = OrganisationUnitMode.SELECTED
             orgUnits = params.orgUnits()
@@ -131,7 +131,7 @@ internal class EventQueryBundleFactory @Inject constructor(
         val eventStartDate = getEventStartDate(programSettings, null)
         val ouMode: OrganisationUnitMode
         val orgUnits: List<String>
-        val hasLimitByOrgunit = hasLimitByOrgUnit(params, programSettings, null)
+        val hasLimitByOrgunit = commonHelper.hasLimitByOrgUnit(params, programSettings, null, LimitScope.ALL_ORG_UNITS)
         if (params.orgUnits().size > 0) {
             ouMode = OrganisationUnitMode.SELECTED
             orgUnits = params.orgUnits()
@@ -201,31 +201,6 @@ internal class EventQueryBundleFactory @Inject constructor(
             val scope = programSettings.globalSettings()!!.settingDownload()
             if (scope != null) {
                 return scope == LimitScope.PER_OU_AND_PROGRAM || scope == LimitScope.PER_PROGRAM
-            }
-        }
-        return false
-    }
-
-    private fun hasLimitByOrgUnit(
-        params: ProgramDataDownloadParams, programSettings: ProgramSettings?,
-        programUid: String?
-    ): Boolean {
-        if (params.limitByOrgunit() != null) {
-            return params.limitByOrgunit()!!
-        }
-        if (programSettings != null) {
-            val specificSetting = programSettings.specificSettings()[programUid]
-            if (specificSetting != null) {
-                val scope = specificSetting.settingDownload()
-                if (scope != null) {
-                    return scope == LimitScope.ALL_ORG_UNITS
-                }
-            }
-            if (programSettings.globalSettings() != null) {
-                val scope = programSettings.globalSettings()!!.settingDownload()
-                if (scope != null) {
-                    return scope == LimitScope.PER_OU_AND_PROGRAM || scope == LimitScope.PER_ORG_UNIT
-                }
             }
         }
         return false

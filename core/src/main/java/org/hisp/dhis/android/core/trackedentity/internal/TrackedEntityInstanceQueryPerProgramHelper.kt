@@ -28,17 +28,16 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import java.util.Date
-import javax.inject.Inject
 import org.apache.commons.lang3.time.DateUtils
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.settings.DownloadPeriod
 import org.hisp.dhis.android.core.settings.EnrollmentScope
 import org.hisp.dhis.android.core.settings.ProgramSetting
 import org.hisp.dhis.android.core.settings.ProgramSettings
+import java.util.Date
+import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstanceQueryPerProgramHelper @Inject constructor(
@@ -55,15 +54,9 @@ internal class TrackedEntityInstanceQueryPerProgramHelper @Inject constructor(
             return emptyList()
         }
 
-        val hasLimitByOrgUnit = commonHelper.hasLimitByOrgUnit(params, programSettings, programUid)
-        val (ouMode, orgUnits) = when {
-            params.orgUnits().size > 0 ->
-                Pair(OrganisationUnitMode.SELECTED, params.orgUnits())
-            hasLimitByOrgUnit ->
-                Pair(OrganisationUnitMode.SELECTED, commonHelper.getLinkedCaptureOrgUnitUids(programUid))
-            else ->
-                Pair(OrganisationUnitMode.DESCENDANTS, commonHelper.getRootCaptureOrgUnitUids())
-        }
+        val hasLimitByOrgUnit = commonHelper.hasLimitByOrgUnit(params, programSettings, null)
+        val (ouMode, orgUnits) = commonHelper.getOrganisationUnits(
+            params, hasLimitByOrgUnit) { commonHelper.getLinkedCaptureOrgUnitUids(programUid) }
 
         val builder = TeiQuery.builder()
             .program(programUid)

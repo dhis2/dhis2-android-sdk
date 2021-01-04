@@ -31,6 +31,7 @@ import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
@@ -66,6 +67,17 @@ internal class TrackedEntityInstanceQueryCommonHelper @Inject constructor(
             linkedOrgunits.add(link.organisationUnit()!!)
         }
         return linkedOrgunits
+    }
+
+    fun getOrganisationUnits(params: ProgramDataDownloadParams, hasLimitByOrgUnit: Boolean, byLimitExtractor: () -> List<String>): Pair<OrganisationUnitMode, List<String>> {
+        return when {
+            params.orgUnits().size > 0 ->
+                Pair(OrganisationUnitMode.SELECTED, params.orgUnits())
+            hasLimitByOrgUnit ->
+                Pair(OrganisationUnitMode.SELECTED, byLimitExtractor.invoke())
+            else ->
+                Pair(OrganisationUnitMode.DESCENDANTS, getRootCaptureOrgUnitUids())
+        }
     }
 
     @Suppress("ReturnCount")

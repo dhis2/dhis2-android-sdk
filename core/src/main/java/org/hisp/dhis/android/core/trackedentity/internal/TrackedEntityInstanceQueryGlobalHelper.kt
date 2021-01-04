@@ -28,10 +28,9 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.settings.ProgramSettings
+import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstanceQueryGlobalHelper @Inject constructor(
@@ -46,15 +45,10 @@ internal class TrackedEntityInstanceQueryGlobalHelper @Inject constructor(
         if (limit == 0) {
             return emptyList()
         }
+
         val hasLimitByOrgUnit = commonHelper.hasLimitByOrgUnit(params, programSettings, null)
-        val (ouMode, orgUnits) = when {
-            params.orgUnits().size > 0 ->
-                Pair(OrganisationUnitMode.SELECTED, params.orgUnits())
-            hasLimitByOrgUnit ->
-                Pair(OrganisationUnitMode.SELECTED, commonHelper.getCaptureOrgUnitUids())
-            else ->
-                Pair(OrganisationUnitMode.DESCENDANTS, commonHelper.getRootCaptureOrgUnitUids())
-        }
+        val (ouMode, orgUnits) = commonHelper.getOrganisationUnits(
+            params, hasLimitByOrgUnit) { commonHelper.getCaptureOrgUnitUids() }
 
         val builder = TeiQuery.builder()
             .program(null)

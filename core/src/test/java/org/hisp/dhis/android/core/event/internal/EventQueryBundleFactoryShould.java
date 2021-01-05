@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams;
@@ -54,7 +53,6 @@ import java.util.Map;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
@@ -65,9 +63,6 @@ public class EventQueryBundleFactoryShould {
 
     @Mock
     private TrackedEntityInstanceQueryCommonHelper commonHelper;
-
-    @Mock
-    private LinkStore<OrganisationUnitProgramLink> organisationUnitProgramLinkLinkStore;
 
     @Mock
     private ProgramStoreInterface programStore;
@@ -104,12 +99,11 @@ public class EventQueryBundleFactoryShould {
         when(commonHelper.getRootCaptureOrgUnitUids()).thenReturn(rootOrgUnits);
         when(commonHelper.getCaptureOrgUnitUids()).thenReturn(captureOrgUnits);
         when(commonHelper.getLimit(any(), any(), any(), any())).thenReturn(100).thenReturn(5000);
-        when(organisationUnitProgramLinkLinkStore.selectWhere(anyString())).thenReturn(links);
         when(programStore.getUidsByProgramType(any())).thenReturn(getProgramList());
         when(programSettingsObjectRepository.blockingGet()).thenReturn(programSettings);
 
         bundleFactory = new EventQueryBundleFactory(commonHelper,
-                organisationUnitProgramLinkLinkStore, programStore, programSettingsObjectRepository,
+                programStore, programSettingsObjectRepository,
                 lastUpdatedManager);
     }
 

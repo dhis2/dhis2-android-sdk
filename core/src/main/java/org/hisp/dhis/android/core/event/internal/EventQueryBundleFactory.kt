@@ -29,10 +29,8 @@ package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
 import org.apache.commons.lang3.time.DateUtils
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
 import org.hisp.dhis.android.core.program.ProgramType
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
@@ -45,7 +43,6 @@ import javax.inject.Inject
 @Reusable
 internal class EventQueryBundleFactory @Inject constructor(
     private val commonHelper: TrackedEntityInstanceQueryCommonHelper,
-    private val organisationUnitProgramLinkStore: LinkStore<OrganisationUnitProgramLink>,
     private val programStore: ProgramStoreInterface,
     private val programSettingsObjectRepository: ProgramSettingsObjectRepository,
     private val lastUpdatedManager: EventLastUpdatedManager

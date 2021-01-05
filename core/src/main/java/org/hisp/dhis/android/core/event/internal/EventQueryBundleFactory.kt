@@ -29,12 +29,10 @@ package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
 import org.apache.commons.lang3.time.DateUtils
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo
 import org.hisp.dhis.android.core.program.ProgramType
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
@@ -97,7 +95,7 @@ internal class EventQueryBundleFactory @Inject constructor(
             orgUnits = params.orgUnits()
         } else if (hasLimitByOrgunit) {
             ouMode = OrganisationUnitMode.SELECTED
-            orgUnits = getLinkedCaptureOrgUnitUids(programUid)
+            orgUnits = commonHelper.getLinkedCaptureOrgUnitUids(programUid)
         } else {
             ouMode = OrganisationUnitMode.DESCENDANTS
             orgUnits = commonHelper.getRootCaptureOrgUnitUids()
@@ -182,15 +180,6 @@ internal class EventQueryBundleFactory @Inject constructor(
             .limit(limit)
             .eventStartDate(eventStartDate)
             .build()
-    }
-
-    private fun getLinkedCaptureOrgUnitUids(programUid: String?): List<String> {
-        val ous = commonHelper.getCaptureOrgUnitUids()
-        val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM, programUid)
-            .appendInKeyStringValues(OrganisationUnitProgramLinkTableInfo.Columns.ORGANISATION_UNIT, ous)
-            .build()
-        return organisationUnitProgramLinkStore.selectWhere(whereClause).map { it.organisationUnit()!! }
     }
 
     private fun getEventStartDate(programSettings: ProgramSettings?, programUid: String?): String? {

@@ -63,11 +63,7 @@ internal class TrackedEntityInstanceQueryCommonHelper @Inject constructor(
             .appendKeyStringValue(OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM, programUid)
             .appendInKeyStringValues(OrganisationUnitProgramLinkTableInfo.Columns.ORGANISATION_UNIT, ous)
             .build()
-        val linkedOrgunits: MutableList<String> = ArrayList()
-        for (link in organisationUnitProgramLinkStore.selectWhere(whereClause)) {
-            linkedOrgunits.add(link.organisationUnit()!!)
-        }
-        return linkedOrgunits
+        return organisationUnitProgramLinkStore.selectWhere(whereClause).map { it.organisationUnit()!! }
     }
 
     fun getOrganisationUnits(params: ProgramDataDownloadParams, hasLimitByOrgUnit: Boolean, byLimitExtractor: () -> List<String>): Pair<OrganisationUnitMode, List<String>> {

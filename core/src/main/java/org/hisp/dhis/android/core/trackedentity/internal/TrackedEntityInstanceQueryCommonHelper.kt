@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.settings.LimitScope
 import org.hisp.dhis.android.core.settings.ProgramSetting
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
-import java.util.ArrayList
 import javax.inject.Inject
 
 @Reusable

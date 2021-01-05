@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.event.internal
 import dagger.Reusable
 import org.apache.commons.lang3.time.DateUtils
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.program.ProgramType
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
@@ -84,34 +83,24 @@ internal class EventQueryBundleFactory @Inject constructor(
         }
         val eventStartDate = getEventStartDate(programSettings, programUid)
         val programs = listOf(programUid)
-        val ouMode: OrganisationUnitMode
-        val orgUnits: List<String>
-        val hasLimitByOrgunit = commonHelper.hasLimitByOrgUnit(params, programSettings, programUid, LimitScope.ALL_ORG_UNITS)
-        if (params.orgUnits().size > 0) {
-            ouMode = OrganisationUnitMode.SELECTED
-            orgUnits = params.orgUnits()
-        } else if (hasLimitByOrgunit) {
-            ouMode = OrganisationUnitMode.SELECTED
-            orgUnits = commonHelper.getLinkedCaptureOrgUnitUids(programUid)
-        } else {
-            ouMode = OrganisationUnitMode.DESCENDANTS
-            orgUnits = commonHelper.getRootCaptureOrgUnitUids()
-        }
+        val hasLimitByOrgUnit = commonHelper.hasLimitByOrgUnit(params, programSettings, programUid, LimitScope.ALL_ORG_UNITS)
+        val (ouMode, orgUnits) = commonHelper.getOrganisationUnits(
+            params, hasLimitByOrgUnit) { commonHelper.getLinkedCaptureOrgUnitUids(programUid) }
         val lastUpdated = lastUpdatedManager.getLastUpdated(programUid, orgUnits.toSet(), limit)
-        val builders: MutableList<EventQueryBundle> = ArrayList()
-        if (hasLimitByOrgunit) {
-            for (orgUnitUid in orgUnits) {
-                builders.add(
-                    getBuilderFor(
-                        lastUpdated, listOf(orgUnitUid), programUid, programs,
-                        ouMode, eventStartDate, limit
-                    )
-                )
-            }
+
+        val builder = EventQueryBundle.builder()
+            .lastUpdatedStartDate(lastUpdated)
+            .ouMode(ouMode)
+            .program(programUid)
+            .programList(programs)
+            .limit(limit)
+            .eventStartDate(eventStartDate)
+
+        return if (hasLimitByOrgUnit) {
+            orgUnits.map { builder.orgUnitList(listOf(it)).build() }
         } else {
-            builders.add(getBuilderFor(lastUpdated, orgUnits, programUid, programs, ouMode, eventStartDate, limit))
+            listOf(builder.orgUnitList(orgUnits).build())
         }
-        return builders
     }
 
     private fun queryGlobal(
@@ -124,59 +113,26 @@ internal class EventQueryBundleFactory @Inject constructor(
             return emptyList()
         }
         val eventStartDate = getEventStartDate(programSettings, null)
-        val ouMode: OrganisationUnitMode
-        val orgUnits: List<String>
-        val hasLimitByOrgunit = commonHelper.hasLimitByOrgUnit(params, programSettings, null, LimitScope.ALL_ORG_UNITS)
-        if (params.orgUnits().size > 0) {
-            ouMode = OrganisationUnitMode.SELECTED
-            orgUnits = params.orgUnits()
-        } else if (hasLimitByOrgunit) {
-            ouMode = OrganisationUnitMode.SELECTED
-            orgUnits = commonHelper.getCaptureOrgUnitUids()
-        } else {
-            ouMode = OrganisationUnitMode.DESCENDANTS
-            orgUnits = commonHelper.getRootCaptureOrgUnitUids()
-        }
-        val lastUpdated = lastUpdatedManager.getLastUpdated(null, orgUnits.toSet(), limit)
-        val builders: MutableList<EventQueryBundle> = ArrayList()
-        if (hasLimitByOrgunit) {
-            for (orgUnitUid in orgUnits) {
-                builders.add(
-                    getBuilderFor(
-                        lastUpdated, listOf(orgUnitUid), null,
-                        programList, ouMode, eventStartDate, limit
-                    )
-                )
-            }
-        } else {
-            builders.add(
-                getBuilderFor(
-                    lastUpdated, orgUnits, null, programList, ouMode, eventStartDate,
-                    limit
-                )
-            )
-        }
-        return builders
-    }
 
-    private fun getBuilderFor(
-        lastUpdated: Date?,
-        organisationUnits: List<String?>,
-        program: String?,
-        programs: List<String?>,
-        organisationUnitMode: OrganisationUnitMode,
-        eventStartDate: String?,
-        limit: Int
-    ): EventQueryBundle {
-        return EventQueryBundle.builder()
+        val hasLimitByOrgUnit = commonHelper.hasLimitByOrgUnit(params, programSettings, null, LimitScope.ALL_ORG_UNITS)
+        val (ouMode, orgUnits) = commonHelper.getOrganisationUnits(
+            params, hasLimitByOrgUnit) { commonHelper.getCaptureOrgUnitUids() }
+
+        val lastUpdated = lastUpdatedManager.getLastUpdated(null, orgUnits.toSet(), limit)
+
+        val builder = EventQueryBundle.builder()
             .lastUpdatedStartDate(lastUpdated)
-            .orgUnitList(organisationUnits)
-            .ouMode(organisationUnitMode)
-            .program(program)
-            .programList(programs)
+            .ouMode(ouMode)
+            .program(null)
+            .programList(programList)
             .limit(limit)
             .eventStartDate(eventStartDate)
-            .build()
+
+        return if (hasLimitByOrgUnit) {
+            orgUnits.map { builder.orgUnitList(listOf(it)).build() }
+        } else {
+            listOf(builder.orgUnitList(orgUnits).build())
+        }
     }
 
     private fun getEventStartDate(programSettings: ProgramSettings?, programUid: String?): String? {

@@ -96,11 +96,7 @@ internal class EventQueryBundleFactory @Inject constructor(
             .limit(limit)
             .eventStartDate(eventStartDate)
 
-        return if (hasLimitByOrgUnit) {
-            orgUnits.map { builder.orgUnitList(listOf(it)).build() }
-        } else {
-            listOf(builder.orgUnitList(orgUnits).build())
-        }
+        return divideByOrgUnits(orgUnits, hasLimitByOrgUnit, builder)
     }
 
     private fun queryGlobal(
@@ -128,6 +124,10 @@ internal class EventQueryBundleFactory @Inject constructor(
             .limit(limit)
             .eventStartDate(eventStartDate)
 
+        return divideByOrgUnits(orgUnits, hasLimitByOrgUnit, builder)
+    }
+
+    private fun divideByOrgUnits(orgUnits: List<String>, hasLimitByOrgUnit: Boolean, builder: EventQueryBundle.Builder): List<EventQueryBundle> {
         return if (hasLimitByOrgUnit) {
             orgUnits.map { builder.orgUnitList(listOf(it)).build() }
         } else {

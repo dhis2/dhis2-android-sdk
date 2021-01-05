@@ -64,11 +64,8 @@ internal class TrackedEntityInstanceQueryPerProgramHelper @Inject constructor(
             .programStatus(getProgramStatus(params, programSettings, programUid))
             .programStartDate(getProgramStartDate(programSettings, programUid))
 
-        return if (hasLimitByOrgUnit) {
-            orgUnits.map { builder.orgUnits(listOf(it)).build() }
-        } else {
-            listOf(builder.orgUnits(orgUnits).build())
-        }
+        return commonHelper.divideByOrgUnits(orgUnits, hasLimitByOrgUnit) { builder.orgUnits(it).build() }
+
     }
 
     @Suppress("ReturnCount")

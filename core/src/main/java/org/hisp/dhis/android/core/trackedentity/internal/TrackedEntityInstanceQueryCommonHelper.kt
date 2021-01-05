@@ -155,4 +155,12 @@ internal class TrackedEntityInstanceQueryCommonHelper @Inject constructor(
         }
         return false
     }
+
+    fun <O> divideByOrgUnits(orgUnits: List<String>, hasLimitByOrgUnit: Boolean, builder: (List<String>) -> O): List<O> {
+        return if (hasLimitByOrgUnit) {
+            orgUnits.map { builder.invoke(listOf(it)) }
+        } else {
+            listOf(builder.invoke(orgUnits))
+        }
+    }
 }

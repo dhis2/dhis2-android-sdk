@@ -96,7 +96,7 @@ internal class EventQueryBundleFactory @Inject constructor(
             .limit(limit)
             .eventStartDate(eventStartDate)
 
-        return divideByOrgUnits(orgUnits, hasLimitByOrgUnit, builder)
+        return commonHelper.divideByOrgUnits(orgUnits, hasLimitByOrgUnit) { builder.orgUnitList(it).build() }
     }
 
     private fun queryGlobal(
@@ -124,15 +124,7 @@ internal class EventQueryBundleFactory @Inject constructor(
             .limit(limit)
             .eventStartDate(eventStartDate)
 
-        return divideByOrgUnits(orgUnits, hasLimitByOrgUnit, builder)
-    }
-
-    private fun divideByOrgUnits(orgUnits: List<String>, hasLimitByOrgUnit: Boolean, builder: EventQueryBundle.Builder): List<EventQueryBundle> {
-        return if (hasLimitByOrgUnit) {
-            orgUnits.map { builder.orgUnitList(listOf(it)).build() }
-        } else {
-            listOf(builder.orgUnitList(orgUnits).build())
-        }
+        return commonHelper.divideByOrgUnits(orgUnits, hasLimitByOrgUnit) { builder.orgUnitList(it).build() }
     }
 
     private fun getEventStartDate(programSettings: ProgramSettings?, programUid: String?): String? {

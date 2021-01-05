@@ -58,10 +58,6 @@ internal class TrackedEntityInstanceQueryGlobalHelper @Inject constructor(
             .uids(params.uids())
             .limit(limit)
 
-        return if (hasLimitByOrgUnit) {
-            orgUnits.map { builder.orgUnits(listOf(it)).build() }
-        } else {
-            listOf(builder.orgUnits(orgUnits).build())
-        }
+        return commonHelper.divideByOrgUnits(orgUnits, hasLimitByOrgUnit) { builder.orgUnits(it).build() }
     }
 }

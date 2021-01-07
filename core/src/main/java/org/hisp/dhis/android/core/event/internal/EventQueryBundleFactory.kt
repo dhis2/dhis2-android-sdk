@@ -28,15 +28,14 @@
 package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
-import org.apache.commons.lang3.time.DateUtils
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.program.ProgramType
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
-import org.hisp.dhis.android.core.settings.*
+import org.hisp.dhis.android.core.settings.LimitScope
+import org.hisp.dhis.android.core.settings.ProgramSettings
+import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryFactoryCommonHelper
 import java.util.ArrayList
-import java.util.Date
 import javax.inject.Inject
 
 @Reusable
@@ -77,15 +76,35 @@ internal class EventQueryBundleFactory @Inject constructor(
         programSettings: ProgramSettings?,
         programUid: String?
     ): List<EventQueryBundle> {
+        return queryInternal(params, programSettings, listOf(programUid!!), programUid) {
+            commonHelper.getLinkedCaptureOrgUnitUids(programUid) }
+    }
+
+    private fun queryGlobal(
+        params: ProgramDataDownloadParams,
+        programSettings: ProgramSettings?,
+        programList: List<String>
+    ): List<EventQueryBundle> {
+        return queryInternal(params, programSettings, programList, null) {
+            commonHelper.getCaptureOrgUnitUids() }
+    }
+
+    private fun queryInternal(
+        params: ProgramDataDownloadParams,
+        programSettings: ProgramSettings?,
+        programs: List<String>,
+        programUid: String?,
+        orgUnitByLimitExtractor: () -> List<String>
+    ): List<EventQueryBundle> {
         val limit = commonHelper.getLimit(params, programSettings, programUid) { it?.eventsDownload() }
         if (limit == 0) {
             return emptyList()
         }
-        val eventStartDate = getEventStartDate(programSettings, programUid)
-        val programs = listOf(programUid)
+        val eventStartDate = commonHelper.getStartDate(programSettings, programUid) { it?.eventDateDownload() }
         val hasLimitByOrgUnit = commonHelper.hasLimitByOrgUnit(params, programSettings, programUid, LimitScope.ALL_ORG_UNITS)
         val (ouMode, orgUnits) = commonHelper.getOrganisationUnits(
-            params, hasLimitByOrgUnit) { commonHelper.getLinkedCaptureOrgUnitUids(programUid) }
+            params, hasLimitByOrgUnit, orgUnitByLimitExtractor)
+
         val lastUpdated = lastUpdatedManager.getLastUpdated(programUid, orgUnits.toSet(), limit)
 
         val builder = EventQueryBundle.builder()
@@ -97,56 +116,5 @@ internal class EventQueryBundleFactory @Inject constructor(
             .eventStartDate(eventStartDate)
 
         return commonHelper.divideByOrgUnits(orgUnits, hasLimitByOrgUnit) { builder.orgUnitList(it).build() }
-    }
-
-    private fun queryGlobal(
-        params: ProgramDataDownloadParams,
-        programSettings: ProgramSettings?,
-        programList: List<String>
-    ): List<EventQueryBundle> {
-        val limit = commonHelper.getLimit(params, programSettings, null) { it?.eventsDownload() }
-        if (limit == 0) {
-            return emptyList()
-        }
-        val eventStartDate = getEventStartDate(programSettings, null)
-
-        val hasLimitByOrgUnit = commonHelper.hasLimitByOrgUnit(params, programSettings, null, LimitScope.ALL_ORG_UNITS)
-        val (ouMode, orgUnits) = commonHelper.getOrganisationUnits(
-            params, hasLimitByOrgUnit) { commonHelper.getCaptureOrgUnitUids() }
-
-        val lastUpdated = lastUpdatedManager.getLastUpdated(null, orgUnits.toSet(), limit)
-
-        val builder = EventQueryBundle.builder()
-            .lastUpdatedStartDate(lastUpdated)
-            .ouMode(ouMode)
-            .program(null)
-            .programList(programList)
-            .limit(limit)
-            .eventStartDate(eventStartDate)
-
-        return commonHelper.divideByOrgUnits(orgUnits, hasLimitByOrgUnit) { builder.orgUnitList(it).build() }
-    }
-
-    private fun getEventStartDate(programSettings: ProgramSettings?, programUid: String?): String? {
-        var period: DownloadPeriod? = null
-        if (programSettings != null) {
-            val specificSetting = programSettings.specificSettings()[programUid]
-            val globalSetting = programSettings.globalSettings()
-            if (hasEventDateDownload(specificSetting)) {
-                period = specificSetting!!.eventDateDownload()
-            } else if (hasEventDateDownload(globalSetting)) {
-                period = globalSetting!!.eventDateDownload()
-            }
-        }
-        return if (period == null || period == DownloadPeriod.ANY) {
-            null
-        } else {
-            val eventStartDate = DateUtils.addMonths(Date(), -period.months)
-            BaseIdentifiableObject.dateToSpaceDateStr(eventStartDate)
-        }
-    }
-
-    private fun hasEventDateDownload(programSetting: ProgramSetting?): Boolean {
-        return programSetting?.eventDateDownload() != null
     }
 }

@@ -28,12 +28,11 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import org.apache.commons.lang3.time.DateUtils
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
-import org.hisp.dhis.android.core.settings.*
-import java.util.Date
+import org.hisp.dhis.android.core.settings.EnrollmentScope
+import org.hisp.dhis.android.core.settings.LimitScope
+import org.hisp.dhis.android.core.settings.ProgramSettings
 import javax.inject.Inject
 
 @Reusable
@@ -62,7 +61,7 @@ internal class TrackedEntityInstanceQueryPerProgramHelper @Inject constructor(
             .uids(params.uids())
             .limit(limit)
             .programStatus(getProgramStatus(params, programSettings, programUid))
-            .programStartDate(getProgramStartDate(programSettings, programUid))
+            .programStartDate(commonHelper.getStartDate(programSettings, programUid) { it?.enrollmentDateDownload() })
 
         return commonHelper.divideByOrgUnits(orgUnits, hasLimitByOrgUnit) { builder.orgUnits(it).build() }
 
@@ -95,34 +94,11 @@ internal class TrackedEntityInstanceQueryPerProgramHelper @Inject constructor(
         return null
     }
 
-    private fun getProgramStartDate(programSettings: ProgramSettings?, programUid: String?): String? {
-        var period: DownloadPeriod? = null
-        if (programSettings != null) {
-            val specificSetting = programSettings.specificSettings()[programUid]
-            val globalSetting = programSettings.globalSettings()
-            if (hasEnrollmentDateDownload(specificSetting)) {
-                period = specificSetting!!.enrollmentDateDownload()
-            } else if (hasEnrollmentDateDownload(globalSetting)) {
-                period = globalSetting!!.enrollmentDateDownload()
-            }
-        }
-        return if (period == null || period == DownloadPeriod.ANY) {
-            null
-        } else {
-            val programStartDate = DateUtils.addMonths(Date(), -period.months)
-            BaseIdentifiableObject.dateToSpaceDateStr(programStartDate)
-        }
-    }
-
     private fun enrollmentScopeToProgramStatus(enrollmentScope: EnrollmentScope?): EnrollmentStatus? {
         return if (enrollmentScope != null && enrollmentScope == EnrollmentScope.ONLY_ACTIVE) {
             EnrollmentStatus.ACTIVE
         } else {
             null
         }
-    }
-
-    private fun hasEnrollmentDateDownload(programSetting: ProgramSetting?): Boolean {
-        return programSetting?.enrollmentDateDownload() != null
     }
 }

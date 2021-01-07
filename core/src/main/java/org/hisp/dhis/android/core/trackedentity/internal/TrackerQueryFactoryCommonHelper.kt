@@ -28,17 +28,21 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
+import org.apache.commons.lang3.time.DateUtils
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
+import org.hisp.dhis.android.core.settings.DownloadPeriod
 import org.hisp.dhis.android.core.settings.LimitScope
 import org.hisp.dhis.android.core.settings.ProgramSetting
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
+import java.util.Date
 import javax.inject.Inject
 
 @Reusable
@@ -161,6 +165,25 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
             orgUnits.map { builder.invoke(listOf(it)) }
         } else {
             listOf(builder.invoke(orgUnits))
+        }
+    }
+
+    fun getStartDate(programSettings: ProgramSettings?, programUid: String?, downloadPeriodAccessor: (ProgramSetting?) -> DownloadPeriod?): String? {
+        var period: DownloadPeriod? = null
+        if (programSettings != null) {
+            val specificSetting = programSettings.specificSettings()[programUid]
+            val globalSetting = programSettings.globalSettings()
+            if (downloadPeriodAccessor(specificSetting) != null) {
+                period = downloadPeriodAccessor(specificSetting)
+            } else if (downloadPeriodAccessor(globalSetting) != null) {
+                period = downloadPeriodAccessor(globalSetting)
+            }
+        }
+        return if (period == null || period == DownloadPeriod.ANY) {
+            null
+        } else {
+            val startDate = DateUtils.addMonths(Date(), -period.months)
+            BaseIdentifiableObject.dateToSpaceDateStr(startDate)
         }
     }
 }

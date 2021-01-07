@@ -34,6 +34,8 @@ import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.category.Category;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -60,7 +62,10 @@ final class CategoryCall implements UidsCall<Category> {
 
     @Override
     public Single<List<Category>> download(Set<String> optionSetUids) {
-        return apiDownloader.downloadPartitioned(optionSetUids, MAX_UID_LIST_SIZE, handler, partitionUids ->
-                service.getCategories(CategoryFields.allFields, CategoryFields.uid.in(partitionUids), Boolean.FALSE));
+        return service.getCategories(CategoryFields.allFields, CategoryFields.uid.in(optionSetUids), false).map(categoryPayload -> 
+        {
+            List<Category> items = categoryPayload.items();
+            return items;
+        });
     }
 }

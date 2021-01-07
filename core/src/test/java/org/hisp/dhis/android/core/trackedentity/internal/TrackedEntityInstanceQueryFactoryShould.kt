@@ -88,7 +88,7 @@ class TrackedEntityInstanceQueryFactoryShould {
         )
         Mockito.`when`(programSettingsObjectRepository.blockingGet()).thenReturn(programSettings)
 
-        val commonHelper = TrackedEntityInstanceQueryCommonHelper(
+        val commonHelper = TrackerQueryFactoryCommonHelper(
             userOrganisationUnitLinkStore, organisationUnitProgramLinkLinkStore
         )
         val globalHelper = TrackedEntityInstanceQueryGlobalHelper(commonHelper)

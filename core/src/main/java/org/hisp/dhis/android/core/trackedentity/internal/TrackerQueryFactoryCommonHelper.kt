@@ -42,7 +42,7 @@ import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 import javax.inject.Inject
 
 @Reusable
-internal class TrackedEntityInstanceQueryCommonHelper @Inject constructor(
+internal class TrackerQueryFactoryCommonHelper @Inject constructor(
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
     private val organisationUnitProgramLinkStore: LinkStore<OrganisationUnitProgramLink>
 ) {

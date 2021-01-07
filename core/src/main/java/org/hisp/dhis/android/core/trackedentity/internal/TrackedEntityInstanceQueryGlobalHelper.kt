@@ -35,7 +35,7 @@ import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstanceQueryGlobalHelper @Inject constructor(
-    private val commonHelper: TrackedEntityInstanceQueryCommonHelper
+    private val commonHelper: TrackerQueryFactoryCommonHelper
 ) {
 
     fun queryGlobal(

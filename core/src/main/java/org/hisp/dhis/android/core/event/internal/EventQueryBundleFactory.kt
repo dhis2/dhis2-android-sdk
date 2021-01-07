@@ -34,14 +34,14 @@ import org.hisp.dhis.android.core.program.ProgramType
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
 import org.hisp.dhis.android.core.settings.*
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceQueryCommonHelper
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryFactoryCommonHelper
 import java.util.ArrayList
 import java.util.Date
 import javax.inject.Inject
 
 @Reusable
 internal class EventQueryBundleFactory @Inject constructor(
-    private val commonHelper: TrackedEntityInstanceQueryCommonHelper,
+    private val commonHelper: TrackerQueryFactoryCommonHelper,
     private val programStore: ProgramStoreInterface,
     private val programSettingsObjectRepository: ProgramSettingsObjectRepository,
     private val lastUpdatedManager: EventLastUpdatedManager

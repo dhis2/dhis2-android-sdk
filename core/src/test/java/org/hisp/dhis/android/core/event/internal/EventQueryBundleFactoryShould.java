@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.settings.DownloadPeriod;
 import org.hisp.dhis.android.core.settings.ProgramSetting;
 import org.hisp.dhis.android.core.settings.ProgramSettings;
 import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceQueryCommonHelper;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryFactoryCommonHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,7 +62,7 @@ public class EventQueryBundleFactoryShould {
     private ResourceHandler resourceHandler;
 
     @Mock
-    private TrackedEntityInstanceQueryCommonHelper commonHelper;
+    private TrackerQueryFactoryCommonHelper commonHelper;
 
     @Mock
     private ProgramStoreInterface programStore;

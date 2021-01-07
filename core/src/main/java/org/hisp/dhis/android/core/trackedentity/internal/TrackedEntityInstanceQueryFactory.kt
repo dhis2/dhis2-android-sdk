@@ -39,7 +39,7 @@ internal class TrackedEntityInstanceQueryFactory @Inject constructor(
     private val programStore: ProgramStoreInterface,
     private val programSettingsObjectRepository: ProgramSettingsObjectRepository,
     private val lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager,
-    private val commonHelper: TrackedEntityInstanceQueryCommonHelper,
+    private val commonHelper: TrackerQueryFactoryCommonHelper,
     private val globalHelper: TrackedEntityInstanceQueryGlobalHelper,
     private val perProgramHelper: TrackedEntityInstanceQueryPerProgramHelper
 ) {

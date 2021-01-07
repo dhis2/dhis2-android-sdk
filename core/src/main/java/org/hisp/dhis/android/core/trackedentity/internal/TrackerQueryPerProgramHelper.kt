@@ -28,17 +28,14 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
-import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository
-import javax.inject.Inject
+import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
+import org.hisp.dhis.android.core.settings.ProgramSettings
 
 @Reusable
-internal class TrackedEntityInstanceQueryFactory @Inject constructor(
-    programStore: ProgramStoreInterface,
-    programSettingsObjectRepository: ProgramSettingsObjectRepository,
-    lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager,
-    commonHelper: TrackerQueryFactoryCommonHelper,
-    globalHelper: TrackedEntityInstanceQueryGlobalHelper,
-    perProgramHelper: TrackedEntityInstanceQueryPerProgramHelper
-) : TrackerQueryFactory<TeiQuery>(programStore, programSettingsObjectRepository, lastUpdatedManager, commonHelper, globalHelper, perProgramHelper)
-
+internal interface TrackerQueryPerProgramHelper<T> {
+    fun queryPerProgram(
+        params: ProgramDataDownloadParams,
+        programSettings: ProgramSettings?,
+        programUid: String?
+    ): List<T>
+}

@@ -36,9 +36,9 @@ import javax.inject.Inject
 @Reusable
 internal class TrackedEntityInstanceQueryGlobalHelper @Inject constructor(
     private val commonHelper: TrackerQueryFactoryCommonHelper
-) {
+) : TrackerQueryGlobalHelper<TeiQuery> {
 
-    fun queryGlobal(
+    override fun queryGlobal(
         params: ProgramDataDownloadParams,
         programSettings: ProgramSettings?
     ): List<TeiQuery> {

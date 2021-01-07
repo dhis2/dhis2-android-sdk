@@ -39,9 +39,9 @@ import javax.inject.Inject
 @Reusable
 internal class TrackedEntityInstanceQueryPerProgramHelper @Inject constructor(
     private val commonHelper: TrackerQueryFactoryCommonHelper
-) {
+) : TrackerQueryPerProgramHelper<TeiQuery> {
 
-    fun queryPerProgram(
+    override fun queryPerProgram(
         params: ProgramDataDownloadParams,
         programSettings: ProgramSettings?,
         programUid: String?

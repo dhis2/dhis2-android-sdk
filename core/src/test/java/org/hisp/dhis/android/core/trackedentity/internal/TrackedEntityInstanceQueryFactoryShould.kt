@@ -101,7 +101,7 @@ class TrackedEntityInstanceQueryFactoryShould {
     @Test
     fun create_a_single_bundle_when_global() {
         val params = ProgramDataDownloadParams.builder().build()
-        val queries = queryFactory!!.getTeiQueries(params)
+        val queries = queryFactory!!.getQueries(params)
         Truth.assertThat(queries.size).isEqualTo(1)
         val query = queries[0]
         Truth.assertThat(query.orgUnits()).isEqualTo(rootOrgUnits)
@@ -116,7 +116,7 @@ class TrackedEntityInstanceQueryFactoryShould {
         specificSettings[p1] = ProgramSetting.builder()
             .uid(p1).enrollmentDateDownload(DownloadPeriod.LAST_3_MONTHS).build()
         Mockito.`when`(programSettings.specificSettings()).thenReturn(specificSettings)
-        val queries = queryFactory!!.getTeiQueries(params)
+        val queries = queryFactory!!.getQueries(params)
         Truth.assertThat(queries.size).isEqualTo(2)
         for (query in queries) {
             if (query.program() != null) {
@@ -129,7 +129,7 @@ class TrackedEntityInstanceQueryFactoryShould {
     @Test
     fun single_query_if_program_provided_by_user() {
         val params = ProgramDataDownloadParams.builder().limit(5000).program(p1).build()
-        val queries = queryFactory!!.getTeiQueries(params)
+        val queries = queryFactory!!.getQueries(params)
         Truth.assertThat(queries.size).isEqualTo(1)
         for (query in queries) {
             Truth.assertThat(query.program()).isEqualTo(p1)
@@ -143,7 +143,7 @@ class TrackedEntityInstanceQueryFactoryShould {
         val specificSettings: MutableMap<String, ProgramSetting> = HashMap()
         specificSettings[p1] = ProgramSetting.builder().uid(p1).teiDownload(100).build()
         Mockito.`when`(programSettings.specificSettings()).thenReturn(specificSettings)
-        val queries = queryFactory!!.getTeiQueries(params)
+        val queries = queryFactory!!.getQueries(params)
         Truth.assertThat(queries.size).isEqualTo(2)
         for (query in queries) {
             if (query.program() != null) {

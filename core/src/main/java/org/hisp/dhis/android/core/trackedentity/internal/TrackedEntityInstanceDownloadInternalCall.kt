@@ -58,7 +58,7 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
         relatives: RelationshipItemRelatives
     ): Observable<D2Progress> {
         return Observable.defer {
-            val teiQueries = queryFactory.getTeiQueries(params)
+            val teiQueries = queryFactory.getQueries(params)
             val teiDownloadObservable = Observable.fromIterable(teiQueries)
                 .flatMap { getTrackedEntityInstancesWithPaging(it) }
             // TODO .subscribeOn(teiDownloadScheduler);

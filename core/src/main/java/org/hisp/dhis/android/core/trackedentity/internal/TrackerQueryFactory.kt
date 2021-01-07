@@ -27,18 +27,37 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import dagger.Reusable
+import org.hisp.dhis.android.core.program.ProgramType
+import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
 import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository
-import javax.inject.Inject
 
-@Reusable
-internal class TrackedEntityInstanceQueryFactory @Inject constructor(
-    programStore: ProgramStoreInterface,
-    programSettingsObjectRepository: ProgramSettingsObjectRepository,
-    lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager,
-    commonHelper: TrackerQueryFactoryCommonHelper,
-    globalHelper: TrackedEntityInstanceQueryGlobalHelper,
-    perProgramHelper: TrackedEntityInstanceQueryPerProgramHelper
-) : TrackerQueryFactory<TeiQuery>(programStore, programSettingsObjectRepository, lastUpdatedManager, commonHelper, globalHelper, perProgramHelper)
+internal abstract class TrackerQueryFactory<T> constructor(
+    private val programStore: ProgramStoreInterface,
+    private val programSettingsObjectRepository: ProgramSettingsObjectRepository,
+    private val lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager,
+    private val commonHelper: TrackerQueryFactoryCommonHelper,
+    private val globalHelper: TrackerQueryGlobalHelper<T>,
+    private val perProgramHelper: TrackerQueryPerProgramHelper<T>
+) {
 
+    @Suppress("NestedBlockDepth")
+    fun getQueries(params: ProgramDataDownloadParams): List<T> {
+        val programSettings = programSettingsObjectRepository.blockingGet()
+        lastUpdatedManager.prepare(programSettings, params)
+        return if (params.program() == null) {
+            val trackerPrograms = programStore.getUidsByProgramType(ProgramType.WITH_REGISTRATION)
+            if (commonHelper.hasLimitByProgram(params, programSettings)) {
+                trackerPrograms.flatMap { perProgramHelper.queryPerProgram(params, programSettings, it) }
+            } else {
+                val specificSettings = if (programSettings == null) emptyMap() else programSettings.specificSettings()
+                specificSettings
+                    .filterKeys { trackerPrograms.contains(it) }
+                    .flatMap { perProgramHelper.queryPerProgram(params, programSettings, it.key) } +
+                    globalHelper.queryGlobal(params, programSettings)
+            }
+        } else {
+            perProgramHelper.queryPerProgram(params, programSettings, params.program())
+        }
+    }
+}

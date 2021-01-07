@@ -99,6 +99,8 @@ public abstract class EventQueryRepositoryScope implements BaseScope {
     @NonNull
     public abstract Boolean includeDeleted();
 
+    abstract Builder toBuilder();
+
     static Builder builder() {
         return new AutoValue_EventQueryRepositoryScope.Builder()
                 .order(Collections.emptyList())

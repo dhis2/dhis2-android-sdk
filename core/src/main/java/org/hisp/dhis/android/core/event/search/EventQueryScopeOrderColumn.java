@@ -40,7 +40,8 @@ abstract class EventQueryScopeOrderColumn {
         ENROLLMENT, ENROLLMENT_STATUS,
         ORGUNIT, ORGUNIT_NAME, TRACKED_ENTITY_INSTANCE, FOLLOW_UP, STATUS,
         EVENT_DATE, DUE_DATE, STORED_BY,
-        CREATED, LAST_UPDATED, COMPLETED_BY, COMPLETED_DATE
+        CREATED, LAST_UPDATED, COMPLETED_BY, COMPLETED_DATE,
+        TIMELINE
     }
 
     public static final EventQueryScopeOrderColumn EVENT =
@@ -93,6 +94,9 @@ abstract class EventQueryScopeOrderColumn {
 
     public static final EventQueryScopeOrderColumn COMPLETED_DATE =
             builder().type(Type.COMPLETED_DATE).apiName("completedDate").build();
+
+    public static final EventQueryScopeOrderColumn TIMELINE =
+            builder().type(Type.TIMELINE).build();
 
     public abstract Type type();
 

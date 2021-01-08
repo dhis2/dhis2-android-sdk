@@ -41,9 +41,9 @@ internal class TrackedEntityInstanceLastUpdatedManager @Inject constructor(
     fun update(teiQuery: TeiQuery) {
         if (teiQuery.uids().isEmpty()) {
             val sync = TrackedEntityInstanceSync.builder()
-                .program(teiQuery.program())
+                .program(teiQuery.commonParams().program)
                 .organisationUnitIdsHash(teiQuery.orgUnits().toSet().hashCode())
-                .downloadLimit(teiQuery.limit())
+                .downloadLimit(teiQuery.commonParams().limit)
                 .lastUpdated(resourceHandler.serverDate)
                 .build()
             super.update(sync)

@@ -31,7 +31,6 @@ import dagger.Reusable
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.settings.EnrollmentScope
-import org.hisp.dhis.android.core.settings.LimitScope
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import javax.inject.Inject
 
@@ -45,23 +44,8 @@ internal class TrackedEntityInstanceQueryInternalFactory @Inject constructor(
         programSettings: ProgramSettings?,
         programs: List<String>
     ): List<TeiQuery> {
-        val limit = commonHelper.getLimit(params, programSettings, null) { it?.teiDownload() }
-        if (limit == 0) {
-            return emptyList()
-        }
-
-        val hasLimitByOrgUnit = commonHelper.hasLimitByOrgUnit(params, programSettings, null,
-            LimitScope.PER_ORG_UNIT)
-        val (ouMode, orgUnits) = commonHelper.getOrganisationUnits(
-            params, hasLimitByOrgUnit) { commonHelper.getCaptureOrgUnitUids() }
-
-        val builder = TeiQuery.builder()
-            .program(null)
-            .ouMode(ouMode)
-            .uids(params.uids())
-            .limit(limit)
-
-        return commonHelper.divideByOrgUnits(orgUnits, hasLimitByOrgUnit) { builder.orgUnits(it).build() }
+        return queryInternal(params, programSettings, programs, null, null) {
+            commonHelper.getCaptureOrgUnitUids() }
     }
 
     override fun queryPerProgram(
@@ -69,26 +53,31 @@ internal class TrackedEntityInstanceQueryInternalFactory @Inject constructor(
         programSettings: ProgramSettings?,
         programUid: String?
     ): List<TeiQuery> {
-        val limit = commonHelper.getLimit(params, programSettings, programUid) { it?.teiDownload() }
+        val programStatus = getProgramStatus(params, programSettings, programUid)
+        return queryInternal(params, programSettings, listOf(programUid!!), programUid, programStatus) {
+            commonHelper.getLinkedCaptureOrgUnitUids(programUid) }
+    }
+
+    private fun queryInternal(
+        params: ProgramDataDownloadParams,
+        programSettings: ProgramSettings?,
+        programs: List<String>,
+        programUid: String?,
+        programStatus: EnrollmentStatus?,
+        orgUnitByLimitExtractor: () -> List<String>
+    ): List<TeiQuery> {
+        val limit = commonHelper.getLimit(params, programSettings, programUid) { it?.eventsDownload() }
         if (limit == 0) {
             return emptyList()
         }
-
-        val hasLimitByOrgUnit = commonHelper.hasLimitByOrgUnit(params, programSettings, null,
-            LimitScope.PER_ORG_UNIT)
-        val (ouMode, orgUnits) = commonHelper.getOrganisationUnits(
-            params, hasLimitByOrgUnit) { commonHelper.getLinkedCaptureOrgUnitUids(programUid) }
+        val commonParams: TrackerQueryCommonParams = commonHelper.getCommonParams(params, programSettings, programs, programUid, limit, orgUnitByLimitExtractor) { it?.enrollmentDateDownload() }
 
         val builder = TeiQuery.builder()
-            .program(programUid)
-            .ouMode(ouMode)
+            .commonParams(commonParams)
+            .programStatus(programStatus)
             .uids(params.uids())
-            .limit(limit)
-            .programStatus(getProgramStatus(params, programSettings, programUid))
-            .programStartDate(commonHelper.getStartDate(programSettings, programUid) { it?.enrollmentDateDownload() })
 
-        return commonHelper.divideByOrgUnits(orgUnits, hasLimitByOrgUnit) { builder.orgUnits(it).build() }
-
+        return commonHelper.divideByOrgUnits(commonParams.orgUnitsBeforeDivision, commonParams.hasLimitByOrgUnit) { builder.orgUnits(it).build() }
     }
 
     @Suppress("ReturnCount")

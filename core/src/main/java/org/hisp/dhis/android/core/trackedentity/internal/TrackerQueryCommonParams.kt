@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
-import java.util.Date
 
 data class TrackerQueryCommonParams(
     val programs: List<String>,

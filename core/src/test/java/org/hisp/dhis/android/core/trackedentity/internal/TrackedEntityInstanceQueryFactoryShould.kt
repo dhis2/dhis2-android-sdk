@@ -104,8 +104,8 @@ class TrackedEntityInstanceQueryFactoryShould {
         Truth.assertThat(queries.size).isEqualTo(1)
         val query = queries[0]
         Truth.assertThat(query.orgUnits()).isEqualTo(rootOrgUnits)
-        Truth.assertThat(query.ouMode()).isEqualTo(OrganisationUnitMode.DESCENDANTS)
-        Truth.assertThat(query.program()).isNull()
+        Truth.assertThat(query.commonParams().ouMode).isEqualTo(OrganisationUnitMode.DESCENDANTS)
+        Truth.assertThat(query.commonParams().program).isNull()
     }
 
     @Test
@@ -118,9 +118,9 @@ class TrackedEntityInstanceQueryFactoryShould {
         val queries = queryFactory!!.getQueries(params)
         Truth.assertThat(queries.size).isEqualTo(2)
         for (query in queries) {
-            if (query.program() != null) {
-                Truth.assertThat(query.program()).isEqualTo(p1)
-                Truth.assertThat(query.programStartDate()).isNotNull()
+            if (query.commonParams().program != null) {
+                Truth.assertThat(query.commonParams().program).isEqualTo(p1)
+                Truth.assertThat(query.commonParams().startDate).isNotNull()
             }
         }
     }
@@ -131,8 +131,8 @@ class TrackedEntityInstanceQueryFactoryShould {
         val queries = queryFactory!!.getQueries(params)
         Truth.assertThat(queries.size).isEqualTo(1)
         for (query in queries) {
-            Truth.assertThat(query.program()).isEqualTo(p1)
-            Truth.assertThat(query.limit()).isEqualTo(5000)
+            Truth.assertThat(query.commonParams().program).isEqualTo(p1)
+            Truth.assertThat(query.commonParams().limit).isEqualTo(5000)
         }
     }
 
@@ -145,11 +145,11 @@ class TrackedEntityInstanceQueryFactoryShould {
         val queries = queryFactory!!.getQueries(params)
         Truth.assertThat(queries.size).isEqualTo(2)
         for (query in queries) {
-            if (query.program() != null) {
-                Truth.assertThat(query.program()).isEqualTo(p1)
-                Truth.assertThat(query.limit()).isEqualTo(100)
+            if (query.commonParams().program != null) {
+                Truth.assertThat(query.commonParams().program).isEqualTo(p1)
+                Truth.assertThat(query.commonParams().limit).isEqualTo(100)
             } else {
-                Truth.assertThat(query.limit()).isEqualTo(5000)
+                Truth.assertThat(query.commonParams().limit).isEqualTo(5000)
             }
         }
     }

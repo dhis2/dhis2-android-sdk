@@ -44,7 +44,7 @@ internal class TrackedEntityInstancesEndpointCallFactory @Inject constructor(
     fun getCall(query: TeiQuery): Single<Payload<TrackedEntityInstance>> {
         return trackedEntityInstanceService.getTrackedEntityInstances(
             getUidStr(query), getOuStr(query),
-            query.ouMode().name, query.program(), getProgramStatus(query), query.programStartDate(),
+            query.commonParams().ouMode.name, query.commonParams().program, getProgramStatus(query), query.commonParams().startDate,
             TrackedEntityInstanceFields.allFields, true, query.page(), query.pageSize(),
             getLastUpdated(query), true, true
         )
@@ -62,7 +62,7 @@ internal class TrackedEntityInstancesEndpointCallFactory @Inject constructor(
     }
 
     private fun getLastUpdated(query: TeiQuery): String? {
-        val lastUpdated = lastUpdatedManager.getLastUpdated(query.program(), query.orgUnits().toSet(), query.limit())
+        val lastUpdated = lastUpdatedManager.getLastUpdated(query.commonParams().program, query.orgUnits().toSet(), query.commonParams().limit)
         return if (lastUpdated == null) null else BaseIdentifiableObject.dateToDateStr(lastUpdated)
     }
 

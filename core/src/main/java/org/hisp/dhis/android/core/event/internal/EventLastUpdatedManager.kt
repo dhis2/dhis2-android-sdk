@@ -41,9 +41,9 @@ internal class EventLastUpdatedManager @Inject constructor(
 
     fun update(bundle: EventQueryBundle) {
         val sync = EventSync.builder()
-            .program(bundle.program())
+            .program(bundle.commonParams().program)
             .organisationUnitIdsHash(bundle.orgUnitList().toSet().hashCode())
-            .downloadLimit(bundle.limit())
+            .downloadLimit(bundle.commonParams().limit)
             .lastUpdated(resourceHandler.serverDate)
             .build()
         super.update(sync)

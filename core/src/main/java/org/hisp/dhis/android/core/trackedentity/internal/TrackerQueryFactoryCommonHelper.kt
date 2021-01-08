@@ -32,10 +32,12 @@ import org.apache.commons.lang3.time.DateUtils
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.event.internal.EventLastUpdatedManager
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo
+import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.settings.DownloadPeriod
 import org.hisp.dhis.android.core.settings.LimitScope
@@ -185,5 +187,29 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
             val startDate = DateUtils.addMonths(Date(), -period.months)
             BaseIdentifiableObject.dateToSpaceDateStr(startDate)
         }
+    }
+
+    fun getCommonParams(
+        params: ProgramDataDownloadParams,
+        programSettings: ProgramSettings?,
+        programs: List<String>,
+        programUid: String?,
+        limit: Int,
+        orgUnitByLimitExtractor: () -> List<String>,
+        periodExtractor: (ProgramSetting?) -> DownloadPeriod?
+        ): TrackerQueryCommonParams {
+        val hasLimitByOrgUnit = hasLimitByOrgUnit(params, programSettings, programUid, LimitScope.ALL_ORG_UNITS)
+        val (ouMode, orgUnits) = getOrganisationUnits(
+            params, hasLimitByOrgUnit, orgUnitByLimitExtractor)
+
+        return TrackerQueryCommonParams(
+            programs,
+            programUid,
+            getStartDate(programSettings, programUid, periodExtractor),
+            hasLimitByOrgUnit,
+            ouMode,
+            orgUnits,
+            limit
+        )
     }
 }

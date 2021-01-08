@@ -25,43 +25,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.event.internal;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
+import java.util.Date
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams;
-
-import java.util.Date;
-import java.util.List;
-
-@AutoValue
-abstract class EventQueryBundle {
-
-    @NonNull
-    abstract TrackerQueryCommonParams commonParams();
-
-    @NonNull
-    abstract List<String> orgUnitList();
-
-    @Nullable
-    abstract Date lastUpdatedStartDate();
-
-    static Builder builder() {
-        return new AutoValue_EventQueryBundle.Builder();
-    }
-
-    @AutoValue.Builder
-    abstract static class Builder {
-        abstract Builder commonParams(TrackerQueryCommonParams commonParams);
-
-        abstract Builder orgUnitList(List<String> orgUnitList);
-
-        abstract Builder lastUpdatedStartDate(Date lastUpdatedStartDate);
-
-        abstract EventQueryBundle build();
-    }
-}
+data class TrackerQueryCommonParams(
+    val programs: List<String>,
+    val program: String?,
+    val startDate: String?,
+    val hasLimitByOrgUnit: Boolean,
+    val ouMode: OrganisationUnitMode,
+    val orgUnitsBeforeDivision: List<String>,
+    val limit: Int)

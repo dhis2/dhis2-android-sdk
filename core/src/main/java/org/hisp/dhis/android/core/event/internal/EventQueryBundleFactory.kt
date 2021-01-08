@@ -31,9 +31,9 @@ import dagger.Reusable
 import org.hisp.dhis.android.core.program.ProgramType
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
-import org.hisp.dhis.android.core.settings.LimitScope
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryFactoryCommonHelper
 import java.util.ArrayList
 import javax.inject.Inject
@@ -83,9 +83,9 @@ internal class EventQueryBundleFactory @Inject constructor(
     private fun queryGlobal(
         params: ProgramDataDownloadParams,
         programSettings: ProgramSettings?,
-        programList: List<String>
+        programs: List<String>
     ): List<EventQueryBundle> {
-        return queryInternal(params, programSettings, programList, null) {
+        return queryInternal(params, programSettings, programs, null) {
             commonHelper.getCaptureOrgUnitUids() }
     }
 
@@ -100,21 +100,13 @@ internal class EventQueryBundleFactory @Inject constructor(
         if (limit == 0) {
             return emptyList()
         }
-        val eventStartDate = commonHelper.getStartDate(programSettings, programUid) { it?.eventDateDownload() }
-        val hasLimitByOrgUnit = commonHelper.hasLimitByOrgUnit(params, programSettings, programUid, LimitScope.ALL_ORG_UNITS)
-        val (ouMode, orgUnits) = commonHelper.getOrganisationUnits(
-            params, hasLimitByOrgUnit, orgUnitByLimitExtractor)
-
-        val lastUpdated = lastUpdatedManager.getLastUpdated(programUid, orgUnits.toSet(), limit)
+        val commonParams: TrackerQueryCommonParams = commonHelper.getCommonParams(params, programSettings, programs, programUid, limit, orgUnitByLimitExtractor) { it?.eventDateDownload() }
+        val lastUpdated = lastUpdatedManager.getLastUpdated(programUid, commonParams.orgUnitsBeforeDivision.toSet(), limit)
 
         val builder = EventQueryBundle.builder()
+            .commonParams(commonParams)
             .lastUpdatedStartDate(lastUpdated)
-            .ouMode(ouMode)
-            .program(programUid)
-            .programList(programs)
-            .limit(limit)
-            .eventStartDate(eventStartDate)
 
-        return commonHelper.divideByOrgUnits(orgUnits, hasLimitByOrgUnit) { builder.orgUnitList(it).build() }
+        return commonHelper.divideByOrgUnits(commonParams.orgUnitsBeforeDivision, commonParams.hasLimitByOrgUnit) { builder.orgUnitList(it).build() }
     }
 }

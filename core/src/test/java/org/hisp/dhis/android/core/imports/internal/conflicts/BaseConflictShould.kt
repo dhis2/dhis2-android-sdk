@@ -56,6 +56,7 @@ internal open class BaseConflictShould {
     protected val eventUid = "ohAH6BXIMad"
     protected val enrollmentUid = "tliijiEnCp5"
     protected val relatedTeiUid = "QGyxOe1zewj"
+    protected val teiUid = "9iKols8763J"
 
     protected val relationshipUid = "AJOytZW7OaI"
 
@@ -69,5 +70,6 @@ internal open class BaseConflictShould {
 
         whenever(conflictBuilder.build()) doReturn trackerImportConflict
         whenever(trackerImportConflict.enrollment()) doReturn enrollmentUid
+        whenever(trackerImportConflict.trackedEntityInstance()) doReturn teiUid
     }
 }

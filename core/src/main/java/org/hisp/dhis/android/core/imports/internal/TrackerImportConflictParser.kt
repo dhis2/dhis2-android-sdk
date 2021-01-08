@@ -53,6 +53,7 @@ internal class TrackerImportConflictParser @Inject constructor(
         BadAttributePatternConflict,
         NonUniqueAttributeConflict,
         LackingEnrollmentCascadeDeleteAuthorityConflict,
+        LackingTEICascadeDeleteAuthorityConflict,
         TrackedEntityInstanceNotFoundConflict,
         EventNotFoundConflict,
         EventHasInvalidProgramConflict,

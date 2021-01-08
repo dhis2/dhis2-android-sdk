@@ -110,7 +110,7 @@ object TrackedImportConflictSamples {
 
     fun userIsLackingTEICascadeDeleteAuthority(teiUid: String): ImportConflict {
         return ImportConflict.create(teiUid,
-        "Tracked entity instance $teiUid cannot be deleted as it has associated enrollments and user does not have authority F_ENROLLMENT_CASCADE_DELETE")
+        "Tracked entity instance $teiUid cannot be deleted as it has associated enrollments and user does not have authority F_TEI_CASCADE_DELETE")
     }
 
     fun userIsLackingEnrollmentCascadeDeleteAuthority(enrollmentUid: String): ImportConflict {

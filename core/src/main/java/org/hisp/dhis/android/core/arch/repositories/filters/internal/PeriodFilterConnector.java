@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 
 import androidx.annotation.NonNull;
 
-import org.hisp.dhis.android.core.arch.helpers.DateUtils;
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
 import org.hisp.dhis.android.core.common.DateFilterPeriod;
 import org.hisp.dhis.android.core.common.DatePeriodType;
@@ -54,8 +53,7 @@ public final class PeriodFilterConnector<R extends BaseRepository> {
      * @return the new repository
      */
     public R before(Date value) {
-        String dateStr = DateUtils.DATE_FORMAT.format(value);
-        DateFilterPeriod filter = DateFilterPeriod.builder().endDate(dateStr).type(DatePeriodType.ABSOLUTE).build();
+        DateFilterPeriod filter = DateFilterPeriod.builder().endDate(value).type(DatePeriodType.ABSOLUTE).build();
         return repositoryFactory.updated(filter);
     }
 
@@ -66,8 +64,7 @@ public final class PeriodFilterConnector<R extends BaseRepository> {
      * @return the new repository
      */
     public R after(Date value) {
-        String dateStr = DateUtils.DATE_FORMAT.format(value);
-        DateFilterPeriod filter = DateFilterPeriod.builder().startDate(dateStr).type(DatePeriodType.ABSOLUTE).build();
+        DateFilterPeriod filter = DateFilterPeriod.builder().startDate(value).type(DatePeriodType.ABSOLUTE).build();
         return repositoryFactory.updated(filter);
     }
 
@@ -92,10 +89,8 @@ public final class PeriodFilterConnector<R extends BaseRepository> {
     }
 
     private R inPeriod(@NonNull Date startDate, @NonNull Date endDate) {
-        String startDateStr = DateUtils.DATE_FORMAT.format(startDate);
-        String endDateStr = DateUtils.DATE_FORMAT.format(endDate);
         DateFilterPeriod filter = DateFilterPeriod.builder()
-                .startDate(startDateStr).endDate(endDateStr).type(DatePeriodType.ABSOLUTE).build();
+                .startDate(startDate).endDate(endDate).type(DatePeriodType.ABSOLUTE).build();
         return repositoryFactory.updated(filter);
     }
 }

@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity.search;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
 import org.hisp.dhis.android.core.common.AssignedUserMode;
+import org.hisp.dhis.android.core.common.DateFilterPeriod;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
@@ -77,8 +78,10 @@ public class TrackedEntityInstanceLocalQueryHelperShould {
 
         TrackedEntityInstanceQueryRepositoryScope scope  = queryBuilder
                 .program(programUid)
-                .programStartDate(format.parse("2019-04-15"))
-                .programEndDate(format.parse("2019-05-19"))
+                .programDate(DateFilterPeriod.builder()
+                        .startDate(format.parse("2019-04-15"))
+                        .endDate(format.parse("2019-05-19"))
+                        .build())
                 .query(RepositoryScopeFilterItem.builder().key("").operator(FilterItemOperator.LIKE).value("female").build())
                 .build();
 
@@ -164,7 +167,7 @@ public class TrackedEntityInstanceLocalQueryHelperShould {
         assertThat(query1).doesNotContain("ACTIVE");
 
         TrackedEntityInstanceQueryEventFilter eventFilterWithDates = TrackedEntityInstanceQueryEventFilter.builder()
-                .eventStartDate(new Date()).eventEndDate(new Date())
+                .eventDate(DateFilterPeriod.builder().startDate(new Date()).endDate(new Date()).build())
                 .eventStatus(Collections.singletonList(EventStatus.ACTIVE)).build();
         TrackedEntityInstanceQueryRepositoryScope scopeWithDates = queryBuilder
                 .program(programUid)
@@ -179,7 +182,7 @@ public class TrackedEntityInstanceLocalQueryHelperShould {
     @Test
     public void build_sql_query_with_due_date_in_overdue() {
         TrackedEntityInstanceQueryEventFilter eventFilter = TrackedEntityInstanceQueryEventFilter.builder()
-                .eventStartDate(new Date()).eventEndDate(new Date())
+                .eventDate(DateFilterPeriod.builder().startDate(new Date()).endDate(new Date()).build())
                 .eventStatus(Collections.singletonList(EventStatus.OVERDUE)).build();
         TrackedEntityInstanceQueryRepositoryScope overdueQuery = queryBuilder
                 .program(programUid)

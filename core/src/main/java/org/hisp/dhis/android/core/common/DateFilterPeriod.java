@@ -35,6 +35,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
+import java.util.Date;
+
 @AutoValue
 @JsonDeserialize(builder = AutoValue_DateFilterPeriod.Builder.class)
 public abstract class DateFilterPeriod {
@@ -49,11 +51,11 @@ public abstract class DateFilterPeriod {
 
     @Nullable
     @JsonProperty()
-    public abstract String startDate();
+    public abstract Date startDate();
 
     @Nullable
     @JsonProperty()
-    public abstract String endDate();
+    public abstract Date endDate();
 
     @Nullable
     @JsonProperty()
@@ -76,9 +78,9 @@ public abstract class DateFilterPeriod {
 
         public abstract Builder endBuffer(Integer endBuffer);
 
-        public abstract Builder startDate(String startDate);
+        public abstract Builder startDate(Date startDate);
 
-        public abstract Builder endDate(String endDate);
+        public abstract Builder endDate(Date endDate);
 
         public abstract Builder period(RelativePeriod period);
 

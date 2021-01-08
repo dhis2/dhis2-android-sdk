@@ -25,48 +25,41 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.event.internal
 
-package org.hisp.dhis.android.core.event.internal;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.event.Event
+import java.util.concurrent.Callable
+import javax.inject.Inject
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+@Reusable
+internal class EventEndpointCallFactory @Inject constructor(
+    private val service: EventService,
+    private val apiCallExecutor: APICallExecutor,
+    private val lastUpdatedManager: EventLastUpdatedManager
+) {
 
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams;
-
-import java.util.Collection;
-import java.util.Collections;
-
-@AutoValue
-abstract class EventQuery extends BaseQuery {
-
-    @NonNull
-    abstract TrackerQueryCommonParams commonParams();
-
-    @Nullable
-    abstract String orgUnit();
-
-    @NonNull
-    abstract Collection<String> uids();
-
-    static Builder builder() {
-        return new AutoValue_EventQuery.Builder()
-                .page(1)
-                .pageSize(DEFAULT_PAGE_SIZE)
-                .paging(true)
-                .uids(Collections.emptyList());
+    fun getCall(eventQuery: EventQuery): Callable<List<Event>> {
+        return Callable {
+            val call = service.getEvents(
+                eventQuery.orgUnit(), eventQuery.commonParams().ouMode.name,
+                eventQuery.commonParams().program, EventFields.allFields, true,
+                eventQuery.page(), eventQuery.pageSize(), getLastUpdated(eventQuery), true,
+                getUidStr(eventQuery)
+            )
+            apiCallExecutor.executePayloadCall(call)
+        }
     }
 
-    @AutoValue.Builder
-    abstract static class Builder extends BaseQuery.Builder<Builder> {
-        abstract Builder commonParams(TrackerQueryCommonParams commonParams);
+    private fun getLastUpdated(query: EventQuery): String? {
+        val lastUpdated = lastUpdatedManager.getLastUpdated(query.commonParams())
+        return if (lastUpdated == null) null else BaseIdentifiableObject.dateToDateStr(lastUpdated)
+    }
 
-        abstract Builder orgUnit(String orgUnit);
-
-        abstract Builder uids(Collection<String> uIds);
-
-        abstract EventQuery build();
+    private fun getUidStr(query: EventQuery): String? {
+        return if (query.uids().isEmpty()) null else CollectionsHelper.joinCollectionWithSeparator(query.uids(), ";")
     }
 }

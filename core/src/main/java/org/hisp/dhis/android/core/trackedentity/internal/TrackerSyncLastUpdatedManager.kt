@@ -50,6 +50,10 @@ internal open class TrackerSyncLastUpdatedManager<S : TrackerBaseSync>(private v
             .toMap()
     }
 
+    fun getLastUpdated(commonParams: TrackerQueryCommonParams): Date? {
+        return getLastUpdated(commonParams.program, commonParams.orgUnitsBeforeDivision.toSet(), commonParams.limit)
+    }
+
     fun getLastUpdated(programId: String?, organisationUnits: Set<String>, limit: Int): Date? {
         val orgUnitHashCode = organisationUnits.toSet().hashCode()
         return if (params!!.uids().isEmpty()) {

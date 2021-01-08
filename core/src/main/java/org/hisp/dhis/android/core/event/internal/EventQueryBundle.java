@@ -29,13 +29,11 @@
 package org.hisp.dhis.android.core.event.internal;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams;
 
-import java.util.Date;
 import java.util.List;
 
 @AutoValue
@@ -45,10 +43,7 @@ abstract class EventQueryBundle {
     abstract TrackerQueryCommonParams commonParams();
 
     @NonNull
-    abstract List<String> orgUnitList();
-
-    @Nullable
-    abstract Date lastUpdatedStartDate();
+    abstract List<String> orgUnits();
 
     static Builder builder() {
         return new AutoValue_EventQueryBundle.Builder();
@@ -58,9 +53,7 @@ abstract class EventQueryBundle {
     abstract static class Builder {
         abstract Builder commonParams(TrackerQueryCommonParams commonParams);
 
-        abstract Builder orgUnitList(List<String> orgUnitList);
-
-        abstract Builder lastUpdatedStartDate(Date lastUpdatedStartDate);
+        abstract Builder orgUnits(List<String> orgUnits);
 
         abstract EventQueryBundle build();
     }

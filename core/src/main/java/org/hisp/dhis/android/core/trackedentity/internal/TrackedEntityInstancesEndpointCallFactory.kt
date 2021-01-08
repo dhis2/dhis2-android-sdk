@@ -62,7 +62,7 @@ internal class TrackedEntityInstancesEndpointCallFactory @Inject constructor(
     }
 
     private fun getLastUpdated(query: TeiQuery): String? {
-        val lastUpdated = lastUpdatedManager.getLastUpdated(query.commonParams().program, query.orgUnits().toSet(), query.commonParams().limit)
+        val lastUpdated = lastUpdatedManager.getLastUpdated(query.commonParams())
         return if (lastUpdated == null) null else BaseIdentifiableObject.dateToDateStr(lastUpdated)
     }
 

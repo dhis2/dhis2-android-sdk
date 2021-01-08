@@ -74,7 +74,7 @@ class EventWithLimitCallFactory @Inject internal constructor(
             for (bundle in bundles) {
 
                 var eventsCount = 0
-                for (orgunitUid in bundle.orgUnitList()) {
+                for (orgunitUid in bundle.orgUnits()) {
                     if (eventsCount >= bundle.commonParams().limit) {
                         break
                     }
@@ -83,10 +83,8 @@ class EventWithLimitCallFactory @Inject internal constructor(
                             break
                         }
                         val eventQueryBuilder = EventQuery.builder()
+                            .commonParams(bundle.commonParams())
                             .orgUnit(orgunitUid)
-                            .ouMode(bundle.commonParams().ouMode)
-                            .program(programUid)
-                            .lastUpdatedStartDate(bundle.lastUpdatedStartDate())
                             .uids(params.uids())
 
                         val result = getEventsForOrgUnitProgramCombination(

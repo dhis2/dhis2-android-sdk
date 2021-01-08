@@ -102,7 +102,7 @@ class EventQueryBundleFactoryShould {
             programSettingsObjectRepository,
             lastUpdatedManager!!,
             commonHelper,
-            EventQueryBundleInternalFactory(commonHelper, lastUpdatedManager)
+            EventQueryBundleInternalFactory(commonHelper)
         )
     }
 
@@ -112,7 +112,7 @@ class EventQueryBundleFactoryShould {
         val bundles = bundleFactory!!.getQueries(params)
         Truth.assertThat(bundles.size).isEqualTo(1)
         val bundle = bundles[0]
-        Truth.assertThat(bundle.orgUnitList()).isEqualTo(rootOrgUnits)
+        Truth.assertThat(bundle.orgUnits()).isEqualTo(rootOrgUnits)
         Truth.assertThat(bundle.commonParams().programs).isEqualTo(programList)
         Truth.assertThat(bundle.commonParams().ouMode).isEqualTo(OrganisationUnitMode.DESCENDANTS)
     }

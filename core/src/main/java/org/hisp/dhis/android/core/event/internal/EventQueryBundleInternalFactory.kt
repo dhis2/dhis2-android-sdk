@@ -37,8 +37,7 @@ import javax.inject.Inject
 
 @Reusable
 internal class EventQueryBundleInternalFactory @Inject constructor(
-    private val commonHelper: TrackerQueryFactoryCommonHelper,
-    private val lastUpdatedManager: EventLastUpdatedManager
+    private val commonHelper: TrackerQueryFactoryCommonHelper
 ) : TrackerQueryInternalFactory<EventQueryBundle> {
 
     override fun queryPerProgram(
@@ -71,12 +70,10 @@ internal class EventQueryBundleInternalFactory @Inject constructor(
             return emptyList()
         }
         val commonParams: TrackerQueryCommonParams = commonHelper.getCommonParams(params, programSettings, programs, programUid, limit, orgUnitByLimitExtractor) { it?.eventDateDownload() }
-        val lastUpdated = lastUpdatedManager.getLastUpdated(programUid, commonParams.orgUnitsBeforeDivision.toSet(), limit)
 
         val builder = EventQueryBundle.builder()
             .commonParams(commonParams)
-            .lastUpdatedStartDate(lastUpdated)
 
-        return commonHelper.divideByOrgUnits(commonParams.orgUnitsBeforeDivision, commonParams.hasLimitByOrgUnit) { builder.orgUnitList(it).build() }
+        return commonHelper.divideByOrgUnits(commonParams.orgUnitsBeforeDivision, commonParams.hasLimitByOrgUnit) { builder.orgUnits(it).build() }
     }
 }

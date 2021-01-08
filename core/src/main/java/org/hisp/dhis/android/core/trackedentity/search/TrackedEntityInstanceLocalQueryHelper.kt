@@ -34,10 +34,7 @@ import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope.OrderByDirection
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
-import org.hisp.dhis.android.core.common.AssignedUserMode
-import org.hisp.dhis.android.core.common.DataColumns
-import org.hisp.dhis.android.core.common.IdentifiableColumns
-import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.common.*
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.event.EventTableInfo
@@ -160,17 +157,20 @@ internal object TrackedEntityInstanceLocalQueryHelper {
         if (scope.program() != null) {
             where.appendKeyStringValue(dot(ENROLLMENT_ALIAS, PROGRAM), escapeQuotes(scope.program()))
         }
-        if (scope.programStartDate() != null) {
-            where.appendKeyGreaterOrEqStringValue(
-                dot(ENROLLMENT_ALIAS, ENROLLMENT_DATE),
-                scope.formattedProgramStartDate()
-            )
-        }
-        if (scope.programEndDate() != null) {
-            where.appendKeyLessThanOrEqStringValue(
-                dot(ENROLLMENT_ALIAS, ENROLLMENT_DATE),
-                scope.formattedProgramEndDate()
-            )
+        if (scope.programDate() != null) {
+            DateFilterPeriodHelper.getStartDate(scope.programDate()!!)?.let { startDate  ->
+                where.appendKeyGreaterOrEqStringValue(
+                    dot(ENROLLMENT_ALIAS, ENROLLMENT_DATE),
+                    DateUtils.SIMPLE_DATE_FORMAT.format(startDate)
+                )
+            }
+
+            DateFilterPeriodHelper.getEndDate(scope.programDate()!!)?.let { endDate ->
+                where.appendKeyLessThanOrEqStringValue(
+                    dot(ENROLLMENT_ALIAS, ENROLLMENT_DATE),
+                    DateUtils.SIMPLE_DATE_FORMAT.format(endDate)
+                )
+            }
         }
         if (scope.enrollmentStatus() != null) {
             where.appendInKeyEnumValues(
@@ -303,7 +303,7 @@ internal object TrackedEntityInstanceLocalQueryHelper {
 
         if (statusList == null) {
             appendEventDates(innerClause, eventFilter, EventTableInfo.Columns.EVENT_DATE)
-        } else if (statusList.size > 0 && eventFilter.eventStartDate() != null && eventFilter.eventEndDate() != null) {
+        } else if (statusList.size > 0 && eventFilter.eventDate() != null) {
             val nowStr = DateUtils.SIMPLE_DATE_FORMAT.format(Date())
             val statusListWhere = WhereClauseBuilder()
             for (eventStatus in statusList) {
@@ -346,13 +346,17 @@ internal object TrackedEntityInstanceLocalQueryHelper {
     private fun appendEventDates(
         where: WhereClauseBuilder,
         eventFilter: TrackedEntityInstanceQueryEventFilter,
-        targetDate: String
+        refDate: String
     ) {
-        if (eventFilter.eventStartDate() != null) {
-            where.appendKeyGreaterOrEqStringValue(dot(EVENT_ALIAS, targetDate), eventFilter.formattedEventStartDate())
-        }
-        if (eventFilter.eventEndDate() != null) {
-            where.appendKeyLessThanOrEqStringValue(dot(EVENT_ALIAS, targetDate), eventFilter.formattedEventEndDate())
+        if (eventFilter.eventDate() != null) {
+            DateFilterPeriodHelper.getStartDate(eventFilter.eventDate()!!)?.let { startDate ->
+                val dateStr = DateUtils.SIMPLE_DATE_FORMAT.format(startDate)
+                where.appendKeyGreaterOrEqStringValue(dot(EVENT_ALIAS, refDate), dateStr)
+            }
+            DateFilterPeriodHelper.getEndDate(eventFilter.eventDate()!!)?.let { endDate ->
+                val dateStr = DateUtils.SIMPLE_DATE_FORMAT.format(endDate)
+                where.appendKeyLessThanOrEqStringValue(dot(EVENT_ALIAS, refDate), dateStr)
+            }
         }
     }
 

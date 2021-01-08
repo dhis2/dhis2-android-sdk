@@ -63,6 +63,8 @@ public abstract class DateFilterPeriod {
     @JsonProperty()
     public abstract DatePeriodType type();
 
+    public abstract Builder toBuilder();
+
     public static Builder builder() {
         return new AutoValue_DateFilterPeriod.Builder();
     }

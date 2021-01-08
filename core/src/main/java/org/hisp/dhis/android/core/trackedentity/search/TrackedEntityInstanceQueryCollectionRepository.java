@@ -43,12 +43,15 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.BoolFilterC
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqLikeItemFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ListFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.PeriodFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ScopedFilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
 import org.hisp.dhis.android.core.common.AssignedUserMode;
+import org.hisp.dhis.android.core.common.DateFilterPeriod;
+import org.hisp.dhis.android.core.common.DateFilterPeriodHelper;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.event.EventStatus;
@@ -230,21 +233,29 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     }
 
     /**
-     * Define an enrollment start date. It only applies if a program has been specified in {@link #byProgram()}.
-     *
-     * @return Repository connector
+     * @deprecated use {@link #byProgramDate()} instead.
      */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, Date> byProgramStartDate() {
-        return connectorFactory.eqConnector(date -> scope.toBuilder().programStartDate(date).build());
+        return connectorFactory.eqConnector(date -> byProgramDate().after(date).getScope());
     }
 
     /**
-     * Define an enrollment end date. It only applies if a program has been specified in {@link #byProgram()}.
+     * @deprecated use {@link #byProgramDate()} instead.
+     */
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, Date> byProgramEndDate() {
+        return connectorFactory.eqConnector(date -> byProgramDate().before(date).getScope());
+    }
+
+    /**
+     * Define an enrollment date filter. It only applies if a program has been specified in {@link #byProgram()}.
      *
      * @return Repository connector
      */
-    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, Date> byProgramEndDate() {
-        return connectorFactory.eqConnector(date -> scope.toBuilder().programEndDate(date).build());
+    public PeriodFilterConnector<TrackedEntityInstanceQueryCollectionRepository> byProgramDate() {
+        return connectorFactory.periodConnector(filter -> {
+            DateFilterPeriod mergedFilter = DateFilterPeriodHelper.mergeDateFilterPeriods(scope.programDate(), filter);
+            return scope.toBuilder().programDate(mergedFilter).build();
+        });
     }
 
     /**
@@ -268,23 +279,27 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     }
 
     /**
-     * Define an event start date. It only applies if a program has been specified in {@link #byProgram()}.
-     *
-     * @return Repository connector
+     * @deprecated use {@link #byEventDate()} instead.
      */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, Date> byEventStartDate() {
-        return connectorFactory.eqConnector(date ->
-                TrackedEntityInstanceQueryRepositoryScopeHelper.setEventStartDate(scope, date));
+        return connectorFactory.eqConnector(date -> byEventDate().after(date).getScope());
     }
 
     /**
-     * Define an event end date. It only applies if a program has been specified in {@link #byProgram()}.
+     * @deprecated use {@link #byEventDate()} instead.
+     */
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, Date> byEventEndDate() {
+        return connectorFactory.eqConnector(date -> byEventDate().before(date).getScope());
+    }
+
+    /**
+     * Define an event date filter. It only applies if a program has been specified in {@link #byProgram()}.
      *
      * @return Repository connector
      */
-    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, Date> byEventEndDate() {
-        return connectorFactory.eqConnector(date ->
-                TrackedEntityInstanceQueryRepositoryScopeHelper.setEventEndDate(scope, date));
+    public PeriodFilterConnector<TrackedEntityInstanceQueryCollectionRepository> byEventDate() {
+        return connectorFactory.periodConnector(dateFilter ->
+                TrackedEntityInstanceQueryRepositoryScopeHelper.setEventDateFilter(scope, dateFilter));
     }
 
     /**

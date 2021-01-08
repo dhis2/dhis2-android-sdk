@@ -27,33 +27,22 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search
 
-import java.util.*
 import org.hisp.dhis.android.core.common.AssignedUserMode
+import org.hisp.dhis.android.core.common.DateFilterPeriod
+import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 
 internal object TrackedEntityInstanceQueryRepositoryScopeHelper {
 
     @JvmStatic
-    fun setEventStartDate(
+    fun setEventDateFilter(
         scope: TrackedEntityInstanceQueryRepositoryScope,
-        startDate: Date
+        dateFilter: DateFilterPeriod
     ): TrackedEntityInstanceQueryRepositoryScope {
-
-        val eventFilters = getScopeEventFiltersOrInitial(scope).map {
-            it.toBuilder().eventStartDate(startDate).build()
-        }
-        return scope.toBuilder().eventFilters(eventFilters).build()
-    }
-
-    @JvmStatic
-    fun setEventEndDate(
-        scope: TrackedEntityInstanceQueryRepositoryScope,
-        endDate: Date
-    ): TrackedEntityInstanceQueryRepositoryScope {
-
-        val eventFilters = getScopeEventFiltersOrInitial(scope).map {
-            it.toBuilder().eventEndDate(endDate).build()
+        val eventFilters = getScopeEventFiltersOrInitial(scope).map { eventFilter ->
+            val eventDateFilter = DateFilterPeriodHelper.mergeDateFilterPeriods(eventFilter.eventDate(), dateFilter)
+            eventFilter.toBuilder().eventDate(eventDateFilter).build()
         }
         return scope.toBuilder().eventFilters(eventFilters).build()
     }
@@ -93,8 +82,16 @@ internal object TrackedEntityInstanceQueryRepositoryScopeHelper {
         filter.program()?.let { builder.program(it.uid()) }
         filter.enrollmentStatus()?.let { builder.enrollmentStatus(listOf(it)) }
         filter.enrollmentCreatedPeriod()?.let { createPeriod ->
-            createPeriod.periodFrom()?.let { builder.programStartDate(addDays(Date(), it)) }
-            createPeriod.periodTo()?. let { builder.programEndDate(addDays(Date(), it)) }
+            createPeriod.periodFrom()?.let { periodFrom ->
+                val fromFilter = DateFilterPeriod.builder().startBuffer(periodFrom).build()
+                val newFilter = DateFilterPeriodHelper.mergeDateFilterPeriods(builder.build().programDate(), fromFilter)
+                builder.programDate(newFilter)
+            }
+            createPeriod.periodTo()?. let { periodTo ->
+                val toFilter = DateFilterPeriod.builder().endBuffer(periodTo).build()
+                val newFilter = DateFilterPeriodHelper.mergeDateFilterPeriods(builder.build().programDate(), toFilter)
+                builder.programDate(newFilter)
+            }
         }
         filter.followUp()?.let {
             // TODO
@@ -106,8 +103,18 @@ internal object TrackedEntityInstanceQueryRepositoryScopeHelper {
                 eventFilter.programStage()?.let { eventBuilder.programStage(it) }
                 eventFilter.eventStatus()?.let { eventBuilder.eventStatus(listOf(it)) }
                 eventFilter.eventCreatedPeriod()?.let { createPeriod ->
-                    createPeriod.periodFrom()?.let { eventBuilder.eventStartDate(addDays(Date(), it)) }
-                    createPeriod.periodTo()?.let { eventBuilder.eventEndDate(addDays(Date(), it)) }
+                    createPeriod.periodFrom()?.let { periodFrom ->
+                        val fromFilter = DateFilterPeriod.builder().startBuffer(periodFrom).build()
+                        val newFilter =
+                            DateFilterPeriodHelper.mergeDateFilterPeriods(eventBuilder.build().eventDate(), fromFilter)
+                        eventBuilder.eventDate(newFilter)
+                    }
+                    createPeriod.periodTo()?.let { periodTo ->
+                        val toFilter = DateFilterPeriod.builder().endBuffer(periodTo).build()
+                        val newFilter =
+                            DateFilterPeriodHelper.mergeDateFilterPeriods(eventBuilder.build().eventDate(), toFilter)
+                        eventBuilder.eventDate(newFilter)
+                    }
                 }
                 eventFilter.assignedUserMode()?.let { eventBuilder.assignedUserMode(it) }
 
@@ -129,12 +136,5 @@ internal object TrackedEntityInstanceQueryRepositoryScopeHelper {
         } else {
             scope.eventFilters()
         }
-    }
-
-    private fun addDays(date: Date, days: Int): Date {
-        val calendar = Calendar.getInstance()
-        calendar.time = date
-        calendar.add(Calendar.DATE, days)
-        return calendar.time
     }
 }

@@ -49,7 +49,7 @@ internal abstract class TrackerQueryFactory<T, S : TrackerBaseSync> constructor(
             if (commonHelper.hasLimitByProgram(params, programSettings)) {
                 trackerPrograms.flatMap { internalFactory.queryPerProgram(params, programSettings, it) }
             } else {
-                val specificSettings = programSettings.specificSettings() ?: emptyMap()
+                val specificSettings = programSettings?.specificSettings() ?: emptyMap()
                 val globalPrograms = trackerPrograms.toList() - specificSettings.keys
                 specificSettings
                     .filterKeys { trackerPrograms.contains(it) }

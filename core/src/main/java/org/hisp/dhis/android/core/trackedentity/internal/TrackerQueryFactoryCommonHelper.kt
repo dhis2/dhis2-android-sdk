@@ -129,7 +129,7 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
                 return download
             }
         }
-        if (params.limit() != null && params.limitByProgram() != null && params.limitByProgram()!!) {
+        if (params.limit() != null && params.limitByProgram() == true) {
             return params.limit()!!
         }
         if (programSettings != null) {

@@ -28,85 +28,17 @@
 package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.program.ProgramType
-import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
-import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository
-import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryFactory
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryFactoryCommonHelper
-import java.util.ArrayList
 import javax.inject.Inject
 
 @Reusable
 internal class EventQueryBundleFactory @Inject constructor(
-    private val commonHelper: TrackerQueryFactoryCommonHelper,
-    private val programStore: ProgramStoreInterface,
-    private val programSettingsObjectRepository: ProgramSettingsObjectRepository,
-    private val lastUpdatedManager: EventLastUpdatedManager
-) {
-    fun getEventQueryBundles(params: ProgramDataDownloadParams): List<EventQueryBundle> {
-        val programSettings = programSettingsObjectRepository.blockingGet()
-        lastUpdatedManager.prepare(programSettings, params)
-        val builders: MutableList<EventQueryBundle> = ArrayList()
-        if (params.program() == null) {
-            val eventPrograms = programStore.getUidsByProgramType(ProgramType.WITHOUT_REGISTRATION)
-            if (commonHelper.hasLimitByProgram(params, programSettings)) {
-                for (programUid in eventPrograms) {
-                    builders.addAll(queryPerProgram(params, programSettings, programUid))
-                }
-            } else {
-                val specificSettings = if (programSettings == null) emptyMap() else programSettings.specificSettings()
-                for ((programUid) in specificSettings) {
-                    if (eventPrograms.contains(programUid)) {
-                        builders.addAll(queryPerProgram(params, programSettings, programUid))
-                        eventPrograms.remove(programUid)
-                    }
-                }
-                builders.addAll(queryGlobal(params, programSettings, eventPrograms))
-            }
-        } else {
-            builders.addAll(queryPerProgram(params, programSettings, params.program()))
-        }
-        return builders
-    }
-
-    private fun queryPerProgram(
-        params: ProgramDataDownloadParams,
-        programSettings: ProgramSettings?,
-        programUid: String?
-    ): List<EventQueryBundle> {
-        return queryInternal(params, programSettings, listOf(programUid!!), programUid) {
-            commonHelper.getLinkedCaptureOrgUnitUids(programUid) }
-    }
-
-    private fun queryGlobal(
-        params: ProgramDataDownloadParams,
-        programSettings: ProgramSettings?,
-        programs: List<String>
-    ): List<EventQueryBundle> {
-        return queryInternal(params, programSettings, programs, null) {
-            commonHelper.getCaptureOrgUnitUids() }
-    }
-
-    private fun queryInternal(
-        params: ProgramDataDownloadParams,
-        programSettings: ProgramSettings?,
-        programs: List<String>,
-        programUid: String?,
-        orgUnitByLimitExtractor: () -> List<String>
-    ): List<EventQueryBundle> {
-        val limit = commonHelper.getLimit(params, programSettings, programUid) { it?.eventsDownload() }
-        if (limit == 0) {
-            return emptyList()
-        }
-        val commonParams: TrackerQueryCommonParams = commonHelper.getCommonParams(params, programSettings, programs, programUid, limit, orgUnitByLimitExtractor) { it?.eventDateDownload() }
-        val lastUpdated = lastUpdatedManager.getLastUpdated(programUid, commonParams.orgUnitsBeforeDivision.toSet(), limit)
-
-        val builder = EventQueryBundle.builder()
-            .commonParams(commonParams)
-            .lastUpdatedStartDate(lastUpdated)
-
-        return commonHelper.divideByOrgUnits(commonParams.orgUnitsBeforeDivision, commonParams.hasLimitByOrgUnit) { builder.orgUnitList(it).build() }
-    }
-}
+    programStore: ProgramStoreInterface,
+    programSettingsObjectRepository: ProgramSettingsObjectRepository,
+    lastUpdatedManager: EventLastUpdatedManager,
+    commonHelper: TrackerQueryFactoryCommonHelper,
+    internalFactory: EventQueryBundleInternalFactory
+) : TrackerQueryFactory<EventQueryBundle, EventSync>(programStore, programSettingsObjectRepository, lastUpdatedManager, commonHelper, internalFactory)

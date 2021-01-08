@@ -29,35 +29,19 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
-import org.hisp.dhis.android.core.settings.LimitScope
 import org.hisp.dhis.android.core.settings.ProgramSettings
-import javax.inject.Inject
 
 @Reusable
-internal class TrackedEntityInstanceQueryGlobalHelper @Inject constructor(
-    private val commonHelper: TrackerQueryFactoryCommonHelper
-) : TrackerQueryGlobalHelper<TeiQuery> {
-
-    override fun queryGlobal(
+internal interface TrackerQueryInternalFactory<T> {
+    fun queryGlobal(
         params: ProgramDataDownloadParams,
-        programSettings: ProgramSettings?
-    ): List<TeiQuery> {
-        val limit = commonHelper.getLimit(params, programSettings, null) { it?.teiDownload() }
-        if (limit == 0) {
-            return emptyList()
-        }
+        programSettings: ProgramSettings?,
+        programs: List<String>
+    ): List<T>
 
-        val hasLimitByOrgUnit = commonHelper.hasLimitByOrgUnit(params, programSettings, null,
-            LimitScope.PER_ORG_UNIT)
-        val (ouMode, orgUnits) = commonHelper.getOrganisationUnits(
-            params, hasLimitByOrgUnit) { commonHelper.getCaptureOrgUnitUids() }
-
-        val builder = TeiQuery.builder()
-            .program(null)
-            .ouMode(ouMode)
-            .uids(params.uids())
-            .limit(limit)
-
-        return commonHelper.divideByOrgUnits(orgUnits, hasLimitByOrgUnit) { builder.orgUnits(it).build() }
-    }
+    fun queryPerProgram(
+        params: ProgramDataDownloadParams,
+        programSettings: ProgramSettings?,
+        programUid: String?
+    ): List<T>
 }

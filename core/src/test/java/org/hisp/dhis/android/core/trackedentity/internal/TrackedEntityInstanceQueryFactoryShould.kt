@@ -91,10 +91,9 @@ class TrackedEntityInstanceQueryFactoryShould {
         val commonHelper = TrackerQueryFactoryCommonHelper(
             userOrganisationUnitLinkStore, organisationUnitProgramLinkLinkStore
         )
-        val globalHelper = TrackedEntityInstanceQueryGlobalHelper(commonHelper)
-        val perProgramHelper = TrackedEntityInstanceQueryPerProgramHelper(commonHelper)
+        val internalFactory = TrackedEntityInstanceQueryInternalFactory(commonHelper)
         queryFactory = TrackedEntityInstanceQueryFactory(
-            programStore, programSettingsObjectRepository, lastUpdatedManager, commonHelper, globalHelper, perProgramHelper
+            programStore, programSettingsObjectRepository, lastUpdatedManager, commonHelper, internalFactory
         )
     }
 

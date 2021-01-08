@@ -69,7 +69,7 @@ class EventWithLimitCallFactory @Inject internal constructor(
 
         return Observable.create { emitter ->
             var successfulSync = true
-            val bundles = eventQueryBundleFactory.getEventQueryBundles(params)
+            val bundles = eventQueryBundleFactory.getQueries(params)
 
             for (bundle in bundles) {
 

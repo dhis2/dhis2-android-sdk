@@ -36,9 +36,33 @@ import org.hisp.dhis.android.core.settings.ProgramSettings
 import javax.inject.Inject
 
 @Reusable
-internal class TrackedEntityInstanceQueryPerProgramHelper @Inject constructor(
+internal class TrackedEntityInstanceQueryInternalFactory @Inject constructor(
     private val commonHelper: TrackerQueryFactoryCommonHelper
-) : TrackerQueryPerProgramHelper<TeiQuery> {
+) : TrackerQueryInternalFactory<TeiQuery> {
+
+    override fun queryGlobal(
+        params: ProgramDataDownloadParams,
+        programSettings: ProgramSettings?,
+        programs: List<String>
+    ): List<TeiQuery> {
+        val limit = commonHelper.getLimit(params, programSettings, null) { it?.teiDownload() }
+        if (limit == 0) {
+            return emptyList()
+        }
+
+        val hasLimitByOrgUnit = commonHelper.hasLimitByOrgUnit(params, programSettings, null,
+            LimitScope.PER_ORG_UNIT)
+        val (ouMode, orgUnits) = commonHelper.getOrganisationUnits(
+            params, hasLimitByOrgUnit) { commonHelper.getCaptureOrgUnitUids() }
+
+        val builder = TeiQuery.builder()
+            .program(null)
+            .ouMode(ouMode)
+            .uids(params.uids())
+            .limit(limit)
+
+        return commonHelper.divideByOrgUnits(orgUnits, hasLimitByOrgUnit) { builder.orgUnits(it).build() }
+    }
 
     override fun queryPerProgram(
         params: ProgramDataDownloadParams,

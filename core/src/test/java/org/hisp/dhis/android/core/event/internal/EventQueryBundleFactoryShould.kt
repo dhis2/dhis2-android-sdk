@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.event.internal
 
 import com.google.common.truth.Truth
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
@@ -46,8 +45,6 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
-import java.util.ArrayList
-import java.util.Arrays
 import java.util.HashMap
 
 @RunWith(JUnit4::class)
@@ -75,13 +72,9 @@ class EventQueryBundleFactoryShould {
     private val ou1 = "ou1"
     private val ou1c1 = "ou1.1"
     private val ou2 = "ou2"
-    private val rootOrgUnits = Arrays.asList(ou1, ou2)
-    private val captureOrgUnits = Arrays.asList(ou1, ou1c1, ou2)
-    private val links = Arrays.asList(
-        OrganisationUnitProgramLink.builder().organisationUnit(ou1c1).program(p1).build(),
-        OrganisationUnitProgramLink.builder().organisationUnit(ou1c1).program(p2).build(),
-        OrganisationUnitProgramLink.builder().organisationUnit(ou2).program(p2).build()
-    )
+    private val rootOrgUnits = listOf(ou1, ou2)
+    private val captureOrgUnits = listOf(ou1, ou1c1, ou2)
+    private val programList = listOf(p1, p2, p3)
 
     // Object to test
     private var bundleFactory: EventQueryBundleFactory? = null
@@ -105,16 +98,18 @@ class EventQueryBundleFactoryShould {
         )
         Mockito.`when`(programSettingsObjectRepository!!.blockingGet()).thenReturn(programSettings)
         bundleFactory = EventQueryBundleFactory(
+            programStore,
+            programSettingsObjectRepository,
+            lastUpdatedManager!!,
             commonHelper,
-            programStore, programSettingsObjectRepository,
-            lastUpdatedManager!!
+            EventQueryBundleInternalFactory(commonHelper, lastUpdatedManager)
         )
     }
 
     @Test
     fun create_a_single_bundle_when_global() {
         val params = ProgramDataDownloadParams.builder().build()
-        val bundles = bundleFactory!!.getEventQueryBundles(params)
+        val bundles = bundleFactory!!.getQueries(params)
         Truth.assertThat(bundles.size).isEqualTo(1)
         val bundle = bundles[0]
         Truth.assertThat(bundle.orgUnitList()).isEqualTo(rootOrgUnits)
@@ -129,7 +124,7 @@ class EventQueryBundleFactoryShould {
         val specifics: MutableMap<String, ProgramSetting> = HashMap()
         specifics[p1] = ProgramSetting.builder().uid(p1).eventsDownload(200).build()
         Mockito.`when`(programSettings!!.specificSettings()).thenReturn(specifics)
-        val bundles = bundleFactory!!.getEventQueryBundles(params)
+        val bundles = bundleFactory!!.getQueries(params)
         Truth.assertThat(bundles.size).isEqualTo(2)
         for (bundle in bundles) {
             if (bundle.commonParams().programs.size == 1) {
@@ -150,7 +145,7 @@ class EventQueryBundleFactoryShould {
         val specifics: MutableMap<String, ProgramSetting> = HashMap()
         specifics[p1] = ProgramSetting.builder().uid(p1).eventDateDownload(DownloadPeriod.LAST_3_MONTHS).build()
         Mockito.`when`(programSettings!!.specificSettings()).thenReturn(specifics)
-        val bundles = bundleFactory!!.getEventQueryBundles(params)
+        val bundles = bundleFactory!!.getQueries(params)
         Truth.assertThat(bundles.size).isEqualTo(2)
         for (bundle in bundles) {
             if (bundle.commonParams().programs.size == 1) {
@@ -166,7 +161,7 @@ class EventQueryBundleFactoryShould {
         val specificSettings: MutableMap<String, ProgramSetting> = HashMap()
         specificSettings[p1] = ProgramSetting.builder().uid(p1).eventsDownload(100).build()
         Mockito.`when`(programSettings!!.specificSettings()).thenReturn(specificSettings)
-        val bundles = bundleFactory!!.getEventQueryBundles(params)
+        val bundles = bundleFactory!!.getQueries(params)
         Truth.assertThat(bundles.size).isEqualTo(2)
         for (bundle in bundles) {
             if (bundle.commonParams().programs.size == 1) {
@@ -177,13 +172,4 @@ class EventQueryBundleFactoryShould {
             }
         }
     }
-
-    private val programList: List<String>
-        private get() {
-            val programList: MutableList<String> = ArrayList()
-            programList.add(p1)
-            programList.add(p2)
-            programList.add(p3)
-            return programList
-        }
 }

@@ -27,25 +27,51 @@
  */
 package org.hisp.dhis.android.core.arch.json.internal
 
-import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.module.SimpleModule
+import org.assertj.core.api.Assertions.assertThat
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
-import java.util.Date
+import org.junit.Before
+import org.junit.Test
+import java.util.*
 
-internal object ObjectMapperFactory {
+class ObjectMapperFactoryShould {
 
-    @JvmStatic
-    fun objectMapper(): ObjectMapper {
-        val dateModule = SimpleModule()
-        dateModule.addDeserializer(Date::class.java, DateMultiFormatDeserializer())
+    private lateinit var objectMapper: ObjectMapper
 
-        return ObjectMapper()
-            .registerModule(dateModule)
-            .setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw())
-            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-            .enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE)
-            .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+    @Before
+    fun setUp() {
+        objectMapper = objectMapper()
+    }
+
+    @Test
+    fun serialize_date_format() {
+        val dateStr = "2020-12-01T12:34:56.123"
+        val date = BaseIdentifiableObject.DATE_FORMAT.parse(dateStr)
+
+        val serialized = objectMapper.writeValueAsString(date)
+        val deserializedDate = objectMapper.readValue(serialized, Date::class.java)
+
+        assertThat(serialized).isEqualTo("\"$dateStr\"")
+        assertThat(deserializedDate).isEqualTo(date)
+    }
+
+    @Test
+    fun deserialize_multiple_date_format() {
+        listOf(
+            "2020-12-01T12:34:56.123Z"  to "2020-12-01T12:34:56.123",
+            "2020-12-01T12:34:56.123"   to "2020-12-01T12:34:56.123",
+            "2020-12-01T12:34:56.12"    to "2020-12-01T12:34:56.012",
+            "2020-12-01T12:34:56.1"     to "2020-12-01T12:34:56.001",
+            "2020-12-01T12:34:56"       to "2020-12-01T12:34:56.000",
+            "2020-12-01T12:34:56"       to "2020-12-01T12:34:56.000",
+            "2020-12-01T12:34"          to "2020-12-01T12:34:00.000",
+            "2020-12-01"                to "2020-12-01T00:00:00.000"
+        ).forEach { (source, expected) ->
+            val sourceDate = objectMapper.readValue("\"$source\"", Date::class.java)
+            val expectedDate = BaseIdentifiableObject.parseDate(expected)
+
+            assertThat(sourceDate).isEqualTo(expectedDate)
+        }
     }
 }

@@ -118,6 +118,14 @@ object TrackedImportConflictSamples {
         "Enrollment $enrollmentUid cannot be deleted as it has associated events and user does not have authority: F_ENROLLMENT_CASCADE_DELETE")
     }
 
+    fun fileResourceAlreadyAssigned(fileResourceUid: String): ImportConflict {
+        return ImportConflict.create("Attribute.value", "File resource with uid '$fileResourceUid' has already been assigned to a different object")
+    }
+
+    fun fileResourceReferenceNotFound(fileResourceUid: String): ImportConflict {
+        return ImportConflict.create("Attribute.value", "Value '$fileResourceUid' is not the uid of a file")
+    }
+
     fun eventNotFound(eventUid: String, relationshipUid: String): ImportConflict {
         return ImportConflict.create(relationshipUid, "ProgramStageInstance '$eventUid' not found.")
     }

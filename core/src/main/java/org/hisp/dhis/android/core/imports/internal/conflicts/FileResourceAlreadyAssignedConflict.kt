@@ -30,15 +30,29 @@ package org.hisp.dhis.android.core.imports.internal.conflicts
 import org.hisp.dhis.android.core.imports.TrackerImportConflict
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
-internal interface TrackerImportConflictItem {
-    val errorCode: String
-    fun matches(conflict: ImportConflict): Boolean
-    fun getTrackedEntityAttribute(conflict: ImportConflict): String? { return null }
-    fun getDataElement(conflict: ImportConflict): String? { return null }
-    fun getEvent(conflict: ImportConflict): String? { return null }
-    fun getEnrollment(conflict: ImportConflict): String? { return null }
-    fun getTrackedEntityInstance(conflict: ImportConflict): String? { return null }
-    fun getFileResource(conflict: ImportConflict): String? { return null }
-    fun getDisplayDescription(conflict: ImportConflict, conflictBuilder: TrackerImportConflict.Builder,
-                              context: TrackerImportConflictItemContext): String
+internal object FileResourceAlreadyAssignedConflict : TrackerImportConflictItem {
+
+    private val regex: Regex = Regex("File resource with uid '(\\w{11})' has already been assigned to a different object")
+    private fun description(fileResourceUid: String) = "The file $fileResourceUid has already been assigned"
+
+    override val errorCode: String = "E1009"
+
+    override fun matches(conflict: ImportConflict): Boolean {
+        return regex.matches(conflict.value())
+    }
+
+    override fun getFileResource(conflict: ImportConflict): String? {
+        return regex.find(conflict.value())?.groupValues?.get(1)
+    }
+
+    override fun getDisplayDescription(
+            conflict: ImportConflict,
+            conflictBuilder: TrackerImportConflict.Builder,
+            context: TrackerImportConflictItemContext
+    ): String {
+        return getFileResource(conflict)?.let { fileResourceUid ->
+            description(fileResourceUid)
+        } ?:
+        conflict.value()
+    }
 }

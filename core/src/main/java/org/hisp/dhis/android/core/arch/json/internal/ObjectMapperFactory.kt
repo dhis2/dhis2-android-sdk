@@ -31,6 +31,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.module.SimpleModule
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import java.util.Date
 
 internal object ObjectMapperFactory {
@@ -42,6 +43,7 @@ internal object ObjectMapperFactory {
 
         return ObjectMapper()
             .registerModule(dateModule)
+            .setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw())
             .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             .enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE)
             .setSerializationInclusion(JsonInclude.Include.NON_NULL)

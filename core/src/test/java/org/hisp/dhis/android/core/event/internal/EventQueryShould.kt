@@ -25,21 +25,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.event.internal
 
-package org.hisp.dhis.android.core.event.internal;
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.data.trackedentity.internal.TrackerQueryCommonParamsSamples
+import org.junit.Test
 
-import org.junit.Test;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class EventQueryShould {
+class EventQueryShould {
 
     @Test
-    public void create_event_query_successfully() {
-        EventQuery eventQuery = EventQuery.builder()
-                .pageSize(50)
-                .build();
-
-        assertThat(eventQuery).isNotNull();
+    fun create_event_query_successfully() {
+        val eventQuery = EventQuery.builder()
+            .commonParams(TrackerQueryCommonParamsSamples.get())
+            .pageSize(50)
+            .build()
+        Truth.assertThat(eventQuery).isNotNull()
     }
 }

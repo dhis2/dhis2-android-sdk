@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.event.internal;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl;
 import org.hisp.dhis.android.core.arch.api.testutils.RetrofitFactory;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.trackedentity.internal.TrackerQueryCommonParamsSamples;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
@@ -107,6 +108,7 @@ public class EventEndpointCallShould {
 
     private Callable<List<Event>> givenAEventCallByPagination(int page, int pageCount) {
         EventQuery eventQuery = EventQuery.builder()
+                .commonParams(TrackerQueryCommonParamsSamples.get())
                 .page(page)
                 .pageSize(pageCount)
                 .paging(true)

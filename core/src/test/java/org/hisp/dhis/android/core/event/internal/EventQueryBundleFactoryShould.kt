@@ -27,7 +27,9 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.mock
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
@@ -42,30 +44,19 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.ArgumentMatchers
-import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 import java.util.HashMap
 
 @RunWith(JUnit4::class)
 class EventQueryBundleFactoryShould {
-    @Mock
-    private val resourceHandler: ResourceHandler? = null
-
-    @Mock
-    private val commonHelper: TrackerQueryFactoryCommonHelper? = null
-
-    @Mock
-    private val programStore: ProgramStoreInterface? = null
-
-    @Mock
-    private val programSettingsObjectRepository: ProgramSettingsObjectRepository? = null
-
-    @Mock
-    private val programSettings: ProgramSettings? = null
-
-    @Mock
-    private val lastUpdatedManager: EventLastUpdatedManager? = null
+    private val resourceHandler: ResourceHandler = mock()
+    private val commonHelper: TrackerQueryFactoryCommonHelper = mock()
+    private val programStore: ProgramStoreInterface = mock()
+    private val programSettingsObjectRepository: ProgramSettingsObjectRepository = mock()
+    private val programSettings: ProgramSettings = mock()
+    private val lastUpdatedManager: EventLastUpdatedManager = mock()
+    
     private val p1 = "program1"
     private val p2 = "program2"
     private val p3 = "program3"
@@ -76,80 +67,79 @@ class EventQueryBundleFactoryShould {
     private val captureOrgUnits = listOf(ou1, ou1c1, ou2)
     private val programList = listOf(p1, p2, p3)
 
+    private val params = ProgramDataDownloadParams.builder().build()
+
     // Object to test
     private var bundleFactory: EventQueryBundleFactory? = null
+
     @Before
     @Throws(Exception::class)
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-        Mockito.`when`(resourceHandler!!.getLastUpdated(ArgumentMatchers.any())).thenReturn(null)
-        Mockito.`when`(commonHelper!!.getRootCaptureOrgUnitUids()).thenReturn(rootOrgUnits)
+        Mockito.`when`(resourceHandler.getLastUpdated(ArgumentMatchers.any())).thenReturn(null)
+        Mockito.`when`(commonHelper.getRootCaptureOrgUnitUids()).thenReturn(rootOrgUnits)
         Mockito.`when`(commonHelper.getCaptureOrgUnitUids()).thenReturn(captureOrgUnits)
         Mockito.`when`(
-            commonHelper.getLimit(
-                ArgumentMatchers.any(),
-                ArgumentMatchers.any<ProgramSettings>(),
-                ArgumentMatchers.any<String>(),
-                ArgumentMatchers.any<Function1<ProgramSetting?, Int>>()
-            )
+            commonHelper.getLimit(any(), any(), any(), any())
         ).thenReturn(100).thenReturn(5000)
-        Mockito.`when`(programStore!!.getUidsByProgramType(ArgumentMatchers.any())).thenReturn(
+        Mockito.`when`(programStore.getUidsByProgramType(ArgumentMatchers.any())).thenReturn(
             programList
         )
-        Mockito.`when`(programSettingsObjectRepository!!.blockingGet()).thenReturn(programSettings)
+        Mockito.`when`(programSettingsObjectRepository.blockingGet()).thenReturn(programSettings)
         bundleFactory = EventQueryBundleFactory(
             programStore,
             programSettingsObjectRepository,
-            lastUpdatedManager!!,
+            lastUpdatedManager,
             commonHelper
         )
     }
 
     @Test
     fun create_a_single_bundle_when_global() {
-        val params = ProgramDataDownloadParams.builder().build()
         val bundles = bundleFactory!!.getQueries(params)
-        Truth.assertThat(bundles.size).isEqualTo(1)
+        assertThat(bundles.size).isEqualTo(1)
         val bundle = bundles[0]
-        Truth.assertThat(bundle.orgUnits()).isEqualTo(rootOrgUnits)
-        Truth.assertThat(bundle.commonParams().programs).isEqualTo(programList)
-        Truth.assertThat(bundle.commonParams().ouMode).isEqualTo(OrganisationUnitMode.DESCENDANTS)
+        assertThat(bundle.orgUnits()).isEqualTo(rootOrgUnits)
+        assertThat(bundle.commonParams().programs).isEqualTo(programList)
+        assertThat(bundle.commonParams().ouMode).isEqualTo(OrganisationUnitMode.DESCENDANTS)
     }
 
     // TODO refactor tests
     @Test
     fun create_separate_bundle_for_program_if_has_specific_settings() {
-        val params = ProgramDataDownloadParams.builder().build()
         val specifics: MutableMap<String, ProgramSetting> = HashMap()
         specifics[p1] = ProgramSetting.builder().uid(p1).eventsDownload(200).build()
-        Mockito.`when`(programSettings!!.specificSettings()).thenReturn(specifics)
+        Mockito.`when`(programSettings.specificSettings()).thenReturn(specifics)
         val bundles = bundleFactory!!.getQueries(params)
-        Truth.assertThat(bundles.size).isEqualTo(2)
+        assertThat(bundles.size).isEqualTo(2)
         for (bundle in bundles) {
-            if (bundle.commonParams().programs.size == 1) {
-                Truth.assertThat(bundle.commonParams().programs[0]).isEqualTo(p1)
-                Truth.assertThat(bundle.commonParams().limit).isEqualTo(200)
-            } else if (bundle.commonParams().programs.size == 2) {
-                Truth.assertThat(bundle.commonParams().programs.contains(p2)).isTrue()
-                Truth.assertThat(bundle.commonParams().programs.contains(p3)).isTrue()
-            } else {
-                throw RuntimeException("Not a valid bundle")
+            when (bundle.commonParams().programs.size) {
+                1 -> {
+                    assertThat(bundle.commonParams().programs[0]).isEqualTo(p1)
+                    assertThat(bundle.commonParams().limit).isEqualTo(200)
+                }
+                2 -> {
+                    assertThat(bundle.commonParams().programs.contains(p2)).isTrue()
+                    assertThat(bundle.commonParams().programs.contains(p3)).isTrue()
+                }
+                else -> {
+                    throw RuntimeException("Not a valid bundle")
+                }
             }
         }
     }
 
     @Test
     fun get_event_date_if_defined() {
-        val params = ProgramDataDownloadParams.builder().build()
         val specifics: MutableMap<String, ProgramSetting> = HashMap()
         specifics[p1] = ProgramSetting.builder().uid(p1).eventDateDownload(DownloadPeriod.LAST_3_MONTHS).build()
-        Mockito.`when`(programSettings!!.specificSettings()).thenReturn(specifics)
+        Mockito.`when`(programSettings.specificSettings()).thenReturn(specifics)
         val bundles = bundleFactory!!.getQueries(params)
-        Truth.assertThat(bundles.size).isEqualTo(2)
+        assertThat(bundles.size).isEqualTo(2)
         for (bundle in bundles) {
             if (bundle.commonParams().programs.size == 1) {
-                Truth.assertThat(bundle.commonParams().programs[0]).isEqualTo(p1)
-                Truth.assertThat(bundle.commonParams().startDate).isNotNull()
+                assertThat(bundle.commonParams().programs[0]).isEqualTo(p1)
+                assertThat(bundle.commonParams().startDate).isNotNull()
             }
         }
     }
@@ -159,15 +149,15 @@ class EventQueryBundleFactoryShould {
         val params = ProgramDataDownloadParams.builder().limit(5000).build()
         val specificSettings: MutableMap<String, ProgramSetting> = HashMap()
         specificSettings[p1] = ProgramSetting.builder().uid(p1).eventsDownload(100).build()
-        Mockito.`when`(programSettings!!.specificSettings()).thenReturn(specificSettings)
+        Mockito.`when`(programSettings.specificSettings()).thenReturn(specificSettings)
         val bundles = bundleFactory!!.getQueries(params)
-        Truth.assertThat(bundles.size).isEqualTo(2)
+        assertThat(bundles.size).isEqualTo(2)
         for (bundle in bundles) {
             if (bundle.commonParams().programs.size == 1) {
-                Truth.assertThat(bundle.commonParams().programs[0]).isEqualTo(p1)
-                Truth.assertThat(bundle.commonParams().limit).isEqualTo(100)
+                assertThat(bundle.commonParams().programs[0]).isEqualTo(p1)
+                assertThat(bundle.commonParams().limit).isEqualTo(100)
             } else {
-                Truth.assertThat(bundle.commonParams().limit).isEqualTo(5000)
+                assertThat(bundle.commonParams().limit).isEqualTo(5000)
             }
         }
     }

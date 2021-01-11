@@ -69,7 +69,7 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
         return organisationUnitProgramLinkStore.selectWhere(whereClause).map { it.organisationUnit()!! }
     }
 
-    fun getOrganisationUnits(params: ProgramDataDownloadParams, hasLimitByOrgUnit: Boolean, byLimitExtractor: () -> List<String>): Pair<OrganisationUnitMode, List<String>> {
+    private fun getOrganisationUnits(params: ProgramDataDownloadParams, hasLimitByOrgUnit: Boolean, byLimitExtractor: () -> List<String>): Pair<OrganisationUnitMode, List<String>> {
         return when {
             params.orgUnits().size > 0 ->
                 Pair(OrganisationUnitMode.SELECTED, params.orgUnits())
@@ -85,7 +85,7 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
         params: ProgramDataDownloadParams,
         programSettings: ProgramSettings?,
         programUid: String?,
-        specificSettingScope: LimitScope
+            specificSettingScope: LimitScope
     ): Boolean {
         if (params.limitByOrgunit() != null) {
             return params.limitByOrgunit()!!
@@ -168,7 +168,7 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
         }
     }
 
-    fun getStartDate(programSettings: ProgramSettings?, programUid: String?, downloadPeriodAccessor: (ProgramSetting?) -> DownloadPeriod?): String? {
+    private fun getStartDate(programSettings: ProgramSettings?, programUid: String?, downloadPeriodAccessor: (ProgramSetting?) -> DownloadPeriod?): String? {
         var period: DownloadPeriod? = null
         if (programSettings != null) {
             val specificSetting = programSettings.specificSettings()[programUid]
@@ -193,10 +193,11 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
         programs: List<String>,
         programUid: String?,
         limit: Int,
+        specificSettingScope: LimitScope,
         orgUnitByLimitExtractor: () -> List<String>,
         periodExtractor: (ProgramSetting?) -> DownloadPeriod?
         ): TrackerQueryCommonParams {
-        val hasLimitByOrgUnit = hasLimitByOrgUnit(params, programSettings, programUid, LimitScope.ALL_ORG_UNITS)
+        val hasLimitByOrgUnit = hasLimitByOrgUnit(params, programSettings, programUid, specificSettingScope)
         val (ouMode, orgUnits) = getOrganisationUnits(
             params, hasLimitByOrgUnit, orgUnitByLimitExtractor)
 

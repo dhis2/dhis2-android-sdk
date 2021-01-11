@@ -31,6 +31,7 @@ import dagger.Reusable
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.settings.EnrollmentScope
+import org.hisp.dhis.android.core.settings.LimitScope
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import javax.inject.Inject
 
@@ -42,19 +43,21 @@ internal class TrackedEntityInstanceQueryInternalFactory @Inject constructor(
     override fun queryGlobal(
         params: ProgramDataDownloadParams,
         programSettings: ProgramSettings?,
-        programs: List<String>
-    ): List<TeiQuery> {
-        return queryInternal(params, programSettings, programs, null, null) {
+        programs: List<String>,
+        specificSettingScope: LimitScope
+        ): List<TeiQuery> {
+        return queryInternal(params, programSettings, programs, null, null, specificSettingScope) {
             commonHelper.getCaptureOrgUnitUids() }
     }
 
     override fun queryPerProgram(
         params: ProgramDataDownloadParams,
         programSettings: ProgramSettings?,
-        programUid: String?
-    ): List<TeiQuery> {
+        programUid: String?,
+        specificSettingScope: LimitScope
+        ): List<TeiQuery> {
         val programStatus = getProgramStatus(params, programSettings, programUid)
-        return queryInternal(params, programSettings, listOf(programUid!!), programUid, programStatus) {
+        return queryInternal(params, programSettings, listOf(programUid!!), programUid, programStatus, specificSettingScope) {
             commonHelper.getLinkedCaptureOrgUnitUids(programUid) }
     }
 
@@ -64,13 +67,14 @@ internal class TrackedEntityInstanceQueryInternalFactory @Inject constructor(
         programs: List<String>,
         programUid: String?,
         programStatus: EnrollmentStatus?,
+        specificSettingScope: LimitScope,
         orgUnitByLimitExtractor: () -> List<String>
     ): List<TeiQuery> {
         val limit = commonHelper.getLimit(params, programSettings, programUid) { it?.eventsDownload() }
         if (limit == 0) {
             return emptyList()
         }
-        val commonParams: TrackerQueryCommonParams = commonHelper.getCommonParams(params, programSettings, programs, programUid, limit, orgUnitByLimitExtractor) { it?.enrollmentDateDownload() }
+        val commonParams: TrackerQueryCommonParams = commonHelper.getCommonParams(params, programSettings, programs, programUid, limit, specificSettingScope, orgUnitByLimitExtractor) { it?.enrollmentDateDownload() }
 
         val builder = TeiQuery.builder()
             .commonParams(commonParams)

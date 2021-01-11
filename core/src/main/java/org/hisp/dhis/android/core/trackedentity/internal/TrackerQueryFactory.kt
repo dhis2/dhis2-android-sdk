@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import org.hisp.dhis.android.core.program.ProgramType
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
+import org.hisp.dhis.android.core.settings.LimitScope
 import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository
 
 internal abstract class TrackerQueryFactory<T, S : TrackerBaseSync> constructor(
@@ -37,7 +38,8 @@ internal abstract class TrackerQueryFactory<T, S : TrackerBaseSync> constructor(
     private val programSettingsObjectRepository: ProgramSettingsObjectRepository,
     private val lastUpdatedManager: TrackerSyncLastUpdatedManager<S>,
     private val commonHelper: TrackerQueryFactoryCommonHelper,
-    private val internalFactory: TrackerQueryInternalFactory<T>
+    private val internalFactory: TrackerQueryInternalFactory<T>,
+    private val specificSettingScope: LimitScope
 ) {
 
     @Suppress("NestedBlockDepth")

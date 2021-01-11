@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
+import org.hisp.dhis.android.core.settings.LimitScope
 import org.hisp.dhis.android.core.settings.ProgramSettings
 
 @Reusable
@@ -36,12 +37,14 @@ internal interface TrackerQueryInternalFactory<T> {
     fun queryGlobal(
         params: ProgramDataDownloadParams,
         programSettings: ProgramSettings?,
-        programs: List<String>
+        programs: List<String>,
+        specificSettingScope: LimitScope
     ): List<T>
 
     fun queryPerProgram(
         params: ProgramDataDownloadParams,
         programSettings: ProgramSettings?,
-        programUid: String?
+        programUid: String?,
+        specificSettingScope: LimitScope
     ): List<T>
 }

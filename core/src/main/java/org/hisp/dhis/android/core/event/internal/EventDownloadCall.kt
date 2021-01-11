@@ -43,7 +43,7 @@ import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
 
 @Reusable
-class EventWithLimitCallFactory @Inject internal constructor(
+class EventDownloadCall @Inject internal constructor(
     private val systemInfoModuleDownloader: SystemInfoModuleDownloader,
     private val d2CallExecutor: D2CallExecutor,
     private val rxCallExecutor: RxAPICallExecutor,

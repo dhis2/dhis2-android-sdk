@@ -45,9 +45,15 @@ internal class EventEndpointCallFactory @Inject constructor(
     fun getCall(eventQuery: EventQuery): Callable<List<Event>> {
         return Callable {
             val call = service.getEvents(
-                eventQuery.orgUnit(), eventQuery.commonParams().ouMode.name,
-                eventQuery.commonParams().program, EventFields.allFields, true,
-                eventQuery.page(), eventQuery.pageSize(), getLastUpdated(eventQuery), true,
+                eventQuery.orgUnit(),
+                eventQuery.commonParams().ouMode.name,
+                eventQuery.commonParams().program,
+                EventFields.allFields,
+                true,
+                eventQuery.page(),
+                eventQuery.pageSize(),
+                getLastUpdated(eventQuery),
+                true,
                 getUidStr(eventQuery)
             )
             apiCallExecutor.executePayloadCall(call)

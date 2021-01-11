@@ -101,8 +101,7 @@ class EventQueryBundleFactoryShould {
             programStore,
             programSettingsObjectRepository,
             lastUpdatedManager!!,
-            commonHelper,
-            EventQueryBundleInternalFactory(commonHelper)
+            commonHelper
         )
     }
 

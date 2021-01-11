@@ -27,24 +27,20 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.settings.LimitScope
 import org.hisp.dhis.android.core.settings.ProgramSettings
 
-@Reusable
-internal interface TrackerQueryInternalFactory<T> {
-    fun queryGlobal(
-        params: ProgramDataDownloadParams,
-        programSettings: ProgramSettings?,
-        programs: List<String>,
-        specificSettingScope: LimitScope
+internal abstract class TrackerQueryInternalFactory<T>(
+    protected val params: ProgramDataDownloadParams,
+    protected val programSettings: ProgramSettings?,
+    protected val specificSettingScope: LimitScope) {
+
+    abstract fun queryGlobal(
+        programs: List<String>
     ): List<T>
 
-    fun queryPerProgram(
-        params: ProgramDataDownloadParams,
-        programSettings: ProgramSettings?,
-        programUid: String?,
-        specificSettingScope: LimitScope
+    abstract fun queryPerProgram(
+        programUid: String?
     ): List<T>
 }

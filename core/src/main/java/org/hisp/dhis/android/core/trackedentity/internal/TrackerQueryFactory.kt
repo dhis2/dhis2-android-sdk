@@ -31,6 +31,7 @@ import org.hisp.dhis.android.core.program.ProgramType
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
 import org.hisp.dhis.android.core.settings.LimitScope
+import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository
 
 internal abstract class TrackerQueryFactory<T, S : TrackerBaseSync> constructor(
@@ -38,28 +39,29 @@ internal abstract class TrackerQueryFactory<T, S : TrackerBaseSync> constructor(
     private val programSettingsObjectRepository: ProgramSettingsObjectRepository,
     private val lastUpdatedManager: TrackerSyncLastUpdatedManager<S>,
     private val commonHelper: TrackerQueryFactoryCommonHelper,
-    private val internalFactory: TrackerQueryInternalFactory<T>,
-    private val specificSettingScope: LimitScope
+    private val specificSettingScope: LimitScope,
+    private val internalFactoryCreator: (params: ProgramDataDownloadParams, programSettings: ProgramSettings?) -> TrackerQueryInternalFactory<T>
 ) {
 
     @Suppress("NestedBlockDepth")
     fun getQueries(params: ProgramDataDownloadParams): List<T> {
         val programSettings = programSettingsObjectRepository.blockingGet()
+        val internalFactory = internalFactoryCreator.invoke(params, programSettings)
         lastUpdatedManager.prepare(programSettings, params)
         return if (params.program() == null) {
             val trackerPrograms = programStore.getUidsByProgramType(ProgramType.WITH_REGISTRATION)
             if (commonHelper.hasLimitByProgram(params, programSettings)) {
-                trackerPrograms.flatMap { internalFactory.queryPerProgram(params, programSettings, it) }
+                trackerPrograms.flatMap { internalFactory.queryPerProgram(it) }
             } else {
                 val specificSettings = programSettings?.specificSettings() ?: emptyMap()
                 val globalPrograms = trackerPrograms.toList() - specificSettings.keys
                 specificSettings
                     .filterKeys { trackerPrograms.contains(it) }
-                    .flatMap { internalFactory.queryPerProgram(params, programSettings, it.key) } +
-                    internalFactory.queryGlobal(params, programSettings, globalPrograms)
+                    .flatMap { internalFactory.queryPerProgram(it.key) } +
+                    internalFactory.queryGlobal(globalPrograms)
             }
         } else {
-            internalFactory.queryPerProgram(params, programSettings, params.program())
+            internalFactory.queryPerProgram(params.program())
         }
     }
 }

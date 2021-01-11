@@ -27,47 +27,37 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.settings.EnrollmentScope
 import org.hisp.dhis.android.core.settings.LimitScope
 import org.hisp.dhis.android.core.settings.ProgramSettings
-import javax.inject.Inject
 
-@Reusable
-internal class TrackedEntityInstanceQueryInternalFactory @Inject constructor(
-    private val commonHelper: TrackerQueryFactoryCommonHelper
-) : TrackerQueryInternalFactory<TeiQuery> {
+internal class TrackedEntityInstanceQueryInternalFactory constructor(
+    private val commonHelper: TrackerQueryFactoryCommonHelper,
+    params: ProgramDataDownloadParams,
+    programSettings: ProgramSettings?
+) : TrackerQueryInternalFactory<TeiQuery>(params, programSettings, LimitScope.PER_ORG_UNIT) {
 
     override fun queryGlobal(
-        params: ProgramDataDownloadParams,
-        programSettings: ProgramSettings?,
-        programs: List<String>,
-        specificSettingScope: LimitScope
+        programs: List<String>
         ): List<TeiQuery> {
-        return queryInternal(params, programSettings, programs, null, null, specificSettingScope) {
+        return queryInternal(programs, null, null) {
             commonHelper.getCaptureOrgUnitUids() }
     }
 
     override fun queryPerProgram(
-        params: ProgramDataDownloadParams,
-        programSettings: ProgramSettings?,
-        programUid: String?,
-        specificSettingScope: LimitScope
+        programUid: String?
         ): List<TeiQuery> {
         val programStatus = getProgramStatus(params, programSettings, programUid)
-        return queryInternal(params, programSettings, listOf(programUid!!), programUid, programStatus, specificSettingScope) {
+        return queryInternal(listOf(programUid!!), programUid, programStatus) {
             commonHelper.getLinkedCaptureOrgUnitUids(programUid) }
     }
 
     private fun queryInternal(
-        params: ProgramDataDownloadParams,
-        programSettings: ProgramSettings?,
         programs: List<String>,
         programUid: String?,
         programStatus: EnrollmentStatus?,
-        specificSettingScope: LimitScope,
         orgUnitByLimitExtractor: () -> List<String>
     ): List<TeiQuery> {
         val limit = commonHelper.getLimit(params, programSettings, programUid) { it?.eventsDownload() }

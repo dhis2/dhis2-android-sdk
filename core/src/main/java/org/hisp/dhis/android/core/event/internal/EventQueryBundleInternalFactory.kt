@@ -27,40 +27,34 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import dagger.Reusable
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
+import org.hisp.dhis.android.core.settings.LimitScope
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryFactoryCommonHelper
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryInternalFactory
-import javax.inject.Inject
 
-@Reusable
-internal class EventQueryBundleInternalFactory @Inject constructor(
-    private val commonHelper: TrackerQueryFactoryCommonHelper
-) : TrackerQueryInternalFactory<EventQueryBundle> {
+internal class EventQueryBundleInternalFactory constructor(
+    private val commonHelper: TrackerQueryFactoryCommonHelper,
+    params: ProgramDataDownloadParams,
+    programSettings: ProgramSettings?
+) : TrackerQueryInternalFactory<EventQueryBundle>(params, programSettings, LimitScope.ALL_ORG_UNITS) {
 
     override fun queryPerProgram(
-        params: ProgramDataDownloadParams,
-        programSettings: ProgramSettings?,
         programUid: String?
     ): List<EventQueryBundle> {
-        return queryInternal(params, programSettings, listOf(programUid!!), programUid) {
+        return queryInternal(listOf(programUid!!), programUid) {
             commonHelper.getLinkedCaptureOrgUnitUids(programUid) }
     }
 
     override fun queryGlobal(
-        params: ProgramDataDownloadParams,
-        programSettings: ProgramSettings?,
         programs: List<String>
     ): List<EventQueryBundle> {
-        return queryInternal(params, programSettings, programs, null) {
+        return queryInternal(programs, null) {
             commonHelper.getCaptureOrgUnitUids() }
     }
 
     private fun queryInternal(
-        params: ProgramDataDownloadParams,
-        programSettings: ProgramSettings?,
         programs: List<String>,
         programUid: String?,
         orgUnitByLimitExtractor: () -> List<String>
@@ -69,7 +63,7 @@ internal class EventQueryBundleInternalFactory @Inject constructor(
         if (limit == 0) {
             return emptyList()
         }
-        val commonParams: TrackerQueryCommonParams = commonHelper.getCommonParams(params, programSettings, programs, programUid, limit, orgUnitByLimitExtractor) { it?.eventDateDownload() }
+        val commonParams: TrackerQueryCommonParams = commonHelper.getCommonParams(params, programSettings, programs, programUid, limit, specificSettingScope, orgUnitByLimitExtractor) { it?.eventDateDownload() }
 
         val builder = EventQueryBundle.builder()
             .commonParams(commonParams)

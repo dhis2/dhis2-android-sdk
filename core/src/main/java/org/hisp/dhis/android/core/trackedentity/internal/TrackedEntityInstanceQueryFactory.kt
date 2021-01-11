@@ -28,7 +28,10 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
+import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
+import org.hisp.dhis.android.core.settings.LimitScope
+import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository
 import javax.inject.Inject
 
@@ -37,7 +40,7 @@ internal class TrackedEntityInstanceQueryFactory @Inject constructor(
     programStore: ProgramStoreInterface,
     programSettingsObjectRepository: ProgramSettingsObjectRepository,
     lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager,
-    commonHelper: TrackerQueryFactoryCommonHelper,
-    internalFactory: TrackedEntityInstanceQueryInternalFactory
-) : TrackerQueryFactory<TeiQuery, TrackedEntityInstanceSync>(programStore, programSettingsObjectRepository, lastUpdatedManager, commonHelper, internalFactory)
+    commonHelper: TrackerQueryFactoryCommonHelper
+) : TrackerQueryFactory<TeiQuery, TrackedEntityInstanceSync>(programStore, programSettingsObjectRepository, lastUpdatedManager, commonHelper, LimitScope.PER_ORG_UNIT,
+    { params: ProgramDataDownloadParams, programSettings: ProgramSettings? -> TrackedEntityInstanceQueryInternalFactory(commonHelper, params, programSettings) })
 

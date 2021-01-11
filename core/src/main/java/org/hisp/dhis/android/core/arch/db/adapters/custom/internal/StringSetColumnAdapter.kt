@@ -27,10 +27,21 @@
  */
 package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 import java.util.*
 
 internal class StringSetColumnAdapter : JSONObjectSetColumnAdapter<String>() {
     override fun getObjectClass(): Class<Set<String>> {
         return HashSet<String>().javaClass
+    }
+
+    override fun serialize(o: Set<String>?): String? = StringSetColumnAdapter.serialize(o)
+
+    companion object {
+        fun serialize(o: Set<String>?): String? {
+            return o?.let {
+                ObjectMapperFactory.objectMapper().writeValueAsString(it)
+            }
+        }
     }
 }

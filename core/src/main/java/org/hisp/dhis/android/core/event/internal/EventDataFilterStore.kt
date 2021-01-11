@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.event.internal
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DateFilterPeriodColumnAdapter
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringSetColumnAdapter
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
@@ -49,9 +51,9 @@ internal object EventDataFilterStore {
         w.bind(5, o.gt())
         w.bind(6, o.lt())
         w.bind(7, o.eq())
-        w.bind(8, mapper.writeValueAsString(o.`in`()))
+        w.bind(8, StringSetColumnAdapter.serialize(o.`in`()))
         w.bind(9, o.like())
-        w.bind(10, mapper.writeValueAsString(o.dateFilter()))
+        w.bind(10, DateFilterPeriodColumnAdapter.serialize(o.dateFilter()))
     }
 
     private val WHERE_UPDATE_BINDER = WhereStatementBinder { _: EventDataFilter, _ -> }

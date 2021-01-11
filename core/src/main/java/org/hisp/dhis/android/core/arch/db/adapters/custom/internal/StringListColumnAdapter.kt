@@ -27,8 +27,20 @@
  */
 package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
+
 internal class StringListColumnAdapter : JSONObjectListColumnAdapter<String>() {
     override fun getObjectClass(): Class<List<String>> {
         return ArrayList<String>().javaClass
+    }
+
+    override fun serialize(o: List<String>?): String? = StringListColumnAdapter.serialize(o)
+
+    companion object {
+        fun serialize(o: List<String>?): String? {
+            return o?.let {
+                ObjectMapperFactory.objectMapper().writeValueAsString(it)
+            }
+        }
     }
 }

@@ -60,7 +60,9 @@ internal class TrackerImportConflictParser @Inject constructor(
         EventHasInvalidProgramStageConflict,
         EnrollmentNotFoundConflict,
         EnrollmentHasInvalidProgramConflict,
-        InvalidTrackedEntityTypeConflict
+        InvalidTrackedEntityTypeConflict,
+        FileResourceAlreadyAssignedConflict,
+        FileResourceReferenceNotFoundConflict
     )
 
     private val enrollmentConflicts: List<TrackerImportConflictItem> = listOf(
@@ -73,7 +75,9 @@ internal class TrackerImportConflictParser @Inject constructor(
 
     private val eventConflicts: List<TrackerImportConflictItem> = listOf(
         InvalidDataValueConflict,
-        MissingDataElementConflict
+        MissingDataElementConflict,
+        FileResourceAlreadyAssignedConflict,
+        FileResourceReferenceNotFoundConflict
     )
 
     fun getTrackedEntityInstanceConflict(

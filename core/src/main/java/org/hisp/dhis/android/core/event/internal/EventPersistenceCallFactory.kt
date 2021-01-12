@@ -29,13 +29,13 @@ package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
 import io.reactivex.Completable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
-import javax.inject.Inject
 
 @Reusable
 class EventPersistenceCallFactory @Inject internal constructor(
@@ -52,7 +52,8 @@ class EventPersistenceCallFactory @Inject internal constructor(
     }
 
     private fun persistEventsInternal(
-        events: Collection<Event>, asRelationship: Boolean,
+        events: Collection<Event>,
+        asRelationship: Boolean,
         relatives: RelationshipItemRelatives?
     ): Completable {
         return Completable.defer {

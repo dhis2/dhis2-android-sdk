@@ -28,12 +28,12 @@
 package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
+import java.util.concurrent.Callable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.event.Event
-import java.util.concurrent.Callable
-import javax.inject.Inject
 
 @Reusable
 internal class EventEndpointCallFactory @Inject constructor(

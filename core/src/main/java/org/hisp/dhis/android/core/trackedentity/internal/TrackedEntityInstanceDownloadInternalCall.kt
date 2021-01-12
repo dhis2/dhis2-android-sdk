@@ -31,6 +31,7 @@ import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.Single
 import javax.inject.Inject
+import kotlin.math.min
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.paging.internal.ApiPagingEngine
 import org.hisp.dhis.android.core.arch.api.paging.internal.Paging
@@ -41,7 +42,6 @@ import org.hisp.dhis.android.core.arch.helpers.internal.BooleanWrapper
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import kotlin.math.min
 
 @Reusable
 internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(

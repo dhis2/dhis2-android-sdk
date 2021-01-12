@@ -44,14 +44,16 @@ internal class EventQueryBundleInternalFactory constructor(
         programUid: String?
     ): List<EventQueryBundle> {
         return queryInternal(listOf(programUid!!), programUid) {
-            commonHelper.getLinkedCaptureOrgUnitUids(programUid) }
+            commonHelper.getLinkedCaptureOrgUnitUids(programUid)
+        }
     }
 
     override fun queryGlobal(
         programs: List<String>
     ): List<EventQueryBundle> {
         return queryInternal(programs, null) {
-            commonHelper.getCaptureOrgUnitUids() }
+            commonHelper.getCaptureOrgUnitUids()
+        }
     }
 
     private fun queryInternal(
@@ -63,13 +65,14 @@ internal class EventQueryBundleInternalFactory constructor(
         if (limit == 0) {
             return emptyList()
         }
-        val commonParams: TrackerQueryCommonParams = commonHelper.getCommonParams(params, programSettings,
-            programs, programUid, limit, specificSettingScope, orgUnitByLimitExtractor) { it?.eventDateDownload() }
+        val commonParams: TrackerQueryCommonParams = commonHelper.getCommonParams(
+            params, programSettings,
+            programs, programUid, limit, specificSettingScope, orgUnitByLimitExtractor
+        ) { it?.eventDateDownload() }
 
         val builder = EventQueryBundle.builder()
             .commonParams(commonParams)
 
-        return commonHelper.divideByOrgUnits(commonParams.orgUnitsBeforeDivision, commonParams.hasLimitByOrgUnit)
-        { builder.orgUnits(it).build() }
+        return commonHelper.divideByOrgUnits(commonParams.orgUnitsBeforeDivision, commonParams.hasLimitByOrgUnit) { builder.orgUnits(it).build() }
     }
 }

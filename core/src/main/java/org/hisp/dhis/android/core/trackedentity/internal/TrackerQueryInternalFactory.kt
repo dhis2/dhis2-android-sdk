@@ -34,7 +34,8 @@ import org.hisp.dhis.android.core.settings.ProgramSettings
 internal abstract class TrackerQueryInternalFactory<T>(
     protected val params: ProgramDataDownloadParams,
     protected val programSettings: ProgramSettings?,
-    protected val specificSettingScope: LimitScope) {
+    protected val specificSettingScope: LimitScope
+) {
 
     abstract fun queryGlobal(
         programs: List<String>

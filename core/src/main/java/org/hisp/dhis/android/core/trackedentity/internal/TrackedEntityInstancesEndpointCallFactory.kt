@@ -29,11 +29,11 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
 import io.reactivex.Single
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstancesEndpointCallFactory @Inject constructor(
@@ -46,7 +46,8 @@ internal class TrackedEntityInstancesEndpointCallFactory @Inject constructor(
             getUidStr(query), getOuStr(query),
             query.commonParams().ouMode.name, query.commonParams().program, getProgramStatus(query),
             query.commonParams().startDate, TrackedEntityInstanceFields.allFields, true, query.page(),
-            query.pageSize(), getLastUpdated(query), true, true)
+            query.pageSize(), getLastUpdated(query), true, true
+        )
     }
 
     private fun getUidStr(query: TeiQuery): String? {

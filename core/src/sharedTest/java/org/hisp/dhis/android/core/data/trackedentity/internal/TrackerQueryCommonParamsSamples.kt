@@ -34,7 +34,9 @@ internal object TrackerQueryCommonParamsSamples {
 
     @JvmStatic
     fun get(): TrackerQueryCommonParams {
-        return TrackerQueryCommonParams(listOf(), null, "start-date", false,
-            OrganisationUnitMode.ACCESSIBLE, listOf(), 50)
+        return TrackerQueryCommonParams(
+            listOf(), null, "start-date", false,
+            OrganisationUnitMode.ACCESSIBLE, listOf(), 50
+        )
     }
 }

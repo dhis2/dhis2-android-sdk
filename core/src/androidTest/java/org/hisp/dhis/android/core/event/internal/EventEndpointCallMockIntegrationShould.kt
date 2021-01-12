@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.event.internal.EventCallFactory.create
@@ -36,11 +36,19 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 class EventEndpointCallMockIntegrationShould : BaseMockIntegrationTestMetadataEnqueable() {
+    
+    @Before
+    @Throws(D2Error::class)
+    fun setUp() {
+        dhis2MockServer.enqueueSystemInfoResponse()
+    }
+    
     @After
     @Throws(D2Error::class)
     fun tearDown() {
@@ -49,41 +57,21 @@ class EventEndpointCallMockIntegrationShould : BaseMockIntegrationTestMetadataEn
 
     @Test
     @Throws(Exception::class)
-    fun download_events_according_to_default_query() {
-        val eventEndpointCall = create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", 0)
+    fun download_number_of_events_according_to_page_default_query() {
         dhis2MockServer.enqueueMockResponse("event/events_1.json")
-        val events = eventEndpointCall.call()
-        (d2.eventModule() as EventModuleImpl).eventPersistenceCallFactory.persistEvents(
-            events,
-            RelationshipItemRelatives()
-        ).blockingGet()
-        Truth.assertThat(d2.eventModule().events().blockingCount()).isEqualTo(1)
-    }
-
-    @Test
-    @Throws(Exception::class)
-    fun download_number_of_events_according_to_page_size() {
-        val pageSize = 1
-        val eventEndpointCall = create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", pageSize)
-        dhis2MockServer.enqueueMockResponse("event/events_1.json")
-        val events = eventEndpointCall.call()
-        (d2.eventModule() as EventModuleImpl).eventPersistenceCallFactory.persistEvents(
-            events,
-            RelationshipItemRelatives()
-        ).blockingGet()
-        Truth.assertThat(d2.eventModule().events().blockingCount()).isEqualTo(pageSize)
+        d2.eventModule().eventDownloader().blockingDownload()
+        assertThat(d2.eventModule().events().blockingCount()).isEqualTo(1)
     }
 
     @Test
     @Throws(Exception::class)
     fun rollback_transaction_when_insert_a_event_with_wrong_foreign_key() {
-        val eventEndpointCall = create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", 0)
         dhis2MockServer.enqueueMockResponse(
             "event/two_events_first_good_second_wrong_foreign_key.json"
         )
-        eventEndpointCall.call()
-        Truth.assertThat(d2.eventModule().events().blockingCount()).isEqualTo(0)
-        Truth.assertThat(d2.trackedEntityModule().trackedEntityDataValues().blockingCount())
+        d2.eventModule().eventDownloader().blockingDownload()
+        assertThat(d2.eventModule().events().blockingCount()).isEqualTo(0)
+        assertThat(d2.trackedEntityModule().trackedEntityDataValues().blockingCount())
             .isEqualTo(0)
     }
 
@@ -99,8 +87,8 @@ class EventEndpointCallMockIntegrationShould : BaseMockIntegrationTestMetadataEn
             RelationshipItemRelatives()
         ).blockingGet()
         val event = events[0]
-        Truth.assertThat(event.uid()).isEqualTo("V1CerIi3sdL")
-        Truth.assertThat(d2.eventModule().events().blockingCount()).isEqualTo(pageSize)
+        assertThat(event.uid()).isEqualTo("V1CerIi3sdL")
+        assertThat(d2.eventModule().events().blockingCount()).isEqualTo(pageSize)
         EventStoreImpl.create(d2.databaseAdapter()).update(
             event.toBuilder()
                 .state(State.SYNCED).status(EventStatus.SKIPPED).build()
@@ -110,8 +98,8 @@ class EventEndpointCallMockIntegrationShould : BaseMockIntegrationTestMetadataEn
             RelationshipItemRelatives()
         ).blockingGet()
         val event1 = d2.eventModule().events().one().blockingGet()
-        Truth.assertThat(event1.uid()).isEqualTo("V1CerIi3sdL")
-        Truth.assertThat(event1.status())
+        assertThat(event1.uid()).isEqualTo("V1CerIi3sdL")
+        assertThat(event1.status())
             .isEqualTo(EventStatus.COMPLETED) // Because in Synced state should overwrite.
         EventStoreImpl.create(d2.databaseAdapter()).update(
             event.toBuilder()
@@ -122,8 +110,8 @@ class EventEndpointCallMockIntegrationShould : BaseMockIntegrationTestMetadataEn
             RelationshipItemRelatives()
         ).blockingGet()
         val event2 = d2.eventModule().events().one().blockingGet()
-        Truth.assertThat(event2.uid()).isEqualTo("V1CerIi3sdL")
-        Truth.assertThat(event2.status()).isEqualTo(EventStatus.SKIPPED)
+        assertThat(event2.uid()).isEqualTo("V1CerIi3sdL")
+        assertThat(event2.status()).isEqualTo(EventStatus.SKIPPED)
         EventStoreImpl.create(d2.databaseAdapter()).update(
             event.toBuilder()
                 .state(State.ERROR).status(EventStatus.SKIPPED).build()
@@ -133,8 +121,8 @@ class EventEndpointCallMockIntegrationShould : BaseMockIntegrationTestMetadataEn
             RelationshipItemRelatives()
         ).blockingGet()
         val event3 = d2.eventModule().events().one().blockingGet()
-        Truth.assertThat(event3.uid()).isEqualTo("V1CerIi3sdL")
-        Truth.assertThat(event3.status()).isEqualTo(EventStatus.SKIPPED)
+        assertThat(event3.uid()).isEqualTo("V1CerIi3sdL")
+        assertThat(event3.status()).isEqualTo(EventStatus.SKIPPED)
         EventStoreImpl.create(d2.databaseAdapter()).update(
             event.toBuilder()
                 .state(State.TO_POST).status(EventStatus.SKIPPED).build()
@@ -144,21 +132,15 @@ class EventEndpointCallMockIntegrationShould : BaseMockIntegrationTestMetadataEn
             RelationshipItemRelatives()
         ).blockingGet()
         val event4 = d2.eventModule().events().one().blockingGet()
-        Truth.assertThat(event4.uid()).isEqualTo("V1CerIi3sdL")
-        Truth.assertThat(event4.status()).isEqualTo(EventStatus.SKIPPED)
+        assertThat(event4.uid()).isEqualTo("V1CerIi3sdL")
+        assertThat(event4.status()).isEqualTo(EventStatus.SKIPPED)
     }
 
     @Test
     @Throws(Exception::class)
-    fun download_events_by_uids() {
-        val eventEndpointCall =
-            create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", 0, listOf("wAiGPfJGMxt", "PpNGhvEYnXe"))
+    fun download_events_by_uid() {
         dhis2MockServer.enqueueMockResponse("event/events_with_uids.json")
-        val events = eventEndpointCall.call()
-        (d2.eventModule() as EventModuleImpl).eventPersistenceCallFactory.persistEvents(
-            events,
-            RelationshipItemRelatives()
-        ).blockingGet()
-        Truth.assertThat(d2.eventModule().events().blockingCount()).isEqualTo(2)
+        d2.eventModule().eventDownloader().byUid().`in`("wAiGPfJGMxt", "PpNGhvEYnXe").blockingDownload()
+        assertThat(d2.eventModule().events().blockingCount()).isEqualTo(2)
     }
 }

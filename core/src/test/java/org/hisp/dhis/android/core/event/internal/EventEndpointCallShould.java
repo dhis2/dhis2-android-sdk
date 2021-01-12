@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.data.trackedentity.internal.TrackerQueryCommon
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
-import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -61,7 +60,10 @@ public class EventEndpointCallShould {
     private static Dhis2MockServer mockWebServer;
 
     @Mock
-    protected DatabaseAdapter databaseAdapter;
+    private DatabaseAdapter databaseAdapter;
+
+    @Mock
+    private EventLastUpdatedManager lastUpdatedManager;
 
     @BeforeClass
     public static void setUpClass() throws IOException {
@@ -117,8 +119,6 @@ public class EventEndpointCallShould {
     }
 
     private Callable<List<Event>> givenACallForQuery(EventQuery eventQuery) {
-        EventLastUpdatedManager lastUpdatedManager = new EventLastUpdatedManager(
-                EventSyncStore.create(databaseAdapter), ResourceHandler.create(databaseAdapter));
         return new EventEndpointCallFactory(retrofit.create(EventService.class),
                 APICallExecutorImpl.create(databaseAdapter), lastUpdatedManager).getCall(eventQuery);
     }

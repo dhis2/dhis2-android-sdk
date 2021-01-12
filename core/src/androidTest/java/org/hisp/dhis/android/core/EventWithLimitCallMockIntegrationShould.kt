@@ -58,7 +58,7 @@ class EventWithLimitCallMockIntegrationShould : BaseMockIntegrationTestMetadataE
 
     @Test
     fun download_events_by_uid_limited_by_one() {
-        val eventLimitByOrgUnit = 2 // TODO value changed, review
+        val eventLimitByOrgUnit = 1
         dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json")
         dhis2MockServer.enqueueMockResponse("event/events_with_uids.json")
         d2.eventModule().eventDownloader()

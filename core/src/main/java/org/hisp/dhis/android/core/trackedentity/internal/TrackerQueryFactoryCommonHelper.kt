@@ -115,10 +115,6 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
         programUid: String?,
         downloadExtractor: (ProgramSetting?) -> Int?
     ): Int {
-        val uidsCount = params.uids().size
-        if (uidsCount > 0) {
-            return uidsCount
-        }
         if (params.limit() != null && isGlobalOrUserDefinedProgram(params, programUid)) {
             return params.limit()!!
         }

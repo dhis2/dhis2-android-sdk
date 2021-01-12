@@ -64,14 +64,16 @@ internal class TrackedEntityInstanceQueryInternalFactory constructor(
         if (limit == 0) {
             return emptyList()
         }
-        val commonParams: TrackerQueryCommonParams = commonHelper.getCommonParams(params, programSettings, programs, programUid, limit, specificSettingScope, orgUnitByLimitExtractor) { it?.enrollmentDateDownload() }
+        val commonParams: TrackerQueryCommonParams = commonHelper.getCommonParams(params, programSettings, programs,
+            programUid, limit, specificSettingScope, orgUnitByLimitExtractor) { it?.enrollmentDateDownload() }
 
         val builder = TeiQuery.builder()
             .commonParams(commonParams)
             .programStatus(programStatus)
             .uids(params.uids())
 
-        return commonHelper.divideByOrgUnits(commonParams.orgUnitsBeforeDivision, commonParams.hasLimitByOrgUnit) { builder.orgUnits(it).build() }
+        return commonHelper.divideByOrgUnits(commonParams.orgUnitsBeforeDivision,
+            commonParams.hasLimitByOrgUnit) { builder.orgUnits(it).build() }
     }
 
     @Suppress("ReturnCount")

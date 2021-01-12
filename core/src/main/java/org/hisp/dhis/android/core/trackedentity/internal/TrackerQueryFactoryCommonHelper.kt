@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 import java.util.Date
 import javax.inject.Inject
 
+@Suppress("TooManyFunctions")
 @Reusable
 internal class TrackerQueryFactoryCommonHelper @Inject constructor(
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
@@ -69,7 +70,8 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
         return organisationUnitProgramLinkStore.selectWhere(whereClause).map { it.organisationUnit()!! }
     }
 
-    private fun getOrganisationUnits(params: ProgramDataDownloadParams, hasLimitByOrgUnit: Boolean, byLimitExtractor: () -> List<String>): Pair<OrganisationUnitMode, List<String>> {
+    private fun getOrganisationUnits(params: ProgramDataDownloadParams, hasLimitByOrgUnit: Boolean,
+        byLimitExtractor: () -> List<String>): Pair<OrganisationUnitMode, List<String>> {
         return when {
             params.orgUnits().size > 0 ->
                 Pair(OrganisationUnitMode.SELECTED, params.orgUnits())
@@ -156,7 +158,8 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
         return false
     }
 
-    fun <O> divideByOrgUnits(orgUnits: List<String>, hasLimitByOrgUnit: Boolean, builder: (List<String>) -> O): List<O> {
+    fun <O> divideByOrgUnits(orgUnits: List<String>, hasLimitByOrgUnit: Boolean,
+        builder: (List<String>) -> O): List<O> {
         return if (hasLimitByOrgUnit) {
             orgUnits.map { builder.invoke(listOf(it)) }
         } else {
@@ -164,7 +167,8 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
         }
     }
 
-    private fun getStartDate(programSettings: ProgramSettings?, programUid: String?, downloadPeriodAccessor: (ProgramSetting?) -> DownloadPeriod?): String? {
+    private fun getStartDate(programSettings: ProgramSettings?, programUid: String?,
+        downloadPeriodAccessor: (ProgramSetting?) -> DownloadPeriod?): String? {
         var period: DownloadPeriod? = null
         if (programSettings != null) {
             val specificSetting = programSettings.specificSettings()[programUid]
@@ -183,6 +187,7 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
         }
     }
 
+    @Suppress("LongParameterList")
     fun getCommonParams(
         params: ProgramDataDownloadParams,
         programSettings: ProgramSettings?,

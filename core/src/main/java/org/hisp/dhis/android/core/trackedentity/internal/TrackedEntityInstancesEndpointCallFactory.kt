@@ -44,10 +44,9 @@ internal class TrackedEntityInstancesEndpointCallFactory @Inject constructor(
     fun getCall(query: TeiQuery): Single<Payload<TrackedEntityInstance>> {
         return trackedEntityInstanceService.getTrackedEntityInstances(
             getUidStr(query), getOuStr(query),
-            query.commonParams().ouMode.name, query.commonParams().program, getProgramStatus(query), query.commonParams().startDate,
-            TrackedEntityInstanceFields.allFields, true, query.page(), query.pageSize(),
-            getLastUpdated(query), true, true
-        )
+            query.commonParams().ouMode.name, query.commonParams().program, getProgramStatus(query),
+            query.commonParams().startDate, TrackedEntityInstanceFields.allFields, true, query.page(),
+            query.pageSize(), getLastUpdated(query), true, true)
     }
 
     private fun getUidStr(query: TeiQuery): String? {

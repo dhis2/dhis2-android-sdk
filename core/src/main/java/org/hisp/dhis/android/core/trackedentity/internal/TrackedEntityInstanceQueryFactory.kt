@@ -41,6 +41,8 @@ internal class TrackedEntityInstanceQueryFactory @Inject constructor(
     programSettingsObjectRepository: ProgramSettingsObjectRepository,
     lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager,
     commonHelper: TrackerQueryFactoryCommonHelper
-) : TrackerQueryFactory<TeiQuery, TrackedEntityInstanceSync>(programStore, programSettingsObjectRepository, lastUpdatedManager, commonHelper, LimitScope.PER_ORG_UNIT,
-    { params: ProgramDataDownloadParams, programSettings: ProgramSettings? -> TrackedEntityInstanceQueryInternalFactory(commonHelper, params, programSettings) })
+) : TrackerQueryFactory<TeiQuery, TrackedEntityInstanceSync>(programStore, programSettingsObjectRepository,
+    lastUpdatedManager, commonHelper, LimitScope.PER_ORG_UNIT,
+    { params: ProgramDataDownloadParams, programSettings: ProgramSettings? ->
+        TrackedEntityInstanceQueryInternalFactory(commonHelper, params, programSettings) })
 

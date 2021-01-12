@@ -39,7 +39,7 @@ import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 class EventEndpointCallMockIntegrationShould : BaseMockIntegrationTestMetadataEnqueable() {
-    
+
     @After
     @Throws(D2Error::class)
     fun tearDown() {

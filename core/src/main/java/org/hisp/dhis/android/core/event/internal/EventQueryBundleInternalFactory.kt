@@ -73,6 +73,8 @@ internal class EventQueryBundleInternalFactory constructor(
         val builder = EventQueryBundle.builder()
             .commonParams(commonParams)
 
-        return commonHelper.divideByOrgUnits(commonParams.orgUnitsBeforeDivision, commonParams.hasLimitByOrgUnit) { builder.orgUnits(it).build() }
+        return commonHelper.divideByOrgUnits(commonParams.orgUnitsBeforeDivision, commonParams.hasLimitByOrgUnit) {
+            builder.orgUnits(it).build()
+        }
     }
 }

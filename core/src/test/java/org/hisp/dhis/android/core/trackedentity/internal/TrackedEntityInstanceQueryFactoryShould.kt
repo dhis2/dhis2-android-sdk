@@ -27,8 +27,10 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
+import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
@@ -43,10 +45,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.ArgumentMatchers
-import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
-import java.util.HashMap
 
 @RunWith(JUnit4::class)
 class TrackedEntityInstanceQueryFactoryShould {
@@ -78,15 +77,15 @@ class TrackedEntityInstanceQueryFactoryShould {
     @Throws(Exception::class)
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-        Mockito.`when`(userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids()).thenReturn(rootOrgUnits)
-        Mockito.`when`(userOrganisationUnitLinkStore.queryOrganisationUnitUidsByScope(ArgumentMatchers.any()))
+        whenever(userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids()).thenReturn(rootOrgUnits)
+        whenever(userOrganisationUnitLinkStore.queryOrganisationUnitUidsByScope(any()))
             .thenReturn(captureOrgUnits)
-        Mockito.`when`(organisationUnitProgramLinkLinkStore.selectWhere(ArgumentMatchers.anyString()))
+        whenever(organisationUnitProgramLinkLinkStore.selectWhere(any()))
             .thenReturn(links)
-        Mockito.`when`(programStore.getUidsByProgramType(ArgumentMatchers.any())).thenReturn(
+        whenever(programStore.getUidsByProgramType(any())).thenReturn(
             listOf(p1, p2, p3)
         )
-        Mockito.`when`(programSettingsObjectRepository.blockingGet()).thenReturn(programSettings)
+        whenever(programSettingsObjectRepository.blockingGet()).thenReturn(programSettings)
 
         val commonHelper = TrackerQueryFactoryCommonHelper(
             userOrganisationUnitLinkStore, organisationUnitProgramLinkLinkStore
@@ -100,26 +99,26 @@ class TrackedEntityInstanceQueryFactoryShould {
     fun create_a_single_bundle_when_global() {
         val params = ProgramDataDownloadParams.builder().build()
         val queries = queryFactory!!.getQueries(params)
-        Truth.assertThat(queries.size).isEqualTo(1)
+        assertThat(queries.size).isEqualTo(1)
         val query = queries[0]
-        Truth.assertThat(query.orgUnits()).isEqualTo(rootOrgUnits)
-        Truth.assertThat(query.commonParams().ouMode).isEqualTo(OrganisationUnitMode.DESCENDANTS)
-        Truth.assertThat(query.commonParams().program).isNull()
+        assertThat(query.orgUnits()).isEqualTo(rootOrgUnits)
+        assertThat(query.commonParams().ouMode).isEqualTo(OrganisationUnitMode.DESCENDANTS)
+        assertThat(query.commonParams().program).isNull()
     }
 
     @Test
     fun get_enrollment_date_value_if_defined() {
         val params = ProgramDataDownloadParams.builder().build()
-        val specificSettings: MutableMap<String, ProgramSetting> = HashMap()
-        specificSettings[p1] = ProgramSetting.builder()
-            .uid(p1).enrollmentDateDownload(DownloadPeriod.LAST_3_MONTHS).build()
-        Mockito.`when`(programSettings.specificSettings()).thenReturn(specificSettings)
+
+        val settings = ProgramSetting.builder().uid(p1).enrollmentDateDownload(DownloadPeriod.LAST_3_MONTHS).build()
+        whenever(programSettings.specificSettings()).thenReturn(mapOf(p1 to settings))
+
         val queries = queryFactory!!.getQueries(params)
-        Truth.assertThat(queries.size).isEqualTo(2)
+        assertThat(queries.size).isEqualTo(2)
         for (query in queries) {
             if (query.commonParams().program != null) {
-                Truth.assertThat(query.commonParams().program).isEqualTo(p1)
-                Truth.assertThat(query.commonParams().startDate).isNotNull()
+                assertThat(query.commonParams().program).isEqualTo(p1)
+                assertThat(query.commonParams().startDate).isNotNull()
             }
         }
     }
@@ -128,27 +127,28 @@ class TrackedEntityInstanceQueryFactoryShould {
     fun single_query_if_program_provided_by_user() {
         val params = ProgramDataDownloadParams.builder().limit(5000).program(p1).build()
         val queries = queryFactory!!.getQueries(params)
-        Truth.assertThat(queries.size).isEqualTo(1)
+        assertThat(queries.size).isEqualTo(1)
         for (query in queries) {
-            Truth.assertThat(query.commonParams().program).isEqualTo(p1)
-            Truth.assertThat(query.commonParams().limit).isEqualTo(5000)
+            assertThat(query.commonParams().program).isEqualTo(p1)
+            assertThat(query.commonParams().limit).isEqualTo(5000)
         }
     }
 
     @Test
     fun apply_user_defined_limit_only_to_global_if_no_program() {
         val params = ProgramDataDownloadParams.builder().limit(5000).build()
-        val specificSettings: MutableMap<String, ProgramSetting> = HashMap()
-        specificSettings[p1] = ProgramSetting.builder().uid(p1).teiDownload(100).build()
-        Mockito.`when`(programSettings.specificSettings()).thenReturn(specificSettings)
+
+        val settings = ProgramSetting.builder().uid(p1).teiDownload(100).build()
+        whenever(programSettings.specificSettings()).thenReturn(mapOf(p1 to settings))
+
         val queries = queryFactory!!.getQueries(params)
-        Truth.assertThat(queries.size).isEqualTo(2)
+        assertThat(queries.size).isEqualTo(2)
         for (query in queries) {
             if (query.commonParams().program != null) {
-                Truth.assertThat(query.commonParams().program).isEqualTo(p1)
-                Truth.assertThat(query.commonParams().limit).isEqualTo(100)
+                assertThat(query.commonParams().program).isEqualTo(p1)
+                assertThat(query.commonParams().limit).isEqualTo(100)
             } else {
-                Truth.assertThat(query.commonParams().limit).isEqualTo(5000)
+                assertThat(query.commonParams().limit).isEqualTo(5000)
             }
         }
     }

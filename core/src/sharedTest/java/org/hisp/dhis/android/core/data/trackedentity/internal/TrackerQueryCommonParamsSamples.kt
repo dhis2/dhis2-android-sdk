@@ -33,9 +33,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParam
 object TrackerQueryCommonParamsSamples {
 
     @JvmStatic
-    fun get(
-    ): TrackerQueryCommonParams {
+    fun get(): TrackerQueryCommonParams {
         return TrackerQueryCommonParams(listOf(), null, "start-date", false, OrganisationUnitMode.ACCESSIBLE, listOf(), 50)
     }
-
 }

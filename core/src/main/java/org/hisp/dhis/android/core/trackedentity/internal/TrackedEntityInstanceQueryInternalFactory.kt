@@ -60,7 +60,7 @@ internal class TrackedEntityInstanceQueryInternalFactory constructor(
         programStatus: EnrollmentStatus?,
         orgUnitByLimitExtractor: () -> List<String>
     ): List<TeiQuery> {
-        val limit = commonHelper.getLimit(params, programSettings, programUid) { it?.eventsDownload() }
+        val limit = commonHelper.getLimit(params, programSettings, programUid) { it?.teiDownload() }
         if (limit == 0) {
             return emptyList()
         }

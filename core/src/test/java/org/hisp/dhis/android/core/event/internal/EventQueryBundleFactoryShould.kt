@@ -30,7 +30,10 @@ package org.hisp.dhis.android.core.event.internal
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
@@ -39,24 +42,24 @@ import org.hisp.dhis.android.core.settings.ProgramSetting
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryFactoryCommonHelper
+import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
-import java.util.HashMap
 
 @RunWith(JUnit4::class)
 class EventQueryBundleFactoryShould {
     private val resourceHandler: ResourceHandler = mock()
-    private val commonHelper: TrackerQueryFactoryCommonHelper = mock()
     private val programStore: ProgramStoreInterface = mock()
     private val programSettingsObjectRepository: ProgramSettingsObjectRepository = mock()
     private val programSettings: ProgramSettings = mock()
     private val lastUpdatedManager: EventLastUpdatedManager = mock()
-    
+    private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore = mock()
+    private val organisationUnitProgramLinkLinkStore: LinkStore<OrganisationUnitProgramLink> = mock()
+
     private val p1 = "program1"
     private val p2 = "program2"
     private val p3 = "program3"
@@ -76,16 +79,17 @@ class EventQueryBundleFactoryShould {
     @Throws(Exception::class)
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-        Mockito.`when`(resourceHandler.getLastUpdated(ArgumentMatchers.any())).thenReturn(null)
-        Mockito.`when`(commonHelper.getRootCaptureOrgUnitUids()).thenReturn(rootOrgUnits)
-        Mockito.`when`(commonHelper.getCaptureOrgUnitUids()).thenReturn(captureOrgUnits)
-        Mockito.`when`(
-            commonHelper.getLimit(any(), any(), any(), any())
-        ).thenReturn(100).thenReturn(5000)
-        Mockito.`when`(programStore.getUidsByProgramType(ArgumentMatchers.any())).thenReturn(
-            programList
+        whenever(resourceHandler.getLastUpdated(any())).thenReturn(null)
+        whenever(programStore.getUidsByProgramType(any())).thenReturn(programList)
+        whenever(userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids()).thenReturn(rootOrgUnits)
+        whenever(userOrganisationUnitLinkStore.queryOrganisationUnitUidsByScope(ArgumentMatchers.any()))
+            .thenReturn(captureOrgUnits)
+
+        whenever(programSettingsObjectRepository.blockingGet()).thenReturn(programSettings)
+
+        val commonHelper = TrackerQueryFactoryCommonHelper(
+            userOrganisationUnitLinkStore, organisationUnitProgramLinkLinkStore
         )
-        Mockito.`when`(programSettingsObjectRepository.blockingGet()).thenReturn(programSettings)
         bundleFactory = EventQueryBundleFactory(
             programStore,
             programSettingsObjectRepository,
@@ -104,12 +108,11 @@ class EventQueryBundleFactoryShould {
         assertThat(bundle.commonParams().ouMode).isEqualTo(OrganisationUnitMode.DESCENDANTS)
     }
 
-    // TODO refactor tests
     @Test
     fun create_separate_bundle_for_program_if_has_specific_settings() {
-        val specifics: MutableMap<String, ProgramSetting> = HashMap()
-        specifics[p1] = ProgramSetting.builder().uid(p1).eventsDownload(200).build()
-        Mockito.`when`(programSettings.specificSettings()).thenReturn(specifics)
+        val settings = ProgramSetting.builder().uid(p1).eventsDownload(200).build()
+        whenever(programSettings.specificSettings()).thenReturn(mapOf(p1 to settings))
+
         val bundles = bundleFactory!!.getQueries(params)
         assertThat(bundles.size).isEqualTo(2)
         for (bundle in bundles) {
@@ -131,9 +134,9 @@ class EventQueryBundleFactoryShould {
 
     @Test
     fun get_event_date_if_defined() {
-        val specifics: MutableMap<String, ProgramSetting> = HashMap()
-        specifics[p1] = ProgramSetting.builder().uid(p1).eventDateDownload(DownloadPeriod.LAST_3_MONTHS).build()
-        Mockito.`when`(programSettings.specificSettings()).thenReturn(specifics)
+        val settings = ProgramSetting.builder().uid(p1).eventDateDownload(DownloadPeriod.LAST_3_MONTHS).build()
+        whenever(programSettings.specificSettings()).thenReturn(mapOf(p1 to settings))
+
         val bundles = bundleFactory!!.getQueries(params)
         assertThat(bundles.size).isEqualTo(2)
         for (bundle in bundles) {
@@ -147,9 +150,10 @@ class EventQueryBundleFactoryShould {
     @Test
     fun apply_user_defined_limit_only_to_global_if_no_program() {
         val params = ProgramDataDownloadParams.builder().limit(5000).build()
-        val specificSettings: MutableMap<String, ProgramSetting> = HashMap()
-        specificSettings[p1] = ProgramSetting.builder().uid(p1).eventsDownload(100).build()
-        Mockito.`when`(programSettings.specificSettings()).thenReturn(specificSettings)
+
+        val settings = ProgramSetting.builder().uid(p1).eventsDownload(100).build()
+        whenever(programSettings.specificSettings()).thenReturn(mapOf(p1 to settings))
+
         val bundles = bundleFactory!!.getQueries(params)
         assertThat(bundles.size).isEqualTo(2)
         for (bundle in bundles) {

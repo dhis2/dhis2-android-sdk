@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.imports.internal.conflicts
 
-import org.hisp.dhis.android.core.imports.TrackerImportConflict
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
 internal object EnrollmentNotFoundConflict : TrackerImportConflictItem {
@@ -48,7 +47,6 @@ internal object EnrollmentNotFoundConflict : TrackerImportConflictItem {
 
     override fun getDisplayDescription(
         conflict: ImportConflict,
-        conflictBuilder: TrackerImportConflict.Builder,
         context: TrackerImportConflictItemContext
     ): String {
         return getEnrollment(conflict)?.let { enrollmentUid ->

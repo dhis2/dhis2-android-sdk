@@ -111,7 +111,7 @@ internal class TrackerImportConflictParser @Inject constructor(
         if (conflictType != null) {
             conflictBuilder
                 .errorCode(conflictType.errorCode)
-                .displayDescription(conflictType.getDisplayDescription(conflict, conflictBuilder, context))
+                .displayDescription(conflictType.getDisplayDescription(conflict, context))
                 .trackedEntityAttribute(conflictType.getTrackedEntityAttribute(conflict))
                 .dataElement(conflictType.getDataElement(conflict))
         } else {

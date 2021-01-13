@@ -47,8 +47,7 @@ internal class EnrollmentHasInvalidProgramConflictShould : BaseConflictShould() 
 
     @Test
     fun `Should create display description`() {
-        val displayDescription = EnrollmentHasInvalidProgramConflict
-            .getDisplayDescription(importConflict, conflictBuilder, context)
+        val displayDescription = EnrollmentHasInvalidProgramConflict.getDisplayDescription(importConflict, context)
         assert(displayDescription == "Your enrollment $enrollmentUid has an invalid program")
     }
 }

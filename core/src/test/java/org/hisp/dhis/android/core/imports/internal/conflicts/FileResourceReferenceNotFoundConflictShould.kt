@@ -47,7 +47,7 @@ internal class FileResourceReferenceNotFoundConflictShould : BaseConflictShould(
     @Test
     fun `Should create display description`() {
         val displayDescription =
-            FileResourceReferenceNotFoundConflict.getDisplayDescription(importConflict, conflictBuilder, context)
+            FileResourceReferenceNotFoundConflict.getDisplayDescription(importConflict, context)
         assert(displayDescription == "The file reference $fileResourceUid could not be found")
     }
 }

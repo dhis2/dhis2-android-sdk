@@ -48,7 +48,7 @@ internal class LackingEnrollmentCascadeDeleteAuthorityConflictShould : BaseConfl
     @Test
     fun `Should create display description`() {
         val displayDescription = LackingEnrollmentCascadeDeleteAuthorityConflict
-            .getDisplayDescription(importConflict, conflictBuilder, context)
+            .getDisplayDescription(importConflict, context)
         assert(displayDescription == "You lack the authority to delete the enrollment: $enrollmentUid")
     }
 }

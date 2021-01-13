@@ -32,14 +32,11 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.dataelement.DataElement
-import org.hisp.dhis.android.core.imports.TrackerImportConflict
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.junit.Before
 
 internal open class BaseConflictShould {
 
-    protected val conflictBuilder: TrackerImportConflict.Builder = mock()
-    protected val trackerImportConflict: TrackerImportConflict = mock()
     protected val context: TrackerImportConflictItemContext = mock()
 
     protected val attributeStore: IdentifiableObjectStore<TrackedEntityAttribute> = mock()
@@ -68,9 +65,5 @@ internal open class BaseConflictShould {
 
         whenever(attributeStore.selectByUid(attributeUid)) doReturn attribute
         whenever(dataElementStore.selectByUid(dataElementUid)) doReturn dataElement
-
-        whenever(conflictBuilder.build()) doReturn trackerImportConflict
-        whenever(trackerImportConflict.enrollment()) doReturn enrollmentUid
-        whenever(trackerImportConflict.trackedEntityInstance()) doReturn teiUid
     }
 }

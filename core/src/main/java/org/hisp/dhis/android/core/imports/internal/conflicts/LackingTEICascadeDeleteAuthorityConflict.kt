@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.imports.internal.conflicts
 
-import org.hisp.dhis.android.core.imports.TrackerImportConflict
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
 internal object LackingTEICascadeDeleteAuthorityConflict : TrackerImportConflictItem {
@@ -51,10 +50,9 @@ internal object LackingTEICascadeDeleteAuthorityConflict : TrackerImportConflict
 
     override fun getDisplayDescription(
         conflict: ImportConflict,
-        conflictBuilder: TrackerImportConflict.Builder,
         context: TrackerImportConflictItemContext
     ): String {
-        return conflictBuilder.build().trackedEntityInstance()?.let { trackedEntityInstanceUid ->
+        return getTrackedEntityInstance(conflict)?.let { trackedEntityInstanceUid ->
             description(trackedEntityInstanceUid)
         }
             ?: conflict.value()

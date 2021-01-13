@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.imports.internal.conflicts
 
-import org.hisp.dhis.android.core.imports.TrackerImportConflict
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
 internal object MissingAttributeConflict : TrackerImportConflictItem {
@@ -47,7 +46,6 @@ internal object MissingAttributeConflict : TrackerImportConflictItem {
 
     override fun getDisplayDescription(
         conflict: ImportConflict,
-        conflictBuilder: TrackerImportConflict.Builder,
         context: TrackerImportConflictItemContext
     ): String {
 

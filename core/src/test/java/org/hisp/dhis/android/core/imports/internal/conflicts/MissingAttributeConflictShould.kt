@@ -50,8 +50,7 @@ internal class MissingAttributeConflictShould : BaseConflictShould() {
     fun `Should create display description`() {
         whenever(attribute.displayFormName()) doReturn "Attribute form name"
 
-        val displayDescription =
-            MissingAttributeConflict.getDisplayDescription(importConflict, conflictBuilder, context)
+        val displayDescription = MissingAttributeConflict.getDisplayDescription(importConflict, context)
         assert(displayDescription == "Missing mandatory attribute: Attribute form name")
     }
 }

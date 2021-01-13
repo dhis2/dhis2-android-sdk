@@ -46,8 +46,7 @@ internal class LackingTEICascadeDeleteAuthorityConflictShould : BaseConflictShou
 
     @Test
     fun `Should create display description`() {
-        val displayDescription = LackingTEICascadeDeleteAuthorityConflict
-            .getDisplayDescription(importConflict, conflictBuilder, context)
+        val displayDescription = LackingTEICascadeDeleteAuthorityConflict.getDisplayDescription(importConflict, context)
         assert(displayDescription == "You lack the authority to delete the entity: $teiUid")
     }
 }

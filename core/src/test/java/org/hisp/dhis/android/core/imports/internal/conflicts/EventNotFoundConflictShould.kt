@@ -46,7 +46,7 @@ internal class EventNotFoundConflictShould : BaseConflictShould() {
 
     @Test
     fun `Should create display description`() {
-        val displayDescription = EventNotFoundConflict.getDisplayDescription(importConflict, conflictBuilder, context)
+        val displayDescription = EventNotFoundConflict.getDisplayDescription(importConflict, context)
         assert(displayDescription == "Your event $eventUid does not exist in the server")
     }
 }

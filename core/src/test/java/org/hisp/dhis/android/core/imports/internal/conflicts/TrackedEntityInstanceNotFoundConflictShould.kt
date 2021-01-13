@@ -47,7 +47,7 @@ internal class TrackedEntityInstanceNotFoundConflictShould : BaseConflictShould(
     @Test
     fun `Should create display description`() {
         val displayDescription =
-            TrackedEntityInstanceNotFoundConflict.getDisplayDescription(importConflict, conflictBuilder, context)
+            TrackedEntityInstanceNotFoundConflict.getDisplayDescription(importConflict, context)
         assert(displayDescription == "Your entity $relatedTeiUid does not exist in the server")
     }
 }

@@ -46,8 +46,7 @@ internal class EventHasInvalidProgramConflictShould : BaseConflictShould() {
 
     @Test
     fun `Should create display description`() {
-        val displayDescription = EventHasInvalidProgramConflict
-            .getDisplayDescription(importConflict, conflictBuilder, context)
+        val displayDescription = EventHasInvalidProgramConflict.getDisplayDescription(importConflict, context)
         assert(displayDescription == "Your event $eventUid has an invalid program")
     }
 }

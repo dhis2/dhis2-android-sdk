@@ -46,8 +46,7 @@ internal class InvalidTrackedEntityTypeConflictShould : BaseConflictShould() {
 
     @Test
     fun `Should create display description`() {
-        val displayDescription =
-            InvalidTrackedEntityTypeConflict.getDisplayDescription(importConflict, conflictBuilder, context)
+        val displayDescription = InvalidTrackedEntityTypeConflict.getDisplayDescription(importConflict, context)
         assert(displayDescription == "Your entity $relatedTeiUid has an invalid type of entity")
     }
 }

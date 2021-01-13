@@ -34,9 +34,10 @@ import org.hisp.dhis.android.core.D2
 import org.hisp.dhis.android.core.D2Factory
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.junit.Before
+import org.junit.Test
 
 class TrackedEntityInstanceQueryAndDownloadRealIntegrationShould : BaseRealIntegrationTest() {
-    private var d2: D2? = null
+    private lateinit var d2: D2
 
     @Before
     @Throws(IOException::class)
@@ -47,12 +48,12 @@ class TrackedEntityInstanceQueryAndDownloadRealIntegrationShould : BaseRealInteg
 
     // @Test
     fun query_and_download_tracked_entity_instances() {
-        d2!!.userModule().logIn(username, password, url).blockingGet()
-        d2!!.metadataModule().blockingDownload()
+        d2.userModule().logIn(username, password, url).blockingGet()
+        d2.metadataModule().blockingDownload()
 
-        val orgUnit = d2!!.organisationUnitModule().organisationUnits()
+        val orgUnit = d2.organisationUnitModule().organisationUnits()
             .one().blockingGet().uid()
-        val queriedTeis = d2!!.trackedEntityModule().trackedEntityInstanceQuery()
+        val queriedTeis = d2.trackedEntityModule().trackedEntityInstanceQuery()
             .byOrgUnits().`in`(listOf(orgUnit))
             .byOrgUnitMode().eq(OrganisationUnitMode.ACCESSIBLE)
             .onlineOnly().blockingGet()
@@ -60,9 +61,9 @@ class TrackedEntityInstanceQueryAndDownloadRealIntegrationShould : BaseRealInteg
 
         val uids = queriedTeis.map { it.uid() }.toSet()
 
-        d2!!.trackedEntityModule().trackedEntityInstanceDownloader()
+        d2.trackedEntityModule().trackedEntityInstanceDownloader()
             .byUid().`in`(uids).blockingDownload()
-        val downloadedTeis = d2!!.trackedEntityModule().trackedEntityInstances()
+        val downloadedTeis = d2.trackedEntityModule().trackedEntityInstances()
             .byUid().`in`(uids).blockingGet()
         assertThat(queriedTeis.size).isEqualTo(downloadedTeis.size)
     }

@@ -31,7 +31,8 @@ import org.junit.Test
 
 internal class LackingEnrollmentCascadeDeleteAuthorityConflictShould : BaseConflictShould() {
 
-    private val importConflict = TrackedImportConflictSamples.userIsLackingEnrollmentCascadeDeleteAuthority(enrollmentUid)
+    private val importConflict =
+        TrackedImportConflictSamples.userIsLackingEnrollmentCascadeDeleteAuthority(enrollmentUid)
 
     @Test
     fun `Should match error message`() {
@@ -46,7 +47,8 @@ internal class LackingEnrollmentCascadeDeleteAuthorityConflictShould : BaseConfl
 
     @Test
     fun `Should create display description`() {
-        val displayDescription = LackingEnrollmentCascadeDeleteAuthorityConflict.getDisplayDescription(importConflict, conflictBuilder, context)
+        val displayDescription = LackingEnrollmentCascadeDeleteAuthorityConflict
+            .getDisplayDescription(importConflict, conflictBuilder, context)
         assert(displayDescription == "You lack the authority to delete the enrollment: $enrollmentUid")
     }
 }

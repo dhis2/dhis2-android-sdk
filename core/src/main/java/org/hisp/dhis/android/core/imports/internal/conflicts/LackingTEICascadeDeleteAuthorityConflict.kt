@@ -32,10 +32,12 @@ import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
 internal object LackingTEICascadeDeleteAuthorityConflict : TrackerImportConflictItem {
 
-    private val regex: Regex = Regex("Tracked entity instance (\\w{11}) cannot be deleted as it has associated" +
-            " enrollments and user does not have authority F_TEI_CASCADE_DELETE")
+    private val regex: Regex = Regex(
+        "Tracked entity instance (\\w{11}) cannot be deleted as it has associated" +
+            " enrollments and user does not have authority F_TEI_CASCADE_DELETE"
+    )
     private fun description(trackedEntityInstance: String) =
-            "You lack the authority to delete the entity: $trackedEntityInstance"
+        "You lack the authority to delete the entity: $trackedEntityInstance"
 
     override val errorCode: String = "E1100"
 
@@ -54,7 +56,7 @@ internal object LackingTEICascadeDeleteAuthorityConflict : TrackerImportConflict
     ): String {
         return conflictBuilder.build().trackedEntityInstance()?.let { trackedEntityInstanceUid ->
             description(trackedEntityInstanceUid)
-        } ?:
-        conflict.value()
+        }
+            ?: conflict.value()
     }
 }

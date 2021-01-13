@@ -32,8 +32,10 @@ import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
 internal object LackingEnrollmentCascadeDeleteAuthorityConflict : TrackerImportConflictItem {
 
-    private val regex: Regex = Regex("Enrollment (\\w{11}) cannot be deleted as it has associated" +
-            " events and user does not have authority: F_ENROLLMENT_CASCADE_DELETE")
+    private val regex: Regex = Regex(
+        "Enrollment (\\w{11}) cannot be deleted as it has associated" +
+            " events and user does not have authority: F_ENROLLMENT_CASCADE_DELETE"
+    )
     private fun description(enrollment: String) = "You lack the authority to delete the enrollment: $enrollment"
 
     override val errorCode: String = "E1103"
@@ -53,7 +55,7 @@ internal object LackingEnrollmentCascadeDeleteAuthorityConflict : TrackerImportC
     ): String {
         return conflictBuilder.build().enrollment()?.let { enrollmentUid ->
             description(enrollmentUid)
-        } ?:
-        conflict.value()
+        }
+            ?: conflict.value()
     }
 }

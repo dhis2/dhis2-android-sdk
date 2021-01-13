@@ -32,7 +32,10 @@ import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
 internal object FileResourceAlreadyAssignedConflict : TrackerImportConflictItem {
 
-    private val regex: Regex = Regex("File resource with uid '(\\w{11})' has already been assigned to a different object")
+    private val regex: Regex = Regex(
+        "File resource with uid '(\\w{11})' has already been assigned to " +
+            "a different object"
+    )
     private fun description(fileResourceUid: String) = "The file $fileResourceUid has already been assigned"
 
     override val errorCode: String = "E1009"
@@ -46,13 +49,13 @@ internal object FileResourceAlreadyAssignedConflict : TrackerImportConflictItem 
     }
 
     override fun getDisplayDescription(
-            conflict: ImportConflict,
-            conflictBuilder: TrackerImportConflict.Builder,
-            context: TrackerImportConflictItemContext
+        conflict: ImportConflict,
+        conflictBuilder: TrackerImportConflict.Builder,
+        context: TrackerImportConflictItemContext
     ): String {
         return getFileResource(conflict)?.let { fileResourceUid ->
             description(fileResourceUid)
-        } ?:
-        conflict.value()
+        }
+            ?: conflict.value()
     }
 }

@@ -34,7 +34,7 @@ internal object EnrollmentNotFoundConflict : TrackerImportConflictItem {
 
     private val regex: Regex = Regex("ProgramInstance '(\\w{11})' not found.")
     private fun description(enrollmentUid: String) =
-            "Your enrollment $enrollmentUid does not exist in the server"
+        "Your enrollment $enrollmentUid does not exist in the server"
 
     override val errorCode: String = "E1081"
 
@@ -47,13 +47,13 @@ internal object EnrollmentNotFoundConflict : TrackerImportConflictItem {
     }
 
     override fun getDisplayDescription(
-            conflict: ImportConflict,
-            conflictBuilder: TrackerImportConflict.Builder,
-            context: TrackerImportConflictItemContext
+        conflict: ImportConflict,
+        conflictBuilder: TrackerImportConflict.Builder,
+        context: TrackerImportConflictItemContext
     ): String {
         return getEnrollment(conflict)?.let { enrollmentUid ->
             description(enrollmentUid)
-        } ?:
-        conflict.value()
+        }
+            ?: conflict.value()
     }
 }

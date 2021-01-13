@@ -109,17 +109,26 @@ object TrackedImportConflictSamples {
     }
 
     fun userIsLackingTEICascadeDeleteAuthority(teiUid: String): ImportConflict {
-        return ImportConflict.create(teiUid,
-        "Tracked entity instance $teiUid cannot be deleted as it has associated enrollments and user does not have authority F_TEI_CASCADE_DELETE")
+        return ImportConflict.create(
+            teiUid,
+            "Tracked entity instance $teiUid cannot be deleted as it has associated enrollments and user does" +
+                " not have authority F_TEI_CASCADE_DELETE"
+        )
     }
 
     fun userIsLackingEnrollmentCascadeDeleteAuthority(enrollmentUid: String): ImportConflict {
-        return ImportConflict.create(enrollmentUid,
-        "Enrollment $enrollmentUid cannot be deleted as it has associated events and user does not have authority: F_ENROLLMENT_CASCADE_DELETE")
+        return ImportConflict.create(
+            enrollmentUid,
+            "Enrollment $enrollmentUid cannot be deleted as it has associated events and user does not" +
+                " have authority: F_ENROLLMENT_CASCADE_DELETE"
+        )
     }
 
     fun fileResourceAlreadyAssigned(fileResourceUid: String): ImportConflict {
-        return ImportConflict.create("Attribute.value", "File resource with uid '$fileResourceUid' has already been assigned to a different object")
+        return ImportConflict.create(
+            "Attribute.value",
+            "File resource with uid '$fileResourceUid' has already been assigned to a different object"
+        )
     }
 
     fun fileResourceReferenceNotFound(fileResourceUid: String): ImportConflict {
@@ -151,7 +160,10 @@ object TrackedImportConflictSamples {
     }
 
     fun teiHasInvalidType(teiUid: String, relationshipUid: String): ImportConflict {
-        return ImportConflict.create(relationshipUid, "TrackedEntityInstance '$teiUid' has invalid TrackedEntityType.")
+        return ImportConflict.create(
+            relationshipUid,
+            "TrackedEntityInstance '$teiUid' has invalid TrackedEntityType."
+        )
     }
 
     // Data value types

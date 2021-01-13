@@ -31,7 +31,8 @@ import org.junit.Test
 
 internal class EnrollmentHasInvalidProgramConflictShould : BaseConflictShould() {
 
-    private val importConflict = TrackedImportConflictSamples.enrollmentHasInvalidProgram(enrollmentUid, relationshipUid)
+    private val importConflict =
+        TrackedImportConflictSamples.enrollmentHasInvalidProgram(enrollmentUid, relationshipUid)
 
     @Test
     fun `Should match error message`() {
@@ -47,7 +48,7 @@ internal class EnrollmentHasInvalidProgramConflictShould : BaseConflictShould() 
     @Test
     fun `Should create display description`() {
         val displayDescription = EnrollmentHasInvalidProgramConflict
-                .getDisplayDescription(importConflict, conflictBuilder, context)
+            .getDisplayDescription(importConflict, conflictBuilder, context)
         assert(displayDescription == "Your enrollment $enrollmentUid has an invalid program")
     }
 }

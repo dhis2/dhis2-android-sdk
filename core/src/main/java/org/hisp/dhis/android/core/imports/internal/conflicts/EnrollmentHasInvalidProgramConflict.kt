@@ -46,13 +46,13 @@ internal object EnrollmentHasInvalidProgramConflict : TrackerImportConflictItem 
     }
 
     override fun getDisplayDescription(
-            conflict: ImportConflict,
-            conflictBuilder: TrackerImportConflict.Builder,
-            context: TrackerImportConflictItemContext
+        conflict: ImportConflict,
+        conflictBuilder: TrackerImportConflict.Builder,
+        context: TrackerImportConflictItemContext
     ): String {
         return getEnrollment(conflict)?.let { enrollmentUid ->
             description(enrollmentUid)
-        } ?:
-        conflict.value()
+        }
+            ?: conflict.value()
     }
 }

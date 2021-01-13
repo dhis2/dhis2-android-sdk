@@ -34,7 +34,7 @@ internal object InvalidTrackedEntityTypeConflict : TrackerImportConflictItem {
 
     private val regex: Regex = Regex("TrackedEntityInstance '(\\w{11})' has invalid TrackedEntityType.")
     private fun description(trackedEntityInstanceUid: String) =
-            "Your entity $trackedEntityInstanceUid has an invalid type of entity"
+        "Your entity $trackedEntityInstanceUid has an invalid type of entity"
 
     override val errorCode: String = "E1005"
 
@@ -47,13 +47,13 @@ internal object InvalidTrackedEntityTypeConflict : TrackerImportConflictItem {
     }
 
     override fun getDisplayDescription(
-            conflict: ImportConflict,
-            conflictBuilder: TrackerImportConflict.Builder,
-            context: TrackerImportConflictItemContext
+        conflict: ImportConflict,
+        conflictBuilder: TrackerImportConflict.Builder,
+        context: TrackerImportConflictItemContext
     ): String {
         return getTrackedEntityInstance(conflict)?.let { trackedEntityInstanceUid ->
             description(trackedEntityInstanceUid)
-        } ?:
-        conflict.value()
+        }
+            ?: conflict.value()
     }
 }

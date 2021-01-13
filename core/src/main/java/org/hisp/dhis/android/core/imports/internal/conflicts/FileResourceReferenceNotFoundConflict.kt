@@ -46,13 +46,13 @@ internal object FileResourceReferenceNotFoundConflict : TrackerImportConflictIte
     }
 
     override fun getDisplayDescription(
-            conflict: ImportConflict,
-            conflictBuilder: TrackerImportConflict.Builder,
-            context: TrackerImportConflictItemContext
+        conflict: ImportConflict,
+        conflictBuilder: TrackerImportConflict.Builder,
+        context: TrackerImportConflictItemContext
     ): String {
         return getFileResource(conflict)?.let { fileResourceUid ->
             description(fileResourceUid)
-        } ?:
-        conflict.value()
+        }
+            ?: conflict.value()
     }
 }

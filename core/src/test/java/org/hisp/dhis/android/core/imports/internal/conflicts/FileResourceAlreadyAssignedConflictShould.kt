@@ -46,7 +46,8 @@ internal class FileResourceAlreadyAssignedConflictShould : BaseConflictShould() 
 
     @Test
     fun `Should create display description`() {
-        val displayDescription = FileResourceAlreadyAssignedConflict.getDisplayDescription(importConflict, conflictBuilder, context)
+        val displayDescription =
+            FileResourceAlreadyAssignedConflict.getDisplayDescription(importConflict, conflictBuilder, context)
         assert(displayDescription == "The file $fileResourceUid has already been assigned")
     }
 }

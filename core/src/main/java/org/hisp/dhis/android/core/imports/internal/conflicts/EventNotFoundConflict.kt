@@ -46,13 +46,13 @@ internal object EventNotFoundConflict : TrackerImportConflictItem {
     }
 
     override fun getDisplayDescription(
-            conflict: ImportConflict,
-            conflictBuilder: TrackerImportConflict.Builder,
-            context: TrackerImportConflictItemContext
+        conflict: ImportConflict,
+        conflictBuilder: TrackerImportConflict.Builder,
+        context: TrackerImportConflictItemContext
     ): String {
         return getEvent(conflict)?.let { eventUid ->
             description(eventUid)
-        } ?:
-        conflict.value()
+        }
+            ?: conflict.value()
     }
 }

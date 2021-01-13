@@ -46,7 +46,8 @@ internal class EnrollmentNotFoundConflictShould : BaseConflictShould() {
 
     @Test
     fun `Should create display description`() {
-        val displayDescription = EnrollmentNotFoundConflict.getDisplayDescription(importConflict, conflictBuilder, context)
+        val displayDescription =
+            EnrollmentNotFoundConflict.getDisplayDescription(importConflict, conflictBuilder, context)
         assert(displayDescription == "Your enrollment $enrollmentUid does not exist in the server")
     }
 }

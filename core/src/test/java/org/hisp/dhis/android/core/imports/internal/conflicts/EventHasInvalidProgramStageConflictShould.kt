@@ -47,7 +47,7 @@ internal class EventHasInvalidProgramStageConflictShould : BaseConflictShould() 
     @Test
     fun `Should create display description`() {
         val displayDescription = EventHasInvalidProgramStageConflict
-                .getDisplayDescription(importConflict, conflictBuilder, context)
+            .getDisplayDescription(importConflict, conflictBuilder, context)
         assert(displayDescription == "Your event $eventUid has an invalid program stage")
     }
 }

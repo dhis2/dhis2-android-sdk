@@ -34,7 +34,7 @@ internal object TrackedEntityInstanceNotFoundConflict : TrackerImportConflictIte
 
     private val regex: Regex = Regex("TrackedEntityInstance '(\\w{11})' not found.")
     private fun description(trackedEntityInstanceUid: String) =
-            "Your entity $trackedEntityInstanceUid does not exist in the server"
+        "Your entity $trackedEntityInstanceUid does not exist in the server"
 
     override val errorCode: String = "E1063"
 
@@ -47,13 +47,13 @@ internal object TrackedEntityInstanceNotFoundConflict : TrackerImportConflictIte
     }
 
     override fun getDisplayDescription(
-            conflict: ImportConflict,
-            conflictBuilder: TrackerImportConflict.Builder,
-            context: TrackerImportConflictItemContext
+        conflict: ImportConflict,
+        conflictBuilder: TrackerImportConflict.Builder,
+        context: TrackerImportConflictItemContext
     ): String {
         return getTrackedEntityInstance(conflict)?.let { trackedEntityInstanceUid ->
             description(trackedEntityInstanceUid)
-        } ?:
-        conflict.value()
+        }
+            ?: conflict.value()
     }
 }

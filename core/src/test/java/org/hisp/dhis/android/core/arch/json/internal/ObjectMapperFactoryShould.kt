@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.arch.json.internal
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.google.common.truth.Truth.assertThat
+import org.assertj.core.api.Assertions.assertThat
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.junit.Before

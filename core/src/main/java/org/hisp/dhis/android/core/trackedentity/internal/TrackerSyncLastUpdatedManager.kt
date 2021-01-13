@@ -38,11 +38,11 @@ import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceSyncTableInfo.Columns
 
 internal open class TrackerSyncLastUpdatedManager<S : TrackerBaseSync>(private val store: ObjectWithoutUidStore<S>) {
-    private var syncMap: Map<Pair<String?, Int>, S>? = null
+    private lateinit var syncMap: Map<Pair<String?, Int>, S>
     private var programSettings: ProgramSettings? = null
-    private var params: ProgramDataDownloadParams? = null
+    private lateinit var params: ProgramDataDownloadParams
 
-    fun prepare(programSettings: ProgramSettings?, params: ProgramDataDownloadParams?) {
+    fun prepare(programSettings: ProgramSettings?, params: ProgramDataDownloadParams) {
         this.programSettings = programSettings
         this.params = params
         this.syncMap = store.selectAll()
@@ -56,17 +56,9 @@ internal open class TrackerSyncLastUpdatedManager<S : TrackerBaseSync>(private v
 
     fun getLastUpdated(programId: String?, organisationUnits: Set<String>, limit: Int): Date? {
         val orgUnitHashCode = organisationUnits.toSet().hashCode()
-        return if (params!!.uids().isEmpty()) {
-            if (programId != null) {
-                val programSync = syncMap!![Pair(programId, orgUnitHashCode)]
-                val programLastUpdated = getLastUpdatedIfValid(programSync, limit)
-                if (programLastUpdated != null) {
-                    return programLastUpdated
-                }
-            }
-            val programSync = syncMap!![Pair(null, orgUnitHashCode)]
-            val generalLastUpdated = getLastUpdatedIfValid(programSync, limit)
-            generalLastUpdated ?: getDefaultLastUpdated(programId)
+        return if (params.uids().isEmpty()) {
+            val storedSync = syncMap[Pair(programId, orgUnitHashCode)]
+            return getLastUpdatedIfValid(storedSync, limit) ?: getDefaultLastUpdated(programId)
         } else {
             null
         }

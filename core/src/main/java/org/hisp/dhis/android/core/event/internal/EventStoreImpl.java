@@ -31,13 +31,13 @@ package org.hisp.dhis.android.core.event.internal;
 import android.database.Cursor;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStoreImpl;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper;
+import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
@@ -49,6 +49,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import kotlin.jvm.functions.Function1;
 
 public final class EventStoreImpl extends IdentifiableDeletableDataObjectStoreImpl<Event> implements EventStore {
 
@@ -79,7 +81,7 @@ public final class EventStoreImpl extends IdentifiableDeletableDataObjectStoreIm
     private EventStoreImpl(DatabaseAdapter databaseAdapter,
                            SQLStatementBuilderImpl builder,
                            StatementBinder<Event> binder,
-                           ObjectFactory<Event> objectFactory) {
+                           Function1<Cursor, Event> objectFactory) {
         super(databaseAdapter, builder, binder, objectFactory);
     }
 
@@ -157,12 +159,22 @@ public final class EventStoreImpl extends IdentifiableDeletableDataObjectStoreIm
                     " FROM " + EventTableInfo.TABLE_INFO.name() + whereStatement + ") b " +
                 "ON a." + IdentifiableColumns.UID + " = b." + Columns.ENROLLMENT;
 
-        return processCount(databaseAdapter.rawQuery(query));
+        return processCount(getDatabaseAdapter().rawQuery(query));
+    }
+
+    @Override
+    public List<String> queryMissingRelationshipsUids() {
+        String whereRelationshipsClause = new WhereClauseBuilder()
+                .appendKeyStringValue(DataColumns.STATE, State.RELATIONSHIP)
+                .appendIsNullValue(EventTableInfo.Columns.ORGANISATION_UNIT)
+                .build();
+
+        return selectUidsWhere(whereRelationshipsClause);
     }
 
     private List<Event> eventListFromQuery(String query) {
         List<Event> eventList = new ArrayList<>();
-        Cursor cursor = databaseAdapter.rawQuery(query);
+        Cursor cursor = getDatabaseAdapter().rawQuery(query);
         addObjectsToCollection(cursor, eventList);
         return eventList;
     }

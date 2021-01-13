@@ -39,7 +39,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.when;
 
 public class DHISVersionManagerShould {

@@ -87,7 +87,7 @@ public class TrackedEntityAttributeHandlerShould {
     @Test
     public void extend_identifiable_handler_impl() {
         IdentifiableHandlerImpl<TrackedEntityAttribute> genericHandler =
-                new TrackedEntityAttributeHandler(null);
+                new TrackedEntityAttributeHandler(trackedEntityAttributeStore);
     }
 
     @Test

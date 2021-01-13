@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueColle
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueCollectionRepository;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCollectionRepository;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterCollectionRepository;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttributeCollectionRepository;
@@ -57,6 +58,7 @@ public final class TrackedEntityModuleImpl implements TrackedEntityModule {
     private final TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValues;
     private final TrackedEntityAttributeCollectionRepository trackedEntityAttributes;
     private final TrackedEntityTypeAttributeCollectionRepository trackedEntityTypeAttributes;
+    private final TrackedEntityInstanceFilterCollectionRepository trackedEntityInstanceFilters;
 
     private final TrackedEntityInstanceQueryCollectionRepository trackedEntityInstanceQuery;
 
@@ -75,6 +77,7 @@ public final class TrackedEntityModuleImpl implements TrackedEntityModule {
             TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValues,
             TrackedEntityAttributeCollectionRepository trackedEntityAttributes,
             TrackedEntityTypeAttributeCollectionRepository trackedEntityTypeAttributes,
+            TrackedEntityInstanceFilterCollectionRepository trackedEntityInstanceFilters,
             TrackedEntityAttributeReservedValueManager reservedValueManager,
             TrackedEntityInstanceDownloader trackedEntityInstanceDownloader,
             TrackedEntityInstanceListDownloadAndPersistCallFactory downloadAndPersistCallFactory,
@@ -86,6 +89,7 @@ public final class TrackedEntityModuleImpl implements TrackedEntityModule {
         this.trackedEntityAttributeValues = trackedEntityAttributeValues;
         this.trackedEntityAttributes = trackedEntityAttributes;
         this.trackedEntityTypeAttributes =trackedEntityTypeAttributes;
+        this.trackedEntityInstanceFilters = trackedEntityInstanceFilters;
         this.reservedValueManager = reservedValueManager;
         this.trackedEntityInstanceDownloader = trackedEntityInstanceDownloader;
         this.downloadAndPersistCallFactory = downloadAndPersistCallFactory;
@@ -148,6 +152,11 @@ public final class TrackedEntityModuleImpl implements TrackedEntityModule {
     @Override
     public TrackedEntityTypeAttributeCollectionRepository trackedEntityTypeAttributes() {
         return trackedEntityTypeAttributes;
+    }
+
+    @Override
+    public TrackedEntityInstanceFilterCollectionRepository trackedEntityInstanceFilters() {
+        return trackedEntityInstanceFilters;
     }
 
     @Override

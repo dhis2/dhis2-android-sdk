@@ -121,6 +121,12 @@ public final class DataValueCollectionRepository
         return cf.string(Columns.VALUE);
     }
 
+    public DataValueCollectionRepository byDataSetUid(String dataSetUid) {
+        return cf.subQuery(DataValueByDataSetQueryHelper.getKey())
+                .rawSubQuery(DataValueByDataSetQueryHelper.getOperator(),
+                        DataValueByDataSetQueryHelper.whereClause(dataSetUid));
+    }
+
     public StringFilterConnector<DataValueCollectionRepository> byStoredBy() {
         return cf.string(Columns.STORED_BY);
     }

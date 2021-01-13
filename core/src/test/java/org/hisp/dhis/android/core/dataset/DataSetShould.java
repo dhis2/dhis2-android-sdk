@@ -42,7 +42,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.text.ParseException;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 public class DataSetShould extends BaseObjectShould implements ObjectShould {
 
@@ -63,16 +63,16 @@ public class DataSetShould extends BaseObjectShould implements ObjectShould {
                 BaseIdentifiableObject.DATE_FORMAT.parse("2012-06-10T00:36:10.036"));
         assertThat(dataSet.name()).isEqualTo("ART monthly summary");
         assertThat(dataSet.shortName()).isEqualTo("ART 2010");
-        assertThat(dataSet.validCompleteOnly()).isEqualTo(false);
-        assertThat(dataSet.dataElementDecoration()).isEqualTo(false);
-        assertThat(dataSet.notifyCompletingUser()).isEqualTo(false);
-        assertThat(dataSet.noValueRequiresComment()).isEqualTo(false);
-        assertThat(dataSet.skipOffline()).isEqualTo(false);
+        assertThat(dataSet.validCompleteOnly()).isFalse();
+        assertThat(dataSet.dataElementDecoration()).isFalse();
+        assertThat(dataSet.notifyCompletingUser()).isFalse();
+        assertThat(dataSet.noValueRequiresComment()).isFalse();
+        assertThat(dataSet.skipOffline()).isFalse();
         assertThat(dataSet.displayShortName()).isEqualTo("ART 2010");
-        assertThat(dataSet.fieldCombinationRequired()).isEqualTo(false);
-        assertThat(dataSet.renderHorizontally()).isEqualTo(false);
-        assertThat(dataSet.renderAsTabs()).isEqualTo(false);
-        assertThat(dataSet.mobile()).isEqualTo(false);
+        assertThat(dataSet.fieldCombinationRequired()).isFalse();
+        assertThat(dataSet.renderHorizontally()).isFalse();
+        assertThat(dataSet.renderAsTabs()).isFalse();
+        assertThat(dataSet.mobile()).isFalse();
         assertThat(dataSet.version()).isEqualTo(22);
         assertThat(dataSet.timelyDays()).isEqualTo(0);
         assertThat(dataSet.periodType()).isEqualTo(PeriodType.Monthly);

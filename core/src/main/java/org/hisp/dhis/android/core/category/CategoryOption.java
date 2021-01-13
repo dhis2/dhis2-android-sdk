@@ -40,12 +40,15 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.AccessColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreObjectWithUidListColumnAdapter;
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 import java.util.Date;
+import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_CategoryOption.Builder.class)
@@ -64,6 +67,11 @@ public abstract class CategoryOption extends BaseNameableObject implements CoreO
     @JsonProperty()
     @ColumnAdapter(AccessColumnAdapter.class)
     public abstract Access access();
+
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(IgnoreObjectWithUidListColumnAdapter.class)
+    public abstract List<ObjectWithUid> organisationUnits();
 
     public static CategoryOption create(Cursor cursor) {
         return $AutoValue_CategoryOption.createFromCursor(cursor);
@@ -84,7 +92,9 @@ public abstract class CategoryOption extends BaseNameableObject implements CoreO
 
         public abstract Builder endDate(@Nullable Date endDate);
 
-        public abstract Builder access(@Nullable Access access);
+        public abstract Builder access(Access access);
+
+        public abstract Builder organisationUnits(@Nullable List<ObjectWithUid> organisationUnits);
 
         abstract CategoryOption autoBuild();
 

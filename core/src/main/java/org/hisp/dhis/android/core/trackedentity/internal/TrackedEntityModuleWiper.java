@@ -32,6 +32,8 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedVa
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilterTableInfo;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeTableInfo;
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
@@ -55,7 +57,9 @@ public final class TrackedEntityModuleWiper implements ModuleWiper {
     public void wipeMetadata() {
         tableWiper.wipeTables(
                 TrackedEntityAttributeTableInfo.TABLE_INFO,
-                TrackedEntityTypeTableInfo.TABLE_INFO);
+                TrackedEntityTypeTableInfo.TABLE_INFO,
+                TrackedEntityInstanceFilterTableInfo.TABLE_INFO,
+                TrackedEntityInstanceEventFilterTableInfo.TABLE_INFO);
     }
 
     @Override

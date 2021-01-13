@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.program.programindicatorengine.internal.funct
 
 import com.google.common.collect.Lists;
 
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.MatcherAssert;
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
 import org.junit.Test;
@@ -39,6 +37,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -64,26 +63,22 @@ public class D2ConcatenateShould {
     public void evaluateD2Concatenate() {
         when(context.expr()).thenReturn(Lists.newArrayList(mockedFirstExpr));
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn("hello");
-        MatcherAssert.assertThat(concatenate.evaluate(context, visitor),
-                CoreMatchers.<Object>is("hello"));
+        assertThat(concatenate.evaluate(context, visitor)).isEqualTo("hello");
 
         when(context.expr()).thenReturn(Lists.newArrayList(mockedFirstExpr, mockedSecondExpr));
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn("hello");
         when(visitor.castStringVisit(mockedSecondExpr)).thenReturn(null);
-        MatcherAssert.assertThat(concatenate.evaluate(context, visitor),
-                CoreMatchers.<Object>is("hello"));
+        assertThat(concatenate.evaluate(context, visitor)).isEqualTo("hello");
 
         when(context.expr()).thenReturn(Lists.newArrayList(mockedFirstExpr, mockedSecondExpr));
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn(null);
         when(visitor.castStringVisit(mockedSecondExpr)).thenReturn(null);
-        MatcherAssert.assertThat(concatenate.evaluate(context, visitor),
-                CoreMatchers.<Object>is(""));
+        assertThat(concatenate.evaluate(context, visitor)).isEqualTo("");
 
         when(context.expr()).thenReturn(Lists.newArrayList(mockedFirstExpr, mockedSecondExpr, mockedThirdExpr));
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn("hello");
         when(visitor.castStringVisit(mockedSecondExpr)).thenReturn(" ");
         when(visitor.castStringVisit(mockedThirdExpr)).thenReturn("there");
-        MatcherAssert.assertThat(concatenate.evaluate(context, visitor),
-                CoreMatchers.<Object>is("hello there"));
+        assertThat(concatenate.evaluate(context, visitor)).isEqualTo("hello there");
     }
 }

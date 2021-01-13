@@ -33,10 +33,13 @@ import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
 
 import org.hisp.dhis.android.core.arch.cache.internal.D2Cache;
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenSelection;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BoolFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqLikeItemFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ListFilterConnector;
@@ -54,6 +57,8 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.systeminfo.DHISVersion;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterCollectionRepository;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
 
@@ -62,6 +67,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -71,7 +77,7 @@ import io.reactivex.Single;
 @Reusable
 @SuppressWarnings({"PMD.GodClass", "PMD.ExcessiveImports", "PMD.ExcessivePublicCount"})
 public final class TrackedEntityInstanceQueryCollectionRepository
-        implements ReadOnlyCollectionRepository<TrackedEntityInstance> {
+        implements ReadOnlyWithUidCollectionRepository<TrackedEntityInstance> {
 
     private final TrackedEntityInstanceStore store;
     private final TrackedEntityInstanceQueryCallFactory onlineCallFactory;
@@ -79,6 +85,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     private final ScopedFilterConnectorFactory<TrackedEntityInstanceQueryCollectionRepository,
             TrackedEntityInstanceQueryRepositoryScope> connectorFactory;
     private final DHISVersionManager versionManager;
+    private final TrackedEntityInstanceFilterCollectionRepository filtersRepository;
 
     private final TrackedEntityInstanceQueryRepositoryScope scope;
 
@@ -91,16 +98,18 @@ public final class TrackedEntityInstanceQueryCollectionRepository
             final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders,
             final TrackedEntityInstanceQueryRepositoryScope scope,
             final DHISVersionManager versionManager,
+            final TrackedEntityInstanceFilterCollectionRepository filtersRepository,
             final D2Cache<TrackedEntityInstanceQueryOnline, List<TrackedEntityInstance>> onlineCache) {
         this.store = store;
         this.onlineCallFactory = onlineCallFactory;
         this.childrenAppenders = childrenAppenders;
         this.scope = scope;
         this.versionManager = versionManager;
+        this.filtersRepository = filtersRepository;
         this.onlineCache = onlineCache;
         this.connectorFactory = new ScopedFilterConnectorFactory<>(s ->
                 new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
-                        s, versionManager, onlineCache));
+                        s, versionManager, filtersRepository, onlineCache));
     }
 
     /**
@@ -110,8 +119,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @return
      */
     public TrackedEntityInstanceQueryCollectionRepository onlineOnly() {
-        return new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
-                scope.toBuilder().mode(RepositoryMode.ONLINE_ONLY).build(), versionManager, onlineCache);
+        return connectorFactory.eqConnector(v -> scope.toBuilder().mode(RepositoryMode.ONLINE_ONLY).build()).eq(null);
     }
 
     /**
@@ -120,8 +128,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @return
      */
     public TrackedEntityInstanceQueryCollectionRepository offlineOnly() {
-        return new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
-                scope.toBuilder().mode(RepositoryMode.OFFLINE_ONLY).build(), versionManager, onlineCache);
+        return connectorFactory.eqConnector(v -> scope.toBuilder().mode(RepositoryMode.OFFLINE_ONLY).build()).eq(null);
     }
 
     /**
@@ -132,8 +139,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @return
      */
     public TrackedEntityInstanceQueryCollectionRepository onlineFirst() {
-        return new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
-                scope.toBuilder().mode(RepositoryMode.ONLINE_FIRST).build(), versionManager, onlineCache);
+        return connectorFactory.eqConnector(v -> scope.toBuilder().mode(RepositoryMode.ONLINE_FIRST).build()).eq(null);
     }
 
     /**
@@ -144,8 +150,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @return
      */
     public TrackedEntityInstanceQueryCollectionRepository offlineFirst() {
-        return new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
-                scope.toBuilder().mode(RepositoryMode.OFFLINE_FIRST).build(), versionManager, onlineCache);
+        return connectorFactory.eqConnector(v -> scope.toBuilder().mode(RepositoryMode.OFFLINE_FIRST).build()).eq(null);
     }
 
     /**
@@ -160,8 +165,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @param attributeId Attribute uid to use in the filter
      * @return Repository connector
      */
-    public EqLikeItemFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-            TrackedEntityInstanceQueryRepositoryScope> byAttribute(String attributeId) {
+    public EqLikeItemFilterConnector<TrackedEntityInstanceQueryCollectionRepository> byAttribute(String attributeId) {
         return connectorFactory.eqLikeItemC(attributeId, filterItem -> {
             List<RepositoryScopeFilterItem> attributes = new ArrayList<>(scope.attribute());
             attributes.add(filterItem);
@@ -181,8 +185,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @param attributeId Attribute uid to use in the filter
      * @return Repository connector
      */
-    public EqLikeItemFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-            TrackedEntityInstanceQueryRepositoryScope> byFilter(String attributeId) {
+    public EqLikeItemFilterConnector<TrackedEntityInstanceQueryCollectionRepository> byFilter(String attributeId) {
         return connectorFactory.eqLikeItemC(attributeId, filterItem -> {
             List<RepositoryScopeFilterItem> filters = new ArrayList<>(scope.filter());
             filters.add(filterItem);
@@ -195,8 +198,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      *
      * @return Repository connector
      */
-    public EqLikeItemFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-            TrackedEntityInstanceQueryRepositoryScope> byQuery() {
+    public EqLikeItemFilterConnector<TrackedEntityInstanceQueryCollectionRepository> byQuery() {
         return connectorFactory.eqLikeItemC("", filterItem -> scope.toBuilder().query(filterItem).build());
     }
 
@@ -205,8 +207,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      *
      * @return Repository connector
      */
-    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-            TrackedEntityInstanceQueryRepositoryScope, String> byProgram() {
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, String> byProgram() {
         return connectorFactory.eqConnector(programUid -> scope.toBuilder().program(programUid).build());
     }
 
@@ -215,8 +216,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      *
      * @return Repository connector
      */
-    public ListFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-            TrackedEntityInstanceQueryRepositoryScope, String> byOrgUnits() {
+    public ListFilterConnector<TrackedEntityInstanceQueryCollectionRepository, String> byOrgUnits() {
         return connectorFactory.listConnector(orgunitUids -> scope.toBuilder().orgUnits(orgunitUids).build());
     }
 
@@ -225,8 +225,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      *
      * @return Repository connector
      */
-    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-            TrackedEntityInstanceQueryRepositoryScope, OrganisationUnitMode> byOrgUnitMode() {
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, OrganisationUnitMode> byOrgUnitMode() {
         return connectorFactory.eqConnector(mode -> scope.toBuilder().orgUnitMode(mode).build());
     }
 
@@ -235,8 +234,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      *
      * @return Repository connector
      */
-    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-            TrackedEntityInstanceQueryRepositoryScope, Date> byProgramStartDate() {
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, Date> byProgramStartDate() {
         return connectorFactory.eqConnector(date -> scope.toBuilder().programStartDate(date).build());
     }
 
@@ -245,8 +243,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      *
      * @return Repository connector
      */
-    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-            TrackedEntityInstanceQueryRepositoryScope, Date> byProgramEndDate() {
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, Date> byProgramEndDate() {
         return connectorFactory.eqConnector(date -> scope.toBuilder().programEndDate(date).build());
     }
 
@@ -254,8 +251,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @deprecated use {@link #byEnrollmentStatus()} instead.
      */
     @Deprecated
-    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-            TrackedEntityInstanceQueryRepositoryScope, EnrollmentStatus> byProgramStatus() {
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, EnrollmentStatus> byProgramStatus() {
         return connectorFactory.eqConnector(status ->
                 scope.toBuilder().enrollmentStatus(Collections.singletonList(status)).build());
     }
@@ -267,8 +263,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      *
      * @return Repository connector
      */
-    public ListFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-            TrackedEntityInstanceQueryRepositoryScope, EnrollmentStatus> byEnrollmentStatus() {
+    public ListFilterConnector<TrackedEntityInstanceQueryCollectionRepository, EnrollmentStatus> byEnrollmentStatus() {
         return connectorFactory.listConnector(statusList -> scope.toBuilder().enrollmentStatus(statusList).build());
     }
 
@@ -277,9 +272,9 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      *
      * @return Repository connector
      */
-    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-            TrackedEntityInstanceQueryRepositoryScope, Date> byEventStartDate() {
-        return connectorFactory.eqConnector(date -> scope.toBuilder().eventStartDate(date).build());
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, Date> byEventStartDate() {
+        return connectorFactory.eqConnector(date ->
+                TrackedEntityInstanceQueryRepositoryScopeHelper.setEventStartDate(scope, date));
     }
 
     /**
@@ -287,9 +282,9 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      *
      * @return Repository connector
      */
-    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-            TrackedEntityInstanceQueryRepositoryScope, Date> byEventEndDate() {
-        return connectorFactory.eqConnector(date -> scope.toBuilder().eventEndDate(date).build());
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, Date> byEventEndDate() {
+        return connectorFactory.eqConnector(date ->
+                TrackedEntityInstanceQueryRepositoryScopeHelper.setEventEndDate(scope, date));
     }
 
     /**
@@ -299,9 +294,9 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      *
      * @return Repository connector
      */
-    public ListFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-            TrackedEntityInstanceQueryRepositoryScope, EventStatus> byEventStatus() {
-        return connectorFactory.listConnector(statusList -> scope.toBuilder().eventStatus(statusList).build());
+    public ListFilterConnector<TrackedEntityInstanceQueryCollectionRepository, EventStatus> byEventStatus() {
+        return connectorFactory.listConnector(statusList ->
+                TrackedEntityInstanceQueryRepositoryScopeHelper.setEventStatus(scope, statusList));
     }
 
     /**
@@ -309,8 +304,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      *
      * @return Repository connector
      */
-    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-            TrackedEntityInstanceQueryRepositoryScope, String> byTrackedEntityType() {
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, String> byTrackedEntityType() {
         return connectorFactory.eqConnector(type -> scope.toBuilder().trackedEntityType(type).build());
     }
 
@@ -320,8 +314,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      *
      * @return Repository connector
      */
-    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-            TrackedEntityInstanceQueryRepositoryScope, Boolean> byIncludeDeleted() {
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, Boolean> byIncludeDeleted() {
         return connectorFactory.eqConnector(bool -> scope.toBuilder().includeDeleted(bool).build());
     }
 
@@ -331,9 +324,17 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      *
      * @return Repository connector
      */
-    public ListFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-            TrackedEntityInstanceQueryRepositoryScope, State> byStates() {
+    public ListFilterConnector<TrackedEntityInstanceQueryCollectionRepository, State> byStates() {
         return connectorFactory.listConnector(states -> scope.toBuilder().states(states).build());
+    }
+
+    /**
+     * Filter by follow up status. It only applies if a program has been specified in {@link #byProgram()}.
+     *
+     * @return Repository connector
+     */
+    public BoolFilterConnector<TrackedEntityInstanceQueryCollectionRepository> byFollowUp() {
+        return connectorFactory.booleanConnector(followUp -> scope.toBuilder().followUp(followUp).build());
     }
 
     /**
@@ -342,11 +343,10 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      *
      * @return Repository connector
      */
-    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-            TrackedEntityInstanceQueryRepositoryScope, AssignedUserMode> byAssignedUserMode() {
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, AssignedUserMode> byAssignedUserMode() {
         return connectorFactory.eqConnector(mode -> {
             if (versionManager.isGreaterThan(DHISVersion.V2_31)) {
-                return scope.toBuilder().assignedUserMode(mode).build();
+                return TrackedEntityInstanceQueryRepositoryScopeHelper.setAssignedUserMode(scope, mode);
             } else {
                 return scope;
             }
@@ -358,9 +358,22 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      *
      * @return Repository connector
      */
-    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-            TrackedEntityInstanceQueryRepositoryScope, Boolean> allowOnlineCache() {
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, Boolean> allowOnlineCache() {
         return connectorFactory.eqConnector(bool -> scope.toBuilder().allowOnlineCache(bool).build());
+    }
+
+    /**
+     * Apply the filters defined in a {@link TrackedEntityInstanceFilter}. It will overwrite previous filters in case
+     * they overlap. In the same way, they could be overwritten by subsequent filters.
+     *
+     * @return Repository connector
+     */
+    public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, String> byTrackedEntityInstanceFilter() {
+        return connectorFactory.eqConnector(id -> {
+            TrackedEntityInstanceFilter filter =
+                    filtersRepository.byUid().eq(id).withTrackedEntityInstanceEventFilters().one().blockingGet();
+            return TrackedEntityInstanceQueryRepositoryScopeHelper.addTrackedEntityInstanceFilter(scope, filter);
+        });
     }
 
     /**
@@ -370,7 +383,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @return Repository connector
      */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-            TrackedEntityInstanceQueryRepositoryScope, RepositoryScope.OrderByDirection> orderByCreated() {
+            RepositoryScope.OrderByDirection> orderByCreated() {
         return orderConnector(TrackedEntityInstanceQueryScopeOrderColumn.CREATED);
     }
 
@@ -381,7 +394,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @return Repository connector
      */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-            TrackedEntityInstanceQueryRepositoryScope, RepositoryScope.OrderByDirection> orderByLastUpdated() {
+            RepositoryScope.OrderByDirection> orderByLastUpdated() {
         return orderConnector(TrackedEntityInstanceQueryScopeOrderColumn.LAST_UPDATED);
     }
 
@@ -391,7 +404,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @return Repository connector
      */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-            TrackedEntityInstanceQueryRepositoryScope, RepositoryScope.OrderByDirection> orderByAttribute(String attr) {
+            RepositoryScope.OrderByDirection> orderByAttribute(String attr) {
         return orderConnector(TrackedEntityInstanceQueryScopeOrderColumn.attribute(attr));
     }
 
@@ -401,7 +414,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @return Repository connector
      */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-            TrackedEntityInstanceQueryRepositoryScope, RepositoryScope.OrderByDirection> orderByOrganisationUnitName() {
+            RepositoryScope.OrderByDirection> orderByOrganisationUnitName() {
         return orderConnector(TrackedEntityInstanceQueryScopeOrderColumn.ORGUNIT_NAME);
     }
 
@@ -411,7 +424,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @return Repository connector
      */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-            TrackedEntityInstanceQueryRepositoryScope, RepositoryScope.OrderByDirection> orderByEnrollmentDate() {
+            RepositoryScope.OrderByDirection> orderByEnrollmentDate() {
         return orderConnector(TrackedEntityInstanceQueryScopeOrderColumn.ENROLLMENT_DATE);
     }
 
@@ -421,7 +434,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @return Repository connector
      */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-            TrackedEntityInstanceQueryRepositoryScope, RepositoryScope.OrderByDirection> orderByIncidentDate() {
+            RepositoryScope.OrderByDirection> orderByIncidentDate() {
         return orderConnector(TrackedEntityInstanceQueryScopeOrderColumn.INCIDENT_DATE);
     }
 
@@ -432,7 +445,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @return Repository connector
      */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-            TrackedEntityInstanceQueryRepositoryScope, RepositoryScope.OrderByDirection> orderByEventDate() {
+            RepositoryScope.OrderByDirection> orderByEventDate() {
         return orderConnector(TrackedEntityInstanceQueryScopeOrderColumn.EVENT_DATE);
     }
 
@@ -442,7 +455,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @return Repository connector
      */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-            TrackedEntityInstanceQueryRepositoryScope, RepositoryScope.OrderByDirection> orderByCompletedDate() {
+            RepositoryScope.OrderByDirection> orderByCompletedDate() {
         return orderConnector(TrackedEntityInstanceQueryScopeOrderColumn.COMPLETION_DATE);
     }
 
@@ -452,7 +465,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @return Repository connector
      */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-            TrackedEntityInstanceQueryRepositoryScope, RepositoryScope.OrderByDirection> orderByEnrollmentStatus() {
+            RepositoryScope.OrderByDirection> orderByEnrollmentStatus() {
         return orderConnector(TrackedEntityInstanceQueryScopeOrderColumn.ENROLLMENT_STATUS);
     }
 
@@ -475,10 +488,14 @@ public final class TrackedEntityInstanceQueryCollectionRepository
                 childrenAppenders, onlineCache);
     }
 
+    public TrackedEntityInstanceQueryRepositoryScope getScope() {
+        return scope;
+    }
+
     @Override
     public List<TrackedEntityInstance> blockingGet() {
         if (scope.mode().equals(RepositoryMode.OFFLINE_ONLY) || scope.mode().equals(RepositoryMode.OFFLINE_FIRST)) {
-            String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(scope, Collections.emptyList(),
+            String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(scope, Collections.emptySet(),
                     -1);
             List<TrackedEntityInstance> instances = store.selectRawQuery(sqlQuery);
             return ChildrenAppenderExecutor.appendInObjectCollection(instances, childrenAppenders,
@@ -486,9 +503,23 @@ public final class TrackedEntityInstanceQueryCollectionRepository
                             TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES)));
         } else {
             try {
-                TrackedEntityInstanceQueryOnline noPagingQuery = TrackedEntityInstanceQueryOnline.create(scope)
-                        .toBuilder().paging(false).build();
-                return onlineCallFactory.getCall(noPagingQuery).call();
+                List<TrackedEntityInstance> instances = new ArrayList<>();
+
+                List<TrackedEntityInstanceQueryOnline> onlineQueries =
+                        TrackedEntityInstanceQueryOnlineHelper.fromScope(scope);
+
+                for (TrackedEntityInstanceQueryOnline onlineQuery : onlineQueries) {
+                    TrackedEntityInstanceQueryOnline noPagingQuery = onlineQuery.toBuilder().paging(false).build();
+                    List<TrackedEntityInstance> pageInstances = onlineCallFactory.getCall(noPagingQuery).call();
+
+                    Set<String> returnedUids = UidsHelper.getUids(instances);
+                    for (TrackedEntityInstance instance : pageInstances) {
+                        if (!returnedUids.contains(instance.uid())) {
+                            instances.add(instance);
+                        }
+                    }
+                }
+                return instances;
             } catch (D2Error e) {
                 return Collections.emptyList();
             } catch (Exception e) {
@@ -524,6 +555,50 @@ public final class TrackedEntityInstanceQueryCollectionRepository
 
     @Override
     public ReadOnlyObjectRepository<TrackedEntityInstance> one() {
+        return objectRepository(list -> list.isEmpty() ? null : list.get(0));
+    }
+
+    private EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
+            RepositoryScope.OrderByDirection> orderConnector(
+            TrackedEntityInstanceQueryScopeOrderColumn col) {
+        return connectorFactory.eqConnector(direction -> {
+            List<TrackedEntityInstanceQueryScopeOrderByItem> order = new ArrayList<>(scope.order());
+            order.add(TrackedEntityInstanceQueryScopeOrderByItem.builder().column(col).direction(direction).build());
+            return scope.toBuilder().order(order).build();
+        });
+    }
+
+    @Override
+    public ReadOnlyObjectRepository<TrackedEntityInstance> uid(String uid) {
+        return objectRepository(list -> {
+            for (TrackedEntityInstance instance : list) {
+                if (uid.equals(instance.uid())) {
+                    return instance;
+                }
+            }
+            return null;
+        });
+    }
+
+    @Override
+    public Single<List<String>> getUids() {
+        return Single.fromCallable(this::blockingGetUids);
+    }
+
+    @Override
+    public List<String> blockingGetUids() {
+        if (scope.mode().equals(RepositoryMode.OFFLINE_ONLY) || scope.mode().equals(RepositoryMode.OFFLINE_FIRST)) {
+            String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getUidsWhereClause(scope, Collections.emptySet(),
+                    -1);
+            return store.selectUidsWhere(sqlQuery);
+        } else {
+            List<TrackedEntityInstance> instances = blockingGet();
+            return new ArrayList<>(UidsHelper.getUids(instances));
+        }
+    }
+
+    private ReadOnlyObjectRepository<TrackedEntityInstance> objectRepository(
+            Transformer<List<TrackedEntityInstance>, TrackedEntityInstance> transformer) {
         return new ReadOnlyObjectRepository<TrackedEntityInstance>() {
 
             @Override
@@ -534,7 +609,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
             @Override
             public TrackedEntityInstance blockingGet() {
                 List<TrackedEntityInstance> list = TrackedEntityInstanceQueryCollectionRepository.this.blockingGet();
-                return list.isEmpty() ? null : list.get(0);
+                return transformer.transform(list);
             }
 
             @Override
@@ -547,15 +622,5 @@ public final class TrackedEntityInstanceQueryCollectionRepository
                 return blockingGet() != null;
             }
         };
-    }
-
-    private EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository,
-            TrackedEntityInstanceQueryRepositoryScope, RepositoryScope.OrderByDirection> orderConnector(
-            TrackedEntityInstanceQueryScopeOrderColumn col) {
-        return connectorFactory.eqConnector(direction -> {
-            List<TrackedEntityInstanceQueryScopeOrderByItem> order = new ArrayList<>(scope.order());
-            order.add(TrackedEntityInstanceQueryScopeOrderByItem.builder().column(col).direction(direction).build());
-            return scope.toBuilder().order(order).build();
-        });
     }
 }

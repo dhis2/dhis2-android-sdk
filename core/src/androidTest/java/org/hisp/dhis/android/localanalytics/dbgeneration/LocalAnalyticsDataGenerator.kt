@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.localanalytics.dbgeneration
 
+import java.util.*
+import kotlin.random.Random
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
 import org.hisp.dhis.android.core.data.datavalue.DataValueSamples
 import org.hisp.dhis.android.core.data.enrollment.EnrollmentSamples
@@ -44,8 +46,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import java.util.*
-import kotlin.random.Random
 
 internal class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDataParams) {
 
@@ -53,21 +53,30 @@ internal class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDat
     private val uidGenerator = UidGeneratorImpl()
 
     fun generateDataValues(metadata: MetadataForDataFilling): List<DataValue> {
-        val orgUnits: List<OrganisationUnit> = metadata.organisationUnits.filter { it.level() == 3 }.groupBy { it.parent() }.map { aa -> aa.value.first() }
-        val categoryOptionCombosByCategoryCombo = metadata.categoryOptionCombos.groupBy { coc -> coc.categoryCombo() }
-        val dataElementsByCategoryCombo = metadata.aggregatedDataElements.groupBy { de -> de.categoryCombo() }
+        val orgUnits: List<OrganisationUnit> = metadata.organisationUnits.filter { it.level() == 3 }
+            .groupBy { it.parent() }.map { aa -> aa.value.first() }
+        val categoryOptionCombosByCategoryCombo = metadata.categoryOptionCombos
+            .groupBy { coc -> coc.categoryCombo() }
+        val dataElementsByCategoryCombo = metadata.aggregatedDataElements
+            .groupBy { de -> de.categoryCombo() }
 
-        val periodOrgUnits = metadata.periods.flatMap { period -> orgUnits.map { ou -> Pair(period, ou) } }
+        val periodOrgUnits = metadata.periods.flatMap {
+            period ->
+            orgUnits.map { ou -> Pair(period, ou) }
+        }
 
         val iterations = params.dataValues / 100
 
-        return categoryOptionCombosByCategoryCombo.flatMap { (categoryCombo, categoryOptionCombos) ->
+        return categoryOptionCombosByCategoryCombo.flatMap {
+            (categoryCombo, categoryOptionCombos) ->
             categoryOptionCombos.flatMap { categoryOptionCombo ->
                 dataElementsByCategoryCombo[categoryCombo]!!.flatMap { dataElement ->
                     (0 until iterations).map {
                         val (period, ou) = periodOrgUnits[it]
-                        DataValueSamples.getDataValue(ou.uid(), dataElement.uid(), period.periodId()!!, categoryOptionCombo.uid(),
-                                metadata.categoryOptionCombos.first().uid(), random.nextDouble().toString())
+                        DataValueSamples.getDataValue(
+                            ou.uid(), dataElement.uid(), period.periodId()!!, categoryOptionCombo.uid(),
+                            metadata.categoryOptionCombos.first().uid(), random.nextDouble().toString()
+                        )
                     }
                 }
             }
@@ -84,37 +93,49 @@ internal class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDat
 
     fun generateEnrollments(teis: List<TrackedEntityInstance>, program: Program): List<Enrollment> {
         return teis.map { tei ->
-            EnrollmentSamples.get(uidGenerator.generate(), tei.organisationUnit(), program.uid(), tei.uid(), getRandomDateInLastYear())
+            EnrollmentSamples.get(
+                uidGenerator.generate(), tei.organisationUnit(), program.uid(), tei.uid(),
+                getRandomDateInLastYear()
+            )
         }
     }
 
     fun generateEventsWithoutRegistration(metadata: MetadataForDataFilling): List<Event> {
         val level3OrgUnits = metadata.organisationUnits.filter { ou -> ou.level() == 3 }
         val program = metadata.programs[1]
-        val programStages = metadata.programStages.filter { ps -> ps.program()!!.uid() == program.uid() }
+        val programStages = metadata.programStages
+            .filter { ps -> ps.program()!!.uid() == program.uid() }
         return (1..params.eventsWithoutRegistration).map { i ->
             val ou = level3OrgUnits[i % level3OrgUnits.size]
             val programStage = programStages[i % programStages.size]
-            EventSamples.get(uidGenerator.generate(), null, ou.uid(), programStage.program()!!.uid(), programStage.uid(),
-                    metadata.categoryOptionCombos.first().uid(), getRandomDateInLastYear())
+            EventSamples.get(
+                uidGenerator.generate(), null, ou.uid(), programStage.program()!!.uid(), programStage.uid(),
+                metadata.categoryOptionCombos.first().uid(), getRandomDateInLastYear()
+            )
         }
     }
 
     fun generateEventsRegistration(metadata: MetadataForDataFilling, enrollments: List<Enrollment>): List<Event> {
         val program = metadata.programs[0]
-        val programStages = metadata.programStages.filter { ps -> ps.program()!!.uid() == program.uid() }
+        val programStages = metadata.programStages
+            .filter { ps -> ps.program()!!.uid() == program.uid() }
         return enrollments.flatMap { enrollment ->
             programStages.flatMap { ps ->
                 (1..params.eventsWithRegistrationPerEnrollmentAndPS).map {
-                    EventSamples.get(uidGenerator.generate(), enrollment.uid(), enrollment.organisationUnit(),
-                            enrollment.program(), ps.uid(), metadata.categoryOptionCombos.first().uid(),
-                            getRandomDateInLastYear())
+                    EventSamples.get(
+                        uidGenerator.generate(), enrollment.uid(), enrollment.organisationUnit(),
+                        enrollment.program(), ps.uid(), metadata.categoryOptionCombos.first().uid(),
+                        getRandomDateInLastYear()
+                    )
                 }
             }
         }
     }
 
-    fun generateTrackedEntityAttributeValues(trackedEntityAttributes: List<TrackedEntityAttribute>, teis: List<TrackedEntityInstance>): List<TrackedEntityAttributeValue> {
+    fun generateTrackedEntityAttributeValues(
+        trackedEntityAttributes: List<TrackedEntityAttribute>,
+        teis: List<TrackedEntityInstance>
+    ): List<TrackedEntityAttributeValue> {
         return trackedEntityAttributes.flatMap { tea ->
             teis.map { tei ->
                 TrackedEntityAttributeValueSamples.get(tea.uid(), tei.uid(), generateRandomStringValue())
@@ -122,7 +143,10 @@ internal class LocalAnalyticsDataGenerator(private val params: LocalAnalyticsDat
         }
     }
 
-    fun generateTrackedEntityDataValues(dataElements: List<DataElement>, events: List<Event>): List<TrackedEntityDataValue> {
+    fun generateTrackedEntityDataValues(
+        dataElements: List<DataElement>,
+        events: List<Event>
+    ): List<TrackedEntityDataValue> {
         return dataElements.flatMap { de ->
             events.map { event ->
                 TrackedEntityDataValueSamples.get(de.uid(), event.uid(), generateRandomStringValue())

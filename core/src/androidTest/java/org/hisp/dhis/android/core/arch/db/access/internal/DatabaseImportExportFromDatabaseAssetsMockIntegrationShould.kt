@@ -27,19 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.db.access.internal
 
-import androidx.test.platform.app.InstrumentationRegistry
-import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.D2Factory
-import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
-import org.hisp.dhis.android.core.systeminfo.SystemInfoTableInfo
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
-import org.junit.After
-import org.junit.AfterClass
-import org.junit.BeforeClass
-import org.junit.Test
-import org.junit.runner.RunWith
-
 // @RunWith(D2JunitRunner::class)
 class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould {
 

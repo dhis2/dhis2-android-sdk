@@ -30,20 +30,20 @@ package org.hisp.dhis.android.core.systeminfo;
 
 import org.junit.Test;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 public class SMSVersionShould {
 
     @Test
     public void return_sms_version_if_patch_version_exists() {
         SMSVersion smsVersion = SMSVersion.getValue("2.33.2");
-        assertThat(smsVersion).isEqualByComparingTo(SMSVersion.V1);
+        assertThat(smsVersion).isEqualTo(SMSVersion.V1);
     }
 
     @Test
     public void return_latest_sms_version_if_patch_does_not_exist() {
         SMSVersion smsVersion = SMSVersion.getValue("2.33.100");
-        assertThat(smsVersion).isEqualByComparingTo(SMSVersion.V2);
+        assertThat(smsVersion).isEqualTo(SMSVersion.V2);
     }
 
     @Test

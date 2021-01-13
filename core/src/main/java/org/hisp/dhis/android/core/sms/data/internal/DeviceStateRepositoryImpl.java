@@ -19,6 +19,7 @@ import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
+@SuppressLint("MissingPermission")
 public class DeviceStateRepositoryImpl implements DeviceStateRepository {
     private final Context context;
 

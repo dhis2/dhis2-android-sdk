@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
 import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.category.CategoryTableInfo;
 
 public final class CategoryFields {
@@ -46,7 +45,7 @@ public final class CategoryFields {
     public static final Fields<Category> allFields = Fields.<Category>builder()
             .fields(fh.getIdentifiableFields())
             .fields(
-                    fh.<CategoryOption>nestedField(CATEGORY_OPTIONS).with(CategoryOptionFields.allFields),
+                    fh.nestedFieldWithUid(CATEGORY_OPTIONS),
                     fh.<String>field(CategoryTableInfo.Columns.DATA_DIMENSION_TYPE)
             ).build();
 

@@ -28,7 +28,8 @@
 
 package org.hisp.dhis.android.core.period.internal;
 
-import org.assertj.core.util.Lists;
+import com.google.common.collect.Lists;
+
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.period.DatePeriod;
 import org.junit.Test;
@@ -38,7 +39,7 @@ import org.junit.runners.JUnit4;
 import java.util.Date;
 import java.util.List;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(JUnit4.class)
 public class InPeriodQueryHelperShould {

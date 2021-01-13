@@ -36,7 +36,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.text.ParseException;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 public class CategoryComboShould extends BaseObjectShould implements ObjectShould {
 
@@ -57,7 +57,7 @@ public class CategoryComboShould extends BaseObjectShould implements ObjectShoul
                 BaseIdentifiableObject.DATE_FORMAT.parse("2016-04-18T16:04:34.745"));
         assertThat(combo.name()).isEqualTo("Births");
         assertThat(combo.displayName()).isEqualTo("Births");
-        assertThat(combo.isDefault()).isEqualTo(false);
+        assertThat(combo.isDefault()).isFalse();
 
         // categories
         assertThat(combo.categories().get(0).uid()).isEqualTo("KfdsGBcoiCa");

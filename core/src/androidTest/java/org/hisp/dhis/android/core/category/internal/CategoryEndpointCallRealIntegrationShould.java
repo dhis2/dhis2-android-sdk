@@ -42,7 +42,7 @@ import java.util.List;
 
 import io.reactivex.Single;
 
-import static junit.framework.Assert.assertFalse;
+import static com.google.common.truth.Truth.assertThat;
 
 public class CategoryEndpointCallRealIntegrationShould extends BaseRealIntegrationTest {
 
@@ -63,6 +63,6 @@ public class CategoryEndpointCallRealIntegrationShould extends BaseRealIntegrati
                 new HashSet<>(Lists.newArrayList("cX5k9anHEHd")));
         List<Category> categories = categoryEndpointCall.blockingGet();
 
-        assertFalse(categories.isEmpty());
+        assertThat(categories.isEmpty()).isFalse();
     }
 }

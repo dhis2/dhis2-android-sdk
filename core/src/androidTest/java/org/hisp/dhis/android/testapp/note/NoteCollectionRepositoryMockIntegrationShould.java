@@ -36,8 +36,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class NoteCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -45,53 +44,53 @@ public class NoteCollectionRepositoryMockIntegrationShould extends BaseMockInteg
     @Test
     public void find_all() {
         List<Note> notes = d2.noteModule().notes().blockingGet();
-        assertThat(notes.size(), is(10));
+        assertThat(notes.size()).isEqualTo(10);
     }
 
     @Test
     public void filter_by_uid() {
         List<Note> notes = d2.noteModule().notes().byUid().eq("enrollmentNote1").blockingGet();
-        assertThat(notes.size(), is(1));
+        assertThat(notes.size()).isEqualTo(1);
     }
 
     @Test
     public void filter_by_note_type() {
         List<Note> enrollmentNotes = d2.noteModule().notes()
                 .byNoteType().eq(Note.NoteType.ENROLLMENT_NOTE).blockingGet();
-        assertThat(enrollmentNotes.size(), is(4));
+        assertThat(enrollmentNotes.size()).isEqualTo(4);
 
         List<Note> eventNotes = d2.noteModule().notes()
                 .byNoteType().eq(Note.NoteType.EVENT_NOTE).blockingGet();
-        assertThat(eventNotes.size(), is(6));
+        assertThat(eventNotes.size()).isEqualTo(6);
     }
 
     @Test
     public void filter_by_event_uid() {
         List<Note> notes = d2.noteModule().notes().byEventUid().eq("event1").blockingGet();
-        assertThat(notes.size(), is(2));
+        assertThat(notes.size()).isEqualTo(2);
     }
 
     @Test
     public void filter_by_enrollment_uid() {
         List<Note> notes = d2.noteModule().notes().byEnrollmentUid().eq("enroll1").blockingGet();
-        assertThat(notes.size(), is(2));
+        assertThat(notes.size()).isEqualTo(2);
     }
 
     @Test
     public void filter_by_value() {
         List<Note> notes = d2.noteModule().notes().byValue().eq("TEI enrollment note 3").blockingGet();
-        assertThat(notes.size(), is(1));
+        assertThat(notes.size()).isEqualTo(1);
     }
 
     @Test
     public void filter_by_stored_by() {
         List<Note> notes = d2.noteModule().notes().byStoredBy().eq("android").blockingGet();
-        assertThat(notes.size(), is(10));
+        assertThat(notes.size()).isEqualTo(10);
     }
 
     @Test
     public void filter_by_stored_date() {
         List<Note> notes = d2.noteModule().notes().byStoredDate().eq("2018-03-19T15:20:55.058").blockingGet();
-        assertThat(notes.size(), is(8));
+        assertThat(notes.size()).isEqualTo(8);
     }
 }

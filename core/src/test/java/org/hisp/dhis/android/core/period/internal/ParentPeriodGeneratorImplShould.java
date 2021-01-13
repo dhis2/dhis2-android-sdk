@@ -27,7 +27,8 @@
  */
 package org.hisp.dhis.android.core.period.internal;
 
-import org.assertj.core.util.Lists;
+import com.google.common.collect.Lists;
+
 import org.hisp.dhis.android.core.period.Period;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.junit.Before;
@@ -37,7 +38,7 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -191,7 +192,7 @@ public class ParentPeriodGeneratorImplShould {
     }
 
     private void assertChildAnswerInParentAnswer(Period period) {
-        assertThat(periodGenerator.generatePeriods().contains(period)).isEqualTo(true);
+        assertThat(periodGenerator.generatePeriods().contains(period)).isTrue();
     }
 
     @Test

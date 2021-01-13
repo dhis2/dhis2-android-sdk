@@ -233,7 +233,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
 
         assertThat(partitions.size()).isEqualTo(1);
         assertThat(partitions.get(0).size()).isEqualTo(3);
-        assertThat(UidsHelper.getUidsList(partitions.get(0)).containsAll(Lists.newArrayList(tei1, tei2, tei3))).isEqualTo(true);
+        assertThat(UidsHelper.getUidsList(partitions.get(0)).containsAll(Lists.newArrayList(tei1, tei2, tei3))).isTrue();
     }
 
     @Test

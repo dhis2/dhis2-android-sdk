@@ -36,8 +36,8 @@ import org.junit.runners.JUnit4;
 import java.util.Calendar;
 import java.util.List;
 
+import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.fail;
-import static org.assertj.core.api.Java6Assertions.assertThat;
 
 @RunWith(JUnit4.class)
 public class AbstractPeriodGeneratorShould {

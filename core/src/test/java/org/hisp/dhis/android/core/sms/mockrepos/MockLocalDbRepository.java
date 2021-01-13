@@ -11,7 +11,6 @@ import org.hisp.dhis.android.core.sms.mockrepos.testobjects.MockMetadata;
 import org.hisp.dhis.android.core.sms.mockrepos.testobjects.MockObjects;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.smscompression.models.SMSMetadata;
-import org.mockito.Mock;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -21,14 +20,16 @@ import io.reactivex.Completable;
 import io.reactivex.Single;
 
 public class MockLocalDbRepository implements LocalDbRepository {
+    private static final int RESULT_WAITING_TIMEOUT_DEFAULT = 120;
+
     private String gatewayNumber = "525525";
     private String confirmationSenderNumber = null;
-    private Integer resultWaitingTimeout = 120;
+    private Integer resultWaitingTimeout = RESULT_WAITING_TIMEOUT_DEFAULT;
     private SMSMetadata metadata = new MockMetadata();
     private WebApiRepository.GetMetadataIdsConfig metadataIdsConfig = new WebApiRepository.GetMetadataIdsConfig();
     private boolean moduleEnabled = true;
     private boolean waitingForResult = false;
-    private HashMap<Integer, SubmissionType> ongoingSubmissions = new HashMap<>();
+    private final HashMap<Integer, SubmissionType> ongoingSubmissions = new HashMap<>();
 
     public MockLocalDbRepository() {
         metadata.lastSyncDate = new Date();
@@ -50,6 +51,11 @@ public class MockLocalDbRepository implements LocalDbRepository {
     }
 
     @Override
+    public Completable deleteGatewayNumber() {
+        return Completable.fromAction(() -> gatewayNumber = null);
+    }
+
+    @Override
     public Single<Integer> getWaitingResultTimeout() {
         return Single.fromCallable(() -> resultWaitingTimeout);
     }
@@ -60,6 +66,11 @@ public class MockLocalDbRepository implements LocalDbRepository {
     }
 
     @Override
+    public Completable deleteWaitingResultTimeout() {
+        return Completable.fromAction(() -> resultWaitingTimeout = RESULT_WAITING_TIMEOUT_DEFAULT);
+    }
+
+    @Override
     public Single<String> getConfirmationSenderNumber() {
         return Single.fromCallable(() -> confirmationSenderNumber);
     }
@@ -67,6 +78,11 @@ public class MockLocalDbRepository implements LocalDbRepository {
     @Override
     public Completable setConfirmationSenderNumber(String number) {
         return Completable.fromAction(() -> confirmationSenderNumber = number);
+    }
+
+    @Override
+    public Completable deleteConfirmationSenderNumber() {
+        return Completable.fromAction(() -> confirmationSenderNumber = null);
     }
 
     @Override

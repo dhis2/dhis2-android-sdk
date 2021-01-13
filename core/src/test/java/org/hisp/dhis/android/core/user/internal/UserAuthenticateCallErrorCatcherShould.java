@@ -38,7 +38,7 @@ import org.junit.runners.JUnit4;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(JUnit4.class)
 public class UserAuthenticateCallErrorCatcherShould {

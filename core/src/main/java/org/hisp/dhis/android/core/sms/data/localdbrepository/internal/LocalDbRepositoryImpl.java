@@ -102,16 +102,14 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     @Override
     public Single<String> getGatewayNumber() {
         return Single.fromCallable(() ->
-                context.getSharedPreferences(CONFIG_FILE, Context.MODE_PRIVATE)
-                        .getString(KEY_GATEWAY, "")
+                prefs().getString(KEY_GATEWAY, "")
         );
     }
 
     @Override
     public Completable setGatewayNumber(String number) {
         return Completable.fromAction(() -> {
-            boolean result = context.getSharedPreferences(CONFIG_FILE, Context.MODE_PRIVATE)
-                    .edit().putString(KEY_GATEWAY, number).commit();
+            boolean result = prefs().edit().putString(KEY_GATEWAY, number).commit();
             if (!result) {
                 throw new IOException("Failed writing gateway number to local storage");
             }
@@ -119,18 +117,30 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     }
 
     @Override
+    public Completable deleteGatewayNumber() {
+        return deleteKey(KEY_GATEWAY);
+    }
+
+    private Completable deleteKey(String key) {
+        return Completable.fromAction(() -> {
+            boolean result = prefs().edit().remove(key).commit();
+            if (!result) {
+                throw new IOException("Failed deleting value from local storage for key: " + key);
+            }
+        });
+    }
+
+    @Override
     public Single<Integer> getWaitingResultTimeout() {
         return Single.fromCallable(() ->
-                context.getSharedPreferences(CONFIG_FILE, Context.MODE_PRIVATE)
-                        .getInt(KEY_WAITING_RESULT_TIMEOUT, 120)
+                prefs().getInt(KEY_WAITING_RESULT_TIMEOUT, 120)
         );
     }
 
     @Override
     public Completable setWaitingResultTimeout(Integer timeoutSeconds) {
         return Completable.fromAction(() -> {
-            boolean result = context.getSharedPreferences(CONFIG_FILE, Context.MODE_PRIVATE)
-                    .edit().putInt(KEY_WAITING_RESULT_TIMEOUT, timeoutSeconds).commit();
+            boolean result = prefs().edit().putInt(KEY_WAITING_RESULT_TIMEOUT, timeoutSeconds).commit();
             if (!result) {
                 throw new IOException("Failed writing timeout setting to local storage");
             }
@@ -138,22 +148,30 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     }
 
     @Override
+    public Completable deleteWaitingResultTimeout() {
+        return deleteKey(KEY_WAITING_RESULT_TIMEOUT);
+    }
+
+    @Override
     public Single<String> getConfirmationSenderNumber() {
         return Single.fromCallable(() ->
-                context.getSharedPreferences(CONFIG_FILE, Context.MODE_PRIVATE)
-                        .getString(KEY_CONFIRMATION_SENDER, "")
+                prefs().getString(KEY_CONFIRMATION_SENDER, "")
         );
     }
 
     @Override
     public Completable setConfirmationSenderNumber(String number) {
         return Completable.fromAction(() -> {
-            boolean result = context.getSharedPreferences(CONFIG_FILE, Context.MODE_PRIVATE)
-                    .edit().putString(KEY_CONFIRMATION_SENDER, number).commit();
+            boolean result = prefs().edit().putString(KEY_CONFIRMATION_SENDER, number).commit();
             if (!result) {
                 throw new IOException("Failed writing confirmation sender number to local storage");
             }
         });
+    }
+
+    @Override
+    public Completable deleteConfirmationSenderNumber() {
+        return deleteKey(KEY_CONFIRMATION_SENDER);
     }
 
     @Override
@@ -243,9 +261,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     public Completable setMetadataDownloadConfig(WebApiRepository.GetMetadataIdsConfig config) {
         return Completable.fromAction(() -> {
             String value = ObjectMapperFactory.objectMapper().writeValueAsString(config);
-            SharedPreferences.Editor editor = context
-                    .getSharedPreferences(CONFIG_FILE, Context.MODE_PRIVATE)
-                    .edit().putString(KEY_METADATA_CONFIG, value);
+            SharedPreferences.Editor editor = prefs().edit().putString(KEY_METADATA_CONFIG, value);
             if (!editor.commit()) {
                 throw new IOException("Failed writing SMS metadata config to local storage");
             }
@@ -255,8 +271,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     @Override
     public Single<WebApiRepository.GetMetadataIdsConfig> getMetadataDownloadConfig() {
         return Single.fromCallable(() -> {
-            String stringVal = context.getSharedPreferences(CONFIG_FILE, Context.MODE_PRIVATE)
-                    .getString(KEY_METADATA_CONFIG, null);
+            String stringVal = prefs().getString(KEY_METADATA_CONFIG, null);
             return ObjectMapperFactory.objectMapper()
                     .readValue(stringVal, WebApiRepository.GetMetadataIdsConfig.class);
         });
@@ -265,8 +280,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     @Override
     public Completable setModuleEnabled(boolean enabled) {
         return Completable.fromAction(() -> {
-            boolean result = context.getSharedPreferences(CONFIG_FILE, Context.MODE_PRIVATE)
-                    .edit().putBoolean(KEY_MODULE_ENABLED, enabled).commit();
+            boolean result = prefs().edit().putBoolean(KEY_MODULE_ENABLED, enabled).commit();
             if (!result) {
                 throw new IOException("Failed writing module enabled value to local storage");
             }
@@ -276,16 +290,14 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     @Override
     public Single<Boolean> isModuleEnabled() {
         return Single.fromCallable(() ->
-                context.getSharedPreferences(CONFIG_FILE, Context.MODE_PRIVATE)
-                        .getBoolean(KEY_MODULE_ENABLED, false)
+                prefs().getBoolean(KEY_MODULE_ENABLED, false)
         );
     }
 
     @Override
     public Completable setWaitingForResultEnabled(boolean enabled) {
         return Completable.fromAction(() -> {
-            boolean result = context.getSharedPreferences(CONFIG_FILE, Context.MODE_PRIVATE)
-                    .edit().putBoolean(KEY_WAIT_FOR_RESULT, enabled).commit();
+            boolean result = prefs().edit().putBoolean(KEY_WAIT_FOR_RESULT, enabled).commit();
             if (!result) {
                 throw new IOException("Failed writing value to local storage, waiting for result");
             }
@@ -295,8 +307,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     @Override
     public Single<Boolean> getWaitingForResultEnabled() {
         return Single.fromCallable(() ->
-                context.getSharedPreferences(CONFIG_FILE, Context.MODE_PRIVATE)
-                        .getBoolean(KEY_WAIT_FOR_RESULT, false)
+                prefs().getBoolean(KEY_WAIT_FOR_RESULT, false)
         );
     }
 
@@ -362,5 +373,9 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     @Override
     public Single<Relationship> getRelationship(String relationshipUid) {
         return Single.fromCallable(() -> relationshipStore.selectByUid(relationshipUid));
+    }
+
+    private SharedPreferences prefs() {
+        return context.getSharedPreferences(CONFIG_FILE, Context.MODE_PRIVATE);
     }
 }

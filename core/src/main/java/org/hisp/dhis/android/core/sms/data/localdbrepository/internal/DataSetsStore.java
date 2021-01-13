@@ -1,18 +1,14 @@
 package org.hisp.dhis.android.core.sms.data.localdbrepository.internal;
 
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.dataset.DataSetCollectionRepository;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationCollectionRepository;
-import org.hisp.dhis.android.core.dataset.DataSetElement;
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationStore;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.datavalue.DataValueCollectionRepository;
 import org.hisp.dhis.android.core.datavalue.DataValueModule;
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,39 +21,24 @@ class DataSetsStore {
     private final DataValueModule dataValueModule;
     private final DataValueStore dataValueStore;
     private final DataSetCompleteRegistrationStore dataSetStore;
-    private final DataSetCollectionRepository dataSetRepository;
     private final DataSetCompleteRegistrationCollectionRepository completeRegistrationRepository;
 
     @Inject
     DataSetsStore(DataValueModule dataValueModule,
                   DataValueStore dataValueStore,
                   DataSetCompleteRegistrationStore dataSetStore,
-                  DataSetCollectionRepository dataSetRepository,
                   DataSetCompleteRegistrationCollectionRepository completeRegistrationRepository) {
         this.dataValueModule = dataValueModule;
         this.dataValueStore = dataValueStore;
         this.dataSetStore = dataSetStore;
-        this.dataSetRepository = dataSetRepository;
         this.completeRegistrationRepository = completeRegistrationRepository;
     }
 
     Single<List<DataValue>> getDataValues(String dataSetUid, String orgUnit,
                                           String period, String attributeOptionComboUid) {
         return Single.fromCallable(() -> {
-            DataSet dataSet = dataSetRepository
-                    .byUid().eq(dataSetUid)
-                    .withDataSetElements()
-                    .one().blockingGet();
-
-            List<String> dataElementUids = new ArrayList<>();
-            if (dataSet != null && dataSet.dataSetElements() != null) {
-                for (DataSetElement dataSetElement : dataSet.dataSetElements()) {
-                    dataElementUids.add(dataSetElement.dataElement().uid());
-                }
-            }
-
             DataValueCollectionRepository baseDataValuesRepo = dataValueModule.dataValues()
-                    .byDataElementUid().in(dataElementUids)
+                    .byDataSetUid(dataSetUid)
                     .byOrganisationUnitUid().eq(orgUnit)
                     .byPeriod().eq(period)
                     .byAttributeOptionComboUid().eq(attributeOptionComboUid);

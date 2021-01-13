@@ -171,7 +171,7 @@ public class DataSetHandlerShould {
     @Test
     public void not_perform_any_action_passing_null_arguments() {
 
-        dataSetHandler.handle(null, null);
+        dataSetHandler.handle(null);
 
         verify(dataSetStore, never()).delete(anyString());
         verify(dataSetStore, never()).update(any(DataSet.class));

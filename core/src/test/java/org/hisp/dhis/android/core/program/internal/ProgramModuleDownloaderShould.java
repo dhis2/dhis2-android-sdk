@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.program.internal;
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCall;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
 import org.hisp.dhis.android.core.common.BaseCallShould;
+import org.hisp.dhis.android.core.event.EventFilter;
 import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.option.OptionGroup;
 import org.hisp.dhis.android.core.option.OptionSet;
@@ -38,6 +39,7 @@ import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,8 +57,7 @@ import okhttp3.MediaType;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 
-import static junit.framework.Assert.assertTrue;
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.when;
 
@@ -85,6 +86,12 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
 
     @Mock
     private UidsCall<TrackedEntityAttribute> trackedEntityAttributeCall;
+
+    @Mock
+    private UidsCall<TrackedEntityInstanceFilter> trackedEntityInstanceFilterCall;
+
+    @Mock
+    private UidsCall<EventFilter> eventFilterCall;
 
     @Mock
     private ListCall<RelationshipType> relationshipTypeCall;
@@ -118,6 +125,8 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
         returnEmptyList(optionSetCall);
         returnEmptyList(optionCall);
         returnEmptyList(optionGroupCall);
+        returnEmptyList(trackedEntityInstanceFilterCall);
+        returnEmptyList(eventFilterCall);
         returnEmptyList(programRuleCall);
         returnEmptyList(programStageCall);
 
@@ -127,6 +136,8 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
                 programRuleCall,
                 trackedEntityTypeCall,
                 trackedEntityAttributeCall,
+                trackedEntityInstanceFilterCall,
+                eventFilterCall,
                 relationshipTypeCall,
                 optionSetCall,
                 optionCall,
@@ -153,7 +164,7 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     @Test
     public void return_programs() {
         List<Program> programs = programModuleDownloader.downloadMetadata(anySet()).blockingGet();
-        assertTrue(!programs.isEmpty());
+        assertThat(!programs.isEmpty()).isTrue();
         assertThat(programs.get(0)).isEqualTo(program);
     }
 
@@ -184,6 +195,18 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     @Test(expected = Exception.class)
     public void fail_when_tracked_entity_attributes_call_fails() {
         returnError(trackedEntityAttributeCall);
+        programModuleDownloader.downloadMetadata(anySet()).blockingGet();
+    }
+
+    @Test(expected = Exception.class)
+    public void fail_when_tracked_entity_instance_filters_call_fails() {
+        returnError(trackedEntityInstanceFilterCall);
+        programModuleDownloader.downloadMetadata(anySet()).blockingGet();
+    }
+
+    @Test(expected = Exception.class)
+    public void fail_when_event_filters_call_fails() {
+        returnError(eventFilterCall);
         programModuleDownloader.downloadMetadata(anySet()).blockingGet();
     }
 

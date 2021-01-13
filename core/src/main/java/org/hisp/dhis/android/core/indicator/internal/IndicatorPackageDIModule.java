@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
 import org.hisp.dhis.android.core.indicator.Indicator;
 import org.hisp.dhis.android.core.indicator.IndicatorModule;
 import org.hisp.dhis.android.core.indicator.IndicatorType;
+import org.hisp.dhis.android.core.indicator.datasetindicatorengine.IndicatorEngineEntityDIModule;
 
 import dagger.Module;
 import dagger.Provides;
@@ -41,7 +42,8 @@ import retrofit2.Retrofit;
 @Module(includes = {
         DataSetIndicatorEntityDIModule.class,
         IndicatorEntityDIModule.class,
-        IndicatorTypeEntityDIModule.class
+        IndicatorTypeEntityDIModule.class,
+        IndicatorEngineEntityDIModule.class
 })
 public final class IndicatorPackageDIModule {
 

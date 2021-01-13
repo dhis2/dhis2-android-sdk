@@ -33,6 +33,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 
+import org.hisp.dhis.android.core.analytics.AnalyticsModule;
 import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent;
 import org.hisp.dhis.android.core.arch.d2.internal.D2Modules;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
@@ -106,6 +107,10 @@ public final class D2 {
     @NonNull
     public AggregatedModule aggregatedModule() {
         return d2DIComponent.aggregatedModule();
+    }
+
+    public AnalyticsModule analyticsModule() {
+        return this.modules.analytics;
     }
 
     public SystemInfoModule systemInfoModule() {

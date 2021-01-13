@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.imports.internal.conflicts
 
+import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.whenever
-import junit.framework.Assert.assertTrue
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
 import org.junit.Test
 
@@ -45,9 +45,12 @@ internal class InvalidAttributeValueTypeConflictShould : BaseConflictShould() {
         checkMatchAndAttribute(TrackedImportConflictSamples.invalidUsernameAttribute(attributeUid, value))
         checkMatchAndAttribute(TrackedImportConflictSamples.invalidAttributeOption(attributeUid, value, optionSetUid))
 
-        assertTrue(InvalidAttributeValueTypeConflict.matches(TrackedImportConflictSamples.invalidFileAttribute(value)))
-        assertTrue(InvalidAttributeValueTypeConflict
-                .getTrackedEntityAttribute(TrackedImportConflictSamples.invalidFileAttribute(value)).isNullOrBlank())
+        assertThat(InvalidAttributeValueTypeConflict.matches(TrackedImportConflictSamples.invalidFileAttribute(value)))
+            .isTrue()
+        assertThat(
+            InvalidAttributeValueTypeConflict
+                .getTrackedEntityAttribute(TrackedImportConflictSamples.invalidFileAttribute(value)).isNullOrBlank()
+        ).isTrue()
     }
 
     @Test
@@ -61,18 +64,18 @@ internal class InvalidAttributeValueTypeConflictShould : BaseConflictShould() {
         checkDescription(TrackedImportConflictSamples.invalidAttributeOption(attributeUid, value, optionSetUid))
 
         val fileConflictDescription = InvalidAttributeValueTypeConflict
-                .getDisplayDescription(TrackedImportConflictSamples.invalidFileAttribute(value), context)
-        assertTrue(fileConflictDescription == TrackedImportConflictSamples.invalidFileAttribute(value).value())
+            .getDisplayDescription(TrackedImportConflictSamples.invalidFileAttribute(value), context)
+        assertThat(fileConflictDescription == TrackedImportConflictSamples.invalidFileAttribute(value).value()).isTrue()
     }
 
     private fun checkMatchAndAttribute(conflict: ImportConflict) {
-        assertTrue(InvalidAttributeValueTypeConflict.matches(conflict))
-        assertTrue(InvalidAttributeValueTypeConflict.getTrackedEntityAttribute(conflict) == attributeUid)
+        assertThat(InvalidAttributeValueTypeConflict.matches(conflict)).isTrue()
+        assertThat(InvalidAttributeValueTypeConflict.getTrackedEntityAttribute(conflict) == attributeUid).isTrue()
     }
 
     private fun checkDescription(conflict: ImportConflict) {
         whenever(attribute.displayFormName()) doReturn "Attribute form name"
         val description = InvalidAttributeValueTypeConflict.getDisplayDescription(conflict, context)
-        assertTrue(description == "Invalid value type for attribute: Attribute form name")
+        assertThat(description == "Invalid value type for attribute: Attribute form name").isTrue()
     }
 }

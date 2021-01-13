@@ -37,8 +37,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class OptionSetCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -46,20 +45,20 @@ public class OptionSetCollectionRepositoryMockIntegrationShould extends BaseMock
     @Test
     public void find_all() {
         List<OptionSet> optionSets = d2.optionModule().optionSets().blockingGet();
-        assertThat(optionSets.size(), is(2));
+        assertThat(optionSets.size()).isEqualTo(2);
     }
 
     @Test
     public void filter_by_version() {
         List<OptionSet> optionSets = d2.optionModule().optionSets()
                 .byVersion().eq(1).blockingGet();
-        assertThat(optionSets.size(), is(1));
+        assertThat(optionSets.size()).isEqualTo(1);
     }
 
     @Test
     public void filter_by_value_type() {
         List<OptionSet> optionSets = d2.optionModule().optionSets()
                 .byValueType().eq(ValueType.TEXT).blockingGet();
-        assertThat(optionSets.size(), is(1));
+        assertThat(optionSets.size()).isEqualTo(1);
     }
 }

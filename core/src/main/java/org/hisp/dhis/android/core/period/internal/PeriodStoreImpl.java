@@ -63,6 +63,15 @@ public final class PeriodStoreImpl extends ObjectWithoutUidStoreImpl<Period> imp
     }
 
     @Override
+    public Period selectByPeriodId(String periodId) {
+        String whereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(PeriodTableInfo.Columns.PERIOD_ID, periodId)
+                .build();
+
+        return selectOneWhere(whereClause);
+    }
+
+    @Override
     public Period selectPeriodByTypeAndDate(PeriodType periodType, Date date) {
 
         String whereClause = new WhereClauseBuilder()

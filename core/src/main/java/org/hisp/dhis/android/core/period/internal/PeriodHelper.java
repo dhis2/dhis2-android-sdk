@@ -31,8 +31,10 @@ package org.hisp.dhis.android.core.period.internal;
 import org.hisp.dhis.android.core.period.Period;
 import org.hisp.dhis.android.core.period.PeriodType;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -47,16 +49,24 @@ public class PeriodHelper {
     private final PeriodForDataSetManager periodForDataSetManager;
     private final ParentPeriodGenerator parentPeriodGenerator;
     private final PeriodParser periodParser;
+    private final CalendarProvider calendarProvider;
 
     @Inject
     PeriodHelper(PeriodStore periodStore,
                  PeriodForDataSetManager periodForDataSetManager,
                  ParentPeriodGenerator parentPeriodGenerator,
-                 PeriodParser periodParser) {
+                 PeriodParser periodParser,
+                 CalendarProvider calendarProvider) {
         this.periodStore = periodStore;
         this.periodForDataSetManager = periodForDataSetManager;
         this.parentPeriodGenerator = parentPeriodGenerator;
         this.periodParser = periodParser;
+        this.calendarProvider = calendarProvider;
+    }
+
+    public static Integer getDays(Period period) {
+        long diff = period.endDate().getTime() - period.startDate().getTime();
+        return (int) TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -71,7 +81,7 @@ public class PeriodHelper {
      */
     @Deprecated
     public Period getPeriod(@NonNull PeriodType periodType, @NonNull Date date) {
-        return blockingGetPeriodForPeriodTypeAndDate(periodType, date);
+        return blockingGetPeriodForPeriodTypeAndDate(periodType, date, 0);
     }
 
     /**
@@ -83,15 +93,7 @@ public class PeriodHelper {
      * @return Period
      */
     public Period blockingGetPeriodForPeriodTypeAndDate(@NonNull PeriodType periodType, @NonNull Date date) {
-        Period period = periodStore.selectPeriodByTypeAndDate(periodType, date);
-
-        if (period == null) {
-            Period newPeriod = parentPeriodGenerator.generatePeriod(periodType, date);
-            periodStore.updateOrInsertWhere(newPeriod);
-            return newPeriod;
-        } else {
-            return period;
-        }
+        return blockingGetPeriodForPeriodTypeAndDate(periodType, date, 0);
     }
 
     /**
@@ -102,9 +104,44 @@ public class PeriodHelper {
      * @param date Date contained in the period
      *
      * @return {@code Single} with the generated period.
-     * */
+     */
     public Single<Period> getPeriodForPeriodTypeAndDate(@NonNull PeriodType periodType, @NonNull Date date) {
         return Single.just(blockingGetPeriodForPeriodTypeAndDate(periodType, date));
+    }
+
+    /**
+     * Get a period object specifying a periodType and a date in the period.
+     * If the period does not exist in the database, it is inserted.
+     *
+     * @param periodType Period type
+     * @param date Date contained in the period
+     * @param periodOffset Number of periods backwards or forwards relative to 'date'
+     * @return Period
+     */
+    public Period blockingGetPeriodForPeriodTypeAndDate(@NonNull PeriodType periodType, @NonNull Date date,
+                                                        @NonNull int periodOffset) {
+        Period period = parentPeriodGenerator.generatePeriod(periodType, date, periodOffset);
+
+        if (periodStore.selectByPeriodId(period.periodId()) == null) {
+            periodStore.updateOrInsertWhere(period);
+        }
+
+        return period;
+    }
+
+    /**
+     * Get a period object specifying a periodType and a date in the period.
+     * If the period does not exist in the database, it is inserted.
+     *
+     * @param periodType Period type
+     * @param date Date contained in the period
+     * @param periodOffset Number of periods backwards or forwards relative to 'date'
+     *
+     * @return {@code Single} with the generated period.
+     */
+    public Single<Period> getPeriodForPeriodTypeAndDate(@NonNull PeriodType periodType, @NonNull Date date,
+                                                        @NonNull int periodOffset) {
+        return Single.just(blockingGetPeriodForPeriodTypeAndDate(periodType, date, periodOffset));
     }
 
     /**
@@ -137,6 +174,14 @@ public class PeriodHelper {
 
     public Single<List<Period>> getPeriodsForDataSet(String dataSetUid) {
         return periodForDataSetManager.getPeriodsForDataSet(dataSetUid);
+    }
+
+    /**
+     * Get a calendar instance
+     * @return a calendar instance
+     */
+    public Calendar getCalendar() {
+        return calendarProvider.getCalendar();
     }
 
     public List<Period> blockingGetPeriodsForDataSet(String dataSetUid) {

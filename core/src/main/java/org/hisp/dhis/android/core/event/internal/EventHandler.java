@@ -30,19 +30,27 @@ package org.hisp.dhis.android.core.event.internal;
 
 import android.util.Log;
 
+import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerImpl;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.event.EventInternalAccessor;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.note.Note;
 import org.hisp.dhis.android.core.note.internal.NoteDHISVersionManager;
 import org.hisp.dhis.android.core.note.internal.NoteUniquenessManager;
+import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -55,22 +63,29 @@ final class EventHandler extends IdentifiableDataHandlerImpl<Event> {
     private final Handler<Note> noteHandler;
     private final NoteDHISVersionManager noteVersionManager;
     private final NoteUniquenessManager noteUniquenessManager;
+    private final OrphanCleaner<Event, Relationship> relationshipOrphanCleaner;
 
     @Inject
-    EventHandler(EventStore eventStore,
-                 HandlerWithTransformer<TrackedEntityDataValue> trackedEntityDataValueHandler,
-                 Handler<Note> noteHandler,
-                 NoteDHISVersionManager noteVersionManager,
-                 NoteUniquenessManager noteUniquenessManager) {
-        super(eventStore);
+    EventHandler(
+            RelationshipDHISVersionManager relationshipVersionManager,
+            RelationshipHandler relationshipHandler,
+            EventStore eventStore,
+            HandlerWithTransformer<TrackedEntityDataValue> trackedEntityDataValueHandler,
+            Handler<Note> noteHandler,
+            NoteDHISVersionManager noteVersionManager,
+            NoteUniquenessManager noteUniquenessManager,
+            OrphanCleaner<Event, Relationship> relationshipOrphanCleaner) {
+        super(eventStore, relationshipVersionManager, relationshipHandler);
         this.trackedEntityDataValueHandler = trackedEntityDataValueHandler;
         this.noteHandler = noteHandler;
         this.noteVersionManager = noteVersionManager;
         this.noteUniquenessManager = noteUniquenessManager;
+        this.relationshipOrphanCleaner = relationshipOrphanCleaner;
     }
 
     @Override
-    protected void afterObjectHandled(Event event, HandleAction action, Boolean overwrite) {
+    protected void afterObjectHandled(Event event, HandleAction action, Boolean overwrite,
+                                      RelationshipItemRelatives relatives) {
         final String eventUid = event.uid();
 
         if (action == HandleAction.Delete) {
@@ -88,6 +103,11 @@ final class EventHandler extends IdentifiableDataHandlerImpl<Event> {
             Set<Note> notesToSync = noteUniquenessManager.buildUniqueCollection(
                     notes, Note.NoteType.EVENT_NOTE, event.uid());
             noteHandler.handleMany(notesToSync);
+
+            List<Relationship> relationships = EventInternalAccessor.accessRelationships(event);
+            if (relationships != null && !relationships.isEmpty()) {
+                handleRelationships(relationships, event, relatives);
+            }
         }
     }
 
@@ -99,5 +119,20 @@ final class EventHandler extends IdentifiableDataHandlerImpl<Event> {
                 event.status() == EventStatus.OVERDUE;
 
         return !validEventDate || event.organisationUnit() == null;
+    }
+
+    @Override
+    protected Event addRelationshipState(Event o) {
+        return o.toBuilder().state(State.RELATIONSHIP).build();
+    }
+
+    @Override
+    protected Event addSyncedState(Event o) {
+        return o.toBuilder().state(State.SYNCED).build();
+    }
+
+    @Override
+    protected void deleteOrphans(Event o) {
+        relationshipOrphanCleaner.deleteOrphan(o, EventInternalAccessor.accessRelationships(o));
     }
 }

@@ -41,7 +41,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(JUnit4.class)
 public class OrganisationUnitShould {

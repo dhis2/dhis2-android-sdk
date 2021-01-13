@@ -35,8 +35,7 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class CollectionRepositoryOneMethodMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -48,7 +47,7 @@ public class CollectionRepositoryOneMethodMockIntegrationShould extends BaseMock
     public void get_first_object_without_filters() {
         CategoryCombo combo = d2.categoryModule().categoryCombos()
                 .one().blockingGet();
-        assertThat(combo.uid(), is(BIRTH_UID));
+        assertThat(combo.uid()).isEqualTo(BIRTH_UID);
     }
 
     @Test
@@ -56,7 +55,7 @@ public class CollectionRepositoryOneMethodMockIntegrationShould extends BaseMock
         CategoryCombo combo = d2.categoryModule().categoryCombos()
                 .byName().eq("Births")
                 .one().blockingGet();
-        assertThat(combo.uid(), is(BIRTH_UID));
+        assertThat(combo.uid()).isEqualTo(BIRTH_UID);
     }
 
     @Test
@@ -64,7 +63,7 @@ public class CollectionRepositoryOneMethodMockIntegrationShould extends BaseMock
         CategoryCombo combo = d2.categoryModule().categoryCombos()
                 .byIsDefault().isTrue()
                 .one().blockingGet();
-        assertThat(combo.uid(), is(DEFAULT_UID));
+        assertThat(combo.uid()).isEqualTo(DEFAULT_UID);
     }
 
     @Test
@@ -72,15 +71,15 @@ public class CollectionRepositoryOneMethodMockIntegrationShould extends BaseMock
         CategoryCombo combo = d2.categoryModule().categoryCombos()
                 .byName().eq("Wrong name")
                 .one().blockingGet();
-        assertThat(combo == null, is(true));
+        assertThat(combo == null).isTrue();
     }
 
     @Test
     public void get_with_all_children_returns_object_children() {
         CategoryCombo combo = d2.categoryModule().categoryCombos()
                 .withCategories().withCategoryOptionCombos().one().blockingGet();
-        assertThat(combo.uid(), is(BIRTH_UID));
-        assertThat(combo.categories().size(), is(2));
-        assertThat(CategoryComboInternalAccessor.accessCategoryOptionCombos(combo).size(), is(2));
+        assertThat(combo.uid()).isEqualTo(BIRTH_UID);
+        assertThat(combo.categories().size()).isEqualTo(2);
+        assertThat(CategoryComboInternalAccessor.accessCategoryOptionCombos(combo).size()).isEqualTo(2);
     }
 }

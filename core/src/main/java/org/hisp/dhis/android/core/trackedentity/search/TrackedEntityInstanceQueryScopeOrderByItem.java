@@ -33,22 +33,22 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 
 @AutoValue
-abstract class TrackedEntityInstanceQueryScopeOrderByItem {
+public abstract class TrackedEntityInstanceQueryScopeOrderByItem {
 
     public abstract TrackedEntityInstanceQueryScopeOrderColumn column();
 
     public abstract RepositoryScope.OrderByDirection direction();
 
-    public String toAPIString() {
+    String toAPIString() {
         return column().hasApiName() ? column().apiName() + ":" + direction().getApi() : null;
     }
 
-    public static Builder builder() {
+    static Builder builder() {
         return new AutoValue_TrackedEntityInstanceQueryScopeOrderByItem.Builder();
     }
 
     @AutoValue.Builder
-    public abstract static class Builder {
+    abstract static class Builder {
 
         public abstract Builder column(TrackedEntityInstanceQueryScopeOrderColumn column);
 

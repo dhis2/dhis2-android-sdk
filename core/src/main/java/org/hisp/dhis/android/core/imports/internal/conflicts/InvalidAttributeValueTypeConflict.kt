@@ -32,14 +32,14 @@ import org.hisp.dhis.android.core.imports.internal.ImportConflict
 internal object InvalidAttributeValueTypeConflict : TrackerImportConflictItem {
 
     private val errorRegex: List<Regex> = listOf(
-            Regex("Value '[\\w|\\s]*' is not a valid numeric type for attribute (\\w{11})"),
-            Regex("Value '[\\w|\\s]*' is not a valid boolean type for attribute (\\w{11})"),
-            Regex("Value '[\\w|\\s]*' is not true \\(true-only type\\) for attribute (\\w{11})"),
-            Regex("Value '[\\w|\\s]*' is not a valid date for attribute (\\w{11})"),
-            Regex("Value '[\\w|\\s]*' is not a valid datetime for attribute (\\w{11})"),
-            Regex("Value '[\\w|\\s]*' is not a valid username for attribute (\\w{11})"),
-            Regex("Value '[\\w|\\s]*' is not the uid of a file"),
-            Regex("Value '[\\w|\\s]*' is not a valid option for attribute (\\w{11}) and option set [\\w|\\s]*")
+        Regex("Value '[\\w|\\s]*' is not a valid numeric type for attribute (\\w{11})"),
+        Regex("Value '[\\w|\\s]*' is not a valid boolean type for attribute (\\w{11})"),
+        Regex("Value '[\\w|\\s]*' is not true \\(true-only type\\) for attribute (\\w{11})"),
+        Regex("Value '[\\w|\\s]*' is not a valid date for attribute (\\w{11})"),
+        Regex("Value '[\\w|\\s]*' is not a valid datetime for attribute (\\w{11})"),
+        Regex("Value '[\\w|\\s]*' is not a valid username for attribute (\\w{11})"),
+        Regex("Value '[\\w|\\s]*' is not the uid of a file"),
+        Regex("Value '[\\w|\\s]*' is not a valid option for attribute (\\w{11}) and option set [\\w|\\s]*")
     )
 
     private fun description(attribute: String?) = "Invalid value type for attribute: $attribute"
@@ -58,8 +58,10 @@ internal object InvalidAttributeValueTypeConflict : TrackerImportConflictItem {
         return null
     }
 
-    override fun getDisplayDescription(conflict: ImportConflict,
-                                       context: TrackerImportConflictItemContext): String {
+    override fun getDisplayDescription(
+        conflict: ImportConflict,
+        context: TrackerImportConflictItemContext
+    ): String {
 
         return getTrackedEntityAttribute(conflict)?.let { attributeUid ->
             context.attributeStore.selectByUid(attributeUid)?.let { attribute ->

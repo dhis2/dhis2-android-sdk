@@ -34,9 +34,7 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class DataSetSettingObjectRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -45,7 +43,7 @@ public class DataSetSettingObjectRepositoryMockIntegrationShould extends BaseMoc
     public void find_dataset_setting() {
         DataSetSettings dataSetSettings = d2.settingModule().dataSetSetting().blockingGet();
 
-        assertThat(dataSetSettings.globalSettings(), notNullValue());
-        assertThat(dataSetSettings.specificSettings().size(), is(2));
+        assertThat(dataSetSettings.globalSettings()).isNotNull();
+        assertThat(dataSetSettings.specificSettings().size()).isEqualTo(2);
     }
 }

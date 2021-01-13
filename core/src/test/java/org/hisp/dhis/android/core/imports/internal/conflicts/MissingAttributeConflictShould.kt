@@ -31,7 +31,7 @@ import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.whenever
 import org.junit.Test
 
-internal class MissingAttributeConflictShould : BaseConflictShould()  {
+internal class MissingAttributeConflictShould : BaseConflictShould() {
 
     private val importConflict = TrackedImportConflictSamples.missingMandatoryAttribute(attributeUid)
 

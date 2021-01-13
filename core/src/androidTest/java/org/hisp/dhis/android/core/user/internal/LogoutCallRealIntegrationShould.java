@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.user.AuthenticatedUser;
 import org.junit.Before;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -67,7 +68,7 @@ public class LogoutCallRealIntegrationShould extends BaseRealIntegrationTest {
 
         d2.metadataModule().blockingDownload();
 
-        Callable<List<Event>> eventCall = EventCallFactory.create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", 0);
+        Callable<List<Event>> eventCall = EventCallFactory.create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", 0, Collections.emptyList());
 
         eventCall.call();
 

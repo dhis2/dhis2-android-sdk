@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.dataapproval.internal;
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
+import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall;
 import org.hisp.dhis.android.core.dataapproval.DataApproval;
 
 import dagger.Module;
@@ -44,10 +44,8 @@ public class DataApprovalPackageDIModule {
 
     @Provides
     @Reusable
-    QueryCallFactory<DataApproval, DataApprovalQuery> dataApprovalCallFactory(
-            DataApprovalCallFactory dataApprovalCallFactory) {
-
-        return dataApprovalCallFactory;
+    QueryCall<DataApproval, DataApprovalQuery> dataApprovalCallFactory(DataApprovalCall dataApprovalCall) {
+        return dataApprovalCall;
     }
 
     @Provides

@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.D2
 import org.hisp.dhis.android.core.D2Factory
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.junit.Before
-import org.junit.Test
 
 class TrackedEntityInstanceQueryAndDownloadRealIntegrationShould : BaseRealIntegrationTest() {
     private lateinit var d2: D2

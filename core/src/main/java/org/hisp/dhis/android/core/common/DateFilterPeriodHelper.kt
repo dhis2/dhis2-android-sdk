@@ -31,6 +31,8 @@ import java.util.*
 
 internal object DateFilterPeriodHelper {
 
+    private val calendar: Calendar = Calendar.getInstance()
+
     @JvmStatic
     fun mergeDateFilterPeriods(baseFilter: DateFilterPeriod?, newFilter: DateFilterPeriod?): DateFilterPeriod? {
         return when {
@@ -68,14 +70,28 @@ internal object DateFilterPeriodHelper {
     }
 
     @JvmStatic
-    fun getStartDate(filter: DateFilterPeriod): Date? {
-        // TODO
-        return Date()
+    fun getStartDate(filter: DateFilterPeriod, refDate: Date = Date()): Date? {
+        return when {
+            filter.startDate() != null -> filter.startDate()
+            filter.startBuffer() != null -> addDays(refDate, filter.startBuffer()!!)
+            filter.period() != null -> null //TODO
+            else -> null
+        }
     }
 
     @JvmStatic
-    fun getEndDate(filter: DateFilterPeriod): Date? {
-        // TODO
-        return Date()
+    fun getEndDate(filter: DateFilterPeriod, refDate: Date = Date()): Date? {
+        return when {
+            filter.endDate() != null -> filter.endDate()
+            filter.endBuffer() != null -> addDays(refDate, filter.endBuffer()!!)
+            filter.period() != null -> null //TODO
+            else -> null
+        }
+    }
+
+    private fun addDays(date: Date, days: Int): Date {
+        calendar.time = date
+        calendar.add(Calendar.DATE, days)
+        return calendar.time
     }
 }

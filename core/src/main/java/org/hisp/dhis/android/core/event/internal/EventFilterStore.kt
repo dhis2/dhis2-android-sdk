@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableSt
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithUidStore
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 import org.hisp.dhis.android.core.event.EventFilter
 import org.hisp.dhis.android.core.event.EventFilterTableInfo
 
@@ -43,7 +42,6 @@ internal object EventFilterStore {
     private val BINDER = object : IdentifiableStatementBinder<EventFilter>() {
         override fun bindToStatement(o: EventFilter, w: StatementWrapper) {
             super.bindToStatement(o, w)
-            val mapper = ObjectMapperFactory.objectMapper()
             w.bind(7, o.program())
             w.bind(8, o.programStage())
             w.bind(9, o.description())

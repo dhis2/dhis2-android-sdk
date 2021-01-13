@@ -44,5 +44,4 @@ internal class DateFilterPeriodColumnAdapter : JSONObjectColumnAdapter<DateFilte
             }
         }
     }
-
 }

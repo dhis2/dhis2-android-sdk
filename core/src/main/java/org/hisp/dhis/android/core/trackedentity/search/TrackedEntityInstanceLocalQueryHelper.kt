@@ -158,7 +158,7 @@ internal object TrackedEntityInstanceLocalQueryHelper {
             where.appendKeyStringValue(dot(ENROLLMENT_ALIAS, PROGRAM), escapeQuotes(scope.program()))
         }
         if (scope.programDate() != null) {
-            DateFilterPeriodHelper.getStartDate(scope.programDate()!!)?.let { startDate  ->
+            DateFilterPeriodHelper.getStartDate(scope.programDate()!!)?.let { startDate ->
                 where.appendKeyGreaterOrEqStringValue(
                     dot(ENROLLMENT_ALIAS, ENROLLMENT_DATE),
                     DateUtils.SIMPLE_DATE_FORMAT.format(startDate)

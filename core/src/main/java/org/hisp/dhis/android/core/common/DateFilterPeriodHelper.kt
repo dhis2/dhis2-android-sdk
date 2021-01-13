@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.common
 
 import java.util.*
+import org.hisp.dhis.android.core.period.Period
 
 internal object DateFilterPeriodHelper {
 
@@ -38,7 +39,7 @@ internal object DateFilterPeriodHelper {
         return when {
             newFilter == null -> baseFilter
             baseFilter == null -> newFilter
-            newFilter.period() != null  -> newFilter
+            newFilter.period() != null -> newFilter
             newFilter.startBuffer() != null || newFilter.endBuffer() != null -> {
                 val builder = baseFilter.toBuilder()
 
@@ -74,7 +75,7 @@ internal object DateFilterPeriodHelper {
         return when {
             filter.startDate() != null -> filter.startDate()
             filter.startBuffer() != null -> addDays(refDate, filter.startBuffer()!!)
-            filter.period() != null -> null //TODO
+            filter.period() != null -> getPeriod(filter.period()!!)?.startDate()
             else -> null
         }
     }
@@ -84,9 +85,15 @@ internal object DateFilterPeriodHelper {
         return when {
             filter.endDate() != null -> filter.endDate()
             filter.endBuffer() != null -> addDays(refDate, filter.endBuffer()!!)
-            filter.period() != null -> null //TODO
+            filter.period() != null -> getPeriod(filter.period()!!)?.endDate()
             else -> null
         }
+    }
+
+    @Suppress("FunctionOnlyReturningConstant")
+    private fun getPeriod(period: RelativePeriod): Period? {
+        // TODO
+        return null
     }
 
     private fun addDays(date: Date, days: Int): Date {

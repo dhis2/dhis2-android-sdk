@@ -31,8 +31,8 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.module.SimpleModule
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import java.util.Date
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
 
 internal object ObjectMapperFactory {
 

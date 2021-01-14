@@ -119,7 +119,7 @@ internal class TrackedEntityInstancePostPayloadGenerator @Inject internal constr
         filteredTrackedEntityInstances: MutableList<TrackedEntityInstance>, excludedUids: List<String>
     ): List<TrackedEntityInstance> {
         val trackedEntityInstancesInDBToSync = trackedEntityInstanceStore.queryTrackedEntityInstancesToSync()
-        val filteredUids: List<String?> = getUidsList(filteredTrackedEntityInstances)
+        val filteredUids: List<String> = getUidsList(filteredTrackedEntityInstances)
         val teiUidsToPost = getUidsList(
             trackedEntityInstanceStore.queryTrackedEntityInstancesToPost()
         )

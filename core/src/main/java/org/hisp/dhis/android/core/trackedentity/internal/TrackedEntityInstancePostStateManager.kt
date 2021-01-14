@@ -42,7 +42,6 @@ import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import java.util.ArrayList
-import java.util.HashMap
 import javax.inject.Inject
 
 @Reusable
@@ -59,10 +58,10 @@ internal class TrackedEntityInstancePostStateManager @Inject internal constructo
     }
 
     fun setPartitionStates(partition: List<TrackedEntityInstance>, forcedState: State?) {
-        val teiMap: MutableMap<State, MutableList<String>?> = HashMap()
-        val enrollmentMap: MutableMap<State, MutableList<String>?> = HashMap()
-        val eventMap: MutableMap<State, MutableList<String>?> = HashMap()
-        val relationshipMap: MutableMap<State, MutableList<String>?> = HashMap()
+        val teiMap: MutableMap<State, MutableList<String>> = mutableMapOf()
+        val enrollmentMap: MutableMap<State, MutableList<String>> = mutableMapOf()
+        val eventMap: MutableMap<State, MutableList<String>> = mutableMapOf()
+        val relationshipMap: MutableMap<State, MutableList<String>> = mutableMapOf()
         for (instance in partition) {
             addState(teiMap, instance, forcedState)
             for (enrollment in TrackedEntityInstanceInternalAccessor.accessEnrollments(instance)) {
@@ -88,24 +87,24 @@ internal class TrackedEntityInstancePostStateManager @Inject internal constructo
     }
 
     private fun <O> addState(
-        stateMap: MutableMap<State, MutableList<String>?>, o: O,
+        stateMap: MutableMap<State, MutableList<String>>, o: O,
         forcedState: State?
-    ) where O : DataObject?, O : ObjectWithUidInterface? {
+    ) where O : DataObject, O : ObjectWithUidInterface {
         val s = getStateToSet(o, forcedState)
         if (!stateMap.containsKey(s)) {
             stateMap[s] = ArrayList()
         }
-        stateMap[s]!!.add(o!!.uid())
+        stateMap[s]!!.add(o.uid())
     }
 
-    private fun <O> getStateToSet(o: O, forcedState: State?): State where O : DataObject?, O : ObjectWithUidInterface? {
+    private fun <O> getStateToSet(o: O, forcedState: State?): State where O : DataObject, O : ObjectWithUidInterface {
         return forcedState
-            ?: if (o!!.state() == State.UPLOADING) State.TO_UPDATE else o.state()
+            ?: if (o.state() == State.UPLOADING) State.TO_UPDATE else o.state()
     }
 
-    private fun persistStates(map: Map<State, MutableList<String>?>, store: IdentifiableDeletableDataObjectStore<*>) {
+    private fun persistStates(map: Map<State, MutableList<String>>, store: IdentifiableDeletableDataObjectStore<*>) {
         for ((key, value) in map) {
-            store.setState(value!!, key)
+            store.setState(value, key)
         }
     }
 }

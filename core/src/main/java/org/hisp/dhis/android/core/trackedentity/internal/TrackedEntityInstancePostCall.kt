@@ -53,7 +53,7 @@ internal class TrackedEntityInstancePostCall @Inject internal constructor(
     private val relationshipDeleteCall: RelationshipDeleteCall
 ) {
     fun uploadTrackedEntityInstances(
-        filteredTrackedEntityInstances: List<TrackedEntityInstance>?
+        filteredTrackedEntityInstances: List<TrackedEntityInstance>
     ): Observable<D2Progress> {
         return Observable.defer {
             val teiPartitions = payloadGenerator.getTrackedEntityInstancesPayload(filteredTrackedEntityInstances)
@@ -62,7 +62,7 @@ internal class TrackedEntityInstancePostCall @Inject internal constructor(
             if (teiPartitions.isEmpty()) {
                 return@defer Observable.empty<D2Progress>()
             } else {
-                return@defer Observable.create { emitter: ObservableEmitter<D2Progress?> ->
+                return@defer Observable.create { emitter: ObservableEmitter<D2Progress> ->
                     val strategy: String = if (versionManager.is2_29) {
                         "CREATE_AND_UPDATE"
                     } else {

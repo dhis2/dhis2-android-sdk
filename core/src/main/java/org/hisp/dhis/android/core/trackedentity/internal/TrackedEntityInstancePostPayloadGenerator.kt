@@ -58,7 +58,7 @@ import java.util.HashMap
 import javax.inject.Inject
 
 @Reusable
-internal class TrackedEntityInstancePostInternalCall @Inject internal constructor(
+internal class TrackedEntityInstancePostPayloadGenerator @Inject internal constructor(
     private val versionManager: DHISVersionManager,
     private val relationshipDHISVersionManager: RelationshipDHISVersionManager,
     private val relationshipRepository: RelationshipCollectionRepository,
@@ -72,7 +72,7 @@ internal class TrackedEntityInstancePostInternalCall @Inject internal constructo
     private val noteStore: IdentifiableObjectStore<Note>
 ) {
 
-    fun getPartitionsToSync(filteredTrackedEntityInstances: List<TrackedEntityInstance>?): List<List<TrackedEntityInstance>> {
+    fun getTrackedEntityInstancesPayload(filteredTrackedEntityInstances: List<TrackedEntityInstance>?): List<List<TrackedEntityInstance>> {
         val dataValueMap = trackedEntityDataValueStore.queryTrackerTrackedEntityDataValues()
         val eventMap = eventStore.queryEventsAttachedToEnrollmentToPost()
         val enrollmentMap = enrollmentStore.queryEnrollmentsToPost()

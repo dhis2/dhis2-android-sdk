@@ -44,7 +44,7 @@ import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstancePostCall @Inject internal constructor(
-    private val internalCall: TrackedEntityInstancePostInternalCall,
+    private val payloadGenerator: TrackedEntityInstancePostPayloadGenerator,
     private val versionManager: DHISVersionManager,
     private val trackedEntityInstanceService: TrackedEntityInstanceService,
     private val teiWebResponseHandler: TEIWebResponseHandler,
@@ -55,7 +55,7 @@ internal class TrackedEntityInstancePostCall @Inject internal constructor(
         filteredTrackedEntityInstances: List<TrackedEntityInstance>?
     ): Observable<D2Progress> {
         return Observable.defer {
-            val teiPartitions = internalCall.getPartitionsToSync(filteredTrackedEntityInstances)
+            val teiPartitions = payloadGenerator.getTrackedEntityInstancesPayload(filteredTrackedEntityInstances)
 
             // if size is 0, then no need to do network request
             if (teiPartitions.isEmpty()) {
@@ -80,7 +80,7 @@ internal class TrackedEntityInstancePostCall @Inject internal constructor(
                             teiWebResponseHandler.handleWebResponse(webResponse)
                             emitter.onNext(progressManager.increaseProgress(TrackedEntityInstance::class.java, false))
                         } catch (d2Error: D2Error) {
-                            internalCall.restorePartitionStates(thisPartition)
+                            payloadGenerator.restorePartitionStates(thisPartition)
                             if (d2Error.isOffline) {
                                 emitter.onError(d2Error)
                                 break

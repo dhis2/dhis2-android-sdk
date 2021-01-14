@@ -31,7 +31,6 @@ import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper.excludeUids
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidsList
 import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper
 import org.hisp.dhis.android.core.common.DataColumns
@@ -84,29 +83,26 @@ internal class TrackedEntityInstancePostPayloadGenerator @Inject internal constr
         val targetTrackedEntityInstances: List<TrackedEntityInstance> =
             filteredTrackedEntityInstances ?: trackedEntityInstanceStore.queryTrackedEntityInstancesToSync()
         val trackedEntityInstancesToSync = getPagedTrackedEntityInstances(targetTrackedEntityInstances)
-        val trackedEntityInstancesRecreated: MutableList<List<TrackedEntityInstance>> = ArrayList()
-        for (partition in trackedEntityInstancesToSync) {
-            val partitionRecreated: MutableList<TrackedEntityInstance> = ArrayList()
-            for (trackedEntityInstance in partition) {
-                val recreatedTrackedEntityInstance = recreateTrackedEntityInstance(
+        return trackedEntityInstancesToSync.map { partition ->
+            val partitionRecreated = partition.map { trackedEntityInstance ->
+                recreateTrackedEntityInstance(
                     trackedEntityInstance, dataValueMap, eventMap, enrollmentMap, attributeValueMap, notes
                 )
-                partitionRecreated.add(recreatedTrackedEntityInstance)
             }
-            trackedEntityInstancesRecreated.add(partitionRecreated)
+
             stateManager.setPartitionStates(partitionRecreated, State.UPLOADING)
+            partitionRecreated
         }
-        return trackedEntityInstancesRecreated
     }
 
     private fun getPagedTrackedEntityInstances(
         filteredTrackedEntityInstances: List<TrackedEntityInstance>
     ): List<List<TrackedEntityInstance>> {
-        val includedUids: MutableList<String> = ArrayList()
+        val includedUids: MutableSet<String> = mutableSetOf()
         val partitions = CollectionsHelper.setPartition(filteredTrackedEntityInstances, DEFAULT_PAGE_SIZE)
         val partitionsWithRelationships: MutableList<List<TrackedEntityInstance>> = ArrayList()
         for (partition in partitions) {
-            val partitionWithoutDuplicates = excludeUids(partition, includedUids)
+            val partitionWithoutDuplicates = partition.filterNot { o -> includedUids.contains(o.uid()) }
             val partitionWithRelationships =
                 getTrackedEntityInstancesWithRelationships(partitionWithoutDuplicates.toMutableList(), includedUids)
             partitionsWithRelationships.add(partitionWithRelationships)
@@ -116,7 +112,7 @@ internal class TrackedEntityInstancePostPayloadGenerator @Inject internal constr
     }
 
     private fun getTrackedEntityInstancesWithRelationships(
-        filteredTrackedEntityInstances: MutableList<TrackedEntityInstance>, excludedUids: List<String>
+        filteredTrackedEntityInstances: MutableList<TrackedEntityInstance>, excludedUids: Set<String>
     ): List<TrackedEntityInstance> {
         val trackedEntityInstancesInDBToSync = trackedEntityInstanceStore.queryTrackedEntityInstancesToSync()
         val filteredUids: List<String> = filteredTrackedEntityInstances.map { it.uid() }

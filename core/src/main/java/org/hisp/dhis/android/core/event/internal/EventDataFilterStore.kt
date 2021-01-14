@@ -28,20 +28,20 @@
 package org.hisp.dhis.android.core.event.internal
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DateFilterPeriodColumnAdapter
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringSetColumnAdapter
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithoutUidStore
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 import org.hisp.dhis.android.core.event.EventDataFilter
 import org.hisp.dhis.android.core.event.EventDataFilterTableInfo
 
 @Suppress("MagicNumber")
 internal object EventDataFilterStore {
     private val BINDER = StatementBinder { o: EventDataFilter, w: StatementWrapper ->
-        val mapper = ObjectMapperFactory.objectMapper()
         w.bind(1, o.eventFilter())
         w.bind(2, o.dataItem())
         w.bind(3, o.le())
@@ -49,9 +49,9 @@ internal object EventDataFilterStore {
         w.bind(5, o.gt())
         w.bind(6, o.lt())
         w.bind(7, o.eq())
-        w.bind(8, mapper.writeValueAsString(o.`in`()))
+        w.bind(8, StringSetColumnAdapter.serialize(o.`in`()))
         w.bind(9, o.like())
-        w.bind(10, mapper.writeValueAsString(o.dateFilter()))
+        w.bind(10, DateFilterPeriodColumnAdapter.serialize(o.dateFilter()))
     }
 
     private val WHERE_UPDATE_BINDER = WhereStatementBinder { _: EventDataFilter, _ -> }

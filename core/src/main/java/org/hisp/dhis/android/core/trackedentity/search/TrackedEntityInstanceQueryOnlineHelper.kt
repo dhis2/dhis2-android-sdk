@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity.search
 import java.util.*
 import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
+import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
 import org.hisp.dhis.android.core.event.EventStatus
 
 internal object TrackedEntityInstanceQueryOnlineHelper {
@@ -45,11 +46,15 @@ internal object TrackedEntityInstanceQueryOnlineHelper {
                 val eventStatus = getEventStatus(eventFilter)
 
                 baseBuilder
-                    .eventStartDate(eventFilter.eventStartDate())
-                    .eventEndDate(eventFilter.eventEndDate())
                     .eventStatus(eventStatus)
                     .assignedUserMode(eventFilter.assignedUserMode())
-                    .build()
+
+                if (eventFilter.eventDate() != null) {
+                    baseBuilder.eventStartDate(DateFilterPeriodHelper.getStartDate(eventFilter.eventDate()!!))
+                    baseBuilder.eventEndDate(DateFilterPeriodHelper.getEndDate(eventFilter.eventDate()!!))
+                }
+
+                baseBuilder.build()
             }
         }
     }
@@ -63,15 +68,13 @@ internal object TrackedEntityInstanceQueryOnlineHelper {
         // EnrollmentStatus does not accepts a list of status but a single value in web API.
         val enrollmentStatus = scope.enrollmentStatus()?.getOrNull(0)
 
-        return TrackedEntityInstanceQueryOnline.builder()
+        val builder = TrackedEntityInstanceQueryOnline.builder()
             .query(query)
             .attribute(toAPIFilterFormat(scope.attribute()))
             .filter(toAPIFilterFormat(scope.filter()))
             .orgUnits(scope.orgUnits())
             .orgUnitMode(scope.orgUnitMode())
             .program(scope.program())
-            .programStartDate(scope.programStartDate())
-            .programEndDate(scope.programEndDate())
             .enrollmentStatus(enrollmentStatus)
             .followUp(scope.followUp())
             .trackedEntityType(scope.trackedEntityType())
@@ -80,15 +83,21 @@ internal object TrackedEntityInstanceQueryOnlineHelper {
             .page(1)
             .pageSize(BaseQuery.DEFAULT_PAGE_SIZE)
             .paging(true)
+
+        if (scope.programDate() != null) {
+            builder.programStartDate(DateFilterPeriodHelper.getStartDate(scope.programDate()!!))
+            builder.programEndDate(DateFilterPeriodHelper.getEndDate(scope.programDate()!!))
+        }
+
+        return builder
     }
 
     private fun getEventStatus(eventFilter: TrackedEntityInstanceQueryEventFilter): EventStatus? {
         // EventStatus does not accepts a list of status but a single value in web API.
         // Additionally, it requires that eventStartDate and eventEndDate are defined.
         val eventStatus = eventFilter.eventStatus()
-        return if (!eventStatus.isNullOrEmpty() &&
-            eventFilter.eventStartDate() != null && eventFilter.eventEndDate() != null
-        ) {
+        val hasEventDate = eventFilter.eventDate()?.startDate() != null && eventFilter.eventDate()?.endDate() != null
+        return if (!eventStatus.isNullOrEmpty() && hasEventDate) {
             eventStatus[0]
         } else null
     }

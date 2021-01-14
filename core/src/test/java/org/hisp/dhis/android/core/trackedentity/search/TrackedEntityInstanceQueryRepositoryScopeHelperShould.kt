@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import com.google.common.truth.Truth.assertThat
-import java.util.concurrent.TimeUnit
 import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.common.FilterPeriod
 import org.hisp.dhis.android.core.common.ObjectWithUid
@@ -68,8 +67,8 @@ class TrackedEntityInstanceQueryRepositoryScopeHelperShould {
         assertThat(updatedScope.enrollmentStatus()).isEqualTo(listOf(enrollmentStatus))
         // TODO followUp
 
-        val millisBetween = updatedScope.programEndDate()!!.time - updatedScope.programStartDate()!!.time
-        val daysBetween = TimeUnit.DAYS.convert(millisBetween, TimeUnit.MILLISECONDS)
+        assertThat(updatedScope.programDate()).isNotNull()
+        val daysBetween = updatedScope.programDate()!!.endBuffer()!! - updatedScope.programDate()!!.startBuffer()!!
         assertThat(daysBetween).isEqualTo(7)
     }
 
@@ -99,8 +98,8 @@ class TrackedEntityInstanceQueryRepositoryScopeHelperShould {
                     assertThat(it.eventStatus()).isEqualTo(listOf(EventStatus.ACTIVE))
                 programStage2 -> {
                     assertThat(it.assignedUserMode()).isEqualTo(AssignedUserMode.CURRENT)
-                    val millisBetween = it.eventEndDate()!!.time - it.eventStartDate()!!.time
-                    val daysBetween = TimeUnit.DAYS.convert(millisBetween, TimeUnit.MILLISECONDS)
+                    assertThat(it.eventDate()).isNotNull()
+                    val daysBetween = it.eventDate()!!.endBuffer()!! - it.eventDate()!!.startBuffer()!!
                     assertThat(daysBetween).isEqualTo(7)
                 }
                 else -> throw RuntimeException("Unknown programStageId")

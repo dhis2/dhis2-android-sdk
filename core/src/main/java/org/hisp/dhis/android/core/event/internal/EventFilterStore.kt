@@ -28,11 +28,12 @@
 package org.hisp.dhis.android.core.event.internal
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DateFilterPeriodColumnAdapter
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringListColumnAdapter
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithUidStore
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 import org.hisp.dhis.android.core.event.EventFilter
 import org.hisp.dhis.android.core.event.EventFilterTableInfo
 
@@ -41,7 +42,6 @@ internal object EventFilterStore {
     private val BINDER = object : IdentifiableStatementBinder<EventFilter>() {
         override fun bindToStatement(o: EventFilter, w: StatementWrapper) {
             super.bindToStatement(o, w)
-            val mapper = ObjectMapperFactory.objectMapper()
             w.bind(7, o.program())
             w.bind(8, o.programStage())
             w.bind(9, o.description())
@@ -50,13 +50,13 @@ internal object EventFilterStore {
             w.bind(12, o.eventQueryCriteria()?.ouMode())
             w.bind(13, o.eventQueryCriteria()?.assignedUserMode())
             w.bind(14, o.eventQueryCriteria()?.order())
-            w.bind(15, mapper.writeValueAsString(o.eventQueryCriteria()?.displayColumnOrder()))
-            w.bind(16, mapper.writeValueAsString(o.eventQueryCriteria()?.events()))
+            w.bind(15, StringListColumnAdapter.serialize(o.eventQueryCriteria()?.displayColumnOrder()))
+            w.bind(16, StringListColumnAdapter.serialize(o.eventQueryCriteria()?.events()))
             w.bind(17, o.eventQueryCriteria()?.eventStatus())
-            w.bind(18, mapper.writeValueAsString(o.eventQueryCriteria()?.eventDate()))
-            w.bind(19, mapper.writeValueAsString(o.eventQueryCriteria()?.dueDate()))
-            w.bind(20, mapper.writeValueAsString(o.eventQueryCriteria()?.lastUpdatedDate()))
-            w.bind(21, mapper.writeValueAsString(o.eventQueryCriteria()?.completedDate()))
+            w.bind(18, DateFilterPeriodColumnAdapter.serialize(o.eventQueryCriteria()?.eventDate()))
+            w.bind(19, DateFilterPeriodColumnAdapter.serialize(o.eventQueryCriteria()?.dueDate()))
+            w.bind(20, DateFilterPeriodColumnAdapter.serialize(o.eventQueryCriteria()?.lastUpdatedDate()))
+            w.bind(21, DateFilterPeriodColumnAdapter.serialize(o.eventQueryCriteria()?.completedDate()))
         }
     }
 

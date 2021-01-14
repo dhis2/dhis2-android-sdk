@@ -27,10 +27,21 @@
  */
 package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 import org.hisp.dhis.android.core.common.DateFilterPeriod
 
 internal class DateFilterPeriodColumnAdapter : JSONObjectColumnAdapter<DateFilterPeriod>() {
     override fun getEnumClass(): Class<DateFilterPeriod> {
         return DateFilterPeriod::class.java
+    }
+
+    override fun serialize(o: DateFilterPeriod?): String? = DateFilterPeriodColumnAdapter.serialize(o)
+
+    companion object {
+        fun serialize(o: DateFilterPeriod?): String? {
+            return o?.let {
+                ObjectMapperFactory.objectMapper().writeValueAsString(it)
+            }
+        }
     }
 }

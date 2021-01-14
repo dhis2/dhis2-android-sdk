@@ -31,11 +31,14 @@ package org.hisp.dhis.android.core.data.event;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+import org.hisp.dhis.android.core.arch.helpers.DateUtils;
 import org.hisp.dhis.android.core.common.DateFilterPeriod;
 import org.hisp.dhis.android.core.common.DatePeriodType;
 import org.hisp.dhis.android.core.common.RelativePeriod;
 import org.hisp.dhis.android.core.event.EventDataFilter;
 
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 public class EventDataFilterSamples {
@@ -53,8 +56,8 @@ public class EventDataFilterSamples {
                 .in(Sets.newHashSet("India", "Norway"))
                 .like("abc")
                 .dateFilter(DateFilterPeriod.builder()
-                        .startDate("2014-05-01")
-                        .endDate("2019-03-20")
+                        .startDate(getSimpleDate("2014-05-01"))
+                        .endDate(getSimpleDate("2019-03-20"))
                         .type(DatePeriodType.ABSOLUTE)
                         .build())
                 .build();
@@ -76,8 +79,8 @@ public class EventDataFilterSamples {
         return EventDataFilter.builder()
                 .dataItem("dateDataElementUid")
                 .dateFilter(DateFilterPeriod.builder()
-                        .startDate("2014-05-01")
-                        .endDate("2019-03-20")
+                        .startDate(getSimpleDate("2014-05-01"))
+                        .endDate(getSimpleDate("2019-03-20"))
                         .type(DatePeriodType.ABSOLUTE)
                         .build())
                 .build();
@@ -106,5 +109,14 @@ public class EventDataFilterSamples {
 
     public static List<EventDataFilter> getEventDataFilters() {
         return Lists.newArrayList(get1(), get2(), get3(), get4());
+    }
+
+    private static Date getSimpleDate(String dateStr) {
+        try {
+            return DateUtils.SIMPLE_DATE_FORMAT.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

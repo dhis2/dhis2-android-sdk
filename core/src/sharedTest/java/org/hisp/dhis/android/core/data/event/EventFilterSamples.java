@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.data.event;
 
 import com.google.common.collect.Lists;
 
+import org.hisp.dhis.android.core.arch.helpers.DateUtils;
 import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.DateFilterPeriod;
@@ -69,8 +70,8 @@ public class EventFilterSamples {
                         .events(Lists.newArrayList("event1Uid","event2Uid"))
                         .eventStatus(EventStatus.ACTIVE)
                         .eventDate(DateFilterPeriod.builder()
-                                .startDate("2014-05-01")
-                                .endDate("2014-05-01")
+                                .startDate(getSimpleDate("2014-05-01"))
+                                .endDate(getSimpleDate("2014-05-01"))
                                 .type(DatePeriodType.ABSOLUTE)
                                 .build())
                         .dueDate(DateFilterPeriod.builder()
@@ -92,7 +93,16 @@ public class EventFilterSamples {
 
     private static Date getDate(String dateStr) {
         try {
-            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
+            return DateUtils.DATE_FORMAT.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private static Date getSimpleDate(String dateStr) {
+        try {
+            return DateUtils.SIMPLE_DATE_FORMAT.parse(dateStr);
         } catch (ParseException e) {
             e.printStackTrace();
             return null;

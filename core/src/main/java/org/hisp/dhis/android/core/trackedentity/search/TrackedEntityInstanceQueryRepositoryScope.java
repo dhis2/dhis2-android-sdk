@@ -33,16 +33,15 @@ import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.helpers.DateUtils;
 import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
+import org.hisp.dhis.android.core.common.DateFilterPeriod;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 @AutoValue
@@ -70,10 +69,7 @@ public abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseS
     public abstract List<RepositoryScopeFilterItem> filter();
 
     @Nullable
-    public abstract Date programStartDate();
-
-    @Nullable
-    public abstract Date programEndDate();
+    public abstract DateFilterPeriod programDate();
 
     @Nullable
     public abstract List<EnrollmentStatus> enrollmentStatus();
@@ -98,18 +94,6 @@ public abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseS
 
     @NonNull
     public abstract Boolean allowOnlineCache();
-
-    String formattedProgramStartDate() {
-        return formatDate(programStartDate());
-    }
-
-    String formattedProgramEndDate() {
-        return formatDate(programEndDate());
-    }
-
-    private String formatDate(Date date) {
-        return date == null ? null : DateUtils.SIMPLE_DATE_FORMAT.format(date);
-    }
 
     abstract Builder toBuilder();
 
@@ -146,9 +130,7 @@ public abstract class TrackedEntityInstanceQueryRepositoryScope implements BaseS
 
         public abstract Builder filter(List<RepositoryScopeFilterItem> filter);
 
-        public abstract Builder programStartDate(Date programStartDate);
-
-        public abstract Builder programEndDate(Date programEndDate);
+        public abstract Builder programDate(DateFilterPeriod dateFilterPeriod);
 
         public abstract Builder enrollmentStatus(List<EnrollmentStatus> programStatus);
 

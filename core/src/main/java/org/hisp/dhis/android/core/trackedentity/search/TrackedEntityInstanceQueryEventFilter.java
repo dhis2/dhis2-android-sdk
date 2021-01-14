@@ -32,11 +32,10 @@ import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.helpers.DateUtils;
 import org.hisp.dhis.android.core.common.AssignedUserMode;
+import org.hisp.dhis.android.core.common.DateFilterPeriod;
 import org.hisp.dhis.android.core.event.EventStatus;
 
-import java.util.Date;
 import java.util.List;
 
 @AutoValue
@@ -52,22 +51,7 @@ public abstract class TrackedEntityInstanceQueryEventFilter {
     public abstract AssignedUserMode assignedUserMode();
 
     @Nullable
-    public abstract Date eventStartDate();
-
-    @Nullable
-    public abstract Date eventEndDate();
-
-    public String formattedEventStartDate() {
-        return formatDate(eventStartDate());
-    }
-
-    public String formattedEventEndDate() {
-        return formatDate(eventEndDate());
-    }
-
-    private String formatDate(Date date) {
-        return date == null ? null : DateUtils.SIMPLE_DATE_FORMAT.format(date);
-    }
+    public abstract DateFilterPeriod eventDate();
 
     abstract TrackedEntityInstanceQueryEventFilter.Builder toBuilder();
 
@@ -82,9 +66,7 @@ public abstract class TrackedEntityInstanceQueryEventFilter {
 
         public abstract Builder eventStatus(List<EventStatus> eventStatus);
 
-        public abstract Builder eventStartDate(Date eventStartDate);
-
-        public abstract Builder eventEndDate(Date eventEndDate);
+        public abstract Builder eventDate(DateFilterPeriod dateFilterPeriod);
 
         public abstract Builder assignedUserMode(AssignedUserMode assignedUserMode);
 

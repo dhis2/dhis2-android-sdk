@@ -40,7 +40,8 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 
 public final class EventQueryCriteriaFields {
 
-        public final static String DATA_FILTERS = "dataFilters";
+    public final static String DATA_FILTERS = "dataFilters";
+    public final static String ORDER = "order";
 
     private static final FieldsHelper<EventQueryCriteria> fh = new FieldsHelper<>();
 
@@ -50,8 +51,8 @@ public final class EventQueryCriteriaFields {
                     fh.<String>field(Columns.ORGANISATION_UNIT),
                     fh.<OrganisationUnitMode>field(Columns.OU_MODE),
                     fh.<AssignedUserMode>field(Columns.ASSIGNED_USER_MODE),
-                    fh.<String>field(Columns.ORDER),
-                    fh.<String>nestedField(Columns.DISPLAY_COLUMN_ORDER),
+                    fh.<String>field(ORDER),
+                    fh.<String>field(Columns.DISPLAY_COLUMN_ORDER),
                     fh.<EventDataFilter>nestedField(DATA_FILTERS).with(EventDataFilterFields.allFields),
                     fh.<String>field(Columns.EVENTS),
                     fh.<EventStatus>field(Columns.EVENT_STATUS),

@@ -54,13 +54,12 @@ internal abstract class JSONObjectListColumnAdapter<O> : ColumnTypeAdapter<List<
     }
 
     override fun toContentValues(contentValues: ContentValues, columnName: String, o: List<O>?) {
-        if (o != null) {
-            try {
-                val oStr = ObjectMapperFactory.objectMapper().writeValueAsString(o)
-                contentValues.put(columnName, oStr)
-            } catch (e: JsonProcessingException) {
-                e.printStackTrace()
-            }
+        try {
+            contentValues.put(columnName, serialize(o))
+        } catch (e: JsonProcessingException) {
+            e.printStackTrace()
         }
     }
+
+    abstract fun serialize(o: List<O>?): String?
 }

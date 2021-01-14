@@ -86,7 +86,7 @@ import org.hisp.dhis.android.core.sms.internal.SmsDIModule;
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoPackageDIModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityPackageDIModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostCall;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostPayloadGenerator;
 import org.hisp.dhis.android.core.user.internal.UserPackageDIModule;
 import org.hisp.dhis.android.core.validation.internal.ValidationPackageDIModule;
 import org.hisp.dhis.android.core.wipe.internal.WipeDIModule;
@@ -165,7 +165,7 @@ public interface D2DIComponent {
     @VisibleForTesting
     Handler<TrackedEntityType> trackedEntityTypeHandler();
     @VisibleForTesting
-    TrackedEntityInstancePostCall trackedEntityInstancePostCall();
+    TrackedEntityInstancePostPayloadGenerator trackedEntityInstancePostPayloadGenerator();
     @VisibleForTesting
     EventPostCall eventPostCall();
     @VisibleForTesting

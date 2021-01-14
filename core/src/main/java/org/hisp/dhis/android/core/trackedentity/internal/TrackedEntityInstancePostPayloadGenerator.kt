@@ -145,44 +145,7 @@ internal class TrackedEntityInstancePostPayloadGenerator @Inject internal constr
         notes: List<Note>
     ): TrackedEntityInstance {
         val trackedEntityInstanceUid = trackedEntityInstance.uid()
-        val enrollmentsRecreated: MutableList<Enrollment> = ArrayList()
-        val enrollments = enrollmentMap[trackedEntityInstanceUid]
-        val emptyAttributeValueList: List<TrackedEntityAttributeValue> = ArrayList()
-        if (enrollments != null) {
-            for (enrollment in enrollments) {
-                val eventRecreated: MutableList<Event> = ArrayList()
-                val eventsForEnrollment = eventMap[enrollment.uid()]
-                val transformer = NoteToPostTransformer(versionManager)
-                if (eventsForEnrollment != null) {
-                    for (event in eventsForEnrollment) {
-                        val dataValuesForEvent = dataValueMap[event.uid()]
-                        val notesForEvent = getEventNotes(notes, event, transformer)
-                        if (versionManager.is2_30) {
-                            eventRecreated.add(
-                                event.toBuilder()
-                                    .trackedEntityDataValues(dataValuesForEvent)
-                                    .notes(notesForEvent)
-                                    .geometry(null)
-                                    .build()
-                            )
-                        } else {
-                            eventRecreated.add(
-                                event.toBuilder()
-                                    .trackedEntityDataValues(dataValuesForEvent)
-                                    .notes(notesForEvent)
-                                    .build()
-                            )
-                        }
-                    }
-                }
-                val notesForEnrollment = getEnrollmentNotes(notes, enrollment, transformer)
-                enrollmentsRecreated.add(
-                    EnrollmentInternalAccessor.insertEvents(enrollment.toBuilder(), eventRecreated)
-                        .notes(notesForEnrollment)
-                        .build()
-                )
-            }
-        }
+        val enrollmentsRecreated = getEnrollments(dataValueMap, eventMap, enrollmentMap, notes, trackedEntityInstanceUid)
         val attributeValues = attributeValueMap[trackedEntityInstanceUid]
         val dbRelationships =
             relationshipRepository.getByItem(RelationshipHelper.teiItem(trackedEntityInstance.uid()), true)
@@ -196,8 +159,48 @@ internal class TrackedEntityInstancePostPayloadGenerator @Inject internal constr
                     .insertRelationships(trackedEntityInstance.toBuilder(), versionAwareRelationships),
                 enrollmentsRecreated
             )
-            .trackedEntityAttributeValues(attributeValues ?: emptyAttributeValueList)
+            .trackedEntityAttributeValues(attributeValues ?: emptyList())
             .build()
+    }
+
+    private fun getEnrollments(
+        dataValueMap: Map<String, List<TrackedEntityDataValue>>,
+        eventMap: Map<String, List<Event>>,
+        enrollmentMap: Map<String, List<Enrollment>>,
+        notes: List<Note>,
+        trackedEntityInstanceUid: String
+    ): List<Enrollment> {
+        return enrollmentMap[trackedEntityInstanceUid]?.map { enrollment ->
+            val eventRecreated: MutableList<Event> = ArrayList()
+            val eventsForEnrollment = eventMap[enrollment.uid()]
+            val transformer = NoteToPostTransformer(versionManager)
+            if (eventsForEnrollment != null) {
+                for (event in eventsForEnrollment) {
+                    val dataValuesForEvent = dataValueMap[event.uid()]
+                    val notesForEvent = getEventNotes(notes, event, transformer)
+                    if (versionManager.is2_30) {
+                        eventRecreated.add(
+                            event.toBuilder()
+                                .trackedEntityDataValues(dataValuesForEvent)
+                                .notes(notesForEvent)
+                                .geometry(null)
+                                .build()
+                        )
+                    } else {
+                        eventRecreated.add(
+                            event.toBuilder()
+                                .trackedEntityDataValues(dataValuesForEvent)
+                                .notes(notesForEvent)
+                                .build()
+                        )
+                    }
+                }
+            }
+            val notesForEnrollment = getEnrollmentNotes(notes, enrollment, transformer)
+            EnrollmentInternalAccessor.insertEvents(enrollment.toBuilder(), eventRecreated)
+                .notes(notesForEnrollment)
+                .build()
+        } ?: emptyList()
     }
 
     private fun getEventNotes(notes: List<Note>, event: Event, t: NoteToPostTransformer): List<Note> {

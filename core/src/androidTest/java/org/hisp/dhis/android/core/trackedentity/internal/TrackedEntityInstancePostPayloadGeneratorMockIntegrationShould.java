@@ -76,9 +76,9 @@ import java.util.List;
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
-public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMockIntegrationTestMetadataEnqueable {
+public class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould extends BaseMockIntegrationTestMetadataEnqueable {
 
-    private static TrackedEntityInstancePostCall trackedEntityInstancePostCall;
+    private static TrackedEntityInstancePostPayloadGenerator payloadGenerator;
 
     private final String teiId = "teiId";
     private final String enrollment1Id = "enrollment1Id";
@@ -96,7 +96,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
     @BeforeClass
     public static void setUpClass() throws Exception {
         BaseMockIntegrationTestMetadataEnqueable.setUpClass();
-        trackedEntityInstancePostCall = objects.d2DIComponent.trackedEntityInstancePostCall();
+        payloadGenerator = objects.d2DIComponent.trackedEntityInstancePostPayloadGenerator();
     }
 
     @Test
@@ -104,7 +104,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
         storeTrackedEntityInstance();
 
         List<List<TrackedEntityInstance>> partitions =
-                trackedEntityInstancePostCall.getPartitionsToSync(null);
+                payloadGenerator.getTrackedEntityInstancesPayload(null);
 
         assertThat(partitions.size()).isEqualTo(1);
         assertThat(partitions.get(0).size()).isEqualTo(1);
@@ -124,7 +124,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
         storeTrackedEntityInstance();
 
         List<List<TrackedEntityInstance>> partitions =
-                trackedEntityInstancePostCall.getPartitionsToSync(null);
+                payloadGenerator.getTrackedEntityInstancesPayload(null);
 
         assertThat(partitions.size()).isEqualTo(1);
         assertThat(partitions.get(0).size()).isEqualTo(1);
@@ -145,7 +145,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
 
         EnrollmentStoreImpl.create(databaseAdapter).setState("enrollment3Id", State.TO_POST);
         List<List<TrackedEntityInstance>> partitions =
-                trackedEntityInstancePostCall.getPartitionsToSync(null);
+                payloadGenerator.getTrackedEntityInstancesPayload(null);
 
         assertThat(partitions.size()).isEqualTo(1);
         assertThat(partitions.get(0).size()).isEqualTo(1);
@@ -227,7 +227,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
         storeRelationship("relationship3", tei1, tei5);
         storeRelationship("relationship4", tei5, tei4);
 
-        List<List<TrackedEntityInstance>> partitions = trackedEntityInstancePostCall.getPartitionsToSync(
+        List<List<TrackedEntityInstance>> partitions = payloadGenerator.getTrackedEntityInstancesPayload(
                 d2.trackedEntityModule().trackedEntityInstances().byUid().eq(tei1)
                 .byState().in(State.uploadableStates()).blockingGet());
 
@@ -241,7 +241,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
         storeTrackedEntityInstance();
 
         // Ignore result. Just interested in check that target TEIs are marked as UPLOADING
-        List<List<TrackedEntityInstance>> partitions = trackedEntityInstancePostCall.getPartitionsToSync(null);
+        List<List<TrackedEntityInstance>> partitions = payloadGenerator.getTrackedEntityInstancesPayload(null);
 
         TrackedEntityInstance instance = TrackedEntityInstanceStoreImpl.create(databaseAdapter).selectFirst();
         assertThat(instance.state()).isEqualTo(State.UPLOADING);
@@ -305,7 +305,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
                 .build());
 
         List<List<TrackedEntityInstance>> partitions =
-                trackedEntityInstancePostCall.getPartitionsToSync(null);
+                payloadGenerator.getTrackedEntityInstancesPayload(null);
 
         assertThat(partitions.size()).isEqualTo(1);
         assertThat(partitions.get(0).size()).isEqualTo(1);
@@ -331,7 +331,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends BaseMock
                 .build());
 
         List<List<TrackedEntityInstance>> partitions =
-                trackedEntityInstancePostCall.getPartitionsToSync(null);
+                payloadGenerator.getTrackedEntityInstancesPayload(null);
 
         assertThat(partitions.size()).isEqualTo(1);
         assertThat(partitions.get(0).size()).isEqualTo(1);

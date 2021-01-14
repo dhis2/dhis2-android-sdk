@@ -38,9 +38,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -73,5 +75,12 @@ public class DataSetSettingHandlerShould {
         dataSetSettingHandler.handleMany(dataSetSettings);
         verify(dataSetSettingStore, times(1)).delete();
         verify(dataSetSettingStore, times(1)).updateOrInsertWhere(dataSetSetting);
+    }
+
+    @Test
+    public void clean_database_if_empty_collection() {
+        dataSetSettingHandler.handleMany(Collections.emptyList());
+        verify(dataSetSettingStore, times(1)).delete();
+        verify(dataSetSettingStore, never()).updateOrInsertWhere(dataSetSetting);
     }
 }

@@ -38,9 +38,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -73,5 +75,12 @@ public class ProgramSettingHandlerShould {
         programSettingHandler.handleMany(programSettings);
         verify(programSettingStore, times(1)).delete();
         verify(programSettingStore, times(1)).updateOrInsertWhere(programSetting);
+    }
+
+    @Test
+    public void clean_database_if_empty_collection() {
+        programSettingHandler.handleMany(Collections.emptyList());
+        verify(programSettingStore, times(1)).delete();
+        verify(programSettingStore, never()).updateOrInsertWhere(programSetting);
     }
 }

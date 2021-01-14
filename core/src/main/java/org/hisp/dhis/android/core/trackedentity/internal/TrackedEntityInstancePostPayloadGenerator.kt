@@ -119,10 +119,8 @@ internal class TrackedEntityInstancePostPayloadGenerator @Inject internal constr
         filteredTrackedEntityInstances: MutableList<TrackedEntityInstance>, excludedUids: List<String>
     ): List<TrackedEntityInstance> {
         val trackedEntityInstancesInDBToSync = trackedEntityInstanceStore.queryTrackedEntityInstancesToSync()
-        val filteredUids: List<String> = getUidsList(filteredTrackedEntityInstances)
-        val teiUidsToPost = getUidsList(
-            trackedEntityInstanceStore.queryTrackedEntityInstancesToPost()
-        )
+        val filteredUids: List<String> = filteredTrackedEntityInstances.map { it.uid() }
+        val teiUidsToPost = trackedEntityInstanceStore.queryTrackedEntityInstancesToPost().map { it.uid() }
         val relatedTeisToPost: MutableList<String> = ArrayList()
         var internalRelatedTeis = filteredUids
         do {
@@ -206,28 +204,16 @@ internal class TrackedEntityInstancePostPayloadGenerator @Inject internal constr
             .build()
     }
 
-    private fun getEventNotes(notes: List<Note>, event: Event, transformer: NoteToPostTransformer): List<Note> {
-        val notesForEvent: MutableList<Note> = ArrayList()
-        for (note in notes) {
-            if (event.uid() == note.event()) {
-                notesForEvent.add(transformer.transform(note))
-            }
-        }
-        return notesForEvent
+    private fun getEventNotes(notes: List<Note>, event: Event, t: NoteToPostTransformer): List<Note> {
+        return notes
+            .filter { it.event() == event.uid()  }
+            .map { t.transform(it) }
     }
 
-    private fun getEnrollmentNotes(
-        notes: List<Note>,
-        enrollment: Enrollment,
-        transformer: NoteToPostTransformer
-    ): List<Note> {
-        val notesForEnrollment: MutableList<Note> = ArrayList()
-        for (note in notes) {
-            if (enrollment.uid() == note.enrollment()) {
-                notesForEnrollment.add(transformer.transform(note))
-            }
-        }
-        return notesForEnrollment
+    private fun getEnrollmentNotes(notes: List<Note>, enrollment: Enrollment, t: NoteToPostTransformer): List<Note> {
+        return notes
+            .filter { it.enrollment() == enrollment.uid() }
+            .map { t.transform(it) }
     }
 
     companion object {

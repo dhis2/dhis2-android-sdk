@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.imports.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.imports.TrackerImportConflict
@@ -35,7 +36,6 @@ import org.hisp.dhis.android.core.imports.internal.conflicts.*
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueCollectionRepository
-import javax.inject.Inject
 
 @Reusable
 internal class TrackerImportConflictParser @Inject constructor(

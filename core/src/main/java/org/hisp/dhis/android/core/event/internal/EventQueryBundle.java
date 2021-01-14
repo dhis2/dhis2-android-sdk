@@ -29,59 +29,31 @@
 package org.hisp.dhis.android.core.event.internal;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams;
 
-import java.util.Date;
 import java.util.List;
 
 @AutoValue
 abstract class EventQueryBundle {
 
     @NonNull
-    abstract List<String> orgUnitList();
-
-    @Nullable
-    abstract String program();
+    abstract TrackerQueryCommonParams commonParams();
 
     @NonNull
-    abstract List<String> programList();
-
-    @NonNull
-    abstract OrganisationUnitMode ouMode();
-
-    @Nullable
-    abstract Date lastUpdatedStartDate();
-
-    @Nullable
-    abstract String eventStartDate();
-
-    @NonNull
-    abstract Integer limit();
+    abstract List<String> orgUnits();
 
     static Builder builder() {
-        return new AutoValue_EventQueryBundle.Builder()
-                .ouMode(OrganisationUnitMode.SELECTED);
+        return new AutoValue_EventQueryBundle.Builder();
     }
 
     @AutoValue.Builder
     abstract static class Builder {
-        abstract Builder orgUnitList(List<String> orgUnitList);
+        abstract Builder commonParams(TrackerQueryCommonParams commonParams);
 
-        abstract Builder program(String program);
-
-        abstract Builder programList(List<String> programList);
-
-        abstract Builder ouMode(OrganisationUnitMode ouMode);
-
-        abstract Builder lastUpdatedStartDate(Date lastUpdatedStartDate);
-
-        abstract Builder eventStartDate(String eventStartDate);
-
-        abstract Builder limit(Integer limit);
+        abstract Builder orgUnits(List<String> orgUnits);
 
         abstract EventQueryBundle build();
     }

@@ -242,6 +242,10 @@ public class Dhis2MockServer {
         enqueueMockResponse(SYSTEM_INFO_JSON);
     }
 
+    public void enqueueSystemInfoResponse() {
+        enqueueMockResponse(SYSTEM_INFO_JSON);
+    }
+
     public void enqueueMetadataResponses() {
         enqueueMockResponse(GENERAL_SETTINGS_JSON);
         enqueueMockResponse(SYSTEM_INFO_JSON);

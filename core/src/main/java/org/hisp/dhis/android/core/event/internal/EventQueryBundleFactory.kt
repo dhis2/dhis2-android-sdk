@@ -25,35 +25,28 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.event.internal
 
-package org.hisp.dhis.android.core.event.internal;
-
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackerSyncLastUpdatedManager;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
+import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
+import org.hisp.dhis.android.core.settings.ProgramSettings
+import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryFactory
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryFactoryCommonHelper
 
 @Reusable
-class EventLastUpdatedManager extends TrackerSyncLastUpdatedManager<EventSync> {
-
-    private final ResourceHandler resourceHandler;
-
-    @Inject
-    EventLastUpdatedManager(ObjectWithoutUidStore<EventSync> store,
-                            ResourceHandler resourceHandler) {
-        super(store);
-        this.resourceHandler = resourceHandler;
+internal class EventQueryBundleFactory @Inject constructor(
+    programStore: ProgramStoreInterface,
+    programSettingsObjectRepository: ProgramSettingsObjectRepository,
+    lastUpdatedManager: EventLastUpdatedManager,
+    commonHelper: TrackerQueryFactoryCommonHelper
+) : TrackerQueryFactory<EventQueryBundle, EventSync>(
+    programStore, programSettingsObjectRepository, lastUpdatedManager,
+    commonHelper,
+    { params: ProgramDataDownloadParams,
+        programSettings: ProgramSettings? ->
+        EventQueryBundleInternalFactory(commonHelper, params, programSettings)
     }
-
-    public void update(String program, int limit) {
-        EventSync sync = EventSync.builder()
-                .program(program)
-                .downloadLimit(limit)
-                .lastUpdated(resourceHandler.getServerDate())
-                .build();
-        super.update(sync);
-    }
-}
+)

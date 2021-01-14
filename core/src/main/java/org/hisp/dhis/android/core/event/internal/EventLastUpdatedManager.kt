@@ -25,33 +25,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.event.internal
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.resource.internal.ResourceHandler
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerSyncLastUpdatedManager
 
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.CoreColumns;
+@Reusable
+internal class EventLastUpdatedManager @Inject constructor(
+    store: ObjectWithoutUidStore<EventSync>,
+    private val resourceHandler: ResourceHandler
+) : TrackerSyncLastUpdatedManager<EventSync>(store) {
 
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.LAST_UPDATED;
-
-public class TrackerBaseSyncColumns extends CoreColumns {
-    public static final String PROGRAM = "program";
-    public static final String DOWNLOAD_LIMIT = "downloadLimit";
-    public static final String ORGANISATION_UNIT_IDS_HASH = "organisationUnitIdsHash";
-
-    @Override
-    public String[] all() {
-        return CollectionsHelper.appendInNewArray(super.all(),
-                PROGRAM,
-                ORGANISATION_UNIT_IDS_HASH,
-                DOWNLOAD_LIMIT,
-                LAST_UPDATED);
-    }
-
-    @Override
-    public String[] whereUpdate() {
-        return new String[]{
-                PROGRAM,
-                ORGANISATION_UNIT_IDS_HASH
-        };
+    fun update(bundle: EventQueryBundle) {
+        val sync = EventSync.builder()
+            .program(bundle.commonParams().program)
+            .organisationUnitIdsHash(bundle.orgUnits().toSet().hashCode())
+            .downloadLimit(bundle.commonParams().limit)
+            .lastUpdated(resourceHandler.serverDate)
+            .build()
+        super.update(sync)
     }
 }

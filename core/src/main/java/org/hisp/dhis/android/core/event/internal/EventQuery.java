@@ -34,29 +34,19 @@ import androidx.annotation.Nullable;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 
 @AutoValue
 abstract class EventQuery extends BaseQuery {
 
+    @NonNull
+    abstract TrackerQueryCommonParams commonParams();
+
     @Nullable
     abstract String orgUnit();
-
-    @Nullable
-    abstract String program();
-
-    @NonNull
-    abstract OrganisationUnitMode ouMode();
-
-    @Nullable
-    abstract Date lastUpdatedStartDate();
-
-    @Nullable
-    abstract String eventStartDate();
 
     @NonNull
     abstract Collection<String> uids();
@@ -66,21 +56,14 @@ abstract class EventQuery extends BaseQuery {
                 .page(1)
                 .pageSize(DEFAULT_PAGE_SIZE)
                 .paging(true)
-                .ouMode(OrganisationUnitMode.SELECTED)
                 .uids(Collections.emptyList());
     }
 
     @AutoValue.Builder
     abstract static class Builder extends BaseQuery.Builder<Builder> {
+        abstract Builder commonParams(TrackerQueryCommonParams commonParams);
+
         abstract Builder orgUnit(String orgUnit);
-
-        abstract Builder program(String program);
-
-        abstract Builder ouMode(OrganisationUnitMode ouMode);
-
-        abstract Builder lastUpdatedStartDate(Date lastUpdatedStartDate);
-
-        abstract Builder eventStartDate(String eventStartDate);
 
         abstract Builder uids(Collection<String> uIds);
 

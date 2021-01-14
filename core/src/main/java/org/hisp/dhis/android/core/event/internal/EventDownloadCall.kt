@@ -43,7 +43,7 @@ import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
 
 @Reusable
-class EventWithLimitCallFactory @Inject internal constructor(
+class EventDownloadCall @Inject internal constructor(
     private val systemInfoModuleDownloader: SystemInfoModuleDownloader,
     private val d2CallExecutor: D2CallExecutor,
     private val rxCallExecutor: RxAPICallExecutor,
@@ -69,35 +69,35 @@ class EventWithLimitCallFactory @Inject internal constructor(
 
         return Observable.create { emitter ->
             var successfulSync = true
-            val bundles = eventQueryBundleFactory.getEventQueryBundles(params)
+            val bundles = eventQueryBundleFactory.getQueries(params)
 
             for (bundle in bundles) {
 
                 var eventsCount = 0
-                for (orgunitUid in bundle.orgUnitList()) {
-                    if (eventsCount >= bundle.limit()) {
+                for (orgunitUid in bundle.orgUnits()) {
+                    if (eventsCount >= bundle.commonParams().limit) {
                         break
                     }
-                    for (programUid in bundle.programList()) {
-                        if (eventsCount >= bundle.limit()) {
+                    for (programUid in bundle.commonParams().programs) {
+                        if (eventsCount >= bundle.commonParams().limit) {
                             break
                         }
                         val eventQueryBuilder = EventQuery.builder()
+                            .commonParams(bundle.commonParams())
                             .orgUnit(orgunitUid)
-                            .ouMode(bundle.ouMode())
-                            .program(programUid)
-                            .lastUpdatedStartDate(bundle.lastUpdatedStartDate())
                             .uids(params.uids())
 
                         val result = getEventsForOrgUnitProgramCombination(
                             eventQueryBuilder,
-                            bundle.limit() - eventsCount
+                            bundle.commonParams().limit - eventsCount
                         )
                         eventsCount += result.eventCount
                         successfulSync = successfulSync && result.successfulSync
                     }
                 }
-                lastUpdatedManager.update(bundle.program(), bundle.limit())
+                if (params.uids().isEmpty()) {
+                    lastUpdatedManager.update(bundle)
+                }
             }
             emitter.onNext(progressManager.increaseProgress(Event::class.java, true))
             emitter.onComplete()

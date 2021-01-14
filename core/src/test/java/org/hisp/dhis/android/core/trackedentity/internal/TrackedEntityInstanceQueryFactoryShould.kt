@@ -27,9 +27,10 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
+import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
-import java.util.HashMap
+import com.nhaarman.mockitokotlin2.whenever
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
@@ -44,12 +45,10 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.ArgumentMatchers
-import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 
 @RunWith(JUnit4::class)
-class TrackedEntityInstanceQueryBuilderFactoryShould {
+class TrackedEntityInstanceQueryFactoryShould {
 
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore = mock()
     private val organisationUnitProgramLinkLinkStore: LinkStore<OrganisationUnitProgramLink> = mock()
@@ -73,60 +72,53 @@ class TrackedEntityInstanceQueryBuilderFactoryShould {
     )
 
     // Object to test
-    private var builderFactory: TrackedEntityInstanceQueryBuilderFactory? = null
+    private var queryFactory: TrackedEntityInstanceQueryFactory? = null
     @Before
     @Throws(Exception::class)
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-        Mockito.`when`(userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids()).thenReturn(rootOrgUnits)
-        Mockito.`when`(userOrganisationUnitLinkStore.queryOrganisationUnitUidsByScope(ArgumentMatchers.any()))
+        whenever(userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids()).thenReturn(rootOrgUnits)
+        whenever(userOrganisationUnitLinkStore.queryOrganisationUnitUidsByScope(any()))
             .thenReturn(captureOrgUnits)
-        Mockito.`when`(organisationUnitProgramLinkLinkStore.selectWhere(ArgumentMatchers.anyString()))
+        whenever(organisationUnitProgramLinkLinkStore.selectWhere(any()))
             .thenReturn(links)
-        Mockito.`when`(programStore.getUidsByProgramType(ArgumentMatchers.any())).thenReturn(
+        whenever(programStore.getUidsByProgramType(any())).thenReturn(
             listOf(p1, p2, p3)
         )
-        Mockito.`when`(programSettingsObjectRepository.blockingGet()).thenReturn(programSettings)
+        whenever(programSettingsObjectRepository.blockingGet()).thenReturn(programSettings)
 
-        val commonHelper = TrackedEntityInstanceQueryCommonHelper(
+        val commonHelper = TrackerQueryFactoryCommonHelper(
             userOrganisationUnitLinkStore, organisationUnitProgramLinkLinkStore
         )
-        val globalHelper = TrackedEntityInstanceQueryGlobalHelper(
-            lastUpdatedManager, commonHelper
-        )
-        val perProgramHelper = TrackedEntityInstanceQueryPerProgramHelper(
-            lastUpdatedManager, commonHelper
-        )
-        builderFactory = TrackedEntityInstanceQueryBuilderFactory(
-            programStore, programSettingsObjectRepository, lastUpdatedManager, globalHelper, perProgramHelper
+        queryFactory = TrackedEntityInstanceQueryFactory(
+            programStore, programSettingsObjectRepository, lastUpdatedManager, commonHelper
         )
     }
 
     @Test
     fun create_a_single_bundle_when_global() {
         val params = ProgramDataDownloadParams.builder().build()
-        val builders = builderFactory!!.getTeiQueryBuilders(params)
-        Truth.assertThat(builders.size).isEqualTo(1)
-        val bundle = builders[0].build()
-        Truth.assertThat(bundle.orgUnits()).isEqualTo(rootOrgUnits)
-        Truth.assertThat(bundle.ouMode()).isEqualTo(OrganisationUnitMode.DESCENDANTS)
-        Truth.assertThat(bundle.program()).isNull()
+        val queries = queryFactory!!.getQueries(params)
+        assertThat(queries.size).isEqualTo(1)
+        val query = queries[0]
+        assertThat(query.orgUnits()).isEqualTo(rootOrgUnits)
+        assertThat(query.commonParams().ouMode).isEqualTo(OrganisationUnitMode.DESCENDANTS)
+        assertThat(query.commonParams().program).isNull()
     }
 
     @Test
     fun get_enrollment_date_value_if_defined() {
         val params = ProgramDataDownloadParams.builder().build()
-        val specificSettings: MutableMap<String, ProgramSetting> = HashMap()
-        specificSettings[p1] = ProgramSetting.builder()
-            .uid(p1).enrollmentDateDownload(DownloadPeriod.LAST_3_MONTHS).build()
-        Mockito.`when`(programSettings.specificSettings()).thenReturn(specificSettings)
-        val builders = builderFactory!!.getTeiQueryBuilders(params)
-        Truth.assertThat(builders.size).isEqualTo(2)
-        for (builder in builders) {
-            val query = builder.build()
-            if (query.program() != null) {
-                Truth.assertThat(query.program()).isEqualTo(p1)
-                Truth.assertThat(query.programStartDate()).isNotNull()
+
+        val settings = ProgramSetting.builder().uid(p1).enrollmentDateDownload(DownloadPeriod.LAST_3_MONTHS).build()
+        whenever(programSettings.specificSettings()).thenReturn(mapOf(p1 to settings))
+
+        val queries = queryFactory!!.getQueries(params)
+        assertThat(queries.size).isEqualTo(2)
+        for (query in queries) {
+            if (query.commonParams().program != null) {
+                assertThat(query.commonParams().program).isEqualTo(p1)
+                assertThat(query.commonParams().startDate).isNotNull()
             }
         }
     }
@@ -134,30 +126,29 @@ class TrackedEntityInstanceQueryBuilderFactoryShould {
     @Test
     fun single_query_if_program_provided_by_user() {
         val params = ProgramDataDownloadParams.builder().limit(5000).program(p1).build()
-        val builders = builderFactory!!.getTeiQueryBuilders(params)
-        Truth.assertThat(builders.size).isEqualTo(1)
-        for (builder in builders) {
-            val query = builder.build()
-            Truth.assertThat(query.program()).isEqualTo(p1)
-            Truth.assertThat(query.limit()).isEqualTo(5000)
+        val queries = queryFactory!!.getQueries(params)
+        assertThat(queries.size).isEqualTo(1)
+        for (query in queries) {
+            assertThat(query.commonParams().program).isEqualTo(p1)
+            assertThat(query.commonParams().limit).isEqualTo(5000)
         }
     }
 
     @Test
     fun apply_user_defined_limit_only_to_global_if_no_program() {
         val params = ProgramDataDownloadParams.builder().limit(5000).build()
-        val specificSettings: MutableMap<String, ProgramSetting> = HashMap()
-        specificSettings[p1] = ProgramSetting.builder().uid(p1).teiDownload(100).build()
-        Mockito.`when`(programSettings.specificSettings()).thenReturn(specificSettings)
-        val builders = builderFactory!!.getTeiQueryBuilders(params)
-        Truth.assertThat(builders.size).isEqualTo(2)
-        for (builder in builders) {
-            val query = builder.build()
-            if (query.program() != null) {
-                Truth.assertThat(query.program()).isEqualTo(p1)
-                Truth.assertThat(query.limit()).isEqualTo(100)
+
+        val settings = ProgramSetting.builder().uid(p1).teiDownload(100).build()
+        whenever(programSettings.specificSettings()).thenReturn(mapOf(p1 to settings))
+
+        val queries = queryFactory!!.getQueries(params)
+        assertThat(queries.size).isEqualTo(2)
+        for (query in queries) {
+            if (query.commonParams().program != null) {
+                assertThat(query.commonParams().program).isEqualTo(p1)
+                assertThat(query.commonParams().limit).isEqualTo(100)
             } else {
-                Truth.assertThat(query.limit()).isEqualTo(5000)
+                assertThat(query.commonParams().limit).isEqualTo(5000)
             }
         }
     }

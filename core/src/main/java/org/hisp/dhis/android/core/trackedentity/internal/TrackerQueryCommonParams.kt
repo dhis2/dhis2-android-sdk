@@ -25,21 +25,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.event.internal;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 
-import org.junit.Test;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class EventQueryShould {
-
-    @Test
-    public void create_event_query_successfully() {
-        EventQuery eventQuery = EventQuery.builder()
-                .pageSize(50)
-                .build();
-
-        assertThat(eventQuery).isNotNull();
-    }
-}
+internal data class TrackerQueryCommonParams(
+    val programs: List<String>,
+    val program: String?,
+    val startDate: String?,
+    val hasLimitByOrgUnit: Boolean,
+    val ouMode: OrganisationUnitMode,
+    val orgUnitsBeforeDivision: List<String>,
+    val limit: Int
+)

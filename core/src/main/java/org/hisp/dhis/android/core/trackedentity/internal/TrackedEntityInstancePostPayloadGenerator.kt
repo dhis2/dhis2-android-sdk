@@ -29,13 +29,13 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.excludeUids
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidsList
 import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper
-import org.hisp.dhis.android.core.common.*
+import org.hisp.dhis.android.core.common.DataColumns
+import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
@@ -47,14 +47,12 @@ import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStore
-import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import java.util.ArrayList
-import java.util.HashMap
 import javax.inject.Inject
 
 @Reusable
@@ -67,9 +65,9 @@ internal class TrackedEntityInstancePostPayloadGenerator @Inject internal constr
     private val eventStore: EventStore,
     private val trackedEntityDataValueStore: TrackedEntityDataValueStore,
     private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore,
-    private val relationshipStore: RelationshipStore,
     private val relationshipItemStore: RelationshipItemStore,
-    private val noteStore: IdentifiableObjectStore<Note>
+    private val noteStore: IdentifiableObjectStore<Note>,
+    private val stateManager: TrackedEntityInstancePostStateManager
 ) {
 
     fun getTrackedEntityInstancesPayload(filteredTrackedEntityInstances: List<TrackedEntityInstance>?): List<List<TrackedEntityInstance>> {
@@ -96,7 +94,7 @@ internal class TrackedEntityInstancePostPayloadGenerator @Inject internal constr
                 partitionRecreated.add(recreatedTrackedEntityInstance)
             }
             trackedEntityInstancesRecreated.add(partitionRecreated)
-            setPartitionStates(partitionRecreated, State.UPLOADING)
+            stateManager.setPartitionStates(partitionRecreated, State.UPLOADING)
         }
         return trackedEntityInstancesRecreated
     }
@@ -135,7 +133,7 @@ internal class TrackedEntityInstancePostPayloadGenerator @Inject internal constr
             relatedTeiUids.removeAll(excludedUids)
             relatedTeisToPost.addAll(relatedTeiUids)
             internalRelatedTeis = relatedTeiUids
-        } while (!internalRelatedTeis.isEmpty())
+        } while (internalRelatedTeis.isNotEmpty())
         for (trackedEntityInstanceInDB in trackedEntityInstancesInDBToSync) {
             if (relatedTeisToPost.contains(trackedEntityInstanceInDB.uid())) {
                 filteredTrackedEntityInstances.add(trackedEntityInstanceInDB)
@@ -230,61 +228,6 @@ internal class TrackedEntityInstancePostPayloadGenerator @Inject internal constr
             }
         }
         return notesForEnrollment
-    }
-
-    fun restorePartitionStates(partition: List<TrackedEntityInstance>) {
-        setPartitionStates(partition, null)
-    }
-
-    private fun setPartitionStates(partition: List<TrackedEntityInstance>, forcedState: State?) {
-        val teiMap: MutableMap<State, MutableList<String>?> = HashMap()
-        val enrollmentMap: MutableMap<State, MutableList<String>?> = HashMap()
-        val eventMap: MutableMap<State, MutableList<String>?> = HashMap()
-        val relationshipMap: MutableMap<State, MutableList<String>?> = HashMap()
-        for (instance in partition) {
-            addState(teiMap, instance, forcedState)
-            for (enrollment in TrackedEntityInstanceInternalAccessor.accessEnrollments(instance)) {
-                addState(enrollmentMap, enrollment, forcedState)
-                for (event in EnrollmentInternalAccessor.accessEvents(enrollment)) {
-                    addState(eventMap, event, forcedState)
-                }
-            }
-            for (r in TrackedEntityInstanceInternalAccessor.accessRelationships(instance)) {
-                if (versionManager.is2_29) {
-                    val whereClause = WhereClauseBuilder().appendKeyStringValue(CoreColumns.ID, r.id()).build()
-                    val dbRelationship = relationshipStore.selectOneWhere(whereClause)
-                    dbRelationship?.let { addState(relationshipMap, it, forcedState) }
-                } else {
-                    addState(relationshipMap, r, forcedState)
-                }
-            }
-        }
-        persistStates(teiMap, trackedEntityInstanceStore)
-        persistStates(enrollmentMap, enrollmentStore)
-        persistStates(eventMap, eventStore)
-        persistStates(relationshipMap, relationshipStore)
-    }
-
-    private fun <O> addState(
-        stateMap: MutableMap<State, MutableList<String>?>, o: O,
-        forcedState: State?
-    ) where O : DataObject?, O : ObjectWithUidInterface? {
-        val s = getStateToSet(o, forcedState)
-        if (!stateMap.containsKey(s)) {
-            stateMap[s] = ArrayList()
-        }
-        stateMap[s]!!.add(o!!.uid())
-    }
-
-    private fun <O> getStateToSet(o: O, forcedState: State?): State where O : DataObject?, O : ObjectWithUidInterface? {
-        return forcedState
-            ?: if (o!!.state() == State.UPLOADING) State.TO_UPDATE else o.state()
-    }
-
-    private fun persistStates(map: Map<State, MutableList<String>?>, store: IdentifiableDeletableDataObjectStore<*>) {
-        for ((key, value) in map) {
-            store.setState(value!!, key)
-        }
     }
 
     companion object {

@@ -45,6 +45,7 @@ import javax.inject.Inject
 @Reusable
 internal class TrackedEntityInstancePostCall @Inject internal constructor(
     private val payloadGenerator: TrackedEntityInstancePostPayloadGenerator,
+    private val stateManager: TrackedEntityInstancePostStateManager,
     private val versionManager: DHISVersionManager,
     private val trackedEntityInstanceService: TrackedEntityInstanceService,
     private val teiWebResponseHandler: TEIWebResponseHandler,
@@ -80,7 +81,7 @@ internal class TrackedEntityInstancePostCall @Inject internal constructor(
                             teiWebResponseHandler.handleWebResponse(webResponse)
                             emitter.onNext(progressManager.increaseProgress(TrackedEntityInstance::class.java, false))
                         } catch (d2Error: D2Error) {
-                            payloadGenerator.restorePartitionStates(thisPartition)
+                            stateManager.restorePartitionStates(thisPartition)
                             if (d2Error.isOffline) {
                                 emitter.onError(d2Error)
                                 break

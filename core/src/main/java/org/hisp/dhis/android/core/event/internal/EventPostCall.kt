@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.event.internal
 import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
@@ -39,7 +40,6 @@ import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.imports.internal.EventWebResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import javax.inject.Inject
 
 @Reusable
 internal class EventPostCall @Inject internal constructor(
@@ -55,7 +55,6 @@ internal class EventPostCall @Inject internal constructor(
             val eventsToPost = payloadGenerator.getEvents(filteredEvents)
             markObjectsAs(eventsToPost, State.UPLOADING)
 
-            // if there is nothing to send, return null
             if (eventsToPost.isEmpty()) {
                 return@defer Observable.empty<D2Progress>()
             } else {
@@ -66,7 +65,9 @@ internal class EventPostCall @Inject internal constructor(
                     val strategy = if (versionManager.is2_29) "CREATE_AND_UPDATE" else "SYNC"
                     try {
                         val webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
-                            eventService.postEvents(eventPayload, strategy), listOf(409),
+                            eventService.postEvents(eventPayload, strategy),
+                            @Suppress("MagicNumber")
+                            listOf(409),
                             EventWebResponse::class.java
                         )
                         handleWebResponse(webResponse)

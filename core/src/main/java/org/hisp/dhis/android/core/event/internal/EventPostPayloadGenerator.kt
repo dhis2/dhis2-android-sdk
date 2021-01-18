@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.common.DataColumns
@@ -37,7 +38,6 @@ import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.note.NoteTableInfo
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
-import javax.inject.Inject
 
 @Reusable
 internal class EventPostPayloadGenerator @Inject internal constructor(

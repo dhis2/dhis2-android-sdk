@@ -87,7 +87,7 @@ internal class TrackedEntityInstancePostPayloadGenerator @Inject internal constr
         val trackedEntityInstancesToSync = getPagedTrackedEntityInstances(targetTrackedEntityInstances)
         return trackedEntityInstancesToSync.map { partition ->
             val partitionRecreated = partition.map { trackedEntityInstance ->
-                recreateTrackedEntityInstance(
+                getTrackedEntityInstance(
                     trackedEntityInstance, dataValueMap, eventMap, enrollmentMap, attributeValueMap, notes
                 )
             }
@@ -140,7 +140,7 @@ internal class TrackedEntityInstancePostPayloadGenerator @Inject internal constr
     }
 
     @Suppress("LongParameterList")
-    private fun recreateTrackedEntityInstance(
+    private fun getTrackedEntityInstance(
         trackedEntityInstance: TrackedEntityInstance,
         dataValueMap: Map<String, List<TrackedEntityDataValue>>,
         eventMap: Map<String, List<Event>>,

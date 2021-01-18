@@ -63,7 +63,7 @@ import org.hisp.dhis.android.core.domain.aggregated.internal.AggregatedModuleImp
 import org.hisp.dhis.android.core.domain.metadata.internal.MetadataModuleImpl;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentPackageDIModule;
 import org.hisp.dhis.android.core.event.internal.EventPackageDIModule;
-import org.hisp.dhis.android.core.event.internal.EventPostCall;
+import org.hisp.dhis.android.core.event.internal.EventPostPayloadGenerator;
 import org.hisp.dhis.android.core.fileresource.internal.FileResourcePackageDIModule;
 import org.hisp.dhis.android.core.imports.internal.ImportPackageDIModule;
 import org.hisp.dhis.android.core.indicator.internal.IndicatorPackageDIModule;
@@ -167,7 +167,7 @@ public interface D2DIComponent {
     @VisibleForTesting
     TrackedEntityInstancePostPayloadGenerator trackedEntityInstancePostPayloadGenerator();
     @VisibleForTesting
-    EventPostCall eventPostCall();
+    EventPostPayloadGenerator eventPostPayloadGenerator();
     @VisibleForTesting
     IdentifiableObjectStore<CategoryOption> categoryOptionStore();
     @VisibleForTesting

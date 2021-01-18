@@ -33,35 +33,26 @@ import io.reactivex.ObservableEmitter
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper
-import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper
-import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.imports.internal.EventWebResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.note.Note
-import org.hisp.dhis.android.core.note.NoteTableInfo
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
-import java.util.ArrayList
 import javax.inject.Inject
 
 @Reusable
 internal class EventPostCall @Inject internal constructor(
+    private val payloadGenerator: EventPostPayloadGenerator,
     private val versionManager: DHISVersionManager,
     private val eventService: EventService,
     private val eventStore: EventStore,
-    private val trackedEntityDataValueStore: TrackedEntityDataValueStore,
-    private val noteStore: IdentifiableObjectStore<Note>,
     private val apiCallExecutor: APICallExecutor,
     private val eventImportHandler: EventImportHandler
 ) {
     fun uploadEvents(filteredEvents: List<Event>?): Observable<D2Progress> {
         return Observable.defer {
-            val eventsToPost = queryDataToSync(filteredEvents)
+            val eventsToPost = payloadGenerator.queryDataToSync(filteredEvents)
             markObjectsAs(eventsToPost, State.UPLOADING)
 
             // if there is nothing to send, return null
@@ -88,45 +79,6 @@ internal class EventPostCall @Inject internal constructor(
                 }
             }
         }
-    }
-
-    fun queryDataToSync(filteredEvents: List<Event>?): List<Event> {
-        val dataValueMap = trackedEntityDataValueStore.querySingleEventsTrackedEntityDataValues()
-        val events = filteredEvents ?: eventStore.querySingleEventsToPost()
-        val notes = queryNotesToSync()
-        val eventRecreated: MutableList<Event> = ArrayList()
-        for (event in events) {
-            val dataValuesForEvent = dataValueMap[event.uid()]
-            val eventNotes = getEventNotes(notes, event.uid())
-            val eventBuilder = event.toBuilder()
-                .trackedEntityDataValues(dataValuesForEvent)
-                .notes(eventNotes)
-            if (versionManager.is2_30) {
-                eventBuilder.geometry(null)
-            }
-            eventRecreated.add(eventBuilder.build())
-        }
-        return eventRecreated
-    }
-
-    private fun queryNotesToSync(): List<Note> {
-        val whereNotesClause = WhereClauseBuilder()
-            .appendInKeyStringValues(
-                DataColumns.STATE, EnumHelper.asStringList(*State.uploadableStatesIncludingError())
-            )
-            .appendKeyStringValue(NoteTableInfo.Columns.NOTE_TYPE, Note.NoteType.EVENT_NOTE)
-            .build()
-        return noteStore.selectWhere(whereNotesClause)
-    }
-
-    private fun getEventNotes(allNotes: List<Note>, eventUid: String): List<Note> {
-        val eventNotes: MutableList<Note> = ArrayList()
-        for (note in allNotes) {
-            if (eventUid == note.event()) {
-                eventNotes.add(note)
-            }
-        }
-        return eventNotes
     }
 
     private fun handleWebResponse(webResponse: EventWebResponse?) {

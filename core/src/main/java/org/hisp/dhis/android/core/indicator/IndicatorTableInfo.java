@@ -60,6 +60,7 @@ public final class IndicatorTableInfo {
         public final static String DENOMINATOR = "denominator";
         public final static String DENOMINATOR_DESCRIPTION = "denominatorDescription";
         public final static String URL = "url";
+        public final static String DECIMALS = "decimals";
 
         @Override
         public String[] all() {
@@ -70,7 +71,8 @@ public final class IndicatorTableInfo {
                     NUMERATOR_DESCRIPTION,
                     DENOMINATOR,
                     DENOMINATOR_DESCRIPTION,
-                    URL
+                    URL,
+                    DECIMALS
             );
         }
     }

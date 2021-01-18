@@ -99,7 +99,7 @@ class DataSetIndicatorEvaluatorShould {
     }
 
     @Test
-    fun evaluate_indicator_decimals() {
+    fun evaluate_indicator_decimals_default() {
         valueMap = mapOf(
             diObject1 to 10.0,
             diObject2 to 3.0
@@ -108,6 +108,20 @@ class DataSetIndicatorEvaluatorShould {
         assertThat(
             evaluator.evaluate(indicator, indicatorType, valueMap, constantMap, orgunitGroupMap, days)
         ).isEqualTo(3.33)
+    }
+
+    @Test
+    fun evaluate_indicator_decimals_configurable() {
+        whenever(indicator.decimals()) doReturn 3
+
+        valueMap = mapOf(
+            diObject1 to 10.0,
+            diObject2 to 3.0
+        )
+
+        assertThat(
+            evaluator.evaluate(indicator, indicatorType, valueMap, constantMap, orgunitGroupMap, days)
+        ).isEqualTo(3.333)
     }
 
     @Test

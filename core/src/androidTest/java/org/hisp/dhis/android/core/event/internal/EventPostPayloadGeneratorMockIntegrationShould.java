@@ -82,7 +82,8 @@ public class EventPostPayloadGeneratorMockIntegrationShould extends BaseMockInte
     public void build_payload_with_different_enrollments() {
         storeEvents();
 
-        List<Event> events = payloadGenerator.getEvents(null);
+
+        List<Event> events = payloadGenerator.getEvents(eventStore.querySingleEvents());
 
         assertThat(events.size()).isEqualTo(3);
 
@@ -166,7 +167,7 @@ public class EventPostPayloadGeneratorMockIntegrationShould extends BaseMockInte
                 .value("This is an event note")
                 .build());
 
-        List<Event> events = payloadGenerator.getEvents(null);
+        List<Event> events = payloadGenerator.getEvents(eventStore.querySingleEventsToPost());
 
         for (Event event : events) {
             if (event1Id.equals(event.uid())) {

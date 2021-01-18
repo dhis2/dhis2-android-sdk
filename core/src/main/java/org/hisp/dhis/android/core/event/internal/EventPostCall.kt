@@ -50,7 +50,7 @@ internal class EventPostCall @Inject internal constructor(
     private val apiCallExecutor: APICallExecutor,
     private val eventImportHandler: EventImportHandler
 ) {
-    fun uploadEvents(filteredEvents: List<Event>?): Observable<D2Progress> {
+    fun uploadEvents(filteredEvents: List<Event>): Observable<D2Progress> {
         return Observable.defer {
             val eventsToPost = payloadGenerator.getEvents(filteredEvents)
             markObjectsAs(eventsToPost, State.UPLOADING)

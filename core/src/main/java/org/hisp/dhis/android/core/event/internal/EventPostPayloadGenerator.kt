@@ -42,14 +42,12 @@ import javax.inject.Inject
 @Reusable
 internal class EventPostPayloadGenerator @Inject internal constructor(
     private val versionManager: DHISVersionManager,
-    private val eventStore: EventStore,
     private val trackedEntityDataValueStore: TrackedEntityDataValueStore,
     private val noteStore: IdentifiableObjectStore<Note>
 ) {
 
-    fun getEvents(filteredEvents: List<Event>?): List<Event> {
+    fun getEvents(events: List<Event>): List<Event> {
         val dataValueMap = trackedEntityDataValueStore.querySingleEventsTrackedEntityDataValues()
-        val events = filteredEvents ?: eventStore.querySingleEventsToPost()
         val notes = queryNotes()
 
         return events.map { event ->

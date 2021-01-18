@@ -62,6 +62,7 @@ internal class EventPostCall @Inject internal constructor(
     fun uploadEvents(filteredEvents: List<Event>?): Observable<D2Progress> {
         return Observable.defer {
             val eventsToPost = queryDataToSync(filteredEvents)
+            markObjectsAs(eventsToPost, State.UPLOADING)
 
             // if there is nothing to send, return null
             if (eventsToPost.isEmpty()) {
@@ -105,7 +106,6 @@ internal class EventPostCall @Inject internal constructor(
             }
             eventRecreated.add(eventBuilder.build())
         }
-        markObjectsAs(eventRecreated, State.UPLOADING)
         return eventRecreated
     }
 

@@ -71,6 +71,7 @@ class DataSetIndicatorEvaluatorShould {
 
         whenever(indicator.numerator()) doReturn "#{$diItem1}"
         whenever(indicator.denominator()) doReturn "#{$diItem2}"
+        whenever(indicator.decimals()) doReturn 2
 
         orgunitGroupMap = mapOf()
     }

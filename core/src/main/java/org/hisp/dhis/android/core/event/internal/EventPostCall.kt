@@ -52,7 +52,7 @@ internal class EventPostCall @Inject internal constructor(
 ) {
     fun uploadEvents(filteredEvents: List<Event>?): Observable<D2Progress> {
         return Observable.defer {
-            val eventsToPost = payloadGenerator.queryDataToSync(filteredEvents)
+            val eventsToPost = payloadGenerator.getEvents(filteredEvents)
             markObjectsAs(eventsToPost, State.UPLOADING)
 
             // if there is nothing to send, return null

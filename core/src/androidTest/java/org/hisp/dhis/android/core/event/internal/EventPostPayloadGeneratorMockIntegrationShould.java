@@ -82,7 +82,7 @@ public class EventPostPayloadGeneratorMockIntegrationShould extends BaseMockInte
     public void build_payload_with_different_enrollments() {
         storeEvents();
 
-        List<Event> events = payloadGenerator.queryDataToSync(null);
+        List<Event> events = payloadGenerator.getEvents(null);
 
         assertThat(events.size()).isEqualTo(3);
 
@@ -147,7 +147,7 @@ public class EventPostPayloadGeneratorMockIntegrationShould extends BaseMockInte
         storeSingleEvent(event3, program, State.TO_UPDATE, true);
         storeSingleEvent(event4, program, State.SYNCED, false);
 
-        List<Event> events = payloadGenerator.queryDataToSync(
+        List<Event> events = payloadGenerator.getEvents(
                 d2.eventModule().events().byProgramUid().eq(program.uid())
                 .byState().in(State.uploadableStates()).blockingGet());
 
@@ -166,7 +166,7 @@ public class EventPostPayloadGeneratorMockIntegrationShould extends BaseMockInte
                 .value("This is an event note")
                 .build());
 
-        List<Event> events = payloadGenerator.queryDataToSync(null);
+        List<Event> events = payloadGenerator.getEvents(null);
 
         for (Event event : events) {
             if (event1Id.equals(event.uid())) {

@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.event.internal
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.event.Event
@@ -38,7 +37,6 @@ import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.note.NoteTableInfo
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
-import java.util.ArrayList
 import javax.inject.Inject
 
 @Reusable
@@ -49,42 +47,29 @@ internal class EventPostPayloadGenerator @Inject internal constructor(
     private val noteStore: IdentifiableObjectStore<Note>
 ) {
 
-    fun queryDataToSync(filteredEvents: List<Event>?): List<Event> {
+    fun getEvents(filteredEvents: List<Event>?): List<Event> {
         val dataValueMap = trackedEntityDataValueStore.querySingleEventsTrackedEntityDataValues()
         val events = filteredEvents ?: eventStore.querySingleEventsToPost()
-        val notes = queryNotesToSync()
-        val eventRecreated: MutableList<Event> = ArrayList()
-        for (event in events) {
-            val dataValuesForEvent = dataValueMap[event.uid()]
-            val eventNotes = getEventNotes(notes, event.uid())
+        val notes = queryNotes()
+
+        return events.map { event ->
             val eventBuilder = event.toBuilder()
-                .trackedEntityDataValues(dataValuesForEvent)
-                .notes(eventNotes)
+                .trackedEntityDataValues(dataValueMap[event.uid()])
+                .notes(notes.filter { it.event() == event.uid() })
             if (versionManager.is2_30) {
                 eventBuilder.geometry(null)
             }
-            eventRecreated.add(eventBuilder.build())
+            eventBuilder.build()
         }
-        return eventRecreated
     }
 
-    private fun queryNotesToSync(): List<Note> {
+    private fun queryNotes(): List<Note> {
         val whereNotesClause = WhereClauseBuilder()
             .appendInKeyStringValues(
-                DataColumns.STATE, EnumHelper.asStringList(*State.uploadableStatesIncludingError())
+                DataColumns.STATE, State.uploadableStatesIncludingError().map { it.name }
             )
             .appendKeyStringValue(NoteTableInfo.Columns.NOTE_TYPE, Note.NoteType.EVENT_NOTE)
             .build()
         return noteStore.selectWhere(whereNotesClause)
-    }
-
-    private fun getEventNotes(allNotes: List<Note>, eventUid: String): List<Note> {
-        val eventNotes: MutableList<Note> = ArrayList()
-        for (note in allNotes) {
-            if (eventUid == note.event()) {
-                eventNotes.add(note)
-            }
-        }
-        return eventNotes
     }
 }

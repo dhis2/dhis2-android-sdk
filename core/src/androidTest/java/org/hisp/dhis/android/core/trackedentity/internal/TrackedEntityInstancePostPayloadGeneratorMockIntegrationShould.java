@@ -104,7 +104,7 @@ public class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould exte
         storeTrackedEntityInstance();
 
         List<List<TrackedEntityInstance>> partitions =
-                payloadGenerator.getTrackedEntityInstancesPayload(null);
+                payloadGenerator.getTrackedEntityInstancesPartitions(null);
 
         assertThat(partitions.size()).isEqualTo(1);
         assertThat(partitions.get(0).size()).isEqualTo(1);
@@ -124,7 +124,7 @@ public class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould exte
         storeTrackedEntityInstance();
 
         List<List<TrackedEntityInstance>> partitions =
-                payloadGenerator.getTrackedEntityInstancesPayload(null);
+                payloadGenerator.getTrackedEntityInstancesPartitions(null);
 
         assertThat(partitions.size()).isEqualTo(1);
         assertThat(partitions.get(0).size()).isEqualTo(1);
@@ -145,7 +145,7 @@ public class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould exte
 
         EnrollmentStoreImpl.create(databaseAdapter).setState("enrollment3Id", State.TO_POST);
         List<List<TrackedEntityInstance>> partitions =
-                payloadGenerator.getTrackedEntityInstancesPayload(null);
+                payloadGenerator.getTrackedEntityInstancesPartitions(null);
 
         assertThat(partitions.size()).isEqualTo(1);
         assertThat(partitions.get(0).size()).isEqualTo(1);
@@ -227,7 +227,7 @@ public class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould exte
         storeRelationship("relationship3", tei1, tei5);
         storeRelationship("relationship4", tei5, tei4);
 
-        List<List<TrackedEntityInstance>> partitions = payloadGenerator.getTrackedEntityInstancesPayload(
+        List<List<TrackedEntityInstance>> partitions = payloadGenerator.getTrackedEntityInstancesPartitions(
                 d2.trackedEntityModule().trackedEntityInstances().byUid().eq(tei1)
                 .byState().in(State.uploadableStates()).blockingGet());
 
@@ -241,7 +241,7 @@ public class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould exte
         storeTrackedEntityInstance();
 
         // Ignore result. Just interested in check that target TEIs are marked as UPLOADING
-        List<List<TrackedEntityInstance>> partitions = payloadGenerator.getTrackedEntityInstancesPayload(null);
+        List<List<TrackedEntityInstance>> partitions = payloadGenerator.getTrackedEntityInstancesPartitions(null);
 
         TrackedEntityInstance instance = TrackedEntityInstanceStoreImpl.create(databaseAdapter).selectFirst();
         assertThat(instance.state()).isEqualTo(State.UPLOADING);
@@ -305,7 +305,7 @@ public class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould exte
                 .build());
 
         List<List<TrackedEntityInstance>> partitions =
-                payloadGenerator.getTrackedEntityInstancesPayload(null);
+                payloadGenerator.getTrackedEntityInstancesPartitions(null);
 
         assertThat(partitions.size()).isEqualTo(1);
         assertThat(partitions.get(0).size()).isEqualTo(1);
@@ -331,7 +331,7 @@ public class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould exte
                 .build());
 
         List<List<TrackedEntityInstance>> partitions =
-                payloadGenerator.getTrackedEntityInstancesPayload(null);
+                payloadGenerator.getTrackedEntityInstancesPartitions(null);
 
         assertThat(partitions.size()).isEqualTo(1);
         assertThat(partitions.get(0).size()).isEqualTo(1);

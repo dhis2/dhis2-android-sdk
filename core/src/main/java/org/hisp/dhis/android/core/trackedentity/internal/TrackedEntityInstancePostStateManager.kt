@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
+import java.util.ArrayList
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore
 import org.hisp.dhis.android.core.common.CoreColumns
@@ -41,8 +43,6 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
-import java.util.ArrayList
-import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstancePostStateManager @Inject internal constructor(
@@ -57,6 +57,7 @@ internal class TrackedEntityInstancePostStateManager @Inject internal constructo
         setPartitionStates(partition, null)
     }
 
+    @Suppress("NestedBlockDepth")
     fun setPartitionStates(partition: List<TrackedEntityInstance>, forcedState: State?) {
         val teiMap: MutableMap<State, MutableList<String>> = mutableMapOf()
         val enrollmentMap: MutableMap<State, MutableList<String>> = mutableMapOf()
@@ -87,7 +88,8 @@ internal class TrackedEntityInstancePostStateManager @Inject internal constructo
     }
 
     private fun <O> addState(
-        stateMap: MutableMap<State, MutableList<String>>, o: O,
+        stateMap: MutableMap<State, MutableList<String>>,
+        o: O,
         forcedState: State?
     ) where O : DataObject, O : ObjectWithUidInterface {
         val s = getStateToSet(o, forcedState)

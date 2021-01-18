@@ -28,11 +28,12 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
+import java.util.ArrayList
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidsList
-import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
@@ -51,9 +52,8 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
-import java.util.ArrayList
-import javax.inject.Inject
 
+@Suppress("LongParameterList")
 @Reusable
 internal class TrackedEntityInstancePostPayloadGenerator @Inject internal constructor(
     private val versionManager: DHISVersionManager,
@@ -69,14 +69,16 @@ internal class TrackedEntityInstancePostPayloadGenerator @Inject internal constr
     private val stateManager: TrackedEntityInstancePostStateManager
 ) {
 
-    fun getTrackedEntityInstancesPayload(filteredTrackedEntityInstances: List<TrackedEntityInstance>?): List<List<TrackedEntityInstance>> {
+    fun getTrackedEntityInstancesPartitions(
+        filteredTrackedEntityInstances: List<TrackedEntityInstance>?
+    ): List<List<TrackedEntityInstance>> {
         val dataValueMap = trackedEntityDataValueStore.queryTrackerTrackedEntityDataValues()
         val eventMap = eventStore.queryEventsAttachedToEnrollmentToPost()
         val enrollmentMap = enrollmentStore.queryEnrollmentsToPost()
         val attributeValueMap = trackedEntityAttributeValueStore.queryTrackedEntityAttributeValueToPost()
         val whereNotesClause = WhereClauseBuilder()
             .appendInKeyStringValues(
-                DataColumns.STATE, EnumHelper.asStringList(*State.uploadableStatesIncludingError())
+                DataColumns.STATE, State.uploadableStatesIncludingError().map { it.name }
             )
             .build()
         val notes = noteStore.selectWhere(whereNotesClause)
@@ -112,7 +114,8 @@ internal class TrackedEntityInstancePostPayloadGenerator @Inject internal constr
     }
 
     private fun getTrackedEntityInstancesWithRelationships(
-        filteredTrackedEntityInstances: MutableList<TrackedEntityInstance>, excludedUids: Set<String>
+        filteredTrackedEntityInstances: MutableList<TrackedEntityInstance>,
+        excludedUids: Set<String>
     ): List<TrackedEntityInstance> {
         val trackedEntityInstancesInDBToSync = trackedEntityInstanceStore.queryTrackedEntityInstancesToSync()
         val filteredUids: List<String> = filteredTrackedEntityInstances.map { it.uid() }
@@ -136,6 +139,7 @@ internal class TrackedEntityInstancePostPayloadGenerator @Inject internal constr
         return filteredTrackedEntityInstances
     }
 
+    @Suppress("LongParameterList")
     private fun recreateTrackedEntityInstance(
         trackedEntityInstance: TrackedEntityInstance,
         dataValueMap: Map<String, List<TrackedEntityDataValue>>,
@@ -144,7 +148,8 @@ internal class TrackedEntityInstancePostPayloadGenerator @Inject internal constr
         attributeValueMap: Map<String, List<TrackedEntityAttributeValue>>,
         notes: List<Note>
     ): TrackedEntityInstance {
-        val enrollmentsRecreated = getEnrollments(dataValueMap, eventMap, enrollmentMap, notes, trackedEntityInstance.uid())
+        val enrollmentsRecreated =
+            getEnrollments(dataValueMap, eventMap, enrollmentMap, notes, trackedEntityInstance.uid())
         val attributeValues = attributeValueMap[trackedEntityInstance.uid()]
         val dbRelationships =
             relationshipRepository.getByItem(RelationshipHelper.teiItem(trackedEntityInstance.uid()), true)
@@ -180,7 +185,7 @@ internal class TrackedEntityInstancePostPayloadGenerator @Inject internal constr
                 } else {
                     eventBuilder.build()
                 }
-            }
+            } ?: emptyList()
             EnrollmentInternalAccessor.insertEvents(enrollment.toBuilder(), events)
                 .notes(getEnrollmentNotes(notes, enrollment, transformer))
                 .build()
@@ -189,7 +194,7 @@ internal class TrackedEntityInstancePostPayloadGenerator @Inject internal constr
 
     private fun getEventNotes(notes: List<Note>, event: Event, t: NoteToPostTransformer): List<Note> {
         return notes
-            .filter { it.event() == event.uid()  }
+            .filter { it.event() == event.uid() }
             .map { t.transform(it) }
     }
 

@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
@@ -40,7 +41,6 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDeleteCall
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstancePostCall @Inject internal constructor(
@@ -56,7 +56,7 @@ internal class TrackedEntityInstancePostCall @Inject internal constructor(
         filteredTrackedEntityInstances: List<TrackedEntityInstance>
     ): Observable<D2Progress> {
         return Observable.defer {
-            val teiPartitions = payloadGenerator.getTrackedEntityInstancesPayload(filteredTrackedEntityInstances)
+            val teiPartitions = payloadGenerator.getTrackedEntityInstancesPartitions(filteredTrackedEntityInstances)
 
             // if size is 0, then no need to do network request
             if (teiPartitions.isEmpty()) {
@@ -76,7 +76,10 @@ internal class TrackedEntityInstancePostCall @Inject internal constructor(
                             val webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
                                 trackedEntityInstanceService.postTrackedEntityInstances(
                                     trackedEntityInstancePayload, strategy
-                                ), listOf(409), TEIWebResponse::class.java
+                                ),
+                                @Suppress("MagicNumber")
+                                listOf(409),
+                                TEIWebResponse::class.java
                             )
                             teiWebResponseHandler.handleWebResponse(webResponse)
                             emitter.onNext(progressManager.increaseProgress(TrackedEntityInstance::class.java, false))

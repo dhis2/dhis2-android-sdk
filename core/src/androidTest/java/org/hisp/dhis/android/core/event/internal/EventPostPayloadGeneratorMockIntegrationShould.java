@@ -82,8 +82,7 @@ public class EventPostPayloadGeneratorMockIntegrationShould extends BaseMockInte
     public void build_payload_with_different_enrollments() {
         storeEvents();
 
-
-        List<Event> events = payloadGenerator.getEvents(eventStore.querySingleEvents());
+        List<Event> events = payloadGenerator.getEvents(eventStore.querySingleEventsToPost());
 
         assertThat(events.size()).isEqualTo(3);
 

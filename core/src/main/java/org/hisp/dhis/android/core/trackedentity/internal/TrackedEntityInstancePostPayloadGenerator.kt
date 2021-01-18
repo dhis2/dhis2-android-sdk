@@ -70,7 +70,7 @@ internal class TrackedEntityInstancePostPayloadGenerator @Inject internal constr
 ) {
 
     fun getTrackedEntityInstancesPartitions(
-        filteredTrackedEntityInstances: List<TrackedEntityInstance>?
+        filteredTrackedEntityInstances: List<TrackedEntityInstance>
     ): List<List<TrackedEntityInstance>> {
         val dataValueMap = trackedEntityDataValueStore.queryTrackerTrackedEntityDataValues()
         val eventMap = eventStore.queryEventsAttachedToEnrollmentToPost()
@@ -82,9 +82,7 @@ internal class TrackedEntityInstancePostPayloadGenerator @Inject internal constr
             )
             .build()
         val notes = noteStore.selectWhere(whereNotesClause)
-        val targetTrackedEntityInstances: List<TrackedEntityInstance> =
-            filteredTrackedEntityInstances ?: trackedEntityInstanceStore.queryTrackedEntityInstancesToSync()
-        val trackedEntityInstancesToSync = getPagedTrackedEntityInstances(targetTrackedEntityInstances)
+        val trackedEntityInstancesToSync = getPagedTrackedEntityInstances(filteredTrackedEntityInstances)
         return trackedEntityInstancesToSync.map { partition ->
             val partitionRecreated = partition.map { trackedEntityInstance ->
                 getTrackedEntityInstance(

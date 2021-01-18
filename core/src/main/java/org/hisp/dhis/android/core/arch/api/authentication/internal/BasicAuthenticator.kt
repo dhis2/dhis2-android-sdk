@@ -41,6 +41,7 @@ internal class BasicAuthenticator(private val credentialsSecureStore: ObjectKeyV
 
     companion object {
         private const val AUTHORIZATION_KEY = "Authorization"
+        private const val USERNAME_KEY = "Username"
         private const val COOKIE_KEY = "Cookie"
         private const val SET_COOKIE_KEY = "set-cookie"
         const val LOCATION_KEY = "Location"
@@ -55,7 +56,7 @@ internal class BasicAuthenticator(private val credentialsSecureStore: ObjectKeyV
     override fun intercept(chain: Interceptor.Chain): Response {
         val req = chain.request()
 
-        // Header has already been explicitly in UserService.authenticate
+        // Header has already been explicitly set in UserService.authenticate
         val isLoginCall = req.header(AUTHORIZATION_KEY) != null
 
         return if (isLoginCall) {
@@ -84,9 +85,12 @@ internal class BasicAuthenticator(private val credentialsSecureStore: ObjectKeyV
         }
     }
 
+    private fun reqBuilder(chain: Interceptor.Chain, credentials: Credentials): Request.Builder {
+        return chain.request().newBuilder().header(USERNAME_KEY, credentials.username())
+    }
+
     private fun handleRegularCall(chain: Interceptor.Chain, credentials: Credentials): Response {
-        val req = chain.request()
-        val builder = req.newBuilder()
+        val builder = reqBuilder(chain, credentials)
         val useCookie = cookieValue != null
         val builderWithAuthentication =
             if (useCookie) addCookieHeader(builder) else addAuthorizationHeader(builder, credentials)
@@ -95,7 +99,7 @@ internal class BasicAuthenticator(private val credentialsSecureStore: ObjectKeyV
         val finalRes = if (useCookie && hasAuthenticationFailed(res)) {
             res.close()
             removeCookie()
-            val newReqWithBasicAuth = addAuthorizationHeader(req.newBuilder(), credentials).build()
+            val newReqWithBasicAuth = addAuthorizationHeader(reqBuilder(chain, credentials), credentials).build()
             chain.proceed(newReqWithBasicAuth)
         } else {
             res

@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.event.search
 
 import dagger.Reusable
+import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
 import org.hisp.dhis.android.core.event.EventCollectionRepository
 import javax.inject.Inject
 
@@ -37,8 +38,51 @@ internal class EventCollectionRepositoryAdapter @Inject constructor(
 ) {
 
     fun getCollectionRepository(scope: EventQueryRepositoryScope): EventCollectionRepository {
-        // TODO
-        return eventCollectionRepository
+        var repository = eventCollectionRepository
+
+        scope.program()?.let { repository = repository.byProgramUid().eq(it) }
+        scope.programStage()?.let { repository = repository.byProgramStageUid().eq(it) }
+        scope.followUp()?.let {
+            // TODO
+        }
+
+        scope.trackedEntityInstance()?.let { repository = repository.byTrackedEntityInstanceUids(listOf(it)) }
+        scope.organisationUnit()?.let { repository = repository.byOrganisationUnitUid().eq(it) }
+        scope.organisationUnitMode()?.let {
+            // TODO
+        }
+        scope.assignedUserMode()?.let {
+            // TODO
+        }
+        scope.order().forEach {
+            // TODO
+        }
+        scope.dataFilters().forEach {
+            // TODO
+        }
+        scope.events()?.let { repository = repository.byUid().`in`(it) }
+        scope.eventStatus()?.let { repository = repository.byStatus().eq(it) }
+        scope.eventDate()?.let { period ->
+            DateFilterPeriodHelper.getStartDate(period)?.let { repository = repository.byEventDate().after(it) }
+            DateFilterPeriodHelper.getEndDate(period)?.let { repository = repository.byEventDate().before(it) }
+        }
+        scope.dueDate()?.let { period ->
+            DateFilterPeriodHelper.getStartDate(period)?.let { repository = repository.byDueDate().after(it) }
+            DateFilterPeriodHelper.getEndDate(period)?.let { repository = repository.byDueDate().before(it) }
+        }
+        scope.lastUpdatedDate()?.let { period ->
+            DateFilterPeriodHelper.getStartDate(period)?.let { repository = repository.byLastUpdated().after(it)}
+            DateFilterPeriodHelper.getEndDate(period)?.let { repository = repository.byLastUpdated().before(it)}
+        }
+        scope.completedDate()?.let { period ->
+            DateFilterPeriodHelper.getStartDate(period)?.let { repository = repository.byCompleteDate().after(it) }
+            DateFilterPeriodHelper.getEndDate(period)?.let { repository = repository.byCompleteDate().before(it) }
+        }
+        scope.includeDeleted().let {
+            // TODO
+        }
+
+        return repository
     }
 
 }

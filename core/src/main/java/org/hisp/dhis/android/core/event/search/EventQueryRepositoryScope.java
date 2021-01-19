@@ -77,7 +77,7 @@ public abstract class EventQueryRepositoryScope implements BaseScope {
     @NonNull
     public abstract List<EventDataFilter> dataFilters();
 
-    @NonNull
+    @Nullable
     public abstract List<String> events();
 
     @Nullable
@@ -105,7 +105,6 @@ public abstract class EventQueryRepositoryScope implements BaseScope {
         return new AutoValue_EventQueryRepositoryScope.Builder()
                 .order(Collections.emptyList())
                 .dataFilters(Collections.emptyList())
-                .events(Collections.emptyList())
                 .mode(RepositoryMode.OFFLINE_ONLY)
                 .includeDeleted(false);
     }

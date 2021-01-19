@@ -27,34 +27,45 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
+import dagger.Reusable
 import java.util.concurrent.Callable
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.resource.internal.ResourceHandler
-import retrofit2.Retrofit
 
-object EventCallFactory {
-    @JvmStatic
-    fun create(
-        retrofit: Retrofit,
-        databaseAdapter: DatabaseAdapter,
-        orgUnit: String?,
-        pageSize: Int,
-        uids: Collection<String> = emptyList()
+@Reusable
+internal class EventEndpointCallFactory @Inject constructor(
+    private val service: EventService,
+    private val apiCallExecutor: APICallExecutor,
+    private val lastUpdatedManager: EventLastUpdatedManager
+) {
 
-    ): Callable<List<Event>> {
+    fun getCall(eventQuery: EventQuery): Callable<List<Event>> {
+        return Callable {
+            val call = service.getEvents(
+                eventQuery.orgUnit(),
+                eventQuery.commonParams().ouMode.name,
+                eventQuery.commonParams().program,
+                EventFields.allFields,
+                true,
+                eventQuery.page(),
+                eventQuery.pageSize(),
+                getLastUpdated(eventQuery),
+                true,
+                getUidStr(eventQuery)
+            )
+            apiCallExecutor.executePayloadCall(call)
+        }
+    }
 
-        val eventQuery = EventQuery.builder()
-            .orgUnit(orgUnit)
-            .pageSize(pageSize)
-            .uids(uids)
-            .build()
+    private fun getLastUpdated(query: EventQuery): String? {
+        val lastUpdated = lastUpdatedManager.getLastUpdated(query.commonParams())
+        return if (lastUpdated == null) null else BaseIdentifiableObject.dateToDateStr(lastUpdated)
+    }
 
-        return EventEndpointCallFactory(
-            retrofit.create(EventService::class.java),
-            APICallExecutorImpl.create(databaseAdapter),
-            EventLastUpdatedManager(EventSyncStore.create(databaseAdapter), ResourceHandler.create(databaseAdapter))
-        ).getCall(eventQuery)
+    private fun getUidStr(query: EventQuery): String? {
+        return if (query.uids().isEmpty()) null else CollectionsHelper.joinCollectionWithSeparator(query.uids(), ";")
     }
 }

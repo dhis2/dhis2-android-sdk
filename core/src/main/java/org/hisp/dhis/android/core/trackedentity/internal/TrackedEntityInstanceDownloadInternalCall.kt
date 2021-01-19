@@ -31,6 +31,7 @@ import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.Single
 import javax.inject.Inject
+import kotlin.math.min
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.paging.internal.ApiPagingEngine
 import org.hisp.dhis.android.core.arch.api.paging.internal.Paging
@@ -44,7 +45,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
 @Reusable
 internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
-    private val trackedEntityInstanceQueryBuilderFactory: TrackedEntityInstanceQueryBuilderFactory,
+    private val queryFactory: TrackedEntityInstanceQueryFactory,
     private val persistenceCallFactory: TrackedEntityInstancePersistenceCallFactory,
     private val endpointCallFactory: TrackedEntityInstancesEndpointCallFactory,
     private val apiCallExecutor: RxAPICallExecutor,
@@ -57,10 +58,9 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
         relatives: RelationshipItemRelatives
     ): Observable<D2Progress> {
         return Observable.defer {
-            val teiQueryBuilders = trackedEntityInstanceQueryBuilderFactory
-                .getTeiQueryBuilders(params)
-            val teiDownloadObservable = Observable.fromIterable(teiQueryBuilders)
-                .flatMap { teiQueryBuilder: TeiQuery.Builder -> getTrackedEntityInstancesWithPaging(teiQueryBuilder) }
+            val teiQueries = queryFactory.getQueries(params)
+            val teiDownloadObservable = Observable.fromIterable(teiQueries)
+                .flatMap { getTrackedEntityInstancesWithPaging(it) }
             // TODO .subscribeOn(teiDownloadScheduler);
             val isFullUpdate = params.program() == null
             val overwrite = params.overwrite()
@@ -76,16 +76,15 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
     }
 
     private fun getTrackedEntityInstancesWithPaging(
-        teiQueryBuilder: TeiQuery.Builder
+        baseQuery: TeiQuery
     ): Observable<List<TrackedEntityInstance>> {
-        val baseQuery = teiQueryBuilder.build()
-        val pagingList = ApiPagingEngine.getPaginationList(baseQuery.pageSize(), baseQuery.limit())
+        val pagingList = ApiPagingEngine.getPaginationList(baseQuery.pageSize(), baseQuery.commonParams().limit)
         val allOkay = BooleanWrapper(true)
         return Observable
             .fromIterable(pagingList)
             .flatMapSingle { paging: Paging ->
-                teiQueryBuilder.page(paging.page()).pageSize(paging.pageSize())
-                apiCallExecutor.wrapSingle(endpointCallFactory.getCall(teiQueryBuilder.build()), true)
+                val pageQuery = baseQuery.toBuilder().page(paging.page()).pageSize(paging.pageSize()).build()
+                apiCallExecutor.wrapSingle(endpointCallFactory.getCall(pageQuery), true)
                     .map { payload: Payload<TrackedEntityInstance> ->
                         TeiListWithPaging(
                             true,
@@ -107,7 +106,7 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
             .map { tuple: TeiListWithPaging -> tuple.teiList }
             .doOnComplete {
                 if (allOkay.get()) {
-                    lastUpdatedManager.update(teiQueryBuilder.build())
+                    lastUpdatedManager.update(baseQuery)
                 }
             }
     }
@@ -119,7 +118,7 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
         return if (paging.isLastPage &&
             pageTrackedEntityInstances.size > paging.previousItemsToSkipCount()
         ) {
-            val toIndex = Math.min(
+            val toIndex = min(
                 pageTrackedEntityInstances.size,
                 paging.pageSize() - paging.posteriorItemsToSkipCount()
             )

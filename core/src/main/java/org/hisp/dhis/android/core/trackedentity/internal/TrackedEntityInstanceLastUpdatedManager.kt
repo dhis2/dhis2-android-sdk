@@ -25,33 +25,28 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.resource.internal.ResourceHandler
 
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.CoreColumns;
+@Reusable
+internal class TrackedEntityInstanceLastUpdatedManager @Inject constructor(
+    store: ObjectWithoutUidStore<TrackedEntityInstanceSync>,
+    private val resourceHandler: ResourceHandler
+) : TrackerSyncLastUpdatedManager<TrackedEntityInstanceSync>(store) {
 
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.LAST_UPDATED;
-
-public class TrackerBaseSyncColumns extends CoreColumns {
-    public static final String PROGRAM = "program";
-    public static final String DOWNLOAD_LIMIT = "downloadLimit";
-    public static final String ORGANISATION_UNIT_IDS_HASH = "organisationUnitIdsHash";
-
-    @Override
-    public String[] all() {
-        return CollectionsHelper.appendInNewArray(super.all(),
-                PROGRAM,
-                ORGANISATION_UNIT_IDS_HASH,
-                DOWNLOAD_LIMIT,
-                LAST_UPDATED);
-    }
-
-    @Override
-    public String[] whereUpdate() {
-        return new String[]{
-                PROGRAM,
-                ORGANISATION_UNIT_IDS_HASH
-        };
+    fun update(teiQuery: TeiQuery) {
+        if (teiQuery.uids().isEmpty()) {
+            val sync = TrackedEntityInstanceSync.builder()
+                .program(teiQuery.commonParams().program)
+                .organisationUnitIdsHash(teiQuery.orgUnits().toSet().hashCode())
+                .downloadLimit(teiQuery.commonParams().limit)
+                .lastUpdated(resourceHandler.serverDate)
+                .build()
+            super.update(sync)
+        }
     }
 }

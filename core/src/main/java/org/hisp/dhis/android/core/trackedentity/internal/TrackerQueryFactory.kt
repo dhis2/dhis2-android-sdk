@@ -27,53 +27,43 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import dagger.Reusable
-import java.util.ArrayList
-import javax.inject.Inject
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
+import org.hisp.dhis.android.core.program.ProgramType
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
+import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
 import org.hisp.dhis.android.core.settings.ProgramSettings
+import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository
 
-@Reusable
-internal class TrackedEntityInstanceQueryGlobalHelper @Inject constructor(
-    private val lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager,
-    private val commonHelper: TrackedEntityInstanceQueryCommonHelper
-) {
-
-    fun queryGlobal(
+@Suppress("UnnecessaryAbstractClass")
+internal abstract class TrackerQueryFactory<T, S : TrackerBaseSync> constructor(
+    private val programStore: ProgramStoreInterface,
+    private val programSettingsObjectRepository: ProgramSettingsObjectRepository,
+    private val lastUpdatedManager: TrackerSyncLastUpdatedManager<S>,
+    private val commonHelper: TrackerQueryFactoryCommonHelper,
+    private val internalFactoryCreator: (
         params: ProgramDataDownloadParams,
         programSettings: ProgramSettings?
-    ): List<TeiQuery.Builder> {
-        val limit = commonHelper.getLimit(params, programSettings, null)
-        if (limit == 0) {
-            return emptyList()
-        }
-        val lastUpdated = lastUpdatedManager.getLastUpdated(null, limit)
-        val ouMode: OrganisationUnitMode
-        val orgUnits: List<String>
-        val hasLimitByOrgUnit = commonHelper.hasLimitByOrgUnit(params, programSettings, null)
-        when {
-            params.orgUnits().size > 0 -> {
-                ouMode = OrganisationUnitMode.SELECTED
-                orgUnits = params.orgUnits()
-            }
-            hasLimitByOrgUnit -> {
-                ouMode = OrganisationUnitMode.SELECTED
-                orgUnits = commonHelper.getCaptureOrgUnitUids()
-            }
-            else -> {
-                ouMode = OrganisationUnitMode.DESCENDANTS
-                orgUnits = commonHelper.getRootCaptureOrgUnitUids()
-            }
-        }
-        val builders: MutableList<TeiQuery.Builder> = ArrayList()
-        if (hasLimitByOrgUnit) {
-            for (orgUnitUid in orgUnits) {
-                builders.add(commonHelper.getBuilderFor(lastUpdated, listOf(orgUnitUid), ouMode, params, limit))
+    ) -> TrackerQueryInternalFactory<T>
+) {
+
+    @Suppress("NestedBlockDepth")
+    fun getQueries(params: ProgramDataDownloadParams): List<T> {
+        val programSettings = programSettingsObjectRepository.blockingGet()
+        val internalFactory = internalFactoryCreator.invoke(params, programSettings)
+        lastUpdatedManager.prepare(programSettings, params)
+        return if (params.program() == null) {
+            val trackerPrograms = programStore.getUidsByProgramType(ProgramType.WITH_REGISTRATION)
+            if (commonHelper.hasLimitByProgram(params, programSettings)) {
+                trackerPrograms.flatMap { internalFactory.queryPerProgram(it) }
+            } else {
+                val specificSettings = programSettings?.specificSettings() ?: emptyMap()
+                val globalPrograms = trackerPrograms.toList() - specificSettings.keys
+                specificSettings
+                    .filterKeys { trackerPrograms.contains(it) }
+                    .flatMap { internalFactory.queryPerProgram(it.key) } +
+                    internalFactory.queryGlobal(globalPrograms)
             }
         } else {
-            builders.add(commonHelper.getBuilderFor(lastUpdated, orgUnits, ouMode, params, limit))
+            internalFactory.queryPerProgram(params.program())
         }
-        return builders
     }
 }

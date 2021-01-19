@@ -25,33 +25,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.event.internal
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.data.trackedentity.internal.TrackerQueryCommonParamsSamples
+import org.junit.Test
 
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.CoreColumns;
+class EventQueryShould {
 
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.LAST_UPDATED;
-
-public class TrackerBaseSyncColumns extends CoreColumns {
-    public static final String PROGRAM = "program";
-    public static final String DOWNLOAD_LIMIT = "downloadLimit";
-    public static final String ORGANISATION_UNIT_IDS_HASH = "organisationUnitIdsHash";
-
-    @Override
-    public String[] all() {
-        return CollectionsHelper.appendInNewArray(super.all(),
-                PROGRAM,
-                ORGANISATION_UNIT_IDS_HASH,
-                DOWNLOAD_LIMIT,
-                LAST_UPDATED);
-    }
-
-    @Override
-    public String[] whereUpdate() {
-        return new String[]{
-                PROGRAM,
-                ORGANISATION_UNIT_IDS_HASH
-        };
+    @Test
+    fun create_event_query_successfully() {
+        val eventQuery = EventQuery.builder()
+            .commonParams(TrackerQueryCommonParamsSamples.get())
+            .pageSize(50)
+            .build()
+        Truth.assertThat(eventQuery).isNotNull()
     }
 }

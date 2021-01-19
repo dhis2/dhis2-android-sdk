@@ -25,33 +25,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
+import org.hisp.dhis.android.core.settings.LimitScope
+import org.hisp.dhis.android.core.settings.ProgramSettings
 
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.CoreColumns;
+internal abstract class TrackerQueryInternalFactory<T>(
+    protected val params: ProgramDataDownloadParams,
+    protected val programSettings: ProgramSettings?,
+    protected val specificSettingScope: LimitScope
+) {
 
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.LAST_UPDATED;
+    abstract fun queryGlobal(
+        programs: List<String>
+    ): List<T>
 
-public class TrackerBaseSyncColumns extends CoreColumns {
-    public static final String PROGRAM = "program";
-    public static final String DOWNLOAD_LIMIT = "downloadLimit";
-    public static final String ORGANISATION_UNIT_IDS_HASH = "organisationUnitIdsHash";
-
-    @Override
-    public String[] all() {
-        return CollectionsHelper.appendInNewArray(super.all(),
-                PROGRAM,
-                ORGANISATION_UNIT_IDS_HASH,
-                DOWNLOAD_LIMIT,
-                LAST_UPDATED);
-    }
-
-    @Override
-    public String[] whereUpdate() {
-        return new String[]{
-                PROGRAM,
-                ORGANISATION_UNIT_IDS_HASH
-        };
-    }
+    abstract fun queryPerProgram(
+        programUid: String?
+    ): List<T>
 }

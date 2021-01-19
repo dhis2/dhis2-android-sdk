@@ -28,22 +28,26 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import java.util.ArrayList
 import java.util.Date
 import javax.inject.Inject
+import org.apache.commons.lang3.time.DateUtils
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
+import org.hisp.dhis.android.core.settings.DownloadPeriod
 import org.hisp.dhis.android.core.settings.LimitScope
+import org.hisp.dhis.android.core.settings.ProgramSetting
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 
+@Suppress("TooManyFunctions")
 @Reusable
-internal class TrackedEntityInstanceQueryCommonHelper @Inject constructor(
+internal class TrackerQueryFactoryCommonHelper @Inject constructor(
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
     private val organisationUnitProgramLinkStore: LinkStore<OrganisationUnitProgramLink>
 ) {
@@ -57,39 +61,36 @@ internal class TrackedEntityInstanceQueryCommonHelper @Inject constructor(
             .queryOrganisationUnitUidsByScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
     }
 
-    fun getBuilderFor(
-        lastUpdated: Date?,
-        organisationUnits: List<String>,
-        organisationUnitMode: OrganisationUnitMode,
-        params: ProgramDataDownloadParams,
-        limit: Int
-    ): TeiQuery.Builder {
-        return TeiQuery.builder()
-            .lastUpdatedStartDate(lastUpdated)
-            .orgUnits(organisationUnits)
-            .ouMode(organisationUnitMode)
-            .uids(params.uids())
-            .limit(limit)
-    }
-
     fun getLinkedCaptureOrgUnitUids(programUid: String?): List<String> {
         val ous = getCaptureOrgUnitUids()
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM, programUid)
             .appendInKeyStringValues(OrganisationUnitProgramLinkTableInfo.Columns.ORGANISATION_UNIT, ous)
             .build()
-        val linkedOrgunits: MutableList<String> = ArrayList()
-        for (link in organisationUnitProgramLinkStore.selectWhere(whereClause)) {
-            linkedOrgunits.add(link.organisationUnit()!!)
+        return organisationUnitProgramLinkStore.selectWhere(whereClause).map { it.organisationUnit()!! }
+    }
+
+    private fun getOrganisationUnits(
+        params: ProgramDataDownloadParams,
+        hasLimitByOrgUnit: Boolean,
+        byLimitExtractor: () -> List<String>
+    ): Pair<OrganisationUnitMode, List<String>> {
+        return when {
+            params.orgUnits().size > 0 ->
+                Pair(OrganisationUnitMode.SELECTED, params.orgUnits())
+            hasLimitByOrgUnit ->
+                Pair(OrganisationUnitMode.SELECTED, byLimitExtractor.invoke())
+            else ->
+                Pair(OrganisationUnitMode.DESCENDANTS, getRootCaptureOrgUnitUids())
         }
-        return linkedOrgunits
     }
 
     @Suppress("ReturnCount")
     fun hasLimitByOrgUnit(
         params: ProgramDataDownloadParams,
         programSettings: ProgramSettings?,
-        programUid: String?
+        programUid: String?,
+        specificSettingScope: LimitScope
     ): Boolean {
         if (params.limitByOrgunit() != null) {
             return params.limitByOrgunit()!!
@@ -99,7 +100,7 @@ internal class TrackedEntityInstanceQueryCommonHelper @Inject constructor(
             if (specificSetting != null) {
                 val scope = specificSetting.settingDownload()
                 if (scope != null) {
-                    return scope == LimitScope.PER_ORG_UNIT
+                    return scope == specificSettingScope
                 }
             }
             if (programSettings.globalSettings() != null) {
@@ -116,28 +117,27 @@ internal class TrackedEntityInstanceQueryCommonHelper @Inject constructor(
     fun getLimit(
         params: ProgramDataDownloadParams,
         programSettings: ProgramSettings?,
-        programUid: String?
+        programUid: String?,
+        downloadExtractor: (ProgramSetting?) -> Int?
     ): Int {
-        val uidsCount = params.uids().size
-        if (uidsCount > 0) {
-            return uidsCount
-        }
         if (params.limit() != null && isGlobalOrUserDefinedProgram(params, programUid)) {
             return params.limit()!!
         }
         if (programUid != null && programSettings != null) {
             val specificSetting = programSettings.specificSettings()[programUid]
-            if (specificSetting?.teiDownload() != null) {
-                return specificSetting.teiDownload()!!
+            val download = downloadExtractor.invoke(specificSetting)
+            if (download != null) {
+                return download
             }
         }
-        if (params.limit() != null && params.limitByProgram() != null && params.limitByProgram()!!) {
+        if (params.limit() != null && params.limitByProgram() == true) {
             return params.limit()!!
         }
         if (programSettings != null) {
             val globalSetting = programSettings.globalSettings()
-            if (globalSetting?.teiDownload() != null) {
-                return globalSetting.teiDownload()!!
+            val download = downloadExtractor.invoke(globalSetting)
+            if (download != null) {
+                return download
             }
         }
         return ProgramDataDownloadParams.DEFAULT_LIMIT
@@ -145,5 +145,81 @@ internal class TrackedEntityInstanceQueryCommonHelper @Inject constructor(
 
     fun isGlobalOrUserDefinedProgram(params: ProgramDataDownloadParams, programUid: String?): Boolean {
         return programUid == null || programUid == params.program()
+    }
+
+    @Suppress("ReturnCount")
+    fun hasLimitByProgram(params: ProgramDataDownloadParams, programSettings: ProgramSettings?): Boolean {
+        if (params.limitByProgram() != null) {
+            return params.limitByProgram()!!
+        }
+        if (programSettings?.globalSettings() != null) {
+            val scope = programSettings.globalSettings()!!.settingDownload()
+            if (scope != null) {
+                return scope == LimitScope.PER_OU_AND_PROGRAM || scope == LimitScope.PER_PROGRAM
+            }
+        }
+        return false
+    }
+
+    fun <O> divideByOrgUnits(
+        orgUnits: List<String>,
+        hasLimitByOrgUnit: Boolean,
+        builder: (List<String>) -> O
+    ): List<O> {
+        return if (hasLimitByOrgUnit) {
+            orgUnits.map { builder.invoke(listOf(it)) }
+        } else {
+            listOf(builder.invoke(orgUnits))
+        }
+    }
+
+    private fun getStartDate(
+        programSettings: ProgramSettings?,
+        programUid: String?,
+        downloadPeriodAccessor: (ProgramSetting?) -> DownloadPeriod?
+    ): String? {
+        var period: DownloadPeriod? = null
+        if (programSettings != null) {
+            val specificSetting = programSettings.specificSettings()[programUid]
+            val globalSetting = programSettings.globalSettings()
+            if (downloadPeriodAccessor(specificSetting) != null) {
+                period = downloadPeriodAccessor(specificSetting)
+            } else if (downloadPeriodAccessor(globalSetting) != null) {
+                period = downloadPeriodAccessor(globalSetting)
+            }
+        }
+        return if (period == null || period == DownloadPeriod.ANY) {
+            null
+        } else {
+            val startDate = DateUtils.addMonths(Date(), -period.months)
+            BaseIdentifiableObject.dateToSpaceDateStr(startDate)
+        }
+    }
+
+    @Suppress("LongParameterList")
+    fun getCommonParams(
+        params: ProgramDataDownloadParams,
+        programSettings: ProgramSettings?,
+        programs: List<String>,
+        programUid: String?,
+        limit: Int,
+        specificSettingScope: LimitScope,
+        orgUnitByLimitExtractor: () -> List<String>,
+        periodExtractor: (ProgramSetting?) -> DownloadPeriod?
+    ): TrackerQueryCommonParams {
+        val hasLimitByOrgUnit = hasLimitByOrgUnit(params, programSettings, programUid, specificSettingScope)
+        val (ouMode, orgUnits) = getOrganisationUnits(
+            params, hasLimitByOrgUnit, orgUnitByLimitExtractor
+        )
+
+        return TrackerQueryCommonParams(
+            programs,
+            programUid,
+            getStartDate(programSettings, programUid, periodExtractor),
+            hasLimitByOrgUnit,
+            ouMode,
+            orgUnits,
+            limit
+        )
     }
 }

@@ -38,15 +38,20 @@ final class EventSyncStore {
 
     private static final StatementBinder<EventSync> BINDER = (o, w) -> {
         w.bind(1, o.program());
-        w.bind(2, o.downloadLimit());
-        w.bind(3, o.lastUpdated());
+        w.bind(2, o.organisationUnitIdsHash());
+        w.bind(3, o.downloadLimit());
+        w.bind(4, o.lastUpdated());
     };
 
-    private static final WhereStatementBinder<EventSync> WHERE_UPDATE_BINDER =
-            (o, w) -> w.bind(4, o.program());
+    private static final WhereStatementBinder<EventSync> WHERE_UPDATE_BINDER = (o, w) -> {
+        w.bind(5, o.program());
+        w.bind(6, o.organisationUnitIdsHash());
+    };
 
-    private static final WhereStatementBinder<EventSync> DELETE_UPDATE_BINDER =
-            (o, w) -> w.bind(1, o.program());
+    private static final WhereStatementBinder<EventSync> DELETE_UPDATE_BINDER = (o, w) -> {
+        w.bind(1, o.program());
+        w.bind(2, o.organisationUnitIdsHash());
+    };
 
     private EventSyncStore() {
     }

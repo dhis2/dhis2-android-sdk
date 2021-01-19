@@ -47,11 +47,7 @@ internal class TrackerImportConflictParser @Inject constructor(
 
     private val context = TrackerImportConflictItemContext(attributeStore, dataElementStore)
 
-    private val trackedEntityInstanceConflicts: List<TrackerImportConflictItem> = listOf(
-        InvalidAttributeValueTypeConflict,
-        MissingAttributeConflict,
-        BadAttributePatternConflict,
-        NonUniqueAttributeConflict,
+    private val commonConflicts = listOf(
         LackingEnrollmentCascadeDeleteAuthorityConflict,
         LackingTEICascadeDeleteAuthorityConflict,
         TrackedEntityInstanceNotFoundConflict,
@@ -60,24 +56,28 @@ internal class TrackerImportConflictParser @Inject constructor(
         EventHasInvalidProgramStageConflict,
         EnrollmentNotFoundConflict,
         EnrollmentHasInvalidProgramConflict,
-        InvalidTrackedEntityTypeConflict,
         FileResourceAlreadyAssignedConflict,
         FileResourceReferenceNotFoundConflict
     )
 
-    private val enrollmentConflicts: List<TrackerImportConflictItem> = listOf(
+    private val trackedEntityInstanceConflicts: List<TrackerImportConflictItem> = commonConflicts + listOf(
         InvalidAttributeValueTypeConflict,
         MissingAttributeConflict,
         BadAttributePatternConflict,
         NonUniqueAttributeConflict,
-        LackingEnrollmentCascadeDeleteAuthorityConflict
+        InvalidTrackedEntityTypeConflict
     )
 
-    private val eventConflicts: List<TrackerImportConflictItem> = listOf(
+    private val enrollmentConflicts: List<TrackerImportConflictItem> = commonConflicts + listOf(
+        InvalidAttributeValueTypeConflict,
+        MissingAttributeConflict,
+        BadAttributePatternConflict,
+        NonUniqueAttributeConflict
+    )
+
+    private val eventConflicts: List<TrackerImportConflictItem> = commonConflicts + listOf(
         InvalidDataValueConflict,
-        MissingDataElementConflict,
-        FileResourceAlreadyAssignedConflict,
-        FileResourceReferenceNotFoundConflict
+        MissingDataElementConflict
     )
 
     fun getTrackedEntityInstanceConflict(

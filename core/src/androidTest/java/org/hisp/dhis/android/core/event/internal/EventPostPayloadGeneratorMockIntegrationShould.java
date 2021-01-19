@@ -56,9 +56,9 @@ import java.util.List;
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
-public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestMetadataEnqueable {
+public class EventPostPayloadGeneratorMockIntegrationShould extends BaseMockIntegrationTestMetadataEnqueable {
 
-    private static EventPostCall eventPostCall;
+    private static EventPostPayloadGenerator payloadGenerator;
     private static EventStore eventStore;
 
     private final String event1Id = "event1Id";
@@ -70,7 +70,7 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
     public static void setUpClass() throws Exception {
         BaseMockIntegrationTestMetadataEnqueable.setUpClass();
         eventStore = EventStoreImpl.create(objects.databaseAdapter);
-        eventPostCall = objects.d2DIComponent.eventPostCall();
+        payloadGenerator = objects.d2DIComponent.eventPostPayloadGenerator();
     }
 
     @After
@@ -82,7 +82,7 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
     public void build_payload_with_different_enrollments() {
         storeEvents();
 
-        List<Event> events = eventPostCall.queryDataToSync(null);
+        List<Event> events = payloadGenerator.getEvents(eventStore.querySingleEventsToPost());
 
         assertThat(events.size()).isEqualTo(3);
 
@@ -147,31 +147,13 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
         storeSingleEvent(event3, program, State.TO_UPDATE, true);
         storeSingleEvent(event4, program, State.SYNCED, false);
 
-        List<Event> events = eventPostCall.queryDataToSync(
+        List<Event> events = payloadGenerator.getEvents(
                 d2.eventModule().events().byProgramUid().eq(program.uid())
                 .byState().in(State.uploadableStates()).blockingGet());
 
         assertThat(events.size()).isEqualTo(3);
         assertThat(UidsHelper.getUidsList(events).containsAll(Lists.newArrayList(event1, event2, event3)))
                 .isTrue();
-    }
-
-    @Test
-    public void mark_payload_as_uploading() {
-        storeEvents();
-
-        // Ignore result. Just interested in check that target events are marked as UPLOADING
-        List<Event> events = eventPostCall.queryDataToSync(null);
-
-        List<Event> dbEvents = d2.eventModule().events().blockingGet();
-
-        for (Event event : dbEvents) {
-            if (event1Id.equals(event.uid()) || event2Id.equals(event.uid()) || event3Id.equals(event.uid())) {
-                assertThat(event.state()).isEqualTo(State.UPLOADING);
-            } else {
-                assertThat(event.state()).isNotEqualTo(State.UPLOADING);
-            }
-        }
     }
 
     @Test
@@ -184,7 +166,7 @@ public class EventPostCallMockIntegrationShould extends BaseMockIntegrationTestM
                 .value("This is an event note")
                 .build());
 
-        List<Event> events = eventPostCall.queryDataToSync(null);
+        List<Event> events = payloadGenerator.getEvents(eventStore.querySingleEventsToPost());
 
         for (Event event : events) {
             if (event1Id.equals(event.uid())) {

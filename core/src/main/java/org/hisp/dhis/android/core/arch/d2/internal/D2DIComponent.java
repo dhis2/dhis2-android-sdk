@@ -63,7 +63,7 @@ import org.hisp.dhis.android.core.domain.aggregated.internal.AggregatedModuleImp
 import org.hisp.dhis.android.core.domain.metadata.internal.MetadataModuleImpl;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentPackageDIModule;
 import org.hisp.dhis.android.core.event.internal.EventPackageDIModule;
-import org.hisp.dhis.android.core.event.internal.EventPostCall;
+import org.hisp.dhis.android.core.event.internal.EventPostPayloadGenerator;
 import org.hisp.dhis.android.core.fileresource.internal.FileResourcePackageDIModule;
 import org.hisp.dhis.android.core.imports.internal.ImportPackageDIModule;
 import org.hisp.dhis.android.core.indicator.internal.IndicatorPackageDIModule;
@@ -86,7 +86,7 @@ import org.hisp.dhis.android.core.sms.internal.SmsDIModule;
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoPackageDIModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityPackageDIModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostCall;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostPayloadGenerator;
 import org.hisp.dhis.android.core.user.internal.UserPackageDIModule;
 import org.hisp.dhis.android.core.validation.internal.ValidationPackageDIModule;
 import org.hisp.dhis.android.core.wipe.internal.WipeDIModule;
@@ -165,9 +165,9 @@ public interface D2DIComponent {
     @VisibleForTesting
     Handler<TrackedEntityType> trackedEntityTypeHandler();
     @VisibleForTesting
-    TrackedEntityInstancePostCall trackedEntityInstancePostCall();
+    TrackedEntityInstancePostPayloadGenerator trackedEntityInstancePostPayloadGenerator();
     @VisibleForTesting
-    EventPostCall eventPostCall();
+    EventPostPayloadGenerator eventPostPayloadGenerator();
     @VisibleForTesting
     IdentifiableObjectStore<CategoryOption> categoryOptionStore();
     @VisibleForTesting

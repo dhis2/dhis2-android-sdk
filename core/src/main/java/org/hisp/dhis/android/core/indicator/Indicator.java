@@ -76,6 +76,10 @@ public abstract class Indicator extends BaseNameableObject implements CoreObject
     @JsonProperty()
     public abstract String url();
 
+    @Nullable
+    @JsonProperty()
+    public abstract Integer decimals();
+
     public static Builder builder() {
         return new $$AutoValue_Indicator.Builder();
     }
@@ -104,6 +108,8 @@ public abstract class Indicator extends BaseNameableObject implements CoreObject
         public abstract Builder denominatorDescription(String denominatorDescription);
 
         public abstract Builder url(String url);
+
+        public abstract Builder decimals(Integer decimals);
 
         public abstract Indicator build();
     }

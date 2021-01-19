@@ -62,6 +62,6 @@ internal class DataSetIndicatorEvaluator @Inject constructor(private val express
         val formula = "$numerator * ${indicatorType.factor() ?: 1} / $denominator"
         val value = expressionService.getExpressionValue(formula) as Double
 
-        return ParserUtils.getRounded(value, 2)
+        return ParserUtils.getRounded(value, indicator.decimals() ?: 2)
     }
 }

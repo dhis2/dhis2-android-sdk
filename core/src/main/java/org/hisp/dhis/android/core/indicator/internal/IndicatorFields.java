@@ -51,7 +51,8 @@ final class IndicatorFields {
                     fh.<String>field(Columns.NUMERATOR_DESCRIPTION),
                     fh.<String>field(Columns.DENOMINATOR),
                     fh.<String>field(Columns.DENOMINATOR_DESCRIPTION),
-                    fh.<String>field(Columns.URL)
+                    fh.<String>field(Columns.URL),
+                    fh.<Integer>field(Columns.DECIMALS)
             ).build();
 
     private IndicatorFields() {

@@ -72,5 +72,6 @@ public class IndicatorShould extends BaseObjectShould implements ObjectShould {
         assertThat(indicator.denominatorDescription()).isEqualTo("Total 1st ANC visits");
         assertThat(indicator.url()).isEqualTo("");
         assertThat(indicator.indicatorType()).isEqualTo(ObjectWithUid.create("bWuNrMHEoZ0"));
+        assertThat(indicator.decimals()).isEqualTo(3);
     }
 }

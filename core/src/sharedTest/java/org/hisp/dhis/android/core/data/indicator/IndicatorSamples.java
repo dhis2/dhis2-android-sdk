@@ -47,7 +47,8 @@ public class IndicatorSamples {
                 .numeratorDescription("num descr")
                 .denominator("#{c.d}")
                 .denominatorDescription("den descr")
-                .url("dhis2.org");
+                .url("dhis2.org")
+                .decimals(2);
         return indicatorBuilder.build();
     }
 }

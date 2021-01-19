@@ -28,11 +28,15 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
+import com.google.common.collect.Lists;
+
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.common.internal.DataAccessFields;
 import org.hisp.dhis.android.core.event.EventFilter;
+import org.hisp.dhis.android.core.systeminfo.DHISVersion;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import java.util.List;
 import java.util.Set;
@@ -50,24 +54,31 @@ public final class EventFilterCall implements UidsCall<EventFilter> {
     private final EventFilterService service;
     private final Handler<EventFilter> handler;
     private final APIDownloader apiDownloader;
+    private final DHISVersionManager versionManager;
 
     @Inject
     EventFilterCall(EventFilterService service,
                     Handler<EventFilter> handler,
-                    APIDownloader apiDownloader) {
+                    APIDownloader apiDownloader,
+                    DHISVersionManager versionManager) {
         this.service = service;
         this.handler = handler;
         this.apiDownloader = apiDownloader;
+        this.versionManager = versionManager;
     }
 
     @Override
     public Single<List<EventFilter>> download(Set<String> programUids) {
-        String accessDataReadFilter = "access." + DataAccessFields.read.eq(true).generateString();
-        return apiDownloader.downloadPartitioned(programUids, MAX_UID_LIST_SIZE, handler, partitionUids ->
-                service.getEventFilters(
-                        EventFilterFields.programUid.in(partitionUids),
-                        accessDataReadFilter,
-                        EventFilterFields.allFields,
-                        Boolean.FALSE));
+        if (versionManager.isGreaterThan(DHISVersion.V2_31)) {
+            String accessDataReadFilter = "access." + DataAccessFields.read.eq(true).generateString();
+            return apiDownloader.downloadPartitioned(programUids, MAX_UID_LIST_SIZE, handler, partitionUids ->
+                    service.getEventFilters(
+                            EventFilterFields.programUid.in(partitionUids),
+                            accessDataReadFilter,
+                            EventFilterFields.allFields,
+                            Boolean.FALSE));
+        } else {
+            return Single.just(Lists.newArrayList());
+        }
     }
 }

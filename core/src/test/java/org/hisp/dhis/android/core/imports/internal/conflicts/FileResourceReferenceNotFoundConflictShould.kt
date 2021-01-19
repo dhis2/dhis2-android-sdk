@@ -27,34 +27,27 @@
  */
 package org.hisp.dhis.android.core.imports.internal.conflicts
 
-import org.hisp.dhis.android.core.imports.internal.ImportConflict
+import org.junit.Test
 
-internal object NonUniqueAttributeConflict : TrackerImportConflictItem {
+internal class FileResourceReferenceNotFoundConflictShould : BaseConflictShould() {
 
-    private val regex: Regex = Regex("Non-unique attribute value '[\\w|\\s]*' for attribute (\\w{11})")
-    private fun description(attributeName: String) = "Non-unique attribute value: $attributeName"
+    private val importConflict = TrackedImportConflictSamples.fileResourceReferenceNotFound(fileResourceUid)
 
-    override val errorCode: String = "E1064"
-
-    override fun matches(conflict: ImportConflict): Boolean {
-        return regex.matches(conflict.value())
+    @Test
+    fun `Should match error message`() {
+        assert(FileResourceReferenceNotFoundConflict.matches(importConflict))
     }
 
-    override fun getTrackedEntityAttribute(conflict: ImportConflict): String? {
-        return regex.find(conflict.value())?.groupValues?.get(1)
+    @Test
+    fun `Should match file resource uid`() {
+        val value = FileResourceReferenceNotFoundConflict.getFileResource(importConflict)
+        assert(value == fileResourceUid)
     }
 
-    override fun getDisplayDescription(
-        conflict: ImportConflict,
-        context: TrackerImportConflictItemContext
-    ): String {
-
-        return getTrackedEntityAttribute(conflict)?.let { attributeUid ->
-            context.attributeStore.selectByUid(attributeUid)?.let { attribute ->
-                val name = attribute.displayFormName() ?: attribute.displayName() ?: attributeUid
-                description(name)
-            }
-        }
-            ?: conflict.value()
+    @Test
+    fun `Should create display description`() {
+        val displayDescription =
+            FileResourceReferenceNotFoundConflict.getDisplayDescription(importConflict, context)
+        assert(displayDescription == "The file reference $fileResourceUid could not be found")
     }
 }

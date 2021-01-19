@@ -29,18 +29,21 @@ package org.hisp.dhis.android.core.imports.internal.conflicts
 
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
-internal object NonUniqueAttributeConflict : TrackerImportConflictItem {
+internal object LackingEnrollmentCascadeDeleteAuthorityConflict : TrackerImportConflictItem {
 
-    private val regex: Regex = Regex("Non-unique attribute value '[\\w|\\s]*' for attribute (\\w{11})")
-    private fun description(attributeName: String) = "Non-unique attribute value: $attributeName"
+    private val regex: Regex = Regex(
+        "Enrollment (\\w{11}) cannot be deleted as it has associated" +
+            " events and user does not have authority: F_ENROLLMENT_CASCADE_DELETE"
+    )
+    private fun description(enrollment: String) = "You lack the authority to delete the enrollment: $enrollment"
 
-    override val errorCode: String = "E1064"
+    override val errorCode: String = "E1103"
 
     override fun matches(conflict: ImportConflict): Boolean {
         return regex.matches(conflict.value())
     }
 
-    override fun getTrackedEntityAttribute(conflict: ImportConflict): String? {
+    override fun getEnrollment(conflict: ImportConflict): String? {
         return regex.find(conflict.value())?.groupValues?.get(1)
     }
 
@@ -48,12 +51,8 @@ internal object NonUniqueAttributeConflict : TrackerImportConflictItem {
         conflict: ImportConflict,
         context: TrackerImportConflictItemContext
     ): String {
-
-        return getTrackedEntityAttribute(conflict)?.let { attributeUid ->
-            context.attributeStore.selectByUid(attributeUid)?.let { attribute ->
-                val name = attribute.displayFormName() ?: attribute.displayName() ?: attributeUid
-                description(name)
-            }
+        return getEnrollment(conflict)?.let { enrollmentUid ->
+            description(enrollmentUid)
         }
             ?: conflict.value()
     }

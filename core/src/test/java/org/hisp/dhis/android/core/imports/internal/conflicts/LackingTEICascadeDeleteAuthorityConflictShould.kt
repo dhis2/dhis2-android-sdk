@@ -27,34 +27,26 @@
  */
 package org.hisp.dhis.android.core.imports.internal.conflicts
 
-import org.hisp.dhis.android.core.imports.internal.ImportConflict
+import org.junit.Test
 
-internal object NonUniqueAttributeConflict : TrackerImportConflictItem {
+internal class LackingTEICascadeDeleteAuthorityConflictShould : BaseConflictShould() {
 
-    private val regex: Regex = Regex("Non-unique attribute value '[\\w|\\s]*' for attribute (\\w{11})")
-    private fun description(attributeName: String) = "Non-unique attribute value: $attributeName"
+    private val importConflict = TrackedImportConflictSamples.userIsLackingTEICascadeDeleteAuthority(teiUid)
 
-    override val errorCode: String = "E1064"
-
-    override fun matches(conflict: ImportConflict): Boolean {
-        return regex.matches(conflict.value())
+    @Test
+    fun `Should match error message`() {
+        assert(LackingTEICascadeDeleteAuthorityConflict.matches(importConflict))
     }
 
-    override fun getTrackedEntityAttribute(conflict: ImportConflict): String? {
-        return regex.find(conflict.value())?.groupValues?.get(1)
+    @Test
+    fun `Should match enrollment uid`() {
+        val value = LackingTEICascadeDeleteAuthorityConflict.getTrackedEntityInstance(importConflict)
+        assert(value == teiUid)
     }
 
-    override fun getDisplayDescription(
-        conflict: ImportConflict,
-        context: TrackerImportConflictItemContext
-    ): String {
-
-        return getTrackedEntityAttribute(conflict)?.let { attributeUid ->
-            context.attributeStore.selectByUid(attributeUid)?.let { attribute ->
-                val name = attribute.displayFormName() ?: attribute.displayName() ?: attributeUid
-                description(name)
-            }
-        }
-            ?: conflict.value()
+    @Test
+    fun `Should create display description`() {
+        val displayDescription = LackingTEICascadeDeleteAuthorityConflict.getDisplayDescription(importConflict, context)
+        assert(displayDescription == "You lack the authority to delete the entity: $teiUid")
     }
 }

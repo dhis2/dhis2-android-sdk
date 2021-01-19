@@ -39,14 +39,6 @@ internal object BadAttributePatternConflict : TrackerImportConflictItem {
         return error == conflict.value()
     }
 
-    override fun getTrackedEntityAttribute(conflict: ImportConflict): String? {
-        return null
-    }
-
-    override fun getDataElement(conflict: ImportConflict): String? {
-        return null
-    }
-
     override fun getDisplayDescription(
         conflict: ImportConflict,
         context: TrackerImportConflictItemContext

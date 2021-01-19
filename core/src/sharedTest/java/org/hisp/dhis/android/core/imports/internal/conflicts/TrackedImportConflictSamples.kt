@@ -108,6 +108,64 @@ object TrackedImportConflictSamples {
         )
     }
 
+    fun userIsLackingTEICascadeDeleteAuthority(teiUid: String): ImportConflict {
+        return ImportConflict.create(
+            teiUid,
+            "Tracked entity instance $teiUid cannot be deleted as it has associated enrollments and user does" +
+                " not have authority F_TEI_CASCADE_DELETE"
+        )
+    }
+
+    fun userIsLackingEnrollmentCascadeDeleteAuthority(enrollmentUid: String): ImportConflict {
+        return ImportConflict.create(
+            enrollmentUid,
+            "Enrollment $enrollmentUid cannot be deleted as it has associated events and user does not" +
+                " have authority: F_ENROLLMENT_CASCADE_DELETE"
+        )
+    }
+
+    fun fileResourceAlreadyAssigned(fileResourceUid: String): ImportConflict {
+        return ImportConflict.create(
+            "Attribute.value",
+            "File resource with uid '$fileResourceUid' has already been assigned to a different object"
+        )
+    }
+
+    fun fileResourceReferenceNotFound(fileResourceUid: String): ImportConflict {
+        return ImportConflict.create("Attribute.value", "Value '$fileResourceUid' is not the uid of a file")
+    }
+
+    fun eventNotFound(eventUid: String, relationshipUid: String): ImportConflict {
+        return ImportConflict.create(relationshipUid, "ProgramStageInstance '$eventUid' not found.")
+    }
+
+    fun eventHasInvalidProgram(eventUid: String, relationshipUid: String): ImportConflict {
+        return ImportConflict.create(relationshipUid, "ProgramStageInstance '$eventUid' has invalid Program.")
+    }
+
+    fun eventHasInvalidProgramStage(eventUid: String, relationshipUid: String): ImportConflict {
+        return ImportConflict.create(relationshipUid, "ProgramStageInstance '$eventUid' has invalid ProgramStage.")
+    }
+
+    fun enrollmentNotFound(enrollmentUid: String, relationshipUid: String): ImportConflict {
+        return ImportConflict.create(relationshipUid, "ProgramInstance '$enrollmentUid' not found.")
+    }
+
+    fun enrollmentHasInvalidProgram(enrollmentUid: String, relationshipUid: String): ImportConflict {
+        return ImportConflict.create(relationshipUid, "ProgramInstance '$enrollmentUid' has invalid Program.")
+    }
+
+    fun teiNotFound(teiUid: String, relationshipUid: String): ImportConflict {
+        return ImportConflict.create(relationshipUid, "TrackedEntityInstance '$teiUid' not found.")
+    }
+
+    fun teiHasInvalidType(teiUid: String, relationshipUid: String): ImportConflict {
+        return ImportConflict.create(
+            relationshipUid,
+            "TrackedEntityInstance '$teiUid' has invalid TrackedEntityType."
+        )
+    }
+
     // Data value types
 
     fun valueNotNumeric(dataElementId: String): ImportConflict {

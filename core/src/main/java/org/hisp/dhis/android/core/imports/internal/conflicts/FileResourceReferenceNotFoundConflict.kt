@@ -29,18 +29,18 @@ package org.hisp.dhis.android.core.imports.internal.conflicts
 
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
-internal object NonUniqueAttributeConflict : TrackerImportConflictItem {
+internal object FileResourceReferenceNotFoundConflict : TrackerImportConflictItem {
 
-    private val regex: Regex = Regex("Non-unique attribute value '[\\w|\\s]*' for attribute (\\w{11})")
-    private fun description(attributeName: String) = "Non-unique attribute value: $attributeName"
+    private val regex: Regex = Regex("Value '(\\w{11})' is not the uid of a file")
+    private fun description(fileResourceUid: String) = "The file reference $fileResourceUid could not be found"
 
-    override val errorCode: String = "E1064"
+    override val errorCode: String = "E1084"
 
     override fun matches(conflict: ImportConflict): Boolean {
         return regex.matches(conflict.value())
     }
 
-    override fun getTrackedEntityAttribute(conflict: ImportConflict): String? {
+    override fun getFileResource(conflict: ImportConflict): String? {
         return regex.find(conflict.value())?.groupValues?.get(1)
     }
 
@@ -48,12 +48,8 @@ internal object NonUniqueAttributeConflict : TrackerImportConflictItem {
         conflict: ImportConflict,
         context: TrackerImportConflictItemContext
     ): String {
-
-        return getTrackedEntityAttribute(conflict)?.let { attributeUid ->
-            context.attributeStore.selectByUid(attributeUid)?.let { attribute ->
-                val name = attribute.displayFormName() ?: attribute.displayName() ?: attributeUid
-                description(name)
-            }
+        return getFileResource(conflict)?.let { fileResourceUid ->
+            description(fileResourceUid)
         }
             ?: conflict.value()
     }

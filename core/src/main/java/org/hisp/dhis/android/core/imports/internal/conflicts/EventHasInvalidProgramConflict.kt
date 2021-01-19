@@ -29,18 +29,18 @@ package org.hisp.dhis.android.core.imports.internal.conflicts
 
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
-internal object NonUniqueAttributeConflict : TrackerImportConflictItem {
+internal object EventHasInvalidProgramConflict : TrackerImportConflictItem {
 
-    private val regex: Regex = Regex("Non-unique attribute value '[\\w|\\s]*' for attribute (\\w{11})")
-    private fun description(attributeName: String) = "Non-unique attribute value: $attributeName"
+    private val regex: Regex = Regex("ProgramStageInstance '(\\w{11})' has invalid Program.")
+    private fun description(eventUid: String) = "Your event $eventUid has an invalid program"
 
-    override val errorCode: String = "E1064"
+    override val errorCode: String = ""
 
     override fun matches(conflict: ImportConflict): Boolean {
         return regex.matches(conflict.value())
     }
 
-    override fun getTrackedEntityAttribute(conflict: ImportConflict): String? {
+    override fun getEvent(conflict: ImportConflict): String? {
         return regex.find(conflict.value())?.groupValues?.get(1)
     }
 
@@ -48,12 +48,8 @@ internal object NonUniqueAttributeConflict : TrackerImportConflictItem {
         conflict: ImportConflict,
         context: TrackerImportConflictItemContext
     ): String {
-
-        return getTrackedEntityAttribute(conflict)?.let { attributeUid ->
-            context.attributeStore.selectByUid(attributeUid)?.let { attribute ->
-                val name = attribute.displayFormName() ?: attribute.displayName() ?: attributeUid
-                description(name)
-            }
+        return getEvent(conflict)?.let { eventUid ->
+            description(eventUid)
         }
             ?: conflict.value()
     }

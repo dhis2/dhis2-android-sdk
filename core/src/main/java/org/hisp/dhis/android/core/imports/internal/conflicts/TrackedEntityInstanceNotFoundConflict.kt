@@ -29,18 +29,19 @@ package org.hisp.dhis.android.core.imports.internal.conflicts
 
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
-internal object NonUniqueAttributeConflict : TrackerImportConflictItem {
+internal object TrackedEntityInstanceNotFoundConflict : TrackerImportConflictItem {
 
-    private val regex: Regex = Regex("Non-unique attribute value '[\\w|\\s]*' for attribute (\\w{11})")
-    private fun description(attributeName: String) = "Non-unique attribute value: $attributeName"
+    private val regex: Regex = Regex("TrackedEntityInstance '(\\w{11})' not found.")
+    private fun description(trackedEntityInstanceUid: String) =
+        "Your entity $trackedEntityInstanceUid does not exist in the server"
 
-    override val errorCode: String = "E1064"
+    override val errorCode: String = "E1063"
 
     override fun matches(conflict: ImportConflict): Boolean {
         return regex.matches(conflict.value())
     }
 
-    override fun getTrackedEntityAttribute(conflict: ImportConflict): String? {
+    override fun getTrackedEntityInstance(conflict: ImportConflict): String? {
         return regex.find(conflict.value())?.groupValues?.get(1)
     }
 
@@ -48,12 +49,8 @@ internal object NonUniqueAttributeConflict : TrackerImportConflictItem {
         conflict: ImportConflict,
         context: TrackerImportConflictItemContext
     ): String {
-
-        return getTrackedEntityAttribute(conflict)?.let { attributeUid ->
-            context.attributeStore.selectByUid(attributeUid)?.let { attribute ->
-                val name = attribute.displayFormName() ?: attribute.displayName() ?: attributeUid
-                description(name)
-            }
+        return getTrackedEntityInstance(conflict)?.let { trackedEntityInstanceUid ->
+            description(trackedEntityInstanceUid)
         }
             ?: conflict.value()
     }

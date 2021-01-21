@@ -43,12 +43,16 @@ import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
+import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.event.internal.EventFields;
 import org.hisp.dhis.android.core.event.internal.EventPostCall;
 import org.hisp.dhis.android.core.event.internal.EventStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -183,6 +187,14 @@ public final class EventCollectionRepository
                 uids
         );
     }
+
+    public EventCollectionRepository byFollowUp(Boolean followUp) {
+        return cf.subQuery(Columns.ENROLLMENT).inLinkTable(
+                EnrollmentTableInfo.TABLE_INFO.name(),
+                IdentifiableColumns.UID,
+                EnrollmentTableInfo.Columns.FOLLOW_UP,
+                Collections.singletonList(followUp ? "1" : "0")
+        );    }
 
     public StringFilterConnector<EventCollectionRepository> byAssignedUser() {
         return cf.string(Columns.ASSIGNED_USER);

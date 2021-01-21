@@ -42,9 +42,7 @@ internal class EventCollectionRepositoryAdapter @Inject constructor(
 
         scope.program()?.let { repository = repository.byProgramUid().eq(it) }
         scope.programStage()?.let { repository = repository.byProgramStageUid().eq(it) }
-        scope.followUp()?.let {
-            // TODO
-        }
+        scope.followUp()?.let { repository = repository.byFollowUp(it) }
         scope.trackedEntityInstance()?.let { repository = repository.byTrackedEntityInstanceUids(listOf(it)) }
         scope.organisationUnit()?.let { repository = repository.byOrganisationUnitUid().eq(it) }
         scope.organisationUnitMode()?.let {

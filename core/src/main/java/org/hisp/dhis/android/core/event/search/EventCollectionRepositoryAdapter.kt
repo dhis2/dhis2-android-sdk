@@ -83,7 +83,7 @@ internal class EventCollectionRepositoryAdapter @Inject constructor(
         return repository
     }
 
-    fun applyOrgunitSelection(
+    private fun applyOrgunitSelection(
         repository: EventCollectionRepository,
         scope: EventQueryRepositoryScope
     ): EventCollectionRepository {

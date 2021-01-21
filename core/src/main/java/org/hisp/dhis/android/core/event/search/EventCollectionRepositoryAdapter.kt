@@ -28,13 +28,13 @@
 package org.hisp.dhis.android.core.event.search
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
 import org.hisp.dhis.android.core.event.EventCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.user.AuthenticatedUserObjectRepository
-import javax.inject.Inject
 
 @Reusable
 internal class EventCollectionRepositoryAdapter @Inject constructor(
@@ -43,6 +43,7 @@ internal class EventCollectionRepositoryAdapter @Inject constructor(
     private val userRepository: AuthenticatedUserObjectRepository
 ) {
 
+    @Suppress("ComplexMethod")
     fun getCollectionRepository(scope: EventQueryRepositoryScope): EventCollectionRepository {
         var repository = eventCollectionRepository
 
@@ -50,32 +51,8 @@ internal class EventCollectionRepositoryAdapter @Inject constructor(
         scope.programStage()?.let { repository = repository.byProgramStageUid().eq(it) }
         scope.followUp()?.let { repository = repository.byFollowUp(it) }
         scope.trackedEntityInstance()?.let { repository = repository.byTrackedEntityInstanceUids(listOf(it)) }
-        scope.organisationUnitMode().let { mode ->
-            val orgUnitList: List<String>? = when(mode) {
-                OrganisationUnitMode.ALL, OrganisationUnitMode.ACCESSIBLE ->
-                    organisationUnitCollectionRepository.blockingGetUids()
-                OrganisationUnitMode.CHILDREN ->
-                    scope.organisationUnit()?.let { orgUnit ->
-                        organisationUnitCollectionRepository.byParentUid().like(orgUnit).blockingGetUids() + orgUnit
-                    }
-                OrganisationUnitMode.DESCENDANTS ->
-                    scope.organisationUnit()?.let { orgUnit ->
-                        organisationUnitCollectionRepository.byPath().like(orgUnit).blockingGetUids()
-                    }
-                else ->
-                    scope.organisationUnit()?.let { listOf(it) }
-            }
-            orgUnitList?.let { repository = repository.byOrganisationUnitUid().`in`(it) }
-        }
-        scope.assignedUserMode()?.let { mode ->
-            repository = when(mode) {
-                AssignedUserMode.CURRENT -> repository.byAssignedUser().eq(userRepository.blockingGet().user())
-                AssignedUserMode.ANY -> repository.byAssignedUser().isNotNull
-                AssignedUserMode.NONE -> repository.byAssignedUser().isNull
-                // TODO Not implemented yet
-                AssignedUserMode.PROVIDED -> repository
-            }
-        }
+        scope.organisationUnitMode().let { repository = applyOrgunitSelection(repository, scope) }
+        scope.assignedUserMode()?.let { repository = applyUserAssignedMode(repository, it) }
         scope.dataFilters().forEach {
             // TODO
         }
@@ -90,25 +67,15 @@ internal class EventCollectionRepositoryAdapter @Inject constructor(
             DateFilterPeriodHelper.getEndDate(period)?.let { repository = repository.byDueDate().before(it) }
         }
         scope.lastUpdatedDate()?.let { period ->
-            DateFilterPeriodHelper.getStartDate(period)?.let { repository = repository.byLastUpdated().after(it)}
-            DateFilterPeriodHelper.getEndDate(period)?.let { repository = repository.byLastUpdated().before(it)}
+            DateFilterPeriodHelper.getStartDate(period)?.let { repository = repository.byLastUpdated().after(it) }
+            DateFilterPeriodHelper.getEndDate(period)?.let { repository = repository.byLastUpdated().before(it) }
         }
         scope.completedDate()?.let { period ->
             DateFilterPeriodHelper.getStartDate(period)?.let { repository = repository.byCompleteDate().after(it) }
             DateFilterPeriodHelper.getEndDate(period)?.let { repository = repository.byCompleteDate().before(it) }
         }
-        scope.order().forEach { order ->
-            repository = when(order.column()) {
-                EventQueryScopeOrderColumn.EVENT_DATE -> repository.orderByEventDate(order.direction())
-                EventQueryScopeOrderColumn.DUE_DATE -> repository.orderByDueDate(order.direction())
-                EventQueryScopeOrderColumn.COMPLETED_DATE -> repository.orderByCompleteDate(order.direction())
-                EventQueryScopeOrderColumn.CREATED -> repository.orderByCreated(order.direction())
-                EventQueryScopeOrderColumn.LAST_UPDATED -> repository.orderByLastUpdated(order.direction())
-                EventQueryScopeOrderColumn.ORGUNIT_NAME -> repository.orderByOrganisationUnitName(order.direction())
-                EventQueryScopeOrderColumn.TIMELINE -> repository.orderByTimeline(order.direction())
-                else -> repository
-            }
-        }
+        scope.order().forEach { repository = applyOrderColumn(repository, it) }
+
         if (!scope.includeDeleted()) {
             repository = repository.byDeleted().isFalse
         }
@@ -116,4 +83,56 @@ internal class EventCollectionRepositoryAdapter @Inject constructor(
         return repository
     }
 
+    fun applyOrgunitSelection(
+        repository: EventCollectionRepository,
+        scope: EventQueryRepositoryScope
+    ): EventCollectionRepository {
+        return getOrganisationUnits(scope)?.let { repository.byOrganisationUnitUid().`in`(it) } ?: repository
+    }
+
+    fun getOrganisationUnits(scope: EventQueryRepositoryScope): List<String>? {
+        return when (scope.organisationUnitMode()) {
+            OrganisationUnitMode.ALL, OrganisationUnitMode.ACCESSIBLE ->
+                organisationUnitCollectionRepository.blockingGetUids()
+            OrganisationUnitMode.CHILDREN ->
+                scope.organisationUnit()?.let { orgUnit ->
+                    organisationUnitCollectionRepository.byParentUid().like(orgUnit).blockingGetUids() + orgUnit
+                }
+            OrganisationUnitMode.DESCENDANTS ->
+                scope.organisationUnit()?.let { orgUnit ->
+                    organisationUnitCollectionRepository.byPath().like(orgUnit).blockingGetUids()
+                }
+            else ->
+                scope.organisationUnit()?.let { listOf(it) }
+        }
+    }
+
+    private fun applyOrderColumn(
+        repository: EventCollectionRepository,
+        order: EventQueryScopeOrderByItem
+    ): EventCollectionRepository {
+        return when (order.column()) {
+            EventQueryScopeOrderColumn.EVENT_DATE -> repository.orderByEventDate(order.direction())
+            EventQueryScopeOrderColumn.DUE_DATE -> repository.orderByDueDate(order.direction())
+            EventQueryScopeOrderColumn.COMPLETED_DATE -> repository.orderByCompleteDate(order.direction())
+            EventQueryScopeOrderColumn.CREATED -> repository.orderByCreated(order.direction())
+            EventQueryScopeOrderColumn.LAST_UPDATED -> repository.orderByLastUpdated(order.direction())
+            EventQueryScopeOrderColumn.ORGUNIT_NAME -> repository.orderByOrganisationUnitName(order.direction())
+            EventQueryScopeOrderColumn.TIMELINE -> repository.orderByTimeline(order.direction())
+            else -> repository
+        }
+    }
+
+    private fun applyUserAssignedMode(
+        repository: EventCollectionRepository,
+        mode: AssignedUserMode
+    ): EventCollectionRepository {
+        return when (mode) {
+            AssignedUserMode.CURRENT -> repository.byAssignedUser().eq(userRepository.blockingGet().user())
+            AssignedUserMode.ANY -> repository.byAssignedUser().isNotNull
+            AssignedUserMode.NONE -> repository.byAssignedUser().isNull
+            // TODO Not implemented yet
+            AssignedUserMode.PROVIDED -> repository
+        }
+    }
 }

@@ -25,49 +25,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.event.search
 
-package org.hisp.dhis.android.core.event.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.event.EventFilter;
-import org.hisp.dhis.android.core.event.EventModule;
-import org.hisp.dhis.android.core.event.search.EventQueryEntityDIModule;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
-
-@Module(includes = {
-        EventEntityDIModule.class,
-        EventFilterEntityDIModule.class,
-        EventDataFilterEntityDIModule.class,
-        EventSyncEntityDIModule.class,
-        EventQueryEntityDIModule.class
-})
-public final class EventPackageDIModule {
+@Module
+internal class EventQueryEntityDIModule {
 
     @Provides
     @Reusable
-    EventService service(Retrofit retrofit) {
-        return retrofit.create(EventService.class);
-    }
-
-    @Provides
-    @Reusable
-    EventModule module(EventModuleImpl impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    UidsCall<EventFilter> trackedEntityInstanceFilterCall(EventFilterCall impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    EventFilterService eventFilterService(Retrofit retrofit) {
-        return retrofit.create(EventFilterService.class);
+    fun empty(): EventQueryRepositoryScope {
+        return EventQueryRepositoryScope.empty()
     }
 }

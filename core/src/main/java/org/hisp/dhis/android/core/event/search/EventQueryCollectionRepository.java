@@ -42,7 +42,6 @@ import org.hisp.dhis.android.core.common.DateFilterPeriod;
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventCollectionRepository;
-import org.hisp.dhis.android.core.event.EventFilterCollectionRepository;
 import org.hisp.dhis.android.core.event.EventObjectRepository;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
@@ -62,20 +61,15 @@ public final class EventQueryCollectionRepository implements ReadOnlyWithUidColl
     private final ScopedFilterConnectorFactory<EventQueryCollectionRepository,
             EventQueryRepositoryScope> connectorFactory;
 
-    private final EventFilterCollectionRepository filtersRepository;
-
     private final EventQueryRepositoryScope scope;
-
 
     @Inject
     EventQueryCollectionRepository(final EventCollectionRepositoryAdapter eventCollectionRepositoryAdapter,
-                                   final EventFilterCollectionRepository filtersRepository,
                                    final EventQueryRepositoryScope scope) {
         this.eventCollectionRepositoryAdapter = eventCollectionRepositoryAdapter;
-        this.filtersRepository = filtersRepository;
         this.scope = scope;
         this.connectorFactory = new ScopedFilterConnectorFactory<>(s ->
-                new EventQueryCollectionRepository(eventCollectionRepositoryAdapter, filtersRepository, s));
+                new EventQueryCollectionRepository(eventCollectionRepositoryAdapter, s));
     }
 
     public ListFilterConnector<EventQueryCollectionRepository, String> byUid() {
@@ -84,8 +78,8 @@ public final class EventQueryCollectionRepository implements ReadOnlyWithUidColl
 
     public PeriodFilterConnector<EventQueryCollectionRepository> byLastUpdated() {
         return connectorFactory.periodConnector(filter -> {
-            DateFilterPeriod mergedFilter = DateFilterPeriodHelper.mergeDateFilterPeriods(scope.lastUpdatedDate(), filter);
-            return scope.toBuilder().lastUpdatedDate(mergedFilter).build();
+            DateFilterPeriod merged = DateFilterPeriodHelper.mergeDateFilterPeriods(scope.lastUpdatedDate(), filter);
+            return scope.toBuilder().lastUpdatedDate(merged).build();
         });
     }
 
@@ -93,16 +87,16 @@ public final class EventQueryCollectionRepository implements ReadOnlyWithUidColl
         return connectorFactory.eqConnector(status -> scope.toBuilder().eventStatus(status).build());
     }
 
-    public EqFilterConnector<EventQueryCollectionRepository, String> byProgramUid() {
-        return connectorFactory.eqConnector(programUid -> scope.toBuilder().program(programUid).build());
+    public EqFilterConnector<EventQueryCollectionRepository, String> byProgram() {
+        return connectorFactory.eqConnector(program -> scope.toBuilder().program(program).build());
     }
 
-    public EqFilterConnector<EventQueryCollectionRepository, String> byProgramStageUid() {
-        return connectorFactory.eqConnector(programStageUid -> scope.toBuilder().programStage(programStageUid).build());
+    public EqFilterConnector<EventQueryCollectionRepository, String> byProgramStage() {
+        return connectorFactory.eqConnector(programStage -> scope.toBuilder().programStage(programStage).build());
     }
 
-    public EqFilterConnector<EventQueryCollectionRepository, String> byOrganisationUnitUid() {
-        return connectorFactory.eqConnector(orgunitUid -> scope.toBuilder().organisationUnit(orgunitUid).build());
+    public EqFilterConnector<EventQueryCollectionRepository, String> byOrganisationUnit() {
+        return connectorFactory.eqConnector(orgunit -> scope.toBuilder().organisationUnit(orgunit).build());
     }
 
     public EqFilterConnector<EventQueryCollectionRepository, OrganisationUnitMode> byOrganisationUnitMode() {
@@ -111,22 +105,22 @@ public final class EventQueryCollectionRepository implements ReadOnlyWithUidColl
 
     public PeriodFilterConnector<EventQueryCollectionRepository> byEventDate() {
         return connectorFactory.periodConnector(filter -> {
-            DateFilterPeriod mergedFilter = DateFilterPeriodHelper.mergeDateFilterPeriods(scope.eventDate(), filter);
-            return scope.toBuilder().eventDate(mergedFilter).build();
+            DateFilterPeriod merged = DateFilterPeriodHelper.mergeDateFilterPeriods(scope.eventDate(), filter);
+            return scope.toBuilder().eventDate(merged).build();
         });
     }
 
     public PeriodFilterConnector<EventQueryCollectionRepository> byCompleteDate() {
         return connectorFactory.periodConnector(filter -> {
-            DateFilterPeriod mergedFilter = DateFilterPeriodHelper.mergeDateFilterPeriods(scope.completedDate(), filter);
-            return scope.toBuilder().completedDate(mergedFilter).build();
+            DateFilterPeriod merged = DateFilterPeriodHelper.mergeDateFilterPeriods(scope.completedDate(), filter);
+            return scope.toBuilder().completedDate(merged).build();
         });
     }
 
     public PeriodFilterConnector<EventQueryCollectionRepository> byDueDate() {
         return connectorFactory.periodConnector(filter -> {
-            DateFilterPeriod mergedFilter = DateFilterPeriodHelper.mergeDateFilterPeriods(scope.dueDate(), filter);
-            return scope.toBuilder().dueDate(mergedFilter).build();
+            DateFilterPeriod merged = DateFilterPeriodHelper.mergeDateFilterPeriods(scope.dueDate(), filter);
+            return scope.toBuilder().dueDate(merged).build();
         });
     }
 
@@ -134,8 +128,8 @@ public final class EventQueryCollectionRepository implements ReadOnlyWithUidColl
         return connectorFactory.eqConnector(includeDeleted -> scope.toBuilder().includeDeleted(includeDeleted).build());
     }
 
-    public EqFilterConnector<EventQueryCollectionRepository, String> byTrackedEntityInstanceUid() {
-        return connectorFactory.eqConnector(teiUid -> scope.toBuilder().trackedEntityInstance(teiUid).build());
+    public EqFilterConnector<EventQueryCollectionRepository, String> byTrackedEntityInstance() {
+        return connectorFactory.eqConnector(tei -> scope.toBuilder().trackedEntityInstance(tei).build());
     }
 
     public EqFilterConnector<EventQueryCollectionRepository, AssignedUserMode> byAssignedUser() {
@@ -185,6 +179,10 @@ public final class EventQueryCollectionRepository implements ReadOnlyWithUidColl
             order.add(EventQueryScopeOrderByItem.builder().column(col).direction(direction).build());
             return scope.toBuilder().order(order).build();
         });
+    }
+
+    public EventQueryRepositoryScope getScope() {
+        return scope;
     }
 
     @Override

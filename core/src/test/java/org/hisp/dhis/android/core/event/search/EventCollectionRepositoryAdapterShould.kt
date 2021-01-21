@@ -10,7 +10,6 @@ import org.hisp.dhis.android.core.user.AuthenticatedUserObjectRepository
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
-import org.mockito.internal.stubbing.defaultanswers.ReturnsDeepStubs
 
 class EventCollectionRepositoryAdapterShould {
 
@@ -26,8 +25,10 @@ class EventCollectionRepositoryAdapterShould {
 
     @Before
     fun setUp() {
-        adapter = EventCollectionRepositoryAdapter(eventRepository,
-            ouRepository, userRepository)
+        adapter = EventCollectionRepositoryAdapter(
+            eventRepository,
+            ouRepository, userRepository
+        )
 
         whenever(ouRepository.blockingGetUids()) doReturn orgunitDescendants
         whenever(ouRepository.byPath().like(orgunit).blockingGetUids()) doReturn orgunitDescendants
@@ -79,14 +80,18 @@ class EventCollectionRepositoryAdapterShould {
     @Test
     fun `Should apply and concat sort orders`() {
         val scope = EventQueryRepositoryScope.builder()
-            .order(listOf(
-                EventQueryScopeOrderByItem.builder()
-                    .column(EventQueryScopeOrderColumn.EVENT_DATE).direction(RepositoryScope.OrderByDirection.ASC)
-                    .build(),
-                EventQueryScopeOrderByItem.builder()
-                    .column(EventQueryScopeOrderColumn.COMPLETED_DATE).direction(RepositoryScope.OrderByDirection.DESC)
-                    .build()
-            )).build()
+            .order(
+                listOf(
+                    EventQueryScopeOrderByItem.builder()
+                        .column(EventQueryScopeOrderColumn.EVENT_DATE)
+                        .direction(RepositoryScope.OrderByDirection.ASC)
+                        .build(),
+                    EventQueryScopeOrderByItem.builder()
+                        .column(EventQueryScopeOrderColumn.COMPLETED_DATE)
+                        .direction(RepositoryScope.OrderByDirection.DESC)
+                        .build()
+                )
+            ).build()
 
         val intermediateRepository: EventCollectionRepository = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
         whenever(eventRepository.orderByEventDate(any())) doReturn intermediateRepository
@@ -96,5 +101,4 @@ class EventCollectionRepositoryAdapterShould {
         verify(eventRepository).orderByEventDate(RepositoryScope.OrderByDirection.ASC)
         verify(intermediateRepository).orderByCompleteDate(RepositoryScope.OrderByDirection.DESC)
     }
-
 }

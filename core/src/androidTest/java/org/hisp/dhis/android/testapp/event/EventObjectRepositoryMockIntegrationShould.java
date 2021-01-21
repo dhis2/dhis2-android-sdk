@@ -178,7 +178,7 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
         try {
             repository.setAttributeOptionComboUid(attributeOptionCombo);
         } finally {
-            repository.delete();
+            repository.blockingDelete();
         }
     }
 

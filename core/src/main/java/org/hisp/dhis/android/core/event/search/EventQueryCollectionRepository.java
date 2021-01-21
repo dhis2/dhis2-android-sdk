@@ -143,32 +143,32 @@ public final class EventQueryCollectionRepository implements ReadOnlyWithUidColl
     }
 
     public EqFilterConnector<EventQueryCollectionRepository,
-            RepositoryScope.OrderByDirection> orderByEventDate(RepositoryScope.OrderByDirection direction) {
+            RepositoryScope.OrderByDirection> orderByEventDate() {
         return orderConnector(EventQueryScopeOrderColumn.EVENT_DATE);
     }
 
     public EqFilterConnector<EventQueryCollectionRepository,
-            RepositoryScope.OrderByDirection> orderByDueDate(RepositoryScope.OrderByDirection direction) {
+            RepositoryScope.OrderByDirection> orderByDueDate() {
         return orderConnector(EventQueryScopeOrderColumn.DUE_DATE);
     }
 
     public EqFilterConnector<EventQueryCollectionRepository,
-            RepositoryScope.OrderByDirection> orderByCompleteDate(RepositoryScope.OrderByDirection direction) {
+            RepositoryScope.OrderByDirection> orderByCompleteDate() {
         return orderConnector(EventQueryScopeOrderColumn.COMPLETED_DATE);
     }
 
     public EqFilterConnector<EventQueryCollectionRepository,
-            RepositoryScope.OrderByDirection> orderByCreated(RepositoryScope.OrderByDirection direction) {
+            RepositoryScope.OrderByDirection> orderByCreated() {
         return orderConnector(EventQueryScopeOrderColumn.CREATED);
     }
 
     public EqFilterConnector<EventQueryCollectionRepository,
-            RepositoryScope.OrderByDirection> orderByLastUpdated(RepositoryScope.OrderByDirection direction) {
+            RepositoryScope.OrderByDirection> orderByLastUpdated() {
         return orderConnector(EventQueryScopeOrderColumn.LAST_UPDATED);
     }
 
     public EqFilterConnector<EventQueryCollectionRepository,
-            RepositoryScope.OrderByDirection> orderByOrganisationUnitName(RepositoryScope.OrderByDirection direction) {
+            RepositoryScope.OrderByDirection> orderByOrganisationUnitName() {
         return orderConnector(EventQueryScopeOrderColumn.ORGUNIT_NAME);
     }
 

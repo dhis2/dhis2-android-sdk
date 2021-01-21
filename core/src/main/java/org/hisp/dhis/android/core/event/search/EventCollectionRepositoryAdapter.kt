@@ -45,16 +45,12 @@ internal class EventCollectionRepositoryAdapter @Inject constructor(
         scope.followUp()?.let {
             // TODO
         }
-
         scope.trackedEntityInstance()?.let { repository = repository.byTrackedEntityInstanceUids(listOf(it)) }
         scope.organisationUnit()?.let { repository = repository.byOrganisationUnitUid().eq(it) }
         scope.organisationUnitMode()?.let {
             // TODO
         }
         scope.assignedUserMode()?.let {
-            // TODO
-        }
-        scope.order().forEach {
             // TODO
         }
         scope.dataFilters().forEach {
@@ -78,8 +74,20 @@ internal class EventCollectionRepositoryAdapter @Inject constructor(
             DateFilterPeriodHelper.getStartDate(period)?.let { repository = repository.byCompleteDate().after(it) }
             DateFilterPeriodHelper.getEndDate(period)?.let { repository = repository.byCompleteDate().before(it) }
         }
-        scope.includeDeleted().let {
-            // TODO
+        scope.order().forEach { order ->
+            repository = when(order.column()) {
+                EventQueryScopeOrderColumn.EVENT_DATE -> repository.orderByEventDate(order.direction())
+                EventQueryScopeOrderColumn.DUE_DATE -> repository.orderByDueDate(order.direction())
+                EventQueryScopeOrderColumn.COMPLETED_DATE -> repository.orderByCompleteDate(order.direction())
+                EventQueryScopeOrderColumn.CREATED -> repository.orderByCreated(order.direction())
+                EventQueryScopeOrderColumn.LAST_UPDATED -> repository.orderByLastUpdated(order.direction())
+                EventQueryScopeOrderColumn.ORGUNIT_NAME -> repository.orderByOrganisationUnitName(order.direction())
+                EventQueryScopeOrderColumn.TIMELINE -> repository.orderByTimeline(order.direction())
+                else -> repository
+            }
+        }
+        if (!scope.includeDeleted()) {
+            repository = repository.byDeleted().isFalse
         }
 
         return repository

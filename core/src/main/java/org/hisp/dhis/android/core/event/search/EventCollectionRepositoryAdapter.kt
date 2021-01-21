@@ -28,13 +28,19 @@
 package org.hisp.dhis.android.core.event.search
 
 import dagger.Reusable
+import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
 import org.hisp.dhis.android.core.event.EventCollectionRepository
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRepository
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
+import org.hisp.dhis.android.core.user.AuthenticatedUserObjectRepository
 import javax.inject.Inject
 
 @Reusable
 internal class EventCollectionRepositoryAdapter @Inject constructor(
-    private val eventCollectionRepository: EventCollectionRepository
+    private val eventCollectionRepository: EventCollectionRepository,
+    private val organisationUnitCollectionRepository: OrganisationUnitCollectionRepository,
+    private val userRepository: AuthenticatedUserObjectRepository
 ) {
 
     fun getCollectionRepository(scope: EventQueryRepositoryScope): EventCollectionRepository {
@@ -44,12 +50,31 @@ internal class EventCollectionRepositoryAdapter @Inject constructor(
         scope.programStage()?.let { repository = repository.byProgramStageUid().eq(it) }
         scope.followUp()?.let { repository = repository.byFollowUp(it) }
         scope.trackedEntityInstance()?.let { repository = repository.byTrackedEntityInstanceUids(listOf(it)) }
-        scope.organisationUnit()?.let { repository = repository.byOrganisationUnitUid().eq(it) }
-        scope.organisationUnitMode()?.let {
-            // TODO
+        scope.organisationUnitMode().let { mode ->
+            val orgUnitList: List<String>? = when(mode) {
+                OrganisationUnitMode.ALL, OrganisationUnitMode.ACCESSIBLE ->
+                    organisationUnitCollectionRepository.blockingGetUids()
+                OrganisationUnitMode.CHILDREN ->
+                    scope.organisationUnit()?.let { orgUnit ->
+                        organisationUnitCollectionRepository.byParentUid().like(orgUnit).blockingGetUids() + orgUnit
+                    }
+                OrganisationUnitMode.DESCENDANTS ->
+                    scope.organisationUnit()?.let { orgUnit ->
+                        organisationUnitCollectionRepository.byPath().like(orgUnit).blockingGetUids()
+                    }
+                else ->
+                    scope.organisationUnit()?.let { listOf(it) }
+            }
+            orgUnitList?.let { repository = repository.byOrganisationUnitUid().`in`(it) }
         }
-        scope.assignedUserMode()?.let {
-            // TODO
+        scope.assignedUserMode()?.let { mode ->
+            repository = when(mode) {
+                AssignedUserMode.CURRENT -> repository.byAssignedUser().eq(userRepository.blockingGet().user())
+                AssignedUserMode.ANY -> repository.byAssignedUser().isNotNull
+                AssignedUserMode.NONE -> repository.byAssignedUser().isNull
+                // TODO Not implemented yet
+                AssignedUserMode.PROVIDED -> repository
+            }
         }
         scope.dataFilters().forEach {
             // TODO

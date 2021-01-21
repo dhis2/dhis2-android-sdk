@@ -65,7 +65,7 @@ public abstract class EventQueryRepositoryScope implements BaseScope {
     @Nullable
     public abstract String organisationUnit();
 
-    @Nullable
+    @NonNull
     public abstract OrganisationUnitMode organisationUnitMode();
 
     @Nullable
@@ -106,6 +106,7 @@ public abstract class EventQueryRepositoryScope implements BaseScope {
                 .order(Collections.emptyList())
                 .dataFilters(Collections.emptyList())
                 .mode(RepositoryMode.OFFLINE_ONLY)
+                .organisationUnitMode(OrganisationUnitMode.SELECTED)
                 .includeDeleted(false);
     }
 

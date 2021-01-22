@@ -29,62 +29,57 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
 import io.reactivex.Observable
-import io.reactivex.ObservableEmitter
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
-import org.hisp.dhis.android.core.imports.internal.TEIWebResponseHandler
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDeleteCall
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @Reusable
 internal class NewTrackerPostCall @Inject internal constructor(
     private val payloadGenerator: TrackedEntityInstancePostPayloadGenerator,
     private val stateManager: TrackedEntityInstancePostStateManager,
-    private val trackedEntityInstanceService: TrackedEntityInstanceService,
+    private val service: TrackedEntityInstanceService,
     private val apiCallExecutor: APICallExecutor,
     private val relationshipDeleteCall: RelationshipDeleteCall
 ) {
     fun uploadTrackedEntityInstances(
         filteredTrackedEntityInstances: List<TrackedEntityInstance>
     ): Observable<D2Progress> {
-        return Observable.create { emitter: ObservableEmitter<D2Progress> ->
+        return Observable.defer {
 
             // TODO do not partition
-            val teiPartitions = payloadGenerator.getTrackedEntityInstancesPartitions(filteredTrackedEntityInstances)
-            val progressManager = D2ProgressManager(teiPartitions.size)
-            for (partition in teiPartitions) {
+            val teisToPost =
+                payloadGenerator.getTrackedEntityInstancesPartitions(filteredTrackedEntityInstances).flatten()
 
-                // TODO HANDLE DELETED RELATIONSHIPS val thisPartition = relationshipDeleteCall.postDeletedRelationships(partition)
-                val thisPartition = partition
-                val trackedEntityInstancePayload = TrackedEntityInstancePayload.create(thisPartition)
-                try {
-                    val webResponse = apiCallExecutor.executeObjectCall(
-                        trackedEntityInstanceService.postTrackerImporter(
-                            trackedEntityInstancePayload, "SYNC"
-                        )
-                    )
-                    val jobId = webResponse.response().uid()
-                    emitter.onNext(progressManager.increaseProgress(TrackedEntityInstance::class.java, false))
-                } catch (d2Error: D2Error) {
-                    stateManager.restorePartitionStates(thisPartition)
-                    if (d2Error.isOffline) {
-                        emitter.onError(d2Error)
-                        break
-                    } else {
-                        emitter.onNext(
-                            progressManager.increaseProgress(
-                                TrackedEntityInstance::class.java,
-                                false
-                            )
-                        )
-                    }
-                }
+            // TODO HANDLE DELETED RELATIONSHIPS val thisPartition = relationshipDeleteCall.postDeletedRelationships(partition)
+            val trackedEntityInstancePayload = TrackedEntityInstancePayload.create(teisToPost)
+            try {
+                val webResponse = apiCallExecutor.executeObjectCall(
+                    service.postTrackerImporter(trackedEntityInstancePayload, "SYNC")
+                )
+                queryJob(webResponse.response().uid())
+            } catch (d2Error: D2Error) {
+                stateManager.restorePartitionStates(teisToPost)
+                Observable.error<D2Progress>(d2Error)
+                // TODO different treatment when offline error
             }
-            emitter.onComplete()
         }
+    }
+
+    private fun queryJob(jobId: String): Observable<D2Progress> {
+        val progressManager = D2ProgressManager(null)
+        return Observable.interval(1, 5, TimeUnit.SECONDS).map {
+            apiCallExecutor.executeObjectCall(service.getJob(jobId))
+        }.take(3)
+            .map {
+                progressManager.increaseProgress(
+                    TrackedEntityInstance::class.java,
+                    false
+                )
+            }
     }
 }

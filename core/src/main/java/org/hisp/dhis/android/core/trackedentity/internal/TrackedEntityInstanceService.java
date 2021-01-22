@@ -31,8 +31,10 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse;
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponse;
+import org.hisp.dhis.android.core.imports.internal.WebResponse;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.search.SearchGrid;
 
@@ -85,6 +87,9 @@ public interface TrackedEntityInstanceService {
     Call<ObjectWithUidWebResponse> postTrackerImporter(
             @Body TrackedEntityInstancePayload trackedEntityInstances,
             @Query(STRATEGY) String strategy);
+
+    @GET("tracker/jobs/{jobId}")
+    Call<List<ObjectWithUid>> getJob(@Path("jobId") String jobId);
 
     @GET(TRACKED_ENTITY_INSTANCES)
     Single<Payload<TrackedEntityInstance>> getTrackedEntityInstance(

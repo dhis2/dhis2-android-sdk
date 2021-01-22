@@ -52,15 +52,15 @@ internal class EventPostCall @Inject internal constructor(
 ) {
     fun uploadEvents(filteredEvents: List<Event>): Observable<D2Progress> {
         return Observable.defer {
-            val eventsToPost = payloadGenerator.getEvents(filteredEvents)
-            markObjectsAs(eventsToPost, State.UPLOADING)
-
-            if (eventsToPost.isEmpty()) {
+            if (filteredEvents.isEmpty()) {
                 return@defer Observable.empty<D2Progress>()
             } else {
                 val progressManager = D2ProgressManager(1)
                 return@defer Observable.create { emitter: ObservableEmitter<D2Progress> ->
                     val eventPayload = EventPayload()
+                    val eventsToPost = payloadGenerator.getEvents(filteredEvents)
+                    markObjectsAs(eventsToPost, State.UPLOADING)
+
                     eventPayload.events = eventsToPost
                     val strategy = if (versionManager.is2_29) "CREATE_AND_UPDATE" else "SYNC"
                     try {

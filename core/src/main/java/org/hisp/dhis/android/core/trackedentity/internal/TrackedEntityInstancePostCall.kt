@@ -56,18 +56,13 @@ internal class TrackedEntityInstancePostCall @Inject internal constructor(
         filteredTrackedEntityInstances: List<TrackedEntityInstance>
     ): Observable<D2Progress> {
         return Observable.defer {
-            val teiPartitions = payloadGenerator.getTrackedEntityInstancesPartitions(filteredTrackedEntityInstances)
-
-            // if size is 0, then no need to do network request
-            if (teiPartitions.isEmpty()) {
+            if (filteredTrackedEntityInstances.isEmpty()) {
                 return@defer Observable.empty<D2Progress>()
             } else {
                 return@defer Observable.create { emitter: ObservableEmitter<D2Progress> ->
-                    val strategy: String = if (versionManager.is2_29) {
-                        "CREATE_AND_UPDATE"
-                    } else {
-                        "SYNC"
-                    }
+                    val strategy = if (versionManager.is2_29) "CREATE_AND_UPDATE" else "SYNC"
+                    val teiPartitions = payloadGenerator
+                        .getTrackedEntityInstancesPartitions(filteredTrackedEntityInstances)
                     val progressManager = D2ProgressManager(teiPartitions.size)
                     for (partition in teiPartitions) {
                         val thisPartition = relationshipDeleteCall.postDeletedRelationships(partition)

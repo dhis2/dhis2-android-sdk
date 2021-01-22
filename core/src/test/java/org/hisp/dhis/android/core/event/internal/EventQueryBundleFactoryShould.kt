@@ -28,9 +28,7 @@
 package org.hisp.dhis.android.core.event.internal
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
+import com.nhaarman.mockitokotlin2.*
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
@@ -164,5 +162,15 @@ class EventQueryBundleFactoryShould {
                 assertThat(bundle.commonParams().limit).isEqualTo(5000)
             }
         }
+
+    }
+
+    @Test
+    fun asdf() {
+        val params = ProgramDataDownloadParams.builder().uids(listOf("uid")).build()
+
+        val bundles = bundleFactory!!.getQueries(params)
+        verify(lastUpdatedManager, never()).update(any<EventQueryBundle>())
+        verify(lastUpdatedManager, never()).getLastUpdated(any(), any(), any())
     }
 }

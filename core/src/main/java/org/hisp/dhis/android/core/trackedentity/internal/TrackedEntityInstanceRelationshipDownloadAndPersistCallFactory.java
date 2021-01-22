@@ -29,10 +29,13 @@
 package org.hisp.dhis.android.core.trackedentity.internal;
 
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipItem;
 import org.hisp.dhis.android.core.relationship.RelationshipItemTrackedEntityInstance;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore;
+import org.hisp.dhis.android.core.systeminfo.DHISVersion;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
 import java.util.ArrayList;
@@ -53,17 +56,20 @@ final class TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory {
     private final RelationshipStore relationshipStore;
     private final TrackedEntityInstanceService service;
     private final TrackedEntityInstancePersistenceCallFactory persistenceCallFactory;
+    private final DHISVersionManager dhisVersionManager;
 
     @Inject
     TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory(
             @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
             @NonNull RelationshipStore relationshipStore,
             @NonNull TrackedEntityInstanceService service,
-            @NonNull TrackedEntityInstancePersistenceCallFactory persistenceCallFactory) {
+            @NonNull TrackedEntityInstancePersistenceCallFactory persistenceCallFactory,
+            @NonNull DHISVersionManager dhisVersionManager) {
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
         this.relationshipStore = relationshipStore;
         this.service = service;
         this.persistenceCallFactory = persistenceCallFactory;
+        this.dhisVersionManager = dhisVersionManager;
     }
 
     Single<List<TrackedEntityInstance>> downloadAndPersist() {
@@ -74,12 +80,15 @@ final class TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory {
             if (relationships.isEmpty()) {
                 return Single.just(Collections.emptyList());
             } else {
+                String ouMode = dhisVersionManager.isGreaterThan(DHISVersion.V2_30) ?
+                        OrganisationUnitMode.ACCESSIBLE.name() :
+                        null;
                 List<Single<Payload<TrackedEntityInstance>>> singles = new ArrayList<>();
                 List<String> failedTeis = new ArrayList<>();
                 for (String uid : relationships) {
                     Single<Payload<TrackedEntityInstance>> single =
                             service.getTrackedEntityInstance(uid, TrackedEntityInstanceFields.asRelationshipFields,
-                            true, true)
+                            true, true, ouMode)
                             .onErrorResumeNext((err) -> {
                                 failedTeis.add(uid);
                                 return Single.just(Payload.emptyPayload());

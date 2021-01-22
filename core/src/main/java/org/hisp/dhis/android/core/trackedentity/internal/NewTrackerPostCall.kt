@@ -30,24 +30,21 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
-import org.hisp.dhis.android.core.imports.internal.TEIWebResponse
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponseHandler
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDeleteCall
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import javax.inject.Inject
 
 @Reusable
 internal class NewTrackerPostCall @Inject internal constructor(
     private val payloadGenerator: TrackedEntityInstancePostPayloadGenerator,
     private val stateManager: TrackedEntityInstancePostStateManager,
-    private val versionManager: DHISVersionManager,
     private val trackedEntityInstanceService: TrackedEntityInstanceService,
-    private val teiWebResponseHandler: TEIWebResponseHandler,
     private val apiCallExecutor: APICallExecutor,
     private val relationshipDeleteCall: RelationshipDeleteCall
 ) {
@@ -55,22 +52,22 @@ internal class NewTrackerPostCall @Inject internal constructor(
         filteredTrackedEntityInstances: List<TrackedEntityInstance>
     ): Observable<D2Progress> {
         return Observable.create { emitter: ObservableEmitter<D2Progress> ->
-            val strategy = if (versionManager.is2_29) "CREATE_AND_UPDATE" else "SYNC"
+
+            // TODO do not partition
             val teiPartitions = payloadGenerator.getTrackedEntityInstancesPartitions(filteredTrackedEntityInstances)
             val progressManager = D2ProgressManager(teiPartitions.size)
             for (partition in teiPartitions) {
-                val thisPartition = relationshipDeleteCall.postDeletedRelationships(partition)
+
+                // TODO HANDLE DELETED RELATIONSHIPS val thisPartition = relationshipDeleteCall.postDeletedRelationships(partition)
+                val thisPartition = partition
                 val trackedEntityInstancePayload = TrackedEntityInstancePayload.create(thisPartition)
                 try {
-                    val webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
+                    val webResponse = apiCallExecutor.executeObjectCall(
                         trackedEntityInstanceService.postTrackerImporter(
-                            trackedEntityInstancePayload, strategy
-                        ),
-                        @Suppress("MagicNumber")
-                        listOf(409),
-                        TEIWebResponse::class.java
+                            trackedEntityInstancePayload, "SYNC"
+                        )
                     )
-                    teiWebResponseHandler.handleWebResponse(webResponse)
+                    val jobId = webResponse.response().uid()
                     emitter.onNext(progressManager.increaseProgress(TrackedEntityInstance::class.java, false))
                 } catch (d2Error: D2Error) {
                     stateManager.restorePartitionStates(thisPartition)

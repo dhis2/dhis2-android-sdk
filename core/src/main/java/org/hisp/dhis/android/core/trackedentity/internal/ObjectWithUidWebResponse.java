@@ -25,25 +25,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal
 
-import dagger.Reusable
-import io.reactivex.Observable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+package org.hisp.dhis.android.core.trackedentity.internal;
 
-@Reusable
-internal class TrackedEntityInstanceParentPostCall @Inject internal constructor(
-    private val oldCall: OldTrackedEntityInstancePostCall,
-    private val newTrackerCall: NewTrackerPostCall
-) {
+import androidx.annotation.NonNull;
 
-    fun uploadTrackedEntityInstances(trackedEntityInstances: List<TrackedEntityInstance>): Observable<D2Progress> {
-        return if (trackedEntityInstances.isEmpty()) {
-            Observable.empty<D2Progress>()
-        } else {
-            newTrackerCall.uploadTrackedEntityInstances(trackedEntityInstances)
-        }
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.imports.internal.EventImportSummaries;
+import org.hisp.dhis.android.core.imports.internal.WebResponse;
+
+@AutoValue
+@JsonDeserialize(builder = AutoValue_ObjectWithUidWebResponse.Builder.class)
+public abstract class ObjectWithUidWebResponse extends WebResponse {
+    
+    @NonNull
+    public abstract ObjectWithUid response();
+
+    public static Builder builder() {
+        return new AutoValue_ObjectWithUidWebResponse.Builder();
+    }
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder extends WebResponse.Builder<Builder> {
+        public abstract Builder response(ObjectWithUid response);
+
+        public abstract ObjectWithUidWebResponse build();
     }
 }

@@ -82,7 +82,7 @@ public interface TrackedEntityInstanceService {
             @Query(STRATEGY) String strategy);
 
     @POST("tracker")
-    Call<TEIWebResponse> postTrackerImporter(
+    Call<ObjectWithUidWebResponse> postTrackerImporter(
             @Body TrackedEntityInstancePayload trackedEntityInstances,
             @Query(STRATEGY) String strategy);
 

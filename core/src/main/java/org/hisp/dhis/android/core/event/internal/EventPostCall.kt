@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
 import io.reactivex.Observable
-import io.reactivex.ObservableEmitter
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
@@ -54,11 +53,12 @@ internal class EventPostCall @Inject internal constructor(
         return if (filteredEvents.isEmpty()) {
             Observable.empty<D2Progress>()
         } else {
-            val progressManager = D2ProgressManager(1)
-            Observable.create { emitter: ObservableEmitter<D2Progress> ->
+            Observable.defer {
                 val eventPayload = EventPayload()
                 val eventsToPost = payloadGenerator.getEvents(filteredEvents)
                 markObjectsAs(eventsToPost, State.UPLOADING)
+
+                val progressManager = D2ProgressManager(1)
 
                 eventPayload.events = eventsToPost
                 val strategy = if (versionManager.is2_29) "CREATE_AND_UPDATE" else "SYNC"
@@ -70,11 +70,10 @@ internal class EventPostCall @Inject internal constructor(
                         EventWebResponse::class.java
                     )
                     handleWebResponse(webResponse)
-                    emitter.onNext(progressManager.increaseProgress(Event::class.java, true))
-                    emitter.onComplete()
+                    Observable.just<D2Progress>(progressManager.increaseProgress(Event::class.java, true))
                 } catch (e: D2Error) {
                     markObjectsAs(eventsToPost, DataStateHelper.errorIfOnline(e))
-                    throw e
+                    Observable.error<D2Progress>(e)
                 }
             }
         }

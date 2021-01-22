@@ -33,7 +33,6 @@ import androidx.annotation.Nullable;
 import com.google.auto.value.AutoValue;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @AutoValue
@@ -102,6 +101,14 @@ abstract class EventQueryScopeOrderColumn {
     public static final EventQueryScopeOrderColumn TIMELINE =
             builder().type(Type.TIMELINE).build();
 
+    public static List<EventQueryScopeOrderColumn> all = Arrays.asList(
+            EVENT, PROGRAM, PROGRAM_STAGE,
+            ENROLLMENT, ENROLLMENT_STATUS,
+            ORGUNIT, ORGUNIT_NAME, TRACKED_ENTITY_INSTANCE, FOLLOW_UP, STATUS,
+            EVENT_DATE, DUE_DATE, STORED_BY,
+            CREATED, LAST_UPDATED, COMPLETED_BY, COMPLETED_DATE,
+            TIMELINE);
+
     public abstract Type type();
 
     @Nullable
@@ -117,14 +124,6 @@ abstract class EventQueryScopeOrderColumn {
     public static Builder builder() {
         return new AutoValue_EventQueryScopeOrderColumn.Builder();
     }
-
-    public static List<EventQueryScopeOrderColumn> all = Arrays.asList(
-            EVENT, PROGRAM, PROGRAM_STAGE,
-            ENROLLMENT, ENROLLMENT_STATUS,
-            ORGUNIT, ORGUNIT_NAME, TRACKED_ENTITY_INSTANCE, FOLLOW_UP, STATUS,
-            EVENT_DATE, DUE_DATE, STORED_BY,
-            CREATED, LAST_UPDATED, COMPLETED_BY, COMPLETED_DATE,
-            TIMELINE);
 
     @AutoValue.Builder
     abstract static class Builder {

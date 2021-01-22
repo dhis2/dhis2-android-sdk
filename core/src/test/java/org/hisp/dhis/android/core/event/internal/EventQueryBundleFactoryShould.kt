@@ -162,7 +162,6 @@ class EventQueryBundleFactoryShould {
                 assertThat(bundle.commonParams().limit).isEqualTo(5000)
             }
         }
-
     }
 
     @Test

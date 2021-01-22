@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.event.EventFilter
 internal object EventQueryRepositoryScopeHelper {
 
     @JvmStatic
+    @Suppress("ComplexMethod")
     fun addEventFilter(
         scope: EventQueryRepositoryScope,
         filter: EventFilter

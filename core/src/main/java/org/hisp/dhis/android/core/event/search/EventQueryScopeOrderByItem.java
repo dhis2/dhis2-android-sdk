@@ -26,48 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.event.internal;
+package org.hisp.dhis.android.core.event.search;
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.event.EventFilter;
-import org.hisp.dhis.android.core.event.EventModule;
-import org.hisp.dhis.android.core.event.search.EventQueryEntityDIModule;
+import com.google.auto.value.AutoValue;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 
-@Module(includes = {
-        EventEntityDIModule.class,
-        EventFilterEntityDIModule.class,
-        EventDataFilterEntityDIModule.class,
-        EventSyncEntityDIModule.class,
-        EventQueryEntityDIModule.class
-})
-public final class EventPackageDIModule {
+@AutoValue
+public abstract class EventQueryScopeOrderByItem {
 
-    @Provides
-    @Reusable
-    EventService service(Retrofit retrofit) {
-        return retrofit.create(EventService.class);
+    public abstract EventQueryScopeOrderColumn column();
+
+    public abstract RepositoryScope.OrderByDirection direction();
+
+    String toAPIString() {
+        return column().hasApiName() ? column().apiName() + ":" + direction().getApi() : null;
     }
 
-    @Provides
-    @Reusable
-    EventModule module(EventModuleImpl impl) {
-        return impl;
+    static Builder builder() {
+        return new AutoValue_EventQueryScopeOrderByItem.Builder();
     }
 
-    @Provides
-    @Reusable
-    UidsCall<EventFilter> trackedEntityInstanceFilterCall(EventFilterCall impl) {
-        return impl;
-    }
+    @AutoValue.Builder
+    abstract static class Builder {
 
-    @Provides
-    @Reusable
-    EventFilterService eventFilterService(Retrofit retrofit) {
-        return retrofit.create(EventFilterService.class);
+        public abstract Builder column(EventQueryScopeOrderColumn column);
+
+        public abstract Builder direction(RepositoryScope.OrderByDirection direction);
+
+        public abstract EventQueryScopeOrderByItem build();
     }
 }

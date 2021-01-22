@@ -250,6 +250,16 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     }
 
     @Test
+    public void filter_by_follow_up() {
+        List<Event> events =
+                d2.eventModule().events()
+                        .byFollowUp(true)
+                        .blockingGet();
+
+        assertThat(events.size()).isEqualTo(1);
+    }
+
+    @Test
     public void filter_by_assigned_user() {
         List<Event> events =
                 d2.eventModule().events()

@@ -26,48 +26,48 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.event.internal;
+package org.hisp.dhis.android.testapp.event.search;
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
-import org.hisp.dhis.android.core.event.EventFilter;
-import org.hisp.dhis.android.core.event.EventModule;
-import org.hisp.dhis.android.core.event.search.EventQueryEntityDIModule;
+import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.event.search.EventQueryRepositoryScope;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
+import java.util.List;
 
-@Module(includes = {
-        EventEntityDIModule.class,
-        EventFilterEntityDIModule.class,
-        EventDataFilterEntityDIModule.class,
-        EventSyncEntityDIModule.class,
-        EventQueryEntityDIModule.class
-})
-public final class EventPackageDIModule {
+import static com.google.common.truth.Truth.assertThat;
 
-    @Provides
-    @Reusable
-    EventService service(Retrofit retrofit) {
-        return retrofit.create(EventService.class);
+@RunWith(D2JunitRunner.class)
+public class EventQueryCollectionRepositoryMockIntegrationShould
+        extends BaseMockIntegrationTestFullDispatcher {
+
+    @Test
+    public void find_by_program() {
+        List<Event> events =
+                d2.eventModule().eventQuery()
+                        .byProgram().eq("lxAQ7Zs9VYR")
+                        .blockingGet();
+
+        assertThat(events.size()).isEqualTo(4);
     }
 
-    @Provides
-    @Reusable
-    EventModule module(EventModuleImpl impl) {
-        return impl;
+    @Test
+    public void find_uids_by_program() {
+        List<String> eventUids =
+                d2.eventModule().eventQuery()
+                        .byProgram().eq("lxAQ7Zs9VYR")
+                        .blockingGetUids();
+
+        assertThat(eventUids.size()).isEqualTo(4);
     }
 
-    @Provides
-    @Reusable
-    UidsCall<EventFilter> trackedEntityInstanceFilterCall(EventFilterCall impl) {
-        return impl;
-    }
+    @Test
+    public void get_scope() {
+        EventQueryRepositoryScope scope =
+                d2.eventModule().eventQuery().getScope();
 
-    @Provides
-    @Reusable
-    EventFilterService eventFilterService(Retrofit retrofit) {
-        return retrofit.create(EventFilterService.class);
+        assertThat(scope.mode()).isNotNull();
     }
 }

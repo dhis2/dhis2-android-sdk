@@ -60,6 +60,9 @@ public abstract class ReservedValueSetting implements CoreObject, ObjectWithUidI
 
     @AutoValue.Builder
     public abstract static class Builder {
+
+        public abstract Builder id(Long id);
+
         public abstract Builder uid(String uid);
 
         public abstract Builder numberOfValuesToReserve(Integer numberOfValuesToReserve);

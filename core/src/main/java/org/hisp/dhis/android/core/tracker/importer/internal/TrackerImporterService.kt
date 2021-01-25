@@ -30,14 +30,16 @@ package org.hisp.dhis.android.core.tracker.importer.internal
 import org.hisp.dhis.android.core.trackedentity.internal.ObjectWithUidWebResponse
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePayload
 import retrofit2.Call
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Path
 
 internal interface TrackerImporterService {
 
     @POST("tracker")
     fun postTrackerImporter(
-        @Body trackedEntityInstances: TrackedEntityInstancePayload,
-        @Query("strategy") strategy: String
+        @Body trackedEntityInstances: TrackedEntityInstancePayload
     ): Call<ObjectWithUidWebResponse>
 
     @GET("tracker/jobs/{jobId}")

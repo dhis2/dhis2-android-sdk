@@ -62,7 +62,7 @@ internal class TrackerImporterPostCall @Inject internal constructor(
             val trackedEntityInstancePayload = TrackedEntityInstancePayload.create(teisToPost)
             try {
                 val webResponse = apiCallExecutor.executeObjectCall(
-                    service.postTrackerImporter(trackedEntityInstancePayload, "SYNC")
+                    service.postTrackerImporter(trackedEntityInstancePayload)
                 )
                 queryJob(webResponse.response().uid())
 

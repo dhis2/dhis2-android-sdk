@@ -274,13 +274,16 @@ public final class TrackedEntityAttributeReservedValueManager {
                 List<OrganisationUnit> organisationUnits = getOrgUnitsLinkedToAttribute(trackedEntityAttribute.uid());
                 for (OrganisationUnit organisationUnit : organisationUnits) {
                     builder.organisationUnit(organisationUnit)
-                            .count(blockingCount(trackedEntityAttribute.uid(), organisationUnit.uid()));
+                            .count(blockingCount(trackedEntityAttribute.uid(), organisationUnit.uid()))
+                            .numberOfValuesToFillUp(getFillUpToValue(null, trackedEntityAttribute.uid()));
+                    reservedValueSummaries.add(builder.build());
                 }
             } else {
-                builder.count(blockingCount(trackedEntityAttribute.uid(), null));
+                builder.count(blockingCount(trackedEntityAttribute.uid(), null))
+                        .numberOfValuesToFillUp(getFillUpToValue(null, trackedEntityAttribute.uid()));
+                reservedValueSummaries.add(builder.build());
             }
 
-            reservedValueSummaries.add(builder.build());
         }
 
         return reservedValueSummaries;

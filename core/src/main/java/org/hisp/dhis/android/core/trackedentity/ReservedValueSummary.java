@@ -47,6 +47,9 @@ public abstract class ReservedValueSummary {
     @NonNull
     public abstract Integer count();
 
+    @NonNull
+    public abstract Integer numberOfValuesToFillUp();
+
     public static Builder builder() {
         return new AutoValue_ReservedValueSummary.Builder();
     }
@@ -70,6 +73,8 @@ public abstract class ReservedValueSummary {
         public abstract Builder organisationUnit(OrganisationUnit organisationUnit);
 
         public abstract Builder count(Integer count);
+
+        public abstract Builder numberOfValuesToFillUp(Integer numberOfValuesToFillUp);
 
         public abstract ReservedValueSummary build();
     }

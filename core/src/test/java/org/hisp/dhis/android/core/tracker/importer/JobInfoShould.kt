@@ -28,14 +28,14 @@
 package org.hisp.dhis.android.core.tracker.importer
 
 import com.google.common.truth.Truth.assertThat
+import java.io.IOException
+import java.text.ParseException
 import org.hisp.dhis.android.core.Inject
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.BaseObjectShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.core.tracker.importer.internal.JobInfo
 import org.junit.Test
-import java.io.IOException
-import java.text.ParseException
 
 class JobInfoShould : BaseObjectShould("tracker.importer/jobinfo.json"), ObjectShould {
 

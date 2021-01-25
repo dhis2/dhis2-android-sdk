@@ -29,6 +29,8 @@ package org.hisp.dhis.android.core.tracker.importer.internal
 
 import dagger.Reusable
 import io.reactivex.Observable
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
@@ -38,8 +40,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePayload
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostPayloadGenerator
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostStateManager
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
 @Reusable
 internal class TrackerImporterPostCall @Inject internal constructor(
@@ -58,7 +58,8 @@ internal class TrackerImporterPostCall @Inject internal constructor(
             val teisToPost =
                 payloadGenerator.getTrackedEntityInstancesPartitions(filteredTrackedEntityInstances).flatten()
 
-            // TODO HANDLE DELETED RELATIONSHIPS val thisPartition = relationshipDeleteCall.postDeletedRelationships(partition)
+            // TODO HANDLE DELETED RELATIONSHIPS
+            //  val thisPartition = relationshipDeleteCall.postDeletedRelationships(partition)
             val trackedEntityInstancePayload = TrackedEntityInstancePayload.create(teisToPost)
             try {
                 val webResponse = apiCallExecutor.executeObjectCall(
@@ -77,6 +78,7 @@ internal class TrackerImporterPostCall @Inject internal constructor(
 
     private fun queryJob(jobId: String): Observable<D2Progress> {
         val progressManager = D2ProgressManager(null)
+        @Suppress("MagicNumber")
         return Observable.interval(0, 5, TimeUnit.SECONDS)
             .map {
                 apiCallExecutor.executeObjectCall(service.getJob(jobId))

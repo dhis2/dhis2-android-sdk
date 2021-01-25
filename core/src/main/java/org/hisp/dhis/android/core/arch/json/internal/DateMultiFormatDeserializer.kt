@@ -25,39 +25,45 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.json.internal
 
-package org.hisp.dhis.android.core.period;
+import com.fasterxml.jackson.core.JsonParseException
+import com.fasterxml.jackson.core.JsonParser
+import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.DeserializationContext
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import java.io.IOException
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
-import com.google.common.collect.Lists;
+class DateMultiFormatDeserializer @JvmOverloads constructor(vc: Class<*>? = null) : StdDeserializer<Date>(vc) {
+    @Throws(IOException::class, JsonProcessingException::class)
 
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher;
-import org.junit.AfterClass;
-import org.junit.Test;
-
-import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class PeriodParserMockIntegrationShould extends BaseMockIntegrationTestEmptyDispatcher {
-
-    private final List<String> PERIOD_ID_LIST = Lists.newArrayList(
-            "20200315", "2019W40", "2020W1", "2020W10", "2020W53",
-            "2020WedW5", "2020ThuW6", "2020SatW7", "2020SunW8",
-            "2020BiW1", "2019BiW15", "2020BiW25",
-            "202003","202012", "202001B", "2020Q1","2020Q4",
-            "2020S1", "2020AprilS1", "2020NovS1", "2020NovS2", "2020",
-            "2020April", "2020July", "2020Oct", "2020Nov");
-
-    @AfterClass
-    public static void tearDown() {
-        d2.databaseAdapter().delete(PeriodTableInfo.TABLE_INFO.name());
+    override fun deserialize(jp: JsonParser, ctxt: DeserializationContext): Date {
+        val node = jp.codec.readTree<JsonNode>(jp)
+        val date = node.textValue()
+        for (DATE_FORMAT in DATE_FORMATS) {
+            try {
+                return SimpleDateFormat(DATE_FORMAT, Locale.US).parse(date)!!
+            } catch (e: ParseException) {
+                continue
+            }
+        }
+        throw JsonParseException(jp, "Unparseable date: \"$date\".")
     }
 
-    @Test
-    public void get_period_passing_period_id() {
-        for (String periodId : PERIOD_ID_LIST) {
-            Period period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId(periodId);
-            assertThat(period.periodId()).isEqualTo(periodId);
-        }
+    companion object {
+        private val DATE_FORMATS = arrayOf(
+            "yyyy-MM-dd'T'HH:mm:ss.SSS",
+            "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
+            "yyyy-MM-dd'T'HH:mm:ss",
+            "yyyy-MM-dd'T'HH:mm:ssZ",
+            "yyyy-MM-dd'T'HH:mm",
+            "yyyy-MM-dd'T'HH:mmZ",
+            "yyyy-MM-dd")
     }
 }

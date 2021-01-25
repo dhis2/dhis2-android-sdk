@@ -44,10 +44,10 @@ final class BiWeeklyPeriodGenerator extends AbstractPeriodGenerator {
         calendar.getTime();
         calendar.setFirstDayOfWeek(Calendar.MONDAY);
         calendar.setMinimalDaysInFirstWeek(4);
-        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        CalendarUtils.setDayOfWeek(calendar, Calendar.MONDAY);
 
         Calendar cal = (Calendar) calendar.clone();
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY + 3);
+        CalendarUtils.setDayOfWeek(cal, Calendar.MONDAY + 3);
         Integer weekOfYear = cal.get(Calendar.WEEK_OF_YEAR);
         Boolean secondWeekOfBiWeek = weekOfYear % 2 == 0;
         if (secondWeekOfBiWeek) {
@@ -63,7 +63,7 @@ final class BiWeeklyPeriodGenerator extends AbstractPeriodGenerator {
     @Override
     protected String generateId() {
         Calendar cal = (Calendar) calendar.clone();
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY + 3);
+        CalendarUtils.setDayOfWeek(cal, Calendar.MONDAY + 3);
         Date fourthWeekDay = cal.getTime();
         String year = idFormatter.format(fourthWeekDay);
         Integer weekOfYear = cal.get(Calendar.WEEK_OF_YEAR);

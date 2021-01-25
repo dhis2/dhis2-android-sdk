@@ -48,7 +48,7 @@ final class WeeklyPeriodGenerator extends AbstractPeriodGenerator {
         calendar.getTime();
         calendar.setFirstDayOfWeek(weekStartDay);
         calendar.setMinimalDaysInFirstWeek(4);
-        calendar.set(Calendar.DAY_OF_WEEK, weekStartDay);
+        CalendarUtils.setDayOfWeek(calendar, weekStartDay);
     }
 
     @Override
@@ -59,7 +59,7 @@ final class WeeklyPeriodGenerator extends AbstractPeriodGenerator {
     @Override
     protected String generateId() {
         Calendar cal = (Calendar) calendar.clone();
-        cal.set(Calendar.DAY_OF_WEEK, weekStartDay + 3);
+        CalendarUtils.setDayOfWeek(cal, weekStartDay + 3);
         Date fourthWeekDay = cal.getTime();
         String year = idFormatter.format(fourthWeekDay);
         Integer weekOfYear = cal.get(Calendar.WEEK_OF_YEAR);

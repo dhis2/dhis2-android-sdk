@@ -25,39 +25,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.json.internal
 
-package org.hisp.dhis.android.core.period;
+import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.module.SimpleModule
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import java.util.Date
 
-import com.google.common.collect.Lists;
+internal object ObjectMapperFactory {
 
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher;
-import org.junit.AfterClass;
-import org.junit.Test;
+    @JvmStatic
+    fun objectMapper(): ObjectMapper {
+        val dateModule = SimpleModule()
+        dateModule.addDeserializer(Date::class.java, DateMultiFormatDeserializer())
 
-import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class PeriodParserMockIntegrationShould extends BaseMockIntegrationTestEmptyDispatcher {
-
-    private final List<String> PERIOD_ID_LIST = Lists.newArrayList(
-            "20200315", "2019W40", "2020W1", "2020W10", "2020W53",
-            "2020WedW5", "2020ThuW6", "2020SatW7", "2020SunW8",
-            "2020BiW1", "2019BiW15", "2020BiW25",
-            "202003","202012", "202001B", "2020Q1","2020Q4",
-            "2020S1", "2020AprilS1", "2020NovS1", "2020NovS2", "2020",
-            "2020April", "2020July", "2020Oct", "2020Nov");
-
-    @AfterClass
-    public static void tearDown() {
-        d2.databaseAdapter().delete(PeriodTableInfo.TABLE_INFO.name());
-    }
-
-    @Test
-    public void get_period_passing_period_id() {
-        for (String periodId : PERIOD_ID_LIST) {
-            Period period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId(periodId);
-            assertThat(period.periodId()).isEqualTo(periodId);
-        }
+        return ObjectMapper()
+            .registerModule(dateModule)
+            .setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw())
+            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            .enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE)
+            .setSerializationInclusion(JsonInclude.Include.NON_NULL)
     }
 }

@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.organisationunit.internal;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup;
@@ -53,6 +54,8 @@ public final class OrganisationUnitFields {
     static final Field<OrganisationUnit, String> path = Field.create(Columns.PATH);
     private static final Field<OrganisationUnit, String> openingDate = Field.create(Columns.OPENING_DATE);
     private static final Field<OrganisationUnit, String> closedDate = Field.create(Columns.CLOSED_DATE);
+
+    public static final String ASC_ORDER = uid.name() + ":" + RepositoryScope.OrderByDirection.ASC.getApi();
 
     public static final Fields<OrganisationUnit> allFields = Fields.<OrganisationUnit>builder()
             .fields(fh.getNameableFields())

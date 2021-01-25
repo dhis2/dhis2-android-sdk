@@ -25,25 +25,21 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.period.internal
 
-package org.hisp.dhis.android.core.arch.json.internal;
+import java.util.Calendar
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+internal object CalendarUtils {
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+    private const val WEEK_DAYS = 7
 
-public final class ObjectMapperFactory {
+    @JvmStatic
+    fun setDayOfWeek(calendar: Calendar, targetDayOfWeek: Int) {
+        val firstDayOfWeek = calendar.firstDayOfWeek
+        val currentDay = calendar[Calendar.DAY_OF_WEEK]
+        val diff = (targetDayOfWeek - firstDayOfWeek + WEEK_DAYS) % WEEK_DAYS -
+            (currentDay - firstDayOfWeek + WEEK_DAYS) % WEEK_DAYS
 
-    private ObjectMapperFactory() {
-    }
-
-    public static ObjectMapper objectMapper() {
-        return new ObjectMapper()
-                .setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw())
-                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-                .enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE)
-                .setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        calendar.add(Calendar.DATE, diff)
     }
 }

@@ -125,7 +125,7 @@ class OrganisationUnitCall {
     private Single<List<OrganisationUnit>> downloadPage(String orgUnit, AtomicInteger page) {
         return Single.defer(() -> organisationUnitService.getOrganisationUnits(
                 OrganisationUnitFields.allFields, OrganisationUnitFields.path.like(orgUnit),
-                true, PAGE_SIZE, page.getAndIncrement())
+                OrganisationUnitFields.ASC_ORDER, true, PAGE_SIZE, page.getAndIncrement())
                 .map(Payload::items)
                 .doOnSuccess(items -> handler.handleMany(items, pathTransformer)));
     }

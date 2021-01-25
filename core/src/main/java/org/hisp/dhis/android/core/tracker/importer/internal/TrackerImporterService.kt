@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.tracker.importer.internal
 
-import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.trackedentity.internal.ObjectWithUidWebResponse
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePayload
 import retrofit2.Call
@@ -42,5 +41,5 @@ internal interface TrackerImporterService {
     ): Call<ObjectWithUidWebResponse>
 
     @GET("tracker/jobs/{jobId}")
-    fun getJob(@Path("jobId") jobId: String): Call<List<ObjectWithUid>>
+    fun getJob(@Path("jobId") jobId: String): Call<List<JobInfo>>
 }

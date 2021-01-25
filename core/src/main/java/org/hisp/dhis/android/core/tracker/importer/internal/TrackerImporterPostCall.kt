@@ -65,6 +65,8 @@ internal class TrackerImporterPostCall @Inject internal constructor(
                     service.postTrackerImporter(trackedEntityInstancePayload, "SYNC")
                 )
                 queryJob(webResponse.response().uid())
+
+                // TODO manage status
             } catch (d2Error: D2Error) {
                 stateManager.restorePartitionStates(teisToPost)
                 Observable.error<D2Progress>(d2Error)
@@ -75,13 +77,16 @@ internal class TrackerImporterPostCall @Inject internal constructor(
 
     private fun queryJob(jobId: String): Observable<D2Progress> {
         val progressManager = D2ProgressManager(null)
-        return Observable.interval(0,5, TimeUnit.SECONDS).map {
-            apiCallExecutor.executeObjectCall(service.getJob(jobId))
-        }.take(3)
+        return Observable.interval(0, 5, TimeUnit.SECONDS)
+            .map {
+                apiCallExecutor.executeObjectCall(service.getJob(jobId))
+            }
+            .map { it.any { ji -> ji.completed() } }
+            .takeUntil { it }
             .map {
                 progressManager.increaseProgress(
                     TrackedEntityInstance::class.java,
-                    false
+                    it
                 )
             }
     }

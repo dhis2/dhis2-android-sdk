@@ -25,40 +25,44 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.internal;
 
-package org.hisp.dhis.android.core.dataelement.internal;
-
+/*
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkChildStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.attribute.Attribute;
+import org.hisp.dhis.android.core.attribute.AttributeValue;
+import org.hisp.dhis.android.core.attribute.ProgramStageAttributeValueLinkTableInfo;
+import org.hisp.dhis.android.core.legendset.LegendSet;
+import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkTableInfo;
+import org.hisp.dhis.android.core.program.ProgramIndicator;
+import org.hisp.dhis.android.core.program.ProgramStage;
 
-import java.util.Collections;
-import java.util.Map;
+final class ProgramStageAttributeValueChildrenAppender extends ChildrenAppender<ProgramStage> {
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+    private final LinkChildStore<ProgramStage, AttributeValue> linkChildStore;
 
-@Module
-public final class DataElementEntityDIModule {
-
-    @Provides
-    @Reusable
-    IdentifiableObjectStore<DataElement> store(DatabaseAdapter databaseAdapter) {
-        return DataElementStore.create(databaseAdapter);
+    private ProgramStageAttributeValuesChildrenAppender(
+            LinkChildStore<ProgramStage, AttributeValue> linkChildStore) {
+        this.linkChildStore = linkChildStore;
     }
 
-    @Provides
-    @Reusable
-    Handler<DataElement> handler(DataElementHandler handler) {
-        return handler;
+    protected ProgramStage appendChildren(ProgramStage programStage) {
+        ProgramStage.Builder builder = programStage.toBuilder();
+        builder.attributeValues(linkChildStore.getChildren(programStage));
+        return builder.build();
     }
 
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<DataElement>> childrenAppenders() {
-        return Collections.emptyMap();
+    static ChildrenAppender<ProgramStage> create(DatabaseAdapter databaseAdapter) {
+        return new ProgramStageAttributeValuesChildrenAppender(
+                StoreFactory.linkChildStore(
+                        databaseAdapter,
+                        ProgramStageAttributeValueLinkTableInfo.TABLE_INFO,
+                        ProgramStageAttributeValueLinkTableInfo.CHILD_PROJECTION,
+                        Attribute::create
+                )
+        );
     }
-}
+}*/

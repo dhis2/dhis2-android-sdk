@@ -26,39 +26,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataelement.internal;
+package org.hisp.dhis.android.core.data.attribute;
+import org.hisp.dhis.android.core.attribute.ProgramAttributeValueLink;
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
-import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.DataElementModule;
+public class ProgramAttributeValueLinkSamples {
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
-
-@Module(includes = {
-        DataElementEntityDIModule.class,
-        DataElementOperandEntityDIModule.class,
-        DataElementAttributeValueEntityDIModule.class
-})
-public final class DataElementPackageDIModule {
-
-    @Provides
-    @Reusable
-    UidsCallFactory<DataElement> dataElementEndpointCallFactory(DataElementEndpointCallFactory impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    DataElementService service(Retrofit retrofit) {
-        return retrofit.create(DataElementService.class);
-    }
-
-    @Provides
-    @Reusable
-    DataElementModule module(DataElementModuleImpl impl) {
-        return impl;
+    public static ProgramAttributeValueLink getProgramAttribute() {
+        return ProgramAttributeValueLink.builder()
+                .id(1L)
+                .program("program")
+                .attribute("attribute")
+                .value("value")
+                .build();
     }
 }

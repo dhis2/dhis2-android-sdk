@@ -26,39 +26,39 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataelement.internal;
+package org.hisp.dhis.android.core.attribute;
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
-import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.DataElementModule;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_AttributeValue.Builder.class)
+public abstract class AttributeValue {
 
-@Module(includes = {
-        DataElementEntityDIModule.class,
-        DataElementOperandEntityDIModule.class,
-        DataElementAttributeValueEntityDIModule.class
-})
-public final class DataElementPackageDIModule {
+    @JsonProperty()
+    public abstract String value();
 
-    @Provides
-    @Reusable
-    UidsCallFactory<DataElement> dataElementEndpointCallFactory(DataElementEndpointCallFactory impl) {
-        return impl;
+    @JsonProperty()
+    public abstract Attribute attribute();
+
+    public static Builder builder() {
+        return new AutoValue_AttributeValue.Builder();
     }
 
-    @Provides
-    @Reusable
-    DataElementService service(Retrofit retrofit) {
-        return retrofit.create(DataElementService.class);
-    }
+    public abstract Builder toBuilder();
 
-    @Provides
-    @Reusable
-    DataElementModule module(DataElementModuleImpl impl) {
-        return impl;
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder {
+
+        @JsonProperty()
+        public abstract Builder value(String value);
+
+        @JsonProperty()
+        public abstract Builder attribute(Attribute attribute);
+
+        public abstract AttributeValue build();
     }
 }

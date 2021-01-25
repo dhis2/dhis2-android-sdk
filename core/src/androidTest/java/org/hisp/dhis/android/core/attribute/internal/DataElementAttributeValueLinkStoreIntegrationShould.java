@@ -26,39 +26,39 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataelement.internal;
+package org.hisp.dhis.android.core.attribute.internal;
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
-import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.DataElementModule;
+import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLink;
+import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLinkTableInfo;
+import org.hisp.dhis.android.core.data.attribute.DataElementAttributeValueLinkSamples;
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.runner.RunWith;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
+@RunWith(D2JunitRunner.class)
+public class DataElementAttributeValueLinkStoreIntegrationShould
+        extends LinkStoreAbstractIntegrationShould<DataElementAttributeValueLink> {
 
-@Module(includes = {
-        DataElementEntityDIModule.class,
-        DataElementOperandEntityDIModule.class,
-        DataElementAttributeValueEntityDIModule.class
-})
-public final class DataElementPackageDIModule {
-
-    @Provides
-    @Reusable
-    UidsCallFactory<DataElement> dataElementEndpointCallFactory(DataElementEndpointCallFactory impl) {
-        return impl;
+    public DataElementAttributeValueLinkStoreIntegrationShould() {
+        super(DataElementAttributeValueLinkStore.create(TestDatabaseAdapterFactory.get()),
+                DataElementAttributeValueLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 
-    @Provides
-    @Reusable
-    DataElementService service(Retrofit retrofit) {
-        return retrofit.create(DataElementService.class);
+    @Override
+    protected String addMasterUid() {
+        return DataElementAttributeValueLinkSamples.getDataElementAttribute().dataElement();
     }
 
-    @Provides
-    @Reusable
-    DataElementModule module(DataElementModuleImpl impl) {
-        return impl;
+    @Override
+    protected DataElementAttributeValueLink buildObject() {
+        return DataElementAttributeValueLinkSamples.getDataElementAttribute();
+    }
+
+    @Override
+    protected DataElementAttributeValueLink buildObjectWithOtherMasterUid() {
+        return buildObject().toBuilder()
+                .dataElement("new_data_element")
+                .build();
     }
 }

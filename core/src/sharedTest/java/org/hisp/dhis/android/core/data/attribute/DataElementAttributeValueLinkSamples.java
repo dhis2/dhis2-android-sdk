@@ -26,39 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataelement.internal;
+package org.hisp.dhis.android.core.data.attribute;
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
-import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.DataElementModule;
+import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLink;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
+public class DataElementAttributeValueLinkSamples {
 
-@Module(includes = {
-        DataElementEntityDIModule.class,
-        DataElementOperandEntityDIModule.class,
-        DataElementAttributeValueEntityDIModule.class
-})
-public final class DataElementPackageDIModule {
-
-    @Provides
-    @Reusable
-    UidsCallFactory<DataElement> dataElementEndpointCallFactory(DataElementEndpointCallFactory impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    DataElementService service(Retrofit retrofit) {
-        return retrofit.create(DataElementService.class);
-    }
-
-    @Provides
-    @Reusable
-    DataElementModule module(DataElementModuleImpl impl) {
-        return impl;
+    public static DataElementAttributeValueLink getDataElementAttribute() {
+        return DataElementAttributeValueLink.builder()
+                .id(1L)
+                .dataElement("data_element")
+                .attribute("attribute")
+                .value("value")
+                .build();
     }
 }

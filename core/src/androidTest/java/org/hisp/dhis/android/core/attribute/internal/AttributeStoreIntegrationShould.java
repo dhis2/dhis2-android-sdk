@@ -26,39 +26,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataelement.internal;
+package org.hisp.dhis.android.core.attribute.internal;
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
-import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.DataElementModule;
+import org.hisp.dhis.android.core.attribute.Attribute;
+import org.hisp.dhis.android.core.attribute.AttributeTableInfo;
+import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.core.data.attribute.AttributeSamples;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.legendset.LegendSetSamples;
+import org.hisp.dhis.android.core.legendset.LegendSet;
+import org.hisp.dhis.android.core.legendset.LegendSetTableInfo;
+import org.hisp.dhis.android.core.legendset.internal.LegendSetStore;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.runner.RunWith;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
+@RunWith(D2JunitRunner.class)
+public class AttributeStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Attribute> {
 
-@Module(includes = {
-        DataElementEntityDIModule.class,
-        DataElementOperandEntityDIModule.class,
-        DataElementAttributeValueEntityDIModule.class
-})
-public final class DataElementPackageDIModule {
-
-    @Provides
-    @Reusable
-    UidsCallFactory<DataElement> dataElementEndpointCallFactory(DataElementEndpointCallFactory impl) {
-        return impl;
+    public AttributeStoreIntegrationShould() {
+        super(AttributeStore.create(TestDatabaseAdapterFactory.get()), AttributeTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 
-    @Provides
-    @Reusable
-    DataElementService service(Retrofit retrofit) {
-        return retrofit.create(DataElementService.class);
+    @Override
+    protected Attribute buildObject() {
+        return AttributeSamples.getAttribute();
     }
 
-    @Provides
-    @Reusable
-    DataElementModule module(DataElementModuleImpl impl) {
-        return impl;
+    @Override
+    protected Attribute buildObjectToUpdate() {
+        return AttributeSamples.getAttribute().toBuilder()
+                .valueType(ValueType.AGE)
+                .build();
     }
 }

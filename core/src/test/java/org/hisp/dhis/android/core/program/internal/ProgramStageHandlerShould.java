@@ -34,6 +34,9 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
+import org.hisp.dhis.android.core.attribute.Attribute;
+import org.hisp.dhis.android.core.attribute.ProgramStageAttributeValueLink;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.FeatureType;
@@ -53,6 +56,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
@@ -104,6 +108,12 @@ public class ProgramStageHandlerShould {
     @Mock
     private ProgramStage.Builder programStageBuilder;
 
+    @Mock
+    private Handler<Attribute> attributeHandler;
+
+    @Mock
+    private LinkHandler<Attribute, ProgramStageAttributeValueLink> programStageAttributeValueLinkHandler;
+
     // object to test
     private ProgramStageHandler programStageHandler;
 
@@ -117,7 +127,9 @@ public class ProgramStageHandlerShould {
                 programStageDataElementHandler,
                 programStageDataElementCleaner,
                 programStageSectionCleaner,
-                programStageCleaner);
+                programStageCleaner,
+                attributeHandler,
+                programStageAttributeValueLinkHandler);
 
         programStageSections = new ArrayList<>();
         programStageSections.add(programStageSection);
@@ -148,6 +160,12 @@ public class ProgramStageHandlerShould {
     public void call_program_stage_section_handler() throws Exception {
         programStageHandler.handle(programStage);
         verify(programStageSectionHandler).handleMany(eq(programStageSections), any());
+    }
+
+    @Test
+    public void call_attribute_handler() throws Exception {
+        programStageHandler.handle(programStage);
+        verify(attributeHandler).handleMany( anyCollection());
     }
 
     @Test

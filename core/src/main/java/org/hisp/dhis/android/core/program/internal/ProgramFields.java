@@ -31,6 +31,8 @@ package org.hisp.dhis.android.core.program.internal;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import org.hisp.dhis.android.core.attribute.AttributeValue;
+import org.hisp.dhis.android.core.attribute.internal.AttributeValuesFields;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.ObjectStyle;
@@ -55,6 +57,7 @@ public final class ProgramFields {
     private static final String ACCESS = "access";
     private static final String STYLE = "style";
     public static final String PROGRAM_SECTIONS = "programSections";
+    private static final String ATTRIBUTE_VALUES = "attributeValues";
 
     private static FieldsHelper<Program> fh = new FieldsHelper<>();
 
@@ -94,7 +97,9 @@ public final class ProgramFields {
                     fh.<Integer>field(Columns.MAX_TEI_COUNT_TO_RETURN),
                     fh.<FeatureType>field(Columns.FEATURE_TYPE),
                     fh.<AccessLevel>field(Columns.ACCESS_LEVEL),
-                    fh.<ProgramSection>nestedField(PROGRAM_SECTIONS).with(ProgramSectionFields.allFields)
+                    fh.<ProgramSection>nestedField(PROGRAM_SECTIONS).with(ProgramSectionFields.allFields),
+                    fh.<AttributeValue>nestedField(ATTRIBUTE_VALUES).with(AttributeValuesFields.allFields)
+
             ).build();
 
     private ProgramFields() {

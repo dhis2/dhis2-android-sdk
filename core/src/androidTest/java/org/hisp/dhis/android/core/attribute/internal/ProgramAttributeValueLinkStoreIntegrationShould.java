@@ -26,39 +26,39 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataelement.internal;
+package org.hisp.dhis.android.core.attribute.internal;
 
-import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
-import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.DataElementModule;
+import org.hisp.dhis.android.core.attribute.ProgramAttributeValueLink;
+import org.hisp.dhis.android.core.attribute.ProgramAttributeValueLinkTableInfo;
+import org.hisp.dhis.android.core.data.attribute.ProgramAttributeValueLinkSamples;
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.runner.RunWith;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
+@RunWith(D2JunitRunner.class)
+public class ProgramAttributeValueLinkStoreIntegrationShould
+        extends LinkStoreAbstractIntegrationShould<ProgramAttributeValueLink> {
 
-@Module(includes = {
-        DataElementEntityDIModule.class,
-        DataElementOperandEntityDIModule.class,
-        DataElementAttributeValueEntityDIModule.class
-})
-public final class DataElementPackageDIModule {
-
-    @Provides
-    @Reusable
-    UidsCallFactory<DataElement> dataElementEndpointCallFactory(DataElementEndpointCallFactory impl) {
-        return impl;
+    public ProgramAttributeValueLinkStoreIntegrationShould() {
+        super(ProgramAttributeValueLinkStore.create(TestDatabaseAdapterFactory.get()),
+                ProgramAttributeValueLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 
-    @Provides
-    @Reusable
-    DataElementService service(Retrofit retrofit) {
-        return retrofit.create(DataElementService.class);
+    @Override
+    protected String addMasterUid() {
+        return ProgramAttributeValueLinkSamples.getProgramAttribute().program();
     }
 
-    @Provides
-    @Reusable
-    DataElementModule module(DataElementModuleImpl impl) {
-        return impl;
+    @Override
+    protected ProgramAttributeValueLink buildObject() {
+        return ProgramAttributeValueLinkSamples.getProgramAttribute();
+    }
+
+    @Override
+    protected ProgramAttributeValueLink buildObjectWithOtherMasterUid() {
+        return buildObject().toBuilder()
+                .program("new_program")
+                .build();
     }
 }

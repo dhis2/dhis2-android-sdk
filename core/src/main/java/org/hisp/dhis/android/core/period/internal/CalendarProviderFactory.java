@@ -42,7 +42,7 @@ public final class CalendarProviderFactory {
       CalendarProviderFactory.calendarProvider = createFixed();
    }
 
-   static CalendarProvider getCalendarProvider() {
+   public static CalendarProvider getCalendarProvider() {
       return calendarProvider;
    }
 

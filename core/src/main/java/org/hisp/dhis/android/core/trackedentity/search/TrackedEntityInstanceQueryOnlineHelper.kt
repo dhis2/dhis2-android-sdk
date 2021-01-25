@@ -28,14 +28,16 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import java.util.*
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
 import org.hisp.dhis.android.core.event.EventStatus
 
-internal object TrackedEntityInstanceQueryOnlineHelper {
+internal class TrackedEntityInstanceQueryOnlineHelper @Inject constructor(
+    private val dateFilterPeriodHelper: DateFilterPeriodHelper
+) {
 
-    @JvmStatic
     fun fromScope(scope: TrackedEntityInstanceQueryRepositoryScope): List<TrackedEntityInstanceQueryOnline> {
         return if (scope.eventFilters().isEmpty()) {
             listOf(getBaseBuilder(scope).build())
@@ -50,8 +52,8 @@ internal object TrackedEntityInstanceQueryOnlineHelper {
                     .assignedUserMode(eventFilter.assignedUserMode())
 
                 if (eventFilter.eventDate() != null) {
-                    baseBuilder.eventStartDate(DateFilterPeriodHelper.getStartDate(eventFilter.eventDate()!!))
-                    baseBuilder.eventEndDate(DateFilterPeriodHelper.getEndDate(eventFilter.eventDate()!!))
+                    baseBuilder.eventStartDate(dateFilterPeriodHelper.getStartDate(eventFilter.eventDate()!!))
+                    baseBuilder.eventEndDate(dateFilterPeriodHelper.getEndDate(eventFilter.eventDate()!!))
                 }
 
                 baseBuilder.build()
@@ -85,8 +87,8 @@ internal object TrackedEntityInstanceQueryOnlineHelper {
             .paging(true)
 
         if (scope.programDate() != null) {
-            builder.programStartDate(DateFilterPeriodHelper.getStartDate(scope.programDate()!!))
-            builder.programEndDate(DateFilterPeriodHelper.getEndDate(scope.programDate()!!))
+            builder.programStartDate(dateFilterPeriodHelper.getStartDate(scope.programDate()!!))
+            builder.programEndDate(dateFilterPeriodHelper.getEndDate(scope.programDate()!!))
         }
 
         return builder

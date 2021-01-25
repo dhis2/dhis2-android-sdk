@@ -3,6 +3,7 @@ package org.hisp.dhis.android.core.event.search
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
 import org.hisp.dhis.android.core.event.EventCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
@@ -16,6 +17,7 @@ class EventCollectionRepositoryAdapterShould {
     private val eventRepository: EventCollectionRepository = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val ouRepository: OrganisationUnitCollectionRepository = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val userRepository: AuthenticatedUserObjectRepository = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
+    private val dateFilterPeriodHelper: DateFilterPeriodHelper = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
 
     private val orgunit = "ou"
     private val orgunitChildren = listOf("ou1", "ou2") + orgunit
@@ -27,7 +29,9 @@ class EventCollectionRepositoryAdapterShould {
     fun setUp() {
         adapter = EventCollectionRepositoryAdapter(
             eventRepository,
-            ouRepository, userRepository
+            ouRepository,
+            userRepository,
+            dateFilterPeriodHelper
         )
 
         whenever(ouRepository.blockingGetUids()) doReturn orgunitDescendants

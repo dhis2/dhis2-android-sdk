@@ -93,6 +93,8 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     private final TrackedEntityInstanceQueryRepositoryScope scope;
 
     private final D2Cache<TrackedEntityInstanceQueryOnline, List<TrackedEntityInstance>> onlineCache;
+    private final TrackedEntityInstanceQueryOnlineHelper onlineHelper;
+    private final TrackedEntityInstanceLocalQueryHelper localQueryHelper;
 
     @Inject
     TrackedEntityInstanceQueryCollectionRepository(
@@ -102,7 +104,9 @@ public final class TrackedEntityInstanceQueryCollectionRepository
             final TrackedEntityInstanceQueryRepositoryScope scope,
             final DHISVersionManager versionManager,
             final TrackedEntityInstanceFilterCollectionRepository filtersRepository,
-            final D2Cache<TrackedEntityInstanceQueryOnline, List<TrackedEntityInstance>> onlineCache) {
+            final D2Cache<TrackedEntityInstanceQueryOnline, List<TrackedEntityInstance>> onlineCache,
+            final TrackedEntityInstanceQueryOnlineHelper onlineHelper,
+            final TrackedEntityInstanceLocalQueryHelper localQueryHelper) {
         this.store = store;
         this.onlineCallFactory = onlineCallFactory;
         this.childrenAppenders = childrenAppenders;
@@ -110,9 +114,11 @@ public final class TrackedEntityInstanceQueryCollectionRepository
         this.versionManager = versionManager;
         this.filtersRepository = filtersRepository;
         this.onlineCache = onlineCache;
+        this.onlineHelper = onlineHelper;
+        this.localQueryHelper = localQueryHelper;
         this.connectorFactory = new ScopedFilterConnectorFactory<>(s ->
                 new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
-                        s, versionManager, filtersRepository, onlineCache));
+                        s, versionManager, filtersRepository, onlineCache, onlineHelper, localQueryHelper));
     }
 
     /**
@@ -500,7 +506,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
 
     public DataSource<TrackedEntityInstance, TrackedEntityInstance> getDataSource() {
         return new TrackedEntityInstanceQueryDataSource(store, onlineCallFactory, scope,
-                childrenAppenders, onlineCache);
+                childrenAppenders, onlineCache, onlineHelper, localQueryHelper);
     }
 
     public TrackedEntityInstanceQueryRepositoryScope getScope() {
@@ -510,7 +516,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     @Override
     public List<TrackedEntityInstance> blockingGet() {
         if (scope.mode().equals(RepositoryMode.OFFLINE_ONLY) || scope.mode().equals(RepositoryMode.OFFLINE_FIRST)) {
-            String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(scope, Collections.emptySet(),
+            String sqlQuery = localQueryHelper.getSqlQuery(scope, Collections.emptySet(),
                     -1);
             List<TrackedEntityInstance> instances = store.selectRawQuery(sqlQuery);
             return ChildrenAppenderExecutor.appendInObjectCollection(instances, childrenAppenders,
@@ -520,8 +526,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
             try {
                 List<TrackedEntityInstance> instances = new ArrayList<>();
 
-                List<TrackedEntityInstanceQueryOnline> onlineQueries =
-                        TrackedEntityInstanceQueryOnlineHelper.fromScope(scope);
+                List<TrackedEntityInstanceQueryOnline> onlineQueries = onlineHelper.fromScope(scope);
 
                 for (TrackedEntityInstanceQueryOnline onlineQuery : onlineQueries) {
                     TrackedEntityInstanceQueryOnline noPagingQuery = onlineQuery.toBuilder().paging(false).build();
@@ -603,7 +608,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     @Override
     public List<String> blockingGetUids() {
         if (scope.mode().equals(RepositoryMode.OFFLINE_ONLY) || scope.mode().equals(RepositoryMode.OFFLINE_FIRST)) {
-            String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getUidsWhereClause(scope, Collections.emptySet(),
+            String sqlQuery = localQueryHelper.getUidsWhereClause(scope, Collections.emptySet(),
                     -1);
             return store.selectUidsWhere(sqlQuery);
         } else {

@@ -25,11 +25,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.period.internal
 
-package org.hisp.dhis.android.core.period.internal;
+import java.util.*
+import org.hisp.dhis.android.core.common.RelativePeriod
+import org.hisp.dhis.android.core.period.Period
+import org.hisp.dhis.android.core.period.PeriodType
 
-import java.util.Calendar;
-
-interface CalendarProvider {
-   Calendar getCalendar();
+internal interface ParentPeriodGenerator {
+    fun generatePeriods(): List<Period>
+    fun generatePeriods(periodType: PeriodType, futurePeriods: Int): List<Period>
+    fun generatePeriods(periodType: PeriodType, pastPeriods: Int, futurePeriods: Int): List<Period>
+    fun generatePeriod(periodType: PeriodType, date: Date, offset: Int): Period?
+    fun generateRelativePeriods(relativePeriod: RelativePeriod): List<Period>
 }

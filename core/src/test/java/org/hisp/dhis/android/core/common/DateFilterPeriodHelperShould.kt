@@ -29,11 +29,22 @@ package org.hisp.dhis.android.core.common
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory
+import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl
+import org.junit.Before
 import org.junit.Test
 
 class DateFilterPeriodHelperShould {
 
     private val refDate = DateUtils.DATE_FORMAT.parse("2020-02-01T12:34:56.123")
+
+    private lateinit var dateFilterPeriodHelper: DateFilterPeriodHelper
+
+    @Before
+    fun setUp() {
+        dateFilterPeriodHelper =
+            DateFilterPeriodHelper(ParentPeriodGeneratorImpl.create(CalendarProviderFactory.getCalendarProvider()))
+    }
 
     @Test
     fun should_return_absolute_start_date() {
@@ -42,7 +53,7 @@ class DateFilterPeriodHelperShould {
             .startDate(DateUtils.DATE_FORMAT.parse("2020-01-20T00:00:00.000"))
             .build()
 
-        val startDate = DateFilterPeriodHelper.getStartDate(filter, refDate)
+        val startDate = dateFilterPeriodHelper.getStartDate(filter, refDate)
 
         assertThat(startDate).isEqualTo(filter.startDate())
     }
@@ -54,7 +65,7 @@ class DateFilterPeriodHelperShould {
             .startBuffer(-5)
             .build()
 
-        val startDate = DateFilterPeriodHelper.getStartDate(filter, refDate)
+        val startDate = dateFilterPeriodHelper.getStartDate(filter, refDate)
 
         assertThat(startDate).isEqualTo(DateUtils.DATE_FORMAT.parse("2020-01-27T12:34:56.123"))
     }
@@ -66,7 +77,7 @@ class DateFilterPeriodHelperShould {
             .endDate(DateUtils.DATE_FORMAT.parse("2020-01-20T00:00:00.000"))
             .build()
 
-        val endDate = DateFilterPeriodHelper.getEndDate(filter, refDate)
+        val endDate = dateFilterPeriodHelper.getEndDate(filter, refDate)
 
         assertThat(endDate).isEqualTo(filter.endDate())
     }
@@ -78,7 +89,7 @@ class DateFilterPeriodHelperShould {
             .endBuffer(-2)
             .build()
 
-        val endDate = DateFilterPeriodHelper.getEndDate(filter, refDate)
+        val endDate = dateFilterPeriodHelper.getEndDate(filter, refDate)
 
         assertThat(endDate).isEqualTo(DateUtils.DATE_FORMAT.parse("2020-01-30T12:34:56.123"))
     }

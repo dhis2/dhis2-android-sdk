@@ -27,50 +27,58 @@
  */
 package org.hisp.dhis.android.core.common
 
+import dagger.Reusable
 import java.util.*
+import javax.inject.Inject
 import org.hisp.dhis.android.core.period.Period
+import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
 
-internal object DateFilterPeriodHelper {
+@Reusable
+internal class DateFilterPeriodHelper @Inject constructor(
+    val parentPeriodGenerator: ParentPeriodGenerator
+) {
 
     private val calendar: Calendar = Calendar.getInstance()
 
-    @JvmStatic
-    fun mergeDateFilterPeriods(baseFilter: DateFilterPeriod?, newFilter: DateFilterPeriod?): DateFilterPeriod? {
-        return when {
-            newFilter == null -> baseFilter
-            baseFilter == null -> newFilter
-            newFilter.period() != null -> newFilter
-            newFilter.startBuffer() != null || newFilter.endBuffer() != null -> {
-                val builder = baseFilter.toBuilder()
+    companion object {
 
-                builder.period(null)
-                builder.startDate(null)
-                builder.endDate(null)
-                builder.type(DatePeriodType.RELATIVE)
+        @JvmStatic
+        fun mergeDateFilterPeriods(baseFilter: DateFilterPeriod?, newFilter: DateFilterPeriod?): DateFilterPeriod? {
+            return when {
+                newFilter == null -> baseFilter
+                baseFilter == null -> newFilter
+                newFilter.period() != null -> newFilter
+                newFilter.startBuffer() != null || newFilter.endBuffer() != null -> {
+                    val builder = baseFilter.toBuilder()
 
-                newFilter.startBuffer()?.let { builder.startBuffer(it) }
-                newFilter.endBuffer()?.let { builder.endBuffer(it) }
+                    builder.period(null)
+                    builder.startDate(null)
+                    builder.endDate(null)
+                    builder.type(DatePeriodType.RELATIVE)
 
-                builder.build()
+                    newFilter.startBuffer()?.let { builder.startBuffer(it) }
+                    newFilter.endBuffer()?.let { builder.endBuffer(it) }
+
+                    builder.build()
+                }
+                newFilter.startDate() != null || newFilter.endDate() != null -> {
+                    val builder = baseFilter.toBuilder()
+
+                    builder.period(null)
+                    builder.startBuffer(null)
+                    builder.endBuffer(null)
+                    builder.type(DatePeriodType.ABSOLUTE)
+
+                    newFilter.startDate()?.let { builder.startDate(it) }
+                    newFilter.endDate()?.let { builder.endDate(it) }
+
+                    builder.build()
+                }
+                else -> null
             }
-            newFilter.startDate() != null || newFilter.endDate() != null -> {
-                val builder = baseFilter.toBuilder()
-
-                builder.period(null)
-                builder.startBuffer(null)
-                builder.endBuffer(null)
-                builder.type(DatePeriodType.ABSOLUTE)
-
-                newFilter.startDate()?.let { builder.startDate(it) }
-                newFilter.endDate()?.let { builder.endDate(it) }
-
-                builder.build()
-            }
-            else -> null
         }
     }
 
-    @JvmStatic
     fun getStartDate(filter: DateFilterPeriod, refDate: Date = Date()): Date? {
         return when {
             filter.startDate() != null -> filter.startDate()
@@ -80,7 +88,6 @@ internal object DateFilterPeriodHelper {
         }
     }
 
-    @JvmStatic
     fun getEndDate(filter: DateFilterPeriod, refDate: Date = Date()): Date? {
         return when {
             filter.endDate() != null -> filter.endDate()
@@ -90,10 +97,17 @@ internal object DateFilterPeriodHelper {
         }
     }
 
-    @Suppress("FunctionOnlyReturningConstant")
     private fun getPeriod(period: RelativePeriod): Period? {
-        // TODO
-        return null
+        val periods = parentPeriodGenerator.generateRelativePeriods(period)
+
+        return if (periods.isNotEmpty()) {
+            Period.builder()
+                .startDate(periods.first().startDate())
+                .endDate(periods.last().endDate())
+                .build()
+        } else {
+            null
+        }
     }
 
     private fun addDays(date: Date, days: Int): Date {

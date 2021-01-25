@@ -28,48 +28,96 @@
 
 package org.hisp.dhis.android.core.common;
 
+import org.hisp.dhis.android.core.period.PeriodType;
+
 public enum RelativePeriod {
-    TODAY,
-    YESTERDAY,
-    LAST_3_DAYS,
-    LAST_7_DAYS,
-    LAST_14_DAYS,
-    LAST_30_DAYS,
-    LAST_60_DAYS,
-    LAST_90_DAYS,
-    LAST_180_DAYS,
-    THIS_MONTH,
-    LAST_MONTH,
-    THIS_BIMONTH,
-    LAST_BIMONTH,
-    THIS_QUARTER,
-    LAST_QUARTER,
-    THIS_SIX_MONTH,
-    LAST_SIX_MONTH,
-    WEEKS_THIS_YEAR,
-    MONTHS_THIS_YEAR,
-    BIMONTHS_THIS_YEAR,
-    QUARTERS_THIS_YEAR,
-    THIS_YEAR,
-    MONTHS_LAST_YEAR,
-    QUARTERS_LAST_YEAR,
-    LAST_YEAR,
-    LAST_5_YEARS,
-    LAST_12_MONTHS,
-    LAST_6_MONTHS,
-    LAST_3_MONTHS,
-    LAST_6_BIMONTHS,
-    LAST_4_QUARTERS,
-    LAST_2_SIXMONTHS,
-    THIS_FINANCIAL_YEAR,
-    LAST_FINANCIAL_YEAR,
-    LAST_5_FINANCIAL_YEARS,
-    THIS_WEEK,
-    LAST_WEEK,
-    THIS_BIWEEK,
-    LAST_BIWEEK,
-    LAST_4_WEEKS,
-    LAST_4_BIWEEKS,
-    LAST_12_WEEKS,
-    LAST_52_WEEKS
+    TODAY(PeriodType.Daily, 0, 0),
+    YESTERDAY(PeriodType.Daily, -1, -1),
+    LAST_3_DAYS(PeriodType.Daily, -3, 0),
+    LAST_7_DAYS(PeriodType.Daily, -7, 0),
+    LAST_14_DAYS(PeriodType.Daily, -14, 0),
+    LAST_30_DAYS(PeriodType.Daily, -30, 0),
+    LAST_60_DAYS(PeriodType.Daily, -60, 0),
+    LAST_90_DAYS(PeriodType.Daily, -90, 0),
+    LAST_180_DAYS(PeriodType.Daily, -180, 0),
+    THIS_MONTH(PeriodType.Monthly, 0, 0),
+    LAST_MONTH(PeriodType.Monthly, -1, -1),
+    THIS_BIMONTH(PeriodType.BiMonthly, 0, 0),
+    LAST_BIMONTH(PeriodType.BiMonthly, -1, -1),
+    THIS_QUARTER(PeriodType.Quarterly, 0, 0),
+    LAST_QUARTER(PeriodType.Quarterly, -1, -1),
+    THIS_SIX_MONTH(PeriodType.SixMonthly, 0, 0),
+    LAST_SIX_MONTH(PeriodType.SixMonthly, -1, -1),
+    WEEKS_THIS_YEAR(PeriodType.Weekly, null, null, true, false),
+    MONTHS_THIS_YEAR(PeriodType.Monthly, null, null, true, false),
+    BIMONTHS_THIS_YEAR(PeriodType.BiMonthly, null, null, true, false),
+    QUARTERS_THIS_YEAR(PeriodType.Quarterly, null, null, true, false),
+    THIS_YEAR(PeriodType.Yearly, 0, 0),
+    MONTHS_LAST_YEAR(PeriodType.Monthly, null, null, false, true),
+    QUARTERS_LAST_YEAR(PeriodType.Quarterly, null, null, false, true),
+    LAST_YEAR(PeriodType.Yearly, -1, -1),
+    LAST_5_YEARS(PeriodType.Yearly, -5, 0),
+    LAST_12_MONTHS(PeriodType.Monthly, -12, 0),
+    LAST_6_MONTHS(PeriodType.Monthly, -6, 0),
+    LAST_3_MONTHS(PeriodType.Monthly, -3, 0),
+    LAST_6_BIMONTHS(PeriodType.BiMonthly, -6, 0),
+    LAST_4_QUARTERS(PeriodType.Quarterly, -4, 0),
+    LAST_2_SIXMONTHS(PeriodType.SixMonthly, -2, 0),
+    THIS_FINANCIAL_YEAR(PeriodType.FinancialApril, 0, 0),
+    LAST_FINANCIAL_YEAR(PeriodType.FinancialApril, -1, -1),
+    LAST_5_FINANCIAL_YEARS(PeriodType.FinancialApril, -5, 0),
+    THIS_WEEK(PeriodType.Weekly, 0, 0),
+    LAST_WEEK(PeriodType.Weekly, -1, -1),
+    THIS_BIWEEK(PeriodType.BiWeekly, 0, 0),
+    LAST_BIWEEK(PeriodType.BiWeekly, -1, -1),
+    LAST_4_WEEKS(PeriodType.Weekly, -4, 0),
+    LAST_4_BIWEEKS(PeriodType.BiWeekly, -4, 0),
+    LAST_12_WEEKS(PeriodType.Weekly, -12, 0),
+    LAST_52_WEEKS(PeriodType.Weekly, -52, 0);
+
+    private final PeriodType periodType;
+
+    private final Integer start;
+
+    private final Integer end;
+
+    private final Boolean periodsThisYear;
+
+    private final Boolean periodsLastYear;
+
+    RelativePeriod(PeriodType periodType,
+                   Integer start,
+                   Integer end,
+                   Boolean periodsThisYear,
+                   Boolean periodsLastYear) {
+        this.periodType = periodType;
+        this.start = start;
+        this.end = end;
+        this.periodsThisYear = periodsThisYear;
+        this.periodsLastYear = periodsLastYear;
+    }
+
+    RelativePeriod(PeriodType periodType, Integer start, Integer end) {
+        this(periodType, start, end, false, false);
+    }
+
+    PeriodType getPeriodType() {
+        return periodType;
+    }
+
+    Integer getStart() {
+        return this.start;
+    }
+
+    Integer getEnd() {
+        return this.end;
+    }
+
+    Boolean getPeriodsThisYear() {
+        return this.periodsThisYear;
+    }
+
+    Boolean getPeriodsLastYear() {
+        return this.periodsLastYear;
+    }
 }

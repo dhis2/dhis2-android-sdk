@@ -25,26 +25,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal
 
-import dagger.Reusable
-import io.reactivex.Observable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterPostCall
+package org.hisp.dhis.android.core.tracker.importer.internal;
 
-@Reusable
-internal class TrackedEntityInstanceParentPostCall @Inject internal constructor(
-    private val oldCall: OldTrackedEntityInstancePostCall,
-    private val trackerImporterCall: TrackerImporterPostCall
-) {
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
+import retrofit2.Retrofit;
 
-    fun uploadTrackedEntityInstances(trackedEntityInstances: List<TrackedEntityInstance>): Observable<D2Progress> {
-        return if (trackedEntityInstances.isEmpty()) {
-            Observable.empty<D2Progress>()
-        } else {
-            trackerImporterCall.uploadTrackedEntityInstances(trackedEntityInstances)
-        }
+@Module
+public final class TrackerImporterPackageDIModule {
+
+    @Provides
+    @Reusable
+    TrackerImporterService service(Retrofit retrofit) {
+        return retrofit.create(TrackerImporterService.class);
     }
 }

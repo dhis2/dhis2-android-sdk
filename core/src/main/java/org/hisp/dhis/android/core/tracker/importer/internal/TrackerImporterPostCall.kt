@@ -25,7 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal
+package org.hisp.dhis.android.core.tracker.importer.internal
 
 import dagger.Reusable
 import io.reactivex.Observable
@@ -35,14 +35,17 @@ import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDeleteCall
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePayload
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostPayloadGenerator
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostStateManager
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @Reusable
-internal class NewTrackerPostCall @Inject internal constructor(
+internal class TrackerImporterPostCall @Inject internal constructor(
     private val payloadGenerator: TrackedEntityInstancePostPayloadGenerator,
     private val stateManager: TrackedEntityInstancePostStateManager,
-    private val service: TrackedEntityInstanceService,
+    private val service: TrackerImporterService,
     private val apiCallExecutor: APICallExecutor,
     private val relationshipDeleteCall: RelationshipDeleteCall
 ) {
@@ -72,7 +75,7 @@ internal class NewTrackerPostCall @Inject internal constructor(
 
     private fun queryJob(jobId: String): Observable<D2Progress> {
         val progressManager = D2ProgressManager(null)
-        return Observable.interval(1, 5, TimeUnit.SECONDS).map {
+        return Observable.interval(0,5, TimeUnit.SECONDS).map {
             apiCallExecutor.executeObjectCall(service.getJob(jobId))
         }.take(3)
             .map {

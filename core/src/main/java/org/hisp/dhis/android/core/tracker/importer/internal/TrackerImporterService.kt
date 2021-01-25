@@ -25,26 +25,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal
+package org.hisp.dhis.android.core.tracker.importer.internal
 
-import dagger.Reusable
-import io.reactivex.Observable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterPostCall
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.trackedentity.internal.ObjectWithUidWebResponse
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePayload
+import retrofit2.Call
+import retrofit2.http.*
 
-@Reusable
-internal class TrackedEntityInstanceParentPostCall @Inject internal constructor(
-    private val oldCall: OldTrackedEntityInstancePostCall,
-    private val trackerImporterCall: TrackerImporterPostCall
-) {
+internal interface TrackerImporterService {
 
-    fun uploadTrackedEntityInstances(trackedEntityInstances: List<TrackedEntityInstance>): Observable<D2Progress> {
-        return if (trackedEntityInstances.isEmpty()) {
-            Observable.empty<D2Progress>()
-        } else {
-            trackerImporterCall.uploadTrackedEntityInstances(trackedEntityInstances)
-        }
-    }
+    @POST("tracker")
+    fun postTrackerImporter(
+        @Body trackedEntityInstances: TrackedEntityInstancePayload,
+        @Query("strategy") strategy: String
+    ): Call<ObjectWithUidWebResponse>
+
+    @GET("tracker/jobs/{jobId}")
+    fun getJob(@Path("jobId") jobId: String): Call<List<ObjectWithUid>>
 }

@@ -56,7 +56,7 @@ public class MonthlyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
         calendar.set(2018, 3, 11);
 
         MonthlyPeriodGenerator generator = new MonthlyPeriodGenerator(calendar);
-        List<Period> generatedPeriods = generator.generatePeriods(1, 0);
+        List<Period> generatedPeriods = generator.generatePeriods(-1, 0);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period));
     }
@@ -68,7 +68,7 @@ public class MonthlyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
         calendar.set(2016, 2, 5);
 
         MonthlyPeriodGenerator generator = new MonthlyPeriodGenerator(calendar);
-        List<Period> generatedPeriods = generator.generatePeriods(1, 0);
+        List<Period> generatedPeriods = generator.generatePeriods(-1, 0);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period));
     }
@@ -85,7 +85,7 @@ public class MonthlyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
         calendar.set(2018, 11, 11);
 
         MonthlyPeriodGenerator generator = new MonthlyPeriodGenerator(calendar);
-        List<Period> generatedPeriods = generator.generatePeriods(3, 0);
+        List<Period> generatedPeriods = generator.generatePeriods(-3, 0);
 
         assertThat(generatedPeriods).isEqualTo(expectedPeriods);
     }

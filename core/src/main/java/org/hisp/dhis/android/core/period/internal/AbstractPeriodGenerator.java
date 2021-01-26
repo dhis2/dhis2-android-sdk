@@ -54,26 +54,19 @@ abstract class AbstractPeriodGenerator implements PeriodGenerator {
     }
 
     @Override
-    public final List<Period> generatePeriods(int past, int future) throws RuntimeException {
+    public final List<Period> generatePeriods(int start, int end) throws RuntimeException {
         this.calendar = (Calendar) initialCalendar.clone();
-        if (past < 0) {
-            throw new RuntimeException("Number of past periods can't be negative.");
-        }
 
-        if (future < 0) {
-            throw new RuntimeException("Number of future periods can't be negative.");
-        }
-
-        if (future + past < 1) {
+        if (start >= end) {
             return Collections.emptyList();
         }
 
         List<Period> periods = new ArrayList<>();
         setCalendarToStartTimeOfADay(calendar);
         moveToStartOfCurrentPeriod();
-        movePeriods(1 - past - 1);
+        movePeriods(start);
 
-        for (int i = 0; i < past + future; i++) {
+        for (int i = 0; i < end - start; i++) {
             Date startDate = calendar.getTime();
             String periodId = generateId();
 

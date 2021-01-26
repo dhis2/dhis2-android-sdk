@@ -44,18 +44,18 @@ internal class ParentPeriodGeneratorImpl(
     override fun generatePeriods(): List<Period> {
         val periods: MutableList<Period> = ArrayList()
         for (periodType in PeriodType.values()) {
-            val periodsInType = generatePeriods(periodType, periodType.defaultFuturePeriods)
+            val periodsInType = generatePeriods(periodType, periodType.defaultEndPeriods)
             periods.addAll(periodsInType)
         }
         return periods
     }
 
-    override fun generatePeriods(periodType: PeriodType, futurePeriods: Int): List<Period> {
-        return generatePeriods(periodType, periodType.defaultPastPeriods, futurePeriods)
+    override fun generatePeriods(periodType: PeriodType, endPeriods: Int): List<Period> {
+        return generatePeriods(periodType, periodType.defaultStartPeriods, endPeriods)
     }
 
-    override fun generatePeriods(periodType: PeriodType, pastPeriods: Int, futurePeriods: Int): List<Period> {
-        return getPeriodGenerator(periodType).generatePeriods(pastPeriods, futurePeriods)
+    override fun generatePeriods(periodType: PeriodType, startPeriods: Int, endPeriods: Int): List<Period> {
+        return getPeriodGenerator(periodType).generatePeriods(startPeriods, endPeriods)
     }
 
     override fun generatePeriod(periodType: PeriodType, date: Date, offset: Int): Period? {
@@ -64,7 +64,15 @@ internal class ParentPeriodGeneratorImpl(
     }
 
     override fun generateRelativePeriods(relativePeriod: RelativePeriod): List<Period> {
-        TODO("Not yet implemented")
+        val periodGenerator = getPeriodGenerator(relativePeriod.periodType)
+        return when {
+            relativePeriod.start != null && relativePeriod.end != null ->
+                periodGenerator.generatePeriods(relativePeriod.start, relativePeriod.end)
+            relativePeriod.periodsLastYear || relativePeriod.periodsThisYear ->
+                TODO("Implement")
+            else ->
+                emptyList()
+        }
     }
 
     @Suppress("ComplexMethod")

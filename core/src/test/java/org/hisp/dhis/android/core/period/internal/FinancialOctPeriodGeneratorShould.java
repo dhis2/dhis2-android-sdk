@@ -56,7 +56,7 @@ public class FinancialOctPeriodGeneratorShould extends PeriodGeneratorBaseShould
 
         calendar.set(2019, 1, 21);
         YearlyPeriodGenerator generator = YearlyPeriodGeneratorFactory.financialOct(calendar);
-        List<Period> generatedPeriods = generator.generatePeriods(1, 0);
+        List<Period> generatedPeriods = generator.generatePeriods(-1, 0);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period));
     }
@@ -68,7 +68,7 @@ public class FinancialOctPeriodGeneratorShould extends PeriodGeneratorBaseShould
 
         calendar.set(2018, 9, 1);
         YearlyPeriodGenerator generator = YearlyPeriodGeneratorFactory.financialOct(calendar);
-        List<Period> generatedPeriods = generator.generatePeriods(1, 0);
+        List<Period> generatedPeriods = generator.generatePeriods(-1, 0);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period));
     }
@@ -80,7 +80,7 @@ public class FinancialOctPeriodGeneratorShould extends PeriodGeneratorBaseShould
 
         calendar.set(2018, 8, 30);
         YearlyPeriodGenerator generator = YearlyPeriodGeneratorFactory.financialOct(calendar);
-        List<Period> generatedPeriods = generator.generatePeriods(1, 0);
+        List<Period> generatedPeriods = generator.generatePeriods(-1, 0);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period));
     }
@@ -95,7 +95,7 @@ public class FinancialOctPeriodGeneratorShould extends PeriodGeneratorBaseShould
 
         calendar.set(2019, 1, 21);
         YearlyPeriodGenerator generator = YearlyPeriodGeneratorFactory.financialOct(calendar);
-        List<Period> generatedPeriods = generator.generatePeriods(2, 0);
+        List<Period> generatedPeriods = generator.generatePeriods(-2, 0);
 
         assertThat(generatedPeriods).isEqualTo(expectedPeriods);
     }

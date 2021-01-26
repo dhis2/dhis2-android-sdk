@@ -55,7 +55,7 @@ public class DailyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
         Period period = generateExpectedPeriod("20180201", calendar);
         calendar.set(2018, 1, 2);
 
-        List<Period> generatedPeriods = new DailyPeriodGenerator(calendar).generatePeriods(1, 0);
+        List<Period> generatedPeriods = new DailyPeriodGenerator(calendar).generatePeriods(-1, 0);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period));
     }
@@ -68,7 +68,7 @@ public class DailyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
         Period period2 = generateExpectedPeriod("20180305", calendar);
         calendar.set(2018, 2, 6);
 
-        List<Period> generatedPeriods = new DailyPeriodGenerator(calendar).generatePeriods(2, 0);
+        List<Period> generatedPeriods = new DailyPeriodGenerator(calendar).generatePeriods(-2, 0);
         List<Period> expectedPeriods = Lists.newArrayList(period1, period2);
 
         assertThat(generatedPeriods).isEqualTo(expectedPeriods);
@@ -84,7 +84,7 @@ public class DailyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
         Period period3 = generateExpectedPeriod("20180102", calendar);
         calendar.set(2018, 0, 3);
 
-        List<Period> generatedPeriods = new DailyPeriodGenerator(calendar).generatePeriods(3, 0);
+        List<Period> generatedPeriods = new DailyPeriodGenerator(calendar).generatePeriods(-3, 0);
         List<Period> expectedPeriods = Lists.newArrayList(period1, period2, period3);
 
         assertThat(generatedPeriods).isEqualTo(expectedPeriods);

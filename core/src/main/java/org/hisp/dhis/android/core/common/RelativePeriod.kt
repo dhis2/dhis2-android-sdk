@@ -25,12 +25,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.common;
+import org.hisp.dhis.android.core.period.PeriodType
 
-import org.hisp.dhis.android.core.period.PeriodType;
-
-public enum RelativePeriod {
+enum class RelativePeriod constructor(
+    internal val periodType: PeriodType,
+    internal val start: Int?,
+    internal val end: Int?,
+    internal val periodsThisYear: Boolean = false,
+    internal val periodsLastYear: Boolean = false
+) {
     TODAY(PeriodType.Daily, 0, 0),
     YESTERDAY(PeriodType.Daily, -1, -1),
     LAST_3_DAYS(PeriodType.Daily, -3, 0),
@@ -73,51 +78,5 @@ public enum RelativePeriod {
     LAST_4_WEEKS(PeriodType.Weekly, -4, 0),
     LAST_4_BIWEEKS(PeriodType.BiWeekly, -4, 0),
     LAST_12_WEEKS(PeriodType.Weekly, -12, 0),
-    LAST_52_WEEKS(PeriodType.Weekly, -52, 0);
-
-    private final PeriodType periodType;
-
-    private final Integer start;
-
-    private final Integer end;
-
-    private final Boolean periodsThisYear;
-
-    private final Boolean periodsLastYear;
-
-    RelativePeriod(PeriodType periodType,
-                   Integer start,
-                   Integer end,
-                   Boolean periodsThisYear,
-                   Boolean periodsLastYear) {
-        this.periodType = periodType;
-        this.start = start;
-        this.end = end;
-        this.periodsThisYear = periodsThisYear;
-        this.periodsLastYear = periodsLastYear;
-    }
-
-    RelativePeriod(PeriodType periodType, Integer start, Integer end) {
-        this(periodType, start, end, false, false);
-    }
-
-    PeriodType getPeriodType() {
-        return periodType;
-    }
-
-    Integer getStart() {
-        return this.start;
-    }
-
-    Integer getEnd() {
-        return this.end;
-    }
-
-    Boolean getPeriodsThisYear() {
-        return this.periodsThisYear;
-    }
-
-    Boolean getPeriodsLastYear() {
-        return this.periodsLastYear;
-    }
+    LAST_52_WEEKS(PeriodType.Weekly, -52, 0)
 }

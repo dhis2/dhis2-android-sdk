@@ -165,22 +165,22 @@ public class ParentPeriodGeneratorImplShould {
         periodGenerator = new ParentPeriodGeneratorImpl(dailyPeriodGenerator, weeklyPeriodGenerators,
                 biWeeklyPeriodGenerator, monthlyPeriodGenerator, nMonthlyPeriodGenerators, yearlyPeriodGenerators);
 
-        mockGenerator(dailyPeriodGenerator, PeriodType.Daily.getDefaultPastPeriods(), PeriodType.Daily.getDefaultFuturePeriods(), dailyPeriod);
-        mockGenerator(weeklyPeriodGenerator, PeriodType.Weekly.getDefaultPastPeriods(), PeriodType.Weekly.getDefaultFuturePeriods(), weeklyPeriod);
-        mockGenerator(weeklyWednesdayPeriodGenerator, PeriodType.WeeklyWednesday.getDefaultPastPeriods(), PeriodType.WeeklyWednesday.getDefaultFuturePeriods(), weeklyWednesdayPeriod);
-        mockGenerator(weeklyThursdayPeriodGenerator, PeriodType.WeeklyThursday.getDefaultPastPeriods(), PeriodType.WeeklyThursday.getDefaultFuturePeriods(), weeklyThursdayPeriod);
-        mockGenerator(weeklySaturdayPeriodGenerator, PeriodType.WeeklySaturday.getDefaultPastPeriods(), PeriodType.WeeklySaturday.getDefaultFuturePeriods(), weeklySaturdayPeriod);
-        mockGenerator(weeklySundayPeriodGenerator, PeriodType.WeeklySunday.getDefaultPastPeriods(), PeriodType.WeeklySunday.getDefaultFuturePeriods(), weeklySundayPeriod);
-        mockGenerator(biWeeklyPeriodGenerator, PeriodType.BiWeekly.getDefaultPastPeriods(), PeriodType.BiWeekly.getDefaultFuturePeriods(), biWeeklyPeriod);
-        mockGenerator(monthlyPeriodGenerator, PeriodType.Monthly.getDefaultPastPeriods(), PeriodType.Monthly.getDefaultFuturePeriods(), monthlyPeriod);
-        mockGenerator(biMonthlyPeriodGenerator, PeriodType.BiMonthly.getDefaultPastPeriods(), PeriodType.BiMonthly.getDefaultFuturePeriods(), biMonthlyPeriod);
-        mockGenerator(quarterPeriodGenerator, PeriodType.Quarterly.getDefaultPastPeriods(), PeriodType.Quarterly.getDefaultFuturePeriods(), quarterPeriod);
-        mockGenerator(sixMonthlyPeriodGenerator, PeriodType.SixMonthly.getDefaultPastPeriods(), PeriodType.SixMonthly.getDefaultFuturePeriods(), sixMonthlyPeriod);
-        mockGenerator(sixMonthlyAprilPeriodGenerator, PeriodType.SixMonthlyApril.getDefaultPastPeriods(), PeriodType.SixMonthlyApril.getDefaultFuturePeriods(), sixMonthlyAprilPeriod);
-        mockGenerator(yearlyPeriodGenerator, PeriodType.Yearly.getDefaultPastPeriods(), PeriodType.Yearly.getDefaultFuturePeriods(), yearlyPeriod);
-        mockGenerator(financialAprilPeriodGenerator, PeriodType.FinancialApril.getDefaultPastPeriods(), PeriodType.FinancialApril.getDefaultFuturePeriods(), financialAprilPeriod);
-        mockGenerator(financialJulyPeriodGenerator, PeriodType.FinancialJuly.getDefaultPastPeriods(), PeriodType.FinancialJuly.getDefaultFuturePeriods(), financialJulyPeriod);
-        mockGenerator(financialOctPeriodGenerator, PeriodType.FinancialOct.getDefaultPastPeriods(), PeriodType.FinancialOct.getDefaultFuturePeriods(), financialOctPeriod);
+        mockGenerator(dailyPeriodGenerator, PeriodType.Daily.getDefaultStartPeriods(), PeriodType.Daily.getDefaultEndPeriods(), dailyPeriod);
+        mockGenerator(weeklyPeriodGenerator, PeriodType.Weekly.getDefaultStartPeriods(), PeriodType.Weekly.getDefaultEndPeriods(), weeklyPeriod);
+        mockGenerator(weeklyWednesdayPeriodGenerator, PeriodType.WeeklyWednesday.getDefaultStartPeriods(), PeriodType.WeeklyWednesday.getDefaultEndPeriods(), weeklyWednesdayPeriod);
+        mockGenerator(weeklyThursdayPeriodGenerator, PeriodType.WeeklyThursday.getDefaultStartPeriods(), PeriodType.WeeklyThursday.getDefaultEndPeriods(), weeklyThursdayPeriod);
+        mockGenerator(weeklySaturdayPeriodGenerator, PeriodType.WeeklySaturday.getDefaultStartPeriods(), PeriodType.WeeklySaturday.getDefaultEndPeriods(), weeklySaturdayPeriod);
+        mockGenerator(weeklySundayPeriodGenerator, PeriodType.WeeklySunday.getDefaultStartPeriods(), PeriodType.WeeklySunday.getDefaultEndPeriods(), weeklySundayPeriod);
+        mockGenerator(biWeeklyPeriodGenerator, PeriodType.BiWeekly.getDefaultStartPeriods(), PeriodType.BiWeekly.getDefaultEndPeriods(), biWeeklyPeriod);
+        mockGenerator(monthlyPeriodGenerator, PeriodType.Monthly.getDefaultStartPeriods(), PeriodType.Monthly.getDefaultEndPeriods(), monthlyPeriod);
+        mockGenerator(biMonthlyPeriodGenerator, PeriodType.BiMonthly.getDefaultStartPeriods(), PeriodType.BiMonthly.getDefaultEndPeriods(), biMonthlyPeriod);
+        mockGenerator(quarterPeriodGenerator, PeriodType.Quarterly.getDefaultStartPeriods(), PeriodType.Quarterly.getDefaultEndPeriods(), quarterPeriod);
+        mockGenerator(sixMonthlyPeriodGenerator, PeriodType.SixMonthly.getDefaultStartPeriods(), PeriodType.SixMonthly.getDefaultEndPeriods(), sixMonthlyPeriod);
+        mockGenerator(sixMonthlyAprilPeriodGenerator, PeriodType.SixMonthlyApril.getDefaultStartPeriods(), PeriodType.SixMonthlyApril.getDefaultEndPeriods(), sixMonthlyAprilPeriod);
+        mockGenerator(yearlyPeriodGenerator, PeriodType.Yearly.getDefaultStartPeriods(), PeriodType.Yearly.getDefaultEndPeriods(), yearlyPeriod);
+        mockGenerator(financialAprilPeriodGenerator, PeriodType.FinancialApril.getDefaultStartPeriods(), PeriodType.FinancialApril.getDefaultEndPeriods(), financialAprilPeriod);
+        mockGenerator(financialJulyPeriodGenerator, PeriodType.FinancialJuly.getDefaultStartPeriods(), PeriodType.FinancialJuly.getDefaultEndPeriods(), financialJulyPeriod);
+        mockGenerator(financialOctPeriodGenerator, PeriodType.FinancialOct.getDefaultStartPeriods(), PeriodType.FinancialOct.getDefaultEndPeriods(), financialOctPeriod);
     }
 
     private void mockGenerator(PeriodGenerator generator, int past, int future, Period period) {
@@ -199,22 +199,22 @@ public class ParentPeriodGeneratorImplShould {
     public void call_all_child_period_generators() {
         periodGenerator.generatePeriods();
 
-        verifyChildGeneratorCalled(dailyPeriodGenerator, PeriodType.Daily.getDefaultPastPeriods(), PeriodType.Daily.getDefaultFuturePeriods());
-        verifyChildGeneratorCalled(weeklyPeriodGenerator, PeriodType.Weekly.getDefaultPastPeriods(), PeriodType.Weekly.getDefaultFuturePeriods());
-        verifyChildGeneratorCalled(weeklyWednesdayPeriodGenerator, PeriodType.WeeklyWednesday.getDefaultPastPeriods(), PeriodType.WeeklyWednesday.getDefaultFuturePeriods());
-        verifyChildGeneratorCalled(weeklyThursdayPeriodGenerator, PeriodType.WeeklyThursday.getDefaultPastPeriods(), PeriodType.WeeklyThursday.getDefaultFuturePeriods());
-        verifyChildGeneratorCalled(weeklySaturdayPeriodGenerator, PeriodType.WeeklySaturday.getDefaultPastPeriods(), PeriodType.WeeklySaturday.getDefaultFuturePeriods());
-        verifyChildGeneratorCalled(weeklySundayPeriodGenerator, PeriodType.WeeklySunday.getDefaultPastPeriods(), PeriodType.WeeklySunday.getDefaultFuturePeriods());
-        verifyChildGeneratorCalled(biWeeklyPeriodGenerator, PeriodType.BiWeekly.getDefaultPastPeriods(), PeriodType.BiWeekly.getDefaultFuturePeriods());
-        verifyChildGeneratorCalled(monthlyPeriodGenerator, PeriodType.Monthly.getDefaultPastPeriods(), PeriodType.Monthly.getDefaultFuturePeriods());
-        verifyChildGeneratorCalled(biMonthlyPeriodGenerator, PeriodType.BiMonthly.getDefaultPastPeriods(), PeriodType.BiMonthly.getDefaultFuturePeriods());
-        verifyChildGeneratorCalled(quarterPeriodGenerator, PeriodType.Quarterly.getDefaultPastPeriods(), PeriodType.Quarterly.getDefaultFuturePeriods());
-        verifyChildGeneratorCalled(sixMonthlyPeriodGenerator, PeriodType.SixMonthly.getDefaultPastPeriods(), PeriodType.SixMonthly.getDefaultFuturePeriods());
-        verifyChildGeneratorCalled(sixMonthlyAprilPeriodGenerator, PeriodType.SixMonthlyApril.getDefaultPastPeriods(), PeriodType.SixMonthlyApril.getDefaultFuturePeriods());
-        verifyChildGeneratorCalled(yearlyPeriodGenerator, PeriodType.Yearly.getDefaultPastPeriods(), PeriodType.Yearly.getDefaultFuturePeriods());
-        verifyChildGeneratorCalled(financialAprilPeriodGenerator, PeriodType.FinancialApril.getDefaultPastPeriods(), PeriodType.FinancialApril.getDefaultFuturePeriods());
-        verifyChildGeneratorCalled(financialJulyPeriodGenerator, PeriodType.FinancialJuly.getDefaultPastPeriods(), PeriodType.FinancialJuly.getDefaultFuturePeriods());
-        verifyChildGeneratorCalled(financialOctPeriodGenerator, PeriodType.FinancialOct.getDefaultPastPeriods(), PeriodType.FinancialOct.getDefaultFuturePeriods());
+        verifyChildGeneratorCalled(dailyPeriodGenerator, PeriodType.Daily.getDefaultStartPeriods(), PeriodType.Daily.getDefaultEndPeriods());
+        verifyChildGeneratorCalled(weeklyPeriodGenerator, PeriodType.Weekly.getDefaultStartPeriods(), PeriodType.Weekly.getDefaultEndPeriods());
+        verifyChildGeneratorCalled(weeklyWednesdayPeriodGenerator, PeriodType.WeeklyWednesday.getDefaultStartPeriods(), PeriodType.WeeklyWednesday.getDefaultEndPeriods());
+        verifyChildGeneratorCalled(weeklyThursdayPeriodGenerator, PeriodType.WeeklyThursday.getDefaultStartPeriods(), PeriodType.WeeklyThursday.getDefaultEndPeriods());
+        verifyChildGeneratorCalled(weeklySaturdayPeriodGenerator, PeriodType.WeeklySaturday.getDefaultStartPeriods(), PeriodType.WeeklySaturday.getDefaultEndPeriods());
+        verifyChildGeneratorCalled(weeklySundayPeriodGenerator, PeriodType.WeeklySunday.getDefaultStartPeriods(), PeriodType.WeeklySunday.getDefaultEndPeriods());
+        verifyChildGeneratorCalled(biWeeklyPeriodGenerator, PeriodType.BiWeekly.getDefaultStartPeriods(), PeriodType.BiWeekly.getDefaultEndPeriods());
+        verifyChildGeneratorCalled(monthlyPeriodGenerator, PeriodType.Monthly.getDefaultStartPeriods(), PeriodType.Monthly.getDefaultEndPeriods());
+        verifyChildGeneratorCalled(biMonthlyPeriodGenerator, PeriodType.BiMonthly.getDefaultStartPeriods(), PeriodType.BiMonthly.getDefaultEndPeriods());
+        verifyChildGeneratorCalled(quarterPeriodGenerator, PeriodType.Quarterly.getDefaultStartPeriods(), PeriodType.Quarterly.getDefaultEndPeriods());
+        verifyChildGeneratorCalled(sixMonthlyPeriodGenerator, PeriodType.SixMonthly.getDefaultStartPeriods(), PeriodType.SixMonthly.getDefaultEndPeriods());
+        verifyChildGeneratorCalled(sixMonthlyAprilPeriodGenerator, PeriodType.SixMonthlyApril.getDefaultStartPeriods(), PeriodType.SixMonthlyApril.getDefaultEndPeriods());
+        verifyChildGeneratorCalled(yearlyPeriodGenerator, PeriodType.Yearly.getDefaultStartPeriods(), PeriodType.Yearly.getDefaultEndPeriods());
+        verifyChildGeneratorCalled(financialAprilPeriodGenerator, PeriodType.FinancialApril.getDefaultStartPeriods(), PeriodType.FinancialApril.getDefaultEndPeriods());
+        verifyChildGeneratorCalled(financialJulyPeriodGenerator, PeriodType.FinancialJuly.getDefaultStartPeriods(), PeriodType.FinancialJuly.getDefaultEndPeriods());
+        verifyChildGeneratorCalled(financialOctPeriodGenerator, PeriodType.FinancialOct.getDefaultStartPeriods(), PeriodType.FinancialOct.getDefaultEndPeriods());
     }
 
     @Test

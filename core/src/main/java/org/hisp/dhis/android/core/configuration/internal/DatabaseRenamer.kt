@@ -33,7 +33,7 @@ import java.io.File
 import javax.inject.Inject
 
 @Reusable
-class DatabaseRenamer @Inject constructor(private val context: Context) {
+internal class DatabaseRenamer @Inject constructor(private val context: Context) {
 
     fun renameDatabase(from: String, to: String): Boolean {
         val fromFile = context.getDatabasePath(from)

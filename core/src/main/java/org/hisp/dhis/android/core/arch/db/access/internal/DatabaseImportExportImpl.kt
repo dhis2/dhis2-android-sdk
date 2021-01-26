@@ -44,7 +44,7 @@ import org.hisp.dhis.android.core.user.UserModule
 import org.hisp.dhis.android.core.user.internal.UserCredentialsStoreImpl
 
 @Reusable
-class DatabaseImportExportImpl @Inject constructor(
+internal class DatabaseImportExportImpl @Inject constructor(
     private val context: Context,
     private val nameGenerator: DatabaseNameGenerator,
     private val multiUserDatabaseManager: MultiUserDatabaseManager,
@@ -60,7 +60,7 @@ class DatabaseImportExportImpl @Inject constructor(
         const val ExportDatabase = "export-database.db"
     }
 
-    val d2ErrorBuilder = D2Error.builder()
+    private val d2ErrorBuilder = D2Error.builder()
         .errorComponent(D2ErrorComponent.SDK)
 
     override fun importDatabase(file: File) {

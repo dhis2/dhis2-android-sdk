@@ -28,13 +28,12 @@
 
 package org.hisp.dhis.android.core.attribute;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.hisp.dhis.android.core.common.ObjectShould;
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.legendset.Legend;
 import org.junit.Test;
 
 import java.io.IOException;

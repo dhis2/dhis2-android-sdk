@@ -25,41 +25,46 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.dataelement.internal;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.legendset.DataElementLegendSetLink;
+import org.hisp.dhis.android.core.legendset.LegendSet;
 
-import java.util.Collections;
-import java.util.Map;
 
-import dagger.Module;
-import dagger.Provides;
+import javax.inject.Inject;
+
 import dagger.Reusable;
 
-@Module
-public final class DataElementEntityDIModule {
+@Reusable
+final class DataElementHandler extends IdentifiableHandlerImpl<DataElement> {
 
-    @Provides
-    @Reusable
-    IdentifiableObjectStore<DataElement> store(DatabaseAdapter databaseAdapter) {
-        return DataElementStore.create(databaseAdapter);
+    private final Handler<LegendSet> legendSetHandler;
+    private final LinkHandler<LegendSet, DataElementLegendSetLink> dataElementLegendSetLinkHandler;
+
+    @Inject
+    DataElementHandler(
+            IdentifiableObjectStore<DataElement> programStageDataElementStore,
+            Handler<LegendSet> legendSetHandler,
+            LinkHandler<LegendSet, DataElementLegendSetLink> dataElementLegendSetLinkHandler
+    ) {
+
+        super(programStageDataElementStore);
+        this.legendSetHandler = legendSetHandler;
+        this.dataElementLegendSetLinkHandler = dataElementLegendSetLinkHandler;
     }
 
-    @Provides
-    @Reusable
-    Handler<DataElement> handler(DataElementHandler handler) {
-        return handler;
-    }
+    @Override
+    protected void afterObjectHandled(DataElement dataElement, HandleAction action) {
+        legendSetHandler.handleMany(dataElement.legendSets());
 
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<DataElement>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return Collections.singletonMap(DataElementFields.LEGEND_SETS,
-                DataElementLegendSetChildrenAppender.create(databaseAdapter));
+        dataElementLegendSetLinkHandler.handleMany(dataElement.uid(), dataElement.legendSets(),
+                legendSet -> DataElementLegendSetLink.builder()
+                        .dataElement(dataElement.uid()).legendSet(legendSet.uid()).build());
     }
 }

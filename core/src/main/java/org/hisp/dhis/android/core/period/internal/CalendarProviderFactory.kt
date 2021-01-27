@@ -46,6 +46,7 @@ internal object CalendarProviderFactory {
     }
 
     @JvmStatic
+    @Suppress("MagicNumber")
     fun createFixed(): CalendarProvider {
         val calendar = Calendar.getInstance()
         calendar[Calendar.YEAR] = 2019

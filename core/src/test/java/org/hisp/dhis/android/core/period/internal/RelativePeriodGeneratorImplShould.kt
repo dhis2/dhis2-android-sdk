@@ -72,15 +72,14 @@ class RelativePeriodGeneratorImplShould {
                 RelativePeriod.LAST_2_SIXMONTHS -> assertThat(periods.size).isEqualTo(2)
 
                 RelativePeriod.LAST_3_DAYS,
-                RelativePeriod.LAST_3_MONTHS-> assertThat(periods.size).isEqualTo(3)
+                RelativePeriod.LAST_3_MONTHS -> assertThat(periods.size).isEqualTo(3)
 
                 RelativePeriod.LAST_4_WEEKS,
                 RelativePeriod.LAST_4_BIWEEKS,
-                RelativePeriod.LAST_4_QUARTERS-> assertThat(periods.size).isEqualTo(4)
+                RelativePeriod.LAST_4_QUARTERS -> assertThat(periods.size).isEqualTo(4)
 
                 RelativePeriod.LAST_5_YEARS,
                 RelativePeriod.LAST_5_FINANCIAL_YEARS -> assertThat(periods.size).isEqualTo(5)
-
 
                 RelativePeriod.LAST_6_MONTHS,
                 RelativePeriod.LAST_6_BIMONTHS -> assertThat(periods.size).isEqualTo(6)

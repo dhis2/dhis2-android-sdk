@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.common
 
 import org.hisp.dhis.android.core.period.PeriodType
 
+@Suppress("MagicNumber")
 enum class RelativePeriod constructor(
     internal val periodType: PeriodType,
     internal val start: Int?,

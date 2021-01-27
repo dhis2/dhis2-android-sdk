@@ -122,16 +122,17 @@ abstract class AbstractPeriodGenerator implements PeriodGenerator {
         List<Period> periods = new ArrayList<>();
         Period period;
 
-        do {
+        while (true) {
             period = generatePeriod(calendar.getTime(), 0);
 
-            if (period.periodId().startsWith("" + targetYear)) {
+            if (period.periodId() != null &&
+                    period.periodId().startsWith(Integer.toString(targetYear))) {
                 periods.add(period);
                 movePeriods(1);
             } else {
                 break;
             }
-        } while (true);
+        }
 
         return periods;
     }

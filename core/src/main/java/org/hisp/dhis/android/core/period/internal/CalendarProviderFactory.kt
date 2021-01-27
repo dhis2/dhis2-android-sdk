@@ -25,35 +25,37 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.period.internal
 
-package org.hisp.dhis.android.core.period.internal;
+import java.util.*
 
-import java.util.Calendar;
+internal object CalendarProviderFactory {
 
-public final class CalendarProviderFactory {
+    @JvmStatic
+    var calendarProvider: CalendarProvider = RegularCalendarProvider()
+        private set
 
-   private static CalendarProvider calendarProvider = new RegularCalendarProvider();
+    @JvmStatic
+    fun setRegular() {
+        calendarProvider = RegularCalendarProvider()
+    }
 
-   public static void setRegular() {
-      CalendarProviderFactory.calendarProvider = new RegularCalendarProvider();
-   }
+    @JvmStatic
+    fun setFixed() {
+        calendarProvider = createFixed()
+    }
 
-   public static void setFixed() {
-      CalendarProviderFactory.calendarProvider = createFixed();
-   }
+    @JvmStatic
+    fun createFixed(): CalendarProvider {
+        val calendar = Calendar.getInstance()
+        calendar[Calendar.YEAR] = 2019
+        calendar[Calendar.MONTH] = 11
+        calendar[Calendar.DATE] = 10
 
-   public static CalendarProvider getCalendarProvider() {
-      return calendarProvider;
-   }
-
-   static CalendarProvider createFixed() {
-      Calendar calendar = Calendar.getInstance();
-      calendar.set(Calendar.YEAR, 2019);
-      calendar.set(Calendar.MONTH, 11);
-      calendar.set(Calendar.DATE, 10);
-      return new FixedCalendarProvider(calendar);
-   }
-
-   private CalendarProviderFactory() {
-   }
+        calendar[Calendar.HOUR_OF_DAY] = 10
+        calendar[Calendar.MINUTE] = 30
+        calendar[Calendar.SECOND] = 0
+        calendar[Calendar.MILLISECOND] = 0
+        return FixedCalendarProvider(calendar)
+    }
 }

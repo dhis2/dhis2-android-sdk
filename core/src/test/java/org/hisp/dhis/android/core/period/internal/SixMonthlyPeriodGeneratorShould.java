@@ -175,4 +175,43 @@ public class SixMonthlyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
         assertThat(novGenerator.generatePeriod(dateFormatter.parse("2019-05-01"), -1).periodId()).isEqualTo("2019NovS1");
     }
 
+    @Test
+    public void generate_periods_in_this_year() {
+        calendar.set(2019, 7, 29);
+
+        List<Period> sixMonthlyPeriods = NMonthlyPeriodGeneratorFactory.sixMonthly(calendar).generatePeriodsInYear(0);
+        assertThat(sixMonthlyPeriods.size()).isEqualTo(2);
+        assertThat(sixMonthlyPeriods.get(0).periodId()).isEqualTo("2019S1");
+        assertThat(sixMonthlyPeriods.get(1).periodId()).isEqualTo("2019S2");
+
+        List<Period> aprilPeriods = NMonthlyPeriodGeneratorFactory.sixMonthlyApril(calendar).generatePeriodsInYear(0);
+        assertThat(aprilPeriods.size()).isEqualTo(2);
+        assertThat(aprilPeriods.get(0).periodId()).isEqualTo("2019AprilS1");
+        assertThat(aprilPeriods.get(1).periodId()).isEqualTo("2019AprilS2");
+
+        List<Period> novPeriods = NMonthlyPeriodGeneratorFactory.sixMonthlyNov(calendar).generatePeriodsInYear(0);
+        assertThat(novPeriods.size()).isEqualTo(2);
+        assertThat(novPeriods.get(0).periodId()).isEqualTo("2019NovS1");
+        assertThat(novPeriods.get(1).periodId()).isEqualTo("2019NovS2");
+    }
+
+    @Test
+    public void generate_periods_in_last_year() {
+        calendar.set(2019, 7, 29);
+
+        List<Period> sixMonthlyPeriods = NMonthlyPeriodGeneratorFactory.sixMonthly(calendar).generatePeriodsInYear(-1);
+        assertThat(sixMonthlyPeriods.size()).isEqualTo(2);
+        assertThat(sixMonthlyPeriods.get(0).periodId()).isEqualTo("2018S1");
+        assertThat(sixMonthlyPeriods.get(1).periodId()).isEqualTo("2018S2");
+
+        List<Period> aprilPeriods = NMonthlyPeriodGeneratorFactory.sixMonthlyApril(calendar).generatePeriodsInYear(-1);
+        assertThat(aprilPeriods.size()).isEqualTo(2);
+        assertThat(aprilPeriods.get(0).periodId()).isEqualTo("2018AprilS1");
+        assertThat(aprilPeriods.get(1).periodId()).isEqualTo("2018AprilS2");
+
+        List<Period> novPeriods = NMonthlyPeriodGeneratorFactory.sixMonthlyNov(calendar).generatePeriodsInYear(-1);
+        assertThat(novPeriods.size()).isEqualTo(2);
+        assertThat(novPeriods.get(0).periodId()).isEqualTo("2018NovS1");
+        assertThat(novPeriods.get(1).periodId()).isEqualTo("2018NovS2");
+    }
 }

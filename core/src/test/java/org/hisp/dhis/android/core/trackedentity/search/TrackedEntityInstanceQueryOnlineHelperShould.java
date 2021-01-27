@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity.search;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper;
+import org.hisp.dhis.android.core.period.internal.CalendarProvider;
 import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory;
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl;
 import org.junit.Before;
@@ -55,8 +56,10 @@ public class TrackedEntityInstanceQueryOnlineHelperShould {
         queryBuilder = TrackedEntityInstanceQueryRepositoryScope.builder()
                 .orgUnits(Collections.singletonList("uid"));
 
+        CalendarProvider calendarProvider = CalendarProviderFactory.getCalendarProvider();
+
         DateFilterPeriodHelper periodHelper =
-                new DateFilterPeriodHelper(ParentPeriodGeneratorImpl.create(CalendarProviderFactory.getCalendarProvider()));
+                new DateFilterPeriodHelper(calendarProvider, ParentPeriodGeneratorImpl.create(calendarProvider));
 
         onlineHelper = new TrackedEntityInstanceQueryOnlineHelper(periodHelper);
     }

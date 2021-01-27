@@ -36,14 +36,14 @@ import org.junit.Test
 
 class DateFilterPeriodHelperShould {
 
-    private val refDate = DateUtils.DATE_FORMAT.parse("2020-02-01T12:34:56.123")
-
     private lateinit var dateFilterPeriodHelper: DateFilterPeriodHelper
 
     @Before
     fun setUp() {
+        val calendarProvider = CalendarProviderFactory.createFixed()
+
         dateFilterPeriodHelper =
-            DateFilterPeriodHelper(ParentPeriodGeneratorImpl.create(CalendarProviderFactory.getCalendarProvider()))
+            DateFilterPeriodHelper(calendarProvider, ParentPeriodGeneratorImpl.create(calendarProvider))
     }
 
     @Test
@@ -53,7 +53,7 @@ class DateFilterPeriodHelperShould {
             .startDate(DateUtils.DATE_FORMAT.parse("2020-01-20T00:00:00.000"))
             .build()
 
-        val startDate = dateFilterPeriodHelper.getStartDate(filter, refDate)
+        val startDate = dateFilterPeriodHelper.getStartDate(filter)
 
         assertThat(startDate).isEqualTo(filter.startDate())
     }
@@ -65,9 +65,9 @@ class DateFilterPeriodHelperShould {
             .startBuffer(-5)
             .build()
 
-        val startDate = dateFilterPeriodHelper.getStartDate(filter, refDate)
+        val startDate = dateFilterPeriodHelper.getStartDate(filter)
 
-        assertThat(startDate).isEqualTo(DateUtils.DATE_FORMAT.parse("2020-01-27T12:34:56.123"))
+        assertThat(startDate).isEqualTo(DateUtils.DATE_FORMAT.parse("2019-12-5T10:30:00.000"))
     }
 
     @Test
@@ -77,7 +77,7 @@ class DateFilterPeriodHelperShould {
             .endDate(DateUtils.DATE_FORMAT.parse("2020-01-20T00:00:00.000"))
             .build()
 
-        val endDate = dateFilterPeriodHelper.getEndDate(filter, refDate)
+        val endDate = dateFilterPeriodHelper.getEndDate(filter)
 
         assertThat(endDate).isEqualTo(filter.endDate())
     }
@@ -89,8 +89,22 @@ class DateFilterPeriodHelperShould {
             .endBuffer(-2)
             .build()
 
-        val endDate = dateFilterPeriodHelper.getEndDate(filter, refDate)
+        val endDate = dateFilterPeriodHelper.getEndDate(filter)
 
-        assertThat(endDate).isEqualTo(DateUtils.DATE_FORMAT.parse("2020-01-30T12:34:56.123"))
+        assertThat(endDate).isEqualTo(DateUtils.DATE_FORMAT.parse("2019-12-8T10:30:00.000"))
+    }
+
+    @Test
+    fun should_return_relative_date() {
+        val filter = DateFilterPeriod.builder()
+            .type(DatePeriodType.RELATIVE)
+            .period(RelativePeriod.LAST_3_DAYS)
+            .build()
+
+        val startDate = dateFilterPeriodHelper.getStartDate(filter)
+        val endDate = dateFilterPeriodHelper.getEndDate(filter)
+
+        assertThat(startDate).isEqualTo(DateUtils.DATE_FORMAT.parse("2019-12-7T00:00:00.000"))
+        assertThat(endDate).isEqualTo(DateUtils.DATE_FORMAT.parse("2019-12-9T23:59:59.999"))
     }
 }

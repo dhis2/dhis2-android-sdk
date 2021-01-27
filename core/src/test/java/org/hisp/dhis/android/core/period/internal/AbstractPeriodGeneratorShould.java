@@ -54,6 +54,11 @@ public class AbstractPeriodGeneratorShould {
             }
 
             @Override
+            protected void moveToStartOfCurrentYear() {
+
+            }
+
+            @Override
             protected void movePeriods(int number) {
 
             }

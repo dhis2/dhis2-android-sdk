@@ -53,6 +53,12 @@ final class YearlyPeriodGenerator extends AbstractPeriodGenerator {
     }
 
     @Override
+    protected void moveToStartOfCurrentYear() {
+        calendar.set(Calendar.DATE, 1);
+        calendar.set(Calendar.MONTH, firstMonth);
+    }
+
+    @Override
     protected String generateId() {
         if (periodType == PeriodType.FinancialNov) {
             calendar.add(Calendar.YEAR, +1);

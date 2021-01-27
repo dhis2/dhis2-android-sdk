@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.period.internal;
 
 import com.google.common.collect.Lists;
 
+import org.apache.commons.lang3.builder.ToStringExclude;
 import org.hisp.dhis.android.core.period.Period;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.junit.Test;
@@ -114,6 +115,30 @@ public class MonthlyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
         PeriodGenerator biMonthlyGenerator = NMonthlyPeriodGeneratorFactory.biMonthly(calendar);
         assertThat("201905B").isEqualTo(biMonthlyGenerator.generatePeriod(dateFormatter.parse("2019-06-30"), 2).periodId());
         assertThat("201903B").isEqualTo(biMonthlyGenerator.generatePeriod(dateFormatter.parse("2019-07-01"), -1).periodId());
+    }
+
+    @Test
+    public void generate_periods_in_this_year() {
+        calendar.set(2019, 7, 29);
+        PeriodGenerator generator = new MonthlyPeriodGenerator(calendar);
+
+        List<Period> periods = generator.generatePeriodsInYear(0);
+
+        assertThat(periods.size()).isEqualTo(12);
+        assertThat(periods.get(0).periodId()).isEqualTo("201901");
+        assertThat(periods.get(11).periodId()).isEqualTo("201912");
+    }
+
+    @Test
+    public void generate_periods_in_last_year() {
+        calendar.set(2019, 7, 29);
+        PeriodGenerator generator = new MonthlyPeriodGenerator(calendar);
+
+        List<Period> periods = generator.generatePeriodsInYear(-1);
+
+        assertThat(periods.size()).isEqualTo(12);
+        assertThat(periods.get(0).periodId()).isEqualTo("201801");
+        assertThat(periods.get(11).periodId()).isEqualTo("201812");
     }
 
     @Override

@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.arch.cache.internal.ExpirableCache;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper;
+import org.hisp.dhis.android.core.period.internal.CalendarProvider;
 import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory;
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator;
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl;
@@ -88,8 +89,10 @@ public class TrackedEntityInstanceQueryDataSourceShould {
     @Mock
     private ItemKeyedDataSource.LoadInitialCallback<TrackedEntityInstance> initialCallback;
 
+    private final CalendarProvider calendarProvider = CalendarProviderFactory.getCalendarProvider();
+
     private final DateFilterPeriodHelper periodHelper =
-            new DateFilterPeriodHelper(ParentPeriodGeneratorImpl.create(CalendarProviderFactory.getCalendarProvider()));
+            new DateFilterPeriodHelper(calendarProvider, ParentPeriodGeneratorImpl.create(calendarProvider));
 
     private final TrackedEntityInstanceQueryOnlineHelper onlineHelper =
             new TrackedEntityInstanceQueryOnlineHelper(periodHelper);

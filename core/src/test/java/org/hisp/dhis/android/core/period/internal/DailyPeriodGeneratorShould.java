@@ -107,4 +107,28 @@ public class DailyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
         assertThat("20200101").isEqualTo(dailyGenerator.generatePeriod(dateFormatter.parse("2019-12-30"), 2).periodId());
         assertThat("20191229").isEqualTo(dailyGenerator.generatePeriod(dateFormatter.parse("2020-01-02"), -4).periodId());
     }
+
+    @Test
+    public void generate_periods_in_this_year() {
+        calendar.set(2020, 7, 29);
+        PeriodGenerator generator = new DailyPeriodGenerator(calendar);
+
+        List<Period> periods = generator.generatePeriodsInYear(0);
+
+        assertThat(periods.size()).isEqualTo(366);
+        assertThat(periods.get(0).periodId()).isEqualTo("20200101");
+        assertThat(periods.get(365).periodId()).isEqualTo("20201231");
+    }
+
+    @Test
+    public void generate_periods_in_last_year() {
+        calendar.set(2020, 7, 29);
+        PeriodGenerator generator = new DailyPeriodGenerator(calendar);
+
+        List<Period> periods = generator.generatePeriodsInYear(-1);
+
+        assertThat(periods.size()).isEqualTo(365);
+        assertThat(periods.get(0).periodId()).isEqualTo("20190101");
+        assertThat(periods.get(364).periodId()).isEqualTo("20191231");
+    }
 }

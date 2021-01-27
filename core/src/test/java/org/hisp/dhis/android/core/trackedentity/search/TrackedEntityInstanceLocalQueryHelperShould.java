@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.common.DateFilterPeriodHelper;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
+import org.hisp.dhis.android.core.period.internal.CalendarProvider;
 import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory;
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl;
 import org.junit.Before;
@@ -63,8 +64,9 @@ public class TrackedEntityInstanceLocalQueryHelperShould {
     public void setUp() {
         queryBuilder = TrackedEntityInstanceQueryRepositoryScope.builder();
 
+        CalendarProvider calendarProvider = CalendarProviderFactory.getCalendarProvider();
         DateFilterPeriodHelper periodHelper =
-                new DateFilterPeriodHelper(ParentPeriodGeneratorImpl.create(CalendarProviderFactory.getCalendarProvider()));
+                new DateFilterPeriodHelper(calendarProvider, ParentPeriodGeneratorImpl.create(calendarProvider));
 
         localQueryHelper = new TrackedEntityInstanceLocalQueryHelper(periodHelper);
     }

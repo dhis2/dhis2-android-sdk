@@ -65,11 +65,14 @@ internal class ParentPeriodGeneratorImpl(
 
     override fun generateRelativePeriods(relativePeriod: RelativePeriod): List<Period> {
         val periodGenerator = getPeriodGenerator(relativePeriod.periodType)
+
         return when {
             relativePeriod.start != null && relativePeriod.end != null ->
                 periodGenerator.generatePeriods(relativePeriod.start, relativePeriod.end)
-            relativePeriod.periodsLastYear || relativePeriod.periodsThisYear ->
-                TODO("Implement")
+            relativePeriod.periodsThisYear ->
+                periodGenerator.generatePeriodsInYear(0)
+            relativePeriod.periodsLastYear ->
+                periodGenerator.generatePeriodsInYear(-1)
             else ->
                 emptyList()
         }

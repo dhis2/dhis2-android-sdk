@@ -153,4 +153,28 @@ public class QuarterPeriodGeneratorShould extends PeriodGeneratorBaseShould {
         assertThat("2019Q3").isEqualTo(quarterGenerator.generatePeriod(dateFormatter.parse("2019-06-30"), 1).periodId());
         assertThat("2019Q2").isEqualTo(quarterGenerator.generatePeriod(dateFormatter.parse("2019-07-01"), -1).periodId());
     }
+
+    @Test
+    public void generate_periods_in_this_year() {
+        calendar.set(2019, 7, 29);
+        PeriodGenerator generator = NMonthlyPeriodGeneratorFactory.quarter(calendar);
+
+        List<Period> periods = generator.generatePeriodsInYear(0);
+
+        assertThat(periods.size()).isEqualTo(4);
+        assertThat(periods.get(0).periodId()).isEqualTo("2019Q1");
+        assertThat(periods.get(3).periodId()).isEqualTo("2019Q4");
+    }
+
+    @Test
+    public void generate_periods_in_last_year() {
+        calendar.set(2019, 7, 29);
+        PeriodGenerator generator = NMonthlyPeriodGeneratorFactory.quarter(calendar);
+
+        List<Period> periods = generator.generatePeriodsInYear(-1);
+
+        assertThat(periods.size()).isEqualTo(4);
+        assertThat(periods.get(0).periodId()).isEqualTo("2018Q1");
+        assertThat(periods.get(3).periodId()).isEqualTo("2018Q4");
+    }
 }

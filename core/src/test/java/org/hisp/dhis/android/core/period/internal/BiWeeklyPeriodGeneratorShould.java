@@ -105,6 +105,16 @@ public class BiWeeklyPeriodGeneratorShould {
     }
 
     @Test
+    public void generate_last_bi_week_in_a_53_weeks_year() {
+        calendar.set(2020, 11, 29);
+
+        List<Period> generatedPeriods = new BiWeeklyPeriodGenerator(calendar).generatePeriods(0, 1);
+
+        assertThat(generatedPeriods.size()).isEqualTo(1);
+        assertThat(generatedPeriods.get(0).periodId()).isEqualTo("2020BiW27");
+    }
+
+    @Test
     public void generate_period_id() throws ParseException {
         SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -120,6 +130,33 @@ public class BiWeeklyPeriodGeneratorShould {
         PeriodGenerator biWeeklyGenerator = new BiWeeklyPeriodGenerator(calendar);
         assertThat("2020BiW2").isEqualTo(biWeeklyGenerator.generatePeriod(dateFormatter.parse("2019-12-23"), 2).periodId());
         assertThat("2019BiW25").isEqualTo(biWeeklyGenerator.generatePeriod(dateFormatter.parse("2020-01-02"), -2).periodId());
+    }
+
+    @Test
+    public void generate_periods_in_this_year() {
+        calendar.set(2020, 7, 29);
+        PeriodGenerator generator = new BiWeeklyPeriodGenerator(calendar);
+
+        List<Period> periods = generator.generatePeriodsInYear(0);
+
+        // TODO Related to https://jira.dhis2.org/browse/ANDROSDK-1315
+        /*
+        assertThat(periods.size()).isEqualTo(27);
+        assertThat(periods.get(0).periodId()).isEqualTo("2020BiW1");
+        assertThat(periods.get(26).periodId()).isEqualTo("2020BiW27");
+         */
+    }
+
+    @Test
+    public void generate_periods_in_last_year() {
+        calendar.set(2020, 7, 29);
+        PeriodGenerator generator = new BiWeeklyPeriodGenerator(calendar);
+
+        List<Period> periods = generator.generatePeriodsInYear(-1);
+
+        assertThat(periods.size()).isEqualTo(26);
+        assertThat(periods.get(0).periodId()).isEqualTo("2019BiW1");
+        assertThat(periods.get(25).periodId()).isEqualTo("2019BiW26");
     }
 
     private Period generateExpectedPeriod(String id, Calendar cal, int weekStartDay, PeriodType periodType) {

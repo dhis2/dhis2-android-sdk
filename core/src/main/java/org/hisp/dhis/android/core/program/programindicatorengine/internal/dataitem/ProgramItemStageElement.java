@@ -55,12 +55,21 @@ public class ProgramItemStageElement
         if (eventList != null) {
             List<TrackedEntityDataValue> candidates = getCandidates(eventList, dataElementId);
 
-            AggregationType aggregationType = visitor.getProgramIndicatorContext().programIndicator().aggregationType();
+            AggregationType aggregationType =
+                    visitor.getProgramIndicatorContext().programIndicator().aggregationType();
 
             if (!candidates.isEmpty()) {
                 if (AggregationType.LAST.equals(aggregationType) ||
                         AggregationType.LAST_AVERAGE_ORG_UNIT.equals(aggregationType)) {
                     value = candidates.get(candidates.size() - 1).value();
+                } else if (AggregationType.AVERAGE.equals(aggregationType)) {
+                    double average = avg(extractValues(candidates));
+
+                    value = String.valueOf(average);
+                } else if (AggregationType.SUM.equals(aggregationType)) {
+                    double sum = sum(extractValues(candidates));
+
+                    value = String.valueOf(sum);
                 } else {
                     value = candidates.get(0).value();
                 }
@@ -70,6 +79,36 @@ public class ProgramItemStageElement
         DataElement dataElement = visitor.getDataElementStore().selectByUid(dataElementId);
 
         return formatValue(String.valueOf(visitor.handleNulls(value)), dataElement.valueType());
+    }
+
+    private Number[] extractValues(List<TrackedEntityDataValue> teDataValues) {
+        List<Number> values = new ArrayList<>();
+
+        for (TrackedEntityDataValue teDataValue : teDataValues) {
+            values.add(Double.parseDouble(teDataValue.value()));
+        }
+
+        return values.toArray(new Number[0]);
+    }
+
+    public Double sum(Number... values) {
+        if (values == null || values.length == 0) {
+            throw new IllegalArgumentException("Argument is null or empty");
+        }
+
+        double sum = 0.0;
+
+        for (Number number : values) {
+            sum = sum + number.doubleValue();
+        }
+
+        return sum;
+    }
+
+    public Double avg(Number... values) {
+        double sum = sum(values);
+
+        return sum/values.length;
     }
 
     private List<TrackedEntityDataValue> getCandidates(List<Event> events, String dataElement) {

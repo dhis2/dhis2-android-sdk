@@ -4,19 +4,21 @@ import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.mock
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.event.EventFilterCollectionRepository
 import org.junit.Before
 import org.junit.Test
 
 class EventQueryCollectionRepositoryShould {
 
     private val adapter: EventCollectionRepositoryAdapter = mock()
+    private val filterRepository: EventFilterCollectionRepository = mock()
 
     private lateinit var queryRepository: EventQueryCollectionRepository
 
     @Before
     fun setUp() {
         val emptyScope = EventQueryRepositoryScope.empty()
-        queryRepository = EventQueryCollectionRepository(adapter, emptyScope)
+        queryRepository = EventQueryCollectionRepository(adapter, filterRepository, emptyScope)
     }
 
     @Test

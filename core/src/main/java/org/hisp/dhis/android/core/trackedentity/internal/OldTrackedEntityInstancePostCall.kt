@@ -42,7 +42,7 @@ import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
 @Reusable
-internal class TrackedEntityInstancePostCall @Inject internal constructor(
+internal class OldTrackedEntityInstancePostCall @Inject internal constructor(
     private val payloadGenerator: TrackedEntityInstancePostPayloadGenerator,
     private val stateManager: TrackedEntityInstancePostStateManager,
     private val versionManager: DHISVersionManager,
@@ -54,44 +54,40 @@ internal class TrackedEntityInstancePostCall @Inject internal constructor(
     fun uploadTrackedEntityInstances(
         filteredTrackedEntityInstances: List<TrackedEntityInstance>
     ): Observable<D2Progress> {
-        return if (filteredTrackedEntityInstances.isEmpty()) {
-            Observable.empty<D2Progress>()
-        } else {
-            Observable.create { emitter: ObservableEmitter<D2Progress> ->
-                val strategy = if (versionManager.is2_29) "CREATE_AND_UPDATE" else "SYNC"
-                val teiPartitions = payloadGenerator.getTrackedEntityInstancesPartitions(filteredTrackedEntityInstances)
-                val progressManager = D2ProgressManager(teiPartitions.size)
-                for (partition in teiPartitions) {
-                    val thisPartition = relationshipDeleteCall.postDeletedRelationships(partition)
-                    val trackedEntityInstancePayload = TrackedEntityInstancePayload.create(thisPartition)
-                    try {
-                        val webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
-                            trackedEntityInstanceService.postTrackedEntityInstances(
-                                trackedEntityInstancePayload, strategy
-                            ),
-                            @Suppress("MagicNumber")
-                            listOf(409),
-                            TEIWebResponse::class.java
-                        )
-                        teiWebResponseHandler.handleWebResponse(webResponse)
-                        emitter.onNext(progressManager.increaseProgress(TrackedEntityInstance::class.java, false))
-                    } catch (d2Error: D2Error) {
-                        stateManager.restorePartitionStates(thisPartition)
-                        if (d2Error.isOffline) {
-                            emitter.onError(d2Error)
-                            break
-                        } else {
-                            emitter.onNext(
-                                progressManager.increaseProgress(
-                                    TrackedEntityInstance::class.java,
-                                    false
-                                )
+        return Observable.create { emitter: ObservableEmitter<D2Progress> ->
+            val strategy = if (versionManager.is2_29) "CREATE_AND_UPDATE" else "SYNC"
+            val teiPartitions = payloadGenerator.getTrackedEntityInstancesPartitions(filteredTrackedEntityInstances)
+            val progressManager = D2ProgressManager(teiPartitions.size)
+            for (partition in teiPartitions) {
+                val thisPartition = relationshipDeleteCall.postDeletedRelationships(partition)
+                val trackedEntityInstancePayload = TrackedEntityInstancePayload.create(thisPartition)
+                try {
+                    val webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
+                        trackedEntityInstanceService.postTrackedEntityInstances(
+                            trackedEntityInstancePayload, strategy
+                        ),
+                        @Suppress("MagicNumber")
+                        listOf(409),
+                        TEIWebResponse::class.java
+                    )
+                    teiWebResponseHandler.handleWebResponse(webResponse)
+                    emitter.onNext(progressManager.increaseProgress(TrackedEntityInstance::class.java, false))
+                } catch (d2Error: D2Error) {
+                    stateManager.restorePartitionStates(thisPartition)
+                    if (d2Error.isOffline) {
+                        emitter.onError(d2Error)
+                        break
+                    } else {
+                        emitter.onNext(
+                            progressManager.increaseProgress(
+                                TrackedEntityInstance::class.java,
+                                false
                             )
-                        }
+                        )
                     }
                 }
-                emitter.onComplete()
             }
+            emitter.onComplete()
         }
     }
 }

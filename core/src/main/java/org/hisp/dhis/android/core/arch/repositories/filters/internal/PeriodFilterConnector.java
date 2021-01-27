@@ -33,6 +33,7 @@ import androidx.annotation.NonNull;
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
 import org.hisp.dhis.android.core.common.DateFilterPeriod;
 import org.hisp.dhis.android.core.common.DatePeriodType;
+import org.hisp.dhis.android.core.common.RelativePeriod;
 import org.hisp.dhis.android.core.period.DatePeriod;
 import org.hisp.dhis.android.core.period.Period;
 
@@ -91,6 +92,19 @@ public final class PeriodFilterConnector<R extends BaseRepository> {
     private R inPeriod(@NonNull Date startDate, @NonNull Date endDate) {
         DateFilterPeriod filter = DateFilterPeriod.builder()
                 .startDate(startDate).endDate(endDate).type(DatePeriodType.ABSOLUTE).build();
+        return repositoryFactory.updated(filter);
+    }
+
+    /**
+     * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+     * The inRelativePeriod filter checks if the given field has a date value which is within the provided
+     * RelativePeriod.
+     * @param relativePeriod relative period to compare with the target field
+     * @return the new repository
+     */
+    public R inRelativePeriod(@NonNull RelativePeriod relativePeriod) {
+        DateFilterPeriod filter = DateFilterPeriod.builder()
+                .period(relativePeriod).type(DatePeriodType.RELATIVE).build();
         return repositoryFactory.updated(filter);
     }
 }

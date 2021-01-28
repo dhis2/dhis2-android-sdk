@@ -26,44 +26,40 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.trackedentity;
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+public final class ReservedValueSettingTableInfo {
 
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 91;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    private ReservedValueSettingTableInfo() {
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "ReservedValueSetting";
         }
 
-        databaseAdapter.enableWriteAheadLogging();
-    }
+        @Override
+        public Columns columns() {
+            return new Columns();
+        }
+    };
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
+    public static class Columns extends CoreColumns {
+        public static final String UID = "uid";
+        public static final String NUMBER_OF_VALUES_TO_RESERVE = "numberOfValuesToReserve";
 
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+        @Override
+        public String[] all() {
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    UID,
+                    NUMBER_OF_VALUES_TO_RESERVE
+            );
+        }
     }
 }

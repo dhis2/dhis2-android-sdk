@@ -174,6 +174,10 @@ public final class EventQueryCollectionRepository implements ReadOnlyWithUidColl
         return connectorFactory.listConnector(states -> scope.toBuilder().states(states).build());
     }
 
+    public ListFilterConnector<EventQueryCollectionRepository, String> byAttributeOptionCombo() {
+        return connectorFactory.listConnector(aoc -> scope.toBuilder().attributeOptionCombos(aoc).build());
+    }
+
     public EqFilterConnector<EventQueryCollectionRepository,
             RepositoryScope.OrderByDirection> orderByEventDate() {
         return orderConnector(EventQueryScopeOrderColumn.EVENT_DATE);

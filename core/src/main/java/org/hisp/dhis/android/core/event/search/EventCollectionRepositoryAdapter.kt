@@ -83,6 +83,7 @@ internal class EventCollectionRepositoryAdapter @Inject constructor(
         }
 
         scope.states()?.let { repository = repository.byState().`in`(it) }
+        scope.attributeOptionCombos()?.let { repository = repository.byAttributeOptionComboUid().`in`(it) }
 
         return repository
     }

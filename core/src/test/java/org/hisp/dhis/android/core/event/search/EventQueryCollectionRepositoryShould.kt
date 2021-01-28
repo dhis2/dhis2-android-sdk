@@ -40,7 +40,7 @@ class EventQueryCollectionRepositoryShould {
     @Test
     fun `Should create scope with relative event date`() {
         val scope = queryRepository
-            .byEventDate().inRelativePeriod(RelativePeriod.LAST_3_DAYS)
+            .byEventDate().inPeriod(RelativePeriod.LAST_3_DAYS)
             .scope
 
         assertThat(scope.eventDate()?.period()).isEqualTo(RelativePeriod.LAST_3_DAYS)

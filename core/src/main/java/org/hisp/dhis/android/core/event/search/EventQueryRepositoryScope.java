@@ -103,6 +103,9 @@ public abstract class EventQueryRepositoryScope implements BaseScope {
     @Nullable
     public abstract List<State> states();
 
+    @Nullable
+    public abstract List<String> attributeOptionCombos();
+
     abstract Builder toBuilder();
 
     static Builder builder() {
@@ -157,6 +160,8 @@ public abstract class EventQueryRepositoryScope implements BaseScope {
         public abstract Builder includeDeleted(Boolean includeDeleted);
 
         public abstract Builder states(List<State> states);
+
+        public abstract Builder attributeOptionCombos(List<String> attributeOptionCombos);
 
         abstract EventQueryRepositoryScope autoBuild();
 

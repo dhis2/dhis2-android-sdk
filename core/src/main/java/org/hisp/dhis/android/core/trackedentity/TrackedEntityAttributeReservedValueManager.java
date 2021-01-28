@@ -401,16 +401,16 @@ public final class TrackedEntityAttributeReservedValueManager {
 
     private Integer getFillUpToValue(Integer minNumberOfValuesToHave, String attribute) {
         if (minNumberOfValuesToHave == null) {
-            GeneralSettings generalSettings = generalSettingObjectRepository.blockingGet();
-            if (generalSettings == null || generalSettings.reservedValues() == null) {
-                ReservedValueSetting reservedValueSetting = reservedValueSettingStore.selectByUid(attribute);
-                if (reservedValueSetting == null || reservedValueSetting.numberOfValuesToReserve() == null) {
+            ReservedValueSetting reservedValueSetting = reservedValueSettingStore.selectByUid(attribute);
+            if (reservedValueSetting == null || reservedValueSetting.numberOfValuesToReserve() == null) {
+                GeneralSettings generalSettings = generalSettingObjectRepository.blockingGet();
+                if (generalSettings == null || generalSettings.reservedValues() == null) {
                     return FILL_UP_TO;
                 } else {
-                    return reservedValueSetting.numberOfValuesToReserve();
+                    return generalSettings.reservedValues();
                 }
             } else {
-                return generalSettings.reservedValues();
+                return reservedValueSetting.numberOfValuesToReserve();
             }
         } else {
             this.reservedValueSettingStore.updateOrInsert(ReservedValueSetting.builder()

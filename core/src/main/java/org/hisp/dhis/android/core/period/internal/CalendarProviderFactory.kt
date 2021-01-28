@@ -25,11 +25,38 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.period.internal
 
-package org.hisp.dhis.android.core.period.internal;
+import java.util.*
 
-import java.util.Calendar;
+internal object CalendarProviderFactory {
 
-interface CalendarProvider {
-   Calendar getCalendar();
+    @JvmStatic
+    var calendarProvider: CalendarProvider = RegularCalendarProvider()
+        private set
+
+    @JvmStatic
+    fun setRegular() {
+        calendarProvider = RegularCalendarProvider()
+    }
+
+    @JvmStatic
+    fun setFixed() {
+        calendarProvider = createFixed()
+    }
+
+    @JvmStatic
+    @Suppress("MagicNumber")
+    fun createFixed(): CalendarProvider {
+        val calendar = Calendar.getInstance()
+        calendar[Calendar.YEAR] = 2019
+        calendar[Calendar.MONTH] = 11
+        calendar[Calendar.DATE] = 10
+
+        calendar[Calendar.HOUR_OF_DAY] = 10
+        calendar[Calendar.MINUTE] = 30
+        calendar[Calendar.SECOND] = 0
+        calendar[Calendar.MILLISECOND] = 0
+        return FixedCalendarProvider(calendar)
+    }
 }

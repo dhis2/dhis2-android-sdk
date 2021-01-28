@@ -40,7 +40,8 @@ import org.hisp.dhis.android.core.user.AuthenticatedUserObjectRepository
 internal class EventCollectionRepositoryAdapter @Inject constructor(
     private val eventCollectionRepository: EventCollectionRepository,
     private val organisationUnitCollectionRepository: OrganisationUnitCollectionRepository,
-    private val userRepository: AuthenticatedUserObjectRepository
+    private val userRepository: AuthenticatedUserObjectRepository,
+    private val dateFilterPeriodHelper: DateFilterPeriodHelper
 ) {
 
     @Suppress("ComplexMethod")
@@ -59,20 +60,20 @@ internal class EventCollectionRepositoryAdapter @Inject constructor(
         scope.events()?.let { repository = repository.byUid().`in`(it) }
         scope.eventStatus()?.let { repository = repository.byStatus().eq(it) }
         scope.eventDate()?.let { period ->
-            DateFilterPeriodHelper.getStartDate(period)?.let { repository = repository.byEventDate().after(it) }
-            DateFilterPeriodHelper.getEndDate(period)?.let { repository = repository.byEventDate().before(it) }
+            dateFilterPeriodHelper.getStartDate(period)?.let { repository = repository.byEventDate().after(it) }
+            dateFilterPeriodHelper.getEndDate(period)?.let { repository = repository.byEventDate().before(it) }
         }
         scope.dueDate()?.let { period ->
-            DateFilterPeriodHelper.getStartDate(period)?.let { repository = repository.byDueDate().after(it) }
-            DateFilterPeriodHelper.getEndDate(period)?.let { repository = repository.byDueDate().before(it) }
+            dateFilterPeriodHelper.getStartDate(period)?.let { repository = repository.byDueDate().after(it) }
+            dateFilterPeriodHelper.getEndDate(period)?.let { repository = repository.byDueDate().before(it) }
         }
         scope.lastUpdatedDate()?.let { period ->
-            DateFilterPeriodHelper.getStartDate(period)?.let { repository = repository.byLastUpdated().after(it) }
-            DateFilterPeriodHelper.getEndDate(period)?.let { repository = repository.byLastUpdated().before(it) }
+            dateFilterPeriodHelper.getStartDate(period)?.let { repository = repository.byLastUpdated().after(it) }
+            dateFilterPeriodHelper.getEndDate(period)?.let { repository = repository.byLastUpdated().before(it) }
         }
         scope.completedDate()?.let { period ->
-            DateFilterPeriodHelper.getStartDate(period)?.let { repository = repository.byCompleteDate().after(it) }
-            DateFilterPeriodHelper.getEndDate(period)?.let { repository = repository.byCompleteDate().before(it) }
+            dateFilterPeriodHelper.getStartDate(period)?.let { repository = repository.byCompleteDate().after(it) }
+            dateFilterPeriodHelper.getEndDate(period)?.let { repository = repository.byCompleteDate().before(it) }
         }
         scope.order().forEach { repository = applyOrderColumn(repository, it) }
 

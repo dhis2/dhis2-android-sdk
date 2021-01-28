@@ -81,7 +81,7 @@ public abstract class EventQueryRepositoryScope implements BaseScope {
     public abstract List<String> events();
 
     @Nullable
-    public abstract EventStatus eventStatus();
+    public abstract List<EventStatus> eventStatus();
 
     @Nullable
     public abstract DateFilterPeriod eventDate();
@@ -140,7 +140,7 @@ public abstract class EventQueryRepositoryScope implements BaseScope {
 
         public abstract Builder events(List<String> events);
 
-        public abstract Builder eventStatus(EventStatus eventStatus);
+        public abstract Builder eventStatus(List<EventStatus> eventStatus);
 
         public abstract Builder eventDate(DateFilterPeriod eventDate);
 

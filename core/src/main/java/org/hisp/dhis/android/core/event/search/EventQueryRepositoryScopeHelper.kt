@@ -50,7 +50,7 @@ internal object EventQueryRepositoryScopeHelper {
             criteria.order()?.let { builder.order(parseOrderString(it)) }
             criteria.dataFilters()?.let { builder.dataFilters(it) }
             criteria.events()?.let { builder.events(it) }
-            criteria.eventStatus()?.let { builder.eventStatus(it) }
+            criteria.eventStatus()?.let { builder.eventStatus(listOf(it)) }
             criteria.eventDate()?.let { builder.eventDate(it) }
             criteria.dueDate()?.let { builder.dueDate(it) }
             criteria.lastUpdatedDate()?.let { builder.lastUpdatedDate(it) }

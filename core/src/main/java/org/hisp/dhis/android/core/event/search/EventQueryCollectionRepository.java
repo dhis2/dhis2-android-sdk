@@ -88,8 +88,15 @@ public final class EventQueryCollectionRepository implements ReadOnlyWithUidColl
         });
     }
 
-    public EqFilterConnector<EventQueryCollectionRepository, EventStatus> byStatus() {
-        return connectorFactory.eqConnector(status -> scope.toBuilder().eventStatus(status).build());
+    /**
+     * Filter by event status.
+     * <br><b>IMPORTANT:</b> this filter accepts a list of event status, but only the first one will be used for
+     * the online query because the web API does not support querying by multiple status.
+     *
+     * @return Repository connector
+     */
+    public ListFilterConnector<EventQueryCollectionRepository, EventStatus> byStatus() {
+        return connectorFactory.listConnector(status -> scope.toBuilder().eventStatus(status).build());
     }
 
     public EqFilterConnector<EventQueryCollectionRepository, String> byProgram() {

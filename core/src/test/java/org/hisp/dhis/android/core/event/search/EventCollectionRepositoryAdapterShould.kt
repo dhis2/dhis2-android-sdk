@@ -52,7 +52,7 @@ class EventCollectionRepositoryAdapterShould {
     @Test
     fun `Should get selected orgunit`() {
         val scope = EventQueryRepositoryScope.builder()
-            .orgUnits(orgunit)
+            .orgUnits(listOf(orgunit))
             .orgUnitMode(OrganisationUnitMode.SELECTED)
             .build()
 
@@ -73,7 +73,7 @@ class EventCollectionRepositoryAdapterShould {
     @Test
     fun `Should get descendants if DESCENDANTS mode`() {
         val scope = EventQueryRepositoryScope.builder()
-            .orgUnits(orgunit)
+            .orgUnits(listOf(orgunit))
             .orgUnitMode(OrganisationUnitMode.DESCENDANTS)
             .build()
 

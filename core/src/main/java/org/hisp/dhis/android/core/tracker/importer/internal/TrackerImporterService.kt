@@ -44,4 +44,7 @@ internal interface TrackerImporterService {
 
     @GET("tracker/jobs/{jobId}")
     fun getJob(@Path("jobId") jobId: String): Call<List<JobInfo>>
+
+    @GET("tracker/jobs/{jobId}/report")
+    fun getJobReport(@Path("jobId") jobId: String): Call<JobReport>
 }

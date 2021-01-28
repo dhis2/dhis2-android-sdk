@@ -90,6 +90,9 @@ internal class TrackerImporterPostCall @Inject internal constructor(
                     TrackedEntityInstance::class.java,
                     it
                 )
+            }.doOnComplete {
+                val jobReport = apiCallExecutor.executeObjectCall(service.getJobReport(jobId))
+                println(jobReport)
             }
     }
 }

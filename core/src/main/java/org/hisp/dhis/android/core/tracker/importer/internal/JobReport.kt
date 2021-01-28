@@ -25,32 +25,44 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.tracker.importer
+package org.hisp.dhis.android.core.tracker.importer.internal
 
-import com.google.common.truth.Truth.assertThat
-import java.io.IOException
-import java.text.ParseException
-import org.hisp.dhis.android.core.Inject
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject
-import org.hisp.dhis.android.core.common.BaseObjectShould
-import org.hisp.dhis.android.core.common.ObjectShould
-import org.hisp.dhis.android.core.tracker.importer.internal.JobInfo
-import org.junit.Test
+import com.fasterxml.jackson.annotation.JsonProperty
 
-class JobInfoShould : BaseObjectShould("tracker/importer/jobinfo.json"), ObjectShould {
+internal data class JobImportCount(
+    val created: Int,
+    val updated: Int,
+    val deleted: Int,
+    val ignored: Int,
+    val total: Int
+)
 
-    @Test
-    @Throws(IOException::class, ParseException::class)
-    override fun map_from_json_string() {
-        val objectMapper = Inject.objectMapper()
-        val jobInfo = objectMapper.readValue(jsonStream, JobInfo::class.java)
+internal data class JobValidationReport(
+    val errorReports: List<String> // TODO unknown actual type
+)
 
-        assertThat(jobInfo.id).isEqualTo("id")
-        assertThat(jobInfo.uid).isEqualTo("uid")
-        assertThat(jobInfo.level).isEqualTo("INFO")
-        assertThat(jobInfo.category).isEqualTo("TRACKER_IMPORT_JOB")
-        assertThat(jobInfo.time).isEqualTo(BaseIdentifiableObject.DATE_FORMAT.parse("2021-01-25T12:09:18.571"))
-        assertThat(jobInfo.message).isEqualTo("(android) Import:Done took 0.360910 sec.")
-        assertThat(jobInfo.completed).isTrue()
-    }
-}
+internal data class JobTypeReport(
+    val trackerType: String,
+    val stats: JobImportCount,
+    val objectReports: List<String> // TODO unknown actual type
+)
+
+internal data class JobTypeReportMap(
+    @JsonProperty("TRACKED_ENTITY") val trackedEntity: JobTypeReport,
+    @JsonProperty("EVENT") val event: JobTypeReport,
+    @JsonProperty("RELATIONSHIP") val relationship: JobTypeReport,
+    @JsonProperty("ENROLLMENT") val enrollment: JobTypeReport
+)
+
+internal data class JobBundleReport(
+    val status: String,
+    val typeReportMap: JobTypeReportMap,
+    val stats: JobImportCount
+) // TODO whats the difference with father
+
+internal data class JobReport(
+    val status: String,
+    val validationReport: JobValidationReport,
+    val stats: JobImportCount,
+    val bundleReport: JobBundleReport
+)

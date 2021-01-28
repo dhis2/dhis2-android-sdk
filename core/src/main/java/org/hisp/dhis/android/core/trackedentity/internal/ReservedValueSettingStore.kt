@@ -27,16 +27,14 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
 import org.hisp.dhis.android.core.trackedentity.ReservedValueSetting
 import org.hisp.dhis.android.core.trackedentity.ReservedValueSettingTableInfo
 
-object ReservedValueSettingStore {
+internal object ReservedValueSettingStore {
     private val BINDER = StatementBinder<ReservedValueSetting> { o, w ->
         w.bind(1, o.uid())
         w.bind(2, o.numberOfValuesToReserve())
@@ -44,7 +42,8 @@ object ReservedValueSettingStore {
 
     @JvmStatic
     fun create(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<ReservedValueSetting> {
-        return StoreFactory.objectWithUidStore(databaseAdapter, ReservedValueSettingTableInfo.TABLE_INFO, BINDER,
-                ObjectFactory { cursor: Cursor -> ReservedValueSetting.create(cursor) })
+        return StoreFactory.objectWithUidStore(
+            databaseAdapter, ReservedValueSettingTableInfo.TABLE_INFO, BINDER
+        ) { ReservedValueSetting.create(it) }
     }
 }

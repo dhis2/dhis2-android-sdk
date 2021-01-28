@@ -42,6 +42,8 @@ import org.hisp.dhis.android.core.common.DateFilterPeriod;
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventCollectionRepository;
+import org.hisp.dhis.android.core.event.EventFilter;
+import org.hisp.dhis.android.core.event.EventFilterCollectionRepository;
 import org.hisp.dhis.android.core.event.EventObjectRepository;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
@@ -60,16 +62,19 @@ public final class EventQueryCollectionRepository implements ReadOnlyWithUidColl
     private final EventCollectionRepositoryAdapter eventCollectionRepositoryAdapter;
     private final ScopedFilterConnectorFactory<EventQueryCollectionRepository,
             EventQueryRepositoryScope> connectorFactory;
+    private final EventFilterCollectionRepository eventFilterRepository;
 
     private final EventQueryRepositoryScope scope;
 
     @Inject
     EventQueryCollectionRepository(final EventCollectionRepositoryAdapter eventCollectionRepositoryAdapter,
+                                   final EventFilterCollectionRepository eventFilterRepository,
                                    final EventQueryRepositoryScope scope) {
         this.eventCollectionRepositoryAdapter = eventCollectionRepositoryAdapter;
+        this.eventFilterRepository = eventFilterRepository;
         this.scope = scope;
         this.connectorFactory = new ScopedFilterConnectorFactory<>(s ->
-                new EventQueryCollectionRepository(eventCollectionRepositoryAdapter, s));
+                new EventQueryCollectionRepository(eventCollectionRepositoryAdapter, eventFilterRepository, s));
     }
 
     public ListFilterConnector<EventQueryCollectionRepository, String> byUid() {
@@ -134,6 +139,13 @@ public final class EventQueryCollectionRepository implements ReadOnlyWithUidColl
 
     public EqFilterConnector<EventQueryCollectionRepository, AssignedUserMode> byAssignedUser() {
         return connectorFactory.eqConnector(userMode -> scope.toBuilder().assignedUserMode(userMode).build());
+    }
+
+    public EqFilterConnector<EventQueryCollectionRepository, String> byEventFilter() {
+        return connectorFactory.eqConnector(id -> {
+            EventFilter filter = eventFilterRepository.withEventDataFilters().uid(id).blockingGet();
+            return EventQueryRepositoryScopeHelper.addEventFilter(scope, filter);
+        });
     }
 
     public EqFilterConnector<EventQueryCollectionRepository,

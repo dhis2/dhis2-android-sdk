@@ -45,7 +45,7 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo.Columns;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostCall;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceParentPostCall;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
 
 import java.util.List;
@@ -63,7 +63,7 @@ public final class TrackedEntityInstanceCollectionRepository
         implements ReadWriteWithUploadWithUidCollectionRepository
         <TrackedEntityInstance, TrackedEntityInstanceCreateProjection> {
 
-    private final TrackedEntityInstancePostCall postCall;
+    private final TrackedEntityInstanceParentPostCall postCall;
     private final TrackedEntityInstanceStore store;
 
     @Inject
@@ -72,7 +72,7 @@ public final class TrackedEntityInstanceCollectionRepository
             final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders,
             final RepositoryScope scope,
             final Transformer<TrackedEntityInstanceCreateProjection, TrackedEntityInstance> transformer,
-            final TrackedEntityInstancePostCall postCall) {
+            final TrackedEntityInstanceParentPostCall postCall) {
         super(store, childrenAppenders, scope, transformer, new FilterConnectorFactory<>(scope, s ->
                 new TrackedEntityInstanceCollectionRepository(store, childrenAppenders, s, transformer, postCall)));
         this.postCall = postCall;

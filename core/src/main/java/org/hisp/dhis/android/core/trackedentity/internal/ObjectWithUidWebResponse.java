@@ -25,25 +25,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.configuration.internal
 
-import android.content.Context
-import dagger.Reusable
-import java.io.File
-import javax.inject.Inject
+package org.hisp.dhis.android.core.trackedentity.internal;
 
-@Reusable
-internal class DatabaseRenamer @Inject constructor(private val context: Context) {
+import androidx.annotation.NonNull;
 
-    fun renameDatabase(from: String, to: String): Boolean {
-        val fromFile = context.getDatabasePath(from)
-        val toFile = File(fromFile.parentFile, to)
-        return fromFile.renameTo(toFile)
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.imports.internal.WebResponse;
+
+@AutoValue
+@JsonDeserialize(builder = AutoValue_ObjectWithUidWebResponse.Builder.class)
+public abstract class ObjectWithUidWebResponse extends WebResponse {
+    
+    @NonNull
+    public abstract ObjectWithUid response();
+
+    public static Builder builder() {
+        return new AutoValue_ObjectWithUidWebResponse.Builder();
     }
 
-    fun copyDatabase(from: String, to: String): File {
-        val fromFile = context.getDatabasePath(from)
-        val toFile = File(fromFile.parentFile, to)
-        return fromFile.copyTo(toFile)
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder extends WebResponse.Builder<Builder> {
+        public abstract Builder response(ObjectWithUid response);
+
+        public abstract ObjectWithUidWebResponse build();
     }
 }

@@ -25,25 +25,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.configuration.internal
+package org.hisp.dhis.android.core.tracker.importer
 
-import android.content.Context
-import dagger.Reusable
-import java.io.File
-import javax.inject.Inject
+import com.google.common.truth.Truth.assertThat
+import java.io.IOException
+import java.text.ParseException
+import org.hisp.dhis.android.core.Inject
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.tracker.importer.internal.JobInfo
+import org.junit.Test
 
-@Reusable
-internal class DatabaseRenamer @Inject constructor(private val context: Context) {
+class JobInfoShould : BaseObjectShould("tracker.importer/jobinfo.json"), ObjectShould {
 
-    fun renameDatabase(from: String, to: String): Boolean {
-        val fromFile = context.getDatabasePath(from)
-        val toFile = File(fromFile.parentFile, to)
-        return fromFile.renameTo(toFile)
-    }
+    @Test
+    @Throws(IOException::class, ParseException::class)
+    override fun map_from_json_string() {
+        val objectMapper = Inject.objectMapper()
+        val program = objectMapper.readValue(jsonStream, JobInfo::class.java)
 
-    fun copyDatabase(from: String, to: String): File {
-        val fromFile = context.getDatabasePath(from)
-        val toFile = File(fromFile.parentFile, to)
-        return fromFile.copyTo(toFile)
+        assertThat(program.id()).isEqualTo("id")
+        assertThat(program.uid()).isEqualTo("uid")
+        assertThat(program.level()).isEqualTo("INFO")
+        assertThat(program.category()).isEqualTo("TRACKER_IMPORT_JOB")
+        assertThat(program.time()).isEqualTo(BaseIdentifiableObject.DATE_FORMAT.parse("2021-01-25T12:09:18.571"))
+        assertThat(program.message()).isEqualTo("(android) Import:Done took 0.360910 sec.")
+        assertThat(program.completed()).isTrue()
     }
 }

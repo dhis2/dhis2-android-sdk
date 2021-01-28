@@ -36,8 +36,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class OptionGroupCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -48,7 +47,7 @@ public class OptionGroupCollectionRepositoryMockIntegrationShould extends BaseMo
                 d2.optionModule().optionGroups()
                         .blockingGet();
 
-        assertThat(optionGroups.size(), is(1));
+        assertThat(optionGroups.size()).isEqualTo(1);
     }
 
     @Test
@@ -59,7 +58,7 @@ public class OptionGroupCollectionRepositoryMockIntegrationShould extends BaseMo
                         .eq("VQ2lai3OfVG")
                         .blockingGet();
 
-        assertThat(optionGroups.size(), is(1));
+        assertThat(optionGroups.size()).isEqualTo(1);
     }
 
     @Test
@@ -69,8 +68,8 @@ public class OptionGroupCollectionRepositoryMockIntegrationShould extends BaseMo
                         .withOptions()
                         .one().blockingGet();
 
-        assertThat(optionGroup.options().size(), is(2));
-        assertThat(optionGroup.options().get(0).uid(), is("Y1ILwhy5VDY"));
-        assertThat(optionGroup.options().get(1).uid(), is("egT1YqFWsVk"));
+        assertThat(optionGroup.options().size()).isEqualTo(2);
+        assertThat(optionGroup.options().get(0).uid()).isEqualTo("Y1ILwhy5VDY");
+        assertThat(optionGroup.options().get(1).uid()).isEqualTo("egT1YqFWsVk");
     }
 }

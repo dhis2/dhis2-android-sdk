@@ -30,13 +30,14 @@ package org.hisp.dhis.android.core.settings.internal
 import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Single
+import java.net.HttpURLConnection
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.settings.GeneralSettings
-import javax.inject.Inject
 
 @Reusable
 internal class GeneralSettingCall @Inject constructor(
@@ -66,7 +67,7 @@ internal class GeneralSettingCall @Inject constructor(
                 generalSettings
             }
             .doOnError { throwable: Throwable? ->
-                if (throwable is D2Error && throwable.httpErrorCode() == 404) {
+                if (throwable is D2Error && throwable.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND) {
                     generalSettingHandler.handleMany(emptyList())
                 }
             }

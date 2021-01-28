@@ -36,7 +36,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.text.ParseException;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 public class DataSetSettingsShould extends BaseObjectShould implements ObjectShould {
 
@@ -54,7 +54,7 @@ public class DataSetSettingsShould extends BaseObjectShould implements ObjectSho
         assertThat(global.name()).isNull();
         assertThat(global.lastUpdated()).isEqualTo(BaseIdentifiableObject.parseDate("2020-01-31T22:42:57.763Z"));
         assertThat(global.periodDSDownload()).isEqualTo(30);
-        assertThat(global.periodDSDBTrimming()).isEqualByComparingTo(40);
+        assertThat(global.periodDSDBTrimming()).isEqualTo(40);
 
         DataSetSetting childHealth = dataSetSettings.specificSettings().get("BfMAe6Itzgt");
         assertThat(childHealth).isNotNull();
@@ -62,6 +62,6 @@ public class DataSetSettingsShould extends BaseObjectShould implements ObjectSho
         assertThat(childHealth.name()).isEqualTo("Child Health");
         assertThat(childHealth.lastUpdated()).isEqualTo(BaseIdentifiableObject.parseDate("2020-01-31T22:38:20.210Z"));
         assertThat(childHealth.periodDSDownload()).isEqualTo(10);
-        assertThat(childHealth.periodDSDBTrimming()).isEqualByComparingTo(15);
+        assertThat(childHealth.periodDSDBTrimming()).isEqualTo(15);
     }
 }

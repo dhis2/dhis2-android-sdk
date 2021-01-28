@@ -38,7 +38,7 @@ import org.junit.runners.JUnit4;
 import java.io.IOException;
 import java.text.ParseException;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(JUnit4.class)
 public class EnrollmentImportEnrollmentShould extends BaseObjectShould implements ObjectShould {
@@ -61,7 +61,7 @@ public class EnrollmentImportEnrollmentShould extends BaseObjectShould implement
         assertThat(importEnrollment.status()).isEqualTo(ImportStatus.SUCCESS);
         assertThat(importEnrollment.importSummaries()).isNotNull();
 
-        assertThat(importEnrollment.importSummaries()).size().isEqualTo(1);
+        assertThat(importEnrollment.importSummaries().size()).isEqualTo(1);
 
         EnrollmentImportSummary importSummary = importEnrollment.importSummaries().get(0);
 

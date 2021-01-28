@@ -36,8 +36,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -48,7 +47,7 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends B
                 d2.programModule().programIndicators()
                         .blockingGet();
 
-        assertThat(indicators.size(), is(2));
+        assertThat(indicators.size()).isEqualTo(2);
     }
 
     @Test
@@ -59,7 +58,7 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends B
                         .isTrue()
                         .blockingGet();
         
-        assertThat(indicators.size(), is(1));
+        assertThat(indicators.size()).isEqualTo(1);
     }
 
     @Test
@@ -70,7 +69,7 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends B
                         .eq("d2:yearsBetween(A{iESIqZ0R0R0},V{event_date})")
                         .blockingGet();
 
-        assertThat(indicators.size(), is(1));
+        assertThat(indicators.size()).isEqualTo(1);
     }
 
     @Test
@@ -81,7 +80,7 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends B
                         .eq("rXoaHGAXWy9")
                         .blockingGet();
 
-        assertThat(indicators.size(), is(1));
+        assertThat(indicators.size()).isEqualTo(1);
     }
 
     @Test
@@ -92,7 +91,7 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends B
                         .eq("#{edqlbukwRfQ.vANAXwtLwcT} < 11")
                         .blockingGet();
 
-        assertThat(indicators.size(), is(1));
+        assertThat(indicators.size()).isEqualTo(1);
     }
 
     @Test
@@ -103,7 +102,7 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends B
                         .eq(2)
                         .blockingGet();
 
-        assertThat(indicators.size(), is(1));
+        assertThat(indicators.size()).isEqualTo(1);
     }
 
     @Test
@@ -114,7 +113,7 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends B
                         .eq("AVERAGE")
                         .blockingGet();
 
-        assertThat(indicators.size(), is(2));
+        assertThat(indicators.size()).isEqualTo(2);
     }
 
     @Test
@@ -125,14 +124,14 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends B
                         .eq("lxAQ7Zs9VYR")
                         .blockingGet();
 
-        assertThat(indicators.size(), is(2));
+        assertThat(indicators.size()).isEqualTo(2);
     }
 
     @Test
     public void include_legend_sets_as_children() {
         ProgramIndicator programIndicators = d2.programModule().programIndicators()
                 .withLegendSets().one().blockingGet();
-        assertThat(programIndicators.legendSets().size(), is(1));
-        assertThat(programIndicators.legendSets().get(0).name(), is("Age 15y interval"));
+        assertThat(programIndicators.legendSets().size()).isEqualTo(1);
+        assertThat(programIndicators.legendSets().get(0).name()).isEqualTo("Age 15y interval");
     }
 }

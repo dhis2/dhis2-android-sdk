@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.organisationunit.internal;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.api.filters.internal.Filter;
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserInternalAccessor;
@@ -51,7 +50,7 @@ import java.util.List;
 
 import io.reactivex.Single;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Mockito.times;
@@ -184,7 +183,7 @@ public class OrganisationUnitCallUnitShould {
         organisationUnitCall.blockingGet();
 
         verify(organisationUnitHandler,  times(1)).handleMany(anyCollectionOf(OrganisationUnit.class),
-                any(Transformer.class));
+                any());
     }
 
     @Test
@@ -194,6 +193,6 @@ public class OrganisationUnitCallUnitShould {
         organisationUnitCall.blockingGet();
 
         verify(organisationUnitHandler, times(2)).handleMany(anyCollectionOf(OrganisationUnit.class),
-                any(Transformer.class));
+                any());
     }
 }

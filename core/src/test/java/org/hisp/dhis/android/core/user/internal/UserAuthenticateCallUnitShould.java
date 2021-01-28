@@ -61,8 +61,8 @@ import io.reactivex.Completable;
 import io.reactivex.Single;
 import io.reactivex.observers.TestObserver;
 
+import static com.google.common.truth.Truth.assertThat;
 import static okhttp3.Credentials.basic;
-import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.hisp.dhis.android.core.arch.helpers.UserHelper.md5;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;

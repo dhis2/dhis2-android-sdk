@@ -28,8 +28,12 @@
 
 package org.hisp.dhis.android.core.event;
 
+import org.hisp.dhis.android.core.event.search.EventQueryCollectionRepository;
+
 public interface EventModule {
     EventCollectionRepository events();
+    EventFilterCollectionRepository eventFilters();
     EventDownloader eventDownloader();
     EventService eventService();
+    EventQueryCollectionRepository eventQuery();
 }

@@ -35,8 +35,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class SettingsModuleMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -44,44 +43,44 @@ public class SettingsModuleMockIntegrationShould extends BaseMockIntegrationTest
     @Test
     public void allow_access_to_system_setting() {
         List<SystemSetting> systemSettings = d2.settingModule().systemSetting().blockingGet();
-        assertThat(systemSettings.size(), is(2));
+        assertThat(systemSettings.size()).isEqualTo(2);
     }
 
     @Test
     public void allow_access_to_system_setting_filtered_by_key() {
         List<SystemSetting> systemSettingsFlag = d2.settingModule().systemSetting().byKey()
                 .eq(SystemSetting.SystemSettingKey.FLAG).blockingGet();
-        assertThat(systemSettingsFlag.size(), is(1));
-        assertThat(systemSettingsFlag.get(0).value(), is("sierra_leone"));
+        assertThat(systemSettingsFlag.size()).isEqualTo(1);
+        assertThat(systemSettingsFlag.get(0).value()).isEqualTo("sierra_leone");
 
         List<SystemSetting> systemSettingsStyle = d2.settingModule().systemSetting().byKey()
                 .eq(SystemSetting.SystemSettingKey.STYLE).blockingGet();
-        assertThat(systemSettingsStyle.get(0).value(), is("light_blue/light_blue.css"));
+        assertThat(systemSettingsStyle.get(0).value()).isEqualTo("light_blue/light_blue.css");
     }
 
     @Test
     public void allow_access_to_system_setting_filtered_by_value() {
         List<SystemSetting> systemSettingsFlag = d2.settingModule().systemSetting().byValue()
                 .eq("sierra_leone").blockingGet();
-        assertThat(systemSettingsFlag.size(), is(1));
-        assertThat(systemSettingsFlag.get(0).key(), is(SystemSetting.SystemSettingKey.FLAG));
+        assertThat(systemSettingsFlag.size()).isEqualTo(1);
+        assertThat(systemSettingsFlag.get(0).key()).isEqualTo(SystemSetting.SystemSettingKey.FLAG);
 
         List<SystemSetting> systemSettingsStyle = d2.settingModule().systemSetting().byValue()
                 .eq("light_blue/light_blue.css").blockingGet();
-        assertThat(systemSettingsStyle.get(0).key(), is(SystemSetting.SystemSettingKey.STYLE));
+        assertThat(systemSettingsStyle.get(0).key()).isEqualTo(SystemSetting.SystemSettingKey.STYLE);
     }
 
     @Test
     public void allow_access_to_flag_settings() {
         SystemSetting systemSetting = d2.settingModule().systemSetting().flag().blockingGet();
-        assertThat(systemSetting.key(), is(SystemSetting.SystemSettingKey.FLAG));
-        assertThat(systemSetting.value(), is("sierra_leone"));
+        assertThat(systemSetting.key()).isEqualTo(SystemSetting.SystemSettingKey.FLAG);
+        assertThat(systemSetting.value()).isEqualTo("sierra_leone");
     }
 
     @Test
     public void allow_access_to_style_settings() {
         SystemSetting systemSetting = d2.settingModule().systemSetting().style().blockingGet();
-        assertThat(systemSetting.key(), is(SystemSetting.SystemSettingKey.STYLE));
-        assertThat(systemSetting.value(), is("light_blue/light_blue.css"));
+        assertThat(systemSetting.key()).isEqualTo(SystemSetting.SystemSettingKey.STYLE);
+        assertThat(systemSetting.value()).isEqualTo("light_blue/light_blue.css");
     }
 }

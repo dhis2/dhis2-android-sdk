@@ -39,8 +39,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class CategoryOptionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -48,7 +47,7 @@ public class CategoryOptionRepositoryMockIntegrationShould extends BaseMockInteg
     @Test
     public void find_all() {
         List<CategoryOption> options = d2.categoryModule().categoryOptions().blockingGet();
-        assertThat(options.size(), is(8));
+        assertThat(options.size()).isEqualTo(8);
     }
 
     @Test
@@ -57,7 +56,7 @@ public class CategoryOptionRepositoryMockIntegrationShould extends BaseMockInteg
         List<CategoryOption> options = d2.categoryModule().categoryOptions()
                 .byStartDate().eq(date)
                 .blockingGet();
-        assertThat(options.size(), is(1));
+        assertThat(options.size()).isEqualTo(1);
     }
 
     @Test
@@ -66,7 +65,7 @@ public class CategoryOptionRepositoryMockIntegrationShould extends BaseMockInteg
         List<CategoryOption> options = d2.categoryModule().categoryOptions()
                 .byEndDate().eq(date)
                 .blockingGet();
-        assertThat(options.size(), is(1));
+        assertThat(options.size()).isEqualTo(1);
     }
 
     @Test
@@ -74,7 +73,7 @@ public class CategoryOptionRepositoryMockIntegrationShould extends BaseMockInteg
         List<CategoryOption> options = d2.categoryModule().categoryOptions()
                 .byAccessDataWrite().isTrue()
                 .blockingGet();
-        assertThat(options.size(), is(5));
+        assertThat(options.size()).isEqualTo(5);
     }
 
     @Test
@@ -82,7 +81,7 @@ public class CategoryOptionRepositoryMockIntegrationShould extends BaseMockInteg
         List<CategoryOption> options = d2.categoryModule().categoryOptions()
                 .byCategoryUid("KfdsGBcoiCa")
                 .blockingGet();
-        assertThat(options.size(), is(3));
+        assertThat(options.size()).isEqualTo(3);
     }
 
     @Test
@@ -90,6 +89,6 @@ public class CategoryOptionRepositoryMockIntegrationShould extends BaseMockInteg
         List<CategoryOption> options = d2.categoryModule().categoryOptions()
                 .byCategoryOptionComboUid("Gmbgme7z9BF")
                 .blockingGet();
-        assertThat(options.size(), is(2));
+        assertThat(options.size()).isEqualTo(2);
     }
 }

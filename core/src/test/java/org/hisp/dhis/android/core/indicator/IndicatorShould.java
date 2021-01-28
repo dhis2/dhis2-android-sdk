@@ -37,7 +37,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.text.ParseException;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 public class IndicatorShould extends BaseObjectShould implements ObjectShould {
 
@@ -72,5 +72,6 @@ public class IndicatorShould extends BaseObjectShould implements ObjectShould {
         assertThat(indicator.denominatorDescription()).isEqualTo("Total 1st ANC visits");
         assertThat(indicator.url()).isEqualTo("");
         assertThat(indicator.indicatorType()).isEqualTo(ObjectWithUid.create("bWuNrMHEoZ0"));
+        assertThat(indicator.decimals()).isEqualTo(3);
     }
 }

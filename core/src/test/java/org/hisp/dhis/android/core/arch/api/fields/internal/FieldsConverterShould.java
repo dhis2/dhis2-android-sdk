@@ -46,7 +46,7 @@ import retrofit2.Converter;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(JUnit4.class)
 public class FieldsConverterShould {

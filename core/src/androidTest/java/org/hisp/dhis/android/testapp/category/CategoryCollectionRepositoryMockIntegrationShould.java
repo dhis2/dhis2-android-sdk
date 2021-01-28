@@ -36,8 +36,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class CategoryCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -45,7 +44,7 @@ public class CategoryCollectionRepositoryMockIntegrationShould extends BaseMockI
     @Test
     public void find_all() {
         List<Category> categories = d2.categoryModule().categories().blockingGet();
-        assertThat(categories.size(), is(4));
+        assertThat(categories.size()).isEqualTo(4);
     }
 
     @Test
@@ -53,7 +52,7 @@ public class CategoryCollectionRepositoryMockIntegrationShould extends BaseMockI
         List<Category> categories = d2.categoryModule().categories()
                 .byName().like("e")
                 .blockingGet();
-        assertThat(categories.size(), is(3));
+        assertThat(categories.size()).isEqualTo(3);
     }
 
     @Test
@@ -61,7 +60,7 @@ public class CategoryCollectionRepositoryMockIntegrationShould extends BaseMockI
         List<Category> categories = d2.categoryModule().categories()
                 .byDataDimensionType().eq("DISAGGREGATION")
                 .blockingGet();
-        assertThat(categories.size(), is(4));
+        assertThat(categories.size()).isEqualTo(4);
     }
 
     @Test
@@ -70,6 +69,6 @@ public class CategoryCollectionRepositoryMockIntegrationShould extends BaseMockI
                 .withCategoryOptions()
                 .uid("vGs6omsRekv")
                 .blockingGet();
-        assertThat(category.categoryOptions().size(), is(1));
+        assertThat(category.categoryOptions().size()).isEqualTo(1);
     }
 }

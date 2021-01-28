@@ -55,6 +55,7 @@ public final class IndicatorStore {
             w.bind(15, o.denominator());
             w.bind(16, o.denominatorDescription());
             w.bind(17, o.url());
+            w.bind(18, o.decimals());
         }
     };
 

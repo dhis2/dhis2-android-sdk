@@ -36,8 +36,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class IndicatorCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -46,7 +45,7 @@ public class IndicatorCollectionRepositoryMockIntegrationShould extends BaseMock
     public void find_all() {
         List<Indicator> indicators = d2.indicatorModule().indicators()
                 .blockingGet();
-        assertThat(indicators.size(), is(1));
+        assertThat(indicators.size()).isEqualTo(1);
     }
 
     @Test
@@ -54,7 +53,7 @@ public class IndicatorCollectionRepositoryMockIntegrationShould extends BaseMock
         List<Indicator> indicators = d2.indicatorModule().indicators()
                 .byAnnualized().isFalse()
                 .blockingGet();
-        assertThat(indicators.size(), is(1));
+        assertThat(indicators.size()).isEqualTo(1);
     }
 
     @Test
@@ -62,7 +61,7 @@ public class IndicatorCollectionRepositoryMockIntegrationShould extends BaseMock
         List<Indicator> indicators = d2.indicatorModule().indicators()
                 .byIndicatorTypeUid().eq("bWuNrMHEoZ0")
                 .blockingGet();
-        assertThat(indicators.size(), is(1));
+        assertThat(indicators.size()).isEqualTo(1);
     }
 
     @Test
@@ -70,7 +69,7 @@ public class IndicatorCollectionRepositoryMockIntegrationShould extends BaseMock
         List<Indicator> indicators = d2.indicatorModule().indicators()
                 .byNumerator().eq("#{fbfJHSPpUQD.pq2XI5kz2BY}+#{fbfJHSPpUQD.PT59n8BQbqM}-#{Jtf34kNZhzP.pq2XI5kz2BY}-#{Jtf34kNZhzP.PT59n8BQbqM}")
                 .blockingGet();
-        assertThat(indicators.size(), is(1));
+        assertThat(indicators.size()).isEqualTo(1);
     }
 
     @Test
@@ -78,7 +77,7 @@ public class IndicatorCollectionRepositoryMockIntegrationShould extends BaseMock
         List<Indicator> indicators = d2.indicatorModule().indicators()
                 .byNumeratorDescription().eq("ANC1-ANC3")
                 .blockingGet();
-        assertThat(indicators.size(), is(1));
+        assertThat(indicators.size()).isEqualTo(1);
     }
 
     @Test
@@ -86,7 +85,7 @@ public class IndicatorCollectionRepositoryMockIntegrationShould extends BaseMock
         List<Indicator> indicators = d2.indicatorModule().indicators()
                 .byDenominator().eq("#{fbfJHSPpUQD.pq2XI5kz2BY}+#{fbfJHSPpUQD.PT59n8BQbqM}")
                 .blockingGet();
-        assertThat(indicators.size(), is(1));
+        assertThat(indicators.size()).isEqualTo(1);
     }
 
     @Test
@@ -94,7 +93,7 @@ public class IndicatorCollectionRepositoryMockIntegrationShould extends BaseMock
         List<Indicator> indicators = d2.indicatorModule().indicators()
                 .byDenominatorDescription().eq("Total 1st ANC visits")
                 .blockingGet();
-        assertThat(indicators.size(), is(1));
+        assertThat(indicators.size()).isEqualTo(1);
     }
 
     @Test
@@ -102,6 +101,14 @@ public class IndicatorCollectionRepositoryMockIntegrationShould extends BaseMock
         List<Indicator> indicators = d2.indicatorModule().indicators()
                 .byUrl().eq("url")
                 .blockingGet();
-        assertThat(indicators.size(), is(1));
+        assertThat(indicators.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_dataSetUid() {
+        List<Indicator> indicators = d2.indicatorModule().indicators()
+                .byDataSetUid("lyLU2wR22tC")
+                .blockingGet();
+        assertThat(indicators.size()).isEqualTo(1);
     }
 }

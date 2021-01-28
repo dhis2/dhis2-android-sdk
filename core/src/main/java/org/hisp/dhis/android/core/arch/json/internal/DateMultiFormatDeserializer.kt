@@ -33,7 +33,6 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import java.io.IOException
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -64,6 +63,7 @@ class DateMultiFormatDeserializer @JvmOverloads constructor(vc: Class<*>? = null
             "yyyy-MM-dd'T'HH:mm:ssZ",
             "yyyy-MM-dd'T'HH:mm",
             "yyyy-MM-dd'T'HH:mmZ",
-            "yyyy-MM-dd")
+            "yyyy-MM-dd"
+        )
     }
 }

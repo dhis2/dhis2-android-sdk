@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.parser.internal.service.ExpressionService;
 import org.hisp.dhis.android.core.parser.internal.service.dataobject.DimensionalItemObject;
 import org.hisp.dhis.android.core.period.Period;
+import org.hisp.dhis.android.core.period.internal.PeriodHelper;
 import org.hisp.dhis.android.core.validation.MissingValueStrategy;
 import org.hisp.dhis.android.core.validation.ValidationRule;
 import org.hisp.dhis.android.core.validation.ValidationRuleExpression;
@@ -43,7 +44,6 @@ import org.hisp.dhis.android.core.validation.engine.ValidationResultViolation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -74,7 +74,7 @@ class ValidationExecutor {
             return violations;
         }
 
-        Integer days = getDays(period);
+        Integer days = PeriodHelper.getDays(period);
 
         Double leftSideValue = (Double) expressionService.getExpressionValue(rule.leftSide().expression(), valueMap,
                 constantMap, orgunitGroupMap, days, rule.leftSide().missingValueStrategy());
@@ -146,10 +146,5 @@ class ValidationExecutor {
                         expressionService.regenerateExpression(side.expression(), valueMap, constantMap,
                                 orgunitGroupMap, days))
                 .build();
-    }
-
-    private Integer getDays(Period period) {
-        long diff = period.endDate().getTime() - period.startDate().getTime();
-        return (int) TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
     }
 }

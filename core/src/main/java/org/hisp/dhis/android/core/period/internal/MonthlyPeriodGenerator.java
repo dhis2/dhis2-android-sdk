@@ -44,6 +44,11 @@ class MonthlyPeriodGenerator extends AbstractPeriodGenerator {
     }
 
     @Override
+    protected void moveToStartOfCurrentYear() {
+        calendar.set(Calendar.DAY_OF_YEAR, 1);
+    }
+
+    @Override
     protected void movePeriods(int number) {
         calendar.add(Calendar.MONTH, number);
     }

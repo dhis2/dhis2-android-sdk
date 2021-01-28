@@ -39,6 +39,7 @@ public interface TrackedEntityModule {
     TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValues();
     TrackedEntityAttributeCollectionRepository trackedEntityAttributes();
     TrackedEntityTypeAttributeCollectionRepository trackedEntityTypeAttributes();
+    TrackedEntityInstanceFilterCollectionRepository trackedEntityInstanceFilters();
 
     TrackedEntityInstanceQueryCollectionRepository trackedEntityInstanceQuery();
 

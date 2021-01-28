@@ -37,8 +37,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -49,7 +48,7 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
                 d2.trackedEntityModule().trackedEntityAttributes()
                         .blockingGet();
 
-        assertThat(trackedEntityAttributes.size(), is(2));
+        assertThat(trackedEntityAttributes.size()).isEqualTo(2);
     }
 
     @Test
@@ -59,7 +58,7 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
                         .byPattern().eq("RANDOM(XXX######)")
                         .blockingGet();
 
-        assertThat(trackedEntityAttributes.size(), is(1));
+        assertThat(trackedEntityAttributes.size()).isEqualTo(1);
     }
 
     @Test
@@ -69,7 +68,7 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
                         .bySortOrderInListNoProgram().eq(0)
                         .blockingGet();
 
-        assertThat(trackedEntityAttributes.size(), is(1));
+        assertThat(trackedEntityAttributes.size()).isEqualTo(1);
     }
 
     @Test
@@ -78,7 +77,7 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
                 d2.trackedEntityModule().trackedEntityAttributes()
                         .byOptionSetUid().eq("VQ2lai3OfVG")
                         .blockingGet();
-        assertThat(dataElements.size(), is(1));
+        assertThat(dataElements.size()).isEqualTo(1);
     }
 
     @Test
@@ -88,7 +87,7 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
                         .byValueType().eq(ValueType.NUMBER)
                         .blockingGet();
 
-        assertThat(trackedEntityAttributes.size(), is(1));
+        assertThat(trackedEntityAttributes.size()).isEqualTo(1);
     }
 
     @Test
@@ -98,7 +97,7 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
                         .byExpression().eq("expression")
                         .blockingGet();
 
-        assertThat(trackedEntityAttributes.size(), is(1));
+        assertThat(trackedEntityAttributes.size()).isEqualTo(1);
     }
 
     @Test
@@ -108,7 +107,7 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
                         .byProgramScope().isTrue()
                         .blockingGet();
 
-        assertThat(trackedEntityAttributes.size(), is(1));
+        assertThat(trackedEntityAttributes.size()).isEqualTo(1);
     }
 
     @Test
@@ -118,7 +117,7 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
                         .byDisplayInListNoProgram().isTrue()
                         .blockingGet();
 
-        assertThat(trackedEntityAttributes.size(), is(1));
+        assertThat(trackedEntityAttributes.size()).isEqualTo(1);
     }
 
     @Test
@@ -128,7 +127,7 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
                         .byGenerated().isTrue()
                         .blockingGet();
 
-        assertThat(trackedEntityAttributes.size(), is(1));
+        assertThat(trackedEntityAttributes.size()).isEqualTo(1);
     }
 
     @Test
@@ -138,7 +137,7 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
                         .byDisplayOnVisitSchedule().isTrue()
                         .blockingGet();
 
-        assertThat(trackedEntityAttributes.size(), is(1));
+        assertThat(trackedEntityAttributes.size()).isEqualTo(1);
     }
 
     @Test
@@ -148,7 +147,7 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
                         .byOrgUnitScope().isTrue()
                         .blockingGet();
 
-        assertThat(trackedEntityAttributes.size(), is(1));
+        assertThat(trackedEntityAttributes.size()).isEqualTo(1);
     }
 
     @Test
@@ -158,7 +157,7 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
                         .byUnique().isTrue()
                         .blockingGet();
 
-        assertThat(trackedEntityAttributes.size(), is(1));
+        assertThat(trackedEntityAttributes.size()).isEqualTo(1);
     }
 
     @Test
@@ -168,7 +167,7 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
                         .byInherit().isTrue()
                         .blockingGet();
 
-        assertThat(trackedEntityAttributes.size(), is(1));
+        assertThat(trackedEntityAttributes.size()).isEqualTo(1);
     }
 
     @Test
@@ -178,7 +177,7 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
                         .byFieldMask().eq("XXXXX")
                         .blockingGet();
 
-        assertThat(trackedEntityAttributes.size(), is(1));
+        assertThat(trackedEntityAttributes.size()).isEqualTo(1);
     }
 
     @Test
@@ -188,7 +187,7 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
                         .byFormName().eq("formname")
                         .blockingGet();
 
-        assertThat(trackedEntityAttributes.size(), is(1));
+        assertThat(trackedEntityAttributes.size()).isEqualTo(1);
     }
 
     @Test
@@ -198,7 +197,7 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
                         .byDisplayFormName().eq("displayformname")
                         .blockingGet();
 
-        assertThat(trackedEntityAttributes.size(), is(1));
+        assertThat(trackedEntityAttributes.size()).isEqualTo(1);
     }
 
     @Test
@@ -207,7 +206,7 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
                 d2.trackedEntityModule().trackedEntityAttributes()
                         .byColor().eq("#556")
                         .blockingGet();
-        assertThat(trackedEntityAttributes.size(), is(1));
+        assertThat(trackedEntityAttributes.size()).isEqualTo(1);
     }
 
     @Test
@@ -216,6 +215,6 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
                 d2.trackedEntityModule().trackedEntityAttributes()
                         .byIcon().eq("attribute-icon")
                         .blockingGet();
-        assertThat(trackedEntityAttributes.size(), is(1));
+        assertThat(trackedEntityAttributes.size()).isEqualTo(1);
     }
 }

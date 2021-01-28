@@ -37,7 +37,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.text.ParseException;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 public class ProgramIndicatorShould extends BaseObjectShould implements ObjectShould {
 
@@ -58,7 +58,7 @@ public class ProgramIndicatorShould extends BaseObjectShould implements ObjectSh
         assertThat(programIndicator.name()).isEqualTo("Age at visit");
         assertThat(programIndicator.displayName()).isEqualTo("Age at visit");
 
-        assertThat(programIndicator.displayInForm()).isEqualTo(true);
+        assertThat(programIndicator.displayInForm()).isTrue();
         assertThat(programIndicator.expression()).isEqualTo("d2:yearsBetween(A{iESIqZ0R0R0},V{event_date})");
         assertThat(programIndicator.dimensionItem()).isEqualTo("GSae40Fyppf");
         assertThat(programIndicator.filter()).isNull();

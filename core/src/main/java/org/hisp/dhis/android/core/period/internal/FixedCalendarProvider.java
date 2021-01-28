@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.period.internal;
 
+import androidx.annotation.NonNull;
+
 import java.util.Calendar;
 
 class FixedCalendarProvider implements CalendarProvider {
@@ -38,6 +40,7 @@ class FixedCalendarProvider implements CalendarProvider {
         this.calendar = (Calendar) calendar.clone();
     }
 
+    @NonNull
     @Override
     public Calendar getCalendar() {
         return calendar;

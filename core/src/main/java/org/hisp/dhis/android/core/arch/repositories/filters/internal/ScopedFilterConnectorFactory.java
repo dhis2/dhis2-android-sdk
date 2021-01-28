@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.arch.repositories.collection.internal.ScopedRe
 import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.BaseScopeFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
+import org.hisp.dhis.android.core.common.DateFilterPeriod;
 
 import java.util.List;
 
@@ -44,16 +45,24 @@ public class ScopedFilterConnectorFactory<R extends BaseRepository, S extends Ba
         this.repositoryFactory = repositoryFactory;
     }
 
-    public <T> EqFilterConnector<R, S, T> eqConnector(BaseScopeFactory<S, T> baseScopeFactory) {
-        return new EqFilterConnector<>(repositoryFactory, baseScopeFactory);
+    public <T> EqFilterConnector<R, T> eqConnector(BaseScopeFactory<S, T> baseScopeFactory) {
+        return new EqFilterConnector<>(value -> repositoryFactory.updated(baseScopeFactory.updated(value)));
     }
 
-    public <T> ListFilterConnector<R, S, T> listConnector(BaseScopeFactory<S, List<T>> baseScopeFactory) {
-        return new ListFilterConnector<>(repositoryFactory, baseScopeFactory);
+    public <T> ListFilterConnector<R, T> listConnector(BaseScopeFactory<S, List<T>> baseScopeFactory) {
+        return new ListFilterConnector<>(list -> repositoryFactory.updated(baseScopeFactory.updated(list)));
     }
 
-    public EqLikeItemFilterConnector<R, S> eqLikeItemC(String key, BaseScopeFactory<S,
+    public BoolFilterConnector<R> booleanConnector(BaseScopeFactory<S, Boolean> baseScopeFactory) {
+        return new BoolFilterConnector<>(bool -> repositoryFactory.updated(baseScopeFactory.updated(bool)));
+    }
+
+    public EqLikeItemFilterConnector<R> eqLikeItemC(String key, BaseScopeFactory<S,
             RepositoryScopeFilterItem> baseScopeFactory) {
-        return new EqLikeItemFilterConnector<>(repositoryFactory, baseScopeFactory, key);
+        return new EqLikeItemFilterConnector<>(key, item -> repositoryFactory.updated(baseScopeFactory.updated(item)));
+    }
+
+    public PeriodFilterConnector<R> periodConnector(BaseScopeFactory<S, DateFilterPeriod> baseScopeFactory) {
+        return new PeriodFilterConnector<>(filter -> repositoryFactory.updated(baseScopeFactory.updated(filter)));
     }
 }

@@ -29,31 +29,25 @@
 package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ScopedRepositoryFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.BaseScopeFactory;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public final class ListFilterConnector<R  extends BaseRepository, S extends BaseScope, T> {
+public final class ListFilterConnector<R  extends BaseRepository, T> {
 
-    private final ScopedRepositoryFactory<R, S> repositoryFactory;
-    private final BaseScopeFactory<S, List<T>> baseScopeFactory;
+    private final ScopedRepositoryFilterFactory<R, List<T>> repositoryFactory;
 
-    ListFilterConnector(ScopedRepositoryFactory<R, S> repositoryFactory,
-                        BaseScopeFactory<S, List<T>> baseScopeFactory) {
+    ListFilterConnector(ScopedRepositoryFilterFactory<R, List<T>> repositoryFactory) {
         this.repositoryFactory = repositoryFactory;
-        this.baseScopeFactory = baseScopeFactory;
     }
 
     public R eq(T value) {
-        return repositoryFactory.updated(baseScopeFactory.updated(Collections.singletonList(value)));
+        return repositoryFactory.updated(Collections.singletonList(value));
     }
 
     public R in(List<T> values) {
-        return repositoryFactory.updated(baseScopeFactory.updated(values));
+        return repositoryFactory.updated(values);
     }
 
     @SafeVarargs

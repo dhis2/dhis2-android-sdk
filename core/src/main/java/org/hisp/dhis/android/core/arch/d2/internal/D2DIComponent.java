@@ -32,6 +32,7 @@ import android.content.Context;
 
 import androidx.annotation.VisibleForTesting;
 
+import org.hisp.dhis.android.core.analytics.AnalyticsPackageDIModule;
 import org.hisp.dhis.android.core.arch.api.internal.APIClientDIModule;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
@@ -62,7 +63,7 @@ import org.hisp.dhis.android.core.domain.aggregated.internal.AggregatedModuleImp
 import org.hisp.dhis.android.core.domain.metadata.internal.MetadataModuleImpl;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentPackageDIModule;
 import org.hisp.dhis.android.core.event.internal.EventPackageDIModule;
-import org.hisp.dhis.android.core.event.internal.EventPostCall;
+import org.hisp.dhis.android.core.event.internal.EventPostPayloadGenerator;
 import org.hisp.dhis.android.core.fileresource.internal.FileResourcePackageDIModule;
 import org.hisp.dhis.android.core.imports.internal.ImportPackageDIModule;
 import org.hisp.dhis.android.core.indicator.internal.IndicatorPackageDIModule;
@@ -85,7 +86,8 @@ import org.hisp.dhis.android.core.sms.internal.SmsDIModule;
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoPackageDIModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityPackageDIModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostCall;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostPayloadGenerator;
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterPackageDIModule;
 import org.hisp.dhis.android.core.user.internal.UserPackageDIModule;
 import org.hisp.dhis.android.core.validation.internal.ValidationPackageDIModule;
 import org.hisp.dhis.android.core.wipe.internal.WipeDIModule;
@@ -108,6 +110,7 @@ import retrofit2.Retrofit;
         RepositoriesDIModule.class,
 
         AggregatedDataPackageDIModule.class,
+        AnalyticsPackageDIModule.class,
         CategoryPackageDIModule.class,
         CommonPackageDIModule.class,
         ConfigurationPackageDIModule.class,
@@ -134,6 +137,7 @@ import retrofit2.Retrofit;
         SystemInfoPackageDIModule.class,
         SettingPackageDIModule.class,
         TrackedEntityPackageDIModule.class,
+        TrackerImporterPackageDIModule.class,
         SmsDIModule.class,
         UserPackageDIModule.class,
         ValidationPackageDIModule.class}
@@ -163,9 +167,9 @@ public interface D2DIComponent {
     @VisibleForTesting
     Handler<TrackedEntityType> trackedEntityTypeHandler();
     @VisibleForTesting
-    TrackedEntityInstancePostCall trackedEntityInstancePostCall();
+    TrackedEntityInstancePostPayloadGenerator trackedEntityInstancePostPayloadGenerator();
     @VisibleForTesting
-    EventPostCall eventPostCall();
+    EventPostPayloadGenerator eventPostPayloadGenerator();
     @VisibleForTesting
     IdentifiableObjectStore<CategoryOption> categoryOptionStore();
     @VisibleForTesting
@@ -182,6 +186,7 @@ public interface D2DIComponent {
         Builder wipeDIModule(WipeDIModule wipeDIModule);
         Builder repositoriesDIModule(RepositoriesDIModule repositoriesDIModule);
 
+        Builder analyticsPackageDIModule(AnalyticsPackageDIModule analyticsPackageDIModule);
         Builder categoryPackageDIModule(CategoryPackageDIModule categoryPackageDIModule);
         Builder commonPackageDIModule(CommonPackageDIModule commonPackageDIModule);
         Builder configurationPackageDIModule(ConfigurationPackageDIModule configurationPackageDIModule);
@@ -206,6 +211,7 @@ public interface D2DIComponent {
         Builder systemInfoPackageDIModule(SystemInfoPackageDIModule systemInfoPackageDIModule);
         Builder systemSettingPackageDIModule(SettingPackageDIModule settingPackageDIModule);
         Builder trackedEntityPackageDIModule(TrackedEntityPackageDIModule trackedEntityPackageDIModule);
+        Builder trackerImporterPackageDIModule(TrackerImporterPackageDIModule trackerImporterPackageDIModule);
         Builder userPackageDIModule(UserPackageDIModule userPackageDIModule);
         Builder validationPackageDIModule(ValidationPackageDIModule validationPackageDIModule);
         D2DIComponent build();

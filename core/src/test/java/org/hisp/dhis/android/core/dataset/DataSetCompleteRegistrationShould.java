@@ -36,7 +36,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 public class DataSetCompleteRegistrationShould extends BaseObjectShould implements ObjectShould {
 

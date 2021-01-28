@@ -31,8 +31,11 @@ package org.hisp.dhis.android.core.event.internal;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl;
 import org.hisp.dhis.android.core.arch.api.testutils.RetrofitFactory;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer;
+import org.hisp.dhis.android.core.data.trackedentity.internal.TrackerQueryCommonParamsSamples;
 import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -41,14 +44,14 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import okhttp3.mockwebserver.RecordedRequest;
 import retrofit2.Retrofit;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 public class EventEndpointCallShould {
 
@@ -57,7 +60,10 @@ public class EventEndpointCallShould {
     private static Dhis2MockServer mockWebServer;
 
     @Mock
-    protected DatabaseAdapter databaseAdapter;
+    private DatabaseAdapter databaseAdapter;
+
+    @Mock
+    private EventLastUpdatedManager lastUpdatedManager;
 
     @BeforeClass
     public static void setUpClass() throws IOException {
@@ -85,7 +91,7 @@ public class EventEndpointCallShould {
 
         RecordedRequest request = mockWebServer.takeRequest();
 
-        assertThat(request.getPath(), containsString("paging=true&page=2&pageSize=32"));
+        assertThat(request.getPath()).contains("paging=true&page=2&pageSize=32");
     }
 
     @Test
@@ -98,26 +104,39 @@ public class EventEndpointCallShould {
 
         RecordedRequest request = mockWebServer.takeRequest();
 
-        assertThat(request.getPath(), containsString("orgUnit=OU"));
-        assertThat(request.getPath(), containsString("program=P"));
+        assertThat(request.getPath()).contains("orgUnit=OU");
+        assertThat(request.getPath()).contains("program=P");
     }
 
     private Callable<List<Event>> givenAEventCallByPagination(int page, int pageCount) {
         EventQuery eventQuery = EventQuery.builder()
+                .commonParams(TrackerQueryCommonParamsSamples.get())
                 .page(page)
                 .pageSize(pageCount)
                 .paging(true)
                 .build();
+        return givenACallForQuery(eventQuery);
+    }
 
-        return new EventEndpointCallFactory(retrofit.create(EventService.class), APICallExecutorImpl.create(databaseAdapter)).getCall(eventQuery);
+    private Callable<List<Event>> givenACallForQuery(EventQuery eventQuery) {
+        return new EventEndpointCallFactory(retrofit.create(EventService.class),
+                APICallExecutorImpl.create(databaseAdapter), lastUpdatedManager).getCall(eventQuery);
     }
 
     private Callable<List<Event>> givenAEventCallByOrgUnitAndProgram(String orgUnit, String program) {
         EventQuery eventQuery = EventQuery.builder()
                 .orgUnit(orgUnit)
-                .program(program)
+                .commonParams(new TrackerQueryCommonParams(
+                        Collections.singletonList(program),
+                        program,
+                        null,
+                        false,
+                        OrganisationUnitMode.SELECTED,
+                        Collections.singletonList(orgUnit),
+                        10
+                ))
                 .build();
 
-        return new EventEndpointCallFactory(retrofit.create(EventService.class), APICallExecutorImpl.create(databaseAdapter)).getCall(eventQuery);
+        return givenACallForQuery(eventQuery);
     }
 }

@@ -38,7 +38,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.text.ParseException;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 public class EnrollmentShould extends BaseObjectShould implements ObjectShould {
 
@@ -58,10 +58,13 @@ public class EnrollmentShould extends BaseObjectShould implements ObjectShould {
         assertThat(enrollment.uid()).isEqualTo("BVJQIxoM2o4");
         assertThat(enrollment.organisationUnit()).isEqualTo("Rp268JB6Ne4");
         assertThat(enrollment.program()).isEqualTo("ur1Edk5Oe2n");
-        assertThat(enrollment.enrollmentDate()).isEqualTo("2014-08-07T12:27:50.730");
-        assertThat(enrollment.incidentDate()).isEqualTo("2014-07-21T12:27:50.730");
-        assertThat(enrollment.completedDate()).isEqualTo("2014-08-21T12:27:50.730");
-        assertThat(enrollment.followUp()).isEqualTo(false);
+        assertThat(enrollment.enrollmentDate()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2014-08-07T12:27:50.730"));
+        assertThat(enrollment.incidentDate()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2014-07-21T12:27:50.730"));
+        assertThat(enrollment.completedDate()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2014-08-21T12:27:50.730"));
+        assertThat(enrollment.followUp()).isFalse();
         assertThat(enrollment.status()).isEqualTo(EnrollmentStatus.COMPLETED);
         assertThat(enrollment.coordinate()).isEqualTo(Coordinates.create(10.03, 11.11));
         assertThat(enrollment.trackedEntityInstance()).isEqualTo("D2dUWKQErfQ");
@@ -71,5 +74,8 @@ public class EnrollmentShould extends BaseObjectShould implements ObjectShould {
 
         assertThat(enrollment.notes().get(0).uid()).isEqualTo("enrollmentNote1");
         assertThat(enrollment.notes().get(1).uid()).isEqualTo("enrollmentNote2");
+
+        assertThat(enrollment.relationships().get(0).uid()).isEqualTo("hm6qYjPfnzn");
+        assertThat(enrollment.relationships().get(0).from().enrollment().enrollment()).isEqualTo("BVJQIxoM2o4");
     }
 }

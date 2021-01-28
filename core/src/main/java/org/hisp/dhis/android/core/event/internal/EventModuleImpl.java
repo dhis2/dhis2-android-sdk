@@ -32,8 +32,10 @@ import androidx.annotation.VisibleForTesting;
 
 import org.hisp.dhis.android.core.event.EventCollectionRepository;
 import org.hisp.dhis.android.core.event.EventDownloader;
+import org.hisp.dhis.android.core.event.EventFilterCollectionRepository;
 import org.hisp.dhis.android.core.event.EventModule;
 import org.hisp.dhis.android.core.event.EventService;
+import org.hisp.dhis.android.core.event.search.EventQueryCollectionRepository;
 
 import javax.inject.Inject;
 
@@ -43,26 +45,38 @@ import dagger.Reusable;
 public final class EventModuleImpl implements EventModule {
 
     private final EventCollectionRepository events;
+    private final EventFilterCollectionRepository eventFilters;
     private final EventDownloader eventDownloader;
     private final EventService eventService;
+
+    private final EventQueryCollectionRepository eventQuery;
 
     @VisibleForTesting
     final EventPersistenceCallFactory eventPersistenceCallFactory;
 
     @Inject
     EventModuleImpl(EventCollectionRepository events,
+                    EventFilterCollectionRepository eventFilters,
                     EventPersistenceCallFactory eventPersistenceCallFactory,
                     EventDownloader eventDownloader,
-                    EventService eventService) {
+                    EventService eventService,
+                    EventQueryCollectionRepository eventQuery) {
         this.events = events;
+        this.eventFilters = eventFilters;
         this.eventPersistenceCallFactory = eventPersistenceCallFactory;
         this.eventDownloader = eventDownloader;
         this.eventService = eventService;
+        this.eventQuery = eventQuery;
     }
 
     @Override
     public EventCollectionRepository events() {
         return events;
+    }
+
+    @Override
+    public EventFilterCollectionRepository eventFilters() {
+        return eventFilters;
     }
 
     @Override
@@ -73,5 +87,10 @@ public final class EventModuleImpl implements EventModule {
     @Override
     public EventService eventService() {
         return eventService;
+    }
+
+    @Override
+    public EventQueryCollectionRepository eventQuery() {
+        return eventQuery;
     }
 }

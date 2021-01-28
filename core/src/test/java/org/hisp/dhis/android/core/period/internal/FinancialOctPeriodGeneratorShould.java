@@ -27,7 +27,8 @@
  */
 package org.hisp.dhis.android.core.period.internal;
 
-import org.assertj.core.util.Lists;
+import com.google.common.collect.Lists;
+
 import org.hisp.dhis.android.core.period.Period;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.junit.Test;
@@ -39,7 +40,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(JUnit4.class)
 public class FinancialOctPeriodGeneratorShould extends PeriodGeneratorBaseShould {
@@ -55,7 +56,7 @@ public class FinancialOctPeriodGeneratorShould extends PeriodGeneratorBaseShould
 
         calendar.set(2019, 1, 21);
         YearlyPeriodGenerator generator = YearlyPeriodGeneratorFactory.financialOct(calendar);
-        List<Period> generatedPeriods = generator.generatePeriods(1, 0);
+        List<Period> generatedPeriods = generator.generatePeriods(-1, 0);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period));
     }
@@ -67,7 +68,7 @@ public class FinancialOctPeriodGeneratorShould extends PeriodGeneratorBaseShould
 
         calendar.set(2018, 9, 1);
         YearlyPeriodGenerator generator = YearlyPeriodGeneratorFactory.financialOct(calendar);
-        List<Period> generatedPeriods = generator.generatePeriods(1, 0);
+        List<Period> generatedPeriods = generator.generatePeriods(-1, 0);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period));
     }
@@ -79,7 +80,7 @@ public class FinancialOctPeriodGeneratorShould extends PeriodGeneratorBaseShould
 
         calendar.set(2018, 8, 30);
         YearlyPeriodGenerator generator = YearlyPeriodGeneratorFactory.financialOct(calendar);
-        List<Period> generatedPeriods = generator.generatePeriods(1, 0);
+        List<Period> generatedPeriods = generator.generatePeriods(-1, 0);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period));
     }
@@ -94,7 +95,7 @@ public class FinancialOctPeriodGeneratorShould extends PeriodGeneratorBaseShould
 
         calendar.set(2019, 1, 21);
         YearlyPeriodGenerator generator = YearlyPeriodGeneratorFactory.financialOct(calendar);
-        List<Period> generatedPeriods = generator.generatePeriods(2, 0);
+        List<Period> generatedPeriods = generator.generatePeriods(-2, 0);
 
         assertThat(generatedPeriods).isEqualTo(expectedPeriods);
     }
@@ -104,19 +105,65 @@ public class FinancialOctPeriodGeneratorShould extends PeriodGeneratorBaseShould
         SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
         PeriodGenerator yearGenerator = YearlyPeriodGeneratorFactory.yearly(calendar);
-        assertThat("2019").isEqualTo(yearGenerator.generatePeriod(dateFormatter.parse("2019-12-30")).periodId());
-        assertThat("2020").isEqualTo(yearGenerator.generatePeriod(dateFormatter.parse("2020-01-02")).periodId());
+        assertThat("2019").isEqualTo(yearGenerator.generatePeriod(dateFormatter.parse("2019-12-30"), 0).periodId());
+        assertThat("2020").isEqualTo(yearGenerator.generatePeriod(dateFormatter.parse("2020-01-02"), 0).periodId());
 
         PeriodGenerator aprilGenerator = YearlyPeriodGeneratorFactory.financialApril(calendar);
-        assertThat("2018April").isEqualTo(aprilGenerator.generatePeriod(dateFormatter.parse("2019-03-30")).periodId());
-        assertThat("2019April").isEqualTo(aprilGenerator.generatePeriod(dateFormatter.parse("2019-04-02")).periodId());
+        assertThat("2018April").isEqualTo(aprilGenerator.generatePeriod(dateFormatter.parse("2019-03-30"), 0).periodId());
+        assertThat("2019April").isEqualTo(aprilGenerator.generatePeriod(dateFormatter.parse("2019-04-02"), 0).periodId());
 
         PeriodGenerator julyGenerator = YearlyPeriodGeneratorFactory.financialJuly(calendar);
-        assertThat("2018July").isEqualTo(julyGenerator.generatePeriod(dateFormatter.parse("2019-06-30")).periodId());
-        assertThat("2019July").isEqualTo(julyGenerator.generatePeriod(dateFormatter.parse("2019-07-02")).periodId());
+        assertThat("2018July").isEqualTo(julyGenerator.generatePeriod(dateFormatter.parse("2019-06-30"), 0).periodId());
+        assertThat("2019July").isEqualTo(julyGenerator.generatePeriod(dateFormatter.parse("2019-07-02"), 0).periodId());
 
         PeriodGenerator octoberGenerator = YearlyPeriodGeneratorFactory.financialOct(calendar);
-        assertThat("2018Oct").isEqualTo(octoberGenerator.generatePeriod(dateFormatter.parse("2019-09-30")).periodId());
-        assertThat("2019Oct").isEqualTo(octoberGenerator.generatePeriod(dateFormatter.parse("2019-10-02")).periodId());
+        assertThat("2018Oct").isEqualTo(octoberGenerator.generatePeriod(dateFormatter.parse("2019-09-30"), 0).periodId());
+        assertThat("2019Oct").isEqualTo(octoberGenerator.generatePeriod(dateFormatter.parse("2019-10-02"), 0).periodId());
+    }
+
+    @Test
+    public void generate_period_id_with_offset() throws ParseException {
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        PeriodGenerator yearGenerator = YearlyPeriodGeneratorFactory.yearly(calendar);
+        assertThat("2020").isEqualTo(yearGenerator.generatePeriod(dateFormatter.parse("2019-12-30"), 1).periodId());
+        assertThat("2019").isEqualTo(yearGenerator.generatePeriod(dateFormatter.parse("2020-01-02"), -1).periodId());
+
+        PeriodGenerator aprilGenerator = YearlyPeriodGeneratorFactory.financialApril(calendar);
+        assertThat("2019April").isEqualTo(aprilGenerator.generatePeriod(dateFormatter.parse("2019-03-30"), 1).periodId());
+        assertThat("2018April").isEqualTo(aprilGenerator.generatePeriod(dateFormatter.parse("2019-04-02"), -1).periodId());
+
+        PeriodGenerator julyGenerator = YearlyPeriodGeneratorFactory.financialJuly(calendar);
+        assertThat("2019July").isEqualTo(julyGenerator.generatePeriod(dateFormatter.parse("2019-06-30"), 1).periodId());
+        assertThat("2018July").isEqualTo(julyGenerator.generatePeriod(dateFormatter.parse("2019-07-02"), -1).periodId());
+
+        PeriodGenerator octoberGenerator = YearlyPeriodGeneratorFactory.financialOct(calendar);
+        assertThat("2019Oct").isEqualTo(octoberGenerator.generatePeriod(dateFormatter.parse("2019-09-30"), 1).periodId());
+        assertThat("2018Oct").isEqualTo(octoberGenerator.generatePeriod(dateFormatter.parse("2019-10-02"), -1).periodId());
+    }
+
+    @Test
+    public void generate_periods_in_this_year() {
+        calendar.set(2020, 8, 29);
+
+        PeriodGenerator yearGenerator = YearlyPeriodGeneratorFactory.yearly(calendar);
+        List<Period> yearPeriods = yearGenerator.generatePeriodsInYear(0);
+        assertThat(yearPeriods.size()).isEqualTo(1);
+        assertThat(yearPeriods.get(0).periodId()).isEqualTo("2020");
+
+        PeriodGenerator aprilGenerator = YearlyPeriodGeneratorFactory.financialApril(calendar);
+        List<Period> aprilPeriods = aprilGenerator.generatePeriodsInYear(0);
+        assertThat(aprilPeriods.size()).isEqualTo(1);
+        assertThat(aprilPeriods.get(0).periodId()).isEqualTo("2020April");
+
+        PeriodGenerator julyGenerator = YearlyPeriodGeneratorFactory.financialJuly(calendar);
+        List<Period> julyPeriods = julyGenerator.generatePeriodsInYear(0);
+        assertThat(julyPeriods.size()).isEqualTo(1);
+        assertThat(julyPeriods.get(0).periodId()).isEqualTo("2020July");
+
+        PeriodGenerator octoberGenerator = YearlyPeriodGeneratorFactory.financialOct(calendar);
+        List<Period> octoberPeriods = octoberGenerator.generatePeriodsInYear(0);
+        assertThat(octoberPeriods.size()).isEqualTo(1);
+        assertThat(octoberPeriods.get(0).periodId()).isEqualTo("2020Oct");
     }
 }

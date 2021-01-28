@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.imports.internal.conflicts
 
+import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.whenever
-import junit.framework.Assert.assertTrue
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
 import org.junit.Test
 
@@ -59,11 +59,11 @@ internal class InvalidDataValueConflictShould : BaseConflictShould() {
 
         val conflict = TrackedImportConflictSamples.valueNotNumeric(dataElementUid)
         val displayDescription = InvalidDataValueConflict.getDisplayDescription(conflict, context)
-        assertTrue(displayDescription == "Invalid value type for dataElement: Data Element form name")
+        assertThat(displayDescription == "Invalid value type for dataElement: Data Element form name").isTrue()
     }
 
     private fun checkMatchAndDataElement(conflict: ImportConflict) {
-        assertTrue(InvalidDataValueConflict.matches(conflict))
-        assertTrue(InvalidDataValueConflict.getDataElement(conflict) == dataElementUid)
+        assertThat(InvalidDataValueConflict.matches(conflict)).isTrue()
+        assertThat(InvalidDataValueConflict.getDataElement(conflict) == dataElementUid).isTrue()
     }
 }

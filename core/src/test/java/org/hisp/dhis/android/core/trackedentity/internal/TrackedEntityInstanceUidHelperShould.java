@@ -28,7 +28,8 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
-import org.assertj.core.util.Lists;
+import com.google.common.collect.Lists;
+
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor;
@@ -44,7 +45,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.Set;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -104,8 +105,8 @@ public class TrackedEntityInstanceUidHelperShould {
         when(tei2.organisationUnit()).thenReturn("ou4");
         Set<String> missingUids = uidHelper.getMissingOrganisationUnitUids(Lists.newArrayList(tei1, tei2));
         assertThat(missingUids.size()).isEqualTo(2);
-        assertThat(missingUids.contains("ou3")).isEqualTo(true);
-        assertThat(missingUids.contains("ou4")).isEqualTo(true);
+        assertThat(missingUids.contains("ou3")).isTrue();
+        assertThat(missingUids.contains("ou4")).isTrue();
     }
 
     @Test

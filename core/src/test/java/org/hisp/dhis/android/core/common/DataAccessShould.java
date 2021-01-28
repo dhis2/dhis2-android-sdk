@@ -33,7 +33,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.text.ParseException;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 public class DataAccessShould extends BaseObjectShould implements ObjectShould {
 
@@ -46,7 +46,7 @@ public class DataAccessShould extends BaseObjectShould implements ObjectShould {
     public void map_from_json_string() throws IOException, ParseException {
         DataAccess dataAccess = objectMapper.readValue(jsonStream, DataAccess.class);
 
-        assertThat(dataAccess.read()).isEqualTo(true);
-        assertThat(dataAccess.write()).isEqualTo(false);
+        assertThat(dataAccess.read()).isTrue();
+        assertThat(dataAccess.write()).isFalse();
     }
 }

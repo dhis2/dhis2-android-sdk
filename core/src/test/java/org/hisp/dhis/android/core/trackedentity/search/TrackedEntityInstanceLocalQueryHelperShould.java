@@ -30,9 +30,14 @@ package org.hisp.dhis.android.core.trackedentity.search;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
 import org.hisp.dhis.android.core.common.AssignedUserMode;
+import org.hisp.dhis.android.core.common.DateFilterPeriod;
+import org.hisp.dhis.android.core.common.DateFilterPeriodHelper;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
+import org.hisp.dhis.android.core.period.internal.CalendarProvider;
+import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory;
+import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,18 +49,26 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(JUnit4.class)
 public class TrackedEntityInstanceLocalQueryHelperShould {
 
     private TrackedEntityInstanceQueryRepositoryScope.Builder queryBuilder;
 
+    private TrackedEntityInstanceLocalQueryHelper localQueryHelper;
+
     private final String programUid = "IpHINAT79UW";
 
     @Before
     public void setUp() {
         queryBuilder = TrackedEntityInstanceQueryRepositoryScope.builder();
+
+        CalendarProvider calendarProvider = CalendarProviderFactory.getCalendarProvider();
+        DateFilterPeriodHelper periodHelper =
+                new DateFilterPeriodHelper(calendarProvider, ParentPeriodGeneratorImpl.create(calendarProvider));
+
+        localQueryHelper = new TrackedEntityInstanceLocalQueryHelper(periodHelper);
     }
 
     @Test
@@ -67,7 +80,7 @@ public class TrackedEntityInstanceLocalQueryHelperShould {
                 .query(RepositoryScopeFilterItem.builder().key("").operator(FilterItemOperator.LIKE).value("female").build())
                 .build();
 
-        String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(scope, Collections.emptyList(), 50);
+        String sqlQuery = localQueryHelper.getSqlQuery(scope, Collections.emptySet(), 50);
         assertThat(sqlQuery).contains("program");
     }
 
@@ -77,12 +90,14 @@ public class TrackedEntityInstanceLocalQueryHelperShould {
 
         TrackedEntityInstanceQueryRepositoryScope scope  = queryBuilder
                 .program(programUid)
-                .programStartDate(format.parse("2019-04-15"))
-                .programEndDate(format.parse("2019-05-19"))
+                .programDate(DateFilterPeriod.builder()
+                        .startDate(format.parse("2019-04-15"))
+                        .endDate(format.parse("2019-05-19"))
+                        .build())
                 .query(RepositoryScopeFilterItem.builder().key("").operator(FilterItemOperator.LIKE).value("female").build())
                 .build();
 
-        String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(scope, Collections.emptyList(), 50);
+        String sqlQuery = localQueryHelper.getSqlQuery(scope, Collections.emptySet(), 50);
         assertThat(sqlQuery).contains("enrollmentDate >= '2019-04-15'");
         assertThat(sqlQuery).contains("enrollmentDate <= '2019-05-19'");
     }
@@ -95,7 +110,7 @@ public class TrackedEntityInstanceLocalQueryHelperShould {
                 .query(RepositoryScopeFilterItem.builder().key("").operator(FilterItemOperator.LIKE).value("female").build())
                 .build();
 
-        String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(scope, Collections.emptyList(), 50);
+        String sqlQuery = localQueryHelper.getSqlQuery(scope, Collections.emptySet(), 50);
         assertThat(sqlQuery).contains("state IN ('SYNCED', 'TO_POST', 'TO_UPDATE')");
     }
 
@@ -105,7 +120,7 @@ public class TrackedEntityInstanceLocalQueryHelperShould {
                 .program(programUid)
                 .build();
 
-        String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(scope, Collections.emptyList(), 50);
+        String sqlQuery = localQueryHelper.getSqlQuery(scope, Collections.emptySet(), 50);
         assertThat(sqlQuery).contains("state != 'RELATIONSHIP'");
     }
 
@@ -115,7 +130,7 @@ public class TrackedEntityInstanceLocalQueryHelperShould {
                 .includeDeleted(true)
                 .build();
 
-        String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(scopeDeleted, Collections.emptyList(), 50);
+        String sqlQuery = localQueryHelper.getSqlQuery(scopeDeleted, Collections.emptySet(), 50);
         assertThat(sqlQuery).doesNotContain("deleted");
 
         TrackedEntityInstanceQueryRepositoryScope scope = queryBuilder
@@ -123,51 +138,70 @@ public class TrackedEntityInstanceLocalQueryHelperShould {
                 .includeDeleted(false)
                 .build();
 
-        String sqlQuery2 = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(scope, Collections.emptyList(), 50);
+        String sqlQuery2 = localQueryHelper.getSqlQuery(scope, Collections.emptySet(), 50);
         assertThat(sqlQuery2).contains("deleted != 1");
     }
 
     @Test
-    public void build_sql_query_with_assigned_user_mode() {
+    public void build_sql_query_with_follow_up() {
         TrackedEntityInstanceQueryRepositoryScope scope = queryBuilder
                 .program(programUid)
-                .assignedUserMode(AssignedUserMode.ANY)
+                .followUp(true)
                 .build();
 
-        String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(scope, Collections.emptyList(), 50);
+        String sqlQuery = localQueryHelper.getSqlQuery(scope, Collections.emptySet(), 50);
+        assertThat(sqlQuery).contains("followup = 1");
+    }
+
+    @Test
+    public void build_sql_query_with_assigned_user_mode() {
+        TrackedEntityInstanceQueryEventFilter eventFilter =
+                TrackedEntityInstanceQueryEventFilter.builder().assignedUserMode(AssignedUserMode.ANY).build();
+        TrackedEntityInstanceQueryRepositoryScope scope = queryBuilder
+                .program(programUid)
+                .eventFilters(Collections.singletonList(eventFilter))
+                .build();
+
+        String sqlQuery = localQueryHelper.getSqlQuery(scope, Collections.emptySet(), 50);
         assertThat(sqlQuery).contains("assignedUser IS NOT NULL");
     }
 
     @Test
     public void build_sql_query_with_event_status_only_if_event_dates_defined() {
+        TrackedEntityInstanceQueryEventFilter eventFilterWithoutDates = TrackedEntityInstanceQueryEventFilter.builder()
+                .eventStatus(Collections.singletonList(EventStatus.ACTIVE)).build();
         TrackedEntityInstanceQueryRepositoryScope scopeWithoutDates = queryBuilder
                 .program(programUid)
-                .eventStatus(Collections.singletonList(EventStatus.ACTIVE))
+                .eventFilters(Collections.singletonList(eventFilterWithoutDates))
                 .build();
 
-        String query1 = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(scopeWithoutDates, Collections.emptyList(), 50);
+        String query1 = localQueryHelper.getSqlQuery(scopeWithoutDates, Collections.emptySet(), 50);
         assertThat(query1).doesNotContain("ACTIVE");
 
+        TrackedEntityInstanceQueryEventFilter eventFilterWithDates = TrackedEntityInstanceQueryEventFilter.builder()
+                .eventDate(DateFilterPeriod.builder().startDate(new Date()).endDate(new Date()).build())
+                .eventStatus(Collections.singletonList(EventStatus.ACTIVE)).build();
         TrackedEntityInstanceQueryRepositoryScope scopeWithDates = queryBuilder
                 .program(programUid)
-                .eventStatus(Collections.singletonList(EventStatus.ACTIVE))
-                .eventStartDate(new Date()).eventEndDate(new Date())
+                .eventFilters(Collections.singletonList(eventFilterWithDates))
                 .build();
 
-        String query2 = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(scopeWithDates, Collections.emptyList(), 50);
+        String query2 = localQueryHelper.getSqlQuery(scopeWithDates, Collections.emptySet(), 50);
         assertThat(query2).contains("ACTIVE");
         assertThat(query2).contains("eventDate");
     }
 
     @Test
     public void build_sql_query_with_due_date_in_overdue() {
+        TrackedEntityInstanceQueryEventFilter eventFilter = TrackedEntityInstanceQueryEventFilter.builder()
+                .eventDate(DateFilterPeriod.builder().startDate(new Date()).endDate(new Date()).build())
+                .eventStatus(Collections.singletonList(EventStatus.OVERDUE)).build();
         TrackedEntityInstanceQueryRepositoryScope overdueQuery = queryBuilder
                 .program(programUid)
-                .eventStatus(Collections.singletonList(EventStatus.OVERDUE))
-                .eventStartDate(new Date()).eventEndDate(new Date())
+                .eventFilters(Collections.singletonList(eventFilter))
                 .build();
 
-        String query = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(overdueQuery, Collections.emptyList(), 50);
+        String query = localQueryHelper.getSqlQuery(overdueQuery, Collections.emptySet(), 50);
         assertThat(query).contains("dueDate");
         assertThat(query).contains("eventDate");
     }

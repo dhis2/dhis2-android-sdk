@@ -95,6 +95,6 @@ public class ProgramStageDataElementHandlerShould {
     @Test
     public void extend_identifiable_handler_impl() {
         IdentifiableHandlerImpl<ProgramStageDataElement> genericHandler =
-                new ProgramStageDataElementHandler(null, null, null);
+                new ProgramStageDataElementHandler(programStageDataElementStore, null, null);
     }
 }

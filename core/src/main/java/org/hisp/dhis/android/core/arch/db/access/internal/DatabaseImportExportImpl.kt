@@ -29,6 +29,8 @@ package org.hisp.dhis.android.core.arch.db.access.internal
 
 import android.content.Context
 import dagger.Reusable
+import java.io.File
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.DatabaseImportExport
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
@@ -40,11 +42,9 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoStore
 import org.hisp.dhis.android.core.user.UserModule
 import org.hisp.dhis.android.core.user.internal.UserCredentialsStoreImpl
-import java.io.File
-import javax.inject.Inject
 
 @Reusable
-class DatabaseImportExportImpl @Inject constructor(
+internal class DatabaseImportExportImpl @Inject constructor(
     private val context: Context,
     private val nameGenerator: DatabaseNameGenerator,
     private val multiUserDatabaseManager: MultiUserDatabaseManager,
@@ -52,14 +52,15 @@ class DatabaseImportExportImpl @Inject constructor(
     private val credentialsStore: ObjectKeyValueStore<Credentials>,
     private val databaseConfigurationSecureStore: ObjectKeyValueStore<DatabasesConfiguration>,
     private val databaseRenamer: DatabaseRenamer,
-    private val databaseAdapter: DatabaseAdapter) : DatabaseImportExport {
+    private val databaseAdapter: DatabaseAdapter
+) : DatabaseImportExport {
 
     companion object {
         const val TmpDatabase = "tmp-database.db"
         const val ExportDatabase = "export-database.db"
     }
 
-    val d2ErrorBuilder = D2Error.builder()
+    private val d2ErrorBuilder = D2Error.builder()
         .errorComponent(D2ErrorComponent.SDK)
 
     override fun importDatabase(file: File) {
@@ -88,10 +89,10 @@ class DatabaseImportExportImpl @Inject constructor(
             }
 
             val userCredentialsStore = UserCredentialsStoreImpl.create(databaseAdapter)
-            val username = userCredentialsStore.selectFirst().username()
+            val username = userCredentialsStore.selectFirst()!!.username()
 
             val systemInfoStore = SystemInfoStore.create(databaseAdapter)
-            val contextPath = systemInfoStore.selectFirst().contextPath()!!
+            val contextPath = systemInfoStore.selectFirst()!!.contextPath()!!
             val serverUrl = ServerUrlParser.parse(contextPath).toString()
 
             val databaseName = nameGenerator.getDatabaseName(serverUrl, username, false)

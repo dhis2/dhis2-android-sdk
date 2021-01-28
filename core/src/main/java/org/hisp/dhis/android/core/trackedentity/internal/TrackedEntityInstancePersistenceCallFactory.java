@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
 import java.util.List;
@@ -42,7 +43,7 @@ import dagger.Reusable;
 import io.reactivex.Completable;
 
 @Reusable
-final class TrackedEntityInstancePersistenceCallFactory {
+public final class TrackedEntityInstancePersistenceCallFactory {
 
     private final TrackedEntityInstanceHandler trackedEntityInstanceHandler;
     private final TrackedEntityInstanceUidHelper uidsHelper;
@@ -59,18 +60,20 @@ final class TrackedEntityInstancePersistenceCallFactory {
     }
 
     Completable persistTEIs(final List<TrackedEntityInstance> trackedEntityInstances,
-                            boolean isFullUpdate, boolean overwrite) {
-        return persistTEIsInternal(trackedEntityInstances, false, isFullUpdate, overwrite);
+                            boolean isFullUpdate, boolean overwrite, RelationshipItemRelatives relatives) {
+        return persistTEIsInternal(trackedEntityInstances, false, isFullUpdate, overwrite, relatives);
     }
 
-    Completable persistRelationships(final List<TrackedEntityInstance> trackedEntityInstances) {
-        return persistTEIsInternal(trackedEntityInstances, true, false, false);
+    public Completable persistRelationships(final List<TrackedEntityInstance> trackedEntityInstances) {
+        return persistTEIsInternal(trackedEntityInstances, true, false, false, null);
     }
 
     private Completable persistTEIsInternal(final List<TrackedEntityInstance> trackedEntityInstances,
-                            boolean asRelationship, boolean isFullUpdate, boolean overwrite) {
+                                            boolean asRelationship, boolean isFullUpdate, boolean overwrite,
+                                            RelationshipItemRelatives relatives) {
         return Completable.defer(() -> {
-            trackedEntityInstanceHandler.handleMany(trackedEntityInstances, asRelationship, isFullUpdate, overwrite);
+            trackedEntityInstanceHandler.handleMany(trackedEntityInstances, asRelationship, isFullUpdate, overwrite,
+                    relatives);
             Set<String> searchOrgUnitUids = uidsHelper.getMissingOrganisationUnitUids(trackedEntityInstances);
             return organisationUnitDownloader.downloadSearchOrganisationUnits(searchOrgUnitUids);
         });

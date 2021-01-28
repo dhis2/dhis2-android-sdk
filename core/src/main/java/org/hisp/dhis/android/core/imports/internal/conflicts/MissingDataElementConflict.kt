@@ -41,23 +41,21 @@ internal object MissingDataElementConflict : TrackerImportConflictItem {
         return errorStr == conflict.value()
     }
 
-    override fun getTrackedEntityAttribute(conflict: ImportConflict): String? {
-        return null
-    }
-
     override fun getDataElement(conflict: ImportConflict): String? {
         return conflict.`object`()
     }
 
-    override fun getDisplayDescription(conflict: ImportConflict,
-                                       context: TrackerImportConflictItemContext): String {
+    override fun getDisplayDescription(
+        conflict: ImportConflict,
+        context: TrackerImportConflictItemContext
+    ): String {
 
         return getDataElement(conflict)?.let { dataElementUid ->
             context.dataElementStore.selectByUid(dataElementUid)?.let { dataElement ->
                 val name = dataElement.displayFormName() ?: dataElement.displayName() ?: dataElementUid
                 description(name)
             }
-        } ?:
-        conflict.value()
+        }
+            ?: conflict.value()
     }
 }

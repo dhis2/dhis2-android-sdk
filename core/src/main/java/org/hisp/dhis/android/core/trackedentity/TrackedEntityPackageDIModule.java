@@ -40,6 +40,10 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeS
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueEntityDIModule;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueEntityDIModule;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceEntityDIModule;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceEventFilterEntityDIModule;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterCall;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterEntityDIModule;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterService;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceSyncEntityDIModule;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityModuleImpl;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeAttributeEntityDIModule;
@@ -60,6 +64,8 @@ import retrofit2.Retrofit;
         TrackedEntityAttributeValueEntityDIModule.class,
         TrackedEntityDataValueEntityDIModule.class,
         TrackedEntityInstanceEntityDIModule.class,
+        TrackedEntityInstanceEventFilterEntityDIModule.class,
+        TrackedEntityInstanceFilterEntityDIModule.class,
         TrackedEntityInstanceQueryEntityDIModule.class,
         TrackedEntityInstanceSyncEntityDIModule.class,
         TrackedEntityTypeEntityDIModule.class,
@@ -97,6 +103,18 @@ public final class TrackedEntityPackageDIModule {
             TrackedEntityAttributeReservedValueQuery> dataValueCallFactory(
             TrackedEntityAttributeReservedValueEndpointCallFactory impl) {
         return impl;
+    }
+
+    @Provides
+    @Reusable
+    UidsCall<TrackedEntityInstanceFilter> trackedEntityInstanceFilterCall(TrackedEntityInstanceFilterCall impl) {
+        return impl;
+    }
+
+    @Provides
+    @Reusable
+    TrackedEntityInstanceFilterService trackedEntityInstanceFilterService(Retrofit retrofit) {
+        return retrofit.create(TrackedEntityInstanceFilterService.class);
     }
 
     @Provides

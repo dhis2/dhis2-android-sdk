@@ -1,2 +1,2 @@
-# Creates the a table to save the number of the values to reserve for attribute
-CREATE TABLE ReservedValueSetting (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT UNIQUE, numberOfValuesToReserve INTEGER, FOREIGN KEY (uid) REFERENCES TrackedEntityAttribute (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+# Creates table CategoryOptionOrganisationUnitLink
+CREATE TABLE CategoryOptionOrganisationUnitLink (_id INTEGER PRIMARY KEY AUTOINCREMENT, categoryOption TEXT NOT NULL, organisationUnit TEXT NOT NULL, FOREIGN KEY (categoryOption) REFERENCES CategoryOption (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (organisationUnit) REFERENCES OrganisationUnit (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, UNIQUE (categoryOption, organisationUnit));

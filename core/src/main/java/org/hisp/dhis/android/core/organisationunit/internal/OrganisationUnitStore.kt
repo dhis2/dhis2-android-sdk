@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.organisationunit.internal
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringArrayColumnAdapter
-import org.hisp.dhis.android.core.arch.db.cursors.internal.ObjectFactory
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
@@ -40,8 +39,8 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
 
 @Suppress("MagicNumber")
-object OrganisationUnitStore {
-    private val BINDER = object: NameableStatementBinder<OrganisationUnit>() {
+internal object OrganisationUnitStore {
+    private val BINDER = object : NameableStatementBinder<OrganisationUnit>() {
         override fun bindToStatement(o: OrganisationUnit, w: StatementWrapper) {
             super.bindToStatement(o, w)
             w.bind(11, o.path())
@@ -57,7 +56,8 @@ object OrganisationUnitStore {
 
     @JvmStatic
     fun create(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<OrganisationUnit> {
-        return StoreFactory.objectWithUidStore(databaseAdapter, OrganisationUnitTableInfo.TABLE_INFO, BINDER,
-                ObjectFactory { cursor: Cursor -> OrganisationUnit.create(cursor) })
+        return StoreFactory.objectWithUidStore(
+            databaseAdapter, OrganisationUnitTableInfo.TABLE_INFO, BINDER
+        ) { cursor: Cursor -> OrganisationUnit.create(cursor) }
     }
 }

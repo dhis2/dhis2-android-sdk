@@ -44,19 +44,17 @@ internal object NonUniqueAttributeConflict : TrackerImportConflictItem {
         return regex.find(conflict.value())?.groupValues?.get(1)
     }
 
-    override fun getDataElement(conflict: ImportConflict): String? {
-        return null
-    }
-
-    override fun getDisplayDescription(conflict: ImportConflict,
-                                       context: TrackerImportConflictItemContext): String {
+    override fun getDisplayDescription(
+        conflict: ImportConflict,
+        context: TrackerImportConflictItemContext
+    ): String {
 
         return getTrackedEntityAttribute(conflict)?.let { attributeUid ->
             context.attributeStore.selectByUid(attributeUid)?.let { attribute ->
                 val name = attribute.displayFormName() ?: attribute.displayName() ?: attributeUid
                 description(name)
             }
-        } ?:
-        conflict.value()
+        }
+            ?: conflict.value()
     }
 }

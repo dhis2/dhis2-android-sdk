@@ -50,7 +50,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.when;
 
 public class ExpressionServiceShould {
@@ -273,7 +273,8 @@ public class ExpressionServiceShould {
         assertThat(service.getExpressionValue("least(5, 2, 7, 3)")).isEqualTo(2.0);
         assertThat(service.getExpressionValue("least(-5, -2, -7)")).isEqualTo(-7.0);
 
-        assertThat((double) service.getExpressionValue("log(100)")).isBetween(4.6, 4.7);
+        assertThat((double) service.getExpressionValue("log(100)")).isAtLeast(4.6);
+        assertThat((double) service.getExpressionValue("log(100)")).isAtMost(4.7);
         assertThat(service.getExpressionValue("log10(100)")).isEqualTo(2.0);
     }
 

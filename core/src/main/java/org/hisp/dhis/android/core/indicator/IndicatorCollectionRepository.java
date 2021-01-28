@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.indicator.IndicatorTableInfo.Columns;
 
+import java.util.Collections;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -80,5 +81,14 @@ public final class IndicatorCollectionRepository
 
     public StringFilterConnector<IndicatorCollectionRepository> byUrl() {
         return cf.string(Columns.URL);
+    }
+
+    public IndicatorCollectionRepository byDataSetUid(String dataSetUid) {
+        return cf.subQuery(Columns.UID).inLinkTable(
+                DataSetIndicatorLinkTableInfo.TABLE_INFO.name(),
+                DataSetIndicatorLinkTableInfo.Columns.INDICATOR,
+                DataSetIndicatorLinkTableInfo.Columns.DATA_SET,
+                Collections.singletonList(dataSetUid)
+        );
     }
 }

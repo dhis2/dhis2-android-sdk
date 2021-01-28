@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.settings.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.settings.DataSetSetting;
 import org.junit.Before;
@@ -40,9 +41,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class DataSetSettingHandlerShould {
 
@@ -62,6 +65,7 @@ public class DataSetSettingHandlerShould {
 
         dataSetSettings = new ArrayList<>();
         dataSetSettings.add(dataSetSetting);
+        when(dataSetSettingStore.updateOrInsertWhere(any())).thenReturn(HandleAction.Insert);
 
         dataSetSettingHandler = new DataSetSettingHandler(dataSetSettingStore);
     }

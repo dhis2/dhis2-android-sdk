@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
-import com.google.common.truth.Truth;
-
 import org.hisp.dhis.android.core.BaseRealIntegrationTest;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2Factory;
@@ -39,12 +37,11 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueS
 import org.junit.Before;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import static junit.framework.Assert.assertTrue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 public class EventEndpointCallRealIntegrationShould extends BaseRealIntegrationTest {
 
@@ -67,10 +64,10 @@ public class EventEndpointCallRealIntegrationShould extends BaseRealIntegrationT
 
         d2.metadataModule().blockingDownload();
 
-        Callable<List<Event>> eventEndpointCall = EventCallFactory.create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", 0);
+        Callable<List<Event>> eventEndpointCall = EventCallFactory.create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", 0, Collections.emptyList());
 
         List<Event> events = eventEndpointCall.call();
-        Truth.assertThat(events.isEmpty()).isFalse();
+        assertThat(events.isEmpty()).isFalse();
 
         //TODO: we should create dependant server data verifications in other test suite
        /* verifyNumberOfDownloadedEvents(49);
@@ -84,18 +81,18 @@ public class EventEndpointCallRealIntegrationShould extends BaseRealIntegrationT
 
         d2.metadataModule().blockingDownload();
 
-        Callable<List<Event>> eventEndpointCall = EventCallFactory.create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", 0);
+        Callable<List<Event>> eventEndpointCall = EventCallFactory.create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", 0, Collections.emptyList());
 
         eventEndpointCall.call();
 
-        assertTrue(verifyAtLeastOneEventWithOptionCombo());
+        assertThat(verifyAtLeastOneEventWithOptionCombo()).isTrue();
     }
 
     private boolean verifyAtLeastOneEventWithOptionCombo() {
         EventStore eventStore = EventStoreImpl.create(d2.databaseAdapter());
 
         List<Event> downloadedEvents = eventStore.querySingleEvents();
-        for(Event event : downloadedEvents){
+        for (Event event : downloadedEvents) {
             if (event.attributeOptionCombo() != null) {
                 return true;
             }
@@ -108,7 +105,7 @@ public class EventEndpointCallRealIntegrationShould extends BaseRealIntegrationT
 
         List<Event> downloadedEvents = eventStore.querySingleEvents();
 
-        assertThat(downloadedEvents.size(), is(numEvents));
+        assertThat(downloadedEvents.size()).isEqualTo(numEvents);
     }
 
     private void verifyNumberOfDownloadedTrackedEntityDataValue(int num) {
@@ -116,6 +113,6 @@ public class EventEndpointCallRealIntegrationShould extends BaseRealIntegrationT
 
         int numPersisted = trackedEntityDataValueStore.selectAll().size();
 
-        assertThat(numPersisted, is(num));
+        assertThat(numPersisted).isEqualTo(num);
     }
 }

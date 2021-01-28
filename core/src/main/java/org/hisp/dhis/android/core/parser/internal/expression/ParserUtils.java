@@ -196,7 +196,7 @@ public final class ParserUtils {
         return "";
     }
 
-    private static double getRounded(double value, int decimals) {
+    public static double getRounded(double value, int decimals) {
         final double factor = Math.pow(10, decimals);
 
         return Math.round(value * factor) / factor;

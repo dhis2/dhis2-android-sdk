@@ -36,8 +36,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class LegendSetCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -46,7 +45,7 @@ public class LegendSetCollectionRepositoryMockIntegrationShould extends BaseMock
     public void find_all() {
         List<LegendSet> legendSets = d2.legendSetModule().legendSets()
                 .blockingGet();
-        assertThat(legendSets.size(), is(1));
+        assertThat(legendSets.size()).isEqualTo(1);
     }
 
     @Test
@@ -54,7 +53,7 @@ public class LegendSetCollectionRepositoryMockIntegrationShould extends BaseMock
         List<LegendSet> legendSets = d2.legendSetModule().legendSets()
                 .bySymbolizer().eq("color")
                 .blockingGet();
-        assertThat(legendSets.size(), is(1));
+        assertThat(legendSets.size()).isEqualTo(1);
     }
 
     @Test
@@ -63,6 +62,6 @@ public class LegendSetCollectionRepositoryMockIntegrationShould extends BaseMock
                 .withLegends()
                 .one()
                 .blockingGet();
-        assertThat(legendSet.legends().size(), is(2));
+        assertThat(legendSet.legends().size()).isEqualTo(2);
     }
 }

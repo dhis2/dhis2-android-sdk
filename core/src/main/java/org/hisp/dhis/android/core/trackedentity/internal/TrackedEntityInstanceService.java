@@ -62,6 +62,7 @@ public interface TrackedEntityInstanceService {
     String PROGRAM_START_DATE = "programStartDate";
     String PROGRAM_END_DATE = "programEndDate";
     String PROGRAM_STATUS = "programStatus";
+    String FOLLOW_UP = "followUp";
     String EVENT_STATUS = "eventStatus";
     String EVENT_START_DATE = "eventStartDate";
     String EVENT_END_DATE = "eventEndDate";
@@ -126,6 +127,7 @@ public interface TrackedEntityInstanceService {
             @Query(PROGRAM_START_DATE) String programStartDate,
             @Query(PROGRAM_END_DATE) String programEndDate,
             @Query(PROGRAM_STATUS) String enrollmentStatus,
+            @Query(FOLLOW_UP) Boolean followUp,
             @Query(EVENT_START_DATE) String eventStartDate,
             @Query(EVENT_END_DATE) String eventEndDate,
             @Query(EVENT_STATUS) String eventStatus,

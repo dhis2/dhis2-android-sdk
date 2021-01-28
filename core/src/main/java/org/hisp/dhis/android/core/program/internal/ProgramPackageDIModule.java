@@ -55,8 +55,7 @@ import retrofit2.Retrofit;
         ProgramStageSectionEntityDIModule.class,
         ProgramStageSectionProgramIndicatorEntityDIModule.class,
         ProgramStageEntityDIModule.class,
-        ProgramTrackedEntityAttributeEntityDIModule.class,
-        ProgramOrganisationUnitLastUpdatedEntityDIModule.class
+        ProgramTrackedEntityAttributeEntityDIModule.class
 })
 public final class ProgramPackageDIModule {
 

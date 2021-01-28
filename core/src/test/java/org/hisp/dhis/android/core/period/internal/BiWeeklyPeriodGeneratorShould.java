@@ -27,7 +27,8 @@
  */
 package org.hisp.dhis.android.core.period.internal;
 
-import org.assertj.core.util.Lists;
+import com.google.common.collect.Lists;
+
 import org.hisp.dhis.android.core.period.Period;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.junit.Test;
@@ -39,7 +40,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(JUnit4.class)
 public class BiWeeklyPeriodGeneratorShould {
@@ -57,7 +58,7 @@ public class BiWeeklyPeriodGeneratorShould {
 
         calendar.set(2018, 2, 22);
 
-        List<Period> generatedPeriods = new BiWeeklyPeriodGenerator(calendar).generatePeriods(1, 0);
+        List<Period> generatedPeriods = new BiWeeklyPeriodGenerator(calendar).generatePeriods(-1, 0);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period));
     }
@@ -70,7 +71,7 @@ public class BiWeeklyPeriodGeneratorShould {
         Period period2 = generateExpectedPeriod("2018BiW6", calendar, Calendar.MONDAY, PeriodType.BiWeekly);
         calendar.set(2018, 2, 29);
 
-        List<Period> generatedPeriods = new BiWeeklyPeriodGenerator(calendar).generatePeriods(2, 0);
+        List<Period> generatedPeriods = new BiWeeklyPeriodGenerator(calendar).generatePeriods(-2, 0);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period1, period2));
     }
@@ -85,7 +86,7 @@ public class BiWeeklyPeriodGeneratorShould {
         Period period3 = generateExpectedPeriod("2017BiW2", calendar, Calendar.MONDAY, PeriodType.BiWeekly);
         calendar.set(2017, 1, 1);
 
-        List<Period> generatedPeriods = new BiWeeklyPeriodGenerator(calendar).generatePeriods(3, 0);
+        List<Period> generatedPeriods = new BiWeeklyPeriodGenerator(calendar).generatePeriods(-3, 0);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period1, period2, period3));
     }
@@ -98,9 +99,19 @@ public class BiWeeklyPeriodGeneratorShould {
 
         calendar.set(2018, 0, 22);
 
-        List<Period> generatedPeriods = new BiWeeklyPeriodGenerator(calendar).generatePeriods(1, 0);
+        List<Period> generatedPeriods = new BiWeeklyPeriodGenerator(calendar).generatePeriods(-1, 0);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period));
+    }
+
+    @Test
+    public void generate_last_bi_week_in_a_53_weeks_year() {
+        calendar.set(2020, 11, 29);
+
+        List<Period> generatedPeriods = new BiWeeklyPeriodGenerator(calendar).generatePeriods(0, 1);
+
+        assertThat(generatedPeriods.size()).isEqualTo(1);
+        assertThat(generatedPeriods.get(0).periodId()).isEqualTo("2020BiW27");
     }
 
     @Test
@@ -108,8 +119,44 @@ public class BiWeeklyPeriodGeneratorShould {
         SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
         PeriodGenerator biWeeklyGenerator = new BiWeeklyPeriodGenerator(calendar);
-        assertThat("2019BiW26").isEqualTo(biWeeklyGenerator.generatePeriod(dateFormatter.parse("2019-12-23")).periodId());
-        assertThat("2020BiW1").isEqualTo(biWeeklyGenerator.generatePeriod(dateFormatter.parse("2020-01-02")).periodId());
+        assertThat("2019BiW26").isEqualTo(biWeeklyGenerator.generatePeriod(dateFormatter.parse("2019-12-23"), 0).periodId());
+        assertThat("2020BiW1").isEqualTo(biWeeklyGenerator.generatePeriod(dateFormatter.parse("2020-01-02"), 0).periodId());
+    }
+
+    @Test
+    public void generate_period_id_with_offset() throws ParseException {
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        PeriodGenerator biWeeklyGenerator = new BiWeeklyPeriodGenerator(calendar);
+        assertThat("2020BiW2").isEqualTo(biWeeklyGenerator.generatePeriod(dateFormatter.parse("2019-12-23"), 2).periodId());
+        assertThat("2019BiW25").isEqualTo(biWeeklyGenerator.generatePeriod(dateFormatter.parse("2020-01-02"), -2).periodId());
+    }
+
+    @Test
+    public void generate_periods_in_this_year() {
+        calendar.set(2020, 7, 29);
+        PeriodGenerator generator = new BiWeeklyPeriodGenerator(calendar);
+
+        List<Period> periods = generator.generatePeriodsInYear(0);
+
+        // TODO Related to https://jira.dhis2.org/browse/ANDROSDK-1315
+        /*
+        assertThat(periods.size()).isEqualTo(27);
+        assertThat(periods.get(0).periodId()).isEqualTo("2020BiW1");
+        assertThat(periods.get(26).periodId()).isEqualTo("2020BiW27");
+         */
+    }
+
+    @Test
+    public void generate_periods_in_last_year() {
+        calendar.set(2020, 7, 29);
+        PeriodGenerator generator = new BiWeeklyPeriodGenerator(calendar);
+
+        List<Period> periods = generator.generatePeriodsInYear(-1);
+
+        assertThat(periods.size()).isEqualTo(26);
+        assertThat(periods.get(0).periodId()).isEqualTo("2019BiW1");
+        assertThat(periods.get(25).periodId()).isEqualTo("2019BiW26");
     }
 
     private Period generateExpectedPeriod(String id, Calendar cal, int weekStartDay, PeriodType periodType) {

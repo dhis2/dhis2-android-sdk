@@ -66,6 +66,20 @@ public final class RelationshipFields {
             fh.<TrackedEntityInstance>nestedField(RELATIVE)
     ).build();
 
+    private static FieldsHelper<Relationship> rfh = new FieldsHelper<>();
+
+    public static final Fields<Relationship> allNewModelFields
+            = Fields.<Relationship>builder().fields(
+            rfh.<String>field(RELATIONSHIP),
+            rfh.<String>field(RELATIONSHIP_NAME),
+            rfh.<String>field(RELATIONSHIP_TYPE),
+            rfh.<String>field(BaseIdentifiableObject.CREATED),
+            rfh.<String>field(BaseIdentifiableObject.LAST_UPDATED),
+            rfh.<RelationshipItem>nestedField(FROM).with(RelationshipItemFields.allFields),
+            rfh.<RelationshipItem>nestedField(TO).with(RelationshipItemFields.allFields),
+            rfh.<TrackedEntityInstance>nestedField(RELATIVE)
+    ).build();
+
     private RelationshipFields() {
     }
 }

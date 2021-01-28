@@ -34,7 +34,7 @@ import org.junit.runners.JUnit4;
 
 import okhttp3.HttpUrl;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 
 @RunWith(JUnit4.class)

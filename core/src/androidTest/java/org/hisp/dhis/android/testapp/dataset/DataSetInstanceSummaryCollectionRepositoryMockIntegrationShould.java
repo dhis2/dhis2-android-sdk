@@ -39,8 +39,7 @@ import org.junit.runner.RunWith;
 import java.text.ParseException;
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class DataSetInstanceSummaryCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -49,12 +48,12 @@ public class DataSetInstanceSummaryCollectionRepositoryMockIntegrationShould ext
     public void find_all() {
         List<DataSetInstanceSummary> summaries = d2.dataSetModule().dataSetInstanceSummaries()
                 .blockingGet();
-        assertThat(summaries.size(), is(2));
+        assertThat(summaries.size()).isEqualTo(2);
 
         for (DataSetInstanceSummary summary : summaries) {
             if (summary.dataSetUid().equals("lyLU2wR22tC")) {
-                assertThat(summary.dataSetInstanceCount(), is(4));
-                assertThat(summary.valueCount(), is(4));
+                assertThat(summary.dataSetInstanceCount()).isEqualTo(4);
+                assertThat(summary.valueCount()).isEqualTo(4);
             }
         }
     }
@@ -64,12 +63,12 @@ public class DataSetInstanceSummaryCollectionRepositoryMockIntegrationShould ext
         List<DataSetInstanceSummary> summaries = d2.dataSetModule().dataSetInstanceSummaries()
                 .byDataSetUid().eq("lyLU2wR22tC")
                 .blockingGet();
-        assertThat(summaries.size(), is(2));
+        assertThat(summaries.size()).isEqualTo(2);
 
         for (DataSetInstanceSummary summary : summaries) {
             if (!summary.dataSetUid().equals("lyLU2wR22tC")) {
-                assertThat(summary.dataSetInstanceCount(), is(0));
-                assertThat(summary.valueCount(), is(0));
+                assertThat(summary.dataSetInstanceCount()).isEqualTo(0);
+                assertThat(summary.valueCount()).isEqualTo(0);
             }
         }
     }
@@ -79,12 +78,12 @@ public class DataSetInstanceSummaryCollectionRepositoryMockIntegrationShould ext
         List<DataSetInstanceSummary> summaries = d2.dataSetModule().dataSetInstanceSummaries()
                 .byPeriod().eq("2018")
                 .blockingGet();
-        assertThat(summaries.size(), is(2));
+        assertThat(summaries.size()).isEqualTo(2);
 
         for (DataSetInstanceSummary summary : summaries) {
             if (!summary.dataSetUid().equals("lyLU2wR22tC")) {
-                assertThat(summary.dataSetInstanceCount(), is(0));
-                assertThat(summary.valueCount(), is(0));
+                assertThat(summary.dataSetInstanceCount()).isEqualTo(0);
+                assertThat(summary.valueCount()).isEqualTo(0);
             }
         }
     }
@@ -94,7 +93,7 @@ public class DataSetInstanceSummaryCollectionRepositoryMockIntegrationShould ext
         List<DataSetInstanceSummary> summaries = d2.dataSetModule().dataSetInstanceSummaries()
                 .byPeriodType().eq(PeriodType.Yearly)
                 .blockingGet();
-        assertThat(summaries.size(), is(2));
+        assertThat(summaries.size()).isEqualTo(2);
     }
 
     @Test
@@ -102,7 +101,7 @@ public class DataSetInstanceSummaryCollectionRepositoryMockIntegrationShould ext
         List<DataSetInstanceSummary> summaries = d2.dataSetModule().dataSetInstanceSummaries()
                 .byPeriodStartDate().after(BaseIdentifiableObject.parseDate("2018-07-15T00:00:00.000"))
                 .blockingGet();
-        assertThat(summaries.size(), is(2));
+        assertThat(summaries.size()).isEqualTo(2);
     }
 
     @Test
@@ -110,7 +109,7 @@ public class DataSetInstanceSummaryCollectionRepositoryMockIntegrationShould ext
         List<DataSetInstanceSummary> summaries = d2.dataSetModule().dataSetInstanceSummaries()
                 .byPeriodEndDate().after(BaseIdentifiableObject.parseDate("2018-07-15T00:00:00.000"))
                 .blockingGet();
-        assertThat(summaries.size(), is(2));
+        assertThat(summaries.size()).isEqualTo(2);
     }
 
     @Test
@@ -118,12 +117,12 @@ public class DataSetInstanceSummaryCollectionRepositoryMockIntegrationShould ext
         List<DataSetInstanceSummary> summaries = d2.dataSetModule().dataSetInstanceSummaries()
                 .byOrganisationUnitUid().eq("DiszpKrYNg8")
                 .blockingGet();
-        assertThat(summaries.size(), is(2));
+        assertThat(summaries.size()).isEqualTo(2);
 
         for (DataSetInstanceSummary summary : summaries) {
             if (!summary.dataSetUid().equals("lyLU2wR22tC")) {
-                assertThat(summary.dataSetInstanceCount(), is(0));
-                assertThat(summary.valueCount(), is(0));
+                assertThat(summary.dataSetInstanceCount()).isEqualTo(0);
+                assertThat(summary.valueCount()).isEqualTo(0);
             }
         }
 

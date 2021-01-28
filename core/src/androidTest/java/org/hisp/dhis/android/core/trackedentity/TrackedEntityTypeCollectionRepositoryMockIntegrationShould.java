@@ -36,8 +36,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class TrackedEntityTypeCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -46,14 +45,14 @@ public class TrackedEntityTypeCollectionRepositoryMockIntegrationShould extends 
     public void allow_access_to_all_tracked_entity_types_without_children() {
         List<TrackedEntityType> trackedEntityTypes = d2.trackedEntityModule().trackedEntityTypes()
                         .blockingGet();
-        assertThat(trackedEntityTypes.size(), is(1));
+        assertThat(trackedEntityTypes.size()).isEqualTo(1);
     }
 
     @Test
     public void include_attributes_as_children() {
         TrackedEntityType trackedEntityType = d2.trackedEntityModule().trackedEntityTypes()
                 .withTrackedEntityTypeAttributes().one().blockingGet();
-        assertThat(trackedEntityType.trackedEntityTypeAttributes().size(), is(1));
+        assertThat(trackedEntityType.trackedEntityTypeAttributes().size()).isEqualTo(1);
     }
 
     @Test
@@ -61,7 +60,7 @@ public class TrackedEntityTypeCollectionRepositoryMockIntegrationShould extends 
         List<TrackedEntityType> trackedEntityTypes = d2.trackedEntityModule().trackedEntityTypes()
                 .byFeatureType().eq(FeatureType.NONE)
                 .blockingGet();
-        assertThat(trackedEntityTypes.size(), is(1));
+        assertThat(trackedEntityTypes.size()).isEqualTo(1);
     }
 
     @Test
@@ -69,7 +68,7 @@ public class TrackedEntityTypeCollectionRepositoryMockIntegrationShould extends 
         List<TrackedEntityType> trackedEntityTypes = d2.trackedEntityModule().trackedEntityTypes()
                 .byColor().eq("#000")
                         .blockingGet();
-        assertThat(trackedEntityTypes.size(), is(1));
+        assertThat(trackedEntityTypes.size()).isEqualTo(1);
     }
 
     @Test
@@ -77,6 +76,6 @@ public class TrackedEntityTypeCollectionRepositoryMockIntegrationShould extends 
         List<TrackedEntityType> trackedEntityTypes = d2.trackedEntityModule().trackedEntityTypes()
                 .byIcon().eq("my-tracked-entity-attribute-icon-name")
                         .blockingGet();
-        assertThat(trackedEntityTypes.size(), is(1));
+        assertThat(trackedEntityTypes.size()).isEqualTo(1);
     }
 }

@@ -36,8 +36,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class AuthorityCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -45,13 +44,13 @@ public class AuthorityCollectionRepositoryMockIntegrationShould extends BaseMock
     @Test
     public void find_all() {
         List<Authority> authorities = d2.userModule().authorities().blockingGet();
-        assertThat(authorities.size(), is(2));
+        assertThat(authorities.size()).isEqualTo(2);
     }
 
     @Test
     public void filter_by_name() {
         List<Authority> authorities = d2.userModule().authorities()
                 .byName().eq("F_ENROLLMENT_CASCADE_DELETE").blockingGet();
-        assertThat(authorities.size(), is(1));
+        assertThat(authorities.size()).isEqualTo(1);
     }
 }

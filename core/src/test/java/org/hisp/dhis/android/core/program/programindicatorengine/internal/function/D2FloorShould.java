@@ -1,7 +1,5 @@
 package org.hisp.dhis.android.core.program.programindicatorengine.internal.function;
 
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.MatcherAssert;
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
 import org.junit.Before;
@@ -10,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -34,28 +33,28 @@ public class D2FloorShould {
     @Test
     public void evaluateMustReturnFlooredValue() {
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn("4.1");
-        MatcherAssert.assertThat(floor.evaluate(context, visitor), CoreMatchers.<Object>is("4"));
+        assertThat(floor.evaluate(context, visitor)).isEqualTo("4");
 
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn("0.8");
-        MatcherAssert.assertThat(floor.evaluate(context, visitor), CoreMatchers.<Object>is("0"));
+        assertThat(floor.evaluate(context, visitor)).isEqualTo("0");
 
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn("5.1");
-        MatcherAssert.assertThat(floor.evaluate(context, visitor), CoreMatchers.<Object>is("5"));
+        assertThat(floor.evaluate(context, visitor)).isEqualTo("5");
 
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn("1.0");
-        MatcherAssert.assertThat(floor.evaluate(context, visitor), CoreMatchers.<Object>is("1"));
+        assertThat(floor.evaluate(context, visitor)).isEqualTo("1");
 
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn("-9.3");
-        MatcherAssert.assertThat(floor.evaluate(context, visitor), CoreMatchers.<Object>is("-10"));
+        assertThat(floor.evaluate(context, visitor)).isEqualTo("-10");
 
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn("-5.9");
-        MatcherAssert.assertThat(floor.evaluate(context, visitor), CoreMatchers.<Object>is("-6"));
+        assertThat(floor.evaluate(context, visitor)).isEqualTo("-6");
     }
 
     @Test
     public void return_zero_when_number_is_invalid() {
         when(visitor.castStringVisit(mockedFirstExpr)).thenReturn("not a number");
 
-        MatcherAssert.assertThat(floor.evaluate(context, visitor), CoreMatchers.<Object>is("0"));
+        assertThat(floor.evaluate(context, visitor)).isEqualTo("0");
     }
 }

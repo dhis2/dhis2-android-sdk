@@ -32,7 +32,7 @@ import android.os.Build;
 import android.util.Log;
 
 import org.hisp.dhis.android.BuildConfig;
-import org.hisp.dhis.android.core.arch.api.authentication.internal.BasicAuthenticatorFactory;
+import org.hisp.dhis.android.core.arch.api.authentication.internal.BasicAuthenticator;
 import org.hisp.dhis.android.core.arch.api.internal.DynamicServerURLInterceptor;
 import org.hisp.dhis.android.core.arch.api.internal.PreventURLDecodeInterceptor;
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLVersionRedirectionInterceptor;
@@ -64,8 +64,8 @@ final class OkHttpClientFactory {
 
         OkHttpClient.Builder client = new OkHttpClient.Builder()
                 .addInterceptor(new DynamicServerURLInterceptor())
-                .addNetworkInterceptor(new ServerURLVersionRedirectionInterceptor())
-                .addInterceptor(BasicAuthenticatorFactory.create(credentialsSecureStore))
+                .addInterceptor(new ServerURLVersionRedirectionInterceptor())
+                .addInterceptor(new BasicAuthenticator(credentialsSecureStore))
                 .addInterceptor(new PreventURLDecodeInterceptor())
                 .addInterceptor(chain -> {
                     Request originalRequest = chain.request();
@@ -76,7 +76,8 @@ final class OkHttpClientFactory {
                 })
                 .readTimeout(d2Configuration.readTimeoutInSeconds(), TimeUnit.SECONDS)
                 .connectTimeout(d2Configuration.connectTimeoutInSeconds(), TimeUnit.SECONDS)
-                .writeTimeout(d2Configuration.writeTimeoutInSeconds(), TimeUnit.SECONDS);
+                .writeTimeout(d2Configuration.writeTimeoutInSeconds(), TimeUnit.SECONDS)
+                .followRedirects(false);
 
         for (Interceptor interceptor : d2Configuration.networkInterceptors()) {
             client.addNetworkInterceptor(interceptor);

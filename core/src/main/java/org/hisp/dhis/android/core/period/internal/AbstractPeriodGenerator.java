@@ -54,26 +54,19 @@ abstract class AbstractPeriodGenerator implements PeriodGenerator {
     }
 
     @Override
-    public final List<Period> generatePeriods(int past, int future) throws RuntimeException {
+    public final List<Period> generatePeriods(int start, int end) throws RuntimeException {
         this.calendar = (Calendar) initialCalendar.clone();
-        if (past < 0) {
-            throw new RuntimeException("Number of past periods can't be negative.");
-        }
 
-        if (future < 0) {
-            throw new RuntimeException("Number of future periods can't be negative.");
-        }
-
-        if (future + past < 1) {
+        if (start >= end) {
             return Collections.emptyList();
         }
 
         List<Period> periods = new ArrayList<>();
         setCalendarToStartTimeOfADay(calendar);
         moveToStartOfCurrentPeriod();
-        movePeriods(1 - past - 1);
+        movePeriods(start);
 
-        for (int i = 0; i < past + future; i++) {
+        for (int i = 0; i < end - start; i++) {
             Date startDate = calendar.getTime();
             String periodId = generateId();
 
@@ -95,12 +88,13 @@ abstract class AbstractPeriodGenerator implements PeriodGenerator {
     }
 
     @Override
-    public final Period generatePeriod(Date date) {
+    public final Period generatePeriod(Date date, int periodOffset) {
         this.calendar = (Calendar) initialCalendar.clone();
 
         calendar.setTime(date);
         setCalendarToStartTimeOfADay(calendar);
         moveToStartOfCurrentPeriod();
+        this.movePeriods(periodOffset);
 
         Date startDate = calendar.getTime();
         String periodId = generateId();
@@ -114,6 +108,33 @@ abstract class AbstractPeriodGenerator implements PeriodGenerator {
                 .periodId(periodId)
                 .endDate(endDate)
                 .build();
+    }
+
+    @Override
+    public List<Period> generatePeriodsInYear(int yearOffset) {
+        this.calendar = (Calendar) initialCalendar.clone();
+
+        int targetYear = calendar.get(Calendar.YEAR) + yearOffset;
+        calendar.set(Calendar.YEAR, targetYear);
+        setCalendarToStartTimeOfADay(calendar);
+        moveToStartOfCurrentYear();
+
+        List<Period> periods = new ArrayList<>();
+        Period period;
+
+        while (true) {
+            period = generatePeriod(calendar.getTime(), 0);
+
+            if (period.periodId() != null &&
+                    period.periodId().startsWith(Integer.toString(targetYear))) {
+                periods.add(period);
+                movePeriods(1);
+            } else {
+                break;
+            }
+        }
+
+        return periods;
     }
 
     static void setCalendarToStartTimeOfADay(Calendar calendar) {
@@ -130,4 +151,6 @@ abstract class AbstractPeriodGenerator implements PeriodGenerator {
     protected String generateId() {
         return idFormatter.format(calendar.getTime());
     }
+
+    protected abstract void moveToStartOfCurrentYear();
 }

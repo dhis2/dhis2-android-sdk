@@ -27,7 +27,8 @@
  */
 package org.hisp.dhis.android.core.period.internal;
 
-import org.assertj.core.util.Lists;
+import com.google.common.collect.Lists;
+
 import org.hisp.dhis.android.core.period.Period;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.junit.Test;
@@ -39,7 +40,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(JUnit4.class)
 public class DailyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
@@ -54,7 +55,7 @@ public class DailyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
         Period period = generateExpectedPeriod("20180201", calendar);
         calendar.set(2018, 1, 2);
 
-        List<Period> generatedPeriods = new DailyPeriodGenerator(calendar).generatePeriods(1, 0);
+        List<Period> generatedPeriods = new DailyPeriodGenerator(calendar).generatePeriods(-1, 0);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period));
     }
@@ -67,7 +68,7 @@ public class DailyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
         Period period2 = generateExpectedPeriod("20180305", calendar);
         calendar.set(2018, 2, 6);
 
-        List<Period> generatedPeriods = new DailyPeriodGenerator(calendar).generatePeriods(2, 0);
+        List<Period> generatedPeriods = new DailyPeriodGenerator(calendar).generatePeriods(-2, 0);
         List<Period> expectedPeriods = Lists.newArrayList(period1, period2);
 
         assertThat(generatedPeriods).isEqualTo(expectedPeriods);
@@ -83,7 +84,7 @@ public class DailyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
         Period period3 = generateExpectedPeriod("20180102", calendar);
         calendar.set(2018, 0, 3);
 
-        List<Period> generatedPeriods = new DailyPeriodGenerator(calendar).generatePeriods(3, 0);
+        List<Period> generatedPeriods = new DailyPeriodGenerator(calendar).generatePeriods(-3, 0);
         List<Period> expectedPeriods = Lists.newArrayList(period1, period2, period3);
 
         assertThat(generatedPeriods).isEqualTo(expectedPeriods);
@@ -94,7 +95,40 @@ public class DailyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
         SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
         PeriodGenerator dailyGenerator = new DailyPeriodGenerator(calendar);
-        assertThat("20191230").isEqualTo(dailyGenerator.generatePeriod(dateFormatter.parse("2019-12-30")).periodId());
-        assertThat("20200102").isEqualTo(dailyGenerator.generatePeriod(dateFormatter.parse("2020-01-02")).periodId());
+        assertThat("20191230").isEqualTo(dailyGenerator.generatePeriod(dateFormatter.parse("2019-12-30"), 0).periodId());
+        assertThat("20200102").isEqualTo(dailyGenerator.generatePeriod(dateFormatter.parse("2020-01-02"), 0).periodId());
+    }
+
+    @Test
+    public void generate_period_id_with_offset() throws ParseException {
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        PeriodGenerator dailyGenerator = new DailyPeriodGenerator(calendar);
+        assertThat("20200101").isEqualTo(dailyGenerator.generatePeriod(dateFormatter.parse("2019-12-30"), 2).periodId());
+        assertThat("20191229").isEqualTo(dailyGenerator.generatePeriod(dateFormatter.parse("2020-01-02"), -4).periodId());
+    }
+
+    @Test
+    public void generate_periods_in_this_year() {
+        calendar.set(2020, 7, 29);
+        PeriodGenerator generator = new DailyPeriodGenerator(calendar);
+
+        List<Period> periods = generator.generatePeriodsInYear(0);
+
+        assertThat(periods.size()).isEqualTo(366);
+        assertThat(periods.get(0).periodId()).isEqualTo("20200101");
+        assertThat(periods.get(365).periodId()).isEqualTo("20201231");
+    }
+
+    @Test
+    public void generate_periods_in_last_year() {
+        calendar.set(2020, 7, 29);
+        PeriodGenerator generator = new DailyPeriodGenerator(calendar);
+
+        List<Period> periods = generator.generatePeriodsInYear(-1);
+
+        assertThat(periods.size()).isEqualTo(365);
+        assertThat(periods.get(0).periodId()).isEqualTo("20190101");
+        assertThat(periods.get(364).periodId()).isEqualTo("20191231");
     }
 }

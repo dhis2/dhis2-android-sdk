@@ -43,7 +43,7 @@ import java.util.concurrent.Callable;
 
 import retrofit2.Response;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 

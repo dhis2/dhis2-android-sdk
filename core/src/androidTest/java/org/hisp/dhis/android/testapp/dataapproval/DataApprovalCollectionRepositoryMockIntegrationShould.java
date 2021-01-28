@@ -37,8 +37,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class DataApprovalCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -47,7 +46,7 @@ public class DataApprovalCollectionRepositoryMockIntegrationShould extends BaseM
     public void find_all() {
         List<DataApproval> dataApprovals = d2.dataSetModule().dataApprovals()
                 .blockingGet();
-        assertThat(dataApprovals.size(), is(1));
+        assertThat(dataApprovals.size()).isEqualTo(1);
     }
 
     @Test
@@ -55,7 +54,7 @@ public class DataApprovalCollectionRepositoryMockIntegrationShould extends BaseM
         List<DataApproval> dataApprovals = d2.dataSetModule().dataApprovals()
                 .byWorkflowUid().eq("rIUL3hYOjJc")
                 .blockingGet();
-        assertThat(dataApprovals.size(), is(1));
+        assertThat(dataApprovals.size()).isEqualTo(1);
     }
 
     @Test
@@ -63,7 +62,7 @@ public class DataApprovalCollectionRepositoryMockIntegrationShould extends BaseM
         List<DataApproval> dataApprovals = d2.dataSetModule().dataApprovals()
                 .byOrganisationUnitUid().eq("DiszpKrYNg8")
                 .blockingGet();
-        assertThat(dataApprovals.size(), is(1));
+        assertThat(dataApprovals.size()).isEqualTo(1);
     }
 
     @Test
@@ -71,7 +70,7 @@ public class DataApprovalCollectionRepositoryMockIntegrationShould extends BaseM
         List<DataApproval> dataApprovals = d2.dataSetModule().dataApprovals()
                 .byPeriodId().eq("2018")
                 .blockingGet();
-        assertThat(dataApprovals.size(), is(1));
+        assertThat(dataApprovals.size()).isEqualTo(1);
     }
 
     @Test
@@ -79,7 +78,7 @@ public class DataApprovalCollectionRepositoryMockIntegrationShould extends BaseM
         List<DataApproval> dataApprovals = d2.dataSetModule().dataApprovals()
                 .byAttributeOptionComboUid().eq("Gmbgme7z9BF")
                 .blockingGet();
-        assertThat(dataApprovals.size(), is(1));
+        assertThat(dataApprovals.size()).isEqualTo(1);
     }
 
     @Test
@@ -87,6 +86,6 @@ public class DataApprovalCollectionRepositoryMockIntegrationShould extends BaseM
         List<DataApproval> dataApprovals = d2.dataSetModule().dataApprovals()
                 .byState().eq(DataApprovalState.UNAPPROVED_ABOVE)
                 .blockingGet();
-        assertThat(dataApprovals.size(), is(1));
+        assertThat(dataApprovals.size()).isEqualTo(1);
     }
 }

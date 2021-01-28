@@ -37,7 +37,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.text.ParseException;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 public class DataElementShould extends BaseObjectShould implements ObjectShould {
 
@@ -67,7 +67,7 @@ public class DataElementShould extends BaseObjectShould implements ObjectShould 
         assertThat(dataElement.displayFormName()).isEqualTo("ANC Visit");
 
         assertThat(dataElement.valueType()).isEqualTo(ValueType.TEXT);
-        assertThat(dataElement.zeroIsSignificant()).isEqualTo(false);
+        assertThat(dataElement.zeroIsSignificant()).isFalse();
         assertThat(dataElement.optionSetUid()).isEqualTo("fUS7fy2HbaI");
         assertThat(dataElement.categoryComboUid()).isEqualTo("p0KPaWEg3cf");
         assertThat(dataElement.domainType()).isEqualTo("TRACKER");

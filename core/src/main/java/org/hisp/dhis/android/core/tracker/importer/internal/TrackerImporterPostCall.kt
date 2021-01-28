@@ -65,7 +65,6 @@ internal class TrackerImporterPostCall @Inject internal constructor(
                     service.postTrackerImporter(trackedEntityInstancePayload)
                 )
                 jobQueryCall.storeAndQueryJob(webResponse.response().uid())
-
             } catch (d2Error: D2Error) {
                 stateManager.restorePartitionStates(teisToPost)
                 Observable.error<D2Progress>(d2Error)

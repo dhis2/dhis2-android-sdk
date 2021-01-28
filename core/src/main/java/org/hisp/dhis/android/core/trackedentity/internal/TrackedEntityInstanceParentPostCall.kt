@@ -25,25 +25,26 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.configuration.internal
+package org.hisp.dhis.android.core.trackedentity.internal
 
-import android.content.Context
 import dagger.Reusable
-import java.io.File
+import io.reactivex.Observable
 import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterPostCall
 
 @Reusable
-internal class DatabaseRenamer @Inject constructor(private val context: Context) {
+internal class TrackedEntityInstanceParentPostCall @Inject internal constructor(
+    private val oldCall: OldTrackedEntityInstancePostCall,
+    private val trackerImporterCall: TrackerImporterPostCall
+) {
 
-    fun renameDatabase(from: String, to: String): Boolean {
-        val fromFile = context.getDatabasePath(from)
-        val toFile = File(fromFile.parentFile, to)
-        return fromFile.renameTo(toFile)
-    }
-
-    fun copyDatabase(from: String, to: String): File {
-        val fromFile = context.getDatabasePath(from)
-        val toFile = File(fromFile.parentFile, to)
-        return fromFile.copyTo(toFile)
+    fun uploadTrackedEntityInstances(trackedEntityInstances: List<TrackedEntityInstance>): Observable<D2Progress> {
+        return if (trackedEntityInstances.isEmpty()) {
+            Observable.empty<D2Progress>()
+        } else {
+            oldCall.uploadTrackedEntityInstances(trackedEntityInstances)
+        }
     }
 }

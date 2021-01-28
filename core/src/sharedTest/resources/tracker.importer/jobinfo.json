@@ -1,0 +1,9 @@
+{
+  "id": "id",
+  "uid": "uid",
+  "level": "INFO",
+  "category": "TRACKER_IMPORT_JOB",
+  "time": "2021-01-25T12:09:18.571",
+  "message": "(android) Import:Done took 0.360910 sec.",
+  "completed": true
+}

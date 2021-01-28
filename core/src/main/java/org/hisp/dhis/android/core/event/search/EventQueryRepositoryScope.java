@@ -62,11 +62,11 @@ public abstract class EventQueryRepositoryScope implements BaseScope {
     @Nullable
     public abstract String trackedEntityInstance();
 
-    @Nullable
-    public abstract String organisationUnit();
+    @NonNull
+    public abstract List<String> orgUnits();
 
     @NonNull
-    public abstract OrganisationUnitMode organisationUnitMode();
+    public abstract OrganisationUnitMode orgUnitMode();
 
     @Nullable
     public abstract AssignedUserMode assignedUserMode();
@@ -106,7 +106,8 @@ public abstract class EventQueryRepositoryScope implements BaseScope {
                 .order(Collections.emptyList())
                 .dataFilters(Collections.emptyList())
                 .mode(RepositoryMode.OFFLINE_ONLY)
-                .organisationUnitMode(OrganisationUnitMode.SELECTED)
+                .orgUnitMode(OrganisationUnitMode.SELECTED)
+                .orgUnits(Collections.emptyList())
                 .includeDeleted(false);
     }
 
@@ -127,9 +128,9 @@ public abstract class EventQueryRepositoryScope implements BaseScope {
 
         public abstract Builder trackedEntityInstance(String trackedEntityInstance);
 
-        public abstract Builder organisationUnit(String organisationUnit);
+        public abstract Builder orgUnits(List<String> orgUnits);
 
-        public abstract Builder organisationUnitMode(OrganisationUnitMode organisationUnitMode);
+        public abstract Builder orgUnitMode(OrganisationUnitMode orgUnitMode);
 
         public abstract Builder assignedUserMode(AssignedUserMode assignedUserMode);
 

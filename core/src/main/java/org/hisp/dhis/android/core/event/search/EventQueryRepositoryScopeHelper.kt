@@ -44,8 +44,8 @@ internal object EventQueryRepositoryScopeHelper {
         filter.programStage()?.let { builder.programStage(it) }
         filter.eventQueryCriteria()?.let { criteria ->
             criteria.followUp()?.let { builder.followUp(it) }
-            criteria.organisationUnit()?.let { builder.organisationUnit(it) }
-            criteria.ouMode()?.let { builder.organisationUnitMode(it) }
+            criteria.organisationUnit()?.let { builder.orgUnits(listOf(it)) }
+            criteria.ouMode()?.let { builder.orgUnitMode(it) }
             criteria.assignedUserMode()?.let { builder.assignedUserMode(it) }
             criteria.order()?.let { builder.order(parseOrderString(it)) }
             criteria.dataFilters()?.let { builder.dataFilters(it) }

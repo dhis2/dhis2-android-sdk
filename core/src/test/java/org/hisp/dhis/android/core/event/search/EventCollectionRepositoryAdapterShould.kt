@@ -42,7 +42,7 @@ class EventCollectionRepositoryAdapterShould {
     @Test
     fun `Should get null if orgUnit is null and mode is SELECTED`() {
         val scope = EventQueryRepositoryScope.builder()
-            .organisationUnitMode(OrganisationUnitMode.SELECTED)
+            .orgUnitMode(OrganisationUnitMode.SELECTED)
             .build()
 
         val orgunitList = adapter.getOrganisationUnits(scope)
@@ -52,8 +52,8 @@ class EventCollectionRepositoryAdapterShould {
     @Test
     fun `Should get selected orgunit`() {
         val scope = EventQueryRepositoryScope.builder()
-            .organisationUnit(orgunit)
-            .organisationUnitMode(OrganisationUnitMode.SELECTED)
+            .orgUnits(orgunit)
+            .orgUnitMode(OrganisationUnitMode.SELECTED)
             .build()
 
         val orgunitList = adapter.getOrganisationUnits(scope)
@@ -63,7 +63,7 @@ class EventCollectionRepositoryAdapterShould {
     @Test
     fun `Should get all if ALL mode`() {
         val scope = EventQueryRepositoryScope.builder()
-            .organisationUnitMode(OrganisationUnitMode.ALL)
+            .orgUnitMode(OrganisationUnitMode.ALL)
             .build()
 
         val orgunitList = adapter.getOrganisationUnits(scope)
@@ -73,8 +73,8 @@ class EventCollectionRepositoryAdapterShould {
     @Test
     fun `Should get descendants if DESCENDANTS mode`() {
         val scope = EventQueryRepositoryScope.builder()
-            .organisationUnit(orgunit)
-            .organisationUnitMode(OrganisationUnitMode.DESCENDANTS)
+            .orgUnits(orgunit)
+            .orgUnitMode(OrganisationUnitMode.DESCENDANTS)
             .build()
 
         val orgunitList = adapter.getOrganisationUnits(scope)

@@ -53,7 +53,7 @@ internal class EventCollectionRepositoryAdapter @Inject constructor(
         scope.programStage()?.let { repository = repository.byProgramStageUid().eq(it) }
         scope.followUp()?.let { repository = repository.byFollowUp(it) }
         scope.trackedEntityInstance()?.let { repository = repository.byTrackedEntityInstanceUids(listOf(it)) }
-        scope.organisationUnitMode().let { repository = applyOrgunitSelection(repository, scope) }
+        scope.orgUnitMode().let { repository = applyOrgunitSelection(repository, scope) }
         scope.assignedUserMode()?.let { repository = applyUserAssignedMode(repository, it) }
         scope.dataFilters().forEach {
             // TODO
@@ -93,22 +93,22 @@ internal class EventCollectionRepositoryAdapter @Inject constructor(
     }
 
     fun getOrganisationUnits(scope: EventQueryRepositoryScope): List<String>? {
-        return when (scope.organisationUnitMode()) {
+        return when (scope.orgUnitMode()) {
             OrganisationUnitMode.ALL, OrganisationUnitMode.ACCESSIBLE ->
                 organisationUnitCollectionRepository.blockingGetUids()
             OrganisationUnitMode.CAPTURE ->
                 organisationUnitCollectionRepository
                     .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE).blockingGetUids()
             OrganisationUnitMode.CHILDREN ->
-                scope.organisationUnit()?.let { orgUnit ->
-                    organisationUnitCollectionRepository.byParentUid().like(orgUnit).blockingGetUids() + orgUnit
-                }
+                scope.orgUnits().map { orgUnit ->
+                    organisationUnitCollectionRepository.byParentUid().eq(orgUnit).blockingGetUids() + orgUnit
+                }.flatten()
             OrganisationUnitMode.DESCENDANTS ->
-                scope.organisationUnit()?.let { orgUnit ->
+                scope.orgUnits().map { orgUnit ->
                     organisationUnitCollectionRepository.byPath().like(orgUnit).blockingGetUids()
-                }
+                }.flatten()
             OrganisationUnitMode.SELECTED ->
-                scope.organisationUnit()?.let { listOf(it) }
+                scope.orgUnits()
         }
     }
 

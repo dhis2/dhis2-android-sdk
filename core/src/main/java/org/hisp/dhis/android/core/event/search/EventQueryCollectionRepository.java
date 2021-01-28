@@ -100,12 +100,19 @@ public final class EventQueryCollectionRepository implements ReadOnlyWithUidColl
         return connectorFactory.eqConnector(programStage -> scope.toBuilder().programStage(programStage).build());
     }
 
-    public EqFilterConnector<EventQueryCollectionRepository, String> byOrganisationUnit() {
-        return connectorFactory.eqConnector(orgunit -> scope.toBuilder().organisationUnit(orgunit).build());
+    /**
+     * Filter by Event organisation units.
+     * <br><b>IMPORTANT:</b> this filter accepts a list of organisation units, but only the first one will be used for
+     * the online query because the web API does not support querying by multiple organisation units.
+     *
+     * @return Repository connector
+     */
+    public ListFilterConnector<EventQueryCollectionRepository, String> byOrgUnits() {
+        return connectorFactory.listConnector(orgunits -> scope.toBuilder().orgUnits(orgunits).build());
     }
 
-    public EqFilterConnector<EventQueryCollectionRepository, OrganisationUnitMode> byOrganisationUnitMode() {
-        return connectorFactory.eqConnector(mode -> scope.toBuilder().organisationUnitMode(mode).build());
+    public EqFilterConnector<EventQueryCollectionRepository, OrganisationUnitMode> byOrgUnitMode() {
+        return connectorFactory.eqConnector(mode -> scope.toBuilder().orgUnitMode(mode).build());
     }
 
     public PeriodFilterConnector<EventQueryCollectionRepository> byEventDate() {

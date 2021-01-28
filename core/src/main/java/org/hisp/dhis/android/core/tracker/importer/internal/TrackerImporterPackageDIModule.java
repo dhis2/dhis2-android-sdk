@@ -25,25 +25,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.configuration.internal
 
-import android.content.Context
-import dagger.Reusable
-import java.io.File
-import javax.inject.Inject
+package org.hisp.dhis.android.core.tracker.importer.internal;
 
-@Reusable
-internal class DatabaseRenamer @Inject constructor(private val context: Context) {
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
+import retrofit2.Retrofit;
 
-    fun renameDatabase(from: String, to: String): Boolean {
-        val fromFile = context.getDatabasePath(from)
-        val toFile = File(fromFile.parentFile, to)
-        return fromFile.renameTo(toFile)
-    }
+@Module
+public final class TrackerImporterPackageDIModule {
 
-    fun copyDatabase(from: String, to: String): File {
-        val fromFile = context.getDatabasePath(from)
-        val toFile = File(fromFile.parentFile, to)
-        return fromFile.copyTo(toFile)
+    @Provides
+    @Reusable
+    TrackerImporterService service(Retrofit retrofit) {
+        return retrofit.create(TrackerImporterService.class);
     }
 }

@@ -25,25 +25,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.configuration.internal
+package org.hisp.dhis.android.core.tracker.importer.internal
 
-import android.content.Context
-import dagger.Reusable
-import java.io.File
-import javax.inject.Inject
+import org.hisp.dhis.android.core.trackedentity.internal.ObjectWithUidWebResponse
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePayload
+import retrofit2.Call
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Path
 
-@Reusable
-internal class DatabaseRenamer @Inject constructor(private val context: Context) {
+internal interface TrackerImporterService {
 
-    fun renameDatabase(from: String, to: String): Boolean {
-        val fromFile = context.getDatabasePath(from)
-        val toFile = File(fromFile.parentFile, to)
-        return fromFile.renameTo(toFile)
-    }
+    @POST("tracker")
+    fun postTrackerImporter(
+        @Body trackedEntityInstances: TrackedEntityInstancePayload
+    ): Call<ObjectWithUidWebResponse>
 
-    fun copyDatabase(from: String, to: String): File {
-        val fromFile = context.getDatabasePath(from)
-        val toFile = File(fromFile.parentFile, to)
-        return fromFile.copyTo(toFile)
-    }
+    @GET("tracker/jobs/{jobId}")
+    fun getJob(@Path("jobId") jobId: String): Call<List<JobInfo>>
 }

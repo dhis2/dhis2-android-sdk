@@ -25,44 +25,38 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataset.internal
 
-package org.hisp.dhis.android.core.dataset.internal;
-
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.dataset.Section;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.dataset.Section
 
 @Module
-public final class SectionEntityDIModule {
-
+internal class SectionEntityDIModule {
     @Provides
     @Reusable
-    IdentifiableObjectStore<Section> store(DatabaseAdapter databaseAdapter) {
-        return SectionStore.create(databaseAdapter);
+    fun store(databaseAdapter: DatabaseAdapter?): IdentifiableObjectStore<Section> {
+        return SectionStore.create(databaseAdapter)
     }
 
     @Provides
     @Reusable
-    Handler<Section> handler(SectionHandler impl) {
-        return impl;
+    fun handler(impl: SectionHandler): Handler<Section> {
+        return impl
     }
 
     @Provides
     @Reusable
-    @SuppressWarnings("PMD.NonStaticInitializer")
-    Map<String, ChildrenAppender<Section>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return new HashMap<String, ChildrenAppender<Section>>() {{
-            put(SectionFields.GREYED_FIELDS, SectionGreyedFieldsChildrenAppender.create(databaseAdapter));
-            put(SectionFields.DATA_ELEMENTS, SectionDataElementChildrenAppender.create(databaseAdapter));
-        }};
+    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<Section>> {
+        return mapOf(
+            Pair(SectionFields.GREYED_FIELDS, SectionGreyedFieldsChildrenAppender.create(databaseAdapter)),
+            Pair(SectionFields.DATA_ELEMENTS, SectionDataElementChildrenAppender.create(databaseAdapter)),
+            Pair(SectionFields.INDICATORS, SectionIndicatorsChildrenAppender.create(databaseAdapter))
+        )
     }
 }

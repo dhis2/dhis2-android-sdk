@@ -42,8 +42,7 @@ import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLinkTableInfo
 import org.hisp.dhis.android.core.indicator.Indicator
 import javax.inject.Inject
 
-@Reusable
-internal class SectionHandler @Inject constructor(
+@Reusable internal class SectionHandler @Inject constructor(
     sectionStore: IdentifiableObjectStore<Section>,
     private val sectionDataElementLinkHandler: OrderedLinkHandler<DataElement, SectionDataElementLink>,
     private val greyedFieldsHandler: Handler<DataElementOperand>,

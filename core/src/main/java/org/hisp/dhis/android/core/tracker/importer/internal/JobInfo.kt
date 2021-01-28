@@ -25,32 +25,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.tracker.importer
+package org.hisp.dhis.android.core.tracker.importer.internal
 
-import com.google.common.truth.Truth.assertThat
-import java.io.IOException
-import java.text.ParseException
-import org.hisp.dhis.android.core.Inject
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject
-import org.hisp.dhis.android.core.common.BaseObjectShould
-import org.hisp.dhis.android.core.common.ObjectShould
-import org.hisp.dhis.android.core.tracker.importer.internal.JobInfo
-import org.junit.Test
+import com.gabrielittner.auto.value.cursor.ColumnAdapter
+import java.util.Date
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter
 
-class JobInfoShould : BaseObjectShould("tracker.importer/jobinfo.json"), ObjectShould {
-
-    @Test
-    @Throws(IOException::class, ParseException::class)
-    override fun map_from_json_string() {
-        val objectMapper = Inject.objectMapper()
-        val jobInfo = objectMapper.readValue(jsonStream, JobInfo::class.java)
-
-        assertThat(jobInfo.id).isEqualTo("id")
-        assertThat(jobInfo.uid).isEqualTo("uid")
-        assertThat(jobInfo.level).isEqualTo("INFO")
-        assertThat(jobInfo.category).isEqualTo("TRACKER_IMPORT_JOB")
-        assertThat(jobInfo.time).isEqualTo(BaseIdentifiableObject.DATE_FORMAT.parse("2021-01-25T12:09:18.571"))
-        assertThat(jobInfo.message).isEqualTo("(android) Import:Done took 0.360910 sec.")
-        assertThat(jobInfo.completed).isTrue()
-    }
-}
+internal data class JobInfo(
+    val id: String,
+    val uid: String,
+    val level: String,
+    val category: String,
+    @ColumnAdapter(DbDateColumnAdapter::class) val time: Date,
+    val message: String,
+    val completed: Boolean
+)

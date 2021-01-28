@@ -83,7 +83,7 @@ internal class TrackerImporterPostCall @Inject internal constructor(
             .map {
                 apiCallExecutor.executeObjectCall(service.getJob(jobId))
             }
-            .map { it.any { ji -> ji.completed() } }
+            .map { it.any { ji -> ji.completed } }
             .takeUntil { it }
             .map {
                 progressManager.increaseProgress(

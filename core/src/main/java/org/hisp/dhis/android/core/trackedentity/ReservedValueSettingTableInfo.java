@@ -28,54 +28,38 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
-import com.google.auto.value.AutoValue;
+public final class ReservedValueSettingTableInfo {
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-
-@AutoValue
-public abstract class ReservedValueSummary {
-
-    @NonNull
-    public abstract TrackedEntityAttribute trackedEntityAttribute();
-
-    @Nullable
-    public abstract OrganisationUnit organisationUnit();
-
-    @NonNull
-    public abstract Integer count();
-
-    @NonNull
-    public abstract Integer numberOfValuesToFillUp();
-
-    public static Builder builder() {
-        return new AutoValue_ReservedValueSummary.Builder();
+    private ReservedValueSettingTableInfo() {
     }
 
-    public abstract Builder toBuilder();
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    public static ReservedValueSummary create(@NonNull TrackedEntityAttribute trackedEntityAttribute,
-                                              OrganisationUnit organisationUnit,
-                                              @NonNull Integer count) {
-        return builder()
-                .trackedEntityAttribute(trackedEntityAttribute)
-                .organisationUnit(organisationUnit)
-                .count(count)
-                .build();
-    }
+        @Override
+        public String name() {
+            return "ReservedValueSetting";
+        }
 
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder trackedEntityAttribute(TrackedEntityAttribute trackedEntityAttribute);
+        @Override
+        public Columns columns() {
+            return new Columns();
+        }
+    };
 
-        public abstract Builder organisationUnit(OrganisationUnit organisationUnit);
+    public static class Columns extends CoreColumns {
+        public static final String UID = "uid";
+        public static final String NUMBER_OF_VALUES_TO_RESERVE = "numberOfValuesToReserve";
 
-        public abstract Builder count(Integer count);
-
-        public abstract Builder numberOfValuesToFillUp(Integer numberOfValuesToFillUp);
-
-        public abstract ReservedValueSummary build();
+        @Override
+        public String[] all() {
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    UID,
+                    NUMBER_OF_VALUES_TO_RESERVE
+            );
+        }
     }
 }

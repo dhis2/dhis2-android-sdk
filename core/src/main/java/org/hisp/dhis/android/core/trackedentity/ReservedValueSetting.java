@@ -28,54 +28,45 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import android.database.Cursor;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 @AutoValue
-public abstract class ReservedValueSummary {
-
-    @NonNull
-    public abstract TrackedEntityAttribute trackedEntityAttribute();
+public abstract class ReservedValueSetting implements CoreObject, ObjectWithUidInterface {
 
     @Nullable
-    public abstract OrganisationUnit organisationUnit();
+    public abstract String uid();
+
+    @Nullable
+    public abstract Integer numberOfValuesToReserve();
 
     @NonNull
-    public abstract Integer count();
-
-    @NonNull
-    public abstract Integer numberOfValuesToFillUp();
-
-    public static Builder builder() {
-        return new AutoValue_ReservedValueSummary.Builder();
+    public static ReservedValueSetting create(Cursor cursor) {
+        return AutoValue_ReservedValueSetting.createFromCursor(cursor);
     }
 
     public abstract Builder toBuilder();
 
-    public static ReservedValueSummary create(@NonNull TrackedEntityAttribute trackedEntityAttribute,
-                                              OrganisationUnit organisationUnit,
-                                              @NonNull Integer count) {
-        return builder()
-                .trackedEntityAttribute(trackedEntityAttribute)
-                .organisationUnit(organisationUnit)
-                .count(count)
-                .build();
+    public static Builder builder() {
+        return new AutoValue_ReservedValueSetting.Builder();
     }
 
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract Builder trackedEntityAttribute(TrackedEntityAttribute trackedEntityAttribute);
 
-        public abstract Builder organisationUnit(OrganisationUnit organisationUnit);
+        public abstract Builder id(Long id);
 
-        public abstract Builder count(Integer count);
+        public abstract Builder uid(String uid);
 
-        public abstract Builder numberOfValuesToFillUp(Integer numberOfValuesToFillUp);
+        public abstract Builder numberOfValuesToReserve(Integer numberOfValuesToReserve);
 
-        public abstract ReservedValueSummary build();
+        public abstract ReservedValueSetting build();
     }
 }

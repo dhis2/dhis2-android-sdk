@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinde
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkStore
-import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkTableInfo
 import org.hisp.dhis.android.core.dataset.SectionIndicatorLinkTableInfo
 
 internal object SectionIndicatorLinkStore {
@@ -45,7 +44,7 @@ internal object SectionIndicatorLinkStore {
         return linkStore(
             databaseAdapter,
             SectionIndicatorLinkTableInfo.TABLE_INFO,
-            CategoryCategoryComboLinkTableInfo.Columns.CATEGORY_COMBO,
+            SectionIndicatorLinkTableInfo.Columns.SECTION,
             BINDER
         ) { SectionIndicatorLink.create(it) }
     }

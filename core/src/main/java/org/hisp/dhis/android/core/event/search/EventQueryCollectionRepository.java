@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.common.DateFilterPeriod;
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventCollectionRepository;
 import org.hisp.dhis.android.core.event.EventFilter;
@@ -47,6 +48,7 @@ import org.hisp.dhis.android.core.event.EventFilterCollectionRepository;
 import org.hisp.dhis.android.core.event.EventObjectRepository;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -160,6 +162,16 @@ public final class EventQueryCollectionRepository implements ReadOnlyWithUidColl
             EventFilter filter = eventFilterRepository.withEventDataFilters().uid(id).blockingGet();
             return EventQueryRepositoryScopeHelper.addEventFilter(scope, filter);
         });
+    }
+
+    /**
+     * Filter by sync status.
+     * <br><b>IMPORTANT:</b> using this filter forces <b>offlineOnly</b> mode.
+     *
+     * @return Repository connector
+     */
+    public ListFilterConnector<EventQueryCollectionRepository, State> byStates() {
+        return connectorFactory.listConnector(states -> scope.toBuilder().states(states).build());
     }
 
     public EqFilterConnector<EventQueryCollectionRepository,

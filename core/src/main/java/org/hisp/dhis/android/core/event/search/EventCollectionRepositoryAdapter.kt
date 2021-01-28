@@ -82,6 +82,8 @@ internal class EventCollectionRepositoryAdapter @Inject constructor(
             repository = repository.byDeleted().isFalse
         }
 
+        scope.states()?.let { repository = repository.byState().`in`(it) }
+
         return repository
     }
 

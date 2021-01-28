@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode;
 import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.common.DateFilterPeriod;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.EventDataFilter;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
@@ -99,6 +100,9 @@ public abstract class EventQueryRepositoryScope implements BaseScope {
     @NonNull
     public abstract Boolean includeDeleted();
 
+    @Nullable
+    public abstract List<State> states();
+
     abstract Builder toBuilder();
 
     static Builder builder() {
@@ -152,6 +156,19 @@ public abstract class EventQueryRepositoryScope implements BaseScope {
 
         public abstract Builder includeDeleted(Boolean includeDeleted);
 
-        public abstract EventQueryRepositoryScope build();
+        public abstract Builder states(List<State> states);
+
+        abstract EventQueryRepositoryScope autoBuild();
+
+        // Auxiliary fields to access values
+        abstract List<State> states();
+
+        public EventQueryRepositoryScope build()  {
+            if (states() != null) {
+                mode(RepositoryMode.OFFLINE_ONLY);
+            }
+
+            return autoBuild();
+        }
     }
 }

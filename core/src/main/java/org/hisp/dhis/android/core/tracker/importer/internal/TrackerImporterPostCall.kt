@@ -64,7 +64,7 @@ internal class TrackerImporterPostCall @Inject internal constructor(
                 val webResponse = apiCallExecutor.executeObjectCall(
                     service.postTrackerImporter(trackedEntityInstancePayload)
                 )
-                jobQueryCall.storeAndQueryJob(webResponse.response())
+                jobQueryCall.storeAndQueryJob(webResponse.response().uid())
 
             } catch (d2Error: D2Error) {
                 stateManager.restorePartitionStates(teisToPost)

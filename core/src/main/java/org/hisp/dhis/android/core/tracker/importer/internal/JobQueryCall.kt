@@ -32,7 +32,8 @@ import io.reactivex.Observable
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
-import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.common.StorableObjectWithUid
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -40,11 +41,13 @@ import javax.inject.Inject
 @Reusable
 internal class JobQueryCall @Inject internal constructor(
     private val service: TrackerImporterService,
-    private val apiCallExecutor: APICallExecutor
+    private val apiCallExecutor: APICallExecutor,
+    private val trackerJobStore: IdentifiableObjectStore<StorableObjectWithUid>
 ) {
 
-    fun storeAndQueryJob(job: ObjectWithUid): Observable<D2Progress> {
-        // TODO store
+    fun storeAndQueryJob(jobId: String): Observable<D2Progress> {
+        val job = StorableObjectWithUid.builder().uid(jobId).build()
+        trackerJobStore.insert(job)
         return queryJob(job.uid())
     }
 
@@ -64,6 +67,7 @@ internal class JobQueryCall @Inject internal constructor(
                 )
             }.doOnComplete {
                 val jobReport = apiCallExecutor.executeObjectCall(service.getJobReport(jobId))
+                trackerJobStore.delete(jobId)
                 println(jobReport)
                 // TODO manage status
             }

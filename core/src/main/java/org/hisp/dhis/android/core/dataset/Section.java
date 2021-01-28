@@ -41,12 +41,13 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreDataElementListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreDataElementOperandListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreObjectWithUidListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreIndicatorListAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
+import org.hisp.dhis.android.core.indicator.Indicator;
 
 import java.util.List;
 
@@ -87,8 +88,8 @@ public abstract class Section extends BaseIdentifiableObject implements CoreObje
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(IgnoreObjectWithUidListColumnAdapter.class)
-    public abstract List<ObjectWithUid> indicators();
+    @ColumnAdapter(IgnoreIndicatorListAdapter.class)
+    public abstract List<Indicator> indicators();
 
     public static Builder builder() {
         return new $$AutoValue_Section.Builder();
@@ -119,7 +120,7 @@ public abstract class Section extends BaseIdentifiableObject implements CoreObje
 
         public abstract Builder greyedFields(List<DataElementOperand> greyedFields);
 
-        public abstract Builder indicators(List<ObjectWithUid> indicators);
+        public abstract Builder indicators(List<Indicator> indicators);
 
         public abstract Section build();
     }

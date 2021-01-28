@@ -32,6 +32,7 @@ import javax.inject.Inject
 import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
 import org.hisp.dhis.android.core.event.EventCollectionRepository
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.user.AuthenticatedUserObjectRepository
@@ -95,6 +96,9 @@ internal class EventCollectionRepositoryAdapter @Inject constructor(
         return when (scope.organisationUnitMode()) {
             OrganisationUnitMode.ALL, OrganisationUnitMode.ACCESSIBLE ->
                 organisationUnitCollectionRepository.blockingGetUids()
+            OrganisationUnitMode.CAPTURE ->
+                organisationUnitCollectionRepository
+                    .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE).blockingGetUids()
             OrganisationUnitMode.CHILDREN ->
                 scope.organisationUnit()?.let { orgUnit ->
                     organisationUnitCollectionRepository.byParentUid().like(orgUnit).blockingGetUids() + orgUnit
@@ -103,7 +107,7 @@ internal class EventCollectionRepositoryAdapter @Inject constructor(
                 scope.organisationUnit()?.let { orgUnit ->
                     organisationUnitCollectionRepository.byPath().like(orgUnit).blockingGetUids()
                 }
-            else ->
+            OrganisationUnitMode.SELECTED ->
                 scope.organisationUnit()?.let { listOf(it) }
         }
     }

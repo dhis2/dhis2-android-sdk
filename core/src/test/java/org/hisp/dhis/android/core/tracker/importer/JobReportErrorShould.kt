@@ -28,17 +28,17 @@
 package org.hisp.dhis.android.core.tracker.importer
 
 import com.google.common.truth.Truth.assertThat
-import java.io.IOException
-import java.text.ParseException
 import org.hisp.dhis.android.core.Inject
 import org.hisp.dhis.android.core.common.BaseObjectShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.core.tracker.importer.internal.JobImportCount
 import org.hisp.dhis.android.core.tracker.importer.internal.JobReport
-import org.hisp.dhis.android.core.tracker.importer.internal.JobTypeReport
+import org.hisp.dhis.android.core.tracker.importer.internal.JobValidationError
 import org.junit.Test
+import java.io.IOException
+import java.text.ParseException
 
-class JobReportShould : BaseObjectShould("tracker/importer/jobreport.json"), ObjectShould {
+class JobReportErrorShould : BaseObjectShould("tracker/importer/jobreport-error.json"), ObjectShould {
 
     @Test
     @Throws(IOException::class, ParseException::class)
@@ -46,42 +46,16 @@ class JobReportShould : BaseObjectShould("tracker/importer/jobreport.json"), Obj
         val objectMapper = Inject.objectMapper()
         val jobReport = objectMapper.readValue(jsonStream, JobReport::class.java)
 
-        assertThat(jobReport.status).isEqualTo("OK")
-        assertThat(jobReport.validationReport.errorReports).isEmpty()
-        assertThat(jobReport.stats).isEqualTo(JobImportCount(1, 2, 3, 4, 10))
+        assertThat(jobReport.status).isEqualTo("ERROR")
+        assertThat(jobReport.stats).isEqualTo(JobImportCount(0, 0, 0, 1, 1))
 
-        assertThat(jobReport.bundleReport.status).isEqualTo("OK")
+        assertThat(jobReport.validationReport.errorReports.size).isEqualTo(1)
 
-        assertThat(jobReport.bundleReport.stats)
-            .isEqualTo(JobImportCount(5, 6, 7, 8, 26))
-
-        assertThat(jobReport.bundleReport.typeReportMap.trackedEntity).isEqualTo(
-            JobTypeReport(
-                "TRACKED_ENTITY",
-                JobImportCount(3, 3, 2, 2, 10),
-                emptyList()
-            )
-        )
-        assertThat(jobReport.bundleReport.typeReportMap.event).isEqualTo(
-            JobTypeReport(
-                "EVENT",
-                JobImportCount(2, 2, 2, 2, 8),
-                emptyList()
-            )
-        )
-        assertThat(jobReport.bundleReport.typeReportMap.relationship).isEqualTo(
-            JobTypeReport(
-                "RELATIONSHIP",
-                JobImportCount(1, 1, 1, 1, 4),
-                emptyList()
-            )
-        )
-        assertThat(jobReport.bundleReport.typeReportMap.enrollment).isEqualTo(
-            JobTypeReport(
-                "ENROLLMENT",
-                JobImportCount(0, 0, 0, 0, 0),
-                emptyList()
-            )
-        )
+        val error = jobReport.validationReport.errorReports.first()
+        assertThat(error).isEqualTo(JobValidationError(
+            "PXi7gfVIk1p",
+            "EVENT",
+            "E1033",
+            "Event: `PXi7gfVIk1p`, Enrollment value is NULL."))
     }
 }

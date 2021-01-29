@@ -37,8 +37,16 @@ internal data class JobImportCount(
     val total: Int
 )
 
+
+internal data class JobValidationError(
+    val uid: String,
+    val trackerType: String,
+    val errorCode: String,
+    val message: String
+)
+
 internal data class JobValidationReport(
-    val errorReports: List<String> // TODO unknown actual type
+    val errorReports: List<JobValidationError>
 )
 
 internal data class JobTypeReport(
@@ -64,5 +72,5 @@ internal data class JobReport(
     val status: String,
     val validationReport: JobValidationReport,
     val stats: JobImportCount,
-    val bundleReport: JobBundleReport
+    val bundleReport: JobBundleReport?
 )

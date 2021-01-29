@@ -31,26 +31,57 @@ import com.google.common.truth.Truth.assertThat
 import java.io.IOException
 import java.text.ParseException
 import org.hisp.dhis.android.core.Inject
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.BaseObjectShould
 import org.hisp.dhis.android.core.common.ObjectShould
-import org.hisp.dhis.android.core.tracker.importer.internal.JobInfo
+import org.hisp.dhis.android.core.tracker.importer.internal.JobImportCount
+import org.hisp.dhis.android.core.tracker.importer.internal.JobReport
+import org.hisp.dhis.android.core.tracker.importer.internal.JobTypeReport
 import org.junit.Test
 
-class JobInfoShould : BaseObjectShould("tracker/importer/jobinfo.json"), ObjectShould {
+class JobReportShould : BaseObjectShould("tracker/importer/jobreport.json"), ObjectShould {
 
     @Test
     @Throws(IOException::class, ParseException::class)
     override fun map_from_json_string() {
         val objectMapper = Inject.objectMapper()
-        val jobInfo = objectMapper.readValue(jsonStream, JobInfo::class.java)
+        val jobReport = objectMapper.readValue(jsonStream, JobReport::class.java)
 
-        assertThat(jobInfo.id).isEqualTo("id")
-        assertThat(jobInfo.uid).isEqualTo("uid")
-        assertThat(jobInfo.level).isEqualTo("INFO")
-        assertThat(jobInfo.category).isEqualTo("TRACKER_IMPORT_JOB")
-        assertThat(jobInfo.time).isEqualTo(BaseIdentifiableObject.DATE_FORMAT.parse("2021-01-25T12:09:18.571"))
-        assertThat(jobInfo.message).isEqualTo("(android) Import:Done took 0.360910 sec.")
-        assertThat(jobInfo.completed).isTrue()
+        assertThat(jobReport.status).isEqualTo("OK")
+        assertThat(jobReport.validationReport.errorReports).isEmpty()
+        assertThat(jobReport.stats).isEqualTo(JobImportCount(1, 2, 3, 4, 10))
+
+        assertThat(jobReport.bundleReport.status).isEqualTo("OK")
+
+        assertThat(jobReport.bundleReport.stats)
+            .isEqualTo(JobImportCount(5, 6, 7, 8, 26))
+
+        assertThat(jobReport.bundleReport.typeReportMap.trackedEntity).isEqualTo(
+            JobTypeReport(
+                "TRACKED_ENTITY",
+                JobImportCount(3, 3, 2, 2, 10),
+                emptyList()
+            )
+        )
+        assertThat(jobReport.bundleReport.typeReportMap.event).isEqualTo(
+            JobTypeReport(
+                "EVENT",
+                JobImportCount(2, 2, 2, 2, 8),
+                emptyList()
+            )
+        )
+        assertThat(jobReport.bundleReport.typeReportMap.relationship).isEqualTo(
+            JobTypeReport(
+                "RELATIONSHIP",
+                JobImportCount(1, 1, 1, 1, 4),
+                emptyList()
+            )
+        )
+        assertThat(jobReport.bundleReport.typeReportMap.enrollment).isEqualTo(
+            JobTypeReport(
+                "ENROLLMENT",
+                JobImportCount(0, 0, 0, 0, 0),
+                emptyList()
+            )
+        )
     }
 }

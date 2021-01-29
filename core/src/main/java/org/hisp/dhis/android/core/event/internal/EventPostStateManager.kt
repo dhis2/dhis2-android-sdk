@@ -28,10 +28,10 @@
 package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.event.Event
-import javax.inject.Inject
 
 @Reusable
 internal class EventPostStateManager @Inject internal constructor(

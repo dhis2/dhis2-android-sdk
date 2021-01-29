@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.tracker.importer
 
 import com.google.common.truth.Truth.assertThat
+import java.io.IOException
+import java.text.ParseException
 import org.hisp.dhis.android.core.Inject
 import org.hisp.dhis.android.core.common.BaseObjectShould
 import org.hisp.dhis.android.core.common.ObjectShould
@@ -35,8 +37,6 @@ import org.hisp.dhis.android.core.tracker.importer.internal.JobImportCount
 import org.hisp.dhis.android.core.tracker.importer.internal.JobReport
 import org.hisp.dhis.android.core.tracker.importer.internal.JobValidationError
 import org.junit.Test
-import java.io.IOException
-import java.text.ParseException
 
 class JobReportErrorShould : BaseObjectShould("tracker/importer/jobreport-error.json"), ObjectShould {
 
@@ -52,10 +52,13 @@ class JobReportErrorShould : BaseObjectShould("tracker/importer/jobreport-error.
         assertThat(jobReport.validationReport.errorReports.size).isEqualTo(1)
 
         val error = jobReport.validationReport.errorReports.first()
-        assertThat(error).isEqualTo(JobValidationError(
-            "PXi7gfVIk1p",
-            "EVENT",
-            "E1033",
-            "Event: `PXi7gfVIk1p`, Enrollment value is NULL."))
+        assertThat(error).isEqualTo(
+            JobValidationError(
+                "PXi7gfVIk1p",
+                "EVENT",
+                "E1033",
+                "Event: `PXi7gfVIk1p`, Enrollment value is NULL."
+            )
+        )
     }
 }

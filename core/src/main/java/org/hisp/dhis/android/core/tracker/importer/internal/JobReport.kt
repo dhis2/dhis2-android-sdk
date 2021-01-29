@@ -37,7 +37,6 @@ internal data class JobImportCount(
     val total: Int
 )
 
-
 internal data class JobValidationError(
     val uid: String,
     val trackerType: String,

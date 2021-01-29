@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.dataset.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
@@ -40,7 +41,6 @@ import org.hisp.dhis.android.core.dataset.SectionDataElementLink
 import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLink
 import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLinkTableInfo
 import org.hisp.dhis.android.core.indicator.Indicator
-import javax.inject.Inject
 
 @Reusable internal class SectionHandler @Inject constructor(
     sectionStore: IdentifiableObjectStore<Section>,
@@ -50,7 +50,7 @@ import javax.inject.Inject
     private val sectionIndicatorLinkHandler: LinkHandler<Indicator, SectionIndicatorLink>,
     private val sectionGreyedFieldsStore: LinkStore<SectionGreyedFieldsLink>
 ) : IdentifiableHandlerImpl<Section>(sectionStore) {
-    
+
     override fun afterObjectHandled(o: Section, action: HandleAction) {
         sectionDataElementLinkHandler.handleMany(
             o.uid(), o.dataElements()
@@ -64,7 +64,8 @@ import javax.inject.Inject
 
         sectionIndicatorLinkHandler.handleMany(
             o.uid(), o.indicators()
-        ) { SectionIndicatorLink.builder()
+        ) {
+            SectionIndicatorLink.builder()
                 .section(o.uid())
                 .indicator(it.uid())
                 .build()

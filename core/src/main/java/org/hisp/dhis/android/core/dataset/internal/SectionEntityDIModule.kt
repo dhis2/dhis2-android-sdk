@@ -54,9 +54,9 @@ internal class SectionEntityDIModule {
     @Reusable
     fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<Section>> {
         return mapOf(
-            Pair(SectionFields.GREYED_FIELDS, SectionGreyedFieldsChildrenAppender.create(databaseAdapter)),
-            Pair(SectionFields.DATA_ELEMENTS, SectionDataElementChildrenAppender.create(databaseAdapter)),
-            Pair(SectionFields.INDICATORS, SectionIndicatorsChildrenAppender.create(databaseAdapter))
+            SectionFields.GREYED_FIELDS to SectionGreyedFieldsChildrenAppender.create(databaseAdapter),
+            SectionFields.DATA_ELEMENTS to SectionDataElementChildrenAppender.create(databaseAdapter),
+            SectionFields.INDICATORS to SectionIndicatorsChildrenAppender.create(databaseAdapter)
         )
     }
 }

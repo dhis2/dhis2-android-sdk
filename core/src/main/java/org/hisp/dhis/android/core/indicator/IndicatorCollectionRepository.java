@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilt
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.dataset.SectionIndicatorLinkTableInfo;
 import org.hisp.dhis.android.core.indicator.IndicatorTableInfo.Columns;
 
 import java.util.Collections;
@@ -88,6 +89,15 @@ public final class IndicatorCollectionRepository
                 DataSetIndicatorLinkTableInfo.TABLE_INFO.name(),
                 DataSetIndicatorLinkTableInfo.Columns.INDICATOR,
                 DataSetIndicatorLinkTableInfo.Columns.DATA_SET,
+                Collections.singletonList(dataSetUid)
+        );
+    }
+
+    public IndicatorCollectionRepository bySectionUid(String dataSetUid) {
+        return cf.subQuery(Columns.UID).inLinkTable(
+                SectionIndicatorLinkTableInfo.TABLE_INFO.name(),
+                SectionIndicatorLinkTableInfo.Columns.INDICATOR,
+                SectionIndicatorLinkTableInfo.Columns.SECTION,
                 Collections.singletonList(dataSetUid)
         );
     }

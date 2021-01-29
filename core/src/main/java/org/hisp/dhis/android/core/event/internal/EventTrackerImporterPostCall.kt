@@ -25,26 +25,45 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal
+package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
 import io.reactivex.Observable
-import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.tracker.importer.internal.TrackedEntityInstanceTrackerImporterPostCall
+import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper
+import org.hisp.dhis.android.core.event.Event
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.tracker.importer.internal.JobQueryCall
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterService
+import javax.inject.Inject
 
 @Reusable
-internal class TrackedEntityInstanceParentPostCall @Inject internal constructor(
-    private val oldCall: OldTrackedEntityInstancePostCall,
-    private val trackerImporterCall: TrackedEntityInstanceTrackerImporterPostCall
+internal class EventTrackerImporterPostCall @Inject internal constructor(
+    private val payloadGenerator: EventPostPayloadGenerator,
+    private val stateManager: EventPostStateManager,
+    private val service: TrackerImporterService,
+    private val apiCallExecutor: APICallExecutor,
+    private val jobQueryCall: JobQueryCall
 ) {
+    fun uploadEvents(
+        events: List<Event>
+    ): Observable<D2Progress> {
+        return Observable.defer {
+            val eventPayload = EventPayload()
+            val eventsToPost = payloadGenerator.getEvents(events)
+            eventPayload.events = eventsToPost
 
-    fun uploadTrackedEntityInstances(trackedEntityInstances: List<TrackedEntityInstance>): Observable<D2Progress> {
-        return if (trackedEntityInstances.isEmpty()) {
-            Observable.empty<D2Progress>()
-        } else {
-            oldCall.uploadTrackedEntityInstances(trackedEntityInstances)
+            try {
+                val webResponse = apiCallExecutor.executeObjectCall(
+                    service.postEvents(eventPayload)
+                )
+                jobQueryCall.storeAndQueryJob(webResponse.response().uid())
+            } catch (d2Error: D2Error) {
+                stateManager.markObjectsAs(eventsToPost, DataStateHelper.errorIfOnline(d2Error))
+                Observable.error<D2Progress>(d2Error)
+                // TODO different treatment when offline error
+            }
         }
     }
 }

@@ -103,13 +103,13 @@ internal class EventCollectionRepositoryAdapter @Inject constructor(
                 organisationUnitCollectionRepository
                     .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE).blockingGetUids()
             OrganisationUnitMode.CHILDREN ->
-                scope.orgUnits().map { orgUnit ->
+                scope.orgUnits()?.map { orgUnit ->
                     organisationUnitCollectionRepository.byParentUid().eq(orgUnit).blockingGetUids() + orgUnit
-                }.flatten()
+                }?.flatten()
             OrganisationUnitMode.DESCENDANTS ->
-                scope.orgUnits().map { orgUnit ->
+                scope.orgUnits()?.map { orgUnit ->
                     organisationUnitCollectionRepository.byPath().like(orgUnit).blockingGetUids()
-                }.flatten()
+                }?.flatten()
             OrganisationUnitMode.SELECTED ->
                 scope.orgUnits()
         }

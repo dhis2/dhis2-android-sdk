@@ -63,7 +63,7 @@ public abstract class EventQueryRepositoryScope implements BaseScope {
     @Nullable
     public abstract String trackedEntityInstance();
 
-    @NonNull
+    @Nullable
     public abstract List<String> orgUnits();
 
     @NonNull
@@ -114,7 +114,6 @@ public abstract class EventQueryRepositoryScope implements BaseScope {
                 .dataFilters(Collections.emptyList())
                 .mode(RepositoryMode.OFFLINE_ONLY)
                 .orgUnitMode(OrganisationUnitMode.SELECTED)
-                .orgUnits(Collections.emptyList())
                 .includeDeleted(false);
     }
 

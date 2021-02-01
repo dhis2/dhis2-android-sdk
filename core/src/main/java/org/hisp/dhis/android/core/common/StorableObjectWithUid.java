@@ -26,29 +26,43 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.tracker.importer.internal;
+package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.StorableObjectWithUid;
+import android.database.Cursor;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
+import androidx.annotation.NonNull;
 
-@Module
-public final class TrackerImporterPackageDIModule {
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-    @Provides
-    @Reusable
-    TrackerImporterService service(Retrofit retrofit) {
-        return retrofit.create(TrackerImporterService.class);
+import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.UID;
+
+@AutoValue
+public abstract class StorableObjectWithUid extends BaseObject implements ObjectWithUidInterface {
+
+    @Override
+    @NonNull
+    @JsonProperty(UID)
+    public abstract String uid();
+
+    @NonNull
+    public static StorableObjectWithUid create(Cursor cursor) {
+        return AutoValue_StorableObjectWithUid.createFromCursor(cursor);
     }
 
-    @Provides
-    @Reusable
-    IdentifiableObjectStore<StorableObjectWithUid> store(DatabaseAdapter databaseAdapter) {
-        return TrackerJobStore.create(databaseAdapter);
+    public static Builder builder() {
+        return new $$AutoValue_StorableObjectWithUid.Builder();
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder extends BaseObject.Builder<Builder> {
+        public abstract Builder uid(String uid);
+
+        public abstract StorableObjectWithUid build();
+
     }
 }

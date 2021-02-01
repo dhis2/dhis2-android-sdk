@@ -25,30 +25,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.tracker.importer.internal
 
-package org.hisp.dhis.android.core.tracker.importer.internal;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithUidStore
+import org.hisp.dhis.android.core.common.StorableObjectWithUid
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.StorableObjectWithUid;
+internal object TrackerJobStore {
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
-
-@Module
-public final class TrackerImporterPackageDIModule {
-
-    @Provides
-    @Reusable
-    TrackerImporterService service(Retrofit retrofit) {
-        return retrofit.create(TrackerImporterService.class);
-    }
-
-    @Provides
-    @Reusable
-    IdentifiableObjectStore<StorableObjectWithUid> store(DatabaseAdapter databaseAdapter) {
-        return TrackerJobStore.create(databaseAdapter);
+    @JvmStatic
+    fun create(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<StorableObjectWithUid> {
+        return objectWithUidStore(
+            databaseAdapter,
+            TrackerJobTableInfo.TABLE_INFO,
+            StatementBinder { o, w -> w.bind(1, o.uid()) }
+        ) { StorableObjectWithUid.create(it) }
     }
 }

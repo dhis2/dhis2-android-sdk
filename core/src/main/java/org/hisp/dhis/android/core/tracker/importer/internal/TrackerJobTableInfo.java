@@ -28,27 +28,40 @@
 
 package org.hisp.dhis.android.core.tracker.importer.internal;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.StorableObjectWithUid;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
+import static org.hisp.dhis.android.core.common.IdentifiableColumns.UID;
 
-@Module
-public final class TrackerImporterPackageDIModule {
+public final class TrackerJobTableInfo {
 
-    @Provides
-    @Reusable
-    TrackerImporterService service(Retrofit retrofit) {
-        return retrofit.create(TrackerImporterService.class);
+    private TrackerJobTableInfo() {
     }
 
-    @Provides
-    @Reusable
-    IdentifiableObjectStore<StorableObjectWithUid> store(DatabaseAdapter databaseAdapter) {
-        return TrackerJobStore.create(databaseAdapter);
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "TrackerJob";
+        }
+
+        @Override
+        public CoreColumns columns() {
+            return new Columns();
+        }
+    };
+
+    public static class Columns extends CoreColumns {
+
+        @Override
+        public String[] all() {
+            return CollectionsHelper.appendInNewArray(super.all(), UID);
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return new String[]{UID};
+        }
     }
 }

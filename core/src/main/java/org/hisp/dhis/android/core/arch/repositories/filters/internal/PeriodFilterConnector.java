@@ -102,7 +102,7 @@ public final class PeriodFilterConnector<R extends BaseRepository> {
      * @param relativePeriod relative period to compare with the target field
      * @return the new repository
      */
-    public R inRelativePeriod(@NonNull RelativePeriod relativePeriod) {
+    public R inPeriod(@NonNull RelativePeriod relativePeriod) {
         DateFilterPeriod filter = DateFilterPeriod.builder()
                 .period(relativePeriod).type(DatePeriodType.RELATIVE).build();
         return repositoryFactory.updated(filter);

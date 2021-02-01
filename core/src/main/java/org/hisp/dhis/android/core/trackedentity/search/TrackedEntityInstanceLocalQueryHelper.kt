@@ -40,11 +40,13 @@ import org.hisp.dhis.android.core.common.*
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.event.EventTableInfo
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
 import org.hisp.dhis.android.core.user.AuthenticatedUserTableInfo
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
 
 @Reusable
 @Suppress("TooManyFunctions")
@@ -197,6 +199,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
                     OrganisationUnitMode.ALL != scope.orgUnitMode() &&
                     OrganisationUnitMode.ACCESSIBLE != scope.orgUnitMode()
                 ) ||
+                OrganisationUnitMode.CAPTURE == scope.orgUnitMode() ||
                 hasOrgunitSortOrder(scope)
             )
     }
@@ -223,9 +226,21 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
                 // TODO Include orgunit?
                 inner.appendOrKeyStringValue(dot(orgunitAlias, IdentifiableColumns.UID), escapeQuotes(orgUnit))
             }
-            else -> scope.orgUnits().forEach { orgUnit ->
+            OrganisationUnitMode.CAPTURE ->
+                inner.appendComplexQuery(
+                    String.format(
+                        "%s IN (SELECT %s FROM %s WHERE %s = '%s')",
+                        dot(orgunitAlias, IdentifiableColumns.UID),
+                        UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
+                        UserOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
+                        UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT_SCOPE,
+                        OrganisationUnit.Scope.SCOPE_DATA_CAPTURE.name
+                    )
+                )
+            OrganisationUnitMode.SELECTED -> scope.orgUnits().forEach { orgUnit ->
                 inner.appendOrKeyStringValue(dot(orgunitAlias, IdentifiableColumns.UID), escapeQuotes(orgUnit))
             }
+            OrganisationUnitMode.ACCESSIBLE, OrganisationUnitMode.ALL -> {}
         }
         if (!inner.isEmpty) {
             where.appendComplexQuery(inner.build())

@@ -47,5 +47,6 @@ public enum OrganisationUnitMode {
     CHILDREN,
     DESCENDANTS,
     ACCESSIBLE,
+    CAPTURE,
     ALL
 }

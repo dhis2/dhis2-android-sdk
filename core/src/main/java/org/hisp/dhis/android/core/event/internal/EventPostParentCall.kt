@@ -25,32 +25,25 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.tracker.importer.internal
+package org.hisp.dhis.android.core.event.internal
 
-import org.hisp.dhis.android.core.event.internal.EventPayload
-import org.hisp.dhis.android.core.trackedentity.internal.ObjectWithUidWebResponse
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePayload
-import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
+import dagger.Reusable
+import io.reactivex.Observable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.event.Event
 
-internal interface TrackerImporterService {
+@Reusable
+internal class EventPostParentCall @Inject internal constructor(
+    private val oldCall: OldEventPostCall,
+    private val trackerImporterCall: EventTrackerImporterPostCall
+) {
 
-    @POST("tracker")
-    fun postTrackedEntityInstances(
-        @Body trackedEntityInstances: TrackedEntityInstancePayload
-    ): Call<ObjectWithUidWebResponse>
-
-    @POST("tracker")
-    fun postEvents(
-        @Body events: EventPayload
-    ): Call<ObjectWithUidWebResponse>
-
-    @GET("tracker/jobs/{jobId}")
-    fun getJob(@Path("jobId") jobId: String): Call<List<JobInfo>>
-
-    @GET("tracker/jobs/{jobId}/report")
-    fun getJobReport(@Path("jobId") jobId: String): Call<JobReport>
+    fun uploadEvents(events: List<Event>): Observable<D2Progress> {
+        return if (events.isEmpty()) {
+            Observable.empty<D2Progress>()
+        } else {
+            oldCall.uploadEvents(events)
+        }
+    }
 }

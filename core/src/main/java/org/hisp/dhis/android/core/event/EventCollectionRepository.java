@@ -45,7 +45,7 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.event.internal.EventFields;
-import org.hisp.dhis.android.core.event.internal.EventPostCall;
+import org.hisp.dhis.android.core.event.internal.EventPostParentCall;
 import org.hisp.dhis.android.core.event.internal.EventStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 
@@ -65,7 +65,7 @@ public final class EventCollectionRepository
         extends ReadWriteWithUidCollectionRepositoryImpl<Event, EventCreateProjection, EventCollectionRepository>
         implements ReadWriteWithUploadWithUidCollectionRepository<Event, EventCreateProjection> {
 
-    private final EventPostCall postCall;
+    private final EventPostParentCall postCall;
 
     private final EventStore store;
     private final DataStatePropagator dataStatePropagator;
@@ -74,7 +74,7 @@ public final class EventCollectionRepository
     EventCollectionRepository(final EventStore store,
                               final Map<String, ChildrenAppender<Event>> childrenAppenders,
                               final RepositoryScope scope,
-                              final EventPostCall postCall,
+                              final EventPostParentCall postCall,
                               final Transformer<EventCreateProjection, Event> transformer,
                               final DataStatePropagator dataStatePropagator) {
         super(store, childrenAppenders, scope, transformer,

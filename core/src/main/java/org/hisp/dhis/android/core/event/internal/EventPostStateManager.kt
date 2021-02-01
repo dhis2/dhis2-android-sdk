@@ -25,32 +25,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.tracker.importer.internal
+package org.hisp.dhis.android.core.event.internal
 
-import org.hisp.dhis.android.core.event.internal.EventPayload
-import org.hisp.dhis.android.core.trackedentity.internal.ObjectWithUidWebResponse
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePayload
-import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.event.Event
 
-internal interface TrackerImporterService {
+@Reusable
+internal class EventPostStateManager @Inject internal constructor(
+    private val eventStore: EventStore
+) {
 
-    @POST("tracker")
-    fun postTrackedEntityInstances(
-        @Body trackedEntityInstances: TrackedEntityInstancePayload
-    ): Call<ObjectWithUidWebResponse>
-
-    @POST("tracker")
-    fun postEvents(
-        @Body events: EventPayload
-    ): Call<ObjectWithUidWebResponse>
-
-    @GET("tracker/jobs/{jobId}")
-    fun getJob(@Path("jobId") jobId: String): Call<List<JobInfo>>
-
-    @GET("tracker/jobs/{jobId}/report")
-    fun getJobReport(@Path("jobId") jobId: String): Call<JobReport>
+    fun markObjectsAs(events: Collection<Event>, forcedState: State?) {
+        for (e in events) {
+            eventStore.setState(e.uid(), DataStateHelper.forcedOrOwn(e, forcedState))
+        }
+    }
 }

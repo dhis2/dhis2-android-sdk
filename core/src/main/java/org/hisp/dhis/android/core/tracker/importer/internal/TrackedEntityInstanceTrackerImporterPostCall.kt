@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePo
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostStateManager
 
 @Reusable
-internal class TrackerImporterPostCall @Inject internal constructor(
+internal class TrackedEntityInstanceTrackerImporterPostCall @Inject internal constructor(
     private val payloadGenerator: TrackedEntityInstancePostPayloadGenerator,
     private val stateManager: TrackedEntityInstancePostStateManager,
     private val service: TrackerImporterService,
@@ -62,7 +62,7 @@ internal class TrackerImporterPostCall @Inject internal constructor(
             val trackedEntityInstancePayload = TrackedEntityInstancePayload.create(teisToPost)
             try {
                 val webResponse = apiCallExecutor.executeObjectCall(
-                    service.postTrackerImporter(trackedEntityInstancePayload)
+                    service.postTrackedEntityInstances(trackedEntityInstancePayload)
                 )
                 jobQueryCall.storeAndQueryJob(webResponse.response().uid())
             } catch (d2Error: D2Error) {

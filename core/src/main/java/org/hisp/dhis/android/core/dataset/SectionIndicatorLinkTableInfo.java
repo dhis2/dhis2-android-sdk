@@ -26,43 +26,43 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset.internal;
+package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.dataset.Section;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
-import java.util.HashMap;
-import java.util.Map;
+public final class SectionIndicatorLinkTableInfo {
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-@Module
-public final class SectionEntityDIModule {
+        @Override
+        public String name() {
+            return "SectionIndicatorLink";
+        }
 
-    @Provides
-    @Reusable
-    IdentifiableObjectStore<Section> store(DatabaseAdapter databaseAdapter) {
-        return SectionStore.create(databaseAdapter);
+        @Override
+        public Columns columns() {
+            return new Columns();
+        }
+    };
+
+    private SectionIndicatorLinkTableInfo() {
     }
 
-    @Provides
-    @Reusable
-    Handler<Section> handler(SectionHandler impl) {
-        return impl;
-    }
+    public static class Columns extends CoreColumns {
 
-    @Provides
-    @Reusable
-    @SuppressWarnings("PMD.NonStaticInitializer")
-    Map<String, ChildrenAppender<Section>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return new HashMap<String, ChildrenAppender<Section>>() {{
-            put(SectionFields.GREYED_FIELDS, SectionGreyedFieldsChildrenAppender.create(databaseAdapter));
-            put(SectionFields.DATA_ELEMENTS, SectionDataElementChildrenAppender.create(databaseAdapter));
-        }};
+        public static final String SECTION = "section";
+        public static final String INDICATOR = "indicator";
+
+        @Override
+        public String[] all() {
+            return CollectionsHelper.appendInNewArray(super.all(), SECTION, INDICATOR);
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return all();
+        }
     }
 }

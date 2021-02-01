@@ -25,38 +25,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataset.internal
 
-package org.hisp.dhis.android.core.dataset.internal;
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.dataset.SectionIndicatorLinkSamples
+import org.hisp.dhis.android.core.dataset.SectionIndicatorLinkTableInfo
+import org.hisp.dhis.android.core.dataset.internal.SectionIndicatorLinkStore.create
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.dataelement.DataElementOperand;
-import org.hisp.dhis.android.core.dataelement.internal.DataElementOperandFields;
-import org.hisp.dhis.android.core.dataset.Section;
-import org.hisp.dhis.android.core.dataset.SectionTableInfo.Columns;
+@RunWith(D2JunitRunner::class)
+class SectionIndicatorLinkStoreIntegrationShould : LinkStoreAbstractIntegrationShould<SectionIndicatorLink>(
+    create(TestDatabaseAdapterFactory.get()),
+    SectionIndicatorLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+) {
 
-public final class SectionFields {
+    override fun addMasterUid(): String {
+        return SectionIndicatorLinkSamples.getSectionIndicatorLink().section()!!
+    }
 
-    public final static String DATA_ELEMENTS = "dataElements";
-    public final static String GREYED_FIELDS = "greyedFields";
-    public final static String INDICATORS = "indicators";
+    override fun buildObject(): SectionIndicatorLink {
+        return SectionIndicatorLinkSamples.getSectionIndicatorLink()
+    }
 
-    private static final FieldsHelper<Section> fh = new FieldsHelper<>();
-
-    public static final Fields<Section> allFields = Fields.<Section>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.<String>field(Columns.DESCRIPTION),
-                    fh.<Integer>field(Columns.SORT_ORDER),
-                    fh.nestedFieldWithUid(Columns.DATA_SET),
-                    fh.<Boolean>field(Columns.SHOW_ROW_TOTALS),
-                    fh.<Boolean>field(Columns.SHOW_COLUMN_TOTALS),
-                    fh.nestedFieldWithUid(DATA_ELEMENTS),
-                    fh.nestedFieldWithUid(INDICATORS),
-                    fh.<DataElementOperand>nestedField(GREYED_FIELDS)
-                            .with(DataElementOperandFields.allFields)
-            ).build();
-
-    private SectionFields() {
+    override fun buildObjectWithOtherMasterUid(): SectionIndicatorLink {
+        return buildObject().toBuilder()
+            .section("new_section")
+            .build()
     }
 }

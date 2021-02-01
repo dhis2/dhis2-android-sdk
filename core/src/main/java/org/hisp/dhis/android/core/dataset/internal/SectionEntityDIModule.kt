@@ -25,38 +25,38 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataset.internal
 
-package org.hisp.dhis.android.core.dataset.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.dataset.Section
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.dataelement.DataElementOperand;
-import org.hisp.dhis.android.core.dataelement.internal.DataElementOperandFields;
-import org.hisp.dhis.android.core.dataset.Section;
-import org.hisp.dhis.android.core.dataset.SectionTableInfo.Columns;
+@Module
+internal class SectionEntityDIModule {
+    @Provides
+    @Reusable
+    fun store(databaseAdapter: DatabaseAdapter?): IdentifiableObjectStore<Section> {
+        return SectionStore.create(databaseAdapter)
+    }
 
-public final class SectionFields {
+    @Provides
+    @Reusable
+    fun handler(impl: SectionHandler): Handler<Section> {
+        return impl
+    }
 
-    public final static String DATA_ELEMENTS = "dataElements";
-    public final static String GREYED_FIELDS = "greyedFields";
-    public final static String INDICATORS = "indicators";
-
-    private static final FieldsHelper<Section> fh = new FieldsHelper<>();
-
-    public static final Fields<Section> allFields = Fields.<Section>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.<String>field(Columns.DESCRIPTION),
-                    fh.<Integer>field(Columns.SORT_ORDER),
-                    fh.nestedFieldWithUid(Columns.DATA_SET),
-                    fh.<Boolean>field(Columns.SHOW_ROW_TOTALS),
-                    fh.<Boolean>field(Columns.SHOW_COLUMN_TOTALS),
-                    fh.nestedFieldWithUid(DATA_ELEMENTS),
-                    fh.nestedFieldWithUid(INDICATORS),
-                    fh.<DataElementOperand>nestedField(GREYED_FIELDS)
-                            .with(DataElementOperandFields.allFields)
-            ).build();
-
-    private SectionFields() {
+    @Provides
+    @Reusable
+    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<Section>> {
+        return mapOf(
+            SectionFields.GREYED_FIELDS to SectionGreyedFieldsChildrenAppender.create(databaseAdapter),
+            SectionFields.DATA_ELEMENTS to SectionDataElementChildrenAppender.create(databaseAdapter),
+            SectionFields.INDICATORS to SectionIndicatorsChildrenAppender.create(databaseAdapter)
+        )
     }
 }

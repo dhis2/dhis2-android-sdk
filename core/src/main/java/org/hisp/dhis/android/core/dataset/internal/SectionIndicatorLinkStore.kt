@@ -25,38 +25,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataset.internal
 
-package org.hisp.dhis.android.core.dataset.internal;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkStore
+import org.hisp.dhis.android.core.dataset.SectionIndicatorLinkTableInfo
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.dataelement.DataElementOperand;
-import org.hisp.dhis.android.core.dataelement.internal.DataElementOperandFields;
-import org.hisp.dhis.android.core.dataset.Section;
-import org.hisp.dhis.android.core.dataset.SectionTableInfo.Columns;
+internal object SectionIndicatorLinkStore {
+    private val BINDER = StatementBinder { o: SectionIndicatorLink, w: StatementWrapper ->
+        w.bind(1, o.section())
+        w.bind(2, o.indicator())
+    }
 
-public final class SectionFields {
-
-    public final static String DATA_ELEMENTS = "dataElements";
-    public final static String GREYED_FIELDS = "greyedFields";
-    public final static String INDICATORS = "indicators";
-
-    private static final FieldsHelper<Section> fh = new FieldsHelper<>();
-
-    public static final Fields<Section> allFields = Fields.<Section>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.<String>field(Columns.DESCRIPTION),
-                    fh.<Integer>field(Columns.SORT_ORDER),
-                    fh.nestedFieldWithUid(Columns.DATA_SET),
-                    fh.<Boolean>field(Columns.SHOW_ROW_TOTALS),
-                    fh.<Boolean>field(Columns.SHOW_COLUMN_TOTALS),
-                    fh.nestedFieldWithUid(DATA_ELEMENTS),
-                    fh.nestedFieldWithUid(INDICATORS),
-                    fh.<DataElementOperand>nestedField(GREYED_FIELDS)
-                            .with(DataElementOperandFields.allFields)
-            ).build();
-
-    private SectionFields() {
+    fun create(databaseAdapter: DatabaseAdapter): LinkStore<SectionIndicatorLink> {
+        return linkStore(
+            databaseAdapter,
+            SectionIndicatorLinkTableInfo.TABLE_INFO,
+            SectionIndicatorLinkTableInfo.Columns.SECTION,
+            BINDER
+        ) { SectionIndicatorLink.create(it) }
     }
 }

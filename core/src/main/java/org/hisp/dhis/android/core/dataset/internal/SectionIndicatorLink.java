@@ -28,35 +28,43 @@
 
 package org.hisp.dhis.android.core.dataset.internal;
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.dataelement.DataElementOperand;
-import org.hisp.dhis.android.core.dataelement.internal.DataElementOperandFields;
-import org.hisp.dhis.android.core.dataset.Section;
-import org.hisp.dhis.android.core.dataset.SectionTableInfo.Columns;
+import android.database.Cursor;
 
-public final class SectionFields {
+import androidx.annotation.Nullable;
 
-    public final static String DATA_ELEMENTS = "dataElements";
-    public final static String GREYED_FIELDS = "greyedFields";
-    public final static String INDICATORS = "indicators";
+import com.google.auto.value.AutoValue;
 
-    private static final FieldsHelper<Section> fh = new FieldsHelper<>();
+import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.CoreObject;
 
-    public static final Fields<Section> allFields = Fields.<Section>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.<String>field(Columns.DESCRIPTION),
-                    fh.<Integer>field(Columns.SORT_ORDER),
-                    fh.nestedFieldWithUid(Columns.DATA_SET),
-                    fh.<Boolean>field(Columns.SHOW_ROW_TOTALS),
-                    fh.<Boolean>field(Columns.SHOW_COLUMN_TOTALS),
-                    fh.nestedFieldWithUid(DATA_ELEMENTS),
-                    fh.nestedFieldWithUid(INDICATORS),
-                    fh.<DataElementOperand>nestedField(GREYED_FIELDS)
-                            .with(DataElementOperandFields.allFields)
-            ).build();
+@AutoValue
+public abstract class SectionIndicatorLink implements CoreObject {
 
-    private SectionFields() {
+    @Nullable
+    public abstract String section();
+
+    @Nullable
+    public abstract String indicator();
+
+    public static Builder builder() {
+        return new AutoValue_SectionIndicatorLink.Builder();
+    }
+
+    public static SectionIndicatorLink create(Cursor cursor) {
+        return $AutoValue_SectionIndicatorLink.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseObject.Builder<Builder> {
+
+        public abstract Builder id(Long id);
+
+        public abstract Builder section(@Nullable String section);
+
+        public abstract Builder indicator(@Nullable String indicator);
+
+        public abstract SectionIndicatorLink build();
     }
 }

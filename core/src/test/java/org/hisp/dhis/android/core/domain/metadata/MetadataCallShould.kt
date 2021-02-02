@@ -102,7 +102,7 @@ class MetadataCallShould : BaseCallShould() {
         whenever(categoryDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(smsModule.configCase()).thenReturn(configCase)
         whenever(configCase.refreshMetadataIdsCallable()).thenReturn(Completable.complete())
-        whenever(generalSettingCall.isDatabaseEncrypted).thenReturn(Single.just(false))
+        whenever(generalSettingCall.isDatabaseEncrypted()).thenReturn(Single.just(false))
         Mockito.`when`<Observable<D2Progress>>(
             rxAPICallExecutor.wrapObservableTransactionally(
                 any(),

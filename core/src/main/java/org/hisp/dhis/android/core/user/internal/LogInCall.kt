@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.user.internal
 import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Single
+import javax.inject.Inject
 import okhttp3.HttpUrl
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
@@ -53,7 +54,6 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfo
 import org.hisp.dhis.android.core.user.AuthenticatedUser
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.wipe.internal.WipeModule
-import javax.inject.Inject
 
 @Suppress("LongParameterList", "TooManyFunctions")
 @Reusable
@@ -86,8 +86,10 @@ internal class LogInCall @Inject internal constructor(
         throwExceptionIfAlreadyAuthenticated()
         val parsedServerUrl = ServerUrlParser.parse(serverUrl)
         ServerURLWrapper.setServerUrl(parsedServerUrl.toString())
-        val authenticateCall = userService.authenticate(okhttp3.Credentials.basic(username!!, password!!),
-            UserFields.allFieldsWithoutOrgUnit)
+        val authenticateCall = userService.authenticate(
+            okhttp3.Credentials.basic(username!!, password!!),
+            UserFields.allFieldsWithoutOrgUnit
+        )
         return try {
             val authenticatedUser = apiCallExecutor.executeObjectCallWithErrorCatcher(
                 authenticateCall,

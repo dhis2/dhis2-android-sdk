@@ -55,7 +55,7 @@ internal class JobQueryCall @Inject internal constructor(
         return Observable.just(true)
             .flatMapIterable {
                 val pendingJobs = trackerJobStore.selectAll()
-                    pendingJobs.withIndex().map { ij -> Pair(ij.value, ij.index == pendingJobs.size -1 ) }
+                pendingJobs.withIndex().map { ij -> Pair(ij.value, ij.index == pendingJobs.size - 1) }
             }
             .flatMap { jobWithIsLast -> queryJob(jobWithIsLast.first.uid(), jobWithIsLast.second) }
     }

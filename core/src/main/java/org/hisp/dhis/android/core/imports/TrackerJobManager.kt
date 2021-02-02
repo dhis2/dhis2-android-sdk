@@ -25,35 +25,21 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.imports.internal;
 
-import org.hisp.dhis.android.core.imports.TrackerImportConflictCollectionRepository;
-import org.hisp.dhis.android.core.imports.TrackerJobManager;
+package org.hisp.dhis.android.core.imports;
 
-import javax.inject.Inject;
+import io.reactivex.Observable
+import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.tracker.importer.internal.JobQueryCall
+import javax.inject.Inject
 
-import dagger.Reusable;
-
-@Reusable
-public final class ImportModuleImpl implements ImportModule {
-
-    private final TrackerImportConflictCollectionRepository trackerImportConflicts;
-    private final TrackerJobManager trackerJobManager;
-
-    @Inject
-    ImportModuleImpl(TrackerImportConflictCollectionRepository trackerImportConflicts,
-                     TrackerJobManager trackerJobManager) {
-        this.trackerImportConflicts = trackerImportConflicts;
-        this.trackerJobManager = trackerJobManager;
+class TrackerJobManager @Inject internal constructor(
+    private val jobQueryCall: JobQueryCall
+) {
+    fun resumePendingJobs(): Observable<D2Progress> {
+        return jobQueryCall.queryPendingJobs()
     }
-
-    @Override
-    public TrackerImportConflictCollectionRepository trackerImportConflicts() {
-        return trackerImportConflicts;
-    }
-
-    @Override
-    public TrackerJobManager jobManager() {
-        return trackerJobManager;
+    fun blockingResumePendingJobs(): Observable<D2Progress> {
+        return jobQueryCall.queryPendingJobs()
     }
 }

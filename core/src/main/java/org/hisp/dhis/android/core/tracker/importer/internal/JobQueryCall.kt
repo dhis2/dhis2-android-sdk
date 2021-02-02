@@ -48,10 +48,19 @@ internal class JobQueryCall @Inject internal constructor(
     fun storeAndQueryJob(jobId: String): Observable<D2Progress> {
         val job = StorableObjectWithUid.builder().uid(jobId).build()
         trackerJobStore.insert(job)
-        return queryJob(job.uid())
+        return queryJob(job.uid(), true)
     }
 
-    fun queryJob(jobId: String): Observable<D2Progress> {
+    fun queryPendingJobs(): Observable<D2Progress> {
+        return Observable.just(true)
+            .flatMapIterable {
+                val pendingJobs = trackerJobStore.selectAll()
+                pendingJobs.withIndex().map { ij -> Pair(ij.value, ij.index == pendingJobs.size - 1) }
+            }
+            .flatMap { jobWithIsLast -> queryJob(jobWithIsLast.first.uid(), jobWithIsLast.second) }
+    }
+
+    private fun queryJob(jobId: String, isLastJob: Boolean): Observable<D2Progress> {
         val progressManager = D2ProgressManager(null)
         @Suppress("MagicNumber")
         return Observable.interval(0, 5, TimeUnit.SECONDS)
@@ -63,7 +72,7 @@ internal class JobQueryCall @Inject internal constructor(
             .map {
                 progressManager.increaseProgress(
                     TrackedEntityInstance::class.java,
-                    it
+                    it && isLastJob
                 )
             }.doOnComplete {
                 val jobReport = apiCallExecutor.executeObjectCall(service.getJobReport(jobId))

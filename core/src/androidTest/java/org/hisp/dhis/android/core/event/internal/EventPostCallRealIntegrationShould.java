@@ -92,6 +92,8 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
         createDummyDataToPost(eventUid1);
 
         d2.eventModule().events().blockingUpload();
+
+        d2.importModule().jobManager().blockingResumePendingJobs();
     }
 
     // commented out since it is a flaky test that works against a real server.

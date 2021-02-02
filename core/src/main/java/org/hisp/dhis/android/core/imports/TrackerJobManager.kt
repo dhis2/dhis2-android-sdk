@@ -39,7 +39,8 @@ class TrackerJobManager @Inject internal constructor(
     fun resumePendingJobs(): Observable<D2Progress> {
         return jobQueryCall.queryPendingJobs()
     }
-    fun blockingResumePendingJobs(): Observable<D2Progress> {
-        return jobQueryCall.queryPendingJobs()
+
+    fun blockingResumePendingJobs() {
+        resumePendingJobs().blockingSubscribe()
     }
 }

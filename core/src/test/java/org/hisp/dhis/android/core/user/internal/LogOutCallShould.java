@@ -69,8 +69,8 @@ public class LogOutCallShould {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        when(credentials.username()).thenReturn("user");
-        when(credentials.password()).thenReturn("password");
+        when(credentials.getUsername()).thenReturn("user");
+        when(credentials.getPassword()).thenReturn("password");
 
         logOutCall = new LogOutCall(databaseAdapter, databaseAdapterFactory, credentialsSecureStore);
     }

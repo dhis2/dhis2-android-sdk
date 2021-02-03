@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.user;
 
+import org.hisp.dhis.android.core.maintenance.D2Error;
+
 import io.reactivex.Completable;
 import io.reactivex.Single;
 
@@ -39,6 +41,10 @@ public interface UserModule {
     
     Single<User> logIn(String username, String password, String serverUrl);
     User blockingLogIn(String username, String password, String serverUrl);
+
+    Single<User> logInOpenIdConnect(String serverUrl, String token);
+    User blockingLogInOpenIdConnect(String serverUrl, String token) throws D2Error;
+
     Completable logOut();
     void blockingLogOut();
     Single<Boolean> isLogged();

@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.user.internal
 
 import dagger.Reusable
 import io.reactivex.Single
-import javax.inject.Inject
 import okhttp3.HttpUrl
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
@@ -47,7 +46,9 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.systeminfo.SystemInfo
 import org.hisp.dhis.android.core.user.AuthenticatedUser
 import org.hisp.dhis.android.core.user.User
+import org.hisp.dhis.android.core.user.UserInternalAccessor
 import org.hisp.dhis.android.core.wipe.internal.WipeModule
+import javax.inject.Inject
 
 @Reusable
 @Suppress("LongParameterList")
@@ -72,7 +73,6 @@ internal class LogInCall @Inject internal constructor(
     }
 
     @Throws(D2Error::class)
-    @Suppress("ThrowsCount")
     private fun blockingLogIn(username: String?, password: String?, serverUrl: String?): User {
         exceptions.throwExceptionIfUsernameNull(username)
         exceptions.throwExceptionIfPasswordNull(password)
@@ -86,30 +86,32 @@ internal class LogInCall @Inject internal constructor(
             UserFields.allFieldsWithoutOrgUnit
         )
         return try {
-            val user = apiCallExecutor.executeObjectCallWithErrorCatcher(
-                authenticateCall,
-                apiCallErrorCatcher
-            )
+            val user = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall, apiCallErrorCatcher)
             loginOnline(parsedServerUrl, user, username, password)
         } catch (d2Error: D2Error) {
             if (d2Error.isOffline) {
                 loginOffline(parsedServerUrl, username, password)
-            } else if (d2Error.errorCode() == D2ErrorCode.USER_ACCOUNT_DISABLED) {
-                wipeModule.wipeEverything()
-                throw d2Error
-            } else if (d2Error.errorCode() == D2ErrorCode.UNEXPECTED ||
-                d2Error.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR
-            ) {
-                throw exceptions.noDHIS2Server()
             } else {
-                throw d2Error
+                throw handleOnlineException(d2Error)
             }
+        }
+    }
+
+    private fun handleOnlineException(d2Error: D2Error): D2Error {
+        return if (d2Error.errorCode() == D2ErrorCode.USER_ACCOUNT_DISABLED) {
+            wipeModule.wipeEverything()
+            d2Error
+        } else if (d2Error.errorCode() == D2ErrorCode.UNEXPECTED ||
+            d2Error.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR) {
+            exceptions.noDHIS2Server()
+        } else {
+            d2Error
         }
     }
 
     @Suppress("TooGenericExceptionCaught")
     private fun loginOnline(serverUrl: HttpUrl, user: User, username: String, password: String): User {
-        credentialsSecureStore.set(Credentials.create(username, password))
+        credentialsSecureStore.set(Credentials(username, password, null))
         databaseManager.loadDatabaseOnline(serverUrl, username).blockingAwait()
         val transaction = databaseAdapter.beginNewTransaction()
         return try {
@@ -144,7 +146,52 @@ internal class LogInCall @Inject internal constructor(
         if (UserHelper.md5(username, password) != existingUser.hash()) {
             throw exceptions.badCredentialsError()
         }
-        credentialsSecureStore.set(Credentials.create(username, password))
+        credentialsSecureStore.set(Credentials(username, password, null))
         return userStore.selectByUid(existingUser.user()!!)!!
+    }
+
+    @Throws(D2Error::class)
+    fun blockingLogInOpenIdConnect(serverUrl: String?, token: String?): User {
+        exceptions.throwExceptionIfTokenNull(token)
+        val parsedServerUrl = ServerUrlParser.parse(serverUrl)
+        ServerURLWrapper.setServerUrl(parsedServerUrl.toString())
+
+        val authenticateCall = userService.authenticate(
+            "Bearer $token",
+            UserFields.allFieldsWithoutOrgUnit
+        )
+
+        return try {
+            val user = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall, apiCallErrorCatcher)
+            loginOpenIdConnectInternal(parsedServerUrl, user, token!!)
+        } catch (d2Error: D2Error) {
+            throw handleOnlineException(d2Error)
+        }
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    private fun loginOpenIdConnectInternal(serverUrl: HttpUrl, user: User, token: String): User {
+        val username = UserInternalAccessor.accessUserCredentials(user).username()!!
+        credentialsSecureStore.set(Credentials(username, null, token))
+        databaseManager.loadDatabaseOnline(serverUrl, username).blockingAwait()
+        val transaction = databaseAdapter.beginNewTransaction()
+        return try {
+            val authenticatedUser = AuthenticatedUser.builder()
+                .user(user.uid())
+                .hash(null)
+                .build()
+
+            authenticatedUserStore.updateOrInsertWhere(authenticatedUser)
+            systemInfoRepository.download().blockingAwait()
+            userHandler.handle(user)
+            transaction.setSuccessful()
+            user
+        } catch (e: Exception) {
+            // Credentials are stored and then removed in case of error since they are required to download system info
+            credentialsSecureStore.remove()
+            throw e
+        } finally {
+            transaction.end()
+        }
     }
 }

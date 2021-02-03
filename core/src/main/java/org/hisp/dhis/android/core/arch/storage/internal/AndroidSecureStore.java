@@ -36,6 +36,7 @@ import android.util.Base64;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
@@ -135,7 +136,10 @@ public final class AndroidSecureStore implements SecureStore {
         }
     }
 
-    public void setData(@NonNull String key, @NonNull String data) {
+    public void setData(@NonNull String key, @Nullable String data) {
+        if (data == null) {
+            return;
+        }
         KeyStore ks = null;
         try {
             ks = KeyStore.getInstance(KEYSTORE_PROVIDER_ANDROID_KEYSTORE);

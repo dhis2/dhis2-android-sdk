@@ -160,8 +160,8 @@ public class LogInCallUnitShould extends BaseCallShould {
 
         when(anotherUser.uid()).thenReturn("anotherUserUid");
 
-        when(credentials.username()).thenReturn(USERNAME);
-        when(credentials.password()).thenReturn(PASSWORD);
+        when(credentials.getUsername()).thenReturn(USERNAME);
+        when(credentials.getPassword()).thenReturn(PASSWORD);
 
         when(authenticatedUser.user()).thenReturn(UID);
         when(authenticatedUser.hash()).thenReturn(md5(USERNAME, PASSWORD));
@@ -377,6 +377,6 @@ public class LogInCallUnitShould extends BaseCallShould {
     }
 
     private void verifySuccessOffline() {
-        verify(credentialsSecureStore).set(Credentials.create(USERNAME, PASSWORD));
+        verify(credentialsSecureStore).set(new Credentials(USERNAME, PASSWORD, null));
     }
 }

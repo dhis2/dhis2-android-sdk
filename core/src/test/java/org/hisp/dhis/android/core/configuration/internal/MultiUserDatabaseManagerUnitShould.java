@@ -66,7 +66,7 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
     private final String USERNAME = "username";
     private final String SERVER_URL = "https://dhis2.org";
 
-    private final Credentials credentials = Credentials.create(USERNAME, "password");
+    private final Credentials credentials = new Credentials(USERNAME, "password", null);
 
     private final String UNENCRYPTED_DB_NAME = "un.db";
     private final String ENCRYPTED_DB_NAME = "un.db";

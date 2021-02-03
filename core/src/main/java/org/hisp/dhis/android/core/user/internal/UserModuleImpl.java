@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.user.internal;
 
 import androidx.annotation.NonNull;
 
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.user.AuthenticatedUserObjectRepository;
 import org.hisp.dhis.android.core.user.AuthorityCollectionRepository;
 import org.hisp.dhis.android.core.user.User;
@@ -110,6 +111,16 @@ public final class UserModuleImpl implements UserModule {
     @NonNull
     public User blockingLogIn(String username, String password, String serverUrl) {
         return logIn(username, password, serverUrl).blockingGet();
+    }
+
+    @Override
+    public Single<User> logInOpenIdConnect(String serverUrl, String token) {
+        return Single.fromCallable(() -> blockingLogInOpenIdConnect(serverUrl, token));
+    }
+
+    @Override
+    public User blockingLogInOpenIdConnect(String serverUrl, String token) throws D2Error {
+        return logInCall.blockingLogInOpenIdConnect(serverUrl, token);
     }
 
     @Override

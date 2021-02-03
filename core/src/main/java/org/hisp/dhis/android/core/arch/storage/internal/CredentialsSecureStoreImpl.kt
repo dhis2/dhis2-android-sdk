@@ -25,23 +25,41 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.storage.internal
 
-package org.hisp.dhis.android.core.arch.storage.internal;
+class CredentialsSecureStoreImpl(private val secureStore: SecureStore) : ObjectKeyValueStore<Credentials> {
+    private var credentials: Credentials? = null
 
-import androidx.annotation.NonNull;
+    override fun set(credentials: Credentials) {
+        this.credentials = credentials
+        secureStore.setData(USERNAME_KEY, credentials.username)
+        secureStore.setData(PASSWORD_KEY, credentials.password)
+        secureStore.setData(TOKEN_KEY, credentials.token)
+    }
 
-import com.google.auto.value.AutoValue;
+    override fun get(): Credentials? {
+        if (credentials == null) {
+            val username = secureStore.getData(USERNAME_KEY)
+            val password = secureStore.getData(PASSWORD_KEY)
+            val token = secureStore.getData(TOKEN_KEY)
 
-@AutoValue
-public abstract class Credentials {
+            if (username != null) {
+                credentials = Credentials(username, password, token)
+            }
+        }
+        return credentials
+    }
 
-    @NonNull
-    public abstract String username();
+    override fun remove() {
+        credentials = null
+        secureStore.removeData(USERNAME_KEY)
+        secureStore.removeData(PASSWORD_KEY)
+        secureStore.removeData(TOKEN_KEY)
+    }
 
-    @NonNull
-    public abstract String password();
-
-    public static Credentials create(@NonNull String username, @NonNull String password) {
-        return new AutoValue_Credentials(username, password);
+    companion object {
+        private const val USERNAME_KEY = "username"
+        private const val PASSWORD_KEY = "password"
+        private const val TOKEN_KEY = "token"
     }
 }

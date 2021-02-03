@@ -52,18 +52,18 @@ public class CredentialsSecureStorageMockIntegrationShould {
 
     @Test
     public void credentials_are_correctly_stored() {
-        Credentials credentials = Credentials.create("username", "password");
+        Credentials credentials = new Credentials("username", "password", null);
         credentialsSecureStore.set(credentials);
 
         Credentials retrievedCredentials = credentialsSecureStore.get();
 
-        assertThat(retrievedCredentials.username()).isEqualTo(credentials.username());
-        assertThat(retrievedCredentials.password()).isEqualTo(credentials.password());
+        assertThat(retrievedCredentials.getUsername()).isEqualTo(credentials.getUsername());
+        assertThat(retrievedCredentials.getPassword()).isEqualTo(credentials.getPassword());
     }
 
     @Test
     public void credentials_are_correctly_removed() {
-        Credentials credentials = Credentials.create("username", "password");
+        Credentials credentials = new Credentials("username", "password", null);
         credentialsSecureStore.set(credentials);
 
         credentialsSecureStore.remove();

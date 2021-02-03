@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
 import org.hisp.dhis.android.core.arch.db.access.Transaction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.user.User;
 
 import java.util.concurrent.Callable;
@@ -69,7 +68,6 @@ final class UserCall implements Callable<User> {
         Transaction transaction = genericCallData.databaseAdapter().beginNewTransaction();
         try {
             userHandler.handle(user);
-            genericCallData.resourceHandler().handleResource(Resource.Type.USER);
 
             transaction.setSuccessful();
         } catch (Exception constraintException) {

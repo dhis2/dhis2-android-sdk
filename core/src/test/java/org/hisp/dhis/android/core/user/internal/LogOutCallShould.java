@@ -41,7 +41,6 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import io.reactivex.Completable;
 import io.reactivex.observers.TestObserver;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -50,7 +49,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
-public class LogOutCallFactoryShould {
+public class LogOutCallShould {
 
     @Mock
     private ObjectKeyValueStore<Credentials> credentialsSecureStore;
@@ -64,7 +63,7 @@ public class LogOutCallFactoryShould {
     @Mock
     private DatabaseAdapterFactory databaseAdapterFactory;
 
-    private Completable logOutCompletable;
+    private LogOutCall logOutCall;
 
     @Before
     public void setUp() throws Exception {
@@ -73,14 +72,14 @@ public class LogOutCallFactoryShould {
         when(credentials.username()).thenReturn("user");
         when(credentials.password()).thenReturn("password");
 
-        logOutCompletable = new LogOutCallFactory(databaseAdapter, databaseAdapterFactory, credentialsSecureStore).logOut();
+        logOutCall = new LogOutCall(databaseAdapter, databaseAdapterFactory, credentialsSecureStore);
     }
 
     @Test
     public void clear_user_credentials() {
         when(credentialsSecureStore.get()).thenReturn(credentials);
 
-        logOutCompletable.blockingAwait();
+        logOutCall.logOut().blockingAwait();
 
         verify(credentialsSecureStore, times(1)).remove();
     }
@@ -89,7 +88,7 @@ public class LogOutCallFactoryShould {
     public void throw_d2_exception_if_no_authenticated_user() {
         when(credentialsSecureStore.get()).thenReturn(null);
 
-        TestObserver<Void> testObserver = logOutCompletable.test();
+        TestObserver<Void> testObserver = logOutCall.logOut().test();
         testObserver.awaitTerminalEvent();
 
         D2Error d2Error = (D2Error) testObserver.errors().get(0);

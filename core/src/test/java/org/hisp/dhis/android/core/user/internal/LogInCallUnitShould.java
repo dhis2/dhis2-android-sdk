@@ -377,12 +377,6 @@ public class LogInCallUnitShould extends BaseCallShould {
     }
 
     private void verifySuccessOffline() {
-        AuthenticatedUser authenticatedUserModel =
-                AuthenticatedUser.builder()
-                        .user(UID)
-                        .hash(md5(USERNAME, PASSWORD))
-                        .build();
-        verifyTransactionComplete();
-        verify(authenticatedUserStore).updateOrInsertWhere(authenticatedUserModel);
+        verify(credentialsSecureStore).set(Credentials.create(USERNAME, PASSWORD));
     }
 }

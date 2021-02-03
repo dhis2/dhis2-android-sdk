@@ -112,11 +112,12 @@ internal class LogInCall @Inject internal constructor(
         databaseManager.loadDatabaseOnline(serverUrl, username).blockingAwait()
         val transaction = databaseAdapter.beginNewTransaction()
         return try {
-            val authenticatedUserToStore = buildAuthenticatedUser(
-                user.uid(),
-                username, password
-            )
-            authenticatedUserStore.updateOrInsertWhere(authenticatedUserToStore)
+            val authenticatedUser = AuthenticatedUser.builder()
+                .user(user.uid())
+                .hash(UserHelper.md5(username, password))
+                .build()
+
+            authenticatedUserStore.updateOrInsertWhere(authenticatedUser)
             systemInfoRepository.download().blockingAwait()
             userHandler.handle(user)
             transaction.setSuccessful()
@@ -138,30 +139,11 @@ internal class LogInCall @Inject internal constructor(
             throw exceptions.noUserOfflineError()
         }
         val existingUser = authenticatedUserStore.selectFirst() ?: throw exceptions.noUserOfflineError()
-        val userId = existingUser.user()!!
 
         if (UserHelper.md5(username, password) != existingUser.hash()) {
             throw exceptions.badCredentialsError()
         }
-        val transaction = databaseAdapter.beginNewTransaction()
-        try {
-            val authenticatedUser = buildAuthenticatedUser(
-                userId,
-                username, password
-            )
-            authenticatedUserStore.updateOrInsertWhere(authenticatedUser)
-            credentialsSecureStore.set(Credentials.create(username, password))
-            transaction.setSuccessful()
-        } finally {
-            transaction.end()
-        }
-        return userStore.selectByUid(userId)!!
-    }
-
-    private fun buildAuthenticatedUser(uid: String, username: String, password: String): AuthenticatedUser {
-        return AuthenticatedUser.builder()
-            .user(uid)
-            .hash(UserHelper.md5(username, password))
-            .build()
+        credentialsSecureStore.set(Credentials.create(username, password))
+        return userStore.selectByUid(existingUser.user()!!)!!
     }
 }

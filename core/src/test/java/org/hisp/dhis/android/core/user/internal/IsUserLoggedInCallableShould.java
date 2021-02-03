@@ -57,8 +57,8 @@ public class IsUserLoggedInCallableShould {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
-        when(credentials.username()).thenReturn("user");
-        when(credentials.password()).thenReturn("password");
+        when(credentials.getUsername()).thenReturn("user");
+        when(credentials.getPassword()).thenReturn("password");
 
         isUserLoggedInSingle = new IsUserLoggedInCallableFactory(credentialsSecureStore).isLogged();
     }

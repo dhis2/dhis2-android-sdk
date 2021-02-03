@@ -62,7 +62,7 @@ final class NoteProjectionTransformer implements Transformer<NoteCreateProjectio
                 .event(projection.event())
                 .enrollment(projection.enrollment())
                 .value(projection.value())
-                .storedBy(credentialsSecureStore.get().username())
+                .storedBy(credentialsSecureStore.get().getUsername())
                 .storedDate(BaseIdentifiableObject.dateToDateStr(new Date()))
                 .deleted(false)
                 .build();

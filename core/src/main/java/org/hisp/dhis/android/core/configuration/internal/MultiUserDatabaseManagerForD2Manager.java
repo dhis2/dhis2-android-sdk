@@ -75,7 +75,7 @@ public class MultiUserDatabaseManagerForD2Manager {
         if (databaseConfiguration != null && credentials != null) {
             ServerURLWrapper.setServerUrl(databaseConfiguration.loggedServerUrl());
             DatabaseUserConfiguration userConfiguration = configurationHelper.getLoggedUserConfiguration(
-                    databaseConfiguration, credentials.username());
+                    databaseConfiguration, credentials.getUsername());
             databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, userConfiguration);
         }
     }

@@ -27,14 +27,14 @@
  */
 package org.hisp.dhis.android.core.arch.api.authentication.internal
 
-import java.io.IOException
-import java.util.Locale
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 import org.hisp.dhis.android.core.arch.helpers.UserHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
+import java.io.IOException
+import java.util.Locale
 
 internal class BasicAuthenticator(private val credentialsSecureStore: ObjectKeyValueStore<Credentials>) :
     Interceptor {
@@ -86,7 +86,7 @@ internal class BasicAuthenticator(private val credentialsSecureStore: ObjectKeyV
     }
 
     private fun reqBuilder(chain: Interceptor.Chain, credentials: Credentials): Request.Builder {
-        return chain.request().newBuilder().header(USERNAME_KEY, credentials.username())
+        return chain.request().newBuilder().header(USERNAME_KEY, credentials.username)
     }
 
     private fun handleRegularCall(chain: Interceptor.Chain, credentials: Credentials): Response {
@@ -115,7 +115,7 @@ internal class BasicAuthenticator(private val credentialsSecureStore: ObjectKeyV
     }
 
     private fun addAuthorizationHeader(builder: Request.Builder, credentials: Credentials): Request.Builder {
-        val base64Credentials = UserHelper.base64(credentials.username(), credentials.password())
+        val base64Credentials = UserHelper.base64(credentials.username, credentials.password)
         return builder.addHeader(
             AUTHORIZATION_KEY,
             String.format(

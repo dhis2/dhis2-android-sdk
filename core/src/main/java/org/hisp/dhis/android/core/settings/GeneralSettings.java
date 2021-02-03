@@ -102,7 +102,7 @@ public abstract class GeneralSettings implements CoreObject {
     public abstract String matomoID();
 
     @Nullable
-    public abstract String matomoUrl();
+    public abstract String matomoURL();
 
     public static GeneralSettings create(Cursor cursor) {
         return $AutoValue_GeneralSettings.createFromCursor(cursor);
@@ -139,7 +139,7 @@ public abstract class GeneralSettings implements CoreObject {
 
         public abstract Builder matomoID(String matomoID);
 
-        public abstract Builder matomoUrl(String matomoUrl);
+        public abstract Builder matomoURL(String matomoURL);
 
         public abstract GeneralSettings build();
     }

@@ -57,7 +57,7 @@ public final class GeneralSettingTableInfo {
         public static final String SMS_GATEWAY = "smsGateway";
         public static final String SMS_RESULT_SENDER = "smsResultSender";
         public static final String MATOMO_ID = "matomoID";
-        public static final String MATOMO_URL = "matomoUrl";
+        public static final String MATOMO_URL = "matomoURL";
 
         @Override
         public String[] all() {

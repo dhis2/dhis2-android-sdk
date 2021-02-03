@@ -45,7 +45,7 @@ internal object GeneralSettingStore {
         w.bind(4, o.smsGateway())
         w.bind(5, o.smsResultSender())
         w.bind(6, o.matomoID())
-        w.bind(7, o.matomoUrl())
+        w.bind(7, o.matomoURL())
     }
 
     private val WHERE_UPDATE_BINDER = WhereStatementBinder<GeneralSettings> {

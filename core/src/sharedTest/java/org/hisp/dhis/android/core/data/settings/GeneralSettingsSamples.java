@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.data.settings;
 
 import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
 import org.hisp.dhis.android.core.settings.GeneralSettings;
-import org.hisp.dhis.android.core.settings.DataSyncPeriod;
-import org.hisp.dhis.android.core.settings.MetadataSyncPeriod;
 
 public class GeneralSettingsSamples {
 
@@ -44,7 +42,7 @@ public class GeneralSettingsSamples {
                 .smsGateway("+34678456123")
                 .smsResultSender("+34654321456")
                 .matomoID("123abc")
-                .matomoUrl("https://www.matomo.org")
+                .matomoURL("https://www.matomo.org")
                 .build();
     }
 }

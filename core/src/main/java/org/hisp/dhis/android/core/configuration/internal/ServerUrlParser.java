@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.configuration.internal;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
@@ -48,7 +49,7 @@ public final class ServerUrlParser {
         return withSlash.endsWith("api/") ? withSlash : withSlash + "api/";
     }
 
-    public static HttpUrl parse(@NonNull String url) throws D2Error {
+    public static HttpUrl parse(@Nullable String url) throws D2Error {
         if (url == null) {
             throw D2Error.builder()
                     .errorCode(D2ErrorCode.SERVER_URL_NULL)

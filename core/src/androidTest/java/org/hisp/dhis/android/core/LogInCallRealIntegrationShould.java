@@ -33,7 +33,7 @@ import org.junit.Before;
 
 import java.io.IOException;
 
-public class UserAuthenticateCallRealIntegrationShould extends BaseRealIntegrationTest {
+public class LogInCallRealIntegrationShould extends BaseRealIntegrationTest {
 
     private D2 d2;
 

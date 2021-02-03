@@ -47,7 +47,7 @@ public final class UserModuleImpl implements UserModule {
 
     private final IsUserLoggedInCallableFactory isUserLoggedInCallFactory;
     private final LogOutCallFactory logoutCallCallFactory;
-    private final UserAuthenticateCallFactory loginCallFactory;
+    private final LogInCall logInCall;
 
     private final AuthenticatedUserObjectRepository authenticatedUser;
     private final UserRoleCollectionRepository userRoles;
@@ -58,7 +58,7 @@ public final class UserModuleImpl implements UserModule {
     @Inject
     UserModuleImpl(IsUserLoggedInCallableFactory isUserLoggedInCallFactory,
                    LogOutCallFactory logoutCallCallFactory,
-                   UserAuthenticateCallFactory loginCallFactory,
+                   LogInCall logInCall,
                    AuthenticatedUserObjectRepository authenticatedUser,
                    UserRoleCollectionRepository userRoles,
                    AuthorityCollectionRepository authorities,
@@ -66,7 +66,7 @@ public final class UserModuleImpl implements UserModule {
                    UserObjectRepository user) {
         this.isUserLoggedInCallFactory = isUserLoggedInCallFactory;
         this.logoutCallCallFactory = logoutCallCallFactory;
-        this.loginCallFactory = loginCallFactory;
+        this.logInCall = logInCall;
         this.authenticatedUser = authenticatedUser;
         this.userRoles = userRoles;
         this.authorities = authorities;
@@ -102,7 +102,7 @@ public final class UserModuleImpl implements UserModule {
     @Override
     @NonNull
     public Single<User> logIn(String username, String password, String serverUrl) {
-        return loginCallFactory.logIn(username, password, serverUrl);
+        return logInCall.logIn(username, password, serverUrl);
     }
 
     @Override

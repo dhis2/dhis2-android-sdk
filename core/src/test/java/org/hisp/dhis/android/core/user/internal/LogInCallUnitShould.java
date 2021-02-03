@@ -74,7 +74,7 @@ import static org.mockito.Mockito.when;
 
 
 @RunWith(JUnit4.class)
-public class UserAuthenticateCallUnitShould extends BaseCallShould {
+public class LogInCallUnitShould extends BaseCallShould {
 
     @Mock
     private UserService userService;
@@ -191,7 +191,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     }
 
     private Single<User> instantiateCall(String username, String password, String serverUrl) {
-        return new UserAuthenticateCallFactory(databaseAdapter, apiCallExecutor,
+        return new LogInCall(databaseAdapter, apiCallExecutor,
                 userService, credentialsSecureStore, userHandler, resourceHandler, authenticatedUserStore,
                 systemInfoRepository, userStore, wipeModule, multiUserDatabaseManager, generalSettingCall, apiCallErrorCatcher).logIn(username, password, serverUrl);
     }

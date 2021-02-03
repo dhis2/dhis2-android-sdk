@@ -25,28 +25,28 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings.internal
 
-package org.hisp.dhis.android.core.settings.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.settings.GeneralSettings
 
-import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.settings.GeneralSettingsSamples;
-import org.hisp.dhis.android.core.settings.GeneralSettings;
-import org.hisp.dhis.android.core.settings.GeneralSettingTableInfo;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.runner.RunWith;
+@Module
+internal class GeneralSettingEntityDIModule {
 
-@RunWith(D2JunitRunner.class)
-public class GeneralSettingsStoreIntegrationShould
-        extends ObjectStoreAbstractIntegrationShould<GeneralSettings> {
-
-    public GeneralSettingsStoreIntegrationShould() {
-        super(GeneralSettingStore.create(TestDatabaseAdapterFactory.get()), GeneralSettingTableInfo.TABLE_INFO,
-                TestDatabaseAdapterFactory.get());
+    @Provides
+    @Reusable
+    fun generalSettingStore(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<GeneralSettings> {
+        return GeneralSettingStore.create(databaseAdapter)
     }
 
-    @Override
-    protected GeneralSettings buildObject() {
-        return GeneralSettingsSamples.getGeneralSettings();
+    @Provides
+    @Reusable
+    fun dataSetSettingHandler(store: ObjectWithoutUidStore<GeneralSettings>): Handler<GeneralSettings> {
+        return GeneralSettingHandler(store)
     }
 }

@@ -26,36 +26,38 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings.internal;
+package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.settings.GeneralSettings;
-import org.hisp.dhis.android.core.settings.GeneralSettingTableInfo;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.junit.Test;
 
-final class GeneralSettingStore {
+import java.io.IOException;
+import java.text.ParseException;
 
-    private static final StatementBinder<GeneralSettings> BINDER = (o, w) -> {
-        w.bind(1, o.dataSync());
-        w.bind(2, o.encryptDB());
-        w.bind(3, o.lastUpdated());
-        w.bind(4, o.metadataSync());
-        w.bind(5, o.reservedValues());
-        w.bind(6, o.numberSmsToSend());
-        w.bind(7, o.numberSmsConfirmation());
-    };
+import static com.google.common.truth.Truth.assertThat;
 
-    private static final WhereStatementBinder<GeneralSettings> WHERE_UPDATE_BINDER = (o, w) -> {};
+public class GeneralSettingsV2Should extends BaseObjectShould implements ObjectShould {
 
-    private static final WhereStatementBinder<GeneralSettings> WHERE_DELETE_BINDER = (o, w) -> {};
+    public GeneralSettingsV2Should() {
+        super("settings/general_settings_v2.json");
+    }
 
-    private GeneralSettingStore() {}
+    @Override
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        GeneralSettings generalSettings = objectMapper.readValue(jsonStream, GeneralSettings.class);
 
-    public static ObjectWithoutUidStore<GeneralSettings> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, GeneralSettingTableInfo.TABLE_INFO, BINDER,
-                WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER, GeneralSettings::create);
+        assertThat(generalSettings.dataSync()).isNull();
+        assertThat(generalSettings.encryptDB()).isFalse();
+        assertThat(generalSettings.lastUpdated()).isNull();
+        assertThat(generalSettings.metadataSync()).isNull();
+        assertThat(generalSettings.reservedValues()).isEqualTo(40);
+        assertThat(generalSettings.smsGateway()).isEqualTo("+84566464");
+        assertThat(generalSettings.numberSmsToSend()).isEqualTo("+84566464");
+        assertThat(generalSettings.smsResultSender()).isEqualTo("+9456498778");
+        assertThat(generalSettings.numberSmsConfirmation()).isEqualTo("+9456498778");
+        assertThat(generalSettings.matomoID()).isEqualTo("123abc");
+        assertThat(generalSettings.matomoUrl()).isEqualTo("https://www.matomo.org");
     }
 }

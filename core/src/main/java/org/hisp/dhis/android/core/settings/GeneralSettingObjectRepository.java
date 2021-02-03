@@ -59,6 +59,7 @@ public class GeneralSettingObjectRepository
         if (settings.isEmpty()) {
             return null;
         } else {
+            // TODO Read legacy properties from synchronization repository
             return settings.get(0);
         }
     }

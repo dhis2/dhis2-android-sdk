@@ -39,10 +39,10 @@ import java.text.ParseException;
 
 import static com.google.common.truth.Truth.assertThat;
 
-public class GeneralSettingsShould extends BaseObjectShould implements ObjectShould {
+public class GeneralSettingsV1Should extends BaseObjectShould implements ObjectShould {
 
-    public GeneralSettingsShould() {
-        super("settings/general_settings.json");
+    public GeneralSettingsV1Should() {
+        super("settings/general_settings_v1.json");
     }
 
     @Override
@@ -55,8 +55,12 @@ public class GeneralSettingsShould extends BaseObjectShould implements ObjectSho
         assertThat(generalSettings.lastUpdated()).isEqualTo(BaseIdentifiableObject.parseDate("2020-01-13T16:52:05.144Z"));
         assertThat(generalSettings.metadataSync()).isEqualTo(MetadataSyncPeriod.MANUAL);
         assertThat(generalSettings.reservedValues()).isEqualTo(100);
+        assertThat(generalSettings.smsGateway()).isEqualTo("98456123");
         assertThat(generalSettings.numberSmsToSend()).isEqualTo("98456123");
+        assertThat(generalSettings.smsResultSender()).isEqualTo("98456122");
         assertThat(generalSettings.numberSmsConfirmation()).isEqualTo("98456122");
+        assertThat(generalSettings.matomoID()).isNull();
+        assertThat(generalSettings.matomoUrl()).isNull();
     }
 
     @Test

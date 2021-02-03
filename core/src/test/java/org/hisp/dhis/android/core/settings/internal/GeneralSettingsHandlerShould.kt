@@ -25,45 +25,46 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings.internal
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+import com.nhaarman.mockitokotlin2.*
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.settings.GeneralSettings
+import org.junit.Before
+import org.junit.Test
+import org.mockito.Mockito
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+class GeneralSettingsHandlerShould {
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+    private val generalSettingStore: ObjectWithoutUidStore<GeneralSettings> = mock()
 
-class BaseDatabaseOpenHelper {
+    private val generalSettings: GeneralSettings = mock()
 
-    static final int VERSION = 94;
+    private lateinit var generalSettingHandler: Handler<GeneralSettings>
 
-    private final AssetManager assetManager;
-    private final int targetVersion;
+    private lateinit var generalSettingList: List<GeneralSettings>
 
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    @Before
+    @Throws(Exception::class)
+    fun setUp() {
+        generalSettingList = listOf(generalSettings)
+        whenever(generalSettingStore.updateOrInsertWhere(any())) doReturn HandleAction.Insert
+        generalSettingHandler = GeneralSettingHandler(generalSettingStore)
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
-        databaseAdapter.enableWriteAheadLogging();
+    @Test
+    fun clean_database_before_insert_collection() {
+        generalSettingHandler.handleMany(generalSettingList)
+        Mockito.verify(generalSettingStore).delete()
+        Mockito.verify(generalSettingStore).updateOrInsertWhere(generalSettings)
     }
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    @Test
+    fun clean_database_if_empty_collection() {
+        generalSettingHandler!!.handleMany(emptyList())
+        Mockito.verify(generalSettingStore).delete()
+        Mockito.verify(generalSettingStore, never()).updateOrInsertWhere(generalSettings)
     }
 }

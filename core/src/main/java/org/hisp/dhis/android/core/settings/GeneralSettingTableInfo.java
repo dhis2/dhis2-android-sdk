@@ -51,24 +51,24 @@ public final class GeneralSettingTableInfo {
     };
 
     public static class Columns extends CoreColumns {
-        public static final String DATA_SYNC = "dataSync";
         public static final String ENCRYPT_DB = "encryptDB";
         public static final String LAST_UPDATED = "lastUpdated";
-        public static final String METADATA_SYNC = "metadataSync";
         public static final String RESERVED_VALUES = "reservedValues";
-        public static final String NUMBER_SMS_TO_SEND = "numberSmsToSend";
-        public static final String NUMBER_SMS_CONFIRMATION = "numberSmsConfirmation";
+        public static final String SMS_GATEWAY = "smsGateway";
+        public static final String SMS_RESULT_SENDER = "smsResultSender";
+        public static final String MATOMO_ID = "matomoID";
+        public static final String MATOMO_URL = "matomoUrl";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    DATA_SYNC,
                     ENCRYPT_DB,
                     LAST_UPDATED,
-                    METADATA_SYNC,
                     RESERVED_VALUES,
-                    NUMBER_SMS_TO_SEND,
-                    NUMBER_SMS_CONFIRMATION
+                    SMS_GATEWAY,
+                    SMS_RESULT_SENDER,
+                    MATOMO_ID,
+                    MATOMO_URL
             );
         }
     }

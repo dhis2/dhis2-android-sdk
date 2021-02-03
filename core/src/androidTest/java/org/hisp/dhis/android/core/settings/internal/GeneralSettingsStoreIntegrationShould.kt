@@ -25,32 +25,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings.internal
 
-package org.hisp.dhis.android.core.settings.internal;
+import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.settings.GeneralSettingsSamples
+import org.hisp.dhis.android.core.settings.GeneralSettingTableInfo
+import org.hisp.dhis.android.core.settings.GeneralSettings
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.settings.GeneralSettings;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-
-@Module
-public final class GeneralSettingEntityDIModule {
-
-    @Provides
-    @Reusable
-    ObjectWithoutUidStore<GeneralSettings> generalSettingStore(DatabaseAdapter databaseAdapter) {
-        return GeneralSettingStore.create(databaseAdapter);
+@RunWith(D2JunitRunner::class)
+class GeneralSettingsStoreIntegrationShould : ObjectStoreAbstractIntegrationShould<GeneralSettings>(
+    GeneralSettingStore.create(TestDatabaseAdapterFactory.get()),
+    GeneralSettingTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get()
+) {
+    override fun buildObject(): GeneralSettings {
+        return GeneralSettingsSamples.getGeneralSettings()
     }
-
-    @Provides
-    @Reusable
-    Handler<GeneralSettings> dataSetSettingHandler(ObjectWithoutUidStore<GeneralSettings> store) {
-        return new GeneralSettingHandler(store);
-    }
-
-
 }

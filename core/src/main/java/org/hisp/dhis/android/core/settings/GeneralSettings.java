@@ -32,15 +32,15 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.DataSyncPeriodColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.MetadataSyncPeriodColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreDataSyncPeriodColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreMetadataSyncPeriodColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Date;
@@ -49,33 +49,60 @@ import java.util.Date;
 @JsonDeserialize(builder = $$AutoValue_GeneralSettings.Builder.class)
 public abstract class GeneralSettings implements CoreObject {
 
-    @JsonProperty()
-    @ColumnAdapter(DataSyncPeriodColumnAdapter.class)
+    /**
+     * @deprecated Use {@link ...}
+     */
+    @Deprecated
+    @Nullable
+    @ColumnAdapter(IgnoreDataSyncPeriodColumnAdapter.class)
     public abstract DataSyncPeriod dataSync();
 
-    @JsonProperty()
     public abstract Boolean encryptDB();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
-    @JsonProperty()
-    @ColumnAdapter(MetadataSyncPeriodColumnAdapter.class)
+    /**
+     * @deprecated Use {@link ...}
+     */
+    @Deprecated
+    @Nullable
+    @ColumnAdapter(IgnoreMetadataSyncPeriodColumnAdapter.class)
     public abstract MetadataSyncPeriod metadataSync();
 
     @Nullable
-    @JsonProperty()
     public abstract Integer reservedValues();
 
+    /**
+     * @deprecated Use {@link #smsGateway()} instead.
+     */
+    @Deprecated
     @Nullable
-    @JsonProperty()
-    public abstract String numberSmsToSend();
+    public String numberSmsToSend() {
+        return smsGateway();
+    }
+
+    /**
+     * @deprecated Use {@link #smsResultSender()} instead.
+     */
+    @Deprecated
+    @Nullable
+    public String numberSmsConfirmation() {
+        return smsResultSender();
+    }
 
     @Nullable
-    @JsonProperty()
-    public abstract String numberSmsConfirmation();
+    public abstract String smsGateway();
+
+    @Nullable
+    public abstract String smsResultSender();
+
+    @Nullable
+    public abstract String matomoID();
+
+    @Nullable
+    public abstract String matomoUrl();
 
     public static GeneralSettings create(Cursor cursor) {
         return $AutoValue_GeneralSettings.createFromCursor(cursor);
@@ -92,19 +119,27 @@ public abstract class GeneralSettings implements CoreObject {
     public abstract static class Builder {
         public abstract Builder id(Long id);
 
+        @Deprecated
         public abstract Builder dataSync(DataSyncPeriod dataSync);
 
         public abstract Builder encryptDB(Boolean encryptDB);
 
         public abstract Builder lastUpdated(Date lastUpdated);
 
+        @Deprecated
         public abstract Builder metadataSync(MetadataSyncPeriod metadataSync);
 
         public abstract Builder reservedValues(Integer reservedValues);
 
-        public abstract Builder numberSmsToSend(String numberSmsToSend);
+        @JsonAlias("numberSmsToSend")
+        public abstract Builder smsGateway(String smsGateway);
 
-        public abstract Builder numberSmsConfirmation(String numberSmsConfirmation);
+        @JsonAlias("numberSmsConfirmation")
+        public abstract Builder smsResultSender(String smsGateway);
+
+        public abstract Builder matomoID(String matomoID);
+
+        public abstract Builder matomoUrl(String matomoUrl);
 
         public abstract GeneralSettings build();
     }

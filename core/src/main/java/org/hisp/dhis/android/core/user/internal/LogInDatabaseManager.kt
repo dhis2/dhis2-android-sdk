@@ -29,10 +29,10 @@ package org.hisp.dhis.android.core.user.internal
 
 import dagger.Reusable
 import io.reactivex.Completable
+import javax.inject.Inject
 import okhttp3.HttpUrl
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
 import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall
-import javax.inject.Inject
 
 @Reusable
 internal class LogInDatabaseManager @Inject internal constructor(

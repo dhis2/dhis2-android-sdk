@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.user.internal
 
 import dagger.Reusable
 import io.reactivex.Single
+import javax.inject.Inject
 import okhttp3.HttpUrl
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
@@ -47,9 +48,9 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfo
 import org.hisp.dhis.android.core.user.AuthenticatedUser
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.wipe.internal.WipeModule
-import javax.inject.Inject
 
 @Reusable
+@Suppress("LongParameterList")
 internal class LogInCall @Inject internal constructor(
     private val databaseAdapter: DatabaseAdapter,
     private val apiCallExecutor: APICallExecutor,

@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.user.internal
 
 import io.reactivex.Completable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
@@ -35,7 +36,6 @@ import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
-import javax.inject.Inject
 
 class LogOutCall @Inject internal constructor(
     private val databaseAdapter: DatabaseAdapter,

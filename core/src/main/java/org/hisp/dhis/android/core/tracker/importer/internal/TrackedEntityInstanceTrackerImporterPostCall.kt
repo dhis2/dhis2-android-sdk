@@ -29,11 +29,9 @@ package org.hisp.dhis.android.core.tracker.importer.internal
 
 import dagger.Reusable
 import io.reactivex.Observable
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDeleteCall
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
@@ -42,11 +40,12 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePo
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostStateManager
 
 @Reusable
-internal class TrackerImporterPostCall @Inject internal constructor(
+internal class TrackedEntityInstanceTrackerImporterPostCall @Inject internal constructor(
     private val payloadGenerator: TrackedEntityInstancePostPayloadGenerator,
     private val stateManager: TrackedEntityInstancePostStateManager,
     private val service: TrackerImporterService,
     private val apiCallExecutor: APICallExecutor,
+    private val jobQueryCall: JobQueryCall,
     private val relationshipDeleteCall: RelationshipDeleteCall
 ) {
     fun uploadTrackedEntityInstances(
@@ -63,33 +62,14 @@ internal class TrackerImporterPostCall @Inject internal constructor(
             val trackedEntityInstancePayload = TrackedEntityInstancePayload.create(teisToPost)
             try {
                 val webResponse = apiCallExecutor.executeObjectCall(
-                    service.postTrackerImporter(trackedEntityInstancePayload)
+                    service.postTrackedEntityInstances(trackedEntityInstancePayload)
                 )
-                queryJob(webResponse.response().uid())
-
-                // TODO manage status
+                jobQueryCall.storeAndQueryJob(webResponse.response().uid())
             } catch (d2Error: D2Error) {
                 stateManager.restorePartitionStates(teisToPost)
                 Observable.error<D2Progress>(d2Error)
                 // TODO different treatment when offline error
             }
         }
-    }
-
-    private fun queryJob(jobId: String): Observable<D2Progress> {
-        val progressManager = D2ProgressManager(null)
-        @Suppress("MagicNumber")
-        return Observable.interval(0, 5, TimeUnit.SECONDS)
-            .map {
-                apiCallExecutor.executeObjectCall(service.getJob(jobId))
-            }
-            .map { it.any { ji -> ji.completed() } }
-            .takeUntil { it }
-            .map {
-                progressManager.increaseProgress(
-                    TrackedEntityInstance::class.java,
-                    it
-                )
-            }
     }
 }

@@ -46,7 +46,7 @@ import static com.google.common.truth.Truth.assertThat;
 // ToDo: more tests to verify correct store behaviour
 // ToDo:    - what will happen if the same user will be inserted twice?
 @RunWith(D2JunitRunner.class)
-public class UserAuthenticateCallMockIntegrationShould extends BaseMockIntegrationTestEmptyEnqueable {
+public class LogInCallMockIntegrationShould extends BaseMockIntegrationTestEmptyEnqueable {
 
     @Before
     public void setUp() throws D2Error {

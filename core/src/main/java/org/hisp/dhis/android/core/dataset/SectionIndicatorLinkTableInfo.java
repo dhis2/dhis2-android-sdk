@@ -26,17 +26,43 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.period.internal;
+package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.period.Period;
-import org.hisp.dhis.android.core.period.PeriodType;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
-import java.util.Date;
-import java.util.List;
+public final class SectionIndicatorLinkTableInfo {
 
-interface ParentPeriodGenerator {
-    List<Period> generatePeriods();
-    List<Period> generatePeriods(PeriodType periodType, int futurePeriods);
-    List<Period> generatePeriods(PeriodType periodType, int pastPeriods, int futurePeriods);
-    Period generatePeriod(PeriodType periodType, Date date, int offset);
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "SectionIndicatorLink";
+        }
+
+        @Override
+        public Columns columns() {
+            return new Columns();
+        }
+    };
+
+    private SectionIndicatorLinkTableInfo() {
+    }
+
+    public static class Columns extends CoreColumns {
+
+        public static final String SECTION = "section";
+        public static final String INDICATOR = "indicator";
+
+        @Override
+        public String[] all() {
+            return CollectionsHelper.appendInNewArray(super.all(), SECTION, INDICATOR);
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return all();
+        }
+    }
 }

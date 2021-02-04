@@ -28,7 +28,9 @@
 package org.hisp.dhis.android.core.imports.internal;
 
 import org.hisp.dhis.android.core.imports.TrackerImportConflictCollectionRepository;
+import org.hisp.dhis.android.core.imports.TrackerJobManager;
 
 public interface ImportModule {
     TrackerImportConflictCollectionRepository trackerImportConflicts();
+    TrackerJobManager jobManager();
 }

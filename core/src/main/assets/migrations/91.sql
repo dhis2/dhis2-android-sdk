@@ -1,2 +1,2 @@
-# Add Data Element Legend Set Link
-CREATE TABLE DataElementLegendSetLink (_id INTEGER PRIMARY KEY AUTOINCREMENT, dataElement TEXT NOT NULL, legendSet TEXT NOT NULL, FOREIGN KEY (dataElement) REFERENCES DataElement (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (legendSet) REFERENCES LegendSet (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, UNIQUE (dataElement, legendSet));
+# Creates the a table to save the number of the values to reserve for attribute
+CREATE TABLE ReservedValueSetting (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT UNIQUE, numberOfValuesToReserve INTEGER, FOREIGN KEY (uid) REFERENCES TrackedEntityAttribute (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);

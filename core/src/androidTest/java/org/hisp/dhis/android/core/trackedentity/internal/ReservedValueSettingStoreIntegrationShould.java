@@ -26,50 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.trackedentity.internal;
 
-public enum RelativePeriod {
-    TODAY,
-    YESTERDAY,
-    LAST_3_DAYS,
-    LAST_7_DAYS,
-    LAST_14_DAYS,
-    LAST_30_DAYS,
-    LAST_60_DAYS,
-    LAST_90_DAYS,
-    LAST_180_DAYS,
-    THIS_MONTH,
-    LAST_MONTH,
-    THIS_BIMONTH,
-    LAST_BIMONTH,
-    THIS_QUARTER,
-    LAST_QUARTER,
-    THIS_SIX_MONTH,
-    LAST_SIX_MONTH,
-    WEEKS_THIS_YEAR,
-    MONTHS_THIS_YEAR,
-    BIMONTHS_THIS_YEAR,
-    QUARTERS_THIS_YEAR,
-    THIS_YEAR,
-    MONTHS_LAST_YEAR,
-    QUARTERS_LAST_YEAR,
-    LAST_YEAR,
-    LAST_5_YEARS,
-    LAST_12_MONTHS,
-    LAST_6_MONTHS,
-    LAST_3_MONTHS,
-    LAST_6_BIMONTHS,
-    LAST_4_QUARTERS,
-    LAST_2_SIXMONTHS,
-    THIS_FINANCIAL_YEAR,
-    LAST_FINANCIAL_YEAR,
-    LAST_5_FINANCIAL_YEARS,
-    THIS_WEEK,
-    LAST_WEEK,
-    THIS_BIWEEK,
-    LAST_BIWEEK,
-    LAST_4_WEEKS,
-    LAST_4_BIWEEKS,
-    LAST_12_WEEKS,
-    LAST_52_WEEKS
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.trackedentity.ReservedValueSettingSamples;
+import org.hisp.dhis.android.core.trackedentity.ReservedValueSetting;
+import org.hisp.dhis.android.core.trackedentity.ReservedValueSettingTableInfo;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.runner.RunWith;
+
+@RunWith(D2JunitRunner.class)
+public class ReservedValueSettingStoreIntegrationShould extends
+        IdentifiableObjectStoreAbstractIntegrationShould<ReservedValueSetting> {
+
+    public ReservedValueSettingStoreIntegrationShould() {
+        super(ReservedValueSettingStore.create(TestDatabaseAdapterFactory.get()),
+                ReservedValueSettingTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+    }
+
+    @Override
+    protected ReservedValueSetting buildObject() {
+        return ReservedValueSettingSamples.get();
+    }
+
+    @Override
+    protected ReservedValueSetting buildObjectToUpdate() {
+        return ReservedValueSettingSamples.get().toBuilder()
+                .numberOfValuesToReserve(100)
+                .build();
+    }
 }

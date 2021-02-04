@@ -26,77 +26,43 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.tracker.importer.internal;
+package org.hisp.dhis.android.core.common;
+
+import android.database.Cursor;
 
 import androidx.annotation.NonNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-
-import java.util.Date;
+import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.UID;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_JobInfo.Builder.class)
-public abstract class JobInfo {
+public abstract class StorableObjectWithUid extends BaseObject implements ObjectWithUidInterface {
 
+    @Override
     @NonNull
-    @JsonProperty
+    @JsonProperty(UID)
     public abstract String uid();
-    
-    @NonNull
-    @JsonProperty
-    public abstract String id();
 
     @NonNull
-    @JsonProperty
-    public abstract String level();
-
-    @NonNull
-    @JsonProperty
-    public abstract String category();
-
-    @NonNull
-    @JsonProperty
-    @ColumnAdapter(DbDateColumnAdapter.class)
-    public abstract Date time();
-
-    @NonNull
-    @JsonProperty
-    public abstract String message();
-
-    @NonNull
-    @JsonProperty
-    public abstract Boolean completed();
-
-    public abstract JobInfo.Builder toBuilder();
-
-    public static JobInfo.Builder builder() {
-        return new AutoValue_JobInfo.Builder();
+    public static StorableObjectWithUid create(Cursor cursor) {
+        return AutoValue_StorableObjectWithUid.createFromCursor(cursor);
     }
 
+    public static Builder builder() {
+        return new $$AutoValue_StorableObjectWithUid.Builder();
+    }
+
+    public abstract Builder toBuilder();
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
+    public static abstract class Builder extends BaseObject.Builder<Builder> {
         public abstract Builder uid(String uid);
 
-        public abstract Builder id(String id);
+        public abstract StorableObjectWithUid build();
 
-        public abstract Builder level(String level);
-
-        public abstract Builder category(String category);
-
-        public abstract Builder time(Date time);
-
-        public abstract Builder message(String message);
-
-        public abstract Builder completed(Boolean completed);
-
-        public abstract JobInfo build();
     }
 }

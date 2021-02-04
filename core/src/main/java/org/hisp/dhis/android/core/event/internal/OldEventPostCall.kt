@@ -41,40 +41,36 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 
 @Reusable
-internal class EventPostCall @Inject internal constructor(
+internal class OldEventPostCall @Inject internal constructor(
     private val payloadGenerator: EventPostPayloadGenerator,
     private val versionManager: DHISVersionManager,
     private val eventService: EventService,
-    private val eventStore: EventStore,
     private val apiCallExecutor: APICallExecutor,
-    private val eventImportHandler: EventImportHandler
+    private val eventImportHandler: EventImportHandler,
+    private val stateManager: EventPostStateManager
 ) {
     fun uploadEvents(filteredEvents: List<Event>): Observable<D2Progress> {
-        return if (filteredEvents.isEmpty()) {
-            Observable.empty<D2Progress>()
-        } else {
-            Observable.defer {
-                val eventPayload = EventPayload()
-                val eventsToPost = payloadGenerator.getEvents(filteredEvents)
-                markObjectsAs(eventsToPost, State.UPLOADING)
+        return Observable.defer {
+            val eventPayload = EventPayload()
+            val eventsToPost = payloadGenerator.getEvents(filteredEvents)
+            stateManager.markObjectsAs(eventsToPost, State.UPLOADING)
 
-                val progressManager = D2ProgressManager(1)
+            val progressManager = D2ProgressManager(1)
 
-                eventPayload.events = eventsToPost
-                val strategy = if (versionManager.is2_29) "CREATE_AND_UPDATE" else "SYNC"
-                try {
-                    val webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
-                        eventService.postEvents(eventPayload, strategy),
-                        @Suppress("MagicNumber")
-                        listOf(409),
-                        EventWebResponse::class.java
-                    )
-                    handleWebResponse(webResponse)
-                    Observable.just<D2Progress>(progressManager.increaseProgress(Event::class.java, true))
-                } catch (e: D2Error) {
-                    markObjectsAs(eventsToPost, DataStateHelper.errorIfOnline(e))
-                    Observable.error<D2Progress>(e)
-                }
+            eventPayload.events = eventsToPost
+            val strategy = if (versionManager.is2_29) "CREATE_AND_UPDATE" else "SYNC"
+            try {
+                val webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
+                    eventService.postEvents(eventPayload, strategy),
+                    @Suppress("MagicNumber")
+                    listOf(409),
+                    EventWebResponse::class.java
+                )
+                handleWebResponse(webResponse)
+                Observable.just<D2Progress>(progressManager.increaseProgress(Event::class.java, true))
+            } catch (e: D2Error) {
+                stateManager.markObjectsAs(eventsToPost, DataStateHelper.errorIfOnline(e))
+                Observable.error<D2Progress>(e)
             }
         }
     }
@@ -88,11 +84,5 @@ internal class EventPostCall @Inject internal constructor(
             null,
             null
         )
-    }
-
-    private fun markObjectsAs(events: Collection<Event>, forcedState: State?) {
-        for (e in events) {
-            eventStore.setState(e.uid(), DataStateHelper.forcedOrOwn(e, forcedState))
-        }
     }
 }

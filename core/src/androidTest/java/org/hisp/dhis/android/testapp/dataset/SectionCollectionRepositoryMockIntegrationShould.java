@@ -104,4 +104,13 @@ public class SectionCollectionRepositoryMockIntegrationShould extends BaseMockIn
         assertThat(section.dataElements().get(0).uid()).isEqualTo("g9eOBujte1U");
         assertThat(section.dataElements().get(0).code()).isEqualTo("DE_2005735");
     }
+
+    @Test
+    public void return_indicators_as_children() {
+        Section section = d2.dataSetModule().sections()
+                .withIndicators().one().blockingGet();
+        assertThat(section.indicators().size()).isEqualTo(1);
+        assertThat(section.indicators().get(0).uid()).isEqualTo("ReUHfIn0pTQ");
+        assertThat(section.indicators().get(0).code()).isEqualTo("IN_52462");
+    }
 }

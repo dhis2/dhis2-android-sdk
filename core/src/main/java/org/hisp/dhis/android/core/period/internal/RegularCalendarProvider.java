@@ -28,10 +28,13 @@
 
 package org.hisp.dhis.android.core.period.internal;
 
+import androidx.annotation.NonNull;
+
 import java.util.Calendar;
 
 class RegularCalendarProvider implements CalendarProvider {
 
+    @NonNull
     @Override
     public Calendar getCalendar() {
         return Calendar.getInstance();

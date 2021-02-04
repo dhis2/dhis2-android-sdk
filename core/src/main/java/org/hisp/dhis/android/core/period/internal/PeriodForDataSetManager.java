@@ -59,9 +59,9 @@ public class PeriodForDataSetManager {
     Single<List<Period>> getPeriodsForDataSet(String dataSetUid) {
         return dataSetCollectionRepository.uid(dataSetUid).get().map(dataSet -> {
             Integer dataSetFuturePeriods = dataSet.openFuturePeriods();
-            int futurePeriods = dataSetFuturePeriods == null ? 0 : dataSetFuturePeriods;
+            int endPeriods = dataSetFuturePeriods == null ? 0 : dataSetFuturePeriods;
 
-            List<Period> periods = parentPeriodGenerator.generatePeriods(dataSet.periodType(), futurePeriods);
+            List<Period> periods = parentPeriodGenerator.generatePeriods(dataSet.periodType(), endPeriods);
             storePeriods(periods);
             return periods;
         });
@@ -86,8 +86,17 @@ public class PeriodForDataSetManager {
         return periods;
     }
 
-    public List<Period> getPeriodsInRange(PeriodType periodType, int pastPeriods, int futurePeriods) {
-        List<Period> periods = parentPeriodGenerator.generatePeriods(periodType, pastPeriods, futurePeriods);
+    /**
+     * Generate a list of periods given a PeriodType and a range. For example, the method call
+     * getPeriodsInRange(PeriodType.Monthly, -5, 1) will generate the last 5 months and the next month.
+     *
+     * @param periodType Period type
+     * @param startOffset Relative period offset, it could be positive or negative
+     * @param endOffset Relative period offset, it could be positive or negative
+     * @return List of periods in range
+     */
+    public List<Period> getPeriodsInRange(PeriodType periodType, int startOffset, int endOffset) {
+        List<Period> periods = parentPeriodGenerator.generatePeriods(periodType, startOffset, endOffset);
         storePeriods(periods);
         return periods;
     }

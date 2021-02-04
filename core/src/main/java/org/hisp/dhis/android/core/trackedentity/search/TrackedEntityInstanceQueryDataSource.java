@@ -59,6 +59,7 @@ public final class TrackedEntityInstanceQueryDataSource
     private final TrackedEntityInstanceQueryRepositoryScope scope;
     private final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders;
     private final D2Cache<TrackedEntityInstanceQueryOnline, List<TrackedEntityInstance>> onlineCache;
+    private final TrackedEntityInstanceLocalQueryHelper localQueryHelper;
 
     private Set<String> returnedUidsOffline = new HashSet<>();
     private Set<String> returnedUidsOnline = new HashSet<>();
@@ -74,14 +75,17 @@ public final class TrackedEntityInstanceQueryDataSource
                                          TrackedEntityInstanceQueryRepositoryScope scope,
                                          Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders,
                                          D2Cache<TrackedEntityInstanceQueryOnline,
-                                                 List<TrackedEntityInstance>> onlineCache) {
+                                                 List<TrackedEntityInstance>> onlineCache,
+                                         TrackedEntityInstanceQueryOnlineHelper onlineHelper,
+                                         TrackedEntityInstanceLocalQueryHelper localQueryHelper) {
         this.store = store;
         this.onlineCallFactory = onlineCallFactory;
         this.scope = scope;
         this.childrenAppenders = childrenAppenders;
         this.onlineCache = onlineCache;
+        this.localQueryHelper = localQueryHelper;
 
-        this.baseOnlineQueries = TrackedEntityInstanceQueryOnlineHelper.fromScope(scope);
+        this.baseOnlineQueries = onlineHelper.fromScope(scope);
 
         for (TrackedEntityInstanceQueryOnline onlineQuery : this.baseOnlineQueries) {
             this.onlineQueryStatusMap.put(onlineQuery, OnlineQueryStatus.create());
@@ -140,7 +144,7 @@ public final class TrackedEntityInstanceQueryDataSource
     }
 
     private List<TrackedEntityInstance> queryOffline(int requestedLoadSize) {
-        String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(scope, returnedUidsOffline,
+        String sqlQuery = localQueryHelper.getSqlQuery(scope, returnedUidsOffline,
                 requestedLoadSize);
         List<TrackedEntityInstance> instances = store.selectRawQuery(sqlQuery);
         addUids(returnedUidsOffline, instances);

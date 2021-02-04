@@ -29,6 +29,10 @@ package org.hisp.dhis.android.core.trackedentity.search;
 
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
+import org.hisp.dhis.android.core.common.DateFilterPeriodHelper;
+import org.hisp.dhis.android.core.period.internal.CalendarProvider;
+import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory;
+import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,10 +49,19 @@ public class TrackedEntityInstanceQueryOnlineHelperShould {
 
     private TrackedEntityInstanceQueryRepositoryScope.Builder queryBuilder;
 
+    private TrackedEntityInstanceQueryOnlineHelper onlineHelper;
+
     @Before
     public void setUp() {
         queryBuilder = TrackedEntityInstanceQueryRepositoryScope.builder()
                 .orgUnits(Collections.singletonList("uid"));
+
+        CalendarProvider calendarProvider = CalendarProviderFactory.getCalendarProvider();
+
+        DateFilterPeriodHelper periodHelper =
+                new DateFilterPeriodHelper(calendarProvider, ParentPeriodGeneratorImpl.create(calendarProvider));
+
+        onlineHelper = new TrackedEntityInstanceQueryOnlineHelper(periodHelper);
     }
 
     @Test
@@ -57,7 +70,7 @@ public class TrackedEntityInstanceQueryOnlineHelperShould {
                 .query(RepositoryScopeFilterItem.builder().key("").operator(FilterItemOperator.LIKE).value("filter").build())
                 .build();
 
-        List<TrackedEntityInstanceQueryOnline> onlineQueries = TrackedEntityInstanceQueryOnlineHelper.fromScope(scope);
+        List<TrackedEntityInstanceQueryOnline> onlineQueries = onlineHelper.fromScope(scope);
 
         assertThat(onlineQueries.size()).isEqualTo(1);
         assertThat(onlineQueries.get(0).query()).isEqualTo("LIKE:filter");
@@ -77,7 +90,7 @@ public class TrackedEntityInstanceQueryOnlineHelperShould {
                                 .key("attribute2").operator(FilterItemOperator.LIKE).value("filter22").build()
                 )).build();
 
-        List<TrackedEntityInstanceQueryOnline> onlineQueries = TrackedEntityInstanceQueryOnlineHelper.fromScope(scope);
+        List<TrackedEntityInstanceQueryOnline> onlineQueries = onlineHelper.fromScope(scope);
 
         assertThat(onlineQueries.size()).isEqualTo(1);
         assertThat(onlineQueries.get(0).attribute().size()).isEqualTo(3);
@@ -100,7 +113,7 @@ public class TrackedEntityInstanceQueryOnlineHelperShould {
                                 .key("filterItem3").operator(FilterItemOperator.EQ).value("filter32").build()
                 )).build();
 
-        List<TrackedEntityInstanceQueryOnline> onlineQueries = TrackedEntityInstanceQueryOnlineHelper.fromScope(scope);
+        List<TrackedEntityInstanceQueryOnline> onlineQueries = onlineHelper.fromScope(scope);
 
         assertThat(onlineQueries.size()).isEqualTo(1);
         assertThat(onlineQueries.get(0).filter().size()).isEqualTo(3);

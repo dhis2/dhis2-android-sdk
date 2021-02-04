@@ -31,6 +31,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.module.SimpleModule
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import java.util.Date
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 
@@ -43,6 +44,7 @@ internal object ObjectMapperFactory {
 
         return ObjectMapper()
             .registerModule(dateModule)
+            .registerModule(KotlinModule())
             .setDateFormat(DateUtils.DATE_FORMAT.raw())
             .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             .enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE)

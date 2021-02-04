@@ -31,43 +31,43 @@ package org.hisp.dhis.android.core.period;
 import java.util.Calendar;
 
 public enum PeriodType {
-    Daily(59, 1, "\\b(\\d{4})(\\d{2})(\\d{2})\\b"),
-    Weekly(12, 1, "\\b(\\d{4})W(\\d[\\d]?)\\b"),
-    WeeklyWednesday(12, 1, "\\b(\\d{4})WedW(\\d[\\d]?)\\b"),
-    WeeklyThursday(12, 1, "\\b(\\d{4})ThuW(\\d[\\d]?)\\b"),
-    WeeklySaturday(12, 1, "\\b(\\d{4})SatW(\\d[\\d]?)\\b"),
-    WeeklySunday(12, 1, "\\b(\\d{4})SunW(\\d[\\d]?)\\b"),
-    BiWeekly(12, 1, "\\b(\\d{4})BiW(\\d[\\d]?)\\b"),
-    Monthly(11, 1, "\\b(\\d{4})[-]?(\\d{2})\\b"),
-    BiMonthly(5, 1, "\\b(\\d{4})(\\d{2})B\\b"),
-    Quarterly(4, 1, "\\b(\\d{4})Q(\\d)\\b"),
-    SixMonthly(4, 1, "\\b(\\d{4})S(\\d)\\b"),
-    SixMonthlyApril(4, 1, "\\b(\\d{4})AprilS(\\d)\\b"),
-    SixMonthlyNov(4, 1, "\\b(\\d{4})NovS(\\d)\\b"),
-    Yearly(4, 1, "\\b(\\d{4})\\b"),
-    FinancialApril(4, 1, "\\b(\\d{4})April\\b"),
-    FinancialJuly(4, 1, "\\b(\\d{4})July\\b"),
-    FinancialOct(4, 1, "\\b(\\d{4})Oct\\b"),
-    FinancialNov(4, 1, "\\b(\\d{4})Nov\\b");
+    Daily(-59, 1, "\\b(\\d{4})(\\d{2})(\\d{2})\\b"),
+    Weekly(-12, 1, "\\b(\\d{4})W(\\d[\\d]?)\\b"),
+    WeeklyWednesday(-12, 1, "\\b(\\d{4})WedW(\\d[\\d]?)\\b"),
+    WeeklyThursday(-12, 1, "\\b(\\d{4})ThuW(\\d[\\d]?)\\b"),
+    WeeklySaturday(-12, 1, "\\b(\\d{4})SatW(\\d[\\d]?)\\b"),
+    WeeklySunday(-12, 1, "\\b(\\d{4})SunW(\\d[\\d]?)\\b"),
+    BiWeekly(-12, 1, "\\b(\\d{4})BiW(\\d[\\d]?)\\b"),
+    Monthly(-11, 1, "\\b(\\d{4})[-]?(\\d{2})\\b"),
+    BiMonthly(-5, 1, "\\b(\\d{4})(\\d{2})B\\b"),
+    Quarterly(-4, 1, "\\b(\\d{4})Q(\\d)\\b"),
+    SixMonthly(-4, 1, "\\b(\\d{4})S(\\d)\\b"),
+    SixMonthlyApril(-4, 1, "\\b(\\d{4})AprilS(\\d)\\b"),
+    SixMonthlyNov(-4, 1, "\\b(\\d{4})NovS(\\d)\\b"),
+    Yearly(-4, 1, "\\b(\\d{4})\\b"),
+    FinancialApril(-4, 1, "\\b(\\d{4})April\\b"),
+    FinancialJuly(-4, 1, "\\b(\\d{4})July\\b"),
+    FinancialOct(-4, 1, "\\b(\\d{4})Oct\\b"),
+    FinancialNov(-4, 1, "\\b(\\d{4})Nov\\b");
 
-    private Integer defaultPastPeriods;
+    private final Integer defaultStartPeriods;
 
-    private Integer defaultFuturePeriods;
+    private final Integer defaultEndPeriods;
 
-    private String pattern;
+    private final String pattern;
 
-    PeriodType(Integer defaultPastPeriods, Integer defaultFuturePeriods, String pattern) {
-        this.defaultPastPeriods = defaultPastPeriods;
-        this.defaultFuturePeriods = defaultFuturePeriods;
+    PeriodType(Integer defaultStartPeriods, Integer defaultEndPeriods, String pattern) {
+        this.defaultStartPeriods = defaultStartPeriods;
+        this.defaultEndPeriods = defaultEndPeriods;
         this.pattern = pattern;
     }
 
-    public Integer getDefaultPastPeriods() {
-        return this.defaultPastPeriods;
+    public Integer getDefaultStartPeriods() {
+        return this.defaultStartPeriods;
     }
 
-    public Integer getDefaultFuturePeriods() {
-        return this.defaultFuturePeriods;
+    public Integer getDefaultEndPeriods() {
+        return this.defaultEndPeriods;
     }
 
     public String getPattern() {

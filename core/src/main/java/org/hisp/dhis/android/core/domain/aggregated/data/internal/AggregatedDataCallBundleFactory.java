@@ -121,7 +121,7 @@ class AggregatedDataCallBundleFactory {
         List<AggregatedDataCallBundle> bundles = new ArrayList<>();
         for (Map.Entry<AggregatedDataCallBundleKey, List<DataSet>> entry : keyDataSetMap.entrySet()) {
             AggregatedDataCallBundleKey key = entry.getKey();
-            List<Period> periods = periodManager.getPeriodsInRange(key.periodType(), key.pastPeriods(),
+            List<Period> periods = periodManager.getPeriodsInRange(key.periodType(), -key.pastPeriods(),
                     key.futurePeriods());
 
             if (!periods.isEmpty()) {
@@ -168,7 +168,7 @@ class AggregatedDataCallBundleFactory {
                 return globalSetting.periodDSDownload();
             }
         }
-        return dataSet.periodType().getDefaultPastPeriods();
+        return -dataSet.periodType().getDefaultStartPeriods();
     }
 
     private boolean hasPeriodDSDownload(DataSetSetting dataSetSetting) {

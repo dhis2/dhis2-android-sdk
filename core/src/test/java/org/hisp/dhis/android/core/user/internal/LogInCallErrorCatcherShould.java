@@ -41,7 +41,7 @@ import retrofit2.Response;
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(JUnit4.class)
-public class UserAuthenticateCallErrorCatcherShould {
+public class LogInCallErrorCatcherShould {
 
     private UserAuthenticateCallErrorCatcher catcher;
 

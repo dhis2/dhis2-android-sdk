@@ -32,6 +32,7 @@ import javax.inject.Inject
 import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
 import org.hisp.dhis.android.core.event.EventCollectionRepository
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.user.AuthenticatedUserObjectRepository
@@ -40,7 +41,8 @@ import org.hisp.dhis.android.core.user.AuthenticatedUserObjectRepository
 internal class EventCollectionRepositoryAdapter @Inject constructor(
     private val eventCollectionRepository: EventCollectionRepository,
     private val organisationUnitCollectionRepository: OrganisationUnitCollectionRepository,
-    private val userRepository: AuthenticatedUserObjectRepository
+    private val userRepository: AuthenticatedUserObjectRepository,
+    private val dateFilterPeriodHelper: DateFilterPeriodHelper
 ) {
 
     @Suppress("ComplexMethod")
@@ -51,34 +53,37 @@ internal class EventCollectionRepositoryAdapter @Inject constructor(
         scope.programStage()?.let { repository = repository.byProgramStageUid().eq(it) }
         scope.followUp()?.let { repository = repository.byFollowUp(it) }
         scope.trackedEntityInstance()?.let { repository = repository.byTrackedEntityInstanceUids(listOf(it)) }
-        scope.organisationUnitMode().let { repository = applyOrgunitSelection(repository, scope) }
+        scope.orgUnitMode().let { repository = applyOrgunitSelection(repository, scope) }
         scope.assignedUserMode()?.let { repository = applyUserAssignedMode(repository, it) }
         scope.dataFilters().forEach {
             // TODO
         }
         scope.events()?.let { repository = repository.byUid().`in`(it) }
-        scope.eventStatus()?.let { repository = repository.byStatus().eq(it) }
+        scope.eventStatus()?.let { repository = repository.byStatus().`in`(it) }
         scope.eventDate()?.let { period ->
-            DateFilterPeriodHelper.getStartDate(period)?.let { repository = repository.byEventDate().after(it) }
-            DateFilterPeriodHelper.getEndDate(period)?.let { repository = repository.byEventDate().before(it) }
+            dateFilterPeriodHelper.getStartDate(period)?.let { repository = repository.byEventDate().after(it) }
+            dateFilterPeriodHelper.getEndDate(period)?.let { repository = repository.byEventDate().before(it) }
         }
         scope.dueDate()?.let { period ->
-            DateFilterPeriodHelper.getStartDate(period)?.let { repository = repository.byDueDate().after(it) }
-            DateFilterPeriodHelper.getEndDate(period)?.let { repository = repository.byDueDate().before(it) }
+            dateFilterPeriodHelper.getStartDate(period)?.let { repository = repository.byDueDate().after(it) }
+            dateFilterPeriodHelper.getEndDate(period)?.let { repository = repository.byDueDate().before(it) }
         }
         scope.lastUpdatedDate()?.let { period ->
-            DateFilterPeriodHelper.getStartDate(period)?.let { repository = repository.byLastUpdated().after(it) }
-            DateFilterPeriodHelper.getEndDate(period)?.let { repository = repository.byLastUpdated().before(it) }
+            dateFilterPeriodHelper.getStartDate(period)?.let { repository = repository.byLastUpdated().after(it) }
+            dateFilterPeriodHelper.getEndDate(period)?.let { repository = repository.byLastUpdated().before(it) }
         }
         scope.completedDate()?.let { period ->
-            DateFilterPeriodHelper.getStartDate(period)?.let { repository = repository.byCompleteDate().after(it) }
-            DateFilterPeriodHelper.getEndDate(period)?.let { repository = repository.byCompleteDate().before(it) }
+            dateFilterPeriodHelper.getStartDate(period)?.let { repository = repository.byCompleteDate().after(it) }
+            dateFilterPeriodHelper.getEndDate(period)?.let { repository = repository.byCompleteDate().before(it) }
         }
         scope.order().forEach { repository = applyOrderColumn(repository, it) }
 
         if (!scope.includeDeleted()) {
             repository = repository.byDeleted().isFalse
         }
+
+        scope.states()?.let { repository = repository.byState().`in`(it) }
+        scope.attributeOptionCombos()?.let { repository = repository.byAttributeOptionComboUid().`in`(it) }
 
         return repository
     }
@@ -91,19 +96,22 @@ internal class EventCollectionRepositoryAdapter @Inject constructor(
     }
 
     fun getOrganisationUnits(scope: EventQueryRepositoryScope): List<String>? {
-        return when (scope.organisationUnitMode()) {
+        return when (scope.orgUnitMode()) {
             OrganisationUnitMode.ALL, OrganisationUnitMode.ACCESSIBLE ->
                 organisationUnitCollectionRepository.blockingGetUids()
+            OrganisationUnitMode.CAPTURE ->
+                organisationUnitCollectionRepository
+                    .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE).blockingGetUids()
             OrganisationUnitMode.CHILDREN ->
-                scope.organisationUnit()?.let { orgUnit ->
-                    organisationUnitCollectionRepository.byParentUid().like(orgUnit).blockingGetUids() + orgUnit
-                }
+                scope.orgUnits()?.map { orgUnit ->
+                    organisationUnitCollectionRepository.byParentUid().eq(orgUnit).blockingGetUids() + orgUnit
+                }?.flatten()
             OrganisationUnitMode.DESCENDANTS ->
-                scope.organisationUnit()?.let { orgUnit ->
+                scope.orgUnits()?.map { orgUnit ->
                     organisationUnitCollectionRepository.byPath().like(orgUnit).blockingGetUids()
-                }
-            else ->
-                scope.organisationUnit()?.let { listOf(it) }
+                }?.flatten()
+            OrganisationUnitMode.SELECTED ->
+                scope.orgUnits()
         }
     }
 

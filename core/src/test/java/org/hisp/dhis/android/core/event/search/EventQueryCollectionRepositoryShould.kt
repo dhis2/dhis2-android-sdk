@@ -4,6 +4,8 @@ import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.mock
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.common.DatePeriodType
+import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.event.EventFilterCollectionRepository
 import org.junit.Before
 import org.junit.Test
@@ -33,6 +35,16 @@ class EventQueryCollectionRepositoryShould {
 
         assertThat(scope.eventDate()?.startDate()).isEqualTo(startDate)
         assertThat(scope.eventDate()?.endDate()).isEqualTo(endDate)
+    }
+
+    @Test
+    fun `Should create scope with relative event date`() {
+        val scope = queryRepository
+            .byEventDate().inPeriod(RelativePeriod.LAST_3_DAYS)
+            .scope
+
+        assertThat(scope.eventDate()?.period()).isEqualTo(RelativePeriod.LAST_3_DAYS)
+        assertThat(scope.eventDate()?.type()).isEqualTo(DatePeriodType.RELATIVE)
     }
 
     @Test

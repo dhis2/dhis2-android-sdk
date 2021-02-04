@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.tracker.importer.internal
 
+import org.hisp.dhis.android.core.event.internal.EventPayload
 import org.hisp.dhis.android.core.trackedentity.internal.ObjectWithUidWebResponse
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePayload
 import retrofit2.Call
@@ -38,10 +39,18 @@ import retrofit2.http.Path
 internal interface TrackerImporterService {
 
     @POST("tracker")
-    fun postTrackerImporter(
+    fun postTrackedEntityInstances(
         @Body trackedEntityInstances: TrackedEntityInstancePayload
+    ): Call<ObjectWithUidWebResponse>
+
+    @POST("tracker")
+    fun postEvents(
+        @Body events: EventPayload
     ): Call<ObjectWithUidWebResponse>
 
     @GET("tracker/jobs/{jobId}")
     fun getJob(@Path("jobId") jobId: String): Call<List<JobInfo>>
+
+    @GET("tracker/jobs/{jobId}/report")
+    fun getJobReport(@Path("jobId") jobId: String): Call<JobReport>
 }

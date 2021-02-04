@@ -142,7 +142,7 @@ class MetadataCall @Inject internal constructor(
     }
 
     private fun changeEncryptionIfRequired(): Completable {
-        return generalSettingCall.isDatabaseEncrypted
+        return generalSettingCall.isDatabaseEncrypted()
             .doOnSuccess { encrypt: Boolean ->
                 multiUserDatabaseManager.changeEncryptionIfRequired(credentialsSecureStore.get(), encrypt)
             }

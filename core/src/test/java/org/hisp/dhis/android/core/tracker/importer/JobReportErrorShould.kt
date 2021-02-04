@@ -25,44 +25,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.tracker.importer
 
-package org.hisp.dhis.android.core.dataset.internal;
+import com.google.common.truth.Truth.assertThat
+import java.io.IOException
+import java.text.ParseException
+import org.hisp.dhis.android.core.Inject
+import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.tracker.importer.internal.JobImportCount
+import org.hisp.dhis.android.core.tracker.importer.internal.JobReport
+import org.hisp.dhis.android.core.tracker.importer.internal.JobValidationError
+import org.junit.Test
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.dataset.Section;
+class JobReportErrorShould : BaseObjectShould("tracker/importer/jobreport-error.json"), ObjectShould {
 
-import java.util.HashMap;
-import java.util.Map;
+    @Test
+    @Throws(IOException::class, ParseException::class)
+    override fun map_from_json_string() {
+        val objectMapper = Inject.objectMapper()
+        val jobReport = objectMapper.readValue(jsonStream, JobReport::class.java)
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+        assertThat(jobReport.status).isEqualTo("ERROR")
+        assertThat(jobReport.stats).isEqualTo(JobImportCount(0, 0, 0, 1, 1))
 
-@Module
-public final class SectionEntityDIModule {
+        assertThat(jobReport.validationReport.errorReports.size).isEqualTo(1)
 
-    @Provides
-    @Reusable
-    IdentifiableObjectStore<Section> store(DatabaseAdapter databaseAdapter) {
-        return SectionStore.create(databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    Handler<Section> handler(SectionHandler impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    @SuppressWarnings("PMD.NonStaticInitializer")
-    Map<String, ChildrenAppender<Section>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return new HashMap<String, ChildrenAppender<Section>>() {{
-            put(SectionFields.GREYED_FIELDS, SectionGreyedFieldsChildrenAppender.create(databaseAdapter));
-            put(SectionFields.DATA_ELEMENTS, SectionDataElementChildrenAppender.create(databaseAdapter));
-        }};
+        val error = jobReport.validationReport.errorReports.first()
+        assertThat(error).isEqualTo(
+            JobValidationError(
+                "PXi7gfVIk1p",
+                "EVENT",
+                "E1033",
+                "Event: `PXi7gfVIk1p`, Enrollment value is NULL."
+            )
+        )
     }
 }

@@ -26,10 +26,42 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.period.internal;
+package org.hisp.dhis.android.core.tracker.importer.internal;
 
-import java.util.Calendar;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
-interface CalendarProvider {
-   Calendar getCalendar();
+import static org.hisp.dhis.android.core.common.IdentifiableColumns.UID;
+
+public final class TrackerJobTableInfo {
+
+    private TrackerJobTableInfo() {
+    }
+
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "TrackerJob";
+        }
+
+        @Override
+        public CoreColumns columns() {
+            return new Columns();
+        }
+    };
+
+    public static class Columns extends CoreColumns {
+
+        @Override
+        public String[] all() {
+            return CollectionsHelper.appendInNewArray(super.all(), UID);
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return new String[]{UID};
+        }
+    }
 }

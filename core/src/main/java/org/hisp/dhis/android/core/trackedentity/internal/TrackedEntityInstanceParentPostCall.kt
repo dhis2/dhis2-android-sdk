@@ -32,12 +32,12 @@ import io.reactivex.Observable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterPostCall
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackedEntityInstanceTrackerImporterPostCall
 
 @Reusable
 internal class TrackedEntityInstanceParentPostCall @Inject internal constructor(
     private val oldCall: OldTrackedEntityInstancePostCall,
-    private val trackerImporterCall: TrackerImporterPostCall
+    private val trackerImporterCall: TrackedEntityInstanceTrackerImporterPostCall
 ) {
 
     fun uploadTrackedEntityInstances(trackedEntityInstances: List<TrackedEntityInstance>): Observable<D2Progress> {

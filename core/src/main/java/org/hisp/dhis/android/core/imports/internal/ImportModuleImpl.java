@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.imports.internal;
 
 import org.hisp.dhis.android.core.imports.TrackerImportConflictCollectionRepository;
+import org.hisp.dhis.android.core.imports.TrackerJobManager;
 
 import javax.inject.Inject;
 
@@ -37,14 +38,22 @@ import dagger.Reusable;
 public final class ImportModuleImpl implements ImportModule {
 
     private final TrackerImportConflictCollectionRepository trackerImportConflicts;
+    private final TrackerJobManager trackerJobManager;
 
     @Inject
-    ImportModuleImpl(TrackerImportConflictCollectionRepository trackerImportConflicts) {
+    ImportModuleImpl(TrackerImportConflictCollectionRepository trackerImportConflicts,
+                     TrackerJobManager trackerJobManager) {
         this.trackerImportConflicts = trackerImportConflicts;
+        this.trackerJobManager = trackerJobManager;
     }
 
     @Override
     public TrackerImportConflictCollectionRepository trackerImportConflicts() {
         return trackerImportConflicts;
+    }
+
+    @Override
+    public TrackerJobManager jobManager() {
+        return trackerJobManager;
     }
 }

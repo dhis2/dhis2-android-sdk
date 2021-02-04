@@ -26,53 +26,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
+import android.content.ContentValues;
+import android.database.Cursor;
 
-import java.util.Collections;
-import java.util.Map;
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
-@AutoValue
-@JsonDeserialize(builder = AutoValue_DataSetSettings.Builder.class)
-public abstract class DataSetSettings {
+import org.hisp.dhis.android.core.settings.ProgramSettings;
 
-    @JsonProperty()
-    public abstract DataSetSetting globalSettings();
+public final class ProgramSyncSettingsColumnAdapter implements ColumnTypeAdapter<ProgramSettings> {
 
-    @JsonProperty()
-    public abstract Map<String, DataSetSetting> specificSettings();
-
-    public static Builder builder() {
-        return new AutoValue_DataSetSettings.Builder()
-                .globalSettings(DataSetSetting.builder().build())
-                .specificSettings(Collections.emptyMap());
+    @Override
+    public final ProgramSettings fromCursor(Cursor cursor, String columnName) {
+        return ProgramSettings.builder().build();
     }
 
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-        public abstract Builder globalSettings(DataSetSetting globalSettings);
-
-        public abstract Builder specificSettings(Map<String, DataSetSetting> specificSettings);
-
-        abstract DataSetSettings autoBuild();
-
-        //Auxiliary fields
-        abstract Map<String, DataSetSetting> specificSettings();
-
-        public DataSetSettings build() {
-
-            try {
-                specificSettings();
-            } catch (IllegalStateException e) {
-                specificSettings(Collections.emptyMap());
-            }
-
-            return autoBuild();
-        }
+    @Override
+    public final void toContentValues(ContentValues values, String columnName, ProgramSettings value) {
     }
 }

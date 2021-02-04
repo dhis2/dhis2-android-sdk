@@ -25,54 +25,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings.internal
 
-package org.hisp.dhis.android.core.settings;
+import android.database.Cursor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithoutUidStore
+import org.hisp.dhis.android.core.settings.SynchronizationSettingTableInfo
+import org.hisp.dhis.android.core.settings.SynchronizationSettings
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
-
-import java.util.Collections;
-import java.util.Map;
-
-@AutoValue
-@JsonDeserialize(builder = AutoValue_DataSetSettings.Builder.class)
-public abstract class DataSetSettings {
-
-    @JsonProperty()
-    public abstract DataSetSetting globalSettings();
-
-    @JsonProperty()
-    public abstract Map<String, DataSetSetting> specificSettings();
-
-    public static Builder builder() {
-        return new AutoValue_DataSetSettings.Builder()
-                .globalSettings(DataSetSetting.builder().build())
-                .specificSettings(Collections.emptyMap());
+internal object SynchronizationSettingStore {
+    private val BINDER = StatementBinder { o: SynchronizationSettings, w: StatementWrapper ->
+        w.bind(1, o.dataSync())
+        w.bind(2, o.metadataSync())
     }
 
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-        public abstract Builder globalSettings(DataSetSetting globalSettings);
+    private val WHERE_UPDATE_BINDER = WhereStatementBinder {
+        _: SynchronizationSettings, _: StatementWrapper ->
+    }
 
-        public abstract Builder specificSettings(Map<String, DataSetSetting> specificSettings);
+    private val WHERE_DELETE_BINDER = WhereStatementBinder {
+        _: SynchronizationSettings, _: StatementWrapper ->
+    }
 
-        abstract DataSetSettings autoBuild();
-
-        //Auxiliary fields
-        abstract Map<String, DataSetSetting> specificSettings();
-
-        public DataSetSettings build() {
-
-            try {
-                specificSettings();
-            } catch (IllegalStateException e) {
-                specificSettings(Collections.emptyMap());
-            }
-
-            return autoBuild();
-        }
+    fun create(databaseAdapter: DatabaseAdapter?): ObjectWithoutUidStore<SynchronizationSettings> {
+        return objectWithoutUidStore(databaseAdapter!!, SynchronizationSettingTableInfo.TABLE_INFO, BINDER,
+            WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER) { cursor: Cursor? -> SynchronizationSettings.create(cursor) }
     }
 }

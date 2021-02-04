@@ -63,7 +63,7 @@ class GeneralSettingsHandlerShould {
 
     @Test
     fun clean_database_if_empty_collection() {
-        generalSettingHandler!!.handleMany(emptyList())
+        generalSettingHandler.handleMany(emptyList())
         Mockito.verify(generalSettingStore).delete()
         Mockito.verify(generalSettingStore, never()).updateOrInsertWhere(generalSettings)
     }

@@ -27,37 +27,44 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
+import com.nhaarman.mockitokotlin2.*
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithoutUidStore
-import org.hisp.dhis.android.core.settings.GeneralSettingTableInfo
-import org.hisp.dhis.android.core.settings.GeneralSettings
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.settings.SynchronizationSettings
+import org.junit.Before
+import org.junit.Test
+import org.mockito.Mockito
 
-internal object GeneralSettingStore {
-    private val BINDER = StatementBinder { o: GeneralSettings, w: StatementWrapper ->
-        w.bind(1, o.encryptDB())
-        w.bind(2, o.lastUpdated())
-        w.bind(3, o.reservedValues())
-        w.bind(4, o.smsGateway())
-        w.bind(5, o.smsResultSender())
-        w.bind(6, o.matomoID())
-        w.bind(7, o.matomoURL())
+class SynchronizationSettingsHandlerShould {
+
+    private val synchronizationSettingStore: ObjectWithoutUidStore<SynchronizationSettings> = mock()
+
+    private val synchronizationSettings: SynchronizationSettings = mock()
+
+    private lateinit var synchronizationSettingsHandler: Handler<SynchronizationSettings>
+
+    private lateinit var synchronizationSettingsList: List<SynchronizationSettings>
+
+    @Before
+    @Throws(Exception::class)
+    fun setUp() {
+        synchronizationSettingsList = listOf(synchronizationSettings)
+        whenever(synchronizationSettingStore.updateOrInsertWhere(any())) doReturn HandleAction.Insert
+        synchronizationSettingsHandler = SynchronizationSettingHandler(synchronizationSettingStore)
     }
 
-    private val WHERE_UPDATE_BINDER = WhereStatementBinder {
-        _: GeneralSettings, _: StatementWrapper ->
+    @Test
+    fun clean_database_before_insert_collection() {
+        synchronizationSettingsHandler.handleMany(synchronizationSettingsList)
+        Mockito.verify(synchronizationSettingStore).delete()
+        Mockito.verify(synchronizationSettingStore).updateOrInsertWhere(synchronizationSettings)
     }
 
-    private val WHERE_DELETE_BINDER = WhereStatementBinder {
-        _: GeneralSettings, _: StatementWrapper ->
-    }
-
-    fun create(databaseAdapter: DatabaseAdapter?): ObjectWithoutUidStore<GeneralSettings> {
-        return objectWithoutUidStore(databaseAdapter!!, GeneralSettingTableInfo.TABLE_INFO, BINDER,
-            WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER) { cursor: Cursor? -> GeneralSettings.create(cursor) }
+    @Test
+    fun clean_database_if_empty_collection() {
+        synchronizationSettingsHandler.handleMany(emptyList())
+        Mockito.verify(synchronizationSettingStore).delete()
+        Mockito.verify(synchronizationSettingStore, never()).updateOrInsertWhere(synchronizationSettings)
     }
 }

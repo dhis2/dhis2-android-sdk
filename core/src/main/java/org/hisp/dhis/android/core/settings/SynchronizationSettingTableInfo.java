@@ -28,51 +28,38 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
-import java.util.Collections;
-import java.util.Map;
+public final class SynchronizationSettingTableInfo {
 
-@AutoValue
-@JsonDeserialize(builder = AutoValue_DataSetSettings.Builder.class)
-public abstract class DataSetSettings {
-
-    @JsonProperty()
-    public abstract DataSetSetting globalSettings();
-
-    @JsonProperty()
-    public abstract Map<String, DataSetSetting> specificSettings();
-
-    public static Builder builder() {
-        return new AutoValue_DataSetSettings.Builder()
-                .globalSettings(DataSetSetting.builder().build())
-                .specificSettings(Collections.emptyMap());
+    private SynchronizationSettingTableInfo() {
     }
 
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-        public abstract Builder globalSettings(DataSetSetting globalSettings);
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-        public abstract Builder specificSettings(Map<String, DataSetSetting> specificSettings);
+        @Override
+        public String name() {
+            return "SynchronizationSetting";
+        }
 
-        abstract DataSetSettings autoBuild();
+        @Override
+        public CoreColumns columns() {
+            return new Columns();
+        }
+    };
 
-        //Auxiliary fields
-        abstract Map<String, DataSetSetting> specificSettings();
+    public static class Columns extends CoreColumns {
+        public static final String DATA_SYNC = "dataSync";
+        public static final String METADATA_SYNC = "metadataSync";
 
-        public DataSetSettings build() {
-
-            try {
-                specificSettings();
-            } catch (IllegalStateException e) {
-                specificSettings(Collections.emptyMap());
-            }
-
-            return autoBuild();
+        @Override
+        public String[] all() {
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    DATA_SYNC,
+                    METADATA_SYNC
+            );
         }
     }
 }

@@ -26,33 +26,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings.internal;
+package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
 
-import org.hisp.dhis.android.core.settings.SettingModule;
+import android.content.ContentValues;
+import android.database.Cursor;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
-@Module(includes = {
-        GeneralSettingEntityDIModule.class,
-        DataSetSettingEntityDIModule.class,
-        ProgramSettingEntityDIModule.class,
-        UserSettingsEntityDIModule.class,
-        SystemSettingEntityDIModule.class
-})
-public final class SettingPackageDIModule {
+import org.hisp.dhis.android.core.settings.DataSetSettings;
 
-    @Provides
-    @Reusable
-    SettingService settingService(Retrofit retrofit) {
-        return retrofit.create(SettingService.class);
+public final class DataSetSyncSettingsColumnAdapter implements ColumnTypeAdapter<DataSetSettings> {
+
+    @Override
+    public final DataSetSettings fromCursor(Cursor cursor, String columnName) {
+        return DataSetSettings.builder().build();
     }
 
-    @Provides
-    @Reusable
-    SettingModule module(SettingModuleImpl impl) {
-        return impl;
+    @Override
+    public final void toContentValues(ContentValues values, String columnName, DataSetSettings value) {
     }
 }

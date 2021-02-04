@@ -25,54 +25,28 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings.internal
 
-package org.hisp.dhis.android.core.settings;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.settings.SynchronizationSettings
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
+@Module
+internal class SynchronizationSettingEntityDIModule {
 
-import java.util.Collections;
-import java.util.Map;
-
-@AutoValue
-@JsonDeserialize(builder = AutoValue_DataSetSettings.Builder.class)
-public abstract class DataSetSettings {
-
-    @JsonProperty()
-    public abstract DataSetSetting globalSettings();
-
-    @JsonProperty()
-    public abstract Map<String, DataSetSetting> specificSettings();
-
-    public static Builder builder() {
-        return new AutoValue_DataSetSettings.Builder()
-                .globalSettings(DataSetSetting.builder().build())
-                .specificSettings(Collections.emptyMap());
+    @Provides
+    @Reusable
+    fun store(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<SynchronizationSettings> {
+        return SynchronizationSettingStore.create(databaseAdapter)
     }
 
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-        public abstract Builder globalSettings(DataSetSetting globalSettings);
-
-        public abstract Builder specificSettings(Map<String, DataSetSetting> specificSettings);
-
-        abstract DataSetSettings autoBuild();
-
-        //Auxiliary fields
-        abstract Map<String, DataSetSetting> specificSettings();
-
-        public DataSetSettings build() {
-
-            try {
-                specificSettings();
-            } catch (IllegalStateException e) {
-                specificSettings(Collections.emptyMap());
-            }
-
-            return autoBuild();
-        }
+    @Provides
+    @Reusable
+    fun handler(store: ObjectWithoutUidStore<SynchronizationSettings>): Handler<SynchronizationSettings> {
+        return SynchronizationSettingHandler(store)
     }
 }

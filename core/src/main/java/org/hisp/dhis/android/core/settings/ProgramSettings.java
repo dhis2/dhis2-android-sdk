@@ -51,6 +51,7 @@ public abstract class ProgramSettings {
 
     public static Builder builder() {
         return new AutoValue_ProgramSettings.Builder()
+                .globalSettings(ProgramSetting.builder().build())
                 .specificSettings(Collections.emptyMap());
     }
 

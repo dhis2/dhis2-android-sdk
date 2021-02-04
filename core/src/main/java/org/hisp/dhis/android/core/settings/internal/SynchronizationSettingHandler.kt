@@ -25,54 +25,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings.internal
 
-package org.hisp.dhis.android.core.settings;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
+import org.hisp.dhis.android.core.settings.SynchronizationSettings
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
+internal class SynchronizationSettingHandler(store: ObjectWithoutUidStore<SynchronizationSettings>) :
+    ObjectWithoutUidHandlerImpl<SynchronizationSettings>(store) {
 
-import java.util.Collections;
-import java.util.Map;
-
-@AutoValue
-@JsonDeserialize(builder = AutoValue_DataSetSettings.Builder.class)
-public abstract class DataSetSettings {
-
-    @JsonProperty()
-    public abstract DataSetSetting globalSettings();
-
-    @JsonProperty()
-    public abstract Map<String, DataSetSetting> specificSettings();
-
-    public static Builder builder() {
-        return new AutoValue_DataSetSettings.Builder()
-                .globalSettings(DataSetSetting.builder().build())
-                .specificSettings(Collections.emptyMap());
-    }
-
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-        public abstract Builder globalSettings(DataSetSetting globalSettings);
-
-        public abstract Builder specificSettings(Map<String, DataSetSetting> specificSettings);
-
-        abstract DataSetSettings autoBuild();
-
-        //Auxiliary fields
-        abstract Map<String, DataSetSetting> specificSettings();
-
-        public DataSetSettings build() {
-
-            try {
-                specificSettings();
-            } catch (IllegalStateException e) {
-                specificSettings(Collections.emptyMap());
-            }
-
-            return autoBuild();
-        }
+    override fun beforeCollectionHandled(
+        oCollection: Collection<SynchronizationSettings>
+    ): Collection<SynchronizationSettings> {
+        store.delete()
+        return oCollection
     }
 }

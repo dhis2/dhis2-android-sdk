@@ -25,54 +25,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings.internal
 
-package org.hisp.dhis.android.core.settings;
+import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.settings.SynchronizationSettingsSamples
+import org.hisp.dhis.android.core.settings.SynchronizationSettingTableInfo
+import org.hisp.dhis.android.core.settings.SynchronizationSettings
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
-
-import java.util.Collections;
-import java.util.Map;
-
-@AutoValue
-@JsonDeserialize(builder = AutoValue_DataSetSettings.Builder.class)
-public abstract class DataSetSettings {
-
-    @JsonProperty()
-    public abstract DataSetSetting globalSettings();
-
-    @JsonProperty()
-    public abstract Map<String, DataSetSetting> specificSettings();
-
-    public static Builder builder() {
-        return new AutoValue_DataSetSettings.Builder()
-                .globalSettings(DataSetSetting.builder().build())
-                .specificSettings(Collections.emptyMap());
-    }
-
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-        public abstract Builder globalSettings(DataSetSetting globalSettings);
-
-        public abstract Builder specificSettings(Map<String, DataSetSetting> specificSettings);
-
-        abstract DataSetSettings autoBuild();
-
-        //Auxiliary fields
-        abstract Map<String, DataSetSetting> specificSettings();
-
-        public DataSetSettings build() {
-
-            try {
-                specificSettings();
-            } catch (IllegalStateException e) {
-                specificSettings(Collections.emptyMap());
-            }
-
-            return autoBuild();
-        }
+@RunWith(D2JunitRunner::class)
+class SynchronizationSettingsStoreIntegrationShould : ObjectStoreAbstractIntegrationShould<SynchronizationSettings>(
+    SynchronizationSettingStore.create(TestDatabaseAdapterFactory.get()),
+    SynchronizationSettingTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get()
+) {
+    override fun buildObject(): SynchronizationSettings {
+        return SynchronizationSettingsSamples.getSynchronizationSettings()
     }
 }

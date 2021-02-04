@@ -26,44 +26,36 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.testapp.legendset;
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+import org.hisp.dhis.android.core.legendset.DataElementLegendSetLink;
+import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLink;
+import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
+import org.mockito.Mock;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+public class DataElementLegendSetLinkPublicAccessShould
+        extends BasePublicAccessShould<DataElementLegendSetLink> {
 
-class BaseDatabaseOpenHelper {
+    @Mock
+    private DataElementLegendSetLink object;
 
-    static final int VERSION = 94;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    @Override
+    public DataElementLegendSetLink object() {
+        return object;
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
-        databaseAdapter.enableWriteAheadLogging();
+    @Override
+    public void has_public_create_method() {
+        DataElementLegendSetLink.create(null);
     }
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
+    @Override
+    public void has_public_builder_method() {
+        DataElementLegendSetLink.builder();
     }
 
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    @Override
+    public void has_public_to_builder_method() {
+        object().toBuilder();
     }
 }

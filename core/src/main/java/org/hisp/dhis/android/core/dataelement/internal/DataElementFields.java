@@ -39,11 +39,14 @@ import org.hisp.dhis.android.core.common.internal.AccessFields;
 import org.hisp.dhis.android.core.common.objectstyle.internal.ObjectStyleFields;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementTableInfo;
+import org.hisp.dhis.android.core.legendset.LegendSet;
+import org.hisp.dhis.android.core.legendset.internal.LegendSetFields;
 
 public final class DataElementFields {
 
     private final static String STYLE = "style";
     private final static String ACCESS = "access";
+    public static final String LEGEND_SETS = "legendSets";
 
     private static final FieldsHelper<DataElement> fh = new FieldsHelper<>();
 
@@ -68,7 +71,8 @@ public final class DataElementFields {
                     fh.<ObjectStyle>nestedField(STYLE)
                             .with(ObjectStyleFields.allFields),
                     fh.<Access>nestedField(ACCESS)
-                            .with(AccessFields.read)
+                            .with(AccessFields.read),
+                    fh.<LegendSet>nestedField(LEGEND_SETS).with(LegendSetFields.allFields)
             ).build();
 
     private DataElementFields() {

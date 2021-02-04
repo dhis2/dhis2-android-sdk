@@ -26,44 +26,40 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.legendset;
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.legendset.DataElementLegendSetLinkSamples;
+import org.hisp.dhis.android.core.data.legendset.ProgramIndicatorLegendSetLinkSamples;
+import org.hisp.dhis.android.core.legendset.internal.DataElementLegendSetLinkStore;
+import org.hisp.dhis.android.core.legendset.internal.ProgramIndicatorLegendSetLinkStore;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.runner.RunWith;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+@RunWith(D2JunitRunner.class)
+public class DataElementLegendSetLinkStoreIntegrationShould
+        extends LinkStoreAbstractIntegrationShould<DataElementLegendSetLink> {
 
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 94;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    public DataElementLegendSetLinkStoreIntegrationShould() {
+        super(DataElementLegendSetLinkStore.create(TestDatabaseAdapterFactory.get()),
+                DataElementLegendSetLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
-        databaseAdapter.enableWriteAheadLogging();
+    @Override
+    protected String addMasterUid() {
+        return DataElementLegendSetLinkSamples.getDataElementLegendSetLink().dataElement();
     }
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
+    @Override
+    protected DataElementLegendSetLink buildObject() {
+        return DataElementLegendSetLinkSamples.getDataElementLegendSetLink();
     }
 
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    @Override
+    protected DataElementLegendSetLink buildObjectWithOtherMasterUid() {
+        return buildObject().toBuilder()
+                .dataElement("new_data_element")
+                .build();
     }
 }

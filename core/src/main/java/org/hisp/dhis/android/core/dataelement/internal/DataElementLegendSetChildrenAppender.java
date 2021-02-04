@@ -25,45 +25,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-package org.hisp.dhis.android.core.arch.db.access.internal;
-
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+package org.hisp.dhis.android.core.dataelement.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkChildStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
+import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.legendset.DataElementLegendSetLinkTableInfo;
+import org.hisp.dhis.android.core.legendset.LegendSet;
 
-class BaseDatabaseOpenHelper {
+final class DataElementLegendSetChildrenAppender extends ChildrenAppender<DataElement> {
 
-    static final int VERSION = 94;
+    private final LinkChildStore<DataElement, LegendSet> linkChildStore;
 
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    private DataElementLegendSetChildrenAppender(
+            LinkChildStore<DataElement, LegendSet> linkChildStore) {
+        this.linkChildStore = linkChildStore;
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
-        databaseAdapter.enableWriteAheadLogging();
+    @Override
+    protected DataElement appendChildren(DataElement dataElement) {
+        DataElement.Builder builder = dataElement.toBuilder();
+        builder.legendSets(linkChildStore.getChildren(dataElement));
+        return builder.build();
     }
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    static ChildrenAppender<DataElement> create(DatabaseAdapter databaseAdapter) {
+        return new DataElementLegendSetChildrenAppender(
+                StoreFactory.linkChildStore(
+                        databaseAdapter,
+                        DataElementLegendSetLinkTableInfo.TABLE_INFO,
+                        DataElementLegendSetLinkTableInfo.CHILD_PROJECTION,
+                        LegendSet::create
+                )
+        );
     }
 }

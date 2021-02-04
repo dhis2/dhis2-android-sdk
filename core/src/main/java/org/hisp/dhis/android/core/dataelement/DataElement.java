@@ -32,6 +32,7 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
@@ -39,6 +40,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbValueTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreLegendSetListColumnAdapter;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
@@ -46,6 +48,9 @@ import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.core.legendset.LegendSet;
+
+import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_DataElement.Builder.class)
@@ -90,7 +95,13 @@ public abstract class DataElement extends BaseNameableObject
     }
 
     @Nullable
+    @JsonProperty()
+    @ColumnAdapter(IgnoreLegendSetListColumnAdapter.class)
+    public abstract List<LegendSet> legendSets();
+
+    @Nullable
     public abstract String fieldMask();
+
 
     public static Builder builder() {
         return new $$AutoValue_DataElement.Builder();
@@ -124,6 +135,8 @@ public abstract class DataElement extends BaseNameableObject
         public abstract DataElement.Builder optionSet(ObjectWithUid optionSet);
 
         public abstract DataElement.Builder categoryCombo(ObjectWithUid categoryCombo);
+
+        public abstract DataElement.Builder legendSets(List<LegendSet> legendSets);
 
         public abstract DataElement.Builder fieldMask(String fieldMask);
 

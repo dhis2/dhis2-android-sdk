@@ -41,7 +41,6 @@ import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
-import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.user.AuthenticatedUser;
@@ -84,9 +83,6 @@ public class LogInCallUnitShould extends BaseCallShould {
 
     @Mock
     private Handler<User> userHandler;
-
-    @Mock
-    private ResourceHandler resourceHandler;
 
     @Mock
     private ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
@@ -192,8 +188,10 @@ public class LogInCallUnitShould extends BaseCallShould {
 
     private Single<User> instantiateCall(String username, String password, String serverUrl) {
         return new LogInCall(databaseAdapter, apiCallExecutor,
-                userService, credentialsSecureStore, userHandler, resourceHandler, authenticatedUserStore,
-                systemInfoRepository, userStore, wipeModule, multiUserDatabaseManager, generalSettingCall, apiCallErrorCatcher).logIn(username, password, serverUrl);
+                userService, credentialsSecureStore, userHandler, authenticatedUserStore,
+                systemInfoRepository, userStore, wipeModule, apiCallErrorCatcher,
+                new LogInDatabaseManager(multiUserDatabaseManager, generalSettingCall),
+                new LogInExceptions(credentialsSecureStore)).logIn(username, password, serverUrl);
     }
 
     private OngoingStubbing<User> whenAPICall() throws D2Error {
@@ -379,12 +377,6 @@ public class LogInCallUnitShould extends BaseCallShould {
     }
 
     private void verifySuccessOffline() {
-        AuthenticatedUser authenticatedUserModel =
-                AuthenticatedUser.builder()
-                        .user(UID)
-                        .hash(md5(USERNAME, PASSWORD))
-                        .build();
-        verifyTransactionComplete();
-        verify(authenticatedUserStore).updateOrInsertWhere(authenticatedUserModel);
+        verify(credentialsSecureStore).set(Credentials.create(USERNAME, PASSWORD));
     }
 }

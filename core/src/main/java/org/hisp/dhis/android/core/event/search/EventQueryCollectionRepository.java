@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.event.search;
 
 import androidx.lifecycle.LiveData;
+import androidx.paging.DataSource;
 import androidx.paging.PagedList;
 
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepository;
@@ -254,6 +255,10 @@ public final class EventQueryCollectionRepository implements ReadOnlyWithUidColl
     @Override
     public LiveData<PagedList<Event>> getPaged(int pageSize) {
         return getEventCollectionRepository().getPaged(pageSize);
+    }
+
+    public DataSource<Event, Event> getDataSource() {
+        return getEventCollectionRepository().getDataSource();
     }
 
     @Override

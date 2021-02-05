@@ -58,7 +58,9 @@ internal class EventCollectionRepositoryAdapter @Inject constructor(
         scope.dataFilters().forEach {
             // TODO
         }
-        scope.events()?.let { repository = repository.byUid().`in`(it) }
+        if (!scope.events().isNullOrEmpty()) {
+            repository = repository.byUid().`in`(scope.events())
+        }
         scope.eventStatus()?.let { repository = repository.byStatus().`in`(it) }
         scope.eventDate()?.let { period ->
             dateFilterPeriodHelper.getStartDate(period)?.let { repository = repository.byEventDate().after(it) }

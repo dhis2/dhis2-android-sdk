@@ -26,44 +26,39 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.attribute;
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_AttributeValue.Builder.class)
+public abstract class AttributeValue {
 
-class BaseDatabaseOpenHelper {
+    @JsonProperty()
+    public abstract String value();
 
-    static final int VERSION = 95;
+    @JsonProperty()
+    public abstract Attribute attribute();
 
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    public static Builder builder() {
+        return new AutoValue_AttributeValue.Builder();
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
+    public abstract Builder toBuilder();
 
-        databaseAdapter.enableWriteAheadLogging();
-    }
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder {
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
+        @JsonProperty()
+        public abstract Builder value(String value);
 
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
+        @JsonProperty()
+        public abstract Builder attribute(Attribute attribute);
 
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+        public abstract AttributeValue build();
     }
 }

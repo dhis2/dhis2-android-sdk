@@ -40,6 +40,8 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbValueTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreAttributeValuesListAdapter;
+import org.hisp.dhis.android.core.attribute.AttributeValue;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreLegendSetListColumnAdapter;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
@@ -102,6 +104,10 @@ public abstract class DataElement extends BaseNameableObject
     @Nullable
     public abstract String fieldMask();
 
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(IgnoreAttributeValuesListAdapter.class)
+    public abstract List<AttributeValue> attributeValues();
 
     public static Builder builder() {
         return new $$AutoValue_DataElement.Builder();
@@ -139,6 +145,8 @@ public abstract class DataElement extends BaseNameableObject
         public abstract DataElement.Builder legendSets(List<LegendSet> legendSets);
 
         public abstract DataElement.Builder fieldMask(String fieldMask);
+
+        public abstract Builder attributeValues(List<AttributeValue> attributeValues);
 
         abstract DataElement autoBuild();
 

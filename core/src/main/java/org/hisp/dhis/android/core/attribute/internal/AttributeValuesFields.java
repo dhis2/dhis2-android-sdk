@@ -26,44 +26,25 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.attribute.internal;
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import org.hisp.dhis.android.core.attribute.Attribute;
+import org.hisp.dhis.android.core.attribute.AttributeValue;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+public final class AttributeValuesFields {
+    public static final String VALUE = "value";
+    public static final String ATTRIBUTE = "attribute";
 
-class BaseDatabaseOpenHelper {
+    private static final FieldsHelper<AttributeValue> fh = new FieldsHelper<>();
 
-    static final int VERSION = 95;
+    public static final Fields<AttributeValue> allFields = Fields.<AttributeValue>builder()
+            .fields(
+                    fh.<String>field(VALUE),
+                    fh.<Attribute>nestedField(ATTRIBUTE).with(AttributeFields.allFields)
+            ).build();
 
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
-    }
-
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    private AttributeValuesFields() {
     }
 }

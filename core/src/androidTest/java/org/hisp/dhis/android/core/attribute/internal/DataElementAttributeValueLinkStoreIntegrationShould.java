@@ -26,44 +26,39 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.attribute.internal;
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLink;
+import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLinkTableInfo;
+import org.hisp.dhis.android.core.data.attribute.DataElementAttributeValueLinkSamples;
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.runner.RunWith;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+@RunWith(D2JunitRunner.class)
+public class DataElementAttributeValueLinkStoreIntegrationShould
+        extends LinkStoreAbstractIntegrationShould<DataElementAttributeValueLink> {
 
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 95;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    public DataElementAttributeValueLinkStoreIntegrationShould() {
+        super(DataElementAttributeValueLinkStore.create(TestDatabaseAdapterFactory.get()),
+                DataElementAttributeValueLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
-        databaseAdapter.enableWriteAheadLogging();
+    @Override
+    protected String addMasterUid() {
+        return DataElementAttributeValueLinkSamples.getDataElementAttribute().dataElement();
     }
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
+    @Override
+    protected DataElementAttributeValueLink buildObject() {
+        return DataElementAttributeValueLinkSamples.getDataElementAttribute();
     }
 
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    @Override
+    protected DataElementAttributeValueLink buildObjectWithOtherMasterUid() {
+        return buildObject().toBuilder()
+                .dataElement("new_data_element")
+                .build();
     }
 }

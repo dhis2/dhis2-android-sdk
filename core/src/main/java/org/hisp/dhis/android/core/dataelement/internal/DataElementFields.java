@@ -31,6 +31,8 @@ package org.hisp.dhis.android.core.dataelement.internal;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import org.hisp.dhis.android.core.attribute.AttributeValue;
+import org.hisp.dhis.android.core.attribute.internal.AttributeValuesFields;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
@@ -47,6 +49,7 @@ public final class DataElementFields {
     private final static String STYLE = "style";
     private final static String ACCESS = "access";
     public static final String LEGEND_SETS = "legendSets";
+    private static final String ATTRIBUTE_VALUES = "attributeValues";
 
     private static final FieldsHelper<DataElement> fh = new FieldsHelper<>();
 
@@ -72,7 +75,8 @@ public final class DataElementFields {
                             .with(ObjectStyleFields.allFields),
                     fh.<Access>nestedField(ACCESS)
                             .with(AccessFields.read),
-                    fh.<LegendSet>nestedField(LEGEND_SETS).with(LegendSetFields.allFields)
+                    fh.<LegendSet>nestedField(LEGEND_SETS).with(LegendSetFields.allFields),
+                    fh.<AttributeValue>nestedField(ATTRIBUTE_VALUES).with(AttributeValuesFields.allFields)
             ).build();
 
     private DataElementFields() {

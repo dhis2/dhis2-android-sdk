@@ -47,6 +47,7 @@ import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.KeyValueStorageDIModule;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
+import org.hisp.dhis.android.core.attribute.internal.AttributePackageDIModule;
 import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.category.internal.CategoryPackageDIModule;
 import org.hisp.dhis.android.core.common.internal.CommonPackageDIModule;
@@ -103,6 +104,7 @@ import retrofit2.Retrofit;
 @Component(modules = {
         AppContextDIModule.class,
         APIClientDIModule.class,
+        AttributePackageDIModule.class,
         DatabaseDIModule.class,
         JSONSerializationDIModule.class,
         KeyValueStorageDIModule.class,

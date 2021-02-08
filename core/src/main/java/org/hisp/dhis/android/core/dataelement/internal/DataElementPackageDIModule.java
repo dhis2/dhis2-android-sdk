@@ -40,6 +40,7 @@ import retrofit2.Retrofit;
 @Module(includes = {
         DataElementEntityDIModule.class,
         DataElementOperandEntityDIModule.class,
+        DataElementAttributeValueEntityDIModule.class,
         DataElementLegendSetEntityDIModule.class
 })
 public final class DataElementPackageDIModule {

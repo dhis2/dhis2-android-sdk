@@ -26,44 +26,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
-
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+package org.hisp.dhis.android.core.attribute.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.attribute.Attribute;
 
-class BaseDatabaseOpenHelper {
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-    static final int VERSION = 95;
+@Module
+public final class AttributeEntityDIModule {
 
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    @Provides
+    @Reusable
+    IdentifiableObjectStore<Attribute> store(DatabaseAdapter databaseAdapter) {
+        return AttributeStore.create(databaseAdapter);
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    @Provides
+    @Reusable
+    Handler<Attribute> handler(IdentifiableObjectStore<Attribute> store) {
+        return new IdentifiableHandlerImpl<>(store);
     }
 }

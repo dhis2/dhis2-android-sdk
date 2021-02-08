@@ -26,44 +26,39 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.attribute.internal;
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+import org.hisp.dhis.android.core.attribute.ProgramAttributeValueLink;
+import org.hisp.dhis.android.core.attribute.ProgramAttributeValueLinkTableInfo;
+import org.hisp.dhis.android.core.data.attribute.ProgramAttributeValueLinkSamples;
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.runner.RunWith;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+@RunWith(D2JunitRunner.class)
+public class ProgramAttributeValueLinkStoreIntegrationShould
+        extends LinkStoreAbstractIntegrationShould<ProgramAttributeValueLink> {
 
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 95;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    public ProgramAttributeValueLinkStoreIntegrationShould() {
+        super(ProgramAttributeValueLinkStore.create(TestDatabaseAdapterFactory.get()),
+                ProgramAttributeValueLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
-        databaseAdapter.enableWriteAheadLogging();
+    @Override
+    protected String addMasterUid() {
+        return ProgramAttributeValueLinkSamples.getProgramAttribute().program();
     }
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
+    @Override
+    protected ProgramAttributeValueLink buildObject() {
+        return ProgramAttributeValueLinkSamples.getProgramAttribute();
     }
 
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    @Override
+    protected ProgramAttributeValueLink buildObjectWithOtherMasterUid() {
+        return buildObject().toBuilder()
+                .program("new_program")
+                .build();
     }
 }

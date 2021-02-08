@@ -26,44 +26,57 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.attribute;
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+public final class ProgramAttributeValueLinkTableInfo {
 
-class BaseDatabaseOpenHelper {
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    static final int VERSION = 95;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
-    }
-
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
+        @Override
+        public String name() {
+            return "ProgramAttributeValueLink";
         }
 
-        databaseAdapter.enableWriteAheadLogging();
+        @Override
+        public CoreColumns columns() {
+            return new Columns();
+        }
+    };
+
+    public static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
+            AttributeTableInfo.TABLE_INFO,
+            Columns.PROGRAM,
+            Columns.ATTRIBUTE);
+
+    private ProgramAttributeValueLinkTableInfo() {
     }
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
+    public static class Columns extends CoreColumns {
 
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
+        public static final String PROGRAM = "program";
+        public static final String ATTRIBUTE = "attribute";
+        public static final String VALUE = "value";
 
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+        @Override
+        public String[] all() {
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    PROGRAM,
+                    ATTRIBUTE,
+                    VALUE
+            );
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    PROGRAM,
+                    ATTRIBUTE
+            );
+        }
     }
 }

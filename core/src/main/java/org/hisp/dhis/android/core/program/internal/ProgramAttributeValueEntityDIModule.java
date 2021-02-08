@@ -26,44 +26,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
-
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl;
+import org.hisp.dhis.android.core.attribute.Attribute;
+import org.hisp.dhis.android.core.attribute.ProgramAttributeValueLink;
+import org.hisp.dhis.android.core.attribute.internal.ProgramAttributeValueLinkStore;
 
-class BaseDatabaseOpenHelper {
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-    static final int VERSION = 95;
+@Module
+public final class ProgramAttributeValueEntityDIModule {
 
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    @Provides
+    @Reusable
+    public LinkStore<ProgramAttributeValueLink> store(DatabaseAdapter databaseAdapter) {
+        return ProgramAttributeValueLinkStore.create(databaseAdapter);
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    @Provides
+    @Reusable
+    public LinkHandler<Attribute, ProgramAttributeValueLink> handler(
+            LinkStore<ProgramAttributeValueLink> store) {
+        return new LinkHandlerImpl<>(store);
     }
 }

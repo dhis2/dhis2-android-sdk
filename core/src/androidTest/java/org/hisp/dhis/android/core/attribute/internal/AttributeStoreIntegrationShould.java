@@ -26,44 +26,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.attribute.internal;
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+import org.hisp.dhis.android.core.attribute.Attribute;
+import org.hisp.dhis.android.core.attribute.AttributeTableInfo;
+import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.core.data.attribute.AttributeSamples;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.legendset.LegendSetSamples;
+import org.hisp.dhis.android.core.legendset.LegendSet;
+import org.hisp.dhis.android.core.legendset.LegendSetTableInfo;
+import org.hisp.dhis.android.core.legendset.internal.LegendSetStore;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.runner.RunWith;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+@RunWith(D2JunitRunner.class)
+public class AttributeStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Attribute> {
 
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 95;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    public AttributeStoreIntegrationShould() {
+        super(AttributeStore.create(TestDatabaseAdapterFactory.get()), AttributeTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
-        databaseAdapter.enableWriteAheadLogging();
+    @Override
+    protected Attribute buildObject() {
+        return AttributeSamples.getAttribute();
     }
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    @Override
+    protected Attribute buildObjectToUpdate() {
+        return AttributeSamples.getAttribute().toBuilder()
+                .valueType(ValueType.AGE)
+                .build();
     }
 }

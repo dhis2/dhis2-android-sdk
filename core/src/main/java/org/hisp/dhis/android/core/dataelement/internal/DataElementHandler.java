@@ -79,7 +79,7 @@ final class DataElementHandler extends IdentifiableHandlerImpl<DataElement> {
                     attribute -> DataElementAttributeValueLink.builder()
                             .dataElement(dataElement.uid())
                             .attribute(attribute.uid())
-                            .value(AttributeValueUtils.extractValue(dataElement.attributeValues(),attribute.uid()))
+                            .value(AttributeValueUtils.extractValue(dataElement.attributeValues(), attribute.uid()))
                             .build());
         }
 

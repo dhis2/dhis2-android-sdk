@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.attribute;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.NameableColumns;
-import org.hisp.dhis.android.core.common.NameableWithStyleColumns;
 
 public final class AttributeTableInfo {
 

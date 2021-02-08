@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.attribute;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -42,10 +44,9 @@ import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ValueType;
 
-import androidx.annotation.Nullable;
-
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_Attribute.Builder.class)
+@SuppressWarnings({"PMD.ExcessivePublicCount"})
 public abstract class Attribute extends BaseNameableObject implements CoreObject {
 
     @Nullable
@@ -201,7 +202,7 @@ public abstract class Attribute extends BaseNameableObject implements CoreObject
 
         public abstract Builder valueType(ValueType valueType);
 
-        public abstract Builder mandatory(java.lang.Boolean mandatory);
+        public abstract Builder mandatory(Boolean mandatory);
 
         public abstract Builder unique(Boolean unique);
 

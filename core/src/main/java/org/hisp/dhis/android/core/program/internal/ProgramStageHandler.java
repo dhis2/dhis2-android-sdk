@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.program.internal;
 
-import android.util.Log;
-
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleaner;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
@@ -38,7 +36,6 @@ import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.attribute.Attribute;
-import org.hisp.dhis.android.core.attribute.AttributeValue;
 import org.hisp.dhis.android.core.attribute.AttributeValueUtils;
 import org.hisp.dhis.android.core.attribute.ProgramStageAttributeValueLink;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
@@ -47,7 +44,6 @@ import org.hisp.dhis.android.core.program.ProgramStageDataElement;
 import org.hisp.dhis.android.core.program.ProgramStageInternalAccessor;
 import org.hisp.dhis.android.core.program.ProgramStageSection;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -111,7 +107,7 @@ final class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage> {
                     attribute -> ProgramStageAttributeValueLink.builder()
                             .programStage(programStage.uid())
                             .attribute(attribute.uid())
-                            .value(AttributeValueUtils.extractValue(programStage.attributeValues(),attribute.uid()))
+                            .value(AttributeValueUtils.extractValue(programStage.attributeValues(), attribute.uid()))
                             .build());
         }
     }

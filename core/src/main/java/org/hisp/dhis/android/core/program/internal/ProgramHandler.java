@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.attribute.Attribute;
 import org.hisp.dhis.android.core.attribute.AttributeValueUtils;
-import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLink;
 import org.hisp.dhis.android.core.attribute.ProgramAttributeValueLink;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
@@ -115,7 +114,7 @@ final class ProgramHandler extends IdentifiableHandlerImpl<Program> {
                     attribute -> ProgramAttributeValueLink.builder()
                             .program(program.uid())
                             .attribute(attribute.uid())
-                            .value(AttributeValueUtils.extractValue(program.attributeValues(),attribute.uid()))
+                            .value(AttributeValueUtils.extractValue(program.attributeValues(), attribute.uid()))
                             .build());
         }
 

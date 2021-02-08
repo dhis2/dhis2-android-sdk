@@ -3,7 +3,11 @@ package org.hisp.dhis.android.core.attribute;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AttributeValueUtils {
+public final class AttributeValueUtils {
+
+    private AttributeValueUtils() {
+    }
+
     public static List<Attribute> extractAttributes(List<AttributeValue> attributeValues) {
         List<Attribute> attributes = new ArrayList<>();
 

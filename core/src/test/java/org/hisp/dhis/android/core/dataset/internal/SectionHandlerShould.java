@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.dataset.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandler;
@@ -37,6 +38,7 @@ import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.hisp.dhis.android.core.dataset.Section;
 import org.hisp.dhis.android.core.dataset.SectionDataElementLink;
 import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLink;
+import org.hisp.dhis.android.core.indicator.Indicator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -71,6 +73,9 @@ public class SectionHandlerShould {
     private LinkHandler<DataElementOperand, SectionGreyedFieldsLink> sectionGreyedFieldsLinkHandler;
 
     @Mock
+    private LinkHandler<Indicator, SectionIndicatorLink> sectionIndicatorLinkHandler;
+
+    @Mock
     private LinkStore<SectionGreyedFieldsLink> sectionGreyedFieldsStore;
 
     @Mock
@@ -86,7 +91,7 @@ public class SectionHandlerShould {
         MockitoAnnotations.initMocks(this);
 
         sectionHandler = new SectionHandler(sectionStore, sectionDataElementLinkHandler,
-                greyedFieldsHandler, sectionGreyedFieldsLinkHandler, sectionGreyedFieldsStore);
+                greyedFieldsHandler, sectionGreyedFieldsLinkHandler, sectionIndicatorLinkHandler, sectionGreyedFieldsStore);
 
         when(section.uid()).thenReturn("section_uid");
 
@@ -96,6 +101,8 @@ public class SectionHandlerShould {
 
         List<DataElementOperand> greyedFields = new ArrayList<>();
         when(section.greyedFields()).thenReturn(greyedFields);
+
+        when(sectionStore.updateOrInsert(section)).thenReturn(HandleAction.Insert);
     }
 
     @Test

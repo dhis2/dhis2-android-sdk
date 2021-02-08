@@ -41,6 +41,7 @@ import retrofit2.Retrofit;
         DataElementEntityDIModule.class,
         DataElementOperandEntityDIModule.class,
         DataElementAttributeValueEntityDIModule.class
+        DataElementLegendSetEntityDIModule.class
 })
 public final class DataElementPackageDIModule {
 

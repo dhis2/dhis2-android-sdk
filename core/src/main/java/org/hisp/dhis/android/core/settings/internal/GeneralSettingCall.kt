@@ -66,14 +66,15 @@ internal class GeneralSettingCall @Inject constructor(
                 }
                 generalSettings
             }
-            .doOnError { throwable: Throwable? ->
+            .doOnError { throwable: Throwable ->
                 if (throwable is D2Error && throwable.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND) {
                     generalSettingHandler.handleMany(emptyList())
                 }
             }
     }
 
-    val isDatabaseEncrypted: Single<Boolean>
-        get() = apiCallExecutor.wrapSingle(androidSettingService.generalSettings, false)
+    fun isDatabaseEncrypted(): Single<Boolean> {
+        return apiCallExecutor.wrapSingle(androidSettingService.generalSettings, false)
             .map { obj: GeneralSettings -> obj.encryptDB() }
+    }
 }

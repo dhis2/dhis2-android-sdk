@@ -54,6 +54,11 @@ public class AbstractPeriodGeneratorShould {
             }
 
             @Override
+            protected void moveToStartOfCurrentYear() {
+
+            }
+
+            @Override
             protected void movePeriods(int number) {
 
             }
@@ -62,24 +67,20 @@ public class AbstractPeriodGeneratorShould {
 
     @Test
     public void generate_one_requested_period() {
-        List<Period> periods = generator.generatePeriods(1, 0);
+        List<Period> periods = generator.generatePeriods(-1, 0);
         assertThat(periods.size()).isEqualTo(1);
     }
 
     @Test
     public void generate_many_requested_period() {
-        List<Period> periods = generator.generatePeriods(5, 0);
+        List<Period> periods = generator.generatePeriods(-5, 0);
         assertThat(periods.size()).isEqualTo(5);
     }
 
     @Test
-    public void throw_exception_for_negative_periods() {
-        try {
-            generator.generatePeriods(-12, 0);
-            fail("Exception was expected, but nothing was thrown.");
-        } catch (RuntimeException e) {
-            // No operation.
-        }
+    public void empty_list_for_invalid_periods() {
+        List<Period> periods = generator.generatePeriods(-1, -5);
+        assertThat(periods).isEmpty();
     }
 
     @Test

@@ -56,6 +56,12 @@ final class BiWeeklyPeriodGenerator extends AbstractPeriodGenerator {
     }
 
     @Override
+    protected void moveToStartOfCurrentYear() {
+        moveToStartOfCurrentPeriod();
+        calendar.set(Calendar.WEEK_OF_YEAR, 1);
+    }
+
+    @Override
     protected void movePeriods(int number) {
         calendar.add(Calendar.WEEK_OF_YEAR, number * 2);
     }

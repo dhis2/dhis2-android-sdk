@@ -60,6 +60,15 @@ class NMonthlyPeriodGenerator extends AbstractPeriodGenerator {
     }
 
     @Override
+    protected void moveToStartOfCurrentYear() {
+        calendar.set(Calendar.DATE, 1);
+        if (startMonth >= 6) {
+            calendar.add(Calendar.YEAR, -1);
+        }
+        calendar.set(Calendar.MONTH, startMonth);
+    }
+
+    @Override
     protected void movePeriods(int number) {
         calendar.add(Calendar.MONTH, durationInMonths * number);
     }

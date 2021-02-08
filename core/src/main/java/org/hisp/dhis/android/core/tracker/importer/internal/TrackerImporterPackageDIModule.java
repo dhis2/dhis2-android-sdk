@@ -28,6 +28,10 @@
 
 package org.hisp.dhis.android.core.tracker.importer.internal;
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.StorableObjectWithUid;
+
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
@@ -40,5 +44,11 @@ public final class TrackerImporterPackageDIModule {
     @Reusable
     TrackerImporterService service(Retrofit retrofit) {
         return retrofit.create(TrackerImporterService.class);
+    }
+
+    @Provides
+    @Reusable
+    IdentifiableObjectStore<StorableObjectWithUid> store(DatabaseAdapter databaseAdapter) {
+        return TrackerJobStore.create(databaseAdapter);
     }
 }

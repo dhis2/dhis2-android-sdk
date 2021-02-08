@@ -37,20 +37,20 @@ import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.core.tracker.importer.internal.JobInfo
 import org.junit.Test
 
-class JobInfoShould : BaseObjectShould("tracker.importer/jobinfo.json"), ObjectShould {
+class JobInfoShould : BaseObjectShould("tracker/importer/jobinfo.json"), ObjectShould {
 
     @Test
     @Throws(IOException::class, ParseException::class)
     override fun map_from_json_string() {
         val objectMapper = Inject.objectMapper()
-        val program = objectMapper.readValue(jsonStream, JobInfo::class.java)
+        val jobInfo = objectMapper.readValue(jsonStream, JobInfo::class.java)
 
-        assertThat(program.id()).isEqualTo("id")
-        assertThat(program.uid()).isEqualTo("uid")
-        assertThat(program.level()).isEqualTo("INFO")
-        assertThat(program.category()).isEqualTo("TRACKER_IMPORT_JOB")
-        assertThat(program.time()).isEqualTo(BaseIdentifiableObject.DATE_FORMAT.parse("2021-01-25T12:09:18.571"))
-        assertThat(program.message()).isEqualTo("(android) Import:Done took 0.360910 sec.")
-        assertThat(program.completed()).isTrue()
+        assertThat(jobInfo.id).isEqualTo("id")
+        assertThat(jobInfo.uid).isEqualTo("uid")
+        assertThat(jobInfo.level).isEqualTo("INFO")
+        assertThat(jobInfo.category).isEqualTo("TRACKER_IMPORT_JOB")
+        assertThat(jobInfo.time).isEqualTo(BaseIdentifiableObject.DATE_FORMAT.parse("2021-01-25T12:09:18.571"))
+        assertThat(jobInfo.message).isEqualTo("(android) Import:Done took 0.360910 sec.")
+        assertThat(jobInfo.completed).isTrue()
     }
 }

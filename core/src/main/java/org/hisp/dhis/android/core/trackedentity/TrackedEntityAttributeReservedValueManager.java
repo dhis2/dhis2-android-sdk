@@ -84,6 +84,7 @@ public final class TrackedEntityAttributeReservedValueManager {
     private final LinkStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore;
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
     private final GeneralSettingObjectRepository generalSettingObjectRepository;
+    private final IdentifiableObjectStore<ReservedValueSetting> reservedValueSettingStore;
     private final D2CallExecutor executor;
     private final QueryCallFactory<TrackedEntityAttributeReservedValue,
             TrackedEntityAttributeReservedValueQuery> reservedValueQueryCallFactory;
@@ -99,6 +100,7 @@ public final class TrackedEntityAttributeReservedValueManager {
             LinkStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore,
             UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
             GeneralSettingObjectRepository generalSettingObjectRepository,
+            IdentifiableObjectStore<ReservedValueSetting> reservedValueSettingStore,
             D2CallExecutor executor,
             QueryCallFactory<TrackedEntityAttributeReservedValue,
                     TrackedEntityAttributeReservedValueQuery> reservedValueQueryCallFactory) {
@@ -109,6 +111,7 @@ public final class TrackedEntityAttributeReservedValueManager {
         this.organisationUnitProgramLinkStore = organisationUnitProgramLinkStore;
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
         this.generalSettingObjectRepository = generalSettingObjectRepository;
+        this.reservedValueSettingStore = reservedValueSettingStore;
         this.executor = executor;
         this.reservedValueQueryCallFactory = reservedValueQueryCallFactory;
     }
@@ -271,13 +274,16 @@ public final class TrackedEntityAttributeReservedValueManager {
                 List<OrganisationUnit> organisationUnits = getOrgUnitsLinkedToAttribute(trackedEntityAttribute.uid());
                 for (OrganisationUnit organisationUnit : organisationUnits) {
                     builder.organisationUnit(organisationUnit)
-                            .count(blockingCount(trackedEntityAttribute.uid(), organisationUnit.uid()));
+                            .count(blockingCount(trackedEntityAttribute.uid(), organisationUnit.uid()))
+                            .numberOfValuesToFillUp(getFillUpToValue(null, trackedEntityAttribute.uid()));
+                    reservedValueSummaries.add(builder.build());
                 }
             } else {
-                builder.count(blockingCount(trackedEntityAttribute.uid(), null));
+                builder.count(blockingCount(trackedEntityAttribute.uid(), null))
+                        .numberOfValuesToFillUp(getFillUpToValue(null, trackedEntityAttribute.uid()));
+                reservedValueSummaries.add(builder.build());
             }
 
-            reservedValueSummaries.add(builder.build());
         }
 
         return reservedValueSummaries;
@@ -314,7 +320,7 @@ public final class TrackedEntityAttributeReservedValueManager {
             // Using local date. It's not worth it to make a system info call
             store.deleteExpired(new Date());
 
-            Integer fillUpTo = getFillUpToValue(minNumberOfValuesToHave);
+            Integer fillUpTo = getFillUpToValue(minNumberOfValuesToHave, attribute);
 
             String pattern = trackedEntityAttributeStore.selectByUid(attribute).pattern();
             int remainingValues = store.count(
@@ -393,15 +399,22 @@ public final class TrackedEntityAttributeReservedValueManager {
         return pattern != null && pattern.contains("ORG_UNIT_CODE");
     }
 
-    private Integer getFillUpToValue(Integer minNumberOfValuesToHave) {
+    private Integer getFillUpToValue(Integer minNumberOfValuesToHave, String attribute) {
         if (minNumberOfValuesToHave == null) {
-            GeneralSettings generalSettings = generalSettingObjectRepository.blockingGet();
-            if (generalSettings == null || generalSettings.reservedValues() == null) {
-                return FILL_UP_TO;
+            ReservedValueSetting reservedValueSetting = reservedValueSettingStore.selectByUid(attribute);
+            if (reservedValueSetting == null || reservedValueSetting.numberOfValuesToReserve() == null) {
+                GeneralSettings generalSettings = generalSettingObjectRepository.blockingGet();
+                if (generalSettings == null || generalSettings.reservedValues() == null) {
+                    return FILL_UP_TO;
+                } else {
+                    return generalSettings.reservedValues();
+                }
             } else {
-                return generalSettings.reservedValues();
+                return reservedValueSetting.numberOfValuesToReserve();
             }
         } else {
+            this.reservedValueSettingStore.updateOrInsert(ReservedValueSetting.builder()
+                    .uid(attribute).numberOfValuesToReserve(minNumberOfValuesToHave).build());
             return minNumberOfValuesToHave;
         }
     }

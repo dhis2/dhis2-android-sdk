@@ -27,14 +27,6 @@
  */
 package org.hisp.dhis.android.core.dataelement.internal;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
@@ -43,6 +35,7 @@ import org.hisp.dhis.android.core.attribute.AttributeValue;
 import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLink;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.legendset.DataElementLegendSetLink;
 import org.hisp.dhis.android.core.legendset.LegendSet;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,6 +48,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 @RunWith(JUnit4.class)
 public class DataElementHandlerShould {
     @Mock
@@ -65,6 +66,12 @@ public class DataElementHandlerShould {
 
     @Mock
     private Handler<Attribute> attributeHandler;
+
+    @Mock
+    private LinkHandler<LegendSet, DataElementLegendSetLink> dataElementLegendSetLinkHandler;
+
+    @Mock
+    private Handler<LegendSet> legendSetHandler;
 
     @Mock
     private DataElement dataElement;
@@ -88,7 +95,8 @@ public class DataElementHandlerShould {
         MockitoAnnotations.initMocks(this);
 
         dataElementHandler = new DataElementHandler(
-                dataElementStore, attributeHandler,dataElementAttributeValueLinkHandler);
+                dataElementStore, attributeHandler,dataElementAttributeValueLinkHandler,
+                legendSetHandler, dataElementLegendSetLinkHandler);
 
         dataElements = new ArrayList<>();
         dataElements.add(dataElement);
@@ -114,6 +122,7 @@ public class DataElementHandlerShould {
         attributeValues.add(attValue);
 
         when(dataElement.attributeValues()).thenReturn(attributeValues);
+        when(dataElement.legendSets()).thenReturn(legendSets);
     }
 
     @Test
@@ -153,6 +162,12 @@ public class DataElementHandlerShould {
     public void call_attribute_handlers() {
         dataElementHandler.handleMany(dataElements);
         verify(attributeHandler).handleMany(eq(Arrays.asList(attribute)));
-        verify(dataElementAttributeValueLinkHandler).handleMany(eq(dataElement.uid()),eq(Arrays.asList(attribute)),any());
+        verify(dataElementAttributeValueLinkHandler).handleMany(eq(dataElement.uid()), eq(Arrays.asList(attribute)), any());
+    }
+
+    @Test
+    public void call_legend_set_handler() {
+        dataElementHandler.handleMany(dataElements);
+        verify(legendSetHandler).handleMany(eq(legendSets));
     }
 }

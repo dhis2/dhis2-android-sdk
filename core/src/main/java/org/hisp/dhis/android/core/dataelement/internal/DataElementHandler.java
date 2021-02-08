@@ -36,6 +36,8 @@ import org.hisp.dhis.android.core.attribute.Attribute;
 import org.hisp.dhis.android.core.attribute.AttributeValueUtils;
 import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLink;
 import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.legendset.DataElementLegendSetLink;
+import org.hisp.dhis.android.core.legendset.LegendSet;
 
 import java.util.List;
 
@@ -48,22 +50,27 @@ final class DataElementHandler extends IdentifiableHandlerImpl<DataElement> {
     private final Handler<Attribute> attributeHandler;
     private final LinkHandler<Attribute, DataElementAttributeValueLink>
             dataElementAttributeLinkHandler;
+    private final Handler<LegendSet> legendSetHandler;
+    private final LinkHandler<LegendSet, DataElementLegendSetLink> dataElementLegendSetLinkHandler;
 
     @Inject
     DataElementHandler(
             IdentifiableObjectStore<DataElement> programStageDataElementStore,
             Handler<Attribute> attributeHandler,
-            LinkHandler<Attribute, DataElementAttributeValueLink> dataElementAttributeLinkHandler
+            LinkHandler<Attribute, DataElementAttributeValueLink> dataElementAttributeLinkHandler,
+            Handler<LegendSet> legendSetHandler,
+            LinkHandler<LegendSet, DataElementLegendSetLink> dataElementLegendSetLinkHandler
     ) {
-
         super(programStageDataElementStore);
         this.attributeHandler = attributeHandler;
         this.dataElementAttributeLinkHandler = dataElementAttributeLinkHandler;
+        this.legendSetHandler = legendSetHandler;
+        this.dataElementLegendSetLinkHandler = dataElementLegendSetLinkHandler;
     }
 
     @Override
     protected void afterObjectHandled(DataElement dataElement, HandleAction action) {
-        if (dataElement.attributeValues() != null){
+        if (dataElement.attributeValues() != null) {
             final List<Attribute> attributes = AttributeValueUtils.extractAttributes(dataElement.attributeValues());
 
             attributeHandler.handleMany(attributes);
@@ -74,6 +81,14 @@ final class DataElementHandler extends IdentifiableHandlerImpl<DataElement> {
                             .attribute(attribute.uid())
                             .value(AttributeValueUtils.extractValue(dataElement.attributeValues(),attribute.uid()))
                             .build());
+        }
+
+        if (dataElement.legendSets() != null) {
+            legendSetHandler.handleMany(dataElement.legendSets());
+
+            dataElementLegendSetLinkHandler.handleMany(dataElement.uid(), dataElement.legendSets(),
+                    legendSet -> DataElementLegendSetLink.builder()
+                            .dataElement(dataElement.uid()).legendSet(legendSet.uid()).build());
         }
     }
 }

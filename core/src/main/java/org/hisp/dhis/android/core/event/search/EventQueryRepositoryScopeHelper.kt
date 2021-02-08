@@ -44,13 +44,13 @@ internal object EventQueryRepositoryScopeHelper {
         filter.programStage()?.let { builder.programStage(it) }
         filter.eventQueryCriteria()?.let { criteria ->
             criteria.followUp()?.let { builder.followUp(it) }
-            criteria.organisationUnit()?.let { builder.organisationUnit(it) }
-            criteria.ouMode()?.let { builder.organisationUnitMode(it) }
+            criteria.organisationUnit()?.let { builder.orgUnits(listOf(it)) }
+            criteria.ouMode()?.let { builder.orgUnitMode(it) }
             criteria.assignedUserMode()?.let { builder.assignedUserMode(it) }
             criteria.order()?.let { builder.order(parseOrderString(it)) }
             criteria.dataFilters()?.let { builder.dataFilters(it) }
             criteria.events()?.let { builder.events(it) }
-            criteria.eventStatus()?.let { builder.eventStatus(it) }
+            criteria.eventStatus()?.let { builder.eventStatus(listOf(it)) }
             criteria.eventDate()?.let { builder.eventDate(it) }
             criteria.dueDate()?.let { builder.dueDate(it) }
             criteria.lastUpdatedDate()?.let { builder.lastUpdatedDate(it) }

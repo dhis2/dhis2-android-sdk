@@ -58,7 +58,8 @@ public final class DataElementEntityDIModule {
 
     @Provides
     @Reusable
-    Map<String, ChildrenAppender<DataElement>> childrenAppenders() {
-        return Collections.emptyMap();
+    Map<String, ChildrenAppender<DataElement>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        return Collections.singletonMap(DataElementFields.LEGEND_SETS,
+                DataElementLegendSetChildrenAppender.create(databaseAdapter));
     }
 }

@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.event.search;
 
 import androidx.lifecycle.LiveData;
+import androidx.paging.DataSource;
 import androidx.paging.PagedList;
 
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepository;
@@ -40,6 +41,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.common.DateFilterPeriod;
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventCollectionRepository;
 import org.hisp.dhis.android.core.event.EventFilter;
@@ -88,8 +90,15 @@ public final class EventQueryCollectionRepository implements ReadOnlyWithUidColl
         });
     }
 
-    public EqFilterConnector<EventQueryCollectionRepository, EventStatus> byStatus() {
-        return connectorFactory.eqConnector(status -> scope.toBuilder().eventStatus(status).build());
+    /**
+     * Filter by event status.
+     * <br><b>IMPORTANT:</b> this filter accepts a list of event status, but only the first one will be used for
+     * the online query because the web API does not support querying by multiple status.
+     *
+     * @return Repository connector
+     */
+    public ListFilterConnector<EventQueryCollectionRepository, EventStatus> byStatus() {
+        return connectorFactory.listConnector(status -> scope.toBuilder().eventStatus(status).build());
     }
 
     public EqFilterConnector<EventQueryCollectionRepository, String> byProgram() {
@@ -100,12 +109,19 @@ public final class EventQueryCollectionRepository implements ReadOnlyWithUidColl
         return connectorFactory.eqConnector(programStage -> scope.toBuilder().programStage(programStage).build());
     }
 
-    public EqFilterConnector<EventQueryCollectionRepository, String> byOrganisationUnit() {
-        return connectorFactory.eqConnector(orgunit -> scope.toBuilder().organisationUnit(orgunit).build());
+    /**
+     * Filter by Event organisation units.
+     * <br><b>IMPORTANT:</b> this filter accepts a list of organisation units, but only the first one will be used for
+     * the online query because the web API does not support querying by multiple organisation units.
+     *
+     * @return Repository connector
+     */
+    public ListFilterConnector<EventQueryCollectionRepository, String> byOrgUnits() {
+        return connectorFactory.listConnector(orgunits -> scope.toBuilder().orgUnits(orgunits).build());
     }
 
-    public EqFilterConnector<EventQueryCollectionRepository, OrganisationUnitMode> byOrganisationUnitMode() {
-        return connectorFactory.eqConnector(mode -> scope.toBuilder().organisationUnitMode(mode).build());
+    public EqFilterConnector<EventQueryCollectionRepository, OrganisationUnitMode> byOrgUnitMode() {
+        return connectorFactory.eqConnector(mode -> scope.toBuilder().orgUnitMode(mode).build());
     }
 
     public PeriodFilterConnector<EventQueryCollectionRepository> byEventDate() {
@@ -146,6 +162,20 @@ public final class EventQueryCollectionRepository implements ReadOnlyWithUidColl
             EventFilter filter = eventFilterRepository.withEventDataFilters().uid(id).blockingGet();
             return EventQueryRepositoryScopeHelper.addEventFilter(scope, filter);
         });
+    }
+
+    /**
+     * Filter by sync status.
+     * <br><b>IMPORTANT:</b> using this filter forces <b>offlineOnly</b> mode.
+     *
+     * @return Repository connector
+     */
+    public ListFilterConnector<EventQueryCollectionRepository, State> byStates() {
+        return connectorFactory.listConnector(states -> scope.toBuilder().states(states).build());
+    }
+
+    public ListFilterConnector<EventQueryCollectionRepository, String> byAttributeOptionCombo() {
+        return connectorFactory.listConnector(aoc -> scope.toBuilder().attributeOptionCombos(aoc).build());
     }
 
     public EqFilterConnector<EventQueryCollectionRepository,
@@ -225,6 +255,10 @@ public final class EventQueryCollectionRepository implements ReadOnlyWithUidColl
     @Override
     public LiveData<PagedList<Event>> getPaged(int pageSize) {
         return getEventCollectionRepository().getPaged(pageSize);
+    }
+
+    public DataSource<Event, Event> getDataSource() {
+        return getEventCollectionRepository().getDataSource();
     }
 
     @Override

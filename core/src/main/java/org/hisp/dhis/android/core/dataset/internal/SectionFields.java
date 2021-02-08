@@ -39,8 +39,7 @@ public final class SectionFields {
 
     public final static String DATA_ELEMENTS = "dataElements";
     public final static String GREYED_FIELDS = "greyedFields";
-
-
+    public final static String INDICATORS = "indicators";
 
     private static final FieldsHelper<Section> fh = new FieldsHelper<>();
 
@@ -53,6 +52,7 @@ public final class SectionFields {
                     fh.<Boolean>field(Columns.SHOW_ROW_TOTALS),
                     fh.<Boolean>field(Columns.SHOW_COLUMN_TOTALS),
                     fh.nestedFieldWithUid(DATA_ELEMENTS),
+                    fh.nestedFieldWithUid(INDICATORS),
                     fh.<DataElementOperand>nestedField(GREYED_FIELDS)
                             .with(DataElementOperandFields.allFields)
             ).build();

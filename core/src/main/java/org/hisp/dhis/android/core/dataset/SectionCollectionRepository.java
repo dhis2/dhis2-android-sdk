@@ -82,4 +82,8 @@ public final class SectionCollectionRepository
     public SectionCollectionRepository withGreyedFields() {
         return cf.withChild(SectionFields.GREYED_FIELDS);
     }
+
+    public SectionCollectionRepository withIndicators() {
+        return cf.withChild(SectionFields.INDICATORS);
+    }
 }

@@ -28,12 +28,6 @@
 
 package org.hisp.dhis.android.core;
 
-import android.content.Context;
-
-import androidx.test.platform.app.InstrumentationRegistry;
-
-import com.facebook.stetho.Stetho;
-
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
 import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
@@ -50,8 +44,6 @@ public abstract class BaseRealIntegrationTest {
 
     @Before
     public void setUp() throws IOException {
-        Context context = InstrumentationRegistry.getInstrumentation().getContext();
-        Stetho.initializeWithDefaults(context);
     }
 
     protected GenericCallData getGenericCallData(D2 d2) {

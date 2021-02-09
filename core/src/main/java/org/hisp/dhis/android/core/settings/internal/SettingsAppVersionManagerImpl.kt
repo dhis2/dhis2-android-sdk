@@ -27,30 +27,19 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.settings.DataSetSetting
-import org.hisp.dhis.android.core.settings.ProgramSetting
-import org.hisp.dhis.android.core.settings.SynchronizationSettings
+import javax.inject.Inject
+import javax.inject.Singleton
 
-@Module
-internal class SynchronizationSettingEntityDIModule {
+@Singleton
+internal class SettingsAppVersionManagerImpl @Inject constructor() : SettingsAppVersionManager {
 
-    @Provides
-    @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<SynchronizationSettings> {
-        return SynchronizationSettingStore.create(databaseAdapter)
+    private var version: SettingsAppVersion? = null
+
+    override fun setVersion(version: SettingsAppVersion) {
+        this.version = version
     }
 
-    @Provides
-    @Reusable
-    fun handler(store: ObjectWithoutUidStore<SynchronizationSettings>,
-                dataSetSettingHandler: Handler<DataSetSetting>,
-                programSettingHandler: Handler<ProgramSetting>): Handler<SynchronizationSettings> {
-        return SynchronizationSettingHandler(store, dataSetSettingHandler, programSettingHandler)
+    override fun getVersion(): SettingsAppVersion {
+        return version ?: throw RuntimeException("TODO Ensure version is always present")
     }
 }

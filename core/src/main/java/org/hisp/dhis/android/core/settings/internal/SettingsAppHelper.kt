@@ -27,30 +27,18 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.settings.DataSetSetting
+import org.hisp.dhis.android.core.settings.DataSetSettings
 import org.hisp.dhis.android.core.settings.ProgramSetting
-import org.hisp.dhis.android.core.settings.SynchronizationSettings
+import org.hisp.dhis.android.core.settings.ProgramSettings
 
-@Module
-internal class SynchronizationSettingEntityDIModule {
+internal object SettingsAppHelper {
 
-    @Provides
-    @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<SynchronizationSettings> {
-        return SynchronizationSettingStore.create(databaseAdapter)
+    fun getDataSetSettingList(dataSetSettings: DataSetSettings): List<DataSetSetting> {
+        return dataSetSettings.specificSettings().values + dataSetSettings.globalSettings()
     }
 
-    @Provides
-    @Reusable
-    fun handler(store: ObjectWithoutUidStore<SynchronizationSettings>,
-                dataSetSettingHandler: Handler<DataSetSetting>,
-                programSettingHandler: Handler<ProgramSetting>): Handler<SynchronizationSettings> {
-        return SynchronizationSettingHandler(store, dataSetSettingHandler, programSettingHandler)
+    fun getProgramSettingList(programSettings: ProgramSettings): List<ProgramSetting> {
+        return (programSettings.specificSettings().values + programSettings.globalSettings()).filterNotNull()
     }
 }

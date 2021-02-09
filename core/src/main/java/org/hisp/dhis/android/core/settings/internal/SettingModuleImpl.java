@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.settings.DataSetSettingsObjectRepository;
 import org.hisp.dhis.android.core.settings.GeneralSettingObjectRepository;
 import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository;
 import org.hisp.dhis.android.core.settings.SettingModule;
+import org.hisp.dhis.android.core.settings.SynchronizationSettingObjectRepository;
 import org.hisp.dhis.android.core.settings.SystemSettingCollectionRepository;
 import org.hisp.dhis.android.core.settings.UserSettingsObjectRepository;
 
@@ -47,6 +48,7 @@ public final class SettingModuleImpl implements SettingModule {
     private final GeneralSettingObjectRepository generalSetting;
     private final DataSetSettingsObjectRepository dataSetSetting;
     private final ProgramSettingsObjectRepository programSetting;
+    private final SynchronizationSettingObjectRepository synchronizationSetting;
     private final UserSettingsObjectRepository userSettings;
 
     @Inject
@@ -54,11 +56,13 @@ public final class SettingModuleImpl implements SettingModule {
                       GeneralSettingObjectRepository generalSetting,
                       DataSetSettingsObjectRepository dataSetSetting,
                       ProgramSettingsObjectRepository programSetting,
+                      SynchronizationSettingObjectRepository synchronizationSetting,
                       UserSettingsObjectRepository userSettings) {
         this.systemSetting = systemSettingRepository;
         this.generalSetting = generalSetting;
         this.dataSetSetting = dataSetSetting;
         this.programSetting = programSetting;
+        this.synchronizationSetting = synchronizationSetting;
         this.userSettings = userSettings;
     }
 
@@ -80,6 +84,11 @@ public final class SettingModuleImpl implements SettingModule {
     @Override
     public ProgramSettingsObjectRepository programSetting() {
         return programSetting;
+    }
+
+    @Override
+    public SynchronizationSettingObjectRepository synchronizationSettings() {
+        return synchronizationSetting;
     }
 
     @Override

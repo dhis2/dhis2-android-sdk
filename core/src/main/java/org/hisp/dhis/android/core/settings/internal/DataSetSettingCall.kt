@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.settings.internal
 import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Single
-import java.net.HttpURLConnection
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
@@ -39,6 +37,8 @@ import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.settings.DataSetSetting
 import org.hisp.dhis.android.core.settings.DataSetSettings
+import java.net.HttpURLConnection
+import javax.inject.Inject
 
 @Reusable
 internal class DataSetSettingCall @Inject constructor(
@@ -49,32 +49,33 @@ internal class DataSetSettingCall @Inject constructor(
 ) : CompletableProvider {
 
     override fun getCompletable(storeError: Boolean): Completable {
-        return Completable
-            .fromSingle(downloadAndPersist(storeError))
-            .onErrorComplete()
+        return download(storeError).ignoreElement()
     }
 
-    private fun downloadAndPersist(storeError: Boolean): Single<DataSetSettings> {
+    private fun download(storeError: Boolean): Single<DataSetSettings> {
+        return fetch(storeError)
+            .doOnSuccess { dataSetSettings: DataSetSettings -> process(dataSetSettings) }
+    }
+
+    fun fetch(storeError: Boolean): Single<DataSetSettings> {
         return apiCallExecutor.wrapSingle(androidSettingService.dataSetSettings, storeError)
-            .map { dataSetSettings: DataSetSettings ->
-                val transaction = databaseAdapter.beginNewTransaction()
-                try {
-                    val dataSetSettingList = getDataSetSettingList(dataSetSettings)
-                    dataSetSettingHandler.handleMany(dataSetSettingList)
-                    transaction.setSuccessful()
-                } finally {
-                    transaction.end()
-                }
-                dataSetSettings
-            }
-            .doOnError { throwable: Throwable? ->
+            .onErrorReturn { throwable: Throwable ->
                 if (throwable is D2Error && throwable.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND) {
-                    dataSetSettingHandler.handleMany(emptyList())
+                    return@onErrorReturn DataSetSettings.builder().build()
+                } else {
+                    throw throwable
                 }
             }
     }
 
-    private fun getDataSetSettingList(dataSetSettings: DataSetSettings): List<DataSetSetting> {
-        return dataSetSettings.specificSettings().values + dataSetSettings.globalSettings()
+    fun process(item: DataSetSettings) {
+        val transaction = databaseAdapter.beginNewTransaction()
+        try {
+            val dataSetSettingList = SettingsAppHelper.getDataSetSettingList(item)
+            dataSetSettingHandler.handleMany(dataSetSettingList)
+            transaction.setSuccessful()
+        } finally {
+            transaction.end()
+        }
     }
 }

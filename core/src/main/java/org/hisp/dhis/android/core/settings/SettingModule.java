@@ -37,5 +37,7 @@ public interface SettingModule {
     
     ProgramSettingsObjectRepository programSetting();
 
+    SynchronizationSettingObjectRepository synchronizationSettings();
+
     UserSettingsObjectRepository userSettings();
 }

@@ -25,11 +25,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings.internal
 
-package org.hisp.dhis.android.core.arch.call.factories.internal;
+import dagger.Reusable
+import io.reactivex.Completable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.systeminfo.SystemInfo
+import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoStore
+import javax.inject.Inject
 
-import io.reactivex.Single;
+@Reusable
+internal class SettingsAppVersionCall @Inject constructor(
+    private val appVersionManager: SettingsAppVersionManager,
+    private val systemInfoStore: ObjectWithoutUidStore<SystemInfo>
+): CompletableProvider {
 
-public interface ObjectCall<P> {
-    Single<P> download();
+    override fun getCompletable(storeError: Boolean): Completable {
+
+        return Completable.fromCallable {
+            val context = systemInfoStore.selectFirst()?.contextPath()
+
+            val version = if (context == "https://play.dhis2.org/android-dev") {
+                SettingsAppVersion.V2_0
+            } else {
+                SettingsAppVersion.V1_1
+            }
+
+            appVersionManager.setVersion(version)
+        }
+    }
 }

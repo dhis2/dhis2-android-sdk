@@ -35,44 +35,64 @@ import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.settings.ProgramSetting
-import org.hisp.dhis.android.core.settings.ProgramSettings
+import org.hisp.dhis.android.core.settings.SynchronizationSettings
 import java.net.HttpURLConnection
 import javax.inject.Inject
 
 @Reusable
-internal class ProgramSettingCall @Inject constructor(
+internal class SynchronizationSettingCall @Inject constructor(
     private val databaseAdapter: DatabaseAdapter,
-    private val programSettingHandler: Handler<ProgramSetting>,
+    private val synchronizationSettingHandler: Handler<SynchronizationSettings>,
     private val androidSettingService: SettingService,
-    private val apiCallExecutor: RxAPICallExecutor
+    private val apiCallExecutor: RxAPICallExecutor,
+    private val generalSettingCall: GeneralSettingCall,
+    private val dataSetSettingCall: DataSetSettingCall,
+    private val programSettingCall: ProgramSettingCall,
+    private val appVersionManager: SettingsAppVersionManager
 ) : CompletableProvider {
 
     override fun getCompletable(storeError: Boolean): Completable {
         return download(storeError).ignoreElement()
     }
 
-    fun download(storeError: Boolean): Single<ProgramSettings> {
+    fun download(storeError: Boolean): Single<SynchronizationSettings> {
         return fetch(storeError)
-            .doOnSuccess { programSettings: ProgramSettings -> process(programSettings) }
+            .doOnSuccess { syncSettings: SynchronizationSettings -> process(syncSettings) }
     }
 
-    fun fetch(storeError: Boolean): Single<ProgramSettings> {
-        return apiCallExecutor.wrapSingle(androidSettingService.programSettings, storeError)
-            .onErrorReturn { throwable: Throwable ->
-                if (throwable is D2Error && throwable.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND) {
-                    return@onErrorReturn ProgramSettings.builder().build()
-                } else {
-                    throw throwable
-                }
+    fun fetch(storeError: Boolean): Single<SynchronizationSettings> {
+        return when (appVersionManager.getVersion()) {
+            SettingsAppVersion.V1_1 -> {
+                val generalSettings = generalSettingCall.fetch(storeError, acceptCache = true).blockingGet()
+                val dataSetSettings = dataSetSettingCall.fetch(storeError).blockingGet()
+                val programSettings = programSettingCall.fetch(storeError).blockingGet()
+
+                val syncSettings = SynchronizationSettings.builder()
+                    .dataSync(generalSettings.dataSync())
+                    .metadataSync(generalSettings.metadataSync())
+                    .dataSetSettings(dataSetSettings)
+                    .programSettings(programSettings)
+                    .build()
+
+                Single.just(syncSettings)
             }
+            SettingsAppVersion.V2_0 -> {
+                apiCallExecutor.wrapSingle(androidSettingService.synchronizationSettings, storeError)
+            }
+        }.onErrorReturn { throwable: Throwable ->
+            if (throwable is D2Error && throwable.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND) {
+                SynchronizationSettings.builder().build()
+            } else {
+                throw throwable
+            }
+        }
     }
 
-    fun process(item: ProgramSettings) {
+    fun process(item: SynchronizationSettings) {
         val transaction = databaseAdapter.beginNewTransaction()
         try {
-            val programSettingList = SettingsAppHelper.getProgramSettingList(item)
-            programSettingHandler.handleMany(programSettingList)
+            val syncSettingsList = listOf(item)
+            synchronizationSettingHandler.handleMany(syncSettingsList)
             transaction.setSuccessful()
         } finally {
             transaction.end()

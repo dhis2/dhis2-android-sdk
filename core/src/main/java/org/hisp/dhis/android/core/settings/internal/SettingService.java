@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
 import org.hisp.dhis.android.core.settings.DataSetSettings;
 import org.hisp.dhis.android.core.settings.GeneralSettings;
 import org.hisp.dhis.android.core.settings.ProgramSettings;
+import org.hisp.dhis.android.core.settings.SynchronizationSettings;
 import org.hisp.dhis.android.core.settings.SystemSettings;
 import org.hisp.dhis.android.core.settings.UserSettings;
 
@@ -58,4 +59,7 @@ interface SettingService {
 
     @GET(ANDROID_APP_NAMESPACE + "/" + "program_settings")
     Single<ProgramSettings> getProgramSettings();
+
+    @GET(ANDROID_APP_NAMESPACE + "/" + "synchronization")
+    Single<SynchronizationSettings> getSynchronizationSettings();
 }

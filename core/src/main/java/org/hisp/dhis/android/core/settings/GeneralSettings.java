@@ -50,7 +50,7 @@ import java.util.Date;
 public abstract class GeneralSettings implements CoreObject {
 
     /**
-     * @deprecated Use {@link ...}
+     * @deprecated Use {@link SynchronizationSettings#dataSync()} instead.
      */
     @Deprecated
     @Nullable
@@ -64,7 +64,7 @@ public abstract class GeneralSettings implements CoreObject {
     public abstract Date lastUpdated();
 
     /**
-     * @deprecated Use {@link ...}
+     * @deprecated Use {@link SynchronizationSettings#metadataSync()} instead.
      */
     @Deprecated
     @Nullable

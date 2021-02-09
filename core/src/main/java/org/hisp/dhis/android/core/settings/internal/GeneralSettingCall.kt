@@ -30,14 +30,14 @@ package org.hisp.dhis.android.core.settings.internal
 import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Single
-import java.net.HttpURLConnection
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.settings.GeneralSettings
+import java.net.HttpURLConnection
+import javax.inject.Inject
 
 @Reusable
 internal class GeneralSettingCall @Inject constructor(
@@ -47,30 +47,40 @@ internal class GeneralSettingCall @Inject constructor(
     private val apiCallExecutor: RxAPICallExecutor
 ) : CompletableProvider {
 
+    private var cachedValue: GeneralSettings? = null
+
     override fun getCompletable(storeError: Boolean): Completable {
-        return Completable
-            .fromSingle(downloadAndPersist(storeError))
-            .onErrorComplete()
+        return download(storeError).ignoreElement()
     }
 
-    private fun downloadAndPersist(storeError: Boolean): Single<GeneralSettings> {
-        return apiCallExecutor.wrapSingle(androidSettingService.generalSettings, storeError)
-            .map { generalSettings: GeneralSettings ->
-                val transaction = databaseAdapter.beginNewTransaction()
-                try {
-                    val generalSettingsList = listOf(generalSettings)
-                    generalSettingHandler.handleMany(generalSettingsList)
-                    transaction.setSuccessful()
-                } finally {
-                    transaction.end()
-                }
-                generalSettings
-            }
-            .doOnError { throwable: Throwable ->
+    fun download(storeError: Boolean): Single<GeneralSettings> {
+        return fetch(storeError)
+            .doOnSuccess { generalSettings: GeneralSettings -> process(generalSettings) }
+    }
+
+    fun fetch(storeError: Boolean, acceptCache: Boolean = false): Single<GeneralSettings> {
+        return cachedValue?.let {
+            if (acceptCache) Single.just(it) else null
+        } ?: apiCallExecutor.wrapSingle(androidSettingService.generalSettings, storeError)
+            .onErrorReturn { throwable: Throwable ->
                 if (throwable is D2Error && throwable.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND) {
-                    generalSettingHandler.handleMany(emptyList())
+                    return@onErrorReturn GeneralSettings.builder().build()
+                } else {
+                    throw throwable
                 }
             }
+    }
+
+    fun process(item: GeneralSettings) {
+        cachedValue = item
+        val transaction = databaseAdapter.beginNewTransaction()
+        try {
+            val generalSettingsList = listOf(item)
+            generalSettingHandler.handleMany(generalSettingsList)
+            transaction.setSuccessful()
+        } finally {
+            transaction.end()
+        }
     }
 
     fun isDatabaseEncrypted(): Single<Boolean> {

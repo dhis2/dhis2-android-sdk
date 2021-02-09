@@ -54,4 +54,10 @@ internal class SettingPackageDIModule {
     fun module(impl: SettingModuleImpl): SettingModule {
         return impl
     }
+
+    @Provides
+    @Reusable
+    fun versionManager(impl: SettingsAppVersionManagerImpl): SettingsAppVersionManager {
+        return impl
+    }
 }

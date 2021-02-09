@@ -44,23 +44,37 @@ public class GeneralSettingObjectRepository
         implements ReadOnlyWithDownloadObjectRepository<GeneralSettings> {
 
     private final ObjectWithoutUidStore<GeneralSettings> store;
+    private final ObjectWithoutUidStore<SynchronizationSettings> syncStore;
 
     @Inject
     GeneralSettingObjectRepository(ObjectWithoutUidStore<GeneralSettings> store,
+                                   ObjectWithoutUidStore<SynchronizationSettings> syncStore,
                                    GeneralSettingCall generalSettingCall) {
         super(generalSettingCall);
         this.store = store;
+        this.syncStore = syncStore;
     }
 
     @Override
     public GeneralSettings blockingGet() {
-        List<GeneralSettings> settings = store.selectAll();
+        List<GeneralSettings> generalSettings = store.selectAll();
+        List<SynchronizationSettings> syncSettings = syncStore.selectAll();
 
-        if (settings.isEmpty()) {
+        if (generalSettings.isEmpty() && syncSettings.isEmpty()) {
             return null;
         } else {
-            // TODO Read legacy properties from synchronization repository
-            return settings.get(0);
+            GeneralSettings generalSetting = generalSettings.isEmpty() ?
+                    GeneralSettings.builder().build() :
+                    generalSettings.get(0);
+
+            SynchronizationSettings syncSetting = syncSettings.isEmpty() ?
+                    SynchronizationSettings.builder().build() :
+                    syncSettings.get(0);
+
+            return generalSetting.toBuilder()
+                    .dataSync(syncSetting.dataSync())
+                    .metadataSync(syncSetting.metadataSync())
+                    .build();
         }
     }
 }

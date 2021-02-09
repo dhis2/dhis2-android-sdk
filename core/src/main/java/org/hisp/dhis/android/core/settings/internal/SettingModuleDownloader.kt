@@ -27,30 +27,33 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import dagger.Module
-import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.settings.DataSetSetting
-import org.hisp.dhis.android.core.settings.ProgramSetting
-import org.hisp.dhis.android.core.settings.SynchronizationSettings
+import io.reactivex.Completable
+import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
+import javax.inject.Inject
 
-@Module
-internal class SynchronizationSettingEntityDIModule {
+@Reusable
+internal class SettingModuleDownloader @Inject constructor(
+    private val systemSettingCall: SystemSettingCall,
+    private val generalSettingCall: GeneralSettingCall,
+    private val synchronizationSettingCall: SynchronizationSettingCall,
+    private val userSettingsCall: UserSettingsCall,
+    private val settingAppVersionCall: SettingsAppVersionCall
+) : UntypedModuleDownloader {
 
-    @Provides
-    @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<SynchronizationSettings> {
-        return SynchronizationSettingStore.create(databaseAdapter)
+    override fun downloadMetadata(): Completable {
+        return Completable.fromAction {
+            downloadFromSettingsApp().blockingAwait()
+            userSettingsCall.download().blockingGet()
+            systemSettingCall.call()
+        }
     }
 
-    @Provides
-    @Reusable
-    fun handler(store: ObjectWithoutUidStore<SynchronizationSettings>,
-                dataSetSettingHandler: Handler<DataSetSetting>,
-                programSettingHandler: Handler<ProgramSetting>): Handler<SynchronizationSettings> {
-        return SynchronizationSettingHandler(store, dataSetSettingHandler, programSettingHandler)
+    private fun downloadFromSettingsApp(): Completable {
+        return Completable.fromAction {
+            settingAppVersionCall.getCompletable(false).blockingAwait()
+            generalSettingCall.getCompletable(false).blockingAwait()
+            synchronizationSettingCall.getCompletable(false).blockingAwait()
+        }
     }
 }

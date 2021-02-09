@@ -28,16 +28,28 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
+import org.hisp.dhis.android.core.settings.DataSetSetting
+import org.hisp.dhis.android.core.settings.ProgramSetting
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
 
-internal class SynchronizationSettingHandler(store: ObjectWithoutUidStore<SynchronizationSettings>) :
-    ObjectWithoutUidHandlerImpl<SynchronizationSettings>(store) {
+internal class SynchronizationSettingHandler(
+    store: ObjectWithoutUidStore<SynchronizationSettings>,
+    private val dataSetSettingHandler: Handler<DataSetSetting>,
+    private val programSettingHandler: Handler<ProgramSetting>
+) : ObjectWithoutUidHandlerImpl<SynchronizationSettings>(store) {
 
     override fun beforeCollectionHandled(
         oCollection: Collection<SynchronizationSettings>
     ): Collection<SynchronizationSettings> {
         store.delete()
         return oCollection
+    }
+
+    override fun afterObjectHandled(o: SynchronizationSettings, action: HandleAction) {
+        dataSetSettingHandler.handleMany(SettingsAppHelper.getDataSetSettingList(o.dataSetSettings()))
+        programSettingHandler.handleMany(SettingsAppHelper.getProgramSettingList(o.programSettings()))
     }
 }

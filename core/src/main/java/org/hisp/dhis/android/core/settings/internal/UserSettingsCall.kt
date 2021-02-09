@@ -25,36 +25,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings.internal;
+package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
-import org.hisp.dhis.android.core.arch.call.factories.internal.ObjectCall;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.settings.UserSettings;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Single;
+import dagger.Reusable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
+import org.hisp.dhis.android.core.arch.call.factories.internal.ObjectCall
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.settings.UserSettings
+import javax.inject.Inject
 
 @Reusable
-public class UserSettingsCall implements ObjectCall<UserSettings> {
+class UserSettingsCall @Inject internal constructor(
+    private val handler: Handler<UserSettings>,
+    private val service: SettingService,
+    private val apiDownloader: APIDownloader
+) : ObjectCall<UserSettings> {
 
-    private final Handler<UserSettings> handler;
-    private final SettingService service;
-    private final APIDownloader apiDownloader;
-
-    @Inject
-    UserSettingsCall(Handler<UserSettings> handler,
-                     SettingService service,
-                     APIDownloader apiDownloader) {
-        this.handler = handler;
-        this.service = service;
-        this.apiDownloader = apiDownloader;
-    }
-
-    @Override
-    public Single<UserSettings> download() {
-        return apiDownloader.downloadObject(handler, service.getUserSettings(UserSettingsFields.allFields));
+    override fun download(): Single<UserSettings> {
+        return apiDownloader.downloadObject(handler, service.getUserSettings(UserSettingsFields.allFields))
     }
 }

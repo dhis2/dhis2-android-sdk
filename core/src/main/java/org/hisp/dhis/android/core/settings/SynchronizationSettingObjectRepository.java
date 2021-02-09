@@ -25,46 +25,42 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings.internal;
+package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl;
+import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingCall;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
-import io.reactivex.Completable;
 
 @Reusable
-public class SettingModuleDownloader implements UntypedModuleDownloader {
+public class SynchronizationSettingObjectRepository
+        extends ReadOnlyAnyObjectWithDownloadRepositoryImpl<SynchronizationSettings>
+        implements ReadOnlyWithDownloadObjectRepository<SynchronizationSettings> {
 
-    private final SystemSettingCall systemSettingCall;
-
-    private final GeneralSettingCall generalSettingCall;
-    private final DataSetSettingCall dataSetSettingCall;
-    private final ProgramSettingCall programSettingCall;
-    private final UserSettingsCall userSettingsCall;
+    private final ObjectWithoutUidStore<SynchronizationSettings> syncStore;
 
     @Inject
-    SettingModuleDownloader(SystemSettingCall systemSettingCall,
-                            GeneralSettingCall generalSettingCall,
-                            DataSetSettingCall dataSetSettingCall,
-                            ProgramSettingCall programSettingCall,
-                            UserSettingsCall userSettingsCall) {
-        this.systemSettingCall = systemSettingCall;
-        this.generalSettingCall = generalSettingCall;
-        this.dataSetSettingCall = dataSetSettingCall;
-        this.programSettingCall = programSettingCall;
-        this.userSettingsCall = userSettingsCall;
+    SynchronizationSettingObjectRepository(ObjectWithoutUidStore<SynchronizationSettings> syncStore,
+                                           SynchronizationSettingCall synchronizationSettingCall) {
+        super(synchronizationSettingCall);
+        this.syncStore = syncStore;
     }
 
     @Override
-    public Completable downloadMetadata() {
-        return Completable.fromAction(() -> {
-            generalSettingCall.getCompletable(false).blockingAwait();
-            dataSetSettingCall.getCompletable(false).blockingAwait();
-            programSettingCall.getCompletable(false).blockingAwait();
-            userSettingsCall.download().blockingGet();
-            systemSettingCall.call();
-        });
+    public SynchronizationSettings blockingGet() {
+        List<SynchronizationSettings> syncSettings = syncStore.selectAll();
+
+        if (syncSettings.isEmpty()) {
+            return null;
+        } else {
+            // TODO Import program and dataset
+            return syncSettings.get(0);
+        }
     }
 }

@@ -5,4 +5,5 @@ public enum DataSetFilter {
     ORG_UNIT,
     ASSIGNED_TO_ME,
     PERIOD,
+    CAT_COMBO
 }

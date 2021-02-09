@@ -4,5 +4,5 @@ public enum HomeFilter {
     DATE,
     SYN_STATUS,
     ORG_UNIT,
-    ASSIGNED_TO_ME
+    ASSIGNED_TO_ME,
 }

@@ -7,5 +7,6 @@ public enum ProgramFilter {
     ASSIGNED_TO_ME,
     ENROLLMENT_DATE,
     ENROLLMENT_STATUS,
-    ORG_UNIT
+    ORG_UNIT,
+    CAT_COMBO
 }

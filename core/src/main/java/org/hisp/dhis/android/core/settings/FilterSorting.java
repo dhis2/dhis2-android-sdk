@@ -5,9 +5,9 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class FilterSorting {
 
-    public abstract FiltersSet home();
+    public abstract FiltersSet<HomeFilter> home();
 
-    public abstract FilterScopesSettings dataSettings();
+    public abstract FilterScopesSettings<DataSetFilter> dataSettings();
 
-    public abstract FilterScopesSettings programSettings();
+    public abstract FilterScopesSettings<ProgramFilter> programSettings();
 }

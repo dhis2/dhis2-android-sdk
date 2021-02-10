@@ -32,7 +32,6 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.settings.ProgramSetting
@@ -42,40 +41,37 @@ import javax.inject.Inject
 
 @Reusable
 internal class ProgramSettingCall @Inject constructor(
-    private val databaseAdapter: DatabaseAdapter,
     private val programSettingHandler: Handler<ProgramSetting>,
     private val androidSettingService: SettingService,
-    private val apiCallExecutor: RxAPICallExecutor
+    private val apiCallExecutor: RxAPICallExecutor,
+    private val appVersionManager: SettingsAppVersionManager
 ) : CompletableProvider {
 
     override fun getCompletable(storeError: Boolean): Completable {
-        return download(storeError).ignoreElement()
+        return Completable
+            .fromSingle(download(storeError))
+            .onErrorComplete()
     }
 
     fun download(storeError: Boolean): Single<ProgramSettings> {
         return fetch(storeError)
             .doOnSuccess { programSettings: ProgramSettings -> process(programSettings) }
-    }
-
-    fun fetch(storeError: Boolean): Single<ProgramSettings> {
-        return apiCallExecutor.wrapSingle(androidSettingService.programSettings, storeError)
-            .onErrorReturn { throwable: Throwable ->
+            .doOnError { throwable: Throwable ->
                 if (throwable is D2Error && throwable.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND) {
-                    return@onErrorReturn ProgramSettings.builder().build()
+                    process(null)
                 } else {
                     throw throwable
                 }
             }
     }
 
-    fun process(item: ProgramSettings) {
-        val transaction = databaseAdapter.beginNewTransaction()
-        try {
-            val programSettingList = SettingsAppHelper.getProgramSettingList(item)
-            programSettingHandler.handleMany(programSettingList)
-            transaction.setSuccessful()
-        } finally {
-            transaction.end()
-        }
+    fun fetch(storeError: Boolean): Single<ProgramSettings> {
+        val version = appVersionManager.getVersion()
+        return apiCallExecutor.wrapSingle(androidSettingService.programSettings(version), storeError)
+    }
+
+    fun process(item: ProgramSettings?) {
+        val programSettingList = item?.let { SettingsAppHelper.getProgramSettingList(it) } ?: emptyList()
+        programSettingHandler.handleMany(programSettingList)
     }
 }

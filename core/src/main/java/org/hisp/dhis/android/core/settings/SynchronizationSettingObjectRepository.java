@@ -44,23 +44,37 @@ public class SynchronizationSettingObjectRepository
         implements ReadOnlyWithDownloadObjectRepository<SynchronizationSettings> {
 
     private final ObjectWithoutUidStore<SynchronizationSettings> syncStore;
+    private final DataSetSettingsObjectRepository dataSetSettingsRepository;
+    private final ProgramSettingsObjectRepository programSettingsRepository;
 
     @Inject
     SynchronizationSettingObjectRepository(ObjectWithoutUidStore<SynchronizationSettings> syncStore,
+                                           DataSetSettingsObjectRepository dataSetSettingsRepository,
+                                           ProgramSettingsObjectRepository programSettingsRepository,
                                            SynchronizationSettingCall synchronizationSettingCall) {
         super(synchronizationSettingCall);
         this.syncStore = syncStore;
+        this.dataSetSettingsRepository = dataSetSettingsRepository;
+        this.programSettingsRepository = programSettingsRepository;
     }
 
     @Override
     public SynchronizationSettings blockingGet() {
         List<SynchronizationSettings> syncSettings = syncStore.selectAll();
+        DataSetSettings dataSetSettings = dataSetSettingsRepository.blockingGet();
+        ProgramSettings programSettings = programSettingsRepository.blockingGet();
 
-        if (syncSettings.isEmpty()) {
+        if (syncSettings.isEmpty() && dataSetSettings == null && programSettings == null) {
             return null;
         } else {
-            // TODO Import program and dataset
-            return syncSettings.get(0);
+            SynchronizationSettings.Builder builder = syncSettings.isEmpty() ?
+                    SynchronizationSettings.builder() :
+                    syncSettings.get(0).toBuilder();
+
+            return builder
+                    .dataSetSettings(dataSetSettings)
+                    .programSettings(programSettings)
+                    .build();
         }
     }
 }

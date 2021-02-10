@@ -68,7 +68,9 @@ public abstract class SynchronizationSettings implements CoreObject {
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new $AutoValue_SynchronizationSettings.Builder();
+        return new $AutoValue_SynchronizationSettings.Builder()
+                .dataSetSettings(DataSetSettings.builder().build())
+                .programSettings(ProgramSettings.builder().build());
     }
 
     @AutoValue.Builder

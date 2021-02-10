@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.settings.internal
 import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.data.maintenance.D2ErrorSamples
 import org.hisp.dhis.android.core.settings.ProgramSetting
@@ -42,30 +41,29 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class ProgramSettingCallShould {
-
-    private val databaseAdapter: DatabaseAdapter = mock()
     private val handler: Handler<ProgramSetting> = mock()
     private val service: SettingService = mock()
     private val programSettingSingle: Single<ProgramSettings> = mock()
     private val apiCallExecutor: RxAPICallExecutor = mock()
+    private val appVersionManager: SettingsAppVersionManager = mock()
 
     private lateinit var programSettingCall: ProgramSettingCall
 
     @Before
     fun setUp() {
-        whenever(service.programSettings) doReturn programSettingSingle
-        programSettingCall = ProgramSettingCall(databaseAdapter, handler, service, apiCallExecutor)
+        whenever(appVersionManager.getVersion()) doReturn SettingsAppVersion.V1_1
+        whenever(service.programSettings(any<SettingsAppVersion>())) doReturn programSettingSingle
+        programSettingCall = ProgramSettingCall(handler, service, apiCallExecutor, appVersionManager)
     }
 
     @Test
     fun default_to_empty_collection_if_not_found() {
-        whenever(apiCallExecutor.wrapSingle<ProgramSettings>(programSettingSingle, false)) doReturn
+        whenever(apiCallExecutor.wrapSingle(programSettingSingle, false)) doReturn
             Single.error(D2ErrorSamples.notFound())
 
         programSettingCall.getCompletable(false).blockingAwait()
 
         verify(handler).handleMany(emptyList())
         verifyNoMoreInteractions(handler)
-        verifyNoMoreInteractions(databaseAdapter)
     }
 }

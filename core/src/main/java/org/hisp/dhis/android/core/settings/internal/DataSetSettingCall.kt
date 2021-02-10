@@ -42,40 +42,37 @@ import javax.inject.Inject
 
 @Reusable
 internal class DataSetSettingCall @Inject constructor(
-    private val databaseAdapter: DatabaseAdapter,
     private val dataSetSettingHandler: Handler<DataSetSetting>,
     private val androidSettingService: SettingService,
-    private val apiCallExecutor: RxAPICallExecutor
+    private val apiCallExecutor: RxAPICallExecutor,
+    private val appVersionManager: SettingsAppVersionManager
 ) : CompletableProvider {
 
     override fun getCompletable(storeError: Boolean): Completable {
-        return download(storeError).ignoreElement()
+        return Completable
+            .fromSingle(download(storeError))
+            .onErrorComplete()
     }
 
     private fun download(storeError: Boolean): Single<DataSetSettings> {
         return fetch(storeError)
             .doOnSuccess { dataSetSettings: DataSetSettings -> process(dataSetSettings) }
-    }
-
-    fun fetch(storeError: Boolean): Single<DataSetSettings> {
-        return apiCallExecutor.wrapSingle(androidSettingService.dataSetSettings, storeError)
-            .onErrorReturn { throwable: Throwable ->
+            .doOnError { throwable: Throwable ->
                 if (throwable is D2Error && throwable.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND) {
-                    return@onErrorReturn DataSetSettings.builder().build()
+                    process(null)
                 } else {
                     throw throwable
                 }
             }
     }
 
-    fun process(item: DataSetSettings) {
-        val transaction = databaseAdapter.beginNewTransaction()
-        try {
-            val dataSetSettingList = SettingsAppHelper.getDataSetSettingList(item)
-            dataSetSettingHandler.handleMany(dataSetSettingList)
-            transaction.setSuccessful()
-        } finally {
-            transaction.end()
-        }
+    fun fetch(storeError: Boolean): Single<DataSetSettings> {
+        val version = appVersionManager.getVersion()
+        return apiCallExecutor.wrapSingle(androidSettingService.dataSetSettings(version), storeError)
+    }
+
+    fun process(item: DataSetSettings?) {
+        val dataSetSettingList = item?.let { SettingsAppHelper.getDataSetSettingList(it) } ?: emptyList()
+        dataSetSettingHandler.handleMany(dataSetSettingList)
     }
 }

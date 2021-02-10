@@ -33,8 +33,16 @@ public interface SettingModule {
 
     GeneralSettingObjectRepository generalSetting();
 
+    /**
+     * @deprecated Use {@link #synchronizationSettings()} instead.
+     */
+    @Deprecated
     DataSetSettingsObjectRepository dataSetSetting();
-    
+
+    /**
+     * @deprecated Use {@link #synchronizationSettings()} instead.
+     */
+    @Deprecated
     ProgramSettingsObjectRepository programSetting();
 
     SynchronizationSettingObjectRepository synchronizationSettings();

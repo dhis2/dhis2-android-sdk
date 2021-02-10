@@ -30,39 +30,72 @@ package org.hisp.dhis.android.core.settings.internal
 import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.data.maintenance.D2ErrorSamples
-import org.hisp.dhis.android.core.settings.DataSetSetting
-import org.hisp.dhis.android.core.settings.DataSetSettings
+import org.hisp.dhis.android.core.settings.SynchronizationSettings
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.Mockito
 
 @RunWith(JUnit4::class)
-class DataSetSettingCallShould {
-    private val handler: Handler<DataSetSetting> = mock()
+class SynchronizationSettingCallShould {
+
+    private val handler: Handler<SynchronizationSettings> = mock()
     private val service: SettingService = mock()
-    private val dataSetSettingSingle: Single<DataSetSettings> = mock()
     private val apiCallExecutor: RxAPICallExecutor = mock()
+    private val generalSettingCall: GeneralSettingCall = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
+    private val dataSetSettingCall: DataSetSettingCall = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
+    private val programSettingCall: ProgramSettingCall = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val appVersionManager: SettingsAppVersionManager = mock()
 
-    private lateinit var dataSetSettingCall: DataSetSettingCall
+    private val synchronizationSettings: SynchronizationSettings = mock()
+    private val synchronizationSettingSingle: Single<SynchronizationSettings> = Single.just(synchronizationSettings)
+
+    private lateinit var synchronizationSettingCall: SynchronizationSettingCall
 
     @Before
     fun setUp() {
+        whenever(service.synchronizationSettings(any<SettingsAppVersion>())) doReturn synchronizationSettingSingle
         whenever(appVersionManager.getVersion()) doReturn SettingsAppVersion.V1_1
-        whenever(service.dataSetSettings(any<SettingsAppVersion>())) doReturn dataSetSettingSingle
-        dataSetSettingCall = DataSetSettingCall(handler, service, apiCallExecutor, appVersionManager)
+        synchronizationSettingCall = SynchronizationSettingCall(handler, service, apiCallExecutor,
+            generalSettingCall, dataSetSettingCall, programSettingCall, appVersionManager)
+    }
+
+    @Test
+    fun call_dataSet_and_program_endpoints_if_version_1() {
+        whenever(appVersionManager.getVersion()) doReturn SettingsAppVersion.V1_1
+
+        synchronizationSettingCall.getCompletable(false).blockingAwait()
+
+        verify(generalSettingCall.fetch(any(), any())).blockingGet()
+        verify(dataSetSettingCall.fetch(any())).blockingGet()
+        verify(programSettingCall.fetch(any())).blockingGet()
+        verify(service, never()).synchronizationSettings(any<SettingsAppVersion>())
+    }
+
+    @Test
+    fun call_synchronization_endpoint_if_version_2() {
+        whenever(apiCallExecutor.wrapSingle(synchronizationSettingSingle, false)) doReturn
+            synchronizationSettingSingle
+        whenever(appVersionManager.getVersion()) doReturn SettingsAppVersion.V2_0
+
+        synchronizationSettingCall.getCompletable(false).blockingAwait()
+
+        verify(generalSettingCall.fetch(any(), any()), never()).blockingGet()
+        verify(dataSetSettingCall.fetch(any()), never()).blockingGet()
+        verify(programSettingCall.fetch(any()), never()).blockingGet()
+        verify(service).synchronizationSettings(any<SettingsAppVersion>())
     }
 
     @Test
     fun default_to_empty_collection_if_not_found() {
-        whenever(apiCallExecutor.wrapSingle(dataSetSettingSingle, false)) doReturn
+        whenever(appVersionManager.getVersion()) doReturn SettingsAppVersion.V2_0
+        whenever(apiCallExecutor.wrapSingle(synchronizationSettingSingle, false)) doReturn
             Single.error(D2ErrorSamples.notFound())
 
-        dataSetSettingCall.getCompletable(false).blockingAwait()
+        synchronizationSettingCall.getCompletable(false).blockingAwait()
 
         verify(handler).handleMany(emptyList())
         verifyNoMoreInteractions(handler)

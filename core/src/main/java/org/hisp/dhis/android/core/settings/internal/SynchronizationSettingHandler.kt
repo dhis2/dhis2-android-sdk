@@ -49,7 +49,7 @@ internal class SynchronizationSettingHandler(
     }
 
     override fun afterObjectHandled(o: SynchronizationSettings, action: HandleAction) {
-        dataSetSettingHandler.handleMany(SettingsAppHelper.getDataSetSettingList(o.dataSetSettings()))
-        programSettingHandler.handleMany(SettingsAppHelper.getProgramSettingList(o.programSettings()))
+        o.dataSetSettings()?.let { dataSetSettingHandler.handleMany(SettingsAppHelper.getDataSetSettingList(it)) }
+        o.programSettings()?.let { programSettingHandler.handleMany(SettingsAppHelper.getProgramSettingList(it)) }
     }
 }

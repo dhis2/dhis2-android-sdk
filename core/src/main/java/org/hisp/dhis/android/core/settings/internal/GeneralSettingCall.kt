@@ -32,7 +32,6 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.settings.GeneralSettings
@@ -41,50 +40,48 @@ import javax.inject.Inject
 
 @Reusable
 internal class GeneralSettingCall @Inject constructor(
-    private val databaseAdapter: DatabaseAdapter,
     private val generalSettingHandler: Handler<GeneralSettings>,
     private val androidSettingService: SettingService,
-    private val apiCallExecutor: RxAPICallExecutor
+    private val apiCallExecutor: RxAPICallExecutor,
+    private val appVersionManager: SettingsAppVersionManager
 ) : CompletableProvider {
 
     private var cachedValue: GeneralSettings? = null
 
     override fun getCompletable(storeError: Boolean): Completable {
-        return download(storeError).ignoreElement()
+        return Completable
+            .fromSingle(download(storeError))
+            .onErrorComplete()
     }
 
     fun download(storeError: Boolean): Single<GeneralSettings> {
         return fetch(storeError)
             .doOnSuccess { generalSettings: GeneralSettings -> process(generalSettings) }
-    }
-
-    fun fetch(storeError: Boolean, acceptCache: Boolean = false): Single<GeneralSettings> {
-        return cachedValue?.let {
-            if (acceptCache) Single.just(it) else null
-        } ?: apiCallExecutor.wrapSingle(androidSettingService.generalSettings, storeError)
-            .onErrorReturn { throwable: Throwable ->
+            .doOnError { throwable: Throwable ->
                 if (throwable is D2Error && throwable.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND) {
-                    return@onErrorReturn GeneralSettings.builder().build()
+                    process(null)
                 } else {
                     throw throwable
                 }
             }
     }
 
-    fun process(item: GeneralSettings) {
+    fun fetch(storeError: Boolean, acceptCache: Boolean = false): Single<GeneralSettings> {
+        val version = appVersionManager.getVersion()
+        return cachedValue?.let {
+            if (acceptCache) Single.just(it) else null
+        } ?: apiCallExecutor.wrapSingle(androidSettingService.generalSettings(version), storeError)
+    }
+
+    fun process(item: GeneralSettings?) {
         cachedValue = item
-        val transaction = databaseAdapter.beginNewTransaction()
-        try {
-            val generalSettingsList = listOf(item)
-            generalSettingHandler.handleMany(generalSettingsList)
-            transaction.setSuccessful()
-        } finally {
-            transaction.end()
-        }
+        val generalSettingsList = listOfNotNull(item)
+        generalSettingHandler.handleMany(generalSettingsList)
     }
 
     fun isDatabaseEncrypted(): Single<Boolean> {
-        return apiCallExecutor.wrapSingle(androidSettingService.generalSettings, false)
+        val version = appVersionManager.getVersion()
+        return apiCallExecutor.wrapSingle(androidSettingService.generalSettings(version), false)
             .map { obj: GeneralSettings -> obj.encryptDB() }
     }
 }

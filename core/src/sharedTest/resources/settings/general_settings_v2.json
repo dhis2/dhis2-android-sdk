@@ -1,7 +1,7 @@
 {
   "matomoID": "123abc",
   "encryptDB": false,
-  "matomoUrl": "https://www.matomo.org",
+  "matomoURL": "https://www.matomo.org",
   "smsGateway": "+84566464",
   "reservedValues": 40,
   "smsResultSender": "+9456498778"

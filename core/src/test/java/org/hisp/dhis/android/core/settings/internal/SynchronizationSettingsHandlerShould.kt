@@ -31,6 +31,8 @@ import com.nhaarman.mockitokotlin2.*
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.settings.DataSetSetting
+import org.hisp.dhis.android.core.settings.ProgramSetting
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
 import org.junit.Before
 import org.junit.Test
@@ -39,8 +41,10 @@ import org.mockito.Mockito
 class SynchronizationSettingsHandlerShould {
 
     private val synchronizationSettingStore: ObjectWithoutUidStore<SynchronizationSettings> = mock()
+    private val dataSetSettingHandler: Handler<DataSetSetting> = mock()
+    private val programSettingHandler: Handler<ProgramSetting> = mock()
 
-    private val synchronizationSettings: SynchronizationSettings = mock()
+    private val synchronizationSettings: SynchronizationSettings = SynchronizationSettings.builder().build()
 
     private lateinit var synchronizationSettingsHandler: Handler<SynchronizationSettings>
 
@@ -51,20 +55,28 @@ class SynchronizationSettingsHandlerShould {
     fun setUp() {
         synchronizationSettingsList = listOf(synchronizationSettings)
         whenever(synchronizationSettingStore.updateOrInsertWhere(any())) doReturn HandleAction.Insert
-        synchronizationSettingsHandler = SynchronizationSettingHandler(synchronizationSettingStore)
+        synchronizationSettingsHandler = SynchronizationSettingHandler(synchronizationSettingStore,
+            dataSetSettingHandler, programSettingHandler)
     }
 
     @Test
     fun clean_database_before_insert_collection() {
         synchronizationSettingsHandler.handleMany(synchronizationSettingsList)
-        Mockito.verify(synchronizationSettingStore).delete()
-        Mockito.verify(synchronizationSettingStore).updateOrInsertWhere(synchronizationSettings)
+        verify(synchronizationSettingStore).delete()
+        verify(synchronizationSettingStore).updateOrInsertWhere(synchronizationSettings)
+    }
+
+    @Test
+    fun call_dataSet_and_program_handlers_after_insert_item() {
+        synchronizationSettingsHandler.handleMany(synchronizationSettingsList)
+        verify(dataSetSettingHandler).handleMany(any())
+        verify(programSettingHandler).handleMany(any())
     }
 
     @Test
     fun clean_database_if_empty_collection() {
         synchronizationSettingsHandler.handleMany(emptyList())
-        Mockito.verify(synchronizationSettingStore).delete()
-        Mockito.verify(synchronizationSettingStore, never()).updateOrInsertWhere(synchronizationSettings)
+        verify(synchronizationSettingStore).delete()
+        verify(synchronizationSettingStore, never()).updateOrInsertWhere(synchronizationSettings)
     }
 }

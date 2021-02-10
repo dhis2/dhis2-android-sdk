@@ -32,7 +32,6 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.settings.DataSetSetting
@@ -43,7 +42,7 @@ import javax.inject.Inject
 @Reusable
 internal class DataSetSettingCall @Inject constructor(
     private val dataSetSettingHandler: Handler<DataSetSetting>,
-    private val androidSettingService: SettingService,
+    private val settingAppService: SettingAppService,
     private val apiCallExecutor: RxAPICallExecutor,
     private val appVersionManager: SettingsAppVersionManager
 ) : CompletableProvider {
@@ -68,7 +67,7 @@ internal class DataSetSettingCall @Inject constructor(
 
     fun fetch(storeError: Boolean): Single<DataSetSettings> {
         val version = appVersionManager.getVersion()
-        return apiCallExecutor.wrapSingle(androidSettingService.dataSetSettings(version), storeError)
+        return apiCallExecutor.wrapSingle(settingAppService.dataSetSettings(version), storeError)
     }
 
     fun process(item: DataSetSettings?) {

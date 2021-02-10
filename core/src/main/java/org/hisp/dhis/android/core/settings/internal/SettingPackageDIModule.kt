@@ -51,6 +51,12 @@ internal class SettingPackageDIModule {
 
     @Provides
     @Reusable
+    fun settingAppService(settingService: SettingService): SettingAppService {
+        return SettingAppService(settingService)
+    }
+
+    @Provides
+    @Reusable
     fun module(impl: SettingModuleImpl): SettingModule {
         return impl
     }

@@ -44,34 +44,6 @@ internal interface SettingService {
     @GET("userSettings")
     fun getUserSettings(@Query("key") @Which fields: Fields<UserSettings>): Single<UserSettings>
 
-    fun generalSettings(version: SettingsAppVersion): Single<GeneralSettings> {
-        val key = when(version) {
-            SettingsAppVersion.V1_1 -> "general_settings"
-            else -> "generalSettings"
-        }
-
-        return generalSettings("${getNamespace(version)}/$key")
-    }
-
-    fun dataSetSettings(version: SettingsAppVersion): Single<DataSetSettings> {
-        return dataSetSettings("${getNamespace(version)}/dataSet_settings")
-    }
-
-    fun programSettings(version: SettingsAppVersion): Single<ProgramSettings> {
-        return programSettings("${getNamespace(version)}/program_settings")
-    }
-
-    fun synchronizationSettings(version: SettingsAppVersion): Single<SynchronizationSettings> {
-        return synchronizationSettings("${getNamespace(version)}/synchronization")
-    }
-
-    private fun getNamespace(version: SettingsAppVersion): String {
-        return when(version) {
-            SettingsAppVersion.V1_1 -> ANDROID_APP_NAMESPACE_V1
-            else -> ANDROID_APP_NAMESPACE_V2
-        }
-    }
-
     @GET
     fun generalSettings(@Url url: String): Single<GeneralSettings>
 
@@ -83,9 +55,4 @@ internal interface SettingService {
 
     @GET
     fun synchronizationSettings(@Url url: String): Single<SynchronizationSettings>
-
-    companion object {
-        const val ANDROID_APP_NAMESPACE_V1 = "dataStore/ANDROID_SETTING_APP"
-        const val ANDROID_APP_NAMESPACE_V2 = "dataStore/ANDROID_SETTINGS_APP"
-    }
 }

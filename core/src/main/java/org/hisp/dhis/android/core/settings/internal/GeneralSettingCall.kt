@@ -41,7 +41,7 @@ import javax.inject.Inject
 @Reusable
 internal class GeneralSettingCall @Inject constructor(
     private val generalSettingHandler: Handler<GeneralSettings>,
-    private val androidSettingService: SettingService,
+    private val settingAppService: SettingAppService,
     private val apiCallExecutor: RxAPICallExecutor,
     private val appVersionManager: SettingsAppVersionManager
 ) : CompletableProvider {
@@ -70,7 +70,7 @@ internal class GeneralSettingCall @Inject constructor(
         val version = appVersionManager.getVersion()
         return cachedValue?.let {
             if (acceptCache) Single.just(it) else null
-        } ?: apiCallExecutor.wrapSingle(androidSettingService.generalSettings(version), storeError)
+        } ?: apiCallExecutor.wrapSingle(settingAppService.generalSettings(version), storeError)
     }
 
     fun process(item: GeneralSettings?) {
@@ -81,7 +81,7 @@ internal class GeneralSettingCall @Inject constructor(
 
     fun isDatabaseEncrypted(): Single<Boolean> {
         val version = appVersionManager.getVersion()
-        return apiCallExecutor.wrapSingle(androidSettingService.generalSettings(version), false)
+        return apiCallExecutor.wrapSingle(settingAppService.generalSettings(version), false)
             .map { obj: GeneralSettings -> obj.encryptDB() }
     }
 }

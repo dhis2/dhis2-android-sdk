@@ -41,7 +41,7 @@ import javax.inject.Inject
 @Reusable
 internal class SynchronizationSettingCall @Inject constructor(
     private val synchronizationSettingHandler: Handler<SynchronizationSettings>,
-    private val androidSettingService: SettingService,
+    private val settingAppService: SettingAppService,
     private val apiCallExecutor: RxAPICallExecutor,
     private val generalSettingCall: GeneralSettingCall,
     private val dataSetSettingCall: DataSetSettingCall,
@@ -85,7 +85,7 @@ internal class SynchronizationSettingCall @Inject constructor(
                 Single.just(syncSettings)
             }
             SettingsAppVersion.V2_0 -> {
-                apiCallExecutor.wrapSingle(androidSettingService.synchronizationSettings(version), storeError)
+                apiCallExecutor.wrapSingle(settingAppService.synchronizationSettings(version), storeError)
             }
         }
     }

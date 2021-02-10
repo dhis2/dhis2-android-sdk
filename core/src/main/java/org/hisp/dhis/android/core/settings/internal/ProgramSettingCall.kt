@@ -42,7 +42,7 @@ import javax.inject.Inject
 @Reusable
 internal class ProgramSettingCall @Inject constructor(
     private val programSettingHandler: Handler<ProgramSetting>,
-    private val androidSettingService: SettingService,
+    private val settingAppService: SettingAppService,
     private val apiCallExecutor: RxAPICallExecutor,
     private val appVersionManager: SettingsAppVersionManager
 ) : CompletableProvider {
@@ -67,7 +67,7 @@ internal class ProgramSettingCall @Inject constructor(
 
     fun fetch(storeError: Boolean): Single<ProgramSettings> {
         val version = appVersionManager.getVersion()
-        return apiCallExecutor.wrapSingle(androidSettingService.programSettings(version), storeError)
+        return apiCallExecutor.wrapSingle(settingAppService.programSettings(version), storeError)
     }
 
     fun process(item: ProgramSettings?) {

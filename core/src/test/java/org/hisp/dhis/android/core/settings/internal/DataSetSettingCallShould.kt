@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.settings.internal
 import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.data.maintenance.D2ErrorSamples
 import org.hisp.dhis.android.core.settings.DataSetSetting
@@ -43,7 +42,7 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class DataSetSettingCallShould {
     private val handler: Handler<DataSetSetting> = mock()
-    private val service: SettingService = mock()
+    private val service: SettingAppService = mock()
     private val dataSetSettingSingle: Single<DataSetSettings> = mock()
     private val apiCallExecutor: RxAPICallExecutor = mock()
     private val appVersionManager: SettingsAppVersionManager = mock()
@@ -53,7 +52,7 @@ class DataSetSettingCallShould {
     @Before
     fun setUp() {
         whenever(appVersionManager.getVersion()) doReturn SettingsAppVersion.V1_1
-        whenever(service.dataSetSettings(any<SettingsAppVersion>())) doReturn dataSetSettingSingle
+        whenever(service.dataSetSettings(any())) doReturn dataSetSettingSingle
         dataSetSettingCall = DataSetSettingCall(handler, service, apiCallExecutor, appVersionManager)
     }
 

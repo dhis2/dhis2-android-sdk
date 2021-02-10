@@ -40,6 +40,7 @@ internal class SettingsAppVersionManagerImpl @Inject constructor() : SettingsApp
     }
 
     override fun getVersion(): SettingsAppVersion {
-        return version ?: throw RuntimeException("TODO Ensure version is always present")
+        // TODO Ensure version is always present
+        return version ?: SettingsAppVersion.V1_1
     }
 }

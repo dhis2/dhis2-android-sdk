@@ -43,7 +43,7 @@ import org.mockito.Mockito
 class SynchronizationSettingCallShould {
 
     private val handler: Handler<SynchronizationSettings> = mock()
-    private val service: SettingService = mock()
+    private val service: SettingAppService = mock()
     private val apiCallExecutor: RxAPICallExecutor = mock()
     private val generalSettingCall: GeneralSettingCall = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val dataSetSettingCall: DataSetSettingCall = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
@@ -57,7 +57,7 @@ class SynchronizationSettingCallShould {
 
     @Before
     fun setUp() {
-        whenever(service.synchronizationSettings(any<SettingsAppVersion>())) doReturn synchronizationSettingSingle
+        whenever(service.synchronizationSettings(any())) doReturn synchronizationSettingSingle
         whenever(appVersionManager.getVersion()) doReturn SettingsAppVersion.V1_1
         synchronizationSettingCall = SynchronizationSettingCall(handler, service, apiCallExecutor,
             generalSettingCall, dataSetSettingCall, programSettingCall, appVersionManager)
@@ -72,7 +72,7 @@ class SynchronizationSettingCallShould {
         verify(generalSettingCall.fetch(any(), any())).blockingGet()
         verify(dataSetSettingCall.fetch(any())).blockingGet()
         verify(programSettingCall.fetch(any())).blockingGet()
-        verify(service, never()).synchronizationSettings(any<SettingsAppVersion>())
+        verify(service, never()).synchronizationSettings(any())
     }
 
     @Test
@@ -86,7 +86,7 @@ class SynchronizationSettingCallShould {
         verify(generalSettingCall.fetch(any(), any()), never()).blockingGet()
         verify(dataSetSettingCall.fetch(any()), never()).blockingGet()
         verify(programSettingCall.fetch(any()), never()).blockingGet()
-        verify(service).synchronizationSettings(any<SettingsAppVersion>())
+        verify(service).synchronizationSettings(any())
     }
 
     @Test

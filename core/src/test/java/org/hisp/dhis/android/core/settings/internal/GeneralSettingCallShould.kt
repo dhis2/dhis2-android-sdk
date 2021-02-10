@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.settings.internal
 import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.data.maintenance.D2ErrorSamples
 import org.hisp.dhis.android.core.settings.GeneralSettings
@@ -42,7 +41,7 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class GeneralSettingCallShould {
     private val handler: Handler<GeneralSettings> = mock()
-    private val service: SettingService = mock()
+    private val service: SettingAppService = mock()
     private val generalSettingSingle: Single<GeneralSettings> = mock()
     private val apiCallExecutor: RxAPICallExecutor = mock()
     private val appVersionManager: SettingsAppVersionManager = mock()
@@ -52,7 +51,7 @@ class GeneralSettingCallShould {
     @Before
     fun setUp() {
         whenever(appVersionManager.getVersion()) doReturn SettingsAppVersion.V1_1
-        whenever(service.generalSettings(any<SettingsAppVersion>())) doReturn generalSettingSingle
+        whenever(service.generalSettings(any())) doReturn generalSettingSingle
         generalSettingCall = GeneralSettingCall(handler, service, apiCallExecutor, appVersionManager)
     }
 

@@ -27,43 +27,47 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.data.maintenance.D2ErrorSamples
-import org.hisp.dhis.android.core.settings.ProgramSetting
+import org.hisp.dhis.android.core.settings.DataSetSettings
+import org.hisp.dhis.android.core.settings.GeneralSettings
 import org.hisp.dhis.android.core.settings.ProgramSettings
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.hisp.dhis.android.core.settings.SynchronizationSettings
+import javax.inject.Inject
 
-@RunWith(JUnit4::class)
-class ProgramSettingCallShould {
-    private val handler: Handler<ProgramSetting> = mock()
-    private val service: SettingAppService = mock()
-    private val programSettingSingle: Single<ProgramSettings> = mock()
-    private val apiCallExecutor: RxAPICallExecutor = mock()
-    private val appVersionManager: SettingsAppVersionManager = mock()
+internal class SettingAppService @Inject constructor(
+    private val settingService: SettingService
+) {
 
-    private lateinit var programSettingCall: ProgramSettingCall
+    fun generalSettings(version: SettingsAppVersion): Single<GeneralSettings> {
+        val key = when(version) {
+            SettingsAppVersion.V1_1 -> "general_settings"
+            else -> "generalSettings"
+        }
 
-    @Before
-    fun setUp() {
-        whenever(appVersionManager.getVersion()) doReturn SettingsAppVersion.V1_1
-        whenever(service.programSettings(any())) doReturn programSettingSingle
-        programSettingCall = ProgramSettingCall(handler, service, apiCallExecutor, appVersionManager)
+        return settingService.generalSettings("${getNamespace(version)}/$key")
     }
 
-    @Test
-    fun default_to_empty_collection_if_not_found() {
-        whenever(apiCallExecutor.wrapSingle(programSettingSingle, false)) doReturn
-            Single.error(D2ErrorSamples.notFound())
+    fun dataSetSettings(version: SettingsAppVersion): Single<DataSetSettings> {
+        return settingService.dataSetSettings("${getNamespace(version)}/dataSet_settings")
+    }
 
-        programSettingCall.getCompletable(false).blockingAwait()
+    fun programSettings(version: SettingsAppVersion): Single<ProgramSettings> {
+        return settingService.programSettings("${getNamespace(version)}/program_settings")
+    }
 
-        verify(handler).handleMany(emptyList())
-        verifyNoMoreInteractions(handler)
+    fun synchronizationSettings(version: SettingsAppVersion): Single<SynchronizationSettings> {
+        return settingService.synchronizationSettings("${getNamespace(version)}/synchronization")
+    }
+
+    private fun getNamespace(version: SettingsAppVersion): String {
+        return when(version) {
+            SettingsAppVersion.V1_1 -> ANDROID_APP_NAMESPACE_V1
+            else -> ANDROID_APP_NAMESPACE_V2
+        }
+    }
+
+    companion object {
+        const val ANDROID_APP_NAMESPACE_V1 = "dataStore/ANDROID_SETTING_APP"
+        const val ANDROID_APP_NAMESPACE_V2 = "dataStore/ANDROID_SETTINGS_APP"
     }
 }

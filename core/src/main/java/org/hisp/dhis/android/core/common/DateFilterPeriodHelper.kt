@@ -31,7 +31,6 @@ import dagger.Reusable
 import java.util.*
 import javax.inject.Inject
 import org.hisp.dhis.android.core.period.Period
-import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.internal.CalendarProvider
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
 
@@ -81,7 +80,7 @@ internal class DateFilterPeriodHelper @Inject constructor(
     }
 
     fun getStartDate(filter: DateFilterPeriod): Date? {
-        return when(filter.type()) {
+        return when (filter.type()) {
             DatePeriodType.RELATIVE ->
                 when {
                     filter.period() != null -> getPeriod(filter.period()!!)?.startDate()
@@ -94,7 +93,7 @@ internal class DateFilterPeriodHelper @Inject constructor(
     }
 
     fun getEndDate(filter: DateFilterPeriod): Date? {
-        return when(filter.type()) {
+        return when (filter.type()) {
             DatePeriodType.RELATIVE ->
                 when {
                     filter.period() != null -> getPeriod(filter.period()!!)?.endDate()

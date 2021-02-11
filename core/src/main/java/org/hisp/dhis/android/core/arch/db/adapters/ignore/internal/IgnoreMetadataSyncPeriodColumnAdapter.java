@@ -26,26 +26,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
 
-public interface SettingModule {
-    SystemSettingCollectionRepository systemSetting();
+import org.hisp.dhis.android.core.settings.MetadataSyncPeriod;
 
-    GeneralSettingObjectRepository generalSetting();
-
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    DataSetSettingsObjectRepository dataSetSetting();
-
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    ProgramSettingsObjectRepository programSetting();
-
-    SynchronizationSettingObjectRepository synchronizationSettings();
-
-    UserSettingsObjectRepository userSettings();
+public final class IgnoreMetadataSyncPeriodColumnAdapter extends IgnoreColumnAdapter<MetadataSyncPeriod> {
 }

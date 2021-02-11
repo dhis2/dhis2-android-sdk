@@ -55,9 +55,11 @@ public class Dhis2MockServer {
     private static final String AUTHORITIES_JSON = "user/authorities.json";
     private static final String SYSTEM_INFO_JSON = "systeminfo/system_info.json";
     private static final String SYSTEM_SETTINGS_JSON = "settings/system_settings.json";
-    private static final String GENERAL_SETTINGS_JSON = "settings/general_settings.json";
+    private static final String GENERAL_SETTINGS_V1_JSON = "settings/general_settings_v1.json";
+    private static final String GENERAL_SETTINGS_V2_JSON = "settings/general_settings_v2.json";
     private static final String DATASET_SETTINGS_JSON = "settings/dataset_settings.json";
     private static final String PROGRAM_SETTINGS_JSON = "settings/program_settings.json";
+    private static final String SYNCHRONIZATION_SETTTINGS_JSON = "settings/synchronization_settings.json";
     private static final String USER_SETTINGS_JSON = "settings/user_settings.json";
     private static final String PROGRAMS_JSON = "program/programs.json";
     private static final String PROGRAM_STAGES_JSON = "program/program_stages.json";
@@ -163,11 +165,15 @@ public class Dhis2MockServer {
                 } else if (path.startsWith("/api/systemSettings?")) {
                     return createMockResponse(SYSTEM_SETTINGS_JSON);
                 } else if (path.startsWith("/api/dataStore/ANDROID_SETTING_APP/general_settings")) {
-                    return createMockResponse(GENERAL_SETTINGS_JSON);
+                    return createMockResponse(GENERAL_SETTINGS_V1_JSON);
                 } else if (path.startsWith("/api/dataStore/ANDROID_SETTING_APP/dataSet_settings")) {
                     return createMockResponse(DATASET_SETTINGS_JSON);
                 } else if (path.startsWith("/api/dataStore/ANDROID_SETTING_APP/program_settings")) {
                     return createMockResponse(PROGRAM_SETTINGS_JSON);
+                } else if (path.startsWith("/api/dataStore/ANDROID_SETTINGS_APP/generalSettings")) {
+                    return createMockResponse(GENERAL_SETTINGS_V2_JSON);
+                } else if (path.startsWith("/api/dataStore/ANDROID_SETTINGS_APP/synchronization")) {
+                    return createMockResponse(SYNCHRONIZATION_SETTTINGS_JSON);
                 } else if (path.startsWith("/api/userSettings?")) {
                     return createMockResponse(USER_SETTINGS_JSON);
                 } else if (path.startsWith("/api/programs?")) {
@@ -238,7 +244,7 @@ public class Dhis2MockServer {
 
     public void enqueueLoginResponses() {
         enqueueMockResponse(USER_JSON);
-        enqueueMockResponse(GENERAL_SETTINGS_JSON);
+        enqueueMockResponse(GENERAL_SETTINGS_V1_JSON);
         enqueueMockResponse(SYSTEM_INFO_JSON);
     }
 
@@ -247,9 +253,9 @@ public class Dhis2MockServer {
     }
 
     public void enqueueMetadataResponses() {
-        enqueueMockResponse(GENERAL_SETTINGS_JSON);
+        enqueueMockResponse(GENERAL_SETTINGS_V1_JSON);
         enqueueMockResponse(SYSTEM_INFO_JSON);
-        enqueueMockResponse(GENERAL_SETTINGS_JSON);
+        enqueueMockResponse(GENERAL_SETTINGS_V1_JSON);
         enqueueMockResponse(DATASET_SETTINGS_JSON);
         server.enqueue(getErrorResponse());
         enqueueMockResponse(USER_SETTINGS_JSON);

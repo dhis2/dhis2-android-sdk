@@ -25,27 +25,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings.internal
 
-package org.hisp.dhis.android.core.settings;
-
-public interface SettingModule {
-    SystemSettingCollectionRepository systemSetting();
-
-    GeneralSettingObjectRepository generalSetting();
-
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    DataSetSettingsObjectRepository dataSetSetting();
-
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    ProgramSettingsObjectRepository programSetting();
-
-    SynchronizationSettingObjectRepository synchronizationSettings();
-
-    UserSettingsObjectRepository userSettings();
+internal enum class SettingsAppVersion {
+    V1_1,
+    V2_0
 }

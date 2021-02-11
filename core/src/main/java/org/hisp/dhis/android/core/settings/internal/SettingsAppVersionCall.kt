@@ -25,27 +25,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings.internal
 
-package org.hisp.dhis.android.core.settings;
+import dagger.Reusable
+import io.reactivex.Completable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.systeminfo.SystemInfo
 
-public interface SettingModule {
-    SystemSettingCollectionRepository systemSetting();
+@Reusable
+internal class SettingsAppVersionCall @Inject constructor(
+    private val appVersionManager: SettingsAppVersionManager,
+    private val systemInfoStore: ObjectWithoutUidStore<SystemInfo>
+) : CompletableProvider {
 
-    GeneralSettingObjectRepository generalSetting();
+    override fun getCompletable(storeError: Boolean): Completable {
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    DataSetSettingsObjectRepository dataSetSetting();
+        return Completable.fromCallable {
+            val context = systemInfoStore.selectFirst()?.contextPath()
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    ProgramSettingsObjectRepository programSetting();
+            val version = if (context == "https://play.dhis2.org/android-dev") {
+                SettingsAppVersion.V2_0
+            } else {
+                SettingsAppVersion.V1_1
+            }
 
-    SynchronizationSettingObjectRepository synchronizationSettings();
-
-    UserSettingsObjectRepository userSettings();
+            appVersionManager.setVersion(version)
+        }
+    }
 }

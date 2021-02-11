@@ -25,11 +25,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings.internal
 
-package org.hisp.dhis.android.core.arch.call.factories.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.settings.DataSetSetting
+import org.hisp.dhis.android.core.settings.ProgramSetting
+import org.hisp.dhis.android.core.settings.SynchronizationSettings
 
-import io.reactivex.Single;
+@Module
+internal class SynchronizationSettingEntityDIModule {
 
-public interface ObjectCall<P> {
-    Single<P> download();
+    @Provides
+    @Reusable
+    fun store(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<SynchronizationSettings> {
+        return SynchronizationSettingStore.create(databaseAdapter)
+    }
+
+    @Provides
+    @Reusable
+    fun handler(
+        store: ObjectWithoutUidStore<SynchronizationSettings>,
+        dataSetSettingHandler: Handler<DataSetSetting>,
+        programSettingHandler: Handler<ProgramSetting>
+    ): Handler<SynchronizationSettings> {
+        return SynchronizationSettingHandler(store, dataSetSettingHandler, programSettingHandler)
+    }
 }

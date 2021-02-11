@@ -25,27 +25,47 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings.internal
 
-package org.hisp.dhis.android.core.settings;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.settings.SettingModule
+import retrofit2.Retrofit
 
-public interface SettingModule {
-    SystemSettingCollectionRepository systemSetting();
+@Module(
+    includes = [
+        GeneralSettingEntityDIModule::class,
+        DataSetSettingEntityDIModule::class,
+        ProgramSettingEntityDIModule::class,
+        UserSettingsEntityDIModule::class,
+        SynchronizationSettingEntityDIModule::class,
+        SystemSettingEntityDIModule::class
+    ]
+)
+internal class SettingPackageDIModule {
 
-    GeneralSettingObjectRepository generalSetting();
+    @Provides
+    @Reusable
+    fun settingService(retrofit: Retrofit): SettingService {
+        return retrofit.create(SettingService::class.java)
+    }
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    DataSetSettingsObjectRepository dataSetSetting();
+    @Provides
+    @Reusable
+    fun settingAppService(settingService: SettingService): SettingAppService {
+        return SettingAppService(settingService)
+    }
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    ProgramSettingsObjectRepository programSetting();
+    @Provides
+    @Reusable
+    fun module(impl: SettingModuleImpl): SettingModule {
+        return impl
+    }
 
-    SynchronizationSettingObjectRepository synchronizationSettings();
-
-    UserSettingsObjectRepository userSettings();
+    @Provides
+    @Reusable
+    fun versionManager(impl: SettingsAppVersionManagerImpl): SettingsAppVersionManager {
+        return impl
+    }
 }

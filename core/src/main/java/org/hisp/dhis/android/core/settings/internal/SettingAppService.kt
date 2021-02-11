@@ -27,49 +27,47 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import dagger.Reusable
-import io.reactivex.Completable
 import io.reactivex.Single
-import java.net.HttpURLConnection
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.settings.ProgramSetting
+import org.hisp.dhis.android.core.settings.DataSetSettings
+import org.hisp.dhis.android.core.settings.GeneralSettings
 import org.hisp.dhis.android.core.settings.ProgramSettings
+import org.hisp.dhis.android.core.settings.SynchronizationSettings
 
-@Reusable
-internal class ProgramSettingCall @Inject constructor(
-    private val programSettingHandler: Handler<ProgramSetting>,
-    private val settingAppService: SettingAppService,
-    private val apiCallExecutor: RxAPICallExecutor,
-    private val appVersionManager: SettingsAppVersionManager
-) : CompletableProvider {
+internal class SettingAppService @Inject constructor(
+    private val settingService: SettingService
+) {
 
-    override fun getCompletable(storeError: Boolean): Completable {
-        return Completable
-            .fromSingle(download(storeError))
-            .onErrorComplete()
+    fun generalSettings(version: SettingsAppVersion): Single<GeneralSettings> {
+        val key = when (version) {
+            SettingsAppVersion.V1_1 -> "general_settings"
+            else -> "generalSettings"
+        }
+
+        return settingService.generalSettings("${getNamespace(version)}/$key")
     }
 
-    fun download(storeError: Boolean): Single<ProgramSettings> {
-        return fetch(storeError)
-            .doOnSuccess { programSettings: ProgramSettings -> process(programSettings) }
-            .doOnError { throwable: Throwable ->
-                if (throwable is D2Error && throwable.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND) {
-                    process(null)
-                }
-            }
+    fun dataSetSettings(version: SettingsAppVersion): Single<DataSetSettings> {
+        return settingService.dataSetSettings("${getNamespace(version)}/dataSet_settings")
     }
 
-    fun fetch(storeError: Boolean): Single<ProgramSettings> {
-        val version = appVersionManager.getVersion()
-        return apiCallExecutor.wrapSingle(settingAppService.programSettings(version), storeError)
+    fun programSettings(version: SettingsAppVersion): Single<ProgramSettings> {
+        return settingService.programSettings("${getNamespace(version)}/program_settings")
     }
 
-    fun process(item: ProgramSettings?) {
-        val programSettingList = item?.let { SettingsAppHelper.getProgramSettingList(it) } ?: emptyList()
-        programSettingHandler.handleMany(programSettingList)
+    fun synchronizationSettings(version: SettingsAppVersion): Single<SynchronizationSettings> {
+        return settingService.synchronizationSettings("${getNamespace(version)}/synchronization")
+    }
+
+    private fun getNamespace(version: SettingsAppVersion): String {
+        return when (version) {
+            SettingsAppVersion.V1_1 -> ANDROID_APP_NAMESPACE_V1
+            else -> ANDROID_APP_NAMESPACE_V2
+        }
+    }
+
+    companion object {
+        const val ANDROID_APP_NAMESPACE_V1 = "dataStore/ANDROID_SETTING_APP"
+        const val ANDROID_APP_NAMESPACE_V2 = "dataStore/ANDROID_SETTINGS_APP"
     }
 }

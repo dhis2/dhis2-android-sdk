@@ -28,44 +28,40 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.hisp.dhis.android.core.common.ObjectShould;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.ParseException;
 
 import static com.google.common.truth.Truth.assertThat;
 
-public class GeneralSettingsShould extends BaseObjectShould implements ObjectShould {
+public class SynchronizationSettingsShould extends BaseObjectShould implements ObjectShould {
 
-    public GeneralSettingsShould() {
-        super("settings/general_settings.json");
+    public SynchronizationSettingsShould() {
+        super("settings/synchronization_settings.json");
     }
 
     @Override
     @Test
     public void map_from_json_string() throws IOException, ParseException {
-        GeneralSettings generalSettings = objectMapper.readValue(jsonStream, GeneralSettings.class);
+        SynchronizationSettings syncSettings = objectMapper.readValue(jsonStream, SynchronizationSettings.class);
 
-        assertThat(generalSettings.dataSync()).isEqualTo(DataSyncPeriod.EVERY_24_HOURS);
-        assertThat(generalSettings.encryptDB()).isFalse();
-        assertThat(generalSettings.lastUpdated()).isEqualTo(BaseIdentifiableObject.parseDate("2020-01-13T16:52:05.144Z"));
-        assertThat(generalSettings.metadataSync()).isEqualTo(MetadataSyncPeriod.MANUAL);
-        assertThat(generalSettings.reservedValues()).isEqualTo(100);
-        assertThat(generalSettings.numberSmsToSend()).isEqualTo("98456123");
-        assertThat(generalSettings.numberSmsConfirmation()).isEqualTo("98456122");
-    }
+        assertThat(syncSettings.dataSync()).isEqualTo(DataSyncPeriod.EVERY_24_HOURS);
+        assertThat(syncSettings.metadataSync()).isEqualTo(MetadataSyncPeriod.EVERY_12_HOURS);
 
-    @Test
-    public void map_from_json_with_unknown_properties() throws IOException {
-        String jsonPath = "settings/general_settings_with_unknown_options.json";
-        InputStream jsonStream = this.getClass().getClassLoader().getResourceAsStream(jsonPath);
-        GeneralSettings generalSettings = objectMapper.readValue(jsonStream, GeneralSettings.class);
+        assertThat(syncSettings.dataSetSettings()).isNotNull();
+        assertThat(syncSettings.dataSetSettings().globalSettings()).isNotNull();
+        assertThat(syncSettings.dataSetSettings().globalSettings().periodDSDownload()).isEqualTo(11);
+        assertThat(syncSettings.dataSetSettings().specificSettings()).isNotNull();
+        assertThat(syncSettings.dataSetSettings().specificSettings().get("lyLU2wR22tC").periodDSDownload()).isEqualTo(5);
 
-        assertThat(generalSettings.dataSync()).isEqualTo(DataSyncPeriod.EVERY_24_HOURS);
-        assertThat(generalSettings.metadataSync()).isEqualTo(MetadataSyncPeriod.EVERY_24_HOURS);
+        assertThat(syncSettings.programSettings()).isNotNull();
+        assertThat(syncSettings.programSettings().globalSettings()).isNotNull();
+        assertThat(syncSettings.programSettings().globalSettings().teiDownload()).isEqualTo(500);
+        assertThat(syncSettings.programSettings().globalSettings().settingDownload()).isEqualTo(LimitScope.GLOBAL);
+        assertThat(syncSettings.programSettings().specificSettings()).isNotNull();
+        assertThat(syncSettings.programSettings().specificSettings().get("fVQkzCmaCaB").eventsDownload()).isEqualTo(945);
     }
 }

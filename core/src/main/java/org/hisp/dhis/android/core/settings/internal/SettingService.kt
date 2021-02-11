@@ -25,27 +25,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings.internal
 
-package org.hisp.dhis.android.core.settings;
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.api.filters.internal.Which
+import org.hisp.dhis.android.core.settings.*
+import retrofit2.Call
+import retrofit2.http.GET
+import retrofit2.http.Query
+import retrofit2.http.Url
 
-public interface SettingModule {
-    SystemSettingCollectionRepository systemSetting();
+internal interface SettingService {
 
-    GeneralSettingObjectRepository generalSetting();
+    @GET("systemSettings")
+    fun getSystemSettings(@Query("fields") @Which fields: Fields<SystemSettings>): Call<SystemSettings>
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    DataSetSettingsObjectRepository dataSetSetting();
+    @GET("userSettings")
+    fun getUserSettings(@Query("key") @Which fields: Fields<UserSettings>): Single<UserSettings>
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    ProgramSettingsObjectRepository programSetting();
+    @GET
+    fun generalSettings(@Url url: String): Single<GeneralSettings>
 
-    SynchronizationSettingObjectRepository synchronizationSettings();
+    @GET
+    fun dataSetSettings(@Url url: String): Single<DataSetSettings>
 
-    UserSettingsObjectRepository userSettings();
+    @GET
+    fun programSettings(@Url url: String): Single<ProgramSettings>
+
+    @GET
+    fun synchronizationSettings(@Url url: String): Single<SynchronizationSettings>
 }

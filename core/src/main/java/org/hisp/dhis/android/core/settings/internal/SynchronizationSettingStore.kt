@@ -25,27 +25,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings.internal
 
-package org.hisp.dhis.android.core.settings;
+import android.database.Cursor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithoutUidStore
+import org.hisp.dhis.android.core.settings.SynchronizationSettingTableInfo
+import org.hisp.dhis.android.core.settings.SynchronizationSettings
 
-public interface SettingModule {
-    SystemSettingCollectionRepository systemSetting();
+internal object SynchronizationSettingStore {
+    private val BINDER = StatementBinder { o: SynchronizationSettings, w: StatementWrapper ->
+        w.bind(1, o.dataSync())
+        w.bind(2, o.metadataSync())
+    }
 
-    GeneralSettingObjectRepository generalSetting();
+    private val WHERE_UPDATE_BINDER = WhereStatementBinder {
+        _: SynchronizationSettings, _: StatementWrapper ->
+    }
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    DataSetSettingsObjectRepository dataSetSetting();
+    private val WHERE_DELETE_BINDER = WhereStatementBinder {
+        _: SynchronizationSettings, _: StatementWrapper ->
+    }
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    ProgramSettingsObjectRepository programSetting();
-
-    SynchronizationSettingObjectRepository synchronizationSettings();
-
-    UserSettingsObjectRepository userSettings();
+    fun create(databaseAdapter: DatabaseAdapter?): ObjectWithoutUidStore<SynchronizationSettings> {
+        return objectWithoutUidStore(
+            databaseAdapter!!, SynchronizationSettingTableInfo.TABLE_INFO, BINDER,
+            WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER
+        ) { cursor: Cursor? -> SynchronizationSettings.create(cursor) }
+    }
 }

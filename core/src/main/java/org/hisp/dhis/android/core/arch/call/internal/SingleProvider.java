@@ -26,26 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.arch.call.internal;
 
-public interface SettingModule {
-    SystemSettingCollectionRepository systemSetting();
+import io.reactivex.Single;
 
-    GeneralSettingObjectRepository generalSetting();
-
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    DataSetSettingsObjectRepository dataSetSetting();
-
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    ProgramSettingsObjectRepository programSetting();
-
-    SynchronizationSettingObjectRepository synchronizationSettings();
-
-    UserSettingsObjectRepository userSettings();
+public interface SingleProvider {
+    Single getSingle(boolean storeError);
 }

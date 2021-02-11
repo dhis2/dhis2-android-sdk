@@ -26,27 +26,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings.internal;
+package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
 
-import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.settings.GeneralSettingsSamples;
-import org.hisp.dhis.android.core.settings.GeneralSettings;
-import org.hisp.dhis.android.core.settings.GeneralSettingTableInfo;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.runner.RunWith;
+import android.content.ContentValues;
+import android.database.Cursor;
 
-@RunWith(D2JunitRunner.class)
-public class GeneralSettingsStoreIntegrationShould
-        extends ObjectStoreAbstractIntegrationShould<GeneralSettings> {
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
-    public GeneralSettingsStoreIntegrationShould() {
-        super(GeneralSettingStore.create(TestDatabaseAdapterFactory.get()), GeneralSettingTableInfo.TABLE_INFO,
-                TestDatabaseAdapterFactory.get());
+import org.hisp.dhis.android.core.settings.ProgramSettings;
+
+public final class ProgramSyncSettingsColumnAdapter implements ColumnTypeAdapter<ProgramSettings> {
+
+    @Override
+    public ProgramSettings fromCursor(Cursor cursor, String columnName) {
+        return ProgramSettings.builder().build();
     }
 
     @Override
-    protected GeneralSettings buildObject() {
-        return GeneralSettingsSamples.getGeneralSettings();
+    public void toContentValues(ContentValues values, String columnName, ProgramSettings value) {
     }
 }

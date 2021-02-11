@@ -28,54 +28,66 @@
 
 package org.hisp.dhis.android.core.settings;
 
+import android.database.Cursor;
+
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import java.util.Collections;
-import java.util.Map;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.DataSyncPeriodColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.MetadataSyncPeriodColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.DataSetSyncSettingsColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.ProgramSyncSettingsColumnAdapter;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_ProgramSettings.Builder.class)
-public abstract class ProgramSettings {
+@JsonDeserialize(builder = $$AutoValue_SynchronizationSettings.Builder.class)
+public abstract class SynchronizationSettings implements CoreObject {
 
     @Nullable
-    @JsonProperty()
-    public abstract ProgramSetting globalSettings();
+    @ColumnAdapter(DataSyncPeriodColumnAdapter.class)
+    public abstract DataSyncPeriod dataSync();
 
-    @JsonProperty()
-    public abstract Map<String, ProgramSetting> specificSettings();
+    @Nullable
+    @ColumnAdapter(MetadataSyncPeriodColumnAdapter.class)
+    public abstract MetadataSyncPeriod metadataSync();
+
+    @Nullable
+    @ColumnAdapter(DataSetSyncSettingsColumnAdapter.class)
+    public abstract DataSetSettings dataSetSettings();
+
+    @Nullable
+    @ColumnAdapter(ProgramSyncSettingsColumnAdapter.class)
+    public abstract ProgramSettings programSettings();
+
+    public static SynchronizationSettings create(Cursor cursor) {
+        return $AutoValue_SynchronizationSettings.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new AutoValue_ProgramSettings.Builder()
-                .globalSettings(ProgramSetting.builder().build())
-                .specificSettings(Collections.emptyMap());
+        return new $AutoValue_SynchronizationSettings.Builder()
+                .dataSetSettings(DataSetSettings.builder().build())
+                .programSettings(ProgramSettings.builder().build());
     }
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
-        public abstract Builder globalSettings(ProgramSetting globalSettings);
+        public abstract Builder id(Long id);
 
-        public abstract Builder specificSettings(Map<String, ProgramSetting> specificSettings);
+        public abstract Builder dataSync(DataSyncPeriod dataSync);
 
-        abstract ProgramSettings autoBuild();
+        public abstract Builder metadataSync(MetadataSyncPeriod metadataSync);
 
-        //Auxiliary fields
-        abstract Map<String, ProgramSetting> specificSettings();
+        public abstract Builder dataSetSettings(DataSetSettings dataSetSettings);
 
-        public ProgramSettings build() {
+        public abstract Builder programSettings(ProgramSettings programSettings);
 
-            try {
-                specificSettings();
-            } catch (IllegalStateException e) {
-                specificSettings(Collections.emptyMap());
-            }
-
-            return autoBuild();
-        }
+        public abstract SynchronizationSettings build();
     }
 }

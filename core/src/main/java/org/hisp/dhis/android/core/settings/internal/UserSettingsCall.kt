@@ -25,27 +25,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings.internal
 
-package org.hisp.dhis.android.core.settings;
+import dagger.Reusable
+import io.reactivex.Single
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
+import org.hisp.dhis.android.core.arch.call.factories.internal.ObjectCall
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.settings.UserSettings
 
-public interface SettingModule {
-    SystemSettingCollectionRepository systemSetting();
+@Reusable
+class UserSettingsCall @Inject internal constructor(
+    private val handler: Handler<UserSettings>,
+    private val service: SettingService,
+    private val apiDownloader: APIDownloader
+) : ObjectCall<UserSettings> {
 
-    GeneralSettingObjectRepository generalSetting();
-
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    DataSetSettingsObjectRepository dataSetSetting();
-
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    ProgramSettingsObjectRepository programSetting();
-
-    SynchronizationSettingObjectRepository synchronizationSettings();
-
-    UserSettingsObjectRepository userSettings();
+    override fun download(): Single<UserSettings> {
+        return apiDownloader.downloadObject(handler, service.getUserSettings(UserSettingsFields.allFields))
+    }
 }

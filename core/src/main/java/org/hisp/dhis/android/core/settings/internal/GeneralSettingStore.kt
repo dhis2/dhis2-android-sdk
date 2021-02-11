@@ -27,43 +27,40 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import com.nhaarman.mockitokotlin2.*
-import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.data.maintenance.D2ErrorSamples
-import org.hisp.dhis.android.core.settings.ProgramSetting
-import org.hisp.dhis.android.core.settings.ProgramSettings
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import android.database.Cursor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithoutUidStore
+import org.hisp.dhis.android.core.settings.GeneralSettingTableInfo
+import org.hisp.dhis.android.core.settings.GeneralSettings
 
-@RunWith(JUnit4::class)
-class ProgramSettingCallShould {
-    private val handler: Handler<ProgramSetting> = mock()
-    private val service: SettingAppService = mock()
-    private val programSettingSingle: Single<ProgramSettings> = mock()
-    private val apiCallExecutor: RxAPICallExecutor = mock()
-    private val appVersionManager: SettingsAppVersionManager = mock()
-
-    private lateinit var programSettingCall: ProgramSettingCall
-
-    @Before
-    fun setUp() {
-        whenever(appVersionManager.getVersion()) doReturn SettingsAppVersion.V1_1
-        whenever(service.programSettings(any())) doReturn programSettingSingle
-        programSettingCall = ProgramSettingCall(handler, service, apiCallExecutor, appVersionManager)
+@Suppress("MagicNumber")
+internal object GeneralSettingStore {
+    private val BINDER = StatementBinder { o: GeneralSettings, w: StatementWrapper ->
+        w.bind(1, o.encryptDB())
+        w.bind(2, o.lastUpdated())
+        w.bind(3, o.reservedValues())
+        w.bind(4, o.smsGateway())
+        w.bind(5, o.smsResultSender())
+        w.bind(6, o.matomoID())
+        w.bind(7, o.matomoURL())
     }
 
-    @Test
-    fun default_to_empty_collection_if_not_found() {
-        whenever(apiCallExecutor.wrapSingle(programSettingSingle, false)) doReturn
-            Single.error(D2ErrorSamples.notFound())
+    private val WHERE_UPDATE_BINDER = WhereStatementBinder {
+        _: GeneralSettings, _: StatementWrapper ->
+    }
 
-        programSettingCall.getCompletable(false).blockingAwait()
+    private val WHERE_DELETE_BINDER = WhereStatementBinder {
+        _: GeneralSettings, _: StatementWrapper ->
+    }
 
-        verify(handler).handleMany(emptyList())
-        verifyNoMoreInteractions(handler)
+    fun create(databaseAdapter: DatabaseAdapter?): ObjectWithoutUidStore<GeneralSettings> {
+        return objectWithoutUidStore(
+            databaseAdapter!!, GeneralSettingTableInfo.TABLE_INFO, BINDER,
+            WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER
+        ) { cursor: Cursor? -> GeneralSettings.create(cursor) }
     }
 }

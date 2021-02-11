@@ -25,34 +25,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings.internal
 
-package org.hisp.dhis.android.core.settings.internal;
-
-import org.hisp.dhis.android.core.settings.SettingModule;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
-
-@Module(includes = {
-        GeneralSettingEntityDIModule.class,
-        DataSetSettingEntityDIModule.class,
-        ProgramSettingEntityDIModule.class,
-        UserSettingsEntityDIModule.class,
-        SystemSettingEntityDIModule.class
-})
-public final class SettingPackageDIModule {
-
-    @Provides
-    @Reusable
-    SettingService settingService(Retrofit retrofit) {
-        return retrofit.create(SettingService.class);
-    }
-
-    @Provides
-    @Reusable
-    SettingModule module(SettingModuleImpl impl) {
-        return impl;
-    }
+internal interface SettingsAppVersionManager {
+    fun setVersion(version: SettingsAppVersion)
+    fun getVersion(): SettingsAppVersion
 }

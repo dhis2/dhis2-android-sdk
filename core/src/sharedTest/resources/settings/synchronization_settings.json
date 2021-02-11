@@ -1,0 +1,48 @@
+{
+  "dataSync": "24h",
+  "metadataSync": "12h",
+  "dataSetSettings": {
+    "globalSettings": {
+      "lastUpdated": "2021-01-29T18:48:18.739Z",
+      "periodDSDownload": 11
+    },
+    "specificSettings": {
+      "lyLU2wR22tC": {
+        "id": "lyLU2wR22tC",
+        "name": "ART monthly summary",
+        "lastUpdated": "2021-01-29T18:46:53.589Z",
+        "periodDSDownload": 5
+      }
+    }
+  },
+  "programSettings": {
+    "globalSettings": {
+      "lastUpdated": "2021-01-29T18:46:37.550Z",
+      "teiDownload": 500,
+      "eventsDownload": 1000,
+      "updateDownload": "ANY",
+      "settingDownload": "GLOBAL",
+      "eventDateDownload": "ANY"
+    },
+    "specificSettings": {
+      "IpHINAT79UW": {
+        "id": "IpHINAT79UW",
+        "name": "Child Programme",
+        "lastUpdated": "2021-01-29T18:40:54.903Z",
+        "teiDownload": 450,
+        "updateDownload": "ANY",
+        "settingDownload": "PER_ORG_UNIT",
+        "enrollmentDownload": "ONLY_ACTIVE",
+        "enrollmentDateDownload": "ANY"
+      },
+      "fVQkzCmaCaB": {
+        "id": "fVQkzCmaCaB",
+        "name": "Event relationship testing",
+        "lastUpdated": "2021-01-29T18:42:00.902Z",
+        "eventsDownload": 945,
+        "settingDownload": "PER_ORG_UNIT",
+        "eventDateDownload": "LAST_3_MONTHS"
+      }
+    }
+  }
+}

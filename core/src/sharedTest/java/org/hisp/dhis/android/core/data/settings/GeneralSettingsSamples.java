@@ -30,21 +30,19 @@ package org.hisp.dhis.android.core.data.settings;
 
 import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
 import org.hisp.dhis.android.core.settings.GeneralSettings;
-import org.hisp.dhis.android.core.settings.DataSyncPeriod;
-import org.hisp.dhis.android.core.settings.MetadataSyncPeriod;
 
 public class GeneralSettingsSamples {
 
     public static GeneralSettings getGeneralSettings() {
         return GeneralSettings.builder()
                 .id(1L)
-                .dataSync(DataSyncPeriod.EVERY_12_HOURS)
                 .encryptDB(true)
                 .lastUpdated(FillPropertiesTestUtils.LAST_UPDATED)
-                .metadataSync(MetadataSyncPeriod.EVERY_24_HOURS)
                 .reservedValues(100)
-                .numberSmsToSend("+34678456123")
-                .numberSmsConfirmation("+34654321456")
+                .smsGateway("+34678456123")
+                .smsResultSender("+34654321456")
+                .matomoID("123abc")
+                .matomoURL("https://www.matomo.org")
                 .build();
     }
 }

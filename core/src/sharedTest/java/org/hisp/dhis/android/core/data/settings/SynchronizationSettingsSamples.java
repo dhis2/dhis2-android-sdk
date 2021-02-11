@@ -26,26 +26,27 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.data.settings;
 
-public interface SettingModule {
-    SystemSettingCollectionRepository systemSetting();
+import org.hisp.dhis.android.core.settings.DataSetSettings;
+import org.hisp.dhis.android.core.settings.DataSyncPeriod;
+import org.hisp.dhis.android.core.settings.MetadataSyncPeriod;
+import org.hisp.dhis.android.core.settings.ProgramSettings;
+import org.hisp.dhis.android.core.settings.SynchronizationSettings;
 
-    GeneralSettingObjectRepository generalSetting();
+public class SynchronizationSettingsSamples {
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    DataSetSettingsObjectRepository dataSetSetting();
-
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    ProgramSettingsObjectRepository programSetting();
-
-    SynchronizationSettingObjectRepository synchronizationSettings();
-
-    UserSettingsObjectRepository userSettings();
+    public static SynchronizationSettings getSynchronizationSettings() {
+        return SynchronizationSettings.builder()
+                .id(1L)
+                .dataSync(DataSyncPeriod.EVERY_24_HOURS)
+                .metadataSync(MetadataSyncPeriod.EVERY_12_HOURS)
+                .programSettings(ProgramSettings.builder()
+                        .globalSettings(ProgramSettingSamples.getProgramSetting())
+                        .build())
+                .dataSetSettings(DataSetSettings.builder()
+                        .globalSettings(DataSetSettingSamples.getDataSetSetting())
+                        .build())
+                .build();
+    }
 }

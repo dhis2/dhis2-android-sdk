@@ -25,36 +25,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings.internal;
+package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader;
-import org.hisp.dhis.android.core.arch.call.factories.internal.ObjectCall;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.settings.UserSettings;
+import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.settings.SynchronizationSettingsSamples
+import org.hisp.dhis.android.core.settings.SynchronizationSettingTableInfo
+import org.hisp.dhis.android.core.settings.SynchronizationSettings
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-import io.reactivex.Single;
-
-@Reusable
-public class UserSettingsCall implements ObjectCall<UserSettings> {
-
-    private final Handler<UserSettings> handler;
-    private final SettingService service;
-    private final APIDownloader apiDownloader;
-
-    @Inject
-    UserSettingsCall(Handler<UserSettings> handler,
-                     SettingService service,
-                     APIDownloader apiDownloader) {
-        this.handler = handler;
-        this.service = service;
-        this.apiDownloader = apiDownloader;
-    }
-
-    @Override
-    public Single<UserSettings> download() {
-        return apiDownloader.downloadObject(handler, service.getUserSettings(UserSettingsFields.allFields));
+@RunWith(D2JunitRunner::class)
+class SynchronizationSettingsStoreIntegrationShould : ObjectStoreAbstractIntegrationShould<SynchronizationSettings>(
+    SynchronizationSettingStore.create(TestDatabaseAdapterFactory.get()),
+    SynchronizationSettingTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get()
+) {
+    override fun buildObject(): SynchronizationSettings {
+        return SynchronizationSettingsSamples.getSynchronizationSettings()
     }
 }

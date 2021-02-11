@@ -26,26 +26,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
 
-public interface SettingModule {
-    SystemSettingCollectionRepository systemSetting();
+import android.content.ContentValues;
+import android.database.Cursor;
 
-    GeneralSettingObjectRepository generalSetting();
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    DataSetSettingsObjectRepository dataSetSetting();
+import org.hisp.dhis.android.core.settings.DataSetSettings;
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    ProgramSettingsObjectRepository programSetting();
+public final class DataSetSyncSettingsColumnAdapter implements ColumnTypeAdapter<DataSetSettings> {
 
-    SynchronizationSettingObjectRepository synchronizationSettings();
+    @Override
+    public DataSetSettings fromCursor(Cursor cursor, String columnName) {
+        return DataSetSettings.builder().build();
+    }
 
-    UserSettingsObjectRepository userSettings();
+    @Override
+    public void toContentValues(ContentValues values, String columnName, DataSetSettings value) {
+    }
 }

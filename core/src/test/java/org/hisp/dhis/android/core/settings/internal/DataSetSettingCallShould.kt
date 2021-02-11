@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.settings.internal
 import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.data.maintenance.D2ErrorSamples
 import org.hisp.dhis.android.core.settings.DataSetSetting
@@ -42,30 +41,29 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class DataSetSettingCallShould {
-
-    private val databaseAdapter: DatabaseAdapter = mock()
     private val handler: Handler<DataSetSetting> = mock()
-    private val service: SettingService = mock()
+    private val service: SettingAppService = mock()
     private val dataSetSettingSingle: Single<DataSetSettings> = mock()
     private val apiCallExecutor: RxAPICallExecutor = mock()
+    private val appVersionManager: SettingsAppVersionManager = mock()
 
     private lateinit var dataSetSettingCall: DataSetSettingCall
 
     @Before
     fun setUp() {
-        whenever(service.dataSetSettings) doReturn dataSetSettingSingle
-        dataSetSettingCall = DataSetSettingCall(databaseAdapter, handler, service, apiCallExecutor)
+        whenever(appVersionManager.getVersion()) doReturn SettingsAppVersion.V1_1
+        whenever(service.dataSetSettings(any())) doReturn dataSetSettingSingle
+        dataSetSettingCall = DataSetSettingCall(handler, service, apiCallExecutor, appVersionManager)
     }
 
     @Test
     fun default_to_empty_collection_if_not_found() {
-        whenever(apiCallExecutor.wrapSingle<DataSetSettings>(dataSetSettingSingle, false)) doReturn
+        whenever(apiCallExecutor.wrapSingle(dataSetSettingSingle, false)) doReturn
             Single.error(D2ErrorSamples.notFound())
 
         dataSetSettingCall.getCompletable(false).blockingAwait()
 
         verify(handler).handleMany(emptyList())
         verifyNoMoreInteractions(handler)
-        verifyNoMoreInteractions(databaseAdapter)
     }
 }

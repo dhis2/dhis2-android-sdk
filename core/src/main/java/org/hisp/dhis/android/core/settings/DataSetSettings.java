@@ -48,6 +48,7 @@ public abstract class DataSetSettings {
 
     public static Builder builder() {
         return new AutoValue_DataSetSettings.Builder()
+                .globalSettings(DataSetSetting.builder().build())
                 .specificSettings(Collections.emptyMap());
     }
 

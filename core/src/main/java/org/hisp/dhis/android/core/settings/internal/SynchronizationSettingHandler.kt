@@ -25,27 +25,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings.internal
 
-package org.hisp.dhis.android.core.settings;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
+import org.hisp.dhis.android.core.settings.DataSetSetting
+import org.hisp.dhis.android.core.settings.ProgramSetting
+import org.hisp.dhis.android.core.settings.SynchronizationSettings
 
-public interface SettingModule {
-    SystemSettingCollectionRepository systemSetting();
+internal class SynchronizationSettingHandler(
+    store: ObjectWithoutUidStore<SynchronizationSettings>,
+    private val dataSetSettingHandler: Handler<DataSetSetting>,
+    private val programSettingHandler: Handler<ProgramSetting>
+) : ObjectWithoutUidHandlerImpl<SynchronizationSettings>(store) {
 
-    GeneralSettingObjectRepository generalSetting();
+    override fun beforeCollectionHandled(
+        oCollection: Collection<SynchronizationSettings>
+    ): Collection<SynchronizationSettings> {
+        store.delete()
+        return oCollection
+    }
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    DataSetSettingsObjectRepository dataSetSetting();
+    override fun afterObjectHandled(o: SynchronizationSettings, action: HandleAction) {
+        val dataSetSettings = o.dataSetSettings()?.let { SettingsAppHelper.getDataSetSettingList(it) } ?: emptyList()
+        dataSetSettingHandler.handleMany(dataSetSettings)
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    ProgramSettingsObjectRepository programSetting();
-
-    SynchronizationSettingObjectRepository synchronizationSettings();
-
-    UserSettingsObjectRepository userSettings();
+        val programSettings = o.programSettings()?.let { SettingsAppHelper.getProgramSettingList(it) } ?: emptyList()
+        programSettingHandler.handleMany(programSettings)
+    }
 }

@@ -25,27 +25,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings.internal
 
-package org.hisp.dhis.android.core.settings;
+import org.hisp.dhis.android.core.settings.DataSetSetting
+import org.hisp.dhis.android.core.settings.DataSetSettings
+import org.hisp.dhis.android.core.settings.ProgramSetting
+import org.hisp.dhis.android.core.settings.ProgramSettings
 
-public interface SettingModule {
-    SystemSettingCollectionRepository systemSetting();
+internal object SettingsAppHelper {
 
-    GeneralSettingObjectRepository generalSetting();
+    fun getDataSetSettingList(dataSetSettings: DataSetSettings): List<DataSetSetting> {
+        return dataSetSettings.specificSettings().values + dataSetSettings.globalSettings()
+    }
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    DataSetSettingsObjectRepository dataSetSetting();
-
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    ProgramSettingsObjectRepository programSetting();
-
-    SynchronizationSettingObjectRepository synchronizationSettings();
-
-    UserSettingsObjectRepository userSettings();
+    fun getProgramSettingList(programSettings: ProgramSettings): List<ProgramSetting> {
+        return (programSettings.specificSettings().values + programSettings.globalSettings()).filterNotNull()
+    }
 }

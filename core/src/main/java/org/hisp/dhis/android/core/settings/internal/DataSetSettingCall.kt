@@ -34,7 +34,6 @@ import java.net.HttpURLConnection
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.settings.DataSetSetting
@@ -42,39 +41,35 @@ import org.hisp.dhis.android.core.settings.DataSetSettings
 
 @Reusable
 internal class DataSetSettingCall @Inject constructor(
-    private val databaseAdapter: DatabaseAdapter,
     private val dataSetSettingHandler: Handler<DataSetSetting>,
-    private val androidSettingService: SettingService,
-    private val apiCallExecutor: RxAPICallExecutor
+    private val settingAppService: SettingAppService,
+    private val apiCallExecutor: RxAPICallExecutor,
+    private val appVersionManager: SettingsAppVersionManager
 ) : CompletableProvider {
 
     override fun getCompletable(storeError: Boolean): Completable {
         return Completable
-            .fromSingle(downloadAndPersist(storeError))
+            .fromSingle(download(storeError))
             .onErrorComplete()
     }
 
-    private fun downloadAndPersist(storeError: Boolean): Single<DataSetSettings> {
-        return apiCallExecutor.wrapSingle(androidSettingService.dataSetSettings, storeError)
-            .map { dataSetSettings: DataSetSettings ->
-                val transaction = databaseAdapter.beginNewTransaction()
-                try {
-                    val dataSetSettingList = getDataSetSettingList(dataSetSettings)
-                    dataSetSettingHandler.handleMany(dataSetSettingList)
-                    transaction.setSuccessful()
-                } finally {
-                    transaction.end()
-                }
-                dataSetSettings
-            }
-            .doOnError { throwable: Throwable? ->
+    private fun download(storeError: Boolean): Single<DataSetSettings> {
+        return fetch(storeError)
+            .doOnSuccess { dataSetSettings: DataSetSettings -> process(dataSetSettings) }
+            .doOnError { throwable: Throwable ->
                 if (throwable is D2Error && throwable.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND) {
-                    dataSetSettingHandler.handleMany(emptyList())
+                    process(null)
                 }
             }
     }
 
-    private fun getDataSetSettingList(dataSetSettings: DataSetSettings): List<DataSetSetting> {
-        return dataSetSettings.specificSettings().values + dataSetSettings.globalSettings()
+    fun fetch(storeError: Boolean): Single<DataSetSettings> {
+        val version = appVersionManager.getVersion()
+        return apiCallExecutor.wrapSingle(settingAppService.dataSetSettings(version), storeError)
+    }
+
+    fun process(item: DataSetSettings?) {
+        val dataSetSettingList = item?.let { SettingsAppHelper.getDataSetSettingList(it) } ?: emptyList()
+        dataSetSettingHandler.handleMany(dataSetSettingList)
     }
 }

@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.settings;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl;
-import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall;
+import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingCall;
 
 import java.util.List;
 
@@ -39,41 +39,41 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-public class GeneralSettingObjectRepository
-        extends ReadOnlyAnyObjectWithDownloadRepositoryImpl<GeneralSettings>
-        implements ReadOnlyWithDownloadObjectRepository<GeneralSettings> {
+public class SynchronizationSettingObjectRepository
+        extends ReadOnlyAnyObjectWithDownloadRepositoryImpl<SynchronizationSettings>
+        implements ReadOnlyWithDownloadObjectRepository<SynchronizationSettings> {
 
-    private final ObjectWithoutUidStore<GeneralSettings> store;
     private final ObjectWithoutUidStore<SynchronizationSettings> syncStore;
+    private final DataSetSettingsObjectRepository dataSetSettingsRepository;
+    private final ProgramSettingsObjectRepository programSettingsRepository;
 
     @Inject
-    GeneralSettingObjectRepository(ObjectWithoutUidStore<GeneralSettings> store,
-                                   ObjectWithoutUidStore<SynchronizationSettings> syncStore,
-                                   GeneralSettingCall generalSettingCall) {
-        super(generalSettingCall);
-        this.store = store;
+    SynchronizationSettingObjectRepository(ObjectWithoutUidStore<SynchronizationSettings> syncStore,
+                                           DataSetSettingsObjectRepository dataSetSettingsRepository,
+                                           ProgramSettingsObjectRepository programSettingsRepository,
+                                           SynchronizationSettingCall synchronizationSettingCall) {
+        super(synchronizationSettingCall);
         this.syncStore = syncStore;
+        this.dataSetSettingsRepository = dataSetSettingsRepository;
+        this.programSettingsRepository = programSettingsRepository;
     }
 
     @Override
-    public GeneralSettings blockingGet() {
-        List<GeneralSettings> generalSettings = store.selectAll();
+    public SynchronizationSettings blockingGet() {
         List<SynchronizationSettings> syncSettings = syncStore.selectAll();
+        DataSetSettings dataSetSettings = dataSetSettingsRepository.blockingGet();
+        ProgramSettings programSettings = programSettingsRepository.blockingGet();
 
-        if (generalSettings.isEmpty() && syncSettings.isEmpty()) {
+        if (syncSettings.isEmpty() && dataSetSettings == null && programSettings == null) {
             return null;
         } else {
-            GeneralSettings generalSetting = generalSettings.isEmpty() ?
-                    GeneralSettings.builder().build() :
-                    generalSettings.get(0);
+            SynchronizationSettings.Builder builder = syncSettings.isEmpty() ?
+                    SynchronizationSettings.builder() :
+                    syncSettings.get(0).toBuilder();
 
-            SynchronizationSettings syncSetting = syncSettings.isEmpty() ?
-                    SynchronizationSettings.builder().build() :
-                    syncSettings.get(0);
-
-            return generalSetting.toBuilder()
-                    .dataSync(syncSetting.dataSync())
-                    .metadataSync(syncSetting.metadataSync())
+            return builder
+                    .dataSetSettings(dataSetSettings)
+                    .programSettings(programSettings)
                     .build();
         }
     }

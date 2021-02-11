@@ -28,24 +28,36 @@
 
 package org.hisp.dhis.android.core.settings;
 
-public interface SettingModule {
-    SystemSettingCollectionRepository systemSetting();
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.junit.Test;
 
-    GeneralSettingObjectRepository generalSetting();
+import java.io.IOException;
+import java.text.ParseException;
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    DataSetSettingsObjectRepository dataSetSetting();
+import static com.google.common.truth.Truth.assertThat;
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    ProgramSettingsObjectRepository programSetting();
+public class GeneralSettingsV2Should extends BaseObjectShould implements ObjectShould {
 
-    SynchronizationSettingObjectRepository synchronizationSettings();
+    public GeneralSettingsV2Should() {
+        super("settings/general_settings_v2.json");
+    }
 
-    UserSettingsObjectRepository userSettings();
+    @Override
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        GeneralSettings generalSettings = objectMapper.readValue(jsonStream, GeneralSettings.class);
+
+        assertThat(generalSettings.dataSync()).isNull();
+        assertThat(generalSettings.encryptDB()).isFalse();
+        assertThat(generalSettings.lastUpdated()).isNull();
+        assertThat(generalSettings.metadataSync()).isNull();
+        assertThat(generalSettings.reservedValues()).isEqualTo(40);
+        assertThat(generalSettings.smsGateway()).isEqualTo("+84566464");
+        assertThat(generalSettings.numberSmsToSend()).isEqualTo("+84566464");
+        assertThat(generalSettings.smsResultSender()).isEqualTo("+9456498778");
+        assertThat(generalSettings.numberSmsConfirmation()).isEqualTo("+9456498778");
+        assertThat(generalSettings.matomoID()).isEqualTo("123abc");
+        assertThat(generalSettings.matomoURL()).isEqualTo("https://www.matomo.org");
+    }
 }

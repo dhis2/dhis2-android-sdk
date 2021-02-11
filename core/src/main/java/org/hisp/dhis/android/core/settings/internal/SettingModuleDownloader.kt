@@ -25,27 +25,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings.internal
 
-package org.hisp.dhis.android.core.settings;
+import dagger.Reusable
+import io.reactivex.Completable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
 
-public interface SettingModule {
-    SystemSettingCollectionRepository systemSetting();
+@Reusable
+internal class SettingModuleDownloader @Inject constructor(
+    private val systemSettingCall: SystemSettingCall,
+    private val generalSettingCall: GeneralSettingCall,
+    private val synchronizationSettingCall: SynchronizationSettingCall,
+    private val userSettingsCall: UserSettingsCall,
+    private val settingAppVersionCall: SettingsAppVersionCall
+) : UntypedModuleDownloader {
 
-    GeneralSettingObjectRepository generalSetting();
+    override fun downloadMetadata(): Completable {
+        return Completable.fromAction {
+            downloadFromSettingsApp().blockingAwait()
+            userSettingsCall.download().blockingGet()
+            systemSettingCall.call()
+        }
+    }
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    DataSetSettingsObjectRepository dataSetSetting();
-
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    ProgramSettingsObjectRepository programSetting();
-
-    SynchronizationSettingObjectRepository synchronizationSettings();
-
-    UserSettingsObjectRepository userSettings();
+    private fun downloadFromSettingsApp(): Completable {
+        return Completable.fromAction {
+            settingAppVersionCall.getCompletable(false).blockingAwait()
+            generalSettingCall.getCompletable(false).blockingAwait()
+            synchronizationSettingCall.getCompletable(false).blockingAwait()
+        }
+    }
 }

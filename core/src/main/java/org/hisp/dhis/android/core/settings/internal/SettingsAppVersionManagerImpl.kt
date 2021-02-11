@@ -25,27 +25,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings.internal
 
-package org.hisp.dhis.android.core.settings;
+import javax.inject.Inject
+import javax.inject.Singleton
 
-public interface SettingModule {
-    SystemSettingCollectionRepository systemSetting();
+@Singleton
+internal class SettingsAppVersionManagerImpl @Inject constructor() : SettingsAppVersionManager {
 
-    GeneralSettingObjectRepository generalSetting();
+    private var version: SettingsAppVersion? = null
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    DataSetSettingsObjectRepository dataSetSetting();
+    override fun setVersion(version: SettingsAppVersion) {
+        this.version = version
+    }
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    ProgramSettingsObjectRepository programSetting();
-
-    SynchronizationSettingObjectRepository synchronizationSettings();
-
-    UserSettingsObjectRepository userSettings();
+    override fun getVersion(): SettingsAppVersion {
+        // TODO Ensure version is always present
+        return version ?: SettingsAppVersion.V1_1
+    }
 }

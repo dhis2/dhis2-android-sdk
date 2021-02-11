@@ -26,31 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings.internal;
+package org.hisp.dhis.android.testapp.settings;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.settings.GeneralSettings;
+import org.hisp.dhis.android.core.settings.SynchronizationSettings;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import static com.google.common.truth.Truth.assertThat;
 
-@Module
-public final class GeneralSettingEntityDIModule {
+@RunWith(D2JunitRunner.class)
+public class SynchronizationSettingObjectRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
-    @Provides
-    @Reusable
-    ObjectWithoutUidStore<GeneralSettings> generalSettingStore(DatabaseAdapter databaseAdapter) {
-        return GeneralSettingStore.create(databaseAdapter);
+    @Test
+    public void find_synchronization_settings() {
+        SynchronizationSettings syncSettings = d2.settingModule().synchronizationSettings().blockingGet();
+
+        assertThat(syncSettings.dataSync()).isNotNull();
+        assertThat(syncSettings.metadataSync()).isNotNull();
+        assertThat(syncSettings.dataSetSettings()).isNotNull();
+        assertThat(syncSettings.programSettings()).isNotNull();
     }
-
-    @Provides
-    @Reusable
-    Handler<GeneralSettings> dataSetSettingHandler(ObjectWithoutUidStore<GeneralSettings> store) {
-        return new GeneralSettingHandler(store);
-    }
-
-
 }

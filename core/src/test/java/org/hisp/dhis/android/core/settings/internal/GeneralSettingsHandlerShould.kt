@@ -25,51 +25,46 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings.internal
 
-package org.hisp.dhis.android.core.settings;
+import com.nhaarman.mockitokotlin2.*
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.settings.GeneralSettings
+import org.junit.Before
+import org.junit.Test
+import org.mockito.Mockito
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.CoreColumns;
+class GeneralSettingsHandlerShould {
 
-public final class GeneralSettingTableInfo {
+    private val generalSettingStore: ObjectWithoutUidStore<GeneralSettings> = mock()
 
-    private GeneralSettingTableInfo() {
+    private val generalSettings: GeneralSettings = mock()
+
+    private lateinit var generalSettingHandler: Handler<GeneralSettings>
+
+    private lateinit var generalSettingList: List<GeneralSettings>
+
+    @Before
+    @Throws(Exception::class)
+    fun setUp() {
+        generalSettingList = listOf(generalSettings)
+        whenever(generalSettingStore.updateOrInsertWhere(any())) doReturn HandleAction.Insert
+        generalSettingHandler = GeneralSettingHandler(generalSettingStore)
     }
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
+    @Test
+    fun clean_database_before_insert_collection() {
+        generalSettingHandler.handleMany(generalSettingList)
+        Mockito.verify(generalSettingStore).delete()
+        Mockito.verify(generalSettingStore).updateOrInsertWhere(generalSettings)
+    }
 
-        @Override
-        public String name() {
-            return "GeneralSetting";
-        }
-
-        @Override
-        public CoreColumns columns() {
-            return new Columns();
-        }
-    };
-
-    public static class Columns extends CoreColumns {
-        public static final String ENCRYPT_DB = "encryptDB";
-        public static final String LAST_UPDATED = "lastUpdated";
-        public static final String RESERVED_VALUES = "reservedValues";
-        public static final String SMS_GATEWAY = "smsGateway";
-        public static final String SMS_RESULT_SENDER = "smsResultSender";
-        public static final String MATOMO_ID = "matomoID";
-        public static final String MATOMO_URL = "matomoURL";
-
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(),
-                    ENCRYPT_DB,
-                    LAST_UPDATED,
-                    RESERVED_VALUES,
-                    SMS_GATEWAY,
-                    SMS_RESULT_SENDER,
-                    MATOMO_ID,
-                    MATOMO_URL
-            );
-        }
+    @Test
+    fun clean_database_if_empty_collection() {
+        generalSettingHandler.handleMany(emptyList())
+        Mockito.verify(generalSettingStore).delete()
+        Mockito.verify(generalSettingStore, never()).updateOrInsertWhere(generalSettings)
     }
 }

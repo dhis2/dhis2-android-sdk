@@ -36,14 +36,17 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.settings.ProgramSetting
-import org.hisp.dhis.android.core.settings.ProgramSettings
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.settings.SynchronizationSettings
 
 @Reusable
-internal class ProgramSettingCall @Inject constructor(
-    private val programSettingHandler: Handler<ProgramSetting>,
+internal class SynchronizationSettingCall @Inject constructor(
+    private val synchronizationSettingHandler: Handler<SynchronizationSettings>,
     private val settingAppService: SettingAppService,
     private val apiCallExecutor: RxAPICallExecutor,
+    private val generalSettingCall: GeneralSettingCall,
+    private val dataSetSettingCall: DataSetSettingCall,
+    private val programSettingCall: ProgramSettingCall,
     private val appVersionManager: SettingsAppVersionManager
 ) : CompletableProvider {
 
@@ -53,9 +56,9 @@ internal class ProgramSettingCall @Inject constructor(
             .onErrorComplete()
     }
 
-    fun download(storeError: Boolean): Single<ProgramSettings> {
+    fun download(storeError: Boolean): Single<SynchronizationSettings> {
         return fetch(storeError)
-            .doOnSuccess { programSettings: ProgramSettings -> process(programSettings) }
+            .doOnSuccess { syncSettings: SynchronizationSettings -> process(syncSettings) }
             .doOnError { throwable: Throwable ->
                 if (throwable is D2Error && throwable.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND) {
                     process(null)
@@ -63,13 +66,44 @@ internal class ProgramSettingCall @Inject constructor(
             }
     }
 
-    fun fetch(storeError: Boolean): Single<ProgramSettings> {
-        val version = appVersionManager.getVersion()
-        return apiCallExecutor.wrapSingle(settingAppService.programSettings(version), storeError)
+    fun fetch(storeError: Boolean): Single<SynchronizationSettings> {
+        return when (val version = appVersionManager.getVersion()) {
+            SettingsAppVersion.V1_1 -> {
+                val generalSettings = tryOrNull(generalSettingCall.fetch(storeError, acceptCache = true))
+                val dataSetSettings = tryOrNull(dataSetSettingCall.fetch(storeError))
+                val programSettings = tryOrNull(programSettingCall.fetch(storeError))
+
+                if (generalSettings == null && dataSetSettings == null && programSettings == null) {
+                    Single.error(
+                        D2Error.builder()
+                            .errorDescription("Synchronization settings not found")
+                            .errorCode(D2ErrorCode.URL_NOT_FOUND)
+                            .httpErrorCode(HttpURLConnection.HTTP_NOT_FOUND)
+                            .build()
+                    )
+                } else {
+                    Single.just(
+                        SynchronizationSettings.builder()
+                            .dataSync(generalSettings?.dataSync())
+                            .metadataSync(generalSettings?.metadataSync())
+                            .dataSetSettings(dataSetSettings)
+                            .programSettings(programSettings)
+                            .build()
+                    )
+                }
+            }
+            SettingsAppVersion.V2_0 -> {
+                apiCallExecutor.wrapSingle(settingAppService.synchronizationSettings(version), storeError)
+            }
+        }
     }
 
-    fun process(item: ProgramSettings?) {
-        val programSettingList = item?.let { SettingsAppHelper.getProgramSettingList(it) } ?: emptyList()
-        programSettingHandler.handleMany(programSettingList)
+    fun process(item: SynchronizationSettings?) {
+        val syncSettingsList = listOfNotNull(item)
+        synchronizationSettingHandler.handleMany(syncSettingsList)
+    }
+
+    private fun <T> tryOrNull(single: Single<T>): T? {
+        return try { single.blockingGet() } catch (e: java.lang.Exception) { null }
     }
 }

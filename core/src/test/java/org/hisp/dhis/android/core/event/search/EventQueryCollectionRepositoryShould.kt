@@ -29,8 +29,8 @@ class EventQueryCollectionRepositoryShould {
         val endDate = DateUtils.DATE_FORMAT.parse("2021-01-29T00:00:00.000")
 
         val scope = queryRepository
-            .byEventDate().after(startDate)
-            .byEventDate().before(endDate)
+            .byEventDate().afterOrEqual(startDate)
+            .byEventDate().beforeOrEqual(endDate)
             .scope
 
         assertThat(scope.eventDate()?.startDate()).isEqualTo(startDate)

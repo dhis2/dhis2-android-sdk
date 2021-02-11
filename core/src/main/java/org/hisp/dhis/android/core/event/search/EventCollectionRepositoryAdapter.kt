@@ -42,7 +42,7 @@ internal class EventCollectionRepositoryAdapter @Inject constructor(
     private val eventCollectionRepository: EventCollectionRepository,
     private val organisationUnitCollectionRepository: OrganisationUnitCollectionRepository,
     private val userRepository: AuthenticatedUserObjectRepository,
-    private val dateFilterPeriodHelper: DateFilterPeriodHelper
+    private val datePeriodHelper: DateFilterPeriodHelper
 ) {
 
     @Suppress("ComplexMethod")
@@ -63,20 +63,20 @@ internal class EventCollectionRepositoryAdapter @Inject constructor(
         }
         scope.eventStatus()?.let { repository = repository.byStatus().`in`(it) }
         scope.eventDate()?.let { period ->
-            dateFilterPeriodHelper.getStartDate(period)?.let { repository = repository.byEventDate().after(it) }
-            dateFilterPeriodHelper.getEndDate(period)?.let { repository = repository.byEventDate().before(it) }
+            datePeriodHelper.getStartDate(period)?.let { repository = repository.byEventDate().afterOrEqual(it) }
+            datePeriodHelper.getEndDate(period)?.let { repository = repository.byEventDate().beforeOrEqual(it) }
         }
         scope.dueDate()?.let { period ->
-            dateFilterPeriodHelper.getStartDate(period)?.let { repository = repository.byDueDate().after(it) }
-            dateFilterPeriodHelper.getEndDate(period)?.let { repository = repository.byDueDate().before(it) }
+            datePeriodHelper.getStartDate(period)?.let { repository = repository.byDueDate().afterOrEqual(it) }
+            datePeriodHelper.getEndDate(period)?.let { repository = repository.byDueDate().beforeOrEqual(it) }
         }
         scope.lastUpdatedDate()?.let { period ->
-            dateFilterPeriodHelper.getStartDate(period)?.let { repository = repository.byLastUpdated().after(it) }
-            dateFilterPeriodHelper.getEndDate(period)?.let { repository = repository.byLastUpdated().before(it) }
+            datePeriodHelper.getStartDate(period)?.let { repository = repository.byLastUpdated().afterOrEqual(it) }
+            datePeriodHelper.getEndDate(period)?.let { repository = repository.byLastUpdated().beforeOrEqual(it) }
         }
         scope.completedDate()?.let { period ->
-            dateFilterPeriodHelper.getStartDate(period)?.let { repository = repository.byCompleteDate().after(it) }
-            dateFilterPeriodHelper.getEndDate(period)?.let { repository = repository.byCompleteDate().before(it) }
+            datePeriodHelper.getStartDate(period)?.let { repository = repository.byCompleteDate().afterOrEqual(it) }
+            datePeriodHelper.getEndDate(period)?.let { repository = repository.byCompleteDate().beforeOrEqual(it) }
         }
         scope.order().forEach { repository = applyOrderColumn(repository, it) }
 

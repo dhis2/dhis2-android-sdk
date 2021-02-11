@@ -26,41 +26,35 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.repositories.scope.internal;
+package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 
-public enum FilterItemOperator {
-    LIKE("LIKE", "like", "LIKE"),
-    EQ("=", "eq", "EQ"),
-    NOT_EQ("!=", "!eq", "NE"),
-    IN("IN", "in", "IN"),
-    NOT_IN("NOT IN", "!in", "!in"), //No upper API version for this
-    LT("<", "lt", "LT"),
-    LE("<=", "le", "LE"),
-    GT(">", "gt", "GT"),
-    GE(">=", "ge", "GE"),
-    VOID("", "", "");
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
 
-    private String sqlOperator;
+public class BaseSubQueryFilterConnector<R extends BaseRepository> extends AbstractFilterConnector<R, String> {
 
-    private String apiOperator;
+    private final String linkTable;
+    private final String linkParent;
 
-    private String apiUpperOperator;
-
-    FilterItemOperator(String sqlOperator, String apiOperator, String apiUpperOperator) {
-        this.sqlOperator = sqlOperator;
-        this.apiOperator = apiOperator;
-        this.apiUpperOperator = apiUpperOperator;
+    BaseSubQueryFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
+                                RepositoryScope scope,
+                                String key,
+                                String linkTable,
+                                String linkParent) {
+        super(repositoryFactory, scope, key);
+        this.linkTable = linkTable;
+        this.linkParent = linkParent;
     }
 
-    public String getSqlOperator() {
-        return this.sqlOperator;
+    String wrapValue(String value) {
+        return value;
     }
 
-    public String getApiOperator() {
-        return this.apiOperator;
-    }
-
-    public String getApiUpperOperator() {
-        return this.apiUpperOperator;
+    protected R inTableWhere(WhereClauseBuilder clauseBuilder) {
+        return newWithWrappedScope(FilterItemOperator.IN, "(" + String.format(
+                "SELECT DISTINCT %s FROM %s WHERE %s", linkParent, linkTable, clauseBuilder.build()) + ")");
     }
 }

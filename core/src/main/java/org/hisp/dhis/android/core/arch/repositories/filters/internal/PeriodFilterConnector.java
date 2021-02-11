@@ -49,22 +49,22 @@ public final class PeriodFilterConnector<R extends BaseRepository> {
 
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The before filter checks if the given field has a date value which is before to the one provided.
+     * The before filter checks if the given field has a date value which is before or equal to the one provided.
      * @param value value to compare with the target field
      * @return the new repository
      */
-    public R before(Date value) {
+    public R beforeOrEqual(Date value) {
         DateFilterPeriod filter = DateFilterPeriod.builder().endDate(value).type(DatePeriodType.ABSOLUTE).build();
         return repositoryFactory.updated(filter);
     }
 
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The after filter checks if the given field has a date value which is after to the one provided.
+     * The after filter checks if the given field has a date value which is after or equal to the one provided.
      * @param value value to compare with the target field
      * @return the new repository
      */
-    public R after(Date value) {
+    public R afterOrEqual(Date value) {
         DateFilterPeriod filter = DateFilterPeriod.builder().startDate(value).type(DatePeriodType.ABSOLUTE).build();
         return repositoryFactory.updated(filter);
     }

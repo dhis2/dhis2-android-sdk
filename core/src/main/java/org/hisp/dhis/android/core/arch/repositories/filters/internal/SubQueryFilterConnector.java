@@ -52,8 +52,7 @@ public final class SubQueryFilterConnector<R extends BaseRepository>
     public R inLinkTable(String linkTable, String linkParent, String linkChild, List<String> children) {
         WhereClauseBuilder clauseBuilder = new WhereClauseBuilder().appendInKeyStringValues(linkChild, children);
 
-        return newWithWrappedScope(FilterItemOperator.IN, "(" + String.format(
-                "SELECT DISTINCT %s FROM %s WHERE %s", linkParent, linkTable, clauseBuilder.build()) + ")");
+        return inTableWhere(linkTable, linkParent, clauseBuilder);
     }
 
     public R inTableWhere(String linkTable, String linkParent, WhereClauseBuilder clauseBuilder) {

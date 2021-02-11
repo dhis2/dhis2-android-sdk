@@ -28,96 +28,100 @@
 
 package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 
-import androidx.annotation.NonNull;
-
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.period.DatePeriod;
-import org.hisp.dhis.android.core.period.Period;
-import org.hisp.dhis.android.core.period.internal.InPeriodQueryHelper;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.Collection;
 
-public final class DateFilterConnector<R extends BaseRepository> extends BaseAbstractFilterConnector<R, Date> {
+public final class ValueSubQueryFilterConnector<R extends BaseRepository> extends BaseSubQueryFilterConnector<R> {
 
-    DateFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
-                        RepositoryScope scope,
-                        String key) {
-        super(repositoryFactory, scope, key);
+    private final String linkChild;
+    private final String dataElementColumn;
+    private final String dataElementId;
+
+    ValueSubQueryFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
+                                 RepositoryScope scope,
+                                 String key,
+                                 String linkTable,
+                                 String linkParent,
+                                 String linkChild,
+                                 String dataElementColumn,
+                                 String dataElementId) {
+        super(repositoryFactory, scope, key, linkTable, linkParent);
+        this.linkChild = linkChild;
+        this.dataElementColumn = dataElementColumn;
+        this.dataElementId = dataElementId;
     }
 
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The before filter checks if the given field has a date value which is before to the one provided.
+     * The like filter checks if the given field has a value lower or equal than the value provided.
      * @param value value to compare with the target field
      * @return the new repository
      */
-    public R before(Date value) {
-        return newWithWrappedScope(FilterItemOperator.LT, value);
+    public R le(String value) {
+        return inLinkTable(FilterItemOperator.LE, value);
     }
 
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The before filter checks if the given field has a date value which is before or equal to the one provided.
+     * The like filter checks if the given field has a value strictly lower than the value provided.
      * @param value value to compare with the target field
      * @return the new repository
      */
-    public R beforeOrEqual(Date value) {
-        return newWithWrappedScope(FilterItemOperator.LE, value);
+    public R lt(String value) {
+        return inLinkTable(FilterItemOperator.LT, value);
     }
 
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The after filter checks if the given field has a date value which is after to the one provided.
+     * The like filter checks if the given field has a value strictly greater or equal than the value provided.
      * @param value value to compare with the target field
      * @return the new repository
      */
-    public R after(Date value) {
-        return newWithWrappedScope(FilterItemOperator.GT, value);
+    public R ge(String value) {
+        return inLinkTable(FilterItemOperator.GE, value);
     }
 
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The after filter checks if the given field has a date value which is after or equal to the one provided.
+     * The like filter checks if the given field has a value strictly greater than the value provided.
      * @param value value to compare with the target field
      * @return the new repository
      */
-    public R afterOrEqual(Date value) {
-        return newWithWrappedScope(FilterItemOperator.GE, value);
+    public R gt(String value) {
+        return inLinkTable(FilterItemOperator.GT, value);
     }
 
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The inDatePeriods filter checks if the given field has a date value which is within one of the provided
-     * DatePeriods.
-     * @param datePeriods date periods to compare with the target field
+     * The like filter checks if the given field has a value included in the list provided.
+     * @param values value list to compare with the target field
      * @return the new repository
      */
-    public R inDatePeriods(@NonNull List<DatePeriod> datePeriods) {
-        return newWithWrappedScope(InPeriodQueryHelper.buildInPeriodsQuery(key, datePeriods));
+    public R in(Collection<String> values) {
+        return inLinkTable(FilterItemOperator.IN, "(" + getCommaSeparatedValues(values) + ")");
     }
 
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The inDatePeriods filter checks if the given field has a date value which is within one of the provided
-     * Periods.
-     * @param periods periods to compare with the target field
+     * The like filter checks if the given field has a value which contains the value provided. The comparison
+     * is case insensitive.
+     * @param value value to compare with the target field
      * @return the new repository
      */
-    public R inPeriods(@NonNull List<Period> periods) {
-        List<DatePeriod> datePeriods = new ArrayList<>();
-        for (Period period : periods) {
-            datePeriods.add(DatePeriod.builder().startDate(period.startDate()).endDate(period.endDate()).build());
-        }
-        return inDatePeriods(datePeriods);
+    public R like(String value) {
+        return inLinkTable(FilterItemOperator.LIKE, value);
     }
 
-    protected String wrapValue(Date value) {
-        return "'" + BaseIdentifiableObject.DATE_FORMAT.format(value) + "'";
+    private R inLinkTable(FilterItemOperator operator, String value) {
+        WhereClauseBuilder clauseBuilder = new WhereClauseBuilder()
+                .appendKeyOperatorValue(linkChild, operator.getSqlOperator(), value)
+                .appendKeyStringValue(dataElementColumn, dataElementId);
+
+        return inTableWhere(clauseBuilder);
     }
 }

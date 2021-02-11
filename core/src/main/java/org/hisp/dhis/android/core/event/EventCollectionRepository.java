@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterC
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.ValueSubQueryFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.common.FeatureType;
@@ -48,6 +49,7 @@ import org.hisp.dhis.android.core.event.internal.EventFields;
 import org.hisp.dhis.android.core.event.internal.EventPostParentCall;
 import org.hisp.dhis.android.core.event.internal.EventStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo;
 
 import java.util.Collections;
 import java.util.List;
@@ -60,6 +62,7 @@ import io.reactivex.Observable;
 
 import static org.hisp.dhis.android.core.event.EventTableInfo.Columns;
 
+@SuppressWarnings("PMD.ExcessiveImports")
 @Reusable
 public final class EventCollectionRepository
         extends ReadWriteWithUidCollectionRepositoryImpl<Event, EventCreateProjection, EventCollectionRepository>
@@ -183,6 +186,16 @@ public final class EventCollectionRepository
                 EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
                 uids
         );
+    }
+
+    public ValueSubQueryFilterConnector<EventCollectionRepository> byDataValue(String dataElementId) {
+        return cf.valueSubQuery(
+                IdentifiableColumns.UID,
+                TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
+                TrackedEntityDataValueTableInfo.Columns.EVENT,
+                TrackedEntityDataValueTableInfo.Columns.VALUE,
+                TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT,
+                dataElementId);
     }
 
     public EventCollectionRepository byFollowUp(Boolean followUp) {

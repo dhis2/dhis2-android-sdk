@@ -63,12 +63,32 @@ public final class DateFilterConnector<R extends BaseRepository> extends BaseAbs
 
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+     * The before filter checks if the given field has a date value which is before or equal to the one provided.
+     * @param value value to compare with the target field
+     * @return the new repository
+     */
+    public R beforeOrEqual(Date value) {
+        return newWithWrappedScope(FilterItemOperator.LE, value);
+    }
+
+    /**
+     * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
      * The after filter checks if the given field has a date value which is after to the one provided.
      * @param value value to compare with the target field
      * @return the new repository
      */
     public R after(Date value) {
         return newWithWrappedScope(FilterItemOperator.GT, value);
+    }
+
+    /**
+     * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+     * The after filter checks if the given field has a date value which is after or equal to the one provided.
+     * @param value value to compare with the target field
+     * @return the new repository
+     */
+    public R afterOrEqual(Date value) {
+        return newWithWrappedScope(FilterItemOperator.GE, value);
     }
 
     /**

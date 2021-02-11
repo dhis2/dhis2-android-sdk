@@ -242,14 +242,14 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @deprecated use {@link #byProgramDate()} instead.
      */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, Date> byProgramStartDate() {
-        return connectorFactory.eqConnector(date -> byProgramDate().after(date).getScope());
+        return connectorFactory.eqConnector(date -> byProgramDate().afterOrEqual(date).getScope());
     }
 
     /**
      * @deprecated use {@link #byProgramDate()} instead.
      */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, Date> byProgramEndDate() {
-        return connectorFactory.eqConnector(date -> byProgramDate().before(date).getScope());
+        return connectorFactory.eqConnector(date -> byProgramDate().beforeOrEqual(date).getScope());
     }
 
     /**
@@ -288,14 +288,14 @@ public final class TrackedEntityInstanceQueryCollectionRepository
      * @deprecated use {@link #byEventDate()} instead.
      */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, Date> byEventStartDate() {
-        return connectorFactory.eqConnector(date -> byEventDate().after(date).getScope());
+        return connectorFactory.eqConnector(date -> byEventDate().afterOrEqual(date).getScope());
     }
 
     /**
      * @deprecated use {@link #byEventDate()} instead.
      */
     public EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, Date> byEventEndDate() {
-        return connectorFactory.eqConnector(date -> byEventDate().before(date).getScope());
+        return connectorFactory.eqConnector(date -> byEventDate().beforeOrEqual(date).getScope());
     }
 
     /**

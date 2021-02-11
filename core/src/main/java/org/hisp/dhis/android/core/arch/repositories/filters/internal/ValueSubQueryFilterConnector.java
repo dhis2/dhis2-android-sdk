@@ -58,6 +58,16 @@ public final class ValueSubQueryFilterConnector<R extends BaseRepository> extend
 
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+     * The like filter checks if the given field has a value equal to the value provided.
+     * @param value value to compare with the target field
+     * @return the new repository
+     */
+    public R eq(String value) {
+        return inLinkTable(FilterItemOperator.EQ, value);
+    }
+
+    /**
+     * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
      * The like filter checks if the given field has a value lower or equal than the value provided.
      * @param value value to compare with the target field
      * @return the new repository

@@ -60,8 +60,6 @@ internal class GeneralSettingCall @Inject constructor(
             .doOnError { throwable: Throwable ->
                 if (throwable is D2Error && throwable.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND) {
                     process(null)
-                } else {
-                    throw throwable
                 }
             }
     }

@@ -55,9 +55,11 @@ public abstract class SynchronizationSettings implements CoreObject {
     @ColumnAdapter(MetadataSyncPeriodColumnAdapter.class)
     public abstract MetadataSyncPeriod metadataSync();
 
+    @Nullable
     @ColumnAdapter(DataSetSyncSettingsColumnAdapter.class)
     public abstract DataSetSettings dataSetSettings();
 
+    @Nullable
     @ColumnAdapter(ProgramSyncSettingsColumnAdapter.class)
     public abstract ProgramSettings programSettings();
 

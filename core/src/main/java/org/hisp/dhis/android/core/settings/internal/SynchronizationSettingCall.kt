@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
 import java.net.HttpURLConnection
 import javax.inject.Inject
@@ -61,8 +62,6 @@ internal class SynchronizationSettingCall @Inject constructor(
             .doOnError { throwable: Throwable ->
                 if (throwable is D2Error && throwable.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND) {
                     process(null)
-                } else {
-                    throw throwable
                 }
             }
 
@@ -71,18 +70,24 @@ internal class SynchronizationSettingCall @Inject constructor(
     fun fetch(storeError: Boolean): Single<SynchronizationSettings> {
         return when (val version = appVersionManager.getVersion()) {
             SettingsAppVersion.V1_1 -> {
-                val generalSettings = generalSettingCall.fetch(storeError, acceptCache = true).blockingGet()
-                val dataSetSettings = dataSetSettingCall.fetch(storeError).blockingGet()
-                val programSettings = programSettingCall.fetch(storeError).blockingGet()
+                val generalSettings = tryOrNull(generalSettingCall.fetch(storeError, acceptCache = true))
+                val dataSetSettings = tryOrNull(dataSetSettingCall.fetch(storeError))
+                val programSettings = tryOrNull(programSettingCall.fetch(storeError))
 
-                val syncSettings = SynchronizationSettings.builder()
-                    .dataSync(generalSettings.dataSync())
-                    .metadataSync(generalSettings.metadataSync())
-                    .dataSetSettings(dataSetSettings)
-                    .programSettings(programSettings)
-                    .build()
-
-                Single.just(syncSettings)
+                if (generalSettings == null && dataSetSettings == null && programSettings == null) {
+                    Single.error(D2Error.builder()
+                        .errorDescription("Synchronization settings not found")
+                        .errorCode(D2ErrorCode.URL_NOT_FOUND)
+                        .httpErrorCode(HttpURLConnection.HTTP_NOT_FOUND)
+                        .build())
+                } else {
+                    Single.just(SynchronizationSettings.builder()
+                        .dataSync(generalSettings?.dataSync())
+                        .metadataSync(generalSettings?.metadataSync())
+                        .dataSetSettings(dataSetSettings)
+                        .programSettings(programSettings)
+                        .build())
+                }
             }
             SettingsAppVersion.V2_0 -> {
                 apiCallExecutor.wrapSingle(settingAppService.synchronizationSettings(version), storeError)
@@ -93,5 +98,9 @@ internal class SynchronizationSettingCall @Inject constructor(
     fun process(item: SynchronizationSettings?) {
         val syncSettingsList = listOfNotNull(item)
         synchronizationSettingHandler.handleMany(syncSettingsList)
+    }
+
+    private fun <T> tryOrNull(single: Single<T>): T? {
+        return try { single.blockingGet() } catch (e: java.lang.Exception) { null }
     }
 }

@@ -49,7 +49,10 @@ internal class SynchronizationSettingHandler(
     }
 
     override fun afterObjectHandled(o: SynchronizationSettings, action: HandleAction) {
-        o.dataSetSettings()?.let { dataSetSettingHandler.handleMany(SettingsAppHelper.getDataSetSettingList(it)) }
-        o.programSettings()?.let { programSettingHandler.handleMany(SettingsAppHelper.getProgramSettingList(it)) }
+        val dataSetSettings = o.dataSetSettings()?.let { SettingsAppHelper.getDataSetSettingList(it) } ?: emptyList()
+        dataSetSettingHandler.handleMany(dataSetSettings)
+
+        val programSettings = o.programSettings()?.let { SettingsAppHelper.getProgramSettingList(it) } ?: emptyList()
+        programSettingHandler.handleMany(programSettings)
     }
 }

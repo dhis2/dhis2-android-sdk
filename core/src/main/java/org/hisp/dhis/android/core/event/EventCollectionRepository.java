@@ -62,6 +62,7 @@ import io.reactivex.Observable;
 
 import static org.hisp.dhis.android.core.event.EventTableInfo.Columns;
 
+@SuppressWarnings("PMD.ExcessiveImports")
 @Reusable
 public final class EventCollectionRepository
         extends ReadWriteWithUidCollectionRepositoryImpl<Event, EventCreateProjection, EventCollectionRepository>

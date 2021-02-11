@@ -34,7 +34,8 @@ import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepo
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
 
-public class BaseSubQueryFilterConnector<R extends BaseRepository> extends AbstractFilterConnector<R, String> {
+public abstract class BaseSubQueryFilterConnector<R extends BaseRepository>
+        extends AbstractFilterConnector<R, String> {
 
     private final String linkTable;
     private final String linkParent;
@@ -49,12 +50,8 @@ public class BaseSubQueryFilterConnector<R extends BaseRepository> extends Abstr
         this.linkParent = linkParent;
     }
 
-    String wrapValue(String value) {
-        return value;
-    }
-
     protected R inTableWhere(WhereClauseBuilder clauseBuilder) {
-        return newWithWrappedScope(FilterItemOperator.IN, "(" + String.format(
+        return newWithUnwrappedScope(FilterItemOperator.IN, "(" + String.format(
                 "SELECT DISTINCT %s FROM %s WHERE %s", linkParent, linkTable, clauseBuilder.build()) + ")");
     }
 }

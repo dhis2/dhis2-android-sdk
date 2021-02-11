@@ -70,4 +70,14 @@ public class EventQueryCollectionRepositoryMockIntegrationShould
 
         assertThat(scope.mode()).isNotNull();
     }
+
+    @Test
+    public void filter_by_event_filter() {
+        List<Event> event =
+                d2.eventModule().eventQuery()
+                        .byEventFilter().eq("atoQ7Zs9Ijo")
+                        .blockingGet();
+
+        assertThat(event.size()).isEqualTo(1);
+    }
 }

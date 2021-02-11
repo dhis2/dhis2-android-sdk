@@ -30,11 +30,11 @@ package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 
 import androidx.annotation.NonNull;
 
+import org.hisp.dhis.android.core.arch.helpers.DateUtils;
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.period.DatePeriod;
 import org.hisp.dhis.android.core.period.Period;
 import org.hisp.dhis.android.core.period.internal.InPeriodQueryHelper;
@@ -118,6 +118,6 @@ public final class DateFilterConnector<R extends BaseRepository> extends BaseAbs
     }
 
     protected String wrapValue(Date value) {
-        return "'" + BaseIdentifiableObject.DATE_FORMAT.format(value) + "'";
+        return "'" + DateUtils.DATE_FORMAT.format(value) + "'";
     }
 }

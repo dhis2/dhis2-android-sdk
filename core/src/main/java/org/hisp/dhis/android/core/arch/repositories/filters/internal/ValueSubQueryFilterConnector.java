@@ -36,6 +36,8 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOpe
 
 import java.util.Collection;
 
+import static org.hisp.dhis.android.core.arch.repositories.filters.internal.BaseAbstractFilterConnector.escapeQuotes;
+
 public final class ValueSubQueryFilterConnector<R extends BaseRepository> extends BaseSubQueryFilterConnector<R> {
 
     private final String linkChild;
@@ -56,6 +58,10 @@ public final class ValueSubQueryFilterConnector<R extends BaseRepository> extend
         this.dataElementId = dataElementId;
     }
 
+    String wrapValue(String value) {
+        return "'" + escapeQuotes(value) + "'";
+    }
+
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
      * The like filter checks if the given field has a value equal to the value provided.
@@ -63,7 +69,7 @@ public final class ValueSubQueryFilterConnector<R extends BaseRepository> extend
      * @return the new repository
      */
     public R eq(String value) {
-        return inLinkTable(FilterItemOperator.EQ, value);
+        return inLinkTable(FilterItemOperator.EQ, wrapValue(value));
     }
 
     /**
@@ -73,7 +79,7 @@ public final class ValueSubQueryFilterConnector<R extends BaseRepository> extend
      * @return the new repository
      */
     public R le(String value) {
-        return inLinkTable(FilterItemOperator.LE, value);
+        return inLinkTable(FilterItemOperator.LE, wrapValue(value));
     }
 
     /**
@@ -83,7 +89,7 @@ public final class ValueSubQueryFilterConnector<R extends BaseRepository> extend
      * @return the new repository
      */
     public R lt(String value) {
-        return inLinkTable(FilterItemOperator.LT, value);
+        return inLinkTable(FilterItemOperator.LT, wrapValue(value));
     }
 
     /**
@@ -93,7 +99,7 @@ public final class ValueSubQueryFilterConnector<R extends BaseRepository> extend
      * @return the new repository
      */
     public R ge(String value) {
-        return inLinkTable(FilterItemOperator.GE, value);
+        return inLinkTable(FilterItemOperator.GE, wrapValue(value));
     }
 
     /**
@@ -103,7 +109,7 @@ public final class ValueSubQueryFilterConnector<R extends BaseRepository> extend
      * @return the new repository
      */
     public R gt(String value) {
-        return inLinkTable(FilterItemOperator.GT, value);
+        return inLinkTable(FilterItemOperator.GT, wrapValue(value));
     }
 
     /**
@@ -124,7 +130,7 @@ public final class ValueSubQueryFilterConnector<R extends BaseRepository> extend
      * @return the new repository
      */
     public R like(String value) {
-        return inLinkTable(FilterItemOperator.LIKE, value);
+        return inLinkTable(FilterItemOperator.LIKE, wrapValue("%" + value + "%"));
     }
 
     private R inLinkTable(FilterItemOperator operator, String value) {

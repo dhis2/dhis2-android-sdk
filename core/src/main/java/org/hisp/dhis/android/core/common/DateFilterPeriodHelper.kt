@@ -31,6 +31,7 @@ import dagger.Reusable
 import java.util.*
 import javax.inject.Inject
 import org.hisp.dhis.android.core.period.Period
+import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.internal.CalendarProvider
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
 
@@ -80,19 +81,27 @@ internal class DateFilterPeriodHelper @Inject constructor(
     }
 
     fun getStartDate(filter: DateFilterPeriod): Date? {
-        return when {
-            filter.startDate() != null -> filter.startDate()
-            filter.startBuffer() != null -> addDaysToCurrentDate(filter.startBuffer()!!)
-            filter.period() != null -> getPeriod(filter.period()!!)?.startDate()
+        return when(filter.type()) {
+            DatePeriodType.RELATIVE ->
+                when {
+                    filter.period() != null -> getPeriod(filter.period()!!)?.startDate()
+                    filter.startBuffer() != null -> addDaysToCurrentDate(filter.startBuffer()!!)
+                    else -> null
+                }
+            DatePeriodType.ABSOLUTE -> filter.startDate()
             else -> null
         }
     }
 
     fun getEndDate(filter: DateFilterPeriod): Date? {
-        return when {
-            filter.endDate() != null -> filter.endDate()
-            filter.endBuffer() != null -> addDaysToCurrentDate(filter.endBuffer()!!)
-            filter.period() != null -> getPeriod(filter.period()!!)?.endDate()
+        return when(filter.type()) {
+            DatePeriodType.RELATIVE ->
+                when {
+                    filter.period() != null -> getPeriod(filter.period()!!)?.endDate()
+                    filter.endBuffer() != null -> addDaysToCurrentDate(filter.endBuffer()!!)
+                    else -> null
+                }
+            DatePeriodType.ABSOLUTE -> filter.endDate()
             else -> null
         }
     }

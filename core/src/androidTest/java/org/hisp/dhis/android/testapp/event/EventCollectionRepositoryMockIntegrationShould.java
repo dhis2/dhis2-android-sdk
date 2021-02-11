@@ -133,8 +133,8 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     public void filter_by_geometry_type() {
         List<Event> events =
                 d2.eventModule().events()
-                .byGeometryType().eq(FeatureType.POINT)
-                .blockingGet();
+                        .byGeometryType().eq(FeatureType.POINT)
+                        .blockingGet();
 
         assertThat(events.size()).isEqualTo(4);
     }
@@ -143,8 +143,8 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     public void filter_by_geometry_coordinates() {
         List<Event> events =
                 d2.eventModule().events()
-                .byGeometryCoordinates().eq("[21.0, 43.0]")
-                .blockingGet();
+                        .byGeometryCoordinates().eq("[21.0, 43.0]")
+                        .blockingGet();
 
         assertThat(events.size()).isEqualTo(1);
     }
@@ -244,6 +244,16 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
         List<Event> events =
                 d2.eventModule().events()
                         .byTrackedEntityInstanceUids(Collections.singletonList("nWrB0TfWlvh"))
+                        .blockingGet();
+
+        assertThat(events.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_data_value() {
+        List<Event> events =
+                d2.eventModule().events()
+                        .byDataValue("hB9F8vKFmlk").lt("3843")
                         .blockingGet();
 
         assertThat(events.size()).isEqualTo(1);

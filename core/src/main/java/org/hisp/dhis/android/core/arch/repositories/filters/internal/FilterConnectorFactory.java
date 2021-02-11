@@ -86,6 +86,13 @@ public class FilterConnectorFactory<R extends BaseRepository> {
         return new SubQueryFilterConnector<>(repositoryFactory, scope, key);
     }
 
+    public ValueSubQueryFilterConnector<R> valueSubQuery(String key, String linkTable,
+                                                         String linkParent, String linkChild,
+                                                         String dataElementColumn, String dataElementId) {
+        return new ValueSubQueryFilterConnector<>(repositoryFactory, scope, key, linkTable, linkParent, linkChild,
+                dataElementColumn, dataElementId);
+    }
+
     public R withChild(String child) {
         return repositoryFactory.updated(RepositoryScopeHelper.withChild(scope, child));
     }

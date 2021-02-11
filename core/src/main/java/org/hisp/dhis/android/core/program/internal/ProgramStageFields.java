@@ -31,6 +31,8 @@ package org.hisp.dhis.android.core.program.internal;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Field;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
+import org.hisp.dhis.android.core.attribute.AttributeValue;
+import org.hisp.dhis.android.core.attribute.internal.AttributeValuesFields;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.FormType;
@@ -51,6 +53,7 @@ public final class ProgramStageFields {
     private static final String CAPTURE_COORDINATES = "captureCoordinates";
     private static final String STYLE = "style";
     static final String PROGRAM_STAGE_SECTIONS = "programStageSections";
+    private static final String ATTRIBUTE_VALUES = "attributeValues";
     private static final String ACCESS = "access";
 
     private static FieldsHelper<ProgramStage> fh = new FieldsHelper<>();
@@ -87,7 +90,8 @@ public final class ProgramStageFields {
                     fh.<ObjectWithUid>field(Columns.PROGRAM),
                     fh.<Access>nestedField(ACCESS).with(AccessFields.data.with(DataAccessFields.write)),
                     fh.<Boolean>field(Columns.REMIND_COMPLETED),
-                    fh.<Boolean>field(Columns.ENABLE_USER_ASSIGNMENT)
+                    fh.<Boolean>field(Columns.ENABLE_USER_ASSIGNMENT),
+                    fh.<AttributeValue>nestedField(ATTRIBUTE_VALUES).with(AttributeValuesFields.allFields)
             ).build();
 
     private ProgramStageFields() {

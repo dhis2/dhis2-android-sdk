@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.user.internal
 
 import dagger.Reusable
-import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
 import okhttp3.HttpUrl
@@ -42,35 +41,29 @@ import org.hisp.dhis.android.core.arch.helpers.UserHelper
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
-import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
 import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
-import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
-import org.hisp.dhis.android.core.resource.internal.Resource
-import org.hisp.dhis.android.core.resource.internal.ResourceHandler
-import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall
 import org.hisp.dhis.android.core.systeminfo.SystemInfo
 import org.hisp.dhis.android.core.user.AuthenticatedUser
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.wipe.internal.WipeModule
 
-@Suppress("LongParameterList", "TooManyFunctions")
 @Reusable
+@Suppress("LongParameterList")
 internal class LogInCall @Inject internal constructor(
     private val databaseAdapter: DatabaseAdapter,
     private val apiCallExecutor: APICallExecutor,
     private val userService: UserService,
     private val credentialsSecureStore: ObjectKeyValueStore<Credentials>,
     private val userHandler: Handler<User>,
-    private val resourceHandler: ResourceHandler,
     private val authenticatedUserStore: ObjectWithoutUidStore<AuthenticatedUser>,
     private val systemInfoRepository: ReadOnlyWithDownloadObjectRepository<SystemInfo>,
     private val userStore: IdentifiableObjectStore<User>,
     private val wipeModule: WipeModule,
-    private val multiUserDatabaseManager: MultiUserDatabaseManager,
-    private val generalSettingCall: GeneralSettingCall,
-    private val apiCallErrorCatcher: UserAuthenticateCallErrorCatcher
+    private val apiCallErrorCatcher: UserAuthenticateCallErrorCatcher,
+    private val databaseManager: LogInDatabaseManager,
+    private val exceptions: LogInExceptions
 ) {
     fun logIn(username: String?, password: String?, serverUrl: String?): Single<User> {
         return Single.fromCallable {
@@ -81,21 +74,23 @@ internal class LogInCall @Inject internal constructor(
     @Throws(D2Error::class)
     @Suppress("ThrowsCount")
     private fun blockingLogIn(username: String?, password: String?, serverUrl: String?): User {
-        throwExceptionIfUsernameNull(username)
-        throwExceptionIfPasswordNull(password)
-        throwExceptionIfAlreadyAuthenticated()
+        exceptions.throwExceptionIfUsernameNull(username)
+        exceptions.throwExceptionIfPasswordNull(password)
+        exceptions.throwExceptionIfAlreadyAuthenticated()
+
         val parsedServerUrl = ServerUrlParser.parse(serverUrl)
         ServerURLWrapper.setServerUrl(parsedServerUrl.toString())
+
         val authenticateCall = userService.authenticate(
             okhttp3.Credentials.basic(username!!, password!!),
             UserFields.allFieldsWithoutOrgUnit
         )
         return try {
-            val authenticatedUser = apiCallExecutor.executeObjectCallWithErrorCatcher(
+            val user = apiCallExecutor.executeObjectCallWithErrorCatcher(
                 authenticateCall,
                 apiCallErrorCatcher
             )
-            loginOnline(parsedServerUrl, authenticatedUser, username, password)
+            loginOnline(parsedServerUrl, user, username, password)
         } catch (d2Error: D2Error) {
             if (d2Error.isOffline) {
                 loginOffline(parsedServerUrl, username, password)
@@ -105,7 +100,7 @@ internal class LogInCall @Inject internal constructor(
             } else if (d2Error.errorCode() == D2ErrorCode.UNEXPECTED ||
                 d2Error.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR
             ) {
-                throw noDHIS2Server()
+                throw exceptions.noDHIS2Server()
             } else {
                 throw d2Error
             }
@@ -113,20 +108,21 @@ internal class LogInCall @Inject internal constructor(
     }
 
     @Suppress("TooGenericExceptionCaught")
-    private fun loginOnline(serverUrl: HttpUrl, authenticatedUser: User, username: String, password: String): User {
+    private fun loginOnline(serverUrl: HttpUrl, user: User, username: String, password: String): User {
         credentialsSecureStore.set(Credentials.create(username, password))
-        loadDatabaseOnline(serverUrl, username).blockingAwait()
+        databaseManager.loadDatabaseOnline(serverUrl, username).blockingAwait()
         val transaction = databaseAdapter.beginNewTransaction()
         return try {
-            val authenticatedUserToStore = buildAuthenticatedUser(
-                authenticatedUser.uid(),
-                username, password
-            )
-            authenticatedUserStore.updateOrInsertWhere(authenticatedUserToStore)
+            val authenticatedUser = AuthenticatedUser.builder()
+                .user(user.uid())
+                .hash(UserHelper.md5(username, password))
+                .build()
+
+            authenticatedUserStore.updateOrInsertWhere(authenticatedUser)
             systemInfoRepository.download().blockingAwait()
-            handleUser(authenticatedUser)
+            userHandler.handle(user)
             transaction.setSuccessful()
-            authenticatedUser
+            user
         } catch (e: Exception) {
             // Credentials are stored and then removed in case of error since they are required to download system info
             credentialsSecureStore.remove()
@@ -136,116 +132,19 @@ internal class LogInCall @Inject internal constructor(
         }
     }
 
-    private fun loadDatabaseOnline(serverUrl: HttpUrl, username: String): Completable {
-        return generalSettingCall.isDatabaseEncrypted()
-            .doOnSuccess { encrypt: Boolean ->
-                multiUserDatabaseManager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(
-                    serverUrl.toString(), username, encrypt
-                )
-            }
-            .doOnError {
-                multiUserDatabaseManager.loadExistingKeepingEncryptionOtherwiseCreateNew(
-                    serverUrl.toString(), username, false
-                )
-            }
-            .ignoreElement()
-            .onErrorComplete()
-    }
-
-    private fun noUserOfflineError(): D2Error {
-        return D2Error.builder()
-            .errorCode(D2ErrorCode.NO_AUTHENTICATED_USER_OFFLINE)
-            .errorDescription("The user hasn't been previously authenticated. Cannot login offline.")
-            .errorComponent(D2ErrorComponent.SDK)
-            .build()
-    }
-
     @Throws(D2Error::class)
     @Suppress("ThrowsCount")
     private fun loginOffline(serverUrl: HttpUrl, username: String, password: String): User {
-        val existingDatabase = multiUserDatabaseManager.loadExistingKeepingEncryption(
-            serverUrl.toString(),
-            username
-        )
+        val existingDatabase = databaseManager.loadExistingKeepingEncryption(serverUrl, username)
         if (!existingDatabase) {
-            throw noUserOfflineError()
+            throw exceptions.noUserOfflineError()
         }
-        val existingUser = authenticatedUserStore.selectFirst() ?: throw noUserOfflineError()
+        val existingUser = authenticatedUserStore.selectFirst() ?: throw exceptions.noUserOfflineError()
+
         if (UserHelper.md5(username, password) != existingUser.hash()) {
-            throw D2Error.builder()
-                .errorCode(D2ErrorCode.BAD_CREDENTIALS)
-                .errorDescription("Credentials do not match authenticated user. Cannot login offline.")
-                .errorComponent(D2ErrorComponent.SDK)
-                .build()
+            throw exceptions.badCredentialsError()
         }
-        val transaction = databaseAdapter.beginNewTransaction()
-        try {
-            val authenticatedUser = buildAuthenticatedUser(
-                existingUser.user()!!,
-                username, password
-            )
-            authenticatedUserStore.updateOrInsertWhere(authenticatedUser)
-            credentialsSecureStore.set(Credentials.create(username, password))
-            transaction.setSuccessful()
-        } finally {
-            transaction.end()
-        }
+        credentialsSecureStore.set(Credentials.create(username, password))
         return userStore.selectByUid(existingUser.user()!!)!!
-    }
-
-    @Throws(D2Error::class)
-    private fun throwExceptionIfUsernameNull(username: String?) {
-        if (username == null) {
-            throw D2Error.builder()
-                .errorCode(D2ErrorCode.LOGIN_USERNAME_NULL)
-                .errorDescription("Username is null")
-                .errorComponent(D2ErrorComponent.SDK)
-                .build()
-        }
-    }
-
-    @Throws(D2Error::class)
-    private fun throwExceptionIfPasswordNull(password: String?) {
-        if (password == null) {
-            throw D2Error.builder()
-                .errorCode(D2ErrorCode.LOGIN_PASSWORD_NULL)
-                .errorDescription("Password is null")
-                .errorComponent(D2ErrorComponent.SDK)
-                .build()
-        }
-    }
-
-    @Throws(D2Error::class)
-    private fun throwExceptionIfAlreadyAuthenticated() {
-        val credentials = credentialsSecureStore.get()
-        if (credentials != null) {
-            throw D2Error.builder()
-                .errorCode(D2ErrorCode.ALREADY_AUTHENTICATED)
-                .errorDescription("A user is already authenticated: " + credentials.username())
-                .errorComponent(D2ErrorComponent.SDK)
-                .build()
-        }
-    }
-
-    private fun noDHIS2Server(): D2Error {
-        return D2Error.builder()
-            .errorCode(D2ErrorCode.NO_DHIS2_SERVER)
-            .errorDescription("The URL is no DHIS2 server")
-            .errorComponent(D2ErrorComponent.SDK)
-            .build()
-    }
-
-    private fun handleUser(user: User) {
-        userHandler.handle(user)
-        resourceHandler.handleResource(Resource.Type.USER)
-        resourceHandler.handleResource(Resource.Type.USER_CREDENTIALS)
-        resourceHandler.handleResource(Resource.Type.AUTHENTICATED_USER)
-    }
-
-    private fun buildAuthenticatedUser(uid: String, username: String, password: String): AuthenticatedUser {
-        return AuthenticatedUser.builder()
-            .user(uid)
-            .hash(UserHelper.md5(username, password))
-            .build()
     }
 }

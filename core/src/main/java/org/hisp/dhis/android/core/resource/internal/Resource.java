@@ -48,10 +48,7 @@ public abstract class Resource implements CoreObject {
     public enum Type {
         EVENT,
         SYSTEM_INFO,
-        USER,
-        USER_CREDENTIALS,
         ORGANISATION_UNIT,
-        AUTHENTICATED_USER,
         PROGRAM,
         OPTION_SET,
         TRACKED_ENTITY_TYPE,

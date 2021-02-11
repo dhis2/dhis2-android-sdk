@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.dataelement.internal;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 
@@ -53,13 +52,14 @@ public final class DataElementEntityDIModule {
 
     @Provides
     @Reusable
-    Handler<DataElement> handler(IdentifiableObjectStore<DataElement> store) {
-        return new IdentifiableHandlerImpl<>(store);
+    Handler<DataElement> handler(DataElementHandler handler) {
+        return handler;
     }
 
     @Provides
     @Reusable
-    Map<String, ChildrenAppender<DataElement>> childrenAppenders() {
-        return Collections.emptyMap();
+    Map<String, ChildrenAppender<DataElement>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        return Collections.singletonMap(DataElementFields.LEGEND_SETS,
+                DataElementLegendSetChildrenAppender.create(databaseAdapter));
     }
 }

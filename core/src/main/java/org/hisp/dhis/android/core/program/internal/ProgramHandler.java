@@ -34,6 +34,10 @@ import org.hisp.dhis.android.core.arch.cleaners.internal.ParentOrphanCleaner;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
+import org.hisp.dhis.android.core.attribute.Attribute;
+import org.hisp.dhis.android.core.attribute.AttributeValueUtils;
+import org.hisp.dhis.android.core.attribute.ProgramAttributeValueLink;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.program.ProgramInternalAccessor;
@@ -61,6 +65,11 @@ final class ProgramHandler extends IdentifiableHandlerImpl<Program> {
     private final CollectionCleaner<Program> collectionCleaner;
     private final LinkCleaner<Program> linkCleaner;
 
+    private final Handler<Attribute> attributeHandler;
+    private final LinkHandler<Attribute, ProgramAttributeValueLink>
+            programAttributeLinkHandler;
+
+
     @Inject
     ProgramHandler(ProgramStoreInterface programStore,
                    Handler<ProgramRuleVariable> programRuleVariableHandler,
@@ -69,7 +78,9 @@ final class ProgramHandler extends IdentifiableHandlerImpl<Program> {
                    Handler<ProgramSection> programSectionHandler,
                    ParentOrphanCleaner<Program> orphanCleaner,
                    CollectionCleaner<Program> collectionCleaner,
-                   LinkCleaner<Program> linkCleaner) {
+                   LinkCleaner<Program> linkCleaner,
+                   Handler<Attribute> attributeHandler,
+                   LinkHandler<Attribute, ProgramAttributeValueLink> programAttributeLinkHandler) {
         super(programStore);
         this.programRuleVariableHandler = programRuleVariableHandler;
         this.programIndicatorHandler = programIndicatorHandler;
@@ -78,6 +89,8 @@ final class ProgramHandler extends IdentifiableHandlerImpl<Program> {
         this.orphanCleaner = orphanCleaner;
         this.collectionCleaner = collectionCleaner;
         this.linkCleaner = linkCleaner;
+        this.attributeHandler = attributeHandler;
+        this.programAttributeLinkHandler = programAttributeLinkHandler;
     }
 
     @Override
@@ -91,6 +104,20 @@ final class ProgramHandler extends IdentifiableHandlerImpl<Program> {
         if (action == HandleAction.Update) {
             orphanCleaner.deleteOrphan(program);
         }
+
+        if (program.attributeValues() != null){
+            final List<Attribute> attributes = AttributeValueUtils.extractAttributes(program.attributeValues());
+
+            attributeHandler.handleMany(attributes);
+
+            programAttributeLinkHandler.handleMany(program.uid(), attributes,
+                    attribute -> ProgramAttributeValueLink.builder()
+                            .program(program.uid())
+                            .attribute(attribute.uid())
+                            .value(AttributeValueUtils.extractValue(program.attributeValues(), attribute.uid()))
+                            .build());
+        }
+
     }
 
     @Override

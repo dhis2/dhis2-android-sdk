@@ -46,11 +46,13 @@ import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.FeatureTypeCol
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.TrackedEntityTypeWithUidColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreAttributeValuesListAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramIndicatorListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramRuleVariableListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramSectionListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramTrackedEntityAttributeListColumnAdapter;
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
+import org.hisp.dhis.android.core.attribute.AttributeValue;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
@@ -207,6 +209,11 @@ public abstract class Program extends BaseNameableObject
     @ColumnAdapter(AccessLevelColumnAdapter.class)
     public abstract AccessLevel accessLevel();
 
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(IgnoreAttributeValuesListAdapter.class)
+    public abstract List<AttributeValue> attributeValues();
+
     public static Builder builder() {
         return new $$AutoValue_Program.Builder();
     }
@@ -286,6 +293,8 @@ public abstract class Program extends BaseNameableObject
         public abstract Builder featureType(FeatureType featureType);
 
         public abstract Builder accessLevel(AccessLevel accessLevel);
+
+        public abstract Builder attributeValues(List<AttributeValue> attributeValues);
 
         abstract Program autoBuild();
 

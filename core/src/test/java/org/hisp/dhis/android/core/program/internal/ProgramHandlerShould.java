@@ -33,9 +33,15 @@ import org.hisp.dhis.android.core.arch.cleaners.internal.LinkCleaner;
 import org.hisp.dhis.android.core.arch.cleaners.internal.ParentOrphanCleaner;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
+import org.hisp.dhis.android.core.attribute.Attribute;
+import org.hisp.dhis.android.core.attribute.AttributeValue;
+import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLink;
+import org.hisp.dhis.android.core.attribute.ProgramAttributeValueLink;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.program.ProgramInternalAccessor;
@@ -51,9 +57,12 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.never;
@@ -89,6 +98,12 @@ public class ProgramHandlerShould {
     private LinkCleaner<Program> linkCleaner;
 
     @Mock
+    private LinkHandler<Attribute, ProgramAttributeValueLink> programAttributeValueLinkHandler;
+
+    @Mock
+    private Handler<Attribute> attributeHandler;
+
+    @Mock
     private Program program;
 
     @Mock
@@ -118,6 +133,10 @@ public class ProgramHandlerShould {
     @Mock
     private List<ProgramSection> programSections;
 
+    private List<AttributeValue> attributeValues = new ArrayList<>();
+
+    Attribute attribute;
+
     // object to test
     private ProgramHandler programHandler;
 
@@ -128,7 +147,7 @@ public class ProgramHandlerShould {
         programHandler = new ProgramHandler(
                 programStore, programRuleVariableHandler, programIndicatorHandler,
                 programTrackedEntityAttributeHandler, programSectionHandler, orphanCleaner,
-                collectionCleaner, linkCleaner);
+                collectionCleaner, linkCleaner, attributeHandler, programAttributeValueLinkHandler);
 
         when(program.uid()).thenReturn("test_program_uid");
         when(program.code()).thenReturn("test_program_code");
@@ -167,6 +186,23 @@ public class ProgramHandlerShould {
         when(access.data()).thenReturn(dataAccess);
         when(dataAccess.read()).thenReturn(true);
         when(dataAccess.write()).thenReturn(true);
+
+        attribute = Attribute.builder()
+                .programAttribute(true)
+                .uid("Att_Uid")
+                .name("att")
+                .code("att")
+                .valueType(ValueType.TEXT)
+                .build();
+
+        AttributeValue attValue = AttributeValue.builder()
+                .value("5")
+                .attribute(attribute)
+                .build();
+
+        attributeValues.add(attValue);
+
+        when(program.attributeValues()).thenReturn(attributeValues);
     }
 
     @Test
@@ -220,5 +256,12 @@ public class ProgramHandlerShould {
         when(program.trackedEntityType()).thenReturn(null);
         programHandler.handleMany(Collections.singletonList(program));
         verifyNoMoreInteractions(programStore);
+    }
+
+    @Test
+    public void call_attribute_handlers() {
+        programHandler.handleMany(Collections.singletonList(program));
+        verify(attributeHandler).handleMany(eq(Arrays.asList(attribute)));
+        verify(programAttributeValueLinkHandler).handleMany(eq(program.uid()),eq(Arrays.asList(attribute)),any());
     }
 }

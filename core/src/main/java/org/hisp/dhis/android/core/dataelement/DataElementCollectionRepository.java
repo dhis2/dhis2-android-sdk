@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.core.dataelement.internal.DataElementFields;
 
 import java.util.Map;
 
@@ -97,5 +98,9 @@ public final class DataElementCollectionRepository
 
     public StringFilterConnector<DataElementCollectionRepository> byIcon() {
         return cf.string(DataElementTableInfo.Columns.ICON);
+    }
+
+    public DataElementCollectionRepository withLegendSets() {
+        return cf.withChild(DataElementFields.LEGEND_SETS);
     }
 }

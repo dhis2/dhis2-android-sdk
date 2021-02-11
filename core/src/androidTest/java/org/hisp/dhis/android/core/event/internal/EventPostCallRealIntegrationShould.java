@@ -33,12 +33,11 @@ import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2Factory;
 import org.hisp.dhis.android.core.arch.helpers.UidGenerator;
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
-import org.hisp.dhis.android.core.common.FeatureType;
-import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.program.ProgramStage;
+import org.hisp.dhis.android.core.program.ProgramType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl;
@@ -55,8 +54,6 @@ import static com.google.common.truth.Truth.assertThat;
 public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest {
 
     private D2 d2;
-    private UidGenerator uidGenerator;
-
 
     private EventStore eventStore;
     private TrackedEntityDataValueStore trackedEntityDataValueStore;
@@ -78,7 +75,7 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
         eventStore = EventStoreImpl.create(d2.databaseAdapter());
         trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl.create(d2.databaseAdapter());
 
-        uidGenerator = new UidGeneratorImpl();
+        UidGenerator uidGenerator = new UidGeneratorImpl();
 
         eventUid1 = uidGenerator.generate();
         eventUid2 = uidGenerator.generate();
@@ -140,7 +137,6 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
 
     private void createDummyDataToPost(String eventUid) {
         eventStore.insert(Event.builder().uid(eventUid).created(new Date()).lastUpdated(new Date())
-                .geometry(Geometry.builder().type(FeatureType.POINT).coordinates("[12.21, 13.21]").build())
                 .status(EventStatus.ACTIVE).program(programUid)
                 .programStage(programStageUid).organisationUnit(orgUnitUid).eventDate(new Date())
                 .completedDate(new Date()).dueDate(new Date()).state(State.TO_POST)
@@ -198,7 +194,13 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
         d2.metadataModule().blockingDownload();
 
         orgUnitUid = d2.organisationUnitModule().organisationUnits().one().blockingGet().uid();
-        ProgramStage programStage = d2.programModule().programStages().one().blockingGet();
+        String program = d2.programModule().programs()
+                .byProgramType().eq(ProgramType.WITHOUT_REGISTRATION)
+                .byOrganisationUnitUid(orgUnitUid)
+                .one().blockingGet().uid();
+        ProgramStage programStage = d2.programModule().programStages()
+                .byProgramUid().eq(program)
+                .one().blockingGet();
         programStageUid = programStage.uid();
         programUid = programStage.program().uid();
         dataElementUid = d2.dataElementModule().dataElements().one().blockingGet().uid();

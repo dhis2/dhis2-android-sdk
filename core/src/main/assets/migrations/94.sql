@@ -1,9 +1,2 @@
-# Migrate settings app definition
-ALTER TABLE GeneralSetting RENAME TO GeneralSetting_Old;
-CREATE TABLE GeneralSetting (_id INTEGER PRIMARY KEY AUTOINCREMENT, encryptDB INTEGER, lastUpdated TEXT, reservedValues INTEGER, smsGateway TEXT, smsResultSender TEXT, matomoID TEXT, matomoUrl TEXT);
-INSERT INTO GeneralSetting (_id, encryptDB, lastUpdated, reservedValues, smsGateway, smsResultSender, matomoID, matomoURL) SELECT _id, encryptDB, lastUpdated, reservedValues, numberSmsToSend, numberSmsConfirmation, null, null FROM GeneralSetting_Old;
-
-CREATE TABLE SynchronizationSetting (_id INTEGER PRIMARY KEY AUTOINCREMENT, dataSync TEXT, metadataSync TEXT);
-INSERT INTO SynchronizationSetting (dataSync, metadataSync) SELECT dataSync, metadataSync FROM  GeneralSetting_Old;
-
-DELETE GeneralSetting_Old;
+# Add Data Element Legend Set Link
+CREATE TABLE DataElementLegendSetLink (_id INTEGER PRIMARY KEY AUTOINCREMENT, dataElement TEXT NOT NULL, legendSet TEXT NOT NULL, FOREIGN KEY (dataElement) REFERENCES DataElement (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (legendSet) REFERENCES LegendSet (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, UNIQUE (dataElement, legendSet));

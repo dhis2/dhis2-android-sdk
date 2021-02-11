@@ -44,9 +44,11 @@ import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbFormTypeCol
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.FeatureTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreAttributeValuesListAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramStageDataElementListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramStageSectionListColumnAdapter;
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
+import org.hisp.dhis.android.core.attribute.AttributeValue;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
@@ -180,6 +182,11 @@ public abstract class ProgramStage extends BaseIdentifiableObject
     @JsonProperty()
     public abstract Boolean remindCompleted();
 
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(IgnoreAttributeValuesListAdapter.class)
+    public abstract List<AttributeValue> attributeValues();
+
     public static Builder builder() {
         return new $$AutoValue_ProgramStage.Builder();
     }
@@ -251,6 +258,8 @@ public abstract class ProgramStage extends BaseIdentifiableObject
         public abstract Builder access(Access access);
 
         public abstract Builder remindCompleted(Boolean remindCompleted);
+
+        public abstract Builder attributeValues(List<AttributeValue> attributeValues);
 
         abstract ProgramStage autoBuild();
 

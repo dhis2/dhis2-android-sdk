@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositorySco
 import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.common.DateFilterPeriod;
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper;
+import org.hisp.dhis.android.core.common.DatePeriodType;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
@@ -91,6 +92,7 @@ public class TrackedEntityInstanceLocalQueryHelperShould {
         TrackedEntityInstanceQueryRepositoryScope scope  = queryBuilder
                 .program(programUid)
                 .programDate(DateFilterPeriod.builder()
+                        .type(DatePeriodType.ABSOLUTE)
                         .startDate(format.parse("2019-04-15"))
                         .endDate(format.parse("2019-05-19"))
                         .build())
@@ -179,7 +181,11 @@ public class TrackedEntityInstanceLocalQueryHelperShould {
         assertThat(query1).doesNotContain("ACTIVE");
 
         TrackedEntityInstanceQueryEventFilter eventFilterWithDates = TrackedEntityInstanceQueryEventFilter.builder()
-                .eventDate(DateFilterPeriod.builder().startDate(new Date()).endDate(new Date()).build())
+                .eventDate(DateFilterPeriod.builder()
+                        .type(DatePeriodType.ABSOLUTE)
+                        .startDate(new Date())
+                        .endDate(new Date())
+                        .build())
                 .eventStatus(Collections.singletonList(EventStatus.ACTIVE)).build();
         TrackedEntityInstanceQueryRepositoryScope scopeWithDates = queryBuilder
                 .program(programUid)

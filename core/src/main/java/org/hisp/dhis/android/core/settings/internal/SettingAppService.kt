@@ -28,18 +28,18 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import io.reactivex.Single
+import javax.inject.Inject
 import org.hisp.dhis.android.core.settings.DataSetSettings
 import org.hisp.dhis.android.core.settings.GeneralSettings
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
-import javax.inject.Inject
 
 internal class SettingAppService @Inject constructor(
     private val settingService: SettingService
 ) {
 
     fun generalSettings(version: SettingsAppVersion): Single<GeneralSettings> {
-        val key = when(version) {
+        val key = when (version) {
             SettingsAppVersion.V1_1 -> "general_settings"
             else -> "generalSettings"
         }
@@ -60,7 +60,7 @@ internal class SettingAppService @Inject constructor(
     }
 
     private fun getNamespace(version: SettingsAppVersion): String {
-        return when(version) {
+        return when (version) {
             SettingsAppVersion.V1_1 -> ANDROID_APP_NAMESPACE_V1
             else -> ANDROID_APP_NAMESPACE_V2
         }

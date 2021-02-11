@@ -52,7 +52,9 @@ internal object SynchronizationSettingStore {
     }
 
     fun create(databaseAdapter: DatabaseAdapter?): ObjectWithoutUidStore<SynchronizationSettings> {
-        return objectWithoutUidStore(databaseAdapter!!, SynchronizationSettingTableInfo.TABLE_INFO, BINDER,
-            WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER) { cursor: Cursor? -> SynchronizationSettings.create(cursor) }
+        return objectWithoutUidStore(
+            databaseAdapter!!, SynchronizationSettingTableInfo.TABLE_INFO, BINDER,
+            WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER
+        ) { cursor: Cursor? -> SynchronizationSettings.create(cursor) }
     }
 }

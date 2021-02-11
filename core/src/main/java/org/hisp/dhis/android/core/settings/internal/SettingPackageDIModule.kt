@@ -33,14 +33,16 @@ import dagger.Reusable
 import org.hisp.dhis.android.core.settings.SettingModule
 import retrofit2.Retrofit
 
-@Module(includes = [
-    GeneralSettingEntityDIModule::class,
-    DataSetSettingEntityDIModule::class,
-    ProgramSettingEntityDIModule::class,
-    UserSettingsEntityDIModule::class,
-    SynchronizationSettingEntityDIModule::class,
-    SystemSettingEntityDIModule::class
-])
+@Module(
+    includes = [
+        GeneralSettingEntityDIModule::class,
+        DataSetSettingEntityDIModule::class,
+        ProgramSettingEntityDIModule::class,
+        UserSettingsEntityDIModule::class,
+        SynchronizationSettingEntityDIModule::class,
+        SystemSettingEntityDIModule::class
+    ]
+)
 internal class SettingPackageDIModule {
 
     @Provides

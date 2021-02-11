@@ -59,8 +59,10 @@ class SynchronizationSettingCallShould {
     fun setUp() {
         whenever(service.synchronizationSettings(any())) doReturn synchronizationSettingSingle
         whenever(appVersionManager.getVersion()) doReturn SettingsAppVersion.V1_1
-        synchronizationSettingCall = SynchronizationSettingCall(handler, service, apiCallExecutor,
-            generalSettingCall, dataSetSettingCall, programSettingCall, appVersionManager)
+        synchronizationSettingCall = SynchronizationSettingCall(
+            handler, service, apiCallExecutor,
+            generalSettingCall, dataSetSettingCall, programSettingCall, appVersionManager
+        )
     }
 
     @Test

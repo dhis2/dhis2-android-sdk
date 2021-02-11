@@ -29,18 +29,16 @@ package org.hisp.dhis.android.core.settings.internal
 
 import dagger.Reusable
 import io.reactivex.Completable
-import io.reactivex.Single
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.systeminfo.SystemInfo
-import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoStore
-import javax.inject.Inject
 
 @Reusable
 internal class SettingsAppVersionCall @Inject constructor(
     private val appVersionManager: SettingsAppVersionManager,
     private val systemInfoStore: ObjectWithoutUidStore<SystemInfo>
-): CompletableProvider {
+) : CompletableProvider {
 
     override fun getCompletable(storeError: Boolean): Completable {
 

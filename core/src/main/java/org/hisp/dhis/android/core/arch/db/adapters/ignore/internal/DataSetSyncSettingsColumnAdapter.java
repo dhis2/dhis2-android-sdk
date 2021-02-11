@@ -38,11 +38,11 @@ import org.hisp.dhis.android.core.settings.DataSetSettings;
 public final class DataSetSyncSettingsColumnAdapter implements ColumnTypeAdapter<DataSetSettings> {
 
     @Override
-    public final DataSetSettings fromCursor(Cursor cursor, String columnName) {
+    public DataSetSettings fromCursor(Cursor cursor, String columnName) {
         return DataSetSettings.builder().build();
     }
 
     @Override
-    public final void toContentValues(ContentValues values, String columnName, DataSetSettings value) {
+    public void toContentValues(ContentValues values, String columnName, DataSetSettings value) {
     }
 }

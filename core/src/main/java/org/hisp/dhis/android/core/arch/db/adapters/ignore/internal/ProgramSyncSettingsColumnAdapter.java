@@ -38,11 +38,11 @@ import org.hisp.dhis.android.core.settings.ProgramSettings;
 public final class ProgramSyncSettingsColumnAdapter implements ColumnTypeAdapter<ProgramSettings> {
 
     @Override
-    public final ProgramSettings fromCursor(Cursor cursor, String columnName) {
+    public ProgramSettings fromCursor(Cursor cursor, String columnName) {
         return ProgramSettings.builder().build();
     }
 
     @Override
-    public final void toContentValues(ContentValues values, String columnName, ProgramSettings value) {
+    public void toContentValues(ContentValues values, String columnName, ProgramSettings value) {
     }
 }

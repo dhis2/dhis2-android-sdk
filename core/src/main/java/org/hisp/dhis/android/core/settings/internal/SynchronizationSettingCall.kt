@@ -30,14 +30,14 @@ package org.hisp.dhis.android.core.settings.internal
 import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Single
+import java.net.HttpURLConnection
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
-import java.net.HttpURLConnection
-import javax.inject.Inject
 
 @Reusable
 internal class SynchronizationSettingCall @Inject constructor(
@@ -64,7 +64,6 @@ internal class SynchronizationSettingCall @Inject constructor(
                     process(null)
                 }
             }
-
     }
 
     fun fetch(storeError: Boolean): Single<SynchronizationSettings> {
@@ -75,18 +74,22 @@ internal class SynchronizationSettingCall @Inject constructor(
                 val programSettings = tryOrNull(programSettingCall.fetch(storeError))
 
                 if (generalSettings == null && dataSetSettings == null && programSettings == null) {
-                    Single.error(D2Error.builder()
-                        .errorDescription("Synchronization settings not found")
-                        .errorCode(D2ErrorCode.URL_NOT_FOUND)
-                        .httpErrorCode(HttpURLConnection.HTTP_NOT_FOUND)
-                        .build())
+                    Single.error(
+                        D2Error.builder()
+                            .errorDescription("Synchronization settings not found")
+                            .errorCode(D2ErrorCode.URL_NOT_FOUND)
+                            .httpErrorCode(HttpURLConnection.HTTP_NOT_FOUND)
+                            .build()
+                    )
                 } else {
-                    Single.just(SynchronizationSettings.builder()
-                        .dataSync(generalSettings?.dataSync())
-                        .metadataSync(generalSettings?.metadataSync())
-                        .dataSetSettings(dataSetSettings)
-                        .programSettings(programSettings)
-                        .build())
+                    Single.just(
+                        SynchronizationSettings.builder()
+                            .dataSync(generalSettings?.dataSync())
+                            .metadataSync(generalSettings?.metadataSync())
+                            .dataSetSettings(dataSetSettings)
+                            .programSettings(programSettings)
+                            .build()
+                    )
                 }
             }
             SettingsAppVersion.V2_0 -> {

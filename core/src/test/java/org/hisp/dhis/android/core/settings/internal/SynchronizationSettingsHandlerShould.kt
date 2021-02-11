@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.settings.ProgramSetting
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito
 
 class SynchronizationSettingsHandlerShould {
 
@@ -55,8 +54,10 @@ class SynchronizationSettingsHandlerShould {
     fun setUp() {
         synchronizationSettingsList = listOf(synchronizationSettings)
         whenever(synchronizationSettingStore.updateOrInsertWhere(any())) doReturn HandleAction.Insert
-        synchronizationSettingsHandler = SynchronizationSettingHandler(synchronizationSettingStore,
-            dataSetSettingHandler, programSettingHandler)
+        synchronizationSettingsHandler = SynchronizationSettingHandler(
+            synchronizationSettingStore,
+            dataSetSettingHandler, programSettingHandler
+        )
     }
 
     @Test

@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWit
 import org.hisp.dhis.android.core.settings.GeneralSettingTableInfo
 import org.hisp.dhis.android.core.settings.GeneralSettings
 
+@Suppress("MagicNumber")
 internal object GeneralSettingStore {
     private val BINDER = StatementBinder { o: GeneralSettings, w: StatementWrapper ->
         w.bind(1, o.encryptDB())
@@ -57,7 +58,9 @@ internal object GeneralSettingStore {
     }
 
     fun create(databaseAdapter: DatabaseAdapter?): ObjectWithoutUidStore<GeneralSettings> {
-        return objectWithoutUidStore(databaseAdapter!!, GeneralSettingTableInfo.TABLE_INFO, BINDER,
-            WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER) { cursor: Cursor? -> GeneralSettings.create(cursor) }
+        return objectWithoutUidStore(
+            databaseAdapter!!, GeneralSettingTableInfo.TABLE_INFO, BINDER,
+            WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER
+        ) { cursor: Cursor? -> GeneralSettings.create(cursor) }
     }
 }

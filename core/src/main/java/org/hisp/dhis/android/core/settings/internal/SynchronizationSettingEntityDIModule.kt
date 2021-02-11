@@ -48,9 +48,11 @@ internal class SynchronizationSettingEntityDIModule {
 
     @Provides
     @Reusable
-    fun handler(store: ObjectWithoutUidStore<SynchronizationSettings>,
-                dataSetSettingHandler: Handler<DataSetSetting>,
-                programSettingHandler: Handler<ProgramSetting>): Handler<SynchronizationSettings> {
+    fun handler(
+        store: ObjectWithoutUidStore<SynchronizationSettings>,
+        dataSetSettingHandler: Handler<DataSetSetting>,
+        programSettingHandler: Handler<ProgramSetting>
+    ): Handler<SynchronizationSettings> {
         return SynchronizationSettingHandler(store, dataSetSettingHandler, programSettingHandler)
     }
 }

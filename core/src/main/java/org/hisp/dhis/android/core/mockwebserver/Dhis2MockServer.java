@@ -164,6 +164,8 @@ public class Dhis2MockServer {
                     return createMockResponse(SYSTEM_INFO_JSON);
                 } else if (path.startsWith("/api/systemSettings?")) {
                     return createMockResponse(SYSTEM_SETTINGS_JSON);
+                } else if (path.startsWith("/api/dataStore/ANDROID_SETTINGS_APP/info")) {
+                    return getErrorNotFoundResponse();
                 } else if (path.startsWith("/api/dataStore/ANDROID_SETTING_APP/general_settings")) {
                     return createMockResponse(GENERAL_SETTINGS_V1_JSON);
                 } else if (path.startsWith("/api/dataStore/ANDROID_SETTING_APP/dataSet_settings")) {
@@ -253,8 +255,10 @@ public class Dhis2MockServer {
     }
 
     public void enqueueMetadataResponses() {
+        server.enqueue(getErrorNotFoundResponse());
         enqueueMockResponse(GENERAL_SETTINGS_V1_JSON);
         enqueueMockResponse(SYSTEM_INFO_JSON);
+        server.enqueue(getErrorNotFoundResponse());
         enqueueMockResponse(GENERAL_SETTINGS_V1_JSON);
         enqueueMockResponse(DATASET_SETTINGS_JSON);
         server.enqueue(getErrorResponse());
@@ -303,6 +307,10 @@ public class Dhis2MockServer {
 
     private MockResponse getErrorResponse() {
         return new MockResponse().setResponseCode(500).setBody("Error");
+    }
+
+    private MockResponse getErrorNotFoundResponse() {
+        return new MockResponse().setResponseCode(404).setBody("Not found");
     }
 
     public void enqueueMockResponse(String fileName, Date dateHeader) {

@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.program.ProgramStage;
-import org.hisp.dhis.android.core.program.ProgramType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl;
@@ -194,16 +193,16 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
         d2.metadataModule().blockingDownload();
 
         orgUnitUid = d2.organisationUnitModule().organisationUnits().one().blockingGet().uid();
-        String program = d2.programModule().programs()
-                .byProgramType().eq(ProgramType.WITHOUT_REGISTRATION)
-                .byOrganisationUnitUid(orgUnitUid)
-                .one().blockingGet().uid();
+        String program = "q04UBOqq3rp"; // Checked in Sierra Leona that metadata is correct.
+        // Before running, make sure no data elements are compulsory
         ProgramStage programStage = d2.programModule().programStages()
                 .byProgramUid().eq(program)
                 .one().blockingGet();
         programStageUid = programStage.uid();
         programUid = programStage.program().uid();
-        dataElementUid = d2.dataElementModule().dataElements().one().blockingGet().uid();
+        dataElementUid = d2.programModule().programStageDataElements()
+                .byProgramStage().eq(programStageUid)
+                .one().blockingGet().dataElement().uid();
         attributeOptionCombo = d2.categoryModule().categoryOptionCombos().one().blockingGet().uid();
     }
 

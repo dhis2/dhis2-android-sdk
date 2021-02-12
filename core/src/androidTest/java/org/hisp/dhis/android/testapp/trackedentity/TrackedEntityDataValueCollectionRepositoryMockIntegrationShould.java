@@ -98,7 +98,7 @@ public class TrackedEntityDataValueCollectionRepositoryMockIntegrationShould ext
         List<TrackedEntityDataValue> trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues()
                 .byValue().eq("11")
                 .blockingGet();
-        assertThat(trackedEntityDataValues.size()).isEqualTo(2);
+        assertThat(trackedEntityDataValues.size()).isEqualTo(1);
     }
 
     @Test

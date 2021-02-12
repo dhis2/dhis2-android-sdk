@@ -25,22 +25,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings.internal
 
-import javax.inject.Inject
-import javax.inject.Singleton
+package org.hisp.dhis.android.core.settings;
 
-@Singleton
-internal class SettingsAppVersionManagerImpl @Inject constructor() : SettingsAppVersionManager {
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.hisp.dhis.android.core.settings.internal.SettingsAppDataStoreVersion;
+import org.junit.Test;
 
-    private var version: SettingsAppVersion? = null
+import java.io.IOException;
+import java.text.ParseException;
 
-    override fun setVersion(version: SettingsAppVersion) {
-        this.version = version
+import static com.google.common.truth.Truth.assertThat;
+
+public class SettingsAppInfoShould extends BaseObjectShould implements ObjectShould {
+
+    public SettingsAppInfoShould() {
+        super("settings/app_info.json");
     }
 
-    override fun getVersion(): SettingsAppVersion {
-        // TODO Ensure version is always present
-        return version ?: SettingsAppVersion.V1_1
+    @Override
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        SettingsAppInfo appInfo = objectMapper.readValue(jsonStream, SettingsAppInfo.class);
+
+        assertThat(appInfo.dataStoreVersion()).isEqualTo(SettingsAppDataStoreVersion.V2_0);
+        assertThat(appInfo.androidSettingsVersion()).isEqualTo("2.0.0");
     }
 }

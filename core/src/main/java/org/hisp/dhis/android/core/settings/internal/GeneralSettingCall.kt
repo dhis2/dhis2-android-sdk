@@ -43,7 +43,7 @@ internal class GeneralSettingCall @Inject constructor(
     private val generalSettingHandler: Handler<GeneralSettings>,
     private val settingAppService: SettingAppService,
     private val apiCallExecutor: RxAPICallExecutor,
-    private val appVersionManager: SettingsAppVersionManager
+    private val appVersionManager: SettingsAppInfoManager
 ) : CompletableProvider {
 
     private var cachedValue: GeneralSettings? = null
@@ -65,10 +65,13 @@ internal class GeneralSettingCall @Inject constructor(
     }
 
     fun fetch(storeError: Boolean, acceptCache: Boolean = false): Single<GeneralSettings> {
-        val version = appVersionManager.getVersion()
-        return cachedValue?.let {
-            if (acceptCache) Single.just(it) else null
-        } ?: apiCallExecutor.wrapSingle(settingAppService.generalSettings(version), storeError)
+        return when {
+            cachedValue != null && acceptCache -> Single.just(cachedValue)
+            else ->
+                appVersionManager.getDataStoreVersion().flatMap { version ->
+                    apiCallExecutor.wrapSingle(settingAppService.generalSettings(version), storeError = storeError)
+                }
+        }
     }
 
     fun process(item: GeneralSettings?) {
@@ -78,8 +81,11 @@ internal class GeneralSettingCall @Inject constructor(
     }
 
     fun isDatabaseEncrypted(): Single<Boolean> {
-        val version = appVersionManager.getVersion()
-        return apiCallExecutor.wrapSingle(settingAppService.generalSettings(version), false)
+        return appVersionManager.updateAppInfo()
+            .flatMap { appVersionManager.getDataStoreVersion() }
+            .flatMap { version ->
+                apiCallExecutor.wrapSingle(settingAppService.generalSettings(version), storeError = false)
+            }
             .map { obj: GeneralSettings -> obj.encryptDB() }
     }
 }

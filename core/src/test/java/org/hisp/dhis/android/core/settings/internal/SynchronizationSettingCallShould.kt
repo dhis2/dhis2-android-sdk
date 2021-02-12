@@ -48,7 +48,7 @@ class SynchronizationSettingCallShould {
     private val generalSettingCall: GeneralSettingCall = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val dataSetSettingCall: DataSetSettingCall = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val programSettingCall: ProgramSettingCall = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
-    private val appVersionManager: SettingsAppVersionManager = mock()
+    private val appVersionManager: SettingsAppInfoManager = mock()
 
     private val synchronizationSettings: SynchronizationSettings = mock()
     private val synchronizationSettingSingle: Single<SynchronizationSettings> = Single.just(synchronizationSettings)
@@ -58,7 +58,7 @@ class SynchronizationSettingCallShould {
     @Before
     fun setUp() {
         whenever(service.synchronizationSettings(any())) doReturn synchronizationSettingSingle
-        whenever(appVersionManager.getVersion()) doReturn SettingsAppVersion.V1_1
+        whenever(appVersionManager.getDataStoreVersion()) doReturn Single.just(SettingsAppDataStoreVersion.V1_1)
         synchronizationSettingCall = SynchronizationSettingCall(
             handler, service, apiCallExecutor,
             generalSettingCall, dataSetSettingCall, programSettingCall, appVersionManager
@@ -67,7 +67,7 @@ class SynchronizationSettingCallShould {
 
     @Test
     fun call_dataSet_and_program_endpoints_if_version_1() {
-        whenever(appVersionManager.getVersion()) doReturn SettingsAppVersion.V1_1
+        whenever(appVersionManager.getDataStoreVersion()) doReturn Single.just(SettingsAppDataStoreVersion.V1_1)
 
         synchronizationSettingCall.getCompletable(false).blockingAwait()
 
@@ -81,7 +81,7 @@ class SynchronizationSettingCallShould {
     fun call_synchronization_endpoint_if_version_2() {
         whenever(apiCallExecutor.wrapSingle(synchronizationSettingSingle, false)) doReturn
             synchronizationSettingSingle
-        whenever(appVersionManager.getVersion()) doReturn SettingsAppVersion.V2_0
+        whenever(appVersionManager.getDataStoreVersion()) doReturn Single.just(SettingsAppDataStoreVersion.V2_0)
 
         synchronizationSettingCall.getCompletable(false).blockingAwait()
 
@@ -93,7 +93,7 @@ class SynchronizationSettingCallShould {
 
     @Test
     fun default_to_empty_collection_if_not_found() {
-        whenever(appVersionManager.getVersion()) doReturn SettingsAppVersion.V2_0
+        whenever(appVersionManager.getDataStoreVersion()) doReturn Single.just(SettingsAppDataStoreVersion.V2_0)
         whenever(apiCallExecutor.wrapSingle(synchronizationSettingSingle, false)) doReturn
             Single.error(D2ErrorSamples.notFound())
 

@@ -27,45 +27,38 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import org.hisp.dhis.android.core.settings.SettingModule
-import retrofit2.Retrofit
+import io.reactivex.Single
+import javax.inject.Inject
+import javax.inject.Singleton
+import org.hisp.dhis.android.core.settings.SettingsAppInfo
 
-@Module(
-    includes = [
-        GeneralSettingEntityDIModule::class,
-        DataSetSettingEntityDIModule::class,
-        ProgramSettingEntityDIModule::class,
-        UserSettingsEntityDIModule::class,
-        SynchronizationSettingEntityDIModule::class,
-        SystemSettingEntityDIModule::class
-    ]
-)
-internal class SettingPackageDIModule {
+@Singleton
+internal class SettingsAppInfoManagerImpl @Inject constructor(
+    private val settingsAppInfoCall: SettingsAppInfoCall
+) : SettingsAppInfoManager {
 
-    @Provides
-    @Reusable
-    fun settingService(retrofit: Retrofit): SettingService {
-        return retrofit.create(SettingService::class.java)
+    private var dataStoreVersion: SettingsAppDataStoreVersion? = null
+    private var appVersion: String? = null
+
+    override fun getDataStoreVersion(): Single<SettingsAppDataStoreVersion> {
+        return when {
+            dataStoreVersion != null -> Single.just(dataStoreVersion)
+            else -> updateAppInfo().map { it.dataStoreVersion() }
+        }
     }
 
-    @Provides
-    @Reusable
-    fun settingAppService(settingService: SettingService): SettingAppService {
-        return SettingAppService(settingService)
+    override fun getAppVersion(): Single<String> {
+        return when {
+            appVersion != null -> Single.just(appVersion)
+            else -> updateAppInfo().map { it.androidSettingsVersion() }
+        }
     }
 
-    @Provides
-    @Reusable
-    fun module(impl: SettingModuleImpl): SettingModule {
-        return impl
-    }
-
-    @Provides
-    @Reusable
-    fun versionManager(impl: SettingsAppInfoManagerImpl): SettingsAppInfoManager {
-        return impl
+    override fun updateAppInfo(): Single<SettingsAppInfo> {
+        return settingsAppInfoCall.fetch(false)
+            .doOnSuccess { info ->
+                dataStoreVersion = info.dataStoreVersion()
+                appVersion = info.androidSettingsVersion()
+            }
     }
 }

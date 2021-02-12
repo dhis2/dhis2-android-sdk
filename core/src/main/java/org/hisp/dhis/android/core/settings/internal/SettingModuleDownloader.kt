@@ -37,8 +37,7 @@ internal class SettingModuleDownloader @Inject constructor(
     private val systemSettingCall: SystemSettingCall,
     private val generalSettingCall: GeneralSettingCall,
     private val synchronizationSettingCall: SynchronizationSettingCall,
-    private val userSettingsCall: UserSettingsCall,
-    private val settingAppVersionCall: SettingsAppVersionCall
+    private val userSettingsCall: UserSettingsCall
 ) : UntypedModuleDownloader {
 
     override fun downloadMetadata(): Completable {
@@ -51,7 +50,6 @@ internal class SettingModuleDownloader @Inject constructor(
 
     private fun downloadFromSettingsApp(): Completable {
         return Completable.fromAction {
-            settingAppVersionCall.getCompletable(false).blockingAwait()
             generalSettingCall.getCompletable(false).blockingAwait()
             synchronizationSettingCall.getCompletable(false).blockingAwait()
         }

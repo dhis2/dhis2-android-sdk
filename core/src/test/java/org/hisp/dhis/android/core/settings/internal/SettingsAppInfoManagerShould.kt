@@ -27,31 +27,40 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import dagger.Reusable
-import io.reactivex.Completable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.systeminfo.SystemInfo
+import com.google.common.truth.Truth.assertThat
+import com.nhaarman.mockitokotlin2.*
+import io.reactivex.Single
+import org.hisp.dhis.android.core.settings.SettingsAppInfo
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-@Reusable
-internal class SettingsAppVersionCall @Inject constructor(
-    private val appVersionManager: SettingsAppVersionManager,
-    private val systemInfoStore: ObjectWithoutUidStore<SystemInfo>
-) : CompletableProvider {
+@RunWith(JUnit4::class)
+class SettingsAppInfoManagerShould {
+    private val settingsAppInfoCall: SettingsAppInfoCall = mock()
 
-    override fun getCompletable(storeError: Boolean): Completable {
+    private val settingsAppInfo = SettingsAppInfo.builder()
+        .dataStoreVersion(SettingsAppDataStoreVersion.V1_1)
+        .build()
+    private val settingAppInfoSingle: Single<SettingsAppInfo> = Single.just(settingsAppInfo)
 
-        return Completable.fromCallable {
-            val context = systemInfoStore.selectFirst()?.contextPath()
+    private lateinit var manager: SettingsAppInfoManager
 
-            val version = if (context == "https://play.dhis2.org/android-dev") {
-                SettingsAppVersion.V2_0
-            } else {
-                SettingsAppVersion.V1_1
-            }
+    @Before
+    fun setUp() {
+        whenever(settingsAppInfoCall.fetch(any())) doReturn settingAppInfoSingle
+        manager = SettingsAppInfoManagerImpl(settingsAppInfoCall)
+    }
 
-            appVersionManager.setVersion(version)
-        }
+    @Test
+    fun call_setting_info_only_if_version_is_null() {
+        val version = manager.getDataStoreVersion().blockingGet()!!
+        verify(settingsAppInfoCall).fetch(any())
+        assertThat(version).isEquivalentAccordingToCompareTo(settingsAppInfo.dataStoreVersion())
+
+        val cached = manager.getDataStoreVersion().blockingGet()
+        verifyNoMoreInteractions(settingsAppInfoCall)
+        assertThat(cached).isEquivalentAccordingToCompareTo(settingsAppInfo.dataStoreVersion())
     }
 }

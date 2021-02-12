@@ -25,9 +25,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings.internal
 
-internal enum class SettingsAppVersion {
-    V1_1,
-    V2_0
+package org.hisp.dhis.android.core.settings;
+
+import androidx.annotation.Nullable;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.settings.internal.SettingsAppDataStoreVersion;
+
+@AutoValue
+@JsonDeserialize(builder = AutoValue_SettingsAppInfo.Builder.class)
+public abstract class SettingsAppInfo {
+
+    public abstract SettingsAppDataStoreVersion dataStoreVersion();
+
+    @Nullable
+    public abstract String androidSettingsVersion();
+
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_SettingsAppInfo.Builder();
+    }
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder {
+
+        public abstract Builder dataStoreVersion(SettingsAppDataStoreVersion dataStoreVersion);
+
+        public abstract Builder androidSettingsVersion(String androidSettingsVersion);
+
+        public abstract SettingsAppInfo build();
+    }
 }

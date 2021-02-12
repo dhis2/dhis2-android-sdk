@@ -25,9 +25,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings.internal
 
-internal interface SettingsAppVersionManager {
-    fun setVersion(version: SettingsAppVersion)
-    fun getVersion(): SettingsAppVersion
+package org.hisp.dhis.android.core.arch.repositories.filters.internal;
+
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
+
+public final class EventDataFilterConnector<R extends BaseRepository> {
+
+    private final ScopedRepositoryFilterFactory<R, RepositoryScopeFilterItem> repositoryFactory;
+    private final String key;
+
+    EventDataFilterConnector(String key,
+                             ScopedRepositoryFilterFactory<R, RepositoryScopeFilterItem> repositoryFactory) {
+        this.repositoryFactory = repositoryFactory;
+        this.key = key;
+    }
+
+    public R eq(String value) {
+        RepositoryScopeFilterItem item = RepositoryScopeFilterItem.builder()
+                .key(key).operator(FilterItemOperator.EQ).value(value).build();
+        return repositoryFactory.updated(item);
+    }
+
+    public R like(String value) {
+        RepositoryScopeFilterItem item = RepositoryScopeFilterItem.builder()
+                .key(key).operator(FilterItemOperator.LIKE).value(value).build();
+        return repositoryFactory.updated(item);
+    }
 }

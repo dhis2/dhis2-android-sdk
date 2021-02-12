@@ -27,50 +27,41 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException
 import dagger.Reusable
-import io.reactivex.Completable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.settings.DataSetSetting
-import org.hisp.dhis.android.core.settings.DataSetSettings
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.settings.SettingsAppInfo
 import java.net.HttpURLConnection
 import javax.inject.Inject
 
 @Reusable
-internal class DataSetSettingCall @Inject constructor(
-    private val dataSetSettingHandler: Handler<DataSetSetting>,
+internal class SettingsAppInfoCall @Inject constructor(
     private val settingAppService: SettingAppService,
-    private val apiCallExecutor: RxAPICallExecutor,
-    private val appVersionManager: SettingsAppInfoManager
-) : CompletableProvider {
-
-    override fun getCompletable(storeError: Boolean): Completable {
-        return Completable
-            .fromSingle(download(storeError))
-            .onErrorComplete()
-    }
-
-    private fun download(storeError: Boolean): Single<DataSetSettings> {
-        return fetch(storeError)
-            .doOnSuccess { dataSetSettings: DataSetSettings -> process(dataSetSettings) }
-            .doOnError { throwable: Throwable ->
-                if (throwable is D2Error && throwable.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND) {
-                    process(null)
+    private val apiCallExecutor: RxAPICallExecutor
+) {
+    fun fetch(storeError: Boolean): Single<SettingsAppInfo> {
+        return apiCallExecutor.wrapSingle(settingAppService.info(), storeError)
+            .onErrorResumeNext { throwable: Throwable ->
+                return@onErrorResumeNext when {
+                    throwable is D2Error && throwable.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND ->
+                        Single.just(SettingsAppInfo.builder()
+                            .dataStoreVersion(SettingsAppDataStoreVersion.V1_1)
+                            .androidSettingsVersion(null)
+                            .build()
+                        )
+                    throwable is D2Error && throwable.originalException() is InvalidFormatException ->
+                        Single.error(D2Error.builder()
+                            .errorCode(D2ErrorCode.INVALID_SETTINGS_APP_DATASTORE_VERSION)
+                            .errorDescription("Invalid dataStore version for Android Settings App. " +
+                                "Supported versions: ${SettingsAppDataStoreVersion.values().joinToString(",")}")
+                            .build()
+                        )
+                    else ->
+                        Single.error(throwable)
                 }
             }
-    }
-
-    fun fetch(storeError: Boolean): Single<DataSetSettings> {
-        return appVersionManager.getDataStoreVersion().flatMap { version ->
-            apiCallExecutor.wrapSingle(settingAppService.dataSetSettings(version), storeError = storeError)
-        }
-    }
-
-    fun process(item: DataSetSettings?) {
-        val dataSetSettingList = item?.let { SettingsAppHelper.getDataSetSettingList(it) } ?: emptyList()
-        dataSetSettingHandler.handleMany(dataSetSettingList)
     }
 }

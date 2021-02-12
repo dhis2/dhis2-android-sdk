@@ -27,20 +27,38 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
+import io.reactivex.Single
+import org.hisp.dhis.android.core.settings.SettingsAppInfo
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-internal class SettingsAppVersionManagerImpl @Inject constructor() : SettingsAppVersionManager {
+internal class SettingsAppInfoManagerImpl @Inject constructor(
+    private val settingsAppInfoCall: SettingsAppInfoCall
+) : SettingsAppInfoManager {
 
-    private var version: SettingsAppVersion? = null
+    private var dataStoreVersion: SettingsAppDataStoreVersion? = null
+    private var appVersion: String? = null
 
-    override fun setVersion(version: SettingsAppVersion) {
-        this.version = version
+    override fun getDataStoreVersion(): Single<SettingsAppDataStoreVersion> {
+        return when {
+            dataStoreVersion != null -> Single.just(dataStoreVersion)
+            else -> updateAppInfo().map { it.dataStoreVersion() }
+        }
     }
 
-    override fun getVersion(): SettingsAppVersion {
-        // TODO Ensure version is always present
-        return version ?: SettingsAppVersion.V1_1
+    override fun getAppVersion(): Single<String> {
+        return when {
+            appVersion != null -> Single.just(appVersion)
+            else -> updateAppInfo().map { it.androidSettingsVersion() }
+        }
+    }
+
+    override fun updateAppInfo(): Single<SettingsAppInfo> {
+        return settingsAppInfoCall.fetch(false)
+            .doOnSuccess { info ->
+                dataStoreVersion = info.dataStoreVersion()
+                appVersion = info.androidSettingsVersion()
+            }
     }
 }

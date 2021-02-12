@@ -45,13 +45,13 @@ class DataSetSettingCallShould {
     private val service: SettingAppService = mock()
     private val dataSetSettingSingle: Single<DataSetSettings> = mock()
     private val apiCallExecutor: RxAPICallExecutor = mock()
-    private val appVersionManager: SettingsAppVersionManager = mock()
+    private val appVersionManager: SettingsAppInfoManager = mock()
 
     private lateinit var dataSetSettingCall: DataSetSettingCall
 
     @Before
     fun setUp() {
-        whenever(appVersionManager.getVersion()) doReturn SettingsAppVersion.V1_1
+        whenever(appVersionManager.getDataStoreVersion()) doReturn Single.just(SettingsAppDataStoreVersion.V1_1)
         whenever(service.dataSetSettings(any())) doReturn dataSetSettingSingle
         dataSetSettingCall = DataSetSettingCall(handler, service, apiCallExecutor, appVersionManager)
     }

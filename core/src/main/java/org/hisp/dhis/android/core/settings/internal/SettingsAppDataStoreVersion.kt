@@ -27,45 +27,12 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import org.hisp.dhis.android.core.settings.SettingModule
-import retrofit2.Retrofit
+import com.fasterxml.jackson.annotation.JsonProperty
 
-@Module(
-    includes = [
-        GeneralSettingEntityDIModule::class,
-        DataSetSettingEntityDIModule::class,
-        ProgramSettingEntityDIModule::class,
-        UserSettingsEntityDIModule::class,
-        SynchronizationSettingEntityDIModule::class,
-        SystemSettingEntityDIModule::class
-    ]
-)
-internal class SettingPackageDIModule {
+internal enum class SettingsAppDataStoreVersion {
+    @JsonProperty("1.1")
+    V1_1,
 
-    @Provides
-    @Reusable
-    fun settingService(retrofit: Retrofit): SettingService {
-        return retrofit.create(SettingService::class.java)
-    }
-
-    @Provides
-    @Reusable
-    fun settingAppService(settingService: SettingService): SettingAppService {
-        return SettingAppService(settingService)
-    }
-
-    @Provides
-    @Reusable
-    fun module(impl: SettingModuleImpl): SettingModule {
-        return impl
-    }
-
-    @Provides
-    @Reusable
-    fun versionManager(impl: SettingsAppInfoManagerImpl): SettingsAppInfoManager {
-        return impl
-    }
+    @JsonProperty("2.0")
+    V2_0
 }

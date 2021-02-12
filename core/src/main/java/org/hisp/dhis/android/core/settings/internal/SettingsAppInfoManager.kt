@@ -27,7 +27,11 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-internal enum class SettingsAppVersion {
-    V1_1,
-    V2_0
+import io.reactivex.Single
+import org.hisp.dhis.android.core.settings.SettingsAppInfo
+
+internal interface SettingsAppInfoManager {
+    fun getDataStoreVersion(): Single<SettingsAppDataStoreVersion>
+    fun getAppVersion(): Single<String>
+    fun updateAppInfo(): Single<SettingsAppInfo>
 }

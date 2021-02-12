@@ -25,33 +25,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings.internal
 
-import dagger.Reusable
-import io.reactivex.Completable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.systeminfo.SystemInfo
+package org.hisp.dhis.android.core.settings;
 
-@Reusable
-internal class SettingsAppVersionCall @Inject constructor(
-    private val appVersionManager: SettingsAppVersionManager,
-    private val systemInfoStore: ObjectWithoutUidStore<SystemInfo>
-) : CompletableProvider {
+import androidx.annotation.Nullable;
 
-    override fun getCompletable(storeError: Boolean): Completable {
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-        return Completable.fromCallable {
-            val context = systemInfoStore.selectFirst()?.contextPath()
+import org.hisp.dhis.android.core.settings.internal.SettingsAppDataStoreVersion;
 
-            val version = if (context == "https://play.dhis2.org/android-dev") {
-                SettingsAppVersion.V2_0
-            } else {
-                SettingsAppVersion.V1_1
-            }
+@AutoValue
+@JsonDeserialize(builder = AutoValue_SettingsAppInfo.Builder.class)
+public abstract class SettingsAppInfo {
 
-            appVersionManager.setVersion(version)
-        }
+    public abstract SettingsAppDataStoreVersion dataStoreVersion();
+
+    @Nullable
+    public abstract String androidSettingsVersion();
+
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_SettingsAppInfo.Builder();
+    }
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder {
+
+        public abstract Builder dataStoreVersion(SettingsAppDataStoreVersion dataStoreVersion);
+
+        public abstract Builder androidSettingsVersion(String androidSettingsVersion);
+
+        public abstract SettingsAppInfo build();
     }
 }

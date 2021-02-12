@@ -28,40 +28,41 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import io.reactivex.Single
+import org.hisp.dhis.android.core.settings.*
 import javax.inject.Inject
-import org.hisp.dhis.android.core.settings.DataSetSettings
-import org.hisp.dhis.android.core.settings.GeneralSettings
-import org.hisp.dhis.android.core.settings.ProgramSettings
-import org.hisp.dhis.android.core.settings.SynchronizationSettings
 
 internal class SettingAppService @Inject constructor(
     private val settingService: SettingService
 ) {
 
-    fun generalSettings(version: SettingsAppVersion): Single<GeneralSettings> {
+    fun info(): Single<SettingsAppInfo> {
+        return settingService.settingsAppInfo("$ANDROID_APP_NAMESPACE_V2/info")
+    }
+
+    fun generalSettings(version: SettingsAppDataStoreVersion): Single<GeneralSettings> {
         val key = when (version) {
-            SettingsAppVersion.V1_1 -> "general_settings"
+            SettingsAppDataStoreVersion.V1_1 -> "general_settings"
             else -> "generalSettings"
         }
 
         return settingService.generalSettings("${getNamespace(version)}/$key")
     }
 
-    fun dataSetSettings(version: SettingsAppVersion): Single<DataSetSettings> {
+    fun dataSetSettings(version: SettingsAppDataStoreVersion): Single<DataSetSettings> {
         return settingService.dataSetSettings("${getNamespace(version)}/dataSet_settings")
     }
 
-    fun programSettings(version: SettingsAppVersion): Single<ProgramSettings> {
+    fun programSettings(version: SettingsAppDataStoreVersion): Single<ProgramSettings> {
         return settingService.programSettings("${getNamespace(version)}/program_settings")
     }
 
-    fun synchronizationSettings(version: SettingsAppVersion): Single<SynchronizationSettings> {
+    fun synchronizationSettings(version: SettingsAppDataStoreVersion): Single<SynchronizationSettings> {
         return settingService.synchronizationSettings("${getNamespace(version)}/synchronization")
     }
 
-    private fun getNamespace(version: SettingsAppVersion): String {
+    private fun getNamespace(version: SettingsAppDataStoreVersion): String {
         return when (version) {
-            SettingsAppVersion.V1_1 -> ANDROID_APP_NAMESPACE_V1
+            SettingsAppDataStoreVersion.V1_1 -> ANDROID_APP_NAMESPACE_V1
             else -> ANDROID_APP_NAMESPACE_V2
         }
     }

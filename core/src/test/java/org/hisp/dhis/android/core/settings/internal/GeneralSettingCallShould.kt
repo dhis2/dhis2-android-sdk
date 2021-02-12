@@ -44,13 +44,13 @@ class GeneralSettingCallShould {
     private val service: SettingAppService = mock()
     private val generalSettingSingle: Single<GeneralSettings> = mock()
     private val apiCallExecutor: RxAPICallExecutor = mock()
-    private val appVersionManager: SettingsAppVersionManager = mock()
+    private val appVersionManager: SettingsAppInfoManager = mock()
 
     private lateinit var generalSettingCall: GeneralSettingCall
 
     @Before
     fun setUp() {
-        whenever(appVersionManager.getVersion()) doReturn SettingsAppVersion.V1_1
+        whenever(appVersionManager.getDataStoreVersion()) doReturn Single.just(SettingsAppDataStoreVersion.V1_1)
         whenever(service.generalSettings(any())) doReturn generalSettingSingle
         generalSettingCall = GeneralSettingCall(handler, service, apiCallExecutor, appVersionManager)
     }

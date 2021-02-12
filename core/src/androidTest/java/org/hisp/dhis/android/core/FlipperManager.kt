@@ -25,49 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core
 
-package org.hisp.dhis.android.core;
+import androidx.test.platform.app.InstrumentationRegistry
+import com.facebook.flipper.android.AndroidFlipperClient
+import com.facebook.flipper.android.utils.FlipperUtils
+import com.facebook.flipper.plugins.databases.DatabasesFlipperPlugin
+import com.facebook.flipper.plugins.inspector.DescriptorMapping
+import com.facebook.flipper.plugins.inspector.InspectorFlipperPlugin
+import com.facebook.flipper.plugins.network.NetworkFlipperPlugin
+import com.facebook.soloader.SoLoader
+import org.hisp.dhis.android.BuildConfig
 
-import android.util.Log;
+internal object FlipperManager {
 
-import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent;
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer;
-import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory;
-import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
-import org.hisp.dhis.android.core.utils.integration.mock.MockIntegrationTestDatabaseContent;
-
-import java.io.IOException;
-import java.util.Date;
-
-public class MockIntegrationTestObjects {
-    public final DatabaseAdapter databaseAdapter;
-
-    public Date serverDate = new Date();
-    public ResourceHandler resourceHandler;
-
-    public final D2DIComponent d2DIComponent;
-    public final D2 d2;
-    public final Dhis2MockServer dhis2MockServer;
-    public final MockIntegrationTestDatabaseContent content;
-
-    public MockIntegrationTestObjects(MockIntegrationTestDatabaseContent content) throws Exception {
-        this.content = content;
-
-        dhis2MockServer = new Dhis2MockServer(0);
-        CalendarProviderFactory.setFixed();
-
-        d2 = D2Factory.forNewDatabase();
-
-        databaseAdapter = d2.databaseAdapter();
-        d2DIComponent = d2.d2DIComponent;
-
-        resourceHandler = ResourceHandler.create(databaseAdapter);
-        resourceHandler.setServerDate(serverDate);
-    }
-
-    public void tearDown() throws IOException {
-        Log.i("MockIntegrationTestObjects", "Objects teardown: " + content);
-        dhis2MockServer.shutdown();
+    @JvmStatic
+    fun setUp(networkPlugin: NetworkFlipperPlugin) {
+        val context = InstrumentationRegistry.getInstrumentation().context.applicationContext
+        SoLoader.init(context, false)
+        if (BuildConfig.DEBUG && FlipperUtils.shouldEnableFlipper(context)) {
+            val client = AndroidFlipperClient.getInstance(context)
+            client.addPlugin(networkPlugin)
+            client.addPlugin(DatabasesFlipperPlugin(context))
+            client.addPlugin(InspectorFlipperPlugin(context, DescriptorMapping.withDefaults()))
+            client.start()
+        }
     }
 }

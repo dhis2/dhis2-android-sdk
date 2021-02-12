@@ -30,12 +30,12 @@ package org.hisp.dhis.android.core.settings.internal
 import com.fasterxml.jackson.databind.exc.InvalidFormatException
 import dagger.Reusable
 import io.reactivex.Single
+import java.net.HttpURLConnection
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.settings.SettingsAppInfo
-import java.net.HttpURLConnection
-import javax.inject.Inject
 
 @Reusable
 internal class SettingsAppInfoCall @Inject constructor(
@@ -47,17 +47,21 @@ internal class SettingsAppInfoCall @Inject constructor(
             .onErrorResumeNext { throwable: Throwable ->
                 return@onErrorResumeNext when {
                     throwable is D2Error && throwable.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND ->
-                        Single.just(SettingsAppInfo.builder()
-                            .dataStoreVersion(SettingsAppDataStoreVersion.V1_1)
-                            .androidSettingsVersion(null)
-                            .build()
+                        Single.just(
+                            SettingsAppInfo.builder()
+                                .dataStoreVersion(SettingsAppDataStoreVersion.V1_1)
+                                .androidSettingsVersion(null)
+                                .build()
                         )
                     throwable is D2Error && throwable.originalException() is InvalidFormatException ->
-                        Single.error(D2Error.builder()
-                            .errorCode(D2ErrorCode.INVALID_SETTINGS_APP_DATASTORE_VERSION)
-                            .errorDescription("Invalid dataStore version for Android Settings App. " +
-                                "Supported versions: ${SettingsAppDataStoreVersion.values().joinToString(",")}")
-                            .build()
+                        Single.error(
+                            D2Error.builder()
+                                .errorCode(D2ErrorCode.INVALID_SETTINGS_APP_DATASTORE_VERSION)
+                                .errorDescription(
+                                    "Invalid dataStore version for Android Settings App. " +
+                                        "Supported versions: ${SettingsAppDataStoreVersion.values().joinToString(",")}"
+                                )
+                                .build()
                         )
                     else ->
                         Single.error(throwable)

@@ -28,9 +28,9 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import io.reactivex.Single
-import org.hisp.dhis.android.core.settings.SettingsAppInfo
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.hisp.dhis.android.core.settings.SettingsAppInfo
 
 @Singleton
 internal class SettingsAppInfoManagerImpl @Inject constructor(

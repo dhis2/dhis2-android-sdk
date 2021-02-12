@@ -29,8 +29,8 @@ package org.hisp.dhis.android.core.settings.internal
 
 import dagger.Reusable
 import io.reactivex.Completable
-import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
 import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
 
 @Reusable
 internal class SettingModuleDownloader @Inject constructor(

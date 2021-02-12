@@ -67,37 +67,37 @@ internal class SynchronizationSettingCall @Inject constructor(
     }
 
     fun fetch(storeError: Boolean): Single<SynchronizationSettings> {
-       return appVersionManager.getDataStoreVersion().flatMap { version ->
-           when (version) {
-               SettingsAppDataStoreVersion.V1_1 -> {
-                   val generalSettings = tryOrNull(generalSettingCall.fetch(storeError, acceptCache = true))
-                   val dataSetSettings = tryOrNull(dataSetSettingCall.fetch(storeError))
-                   val programSettings = tryOrNull(programSettingCall.fetch(storeError))
+        return appVersionManager.getDataStoreVersion().flatMap { version ->
+            when (version) {
+                SettingsAppDataStoreVersion.V1_1 -> {
+                    val generalSettings = tryOrNull(generalSettingCall.fetch(storeError, acceptCache = true))
+                    val dataSetSettings = tryOrNull(dataSetSettingCall.fetch(storeError))
+                    val programSettings = tryOrNull(programSettingCall.fetch(storeError))
 
-                   if (generalSettings == null && dataSetSettings == null && programSettings == null) {
-                       Single.error(
-                           D2Error.builder()
-                               .errorDescription("Synchronization settings not found")
-                               .errorCode(D2ErrorCode.URL_NOT_FOUND)
-                               .httpErrorCode(HttpURLConnection.HTTP_NOT_FOUND)
-                               .build()
-                       )
-                   } else {
-                       Single.just(
-                           SynchronizationSettings.builder()
-                               .dataSync(generalSettings?.dataSync())
-                               .metadataSync(generalSettings?.metadataSync())
-                               .dataSetSettings(dataSetSettings)
-                               .programSettings(programSettings)
-                               .build()
-                       )
-                   }
-               }
-               SettingsAppDataStoreVersion.V2_0 -> {
-                   apiCallExecutor.wrapSingle(settingAppService.synchronizationSettings(version), storeError)
-               }
-           }
-       }
+                    if (generalSettings == null && dataSetSettings == null && programSettings == null) {
+                        Single.error(
+                            D2Error.builder()
+                                .errorDescription("Synchronization settings not found")
+                                .errorCode(D2ErrorCode.URL_NOT_FOUND)
+                                .httpErrorCode(HttpURLConnection.HTTP_NOT_FOUND)
+                                .build()
+                        )
+                    } else {
+                        Single.just(
+                            SynchronizationSettings.builder()
+                                .dataSync(generalSettings?.dataSync())
+                                .metadataSync(generalSettings?.metadataSync())
+                                .dataSetSettings(dataSetSettings)
+                                .programSettings(programSettings)
+                                .build()
+                        )
+                    }
+                }
+                SettingsAppDataStoreVersion.V2_0 -> {
+                    apiCallExecutor.wrapSingle(settingAppService.synchronizationSettings(version), storeError)
+                }
+            }
+        }
     }
 
     fun process(item: SynchronizationSettings?) {

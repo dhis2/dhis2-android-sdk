@@ -62,6 +62,5 @@ class SettingsAppInfoManagerShould {
         val cached = manager.getDataStoreVersion().blockingGet()
         verifyNoMoreInteractions(settingsAppInfoCall)
         assertThat(cached).isEquivalentAccordingToCompareTo(settingsAppInfo.dataStoreVersion())
-
     }
 }

@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import io.reactivex.Single
-import org.hisp.dhis.android.core.settings.*
 import javax.inject.Inject
+import org.hisp.dhis.android.core.settings.*
 
 internal class SettingAppService @Inject constructor(
     private val settingService: SettingService

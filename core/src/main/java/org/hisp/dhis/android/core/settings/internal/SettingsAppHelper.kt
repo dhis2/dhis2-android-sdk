@@ -27,8 +27,14 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
+import org.hisp.dhis.android.core.settings.AppearanceSettings
+import org.hisp.dhis.android.core.settings.DataSetFilter
 import org.hisp.dhis.android.core.settings.DataSetSetting
 import org.hisp.dhis.android.core.settings.DataSetSettings
+import org.hisp.dhis.android.core.settings.FilterConfig
+import org.hisp.dhis.android.core.settings.FilterScopesSettings
+import org.hisp.dhis.android.core.settings.HomeFilter
+import org.hisp.dhis.android.core.settings.ProgramFilter
 import org.hisp.dhis.android.core.settings.ProgramSetting
 import org.hisp.dhis.android.core.settings.ProgramSettings
 
@@ -40,5 +46,66 @@ internal object SettingsAppHelper {
 
     fun getProgramSettingList(programSettings: ProgramSettings): List<ProgramSetting> {
         return (programSettings.specificSettings().values + programSettings.globalSettings()).filterNotNull()
+    }
+
+    fun getAppearanceSettings(appearanceSettings: AppearanceSettings): List<FilterConfig> {
+        val result: MutableList<FilterConfig> = arrayListOf()
+
+        result.addAll(getHomeFilters(appearanceSettings.filterSorting().home().filters()))
+        result.addAll(getDataSetFilters(appearanceSettings.filterSorting().dataSettings()))
+        result.addAll(getProgramFilters(appearanceSettings.filterSorting().programSettings()))
+
+        return result
+    }
+
+    private fun getHomeFilters(filters: MutableMap<HomeFilter, FilterConfig>) = filters.map { entry ->
+        entry.value.toBuilder()
+            .scope(HomeFilter::class.simpleName)
+            .filterType(entry.key.name)
+            .build()
+    }
+
+    private fun getDataSetFilters(dataSetScope: FilterScopesSettings<DataSetFilter>): List<FilterConfig> {
+
+        val globalFilters = dataSetScope.globalSettings().filters().map { entry ->
+            entry.value.toBuilder()
+                .scope(DataSetFilter::class.simpleName)
+                .filterType(entry.key.name)
+                .build()
+        }
+
+        val specificFilters = dataSetScope.specificSettings().flatMap { entry ->
+            entry.value.filters().map { filter ->
+                filter.value.toBuilder()
+                    .scope(DataSetFilter::class.simpleName)
+                    .filterType(filter.key.name)
+                    .uid(entry.key)
+                    .build()
+            }
+        }
+
+        return listOf(globalFilters, specificFilters).flatten()
+    }
+
+    private fun getProgramFilters(programScope: FilterScopesSettings<ProgramFilter>): List<FilterConfig> {
+
+        val globalFilters = programScope.globalSettings().filters().map { entry ->
+            entry.value.toBuilder()
+                .scope(ProgramFilter::class.simpleName)
+                .filterType(entry.key.name)
+                .build()
+        }
+
+        val specificFilters = programScope.specificSettings().flatMap { entry ->
+            entry.value.filters().map { filter ->
+                filter.value.toBuilder()
+                    .scope(ProgramFilter::class.simpleName)
+                    .filterType(filter.key.name)
+                    .uid(entry.key)
+                    .build()
+            }
+        }
+
+        return listOf(globalFilters, specificFilters).flatten()
     }
 }

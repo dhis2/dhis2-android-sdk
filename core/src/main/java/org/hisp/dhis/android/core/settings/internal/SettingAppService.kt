@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import io.reactivex.Single
+import org.hisp.dhis.android.core.settings.AppearanceSettings
 import javax.inject.Inject
 import org.hisp.dhis.android.core.settings.DataSetSettings
 import org.hisp.dhis.android.core.settings.GeneralSettings
@@ -57,6 +58,10 @@ internal class SettingAppService @Inject constructor(
 
     fun synchronizationSettings(version: SettingsAppVersion): Single<SynchronizationSettings> {
         return settingService.synchronizationSettings("${getNamespace(version)}/synchronization")
+    }
+
+    fun appearanceSettings(version: SettingsAppVersion): Single<AppearanceSettings> {
+        return settingService.appearanceSettings("${getNamespace(version)}/appearance")
     }
 
     private fun getNamespace(version: SettingsAppVersion): String {

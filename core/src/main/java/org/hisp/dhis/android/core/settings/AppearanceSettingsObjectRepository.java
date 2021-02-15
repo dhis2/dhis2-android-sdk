@@ -28,6 +28,10 @@ public class AppearanceSettingsObjectRepository
         this.store = store;
     }
 
+    public Map<HomeFilter, FilterConfig> getHomeFilters() {
+        return blockingGet().filterSorting().home().filters();
+    }
+
     @Override
     public AppearanceSettings blockingGet() {
         List<FilterConfig> filters = store.selectAll();

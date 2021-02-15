@@ -14,15 +14,15 @@ public abstract class FiltersSet<T> {
     @JsonProperty
     public abstract Map<T, FilterConfig> filters();
 
-    public abstract <T> FiltersSet.Builder<T> toBuilder();
+    public abstract Builder<T> toBuilder();
 
-    static <T> Builder<T> builder() {
+    public static <T> Builder<T> builder() {
         return new AutoValue_FiltersSet.Builder<>();
     }
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    abstract static class Builder<T> {
+    public abstract static class Builder<T> {
 
         public abstract Builder<T> filters(Map<T, FilterConfig> filters);
 

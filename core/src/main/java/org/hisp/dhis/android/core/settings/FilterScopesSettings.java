@@ -10,7 +10,7 @@ import java.util.Map;
 @JsonDeserialize(builder = AutoValue_FilterScopesSettings.Builder.class)
 public abstract class FilterScopesSettings<T> {
 
-    public abstract Map<ProgramFilter, FilterConfig> globalSettings();
+    public abstract FiltersSet<T> globalSettings();
 
     public abstract Map<String, FiltersSet<T>> specificSettings();
 
@@ -24,7 +24,7 @@ public abstract class FilterScopesSettings<T> {
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder<T> {
 
-        public abstract Builder<T> globalSettings(Map<ProgramFilter, FilterConfig> globalSettings);
+        public abstract Builder<T> globalSettings(FiltersSet<T>  globalSettings);
 
         public abstract Builder<T> specificSettings(Map<String, FiltersSet<T>> specificSettings);
 

@@ -1,12 +1,8 @@
 package org.hisp.dhis.android.core.settings;
 
-import android.database.Cursor;
-
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_FilterSorting.Builder.class)
@@ -18,9 +14,9 @@ public abstract class FilterSorting {
 
     public abstract FilterScopesSettings<ProgramFilter> programSettings();
 
-    public abstract FilterSorting.Builder toBuilder();
+    public abstract Builder toBuilder();
 
-    public static FilterSorting.Builder builder() {
+    public static Builder builder() {
         return new AutoValue_FilterSorting.Builder();
     }
 

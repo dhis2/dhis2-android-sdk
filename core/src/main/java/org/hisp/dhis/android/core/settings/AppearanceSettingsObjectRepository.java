@@ -32,6 +32,22 @@ public class AppearanceSettingsObjectRepository
         return blockingGet().filterSorting().home().filters();
     }
 
+    public Map<DataSetFilter, FilterConfig> getDataSetFilters(String uid) {
+        FiltersSet<DataSetFilter> filterSet = blockingGet().filterSorting().dataSettings().specificSettings().get(uid);
+        if (filterSet == null) {
+            filterSet = blockingGet().filterSorting().dataSettings().globalSettings();
+        }
+        return filterSet.filters();
+    }
+
+    public Map<ProgramFilter, FilterConfig> getProgramFilters(String uid) {
+        FiltersSet<ProgramFilter> filterSet = blockingGet().filterSorting().programSettings().specificSettings().get(uid);
+        if (filterSet == null) {
+            filterSet = blockingGet().filterSorting().programSettings().globalSettings();
+        }
+        return filterSet.filters();
+    }
+
     @Override
     public AppearanceSettings blockingGet() {
         List<FilterConfig> filters = store.selectAll();

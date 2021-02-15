@@ -51,10 +51,10 @@ public class DataSetCompleteRegistrationCallRealIntegrationShould extends BaseRe
     public void remove_records_deleted_in_the_server() {
         d2.userModule().logIn(username, password, url).blockingGet();
         d2.metadataModule().blockingDownload();
-        d2.aggregatedModule().data().download().blockingSubscribe();
+        d2.aggregatedModule().data().blockingDownload();
 
         // At this point, delete a record in the server
 
-        d2.aggregatedModule().data().download().blockingSubscribe();
+        d2.aggregatedModule().data().blockingDownload();
     }
 }

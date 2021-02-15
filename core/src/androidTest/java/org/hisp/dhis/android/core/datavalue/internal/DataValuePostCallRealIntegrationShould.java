@@ -61,7 +61,7 @@ public class DataValuePostCallRealIntegrationShould extends BaseRealIntegrationT
         d2.userModule().logIn(username, password, url).blockingGet();
 
         d2.metadataModule().blockingDownload();
-        d2.aggregatedModule().data().download().subscribe();
+        d2.aggregatedModule().data().blockingDownload();
 
         DataValue dataValue = getTestDataValueWith(State.TO_POST, 1);
 
@@ -81,7 +81,7 @@ public class DataValuePostCallRealIntegrationShould extends BaseRealIntegrationT
     public void dataValuesWithToUpdateState_shouldBeUploaded() throws Exception {
 
         d2.metadataModule().blockingDownload();
-        d2.aggregatedModule().data().download().subscribe();
+        d2.aggregatedModule().data().blockingDownload();
 
         DataValue dataValue = getTestDataValueWith(State.TO_UPDATE,2);
 

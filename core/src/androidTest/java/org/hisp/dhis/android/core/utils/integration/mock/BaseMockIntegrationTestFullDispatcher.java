@@ -92,7 +92,7 @@ public abstract class BaseMockIntegrationTestFullDispatcher extends BaseMockInte
     }
 
     private static void downloadAggregatedData() {
-        d2.aggregatedModule().data().download().subscribe();
+        d2.aggregatedModule().data().blockingDownload();
     }
 
     private static void storeSomeD2Errors() {

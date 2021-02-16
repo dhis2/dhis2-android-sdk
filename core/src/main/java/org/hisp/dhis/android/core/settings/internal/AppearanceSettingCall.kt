@@ -47,4 +47,6 @@ internal class AppearanceSettingCall @Inject constructor(
         } ?: emptyList()
         appearanceSettingHandler.handleMany(appearanceSettingsList)
     }
+
+    //TODO check version
 }

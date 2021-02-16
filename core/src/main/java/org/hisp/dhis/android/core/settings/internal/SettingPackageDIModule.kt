@@ -40,6 +40,7 @@ import retrofit2.Retrofit
         ProgramSettingEntityDIModule::class,
         UserSettingsEntityDIModule::class,
         SynchronizationSettingEntityDIModule::class,
+        FilterSettingEntityDIModule::class,
         SystemSettingEntityDIModule::class
     ]
 )

@@ -51,9 +51,11 @@ internal object SettingsAppHelper {
     fun getAppearanceSettings(appearanceSettings: AppearanceSettings): List<FilterConfig> {
         val result: MutableList<FilterConfig> = arrayListOf()
 
-        result.addAll(getHomeFilters(appearanceSettings.filterSorting().home().filters()))
-        result.addAll(getDataSetFilters(appearanceSettings.filterSorting().dataSettings()))
-        result.addAll(getProgramFilters(appearanceSettings.filterSorting().programSettings()))
+        appearanceSettings.filterSorting()?.let {
+            result.addAll(getHomeFilters(it.home().filters()))
+            result.addAll(getDataSetFilters(it.dataSettings()))
+            result.addAll(getProgramFilters(it.programSettings()))
+        }
 
         return result
     }

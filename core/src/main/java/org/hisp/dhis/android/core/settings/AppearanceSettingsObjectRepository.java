@@ -136,24 +136,27 @@ public class AppearanceSettingsObjectRepository
         AppearanceSettings.Builder appearanceSettingsBuilder = AppearanceSettings.builder();
         appearanceSettingsBuilder.filterSorting(filterSortingBuilder.build());
 
+//        getFiltersInScope(filters, DataSetFilter.class);
+
         return appearanceSettingsBuilder.build();
     }
 
-    /*private <T> FilterScopesSettings<T> getFiltersInScope(List<FilterConfig> filters, Class<T> programFilterClass) {
+    /*private <T extends Enum<T>> FilterScopesSettings<T> getFiltersInScope(List<FilterConfig> filters, Class<T> filterClass) {
 
         Map<T, FilterConfig> globalDataSetFilters = new HashMap<>();
         Map<String, FiltersSet<T>> specificDataSetFilters = new HashMap<>();
         for (FilterConfig filter : filters) {
-            if (Objects.equals(filter.scope(), "dataSet")) {
+            if (Objects.equals(filter.scope(), filterClass.getSimpleName())) {
                 if (filter.uid() == null) {
-                    globalDataSetFilters.put(getFilterType(programFilterClass, filter.filterType()), filter);
+//                    globalDataSetFilters.put(getFilterType(filterClass, filter.filterType()), filter);
+                    globalDataSetFilters.put(Enum.valueOf(filterClass, Objects.requireNonNull(filter.filterType())), filter);
                 } else {
                     FiltersSet<T> uidFilters = specificDataSetFilters.get(filter.uid());
                     if (uidFilters != null) {
-                        uidFilters.filters().put(getFilterType(filterType, filter.filterType()), filter);
+                        uidFilters.filters().put(getFilterType(filterClass, filter.filterType()), filter);
                     } else {
                         Map<T, FilterConfig> dataSetFilters = new HashMap<>();
-                        dataSetFilters.put(getFilterType(filterType, filter.filterType()), filter);
+                        dataSetFilters.put(getFilterType(filterClass, filter.filterType()), filter);
 
                         FiltersSet.Builder<T> dataSetBuilder = FiltersSet.builder();
                         dataSetBuilder.filters(dataSetFilters);
@@ -172,9 +175,9 @@ public class AppearanceSettingsObjectRepository
         dataSetScopeBuilder.specificSettings(specificDataSetFilters);
 
         return dataSetScopeBuilder.build();
-    }
-
-    private <E extends Enum<E>> E getFilterType(Class<E> enumClass, String value) {
-        return Enum.valueOf(enumClass, value);
     }*/
+
+    private <T extends Enum<T>> T getFilterType(Class<T> enumClass, String value) {
+        return Enum.valueOf(enumClass, value);
+    }
 }

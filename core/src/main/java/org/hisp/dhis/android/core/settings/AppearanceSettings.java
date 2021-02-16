@@ -1,5 +1,7 @@
 package org.hisp.dhis.android.core.settings;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -9,6 +11,7 @@ import com.google.auto.value.AutoValue;
 @JsonDeserialize(builder = AutoValue_AppearanceSettings.Builder.class)
 public abstract class AppearanceSettings {
 
+    @Nullable
     @JsonProperty
     public abstract FilterSorting filterSorting();
 

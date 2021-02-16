@@ -85,32 +85,54 @@ class EventService @Inject constructor(
         return Single.just(blockingHasCategoryComboAccess(event))
     }
 
-    @Suppress("ComplexMethod")
     fun blockingIsEditable(eventUid: String): Boolean {
-        val event = eventRepository.uid(eventUid).blockingGet()
-        val program = programRepository.uid(event.program()).blockingGet()
-        val programStage = programStageRepository.uid(event.programStage()).blockingGet()
-
-        val isBlocked = event.status() == EventStatus.COMPLETED && programStage.blockEntryForm() ?: false
-
-        val isExpired = eventDateUtils.isEventExpired(
-            event = event,
-            completeExpiryDays = program.completeEventsExpiryDays() ?: 0,
-            programPeriodType = programStage.periodType() ?: program.expiryPeriodType(),
-            expiryDays = program.expiryDays() ?: 0
-        )
-
-        return !isBlocked &&
-            !isExpired &&
-            blockingHasDataWriteAccess(eventUid) &&
-            blockingIsInOrgunitRange(event) &&
-            blockingHasCategoryComboAccess(event) &&
-            event.enrollment()?.let { enrollmentService.blockingIsOpen(it) } ?: true &&
-            event.organisationUnit()?.let { organisationUnitService.blockingIsInCaptureScope(it) } ?: true
+        return blockingGetEditableStatus(eventUid) is EventEditableStatus.Editable
     }
 
     fun isEditable(eventUid: String): Single<Boolean> {
         return Single.just(blockingIsEditable(eventUid))
+    }
+
+    @Suppress("ComplexMethod")
+    fun blockingGetEditableStatus(eventUid: String): EventEditableStatus {
+        val event = eventRepository.uid(eventUid).blockingGet()
+        val program = programRepository.uid(event.program()).blockingGet()
+        val programStage = programStageRepository.uid(event.programStage()).blockingGet()
+
+        return when {
+            event.status() == EventStatus.COMPLETED && programStage.blockEntryForm() == true ->
+                EventEditableStatus.NonEditable(EventNonEditableReason.BLOCKED_BY_COMPLETION)
+
+            eventDateUtils.isEventExpired(
+                event = event,
+                completeExpiryDays = program.completeEventsExpiryDays() ?: 0,
+                programPeriodType = programStage.periodType() ?: program.expiryPeriodType(),
+                expiryDays = program.expiryDays() ?: 0
+            ) ->
+                EventEditableStatus.NonEditable(EventNonEditableReason.EXPIRED)
+
+            !blockingHasDataWriteAccess(eventUid) ->
+                EventEditableStatus.NonEditable(EventNonEditableReason.NO_DATA_WRITE_ACCESS)
+
+            !blockingIsInOrgunitRange(event) ->
+                EventEditableStatus.NonEditable(EventNonEditableReason.EVENT_DATE_IS_NOT_IN_ORGUNIT_RANGE)
+
+            !blockingHasCategoryComboAccess(event) ->
+                EventEditableStatus.NonEditable(EventNonEditableReason.NO_CATEGORY_COMBO_ACCESS)
+
+            event.enrollment()?.let { !enrollmentService.blockingIsOpen(it) } ?: false ->
+                EventEditableStatus.NonEditable(EventNonEditableReason.ENROLLMENT_IS_NOT_OPEN)
+
+            event.organisationUnit()?.let { !organisationUnitService.blockingIsInCaptureScope(it) } ?: false ->
+                EventEditableStatus.NonEditable(EventNonEditableReason.ORGUNIT_IS_NOT_IN_CAPTURE_SCOPE)
+
+            else ->
+                EventEditableStatus.Editable()
+        }
+    }
+
+    fun getEditableStatus(eventUid: String): Single<EventEditableStatus> {
+        return Single.just(blockingGetEditableStatus(eventUid))
     }
 
     fun blockingCanAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Boolean {

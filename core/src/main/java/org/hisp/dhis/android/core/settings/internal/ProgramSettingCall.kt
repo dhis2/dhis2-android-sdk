@@ -44,7 +44,7 @@ internal class ProgramSettingCall @Inject constructor(
     private val programSettingHandler: Handler<ProgramSetting>,
     private val settingAppService: SettingAppService,
     private val apiCallExecutor: RxAPICallExecutor,
-    private val appVersionManager: SettingsAppVersionManager
+    private val appVersionManager: SettingsAppInfoManager
 ) : CompletableProvider {
 
     override fun getCompletable(storeError: Boolean): Completable {
@@ -64,8 +64,9 @@ internal class ProgramSettingCall @Inject constructor(
     }
 
     fun fetch(storeError: Boolean): Single<ProgramSettings> {
-        val version = appVersionManager.getVersion()
-        return apiCallExecutor.wrapSingle(settingAppService.programSettings(version), storeError)
+        return appVersionManager.getDataStoreVersion().flatMap { version ->
+            apiCallExecutor.wrapSingle(settingAppService.programSettings(version), storeError = storeError)
+        }
     }
 
     fun process(item: ProgramSettings?) {

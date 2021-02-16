@@ -25,36 +25,42 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings.internal
 
-package org.hisp.dhis.android.core.dataset.internal;
+import com.google.common.truth.Truth.assertThat
+import com.nhaarman.mockitokotlin2.*
+import io.reactivex.Single
+import org.hisp.dhis.android.core.settings.SettingsAppInfo
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-import org.hisp.dhis.android.core.BaseRealIntegrationTest;
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.D2Factory;
-import org.junit.Before;
+@RunWith(JUnit4::class)
+class SettingsAppInfoManagerShould {
+    private val settingsAppInfoCall: SettingsAppInfoCall = mock()
 
-import java.io.IOException;
+    private val settingsAppInfo = SettingsAppInfo.builder()
+        .dataStoreVersion(SettingsAppDataStoreVersion.V1_1)
+        .build()
+    private val settingAppInfoSingle: Single<SettingsAppInfo> = Single.just(settingsAppInfo)
 
-public class DataSetCompleteRegistrationCallRealIntegrationShould extends BaseRealIntegrationTest {
-
-    private D2 d2;
+    private lateinit var manager: SettingsAppInfoManager
 
     @Before
-    public void setUp() throws IOException {
-        super.setUp();
-
-        d2 = D2Factory.forNewDatabase();
+    fun setUp() {
+        whenever(settingsAppInfoCall.fetch(any())) doReturn settingAppInfoSingle
+        manager = SettingsAppInfoManagerImpl(settingsAppInfoCall)
     }
 
-    // commented out since it is a flaky test that works against a real server.
-    //@Test
-    public void remove_records_deleted_in_the_server() {
-        d2.userModule().logIn(username, password, url).blockingGet();
-        d2.metadataModule().blockingDownload();
-        d2.aggregatedModule().data().blockingDownload();
+    @Test
+    fun call_setting_info_only_if_version_is_null() {
+        val version = manager.getDataStoreVersion().blockingGet()!!
+        verify(settingsAppInfoCall).fetch(any())
+        assertThat(version).isEquivalentAccordingToCompareTo(settingsAppInfo.dataStoreVersion())
 
-        // At this point, delete a record in the server
-
-        d2.aggregatedModule().data().blockingDownload();
+        val cached = manager.getDataStoreVersion().blockingGet()
+        verifyNoMoreInteractions(settingsAppInfoCall)
+        assertThat(cached).isEquivalentAccordingToCompareTo(settingsAppInfo.dataStoreVersion())
     }
 }

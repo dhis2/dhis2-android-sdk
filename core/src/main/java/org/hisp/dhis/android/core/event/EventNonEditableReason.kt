@@ -25,9 +25,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings.internal
+package org.hisp.dhis.android.core.event
 
-internal interface SettingsAppVersionManager {
-    fun setVersion(version: SettingsAppVersion)
-    fun getVersion(): SettingsAppVersion
+enum class EventNonEditableReason {
+    BLOCKED_BY_COMPLETION,
+    EXPIRED,
+    NO_DATA_WRITE_ACCESS,
+    EVENT_DATE_IS_NOT_IN_ORGUNIT_RANGE,
+    NO_CATEGORY_COMBO_ACCESS,
+    ENROLLMENT_IS_NOT_OPEN,
+    ORGUNIT_IS_NOT_IN_CAPTURE_SCOPE
 }

@@ -25,36 +25,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings.internal
 
-package org.hisp.dhis.android.core.dataset.internal;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-import org.hisp.dhis.android.core.BaseRealIntegrationTest;
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.D2Factory;
-import org.junit.Before;
+internal enum class SettingsAppDataStoreVersion {
+    @JsonProperty("1.1")
+    V1_1,
 
-import java.io.IOException;
-
-public class DataSetCompleteRegistrationCallRealIntegrationShould extends BaseRealIntegrationTest {
-
-    private D2 d2;
-
-    @Before
-    public void setUp() throws IOException {
-        super.setUp();
-
-        d2 = D2Factory.forNewDatabase();
-    }
-
-    // commented out since it is a flaky test that works against a real server.
-    //@Test
-    public void remove_records_deleted_in_the_server() {
-        d2.userModule().logIn(username, password, url).blockingGet();
-        d2.metadataModule().blockingDownload();
-        d2.aggregatedModule().data().blockingDownload();
-
-        // At this point, delete a record in the server
-
-        d2.aggregatedModule().data().blockingDownload();
-    }
+    @JsonProperty("2.0")
+    V2_0
 }

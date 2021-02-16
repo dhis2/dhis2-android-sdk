@@ -27,50 +27,57 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import dagger.Reusable
-import io.reactivex.Completable
+import com.google.common.truth.Truth.assertThat
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Single
-import java.net.HttpURLConnection
-import javax.inject.Inject
+import java.lang.RuntimeException
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.data.maintenance.D2ErrorSamples
 import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.settings.DataSetSetting
-import org.hisp.dhis.android.core.settings.DataSetSettings
+import org.hisp.dhis.android.core.settings.SettingsAppInfo
+import org.junit.Assert.assertThrows
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-@Reusable
-internal class DataSetSettingCall @Inject constructor(
-    private val dataSetSettingHandler: Handler<DataSetSetting>,
-    private val settingAppService: SettingAppService,
-    private val apiCallExecutor: RxAPICallExecutor,
-    private val appVersionManager: SettingsAppInfoManager
-) : CompletableProvider {
+@RunWith(JUnit4::class)
+class SettingsAppInfoCallShould {
+    private val service: SettingAppService = mock()
+    private val apiCallExecutor: RxAPICallExecutor = mock()
 
-    override fun getCompletable(storeError: Boolean): Completable {
-        return Completable
-            .fromSingle(download(storeError))
-            .onErrorComplete()
+    private val settingAppInfoSingle: Single<SettingsAppInfo> = mock()
+
+    private lateinit var dataSetSettingCall: SettingsAppInfoCall
+
+    @Before
+    fun setUp() {
+        whenever(service.info()) doReturn settingAppInfoSingle
+        dataSetSettingCall = SettingsAppInfoCall(service, apiCallExecutor)
     }
 
-    private fun download(storeError: Boolean): Single<DataSetSettings> {
-        return fetch(storeError)
-            .doOnSuccess { dataSetSettings: DataSetSettings -> process(dataSetSettings) }
-            .doOnError { throwable: Throwable ->
-                if (throwable is D2Error && throwable.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND) {
-                    process(null)
-                }
-            }
+    @Test
+    fun default_to_version_1_if_not_found() {
+        whenever(apiCallExecutor.wrapSingle(settingAppInfoSingle, false)) doReturn
+            Single.error(D2ErrorSamples.notFound())
+
+        val info = dataSetSettingCall.fetch(false).blockingGet()
+
+        assertThat(info.dataStoreVersion()).isEquivalentAccordingToCompareTo(SettingsAppDataStoreVersion.V1_1)
+        assertThat(info.androidSettingsVersion()).isNull()
     }
 
-    fun fetch(storeError: Boolean): Single<DataSetSettings> {
-        return appVersionManager.getDataStoreVersion().flatMap { version ->
-            apiCallExecutor.wrapSingle(settingAppService.dataSetSettings(version), storeError = storeError)
+    @Test
+    fun throws_D2_exception_if_other_error_than_not_found() {
+        whenever(apiCallExecutor.wrapSingle(settingAppInfoSingle, false)) doReturn
+            Single.error(D2ErrorSamples.get())
+
+        val exception = assertThrows(RuntimeException::class.java) {
+            dataSetSettingCall.fetch(false).blockingGet()
         }
-    }
 
-    fun process(item: DataSetSettings?) {
-        val dataSetSettingList = item?.let { SettingsAppHelper.getDataSetSettingList(it) } ?: emptyList()
-        dataSetSettingHandler.handleMany(dataSetSettingList)
+        assertThat(exception.cause).isInstanceOf(D2Error::class.java)
     }
 }

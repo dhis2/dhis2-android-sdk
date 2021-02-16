@@ -28,10 +28,13 @@
 package org.hisp.dhis.android.core.event.search
 
 import dagger.Reusable
+import java.util.*
 import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
 import org.hisp.dhis.android.core.event.EventCollectionRepository
+import org.hisp.dhis.android.core.event.EventDataFilter
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
@@ -55,9 +58,7 @@ internal class EventCollectionRepositoryAdapter @Inject constructor(
         scope.trackedEntityInstance()?.let { repository = repository.byTrackedEntityInstanceUids(listOf(it)) }
         scope.orgUnitMode().let { repository = applyOrgunitSelection(repository, scope) }
         scope.assignedUserMode()?.let { repository = applyUserAssignedMode(repository, it) }
-        scope.dataFilters().forEach {
-            // TODO
-        }
+        scope.dataFilters().forEach { filter -> repository = applyDataFilter(repository, filter) }
         if (!scope.events().isNullOrEmpty()) {
             repository = repository.byUid().`in`(scope.events())
         }
@@ -95,6 +96,38 @@ internal class EventCollectionRepositoryAdapter @Inject constructor(
         scope: EventQueryRepositoryScope
     ): EventCollectionRepository {
         return getOrganisationUnits(scope)?.let { repository.byOrganisationUnitUid().`in`(it) } ?: repository
+    }
+
+    private fun applyDataFilter(
+        repository: EventCollectionRepository,
+        filter: EventDataFilter
+    ): EventCollectionRepository {
+        var filterRepo = repository
+        filter.dataItem()?.let { deId ->
+            filter.eq()?.let { filterRepo = filterRepo.byDataValue(deId).eq(it) }
+            filter.ge()?.let { filterRepo = filterRepo.byDataValue(deId).ge(it) }
+            filter.gt()?.let { filterRepo = filterRepo.byDataValue(deId).gt(it) }
+            filter.le()?.let { filterRepo = filterRepo.byDataValue(deId).le(it) }
+            filter.lt()?.let { filterRepo = filterRepo.byDataValue(deId).lt(it) }
+            filter.like()?.let { filterRepo = filterRepo.byDataValue(deId).like(it) }
+            if (!filter.`in`().isNullOrEmpty()) {
+                filterRepo = filterRepo.byDataValue(deId).`in`(filter.`in`())
+            }
+            filter.dateFilter()?.let { period ->
+                datePeriodHelper.getStartDate(period)?.let {
+                    // This is to ensure that comparison with date without time works as expected
+                    val date = addMillis(it, -1)
+                    filterRepo = filterRepo.byDataValue(deId).gt(DateUtils.DATE_FORMAT.format(date))
+                }
+                datePeriodHelper.getEndDate(period)?.let {
+                    // This is to ensure that comparison with date without time works as expected
+                    val date = addMillis(it, 1)
+                    filterRepo = filterRepo.byDataValue(deId).lt(DateUtils.DATE_FORMAT.format(date))
+                }
+            }
+        }
+
+        return filterRepo
     }
 
     fun getOrganisationUnits(scope: EventQueryRepositoryScope): List<String>? {
@@ -144,5 +177,12 @@ internal class EventCollectionRepositoryAdapter @Inject constructor(
             // TODO Not implemented yet
             AssignedUserMode.PROVIDED -> repository
         }
+    }
+
+    private fun addMillis(date: Date, millis: Int): Date {
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        calendar.add(Calendar.MILLISECOND, millis)
+        return calendar.time
     }
 }

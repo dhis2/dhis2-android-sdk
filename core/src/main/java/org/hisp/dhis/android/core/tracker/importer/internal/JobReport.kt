@@ -48,10 +48,17 @@ internal data class JobValidationReport(
     val errorReports: List<JobValidationError>
 )
 
+internal data class JobObjectReport(
+    val errorReports: List<String>,
+    val index: Int,
+    val trackerType: String,
+    val uid: String
+)
+
 internal data class JobTypeReport(
     val trackerType: String,
     val stats: JobImportCount,
-    val objectReports: List<String> // TODO unknown actual type
+    val objectReports: List<JobObjectReport>
 )
 
 internal data class JobTypeReportMap(
@@ -70,6 +77,6 @@ internal data class JobBundleReport(
 internal data class JobReport(
     val status: String,
     val validationReport: JobValidationReport,
-    val stats: JobImportCount,
+    val stats: JobImportCount?,
     val bundleReport: JobBundleReport?
 )

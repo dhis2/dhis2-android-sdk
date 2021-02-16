@@ -25,36 +25,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings.internal
 
-package org.hisp.dhis.android.core.dataset.internal;
+import io.reactivex.Single
+import javax.inject.Inject
+import javax.inject.Singleton
+import org.hisp.dhis.android.core.settings.SettingsAppInfo
 
-import org.hisp.dhis.android.core.BaseRealIntegrationTest;
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.D2Factory;
-import org.junit.Before;
+@Singleton
+internal class SettingsAppInfoManagerImpl @Inject constructor(
+    private val settingsAppInfoCall: SettingsAppInfoCall
+) : SettingsAppInfoManager {
 
-import java.io.IOException;
+    private var dataStoreVersion: SettingsAppDataStoreVersion? = null
+    private var appVersion: String? = null
 
-public class DataSetCompleteRegistrationCallRealIntegrationShould extends BaseRealIntegrationTest {
-
-    private D2 d2;
-
-    @Before
-    public void setUp() throws IOException {
-        super.setUp();
-
-        d2 = D2Factory.forNewDatabase();
+    override fun getDataStoreVersion(): Single<SettingsAppDataStoreVersion> {
+        return when {
+            dataStoreVersion != null -> Single.just(dataStoreVersion)
+            else -> updateAppInfo().map { it.dataStoreVersion() }
+        }
     }
 
-    // commented out since it is a flaky test that works against a real server.
-    //@Test
-    public void remove_records_deleted_in_the_server() {
-        d2.userModule().logIn(username, password, url).blockingGet();
-        d2.metadataModule().blockingDownload();
-        d2.aggregatedModule().data().blockingDownload();
+    override fun getAppVersion(): Single<String> {
+        return when {
+            appVersion != null -> Single.just(appVersion)
+            else -> updateAppInfo().map { it.androidSettingsVersion() }
+        }
+    }
 
-        // At this point, delete a record in the server
-
-        d2.aggregatedModule().data().blockingDownload();
+    override fun updateAppInfo(): Single<SettingsAppInfo> {
+        return settingsAppInfoCall.fetch(false)
+            .doOnSuccess { info ->
+                dataStoreVersion = info.dataStoreVersion()
+                appVersion = info.androidSettingsVersion()
+            }
     }
 }

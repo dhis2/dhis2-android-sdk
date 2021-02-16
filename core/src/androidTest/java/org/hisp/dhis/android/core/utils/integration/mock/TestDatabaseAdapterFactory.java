@@ -32,8 +32,7 @@ import android.content.Context;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import com.facebook.stetho.Stetho;
-
+import org.hisp.dhis.android.core.FlipperManager;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore;
@@ -58,7 +57,6 @@ public class TestDatabaseAdapterFactory {
 
     private static DatabaseAdapter create() {
         Context context = InstrumentationRegistry.getInstrumentation().getContext();
-        Stetho.initializeWithDefaults(context);
         DatabaseAdapterFactory databaseAdapterFactory = DatabaseAdapterFactory.create(context,
                 new InMemorySecureStore());
         DatabaseAdapter parentDatabaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter();

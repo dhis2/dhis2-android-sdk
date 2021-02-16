@@ -33,7 +33,14 @@
           "ignored": 2,
           "total": 8
         },
-        "objectReports": []
+        "objectReports": [
+          {
+            "errorReports": [],
+            "index": 0,
+            "trackerType": "EVENT",
+            "uid": "UavzrupW3lZ"
+          }
+        ]
       },
       "RELATIONSHIP": {
         "trackerType": "RELATIONSHIP",

@@ -25,22 +25,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings.internal
 
-import javax.inject.Inject
-import javax.inject.Singleton
+package org.hisp.dhis.android.core.settings;
 
-@Singleton
-internal class SettingsAppVersionManagerImpl @Inject constructor() : SettingsAppVersionManager {
+import androidx.annotation.Nullable;
 
-    private var version: SettingsAppVersion? = null
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-    override fun setVersion(version: SettingsAppVersion) {
-        this.version = version
+import org.hisp.dhis.android.core.settings.internal.SettingsAppDataStoreVersion;
+
+@AutoValue
+@JsonDeserialize(builder = AutoValue_SettingsAppInfo.Builder.class)
+public abstract class SettingsAppInfo {
+
+    public abstract SettingsAppDataStoreVersion dataStoreVersion();
+
+    @Nullable
+    public abstract String androidSettingsVersion();
+
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_SettingsAppInfo.Builder();
     }
 
-    override fun getVersion(): SettingsAppVersion {
-        // TODO Ensure version is always present
-        return version ?: SettingsAppVersion.V1_1
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder {
+
+        public abstract Builder dataStoreVersion(SettingsAppDataStoreVersion dataStoreVersion);
+
+        public abstract Builder androidSettingsVersion(String androidSettingsVersion);
+
+        public abstract SettingsAppInfo build();
     }
 }

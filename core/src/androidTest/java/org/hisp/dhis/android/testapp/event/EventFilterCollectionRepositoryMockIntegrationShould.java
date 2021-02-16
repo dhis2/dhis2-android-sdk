@@ -50,7 +50,7 @@ public class EventFilterCollectionRepositoryMockIntegrationShould
         List<EventFilter> eventFilters = d2.eventModule().eventFilters()
                         .blockingGet();
 
-        assertThat(eventFilters.size()).isEqualTo(1);
+        assertThat(eventFilters.size()).isEqualTo(2);
     }
 
     @Test
@@ -59,7 +59,7 @@ public class EventFilterCollectionRepositoryMockIntegrationShould
                         .byProgram().eq("lxAQ7Zs9VYR")
                         .blockingGet();
 
-        assertThat(eventFilters.size()).isEqualTo(1);
+        assertThat(eventFilters.size()).isEqualTo(2);
     }
 
     @Test
@@ -68,7 +68,7 @@ public class EventFilterCollectionRepositoryMockIntegrationShould
                         .byProgramStage().eq("dBwrot7S420")
                         .blockingGet();
 
-        assertThat(eventFilters.size()).isEqualTo(1);
+        assertThat(eventFilters.size()).isEqualTo(2);
     }
 
     @Test
@@ -95,7 +95,7 @@ public class EventFilterCollectionRepositoryMockIntegrationShould
                         .byOrganisationUnit().eq("DiszpKrYNg8")
                         .blockingGet();
 
-        assertThat(eventFilters.size()).isEqualTo(1);
+        assertThat(eventFilters.size()).isEqualTo(2);
     }
 
     @Test
@@ -104,7 +104,7 @@ public class EventFilterCollectionRepositoryMockIntegrationShould
                         .byOuMode().eq(OrganisationUnitMode.ACCESSIBLE)
                         .blockingGet();
 
-        assertThat(eventFilters.size()).isEqualTo(1);
+        assertThat(eventFilters.size()).isEqualTo(2);
     }
 
     @Test
@@ -122,7 +122,7 @@ public class EventFilterCollectionRepositoryMockIntegrationShould
                         .byOrder().eq("dueDate:asc,createdDate:desc")
                         .blockingGet();
 
-        assertThat(eventFilters.size()).isEqualTo(1);
+        assertThat(eventFilters.size()).isEqualTo(2);
     }
 
     @Test
@@ -131,7 +131,7 @@ public class EventFilterCollectionRepositoryMockIntegrationShould
                         .byDisplayColumnOrder().like("assignedUser")
                         .blockingGet();
 
-        assertThat(eventFilters.size()).isEqualTo(1);
+        assertThat(eventFilters.size()).isEqualTo(2);
     }
 
     @Test

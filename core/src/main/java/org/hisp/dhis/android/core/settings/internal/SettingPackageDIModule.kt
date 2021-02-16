@@ -66,7 +66,7 @@ internal class SettingPackageDIModule {
 
     @Provides
     @Reusable
-    fun versionManager(impl: SettingsAppVersionManagerImpl): SettingsAppVersionManager {
+    fun versionManager(impl: SettingsAppInfoManagerImpl): SettingsAppInfoManager {
         return impl
     }
 }

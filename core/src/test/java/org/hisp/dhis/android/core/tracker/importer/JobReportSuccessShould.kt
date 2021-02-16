@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.Inject
 import org.hisp.dhis.android.core.common.BaseObjectShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.core.tracker.importer.internal.JobImportCount
+import org.hisp.dhis.android.core.tracker.importer.internal.JobObjectReport
 import org.hisp.dhis.android.core.tracker.importer.internal.JobReport
 import org.hisp.dhis.android.core.tracker.importer.internal.JobTypeReport
 import org.junit.Test
@@ -67,7 +68,7 @@ class JobReportSuccessShould : BaseObjectShould("tracker/importer/jobreport-succ
             JobTypeReport(
                 "EVENT",
                 JobImportCount(2, 2, 2, 2, 8),
-                emptyList()
+                listOf(JobObjectReport(emptyList(), 0, "EVENT", "UavzrupW3lZ"))
             )
         )
         assertThat(bundleReport.typeReportMap.relationship).isEqualTo(

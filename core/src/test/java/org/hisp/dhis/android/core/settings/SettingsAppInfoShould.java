@@ -26,35 +26,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset.internal;
+package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.BaseRealIntegrationTest;
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.D2Factory;
-import org.junit.Before;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.hisp.dhis.android.core.settings.internal.SettingsAppDataStoreVersion;
+import org.junit.Test;
 
 import java.io.IOException;
+import java.text.ParseException;
 
-public class DataSetCompleteRegistrationCallRealIntegrationShould extends BaseRealIntegrationTest {
+import static com.google.common.truth.Truth.assertThat;
 
-    private D2 d2;
+public class SettingsAppInfoShould extends BaseObjectShould implements ObjectShould {
 
-    @Before
-    public void setUp() throws IOException {
-        super.setUp();
-
-        d2 = D2Factory.forNewDatabase();
+    public SettingsAppInfoShould() {
+        super("settings/app_info.json");
     }
 
-    // commented out since it is a flaky test that works against a real server.
-    //@Test
-    public void remove_records_deleted_in_the_server() {
-        d2.userModule().logIn(username, password, url).blockingGet();
-        d2.metadataModule().blockingDownload();
-        d2.aggregatedModule().data().blockingDownload();
+    @Override
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        SettingsAppInfo appInfo = objectMapper.readValue(jsonStream, SettingsAppInfo.class);
 
-        // At this point, delete a record in the server
-
-        d2.aggregatedModule().data().blockingDownload();
+        assertThat(appInfo.dataStoreVersion()).isEqualTo(SettingsAppDataStoreVersion.V2_0);
+        assertThat(appInfo.androidSettingsVersion()).isEqualTo("2.0.0");
     }
 }

@@ -27,31 +27,11 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import dagger.Reusable
-import io.reactivex.Completable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.systeminfo.SystemInfo
+import io.reactivex.Single
+import org.hisp.dhis.android.core.settings.SettingsAppInfo
 
-@Reusable
-internal class SettingsAppVersionCall @Inject constructor(
-    private val appVersionManager: SettingsAppVersionManager,
-    private val systemInfoStore: ObjectWithoutUidStore<SystemInfo>
-) : CompletableProvider {
-
-    override fun getCompletable(storeError: Boolean): Completable {
-
-        return Completable.fromCallable {
-            val context = systemInfoStore.selectFirst()?.contextPath()
-
-            val version = if (context == "https://play.dhis2.org/android-dev") {
-                SettingsAppVersion.V2_0
-            } else {
-                SettingsAppVersion.V1_1
-            }
-
-            appVersionManager.setVersion(version)
-        }
-    }
+internal interface SettingsAppInfoManager {
+    fun getDataStoreVersion(): Single<SettingsAppDataStoreVersion>
+    fun getAppVersion(): Single<String>
+    fun updateAppInfo(): Single<SettingsAppInfo>
 }

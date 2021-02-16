@@ -25,36 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core
 
-package org.hisp.dhis.android.core.dataset.internal;
+import androidx.test.platform.app.InstrumentationRegistry
+import com.facebook.flipper.android.AndroidFlipperClient
+import com.facebook.flipper.android.utils.FlipperUtils
+import com.facebook.flipper.plugins.databases.DatabasesFlipperPlugin
+import com.facebook.flipper.plugins.inspector.DescriptorMapping
+import com.facebook.flipper.plugins.inspector.InspectorFlipperPlugin
+import com.facebook.flipper.plugins.network.NetworkFlipperPlugin
+import com.facebook.soloader.SoLoader
+import org.hisp.dhis.android.BuildConfig
 
-import org.hisp.dhis.android.core.BaseRealIntegrationTest;
-import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.D2Factory;
-import org.junit.Before;
+internal object FlipperManager {
 
-import java.io.IOException;
-
-public class DataSetCompleteRegistrationCallRealIntegrationShould extends BaseRealIntegrationTest {
-
-    private D2 d2;
-
-    @Before
-    public void setUp() throws IOException {
-        super.setUp();
-
-        d2 = D2Factory.forNewDatabase();
-    }
-
-    // commented out since it is a flaky test that works against a real server.
-    //@Test
-    public void remove_records_deleted_in_the_server() {
-        d2.userModule().logIn(username, password, url).blockingGet();
-        d2.metadataModule().blockingDownload();
-        d2.aggregatedModule().data().blockingDownload();
-
-        // At this point, delete a record in the server
-
-        d2.aggregatedModule().data().blockingDownload();
+    @JvmStatic
+    fun setUp(networkPlugin: NetworkFlipperPlugin) {
+        val context = InstrumentationRegistry.getInstrumentation().context.applicationContext
+        SoLoader.init(context, false)
+        if (BuildConfig.DEBUG && FlipperUtils.shouldEnableFlipper(context)) {
+            val client = AndroidFlipperClient.getInstance(context)
+            client.addPlugin(networkPlugin)
+            client.addPlugin(DatabasesFlipperPlugin(context))
+            client.addPlugin(InspectorFlipperPlugin(context, DescriptorMapping.withDefaults()))
+            client.start()
+        }
     }
 }

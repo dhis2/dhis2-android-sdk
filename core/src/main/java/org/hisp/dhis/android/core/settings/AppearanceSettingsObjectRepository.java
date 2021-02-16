@@ -61,95 +61,30 @@ public class AppearanceSettingsObjectRepository
         }
         FiltersSet.Builder<HomeFilter> homeBuilder = FiltersSet.builder();
         homeBuilder.filters(homeFilters);
+        FiltersSet<HomeFilter> homeScope = homeBuilder.build();
 
-        //DataSet
-        Map<DataSetFilter, FilterConfig> globalDataSetFilters = new HashMap<>();
-        Map<String, FiltersSet<DataSetFilter>> specificDataSetFilters = new HashMap<>();
-        for (FilterConfig filter : filters) {
-            if (Objects.equals(filter.scope(), DataSetFilter.class.getSimpleName())) {
-                if (filter.uid() == null) {
-                    globalDataSetFilters.put(DataSetFilter.valueOf(filter.filterType()), filter);
-                } else {
-                    FiltersSet<DataSetFilter> uidFilters = specificDataSetFilters.get(filter.uid());
-                    if (uidFilters != null) {
-                        uidFilters.filters().put(DataSetFilter.valueOf(filter.filterType()), filter);
-                    } else {
-                        Map<DataSetFilter, FilterConfig> dataSetFilters = new HashMap<>();
-                        dataSetFilters.put(DataSetFilter.valueOf(filter.filterType()), filter);
-
-                        FiltersSet.Builder<DataSetFilter> dataSetBuilder = FiltersSet.builder();
-                        dataSetBuilder.filters(dataSetFilters);
-
-                        specificDataSetFilters.put(filter.uid(), dataSetBuilder.build());
-                    }
-                }
-            }
-        }
-
-        FiltersSet.Builder<DataSetFilter> dataSetGlobalSettingsBuilder = FiltersSet.builder();
-        dataSetGlobalSettingsBuilder.filters(globalDataSetFilters);
-
-        FilterScopesSettings.Builder<DataSetFilter> dataSetScopeBuilder = FilterScopesSettings.builder();
-        dataSetScopeBuilder.globalSettings(dataSetGlobalSettingsBuilder.build());
-        dataSetScopeBuilder.specificSettings(specificDataSetFilters);
-        FilterScopesSettings<DataSetFilter> dataSetScopesSettings = dataSetScopeBuilder.build();
-
-        //Program
-        Map<ProgramFilter, FilterConfig> globalProgramFilters = new HashMap<>();
-        Map<String, FiltersSet<ProgramFilter>> specificProgramFilters = new HashMap<>();
-        for (FilterConfig filter : filters) {
-            if (Objects.equals(filter.scope(), ProgramFilter.class.getSimpleName())) {
-                if (filter.uid() == null) {
-                    globalProgramFilters.put(ProgramFilter.valueOf(filter.filterType()), filter);
-                } else {
-                    FiltersSet<ProgramFilter> uidFilters = specificProgramFilters.get(filter.uid());
-                    if (uidFilters != null) {
-                        uidFilters.filters().put(ProgramFilter.valueOf(filter.filterType()), filter);
-                    } else {
-                        Map<ProgramFilter, FilterConfig> programFilters = new HashMap<>();
-                        programFilters.put(ProgramFilter.valueOf(filter.filterType()), filter);
-
-                        FiltersSet.Builder<ProgramFilter> programBuilder = FiltersSet.builder();
-                        programBuilder.filters(programFilters);
-
-                        specificProgramFilters.put(filter.uid(), programBuilder.build());
-                    }
-                }
-            }
-        }
-
-        FiltersSet.Builder<ProgramFilter> programGlobalSettingsBuilder = FiltersSet.builder();
-        programGlobalSettingsBuilder.filters(globalProgramFilters);
-
-        FilterScopesSettings.Builder<ProgramFilter> programScopeBuilder = FilterScopesSettings.builder();
-        programScopeBuilder.globalSettings(programGlobalSettingsBuilder.build());
-        programScopeBuilder.specificSettings(specificProgramFilters);
-        FilterScopesSettings<ProgramFilter> programScopesSettings = programScopeBuilder.build();
 
         //FilterSorting
         FilterSorting.Builder filterSortingBuilder = FilterSorting.builder();
-        filterSortingBuilder.home(homeBuilder.build());
-        filterSortingBuilder.dataSettings(dataSetScopesSettings);
-        filterSortingBuilder.programSettings(programScopesSettings);
+        filterSortingBuilder.home(homeScope);
+        filterSortingBuilder.dataSettings(getFiltersInScope(filters, DataSetFilter.class));
+        filterSortingBuilder.programSettings(getFiltersInScope(filters, ProgramFilter.class));
 
         //Appearance
         AppearanceSettings.Builder appearanceSettingsBuilder = AppearanceSettings.builder();
         appearanceSettingsBuilder.filterSorting(filterSortingBuilder.build());
 
-//        getFiltersInScope(filters, DataSetFilter.class);
-
         return appearanceSettingsBuilder.build();
     }
 
-    /*private <T extends Enum<T>> FilterScopesSettings<T> getFiltersInScope(List<FilterConfig> filters, Class<T> filterClass) {
+    private <T extends Enum<T>> FilterScopesSettings<T> getFiltersInScope(List<FilterConfig> filters, Class<T> filterClass) {
 
         Map<T, FilterConfig> globalDataSetFilters = new HashMap<>();
         Map<String, FiltersSet<T>> specificDataSetFilters = new HashMap<>();
         for (FilterConfig filter : filters) {
             if (Objects.equals(filter.scope(), filterClass.getSimpleName())) {
                 if (filter.uid() == null) {
-//                    globalDataSetFilters.put(getFilterType(filterClass, filter.filterType()), filter);
-                    globalDataSetFilters.put(Enum.valueOf(filterClass, Objects.requireNonNull(filter.filterType())), filter);
+                    globalDataSetFilters.put(getFilterType(filterClass, filter.filterType()), filter);
                 } else {
                     FiltersSet<T> uidFilters = specificDataSetFilters.get(filter.uid());
                     if (uidFilters != null) {
@@ -175,7 +110,7 @@ public class AppearanceSettingsObjectRepository
         dataSetScopeBuilder.specificSettings(specificDataSetFilters);
 
         return dataSetScopeBuilder.build();
-    }*/
+    }
 
     private <T extends Enum<T>> T getFilterType(Class<T> enumClass, String value) {
         return Enum.valueOf(enumClass, value);

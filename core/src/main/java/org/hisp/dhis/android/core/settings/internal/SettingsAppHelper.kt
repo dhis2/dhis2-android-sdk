@@ -29,12 +29,13 @@ package org.hisp.dhis.android.core.settings.internal
 
 import org.hisp.dhis.android.core.settings.AppearanceSettings
 import org.hisp.dhis.android.core.settings.DataSetFilter
+import org.hisp.dhis.android.core.settings.DataSetFilters
 import org.hisp.dhis.android.core.settings.DataSetSetting
 import org.hisp.dhis.android.core.settings.DataSetSettings
 import org.hisp.dhis.android.core.settings.FilterSetting
-import org.hisp.dhis.android.core.settings.FilterScopeSettings
 import org.hisp.dhis.android.core.settings.HomeFilter
 import org.hisp.dhis.android.core.settings.ProgramFilter
+import org.hisp.dhis.android.core.settings.ProgramFilters
 import org.hisp.dhis.android.core.settings.ProgramSetting
 import org.hisp.dhis.android.core.settings.ProgramSettings
 
@@ -67,7 +68,7 @@ internal object SettingsAppHelper {
             .build()
     }
 
-    private fun getDataSetFilters(dataSetScope: FilterScopeSettings<DataSetFilter>): List<FilterSetting> {
+    private fun getDataSetFilters(dataSetScope: DataSetFilters): List<FilterSetting> {
 
         val globalFilters = dataSetScope.globalSettings().map { entry ->
             entry.value.toBuilder()
@@ -89,7 +90,7 @@ internal object SettingsAppHelper {
         return listOf(globalFilters, specificFilters).flatten()
     }
 
-    private fun getProgramFilters(programScope: FilterScopeSettings<ProgramFilter>): List<FilterSetting> {
+    private fun getProgramFilters(programScope: ProgramFilters): List<FilterSetting> {
 
         val globalFilters = programScope.globalSettings().map { entry ->
             entry.value.toBuilder()

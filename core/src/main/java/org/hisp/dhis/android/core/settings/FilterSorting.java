@@ -12,9 +12,9 @@ public abstract class FilterSorting {
 
     public abstract Map<HomeFilter, FilterSetting> home();
 
-    public abstract FilterScopeSettings<DataSetFilter> dataSetSettings();
+    public abstract DataSetFilters dataSetSettings();
 
-    public abstract FilterScopeSettings<ProgramFilter> programSettings();
+    public abstract ProgramFilters programSettings();
 
     public abstract Builder toBuilder();
 
@@ -28,9 +28,9 @@ public abstract class FilterSorting {
 
         public abstract Builder home(Map<HomeFilter, FilterSetting> home);
 
-        public abstract Builder dataSetSettings(FilterScopeSettings<DataSetFilter> dataSetSettings);
+        public abstract Builder dataSetSettings(DataSetFilters dataSetSettings);
 
-        public abstract Builder programSettings(FilterScopeSettings<ProgramFilter> programSettings);
+        public abstract Builder programSettings(ProgramFilters programSettings);
 
         public abstract FilterSorting build();
     }

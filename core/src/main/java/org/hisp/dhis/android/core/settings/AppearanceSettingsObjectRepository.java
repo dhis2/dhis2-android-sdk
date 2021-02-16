@@ -32,7 +32,7 @@ public class AppearanceSettingsObjectRepository
         return blockingGet().filterSorting().home();
     }
 
-    public Map<DataSetFilter, FilterSetting> getDataSetFilters(String uid) {
+    public Map<DataSetFilter, FilterSetting> getDataSetFiltersByUid(String uid) {
         Map<DataSetFilter, FilterSetting> filters = blockingGet().filterSorting().dataSetSettings().specificSettings().get(uid);
         if (filters == null) {
             filters = blockingGet().filterSorting().dataSetSettings().globalSettings();
@@ -40,7 +40,11 @@ public class AppearanceSettingsObjectRepository
         return filters;
     }
 
-    public Map<ProgramFilter, FilterSetting> getProgramFilters(String uid) {
+    public Map<ProgramFilter, FilterSetting> getTrackedEntityTypeFilters() {
+        return blockingGet().filterSorting().programSettings().globalSettings();
+    }
+
+    public Map<ProgramFilter, FilterSetting> getProgramFiltersByUid(String uid) {
         Map<ProgramFilter, FilterSetting> filters = blockingGet().filterSorting().programSettings().specificSettings().get(uid);
         if (filters == null) {
             filters = blockingGet().filterSorting().programSettings().globalSettings();

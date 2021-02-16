@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.event
 
+import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
@@ -130,5 +131,16 @@ class EventServiceShould {
         whenever(event.attributeOptionCombo()) doReturn attributeOptionComboUid
         whenever(categoryOptionComboService.blockingHasAccess(attributeOptionComboUid, firstJanuary)) doReturn false
         assertFalse(eventService.blockingHasCategoryComboAccess(event))
+    }
+
+    @Test
+    fun `Should return no data write access edition status`() {
+        whenever(event.attributeOptionCombo()) doReturn attributeOptionComboUid
+        whenever(categoryOptionComboService.blockingHasAccess(attributeOptionComboUid, firstJanuary)) doReturn false
+        val status = eventService.blockingGetEditableStatus(event.uid())
+
+        assertThat(status is EventEditableStatus.NonEditable).isTrue()
+        assertThat((status as EventEditableStatus.NonEditable).reason)
+            .isEquivalentAccordingToCompareTo(EventNonEditableReason.NO_DATA_WRITE_ACCESS)
     }
 }

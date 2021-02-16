@@ -5,9 +5,9 @@ import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.CoreColumns;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
 
-public final class FilterConfigTableInfo {
+public final class FilterSettingTableInfo {
 
-    private FilterConfigTableInfo() {
+    private FilterSettingTableInfo() {
     }
 
     public static final TableInfo TABLE_INFO = new TableInfo() {

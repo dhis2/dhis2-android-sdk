@@ -12,8 +12,8 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_FilterConfig.Builder.class)
-public abstract class FilterConfig implements CoreObject {
+@JsonDeserialize(builder = $$AutoValue_FilterSetting.Builder.class)
+public abstract class FilterSetting implements CoreObject {
 
     @Nullable
     public abstract String scope();
@@ -32,14 +32,14 @@ public abstract class FilterConfig implements CoreObject {
     @JsonProperty()
     public abstract Boolean filter();
 
-    public static FilterConfig create(Cursor cursor) {
-        return $AutoValue_FilterConfig.createFromCursor(cursor);
+    public static FilterSetting create(Cursor cursor) {
+        return $AutoValue_FilterSetting.createFromCursor(cursor);
     }
 
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new $AutoValue_FilterConfig.Builder();
+        return new $AutoValue_FilterSetting.Builder();
     }
 
     @AutoValue.Builder
@@ -58,6 +58,6 @@ public abstract class FilterConfig implements CoreObject {
 
         public abstract Builder filter(Boolean filter);
 
-        public abstract FilterConfig build();
+        public abstract FilterSetting build();
     }
 }

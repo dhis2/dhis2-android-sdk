@@ -8,13 +8,13 @@ import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.settings.AppearanceSettings
-import org.hisp.dhis.android.core.settings.FilterConfig
+import org.hisp.dhis.android.core.settings.FilterSetting
 import java.net.HttpURLConnection
 import javax.inject.Inject
 
 @Reusable
 internal class AppearanceSettingCall @Inject constructor(
-    private val appearanceSettingHandler: Handler<FilterConfig>,
+    private val appearanceSettingHandler: Handler<FilterSetting>,
     private val settingAppService: SettingAppService,
     private val apiCallExecutor: RxAPICallExecutor,
     private val appVersionManager: SettingsAppVersionManager

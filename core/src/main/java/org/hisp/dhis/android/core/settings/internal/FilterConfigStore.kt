@@ -7,12 +7,12 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapp
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithoutUidStore
-import org.hisp.dhis.android.core.settings.FilterConfig
-import org.hisp.dhis.android.core.settings.FilterConfigTableInfo
+import org.hisp.dhis.android.core.settings.FilterSetting
+import org.hisp.dhis.android.core.settings.FilterSettingTableInfo
 
 internal object FilterConfigStore {
 
-    private val BINDER = StatementBinder { o: FilterConfig, w: StatementWrapper ->
+    private val BINDER = StatementBinder { o: FilterSetting, w: StatementWrapper ->
         w.bind(1, o.scope())
         w.bind(2, o.filterType())
         w.bind(3, o.uid())
@@ -21,19 +21,19 @@ internal object FilterConfigStore {
     }
 
     private val WHERE_UPDATE_BINDER = WhereStatementBinder {
-            _: FilterConfig, _: StatementWrapper ->
+            _: FilterSetting, _: StatementWrapper ->
     }
 
     private val WHERE_DELETE_BINDER = WhereStatementBinder {
-            _: FilterConfig, _: StatementWrapper ->
+            _: FilterSetting, _: StatementWrapper ->
     }
 
-    fun create(databaseAdapter: DatabaseAdapter?): ObjectWithoutUidStore<FilterConfig> {
+    fun create(databaseAdapter: DatabaseAdapter?): ObjectWithoutUidStore<FilterSetting> {
         return objectWithoutUidStore(
-            databaseAdapter!!, FilterConfigTableInfo.TABLE_INFO,
+            databaseAdapter!!, FilterSettingTableInfo.TABLE_INFO,
             BINDER,
             WHERE_UPDATE_BINDER,
             WHERE_DELETE_BINDER
-        ) { cursor: Cursor? -> FilterConfig.create(cursor) }
+        ) { cursor: Cursor? -> FilterSetting.create(cursor) }
     }
 }

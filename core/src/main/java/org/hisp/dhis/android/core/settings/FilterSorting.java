@@ -4,15 +4,17 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
+import java.util.Map;
+
 @AutoValue
 @JsonDeserialize(builder = AutoValue_FilterSorting.Builder.class)
 public abstract class FilterSorting {
 
-    public abstract FiltersSet<HomeFilter> home();
+    public abstract Map<HomeFilter, FilterSetting> home();
 
-    public abstract FilterScopesSettings<DataSetFilter> dataSettings();
+    public abstract FilterScopeSettings<DataSetFilter> dataSetSettings();
 
-    public abstract FilterScopesSettings<ProgramFilter> programSettings();
+    public abstract FilterScopeSettings<ProgramFilter> programSettings();
 
     public abstract Builder toBuilder();
 
@@ -24,11 +26,11 @@ public abstract class FilterSorting {
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
 
-        public abstract Builder home(FiltersSet<HomeFilter> home);
+        public abstract Builder home(Map<HomeFilter, FilterSetting> home);
 
-        public abstract Builder dataSettings(FilterScopesSettings<DataSetFilter> dataSettings);
+        public abstract Builder dataSetSettings(FilterScopeSettings<DataSetFilter> dataSetSettings);
 
-        public abstract Builder programSettings(FilterScopesSettings<ProgramFilter> programSettings);
+        public abstract Builder programSettings(FilterScopeSettings<ProgramFilter> programSettings);
 
         public abstract FilterSorting build();
     }

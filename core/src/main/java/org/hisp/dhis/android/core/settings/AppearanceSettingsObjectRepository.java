@@ -19,96 +19,84 @@ public class AppearanceSettingsObjectRepository
         extends ReadOnlyAnyObjectWithDownloadRepositoryImpl<AppearanceSettings>
         implements ReadOnlyWithDownloadObjectRepository<AppearanceSettings> {
 
-    private final ObjectWithoutUidStore<FilterConfig> store;
+    private final ObjectWithoutUidStore<FilterSetting> store;
 
     @Inject
-    AppearanceSettingsObjectRepository(ObjectWithoutUidStore<FilterConfig> store,
+    AppearanceSettingsObjectRepository(ObjectWithoutUidStore<FilterSetting> store,
                                        AppearanceSettingCall appearanceSettingCall) {
         super(appearanceSettingCall);
         this.store = store;
     }
 
-    public Map<HomeFilter, FilterConfig> getHomeFilters() {
-        return blockingGet().filterSorting().home().filters();
+    public Map<HomeFilter, FilterSetting> getHomeFilters() {
+        return blockingGet().filterSorting().home();
     }
 
-    public Map<DataSetFilter, FilterConfig> getDataSetFilters(String uid) {
-        FiltersSet<DataSetFilter> filterSet = blockingGet().filterSorting().dataSettings().specificSettings().get(uid);
-        if (filterSet == null) {
-            filterSet = blockingGet().filterSorting().dataSettings().globalSettings();
+    public Map<DataSetFilter, FilterSetting> getDataSetFilters(String uid) {
+        Map<DataSetFilter, FilterSetting> filters = blockingGet().filterSorting().dataSetSettings().specificSettings().get(uid);
+        if (filters == null) {
+            filters = blockingGet().filterSorting().dataSetSettings().globalSettings();
         }
-        return filterSet.filters();
+        return filters;
     }
 
-    public Map<ProgramFilter, FilterConfig> getProgramFilters(String uid) {
-        FiltersSet<ProgramFilter> filterSet = blockingGet().filterSorting().programSettings().specificSettings().get(uid);
-        if (filterSet == null) {
-            filterSet = blockingGet().filterSorting().programSettings().globalSettings();
+    public Map<ProgramFilter, FilterSetting> getProgramFilters(String uid) {
+        Map<ProgramFilter, FilterSetting> filters = blockingGet().filterSorting().programSettings().specificSettings().get(uid);
+        if (filters == null) {
+            filters = blockingGet().filterSorting().programSettings().globalSettings();
         }
-        return filterSet.filters();
+        return filters;
     }
 
     @Override
     public AppearanceSettings blockingGet() {
-        List<FilterConfig> filters = store.selectAll();
+        List<FilterSetting> filters = store.selectAll();
 
         //Home
-        Map<HomeFilter, FilterConfig> homeFilters = new HashMap<>();
-        for (FilterConfig filter : filters) {
+        Map<HomeFilter, FilterSetting> homeFilters = new HashMap<>();
+        for (FilterSetting filter : filters) {
             if (Objects.equals(filter.scope(), HomeFilter.class.getSimpleName())) {
                 homeFilters.put(HomeFilter.valueOf(filter.filterType()), filter);
             }
         }
-        FiltersSet.Builder<HomeFilter> homeBuilder = FiltersSet.builder();
-        homeBuilder.filters(homeFilters);
-        FiltersSet<HomeFilter> homeScope = homeBuilder.build();
-
 
         //FilterSorting
         FilterSorting.Builder filterSortingBuilder = FilterSorting.builder();
-        filterSortingBuilder.home(homeScope);
-        filterSortingBuilder.dataSettings(getFiltersInScope(filters, DataSetFilter.class));
+        filterSortingBuilder.home(homeFilters);
+        filterSortingBuilder.dataSetSettings(getFiltersInScope(filters, DataSetFilter.class));
         filterSortingBuilder.programSettings(getFiltersInScope(filters, ProgramFilter.class));
+        FilterSorting filterSorting = filterSortingBuilder.build();
 
         //Appearance
         AppearanceSettings.Builder appearanceSettingsBuilder = AppearanceSettings.builder();
-        appearanceSettingsBuilder.filterSorting(filterSortingBuilder.build());
-
+        appearanceSettingsBuilder.filterSorting(filterSorting);
         return appearanceSettingsBuilder.build();
     }
 
-    private <T extends Enum<T>> FilterScopesSettings<T> getFiltersInScope(List<FilterConfig> filters, Class<T> filterClass) {
+    private <T extends Enum<T>> FilterScopeSettings<T> getFiltersInScope(List<FilterSetting> filters, Class<T> filterClass) {
 
-        Map<T, FilterConfig> globalDataSetFilters = new HashMap<>();
-        Map<String, FiltersSet<T>> specificDataSetFilters = new HashMap<>();
-        for (FilterConfig filter : filters) {
+        Map<T, FilterSetting> globalDataSetFilters = new HashMap<>();
+        Map<String, Map<T, FilterSetting>> specificDataSetFilters = new HashMap<>();
+        for (FilterSetting filter : filters) {
             if (Objects.equals(filter.scope(), filterClass.getSimpleName())) {
                 if (filter.uid() == null) {
                     globalDataSetFilters.put(getFilterType(filterClass, filter.filterType()), filter);
                 } else {
-                    FiltersSet<T> uidFilters = specificDataSetFilters.get(filter.uid());
+                    Map<T, FilterSetting> uidFilters = specificDataSetFilters.get(filter.uid());
                     if (uidFilters != null) {
-                        uidFilters.filters().put(getFilterType(filterClass, filter.filterType()), filter);
+                        uidFilters.put(getFilterType(filterClass, filter.filterType()), filter);
                     } else {
-                        Map<T, FilterConfig> dataSetFilters = new HashMap<>();
+                        Map<T, FilterSetting> dataSetFilters = new HashMap<>();
                         dataSetFilters.put(getFilterType(filterClass, filter.filterType()), filter);
-
-                        FiltersSet.Builder<T> dataSetBuilder = FiltersSet.builder();
-                        dataSetBuilder.filters(dataSetFilters);
-
-                        specificDataSetFilters.put(filter.uid(), dataSetBuilder.build());
+                        specificDataSetFilters.put(filter.uid(), dataSetFilters);
                     }
                 }
             }
         }
 
-        FiltersSet.Builder<T> globalSettingsBuilder = FiltersSet.builder();
-        globalSettingsBuilder.filters(globalDataSetFilters);
-
-        FilterScopesSettings.Builder<T> dataSetScopeBuilder = FilterScopesSettings.builder();
-        dataSetScopeBuilder.globalSettings(globalSettingsBuilder.build());
+        FilterScopeSettings.Builder<T> dataSetScopeBuilder = FilterScopeSettings.builder();
+        dataSetScopeBuilder.globalSettings(globalDataSetFilters);
         dataSetScopeBuilder.specificSettings(specificDataSetFilters);
-
         return dataSetScopeBuilder.build();
     }
 

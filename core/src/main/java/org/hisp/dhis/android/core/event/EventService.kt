@@ -85,7 +85,6 @@ class EventService @Inject constructor(
         return Single.just(blockingHasCategoryComboAccess(event))
     }
 
-    @Suppress("ComplexMethod")
     fun blockingIsEditable(eventUid: String): Boolean {
         return blockingGetEditableStatus(eventUid) is EventEditableStatus.Editable
     }
@@ -94,6 +93,7 @@ class EventService @Inject constructor(
         return Single.just(blockingIsEditable(eventUid))
     }
 
+    @Suppress("ComplexMethod")
     fun blockingGetEditableStatus(eventUid: String): EventEditableStatus {
         val event = eventRepository.uid(eventUid).blockingGet()
         val program = programRepository.uid(event.program()).blockingGet()

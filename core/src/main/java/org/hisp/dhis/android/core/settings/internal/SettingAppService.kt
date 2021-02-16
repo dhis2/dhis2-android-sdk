@@ -61,7 +61,7 @@ internal class SettingAppService @Inject constructor(
         return settingService.synchronizationSettings("${getNamespace(version)}/synchronization")
     }
 
-    fun appearanceSettings(version: SettingsAppVersion): Single<AppearanceSettings> {
+    fun appearanceSettings(version: SettingsAppDataStoreVersion): Single<AppearanceSettings> {
         return settingService.appearanceSettings("${getNamespace(version)}/appearance")
     }
 

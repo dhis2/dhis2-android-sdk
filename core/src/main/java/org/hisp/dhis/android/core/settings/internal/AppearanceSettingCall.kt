@@ -17,7 +17,7 @@ internal class AppearanceSettingCall @Inject constructor(
     private val appearanceSettingHandler: Handler<FilterSetting>,
     private val settingAppService: SettingAppService,
     private val apiCallExecutor: RxAPICallExecutor,
-    private val appVersionManager: SettingsAppVersionManager
+    private val appVersionManager: SettingsAppInfoManager
 ) : CompletableProvider {
 
     override fun getCompletable(storeError: Boolean): Completable {
@@ -37,8 +37,9 @@ internal class AppearanceSettingCall @Inject constructor(
     }
 
     fun fetch(storeError: Boolean): Single<AppearanceSettings> {
-        val version = appVersionManager.getVersion()
-        return apiCallExecutor.wrapSingle(settingAppService.appearanceSettings(version), storeError)
+        return appVersionManager.getDataStoreVersion().flatMap { version ->
+            apiCallExecutor.wrapSingle(settingAppService.appearanceSettings(version), storeError)
+        }
     }
 
     fun process(item: AppearanceSettings?) {

@@ -33,8 +33,9 @@ import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.settings.AnalyticsTeiAttribute
 import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
 import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicator
@@ -69,7 +70,7 @@ internal class AnalyticsSettingEntityDIModule {
 
     @Provides
     @Reusable
-    fun analyticsTeiSettingHandler(impl: AnalyticsTeiSettingHandler): ObjectWithoutUidHandlerImpl<AnalyticsTeiSetting> {
+    fun analyticsTeiSettingHandler(impl: AnalyticsTeiSettingHandler): Handler<AnalyticsTeiSetting> {
         return impl
     }
 
@@ -77,7 +78,7 @@ internal class AnalyticsSettingEntityDIModule {
     @Reusable
     fun analyticsTeiDataElementHandler(
         store: LinkStore<AnalyticsTeiDataElement>
-    ): LinkHandlerImpl<AnalyticsTeiDataElement, AnalyticsTeiDataElement> {
+    ): LinkHandler<AnalyticsTeiDataElement, AnalyticsTeiDataElement> {
         return LinkHandlerImpl(store)
     }
 
@@ -85,7 +86,7 @@ internal class AnalyticsSettingEntityDIModule {
     @Reusable
     fun analyticsTeiIndicatorHandler(
         store: LinkStore<AnalyticsTeiIndicator>
-    ): LinkHandlerImpl<AnalyticsTeiIndicator, AnalyticsTeiIndicator> {
+    ): LinkHandler<AnalyticsTeiIndicator, AnalyticsTeiIndicator> {
         return LinkHandlerImpl(store)
     }
 
@@ -93,7 +94,7 @@ internal class AnalyticsSettingEntityDIModule {
     @Reusable
     fun analyticsTeiAttributeHandler(
         store: LinkStore<AnalyticsTeiAttribute>
-    ): LinkHandlerImpl<AnalyticsTeiAttribute, AnalyticsTeiAttribute> {
+    ): LinkHandler<AnalyticsTeiAttribute, AnalyticsTeiAttribute> {
         return LinkHandlerImpl(store)
     }
 

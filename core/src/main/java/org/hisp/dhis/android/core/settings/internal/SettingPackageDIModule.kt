@@ -35,6 +35,7 @@ import retrofit2.Retrofit
 
 @Module(
     includes = [
+        AnalyticsSettingEntityDIModule::class,
         GeneralSettingEntityDIModule::class,
         DataSetSettingEntityDIModule::class,
         ProgramSettingEntityDIModule::class,

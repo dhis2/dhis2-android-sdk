@@ -52,6 +52,8 @@ public abstract class AnalyticsTeiAttribute implements CoreObject {
         return AutoValue_AnalyticsTeiAttribute.createFromCursor(cursor);
     }
 
+    public abstract Builder toBuilder();
+
     public static Builder builder() {
         return new AutoValue_AnalyticsTeiAttribute.Builder();
     }

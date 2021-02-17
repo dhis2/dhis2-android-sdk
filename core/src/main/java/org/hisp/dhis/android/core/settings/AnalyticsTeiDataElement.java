@@ -55,6 +55,8 @@ public abstract class AnalyticsTeiDataElement implements CoreObject {
         return AutoValue_AnalyticsTeiDataElement.createFromCursor(cursor);
     }
 
+    public abstract Builder toBuilder();
+
     public static Builder builder() {
         return new AutoValue_AnalyticsTeiDataElement.Builder();
     }

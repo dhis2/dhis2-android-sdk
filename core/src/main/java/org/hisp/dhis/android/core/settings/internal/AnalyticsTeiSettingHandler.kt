@@ -27,36 +27,43 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
+import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithoutUidStore
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
+import org.hisp.dhis.android.core.settings.AnalyticsTeiAttribute
+import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
+import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicator
 import org.hisp.dhis.android.core.settings.AnalyticsTeiSetting
-import org.hisp.dhis.android.core.settings.AnalyticsTeiSettingTableInfo
+import javax.inject.Inject
 
-internal object AnalyticsTeiSettingStore {
+@Reusable
+internal class AnalyticsTeiSettingHandler @Inject constructor(
+    store: ObjectWithoutUidStore<AnalyticsTeiSetting>,
+    private val teiDataElementHandler: LinkHandler<AnalyticsTeiDataElement, AnalyticsTeiDataElement>,
+    private val teiIndicatorHandler: LinkHandler<AnalyticsTeiIndicator, AnalyticsTeiIndicator>,
+    private val teiAttributeHandler: LinkHandler<AnalyticsTeiAttribute, AnalyticsTeiAttribute>
+) : ObjectWithoutUidHandlerImpl<AnalyticsTeiSetting>(store) {
 
-    private val BINDER = StatementBinder { o: AnalyticsTeiSetting, w: StatementWrapper ->
-        w.bind(1, o.uid())
-        w.bind(2, o.name())
-        w.bind(3, o.shortName())
-        w.bind(4, o.period())
-        w.bind(5, o.type())
+    override fun beforeCollectionHandled(
+        oCollection: Collection<AnalyticsTeiSetting>
+    ): Collection<AnalyticsTeiSetting> {
+        store.delete()
+        return oCollection
     }
 
-    private val WHERE_UPDATE_BINDER = WhereStatementBinder {
-        _: AnalyticsTeiSetting, _: StatementWrapper ->
-    }
+    override fun afterObjectHandled(o: AnalyticsTeiSetting, action: HandleAction) {
+        teiDataElementHandler.handleMany(o.uid(), o.data()?.dataElements() ?: emptyList()) { de ->
+            de.toBuilder().teiSetting(o.uid()).build()
+        }
 
-    private val WHERE_DELETE_BINDER = WhereStatementBinder {
-        _: AnalyticsTeiSetting, _: StatementWrapper ->
-    }
+        teiIndicatorHandler.handleMany(o.uid(), o.data()?.indicators() ?: emptyList()) { ind ->
+            ind.toBuilder().teiSetting(o.uid()).build()
+        }
 
-    fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<AnalyticsTeiSetting> {
-        return objectWithoutUidStore(databaseAdapter, AnalyticsTeiSettingTableInfo.TABLE_INFO, BINDER,
-            WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER) { cursor: Cursor -> AnalyticsTeiSetting.create(cursor) }
+        teiAttributeHandler.handleMany(o.uid(), o.data()?.attributes() ?: emptyList()) { att ->
+            att.toBuilder().teiSetting(o.uid()).build()
+        }
     }
 }

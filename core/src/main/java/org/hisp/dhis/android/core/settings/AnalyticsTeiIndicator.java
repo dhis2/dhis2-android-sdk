@@ -51,6 +51,8 @@ public abstract class AnalyticsTeiIndicator implements CoreObject {
 
     public abstract String indicator();
 
+    public abstract Builder toBuilder();
+
     public static AnalyticsTeiIndicator create(Cursor cursor) {
         return AutoValue_AnalyticsTeiIndicator.createFromCursor(cursor);
     }

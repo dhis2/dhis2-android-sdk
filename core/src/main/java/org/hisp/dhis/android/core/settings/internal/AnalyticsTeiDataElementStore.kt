@@ -32,8 +32,8 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithoutUidStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkStore
 import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
 import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElementTableInfo
 
@@ -45,16 +45,9 @@ internal object AnalyticsTeiDataElementStore {
         w.bind(3, o.dataElement())
     }
 
-    private val WHERE_UPDATE_BINDER = WhereStatementBinder {
-        _: AnalyticsTeiDataElement, _: StatementWrapper ->
-    }
-
-    private val WHERE_DELETE_BINDER = WhereStatementBinder {
-        _: AnalyticsTeiDataElement, _: StatementWrapper ->
-    }
-
-    fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<AnalyticsTeiDataElement> {
-        return objectWithoutUidStore(databaseAdapter, AnalyticsTeiDataElementTableInfo.TABLE_INFO, BINDER,
-            WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER) { cursor: Cursor -> AnalyticsTeiDataElement.create(cursor) }
+    fun create(databaseAdapter: DatabaseAdapter): LinkStore<AnalyticsTeiDataElement> {
+        return linkStore(databaseAdapter, AnalyticsTeiDataElementTableInfo.TABLE_INFO,
+            AnalyticsTeiDataElementTableInfo.Columns.TEI_SETTING, BINDER
+        ) { cursor: Cursor -> AnalyticsTeiDataElement.create(cursor) }
     }
 }

@@ -12,6 +12,7 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.data.maintenance.D2ErrorSamples
 import org.hisp.dhis.android.core.settings.AppearanceSettings
+import org.hisp.dhis.android.core.settings.CompletionSpinner
 import org.hisp.dhis.android.core.settings.FilterSetting
 import org.junit.Before
 import org.junit.Test
@@ -21,7 +22,8 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class AppearanceSettingsCallShould {
 
-    private val handler: Handler<FilterSetting> = mock()
+    private val filterSettingHandler: Handler<FilterSetting> = mock()
+    private val completionSpinnerHandler: Handler<CompletionSpinner> = mock()
     private val service: SettingAppService = mock()
     private val apiCallExecutor: RxAPICallExecutor = mock()
     private val appVersionManager: SettingsAppInfoManager = mock()
@@ -36,7 +38,8 @@ class AppearanceSettingsCallShould {
         whenever(service.appearanceSettings(any())) doReturn appearanceSettingsSingle
 
         appearanceSettingsCall = AppearanceSettingCall(
-            handler,
+            filterSettingHandler,
+            completionSpinnerHandler,
             service,
             apiCallExecutor,
             appVersionManager
@@ -70,7 +73,9 @@ class AppearanceSettingsCallShould {
 
         appearanceSettingsCall.getCompletable(false).blockingAwait()
 
-        verify(handler).handleMany(emptyList())
-        verifyNoMoreInteractions(handler)
+        verify(filterSettingHandler).handleMany(emptyList())
+        verifyNoMoreInteractions(filterSettingHandler)
+        verify(completionSpinnerHandler).handleMany(emptyList())
+        verifyNoMoreInteractions(completionSpinnerHandler)
     }
 }

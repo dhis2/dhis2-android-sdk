@@ -19,13 +19,16 @@ public class AppearanceSettingsObjectRepository
         extends ReadOnlyAnyObjectWithDownloadRepositoryImpl<AppearanceSettings>
         implements ReadOnlyWithDownloadObjectRepository<AppearanceSettings> {
 
-    private final ObjectWithoutUidStore<FilterSetting> store;
+    private final ObjectWithoutUidStore<FilterSetting> filterSettingStore;
+    private final ObjectWithoutUidStore<CompletionSpinner> completionSpinnerStore;
 
     @Inject
-    AppearanceSettingsObjectRepository(ObjectWithoutUidStore<FilterSetting> store,
+    AppearanceSettingsObjectRepository(ObjectWithoutUidStore<FilterSetting> filterSettingStore,
+                                       ObjectWithoutUidStore<CompletionSpinner> completionSpinnerStore,
                                        AppearanceSettingCall appearanceSettingCall) {
         super(appearanceSettingCall);
-        this.store = store;
+        this.filterSettingStore = filterSettingStore;
+        this.completionSpinnerStore = completionSpinnerStore;
     }
 
     public Map<HomeFilter, FilterSetting> getHomeFilters() {
@@ -54,7 +57,7 @@ public class AppearanceSettingsObjectRepository
 
     @Override
     public AppearanceSettings blockingGet() {
-        List<FilterSetting> filters = store.selectAll();
+        List<FilterSetting> filters = filterSettingStore.selectAll();
 
         //FilterSorting
         FilterSorting.Builder filterSortingBuilder = FilterSorting.builder();
@@ -63,10 +66,39 @@ public class AppearanceSettingsObjectRepository
         filterSortingBuilder.programSettings(getProgramFilters(filters));
         FilterSorting filterSorting = filterSortingBuilder.build();
 
+        //CompletionSpinner
+        List<CompletionSpinner> completionSpinnerList = completionSpinnerStore.selectAll();
+        CompletionSpinnerSetting.Builder completionSpinnerSettingBuilder = CompletionSpinnerSetting.builder();
+        completionSpinnerSettingBuilder.globalSettings(getGlobalCompletionSpinner(completionSpinnerList));
+        completionSpinnerSettingBuilder.specificSettings(getSpecificCompletionsSpinners(completionSpinnerList));
+        CompletionSpinnerSetting completionSpinnerSetting = completionSpinnerSettingBuilder.build();
+
         //Appearance
         AppearanceSettings.Builder appearanceSettingsBuilder = AppearanceSettings.builder();
         appearanceSettingsBuilder.filterSorting(filterSorting);
+        appearanceSettingsBuilder.completionSpinner(completionSpinnerSetting);
+
         return appearanceSettingsBuilder.build();
+    }
+
+    private Map<String, CompletionSpinner> getSpecificCompletionsSpinners(List<CompletionSpinner> completionSpinnerList) {
+        Map<String, CompletionSpinner> result = new HashMap<>();
+        for (CompletionSpinner completionSpinner : completionSpinnerList) {
+            if (completionSpinner.uid() != null) {
+                result.put(completionSpinner.uid(), completionSpinner);
+            }
+        }
+
+        return result;
+    }
+
+    private CompletionSpinner getGlobalCompletionSpinner(List<CompletionSpinner> completionSpinnerList) {
+        for (CompletionSpinner completionSpinner : completionSpinnerList) {
+            if (completionSpinner.uid() == null) {
+                return completionSpinner;
+            }
+        }
+        return null;
     }
 
     private Map<HomeFilter, FilterSetting> getHomeFilters(List<FilterSetting> filters) {

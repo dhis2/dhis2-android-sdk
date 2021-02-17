@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import org.hisp.dhis.android.core.settings.AppearanceSettings
+import org.hisp.dhis.android.core.settings.CompletionSpinner
 import org.hisp.dhis.android.core.settings.DataSetFilter
 import org.hisp.dhis.android.core.settings.DataSetFilters
 import org.hisp.dhis.android.core.settings.DataSetSetting
@@ -49,7 +50,7 @@ internal object SettingsAppHelper {
         return (programSettings.specificSettings().values + programSettings.globalSettings()).filterNotNull()
     }
 
-    fun getAppearanceSettings(appearanceSettings: AppearanceSettings): List<FilterSetting> {
+    fun getFilterSettingsList(appearanceSettings: AppearanceSettings): List<FilterSetting> {
         val result: MutableList<FilterSetting> = arrayListOf()
 
         appearanceSettings.filterSorting()?.let {
@@ -110,5 +111,21 @@ internal object SettingsAppHelper {
         }
 
         return listOf(globalFilters, specificFilters).flatten()
+    }
+
+    fun getCompletionSpinnerList(appearanceSettings: AppearanceSettings): List<CompletionSpinner> {
+        val list = mutableListOf<CompletionSpinner>()
+        appearanceSettings.completionSpinner()?.let { settings ->
+            settings.globalSettings()?.let {
+                list.add(it)
+            }
+            list.addAll(settings.specificSettings()?.map { entry ->
+                entry.value.toBuilder()
+                    .uid(entry.key)
+                    .build()
+
+            } ?: emptyList())
+        }
+        return list;
     }
 }

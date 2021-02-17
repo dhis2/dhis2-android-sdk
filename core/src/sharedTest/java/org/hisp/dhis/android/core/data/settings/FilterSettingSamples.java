@@ -9,7 +9,7 @@ public class FilterSettingSamples {
                 .id(1L)
                 .scope("ProgramFilter")
                 .filterType("event")
-                .uid("aBcDfGe")
+                .uid("aBcDeFg")
                 .filter(true)
                 .sort(true)
                 .build();

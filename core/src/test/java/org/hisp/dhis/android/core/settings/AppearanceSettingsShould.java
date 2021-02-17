@@ -50,5 +50,13 @@ public class AppearanceSettingsShould extends BaseObjectShould implements Object
         assertThat(programEventDateFilter.uid()).isNull();
         assertThat(programEventDateFilter.sort()).isEqualTo(true);
         assertThat(programEventDateFilter.filter()).isEqualTo(true);
+
+        CompletionSpinnerSetting completionSpinnerSetting = appearanceSettings.completionSpinner();
+        assertThat(completionSpinnerSetting.globalSettings().uid()).isNull();
+
+        Map<String, CompletionSpinner> specificCompletionSpinnerList = completionSpinnerSetting.specificSettings();
+        CompletionSpinner specificCompletionSpinner = specificCompletionSpinnerList.get("IpHINAT79UW");
+        assertThat(specificCompletionSpinner.uid()).isNull();
+        assertThat(specificCompletionSpinner.visible()).isEqualTo(true);
     }
 }

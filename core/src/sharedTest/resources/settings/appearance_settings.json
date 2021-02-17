@@ -120,10 +120,16 @@
     }
   },
   "completionSpinner": {
-    "globalSettings": "true",
+    "globalSettings": {
+      "visible": "true"
+    },
     "specificSettings": {
-      "IpHINAT79UW": "false",
-      "fVQkzCmaCaB": "false"
+      "IpHINAT79UW": {
+        "visible": "true"
+      },
+      "IpHINAT79UQ": {
+        "visible": "true"
+      }
     }
   }
 }

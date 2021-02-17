@@ -15,6 +15,10 @@ public abstract class AppearanceSettings {
     @JsonProperty
     public abstract FilterSorting filterSorting();
 
+    @Nullable
+    @JsonProperty
+    public abstract CompletionSpinnerSetting completionSpinner();
+
     public abstract AppearanceSettings.Builder toBuilder();
 
     public static AppearanceSettings.Builder builder() {
@@ -26,6 +30,8 @@ public abstract class AppearanceSettings {
     public abstract static class Builder {
 
         public abstract Builder filterSorting(FilterSorting filterSorting);
+
+        public abstract Builder completionSpinner(CompletionSpinnerSetting completionSpinnerSetting);
 
         public abstract AppearanceSettings build();
     }

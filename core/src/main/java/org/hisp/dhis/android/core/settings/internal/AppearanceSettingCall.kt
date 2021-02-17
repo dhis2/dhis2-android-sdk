@@ -9,13 +9,15 @@ import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.settings.AppearanceSettings
+import org.hisp.dhis.android.core.settings.CompletionSpinner
 import org.hisp.dhis.android.core.settings.FilterSetting
 import java.net.HttpURLConnection
 import javax.inject.Inject
 
 @Reusable
 internal class AppearanceSettingCall @Inject constructor(
-    private val appearanceSettingHandler: Handler<FilterSetting>,
+    private val filterSettingHandler: Handler<FilterSetting>,
+    private val completionSpinnerHandler: Handler<CompletionSpinner>,
     private val settingAppService: SettingAppService,
     private val apiCallExecutor: RxAPICallExecutor,
     private val appVersionManager: SettingsAppInfoManager
@@ -57,9 +59,15 @@ internal class AppearanceSettingCall @Inject constructor(
     }
 
     fun process(item: AppearanceSettings?) {
-        val appearanceSettingsList = item?.let {
-            SettingsAppHelper.getAppearanceSettings(it)
+
+        val filterSettingsList = item?.let {
+            SettingsAppHelper.getFilterSettingsList(it)
         } ?: emptyList()
-        appearanceSettingHandler.handleMany(appearanceSettingsList)
+        filterSettingHandler.handleMany(filterSettingsList)
+
+        val completionSpinnerSettings = item?.let {
+            SettingsAppHelper.getCompletionSpinnerList(it)
+        } ?: emptyList()
+        completionSpinnerHandler.handleMany(completionSpinnerSettings)
     }
 }

@@ -23,20 +23,20 @@ public final class FilterSettingTableInfo {
     };
 
     public static class Columns extends CoreColumns {
-        public static final String UID = IdentifiableColumns.UID;
         public static final String SCOPE = "scope";
         public static final String FILTER_TYPE = "filterType";
-        public static final String SORT = "sort";
+        public static final String UID = IdentifiableColumns.UID;
         public static final String FILTER = "filter";
+        public static final String SORT = "sort";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    UID,
                     SCOPE,
                     FILTER_TYPE,
-                    SORT,
-                    FILTER
+                    UID,
+                    FILTER,
+                    SORT
             );
         }
     }

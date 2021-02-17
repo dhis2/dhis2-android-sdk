@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum DataSetFilter {
     @JsonProperty("syncStatus")
-    SYN_STATUS,
+    SYNC_STATUS,
 
     @JsonProperty("organisationUnit")
     ORG_UNIT,

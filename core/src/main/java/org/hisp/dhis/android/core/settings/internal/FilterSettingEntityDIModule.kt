@@ -14,12 +14,12 @@ internal class FilterSettingEntityDIModule {
     @Provides
     @Reusable
     fun store(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<FilterSetting> {
-        return FilterConfigStore.create(databaseAdapter)
+        return FilterSettingStore.create(databaseAdapter)
     }
 
     @Provides
     @Reusable
     fun handler(store: ObjectWithoutUidStore<FilterSetting>): Handler<FilterSetting> {
-        return FilterConfigHandler(store)
+        return FilterSettingHandler(store)
     }
 }

@@ -10,7 +10,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWit
 import org.hisp.dhis.android.core.settings.FilterSetting
 import org.hisp.dhis.android.core.settings.FilterSettingTableInfo
 
-internal object FilterConfigStore {
+internal object FilterSettingStore {
 
     private val BINDER = StatementBinder { o: FilterSetting, w: StatementWrapper ->
         w.bind(1, o.scope())

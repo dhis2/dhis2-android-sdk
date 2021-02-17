@@ -28,48 +28,46 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import android.database.Cursor;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
+import org.hisp.dhis.android.core.common.NameableColumns;
 
-import androidx.annotation.Nullable;
+public final class AnalyticsTeiSettingTableInfo {
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.arch.json.internal.AnalyticsTEIIndicatorDeserializer;
-import org.hisp.dhis.android.core.common.CoreObject;
-
-@AutoValue
-@JsonDeserialize(using = AnalyticsTEIIndicatorDeserializer.class)
-public abstract class AnalyticsTeiIndicator implements CoreObject {
-
-    @Nullable
-    public abstract String teiSetting();
-
-    @Nullable
-    public abstract String programStage();
-
-    public abstract String indicator();
-
-    public static AnalyticsTeiIndicator create(Cursor cursor) {
-        return AutoValue_AnalyticsTeiIndicator.createFromCursor(cursor);
+    private AnalyticsTeiSettingTableInfo() {
     }
 
-    public static Builder builder() {
-        return new AutoValue_AnalyticsTeiIndicator.Builder();
-    }
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-        public abstract Builder id(Long id);
+        @Override
+        public String name() {
+            return "AnalyticsTeiSetting";
+        }
 
-        public abstract Builder teiSetting(String teiSetting);
+        @Override
+        public CoreColumns columns() {
+            return new Columns();
+        }
+    };
 
-        public abstract Builder programStage(String programStage);
+    public static class Columns extends CoreColumns {
+        public static final String UID = IdentifiableColumns.UID;
+        public static final String NAME = IdentifiableColumns.NAME;
+        public static final String SHORT_NAME = NameableColumns.SHORT_NAME;
+        public static final String PERIOD = "period";
+        public static final String TYPE = "type";
 
-        public abstract Builder indicator(String indicator);
-
-        public abstract AnalyticsTeiIndicator build();
+        @Override
+        public String[] all() {
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    UID,
+                    NAME,
+                    SHORT_NAME,
+                    PERIOD,
+                    TYPE
+            );
+        }
     }
 }

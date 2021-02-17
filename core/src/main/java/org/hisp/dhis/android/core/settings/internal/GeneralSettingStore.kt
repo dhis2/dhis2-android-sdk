@@ -57,9 +57,9 @@ internal object GeneralSettingStore {
         _: GeneralSettings, _: StatementWrapper ->
     }
 
-    fun create(databaseAdapter: DatabaseAdapter?): ObjectWithoutUidStore<GeneralSettings> {
+    fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<GeneralSettings> {
         return objectWithoutUidStore(
-            databaseAdapter!!, GeneralSettingTableInfo.TABLE_INFO, BINDER,
+            databaseAdapter, GeneralSettingTableInfo.TABLE_INFO, BINDER,
             WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER
         ) { cursor: Cursor? -> GeneralSettings.create(cursor) }
     }

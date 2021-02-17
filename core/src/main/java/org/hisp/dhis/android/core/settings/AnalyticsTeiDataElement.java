@@ -28,6 +28,10 @@
 
 package org.hisp.dhis.android.core.settings;
 
+import android.database.Cursor;
+
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
@@ -39,9 +43,17 @@ import org.hisp.dhis.android.core.common.CoreObject;
 @JsonDeserialize(using = AnalyticsTEIDataElementDeserializer.class)
 public abstract class AnalyticsTeiDataElement implements CoreObject {
 
+    @Nullable
+    public abstract String teiSetting();
+
+    @Nullable
     public abstract String programStage();
 
     public abstract String dataElement();
+
+    public static AnalyticsTeiDataElement create(Cursor cursor) {
+        return AutoValue_AnalyticsTeiDataElement.createFromCursor(cursor);
+    }
 
     public static Builder builder() {
         return new AutoValue_AnalyticsTeiDataElement.Builder();
@@ -51,6 +63,8 @@ public abstract class AnalyticsTeiDataElement implements CoreObject {
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
         public abstract Builder id(Long id);
+
+        public abstract Builder teiSetting(String teiSetting);
 
         public abstract Builder programStage(String programStage);
 

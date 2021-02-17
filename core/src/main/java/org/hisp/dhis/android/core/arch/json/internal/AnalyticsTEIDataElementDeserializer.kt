@@ -49,6 +49,7 @@ class AnalyticsTEIDataElementDeserializer @JvmOverloads constructor(
         val tokens = programDataElement.split(".")
 
         return when (tokens.size) {
+            1 -> AnalyticsTeiDataElement.builder().dataElement(tokens.first()).build()
             2 -> AnalyticsTeiDataElement.builder().programStage(tokens.first()).dataElement(tokens.last()).build()
             else -> throw JsonParseException(jp, "Unparseable dataElement: \"$programDataElement\"")
         }

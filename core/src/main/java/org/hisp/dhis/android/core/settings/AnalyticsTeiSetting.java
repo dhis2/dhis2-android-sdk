@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.settings;
 
+import android.database.Cursor;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
@@ -37,11 +39,12 @@ import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.ChartTypeColum
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreAnalyticsTeiDataColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.period.PeriodType;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_AnalyticsTeiSetting.Builder.class)
-public abstract class AnalyticsTeiSetting implements CoreObject {
+public abstract class AnalyticsTeiSetting implements CoreObject, ObjectWithUidInterface {
 
     public abstract String uid();
 
@@ -57,6 +60,10 @@ public abstract class AnalyticsTeiSetting implements CoreObject {
 
     @ColumnAdapter(IgnoreAnalyticsTeiDataColumnAdapter.class)
     public abstract AnalyticsTeiData data();
+
+    public static AnalyticsTeiSetting create(Cursor cursor) {
+        return AutoValue_AnalyticsTeiSetting.createFromCursor(cursor);
+    }
 
     public static Builder builder() {
         return new AutoValue_AnalyticsTeiSetting.Builder();

@@ -25,51 +25,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings.internal
 
-package org.hisp.dhis.android.core.settings;
+import android.database.Cursor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithUidStore
+import org.hisp.dhis.android.core.settings.AnalyticsTeiSetting
+import org.hisp.dhis.android.core.settings.AnalyticsTeiSettingTableInfo
 
-import android.database.Cursor;
+internal object AnalyticsTeiSettingStore {
 
-import androidx.annotation.Nullable;
-
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.arch.json.internal.AnalyticsTEIIndicatorDeserializer;
-import org.hisp.dhis.android.core.common.CoreObject;
-
-@AutoValue
-@JsonDeserialize(using = AnalyticsTEIIndicatorDeserializer.class)
-public abstract class AnalyticsTeiIndicator implements CoreObject {
-
-    @Nullable
-    public abstract String teiSetting();
-
-    @Nullable
-    public abstract String programStage();
-
-    public abstract String indicator();
-
-    public static AnalyticsTeiIndicator create(Cursor cursor) {
-        return AutoValue_AnalyticsTeiIndicator.createFromCursor(cursor);
+    private val BINDER = StatementBinder { o: AnalyticsTeiSetting, w: StatementWrapper ->
+        w.bind(1, o.uid())
+        w.bind(2, o.name())
+        w.bind(3, o.shortName())
+        w.bind(4, o.period())
+        w.bind(5, o.type())
     }
 
-    public static Builder builder() {
-        return new AutoValue_AnalyticsTeiIndicator.Builder();
-    }
-
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-        public abstract Builder id(Long id);
-
-        public abstract Builder teiSetting(String teiSetting);
-
-        public abstract Builder programStage(String programStage);
-
-        public abstract Builder indicator(String indicator);
-
-        public abstract AnalyticsTeiIndicator build();
+    fun create(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<AnalyticsTeiSetting> {
+        return objectWithUidStore(databaseAdapter,
+            AnalyticsTeiSettingTableInfo.TABLE_INFO, BINDER) { cursor: Cursor? -> AnalyticsTeiSetting.create(cursor) }
     }
 }

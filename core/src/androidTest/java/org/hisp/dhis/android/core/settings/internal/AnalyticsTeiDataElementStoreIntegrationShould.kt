@@ -25,51 +25,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings.internal
 
-package org.hisp.dhis.android.core.settings;
+import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.settings.AnalyticsSettingsSamples
+import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
+import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElementTableInfo
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import android.database.Cursor;
-
-import androidx.annotation.Nullable;
-
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.arch.json.internal.AnalyticsTEIIndicatorDeserializer;
-import org.hisp.dhis.android.core.common.CoreObject;
-
-@AutoValue
-@JsonDeserialize(using = AnalyticsTEIIndicatorDeserializer.class)
-public abstract class AnalyticsTeiIndicator implements CoreObject {
-
-    @Nullable
-    public abstract String teiSetting();
-
-    @Nullable
-    public abstract String programStage();
-
-    public abstract String indicator();
-
-    public static AnalyticsTeiIndicator create(Cursor cursor) {
-        return AutoValue_AnalyticsTeiIndicator.createFromCursor(cursor);
-    }
-
-    public static Builder builder() {
-        return new AutoValue_AnalyticsTeiIndicator.Builder();
-    }
-
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-        public abstract Builder id(Long id);
-
-        public abstract Builder teiSetting(String teiSetting);
-
-        public abstract Builder programStage(String programStage);
-
-        public abstract Builder indicator(String indicator);
-
-        public abstract AnalyticsTeiIndicator build();
+@RunWith(D2JunitRunner::class)
+class AnalyticsTeiDataElementStoreIntegrationShould : ObjectStoreAbstractIntegrationShould<AnalyticsTeiDataElement>(
+    AnalyticsTeiDataElementStore.create(TestDatabaseAdapterFactory.get()),
+    AnalyticsTeiDataElementTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get()
+) {
+    override fun buildObject(): AnalyticsTeiDataElement {
+        return AnalyticsSettingsSamples.analyticsTeiDataElementSample
     }
 }

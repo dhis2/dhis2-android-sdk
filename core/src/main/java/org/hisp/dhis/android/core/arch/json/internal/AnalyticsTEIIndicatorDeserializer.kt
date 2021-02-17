@@ -49,9 +49,9 @@ class AnalyticsTEIIndicatorDeserializer @JvmOverloads constructor(
         val tokens = programIndicator.split(".")
 
         return when (tokens.size) {
-            2 ->
-                AnalyticsTeiIndicator.builder().programStage(tokens.first()).indicator(tokens.last()).build()
-            else -> throw JsonParseException(jp, "Unparseable dataElement: \"$programIndicator\"")
+            1 -> AnalyticsTeiIndicator.builder().indicator(tokens.first()).build()
+            2 -> AnalyticsTeiIndicator.builder().programStage(tokens.first()).indicator(tokens.last()).build()
+            else -> throw JsonParseException(jp, "Unparseable program indicator: \"$programIndicator\"")
         }
     }
 }

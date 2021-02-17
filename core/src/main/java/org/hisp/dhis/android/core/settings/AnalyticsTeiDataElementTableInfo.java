@@ -28,48 +28,40 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import android.database.Cursor;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
-import androidx.annotation.Nullable;
+public final class AnalyticsTeiDataElementTableInfo {
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.arch.json.internal.AnalyticsTEIIndicatorDeserializer;
-import org.hisp.dhis.android.core.common.CoreObject;
-
-@AutoValue
-@JsonDeserialize(using = AnalyticsTEIIndicatorDeserializer.class)
-public abstract class AnalyticsTeiIndicator implements CoreObject {
-
-    @Nullable
-    public abstract String teiSetting();
-
-    @Nullable
-    public abstract String programStage();
-
-    public abstract String indicator();
-
-    public static AnalyticsTeiIndicator create(Cursor cursor) {
-        return AutoValue_AnalyticsTeiIndicator.createFromCursor(cursor);
+    private AnalyticsTeiDataElementTableInfo() {
     }
 
-    public static Builder builder() {
-        return new AutoValue_AnalyticsTeiIndicator.Builder();
-    }
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-        public abstract Builder id(Long id);
+        @Override
+        public String name() {
+            return "AnalyticsTeiDataElement";
+        }
 
-        public abstract Builder teiSetting(String teiSetting);
+        @Override
+        public CoreColumns columns() {
+            return new Columns();
+        }
+    };
 
-        public abstract Builder programStage(String programStage);
+    public static class Columns extends CoreColumns {
+        public static final String TEI_SETTING = "teiSetting";
+        public static final String PROGRAM_STAGE = "programStage";
+        public static final String DATA_ELEMENT = "dataElement";
 
-        public abstract Builder indicator(String indicator);
-
-        public abstract AnalyticsTeiIndicator build();
+        @Override
+        public String[] all() {
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    TEI_SETTING,
+                    PROGRAM_STAGE,
+                    DATA_ELEMENT
+            );
+        }
     }
 }

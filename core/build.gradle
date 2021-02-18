@@ -83,6 +83,9 @@ ext {
 
             // google
             safetyNet       : "17.0.0",
+
+            // open id
+            appauth         : "0.7.1"
     ]
 }
 
@@ -236,6 +239,8 @@ dependencies {
     debugImplementation "com.facebook.flipper:flipper-network-plugin:${libraries.flipper}"
 
     releaseImplementation "com.facebook.flipper:flipper-noop:${libraries.flipper}"
+
+    implementation "net.openid:appauth:${libraries.appauth}"
 }
 
 apply from: project.file("plugins/gradle-mvn-push.gradle")

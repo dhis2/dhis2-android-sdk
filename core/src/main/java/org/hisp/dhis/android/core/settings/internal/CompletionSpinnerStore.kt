@@ -10,6 +10,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
 import org.hisp.dhis.android.core.settings.CompletionSpinner
 import org.hisp.dhis.android.core.settings.CompletionSpinnerTableInfo
 
+@Suppress("MagicNumber")
 internal object CompletionSpinnerStore {
 
     private val BINDER = StatementBinder { o: CompletionSpinner, w: StatementWrapper ->

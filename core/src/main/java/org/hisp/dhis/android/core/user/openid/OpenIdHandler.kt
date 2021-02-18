@@ -31,7 +31,9 @@ package org.hisp.dhis.android.core.user.openid
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import io.reactivex.Single
 import net.openid.appauth.*
+import java.lang.RuntimeException
 
 private const val RC_AUTH = 2021
 
@@ -39,14 +41,9 @@ class OpenIdHandler(context: Context, private val config: OpenIDConnectConfig) {
 
     private val authService = AuthorizationService(context)
 
-    fun logIn(
-        activityStarter: (intent: Intent, requestCode: Int) -> Unit
-    ) {
-        requestAuthCode {
-            activityStarter(
-                Intent(authService.getAuthorizationRequestIntent(it)),
-                RC_AUTH
-            )
+    fun logIn(): Single<IntentWithRequestCode> {
+        return requestAuthCode().map {
+            IntentWithRequestCode(Intent(authService.getAuthorizationRequestIntent(it)), RC_AUTH)
         }
     }
 
@@ -55,52 +52,52 @@ class OpenIdHandler(context: Context, private val config: OpenIDConnectConfig) {
     }
 
     fun handleAuthRequestResult(
-        requestCode: Int,
-        data: Intent?,
-        responseCallback: (AuthServiceResponseModel) -> Unit
-    ) {
-        if (requestCode == RC_AUTH && data != null) {
-            val response = AuthorizationResponse.fromIntent(data)!!
-            val ex = AuthorizationException.fromIntent(data)
+        intent: Intent?,
+        requestCode: Int
+    ): Single<String> {
+        return if (requestCode == RC_AUTH && intent != null) {
+            val response = AuthorizationResponse.fromIntent(intent)!!
+            val ex = AuthorizationException.fromIntent(intent)
             if (ex != null) {
-                responseCallback(
-                    AuthServiceResponseModel(response.authorizationCode, ex.message)
-                )
+                Single.just(response.authorizationCode!!)
             } else {
-                refreshToken(
-                    response.createTokenExchangeRequest(),
-                    responseCallback
-                )
+                refreshToken(response.createTokenExchangeRequest())
             }
+        } else {
+            Single.error<String>(RuntimeException("Unexpected intent or request code"))
         }
     }
 
     private fun refreshToken(
-        tokenRequest: TokenRequest,
-        responseCallback: (AuthServiceResponseModel) -> Unit
-    ) {
-        authService.performTokenRequest(
-           tokenRequest
-        ) { tokenResponse, tokenEx ->
-            responseCallback(
-                AuthServiceResponseModel(tokenResponse?.idToken, tokenEx?.message)
-            )
+        tokenRequest: TokenRequest
+    ): Single<String> {
+        return Single.create { emitter ->
+            authService.performTokenRequest(
+                tokenRequest
+            ) { tokenResponse, tokenEx ->
+                if (tokenResponse?.idToken != null) {
+                    emitter.onSuccess(tokenResponse.idToken!!)
+                } else {
+                    emitter.onError(RuntimeException(tokenEx))
+                }
+            }
         }
+
     }
 
-    private fun requestAuthCode(
-        onAuthRequestReady: (AuthorizationRequest) -> Unit
-    ) {
-        if (config.discoveryUri != null) {
-            discoverAuthServiceConfig(
-                { authServiceConfiguration ->
-                    onAuthRequestReady(buildRequest(authServiceConfiguration))
-                },
-                {
-
-                })
-        } else {
-            onAuthRequestReady(buildRequest(loadAuthServiceConfig()))
+    private fun requestAuthCode(): Single<AuthorizationRequest> {
+        return Single.create { emitter ->
+            if (config.discoveryUri != null) {
+                discoverAuthServiceConfig(
+                    { authServiceConfiguration ->
+                        emitter.onSuccess(buildRequest(authServiceConfiguration))
+                    },
+                    {
+                        emitter.onError(it)
+                    })
+            } else {
+                emitter.onSuccess(buildRequest(loadAuthServiceConfig()))
+            }
         }
     }
 

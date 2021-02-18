@@ -28,7 +28,9 @@
 
 package org.hisp.dhis.android.core.user.openid
 
-data class AuthServiceResponseModel(
-    val token: String?,
-    val exception:String?
+import android.content.Intent
+
+data class IntentWithRequestCode(
+    val intent: Intent,
+    val requestCode: Int
 )

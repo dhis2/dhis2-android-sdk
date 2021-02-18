@@ -33,7 +33,6 @@ import android.content.Intent
 import android.net.Uri
 import io.reactivex.Single
 import net.openid.appauth.*
-import java.lang.RuntimeException
 
 private const val RC_AUTH = 2021
 
@@ -47,11 +46,15 @@ class OpenIdHandler(context: Context, private val config: OpenIDConnectConfig) {
         }
     }
 
+    fun blockingLogIn(): IntentWithRequestCode {
+        return logIn().blockingGet()
+    }
+
     fun onPause() {
         authService.dispose()
     }
 
-    fun handleAuthRequestResult(
+    fun handleLoginResponse(
         intent: Intent?,
         requestCode: Int
     ): Single<String> {
@@ -68,6 +71,13 @@ class OpenIdHandler(context: Context, private val config: OpenIDConnectConfig) {
         }
     }
 
+    fun blockingHandleLogInResponse(
+        intent: Intent?,
+        requestCode: Int
+    ): String {
+        return handleLoginResponse(intent, requestCode).blockingGet()
+    }
+
     private fun refreshToken(
         tokenRequest: TokenRequest
     ): Single<String> {
@@ -82,22 +92,13 @@ class OpenIdHandler(context: Context, private val config: OpenIDConnectConfig) {
                 }
             }
         }
-
     }
 
     private fun requestAuthCode(): Single<AuthorizationRequest> {
-        return Single.create { emitter ->
-            if (config.discoveryUri != null) {
-                discoverAuthServiceConfig(
-                    { authServiceConfiguration ->
-                        emitter.onSuccess(buildRequest(authServiceConfiguration))
-                    },
-                    {
-                        emitter.onError(it)
-                    })
-            } else {
-                emitter.onSuccess(buildRequest(loadAuthServiceConfig()))
-            }
+        return if (config.discoveryUri != null) {
+            discoverAuthServiceConfig(config.discoveryUri)
+        } else {
+            Single.just(buildRequest(loadAuthServiceConfig()))
         }
     }
 
@@ -112,18 +113,16 @@ class OpenIdHandler(context: Context, private val config: OpenIDConnectConfig) {
         setScope("openid email profile")
     }.build()
 
-    private fun discoverAuthServiceConfig(
-        onServiceReady: (AuthorizationServiceConfiguration) -> Unit,
-        onServiceError: (Exception) -> Unit
-    ) {
-        AuthorizationServiceConfiguration
-            .fetchFromUrl(config.discoveryUri!!) { serviceConfiguration, exception ->
+    private fun discoverAuthServiceConfig(discoveryUri: Uri): Single<AuthorizationRequest> {
+        return Single.create { emitter ->
+            AuthorizationServiceConfiguration.fetchFromUrl(discoveryUri) { serviceConfiguration, exception ->
                 if (exception != null) {
-                    onServiceError(exception)
+                    emitter.onError(exception)
                 } else if (serviceConfiguration != null) {
-                    onServiceReady(serviceConfiguration)
+                    emitter.onSuccess(buildRequest(serviceConfiguration))
                 }
             }
+        }
     }
 
     private fun loadAuthServiceConfig(): AuthorizationServiceConfiguration {

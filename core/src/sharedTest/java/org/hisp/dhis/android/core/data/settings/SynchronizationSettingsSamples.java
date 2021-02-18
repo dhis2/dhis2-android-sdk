@@ -41,6 +41,7 @@ public class SynchronizationSettingsSamples {
                 .id(1L)
                 .dataSync(DataSyncPeriod.EVERY_24_HOURS)
                 .metadataSync(MetadataSyncPeriod.EVERY_12_HOURS)
+                .newTrackerImporter(false)
                 .programSettings(ProgramSettings.builder()
                         .globalSettings(ProgramSettingSamples.getProgramSetting())
                         .build())

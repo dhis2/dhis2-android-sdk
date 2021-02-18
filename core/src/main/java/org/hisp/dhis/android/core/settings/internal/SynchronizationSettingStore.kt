@@ -41,6 +41,7 @@ internal object SynchronizationSettingStore {
     private val BINDER = StatementBinder { o: SynchronizationSettings, w: StatementWrapper ->
         w.bind(1, o.dataSync())
         w.bind(2, o.metadataSync())
+        w.bind(3, o.newTrackerImporter())
     }
 
     private val WHERE_UPDATE_BINDER = WhereStatementBinder {

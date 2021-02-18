@@ -56,6 +56,9 @@ public abstract class SynchronizationSettings implements CoreObject {
     public abstract MetadataSyncPeriod metadataSync();
 
     @Nullable
+    public abstract Boolean newTrackerImporter();
+
+    @Nullable
     @ColumnAdapter(DataSetSyncSettingsColumnAdapter.class)
     public abstract DataSetSettings dataSetSettings();
 
@@ -83,6 +86,8 @@ public abstract class SynchronizationSettings implements CoreObject {
         public abstract Builder dataSync(DataSyncPeriod dataSync);
 
         public abstract Builder metadataSync(MetadataSyncPeriod metadataSync);
+
+        public abstract Builder newTrackerImporter(Boolean newTrackerImporter);
 
         public abstract Builder dataSetSettings(DataSetSettings dataSetSettings);
 

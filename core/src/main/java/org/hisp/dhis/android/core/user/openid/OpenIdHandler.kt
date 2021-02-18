@@ -30,18 +30,21 @@ package org.hisp.dhis.android.core.user.openid
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import io.reactivex.Single
-import net.openid.appauth.*
+import net.openid.appauth.AuthorizationException
+import net.openid.appauth.AuthorizationResponse
+import net.openid.appauth.AuthorizationService
+import net.openid.appauth.TokenRequest
 
 private const val RC_AUTH = 2021
 
-class OpenIdHandler(context: Context, private val config: OpenIDConnectConfig) {
+class OpenIdHandler(context: Context, config: OpenIDConnectConfig) {
 
     private val authService = AuthorizationService(context)
+    private val helper = OpenIdRequestHelper(config)
 
     fun logIn(): Single<IntentWithRequestCode> {
-        return requestAuthCode().map {
+        return helper.prepareAuthRequest().map {
             IntentWithRequestCode(Intent(authService.getAuthorizationRequestIntent(it)), RC_AUTH)
         }
     }
@@ -92,43 +95,5 @@ class OpenIdHandler(context: Context, private val config: OpenIDConnectConfig) {
                 }
             }
         }
-    }
-
-    private fun requestAuthCode(): Single<AuthorizationRequest> {
-        return if (config.discoveryUri != null) {
-            discoverAuthServiceConfig(config.discoveryUri)
-        } else {
-            Single.just(buildRequest(loadAuthServiceConfig()))
-        }
-    }
-
-    private fun buildRequest(
-        authServiceConfiguration: AuthorizationServiceConfiguration
-    ): AuthorizationRequest = AuthorizationRequest.Builder(
-        authServiceConfiguration,
-        config.clientId,
-        ResponseTypeValues.CODE,
-        config.redirectUri
-    ).apply {
-        setScope("openid email profile")
-    }.build()
-
-    private fun discoverAuthServiceConfig(discoveryUri: Uri): Single<AuthorizationRequest> {
-        return Single.create { emitter ->
-            AuthorizationServiceConfiguration.fetchFromUrl(discoveryUri) { serviceConfiguration, exception ->
-                if (exception != null) {
-                    emitter.onError(exception)
-                } else if (serviceConfiguration != null) {
-                    emitter.onSuccess(buildRequest(serviceConfiguration))
-                }
-            }
-        }
-    }
-
-    private fun loadAuthServiceConfig(): AuthorizationServiceConfiguration {
-        return AuthorizationServiceConfiguration(
-            Uri.parse("auth_endpoint"),
-            Uri.parse("token_endpoint")
-        )
     }
 }

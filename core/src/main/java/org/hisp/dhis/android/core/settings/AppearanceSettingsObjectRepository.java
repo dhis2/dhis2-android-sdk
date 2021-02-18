@@ -186,7 +186,7 @@ public class AppearanceSettingsObjectRepository
         return getGlobalCompletionSpinner(completionSpinnerList);
     }
 
-    public CompletionSpinner getCompletionSpinnerById(String uid) {
+    public CompletionSpinner getCompletionSpinnerByUid(String uid) {
         List<CompletionSpinner> completionSpinnerList = completionSpinnerStore.selectAll();
         CompletionSpinner result = getSpecificCompletionsSpinners(completionSpinnerList).get(uid);
         if (result == null) {

@@ -63,7 +63,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockIntegrationTestMetadataEnqueable {
 
-    @Test
+    //@Test
     public void download_tracked_entity_instance_enrollments_and_events() throws Exception {
 
         String teiUid = "PgmUFEQYZdt";
@@ -76,7 +76,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockInte
         verifyDownloadedTrackedEntityInstancePayload("trackedentity/tracked_entity_instance_payload.json", teiUid);
     }
 
-    @Test
+    //@Test
     public void remove_data_removed_in_server_after_second_download()
             throws Exception {
         String teiUid = "PgmUFEQYZdt";

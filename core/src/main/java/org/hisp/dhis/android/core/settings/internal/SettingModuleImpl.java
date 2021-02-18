@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.settings.internal;
 
+import org.hisp.dhis.android.core.settings.AppearanceSettingsObjectRepository;
 import org.hisp.dhis.android.core.settings.DataSetSettingsObjectRepository;
 import org.hisp.dhis.android.core.settings.GeneralSettingObjectRepository;
 import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository;
@@ -50,6 +51,7 @@ public final class SettingModuleImpl implements SettingModule {
     private final ProgramSettingsObjectRepository programSetting;
     private final SynchronizationSettingObjectRepository synchronizationSetting;
     private final UserSettingsObjectRepository userSettings;
+    private final AppearanceSettingsObjectRepository appearanceSettings;
 
     @Inject
     SettingModuleImpl(SystemSettingCollectionRepository systemSettingRepository,
@@ -57,13 +59,15 @@ public final class SettingModuleImpl implements SettingModule {
                       DataSetSettingsObjectRepository dataSetSetting,
                       ProgramSettingsObjectRepository programSetting,
                       SynchronizationSettingObjectRepository synchronizationSetting,
-                      UserSettingsObjectRepository userSettings) {
+                      UserSettingsObjectRepository userSettings,
+                      AppearanceSettingsObjectRepository appearanceSettings) {
         this.systemSetting = systemSettingRepository;
         this.generalSetting = generalSetting;
         this.dataSetSetting = dataSetSetting;
         this.programSetting = programSetting;
         this.synchronizationSetting = synchronizationSetting;
         this.userSettings = userSettings;
+        this.appearanceSettings = appearanceSettings;
     }
 
     @Override
@@ -94,5 +98,10 @@ public final class SettingModuleImpl implements SettingModule {
     @Override
     public UserSettingsObjectRepository userSettings() {
         return userSettings;
+    }
+
+    @Override
+    public AppearanceSettingsObjectRepository appearanceSettings() {
+        return appearanceSettings;
     }
 }

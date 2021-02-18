@@ -58,4 +58,7 @@ internal interface SettingService {
 
     @GET
     fun synchronizationSettings(@Url url: String): Single<SynchronizationSettings>
+
+    @GET
+    fun appearanceSettings(@Url url: String): Single<AppearanceSettings>
 }

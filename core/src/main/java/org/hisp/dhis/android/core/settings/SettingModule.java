@@ -48,4 +48,6 @@ public interface SettingModule {
     SynchronizationSettingObjectRepository synchronizationSettings();
 
     UserSettingsObjectRepository userSettings();
+
+    AppearanceSettingsObjectRepository appearanceSettings();
 }

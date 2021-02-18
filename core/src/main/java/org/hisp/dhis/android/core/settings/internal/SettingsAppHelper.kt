@@ -27,8 +27,16 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
+import org.hisp.dhis.android.core.settings.AppearanceSettings
+import org.hisp.dhis.android.core.settings.CompletionSpinner
+import org.hisp.dhis.android.core.settings.DataSetFilter
+import org.hisp.dhis.android.core.settings.DataSetFilters
 import org.hisp.dhis.android.core.settings.DataSetSetting
 import org.hisp.dhis.android.core.settings.DataSetSettings
+import org.hisp.dhis.android.core.settings.FilterSetting
+import org.hisp.dhis.android.core.settings.HomeFilter
+import org.hisp.dhis.android.core.settings.ProgramFilter
+import org.hisp.dhis.android.core.settings.ProgramFilters
 import org.hisp.dhis.android.core.settings.ProgramSetting
 import org.hisp.dhis.android.core.settings.ProgramSettings
 
@@ -40,5 +48,85 @@ internal object SettingsAppHelper {
 
     fun getProgramSettingList(programSettings: ProgramSettings): List<ProgramSetting> {
         return (programSettings.specificSettings().values + programSettings.globalSettings()).filterNotNull()
+    }
+
+    fun getFilterSettingsList(appearanceSettings: AppearanceSettings): List<FilterSetting> {
+        val result: MutableList<FilterSetting> = arrayListOf()
+
+        appearanceSettings.filterSorting()?.let {
+            result.addAll(getHomeFilters(it.home()))
+            result.addAll(getDataSetFilters(it.dataSetSettings()))
+            result.addAll(getProgramFilters(it.programSettings()))
+        }
+
+        return result
+    }
+
+    private fun getHomeFilters(filters: MutableMap<HomeFilter, FilterSetting>) = filters.map { entry ->
+        entry.value.toBuilder()
+            .scope(HomeFilter::class.simpleName)
+            .filterType(entry.key.name)
+            .build()
+    }
+
+    private fun getDataSetFilters(dataSetScope: DataSetFilters): List<FilterSetting> {
+
+        val globalFilters = dataSetScope.globalSettings().map { entry ->
+            entry.value.toBuilder()
+                .scope(DataSetFilter::class.simpleName)
+                .filterType(entry.key.name)
+                .build()
+        }
+
+        val specificFilters = dataSetScope.specificSettings().flatMap { entry ->
+            entry.value.map { filter ->
+                filter.value.toBuilder()
+                    .scope(DataSetFilter::class.simpleName)
+                    .filterType(filter.key.name)
+                    .uid(entry.key)
+                    .build()
+            }
+        }
+
+        return listOf(globalFilters, specificFilters).flatten()
+    }
+
+    private fun getProgramFilters(programScope: ProgramFilters): List<FilterSetting> {
+
+        val globalFilters = programScope.globalSettings().map { entry ->
+            entry.value.toBuilder()
+                .scope(ProgramFilter::class.simpleName)
+                .filterType(entry.key.name)
+                .build()
+        }
+
+        val specificFilters = programScope.specificSettings().flatMap { entry ->
+            entry.value.map { filter ->
+                filter.value.toBuilder()
+                    .scope(ProgramFilter::class.simpleName)
+                    .filterType(filter.key.name)
+                    .uid(entry.key)
+                    .build()
+            }
+        }
+
+        return listOf(globalFilters, specificFilters).flatten()
+    }
+
+    fun getCompletionSpinnerList(appearanceSettings: AppearanceSettings): List<CompletionSpinner> {
+        val list = mutableListOf<CompletionSpinner>()
+        appearanceSettings.completionSpinner()?.let { settings ->
+            settings.globalSettings()?.let {
+                list.add(it)
+            }
+            list.addAll(
+                settings.specificSettings()?.map { entry ->
+                    entry.value.toBuilder()
+                        .uid(entry.key)
+                        .build()
+                } ?: emptyList()
+            )
+        }
+        return list
     }
 }

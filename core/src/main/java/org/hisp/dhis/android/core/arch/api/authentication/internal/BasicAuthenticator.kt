@@ -27,14 +27,14 @@
  */
 package org.hisp.dhis.android.core.arch.api.authentication.internal
 
+import java.io.IOException
+import java.util.Locale
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 import org.hisp.dhis.android.core.arch.helpers.UserHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
-import java.io.IOException
-import java.util.Locale
 
 internal class BasicAuthenticator(private val credentialsSecureStore: ObjectKeyValueStore<Credentials>) :
     Interceptor {

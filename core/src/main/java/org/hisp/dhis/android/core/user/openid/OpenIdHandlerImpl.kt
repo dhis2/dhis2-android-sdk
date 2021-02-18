@@ -32,20 +32,21 @@ import android.content.Context
 import android.content.Intent
 import dagger.Reusable
 import io.reactivex.Single
+import javax.inject.Inject
 import net.openid.appauth.AuthorizationException
 import net.openid.appauth.AuthorizationResponse
 import net.openid.appauth.AuthorizationService
 import net.openid.appauth.TokenRequest
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.LogInCall
-import javax.inject.Inject
 
 private const val RC_AUTH = 2021
 
 @Reusable
 internal class OpenIdHandlerImpl @Inject constructor(
     private val context: Context,
-    private val logInCall: LogInCall) : OpenIdHandler {
+    private val logInCall: LogInCall
+) : OpenIdHandler {
 
     override fun logIn(config: OpenIDConnectConfig): Single<IntentWithRequestCode> {
         return OpenIdRequestHelper(config).prepareAuthRequest().map {

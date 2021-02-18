@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.user.internal
 
 import dagger.Reusable
 import io.reactivex.Single
+import javax.inject.Inject
 import okhttp3.HttpUrl
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
@@ -48,7 +49,6 @@ import org.hisp.dhis.android.core.user.AuthenticatedUser
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserInternalAccessor
 import org.hisp.dhis.android.core.wipe.internal.WipeModule
-import javax.inject.Inject
 
 @Reusable
 @Suppress("LongParameterList")
@@ -102,7 +102,8 @@ internal class LogInCall @Inject internal constructor(
             wipeModule.wipeEverything()
             d2Error
         } else if (d2Error.errorCode() == D2ErrorCode.UNEXPECTED ||
-            d2Error.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR) {
+            d2Error.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR
+        ) {
             exceptions.noDHIS2Server()
         } else {
             d2Error

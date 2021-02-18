@@ -62,7 +62,11 @@ public class AppearanceSettingsObjectRepository
     }
 
     public Map<DataSetFilter, FilterSetting> getDataSetFiltersByUid(String uid) {
-        Map<DataSetFilter, FilterSetting> filters = blockingGet().filterSorting().dataSetSettings().specificSettings().get(uid);
+        Map<DataSetFilter, FilterSetting> filters = blockingGet()
+                .filterSorting()
+                .dataSetSettings()
+                .specificSettings()
+                .get(uid);
         if (filters == null) {
             filters = blockingGet().filterSorting().dataSetSettings().globalSettings();
         }
@@ -74,14 +78,20 @@ public class AppearanceSettingsObjectRepository
     }
 
     public Map<ProgramFilter, FilterSetting> getProgramFiltersByUid(String uid) {
-        Map<ProgramFilter, FilterSetting> filters = blockingGet().filterSorting().programSettings().specificSettings().get(uid);
+        Map<ProgramFilter, FilterSetting> filters = blockingGet()
+                .filterSorting()
+                .programSettings()
+                .specificSettings()
+                .get(uid);
         if (filters == null) {
             filters = blockingGet().filterSorting().programSettings().globalSettings();
         }
         return filters;
     }
 
-    private Map<String, CompletionSpinner> getSpecificCompletionsSpinners(List<CompletionSpinner> completionSpinnerList) {
+    private Map<String, CompletionSpinner> getSpecificCompletionsSpinners(
+            List<CompletionSpinner> completionSpinnerList
+    ) {
         Map<String, CompletionSpinner> result = new HashMap<>();
         for (CompletionSpinner completionSpinner : completionSpinnerList) {
             if (completionSpinner.uid() != null) {
@@ -120,12 +130,12 @@ public class AppearanceSettingsObjectRepository
                     globalDataSetFilters.put(DataSetFilter.valueOf(filter.filterType()), filter);
                 } else {
                     Map<DataSetFilter, FilterSetting> uidFilters = specificDataSetFilters.get(filter.uid());
-                    if (uidFilters != null) {
-                        uidFilters.put(DataSetFilter.valueOf(filter.filterType()), filter);
-                    } else {
+                    if (uidFilters == null) {
                         Map<DataSetFilter, FilterSetting> dataSetFilters = new HashMap<>();
                         dataSetFilters.put(DataSetFilter.valueOf(filter.filterType()), filter);
                         specificDataSetFilters.put(filter.uid(), dataSetFilters);
+                    } else {
+                        uidFilters.put(DataSetFilter.valueOf(filter.filterType()), filter);
                     }
                 }
             }
@@ -146,12 +156,12 @@ public class AppearanceSettingsObjectRepository
                     globalDataSetFilters.put(ProgramFilter.valueOf(filter.filterType()), filter);
                 } else {
                     Map<ProgramFilter, FilterSetting> uidFilters = specificDataSetFilters.get(filter.uid());
-                    if (uidFilters != null) {
-                        uidFilters.put(ProgramFilter.valueOf(filter.filterType()), filter);
-                    } else {
+                    if (uidFilters == null) {
                         Map<ProgramFilter, FilterSetting> dataSetFilters = new HashMap<>();
                         dataSetFilters.put(ProgramFilter.valueOf(filter.filterType()), filter);
                         specificDataSetFilters.put(filter.uid(), dataSetFilters);
+                    } else {
+                        uidFilters.put(ProgramFilter.valueOf(filter.filterType()), filter);
                     }
                 }
             }

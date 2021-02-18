@@ -10,6 +10,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWit
 import org.hisp.dhis.android.core.settings.FilterSetting
 import org.hisp.dhis.android.core.settings.FilterSettingTableInfo
 
+@Suppress("MagicNumber")
 internal object FilterSettingStore {
 
     private val BINDER = StatementBinder { o: FilterSetting, w: StatementWrapper ->
@@ -20,12 +21,10 @@ internal object FilterSettingStore {
         w.bind(5, o.sort())
     }
 
-    private val WHERE_UPDATE_BINDER = WhereStatementBinder {
-        _: FilterSetting, _: StatementWrapper ->
+    private val WHERE_UPDATE_BINDER = WhereStatementBinder { _: FilterSetting, _: StatementWrapper ->
     }
 
-    private val WHERE_DELETE_BINDER = WhereStatementBinder {
-        _: FilterSetting, _: StatementWrapper ->
+    private val WHERE_DELETE_BINDER = WhereStatementBinder { _: FilterSetting, _: StatementWrapper ->
     }
 
     fun create(databaseAdapter: DatabaseAdapter?): ObjectWithoutUidStore<FilterSetting> {

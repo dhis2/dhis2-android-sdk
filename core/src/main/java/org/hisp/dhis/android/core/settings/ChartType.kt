@@ -25,31 +25,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings
 
-package org.hisp.dhis.android.core.settings;
-
-public interface SettingModule {
-    SystemSettingCollectionRepository systemSetting();
-
-    GeneralSettingObjectRepository generalSetting();
-
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    DataSetSettingsObjectRepository dataSetSetting();
-
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    ProgramSettingsObjectRepository programSetting();
-
-    SynchronizationSettingObjectRepository synchronizationSettings();
-
-    AnalyticsSettingObjectRepository analyticsSetting();
-
-    UserSettingsObjectRepository userSettings();
-
-    AppearanceSettingsObjectRepository appearanceSettings();
+enum class ChartType {
+    BAR,
+    LINE,
+    TABLE,
+    WHO_NUTRITION,
+    SINGLE_VALUE
 }

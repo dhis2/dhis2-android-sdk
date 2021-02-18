@@ -28,28 +28,27 @@
 
 package org.hisp.dhis.android.core.settings;
 
-public interface SettingModule {
-    SystemSettingCollectionRepository systemSetting();
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-    GeneralSettingObjectRepository generalSetting();
+import java.util.List;
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    DataSetSettingsObjectRepository dataSetSetting();
+@AutoValue
+@JsonDeserialize(builder = AutoValue_AnalyticsSettings.Builder.class)
+public abstract class AnalyticsSettings {
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    ProgramSettingsObjectRepository programSetting();
+    public abstract List<AnalyticsTeiSetting> tei();
 
-    SynchronizationSettingObjectRepository synchronizationSettings();
+    public static Builder builder() {
+        return new AutoValue_AnalyticsSettings.Builder();
+    }
 
-    AnalyticsSettingObjectRepository analyticsSetting();
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder {
+        public abstract Builder tei(List<AnalyticsTeiSetting> tei);
 
-    UserSettingsObjectRepository userSettings();
-
-    AppearanceSettingsObjectRepository appearanceSettings();
+        public abstract AnalyticsSettings build();
+    }
 }

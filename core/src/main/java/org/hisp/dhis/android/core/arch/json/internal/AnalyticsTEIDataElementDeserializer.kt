@@ -25,31 +25,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.json.internal
 
-package org.hisp.dhis.android.core.settings;
+import com.fasterxml.jackson.core.JsonParseException
+import com.fasterxml.jackson.core.JsonParser
+import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.DeserializationContext
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer
+import java.io.IOException
+import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
 
-public interface SettingModule {
-    SystemSettingCollectionRepository systemSetting();
+class AnalyticsTEIDataElementDeserializer @JvmOverloads constructor(
+    vc: Class<*>? = null
+) : StdDeserializer<AnalyticsTeiDataElement>(vc) {
 
-    GeneralSettingObjectRepository generalSetting();
+    @Throws(IOException::class, JsonProcessingException::class)
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    DataSetSettingsObjectRepository dataSetSetting();
+    override fun deserialize(jp: JsonParser, ctxt: DeserializationContext): AnalyticsTeiDataElement {
+        val node = jp.codec.readTree<JsonNode>(jp)
+        val programDataElement = node.textValue()
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    ProgramSettingsObjectRepository programSetting();
+        val tokens = programDataElement.split(".")
 
-    SynchronizationSettingObjectRepository synchronizationSettings();
-
-    AnalyticsSettingObjectRepository analyticsSetting();
-
-    UserSettingsObjectRepository userSettings();
-
-    AppearanceSettingsObjectRepository appearanceSettings();
+        return when (tokens.size) {
+            1 -> AnalyticsTeiDataElement.builder().dataElement(tokens.first()).build()
+            2 -> AnalyticsTeiDataElement.builder().programStage(tokens.first()).dataElement(tokens.last()).build()
+            else -> throw JsonParseException(jp, "Unparseable dataElement: \"$programDataElement\"")
+        }
+    }
 }

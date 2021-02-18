@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.settings.internal;
 
 import org.hisp.dhis.android.core.settings.AppearanceSettingsObjectRepository;
+import org.hisp.dhis.android.core.settings.AnalyticsSettingObjectRepository;
 import org.hisp.dhis.android.core.settings.DataSetSettingsObjectRepository;
 import org.hisp.dhis.android.core.settings.GeneralSettingObjectRepository;
 import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository;
@@ -50,6 +51,7 @@ public final class SettingModuleImpl implements SettingModule {
     private final DataSetSettingsObjectRepository dataSetSetting;
     private final ProgramSettingsObjectRepository programSetting;
     private final SynchronizationSettingObjectRepository synchronizationSetting;
+    private final AnalyticsSettingObjectRepository analyticsSetting;
     private final UserSettingsObjectRepository userSettings;
     private final AppearanceSettingsObjectRepository appearanceSettings;
 
@@ -59,6 +61,7 @@ public final class SettingModuleImpl implements SettingModule {
                       DataSetSettingsObjectRepository dataSetSetting,
                       ProgramSettingsObjectRepository programSetting,
                       SynchronizationSettingObjectRepository synchronizationSetting,
+                      AnalyticsSettingObjectRepository analyticsSetting,
                       UserSettingsObjectRepository userSettings,
                       AppearanceSettingsObjectRepository appearanceSettings) {
         this.systemSetting = systemSettingRepository;
@@ -66,6 +69,7 @@ public final class SettingModuleImpl implements SettingModule {
         this.dataSetSetting = dataSetSetting;
         this.programSetting = programSetting;
         this.synchronizationSetting = synchronizationSetting;
+        this.analyticsSetting = analyticsSetting;
         this.userSettings = userSettings;
         this.appearanceSettings = appearanceSettings;
     }
@@ -93,6 +97,11 @@ public final class SettingModuleImpl implements SettingModule {
     @Override
     public SynchronizationSettingObjectRepository synchronizationSettings() {
         return synchronizationSetting;
+    }
+
+    @Override
+    public AnalyticsSettingObjectRepository analyticsSetting() {
+        return analyticsSetting;
     }
 
     @Override

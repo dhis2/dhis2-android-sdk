@@ -28,28 +28,45 @@
 
 package org.hisp.dhis.android.core.settings;
 
-public interface SettingModule {
-    SystemSettingCollectionRepository systemSetting();
+import android.database.Cursor;
 
-    GeneralSettingObjectRepository generalSetting();
+import androidx.annotation.Nullable;
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    DataSetSettingsObjectRepository dataSetSetting();
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    ProgramSettingsObjectRepository programSetting();
+import org.hisp.dhis.android.core.arch.json.internal.AnalyticsTEIAttributeDeserializer;
+import org.hisp.dhis.android.core.common.CoreObject;
 
-    SynchronizationSettingObjectRepository synchronizationSettings();
+@AutoValue
+@JsonDeserialize(using = AnalyticsTEIAttributeDeserializer.class)
+public abstract class AnalyticsTeiAttribute implements CoreObject {
 
-    AnalyticsSettingObjectRepository analyticsSetting();
+    @Nullable
+    public abstract String teiSetting();
 
-    UserSettingsObjectRepository userSettings();
+    public abstract String attribute();
 
-    AppearanceSettingsObjectRepository appearanceSettings();
+    public static AnalyticsTeiAttribute create(Cursor cursor) {
+        return AutoValue_AnalyticsTeiAttribute.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_AnalyticsTeiAttribute.Builder();
+    }
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder {
+        public abstract Builder id(Long id);
+
+        public abstract Builder teiSetting(String teiSetting);
+
+        public abstract Builder attribute(String attribute);
+
+        public abstract AnalyticsTeiAttribute build();
+    }
 }

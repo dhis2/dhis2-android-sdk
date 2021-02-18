@@ -25,31 +25,28 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings.internal
 
-package org.hisp.dhis.android.core.settings;
+import android.database.Cursor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkStore
+import org.hisp.dhis.android.core.settings.AnalyticsTeiAttribute
+import org.hisp.dhis.android.core.settings.AnalyticsTeiAttributeTableInfo
 
-public interface SettingModule {
-    SystemSettingCollectionRepository systemSetting();
+internal object AnalyticsTeiAttributeStore {
 
-    GeneralSettingObjectRepository generalSetting();
+    private val BINDER = StatementBinder { o: AnalyticsTeiAttribute, w: StatementWrapper ->
+        w.bind(1, o.teiSetting())
+        w.bind(2, o.attribute())
+    }
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    DataSetSettingsObjectRepository dataSetSetting();
-
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    ProgramSettingsObjectRepository programSetting();
-
-    SynchronizationSettingObjectRepository synchronizationSettings();
-
-    AnalyticsSettingObjectRepository analyticsSetting();
-
-    UserSettingsObjectRepository userSettings();
-
-    AppearanceSettingsObjectRepository appearanceSettings();
+    fun create(databaseAdapter: DatabaseAdapter): LinkStore<AnalyticsTeiAttribute> {
+        return linkStore(
+            databaseAdapter, AnalyticsTeiAttributeTableInfo.TABLE_INFO,
+            AnalyticsTeiAttributeTableInfo.Columns.TEI_SETTING, BINDER
+        ) { cursor: Cursor -> AnalyticsTeiAttribute.create(cursor) }
+    }
 }

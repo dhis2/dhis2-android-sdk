@@ -28,28 +28,40 @@
 
 package org.hisp.dhis.android.core.settings;
 
-public interface SettingModule {
-    SystemSettingCollectionRepository systemSetting();
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
-    GeneralSettingObjectRepository generalSetting();
+public final class AnalyticsTeiDataElementTableInfo {
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    DataSetSettingsObjectRepository dataSetSetting();
+    private AnalyticsTeiDataElementTableInfo() {
+    }
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    ProgramSettingsObjectRepository programSetting();
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    SynchronizationSettingObjectRepository synchronizationSettings();
+        @Override
+        public String name() {
+            return "AnalyticsTeiDataElement";
+        }
 
-    AnalyticsSettingObjectRepository analyticsSetting();
+        @Override
+        public CoreColumns columns() {
+            return new Columns();
+        }
+    };
 
-    UserSettingsObjectRepository userSettings();
+    public static class Columns extends CoreColumns {
+        public static final String TEI_SETTING = "teiSetting";
+        public static final String PROGRAM_STAGE = "programStage";
+        public static final String DATA_ELEMENT = "dataElement";
 
-    AppearanceSettingsObjectRepository appearanceSettings();
+        @Override
+        public String[] all() {
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    TEI_SETTING,
+                    PROGRAM_STAGE,
+                    DATA_ELEMENT
+            );
+        }
+    }
 }

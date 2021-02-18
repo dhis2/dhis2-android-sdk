@@ -1,0 +1,34 @@
+{
+  "tei": [
+    {
+      "uid": "fqEx2avRp1L",
+      "data": {
+        "dataElements": [
+          "dBwrot7S420.sWoqcoByYmD",
+          "dBwrot7S421.Ok9OQpitjQr"
+        ]
+      },
+      "name": "Height evolution",
+      "type": "LINE",
+      "period": "Monthly",
+      "program": "IpHINAT79UW",
+      "shortName": "H. evolution"
+    },
+    {
+      "uid": "XQUhloISaQJ",
+      "data": {
+        "indicators": [
+          "dBwrot7S420.GSae40Fyppf"
+        ],
+        "attributes": [
+          "cejWyOfXge6"
+        ]
+      },
+      "name": "Weight gain",
+      "type": "BAR",
+      "period": "Weekly",
+      "program": "IpHINAT79UW",
+      "shortName": "W. gain"
+    }
+  ]
+}

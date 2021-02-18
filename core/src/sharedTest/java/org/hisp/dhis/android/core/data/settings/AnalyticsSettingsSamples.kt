@@ -25,31 +25,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.data.settings
 
-package org.hisp.dhis.android.core.settings;
+import org.hisp.dhis.android.core.settings.AnalyticsTeiAttribute
+import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
+import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicator
 
-public interface SettingModule {
-    SystemSettingCollectionRepository systemSetting();
+object AnalyticsSettingsSamples {
 
-    GeneralSettingObjectRepository generalSetting();
+    val analyticsTeiDataElementSample: AnalyticsTeiDataElement =
+        AnalyticsTeiDataElement.builder()
+            .id(1L)
+            .teiSetting("tei_setting")
+            .programStage("programStage")
+            .dataElement("dataElement")
+            .build()
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    DataSetSettingsObjectRepository dataSetSetting();
+    val analyticsTeiIndicator: AnalyticsTeiIndicator =
+        AnalyticsTeiIndicator.builder()
+            .id(1L)
+            .teiSetting("tei_setting")
+            .indicator("indicator")
+            .build()
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    ProgramSettingsObjectRepository programSetting();
-
-    SynchronizationSettingObjectRepository synchronizationSettings();
-
-    AnalyticsSettingObjectRepository analyticsSetting();
-
-    UserSettingsObjectRepository userSettings();
-
-    AppearanceSettingsObjectRepository appearanceSettings();
+    val analyticsTeiAttribute: AnalyticsTeiAttribute =
+        AnalyticsTeiAttribute.builder()
+            .id(1L)
+            .teiSetting("tei_setting")
+            .attribute("attribute")
+            .build()
 }

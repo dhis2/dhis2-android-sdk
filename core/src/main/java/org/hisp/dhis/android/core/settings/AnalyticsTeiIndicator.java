@@ -28,28 +28,50 @@
 
 package org.hisp.dhis.android.core.settings;
 
-public interface SettingModule {
-    SystemSettingCollectionRepository systemSetting();
+import android.database.Cursor;
 
-    GeneralSettingObjectRepository generalSetting();
+import androidx.annotation.Nullable;
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    DataSetSettingsObjectRepository dataSetSetting();
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    ProgramSettingsObjectRepository programSetting();
+import org.hisp.dhis.android.core.arch.json.internal.AnalyticsTEIIndicatorDeserializer;
+import org.hisp.dhis.android.core.common.CoreObject;
 
-    SynchronizationSettingObjectRepository synchronizationSettings();
+@AutoValue
+@JsonDeserialize(using = AnalyticsTEIIndicatorDeserializer.class)
+public abstract class AnalyticsTeiIndicator implements CoreObject {
 
-    AnalyticsSettingObjectRepository analyticsSetting();
+    @Nullable
+    public abstract String teiSetting();
 
-    UserSettingsObjectRepository userSettings();
+    @Nullable
+    public abstract String programStage();
 
-    AppearanceSettingsObjectRepository appearanceSettings();
+    public abstract String indicator();
+
+    public abstract Builder toBuilder();
+
+    public static AnalyticsTeiIndicator create(Cursor cursor) {
+        return AutoValue_AnalyticsTeiIndicator.createFromCursor(cursor);
+    }
+
+    public static Builder builder() {
+        return new AutoValue_AnalyticsTeiIndicator.Builder();
+    }
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder {
+        public abstract Builder id(Long id);
+
+        public abstract Builder teiSetting(String teiSetting);
+
+        public abstract Builder programStage(String programStage);
+
+        public abstract Builder indicator(String indicator);
+
+        public abstract AnalyticsTeiIndicator build();
+    }
 }

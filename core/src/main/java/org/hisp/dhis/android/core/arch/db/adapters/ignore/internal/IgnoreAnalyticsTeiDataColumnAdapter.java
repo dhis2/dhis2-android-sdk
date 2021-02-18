@@ -26,30 +26,27 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
 
-public interface SettingModule {
-    SystemSettingCollectionRepository systemSetting();
+import android.content.ContentValues;
+import android.database.Cursor;
 
-    GeneralSettingObjectRepository generalSetting();
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    DataSetSettingsObjectRepository dataSetSetting();
+import org.hisp.dhis.android.core.settings.AnalyticsTeiData;
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    ProgramSettingsObjectRepository programSetting();
+public final class IgnoreAnalyticsTeiDataColumnAdapter implements ColumnTypeAdapter<AnalyticsTeiData> {
 
-    SynchronizationSettingObjectRepository synchronizationSettings();
+    @Override
+    public AnalyticsTeiData fromCursor(Cursor cursor, String columnName) {
+        return AnalyticsTeiData.builder().build();
+    }
 
-    AnalyticsSettingObjectRepository analyticsSetting();
-
-    UserSettingsObjectRepository userSettings();
-
-    AppearanceSettingsObjectRepository appearanceSettings();
+    @Override
+    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
+    public void toContentValues(ContentValues values, String columnName, AnalyticsTeiData value) {
+        /* Method is not abstract since empty action is the default action and we don't want it to
+         * be unnecessarily written in every child.
+         */
+    }
 }

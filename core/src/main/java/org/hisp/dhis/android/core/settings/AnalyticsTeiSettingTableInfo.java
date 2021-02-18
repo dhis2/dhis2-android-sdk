@@ -28,28 +28,46 @@
 
 package org.hisp.dhis.android.core.settings;
 
-public interface SettingModule {
-    SystemSettingCollectionRepository systemSetting();
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
+import org.hisp.dhis.android.core.common.NameableColumns;
 
-    GeneralSettingObjectRepository generalSetting();
+public final class AnalyticsTeiSettingTableInfo {
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    DataSetSettingsObjectRepository dataSetSetting();
+    private AnalyticsTeiSettingTableInfo() {
+    }
 
-    /**
-     * @deprecated Use {@link #synchronizationSettings()} instead.
-     */
-    @Deprecated
-    ProgramSettingsObjectRepository programSetting();
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    SynchronizationSettingObjectRepository synchronizationSettings();
+        @Override
+        public String name() {
+            return "AnalyticsTeiSetting";
+        }
 
-    AnalyticsSettingObjectRepository analyticsSetting();
+        @Override
+        public CoreColumns columns() {
+            return new Columns();
+        }
+    };
 
-    UserSettingsObjectRepository userSettings();
+    public static class Columns extends CoreColumns {
+        public static final String UID = IdentifiableColumns.UID;
+        public static final String NAME = IdentifiableColumns.NAME;
+        public static final String SHORT_NAME = NameableColumns.SHORT_NAME;
+        public static final String PERIOD = "period";
+        public static final String TYPE = "type";
 
-    AppearanceSettingsObjectRepository appearanceSettings();
+        @Override
+        public String[] all() {
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    UID,
+                    NAME,
+                    SHORT_NAME,
+                    PERIOD,
+                    TYPE
+            );
+        }
+    }
 }

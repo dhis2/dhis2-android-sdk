@@ -34,33 +34,32 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapp
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithoutUidStore
-import org.hisp.dhis.android.core.settings.GeneralSettingTableInfo
-import org.hisp.dhis.android.core.settings.GeneralSettings
+import org.hisp.dhis.android.core.settings.AnalyticsTeiSetting
+import org.hisp.dhis.android.core.settings.AnalyticsTeiSettingTableInfo
 
 @Suppress("MagicNumber")
-internal object GeneralSettingStore {
-    private val BINDER = StatementBinder { o: GeneralSettings, w: StatementWrapper ->
-        w.bind(1, o.encryptDB())
-        w.bind(2, o.lastUpdated())
-        w.bind(3, o.reservedValues())
-        w.bind(4, o.smsGateway())
-        w.bind(5, o.smsResultSender())
-        w.bind(6, o.matomoID())
-        w.bind(7, o.matomoURL())
+internal object AnalyticsTeiSettingStore {
+
+    private val BINDER = StatementBinder { o: AnalyticsTeiSetting, w: StatementWrapper ->
+        w.bind(1, o.uid())
+        w.bind(2, o.name())
+        w.bind(3, o.shortName())
+        w.bind(4, o.period())
+        w.bind(5, o.type())
     }
 
     private val WHERE_UPDATE_BINDER = WhereStatementBinder {
-        _: GeneralSettings, _: StatementWrapper ->
+        _: AnalyticsTeiSetting, _: StatementWrapper ->
     }
 
     private val WHERE_DELETE_BINDER = WhereStatementBinder {
-        _: GeneralSettings, _: StatementWrapper ->
+        _: AnalyticsTeiSetting, _: StatementWrapper ->
     }
 
-    fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<GeneralSettings> {
+    fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<AnalyticsTeiSetting> {
         return objectWithoutUidStore(
-            databaseAdapter, GeneralSettingTableInfo.TABLE_INFO, BINDER,
+            databaseAdapter, AnalyticsTeiSettingTableInfo.TABLE_INFO, BINDER,
             WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER
-        ) { cursor: Cursor? -> GeneralSettings.create(cursor) }
+        ) { cursor: Cursor -> AnalyticsTeiSetting.create(cursor) }
     }
 }

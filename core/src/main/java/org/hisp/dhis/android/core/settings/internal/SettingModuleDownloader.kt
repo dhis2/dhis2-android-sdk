@@ -37,6 +37,7 @@ internal class SettingModuleDownloader @Inject constructor(
     private val systemSettingCall: SystemSettingCall,
     private val generalSettingCall: GeneralSettingCall,
     private val synchronizationSettingCall: SynchronizationSettingCall,
+    private val analyticsSettingCall: AnalyticsSettingCall,
     private val userSettingsCall: UserSettingsCall,
     private val appearanceSettingCall: AppearanceSettingCall
 ) : UntypedModuleDownloader {
@@ -54,6 +55,7 @@ internal class SettingModuleDownloader @Inject constructor(
             generalSettingCall.getCompletable(false).blockingAwait()
             synchronizationSettingCall.getCompletable(false).blockingAwait()
             appearanceSettingCall.getCompletable(false).blockingAwait()
+            analyticsSettingCall.getCompletable(false).blockingAwait()
         }
     }
 }

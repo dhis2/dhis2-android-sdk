@@ -65,6 +65,10 @@ internal class SettingAppService @Inject constructor(
         return settingService.appearanceSettings("${getNamespace(version)}/appearance")
     }
 
+    fun analyticsSettings(version: SettingsAppDataStoreVersion): Single<AnalyticsSettings> {
+        return settingService.analyticsSettings("${getNamespace(version)}/analytics")
+    }
+
     private fun getNamespace(version: SettingsAppDataStoreVersion): String {
         return when (version) {
             SettingsAppDataStoreVersion.V1_1 -> ANDROID_APP_NAMESPACE_V1

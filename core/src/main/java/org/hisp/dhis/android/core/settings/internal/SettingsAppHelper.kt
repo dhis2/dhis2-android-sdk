@@ -119,13 +119,14 @@ internal object SettingsAppHelper {
             settings.globalSettings()?.let {
                 list.add(it)
             }
-            list.addAll(settings.specificSettings()?.map { entry ->
-                entry.value.toBuilder()
-                    .uid(entry.key)
-                    .build()
-
-            } ?: emptyList())
+            list.addAll(
+                settings.specificSettings()?.map { entry ->
+                    entry.value.toBuilder()
+                        .uid(entry.key)
+                        .build()
+                } ?: emptyList()
+            )
         }
-        return list;
+        return list
     }
 }

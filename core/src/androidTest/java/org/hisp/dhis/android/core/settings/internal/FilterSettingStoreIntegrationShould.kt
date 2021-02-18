@@ -17,5 +17,4 @@ class FilterSettingStoreIntegrationShould : ObjectStoreAbstractIntegrationShould
     override fun buildObject(): FilterSetting {
         return FilterSettingSamples.getFilterSetting()
     }
-
 }

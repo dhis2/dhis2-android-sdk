@@ -28,9 +28,9 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import io.reactivex.Single
-import org.hisp.dhis.android.core.settings.AppearanceSettings
 import javax.inject.Inject
 import org.hisp.dhis.android.core.settings.*
+import org.hisp.dhis.android.core.settings.AppearanceSettings
 
 internal class SettingAppService @Inject constructor(
     private val settingService: SettingService

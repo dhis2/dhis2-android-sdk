@@ -31,30 +31,6 @@ public class AppearanceSettingsObjectRepository
         this.completionSpinnerStore = completionSpinnerStore;
     }
 
-    public Map<HomeFilter, FilterSetting> getHomeFilters() {
-        return blockingGet().filterSorting().home();
-    }
-
-    public Map<DataSetFilter, FilterSetting> getDataSetFiltersByUid(String uid) {
-        Map<DataSetFilter, FilterSetting> filters = blockingGet().filterSorting().dataSetSettings().specificSettings().get(uid);
-        if (filters == null) {
-            filters = blockingGet().filterSorting().dataSetSettings().globalSettings();
-        }
-        return filters;
-    }
-
-    public Map<ProgramFilter, FilterSetting> getTrackedEntityTypeFilters() {
-        return blockingGet().filterSorting().programSettings().globalSettings();
-    }
-
-    public Map<ProgramFilter, FilterSetting> getProgramFiltersByUid(String uid) {
-        Map<ProgramFilter, FilterSetting> filters = blockingGet().filterSorting().programSettings().specificSettings().get(uid);
-        if (filters == null) {
-            filters = blockingGet().filterSorting().programSettings().globalSettings();
-        }
-        return filters;
-    }
-
     @Override
     public AppearanceSettings blockingGet() {
         List<FilterSetting> filters = filterSettingStore.selectAll();
@@ -79,6 +55,30 @@ public class AppearanceSettingsObjectRepository
         appearanceSettingsBuilder.completionSpinner(completionSpinnerSetting);
 
         return appearanceSettingsBuilder.build();
+    }
+
+    public Map<HomeFilter, FilterSetting> getHomeFilters() {
+        return blockingGet().filterSorting().home();
+    }
+
+    public Map<DataSetFilter, FilterSetting> getDataSetFiltersByUid(String uid) {
+        Map<DataSetFilter, FilterSetting> filters = blockingGet().filterSorting().dataSetSettings().specificSettings().get(uid);
+        if (filters == null) {
+            filters = blockingGet().filterSorting().dataSetSettings().globalSettings();
+        }
+        return filters;
+    }
+
+    public Map<ProgramFilter, FilterSetting> getTrackedEntityTypeFilters() {
+        return blockingGet().filterSorting().programSettings().globalSettings();
+    }
+
+    public Map<ProgramFilter, FilterSetting> getProgramFiltersByUid(String uid) {
+        Map<ProgramFilter, FilterSetting> filters = blockingGet().filterSorting().programSettings().specificSettings().get(uid);
+        if (filters == null) {
+            filters = blockingGet().filterSorting().programSettings().globalSettings();
+        }
+        return filters;
     }
 
     private Map<String, CompletionSpinner> getSpecificCompletionsSpinners(List<CompletionSpinner> completionSpinnerList) {
@@ -161,5 +161,19 @@ public class AppearanceSettingsObjectRepository
         dataSetScopeBuilder.globalSettings(globalDataSetFilters);
         dataSetScopeBuilder.specificSettings(specificDataSetFilters);
         return dataSetScopeBuilder.build();
+    }
+
+    public CompletionSpinner getGlobalCompletionSpinner() {
+        List<CompletionSpinner> completionSpinnerList = completionSpinnerStore.selectAll();
+        return getGlobalCompletionSpinner(completionSpinnerList);
+    }
+
+    public CompletionSpinner getCompletionSpinnerById(String uid) {
+        List<CompletionSpinner> completionSpinnerList = completionSpinnerStore.selectAll();
+        CompletionSpinner result = getSpecificCompletionsSpinners(completionSpinnerList).get(uid);
+        if (result == null) {
+            result = getGlobalCompletionSpinner();
+        }
+        return result;
     }
 }

@@ -6,19 +6,19 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
+import java.lang.Exception
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.settings.CompletionSpinner
 import org.junit.Before
 import org.junit.Test
-import java.lang.Exception
 
 class CompletionSettingHandlerShould {
     private val completionSettingStore: ObjectWithoutUidStore<CompletionSpinner> = mock()
 
     private val completionSpinner = CompletionSpinner.builder()
         .visible(true)
-        .build();
+        .build()
     private lateinit var completionSpinnerHandler: CompletionSpinnerHandler
     private lateinit var completionSpinnerList: List<CompletionSpinner>
 

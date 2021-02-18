@@ -21,11 +21,11 @@ internal object FilterSettingStore {
     }
 
     private val WHERE_UPDATE_BINDER = WhereStatementBinder {
-            _: FilterSetting, _: StatementWrapper ->
+        _: FilterSetting, _: StatementWrapper ->
     }
 
     private val WHERE_DELETE_BINDER = WhereStatementBinder {
-            _: FilterSetting, _: StatementWrapper ->
+        _: FilterSetting, _: StatementWrapper ->
     }
 
     fun create(databaseAdapter: DatabaseAdapter?): ObjectWithoutUidStore<FilterSetting> {

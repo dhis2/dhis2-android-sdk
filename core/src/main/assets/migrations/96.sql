@@ -6,7 +6,7 @@ INSERT INTO GeneralSetting (_id, encryptDB, lastUpdated, reservedValues, smsGate
 CREATE TABLE SynchronizationSetting (_id INTEGER PRIMARY KEY AUTOINCREMENT, dataSync TEXT, metadataSync TEXT, newTrackerImporter INTEGER);
 INSERT INTO SynchronizationSetting (dataSync, metadataSync) SELECT dataSync, metadataSync FROM GeneralSetting_Old;
 
-DELETE GeneralSetting_Old;
+DROP TABLE GeneralSetting_Old;
 
 CREATE TABLE AnalyticsTeiSetting (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL UNIQUE, name TEXT, shortName TEXT, period TEXT, type TEXT);
 CREATE TABLE AnalyticsTeiDataElement (_id INTEGER PRIMARY KEY AUTOINCREMENT, teiSetting TEXT NOT NULL, programStage TEXT, dataElement TEXT NOT NULL, FOREIGN KEY (programStage) REFERENCES ProgramStage (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (dataElement) REFERENCES DataElement (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (teiSetting) REFERENCES AnalyticsTeiSetting (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);

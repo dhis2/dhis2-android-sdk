@@ -31,12 +31,12 @@ import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkStore
 import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
 import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElementTableInfo
 
+@Suppress("MagicNumber")
 internal object AnalyticsTeiDataElementStore {
 
     private val BINDER = StatementBinder { o: AnalyticsTeiDataElement, w: StatementWrapper ->
@@ -46,7 +46,8 @@ internal object AnalyticsTeiDataElementStore {
     }
 
     fun create(databaseAdapter: DatabaseAdapter): LinkStore<AnalyticsTeiDataElement> {
-        return linkStore(databaseAdapter, AnalyticsTeiDataElementTableInfo.TABLE_INFO,
+        return linkStore(
+            databaseAdapter, AnalyticsTeiDataElementTableInfo.TABLE_INFO,
             AnalyticsTeiDataElementTableInfo.Columns.TEI_SETTING, BINDER
         ) { cursor: Cursor -> AnalyticsTeiDataElement.create(cursor) }
     }

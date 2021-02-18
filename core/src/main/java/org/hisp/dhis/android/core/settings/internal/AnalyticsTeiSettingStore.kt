@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWit
 import org.hisp.dhis.android.core.settings.AnalyticsTeiSetting
 import org.hisp.dhis.android.core.settings.AnalyticsTeiSettingTableInfo
 
+@Suppress("MagicNumber")
 internal object AnalyticsTeiSettingStore {
 
     private val BINDER = StatementBinder { o: AnalyticsTeiSetting, w: StatementWrapper ->
@@ -56,7 +57,9 @@ internal object AnalyticsTeiSettingStore {
     }
 
     fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<AnalyticsTeiSetting> {
-        return objectWithoutUidStore(databaseAdapter, AnalyticsTeiSettingTableInfo.TABLE_INFO, BINDER,
-            WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER) { cursor: Cursor -> AnalyticsTeiSetting.create(cursor) }
+        return objectWithoutUidStore(
+            databaseAdapter, AnalyticsTeiSettingTableInfo.TABLE_INFO, BINDER,
+            WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER
+        ) { cursor: Cursor -> AnalyticsTeiSetting.create(cursor) }
     }
 }

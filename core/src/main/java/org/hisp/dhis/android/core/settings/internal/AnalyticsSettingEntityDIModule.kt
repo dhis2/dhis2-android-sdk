@@ -97,5 +97,4 @@ internal class AnalyticsSettingEntityDIModule {
     ): LinkHandler<AnalyticsTeiAttribute, AnalyticsTeiAttribute> {
         return LinkHandlerImpl(store)
     }
-
 }

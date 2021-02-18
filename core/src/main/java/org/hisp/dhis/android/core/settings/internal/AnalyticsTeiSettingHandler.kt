@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
@@ -36,7 +37,6 @@ import org.hisp.dhis.android.core.settings.AnalyticsTeiAttribute
 import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
 import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicator
 import org.hisp.dhis.android.core.settings.AnalyticsTeiSetting
-import javax.inject.Inject
 
 @Reusable
 internal class AnalyticsTeiSettingHandler @Inject constructor(

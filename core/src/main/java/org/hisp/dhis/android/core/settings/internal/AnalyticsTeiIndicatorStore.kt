@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkStore
 import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicator
 import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicatorTableInfo
 
+@Suppress("MagicNumber")
 internal object AnalyticsTeiIndicatorStore {
 
     private val BINDER = StatementBinder { o: AnalyticsTeiIndicator, w: StatementWrapper ->
@@ -45,7 +46,8 @@ internal object AnalyticsTeiIndicatorStore {
     }
 
     fun create(databaseAdapter: DatabaseAdapter): LinkStore<AnalyticsTeiIndicator> {
-        return linkStore(databaseAdapter, AnalyticsTeiIndicatorTableInfo.TABLE_INFO,
+        return linkStore(
+            databaseAdapter, AnalyticsTeiIndicatorTableInfo.TABLE_INFO,
             AnalyticsTeiIndicatorTableInfo.Columns.TEI_SETTING, BINDER
         ) { cursor: Cursor -> AnalyticsTeiIndicator.create(cursor) }
     }

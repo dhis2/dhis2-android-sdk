@@ -33,8 +33,8 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
-import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicator
 import java.io.IOException
+import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicator
 
 class AnalyticsTEIIndicatorDeserializer @JvmOverloads constructor(
     vc: Class<*>? = null

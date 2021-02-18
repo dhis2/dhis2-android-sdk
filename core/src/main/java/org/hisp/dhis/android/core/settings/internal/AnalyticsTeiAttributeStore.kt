@@ -44,7 +44,8 @@ internal object AnalyticsTeiAttributeStore {
     }
 
     fun create(databaseAdapter: DatabaseAdapter): LinkStore<AnalyticsTeiAttribute> {
-        return linkStore(databaseAdapter, AnalyticsTeiAttributeTableInfo.TABLE_INFO,
+        return linkStore(
+            databaseAdapter, AnalyticsTeiAttributeTableInfo.TABLE_INFO,
             AnalyticsTeiAttributeTableInfo.Columns.TEI_SETTING, BINDER
         ) { cursor: Cursor -> AnalyticsTeiAttribute.create(cursor) }
     }

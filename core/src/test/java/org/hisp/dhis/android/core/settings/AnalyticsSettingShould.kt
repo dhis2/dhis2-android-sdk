@@ -28,13 +28,13 @@
 package org.hisp.dhis.android.core.settings
 
 import com.google.common.truth.Truth.assertThat
+import java.io.IOException
+import java.text.ParseException
 import org.hisp.dhis.android.core.common.BaseObjectShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.core.period.PeriodType
 import org.junit.Assert.fail
 import org.junit.Test
-import java.io.IOException
-import java.text.ParseException
 
 class AnalyticsSettingShould : BaseObjectShould("settings/analytics_settings.json"), ObjectShould {
 
@@ -46,7 +46,7 @@ class AnalyticsSettingShould : BaseObjectShould("settings/analytics_settings.jso
         assertThat(analyticsSettings.tei().size).isEqualTo(2)
 
         analyticsSettings.tei().forEach { tei ->
-            when(tei.uid()) {
+            when (tei.uid()) {
                 "fqEx2avRp1L" -> {
                     assertThat(tei.name()).isEqualTo("Height evolution")
                     assertThat(tei.shortName()).isEqualTo("H. evolution")
@@ -54,21 +54,26 @@ class AnalyticsSettingShould : BaseObjectShould("settings/analytics_settings.jso
                     assertThat(tei.type()).isEquivalentAccordingToCompareTo(ChartType.LINE)
                     assertThat(tei.data().dataElements().size).isEqualTo(2)
 
-                    assertThat(tei.data().dataElements().any { dataElement ->
-                        dataElement.dataElement() == "GieVkTxp4HH" && dataElement.programStage() == "ZzYYXq4fJie"
-                    }).isTrue()
+                    assertThat(
+                        tei.data().dataElements().any { dataElement ->
+                            dataElement.dataElement() == "GieVkTxp4HH" && dataElement.programStage() == "ZzYYXq4fJie"
+                        }
+                    ).isTrue()
 
-                    assertThat(tei.data().dataElements().any { dataElement ->
-                        dataElement.dataElement() == "lCtmKdqsD6V" && dataElement.programStage() == "vx67pJHFz4B"
-                    }).isTrue()
-
+                    assertThat(
+                        tei.data().dataElements().any { dataElement ->
+                            dataElement.dataElement() == "lCtmKdqsD6V" && dataElement.programStage() == "vx67pJHFz4B"
+                        }
+                    ).isTrue()
                 }
                 "XQUhloISaQJ" -> {
                     assertThat(tei.name()).isEqualTo("Weight gain")
 
                     assertThat(tei.data().indicators().size).isEqualTo(1)
-                    assertThat(tei.data().indicators().first()?.let {
-                        it.indicator() == "GieVkTxp4HH" && it.programStage() == "ZzYYXq4fJie" }
+                    assertThat(
+                        tei.data().indicators().first()?.let {
+                            it.indicator() == "GieVkTxp4HH" && it.programStage() == "ZzYYXq4fJie"
+                        }
                     ).isTrue()
 
                     assertThat(tei.data().attributes().size).isEqualTo(1)

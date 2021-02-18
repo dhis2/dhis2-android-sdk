@@ -59,8 +59,10 @@ class AnalyticsTeiSettingHandlerShould {
         whenever(analyticsTeiSettingStore.updateOrInsertWhere(any())) doReturn HandleAction.Insert
         whenever(analyticsTeiSetting.uid()) doReturn "tei_setting_uid"
 
-        analyticsTeiSettingHandler = AnalyticsTeiSettingHandler(analyticsTeiSettingStore, teiDataElementHandler,
-            teiIndicatorHandler, teiAttributeHandler)
+        analyticsTeiSettingHandler = AnalyticsTeiSettingHandler(
+            analyticsTeiSettingStore, teiDataElementHandler,
+            teiIndicatorHandler, teiAttributeHandler
+        )
     }
 
     @Test

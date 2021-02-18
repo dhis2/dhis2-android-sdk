@@ -27,7 +27,9 @@
  */
 package org.hisp.dhis.android.core.settings.internal;
 
+import org.hisp.dhis.android.core.settings.CompletionSpinnerTableInfo;
 import org.hisp.dhis.android.core.settings.DataSetSettingTableInfo;
+import org.hisp.dhis.android.core.settings.FilterSettingTableInfo;
 import org.hisp.dhis.android.core.settings.GeneralSettingTableInfo;
 import org.hisp.dhis.android.core.settings.ProgramSettingTableInfo;
 import org.hisp.dhis.android.core.settings.SynchronizationSettingTableInfo;
@@ -57,6 +59,8 @@ public final class SettingModuleWiper implements ModuleWiper {
         tableWiper.wipeTable(DataSetSettingTableInfo.TABLE_INFO);
         tableWiper.wipeTable(ProgramSettingTableInfo.TABLE_INFO);
         tableWiper.wipeTable(SynchronizationSettingTableInfo.TABLE_INFO);
+        tableWiper.wipeTable(FilterSettingTableInfo.TABLE_INFO);
+        tableWiper.wipeTable(CompletionSpinnerTableInfo.TABLE_INFO);
         tableWiper.wipeTable(UserSettingsTableInfo.TABLE_INFO);
     }
 

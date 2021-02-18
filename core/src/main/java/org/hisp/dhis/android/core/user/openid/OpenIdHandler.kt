@@ -28,70 +28,13 @@
 
 package org.hisp.dhis.android.core.user.openid
 
-import android.content.Context
 import android.content.Intent
 import io.reactivex.Single
-import net.openid.appauth.AuthorizationException
-import net.openid.appauth.AuthorizationResponse
-import net.openid.appauth.AuthorizationService
-import net.openid.appauth.TokenRequest
+import org.hisp.dhis.android.core.user.User
 
-private const val RC_AUTH = 2021
-
-class OpenIdHandler(private val context: Context) {
-
-    fun logIn(config: OpenIDConnectConfig): Single<IntentWithRequestCode> {
-        return OpenIdRequestHelper(config).prepareAuthRequest().map {
-            val authService = AuthorizationService(context)
-            val intent = authService.getAuthorizationRequestIntent(it)
-            authService.dispose()
-            IntentWithRequestCode(intent, RC_AUTH)
-        }
-    }
-
-    fun blockingLogIn(config: OpenIDConnectConfig): IntentWithRequestCode {
-        return logIn(config).blockingGet()
-    }
-
-    fun handleLoginResponse(
-        intent: Intent?,
-        requestCode: Int
-    ): Single<String> {
-        return if (requestCode == RC_AUTH && intent != null) {
-            val response = AuthorizationResponse.fromIntent(intent)!!
-            val ex = AuthorizationException.fromIntent(intent)
-            if (ex != null) {
-                Single.just(response.authorizationCode!!)
-            } else {
-                refreshToken(response.createTokenExchangeRequest())
-            }
-        } else {
-            Single.error<String>(RuntimeException("Unexpected intent or request code"))
-        }
-    }
-
-    fun blockingHandleLogInResponse(
-        intent: Intent?,
-        requestCode: Int
-    ): String {
-        return handleLoginResponse(intent, requestCode).blockingGet()
-    }
-
-    private fun refreshToken(
-        tokenRequest: TokenRequest
-    ): Single<String> {
-        return Single.create { emitter ->
-            val authService = AuthorizationService(context)
-            authService.performTokenRequest(
-                tokenRequest
-            ) { tokenResponse, tokenEx ->
-                authService.dispose()
-                if (tokenResponse?.idToken != null) {
-                    emitter.onSuccess(tokenResponse.idToken!!)
-                } else {
-                    emitter.onError(RuntimeException(tokenEx))
-                }
-            }
-        }
-    }
+interface OpenIdHandler {
+    fun logIn(config: OpenIDConnectConfig): Single<IntentWithRequestCode>
+    fun blockingLogIn(config: OpenIDConnectConfig): IntentWithRequestCode
+    fun handleLogInResponse(serverUrl: String, intent: Intent?, requestCode: Int): Single<User>
+    fun blockingHandleLogInResponse(serverUrl: String, intent: Intent?, requestCode: Int): User
 }

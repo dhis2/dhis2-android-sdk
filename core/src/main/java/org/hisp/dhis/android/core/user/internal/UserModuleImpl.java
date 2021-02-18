@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.user.internal;
 
 import androidx.annotation.NonNull;
 
-import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.user.AuthenticatedUserObjectRepository;
 import org.hisp.dhis.android.core.user.AuthorityCollectionRepository;
 import org.hisp.dhis.android.core.user.User;
@@ -37,6 +36,8 @@ import org.hisp.dhis.android.core.user.UserCredentialsObjectRepository;
 import org.hisp.dhis.android.core.user.UserModule;
 import org.hisp.dhis.android.core.user.UserObjectRepository;
 import org.hisp.dhis.android.core.user.UserRoleCollectionRepository;
+import org.hisp.dhis.android.core.user.openid.OpenIdHandler;
+import org.hisp.dhis.android.core.user.openid.OpenIdHandlerImpl;
 
 import javax.inject.Inject;
 
@@ -57,6 +58,8 @@ public final class UserModuleImpl implements UserModule {
     private final UserCredentialsObjectRepository userCredentials;
     private final UserObjectRepository user;
 
+    private final OpenIdHandler openIdHandler;
+
     @Inject
     UserModuleImpl(IsUserLoggedInCallableFactory isUserLoggedInCallFactory,
                    LogOutCall logoutCallCallFactory,
@@ -65,7 +68,8 @@ public final class UserModuleImpl implements UserModule {
                    UserRoleCollectionRepository userRoles,
                    AuthorityCollectionRepository authorities,
                    UserCredentialsObjectRepository userCredentials,
-                   UserObjectRepository user) {
+                   UserObjectRepository user,
+                   OpenIdHandlerImpl openIdHandlerImpl) {
         this.isUserLoggedInCallFactory = isUserLoggedInCallFactory;
         this.logoutCallCallFactory = logoutCallCallFactory;
         this.logInCall = logInCall;
@@ -74,6 +78,7 @@ public final class UserModuleImpl implements UserModule {
         this.authorities = authorities;
         this.userCredentials = userCredentials;
         this.user = user;
+        this.openIdHandler = openIdHandlerImpl;
     }
 
     @Override
@@ -114,16 +119,6 @@ public final class UserModuleImpl implements UserModule {
     }
 
     @Override
-    public Single<User> logInOpenIdConnect(String serverUrl, String token) {
-        return Single.fromCallable(() -> blockingLogInOpenIdConnect(serverUrl, token));
-    }
-
-    @Override
-    public User blockingLogInOpenIdConnect(String serverUrl, String token) throws D2Error {
-        return logInCall.blockingLogInOpenIdConnect(serverUrl, token);
-    }
-
-    @Override
     @NonNull
     public Completable logOut() {
         return logoutCallCallFactory.logOut();
@@ -145,5 +140,11 @@ public final class UserModuleImpl implements UserModule {
     @NonNull
     public boolean blockingIsLogged() {
         return isLogged().blockingGet();
+    }
+
+    @Override
+    @NonNull
+    public OpenIdHandler openIdHandler() {
+        return openIdHandler;
     }
 }

@@ -56,13 +56,13 @@ class AnalyticsSettingShould : BaseObjectShould("settings/analytics_settings.jso
 
                     assertThat(
                         tei.data().dataElements().any { dataElement ->
-                            dataElement.dataElement() == "GieVkTxp4HH" && dataElement.programStage() == "ZzYYXq4fJie"
+                            dataElement.dataElement() == "sWoqcoByYmD" && dataElement.programStage() == "dBwrot7S420"
                         }
                     ).isTrue()
 
                     assertThat(
                         tei.data().dataElements().any { dataElement ->
-                            dataElement.dataElement() == "lCtmKdqsD6V" && dataElement.programStage() == "vx67pJHFz4B"
+                            dataElement.dataElement() == "Ok9OQpitjQr" && dataElement.programStage() == "dBwrot7S421"
                         }
                     ).isTrue()
                 }
@@ -72,12 +72,12 @@ class AnalyticsSettingShould : BaseObjectShould("settings/analytics_settings.jso
                     assertThat(tei.data().indicators().size).isEqualTo(1)
                     assertThat(
                         tei.data().indicators().first()?.let {
-                            it.indicator() == "GieVkTxp4HH" && it.programStage() == "ZzYYXq4fJie"
+                            it.indicator() == "GSae40Fyppf" && it.programStage() == "dBwrot7S420"
                         }
                     ).isTrue()
 
                     assertThat(tei.data().attributes().size).isEqualTo(1)
-                    assertThat(tei.data().attributes().first().attribute() == "Z3Smsacyyz4").isTrue()
+                    assertThat(tei.data().attributes().first().attribute() == "cejWyOfXge6").isTrue()
                 }
                 else -> fail("Unexpected tei uid")
             }

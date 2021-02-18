@@ -88,6 +88,19 @@ public abstract class AnalyticsTeiSetting implements CoreObject, ObjectWithUidIn
 
         public abstract Builder data(AnalyticsTeiData data);
 
-        public abstract AnalyticsTeiSetting build();
+        abstract AnalyticsTeiSetting autoBuild();
+
+        // Auxiliary fields
+        abstract AnalyticsTeiData data();
+
+        public AnalyticsTeiSetting build() {
+            try {
+                data();
+            } catch (IllegalStateException e) {
+                data(AnalyticsTeiData.builder().build());
+            }
+
+            return autoBuild();
+        }
     }
 }

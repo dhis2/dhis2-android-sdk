@@ -152,8 +152,7 @@ internal class LogInCall @Inject internal constructor(
     }
 
     @Throws(D2Error::class)
-    fun blockingLogInOpenIdConnect(serverUrl: String?, token: String?): User {
-        exceptions.throwExceptionIfTokenNull(token)
+    fun blockingLogInOpenIdConnect(serverUrl: String?, token: String): User {
         val parsedServerUrl = ServerUrlParser.parse(serverUrl)
         ServerURLWrapper.setServerUrl(parsedServerUrl.toString())
 
@@ -164,7 +163,7 @@ internal class LogInCall @Inject internal constructor(
 
         return try {
             val user = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall, apiCallErrorCatcher)
-            loginOpenIdConnectInternal(parsedServerUrl, user, token!!)
+            loginOpenIdConnectInternal(parsedServerUrl, user, token)
         } catch (d2Error: D2Error) {
             throw handleOnlineException(d2Error)
         }

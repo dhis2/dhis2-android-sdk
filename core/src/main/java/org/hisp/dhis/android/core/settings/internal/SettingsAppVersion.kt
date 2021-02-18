@@ -27,33 +27,7 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import com.fasterxml.jackson.databind.exc.InvalidFormatException
-import dagger.Reusable
-import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.maintenance.D2Error
-import java.net.HttpURLConnection
-import javax.inject.Inject
-
-@Reusable
-internal class SettingsAppInfoCall @Inject constructor(
-    private val settingAppService: SettingAppService,
-    private val apiCallExecutor: RxAPICallExecutor
-) {
-    fun fetch(storeError: Boolean): Single<SettingsAppVersion> {
-        return apiCallExecutor.wrapSingle(settingAppService.info(), storeError)
-            .map<SettingsAppVersion> {
-                SettingsAppVersion.Valid(it.dataStoreVersion(), it.androidSettingsVersion())
-            }
-            .onErrorResumeNext { throwable: Throwable ->
-                return@onErrorResumeNext when {
-                    throwable is D2Error && throwable.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND ->
-                        Single.just(SettingsAppVersion.Valid(SettingsAppDataStoreVersion.V1_1, null))
-                    throwable is D2Error && throwable.originalException() is InvalidFormatException ->
-                        Single.just(SettingsAppVersion.Unsupported)
-                    else ->
-                        Single.error(throwable)
-                }
-            }
-    }
+internal sealed class SettingsAppVersion {
+    class Valid(dataStore: SettingsAppDataStoreVersion, app: String?) : SettingsAppVersion()
+    object Unsupported : SettingsAppVersion()
 }

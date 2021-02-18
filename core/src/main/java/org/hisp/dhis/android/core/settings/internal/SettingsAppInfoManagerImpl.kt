@@ -37,12 +37,11 @@ internal class SettingsAppInfoManagerImpl @Inject constructor(
     private val settingsAppInfoCall: SettingsAppInfoCall
 ) : SettingsAppInfoManager {
 
-    private var dataStoreVersion: SettingsAppDataStoreVersion? = null
-    private var appVersion: String? = null
+    private var settingsAppVersion: SettingsAppVersion? = null
 
     override fun getDataStoreVersion(): Single<SettingsAppDataStoreVersion> {
         return when {
-            dataStoreVersion != null -> Single.just(dataStoreVersion)
+            settingsAppVersion != null -> Single.just(settingsAppVersion)
             else -> updateAppInfo().map { it.dataStoreVersion() }
         }
     }
@@ -56,9 +55,8 @@ internal class SettingsAppInfoManagerImpl @Inject constructor(
 
     override fun updateAppInfo(): Single<SettingsAppInfo> {
         return settingsAppInfoCall.fetch(false)
-            .doOnSuccess { info ->
-                dataStoreVersion = info.dataStoreVersion()
-                appVersion = info.androidSettingsVersion()
+            .doOnSuccess {
+                settingsAppVersion = it
             }
     }
 }

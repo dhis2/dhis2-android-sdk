@@ -38,19 +38,18 @@ import net.openid.appauth.TokenRequest
 
 private const val RC_AUTH = 2021
 
-class OpenIdHandler(context: Context, config: OpenIDConnectConfig) {
+class OpenIdHandler(context: Context) {
 
     private val authService = AuthorizationService(context)
-    private val helper = OpenIdRequestHelper(config)
 
-    fun logIn(): Single<IntentWithRequestCode> {
-        return helper.prepareAuthRequest().map {
+    fun logIn(config: OpenIDConnectConfig): Single<IntentWithRequestCode> {
+        return OpenIdRequestHelper(config).prepareAuthRequest().map {
             IntentWithRequestCode(Intent(authService.getAuthorizationRequestIntent(it)), RC_AUTH)
         }
     }
 
-    fun blockingLogIn(): IntentWithRequestCode {
-        return logIn().blockingGet()
+    fun blockingLogIn(config: OpenIDConnectConfig): IntentWithRequestCode {
+        return logIn(config).blockingGet()
     }
 
     fun onPause() {

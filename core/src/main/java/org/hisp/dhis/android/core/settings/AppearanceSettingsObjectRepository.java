@@ -34,6 +34,11 @@ public class AppearanceSettingsObjectRepository
     @Override
     public AppearanceSettings blockingGet() {
         List<FilterSetting> filters = filterSettingStore.selectAll();
+        List<CompletionSpinner> completionSpinnerList = completionSpinnerStore.selectAll();
+
+        if (filters.isEmpty() && completionSpinnerList.isEmpty()) {
+            return null;
+        }
 
         //FilterSorting
         FilterSorting.Builder filterSortingBuilder = FilterSorting.builder();
@@ -43,7 +48,6 @@ public class AppearanceSettingsObjectRepository
         FilterSorting filterSorting = filterSortingBuilder.build();
 
         //CompletionSpinner
-        List<CompletionSpinner> completionSpinnerList = completionSpinnerStore.selectAll();
         CompletionSpinnerSetting.Builder completionSpinnerSettingBuilder = CompletionSpinnerSetting.builder();
         completionSpinnerSettingBuilder.globalSettings(getGlobalCompletionSpinner(completionSpinnerList));
         completionSpinnerSettingBuilder.specificSettings(getSpecificCompletionsSpinners(completionSpinnerList));

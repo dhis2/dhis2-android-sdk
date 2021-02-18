@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.settings.internal
 import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.settings.*
+import org.hisp.dhis.android.core.settings.AppearanceSettings
 
 internal class SettingAppService @Inject constructor(
     private val settingService: SettingService
@@ -58,6 +59,10 @@ internal class SettingAppService @Inject constructor(
 
     fun synchronizationSettings(version: SettingsAppDataStoreVersion): Single<SynchronizationSettings> {
         return settingService.synchronizationSettings("${getNamespace(version)}/synchronization")
+    }
+
+    fun appearanceSettings(version: SettingsAppDataStoreVersion): Single<AppearanceSettings> {
+        return settingService.appearanceSettings("${getNamespace(version)}/appearance")
     }
 
     private fun getNamespace(version: SettingsAppDataStoreVersion): String {

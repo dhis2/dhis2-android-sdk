@@ -54,15 +54,15 @@ public class SynchronizationSettingsShould extends BaseObjectShould implements O
 
         assertThat(syncSettings.dataSetSettings()).isNotNull();
         assertThat(syncSettings.dataSetSettings().globalSettings()).isNotNull();
-        assertThat(syncSettings.dataSetSettings().globalSettings().periodDSDownload()).isEqualTo(11);
+        assertThat(syncSettings.dataSetSettings().globalSettings().periodDSDownload()).isEqualTo(30);
         assertThat(syncSettings.dataSetSettings().specificSettings()).isNotNull();
-        assertThat(syncSettings.dataSetSettings().specificSettings().get("lyLU2wR22tC").periodDSDownload()).isEqualTo(5);
+        assertThat(syncSettings.dataSetSettings().specificSettings().get("EKWVBc5C0ms").periodDSDownload()).isEqualTo(10);
 
         assertThat(syncSettings.programSettings()).isNotNull();
         assertThat(syncSettings.programSettings().globalSettings()).isNotNull();
         assertThat(syncSettings.programSettings().globalSettings().teiDownload()).isEqualTo(500);
-        assertThat(syncSettings.programSettings().globalSettings().settingDownload()).isEqualTo(LimitScope.GLOBAL);
+        assertThat(syncSettings.programSettings().globalSettings().settingDownload()).isEqualTo(LimitScope.PER_ORG_UNIT);
         assertThat(syncSettings.programSettings().specificSettings()).isNotNull();
-        assertThat(syncSettings.programSettings().specificSettings().get("fVQkzCmaCaB").eventsDownload()).isEqualTo(945);
+        assertThat(syncSettings.programSettings().specificSettings().get("lxAQ7Zs9VYR").eventsDownload()).isEqualTo(10);
     }
 }

@@ -47,6 +47,8 @@ public interface SettingModule {
 
     SynchronizationSettingObjectRepository synchronizationSettings();
 
+    AnalyticsSettingObjectRepository analyticsSetting();
+
     UserSettingsObjectRepository userSettings();
 
     AppearanceSettingsObjectRepository appearanceSettings();

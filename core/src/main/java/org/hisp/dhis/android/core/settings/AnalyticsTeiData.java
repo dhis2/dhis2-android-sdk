@@ -45,6 +45,8 @@ public abstract class AnalyticsTeiData {
 
     public abstract List<AnalyticsTeiAttribute> attributes();
 
+    public abstract Builder toBuilder();
+
     public static Builder builder() {
         return new AutoValue_AnalyticsTeiData.Builder()
                 .dataElements(Collections.emptyList())

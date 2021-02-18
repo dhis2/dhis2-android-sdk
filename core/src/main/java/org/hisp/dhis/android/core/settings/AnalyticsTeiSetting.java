@@ -65,6 +65,8 @@ public abstract class AnalyticsTeiSetting implements CoreObject, ObjectWithUidIn
         return AutoValue_AnalyticsTeiSetting.createFromCursor(cursor);
     }
 
+    public abstract Builder toBuilder();
+
     public static Builder builder() {
         return new AutoValue_AnalyticsTeiSetting.Builder();
     }

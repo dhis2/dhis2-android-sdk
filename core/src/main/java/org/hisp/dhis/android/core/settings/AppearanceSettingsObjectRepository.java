@@ -131,9 +131,7 @@ public class AppearanceSettingsObjectRepository
                 } else {
                     Map<DataSetFilter, FilterSetting> uidFilters = specificDataSetFilters.get(filter.uid());
                     if (uidFilters == null) {
-                        Map<DataSetFilter, FilterSetting> dataSetFilters = new HashMap<>();
-                        dataSetFilters.put(DataSetFilter.valueOf(filter.filterType()), filter);
-                        specificDataSetFilters.put(filter.uid(), dataSetFilters);
+                        specificDataSetFilters.put(filter.uid(), createRegistryForSpecificDataSetFilters(filter));
                     } else {
                         uidFilters.put(DataSetFilter.valueOf(filter.filterType()), filter);
                     }
@@ -147,6 +145,12 @@ public class AppearanceSettingsObjectRepository
         return dataSetScopeBuilder.build();
     }
 
+    private Map<DataSetFilter, FilterSetting> createRegistryForSpecificDataSetFilters(FilterSetting filter) {
+        Map<DataSetFilter, FilterSetting> dataSetFilters = new HashMap<>();
+        dataSetFilters.put(DataSetFilter.valueOf(filter.filterType()), filter);
+        return dataSetFilters;
+    }
+
     private ProgramFilters getProgramFilters(List<FilterSetting> filters) {
         Map<ProgramFilter, FilterSetting> globalDataSetFilters = new HashMap<>();
         Map<String, Map<ProgramFilter, FilterSetting>> specificDataSetFilters = new HashMap<>();
@@ -157,9 +161,7 @@ public class AppearanceSettingsObjectRepository
                 } else {
                     Map<ProgramFilter, FilterSetting> uidFilters = specificDataSetFilters.get(filter.uid());
                     if (uidFilters == null) {
-                        Map<ProgramFilter, FilterSetting> dataSetFilters = new HashMap<>();
-                        dataSetFilters.put(ProgramFilter.valueOf(filter.filterType()), filter);
-                        specificDataSetFilters.put(filter.uid(), dataSetFilters);
+                        specificDataSetFilters.put(filter.uid(), createRegistryForSpecificProgramFilters(filter));
                     } else {
                         uidFilters.put(ProgramFilter.valueOf(filter.filterType()), filter);
                     }
@@ -171,6 +173,12 @@ public class AppearanceSettingsObjectRepository
         dataSetScopeBuilder.globalSettings(globalDataSetFilters);
         dataSetScopeBuilder.specificSettings(specificDataSetFilters);
         return dataSetScopeBuilder.build();
+    }
+
+    private Map<ProgramFilter, FilterSetting> createRegistryForSpecificProgramFilters(FilterSetting filter) {
+        Map<ProgramFilter, FilterSetting> programFilters = new HashMap<>();
+        programFilters.put(ProgramFilter.valueOf(filter.filterType()), filter);
+        return programFilters;
     }
 
     public CompletionSpinner getGlobalCompletionSpinner() {

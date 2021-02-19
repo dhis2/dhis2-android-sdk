@@ -48,6 +48,7 @@ import org.hisp.dhis.android.core.program.internal.ProgramModuleWiper;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipModuleWiper;
 import org.hisp.dhis.android.core.resource.internal.ResourceModuleWiper;
 import org.hisp.dhis.android.core.settings.internal.SettingModuleWiper;
+import org.hisp.dhis.android.core.sms.internal.SMSModuleWiper;
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleWiper;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityModuleWiper;
 import org.hisp.dhis.android.core.user.internal.UserModuleWiper;
@@ -91,6 +92,7 @@ final class D2ModuleWipers {
             ResourceModuleWiper resource,
             SystemInfoModuleWiper systemInfo,
             SettingModuleWiper systemSetting,
+            SMSModuleWiper smsModuleWiper,
             UserModuleWiper user,
             TrackedEntityModuleWiper trackedEntity) {
 
@@ -120,6 +122,7 @@ final class D2ModuleWipers {
                 resource,
                 systemInfo,
                 systemSetting,
+                smsModuleWiper,
                 user,
                 trackedEntity);
     }

@@ -82,6 +82,8 @@ public interface LocalDbRepository {
 
     Single<Relationship> getRelationship(String relationshipUid);
 
+    Completable clear();
+
     class TooManySubmissionsException extends IllegalStateException {
         public TooManySubmissionsException() {
             super("Too many ongoing submissions at the same time >255");

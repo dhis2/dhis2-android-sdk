@@ -46,7 +46,7 @@ internal class OpenIDConnectHandlerImpl @Inject constructor(
 ) : OpenIDConnectHandler {
 
     override fun logIn(config: OpenIDConnectConfig): Single<IntentWithRequestCode> {
-        return OpenIdRequestHelper(config).prepareAuthRequest().map {
+        return OpenIDConnectRequestHelper(config).prepareAuthRequest().map {
             val authService = AuthorizationService(context)
             val intent = authService.getAuthorizationRequestIntent(it)
             authService.dispose()

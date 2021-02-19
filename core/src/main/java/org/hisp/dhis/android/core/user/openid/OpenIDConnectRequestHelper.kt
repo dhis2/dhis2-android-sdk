@@ -34,7 +34,7 @@ import net.openid.appauth.AuthorizationRequest
 import net.openid.appauth.AuthorizationServiceConfiguration
 import net.openid.appauth.ResponseTypeValues
 
-internal class OpenIdRequestHelper(private val config: OpenIDConnectConfig) {
+internal class OpenIDConnectRequestHelper(private val config: OpenIDConnectConfig) {
 
     fun prepareAuthRequest(): Single<AuthorizationRequest> {
         val configSingle = if (config.discoveryUri != null) {

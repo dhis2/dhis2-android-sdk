@@ -375,6 +375,12 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
         return Single.fromCallable(() -> relationshipStore.selectByUid(relationshipUid));
     }
 
+    @Override
+    public Completable clear() {
+        // TODO Remove metadata uids from file https://jira.dhis2.org/browse/ANDROSDK-1322
+        return Completable.fromAction(() -> prefs().edit().clear().commit());
+    }
+
     private SharedPreferences prefs() {
         return context.getSharedPreferences(CONFIG_FILE, Context.MODE_PRIVATE);
     }

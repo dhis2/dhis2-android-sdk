@@ -27,7 +27,9 @@
  */
 package org.hisp.dhis.android.core.sms.internal;
 
-import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
 
 import javax.inject.Inject;
@@ -37,20 +39,25 @@ import dagger.Reusable;
 @Reusable
 public final class SMSModuleWiper implements ModuleWiper {
 
-    private final LocalDbRepository localDbRepository;
+    private final Context context;
 
     @Inject
-    SMSModuleWiper(LocalDbRepository localDbRepository) {
-        this.localDbRepository = localDbRepository;
+    SMSModuleWiper(Context ctx) {
+        this.context = ctx;
     }
 
     @Override
     public void wipeMetadata() {
-        localDbRepository.clear().blockingAwait();
+        prefs().edit().clear().apply();
     }
 
     @Override
     public void wipeData() {
         // No data to wipe
+    }
+
+    // TODO Move to LocalDbStorage https://jira.dhis2.org/browse/ANDROSDK-1322
+    private SharedPreferences prefs() {
+        return context.getSharedPreferences("smsconfig", Context.MODE_PRIVATE);
     }
 }

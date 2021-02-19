@@ -48,7 +48,7 @@ class EventWithLimitCallMockIntegrationShould : BaseMockIntegrationTestMetadataE
     @Test
     fun download_events() {
         val eventLimitByOrgUnit = 1
-        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json")
+        dhis2MockServer.enqueueSystemInfoResponse()
         dhis2MockServer.enqueueMockResponse("event/events_1.json")
         d2.eventModule().eventDownloader().limit(eventLimitByOrgUnit).blockingDownload()
         val eventStore = EventStoreImpl.create(databaseAdapter)
@@ -56,10 +56,10 @@ class EventWithLimitCallMockIntegrationShould : BaseMockIntegrationTestMetadataE
         Truth.assertThat(downloadedEvents.size).isEqualTo(eventLimitByOrgUnit)
     }
 
-    // @Test
+    // @Test TODO https://jira.dhis2.org/browse/ANDROSDK-1328
     fun download_events_by_uid_limited_by_one() {
         val eventLimitByOrgUnit = 1
-        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json")
+        dhis2MockServer.enqueueSystemInfoResponse()
         dhis2MockServer.enqueueMockResponse("event/events_with_uids.json")
         d2.eventModule().eventDownloader()
             .byUid()

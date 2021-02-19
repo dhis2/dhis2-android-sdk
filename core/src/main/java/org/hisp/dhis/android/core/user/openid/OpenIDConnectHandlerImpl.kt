@@ -40,10 +40,10 @@ import org.hisp.dhis.android.core.user.internal.LogInCall
 private const val RC_AUTH = 2021
 
 @Reusable
-internal class OpenIdHandlerImpl @Inject constructor(
+internal class OpenIDConnectHandlerImpl @Inject constructor(
     private val context: Context,
     private val logInCall: LogInCall
-) : OpenIdHandler {
+) : OpenIDConnectHandler {
 
     override fun logIn(config: OpenIDConnectConfig): Single<IntentWithRequestCode> {
         return OpenIdRequestHelper(config).prepareAuthRequest().map {
@@ -70,7 +70,7 @@ internal class OpenIdHandlerImpl @Inject constructor(
             } else {
                 val response = AuthorizationResponse.fromIntent(intent)!!
                 downloadToken(response.createTokenExchangeRequest()).map {
-                    logInCall.blockingLogInOpenIdConnect(serverUrl, it)
+                    logInCall.blockingLogInOpenIDConnect(serverUrl, it)
                 }
             }
         } else {

@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.user.openid.OpenIdHandler;
+import org.hisp.dhis.android.core.user.openid.OpenIDConnectHandler;
 
 import io.reactivex.Completable;
 import io.reactivex.Single;
@@ -46,5 +46,5 @@ public interface UserModule {
     Single<Boolean> isLogged();
     boolean blockingIsLogged();
 
-    OpenIdHandler openIdHandler();
+    OpenIDConnectHandler openIdHandler();
 }

@@ -154,7 +154,7 @@ internal class LogInCall @Inject internal constructor(
     }
 
     @Throws(D2Error::class)
-    fun blockingLogInOpenIdConnect(serverUrl: String, token: String): User {
+    fun blockingLogInOpenIDConnect(serverUrl: String, token: String): User {
         val parsedServerUrl = ServerUrlParser.parse(serverUrl)
         ServerURLWrapper.setServerUrl(parsedServerUrl.toString())
 

@@ -36,8 +36,8 @@ import org.hisp.dhis.android.core.user.UserCredentialsObjectRepository;
 import org.hisp.dhis.android.core.user.UserModule;
 import org.hisp.dhis.android.core.user.UserObjectRepository;
 import org.hisp.dhis.android.core.user.UserRoleCollectionRepository;
-import org.hisp.dhis.android.core.user.openid.OpenIdHandler;
-import org.hisp.dhis.android.core.user.openid.OpenIdHandlerImpl;
+import org.hisp.dhis.android.core.user.openid.OpenIDConnectHandler;
+import org.hisp.dhis.android.core.user.openid.OpenIDConnectHandlerImpl;
 
 import javax.inject.Inject;
 
@@ -58,7 +58,7 @@ public final class UserModuleImpl implements UserModule {
     private final UserCredentialsObjectRepository userCredentials;
     private final UserObjectRepository user;
 
-    private final OpenIdHandler openIdHandler;
+    private final OpenIDConnectHandler openIDConnectHandler;
 
     @Inject
     UserModuleImpl(IsUserLoggedInCallableFactory isUserLoggedInCallFactory,
@@ -69,7 +69,7 @@ public final class UserModuleImpl implements UserModule {
                    AuthorityCollectionRepository authorities,
                    UserCredentialsObjectRepository userCredentials,
                    UserObjectRepository user,
-                   OpenIdHandlerImpl openIdHandlerImpl) {
+                   OpenIDConnectHandlerImpl openIdHandlerImpl) {
         this.isUserLoggedInCallFactory = isUserLoggedInCallFactory;
         this.logoutCallCallFactory = logoutCallCallFactory;
         this.logInCall = logInCall;
@@ -78,7 +78,7 @@ public final class UserModuleImpl implements UserModule {
         this.authorities = authorities;
         this.userCredentials = userCredentials;
         this.user = user;
-        this.openIdHandler = openIdHandlerImpl;
+        this.openIDConnectHandler = openIdHandlerImpl;
     }
 
     @Override
@@ -144,7 +144,7 @@ public final class UserModuleImpl implements UserModule {
 
     @Override
     @NonNull
-    public OpenIdHandler openIdHandler() {
-        return openIdHandler;
+    public OpenIDConnectHandler openIdHandler() {
+        return openIDConnectHandler;
     }
 }

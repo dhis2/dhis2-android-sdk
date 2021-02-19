@@ -32,7 +32,7 @@ import android.content.Intent
 import io.reactivex.Single
 import org.hisp.dhis.android.core.user.User
 
-interface OpenIdHandler {
+interface OpenIDConnectHandler {
     fun logIn(config: OpenIDConnectConfig): Single<IntentWithRequestCode>
     fun blockingLogIn(config: OpenIDConnectConfig): IntentWithRequestCode
     fun handleLogInResponse(serverUrl: String, intent: Intent?, requestCode: Int): Single<User>

@@ -60,8 +60,8 @@ internal class OpenIdRequestHelper(private val config: OpenIDConnectConfig) {
 
     private fun loadAuthConfig(): AuthorizationServiceConfiguration {
         return AuthorizationServiceConfiguration(
-            Uri.parse("auth_endpoint"),
-            Uri.parse("token_endpoint")
+            Uri.parse("auth_endpoint"), // TODO
+            Uri.parse("token_endpoint")// TODO
         )
     }
 

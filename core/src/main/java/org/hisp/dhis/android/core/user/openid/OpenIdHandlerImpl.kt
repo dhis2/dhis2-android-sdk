@@ -32,11 +32,8 @@ import android.content.Context
 import android.content.Intent
 import dagger.Reusable
 import io.reactivex.Single
+import net.openid.appauth.*
 import javax.inject.Inject
-import net.openid.appauth.AuthorizationException
-import net.openid.appauth.AuthorizationResponse
-import net.openid.appauth.AuthorizationService
-import net.openid.appauth.TokenRequest
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.LogInCall
 
@@ -62,20 +59,19 @@ internal class OpenIdHandlerImpl @Inject constructor(
     }
 
     override fun handleLogInResponse(
-        serverUrl: String, // TODO should be optional and throw exception (Java support?)
+        serverUrl: String,
         intent: Intent?,
         requestCode: Int
     ): Single<User> {
         return if (requestCode == RC_AUTH && intent != null) {
-            val response = AuthorizationResponse.fromIntent(intent)!!
             val ex = AuthorizationException.fromIntent(intent)
-            val tokenSingle = if (ex != null) {
-                Single.just(response.authorizationCode!!)
+            if (ex != null) {
+                Single.error<User>(ex)
             } else {
-                refreshToken(response.createTokenExchangeRequest())
+                val response = AuthorizationResponse.fromIntent(intent)!!
+                downloadToken(response.createTokenExchangeRequest()).map {
+                    logInCall.blockingLogInOpenIdConnect(serverUrl, it) }
             }
-
-            tokenSingle.map { logInCall.blockingLogInOpenIdConnect(serverUrl, it) }
         } else {
             Single.error<User>(RuntimeException("Unexpected intent or request code"))
         }
@@ -89,9 +85,7 @@ internal class OpenIdHandlerImpl @Inject constructor(
         return handleLogInResponse(serverUrl, intent, requestCode).blockingGet()
     }
 
-    private fun refreshToken(
-        tokenRequest: TokenRequest
-    ): Single<String> {
+    private fun downloadToken(tokenRequest: TokenRequest): Single<String> {
         return Single.create { emitter ->
             val authService = AuthorizationService(context)
             authService.performTokenRequest(

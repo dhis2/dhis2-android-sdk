@@ -124,7 +124,7 @@ internal class DatabaseImportExportImpl @Inject constructor(
                 .build()
         }
 
-        val username = credentialsStore.get().username()
+        val username = credentialsStore.get().username
         val databasesConfiguration = databaseConfigurationSecureStore.get()
         val serverUrl = databasesConfiguration.loggedServerUrl()
         val serverConfiguration = databasesConfiguration.servers()

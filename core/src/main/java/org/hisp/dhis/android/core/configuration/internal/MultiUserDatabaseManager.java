@@ -105,7 +105,7 @@ public class MultiUserDatabaseManager {
     public void changeEncryptionIfRequired(Credentials credentials, boolean encrypt) {
         DatabasesConfiguration databasesConfiguration = databaseConfigurationSecureStore.get();
         loadExistingChangingEncryptionIfRequired(databasesConfiguration.loggedServerUrl(),
-                credentials.username(), userConfiguration -> encrypt, false);
+                credentials.getUsername(), userConfiguration -> encrypt, false);
     }
 
     public boolean loadExistingKeepingEncryption(String serverUrl, String username) {

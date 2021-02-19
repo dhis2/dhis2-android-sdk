@@ -68,7 +68,7 @@ internal class LogInExceptions @Inject internal constructor(
         if (credentials != null) {
             throw D2Error.builder()
                 .errorCode(D2ErrorCode.ALREADY_AUTHENTICATED)
-                .errorDescription("A user is already authenticated: " + credentials.username())
+                .errorDescription("A user is already authenticated: " + credentials.username)
                 .errorComponent(D2ErrorComponent.SDK)
                 .build()
         }

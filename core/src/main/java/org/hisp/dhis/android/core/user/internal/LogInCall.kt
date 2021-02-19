@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.arch.helpers.UserHelper
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
@@ -47,6 +46,7 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.systeminfo.SystemInfo
 import org.hisp.dhis.android.core.user.AuthenticatedUser
 import org.hisp.dhis.android.core.user.User
+import org.hisp.dhis.android.core.user.UserInternalAccessor
 import org.hisp.dhis.android.core.wipe.internal.WipeModule
 
 @Reusable
@@ -72,7 +72,6 @@ internal class LogInCall @Inject internal constructor(
     }
 
     @Throws(D2Error::class)
-    @Suppress("ThrowsCount")
     private fun blockingLogIn(username: String?, password: String?, serverUrl: String?): User {
         exceptions.throwExceptionIfUsernameNull(username)
         exceptions.throwExceptionIfPasswordNull(password)
@@ -85,37 +84,43 @@ internal class LogInCall @Inject internal constructor(
             okhttp3.Credentials.basic(username!!, password!!),
             UserFields.allFieldsWithoutOrgUnit
         )
+
+        val credentials = Credentials(username, password, null)
+
         return try {
-            val user = apiCallExecutor.executeObjectCallWithErrorCatcher(
-                authenticateCall,
-                apiCallErrorCatcher
-            )
-            loginOnline(parsedServerUrl, user, username, password)
+            val user = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall, apiCallErrorCatcher)
+            loginOnline(parsedServerUrl, user, credentials)
         } catch (d2Error: D2Error) {
             if (d2Error.isOffline) {
-                loginOffline(parsedServerUrl, username, password)
-            } else if (d2Error.errorCode() == D2ErrorCode.USER_ACCOUNT_DISABLED) {
-                wipeModule.wipeEverything()
-                throw d2Error
-            } else if (d2Error.errorCode() == D2ErrorCode.UNEXPECTED ||
-                d2Error.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR
-            ) {
-                throw exceptions.noDHIS2Server()
+                loginOffline(parsedServerUrl, credentials)
             } else {
-                throw d2Error
+                throw handleOnlineException(d2Error)
             }
         }
     }
 
+    private fun handleOnlineException(d2Error: D2Error): D2Error {
+        return if (d2Error.errorCode() == D2ErrorCode.USER_ACCOUNT_DISABLED) {
+            wipeModule.wipeEverything()
+            d2Error
+        } else if (d2Error.errorCode() == D2ErrorCode.UNEXPECTED ||
+            d2Error.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR
+        ) {
+            exceptions.noDHIS2Server()
+        } else {
+            d2Error
+        }
+    }
+
     @Suppress("TooGenericExceptionCaught")
-    private fun loginOnline(serverUrl: HttpUrl, user: User, username: String, password: String): User {
-        credentialsSecureStore.set(Credentials.create(username, password))
-        databaseManager.loadDatabaseOnline(serverUrl, username).blockingAwait()
+    private fun loginOnline(serverUrl: HttpUrl, user: User, credentials: Credentials): User {
+        credentialsSecureStore.set(credentials)
+        databaseManager.loadDatabaseOnline(serverUrl, credentials.username).blockingAwait()
         val transaction = databaseAdapter.beginNewTransaction()
         return try {
             val authenticatedUser = AuthenticatedUser.builder()
                 .user(user.uid())
-                .hash(UserHelper.md5(username, password))
+                .hash(credentials.getHash())
                 .build()
 
             authenticatedUserStore.updateOrInsertWhere(authenticatedUser)
@@ -134,17 +139,41 @@ internal class LogInCall @Inject internal constructor(
 
     @Throws(D2Error::class)
     @Suppress("ThrowsCount")
-    private fun loginOffline(serverUrl: HttpUrl, username: String, password: String): User {
-        val existingDatabase = databaseManager.loadExistingKeepingEncryption(serverUrl, username)
+    private fun loginOffline(serverUrl: HttpUrl, credentials: Credentials): User {
+        val existingDatabase = databaseManager.loadExistingKeepingEncryption(serverUrl, credentials.username)
         if (!existingDatabase) {
             throw exceptions.noUserOfflineError()
         }
         val existingUser = authenticatedUserStore.selectFirst() ?: throw exceptions.noUserOfflineError()
 
-        if (UserHelper.md5(username, password) != existingUser.hash()) {
+        if (credentials.getHash() != existingUser.hash()) {
             throw exceptions.badCredentialsError()
         }
-        credentialsSecureStore.set(Credentials.create(username, password))
+        credentialsSecureStore.set(credentials)
         return userStore.selectByUid(existingUser.user()!!)!!
+    }
+
+    @Throws(D2Error::class)
+    fun blockingLogInOpenIDConnect(serverUrl: String, token: String): User {
+        val parsedServerUrl = ServerUrlParser.parse(serverUrl)
+        ServerURLWrapper.setServerUrl(parsedServerUrl.toString())
+
+        val authenticateCall = userService.authenticate(
+            "Bearer $token",
+            UserFields.allFieldsWithoutOrgUnit
+        )
+
+        return try {
+            val user = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall, apiCallErrorCatcher)
+            val credentials = getOpenIdConnectCredentials(user, token)
+            loginOnline(parsedServerUrl, user, credentials)
+        } catch (d2Error: D2Error) {
+            throw handleOnlineException(d2Error)
+        }
+    }
+
+    private fun getOpenIdConnectCredentials(user: User, token: String): Credentials {
+        val username = UserInternalAccessor.accessUserCredentials(user).username()!!
+        return Credentials(username, null, token)
     }
 }

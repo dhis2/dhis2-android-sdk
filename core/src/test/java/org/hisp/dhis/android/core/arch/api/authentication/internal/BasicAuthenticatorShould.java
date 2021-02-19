@@ -75,7 +75,7 @@ public class BasicAuthenticatorShould {
 
     @Test
     public void return_test_and_user_when_server_take_request() throws IOException, InterruptedException {
-        Credentials credentials = Credentials.create("test_user", "test_password");
+        Credentials credentials = new Credentials("test_user", "test_password", null);
 
         when(credentialsSecureStore.get()).thenReturn(credentials);
 

@@ -25,46 +25,41 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.storage.internal
 
-package org.hisp.dhis.android.core.note.internal;
+class CredentialsSecureStoreImpl(private val secureStore: SecureStore) : ObjectKeyValueStore<Credentials> {
+    private var credentials: Credentials? = null
 
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
-import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
-import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.note.Note;
-import org.hisp.dhis.android.core.note.NoteCreateProjection;
-
-import java.util.Date;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-
-@Reusable
-final class NoteProjectionTransformer implements Transformer<NoteCreateProjection, Note> {
-
-    private final ObjectKeyValueStore<Credentials> credentialsSecureStore;
-
-    @Inject
-    NoteProjectionTransformer(ObjectKeyValueStore<Credentials> credentialsSecureStore) {
-        this.credentialsSecureStore = credentialsSecureStore;
+    override fun set(credentials: Credentials) {
+        this.credentials = credentials
+        secureStore.setData(USERNAME_KEY, credentials.username)
+        secureStore.setData(PASSWORD_KEY, credentials.password)
+        secureStore.setData(TOKEN_KEY, credentials.token)
     }
 
-    @Override
-    public Note transform(NoteCreateProjection projection) {
-        return Note.builder()
-                .uid(new UidGeneratorImpl().generate())
-                .state(State.TO_POST)
-                .noteType(projection.noteType())
-                .event(projection.event())
-                .enrollment(projection.enrollment())
-                .value(projection.value())
-                .storedBy(credentialsSecureStore.get().getUsername())
-                .storedDate(BaseIdentifiableObject.dateToDateStr(new Date()))
-                .deleted(false)
-                .build();
+    override fun get(): Credentials? {
+        if (credentials == null) {
+            val username = secureStore.getData(USERNAME_KEY)
+            val password = secureStore.getData(PASSWORD_KEY)
+            val token = secureStore.getData(TOKEN_KEY)
+
+            if (username != null) {
+                credentials = Credentials(username, password, token)
+            }
+        }
+        return credentials
+    }
+
+    override fun remove() {
+        credentials = null
+        secureStore.removeData(USERNAME_KEY)
+        secureStore.removeData(PASSWORD_KEY)
+        secureStore.removeData(TOKEN_KEY)
+    }
+
+    companion object {
+        private const val USERNAME_KEY = "username"
+        private const val PASSWORD_KEY = "password"
+        private const val TOKEN_KEY = "token"
     }
 }

@@ -26,42 +26,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.storage.internal;
+package org.hisp.dhis.android.core.user.openid
 
-public class CredentialsSecureStoreImpl implements ObjectKeyValueStore<Credentials> {
+import android.net.Uri
 
-    private static final String USERNAME_KEY = "username";
-    private static final String PASSWORD_KEY = "password";
-
-    private final SecureStore secureStore;
-
-    private Credentials credentials;
-
-    public CredentialsSecureStoreImpl(SecureStore secureStore) {
-        this.secureStore = secureStore;
-    }
-
-    public void set(Credentials credentials) {
-        this.credentials = credentials;
-        this.secureStore.setData(USERNAME_KEY, credentials.username());
-        this.secureStore.setData(PASSWORD_KEY, credentials.password());
-    }
-
-    public Credentials get() {
-        if (this.credentials == null) {
-            String password = this.secureStore.getData(PASSWORD_KEY);
-            String username = this.secureStore.getData(USERNAME_KEY);
-
-            if (password != null && username != null) {
-                this.credentials = Credentials.create(username, password);
-            }
-        }
-        return this.credentials;
-    }
-
-    public void remove() {
-        this.credentials = null;
-        this.secureStore.removeData(USERNAME_KEY);
-        this.secureStore.removeData(PASSWORD_KEY);
-    }
-}
+data class OpenIDConnectConfig(
+    val clientId: String,
+    val redirectUri: Uri,
+    val discoveryUri: Uri?,
+    val authorizationUri: String?,
+    val tokenUrl: String?
+)

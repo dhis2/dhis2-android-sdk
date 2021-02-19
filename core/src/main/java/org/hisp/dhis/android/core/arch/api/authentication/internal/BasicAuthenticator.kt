@@ -111,14 +111,22 @@ internal class BasicAuthenticator(private val credentialsSecureStore: ObjectKeyV
     }
 
     private fun addAuthorizationHeader(builder: Request.Builder, credentials: Credentials): Request.Builder {
-        val base64Credentials = UserHelper.base64(credentials.username(), credentials.password())
-        return builder.addHeader(
-            AUTHORIZATION_KEY,
-            String.format(
-                Locale.US,
-                BASIC_CREDENTIALS, base64Credentials
-            )
+        val headerValue =
+            if (credentials.password != null) getAuthorizationForPassword(credentials)
+            else getAuthorizationForToken(credentials)
+        return builder.addHeader(AUTHORIZATION_KEY, headerValue)
+    }
+
+    private fun getAuthorizationForPassword(credentials: Credentials): String {
+        val base64Credentials = UserHelper.base64(credentials.username, credentials.password)
+        return String.format(
+            Locale.US,
+            BASIC_CREDENTIALS, base64Credentials
         )
+    }
+
+    private fun getAuthorizationForToken(credentials: Credentials): String {
+        return "Bearer " + credentials.token
     }
 
     private fun addCookieHeader(builder: Request.Builder): Request.Builder {

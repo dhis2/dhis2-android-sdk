@@ -25,23 +25,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.storage.internal
 
-package org.hisp.dhis.android.core.arch.storage.internal;
+import org.hisp.dhis.android.core.arch.helpers.UserHelper
 
-import androidx.annotation.NonNull;
-
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class Credentials {
-
-    @NonNull
-    public abstract String username();
-
-    @NonNull
-    public abstract String password();
-
-    public static Credentials create(@NonNull String username, @NonNull String password) {
-        return new AutoValue_Credentials(username, password);
+data class Credentials(val username: String, val password: String?, val token: String?) {
+    fun getHash(): String? {
+        return password.let { UserHelper.md5(username, it) }
     }
 }

@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.arch.api.internal.PreventURLDecodeInterceptor;
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLVersionRedirectionInterceptor;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
+import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore;
 
 import java.security.KeyStore;
 import java.util.ArrayList;
@@ -60,12 +61,13 @@ import okhttp3.TlsVersion;
 final class OkHttpClientFactory {
 
     static OkHttpClient okHttpClient(D2Configuration d2Configuration,
-                                     ObjectKeyValueStore<Credentials> credentialsSecureStore) {
+                                     ObjectKeyValueStore<Credentials> credentialsSecureStore,
+                                     UserIdInMemoryStore userIdStore) {
 
         OkHttpClient.Builder client = new OkHttpClient.Builder()
                 .addInterceptor(new DynamicServerURLInterceptor())
                 .addInterceptor(new ServerURLVersionRedirectionInterceptor())
-                .addInterceptor(new BasicAuthenticator(credentialsSecureStore))
+                .addInterceptor(new BasicAuthenticator(credentialsSecureStore, userIdStore))
                 .addInterceptor(new PreventURLDecodeInterceptor())
                 .addInterceptor(chain -> {
                     Request originalRequest = chain.request();

@@ -25,52 +25,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.storage.internal
 
-package org.hisp.dhis.android.core.arch.storage.internal;
+class UserIdInMemoryStore : ObjectKeyValueStore<String> {
+    private var userId: String? = null
 
-import javax.inject.Singleton;
-
-import dagger.Module;
-import dagger.Provides;
-
-@Module
-public class KeyValueStorageDIModule {
-    private final SecureStore secureStore;
-    private final InsecureStore insecureStore;
-    private final ObjectKeyValueStore<Credentials> credentialsSecureStore;
-    private final UserIdInMemoryStore userIdStore;
-
-    public KeyValueStorageDIModule(SecureStore secureStore,
-                                   InsecureStore insecureStore,
-                                   ObjectKeyValueStore<Credentials> credentialsSecureStore,
-                                   UserIdInMemoryStore userIdStore) {
-        this.secureStore = secureStore;
-        this.insecureStore = insecureStore;
-        this.credentialsSecureStore = credentialsSecureStore;
-        this.userIdStore = userIdStore;
+    override fun set(userId: String) {
+        this.userId = userId
     }
 
-    @Provides
-    @Singleton
-    SecureStore secureStore() {
-        return secureStore;
+    override fun get(): String? {
+        return userId
     }
 
-    @Provides
-    @Singleton
-    InsecureStore insecureStore() {
-        return insecureStore;
-    }
-
-    @Provides
-    @Singleton
-    ObjectKeyValueStore<Credentials> credentialsSecureStore() {
-        return credentialsSecureStore;
-    }
-
-    @Provides
-    @Singleton
-    UserIdInMemoryStore userIdStore() {
-        return userIdStore;
+    override fun remove() {
+        userId = null
     }
 }

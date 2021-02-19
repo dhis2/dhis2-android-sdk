@@ -35,6 +35,7 @@ import androidx.annotation.VisibleForTesting;
 import org.hisp.dhis.android.core.arch.api.ssl.internal.SSLContextInitializer;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.storage.internal.AndroidInsecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
@@ -42,7 +43,10 @@ import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreIm
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore;
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManagerForD2Manager;
+import org.hisp.dhis.android.core.user.User;
+import org.hisp.dhis.android.core.user.internal.UserStore;
 
 import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
@@ -117,20 +121,30 @@ public final class D2Manager {
             ObjectKeyValueStore<Credentials> credentialsSecureStore = new CredentialsSecureStoreImpl(secureStore);
             MultiUserDatabaseManagerForD2Manager multiUserDatabaseManager = MultiUserDatabaseManagerForD2Manager
                     .create(databaseAdapter, d2Config.context(), insecureStore, databaseAdapterFactory);
+
+            Credentials credentials = credentialsSecureStore.get();
             if (wantToImportDBForExternalTesting()) {
                 multiUserDatabaseManager.loadDbForTesting(testingDatabaseName, false, testingUsername);
             } else {
-                multiUserDatabaseManager.loadIfLogged(credentialsSecureStore.get());
+                multiUserDatabaseManager.loadIfLogged(credentials);
+            }
+
+            UserIdInMemoryStore userIdStore = new UserIdInMemoryStore();
+            if (credentials != null) {
+                IdentifiableObjectStore<User> userStore = UserStore.create(databaseAdapter);
+                String uid = userStore.selectFirst().uid();
+                userIdStore.set(uid);
             }
 
             d2 = new D2(
                     RetrofitFactory.retrofit(
-                            OkHttpClientFactory.okHttpClient(d2Configuration, credentialsSecureStore)),
+                            OkHttpClientFactory.okHttpClient(d2Configuration, credentialsSecureStore, userIdStore)),
                     databaseAdapter,
                     d2Configuration.context(),
                     secureStore,
                     insecureStore,
-                    credentialsSecureStore
+                    credentialsSecureStore,
+                    userIdStore
             );
 
             long setUpTime = System.currentTimeMillis() - startTime;

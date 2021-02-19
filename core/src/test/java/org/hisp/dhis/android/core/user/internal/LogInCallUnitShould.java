@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
+import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -89,6 +90,9 @@ public class LogInCallUnitShould extends BaseCallShould {
 
     @Mock
     private ObjectKeyValueStore<Credentials> credentialsSecureStore;
+
+    @Mock
+    private UserIdInMemoryStore userIdStore;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private retrofit2.Call<User> authenticateAPICall;
@@ -188,7 +192,7 @@ public class LogInCallUnitShould extends BaseCallShould {
 
     private Single<User> instantiateCall(String username, String password, String serverUrl) {
         return new LogInCall(databaseAdapter, apiCallExecutor,
-                userService, credentialsSecureStore, userHandler, authenticatedUserStore,
+                userService, credentialsSecureStore, userIdStore, userHandler, authenticatedUserStore,
                 systemInfoRepository, userStore, wipeModule, apiCallErrorCatcher,
                 new LogInDatabaseManager(multiUserDatabaseManager, generalSettingCall),
                 new LogInExceptions(credentialsSecureStore)).logIn(username, password, serverUrl);
@@ -302,13 +306,13 @@ public class LogInCallUnitShould extends BaseCallShould {
     @Test
     public void throw_d2_error_if_user_already_signed_in() {
         when(credentialsSecureStore.get()).thenReturn(credentials);
+        when(userIdStore.get()).thenReturn("userId");
         TestObserver<User> testObserver = logInSingle.test();
         assertD2Error(testObserver, D2ErrorCode.ALREADY_AUTHENTICATED);
     }
 
     @Test
     public void succeed_for_login_online_if_user_has_logged_out() {
-        when(credentialsSecureStore.get()).thenReturn(null);
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
         logInSingle.blockingGet();
         verifySuccess();
@@ -320,7 +324,6 @@ public class LogInCallUnitShould extends BaseCallShould {
     public void succeed_for_login_offline_if_database_exists_and_authenticated_user_too() throws Exception {
         whenAPICall().thenThrow(d2Error);
 
-        when(credentialsSecureStore.get()).thenReturn(null);
         when(multiUserDatabaseManager.loadExistingKeepingEncryption(baseEndpointWithAPI, USERNAME)).thenReturn(true);
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
 
@@ -332,7 +335,6 @@ public class LogInCallUnitShould extends BaseCallShould {
     public void succeed_for_login_offline_if_server_has_a_trailing_slash() throws Exception {
         whenAPICall().thenThrow(d2Error);
         
-        when(credentialsSecureStore.get()).thenReturn(null);
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
         when(multiUserDatabaseManager.loadExistingKeepingEncryption(baseEndpointWithAPI, USERNAME)).thenReturn(true);
 
@@ -356,7 +358,6 @@ public class LogInCallUnitShould extends BaseCallShould {
     public void throw_d2_error_if_logging_offline_with_bad_credentials() throws Exception {
         whenAPICall().thenThrow(d2Error);
 
-        when(credentialsSecureStore.get()).thenReturn(null);
         when(authenticatedUser.hash()).thenReturn("different_hash");
         when(multiUserDatabaseManager.loadExistingKeepingEncryption(baseEndpointWithAPI, USERNAME)).thenReturn(true);
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
@@ -378,5 +379,6 @@ public class LogInCallUnitShould extends BaseCallShould {
 
     private void verifySuccessOffline() {
         verify(credentialsSecureStore).set(new Credentials(USERNAME, PASSWORD, null));
+        verify(userIdStore).set("test_uid");
     }
 }

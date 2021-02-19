@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
+import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
 import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
@@ -56,6 +57,7 @@ internal class LogInCall @Inject internal constructor(
     private val apiCallExecutor: APICallExecutor,
     private val userService: UserService,
     private val credentialsSecureStore: ObjectKeyValueStore<Credentials>,
+    private val userIdStore: UserIdInMemoryStore,
     private val userHandler: Handler<User>,
     private val authenticatedUserStore: ObjectWithoutUidStore<AuthenticatedUser>,
     private val systemInfoRepository: ReadOnlyWithDownloadObjectRepository<SystemInfo>,
@@ -115,6 +117,7 @@ internal class LogInCall @Inject internal constructor(
     @Suppress("TooGenericExceptionCaught")
     private fun loginOnline(serverUrl: HttpUrl, user: User, credentials: Credentials): User {
         credentialsSecureStore.set(credentials)
+        userIdStore.set(user.uid())
         databaseManager.loadDatabaseOnline(serverUrl, credentials.username).blockingAwait()
         val transaction = databaseAdapter.beginNewTransaction()
         return try {
@@ -131,6 +134,7 @@ internal class LogInCall @Inject internal constructor(
         } catch (e: Exception) {
             // Credentials are stored and then removed in case of error since they are required to download system info
             credentialsSecureStore.remove()
+            userIdStore.remove()
             throw e
         } finally {
             transaction.end()
@@ -150,6 +154,7 @@ internal class LogInCall @Inject internal constructor(
             throw exceptions.badCredentialsError()
         }
         credentialsSecureStore.set(credentials)
+        userIdStore.set(existingUser.user()!!)
         return userStore.selectByUid(existingUser.user()!!)!!
     }
 

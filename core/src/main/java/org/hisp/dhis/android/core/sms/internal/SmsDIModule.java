@@ -6,11 +6,13 @@ import org.hisp.dhis.android.core.sms.SmsModule;
 import org.hisp.dhis.android.core.sms.data.internal.DeviceStateRepositoryImpl;
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.LocalDbRepositoryImpl;
 import org.hisp.dhis.android.core.sms.data.smsrepository.internal.SmsRepositoryImpl;
+import org.hisp.dhis.android.core.sms.data.webapirepository.internal.ApiService;
 import org.hisp.dhis.android.core.sms.data.webapirepository.internal.WebApiRepositoryImpl;
 import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.internal.DeviceStateRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import dagger.Module;
 import dagger.Provides;
@@ -36,8 +38,13 @@ public class SmsDIModule {
     }
 
     @Provides
-    WebApiRepository webApiRepository(Retrofit retrofit) {
-        return new WebApiRepositoryImpl(retrofit);
+    WebApiRepository webApiRepository(ApiService apiService, DHISVersionManager dhisVersionManager) {
+        return new WebApiRepositoryImpl(apiService, dhisVersionManager);
+    }
+
+    @Provides
+    ApiService apiService(Retrofit retrofit) {
+        return retrofit.create(ApiService.class);
     }
 
     @Provides

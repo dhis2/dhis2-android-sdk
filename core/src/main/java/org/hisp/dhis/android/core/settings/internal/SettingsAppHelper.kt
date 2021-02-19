@@ -125,19 +125,23 @@ internal object SettingsAppHelper {
         teiDataElements: List<AnalyticsTeiDataElement>,
         teiIndicators: List<AnalyticsTeiIndicator>,
         teiAttributes: List<AnalyticsTeiAttribute>
-    ): AnalyticsSettings {
-        val teiSettingsWithData = teiSettings.map { item ->
-            val data = AnalyticsTeiData.builder()
-                .dataElements(teiDataElements.filter { it.teiSetting() == item.uid() })
-                .indicators(teiIndicators.filter { it.teiSetting() == item.uid() })
-                .attributes(teiAttributes.filter { it.teiSetting() == item.uid() })
+    ): AnalyticsSettings? {
+        return if (teiSettings.isNullOrEmpty()) {
+            null
+        } else {
+            val teiSettingsWithData = teiSettings.map { item ->
+                val data = AnalyticsTeiData.builder()
+                    .dataElements(teiDataElements.filter { it.teiSetting() == item.uid() })
+                    .indicators(teiIndicators.filter { it.teiSetting() == item.uid() })
+                    .attributes(teiAttributes.filter { it.teiSetting() == item.uid() })
+                    .build()
+
+                item.toBuilder().data(data).build()
+            }
+
+            AnalyticsSettings.builder()
+                .tei(teiSettingsWithData)
                 .build()
-
-            item.toBuilder().data(data).build()
         }
-
-        return AnalyticsSettings.builder()
-            .tei(teiSettingsWithData)
-            .build()
     }
 }

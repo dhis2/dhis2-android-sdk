@@ -33,5 +33,7 @@ import android.net.Uri
 data class OpenIDConnectConfig(
     val clientId: String,
     val redirectUri: Uri,
-    val discoveryUri: Uri?
+    val discoveryUri: Uri?,
+    val authorizationUri: String?,
+    val tokenUrl: String?
 )

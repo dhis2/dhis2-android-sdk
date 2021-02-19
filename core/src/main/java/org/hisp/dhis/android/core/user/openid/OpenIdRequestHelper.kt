@@ -40,7 +40,7 @@ internal class OpenIdRequestHelper(private val config: OpenIDConnectConfig) {
         val configSingle = if (config.discoveryUri != null) {
             discoverAuthConfig(config.discoveryUri)
         } else {
-            Single.just(loadAuthConfig())
+            loadAuthConfig()
         }
 
         return configSingle.map { buildRequest(it) }
@@ -58,11 +58,17 @@ internal class OpenIdRequestHelper(private val config: OpenIDConnectConfig) {
         }
     }
 
-    private fun loadAuthConfig(): AuthorizationServiceConfiguration {
-        return AuthorizationServiceConfiguration(
-            Uri.parse("auth_endpoint"), // TODO
-            Uri.parse("token_endpoint")// TODO
-        )
+    private fun loadAuthConfig(): Single<AuthorizationServiceConfiguration> {
+        return if (config.authorizationUri == null || config.tokenUrl == null) {
+            Single.error<AuthorizationServiceConfiguration>(
+                RuntimeException("Either discoveryUri or (authorizationUri and tokenUri) must be defined")
+            )
+        } else {
+            Single.just(AuthorizationServiceConfiguration(
+                Uri.parse(config.authorizationUri),
+                Uri.parse(config.tokenUrl)
+            ))
+        }
     }
 
     private fun buildRequest(

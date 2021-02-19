@@ -27,4 +27,10 @@
  */
 package org.hisp.dhis.android.core.arch.storage.internal
 
-data class Credentials(val username: String, val password: String?, val token: String?)
+import org.hisp.dhis.android.core.arch.helpers.UserHelper
+
+data class Credentials(val username: String, val password: String?, val token: String?) {
+    fun getHash(): String? {
+        return password.let { UserHelper.md5(username, it) }
+    }
+}

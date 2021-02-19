@@ -64,10 +64,12 @@ internal class OpenIdRequestHelper(private val config: OpenIDConnectConfig) {
                 RuntimeException("Either discoveryUri or (authorizationUri and tokenUri) must be defined")
             )
         } else {
-            Single.just(AuthorizationServiceConfiguration(
-                Uri.parse(config.authorizationUri),
-                Uri.parse(config.tokenUrl)
-            ))
+            Single.just(
+                AuthorizationServiceConfiguration(
+                    Uri.parse(config.authorizationUri),
+                    Uri.parse(config.tokenUrl)
+                )
+            )
         }
     }
 

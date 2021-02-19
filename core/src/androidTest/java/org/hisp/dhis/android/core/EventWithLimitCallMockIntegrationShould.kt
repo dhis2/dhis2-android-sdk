@@ -56,7 +56,7 @@ class EventWithLimitCallMockIntegrationShould : BaseMockIntegrationTestMetadataE
         Truth.assertThat(downloadedEvents.size).isEqualTo(eventLimitByOrgUnit)
     }
 
-    @Test
+    // @Test TODO https://jira.dhis2.org/browse/ANDROSDK-1328
     fun download_events_by_uid_limited_by_one() {
         val eventLimitByOrgUnit = 1
         dhis2MockServer.enqueueSystemInfoResponse()

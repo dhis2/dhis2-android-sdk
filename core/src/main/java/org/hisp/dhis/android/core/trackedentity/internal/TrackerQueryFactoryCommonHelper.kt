@@ -113,8 +113,23 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
         return false
     }
 
-    @Suppress("ReturnCount")
     fun getLimit(
+        params: ProgramDataDownloadParams,
+        programSettings: ProgramSettings?,
+        programUid: String?,
+        downloadExtractor: (ProgramSetting?) -> Int?
+    ): Int {
+        val configLimit = getConfigLimit(params, programSettings, programUid, downloadExtractor)
+
+        return if (params.uids().isNullOrEmpty()) {
+            configLimit
+        } else {
+            configLimit.coerceAtMost(params.uids().size)
+        }
+    }
+
+    @Suppress("ReturnCount")
+    private fun getConfigLimit(
         params: ProgramDataDownloadParams,
         programSettings: ProgramSettings?,
         programUid: String?,

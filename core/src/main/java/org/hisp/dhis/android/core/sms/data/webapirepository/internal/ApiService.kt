@@ -4,6 +4,7 @@ import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Query
 
+@Suppress("LongParameterList")
 interface ApiService {
 
     // That's an API call and looks like an API endpoint

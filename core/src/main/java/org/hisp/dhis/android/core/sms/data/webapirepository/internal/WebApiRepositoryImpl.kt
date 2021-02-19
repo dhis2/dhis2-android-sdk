@@ -2,13 +2,13 @@ package org.hisp.dhis.android.core.sms.data.webapirepository.internal
 
 import android.util.Log
 import io.reactivex.Single
+import java.util.*
 import org.hisp.dhis.android.core.sms.data.webapirepository.internal.MetadataResponse.MetadataId
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository.GetMetadataIdsConfig
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.smscompression.models.SMSMetadata
-import java.util.*
 
 internal class WebApiRepositoryImpl(
     private val apiService: ApiService,
@@ -20,7 +20,7 @@ internal class WebApiRepositoryImpl(
             val metadata = SMSMetadata()
             // TODO Server date has not timezone. We cannot use server date because it will be consider as local and
             //  potentially could be move some hours back or forth.
-            //metadata.lastSyncDate = response.system().date();
+            // metadata.lastSyncDate = response.system().date();
             metadata.lastSyncDate = Date()
             metadata.categoryOptionCombos = mapIds(response.categoryOptionCombos())
             metadata.dataElements = mapIds(response.dataElements())

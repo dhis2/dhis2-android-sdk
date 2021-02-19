@@ -27,18 +27,21 @@ class WebApiRepositoryImplShould {
     fun `Include users query if version lower than 2_35`() {
         whenever(dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_35)) doReturn false
 
-        testWebRepository.metadataCall(defalutMetadataConfig);
-        verify(apiService).getMetadataIds(notNull(), notNull(), notNull(), notNull(), notNull(),
-            notNull(), notNull());
+        testWebRepository.metadataCall(defalutMetadataConfig)
+        verify(apiService).getMetadataIds(
+            notNull(), notNull(), notNull(), notNull(), notNull(),
+            notNull(), notNull()
+        )
     }
 
     @Test
     fun `Exclude users if version greater or equal to 2_35`() {
         whenever(dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_35)) doReturn true
 
-        testWebRepository.metadataCall(defalutMetadataConfig);
-        verify(apiService).getMetadataIds(notNull(), notNull(), notNull(), isNull(), notNull(),
-            notNull(), notNull());
-
+        testWebRepository.metadataCall(defalutMetadataConfig)
+        verify(apiService).getMetadataIds(
+            notNull(), notNull(), notNull(), isNull(), notNull(),
+            notNull(), notNull()
+        )
     }
 }

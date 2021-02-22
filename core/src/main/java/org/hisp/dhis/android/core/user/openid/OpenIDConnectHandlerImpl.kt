@@ -42,7 +42,8 @@ private const val RC_AUTH = 2021
 @Reusable
 internal class OpenIDConnectHandlerImpl @Inject constructor(
     private val context: Context,
-    private val logInCall: LogInCall
+    private val logInCall: LogInCall,
+    private val authState: AuthState
 ) : OpenIDConnectHandler {
 
     override fun logIn(config: OpenIDConnectConfig): Single<IntentWithRequestCode> {
@@ -93,6 +94,7 @@ internal class OpenIDConnectHandlerImpl @Inject constructor(
                 tokenRequest
             ) { tokenResponse, tokenEx ->
                 authService.dispose()
+                authState.update(tokenResponse, tokenEx)
                 if (tokenResponse?.idToken != null) {
                     emitter.onSuccess(tokenResponse.idToken!!)
                 } else {

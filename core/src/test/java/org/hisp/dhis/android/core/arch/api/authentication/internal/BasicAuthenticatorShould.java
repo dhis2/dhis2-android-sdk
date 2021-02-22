@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.arch.api.authentication.internal;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore;
+import org.hisp.dhis.android.core.user.openid.OpenIDConnectTokenRefresher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -61,6 +62,9 @@ public class BasicAuthenticatorShould {
     @Mock
     private UserIdInMemoryStore userIdStore;
 
+    @Mock
+    private OpenIDConnectTokenRefresher tokenRefresher;
+
     private MockWebServer mockWebServer;
     private OkHttpClient okHttpClient;
 
@@ -73,7 +77,7 @@ public class BasicAuthenticatorShould {
         mockWebServer.start();
 
         okHttpClient = new OkHttpClient.Builder()
-                .addInterceptor(new BasicAuthenticator(credentialsSecureStore, userIdStore))
+                .addInterceptor(new BasicAuthenticator(credentialsSecureStore, userIdStore, tokenRefresher))
                 .build();
     }
 

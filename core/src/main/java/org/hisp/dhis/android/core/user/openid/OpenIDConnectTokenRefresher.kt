@@ -26,36 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.api.internal;
+package org.hisp.dhis.android.core.user.openid
 
-import net.openid.appauth.AuthState;
+import android.content.Context
+import io.reactivex.Single
+import net.openid.appauth.AuthState
+import net.openid.appauth.AuthorizationException
+import net.openid.appauth.AuthorizationService
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIExecutorsDIModule;
+internal class OpenIDConnectTokenRefresher(
+    private val context: Context,
+    private val state: AuthState) {
 
-import dagger.Module;
-import dagger.Provides;
-import retrofit2.Retrofit;
-
-@Module(includes = {
-        APIExecutorsDIModule.class
-})
-public class APIClientDIModule {
-
-    private final Retrofit retrofit;
-    private final AuthState authState;
-
-    public APIClientDIModule(Retrofit retrofit, AuthState authState) {
-        this.retrofit = retrofit;
-        this.authState = authState;
+    fun needsTokenRefresh(): Boolean {
+        return state.needsTokenRefresh
     }
 
-    @Provides
-    Retrofit retrofit() {
-        return retrofit;
-    }
-
-    @Provides
-    AuthState authState() {
-        return authState;
+    fun blockingGetFreshToken(): String {
+        val service = AuthorizationService(context)
+        return Single.create<String> {
+            state.performActionWithFreshTokens(service) {
+                    _: String?, idToken: String?, ex: AuthorizationException? ->
+                service.dispose()
+                if (idToken != null) {
+                    it.onSuccess(idToken)
+                } else {
+                    it.onError(RuntimeException(ex))
+                }
+            }
+        }.blockingGet()
     }
 }

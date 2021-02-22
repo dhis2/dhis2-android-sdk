@@ -32,7 +32,11 @@ import android.util.Log;
 
 import androidx.annotation.VisibleForTesting;
 
+import net.openid.appauth.AuthState;
+
+import org.hisp.dhis.android.core.arch.api.authentication.internal.BasicAuthenticator;
 import org.hisp.dhis.android.core.arch.api.ssl.internal.SSLContextInitializer;
+import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
@@ -47,9 +51,12 @@ import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore;
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManagerForD2Manager;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.internal.UserStore;
+import org.hisp.dhis.android.core.user.openid.OpenIDConnectTokenRefresher;
 
 import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
+import okhttp3.Interceptor;
+import retrofit2.Retrofit;
 
 /**
  * Helper class that offers static methods to setup and initialize the D2 instance. Also, it ensures that D2 is a
@@ -136,15 +143,22 @@ public final class D2Manager {
                 userIdStore.set(uid);
             }
 
-            d2 = new D2(
-                    RetrofitFactory.retrofit(
-                            OkHttpClientFactory.okHttpClient(d2Configuration, credentialsSecureStore, userIdStore)),
-                    databaseAdapter,
-                    d2Configuration.context(),
-                    secureStore,
-                    insecureStore,
+            AuthState authState = new AuthState();
+            Interceptor authenticator = new BasicAuthenticator(
                     credentialsSecureStore,
-                    userIdStore
+                    userIdStore,
+                    new OpenIDConnectTokenRefresher(d2Config.context(), authState)
+            );
+
+            Retrofit retrofit = RetrofitFactory.retrofit(
+                    OkHttpClientFactory.okHttpClient(d2Configuration, authenticator));
+            D2DIComponent d2DIComponent = D2DIComponent.create(d2Config.context(), retrofit, databaseAdapter,
+                    secureStore, insecureStore, credentialsSecureStore, userIdStore, authState);
+
+            d2 = new D2(
+                    retrofit,
+                    databaseAdapter,
+                    d2DIComponent
             );
 
             long setUpTime = System.currentTimeMillis() - startTime;

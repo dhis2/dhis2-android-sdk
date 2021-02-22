@@ -61,13 +61,12 @@ import okhttp3.TlsVersion;
 final class OkHttpClientFactory {
 
     static OkHttpClient okHttpClient(D2Configuration d2Configuration,
-                                     ObjectKeyValueStore<Credentials> credentialsSecureStore,
-                                     UserIdInMemoryStore userIdStore) {
+                                     Interceptor authenticator) {
 
         OkHttpClient.Builder client = new OkHttpClient.Builder()
                 .addInterceptor(new DynamicServerURLInterceptor())
                 .addInterceptor(new ServerURLVersionRedirectionInterceptor())
-                .addInterceptor(new BasicAuthenticator(credentialsSecureStore, userIdStore))
+                .addInterceptor(authenticator)
                 .addInterceptor(new PreventURLDecodeInterceptor())
                 .addInterceptor(chain -> {
                     Request originalRequest = chain.request();

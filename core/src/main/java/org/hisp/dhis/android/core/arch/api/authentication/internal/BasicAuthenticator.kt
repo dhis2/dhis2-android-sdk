@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.api.authentication.internal
 
-import java.io.IOException
-import java.util.Locale
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
@@ -36,11 +34,15 @@ import org.hisp.dhis.android.core.arch.helpers.UserHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
+import org.hisp.dhis.android.core.user.openid.OpenIDConnectTokenRefresher
+import java.io.IOException
+import java.util.Locale
 
 @Suppress("TooManyFunctions")
 internal class BasicAuthenticator(
     private val credentialsSecureStore: ObjectKeyValueStore<Credentials>,
-    private val userIdStore: UserIdInMemoryStore
+    private val userIdStore: UserIdInMemoryStore,
+    private val tokenRefresher: OpenIDConnectTokenRefresher
 ) :
     Interceptor {
 
@@ -68,10 +70,10 @@ internal class BasicAuthenticator(
             handleLoginCall(chain)
         } else {
             val credentials = credentialsSecureStore.get()
-            return if (credentials == null) {
-                chain.proceed(req)
-            } else {
-                handleRegularCall(chain, credentials)
+            return when {
+                credentials?.password != null -> handlePasswordCall(chain, credentials)
+                credentials?.token != null -> handleTokenCall(chain, credentials)
+                else -> chain.proceed(req)
             }
         }
     }
@@ -93,20 +95,20 @@ internal class BasicAuthenticator(
     private fun getReqBuilder(chain: Interceptor.Chain): Request.Builder {
         val req = chain.request()
         return req.newBuilder()
-            .addHeader(USER_ID_KEY, userIdStore.get())
+            .addHeader(USER_ID_KEY, userIdStore.get()!!)
     }
 
-    private fun handleRegularCall(chain: Interceptor.Chain, credentials: Credentials): Response {
+    private fun handlePasswordCall(chain: Interceptor.Chain, credentials: Credentials): Response {
         val builder = getReqBuilder(chain)
         val useCookie = cookieValue != null
         val builderWithAuthentication =
-            if (useCookie) addCookieHeader(builder) else addAuthorizationHeader(builder, credentials)
+            if (useCookie) addCookieHeader(builder) else addPasswordHeader(builder, credentials)
         val res = chain.proceed(builderWithAuthentication.build())
 
         val finalRes = if (useCookie && hasAuthenticationFailed(res)) {
             res.close()
             removeCookie()
-            val newReqWithBasicAuth = addAuthorizationHeader(getReqBuilder(chain), credentials).build()
+            val newReqWithBasicAuth = addPasswordHeader(getReqBuilder(chain), credentials).build()
             chain.proceed(newReqWithBasicAuth)
         } else {
             res
@@ -116,16 +118,29 @@ internal class BasicAuthenticator(
         return finalRes
     }
 
+    private fun getUpdatedToken(credentials: Credentials): String {
+        return if (tokenRefresher.needsTokenRefresh()) {
+            val token = tokenRefresher.blockingGetFreshToken()
+            credentialsSecureStore.set(credentials.copy(token = token))
+            token
+        } else {
+            credentials.token!!
+        }
+    }
+
+    private fun handleTokenCall(chain: Interceptor.Chain, credentials: Credentials): Response {
+        val builder = getReqBuilder(chain)
+        val builderWithAuthentication = addTokenHeader(builder, getUpdatedToken(credentials))
+        return chain.proceed(builderWithAuthentication.build())
+    }
+
     private fun hasAuthenticationFailed(res: Response): Boolean {
         val location = res.header(LOCATION_KEY)
         return res.isRedirect && location != null && location.contains(LOGIN_ACTION)
     }
 
-    private fun addAuthorizationHeader(builder: Request.Builder, credentials: Credentials): Request.Builder {
-        val headerValue =
-            if (credentials.password != null) getAuthorizationForPassword(credentials)
-            else getAuthorizationForToken(credentials)
-        return builder.addHeader(AUTHORIZATION_KEY, headerValue)
+    private fun addPasswordHeader(builder: Request.Builder, credentials: Credentials): Request.Builder {
+        return builder.addHeader(AUTHORIZATION_KEY, getAuthorizationForPassword(credentials))
     }
 
     private fun getAuthorizationForPassword(credentials: Credentials): String {
@@ -136,8 +151,8 @@ internal class BasicAuthenticator(
         )
     }
 
-    private fun getAuthorizationForToken(credentials: Credentials): String {
-        return "Bearer " + credentials.token
+    private fun addTokenHeader(builder: Request.Builder, token: String): Request.Builder {
+        return builder.addHeader(AUTHORIZATION_KEY, "Bearer $token")
     }
 
     private fun addCookieHeader(builder: Request.Builder): Request.Builder {

@@ -32,6 +32,8 @@ import android.content.Context;
 
 import androidx.annotation.VisibleForTesting;
 
+import net.openid.appauth.AuthState;
+
 import org.hisp.dhis.android.core.analytics.AnalyticsPackageDIModule;
 import org.hisp.dhis.android.core.arch.api.internal.APIClientDIModule;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
@@ -226,11 +228,12 @@ public interface D2DIComponent {
                                 SecureStore secureStore,
                                 InsecureStore insecureStore,
                                 ObjectKeyValueStore<Credentials> credentialsSecureStore,
-                                UserIdInMemoryStore userIdStore) {
+                                UserIdInMemoryStore userIdStore,
+                                AuthState authState) {
         return DaggerD2DIComponent.builder()
                 .appContextDIModule(new AppContextDIModule(context))
                 .databaseDIModule(new DatabaseDIModule(databaseAdapter))
-                .apiClientDIModule(new APIClientDIModule(retrofit))
+                .apiClientDIModule(new APIClientDIModule(retrofit, authState))
                 .secureStorageDIModule(
                         new KeyValueStorageDIModule(secureStore, insecureStore, credentialsSecureStore, userIdStore))
                 .build();

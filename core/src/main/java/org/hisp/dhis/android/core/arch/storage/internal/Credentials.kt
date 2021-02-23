@@ -27,9 +27,10 @@
  */
 package org.hisp.dhis.android.core.arch.storage.internal
 
+import net.openid.appauth.AuthState
 import org.hisp.dhis.android.core.arch.helpers.UserHelper
 
-data class Credentials(val username: String, val password: String?, val token: String?) {
+data class Credentials(val username: String, val password: String?, val openIDConnectState: AuthState?) {
     fun getHash(): String? {
         return password.let { UserHelper.md5(username, it) }
     }

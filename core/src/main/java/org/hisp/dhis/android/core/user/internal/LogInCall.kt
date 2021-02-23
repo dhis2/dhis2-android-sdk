@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.user.internal
 
 import dagger.Reusable
 import io.reactivex.Single
-import javax.inject.Inject
+import net.openid.appauth.AuthState
 import okhttp3.HttpUrl
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
@@ -49,6 +49,7 @@ import org.hisp.dhis.android.core.user.AuthenticatedUser
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserInternalAccessor
 import org.hisp.dhis.android.core.wipe.internal.WipeModule
+import javax.inject.Inject
 
 @Reusable
 @Suppress("LongParameterList")
@@ -65,7 +66,8 @@ internal class LogInCall @Inject internal constructor(
     private val wipeModule: WipeModule,
     private val apiCallErrorCatcher: UserAuthenticateCallErrorCatcher,
     private val databaseManager: LogInDatabaseManager,
-    private val exceptions: LogInExceptions
+    private val exceptions: LogInExceptions,
+    private val openIDConnectState: AuthState
 ) {
     fun logIn(username: String?, password: String?, serverUrl: String?): Single<User> {
         return Single.fromCallable {
@@ -170,15 +172,15 @@ internal class LogInCall @Inject internal constructor(
 
         return try {
             val user = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall, apiCallErrorCatcher)
-            val credentials = getOpenIdConnectCredentials(user, token)
+            val credentials = getOpenIdConnectCredentials(user)
             loginOnline(parsedServerUrl, user, credentials)
         } catch (d2Error: D2Error) {
             throw handleOnlineException(d2Error)
         }
     }
 
-    private fun getOpenIdConnectCredentials(user: User, token: String): Credentials {
+    private fun getOpenIdConnectCredentials(user: User): Credentials {
         val username = UserInternalAccessor.accessUserCredentials(user).username()!!
-        return Credentials(username, null, token)
+        return Credentials(username, null, openIDConnectState)
     }
 }

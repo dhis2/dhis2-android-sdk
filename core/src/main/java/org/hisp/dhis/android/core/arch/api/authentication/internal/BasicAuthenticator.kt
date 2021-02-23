@@ -72,7 +72,7 @@ internal class BasicAuthenticator(
             val credentials = credentialsSecureStore.get()
             return when {
                 credentials?.password != null -> handlePasswordCall(chain, credentials)
-                credentials?.token != null -> handleTokenCall(chain, credentials)
+                credentials?.openIDConnectState != null -> handleTokenCall(chain, credentials)
                 else -> chain.proceed(req)
             }
         }
@@ -121,10 +121,10 @@ internal class BasicAuthenticator(
     private fun getUpdatedToken(credentials: Credentials): String {
         return if (tokenRefresher.needsTokenRefresh()) {
             val token = tokenRefresher.blockingGetFreshToken()
-            credentialsSecureStore.set(credentials.copy(token = token))
+            credentialsSecureStore.set(credentials) // Auth state internally updated
             token
         } else {
-            credentials.token!!
+            credentials.openIDConnectState?.idToken!!
         }
     }
 

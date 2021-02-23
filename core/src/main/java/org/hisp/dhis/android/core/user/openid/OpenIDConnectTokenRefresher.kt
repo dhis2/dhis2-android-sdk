@@ -36,16 +36,16 @@ import net.openid.appauth.AuthorizationService
 
 internal class OpenIDConnectTokenRefresher(
     private val context: Context,
-    private val state: AuthState) {
+    private val authState: AuthState) {
 
     fun needsTokenRefresh(): Boolean {
-        return state.needsTokenRefresh
+        return authState.needsTokenRefresh
     }
 
     fun blockingGetFreshToken(): String {
         val service = AuthorizationService(context)
         return Single.create<String> {
-            state.performActionWithFreshTokens(service) {
+            authState.performActionWithFreshTokens(service) {
                     _: String?, idToken: String?, ex: AuthorizationException? ->
                 service.dispose()
                 if (idToken != null) {

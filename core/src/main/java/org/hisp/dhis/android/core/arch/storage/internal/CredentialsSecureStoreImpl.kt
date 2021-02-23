@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.arch.storage.internal
 
+import net.openid.appauth.AuthState
+
 class CredentialsSecureStoreImpl(private val secureStore: SecureStore) : ObjectKeyValueStore<Credentials> {
     private var credentials: Credentials? = null
 
@@ -34,17 +36,18 @@ class CredentialsSecureStoreImpl(private val secureStore: SecureStore) : ObjectK
         this.credentials = credentials
         secureStore.setData(USERNAME_KEY, credentials.username)
         secureStore.setData(PASSWORD_KEY, credentials.password)
-        secureStore.setData(TOKEN_KEY, credentials.token)
+        secureStore.setData(OPEN_ID_CONNECT_STATE_KEY, credentials.openIDConnectState?.jsonSerializeString())
     }
 
     override fun get(): Credentials? {
         if (credentials == null) {
             val username = secureStore.getData(USERNAME_KEY)
-            val password = secureStore.getData(PASSWORD_KEY)
-            val token = secureStore.getData(TOKEN_KEY)
 
             if (username != null) {
-                credentials = Credentials(username, password, token)
+                val password = secureStore.getData(PASSWORD_KEY)
+                val openIDConnectStateStr = secureStore.getData(OPEN_ID_CONNECT_STATE_KEY)
+                val openIDConnectState = openIDConnectStateStr.let { AuthState.jsonDeserialize(it) }
+                credentials = Credentials(username, password, openIDConnectState)
             }
         }
         return credentials
@@ -54,12 +57,12 @@ class CredentialsSecureStoreImpl(private val secureStore: SecureStore) : ObjectK
         credentials = null
         secureStore.removeData(USERNAME_KEY)
         secureStore.removeData(PASSWORD_KEY)
-        secureStore.removeData(TOKEN_KEY)
+        secureStore.removeData(OPEN_ID_CONNECT_STATE_KEY)
     }
 
     companion object {
         private const val USERNAME_KEY = "username"
         private const val PASSWORD_KEY = "password"
-        private const val TOKEN_KEY = "token"
+        private const val OPEN_ID_CONNECT_STATE_KEY = "oicState"
     }
 }

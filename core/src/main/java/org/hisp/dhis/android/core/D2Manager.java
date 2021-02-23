@@ -32,8 +32,6 @@ import android.util.Log;
 
 import androidx.annotation.VisibleForTesting;
 
-import net.openid.appauth.AuthState;
-
 import org.hisp.dhis.android.core.arch.api.authentication.internal.BasicAuthenticator;
 import org.hisp.dhis.android.core.arch.api.ssl.internal.SSLContextInitializer;
 import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent;
@@ -143,17 +141,16 @@ public final class D2Manager {
                 userIdStore.set(uid);
             }
 
-            AuthState authState = new AuthState();
             Interceptor authenticator = new BasicAuthenticator(
                     credentialsSecureStore,
                     userIdStore,
-                    new OpenIDConnectTokenRefresher(d2Config.context(), authState)
+                    new OpenIDConnectTokenRefresher(d2Config.context())
             );
 
             Retrofit retrofit = RetrofitFactory.retrofit(
                     OkHttpClientFactory.okHttpClient(d2Configuration, authenticator));
             D2DIComponent d2DIComponent = D2DIComponent.create(d2Config.context(), retrofit, databaseAdapter,
-                    secureStore, insecureStore, credentialsSecureStore, userIdStore, authState);
+                    secureStore, insecureStore, credentialsSecureStore, userIdStore);
 
             d2 = new D2(d2DIComponent);
 

@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.user.internal;
 
-import net.openid.appauth.AuthState;
-
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
@@ -144,9 +142,6 @@ public class LogInCallUnitShould extends BaseCallShould {
     @Mock
     private UserAuthenticateCallErrorCatcher apiCallErrorCatcher;
 
-    @Mock
-    private AuthState authState;
-
     // call we are testing
     private Single<User> logInSingle;
 
@@ -200,8 +195,7 @@ public class LogInCallUnitShould extends BaseCallShould {
                 userService, credentialsSecureStore, userIdStore, userHandler, authenticatedUserStore,
                 systemInfoRepository, userStore, wipeModule, apiCallErrorCatcher,
                 new LogInDatabaseManager(multiUserDatabaseManager, generalSettingCall),
-                new LogInExceptions(credentialsSecureStore),
-                authState).logIn(username, password, serverUrl);
+                new LogInExceptions(credentialsSecureStore)).logIn(username, password, serverUrl);
     }
 
     private OngoingStubbing<User> whenAPICall() throws D2Error {

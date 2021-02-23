@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.arch.api.internal;
 
-import net.openid.appauth.AuthState;
-
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIExecutorsDIModule;
 
 import dagger.Module;
@@ -42,20 +40,13 @@ import retrofit2.Retrofit;
 public class APIClientDIModule {
 
     private final Retrofit retrofit;
-    private final AuthState authState;
 
-    public APIClientDIModule(Retrofit retrofit, AuthState authState) {
+    public APIClientDIModule(Retrofit retrofit) {
         this.retrofit = retrofit;
-        this.authState = authState;
     }
 
     @Provides
     Retrofit retrofit() {
         return retrofit;
-    }
-
-    @Provides
-    AuthState authState() {
-        return authState;
     }
 }

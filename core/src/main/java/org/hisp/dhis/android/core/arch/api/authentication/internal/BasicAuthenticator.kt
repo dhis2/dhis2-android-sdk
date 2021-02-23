@@ -119,12 +119,13 @@ internal class BasicAuthenticator(
     }
 
     private fun getUpdatedToken(credentials: Credentials): String {
-        return if (tokenRefresher.needsTokenRefresh()) {
-            val token = tokenRefresher.blockingGetFreshToken()
+        val state = credentials.openIDConnectState!!
+        return if (state.needsTokenRefresh) {
+            val token = tokenRefresher.blockingGetFreshToken(state)
             credentialsSecureStore.set(credentials) // Auth state internally updated
             token
         } else {
-            credentials.openIDConnectState?.idToken!!
+            state.idToken!!
         }
     }
 

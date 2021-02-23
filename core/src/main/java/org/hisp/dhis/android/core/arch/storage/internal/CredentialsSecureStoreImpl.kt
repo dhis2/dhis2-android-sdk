@@ -28,8 +28,13 @@
 package org.hisp.dhis.android.core.arch.storage.internal
 
 import net.openid.appauth.AuthState
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class CredentialsSecureStoreImpl(private val secureStore: SecureStore) : ObjectKeyValueStore<Credentials> {
+@Singleton
+class CredentialsSecureStoreImpl @Inject constructor(private val secureStore: SecureStore) :
+    ObjectKeyValueStore<Credentials> {
+
     private var credentials: Credentials? = null
 
     override fun set(credentials: Credentials) {

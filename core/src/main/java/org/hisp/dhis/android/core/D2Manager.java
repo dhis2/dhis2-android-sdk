@@ -38,9 +38,7 @@ import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent;
 import org.hisp.dhis.android.core.arch.storage.internal.AndroidInsecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreImpl;
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManagerForD2Manager;
 
@@ -54,7 +52,6 @@ import io.reactivex.annotations.NonNull;
 public final class D2Manager {
 
     private static D2 d2;
-    private static D2Configuration d2Configuration;
     private static boolean isTestMode;
     private static SecureStore testingSecureStore;
     private static InsecureStore testingInsecureStore;
@@ -102,7 +99,8 @@ public final class D2Manager {
             InsecureStore insecureStore = testingInsecureStore == null ? new AndroidInsecureStore(context)
                     : testingInsecureStore;
 
-            d2Configuration = D2ConfigurationValidator.validateAndSetDefaultValues(d2Config);
+            D2Configuration d2Configuration = D2ConfigurationValidator.validateAndSetDefaultValues(d2Config);
+            D2DIComponent d2DIComponent = D2DIComponent.create(d2Configuration, secureStore, insecureStore);
 
             if (isTestMode) {
                 NotClosedObjectsDetector.enableNotClosedObjectsDetection();
@@ -112,12 +110,7 @@ public final class D2Manager {
                 SSLContextInitializer.initializeSSLContext(context);
             }
 
-            ObjectKeyValueStore<Credentials> credentialsSecureStore = new CredentialsSecureStoreImpl(secureStore);
-
-            D2DIComponent d2DIComponent = D2DIComponent.create(d2Configuration,
-                    secureStore, insecureStore, credentialsSecureStore);
-
-            Credentials credentials = credentialsSecureStore.get();
+            Credentials credentials = d2DIComponent.credentialsSecureStore().get();
 
             MultiUserDatabaseManagerForD2Manager multiUserDatabaseManager =
                     d2DIComponent.multiUserDatabaseManagerForD2Manager();
@@ -178,7 +171,6 @@ public final class D2Manager {
 
     @VisibleForTesting
     static void clear() {
-        d2Configuration = null;
         d2 = null;
         testingSecureStore = null;
         testingInsecureStore = null;

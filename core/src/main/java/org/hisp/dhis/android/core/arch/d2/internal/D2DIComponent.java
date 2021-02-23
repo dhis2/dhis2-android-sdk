@@ -156,6 +156,7 @@ public interface D2DIComponent {
     DatabaseAdapter databaseAdapter();
     UserIdInMemoryStore userIdInMemoryStore();
     MultiUserDatabaseManagerForD2Manager multiUserDatabaseManagerForD2Manager();
+    ObjectKeyValueStore<Credentials> credentialsSecureStore();
 
     @VisibleForTesting
     Retrofit retrofit();
@@ -181,8 +182,6 @@ public interface D2DIComponent {
     EventPostPayloadGenerator eventPostPayloadGenerator();
     @VisibleForTesting
     IdentifiableObjectStore<CategoryOption> categoryOptionStore();
-    @VisibleForTesting
-    ObjectKeyValueStore<Credentials> credentialsSecureStore();
     @VisibleForTesting
     PeriodHandler periodHandler();
 
@@ -226,12 +225,10 @@ public interface D2DIComponent {
 
     static D2DIComponent create(D2Configuration d2Configuration,
                                 SecureStore secureStore,
-                                InsecureStore insecureStore,
-                                ObjectKeyValueStore<Credentials> credentialsSecureStore) {
+                                InsecureStore insecureStore) {
         return DaggerD2DIComponent.builder()
                 .appContextDIModule(new AppContextDIModule(d2Configuration))
-                .secureStorageDIModule(
-                        new KeyValueStorageDIModule(secureStore, insecureStore, credentialsSecureStore))
+                .secureStorageDIModule(new KeyValueStorageDIModule(secureStore, insecureStore))
                 .build();
     }
 }

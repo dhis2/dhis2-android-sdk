@@ -189,7 +189,6 @@ public interface D2DIComponent {
     @Component.Builder
     interface Builder {
         Builder appContextDIModule(AppContextDIModule appContextDIModule);
-        Builder databaseDIModule(DatabaseDIModule databaseDIModule);
         Builder secureStorageDIModule(KeyValueStorageDIModule secureStoregeDIModule);
         Builder wipeDIModule(WipeDIModule wipeDIModule);
         Builder repositoriesDIModule(RepositoriesDIModule repositoriesDIModule);
@@ -226,13 +225,11 @@ public interface D2DIComponent {
     }
 
     static D2DIComponent create(D2Configuration d2Configuration,
-                                DatabaseAdapter databaseAdapter,
                                 SecureStore secureStore,
                                 InsecureStore insecureStore,
                                 ObjectKeyValueStore<Credentials> credentialsSecureStore) {
         return DaggerD2DIComponent.builder()
                 .appContextDIModule(new AppContextDIModule(d2Configuration))
-                .databaseDIModule(new DatabaseDIModule(databaseAdapter))
                 .secureStorageDIModule(
                         new KeyValueStorageDIModule(secureStore, insecureStore, credentialsSecureStore))
                 .build();

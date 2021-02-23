@@ -35,8 +35,6 @@ import androidx.annotation.VisibleForTesting;
 
 import org.hisp.dhis.android.core.arch.api.ssl.internal.SSLContextInitializer;
 import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent;
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.arch.storage.internal.AndroidInsecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
@@ -57,7 +55,6 @@ public final class D2Manager {
 
     private static D2 d2;
     private static D2Configuration d2Configuration;
-    private static DatabaseAdapter databaseAdapter;
     private static boolean isTestMode;
     private static SecureStore testingSecureStore;
     private static InsecureStore testingInsecureStore;
@@ -104,10 +101,8 @@ public final class D2Manager {
                     : testingSecureStore;
             InsecureStore insecureStore = testingInsecureStore == null ? new AndroidInsecureStore(context)
                     : testingInsecureStore;
-            DatabaseAdapterFactory databaseAdapterFactory = DatabaseAdapterFactory.create(context, secureStore);
 
             d2Configuration = D2ConfigurationValidator.validateAndSetDefaultValues(d2Config);
-            databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter();
 
             if (isTestMode) {
                 NotClosedObjectsDetector.enableNotClosedObjectsDetection();
@@ -119,7 +114,7 @@ public final class D2Manager {
 
             ObjectKeyValueStore<Credentials> credentialsSecureStore = new CredentialsSecureStoreImpl(secureStore);
 
-            D2DIComponent d2DIComponent = D2DIComponent.create(d2Configuration, databaseAdapter,
+            D2DIComponent d2DIComponent = D2DIComponent.create(d2Configuration,
                     secureStore, insecureStore, credentialsSecureStore);
 
             Credentials credentials = credentialsSecureStore.get();
@@ -185,7 +180,6 @@ public final class D2Manager {
     static void clear() {
         d2Configuration = null;
         d2 = null;
-        databaseAdapter =  null;
         testingSecureStore = null;
         testingInsecureStore = null;
         testingDatabaseName = null;

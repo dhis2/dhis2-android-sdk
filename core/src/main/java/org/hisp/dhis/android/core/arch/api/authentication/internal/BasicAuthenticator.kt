@@ -37,9 +37,12 @@ import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectTokenRefresher
 import java.io.IOException
 import java.util.Locale
+import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 @Suppress("TooManyFunctions")
-internal class BasicAuthenticator(
+internal class BasicAuthenticator @Inject constructor(
     private val credentialsSecureStore: ObjectKeyValueStore<Credentials>,
     private val userIdStore: UserIdInMemoryStore,
     private val tokenRefresher: OpenIDConnectTokenRefresher

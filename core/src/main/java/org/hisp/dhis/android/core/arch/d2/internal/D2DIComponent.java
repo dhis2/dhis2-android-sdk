@@ -28,10 +28,9 @@
 
 package org.hisp.dhis.android.core.arch.d2.internal;
 
-import android.content.Context;
-
 import androidx.annotation.VisibleForTesting;
 
+import org.hisp.dhis.android.core.D2Configuration;
 import org.hisp.dhis.android.core.analytics.AnalyticsPackageDIModule;
 import org.hisp.dhis.android.core.arch.api.internal.APIClientDIModule;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
@@ -187,7 +186,6 @@ public interface D2DIComponent {
     @Component.Builder
     interface Builder {
         Builder appContextDIModule(AppContextDIModule appContextDIModule);
-        Builder apiClientDIModule(APIClientDIModule apiClientDIModule);
         Builder databaseDIModule(DatabaseDIModule databaseDIModule);
         Builder secureStorageDIModule(KeyValueStorageDIModule secureStoregeDIModule);
         Builder wipeDIModule(WipeDIModule wipeDIModule);
@@ -224,17 +222,15 @@ public interface D2DIComponent {
         D2DIComponent build();
     }
 
-    static D2DIComponent create(Context context,
-                                Retrofit retrofit,
+    static D2DIComponent create(D2Configuration d2Configuration,
                                 DatabaseAdapter databaseAdapter,
                                 SecureStore secureStore,
                                 InsecureStore insecureStore,
                                 ObjectKeyValueStore<Credentials> credentialsSecureStore,
                                 UserIdInMemoryStore userIdStore) {
         return DaggerD2DIComponent.builder()
-                .appContextDIModule(new AppContextDIModule(context))
+                .appContextDIModule(new AppContextDIModule(d2Configuration))
                 .databaseDIModule(new DatabaseDIModule(databaseAdapter))
-                .apiClientDIModule(new APIClientDIModule(retrofit))
                 .secureStorageDIModule(
                         new KeyValueStorageDIModule(secureStore, insecureStore, credentialsSecureStore, userIdStore))
                 .build();

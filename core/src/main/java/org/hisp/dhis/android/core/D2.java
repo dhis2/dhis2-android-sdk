@@ -66,16 +66,10 @@ import org.hisp.dhis.android.core.wipe.internal.WipeModule;
 import retrofit2.Retrofit;
 
 public final class D2 {
-    private final Retrofit retrofit;
-    private final DatabaseAdapter databaseAdapter;
     private final D2Modules modules;
     final D2DIComponent d2DIComponent;
 
-    D2(@NonNull Retrofit retrofit,
-       @NonNull DatabaseAdapter databaseAdapter,
-       @NonNull D2DIComponent d2DIComponent) {
-        this.retrofit = retrofit;
-        this.databaseAdapter = databaseAdapter;
+    D2(@NonNull D2DIComponent d2DIComponent) {
         this.d2DIComponent = d2DIComponent;
         this.modules = d2DIComponent.modules();
     }
@@ -83,12 +77,12 @@ public final class D2 {
     @VisibleForTesting
     @NonNull
     public Retrofit retrofit() {
-        return retrofit;
+        return d2DIComponent.retrofit();
     }
 
     @NonNull
     public DatabaseAdapter databaseAdapter() {
-        return databaseAdapter;
+        return d2DIComponent.databaseAdapter();
     }
 
     public WithProgressDownloader metadataModule() {

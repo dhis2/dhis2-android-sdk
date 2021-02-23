@@ -155,6 +155,10 @@ public interface D2DIComponent {
     AggregatedModuleImpl aggregatedModule();
     WipeModule wipeModule();
 
+    DatabaseAdapter databaseAdapter();
+
+    @VisibleForTesting
+    Retrofit retrofit();
     @VisibleForTesting
     D2InternalModules internalModules();
     @VisibleForTesting

@@ -155,11 +155,7 @@ public final class D2Manager {
             D2DIComponent d2DIComponent = D2DIComponent.create(d2Config.context(), retrofit, databaseAdapter,
                     secureStore, insecureStore, credentialsSecureStore, userIdStore, authState);
 
-            d2 = new D2(
-                    retrofit,
-                    databaseAdapter,
-                    d2DIComponent
-            );
+            d2 = new D2(d2DIComponent);
 
             long setUpTime = System.currentTimeMillis() - startTime;
             Log.i(D2Manager.class.getName(), "D2 instantiation took " + setUpTime + "ms");

@@ -30,7 +30,16 @@ package org.hisp.dhis.android.core.configuration.internal;
 import java.security.SecureRandom;
 import java.util.Random;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 class DatabaseEncryptionPasswordGenerator {
+
+    @Inject
+    DatabaseEncryptionPasswordGenerator() {
+    }
 
     private final Random random = new SecureRandom();
 

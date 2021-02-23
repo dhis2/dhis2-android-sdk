@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core;
 
+import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.VisibleForTesting;
@@ -36,7 +37,6 @@ import org.hisp.dhis.android.core.arch.api.ssl.internal.SSLContextInitializer;
 import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.storage.internal.AndroidInsecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
@@ -44,10 +44,7 @@ import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreIm
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
-import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore;
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManagerForD2Manager;
-import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.user.internal.UserStore;
 
 import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
@@ -101,12 +98,13 @@ public final class D2Manager {
     public static Single<D2> instantiateD2(@NonNull D2Configuration d2Config) {
         return Single.fromCallable(() -> {
             long startTime = System.currentTimeMillis();
-            SecureStore secureStore = testingSecureStore == null ? new AndroidSecureStore(d2Config.context())
+            Context context = d2Config.context();
+
+            SecureStore secureStore = testingSecureStore == null ? new AndroidSecureStore(context)
                     : testingSecureStore;
-            InsecureStore insecureStore = testingInsecureStore == null ? new AndroidInsecureStore(d2Config.context())
+            InsecureStore insecureStore = testingInsecureStore == null ? new AndroidInsecureStore(context)
                     : testingInsecureStore;
-            DatabaseAdapterFactory databaseAdapterFactory = DatabaseAdapterFactory.create(d2Config.context(),
-                    secureStore);
+            DatabaseAdapterFactory databaseAdapterFactory = DatabaseAdapterFactory.create(context, secureStore);
 
             d2Configuration = D2ConfigurationValidator.validateAndSetDefaultValues(d2Config);
             databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter();
@@ -116,29 +114,28 @@ public final class D2Manager {
             } else {
                 /* SSLContextInitializer, necessary to ensure everything works in Android 4.4 crashes
                  when running the StrictMode above. That's why it's in the else clause */
-                SSLContextInitializer.initializeSSLContext(d2Configuration.context());
+                SSLContextInitializer.initializeSSLContext(context);
             }
 
             ObjectKeyValueStore<Credentials> credentialsSecureStore = new CredentialsSecureStoreImpl(secureStore);
-            MultiUserDatabaseManagerForD2Manager multiUserDatabaseManager = MultiUserDatabaseManagerForD2Manager
-                    .create(databaseAdapter, d2Config.context(), insecureStore, databaseAdapterFactory);
+
+            D2DIComponent d2DIComponent = D2DIComponent.create(d2Configuration, databaseAdapter,
+                    secureStore, insecureStore, credentialsSecureStore);
 
             Credentials credentials = credentialsSecureStore.get();
+
+            MultiUserDatabaseManagerForD2Manager multiUserDatabaseManager =
+                    d2DIComponent.multiUserDatabaseManagerForD2Manager();
             if (wantToImportDBForExternalTesting()) {
                 multiUserDatabaseManager.loadDbForTesting(testingDatabaseName, false, testingUsername);
             } else {
                 multiUserDatabaseManager.loadIfLogged(credentials);
             }
 
-            UserIdInMemoryStore userIdStore = new UserIdInMemoryStore();
             if (credentials != null) {
-                IdentifiableObjectStore<User> userStore = UserStore.create(databaseAdapter);
-                String uid = userStore.selectFirst().uid();
-                userIdStore.set(uid);
+                String uid = d2.userModule().user().blockingGet().uid();
+                d2DIComponent.userIdInMemoryStore().set(uid);
             }
-
-            D2DIComponent d2DIComponent = D2DIComponent.create(d2Config, databaseAdapter,
-                    secureStore, insecureStore, credentialsSecureStore, userIdStore);
 
             d2 = new D2(d2DIComponent);
 

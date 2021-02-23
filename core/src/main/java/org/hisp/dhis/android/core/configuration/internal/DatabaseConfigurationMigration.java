@@ -33,7 +33,6 @@ import android.content.Context;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
-import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.internal.UserCredentialsStore;
@@ -41,6 +40,11 @@ import org.hisp.dhis.android.core.user.internal.UserCredentialsStoreImpl;
 
 import java.util.Arrays;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 class DatabaseConfigurationMigration {
 
     static final String OLD_DBNAME = "dhis.db";
@@ -52,6 +56,7 @@ class DatabaseConfigurationMigration {
     private final DatabaseRenamer renamer;
     private final DatabaseAdapterFactory databaseAdapterFactory;
 
+    @Inject
     DatabaseConfigurationMigration(Context context,
                                    ObjectKeyValueStore<DatabasesConfiguration> newConfigurationStore,
                                    DatabaseConfigurationTransformer transformer,
@@ -101,17 +106,5 @@ class DatabaseConfigurationMigration {
         ObjectStore<Configuration> store = ConfigurationStore.create(databaseAdapter);
         Configuration configuration = store.selectFirst();
         return configuration == null ? null : configuration.serverUrl();
-    }
-
-    static DatabaseConfigurationMigration create(Context context,
-                                                 InsecureStore insecureStore,
-                                                 DatabaseAdapterFactory databaseAdapterFactory) {
-        return new DatabaseConfigurationMigration(
-                context,
-                DatabaseConfigurationInsecureStore.get(insecureStore),
-                new DatabaseConfigurationTransformer(),
-                new DatabaseNameGenerator(),
-                new DatabaseRenamer(context),
-                databaseAdapterFactory);
     }
 }

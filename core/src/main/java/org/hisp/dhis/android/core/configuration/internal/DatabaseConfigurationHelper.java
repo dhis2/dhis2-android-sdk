@@ -40,19 +40,20 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 public class DatabaseConfigurationHelper {
 
     private final DatabaseNameGenerator databaseNameGenerator;
     private final DateProvider dateProvider;
 
+    @Inject
     DatabaseConfigurationHelper(DatabaseNameGenerator databaseNameGenerator, DateProvider dateProvider) {
         this.databaseNameGenerator = databaseNameGenerator;
         this.dateProvider = dateProvider;
-    }
-
-    static DatabaseConfigurationHelper create() {
-        return new DatabaseConfigurationHelper(new DatabaseNameGenerator(),
-                () -> BaseIdentifiableObject.dateToDateStr(new Date()));
     }
 
     @SuppressWarnings("PMD.AvoidDeeplyNestedIfStmts")

@@ -30,11 +30,13 @@ package org.hisp.dhis.android.core.configuration.internal;
 
 import javax.inject.Inject;
 
+import dagger.Reusable;
+
+@Reusable
 public final class DatabaseNameGenerator {
 
     @Inject
     DatabaseNameGenerator() {
-
     }
 
     public String getDatabaseName(String serverUrl, String username, boolean encrypt) {

@@ -33,7 +33,16 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import java.util.Collections;
 import java.util.Date;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 final class DatabaseConfigurationTransformer {
+
+    @Inject
+    DatabaseConfigurationTransformer() {
+    }
 
     public DatabasesConfiguration transform(String serverUrl, String databaseName, String username) {
         return DatabasesConfiguration.builder()

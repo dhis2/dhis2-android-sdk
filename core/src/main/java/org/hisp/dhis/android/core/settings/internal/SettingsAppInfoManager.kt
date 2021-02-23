@@ -28,10 +28,9 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import io.reactivex.Single
-import org.hisp.dhis.android.core.settings.SettingsAppInfo
 
 internal interface SettingsAppInfoManager {
     fun getDataStoreVersion(): Single<SettingsAppDataStoreVersion>
     fun getAppVersion(): Single<String>
-    fun updateAppInfo(): Single<SettingsAppInfo>
+    fun updateAppVersion(): Single<SettingsAppVersion>
 }

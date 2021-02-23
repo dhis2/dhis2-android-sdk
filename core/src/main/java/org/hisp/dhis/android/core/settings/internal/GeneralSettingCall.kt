@@ -28,14 +28,10 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import dagger.Reusable
-import io.reactivex.Completable
 import io.reactivex.Single
-import java.net.HttpURLConnection
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.settings.GeneralSettings
 
 @Reusable
@@ -44,44 +40,31 @@ internal class GeneralSettingCall @Inject constructor(
     private val settingAppService: SettingAppService,
     private val apiCallExecutor: RxAPICallExecutor,
     private val appVersionManager: SettingsAppInfoManager
-) : CompletableProvider {
+) : BaseSettingCall<GeneralSettings>() {
 
     private var cachedValue: GeneralSettings? = null
 
-    override fun getCompletable(storeError: Boolean): Completable {
-        return Completable
-            .fromSingle(download(storeError))
-            .onErrorComplete()
-    }
-
-    fun download(storeError: Boolean): Single<GeneralSettings> {
-        return fetch(storeError)
-            .doOnSuccess { generalSettings: GeneralSettings -> process(generalSettings) }
-            .doOnError { throwable: Throwable ->
-                if (throwable is D2Error && throwable.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND) {
-                    process(null)
-                }
-            }
+    override fun fetch(storeError: Boolean): Single<GeneralSettings> {
+        return appVersionManager.getDataStoreVersion().flatMap { version ->
+            apiCallExecutor.wrapSingle(settingAppService.generalSettings(version), storeError = storeError)
+        }
     }
 
     fun fetch(storeError: Boolean, acceptCache: Boolean = false): Single<GeneralSettings> {
         return when {
             cachedValue != null && acceptCache -> Single.just(cachedValue)
-            else ->
-                appVersionManager.getDataStoreVersion().flatMap { version ->
-                    apiCallExecutor.wrapSingle(settingAppService.generalSettings(version), storeError = storeError)
-                }
+            else -> fetch(storeError)
         }
     }
 
-    fun process(item: GeneralSettings?) {
+    override fun process(item: GeneralSettings?) {
         cachedValue = item
         val generalSettingsList = listOfNotNull(item)
         generalSettingHandler.handleMany(generalSettingsList)
     }
 
     fun isDatabaseEncrypted(): Single<Boolean> {
-        return appVersionManager.updateAppInfo()
+        return appVersionManager.updateAppVersion()
             .flatMap { appVersionManager.getDataStoreVersion() }
             .flatMap { version ->
                 apiCallExecutor.wrapSingle(settingAppService.generalSettings(version), storeError = false)

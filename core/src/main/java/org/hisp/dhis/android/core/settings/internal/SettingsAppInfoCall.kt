@@ -34,35 +34,27 @@ import java.net.HttpURLConnection
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode
-import org.hisp.dhis.android.core.settings.SettingsAppInfo
 
 @Reusable
 internal class SettingsAppInfoCall @Inject constructor(
     private val settingAppService: SettingAppService,
     private val apiCallExecutor: RxAPICallExecutor
 ) {
-    fun fetch(storeError: Boolean): Single<SettingsAppInfo> {
+    companion object {
+        const val unknown = "unknown"
+    }
+
+    fun fetch(storeError: Boolean): Single<SettingsAppVersion> {
         return apiCallExecutor.wrapSingle(settingAppService.info(), storeError)
+            .map<SettingsAppVersion> {
+                SettingsAppVersion.Valid(it.dataStoreVersion(), it.androidSettingsVersion() ?: unknown)
+            }
             .onErrorResumeNext { throwable: Throwable ->
                 return@onErrorResumeNext when {
                     throwable is D2Error && throwable.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND ->
-                        Single.just(
-                            SettingsAppInfo.builder()
-                                .dataStoreVersion(SettingsAppDataStoreVersion.V1_1)
-                                .androidSettingsVersion(null)
-                                .build()
-                        )
+                        Single.just(SettingsAppVersion.Valid(SettingsAppDataStoreVersion.V1_1, unknown))
                     throwable is D2Error && throwable.originalException() is InvalidFormatException ->
-                        Single.error(
-                            D2Error.builder()
-                                .errorCode(D2ErrorCode.INVALID_SETTINGS_APP_DATASTORE_VERSION)
-                                .errorDescription(
-                                    "Invalid dataStore version for Android Settings App. " +
-                                        "Supported versions: ${SettingsAppDataStoreVersion.values().joinToString(",")}"
-                                )
-                                .build()
-                        )
+                        Single.just(SettingsAppVersion.Unsupported)
                     else ->
                         Single.error(throwable)
                 }

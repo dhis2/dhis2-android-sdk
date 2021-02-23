@@ -27,30 +27,7 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import dagger.Reusable
-import io.reactivex.Single
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.settings.DataSetSetting
-import org.hisp.dhis.android.core.settings.DataSetSettings
-
-@Reusable
-internal class DataSetSettingCall @Inject constructor(
-    private val dataSetSettingHandler: Handler<DataSetSetting>,
-    private val settingAppService: SettingAppService,
-    private val apiCallExecutor: RxAPICallExecutor,
-    private val appVersionManager: SettingsAppInfoManager
-) : BaseSettingCall<DataSetSettings>() {
-
-    override fun fetch(storeError: Boolean): Single<DataSetSettings> {
-        return appVersionManager.getDataStoreVersion().flatMap { version ->
-            apiCallExecutor.wrapSingle(settingAppService.dataSetSettings(version), storeError = storeError)
-        }
-    }
-
-    override fun process(item: DataSetSettings?) {
-        val dataSetSettingList = item?.let { SettingsAppHelper.getDataSetSettingList(it) } ?: emptyList()
-        dataSetSettingHandler.handleMany(dataSetSettingList)
-    }
+internal sealed class SettingsAppVersion {
+    class Valid(val dataStore: SettingsAppDataStoreVersion, val app: String) : SettingsAppVersion()
+    object Unsupported : SettingsAppVersion()
 }

@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.settings.internal
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Single
-import org.hisp.dhis.android.core.settings.SettingsAppInfo
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -40,10 +39,8 @@ import org.junit.runners.JUnit4
 class SettingsAppInfoManagerShould {
     private val settingsAppInfoCall: SettingsAppInfoCall = mock()
 
-    private val settingsAppInfo = SettingsAppInfo.builder()
-        .dataStoreVersion(SettingsAppDataStoreVersion.V1_1)
-        .build()
-    private val settingAppInfoSingle: Single<SettingsAppInfo> = Single.just(settingsAppInfo)
+    private val settingsAppInfo = SettingsAppVersion.Valid(SettingsAppDataStoreVersion.V1_1, "unknown")
+    private val settingAppInfoSingle: Single<SettingsAppVersion> = Single.just(settingsAppInfo)
 
     private lateinit var manager: SettingsAppInfoManager
 
@@ -57,10 +54,10 @@ class SettingsAppInfoManagerShould {
     fun call_setting_info_only_if_version_is_null() {
         val version = manager.getDataStoreVersion().blockingGet()!!
         verify(settingsAppInfoCall).fetch(any())
-        assertThat(version).isEquivalentAccordingToCompareTo(settingsAppInfo.dataStoreVersion())
+        assertThat(version).isEquivalentAccordingToCompareTo(settingsAppInfo.dataStore)
 
         val cached = manager.getDataStoreVersion().blockingGet()
         verifyNoMoreInteractions(settingsAppInfoCall)
-        assertThat(cached).isEquivalentAccordingToCompareTo(settingsAppInfo.dataStoreVersion())
+        assertThat(cached).isEquivalentAccordingToCompareTo(settingsAppInfo.dataStore)
     }
 }

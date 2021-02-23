@@ -30,25 +30,29 @@ package org.hisp.dhis.android.core.settings.internal
 import com.fasterxml.jackson.databind.exc.InvalidFormatException
 import dagger.Reusable
 import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.maintenance.D2Error
 import java.net.HttpURLConnection
 import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import org.hisp.dhis.android.core.maintenance.D2Error
 
 @Reusable
 internal class SettingsAppInfoCall @Inject constructor(
     private val settingAppService: SettingAppService,
     private val apiCallExecutor: RxAPICallExecutor
 ) {
+    companion object {
+        const val unknown = "unknown"
+    }
+
     fun fetch(storeError: Boolean): Single<SettingsAppVersion> {
         return apiCallExecutor.wrapSingle(settingAppService.info(), storeError)
             .map<SettingsAppVersion> {
-                SettingsAppVersion.Valid(it.dataStoreVersion(), it.androidSettingsVersion())
+                SettingsAppVersion.Valid(it.dataStoreVersion(), it.androidSettingsVersion() ?: unknown)
             }
             .onErrorResumeNext { throwable: Throwable ->
                 return@onErrorResumeNext when {
                     throwable is D2Error && throwable.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND ->
-                        Single.just(SettingsAppVersion.Valid(SettingsAppDataStoreVersion.V1_1, null))
+                        Single.just(SettingsAppVersion.Valid(SettingsAppDataStoreVersion.V1_1, unknown))
                     throwable is D2Error && throwable.originalException() is InvalidFormatException ->
                         Single.just(SettingsAppVersion.Unsupported)
                     else ->

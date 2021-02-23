@@ -28,12 +28,10 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import dagger.Reusable
-import io.reactivex.Completable
 import io.reactivex.Single
 import java.net.HttpURLConnection
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
@@ -48,25 +46,9 @@ internal class SynchronizationSettingCall @Inject constructor(
     private val dataSetSettingCall: DataSetSettingCall,
     private val programSettingCall: ProgramSettingCall,
     private val appVersionManager: SettingsAppInfoManager
-) : CompletableProvider {
+) : BaseSettingCall<SynchronizationSettings>() {
 
-    override fun getCompletable(storeError: Boolean): Completable {
-        return Completable
-            .fromSingle(download(storeError))
-            .onErrorComplete()
-    }
-
-    fun download(storeError: Boolean): Single<SynchronizationSettings> {
-        return fetch(storeError)
-            .doOnSuccess { syncSettings: SynchronizationSettings -> process(syncSettings) }
-            .doOnError { throwable: Throwable ->
-                if (throwable is D2Error && throwable.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND) {
-                    process(null)
-                }
-            }
-    }
-
-    fun fetch(storeError: Boolean): Single<SynchronizationSettings> {
+    override fun fetch(storeError: Boolean): Single<SynchronizationSettings> {
         return appVersionManager.getDataStoreVersion().flatMap { version ->
             when (version) {
                 SettingsAppDataStoreVersion.V1_1 -> {
@@ -100,7 +82,7 @@ internal class SynchronizationSettingCall @Inject constructor(
         }
     }
 
-    fun process(item: SynchronizationSettings?) {
+    override fun process(item: SynchronizationSettings?) {
         val syncSettingsList = listOfNotNull(item)
         synchronizationSettingHandler.handleMany(syncSettingsList)
     }

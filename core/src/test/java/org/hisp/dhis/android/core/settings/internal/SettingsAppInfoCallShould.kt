@@ -32,12 +32,12 @@ import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Single
-import java.lang.RuntimeException
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.data.maintenance.D2ErrorSamples
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.settings.SettingsAppInfo
 import org.junit.Assert.assertThrows
+import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -63,10 +63,13 @@ class SettingsAppInfoCallShould {
         whenever(apiCallExecutor.wrapSingle(settingAppInfoSingle, false)) doReturn
             Single.error(D2ErrorSamples.notFound())
 
-        val info = dataSetSettingCall.fetch(false).blockingGet()
-
-        assertThat(info.dataStoreVersion()).isEquivalentAccordingToCompareTo(SettingsAppDataStoreVersion.V1_1)
-        assertThat(info.androidSettingsVersion()).isNull()
+        when (val version = dataSetSettingCall.fetch(false).blockingGet()) {
+            is SettingsAppVersion.Valid -> {
+                assertThat(version.dataStore).isEquivalentAccordingToCompareTo(SettingsAppDataStoreVersion.V1_1)
+                assertThat(version.app).isNotEmpty()
+            }
+            else -> fail("Unexpected version")
+        }
     }
 
     @Test

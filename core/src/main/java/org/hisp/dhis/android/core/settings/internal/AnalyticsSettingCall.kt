@@ -28,12 +28,10 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import dagger.Reusable
-import io.reactivex.Completable
 import io.reactivex.Single
 import java.net.HttpURLConnection
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
@@ -46,25 +44,9 @@ internal class AnalyticsSettingCall @Inject constructor(
     private val settingAppService: SettingAppService,
     private val apiCallExecutor: RxAPICallExecutor,
     private val appVersionManager: SettingsAppInfoManager
-) : CompletableProvider {
+) : BaseSettingCall<AnalyticsSettings>() {
 
-    override fun getCompletable(storeError: Boolean): Completable {
-        return Completable
-            .fromSingle(download(storeError))
-            .onErrorComplete()
-    }
-
-    fun download(storeError: Boolean): Single<AnalyticsSettings> {
-        return fetch(storeError)
-            .doOnSuccess { analyticsSettings: AnalyticsSettings -> process(analyticsSettings) }
-            .doOnError { throwable: Throwable ->
-                if (throwable is D2Error && throwable.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND) {
-                    process(null)
-                }
-            }
-    }
-
-    fun fetch(storeError: Boolean): Single<AnalyticsSettings> {
+    override fun fetch(storeError: Boolean): Single<AnalyticsSettings> {
         return appVersionManager.getDataStoreVersion().flatMap { version ->
             when (version) {
                 SettingsAppDataStoreVersion.V1_1 -> {
@@ -83,7 +65,7 @@ internal class AnalyticsSettingCall @Inject constructor(
         }
     }
 
-    fun process(item: AnalyticsSettings?) {
+    override fun process(item: AnalyticsSettings?) {
         val analyticsTeiSettingList = item?.tei() ?: emptyList()
         analyticsTeiSettingHandler.handleMany(analyticsTeiSettingList)
     }

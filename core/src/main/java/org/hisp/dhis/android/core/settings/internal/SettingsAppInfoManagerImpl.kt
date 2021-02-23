@@ -30,7 +30,8 @@ package org.hisp.dhis.android.core.settings.internal
 import io.reactivex.Single
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.hisp.dhis.android.core.settings.SettingsAppInfo
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 
 @Singleton
 internal class SettingsAppInfoManagerImpl @Inject constructor(
@@ -39,24 +40,39 @@ internal class SettingsAppInfoManagerImpl @Inject constructor(
 
     private var settingsAppVersion: SettingsAppVersion? = null
 
+    private val unsupportedVersion = D2Error.builder()
+        .errorCode(D2ErrorCode.UNSUPPORTED_APP_DATASTORE_VERSION)
+        .errorDescription("Unsupported dataStore version")
+        .build()
+
     override fun getDataStoreVersion(): Single<SettingsAppDataStoreVersion> {
-        return when {
-            settingsAppVersion != null -> Single.just(settingsAppVersion)
-            else -> updateAppInfo().map { it.dataStoreVersion() }
+        return getOrUpdateAppVersion().flatMap {
+            when (it) {
+                is SettingsAppVersion.Valid -> Single.just(it.dataStore)
+                is SettingsAppVersion.Unsupported -> Single.error(unsupportedVersion)
+            }
         }
     }
 
     override fun getAppVersion(): Single<String> {
-        return when {
-            appVersion != null -> Single.just(appVersion)
-            else -> updateAppInfo().map { it.androidSettingsVersion() }
+        return getOrUpdateAppVersion().flatMap {
+            when (it) {
+                is SettingsAppVersion.Valid -> Single.just(it.app)
+                is SettingsAppVersion.Unsupported -> Single.error(unsupportedVersion)
+            }
         }
     }
 
-    override fun updateAppInfo(): Single<SettingsAppInfo> {
+    override fun updateAppVersion(): Single<SettingsAppVersion> {
         return settingsAppInfoCall.fetch(false)
             .doOnSuccess {
                 settingsAppVersion = it
             }
+    }
+
+    private fun getOrUpdateAppVersion(): Single<SettingsAppVersion> {
+        return settingsAppVersion
+            ?.let { Single.just(it) }
+            ?: updateAppVersion()
     }
 }

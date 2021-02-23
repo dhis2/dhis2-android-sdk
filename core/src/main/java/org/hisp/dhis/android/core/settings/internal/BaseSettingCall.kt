@@ -27,30 +27,37 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import dagger.Reusable
+import io.reactivex.Completable
 import io.reactivex.Single
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.settings.DataSetSetting
-import org.hisp.dhis.android.core.settings.DataSetSettings
+import java.net.HttpURLConnection
+import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 
-@Reusable
-internal class DataSetSettingCall @Inject constructor(
-    private val dataSetSettingHandler: Handler<DataSetSetting>,
-    private val settingAppService: SettingAppService,
-    private val apiCallExecutor: RxAPICallExecutor,
-    private val appVersionManager: SettingsAppInfoManager
-) : BaseSettingCall<DataSetSettings>() {
+internal abstract class BaseSettingCall<T> : CompletableProvider {
 
-    override fun fetch(storeError: Boolean): Single<DataSetSettings> {
-        return appVersionManager.getDataStoreVersion().flatMap { version ->
-            apiCallExecutor.wrapSingle(settingAppService.dataSetSettings(version), storeError = storeError)
-        }
+    override fun getCompletable(storeError: Boolean): Completable {
+        return Completable
+            .fromSingle(download(storeError))
+            .onErrorComplete()
     }
 
-    override fun process(item: DataSetSettings?) {
-        val dataSetSettingList = item?.let { SettingsAppHelper.getDataSetSettingList(it) } ?: emptyList()
-        dataSetSettingHandler.handleMany(dataSetSettingList)
+    fun download(storeError: Boolean): Single<T> {
+        return fetch(storeError)
+            .doOnSuccess { process(it) }
+            .doOnError { throwable: Throwable ->
+                if (throwable is D2Error &&
+                    (
+                        throwable.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND ||
+                            throwable.errorCode() == D2ErrorCode.UNSUPPORTED_APP_DATASTORE_VERSION
+                        )
+                ) {
+                    process(null)
+                }
+            }
     }
+
+    abstract fun fetch(storeError: Boolean): Single<T>
+
+    abstract fun process(item: T?)
 }

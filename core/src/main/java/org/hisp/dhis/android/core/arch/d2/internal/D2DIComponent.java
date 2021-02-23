@@ -47,6 +47,7 @@ import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.KeyValueStorageDIModule;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore;
 import org.hisp.dhis.android.core.attribute.internal.AttributePackageDIModule;
 import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.category.internal.CategoryPackageDIModule;
@@ -219,14 +220,19 @@ public interface D2DIComponent {
         D2DIComponent build();
     }
 
-    static D2DIComponent create(Context context, Retrofit retrofit, DatabaseAdapter databaseAdapter,
-                                SecureStore secureStore, InsecureStore insecureStore,
-                                ObjectKeyValueStore<Credentials> credentialsSecureStore) {
+    static D2DIComponent create(Context context,
+                                Retrofit retrofit,
+                                DatabaseAdapter databaseAdapter,
+                                SecureStore secureStore,
+                                InsecureStore insecureStore,
+                                ObjectKeyValueStore<Credentials> credentialsSecureStore,
+                                UserIdInMemoryStore userIdStore) {
         return DaggerD2DIComponent.builder()
                 .appContextDIModule(new AppContextDIModule(context))
                 .databaseDIModule(new DatabaseDIModule(databaseAdapter))
                 .apiClientDIModule(new APIClientDIModule(retrofit))
-                .secureStorageDIModule(new KeyValueStorageDIModule(secureStore, insecureStore, credentialsSecureStore))
+                .secureStorageDIModule(
+                        new KeyValueStorageDIModule(secureStore, insecureStore, credentialsSecureStore, userIdStore))
                 .build();
     }
 }

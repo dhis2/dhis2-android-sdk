@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
+import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.junit.Before;
@@ -55,6 +56,9 @@ public class LogOutCallShould {
     private ObjectKeyValueStore<Credentials> credentialsSecureStore;
 
     @Mock
+    private UserIdInMemoryStore userIdStore;
+
+    @Mock
     private Credentials credentials;
 
     @Mock
@@ -72,12 +76,13 @@ public class LogOutCallShould {
         when(credentials.getUsername()).thenReturn("user");
         when(credentials.getPassword()).thenReturn("password");
 
-        logOutCall = new LogOutCall(databaseAdapter, databaseAdapterFactory, credentialsSecureStore);
+        logOutCall = new LogOutCall(databaseAdapter, databaseAdapterFactory, credentialsSecureStore, userIdStore);
     }
 
     @Test
     public void clear_user_credentials() {
         when(credentialsSecureStore.get()).thenReturn(credentials);
+        when(userIdStore.get()).thenReturn("user-id");
 
         logOutCall.logOut().blockingAwait();
 
@@ -86,8 +91,6 @@ public class LogOutCallShould {
 
     @Test
     public void throw_d2_exception_if_no_authenticated_user() {
-        when(credentialsSecureStore.get()).thenReturn(null);
-
         TestObserver<Void> testObserver = logOutCall.logOut().test();
         testObserver.awaitTerminalEvent();
 

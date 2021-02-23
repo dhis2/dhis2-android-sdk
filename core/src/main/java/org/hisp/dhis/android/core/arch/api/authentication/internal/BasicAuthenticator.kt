@@ -35,12 +35,18 @@ import okhttp3.Response
 import org.hisp.dhis.android.core.arch.helpers.UserHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
+import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
 
-internal class BasicAuthenticator(private val credentialsSecureStore: ObjectKeyValueStore<Credentials>) :
+@Suppress("TooManyFunctions")
+internal class BasicAuthenticator(
+    private val credentialsSecureStore: ObjectKeyValueStore<Credentials>,
+    private val userIdStore: UserIdInMemoryStore
+) :
     Interceptor {
 
     companion object {
         private const val AUTHORIZATION_KEY = "Authorization"
+        private const val USER_ID_KEY = "DHIS2-Userid"
         private const val COOKIE_KEY = "Cookie"
         private const val SET_COOKIE_KEY = "set-cookie"
         const val LOCATION_KEY = "Location"
@@ -55,7 +61,7 @@ internal class BasicAuthenticator(private val credentialsSecureStore: ObjectKeyV
     override fun intercept(chain: Interceptor.Chain): Response {
         val req = chain.request()
 
-        // Header has already been explicitly in UserService.authenticate
+        // Header has already been explicitly added in UserService.authenticate
         val isLoginCall = req.header(AUTHORIZATION_KEY) != null
 
         return if (isLoginCall) {
@@ -84,9 +90,14 @@ internal class BasicAuthenticator(private val credentialsSecureStore: ObjectKeyV
         }
     }
 
-    private fun handleRegularCall(chain: Interceptor.Chain, credentials: Credentials): Response {
+    private fun getReqBuilder(chain: Interceptor.Chain): Request.Builder {
         val req = chain.request()
-        val builder = req.newBuilder()
+        return req.newBuilder()
+            .addHeader(USER_ID_KEY, userIdStore.get())
+    }
+
+    private fun handleRegularCall(chain: Interceptor.Chain, credentials: Credentials): Response {
+        val builder = getReqBuilder(chain)
         val useCookie = cookieValue != null
         val builderWithAuthentication =
             if (useCookie) addCookieHeader(builder) else addAuthorizationHeader(builder, credentials)
@@ -95,7 +106,7 @@ internal class BasicAuthenticator(private val credentialsSecureStore: ObjectKeyV
         val finalRes = if (useCookie && hasAuthenticationFailed(res)) {
             res.close()
             removeCookie()
-            val newReqWithBasicAuth = addAuthorizationHeader(req.newBuilder(), credentials).build()
+            val newReqWithBasicAuth = addAuthorizationHeader(getReqBuilder(chain), credentials).build()
             chain.proceed(newReqWithBasicAuth)
         } else {
             res

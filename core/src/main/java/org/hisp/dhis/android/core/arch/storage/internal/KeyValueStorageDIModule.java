@@ -58,6 +58,12 @@ public class KeyValueStorageDIModule {
 
     @Provides
     @Singleton
+    ObjectKeyValueStore<Credentials> credentialsSecureStore(CredentialsSecureStoreImpl impl) {
+        return impl;
+    }
+
+    @Provides
+    @Singleton
     UserIdInMemoryStore userIdStore() {
         return new UserIdInMemoryStore();
     }

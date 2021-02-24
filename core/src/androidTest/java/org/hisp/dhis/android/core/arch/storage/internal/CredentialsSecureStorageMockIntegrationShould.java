@@ -47,7 +47,10 @@ public class CredentialsSecureStorageMockIntegrationShould {
     public void setUp() throws D2Error {
         credentialsSecureStore =
                 new CredentialsSecureStoreImpl(
-                        new AndroidSecureStore(InstrumentationRegistry.getInstrumentation().getContext()));
+                        new ChunkedSecureStore(
+                                new AndroidSecureStore(InstrumentationRegistry.getInstrumentation().getContext())
+                        )
+                );
     }
 
     @Test
@@ -67,6 +70,7 @@ public class CredentialsSecureStorageMockIntegrationShould {
         credentialsSecureStore.set(credentials);
 
         credentialsSecureStore.remove();
+        // credentialsSecureStore.remove();
 
         Credentials retrievedCredentials = credentialsSecureStore.get();
 

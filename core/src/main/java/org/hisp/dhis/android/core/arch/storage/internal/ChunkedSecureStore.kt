@@ -27,47 +27,63 @@
  */
 package org.hisp.dhis.android.core.arch.storage.internal
 
-import net.openid.appauth.AuthState
 import javax.inject.Inject
 import javax.inject.Singleton
 
+private const val SizeInCharacters = 100
+
 @Singleton
-class CredentialsSecureStoreImpl @Inject constructor(private val secureStore: ChunkedSecureStore) :
-    ObjectKeyValueStore<Credentials> {
+class ChunkedSecureStore @Inject constructor(private val internalStore: SecureStore) : SecureStore {
 
-    private var credentials: Credentials? = null
-
-    override fun set(credentials: Credentials) {
-        this.credentials = credentials
-        secureStore.setData(USERNAME_KEY, credentials.username)
-        secureStore.setData(PASSWORD_KEY, credentials.password)
-        secureStore.setData(OPEN_ID_CONNECT_STATE_KEY, credentials.openIDConnectState?.jsonSerializeString())
-    }
-
-    override fun get(): Credentials? {
-        if (credentials == null) {
-            val username = secureStore.getData(USERNAME_KEY)
-
-            if (username != null) {
-                val password = secureStore.getData(PASSWORD_KEY)
-                val openIDConnectStateStr = secureStore.getData(OPEN_ID_CONNECT_STATE_KEY)
-                val openIDConnectState = openIDConnectStateStr?.let { AuthState.jsonDeserialize(it) }
-                credentials = Credentials(username, password, openIDConnectState)
+    override fun setData(key: String, data: String?) {
+        removeData(key)
+        if (data != null) {
+            val chunked = data.chunked(SizeInCharacters)
+            setLen(key, chunked.size)
+            chunked.forEachIndexed { i, chunk ->
+                internalStore.setData(chunkKey(key, i), chunk)
             }
         }
-        return credentials
     }
 
-    override fun remove() {
-        credentials = null
-        secureStore.removeData(USERNAME_KEY)
-        secureStore.removeData(PASSWORD_KEY)
-        secureStore.removeData(OPEN_ID_CONNECT_STATE_KEY)
+    override fun getData(key: String): String? {
+        val len = getLen(key)
+        return if (len == null) {
+            internalStore.getData(key)
+        } else {
+            val dataArray = (0 until len).map {
+                internalStore.getData(chunkKey(key, it))
+            }
+            dataArray.joinToString()
+        }
     }
 
-    companion object {
-        private const val USERNAME_KEY = "username"
-        private const val PASSWORD_KEY = "password"
-        private const val OPEN_ID_CONNECT_STATE_KEY = "oicState"
+    override fun removeData(key: String) {
+        val len = getLen(key)
+        if (len == null) {
+            internalStore.removeData(key)
+        } else {
+            (0 until len).forEach {
+                internalStore.removeData(chunkKey(key, it))
+            }
+            internalStore.removeData(lenKey(key))
+        }
+    }
+
+    private fun getLen(key: String): Int? {
+        val lenValStr = internalStore.getData(lenKey(key))
+        return lenValStr?.toIntOrNull()
+    }
+
+    private fun setLen(key: String, len: Int) {
+        internalStore.setData(lenKey(key), len.toString())
+    }
+
+    private fun lenKey(key: String): String {
+        return "${key}_[LEN]_"
+    }
+
+    private fun chunkKey(key: String, i: Int): String {
+        return "${key}_[$i]_"
     }
 }

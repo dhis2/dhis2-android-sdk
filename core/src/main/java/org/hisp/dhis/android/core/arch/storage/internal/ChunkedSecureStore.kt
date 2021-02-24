@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.arch.storage.internal
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val SizeInCharacters = 100
+private const val SizeInCharacters = 200
 
 @Singleton
 class ChunkedSecureStore @Inject constructor(private val internalStore: SecureStore) : SecureStore {
@@ -54,7 +54,7 @@ class ChunkedSecureStore @Inject constructor(private val internalStore: SecureSt
             val dataArray = (0 until len).map {
                 internalStore.getData(chunkKey(key, it))
             }
-            dataArray.joinToString()
+            dataArray.joinToString("")
         }
     }
 

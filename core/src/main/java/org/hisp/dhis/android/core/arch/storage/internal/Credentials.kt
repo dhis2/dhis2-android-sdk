@@ -34,4 +34,17 @@ data class Credentials(val username: String, val password: String?, val openIDCo
     fun getHash(): String? {
         return password.let { UserHelper.md5(username, it) }
     }
+
+    override fun equals(other: Any?)
+        = (other is Credentials)
+        && username == other.username
+        && password == other.password
+        && openIDConnectState?.jsonSerializeString() == other.openIDConnectState?.jsonSerializeString()
+
+    override fun hashCode(): Int {
+        var result = username.hashCode()
+        result = 31 * result + (password?.hashCode() ?: 0)
+        result = 31 * result + (openIDConnectState?.jsonSerialize()?.hashCode() ?: 0)
+        return result
+    }
 }

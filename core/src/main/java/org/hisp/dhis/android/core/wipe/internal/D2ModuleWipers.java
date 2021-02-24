@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.wipe.internal;
 
+import org.hisp.dhis.android.core.attribute.internal.AttributeModuleWiper;
 import org.hisp.dhis.android.core.category.internal.CategoryModuleWiper;
 import org.hisp.dhis.android.core.common.internal.CommonModuleWiper;
 import org.hisp.dhis.android.core.constant.internal.ConstantModuleWiper;
@@ -94,7 +95,8 @@ final class D2ModuleWipers {
             SettingModuleWiper systemSetting,
             SMSModuleWiper smsModuleWiper,
             UserModuleWiper user,
-            TrackedEntityModuleWiper trackedEntity) {
+            TrackedEntityModuleWiper trackedEntity,
+            AttributeModuleWiper attributeModuleWiper) {
 
         this.wipers = Arrays.asList(
                 category,
@@ -124,6 +126,7 @@ final class D2ModuleWipers {
                 systemSetting,
                 smsModuleWiper,
                 user,
-                trackedEntity);
+                trackedEntity,
+                attributeModuleWiper);
     }
 }

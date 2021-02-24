@@ -57,7 +57,6 @@ class CredentialsSecureStorageMockIntegrationShould {
     fun credentials_are_correctly_stored_for_open_id_connect_config() {
         val authState = AuthState()
         setAndVerify(Credentials("username", null, authState))
-
     }
 
     private fun setAndVerify(credentials: Credentials) {
@@ -65,11 +64,11 @@ class CredentialsSecureStorageMockIntegrationShould {
         store1.set(credentials)
         val extractedCredentials1 = store1.get()
         assertThat(extractedCredentials1).isEqualTo(credentials)
-        
+
+        // Instantiating a second store ensure credentials are not retrieved from the cache
         val store2 = instantiateStore()
         val extractedCredentials2 = store2.get()
         assertThat(extractedCredentials2).isEqualTo(credentials)
-        
     }
 
     @Test

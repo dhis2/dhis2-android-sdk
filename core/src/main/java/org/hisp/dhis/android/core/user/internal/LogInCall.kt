@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.user.internal
 
 import dagger.Reusable
 import io.reactivex.Single
+import javax.inject.Inject
 import net.openid.appauth.AuthState
 import okhttp3.HttpUrl
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
@@ -49,7 +50,6 @@ import org.hisp.dhis.android.core.user.AuthenticatedUser
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserInternalAccessor
 import org.hisp.dhis.android.core.wipe.internal.WipeModule
-import javax.inject.Inject
 
 @Reusable
 @Suppress("LongParameterList")

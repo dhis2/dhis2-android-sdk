@@ -36,11 +36,6 @@ import dagger.Reusable;
 
 @Reusable
 class DatabaseEncryptionPasswordGenerator {
-
-    @Inject
-    DatabaseEncryptionPasswordGenerator() {
-    }
-
     private final Random random = new SecureRandom();
 
     private static final String ALLOWED_CHARS = "0123456789" + "abcdefghijklmnopqrstuvwxyz"
@@ -54,5 +49,9 @@ class DatabaseEncryptionPasswordGenerator {
         }
 
         return new String(randomChars);
+    }
+
+    @Inject
+    DatabaseEncryptionPasswordGenerator() {
     }
 }

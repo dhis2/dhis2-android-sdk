@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.arch.api.internal;
 
+import android.util.Log;
+
 import org.hisp.dhis.android.core.D2Configuration;
 import org.hisp.dhis.android.core.arch.api.authentication.internal.BasicAuthenticator;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIExecutorsDIModule;
@@ -52,11 +54,12 @@ public class APIClientDIModule {
     }
     @Singleton
     @Provides
+    @SuppressWarnings({"PMD.PreserveStackTrace"})
     Retrofit retrofit(OkHttpClient okHttpClient) {
         try {
             return RetrofitFactory.retrofit(okHttpClient);
         } catch (D2Error d2Error) {
-            d2Error.printStackTrace();
+            Log.e("APIClientDIModule", d2Error.getMessage());
             throw new RuntimeException("Can't instantiate retrofit");
         }
     }

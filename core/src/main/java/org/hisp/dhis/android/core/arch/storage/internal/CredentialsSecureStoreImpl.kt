@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.arch.storage.internal
 
-import net.openid.appauth.AuthState
 import javax.inject.Inject
 import javax.inject.Singleton
+import net.openid.appauth.AuthState
 
 @Singleton
 class CredentialsSecureStoreImpl @Inject constructor(private val secureStore: ChunkedSecureStore) :

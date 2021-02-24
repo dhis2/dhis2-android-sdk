@@ -27,6 +27,10 @@
  */
 package org.hisp.dhis.android.core.arch.api.authentication.internal
 
+import java.io.IOException
+import java.util.Locale
+import javax.inject.Inject
+import javax.inject.Singleton
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
@@ -35,10 +39,6 @@ import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectTokenRefresher
-import java.io.IOException
-import java.util.Locale
-import javax.inject.Inject
-import javax.inject.Singleton
 
 @Singleton
 @Suppress("TooManyFunctions")

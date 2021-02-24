@@ -65,6 +65,7 @@ import org.hisp.dhis.android.core.wipe.internal.WipeModule;
 
 import retrofit2.Retrofit;
 
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.CouplingBetweenObjects"})
 public final class D2 {
     private final D2Modules modules;
     final D2DIComponent d2DIComponent;

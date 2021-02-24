@@ -42,6 +42,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
 
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.mockwebserver.MockResponse;
@@ -54,7 +55,7 @@ import static org.mockito.Mockito.when;
 
 // ToDo: Solve problem with INFO logs from MockWebServer being interpreted as errors in gradle
 @RunWith(JUnit4.class)
-public class BasicAuthenticatorShould {
+public class ParentAuthenticatorShould {
 
     @Mock
     private ObjectKeyValueStore<Credentials> credentialsSecureStore;
@@ -76,8 +77,14 @@ public class BasicAuthenticatorShould {
         mockWebServer.enqueue(new MockResponse());
         mockWebServer.start();
 
+        AuthenticatorHelper helper = new AuthenticatorHelper(userIdStore);
+        Interceptor authenticator = new ParentAuthenticator(
+                credentialsSecureStore,
+                new PasswordAndCookieAuthenticator(helper),
+                new OpenIDConnectAuthenticator(credentialsSecureStore, tokenRefresher, helper)
+        );
         okHttpClient = new OkHttpClient.Builder()
-                .addInterceptor(new BasicAuthenticator(credentialsSecureStore, userIdStore, tokenRefresher))
+                .addInterceptor(authenticator)
                 .build();
     }
 

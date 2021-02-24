@@ -25,42 +25,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.authentication.internal
 
-package org.hisp.dhis.android.core.arch.api.internal;
+import dagger.Reusable
+import javax.inject.Inject
+import okhttp3.Interceptor
+import okhttp3.Request
+import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
 
-import android.util.Log;
+@Reusable
+internal class AuthenticatorHelper @Inject constructor(
+    private val userIdStore: UserIdInMemoryStore
+) {
 
-import org.hisp.dhis.android.core.D2Configuration;
-import org.hisp.dhis.android.core.arch.api.authentication.internal.ParentAuthenticator;
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIExecutorsDIModule;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-
-import javax.inject.Singleton;
-
-import dagger.Module;
-import dagger.Provides;
-import okhttp3.OkHttpClient;
-import retrofit2.Retrofit;
-
-@Module(includes = {
-        APIExecutorsDIModule.class
-})
-public class APIClientDIModule {
-
-    @Singleton
-    @Provides
-    OkHttpClient okHttpClient(D2Configuration d2Configuration, ParentAuthenticator authenticator) {
-        return OkHttpClientFactory.okHttpClient(d2Configuration, authenticator);
+    companion object {
+        const val AUTHORIZATION_KEY = "Authorization"
+        private const val USER_ID_KEY = "DHIS2-Userid"
     }
-    @Singleton
-    @Provides
-    @SuppressWarnings({"PMD.PreserveStackTrace"})
-    Retrofit retrofit(OkHttpClient okHttpClient) {
-        try {
-            return RetrofitFactory.retrofit(okHttpClient);
-        } catch (D2Error d2Error) {
-            Log.e("APIClientDIModule", d2Error.getMessage());
-            throw new RuntimeException("Can't instantiate retrofit");
-        }
+
+    fun builderWithUserId(chain: Interceptor.Chain): Request.Builder {
+        val req = chain.request()
+        return req.newBuilder()
+            .addHeader(USER_ID_KEY, userIdStore.get()!!)
     }
 }

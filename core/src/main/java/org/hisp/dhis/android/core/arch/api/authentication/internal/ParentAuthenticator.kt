@@ -25,26 +25,50 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.api.internal
+package org.hisp.dhis.android.core.arch.api.authentication.internal
 
+import dagger.Reusable
 import java.io.IOException
+import javax.inject.Inject
 import okhttp3.Interceptor
 import okhttp3.Response
-import org.hisp.dhis.android.core.arch.api.authentication.internal.PasswordAndCookieAuthenticator.Companion.LOCATION_KEY
+import org.hisp.dhis.android.core.arch.api.authentication.internal.AuthenticatorHelper.Companion.AUTHORIZATION_KEY
+import org.hisp.dhis.android.core.arch.storage.internal.Credentials
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 
-internal class ServerURLVersionRedirectionInterceptor : Interceptor {
+@Reusable
+internal class ParentAuthenticator @Inject constructor(
+    private val credentialsSecureStore: ObjectKeyValueStore<Credentials>,
+    private val passwordAndCookieAuthenticator: PasswordAndCookieAuthenticator,
+    private val openIDConnectAuthenticator: OpenIDConnectAuthenticator
+) :
+    Interceptor {
 
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
-        val request = chain.request()
-        val response = chain.proceed(request)
-        if (response.isRedirect) {
-            val location = response.header(LOCATION_KEY)
-            ServerURLWrapper.setServerUrl(location)
-            response.close()
-            val redirectReq = DynamicServerURLInterceptor.transformRequest(request)
-            return chain.proceed(redirectReq)
+        val req = chain.request()
+
+        // Header has already been explicitly added in UserService.authenticate
+        val isLoginCall = req.header(AUTHORIZATION_KEY) != null
+
+        return if (isLoginCall) {
+            handleLoginCall(chain)
+        } else {
+            val credentials = credentialsSecureStore.get()
+            return when {
+                credentials?.password != null ->
+                    passwordAndCookieAuthenticator.handlePasswordCall(chain, credentials)
+                credentials?.openIDConnectState != null ->
+                    openIDConnectAuthenticator.handleTokenCall(chain, credentials)
+                else -> chain.proceed(req)
+            }
         }
-        return response
+    }
+
+    private fun handleLoginCall(chain: Interceptor.Chain): Response {
+        passwordAndCookieAuthenticator.removeCookie()
+        val res = chain.proceed(chain.request())
+        passwordAndCookieAuthenticator.storeCookieIfSentByServer(res)
+        return res
     }
 }

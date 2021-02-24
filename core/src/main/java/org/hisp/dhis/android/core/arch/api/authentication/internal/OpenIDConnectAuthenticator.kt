@@ -25,26 +25,43 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.api.internal
+package org.hisp.dhis.android.core.arch.api.authentication.internal
 
-import java.io.IOException
+import dagger.Reusable
+import javax.inject.Inject
 import okhttp3.Interceptor
+import okhttp3.Request
 import okhttp3.Response
-import org.hisp.dhis.android.core.arch.api.authentication.internal.PasswordAndCookieAuthenticator.Companion.LOCATION_KEY
+import org.hisp.dhis.android.core.arch.api.authentication.internal.AuthenticatorHelper.Companion.AUTHORIZATION_KEY
+import org.hisp.dhis.android.core.arch.storage.internal.Credentials
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
+import org.hisp.dhis.android.core.user.openid.OpenIDConnectTokenRefresher
 
-internal class ServerURLVersionRedirectionInterceptor : Interceptor {
+@Reusable
+internal class OpenIDConnectAuthenticator @Inject constructor(
+    private val credentialsSecureStore: ObjectKeyValueStore<Credentials>,
+    private val tokenRefresher: OpenIDConnectTokenRefresher,
+    private val helper: AuthenticatorHelper
+) {
 
-    @Throws(IOException::class)
-    override fun intercept(chain: Interceptor.Chain): Response {
-        val request = chain.request()
-        val response = chain.proceed(request)
-        if (response.isRedirect) {
-            val location = response.header(LOCATION_KEY)
-            ServerURLWrapper.setServerUrl(location)
-            response.close()
-            val redirectReq = DynamicServerURLInterceptor.transformRequest(request)
-            return chain.proceed(redirectReq)
+    fun handleTokenCall(chain: Interceptor.Chain, credentials: Credentials): Response {
+        val builder = helper.builderWithUserId(chain)
+        val builderWithAuthentication = addTokenHeader(builder, getUpdatedToken(credentials))
+        return chain.proceed(builderWithAuthentication.build())
+    }
+
+    private fun getUpdatedToken(credentials: Credentials): String {
+        val state = credentials.openIDConnectState!!
+        return if (state.needsTokenRefresh) {
+            val token = tokenRefresher.blockingGetFreshToken(state)
+            credentialsSecureStore.set(credentials) // Auth state internally updated
+            token
+        } else {
+            state.idToken!!
         }
-        return response
+    }
+
+    private fun addTokenHeader(builder: Request.Builder, token: String): Request.Builder {
+        return builder.addHeader(AUTHORIZATION_KEY, "Bearer $token")
     }
 }

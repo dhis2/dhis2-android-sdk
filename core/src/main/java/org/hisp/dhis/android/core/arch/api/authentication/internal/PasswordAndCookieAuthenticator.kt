@@ -27,82 +27,31 @@
  */
 package org.hisp.dhis.android.core.arch.api.authentication.internal
 
-import java.io.IOException
-import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
+import org.hisp.dhis.android.core.arch.api.authentication.internal.AuthenticatorHelper.Companion.AUTHORIZATION_KEY
 import org.hisp.dhis.android.core.arch.helpers.UserHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
-import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
-import org.hisp.dhis.android.core.user.openid.OpenIDConnectTokenRefresher
 
 @Singleton
-@Suppress("TooManyFunctions")
-internal class BasicAuthenticator @Inject constructor(
-    private val credentialsSecureStore: ObjectKeyValueStore<Credentials>,
-    private val userIdStore: UserIdInMemoryStore,
-    private val tokenRefresher: OpenIDConnectTokenRefresher
-) :
-    Interceptor {
+internal class PasswordAndCookieAuthenticator @Inject constructor(
+    private val helper: AuthenticatorHelper
+) {
 
     companion object {
-        private const val AUTHORIZATION_KEY = "Authorization"
-        private const val USER_ID_KEY = "DHIS2-Userid"
         private const val COOKIE_KEY = "Cookie"
         private const val SET_COOKIE_KEY = "set-cookie"
+        private const val LOGIN_ACTION = "login.action"
         const val LOCATION_KEY = "Location"
-
-        private const val BASIC_CREDENTIALS = "Basic %s"
-        const val LOGIN_ACTION = "login.action"
     }
 
     private var cookieValue: String? = null
 
-    @Throws(IOException::class)
-    override fun intercept(chain: Interceptor.Chain): Response {
-        val req = chain.request()
-
-        // Header has already been explicitly added in UserService.authenticate
-        val isLoginCall = req.header(AUTHORIZATION_KEY) != null
-
-        return if (isLoginCall) {
-            handleLoginCall(chain)
-        } else {
-            val credentials = credentialsSecureStore.get()
-            return when {
-                credentials?.password != null -> handlePasswordCall(chain, credentials)
-                credentials?.openIDConnectState != null -> handleTokenCall(chain, credentials)
-                else -> chain.proceed(req)
-            }
-        }
-    }
-
-    private fun handleLoginCall(chain: Interceptor.Chain): Response {
-        removeCookie()
-        val res = chain.proceed(chain.request())
-        storeCookieIfSentByServer(res)
-        return res
-    }
-
-    private fun storeCookieIfSentByServer(res: Response) {
-        val cookieRes = res.header(SET_COOKIE_KEY)
-        if (cookieRes != null) {
-            cookieValue = cookieRes
-        }
-    }
-
-    private fun getReqBuilder(chain: Interceptor.Chain): Request.Builder {
-        val req = chain.request()
-        return req.newBuilder()
-            .addHeader(USER_ID_KEY, userIdStore.get()!!)
-    }
-
-    private fun handlePasswordCall(chain: Interceptor.Chain, credentials: Credentials): Response {
-        val builder = getReqBuilder(chain)
+    fun handlePasswordCall(chain: Interceptor.Chain, credentials: Credentials): Response {
+        val builder = helper.builderWithUserId(chain)
         val useCookie = cookieValue != null
         val builderWithAuthentication =
             if (useCookie) addCookieHeader(builder) else addPasswordHeader(builder, credentials)
@@ -111,7 +60,7 @@ internal class BasicAuthenticator @Inject constructor(
         val finalRes = if (useCookie && hasAuthenticationFailed(res)) {
             res.close()
             removeCookie()
-            val newReqWithBasicAuth = addPasswordHeader(getReqBuilder(chain), credentials).build()
+            val newReqWithBasicAuth = addPasswordHeader(helper.builderWithUserId(chain), credentials).build()
             chain.proceed(newReqWithBasicAuth)
         } else {
             res
@@ -121,21 +70,15 @@ internal class BasicAuthenticator @Inject constructor(
         return finalRes
     }
 
-    private fun getUpdatedToken(credentials: Credentials): String {
-        val state = credentials.openIDConnectState!!
-        return if (state.needsTokenRefresh) {
-            val token = tokenRefresher.blockingGetFreshToken(state)
-            credentialsSecureStore.set(credentials) // Auth state internally updated
-            token
-        } else {
-            state.idToken!!
+    fun storeCookieIfSentByServer(res: Response) {
+        val cookieRes = res.header(SET_COOKIE_KEY)
+        if (cookieRes != null) {
+            cookieValue = cookieRes
         }
     }
 
-    private fun handleTokenCall(chain: Interceptor.Chain, credentials: Credentials): Response {
-        val builder = getReqBuilder(chain)
-        val builderWithAuthentication = addTokenHeader(builder, getUpdatedToken(credentials))
-        return chain.proceed(builderWithAuthentication.build())
+    fun removeCookie() {
+        cookieValue = null
     }
 
     private fun hasAuthenticationFailed(res: Response): Boolean {
@@ -149,21 +92,10 @@ internal class BasicAuthenticator @Inject constructor(
 
     private fun getAuthorizationForPassword(credentials: Credentials): String {
         val base64Credentials = UserHelper.base64(credentials.username, credentials.password)
-        return String.format(
-            Locale.US,
-            BASIC_CREDENTIALS, base64Credentials
-        )
-    }
-
-    private fun addTokenHeader(builder: Request.Builder, token: String): Request.Builder {
-        return builder.addHeader(AUTHORIZATION_KEY, "Bearer $token")
+        return "Basic $base64Credentials"
     }
 
     private fun addCookieHeader(builder: Request.Builder): Request.Builder {
         return builder.addHeader(COOKIE_KEY, cookieValue!!)
-    }
-
-    private fun removeCookie() {
-        cookieValue = null
     }
 }

@@ -27,58 +27,44 @@
  */
 package org.hisp.dhis.android.core.arch.api.authentication.internal
 
+import dagger.Reusable
 import javax.inject.Inject
-import javax.inject.Singleton
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
-import org.hisp.dhis.android.core.arch.api.authentication.internal.AuthenticatorHelper.Companion.AUTHORIZATION_KEY
+import org.hisp.dhis.android.core.arch.api.authentication.internal.UserIdAuthenticatorHelper.Companion.AUTHORIZATION_KEY
 import org.hisp.dhis.android.core.arch.helpers.UserHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 
-@Singleton
+@Reusable
 internal class PasswordAndCookieAuthenticator @Inject constructor(
-    private val helper: AuthenticatorHelper
+    private val userIdHelper: UserIdAuthenticatorHelper,
+    private val cookieHelper: CookieAuthenticatorHelper
 ) {
 
     companion object {
-        private const val COOKIE_KEY = "Cookie"
-        private const val SET_COOKIE_KEY = "set-cookie"
         private const val LOGIN_ACTION = "login.action"
         const val LOCATION_KEY = "Location"
     }
 
-    private var cookieValue: String? = null
-
     fun handlePasswordCall(chain: Interceptor.Chain, credentials: Credentials): Response {
-        val builder = helper.builderWithUserId(chain)
-        val useCookie = cookieValue != null
+        val builder = userIdHelper.builderWithUserId(chain)
+        val useCookie = cookieHelper.isCookieDefined()
         val builderWithAuthentication =
-            if (useCookie) addCookieHeader(builder) else addPasswordHeader(builder, credentials)
+            if (useCookie) cookieHelper.addCookieHeader(builder) else addPasswordHeader(builder, credentials)
         val res = chain.proceed(builderWithAuthentication.build())
 
         val finalRes = if (useCookie && hasAuthenticationFailed(res)) {
             res.close()
-            removeCookie()
-            val newReqWithBasicAuth = addPasswordHeader(helper.builderWithUserId(chain), credentials).build()
+            cookieHelper.removeCookie()
+            val newReqWithBasicAuth = addPasswordHeader(userIdHelper.builderWithUserId(chain), credentials).build()
             chain.proceed(newReqWithBasicAuth)
         } else {
             res
         }
 
-        storeCookieIfSentByServer(finalRes)
+        cookieHelper.storeCookieIfSentByServer(finalRes)
         return finalRes
-    }
-
-    fun storeCookieIfSentByServer(res: Response) {
-        val cookieRes = res.header(SET_COOKIE_KEY)
-        if (cookieRes != null) {
-            cookieValue = cookieRes
-        }
-    }
-
-    fun removeCookie() {
-        cookieValue = null
     }
 
     private fun hasAuthenticationFailed(res: Response): Boolean {
@@ -93,9 +79,5 @@ internal class PasswordAndCookieAuthenticator @Inject constructor(
     private fun getAuthorizationForPassword(credentials: Credentials): String {
         val base64Credentials = UserHelper.base64(credentials.username, credentials.password)
         return "Basic $base64Credentials"
-    }
-
-    private fun addCookieHeader(builder: Request.Builder): Request.Builder {
-        return builder.addHeader(COOKIE_KEY, cookieValue!!)
     }
 }

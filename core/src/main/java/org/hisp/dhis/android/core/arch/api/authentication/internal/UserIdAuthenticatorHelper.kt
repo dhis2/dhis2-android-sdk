@@ -34,7 +34,7 @@ import okhttp3.Request
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
 
 @Reusable
-internal class AuthenticatorHelper @Inject constructor(
+internal class UserIdAuthenticatorHelper @Inject constructor(
     private val userIdStore: UserIdInMemoryStore
 ) {
 

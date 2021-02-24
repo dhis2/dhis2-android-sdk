@@ -77,11 +77,13 @@ public class ParentAuthenticatorShould {
         mockWebServer.enqueue(new MockResponse());
         mockWebServer.start();
 
-        AuthenticatorHelper helper = new AuthenticatorHelper(userIdStore);
+        UserIdAuthenticatorHelper userIdHelper = new UserIdAuthenticatorHelper(userIdStore);
+        CookieAuthenticatorHelper cookieHelper = new CookieAuthenticatorHelper();
         Interceptor authenticator = new ParentAuthenticator(
                 credentialsSecureStore,
-                new PasswordAndCookieAuthenticator(helper),
-                new OpenIDConnectAuthenticator(credentialsSecureStore, tokenRefresher, helper)
+                new PasswordAndCookieAuthenticator(userIdHelper, cookieHelper),
+                new OpenIDConnectAuthenticator(credentialsSecureStore, tokenRefresher, userIdHelper),
+                cookieHelper
         );
         okHttpClient = new OkHttpClient.Builder()
                 .addInterceptor(authenticator)

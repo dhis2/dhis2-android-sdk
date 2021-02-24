@@ -32,7 +32,7 @@ import java.io.IOException
 import javax.inject.Inject
 import okhttp3.Interceptor
 import okhttp3.Response
-import org.hisp.dhis.android.core.arch.api.authentication.internal.AuthenticatorHelper.Companion.AUTHORIZATION_KEY
+import org.hisp.dhis.android.core.arch.api.authentication.internal.UserIdAuthenticatorHelper.Companion.AUTHORIZATION_KEY
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 
@@ -40,7 +40,8 @@ import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 internal class ParentAuthenticator @Inject constructor(
     private val credentialsSecureStore: ObjectKeyValueStore<Credentials>,
     private val passwordAndCookieAuthenticator: PasswordAndCookieAuthenticator,
-    private val openIDConnectAuthenticator: OpenIDConnectAuthenticator
+    private val openIDConnectAuthenticator: OpenIDConnectAuthenticator,
+    private val cookieHelper: CookieAuthenticatorHelper
 ) :
     Interceptor {
 
@@ -66,9 +67,9 @@ internal class ParentAuthenticator @Inject constructor(
     }
 
     private fun handleLoginCall(chain: Interceptor.Chain): Response {
-        passwordAndCookieAuthenticator.removeCookie()
+        cookieHelper.removeCookie()
         val res = chain.proceed(chain.request())
-        passwordAndCookieAuthenticator.storeCookieIfSentByServer(res)
+        cookieHelper.storeCookieIfSentByServer(res)
         return res
     }
 }

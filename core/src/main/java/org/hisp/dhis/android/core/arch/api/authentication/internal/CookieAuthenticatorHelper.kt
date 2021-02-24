@@ -27,41 +27,37 @@
  */
 package org.hisp.dhis.android.core.arch.api.authentication.internal
 
-import dagger.Reusable
 import javax.inject.Inject
-import okhttp3.Interceptor
+import javax.inject.Singleton
 import okhttp3.Request
 import okhttp3.Response
-import org.hisp.dhis.android.core.arch.api.authentication.internal.UserIdAuthenticatorHelper.Companion.AUTHORIZATION_KEY
-import org.hisp.dhis.android.core.arch.storage.internal.Credentials
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
-import org.hisp.dhis.android.core.user.openid.OpenIDConnectTokenRefresher
 
-@Reusable
-internal class OpenIDConnectAuthenticator @Inject constructor(
-    private val credentialsSecureStore: ObjectKeyValueStore<Credentials>,
-    private val tokenRefresher: OpenIDConnectTokenRefresher,
-    private val userIdHelper: UserIdAuthenticatorHelper
-) {
+@Singleton
+internal class CookieAuthenticatorHelper @Inject constructor() {
 
-    fun handleTokenCall(chain: Interceptor.Chain, credentials: Credentials): Response {
-        val builder = userIdHelper.builderWithUserId(chain)
-        val builderWithAuthentication = addTokenHeader(builder, getUpdatedToken(credentials))
-        return chain.proceed(builderWithAuthentication.build())
+    companion object {
+        private const val COOKIE_KEY = "Cookie"
+        private const val SET_COOKIE_KEY = "set-cookie"
     }
 
-    private fun getUpdatedToken(credentials: Credentials): String {
-        val state = credentials.openIDConnectState!!
-        return if (state.needsTokenRefresh) {
-            val token = tokenRefresher.blockingGetFreshToken(state)
-            credentialsSecureStore.set(credentials) // Auth state internally updated
-            token
-        } else {
-            state.idToken!!
+    private var cookieValue: String? = null
+
+    fun storeCookieIfSentByServer(res: Response) {
+        val cookieRes = res.header(SET_COOKIE_KEY)
+        if (cookieRes != null) {
+            cookieValue = cookieRes
         }
     }
 
-    private fun addTokenHeader(builder: Request.Builder, token: String): Request.Builder {
-        return builder.addHeader(AUTHORIZATION_KEY, "Bearer $token")
+    fun isCookieDefined(): Boolean {
+        return cookieValue != null
+    }
+
+    fun removeCookie() {
+        cookieValue = null
+    }
+
+    fun addCookieHeader(builder: Request.Builder): Request.Builder {
+        return builder.addHeader(COOKIE_KEY, cookieValue!!)
     }
 }

@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;

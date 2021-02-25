@@ -66,7 +66,7 @@ internal object EventQueryRepositoryScopeHelper {
 
             when (tokens.size) {
                 2 -> {
-                    val column = EventQueryScopeOrderColumn.all.find { it.apiName() == tokens[0] }
+                    val column = parseOrderColumn(tokens[0])
                     val direction = RepositoryScope.OrderByDirection.values().find { it.api == tokens[1] }
 
                     if (column != null && direction != null) {
@@ -80,6 +80,16 @@ internal object EventQueryRepositoryScopeHelper {
                 }
                 else -> null
             }
+        }
+    }
+
+    private fun parseOrderColumn(orderColumn: String): EventQueryScopeOrderColumn? {
+        val fixedColumn = EventQueryScopeOrderColumn.fixedOrderColumns.find { it.apiName() == orderColumn }
+
+        return when {
+            fixedColumn != null -> fixedColumn
+            Regex("\\w{11}").matches(orderColumn) -> EventQueryScopeOrderColumn.dataElement(orderColumn)
+            else -> null
         }
     }
 }

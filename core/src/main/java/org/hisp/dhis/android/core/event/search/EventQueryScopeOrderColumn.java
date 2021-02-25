@@ -102,17 +102,17 @@ abstract class EventQueryScopeOrderColumn {
     public static final EventQueryScopeOrderColumn TIMELINE =
             builder().type(Type.TIMELINE).build();
 
-    public static EventQueryScopeOrderColumn dataElement(String dataElementUid) {
-        return builder().type(Type.DATA_ELEMENT).apiName(dataElementUid).value(dataElementUid).build();
-    }
-
-    public static List<EventQueryScopeOrderColumn> all = Arrays.asList(
+    static List<EventQueryScopeOrderColumn> fixedOrderColumns = Arrays.asList(
             EVENT, PROGRAM, PROGRAM_STAGE,
             ENROLLMENT, ENROLLMENT_STATUS,
             ORGUNIT, ORGUNIT_NAME, TRACKED_ENTITY_INSTANCE, FOLLOW_UP, STATUS,
             EVENT_DATE, DUE_DATE, STORED_BY,
             CREATED, LAST_UPDATED, COMPLETED_BY, COMPLETED_DATE,
             TIMELINE);
+
+    public static EventQueryScopeOrderColumn dataElement(String dataElementUid) {
+        return builder().type(Type.DATA_ELEMENT).apiName(dataElementUid).value(dataElementUid).build();
+    }
 
     @NonNull
     public abstract Type type();

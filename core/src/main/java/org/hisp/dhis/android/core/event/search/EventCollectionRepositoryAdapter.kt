@@ -28,18 +28,18 @@
 package org.hisp.dhis.android.core.event.search
 
 import dagger.Reusable
+import java.util.*
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
 import org.hisp.dhis.android.core.event.EventCollectionRepository
 import org.hisp.dhis.android.core.event.EventDataFilter
+import org.hisp.dhis.android.core.event.search.EventQueryScopeOrderColumn.Type as OrderColumnType
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.user.AuthenticatedUserObjectRepository
-import java.util.*
-import javax.inject.Inject
-import org.hisp.dhis.android.core.event.search.EventQueryScopeOrderColumn.Type as OrderColumnType
 
 @Reusable
 internal class EventCollectionRepositoryAdapter @Inject constructor(

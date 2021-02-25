@@ -45,20 +45,25 @@ class EventQueryRepositoryScopeHelperShould {
         val scope = EventQueryRepositoryScope.empty()
 
         val criteria = EventQueryCriteria.builder()
-            .order("dueDate:asc,eventDate:desc")
+            .order("dueDate:asc,eventDate:desc,Xve32rmxfpT:asc")
             .build()
         val filter = EventFilter.builder().uid(filterUid).eventQueryCriteria(criteria).build()
 
         val updatedScope = EventQueryRepositoryScopeHelper.addEventFilter(scope, filter)
 
-        assertThat(updatedScope.order().size).isEqualTo(2)
+        assertThat(updatedScope.order().size).isEqualTo(3)
         updatedScope.order().first().let {
             assertThat(it.column()).isEqualTo(EventQueryScopeOrderColumn.DUE_DATE)
             assertThat(it.direction()).isEqualTo(RepositoryScope.OrderByDirection.ASC)
         }
-        updatedScope.order().last().let {
+        updatedScope.order()[1].let {
             assertThat(it.column()).isEqualTo(EventQueryScopeOrderColumn.EVENT_DATE)
             assertThat(it.direction()).isEqualTo(RepositoryScope.OrderByDirection.DESC)
+        }
+        updatedScope.order().last().let {
+            assertThat(it.column().type()).isEqualTo(EventQueryScopeOrderColumn.Type.DATA_ELEMENT)
+            assertThat(it.column().value()).isEqualTo("Xve32rmxfpT")
+            assertThat(it.direction()).isEqualTo(RepositoryScope.OrderByDirection.ASC)
         }
     }
 

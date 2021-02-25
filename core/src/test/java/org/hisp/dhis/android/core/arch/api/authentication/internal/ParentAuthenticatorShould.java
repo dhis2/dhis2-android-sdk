@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.arch.api.authentication.internal;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore;
+import org.hisp.dhis.android.core.user.openid.OpenIDConnectTokenRefresher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,6 +42,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
 
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.mockwebserver.MockResponse;
@@ -53,13 +55,16 @@ import static org.mockito.Mockito.when;
 
 // ToDo: Solve problem with INFO logs from MockWebServer being interpreted as errors in gradle
 @RunWith(JUnit4.class)
-public class BasicAuthenticatorShould {
+public class ParentAuthenticatorShould {
 
     @Mock
     private ObjectKeyValueStore<Credentials> credentialsSecureStore;
 
     @Mock
     private UserIdInMemoryStore userIdStore;
+
+    @Mock
+    private OpenIDConnectTokenRefresher tokenRefresher;
 
     private MockWebServer mockWebServer;
     private OkHttpClient okHttpClient;
@@ -72,8 +77,16 @@ public class BasicAuthenticatorShould {
         mockWebServer.enqueue(new MockResponse());
         mockWebServer.start();
 
+        UserIdAuthenticatorHelper userIdHelper = new UserIdAuthenticatorHelper(userIdStore);
+        CookieAuthenticatorHelper cookieHelper = new CookieAuthenticatorHelper();
+        Interceptor authenticator = new ParentAuthenticator(
+                credentialsSecureStore,
+                new PasswordAndCookieAuthenticator(userIdHelper, cookieHelper),
+                new OpenIDConnectAuthenticator(credentialsSecureStore, tokenRefresher, userIdHelper),
+                cookieHelper
+        );
         okHttpClient = new OkHttpClient.Builder()
-                .addInterceptor(new BasicAuthenticator(credentialsSecureStore, userIdStore))
+                .addInterceptor(authenticator)
                 .build();
     }
 

@@ -30,19 +30,28 @@ package org.hisp.dhis.android.core.arch.d2.internal;
 
 import android.content.Context;
 
+import org.hisp.dhis.android.core.D2Configuration;
+
 import dagger.Module;
 import dagger.Provides;
 
 @Module
 class AppContextDIModule {
     private final Context context;
+    private final D2Configuration d2Configuration;
 
-    AppContextDIModule(Context context) {
-        this.context = context.getApplicationContext();
+    AppContextDIModule(D2Configuration d2Configuration) {
+        this.context = d2Configuration.context().getApplicationContext();
+        this.d2Configuration = d2Configuration;
     }
 
     @Provides
     Context appContext() {
         return context;
+    }
+
+    @Provides
+    D2Configuration d2Configuration() {
+        return d2Configuration;
     }
 }

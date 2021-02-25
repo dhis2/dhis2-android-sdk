@@ -31,8 +31,11 @@ package org.hisp.dhis.android.core.configuration.internal;
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.constant.ConstantModule;
 import org.hisp.dhis.android.core.constant.internal.ConstantModuleImpl;
+
+import java.util.Date;
 
 import dagger.Module;
 import dagger.Provides;
@@ -49,8 +52,8 @@ public final class ConfigurationPackageDIModule {
 
     @Provides
     @Reusable
-    DatabaseConfigurationHelper configurationHelper() {
-        return DatabaseConfigurationHelper.create();
+    DateProvider dateProvider() {
+        return () -> BaseIdentifiableObject.dateToDateStr(new Date());
     }
 
     @Provides

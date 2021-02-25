@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -25,33 +26,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration.internal;
+package org.hisp.dhis.android.core.user.openid
 
-import java.security.SecureRandom;
-import java.util.Random;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import android.content.Context
+import dagger.Reusable
+import io.reactivex.Single
+import javax.inject.Inject
+import net.openid.appauth.AuthState
+import net.openid.appauth.AuthorizationException
+import net.openid.appauth.AuthorizationService
 
 @Reusable
-class DatabaseEncryptionPasswordGenerator {
-    private final Random random = new SecureRandom();
+internal class OpenIDConnectTokenRefresher @Inject constructor(
+    private val context: Context
+) {
 
-    private static final String ALLOWED_CHARS = "0123456789" + "abcdefghijklmnopqrstuvwxyz"
-            + "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    private static final int CODESIZE = 32;
-
-    public String generate() {
-        char[] randomChars = new char[CODESIZE];
-        for (int i = 0; i < CODESIZE; ++i) {
-            randomChars[i] = ALLOWED_CHARS.charAt(random.nextInt(ALLOWED_CHARS.length()));
-        }
-
-        return new String(randomChars);
-    }
-
-    @Inject
-    DatabaseEncryptionPasswordGenerator() {
+    fun blockingGetFreshToken(authState: AuthState): String {
+        val service = AuthorizationService(context)
+        return Single.create<String> {
+            authState.performActionWithFreshTokens(service) {
+                _: String?, idToken: String?, ex: AuthorizationException? ->
+                service.dispose()
+                if (idToken != null) {
+                    it.onSuccess(idToken)
+                } else {
+                    it.onError(RuntimeException(ex))
+                }
+            }
+        }.blockingGet()
     }
 }

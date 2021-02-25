@@ -26,51 +26,36 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.storage.internal;
+package org.hisp.dhis.android.core.arch.api.internal;
 
-import androidx.test.platform.app.InstrumentationRegistry;
-
+import org.hisp.dhis.android.core.arch.api.fields.internal.FieldsConverterFactory;
+import org.hisp.dhis.android.core.arch.api.filters.internal.FilterConverterFactory;
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory;
+import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser;
 import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
-import static com.google.common.truth.Truth.assertThat;
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 
-@RunWith(D2JunitRunner.class)
-public class CredentialsSecureStorageMockIntegrationShould {
+final class RetrofitFactory {
 
-    private ObjectKeyValueStore<Credentials> credentialsSecureStore;
+    static Retrofit retrofit(OkHttpClient okHttpClient) throws D2Error {
+        return new Retrofit.Builder()
+                // Actual baseUrl will be set later during logIn through DynamicServerURLInterceptor. But it's mandatory
+                // to create Retrofit
+                .baseUrl(ServerUrlParser.parse("https://temporary-dhis-url.org/"))
 
-    @Before
-    public void setUp() throws D2Error {
-        credentialsSecureStore =
-                new CredentialsSecureStoreImpl(
-                        new AndroidSecureStore(InstrumentationRegistry.getInstrumentation().getContext()));
+                .client(okHttpClient)
+                .addConverterFactory(JacksonConverterFactory.create(ObjectMapperFactory.objectMapper()))
+                .addConverterFactory(FilterConverterFactory.create())
+                .addConverterFactory(FieldsConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .validateEagerly(true)
+                .build();
     }
 
-    @Test
-    public void credentials_are_correctly_stored() {
-        Credentials credentials = new Credentials("username", "password", null);
-        credentialsSecureStore.set(credentials);
-
-        Credentials retrievedCredentials = credentialsSecureStore.get();
-
-        assertThat(retrievedCredentials.getUsername()).isEqualTo(credentials.getUsername());
-        assertThat(retrievedCredentials.getPassword()).isEqualTo(credentials.getPassword());
+    private RetrofitFactory() {
     }
-
-    @Test
-    public void credentials_are_correctly_removed() {
-        Credentials credentials = new Credentials("username", "password", null);
-        credentialsSecureStore.set(credentials);
-
-        credentialsSecureStore.remove();
-
-        Credentials retrievedCredentials = credentialsSecureStore.get();
-
-        assertThat(retrievedCredentials).isNull();
-    }
-
 }

@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -24,34 +25,39 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.api.authentication.internal
 
-package org.hisp.dhis.android.core.configuration.internal;
+import javax.inject.Inject
+import javax.inject.Singleton
+import okhttp3.Request
+import okhttp3.Response
 
-import java.security.SecureRandom;
-import java.util.Random;
+@Singleton
+internal class CookieAuthenticatorHelper @Inject constructor() {
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-
-@Reusable
-class DatabaseEncryptionPasswordGenerator {
-    private final Random random = new SecureRandom();
-
-    private static final String ALLOWED_CHARS = "0123456789" + "abcdefghijklmnopqrstuvwxyz"
-            + "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    private static final int CODESIZE = 32;
-
-    public String generate() {
-        char[] randomChars = new char[CODESIZE];
-        for (int i = 0; i < CODESIZE; ++i) {
-            randomChars[i] = ALLOWED_CHARS.charAt(random.nextInt(ALLOWED_CHARS.length()));
-        }
-
-        return new String(randomChars);
+    companion object {
+        private const val COOKIE_KEY = "Cookie"
+        private const val SET_COOKIE_KEY = "set-cookie"
     }
 
-    @Inject
-    DatabaseEncryptionPasswordGenerator() {
+    private var cookieValue: String? = null
+
+    fun storeCookieIfSentByServer(res: Response) {
+        val cookieRes = res.header(SET_COOKIE_KEY)
+        if (cookieRes != null) {
+            cookieValue = cookieRes
+        }
+    }
+
+    fun isCookieDefined(): Boolean {
+        return cookieValue != null
+    }
+
+    fun removeCookie() {
+        cookieValue = null
+    }
+
+    fun addCookieHeader(builder: Request.Builder): Request.Builder {
+        return builder.addHeader(COOKIE_KEY, cookieValue!!)
     }
 }

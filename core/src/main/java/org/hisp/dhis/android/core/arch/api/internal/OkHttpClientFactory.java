@@ -26,19 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core;
+package org.hisp.dhis.android.core.arch.api.internal;
 
 import android.os.Build;
 import android.util.Log;
 
 import org.hisp.dhis.android.BuildConfig;
-import org.hisp.dhis.android.core.arch.api.authentication.internal.BasicAuthenticator;
-import org.hisp.dhis.android.core.arch.api.internal.DynamicServerURLInterceptor;
-import org.hisp.dhis.android.core.arch.api.internal.PreventURLDecodeInterceptor;
-import org.hisp.dhis.android.core.arch.api.internal.ServerURLVersionRedirectionInterceptor;
-import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
-import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore;
+import org.hisp.dhis.android.core.D2Configuration;
 
 import java.security.KeyStore;
 import java.util.ArrayList;
@@ -61,13 +55,12 @@ import okhttp3.TlsVersion;
 final class OkHttpClientFactory {
 
     static OkHttpClient okHttpClient(D2Configuration d2Configuration,
-                                     ObjectKeyValueStore<Credentials> credentialsSecureStore,
-                                     UserIdInMemoryStore userIdStore) {
+                                     Interceptor authenticator) {
 
         OkHttpClient.Builder client = new OkHttpClient.Builder()
                 .addInterceptor(new DynamicServerURLInterceptor())
                 .addInterceptor(new ServerURLVersionRedirectionInterceptor())
-                .addInterceptor(new BasicAuthenticator(credentialsSecureStore, userIdStore))
+                .addInterceptor(authenticator)
                 .addInterceptor(new PreventURLDecodeInterceptor())
                 .addInterceptor(chain -> {
                     Request originalRequest = chain.request();

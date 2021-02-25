@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.configuration.internal;
 
-import android.content.Context;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 
@@ -37,11 +35,15 @@ import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 
 import java.util.Date;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 public class MultiUserDatabaseManagerForD2Manager {
 
     private final DatabaseAdapter databaseAdapter;
@@ -49,6 +51,7 @@ public class MultiUserDatabaseManagerForD2Manager {
     private final DatabaseConfigurationMigration migration;
     private final DatabaseAdapterFactory databaseAdapterFactory;
 
+    @Inject
     MultiUserDatabaseManagerForD2Manager(
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull DatabaseConfigurationHelper configurationHelper,
@@ -58,15 +61,6 @@ public class MultiUserDatabaseManagerForD2Manager {
         this.configurationHelper = configurationHelper;
         this.migration = migration;
         this.databaseAdapterFactory = databaseAdapterFactory;
-    }
-
-    public static MultiUserDatabaseManagerForD2Manager create(DatabaseAdapter databaseAdapter, Context context,
-                                                              InsecureStore insecureStore,
-                                                              DatabaseAdapterFactory databaseAdapterFactory) {
-        return new MultiUserDatabaseManagerForD2Manager(databaseAdapter,
-                DatabaseConfigurationHelper.create(),
-                DatabaseConfigurationMigration.create(context, insecureStore, databaseAdapterFactory),
-                databaseAdapterFactory);
     }
 
     public void loadIfLogged(Credentials credentials) {

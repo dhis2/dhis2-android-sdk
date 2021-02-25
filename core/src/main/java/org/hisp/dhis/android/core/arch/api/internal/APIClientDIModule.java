@@ -28,10 +28,18 @@
 
 package org.hisp.dhis.android.core.arch.api.internal;
 
+import android.util.Log;
+
+import org.hisp.dhis.android.core.D2Configuration;
+import org.hisp.dhis.android.core.arch.api.authentication.internal.ParentAuthenticator;
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIExecutorsDIModule;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 
 @Module(includes = {
@@ -39,14 +47,20 @@ import retrofit2.Retrofit;
 })
 public class APIClientDIModule {
 
-    private final Retrofit retrofit;
-
-    public APIClientDIModule(Retrofit retrofit) {
-        this.retrofit = retrofit;
-    }
-
+    @Singleton
     @Provides
-    Retrofit retrofit() {
-        return retrofit;
+    OkHttpClient okHttpClient(D2Configuration d2Configuration, ParentAuthenticator authenticator) {
+        return OkHttpClientFactory.okHttpClient(d2Configuration, authenticator);
+    }
+    @Singleton
+    @Provides
+    @SuppressWarnings({"PMD.PreserveStackTrace"})
+    Retrofit retrofit(OkHttpClient okHttpClient) {
+        try {
+            return RetrofitFactory.retrofit(okHttpClient);
+        } catch (D2Error d2Error) {
+            Log.e("APIClientDIModule", d2Error.getMessage());
+            throw new RuntimeException("Can't instantiate retrofit");
+        }
     }
 }

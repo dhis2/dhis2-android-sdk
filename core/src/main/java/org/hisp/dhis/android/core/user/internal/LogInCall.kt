@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.user.internal
 import dagger.Reusable
 import io.reactivex.Single
 import javax.inject.Inject
+import net.openid.appauth.AuthState
 import okhttp3.HttpUrl
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
@@ -159,26 +160,26 @@ internal class LogInCall @Inject internal constructor(
     }
 
     @Throws(D2Error::class)
-    fun blockingLogInOpenIDConnect(serverUrl: String, token: String): User {
+    fun blockingLogInOpenIDConnect(serverUrl: String, openIDConnectState: AuthState): User {
         val parsedServerUrl = ServerUrlParser.parse(serverUrl)
         ServerURLWrapper.setServerUrl(parsedServerUrl.toString())
 
         val authenticateCall = userService.authenticate(
-            "Bearer $token",
+            "Bearer ${openIDConnectState.idToken}",
             UserFields.allFieldsWithoutOrgUnit
         )
 
         return try {
             val user = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall, apiCallErrorCatcher)
-            val credentials = getOpenIdConnectCredentials(user, token)
+            val credentials = getOpenIdConnectCredentials(user, openIDConnectState)
             loginOnline(parsedServerUrl, user, credentials)
         } catch (d2Error: D2Error) {
             throw handleOnlineException(d2Error)
         }
     }
 
-    private fun getOpenIdConnectCredentials(user: User, token: String): Credentials {
+    private fun getOpenIdConnectCredentials(user: User, openIDConnectState: AuthState): Credentials {
         val username = UserInternalAccessor.accessUserCredentials(user).username()!!
-        return Credentials(username, null, token)
+        return Credentials(username, null, openIDConnectState)
     }
 }

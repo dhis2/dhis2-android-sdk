@@ -37,17 +37,11 @@ import dagger.Provides;
 public class KeyValueStorageDIModule {
     private final SecureStore secureStore;
     private final InsecureStore insecureStore;
-    private final ObjectKeyValueStore<Credentials> credentialsSecureStore;
-    private final UserIdInMemoryStore userIdStore;
 
     public KeyValueStorageDIModule(SecureStore secureStore,
-                                   InsecureStore insecureStore,
-                                   ObjectKeyValueStore<Credentials> credentialsSecureStore,
-                                   UserIdInMemoryStore userIdStore) {
+                                   InsecureStore insecureStore) {
         this.secureStore = secureStore;
         this.insecureStore = insecureStore;
-        this.credentialsSecureStore = credentialsSecureStore;
-        this.userIdStore = userIdStore;
     }
 
     @Provides
@@ -64,13 +58,13 @@ public class KeyValueStorageDIModule {
 
     @Provides
     @Singleton
-    ObjectKeyValueStore<Credentials> credentialsSecureStore() {
-        return credentialsSecureStore;
+    ObjectKeyValueStore<Credentials> credentialsSecureStore(CredentialsSecureStoreImpl impl) {
+        return impl;
     }
 
     @Provides
     @Singleton
     UserIdInMemoryStore userIdStore() {
-        return userIdStore;
+        return new UserIdInMemoryStore();
     }
 }

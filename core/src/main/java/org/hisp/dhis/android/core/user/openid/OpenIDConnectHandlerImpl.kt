@@ -86,15 +86,17 @@ internal class OpenIDConnectHandlerImpl @Inject constructor(
         return handleLogInResponse(serverUrl, intent, requestCode).blockingGet()
     }
 
-    private fun downloadToken(tokenRequest: TokenRequest): Single<String> {
+    private fun downloadToken(tokenRequest: TokenRequest): Single<AuthState> {
         return Single.create { emitter ->
             val authService = AuthorizationService(context)
             authService.performTokenRequest(
                 tokenRequest
             ) { tokenResponse, tokenEx ->
                 authService.dispose()
+                val authState = AuthState()
+                authState.update(tokenResponse, tokenEx)
                 if (tokenResponse?.idToken != null) {
-                    emitter.onSuccess(tokenResponse.idToken!!)
+                    emitter.onSuccess(authState)
                 } else {
                     emitter.onError(RuntimeException(tokenEx))
                 }

@@ -31,21 +31,18 @@ package org.hisp.dhis.android.core.arch.db.access.internal;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseImportExport;
 
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
 
 @Module
 public class DatabaseDIModule {
 
-    private final DatabaseAdapter databaseAdapter;
-
-    public DatabaseDIModule(DatabaseAdapter databaseAdapter) {
-        this.databaseAdapter = databaseAdapter;
-    }
-
     @Provides
-    DatabaseAdapter databaseAdapter() {
-        return databaseAdapter;
+    @Singleton
+    DatabaseAdapter databaseAdapter(DatabaseAdapterFactory adapterFactory) {
+        return adapterFactory.newParentDatabaseAdapter();
     }
 
     @Provides

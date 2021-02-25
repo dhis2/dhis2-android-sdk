@@ -265,6 +265,17 @@ public final class EventCollectionRepository
         );
     }
 
+    public EventCollectionRepository orderByDataElement(RepositoryScope.OrderByDirection direction,
+                                                        String dataElement) {
+        return cf.withExternalOrderBy(
+                TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
+                TrackedEntityDataValueTableInfo.Columns.VALUE,
+                TrackedEntityDataValueTableInfo.Columns.EVENT,
+                Columns.UID,
+                direction,
+                TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT + " = '" + dataElement + "'");
+    }
+
     public int countTrackedEntityInstances() {
         return store.countTeisWhereEvents(getWhereClause());
     }

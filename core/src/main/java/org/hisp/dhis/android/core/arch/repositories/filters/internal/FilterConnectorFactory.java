@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.repositories.filters.internal;
 
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
@@ -108,20 +109,34 @@ public class FilterConnectorFactory<R extends BaseRepository> {
                                  String externalLink,
                                  String ownLink,
                                  RepositoryScope.OrderByDirection direction) {
+        return withExternalOrderBy(externalTable, externalColumn, externalLink, ownLink, direction, null);
+    }
 
-        String column = String.format("(SELECT %s FROM %s WHERE %s = %s)",
+    public R withExternalOrderBy(String externalTable,
+                                 String externalColumn,
+                                 String externalLink,
+                                 String ownLink,
+                                 RepositoryScope.OrderByDirection direction,
+                                 String additionalWhereClause) {
+
+        String connectedAdditionalWhere = additionalWhereClause == null ? "" :
+                " AND " + additionalWhereClause;
+
+        String column = String.format("(SELECT %s FROM %s WHERE %s = %s %s)",
                 externalColumn,
                 externalTable,
                 externalLink,
-                ownLink);
+                ownLink,
+                connectedAdditionalWhere);
 
         RepositoryScopeKeyOrderExtractor extractor = (contentValues, column1) -> {
             String ownLinkKey = contentValues.getAsString(ownLink);
-            return String.format("(SELECT %s FROM %s WHERE %s = '%s')",
+            return String.format("(SELECT %s FROM %s WHERE %s = '%s' %s)",
                     externalColumn,
                     externalTable,
                     externalLink,
-                    ownLinkKey);
+                    ownLinkKey,
+                    connectedAdditionalWhere);
         };
 
         RepositoryScopeOrderByItem item = RepositoryScopeOrderByItem.builder().column(column)

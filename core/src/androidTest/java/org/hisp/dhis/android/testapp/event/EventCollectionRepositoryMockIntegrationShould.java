@@ -405,6 +405,18 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     }
 
     @Test
+    public void order_by_data_element() {
+        List<Event> events = d2.eventModule().events()
+                .byEnrollmentUid().isNull()
+                .orderByDataElement(RepositoryScope.OrderByDirection.DESC, "hB9F8vKFmlk")
+                .withTrackedEntityDataValues()
+                .blockingGet();
+        assertThat(events.size()).isEqualTo(2);
+        assertThat(events.get(0).uid()).isEqualTo("single2");  // 3843
+        assertThat(events.get(1).uid()).isEqualTo("single1");  // 3842
+    }
+
+    @Test
     public void add_events_to_the_repository() throws D2Error {
         List<Event> events1 = d2.eventModule().events().blockingGet();
         assertThat(events1.size()).isEqualTo(4);

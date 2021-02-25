@@ -52,6 +52,7 @@ import org.hisp.dhis.android.core.settings.internal.SettingModuleWiper;
 import org.hisp.dhis.android.core.sms.internal.SMSModuleWiper;
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleWiper;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityModuleWiper;
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobModuleWiper;
 import org.hisp.dhis.android.core.user.internal.UserModuleWiper;
 import org.hisp.dhis.android.core.validation.internal.ValidationModuleWiper;
 
@@ -97,7 +98,8 @@ final class D2ModuleWipers {
             SMSModuleWiper smsModuleWiper,
             UserModuleWiper user,
             TrackedEntityModuleWiper trackedEntity,
-            AttributeModuleWiper attributeModuleWiper) {
+            AttributeModuleWiper attribute,
+            TrackerJobModuleWiper trackerJob) {
 
         this.wipers = Arrays.asList(
                 category,
@@ -128,6 +130,7 @@ final class D2ModuleWipers {
                 smsModuleWiper,
                 user,
                 trackedEntity,
-                attributeModuleWiper);
+                attribute,
+                trackerJob);
     }
 }

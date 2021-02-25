@@ -56,6 +56,10 @@ class MetadataIdsStore {
         );
     }
 
+    Completable clear() {
+        return Completable.fromAction(() -> context.deleteFile(METADATA_FILE));
+    }
+
     private Gson getGson() {
         return new GsonBuilder()
                 .registerTypeAdapter(Date.class, new DateLongFormatTypeAdapter())

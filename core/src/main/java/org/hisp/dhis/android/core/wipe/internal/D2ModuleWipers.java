@@ -63,6 +63,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
+@SuppressWarnings({"PMD.ExcessiveImports"})
 final class D2ModuleWipers {
     final List<ModuleWiper> wipers;
 

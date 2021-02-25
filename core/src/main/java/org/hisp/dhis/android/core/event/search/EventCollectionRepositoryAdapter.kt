@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.event.search
 
 import dagger.Reusable
-import java.util.*
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
@@ -39,6 +37,9 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.user.AuthenticatedUserObjectRepository
+import java.util.*
+import javax.inject.Inject
+import org.hisp.dhis.android.core.event.search.EventQueryScopeOrderColumn.Type as OrderColumnType
 
 @Reusable
 internal class EventCollectionRepositoryAdapter @Inject constructor(
@@ -154,15 +155,26 @@ internal class EventCollectionRepositoryAdapter @Inject constructor(
         repository: EventCollectionRepository,
         order: EventQueryScopeOrderByItem
     ): EventCollectionRepository {
-        return when (order.column()) {
-            EventQueryScopeOrderColumn.EVENT_DATE -> repository.orderByEventDate(order.direction())
-            EventQueryScopeOrderColumn.DUE_DATE -> repository.orderByDueDate(order.direction())
-            EventQueryScopeOrderColumn.COMPLETED_DATE -> repository.orderByCompleteDate(order.direction())
-            EventQueryScopeOrderColumn.CREATED -> repository.orderByCreated(order.direction())
-            EventQueryScopeOrderColumn.LAST_UPDATED -> repository.orderByLastUpdated(order.direction())
-            EventQueryScopeOrderColumn.ORGUNIT_NAME -> repository.orderByOrganisationUnitName(order.direction())
-            EventQueryScopeOrderColumn.TIMELINE -> repository.orderByTimeline(order.direction())
-            else -> repository
+        return when (order.column().type()) {
+            OrderColumnType.EVENT_DATE -> repository.orderByEventDate(order.direction())
+            OrderColumnType.DUE_DATE -> repository.orderByDueDate(order.direction())
+            OrderColumnType.COMPLETED_DATE -> repository.orderByCompleteDate(order.direction())
+            OrderColumnType.CREATED -> repository.orderByCreated(order.direction())
+            OrderColumnType.LAST_UPDATED -> repository.orderByLastUpdated(order.direction())
+            OrderColumnType.ORGUNIT_NAME -> repository.orderByOrganisationUnitName(order.direction())
+            OrderColumnType.TIMELINE -> repository.orderByTimeline(order.direction())
+            OrderColumnType.DATA_ELEMENT -> repository.orderByDataElement(order.direction(), order.column().value())
+            OrderColumnType.EVENT,
+            OrderColumnType.PROGRAM,
+            OrderColumnType.PROGRAM_STAGE,
+            OrderColumnType.ENROLLMENT,
+            OrderColumnType.ENROLLMENT_STATUS,
+            OrderColumnType.ORGUNIT,
+            OrderColumnType.TRACKED_ENTITY_INSTANCE,
+            OrderColumnType.FOLLOW_UP,
+            OrderColumnType.STATUS,
+            OrderColumnType.STORED_BY,
+            OrderColumnType.COMPLETED_BY -> repository
         }
     }
 

@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.event.search;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -44,7 +45,7 @@ abstract class EventQueryScopeOrderColumn {
         ORGUNIT, ORGUNIT_NAME, TRACKED_ENTITY_INSTANCE, FOLLOW_UP, STATUS,
         EVENT_DATE, DUE_DATE, STORED_BY,
         CREATED, LAST_UPDATED, COMPLETED_BY, COMPLETED_DATE,
-        TIMELINE
+        TIMELINE, DATA_ELEMENT
     }
 
     public static final EventQueryScopeOrderColumn EVENT =
@@ -101,6 +102,10 @@ abstract class EventQueryScopeOrderColumn {
     public static final EventQueryScopeOrderColumn TIMELINE =
             builder().type(Type.TIMELINE).build();
 
+    public static EventQueryScopeOrderColumn dataElement(String dataElementUid) {
+        return builder().type(Type.DATA_ELEMENT).apiName(dataElementUid).value(dataElementUid).build();
+    }
+
     public static List<EventQueryScopeOrderColumn> all = Arrays.asList(
             EVENT, PROGRAM, PROGRAM_STAGE,
             ENROLLMENT, ENROLLMENT_STATUS,
@@ -109,6 +114,7 @@ abstract class EventQueryScopeOrderColumn {
             CREATED, LAST_UPDATED, COMPLETED_BY, COMPLETED_DATE,
             TIMELINE);
 
+    @NonNull
     public abstract Type type();
 
     @Nullable

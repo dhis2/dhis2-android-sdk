@@ -43,7 +43,7 @@ import io.reactivex.Single;
 @SuppressWarnings("PMD.ExcessiveImports")
 public class LocalDbRepositoryImpl implements LocalDbRepository {
     private final Context context;
-    private final AuthenticatedUserObjectRepository userModule;
+    private final AuthenticatedUserObjectRepository userRepository;
     private final TrackedEntityModule trackedEntityModule;
     private final EventModule eventModule;
     private final EnrollmentModule enrollmentModule;
@@ -67,7 +67,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
 
     @Inject
     LocalDbRepositoryImpl(Context ctx,
-                          AuthenticatedUserObjectRepository userModule,
+                          AuthenticatedUserObjectRepository userRepository,
                           TrackedEntityModule trackedEntityModule,
                           EventModule eventModule,
                           EnrollmentModule enrollmentModule,
@@ -79,7 +79,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
                           TrackedEntityInstanceStore trackedEntityInstanceStore,
                           DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore) {
         this.context = ctx;
-        this.userModule = userModule;
+        this.userRepository = userRepository;
         this.trackedEntityModule = trackedEntityModule;
         this.eventModule = eventModule;
         this.enrollmentModule = enrollmentModule;
@@ -96,7 +96,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
 
     @Override
     public Single<String> getUserName() {
-        return Single.fromCallable(() -> userModule.blockingGet().user());
+        return Single.fromCallable(() -> userRepository.blockingGet().user());
     }
 
     @Override

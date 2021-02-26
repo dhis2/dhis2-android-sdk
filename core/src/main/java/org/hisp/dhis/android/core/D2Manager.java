@@ -120,12 +120,12 @@ public final class D2Manager {
                 multiUserDatabaseManager.loadIfLogged(credentials);
             }
 
+            d2 = new D2(d2DIComponent);
+
             if (credentials != null) {
                 String uid = d2.userModule().user().blockingGet().uid();
                 d2DIComponent.userIdInMemoryStore().set(uid);
             }
-
-            d2 = new D2(d2DIComponent);
 
             long setUpTime = System.currentTimeMillis() - startTime;
             Log.i(D2Manager.class.getName(), "D2 instantiation took " + setUpTime + "ms");

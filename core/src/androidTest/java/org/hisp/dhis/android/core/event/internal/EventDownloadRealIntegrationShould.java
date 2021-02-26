@@ -37,7 +37,7 @@ import java.io.IOException;
 
 import static com.google.common.truth.Truth.assertThat;
 
-public class EventWithLimitCallRealIntegrationShould extends BaseRealIntegrationTest {
+public class EventDownloadRealIntegrationShould extends BaseRealIntegrationTest {
 
     private D2 d2;
 

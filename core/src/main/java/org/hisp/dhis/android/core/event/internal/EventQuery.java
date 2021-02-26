@@ -51,6 +51,9 @@ abstract class EventQuery extends BaseQuery {
     @NonNull
     abstract Collection<String> uids();
 
+    @Nullable
+    abstract String lastUpdatedStr();
+
     static Builder builder() {
         return new AutoValue_EventQuery.Builder()
                 .page(1)
@@ -66,6 +69,8 @@ abstract class EventQuery extends BaseQuery {
         abstract Builder orgUnit(String orgUnit);
 
         abstract Builder uids(Collection<String> uIds);
+
+        abstract Builder lastUpdatedStr(String lastUpdatedStr);
 
         abstract EventQuery build();
     }

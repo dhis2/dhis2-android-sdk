@@ -83,7 +83,8 @@ class EventDownloadCall @Inject internal constructor(
                             break
                         }
                         val eventQueryBuilder = EventQuery.builder()
-                            .commonParams(bundle.commonParams())
+                            .commonParams(bundle.commonParams().copy(program = programUid))
+                            .lastUpdatedStr(lastUpdatedManager.getLastUpdatedStr(bundle.commonParams()))
                             .orgUnit(orgunitUid)
                             .uids(params.uids())
 

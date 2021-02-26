@@ -25,39 +25,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.sms.internal;
+package org.hisp.dhis.android.core.sms.internal
 
-import android.content.Context;
-import android.content.SharedPreferences;
-
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository
+import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 
 @Reusable
-public final class SMSModuleWiper implements ModuleWiper {
+class SMSModuleWiper @Inject internal constructor(
+    private val localDbRepository: LocalDbRepository
+) : ModuleWiper {
 
-    private final Context context;
-
-    @Inject
-    SMSModuleWiper(Context ctx) {
-        this.context = ctx;
+    override fun wipeMetadata() {
+        localDbRepository.clear().blockingAwait()
     }
 
-    @Override
-    public void wipeMetadata() {
-        prefs().edit().clear().apply();
-    }
-
-    @Override
-    public void wipeData() {
+    override fun wipeData() {
         // No data to wipe
-    }
-
-    // TODO Move to LocalDbStorage https://jira.dhis2.org/browse/ANDROSDK-1322
-    private SharedPreferences prefs() {
-        return context.getSharedPreferences("smsconfig", Context.MODE_PRIVATE);
     }
 }

@@ -25,43 +25,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.tracker.importer.internal
 
-package org.hisp.dhis.android.testapp.legendset;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
+import org.hisp.dhis.android.core.wipe.internal.TableWiper
 
-import org.hisp.dhis.android.core.legendset.LegendSet;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(D2JunitRunner.class)
-public class LegendSetCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
-
-    @Test
-    public void find_all() {
-        List<LegendSet> legendSets = d2.legendSetModule().legendSets()
-                .blockingGet();
-        assertThat(legendSets.size()).isEqualTo(2);
+@Reusable
+class TrackerJobModuleWiper @Inject internal constructor(private val tableWiper: TableWiper) : ModuleWiper {
+    override fun wipeMetadata() {
+        // No metadata to wipe
     }
 
-    @Test
-    public void filter_by_symbolizer() {
-        List<LegendSet> legendSets = d2.legendSetModule().legendSets()
-                .bySymbolizer().eq("color")
-                .blockingGet();
-        assertThat(legendSets.size()).isEqualTo(2);
-    }
-
-    @Test
-    public void include_legends_as_children() {
-        LegendSet legendSet = d2.legendSetModule().legendSets()
-                .withLegends()
-                .one()
-                .blockingGet();
-        assertThat(legendSet.legends().size()).isEqualTo(2);
+    override fun wipeData() {
+        tableWiper.wipeTables(
+            TrackerJobTableInfo.TABLE_INFO
+        )
     }
 }

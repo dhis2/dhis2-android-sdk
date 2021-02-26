@@ -25,43 +25,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.attribute.internal;
 
-package org.hisp.dhis.android.testapp.legendset;
+import org.hisp.dhis.android.core.attribute.AttributeTableInfo;
+import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
+import org.hisp.dhis.android.core.wipe.internal.TableWiper;
 
-import org.hisp.dhis.android.core.legendset.LegendSet;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import javax.inject.Inject;
 
-import java.util.List;
+import dagger.Reusable;
 
-import static com.google.common.truth.Truth.assertThat;
+@Reusable
+public final class AttributeModuleWiper implements ModuleWiper {
 
-@RunWith(D2JunitRunner.class)
-public class LegendSetCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
+    private final TableWiper tableWiper;
 
-    @Test
-    public void find_all() {
-        List<LegendSet> legendSets = d2.legendSetModule().legendSets()
-                .blockingGet();
-        assertThat(legendSets.size()).isEqualTo(2);
+    @Inject
+    AttributeModuleWiper(TableWiper tableWiper) {
+        this.tableWiper = tableWiper;
     }
 
-    @Test
-    public void filter_by_symbolizer() {
-        List<LegendSet> legendSets = d2.legendSetModule().legendSets()
-                .bySymbolizer().eq("color")
-                .blockingGet();
-        assertThat(legendSets.size()).isEqualTo(2);
+    @Override
+    public void wipeMetadata() {
+        tableWiper.wipeTables(
+                AttributeTableInfo.TABLE_INFO
+        );
     }
 
-    @Test
-    public void include_legends_as_children() {
-        LegendSet legendSet = d2.legendSetModule().legendSets()
-                .withLegends()
-                .one()
-                .blockingGet();
-        assertThat(legendSet.legends().size()).isEqualTo(2);
+    @Override
+    public void wipeData() {
+        // No data to wipe
     }
 }

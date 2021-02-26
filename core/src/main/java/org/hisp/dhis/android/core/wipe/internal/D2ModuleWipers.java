@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.wipe.internal;
 
+import org.hisp.dhis.android.core.attribute.internal.AttributeModuleWiper;
 import org.hisp.dhis.android.core.category.internal.CategoryModuleWiper;
 import org.hisp.dhis.android.core.common.internal.CommonModuleWiper;
 import org.hisp.dhis.android.core.constant.internal.ConstantModuleWiper;
@@ -51,6 +52,7 @@ import org.hisp.dhis.android.core.settings.internal.SettingModuleWiper;
 import org.hisp.dhis.android.core.sms.internal.SMSModuleWiper;
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleWiper;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityModuleWiper;
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobModuleWiper;
 import org.hisp.dhis.android.core.user.internal.UserModuleWiper;
 import org.hisp.dhis.android.core.validation.internal.ValidationModuleWiper;
 
@@ -62,6 +64,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
+@SuppressWarnings({"PMD.ExcessiveImports"})
 final class D2ModuleWipers {
     final List<ModuleWiper> wipers;
 
@@ -94,7 +97,9 @@ final class D2ModuleWipers {
             SettingModuleWiper systemSetting,
             SMSModuleWiper smsModuleWiper,
             UserModuleWiper user,
-            TrackedEntityModuleWiper trackedEntity) {
+            TrackedEntityModuleWiper trackedEntity,
+            AttributeModuleWiper attribute,
+            TrackerJobModuleWiper trackerJob) {
 
         this.wipers = Arrays.asList(
                 category,
@@ -124,6 +129,8 @@ final class D2ModuleWipers {
                 systemSetting,
                 smsModuleWiper,
                 user,
-                trackedEntity);
+                trackedEntity,
+                attribute,
+                trackerJob);
     }
 }

@@ -28,7 +28,16 @@
 
 package org.hisp.dhis.android.core.wipe;
 
+import org.hisp.dhis.android.core.common.StorableObjectWithUid;
 import org.hisp.dhis.android.core.data.database.DatabaseAssert;
+import org.hisp.dhis.android.core.fileresource.FileResource;
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceStoreImpl;
+import org.hisp.dhis.android.core.imports.TrackerImportConflict;
+import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
+import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore;
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobStore;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher;
 import org.junit.Test;
 
@@ -39,10 +48,10 @@ public class WipeDBCallMockIntegrationShould extends BaseMockIntegrationTestEmpt
         givenAFreshLoginInDatabase();
 
         givenAMetadataInDatabase();
+        givenDataInDatabase();
+        givenOthersInDatabase();
 
-        givenAEventInDatabase();
-
-        DatabaseAssert.assertThatDatabase(databaseAdapter).isNotEmpty();
+        DatabaseAssert.assertThatDatabase(databaseAdapter).isFull();
 
         d2.wipeModule().wipeEverything();
 
@@ -61,9 +70,24 @@ public class WipeDBCallMockIntegrationShould extends BaseMockIntegrationTestEmpt
 
     private void givenAMetadataInDatabase() {
         d2.metadataModule().blockingDownload();
+        d2.trackedEntityModule().reservedValueManager().blockingDownloadAllReservedValues(1);
     }
 
-    private void givenAEventInDatabase() {
+    private void givenDataInDatabase() {
         d2.eventModule().eventDownloader().limit(1).blockingDownload();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader().limit(1).blockingDownload();
+        d2.aggregatedModule().data().blockingDownload();
+    }
+
+    private void givenOthersInDatabase() {
+        D2ErrorStore.create(databaseAdapter).insert(D2Error.builder()
+                .errorCode(D2ErrorCode.API_RESPONSE_PROCESS_ERROR)
+                .errorDescription("Sample error")
+                .build());
+
+        TrackerImportConflictStore.create(databaseAdapter).insert(TrackerImportConflict.builder().build());
+
+        FileResourceStoreImpl.create(databaseAdapter).insert(FileResource.builder().uid("uid").build());
+        TrackerJobStore.create(databaseAdapter).insert(StorableObjectWithUid.builder().uid("uid").build());
     }
 }

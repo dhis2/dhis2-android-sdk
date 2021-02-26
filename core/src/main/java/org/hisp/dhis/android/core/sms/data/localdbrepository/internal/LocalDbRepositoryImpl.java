@@ -26,7 +26,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
-import org.hisp.dhis.android.core.user.UserModule;
+import org.hisp.dhis.android.core.user.AuthenticatedUserObjectRepository;
 import org.hisp.dhis.smscompression.models.SMSMetadata;
 
 import java.io.IOException;
@@ -43,17 +43,17 @@ import io.reactivex.Single;
 @SuppressWarnings("PMD.ExcessiveImports")
 public class LocalDbRepositoryImpl implements LocalDbRepository {
     private final Context context;
-    private final UserModule userModule;
+    private final AuthenticatedUserObjectRepository userRepository;
     private final TrackedEntityModule trackedEntityModule;
     private final EventModule eventModule;
     private final EnrollmentModule enrollmentModule;
     private final FileResourceCleaner fileResourceCleaner;
     private final EventStore eventStore;
     private final EnrollmentStore enrollmentStore;
-    private final static String CONFIG_FILE = "smsconfig";
-    private final static String KEY_GATEWAY = "gateway";
-    private final static String KEY_CONFIRMATION_SENDER = "confirmationsender";
-    private final static String KEY_WAITING_RESULT_TIMEOUT = "reading_timeout";
+    private static final String CONFIG_FILE = "smsconfig";
+    private static final String KEY_GATEWAY = "gateway";
+    private static final String KEY_CONFIRMATION_SENDER = "confirmationsender";
+    private static final String KEY_WAITING_RESULT_TIMEOUT = "reading_timeout";
     private static final String KEY_METADATA_CONFIG = "metadata_conf";
     private static final String KEY_MODULE_ENABLED = "module_enabled";
     private static final String KEY_WAIT_FOR_RESULT = "wait_for_result";
@@ -67,7 +67,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
 
     @Inject
     LocalDbRepositoryImpl(Context ctx,
-                          UserModule userModule,
+                          AuthenticatedUserObjectRepository userRepository,
                           TrackedEntityModule trackedEntityModule,
                           EventModule eventModule,
                           EnrollmentModule enrollmentModule,
@@ -79,7 +79,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
                           TrackedEntityInstanceStore trackedEntityInstanceStore,
                           DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore) {
         this.context = ctx;
-        this.userModule = userModule;
+        this.userRepository = userRepository;
         this.trackedEntityModule = trackedEntityModule;
         this.eventModule = eventModule;
         this.enrollmentModule = enrollmentModule;
@@ -96,7 +96,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
 
     @Override
     public Single<String> getUserName() {
-        return Single.fromCallable(() -> userModule.authenticatedUser().blockingGet().user());
+        return Single.fromCallable(() -> userRepository.blockingGet().user());
     }
 
     @Override
@@ -377,8 +377,10 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
 
     @Override
     public Completable clear() {
-        // TODO Remove metadata uids from file https://jira.dhis2.org/browse/ANDROSDK-1322
-        return Completable.fromAction(() -> prefs().edit().clear().commit());
+        return Completable.mergeArray(
+                Completable.fromAction(() -> prefs().edit().clear().commit()),
+                metadataIdsStore.clear()
+        );
     }
 
     private SharedPreferences prefs() {

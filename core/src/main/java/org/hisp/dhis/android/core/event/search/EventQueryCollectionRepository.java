@@ -213,6 +213,11 @@ public final class EventQueryCollectionRepository implements ReadOnlyWithUidColl
         return orderConnector(EventQueryScopeOrderColumn.TIMELINE);
     }
 
+    public EqFilterConnector<EventQueryCollectionRepository,
+            RepositoryScope.OrderByDirection> orderByDataElement(String dataElement) {
+        return orderConnector(EventQueryScopeOrderColumn.dataElement(dataElement));
+    }
+
     private EqFilterConnector<EventQueryCollectionRepository,
             RepositoryScope.OrderByDirection> orderConnector(
             EventQueryScopeOrderColumn col) {

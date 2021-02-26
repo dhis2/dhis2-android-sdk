@@ -51,7 +51,7 @@ internal open class TrackerSyncLastUpdatedManager<S : TrackerBaseSync>(private v
             .toMap()
     }
 
-    fun getLastUpdated(commonParams: TrackerQueryCommonParams): Date? {
+    private fun getLastUpdated(commonParams: TrackerQueryCommonParams): Date? {
         return getLastUpdated(commonParams.program, commonParams.orgUnitsBeforeDivision.toSet(), commonParams.limit)
     }
 

@@ -36,6 +36,8 @@ import org.hisp.dhis.android.core.event.EventDataFilterTableInfo.Columns;
 
 public final class EventDataFilterFields {
 
+    private static final String API_IN = "in";
+
     private static final FieldsHelper<EventDataFilter> fh = new FieldsHelper<>();
 
     public static final Fields<EventDataFilter> allFields = Fields.<EventDataFilter>builder()
@@ -46,7 +48,7 @@ public final class EventDataFilterFields {
                     fh.<String>field(Columns.GT),
                     fh.<String>field(Columns.LT),
                     fh.<String>field(Columns.EQ),
-                    fh.<String>field(Columns.IN),
+                    fh.<String>field(API_IN),
                     fh.<String>field(Columns.LIKE),
                     fh.<String>field(Columns.DATE_FILTER)
             ).build();

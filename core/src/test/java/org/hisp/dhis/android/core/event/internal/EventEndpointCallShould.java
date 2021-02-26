@@ -62,9 +62,6 @@ public class EventEndpointCallShould {
     @Mock
     private DatabaseAdapter databaseAdapter;
 
-    @Mock
-    private EventLastUpdatedManager lastUpdatedManager;
-
     @BeforeClass
     public static void setUpClass() throws IOException {
         mockWebServer = new Dhis2MockServer(0);
@@ -120,7 +117,7 @@ public class EventEndpointCallShould {
 
     private Callable<List<Event>> givenACallForQuery(EventQuery eventQuery) {
         return new EventEndpointCallFactory(retrofit.create(EventService.class),
-                APICallExecutorImpl.create(databaseAdapter), lastUpdatedManager).getCall(eventQuery);
+                APICallExecutorImpl.create(databaseAdapter)).getCall(eventQuery);
     }
 
     private Callable<List<Event>> givenAEventCallByOrgUnitAndProgram(String orgUnit, String program) {

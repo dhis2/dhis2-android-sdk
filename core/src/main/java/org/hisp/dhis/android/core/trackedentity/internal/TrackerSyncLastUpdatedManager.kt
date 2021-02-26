@@ -31,6 +31,7 @@ import java.util.Date
 import org.apache.commons.lang3.time.DateUtils
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.settings.DownloadPeriod
 import org.hisp.dhis.android.core.settings.ProgramSetting
@@ -52,6 +53,10 @@ internal open class TrackerSyncLastUpdatedManager<S : TrackerBaseSync>(private v
 
     fun getLastUpdated(commonParams: TrackerQueryCommonParams): Date? {
         return getLastUpdated(commonParams.program, commonParams.orgUnitsBeforeDivision.toSet(), commonParams.limit)
+    }
+
+    fun getLastUpdatedStr(commonParams: TrackerQueryCommonParams): String? {
+        return getLastUpdated(commonParams)?.let { BaseIdentifiableObject.dateToDateStr(it) }
     }
 
     fun getLastUpdated(programId: String?, organisationUnits: Set<String>, limit: Int): Date? {

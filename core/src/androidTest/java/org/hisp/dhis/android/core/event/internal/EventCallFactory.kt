@@ -27,12 +27,11 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import java.util.concurrent.Callable
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.resource.internal.ResourceHandler
 import retrofit2.Retrofit
+import java.util.concurrent.Callable
 
 object EventCallFactory {
     @JvmStatic
@@ -53,8 +52,7 @@ object EventCallFactory {
 
         return EventEndpointCallFactory(
             retrofit.create(EventService::class.java),
-            APICallExecutorImpl.create(databaseAdapter),
-            EventLastUpdatedManager(EventSyncStore.create(databaseAdapter), ResourceHandler.create(databaseAdapter))
+            APICallExecutorImpl.create(databaseAdapter)
         ).getCall(eventQuery)
     }
 }

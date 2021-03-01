@@ -73,7 +73,7 @@ ext {
             jUnit           : "4.13",
             mockito         : "3.4.6",
             mockitoKotlin   : "2.2.0",
-            truth           : "1.0.1",
+            truth           : "1.1.2",
             testRunner      : "1.2.0",
             equalsVerifier  : "3.4.1",
             flipper         : "0.75.0",

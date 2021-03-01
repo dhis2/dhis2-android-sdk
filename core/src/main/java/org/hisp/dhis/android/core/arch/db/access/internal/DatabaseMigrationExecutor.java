@@ -32,6 +32,8 @@ package org.hisp.dhis.android.core.arch.db.access.internal;
 import android.content.res.AssetManager;
 import android.util.Log;
 
+import androidx.annotation.VisibleForTesting;
+
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.Transaction;
 
@@ -45,6 +47,9 @@ class DatabaseMigrationExecutor {
 
     private static final int SNAPSHOT_VERSION = BaseDatabaseOpenHelper.VERSION;
 
+    @VisibleForTesting
+    static boolean USE_SNAPSHOTS = true;
+
     DatabaseMigrationExecutor(DatabaseAdapter databaseAdapter, AssetManager assetManager) {
         this.databaseAdapter = databaseAdapter;
         this.parser = new DatabaseMigrationParser(assetManager);
@@ -53,7 +58,7 @@ class DatabaseMigrationExecutor {
     void upgradeFromTo(int oldVersion, int newVersion) {
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
-            int initialMigrationVersion = performSnapshotIfRequired(oldVersion, newVersion);
+            int initialMigrationVersion = USE_SNAPSHOTS ? performSnapshotIfRequired(oldVersion, newVersion) : 0;
             executeFilesSQL(parser.parseMigrations(initialMigrationVersion, newVersion));
             transaction.setSuccessful();
         } catch (IOException e) {

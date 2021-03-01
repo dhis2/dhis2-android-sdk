@@ -59,8 +59,8 @@ class DatabaseFromMigrationsIntegrationShould {
         }
 
         private fun deleteDatabases() {
-            context.deleteDatabase("$DB_NAME_1.db")
-            context.deleteDatabase("$DB_NAME_2.db")
+            context.deleteDatabase(DB_NAME_1)
+            context.deleteDatabase(DB_NAME_2)
         }
     }
 

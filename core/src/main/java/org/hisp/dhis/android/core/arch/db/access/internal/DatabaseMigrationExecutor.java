@@ -48,7 +48,7 @@ class DatabaseMigrationExecutor {
     private static final int SNAPSHOT_VERSION = BaseDatabaseOpenHelper.VERSION;
 
     @VisibleForTesting
-    static boolean USE_SNAPSHOTS = true;
+    static boolean USE_SNAPSHOT = true;
 
     DatabaseMigrationExecutor(DatabaseAdapter databaseAdapter, AssetManager assetManager) {
         this.databaseAdapter = databaseAdapter;
@@ -58,7 +58,7 @@ class DatabaseMigrationExecutor {
     void upgradeFromTo(int oldVersion, int newVersion) {
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
-            int initialMigrationVersion = USE_SNAPSHOTS ? performSnapshotIfRequired(oldVersion, newVersion) : 0;
+            int initialMigrationVersion = USE_SNAPSHOT ? performSnapshotIfRequired(oldVersion, newVersion) : 0;
             executeFilesSQL(parser.parseMigrations(initialMigrationVersion, newVersion));
             transaction.setSuccessful();
         } catch (IOException e) {

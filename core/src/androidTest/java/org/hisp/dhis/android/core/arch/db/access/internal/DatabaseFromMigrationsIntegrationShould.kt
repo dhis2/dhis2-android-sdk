@@ -71,7 +71,7 @@ class DatabaseFromMigrationsIntegrationShould {
         createDb(databaseAdapter, DB_NAME_1)
         val schema1 = getSchema(databaseAdapter)
 
-        DatabaseMigrationExecutor.USE_SNAPSHOTS = false
+        DatabaseMigrationExecutor.USE_SNAPSHOT = false
 
         createDb(databaseAdapter, DB_NAME_2)
         val schema2 = getSchema(databaseAdapter)

@@ -38,6 +38,7 @@ internal class DatabaseMigrationExecutor(private val databaseAdapter: DatabaseAd
 
     companion object {
         private const val SNAPSHOT_VERSION = BaseDatabaseOpenHelper.VERSION
+        private val MIGRATIONS_ACCEPTING_ERRORS = setOf(98)
 
         @VisibleForTesting
         var USE_SNAPSHOT = true
@@ -48,7 +49,7 @@ internal class DatabaseMigrationExecutor(private val databaseAdapter: DatabaseAd
         try {
             val initialMigrationVersion = if (USE_SNAPSHOT) performSnapshotIfRequired(oldVersion, newVersion) else 0
             val migrations = parser.parseMigrations(initialMigrationVersion, newVersion)
-            migrations.forEach { executeFileSQL(it.sql) }
+            migrations.forEach { executeMigration(it) }
             transaction.setSuccessful()
         } catch (e: IOException) {
             Log.e("Database Error:", e.message)
@@ -64,6 +65,16 @@ internal class DatabaseMigrationExecutor(private val databaseAdapter: DatabaseAd
             SNAPSHOT_VERSION
         } else {
             oldVersion
+        }
+    }
+
+    private fun executeMigration(migration: DatabaseMigration) {
+        if (MIGRATIONS_ACCEPTING_ERRORS.contains(migration.version)) {
+            try {
+                executeFileSQL(migration.sql)
+            } catch (_: Throwable) {}
+        } else {
+            executeFileSQL(migration.sql)
         }
     }
 

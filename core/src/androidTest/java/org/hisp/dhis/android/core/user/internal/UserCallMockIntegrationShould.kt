@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.user.internal
 
 import com.google.common.truth.Truth
+import java.util.concurrent.Callable
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.data.user.UserCredentialsSamples
 import org.hisp.dhis.android.core.data.user.UserSamples
@@ -38,7 +39,6 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.util.concurrent.Callable
 
 @RunWith(D2JunitRunner::class)
 class UserCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
@@ -46,7 +46,7 @@ class UserCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
     companion object {
         private lateinit var userStore: IdentifiableObjectStore<User>
         private lateinit var userCredentialsStore: IdentifiableObjectStore<UserCredentials>
-        
+
         @BeforeClass
         @JvmStatic
         @Throws(Exception::class)
@@ -59,7 +59,7 @@ class UserCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
             userCall.call()
         }
     }
-    
+
     @Test
     fun persist_user_in_database_when_call() {
         Truth.assertThat(userStore.count()).isEqualTo(1)

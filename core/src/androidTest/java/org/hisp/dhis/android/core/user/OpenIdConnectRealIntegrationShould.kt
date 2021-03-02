@@ -27,12 +27,12 @@
  */
 package org.hisp.dhis.android.core.user
 
+import java.io.IOException
 import net.openid.appauth.AuthState
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.D2
 import org.hisp.dhis.android.core.D2Factory
 import org.junit.Before
-import java.io.IOException
 
 class OpenIdConnectRealIntegrationShould : BaseRealIntegrationTest() {
 

@@ -25,23 +25,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user.internal
 
-package org.hisp.dhis.android.core.user.internal;
-
-import androidx.annotation.VisibleForTesting;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import javax.inject.Inject
 
 @Reusable
-public final class UserInternalModule {
-
-    @VisibleForTesting
-    final UserCall userCall;
-
-    @Inject
-    UserInternalModule(UserCall userCall) {
-        this.userCall = userCall;
-    }
-}
+class UserInternalModule @Inject internal constructor(
+    internal val userCall: UserCall,
+    internal val logInCall: LogInCall
+)

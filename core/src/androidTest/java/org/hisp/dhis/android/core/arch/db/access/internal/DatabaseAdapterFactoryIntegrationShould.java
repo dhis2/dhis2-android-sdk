@@ -53,7 +53,7 @@ public class DatabaseAdapterFactoryIntegrationShould {
     @AfterClass
     public static void tearDownClass() {
         Context context = InstrumentationRegistry.getInstrumentation().getContext();
-        context.deleteDatabase(DB_NAME + ".db");
+        context.deleteDatabase(DB_NAME);
     }
 
     @Test

@@ -25,57 +25,46 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.access.internal
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+import android.content.res.AssetManager
+import java.io.IOException
+import java.util.ArrayList
+import java.util.Scanner
 
-import android.content.res.AssetManager;
+internal class DatabaseMigrationParser(private val assetManager: AssetManager) {
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-
-class DatabaseMigrationParser {
-
-    private final AssetManager assetManager;
-
-    DatabaseMigrationParser(AssetManager assetManager) {
-        this.assetManager = assetManager;
-    }
-
-    List<List<String>> parseMigrations(int oldVersion, int newVersion) throws IOException {
-        List<List<String>> scripts = new ArrayList<>();
-
-        int startVersion = oldVersion + 1;
-        for (int i = startVersion; i <= newVersion; i++) {
-            scripts.add(this.parseMigration(i));
+    @Throws(IOException::class)
+    fun parseMigrations(oldVersion: Int, newVersion: Int): List<DatabaseMigration> {
+        val startVersion = oldVersion + 1
+        return (startVersion..newVersion).map {
+            parseMigration(it)
         }
-
-        return scripts;
     }
 
-    List<String> parseSnapshot(int version) throws IOException {
-        return parseFile("snapshots", version);
+    @Throws(IOException::class)
+    fun parseSnapshot(version: Int): List<String> {
+        return parseFile("snapshots", version)
     }
 
-    private List<String> parseMigration(int version) throws IOException {
-        return parseFile("migrations", version);
+    @Throws(IOException::class)
+    private fun parseMigration(version: Int): DatabaseMigration {
+        return DatabaseMigration(version, parseFile("migrations", version))
     }
 
-    private List<String> parseFile(String directory, int newVersion) throws IOException {
-        String fileName = directory + "/" + newVersion + ".sql";
-        InputStream inputStream = assetManager.open(fileName);
-        Scanner sc = new Scanner(inputStream, "UTF-8");
-        List<String> lines = new ArrayList<>();
-
+    @Throws(IOException::class)
+    private fun parseFile(directory: String, newVersion: Int): List<String> {
+        val fileName = "$directory/$newVersion.sql"
+        val inputStream = assetManager.open(fileName)
+        val sc = Scanner(inputStream, "UTF-8")
+        val lines: MutableList<String> = ArrayList()
         while (sc.hasNextLine()) {
-            String line = sc.nextLine();
-            if (line.length() > 1 && !line.contains("#")) {
-                lines.add(line);
+            val line = sc.nextLine()
+            if (line.length > 1 && !line.contains("#")) {
+                lines.add(line)
             }
         }
-        sc.close();
-        return lines;
+        sc.close()
+        return lines
     }
 }

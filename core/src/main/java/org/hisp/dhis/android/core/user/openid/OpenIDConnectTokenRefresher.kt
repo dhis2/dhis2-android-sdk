@@ -38,7 +38,8 @@ import net.openid.appauth.AuthorizationService
 
 @Reusable
 internal class OpenIDConnectTokenRefresher @Inject constructor(
-    private val context: Context
+    private val context: Context,
+    private val logoutHandler: OpenIDConnectLogoutHandler
 ) {
 
     fun blockingGetFreshToken(authState: AuthState): String {
@@ -50,6 +51,7 @@ internal class OpenIDConnectTokenRefresher @Inject constructor(
                 if (idToken != null) {
                     it.onSuccess(idToken)
                 } else {
+                    logoutHandler.logOut()
                     it.onError(RuntimeException(ex))
                 }
             }

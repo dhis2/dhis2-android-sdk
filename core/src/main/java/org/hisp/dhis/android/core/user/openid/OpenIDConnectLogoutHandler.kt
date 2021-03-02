@@ -25,51 +25,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.api.authentication.internal
+
+package org.hisp.dhis.android.core.user.openid
 
 import dagger.Reusable
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
-import okhttp3.Interceptor
-import okhttp3.Request
-import okhttp3.Response
-import org.hisp.dhis.android.core.arch.api.authentication.internal.UserIdAuthenticatorHelper.Companion.AUTHORIZATION_KEY
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
-import org.hisp.dhis.android.core.user.openid.OpenIDConnectLogoutHandler
-import org.hisp.dhis.android.core.user.openid.OpenIDConnectTokenRefresher
-
-private const val UNAUTHORIZED = 401
 
 @Reusable
-internal class OpenIDConnectAuthenticator @Inject constructor(
-    private val credentialsSecureStore: ObjectKeyValueStore<Credentials>,
-    private val tokenRefresher: OpenIDConnectTokenRefresher,
-    private val userIdHelper: UserIdAuthenticatorHelper,
-    private val logoutHandler: OpenIDConnectLogoutHandler
+internal class OpenIDConnectLogoutHandler @Inject constructor(
+    private val credentialsSecureStore: ObjectKeyValueStore<Credentials>
 ) {
 
-    fun handleTokenCall(chain: Interceptor.Chain, credentials: Credentials): Response {
-        val builder = userIdHelper.builderWithUserId(chain)
-        val builderWithAuthentication = addTokenHeader(builder, getUpdatedToken(credentials))
-        val res = chain.proceed(builderWithAuthentication.build())
-        if (res.code() == UNAUTHORIZED) {
-            logoutHandler.logOut()
-        }
-        return res
+    private val logOutSubject = PublishSubject.create<Unit>()
+
+    fun logOutObservable(): Observable<Unit> {
+        return logOutSubject
     }
 
-    private fun getUpdatedToken(credentials: Credentials): String {
-        val state = credentials.openIDConnectState!!
-        return if (state.needsTokenRefresh) {
-            val token = tokenRefresher.blockingGetFreshToken(state)
-            credentialsSecureStore.set(credentials) // Auth state internally updated
-            token
-        } else {
-            state.idToken!!
-        }
-    }
-
-    private fun addTokenHeader(builder: Request.Builder, token: String): Request.Builder {
-        return builder.addHeader(AUTHORIZATION_KEY, "Bearer $token")
+    fun logOut() {
+        credentialsSecureStore.remove()
+        logOutSubject.onNext(Unit)
     }
 }

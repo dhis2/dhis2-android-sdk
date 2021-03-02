@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.arch.api.authentication.internal;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore;
+import org.hisp.dhis.android.core.user.openid.OpenIDConnectLogoutHandler;
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectTokenRefresher;
 import org.junit.After;
 import org.junit.Before;
@@ -66,6 +67,9 @@ public class ParentAuthenticatorShould {
     @Mock
     private OpenIDConnectTokenRefresher tokenRefresher;
 
+    @Mock
+    private OpenIDConnectLogoutHandler logoutHandler;
+
     private MockWebServer mockWebServer;
     private OkHttpClient okHttpClient;
 
@@ -82,7 +86,7 @@ public class ParentAuthenticatorShould {
         Interceptor authenticator = new ParentAuthenticator(
                 credentialsSecureStore,
                 new PasswordAndCookieAuthenticator(userIdHelper, cookieHelper),
-                new OpenIDConnectAuthenticator(credentialsSecureStore, tokenRefresher, userIdHelper),
+                new OpenIDConnectAuthenticator(credentialsSecureStore, tokenRefresher, userIdHelper, logoutHandler),
                 cookieHelper
         );
         okHttpClient = new OkHttpClient.Builder()

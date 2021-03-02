@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.user.openid
 import android.content.Context
 import android.content.Intent
 import dagger.Reusable
+import io.reactivex.Observable
 import io.reactivex.Single
 import javax.inject.Inject
 import net.openid.appauth.*
@@ -42,7 +43,8 @@ private const val RC_AUTH = 2021
 @Reusable
 internal class OpenIDConnectHandlerImpl @Inject constructor(
     private val context: Context,
-    private val logInCall: LogInCall
+    private val logInCall: LogInCall,
+    private val logoutHandler: OpenIDConnectLogoutHandler
 ) : OpenIDConnectHandler {
 
     override fun logIn(config: OpenIDConnectConfig): Single<IntentWithRequestCode> {
@@ -84,6 +86,10 @@ internal class OpenIDConnectHandlerImpl @Inject constructor(
         requestCode: Int
     ): User {
         return handleLogInResponse(serverUrl, intent, requestCode).blockingGet()
+    }
+
+    override fun logOutObservable(): Observable<Unit> {
+        return logoutHandler.logOutObservable()
     }
 
     private fun downloadToken(tokenRequest: TokenRequest): Single<AuthState> {

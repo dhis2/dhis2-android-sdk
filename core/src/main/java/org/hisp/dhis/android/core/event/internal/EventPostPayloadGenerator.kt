@@ -28,27 +28,21 @@
 package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.common.DataColumns
-import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.note.Note
-import org.hisp.dhis.android.core.note.NoteTableInfo
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
+import javax.inject.Inject
 
 @Reusable
 internal class EventPostPayloadGenerator @Inject internal constructor(
     private val versionManager: DHISVersionManager,
     private val trackedEntityDataValueStore: TrackedEntityDataValueStore,
-    private val noteStore: IdentifiableObjectStore<Note>
+    private val noteStore: EventPostNoteStore
 ) {
 
     fun getEvents(events: List<Event>): List<Event> {
         val dataValueMap = trackedEntityDataValueStore.querySingleEventsTrackedEntityDataValues()
-        val notes = queryNotes()
+        val notes = noteStore.queryNotes()
 
         return events.map { event ->
             val eventBuilder = event.toBuilder()
@@ -59,15 +53,5 @@ internal class EventPostPayloadGenerator @Inject internal constructor(
             }
             eventBuilder.build()
         }
-    }
-
-    private fun queryNotes(): List<Note> {
-        val whereNotesClause = WhereClauseBuilder()
-            .appendInKeyStringValues(
-                DataColumns.STATE, State.uploadableStatesIncludingError().map { it.name }
-            )
-            .appendKeyStringValue(NoteTableInfo.Columns.NOTE_TYPE, Note.NoteType.EVENT_NOTE)
-            .build()
-        return noteStore.selectWhere(whereNotesClause)
     }
 }

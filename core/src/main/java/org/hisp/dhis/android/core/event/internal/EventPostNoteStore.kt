@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.note.NoteTableInfo
 import javax.inject.Inject
 
 @Reusable
-internal class NewTrackerImporterNoteStore @Inject internal constructor(
+internal class EventPostNoteStore @Inject internal constructor(
     private val noteStore: IdentifiableObjectStore<Note>
 ) {
 

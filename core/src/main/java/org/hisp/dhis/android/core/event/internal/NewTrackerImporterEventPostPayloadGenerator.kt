@@ -39,7 +39,7 @@ import javax.inject.Inject
 @Reusable
 internal class NewTrackerImporterEventPostPayloadGenerator @Inject internal constructor(
     private val trackedEntityDataValueStore: TrackedEntityDataValueStore,
-    private val noteStore: NewTrackerImporterNoteStore
+    private val noteStore: EventPostNoteStore
 ) {
 
     fun getEvents(events: List<Event>): List<NewTrackerImporterEvent> {

@@ -28,58 +28,36 @@
  */
 package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.period.PeriodType;
-import org.hisp.dhis.android.core.settings.internal.SettingsAppHelper;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
+import static org.hisp.dhis.android.core.settings.internal.AnalyticsTeiDataChildrenAppender.KEY;
+
 @Reusable
 public class AnalyticsTeiSettingCollectionRepository
         extends ReadOnlyCollectionRepositoryImpl<AnalyticsTeiSetting, AnalyticsTeiSettingCollectionRepository> {
 
-    private final LinkStore<AnalyticsTeiDataElement> analyticsTeiDataElementStore;
-    private final LinkStore<AnalyticsTeiIndicator> analyticsTeiIndicatorStore;
-    private final LinkStore<AnalyticsTeiAttribute> analyticsTeiAttributeStore;
-
     @Inject
     AnalyticsTeiSettingCollectionRepository(ObjectWithoutUidStore<AnalyticsTeiSetting> store,
                                             RepositoryScope scope,
-                                            LinkStore<AnalyticsTeiDataElement> analyticsTeiDataElementStore,
-                                            LinkStore<AnalyticsTeiIndicator> analyticsTeiIndicatorStore,
-                                            LinkStore<AnalyticsTeiAttribute> analyticsTeiAttributeStore) {
-        super(store, Collections.emptyMap(), scope, new FilterConnectorFactory<>(scope,
-                s -> new AnalyticsTeiSettingCollectionRepository(store, s,
-                        analyticsTeiDataElementStore, analyticsTeiIndicatorStore, analyticsTeiAttributeStore)));
-        this.analyticsTeiDataElementStore = analyticsTeiDataElementStore;
-        this.analyticsTeiIndicatorStore = analyticsTeiIndicatorStore;
-        this.analyticsTeiAttributeStore = analyticsTeiAttributeStore;
-    }
-
-    @Override
-    public List<AnalyticsTeiSetting> blockingGet() {
-        List<AnalyticsTeiSetting> analyticsTeiSettings = super.blockingGetWithoutChildren();
-
-        List<AnalyticsTeiDataElement> teiDataElements = analyticsTeiDataElementStore.selectAll();
-        List<AnalyticsTeiIndicator> teiIndicators = analyticsTeiIndicatorStore.selectAll();
-        List<AnalyticsTeiAttribute> teiAttributes = analyticsTeiAttributeStore.selectAll();
-
-        return SettingsAppHelper.buildAnalyticsTeiSettings(
-                analyticsTeiSettings,
-                teiDataElements,
-                teiIndicators,
-                teiAttributes);
+                                            Map<String, ChildrenAppender<AnalyticsTeiSetting>> childrenAppenders) {
+        super(store,
+                childrenAppenders,
+                scope.toBuilder().children(scope.children().withChild(KEY)).build(),
+                new FilterConnectorFactory<>(scope,
+                        s -> new AnalyticsTeiSettingCollectionRepository(store, s, childrenAppenders)));
     }
 
     public StringFilterConnector<AnalyticsTeiSettingCollectionRepository> byUid() {

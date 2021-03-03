@@ -43,7 +43,8 @@ public class RealServerMother {
     public static String android_dev = "https://play.dhis2.org/android-dev/";
     public static String android2 = "http://android2.dhis2.org:8080";
 
-    public static String url = android_current;
+    public static String url = "http://172.23.0.1:8080/";
+    //public static String url = android_dev;
 
     public static String username = "android";
     public static String password = "Android123";

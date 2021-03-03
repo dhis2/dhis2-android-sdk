@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl;
 import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -81,7 +82,7 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
     }
 
     // commented out since it is a flaky test that works against a real server.
-    //@Test
+    @Test
     public void successful_response_after_sync_events() throws Exception {
         downloadMetadata();
 

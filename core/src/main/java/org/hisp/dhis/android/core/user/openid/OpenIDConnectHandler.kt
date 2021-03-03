@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.user.openid
 
 import android.content.Intent
+import io.reactivex.Observable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.user.User
 
@@ -37,4 +38,5 @@ interface OpenIDConnectHandler {
     fun blockingLogIn(config: OpenIDConnectConfig): IntentWithRequestCode
     fun handleLogInResponse(serverUrl: String, intent: Intent?, requestCode: Int): Single<User>
     fun blockingHandleLogInResponse(serverUrl: String, intent: Intent?, requestCode: Int): User
+    fun logOutObservable(): Observable<Unit>
 }

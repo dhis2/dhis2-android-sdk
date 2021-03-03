@@ -25,36 +25,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user.internal
 
-package org.hisp.dhis.android.core.user.openid
-
-import android.content.Context
 import dagger.Reusable
-import io.reactivex.Single
 import javax.inject.Inject
-import net.openid.appauth.AuthState
-import net.openid.appauth.AuthorizationException
-import net.openid.appauth.AuthorizationService
 
 @Reusable
-internal class OpenIDConnectTokenRefresher @Inject constructor(
-    private val context: Context,
-    private val logoutHandler: OpenIDConnectLogoutHandler
-) {
-
-    fun blockingGetFreshToken(authState: AuthState): String {
-        val service = AuthorizationService(context)
-        return Single.create<String> {
-            authState.performActionWithFreshTokens(service) {
-                _: String?, idToken: String?, ex: AuthorizationException? ->
-                service.dispose()
-                if (idToken != null) {
-                    it.onSuccess(idToken)
-                } else {
-                    logoutHandler.logOut()
-                    it.onError(RuntimeException(ex))
-                }
-            }
-        }.blockingGet()
-    }
-}
+class UserInternalModule @Inject internal constructor(
+    internal val userCall: UserCall,
+    internal val logInCall: LogInCall
+)

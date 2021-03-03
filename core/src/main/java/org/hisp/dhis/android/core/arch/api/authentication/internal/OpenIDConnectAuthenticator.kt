@@ -35,19 +35,27 @@ import okhttp3.Response
 import org.hisp.dhis.android.core.arch.api.authentication.internal.UserIdAuthenticatorHelper.Companion.AUTHORIZATION_KEY
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
+import org.hisp.dhis.android.core.user.openid.OpenIDConnectLogoutHandler
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectTokenRefresher
+
+private const val UNAUTHORIZED = 401
 
 @Reusable
 internal class OpenIDConnectAuthenticator @Inject constructor(
     private val credentialsSecureStore: ObjectKeyValueStore<Credentials>,
     private val tokenRefresher: OpenIDConnectTokenRefresher,
-    private val userIdHelper: UserIdAuthenticatorHelper
+    private val userIdHelper: UserIdAuthenticatorHelper,
+    private val logoutHandler: OpenIDConnectLogoutHandler
 ) {
 
     fun handleTokenCall(chain: Interceptor.Chain, credentials: Credentials): Response {
         val builder = userIdHelper.builderWithUserId(chain)
         val builderWithAuthentication = addTokenHeader(builder, getUpdatedToken(credentials))
-        return chain.proceed(builderWithAuthentication.build())
+        val res = chain.proceed(builderWithAuthentication.build())
+        if (res.code() == UNAUTHORIZED) {
+            logoutHandler.logOut()
+        }
+        return res
     }
 
     private fun getUpdatedToken(credentials: Credentials): String {

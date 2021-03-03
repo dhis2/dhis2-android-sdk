@@ -26,22 +26,28 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user.internal;
+package org.hisp.dhis.android.core.user.openid
 
-import androidx.annotation.VisibleForTesting;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.storage.internal.Credentials
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 
 @Reusable
-public final class UserInternalModule {
+internal class OpenIDConnectLogoutHandler @Inject constructor(
+    private val credentialsSecureStore: ObjectKeyValueStore<Credentials>
+) {
 
-    @VisibleForTesting
-    final UserCall userCall;
+    private val logOutSubject = PublishSubject.create<Unit>()
 
-    @Inject
-    UserInternalModule(UserCall userCall) {
-        this.userCall = userCall;
+    fun logOutObservable(): Observable<Unit> {
+        return logOutSubject
+    }
+
+    fun logOut() {
+        credentialsSecureStore.remove()
+        logOutSubject.onNext(Unit)
     }
 }

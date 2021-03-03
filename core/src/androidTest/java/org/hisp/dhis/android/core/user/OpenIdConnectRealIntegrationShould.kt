@@ -25,36 +25,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user
 
-package org.hisp.dhis.android.core.user.openid
-
-import android.content.Context
-import dagger.Reusable
-import io.reactivex.Single
-import javax.inject.Inject
+import java.io.IOException
 import net.openid.appauth.AuthState
-import net.openid.appauth.AuthorizationException
-import net.openid.appauth.AuthorizationService
+import org.hisp.dhis.android.core.BaseRealIntegrationTest
+import org.hisp.dhis.android.core.D2
+import org.hisp.dhis.android.core.D2Factory
+import org.junit.Before
 
-@Reusable
-internal class OpenIDConnectTokenRefresher @Inject constructor(
-    private val context: Context,
-    private val logoutHandler: OpenIDConnectLogoutHandler
-) {
+class OpenIdConnectRealIntegrationShould : BaseRealIntegrationTest() {
 
-    fun blockingGetFreshToken(authState: AuthState): String {
-        val service = AuthorizationService(context)
-        return Single.create<String> {
-            authState.performActionWithFreshTokens(service) {
-                _: String?, idToken: String?, ex: AuthorizationException? ->
-                service.dispose()
-                if (idToken != null) {
-                    it.onSuccess(idToken)
-                } else {
-                    logoutHandler.logOut()
-                    it.onError(RuntimeException(ex))
-                }
-            }
-        }.blockingGet()
+    private lateinit var d2: D2
+
+    @Before
+    @Throws(IOException::class)
+    override fun setUp() {
+        super.setUp()
+        d2 = D2Factory.forNewDatabase()
+    }
+
+    // @Test(expected = D2Error::class)
+    fun throw_error_when_not_passing_token() {
+        val logInCall = getD2DIComponent(d2).internalModules().user.logInCall
+        logInCall.blockingLogInOpenIDConnect(url, AuthState())
     }
 }

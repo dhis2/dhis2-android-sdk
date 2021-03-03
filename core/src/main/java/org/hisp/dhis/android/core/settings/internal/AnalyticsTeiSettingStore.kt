@@ -44,8 +44,9 @@ internal object AnalyticsTeiSettingStore {
         w.bind(1, o.uid())
         w.bind(2, o.name())
         w.bind(3, o.shortName())
-        w.bind(4, o.period())
-        w.bind(5, o.type())
+        w.bind(4, o.program())
+        w.bind(5, o.period())
+        w.bind(6, o.type())
     }
 
     private val WHERE_UPDATE_BINDER = WhereStatementBinder {

@@ -25,44 +25,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.data.settings
+package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.period.PeriodType
-import org.hisp.dhis.android.core.settings.*
+import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.settings.AnalyticsSettingsSamples
+import org.hisp.dhis.android.core.settings.AnalyticsTeiSetting
+import org.hisp.dhis.android.core.settings.AnalyticsTeiSettingTableInfo
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-object AnalyticsSettingsSamples {
-
-    val analyticsTeiDataElementSample: AnalyticsTeiDataElement =
-        AnalyticsTeiDataElement.builder()
-            .id(1L)
-            .teiSetting("tei_setting")
-            .programStage("programStage")
-            .dataElement("dataElement")
-            .build()
-
-    val analyticsTeiIndicator: AnalyticsTeiIndicator =
-        AnalyticsTeiIndicator.builder()
-            .id(1L)
-            .teiSetting("tei_setting")
-            .indicator("indicator")
-            .build()
-
-    val analyticsTeiAttribute: AnalyticsTeiAttribute =
-        AnalyticsTeiAttribute.builder()
-            .id(1L)
-            .teiSetting("tei_setting")
-            .attribute("attribute")
-            .build()
-
-    val analyticsTeiSetting: AnalyticsTeiSetting =
-        AnalyticsTeiSetting.builder()
-            .id(1L)
-            .uid("uid")
-            .name("name")
-            .shortName("short_name")
-            .program("program")
-            .period(PeriodType.Monthly)
-            .type(ChartType.LINE)
-            .data(AnalyticsTeiData.builder().build())
-            .build()
+@RunWith(D2JunitRunner::class)
+class AnalyticsTeiSettingStoreIntegrationShould : ObjectStoreAbstractIntegrationShould<AnalyticsTeiSetting>(
+    AnalyticsTeiSettingStore.create(TestDatabaseAdapterFactory.get()),
+    AnalyticsTeiSettingTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get()
+) {
+    override fun buildObject(): AnalyticsTeiSetting {
+        return AnalyticsSettingsSamples.analyticsTeiSetting
+    }
 }

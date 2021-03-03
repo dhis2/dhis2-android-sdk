@@ -28,18 +28,18 @@
 package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper
 import org.hisp.dhis.android.core.common.DataObject
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 import org.hisp.dhis.android.core.common.State
-import javax.inject.Inject
 
 @Reusable
 internal class EventPostStateManager @Inject internal constructor(
     private val eventStore: EventStore
 ) {
 
-    fun <T> markObjectsAs(events: Collection<T>, forcedState: State?) where T: ObjectWithUidInterface, T: DataObject  {
+    fun <T> markObjectsAs(events: Collection<T>, forcedState: State?) where T : ObjectWithUidInterface, T : DataObject {
         for (e in events) {
             eventStore.setState(e.uid(), DataStateHelper.forcedOrOwn(e, forcedState))
         }

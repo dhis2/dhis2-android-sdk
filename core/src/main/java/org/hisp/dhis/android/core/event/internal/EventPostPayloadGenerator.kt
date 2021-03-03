@@ -28,10 +28,10 @@
 package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
-import javax.inject.Inject
 
 @Reusable
 internal class EventPostPayloadGenerator @Inject internal constructor(

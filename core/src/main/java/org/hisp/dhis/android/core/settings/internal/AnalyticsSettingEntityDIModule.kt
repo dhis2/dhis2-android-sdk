@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.settings.AnalyticsTeiAttribute
 import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
 import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicator
@@ -97,4 +98,11 @@ internal class AnalyticsSettingEntityDIModule {
     ): LinkHandler<AnalyticsTeiAttribute, AnalyticsTeiAttribute> {
         return LinkHandlerImpl(store)
     }
+
+    @Provides
+    @Reusable
+    fun teiChildrenAppenders(dataChildrenAppender: AnalyticsTeiDataChildrenAppender):
+        Map<String, ChildrenAppender<AnalyticsTeiSetting>> {
+            return mapOf(AnalyticsTeiDataChildrenAppender.KEY to dataChildrenAppender)
+        }
 }

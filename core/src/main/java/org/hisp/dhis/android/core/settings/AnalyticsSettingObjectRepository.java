@@ -28,12 +28,9 @@
  */
 package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl;
 import org.hisp.dhis.android.core.settings.internal.AnalyticsSettingCall;
-import org.hisp.dhis.android.core.settings.internal.SettingsAppHelper;
 
 import java.util.List;
 
@@ -46,35 +43,29 @@ public class AnalyticsSettingObjectRepository
         extends ReadOnlyAnyObjectWithDownloadRepositoryImpl<AnalyticsSettings>
         implements ReadOnlyWithDownloadObjectRepository<AnalyticsSettings> {
 
-    private final ObjectWithoutUidStore<AnalyticsTeiSetting> analyticsTeiSettingStore;
-    private final LinkStore<AnalyticsTeiDataElement> analyticsTeiDataElementStore;
-    private final LinkStore<AnalyticsTeiIndicator> analyticsTeiIndicatorStore;
-    private final LinkStore<AnalyticsTeiAttribute> analyticsTeiAttributeStore;
+    private final AnalyticsTeiSettingCollectionRepository analyticsTeiSettingRepository;
 
     @Inject
-    AnalyticsSettingObjectRepository(ObjectWithoutUidStore<AnalyticsTeiSetting> analyticsTeiSettingStore,
-                                     LinkStore<AnalyticsTeiDataElement> analyticsTeiDataElementStore,
-                                     LinkStore<AnalyticsTeiIndicator> analyticsTeiIndicatorStore,
-                                     LinkStore<AnalyticsTeiAttribute> analyticsTeiAttributeStore,
+    AnalyticsSettingObjectRepository(AnalyticsTeiSettingCollectionRepository analyticsTeiSettingRepository,
                                      AnalyticsSettingCall analyticsSettingCall) {
         super(analyticsSettingCall);
-        this.analyticsTeiSettingStore = analyticsTeiSettingStore;
-        this.analyticsTeiDataElementStore = analyticsTeiDataElementStore;
-        this.analyticsTeiIndicatorStore = analyticsTeiIndicatorStore;
-        this.analyticsTeiAttributeStore = analyticsTeiAttributeStore;
+        this.analyticsTeiSettingRepository = analyticsTeiSettingRepository;
     }
 
     @Override
     public AnalyticsSettings blockingGet() {
-        List<AnalyticsTeiSetting> analyticsTeiSettings = analyticsTeiSettingStore.selectAll();
-        List<AnalyticsTeiDataElement> teiDataElements = analyticsTeiDataElementStore.selectAll();
-        List<AnalyticsTeiIndicator> teiIndicators = analyticsTeiIndicatorStore.selectAll();
-        List<AnalyticsTeiAttribute> teiAttributes = analyticsTeiAttributeStore.selectAll();
+        List<AnalyticsTeiSetting> analyticsTeiSettings = analyticsTeiSettingRepository.blockingGet();
 
-        return SettingsAppHelper.buildAnalyticsSettings(
-                analyticsTeiSettings,
-                teiDataElements,
-                teiIndicators,
-                teiAttributes);
+        if (analyticsTeiSettings.isEmpty()) {
+            return null;
+        } else {
+            return AnalyticsSettings.builder()
+                    .tei(analyticsTeiSettings)
+                    .build();
+        }
+    }
+
+    public AnalyticsTeiSettingCollectionRepository teis() {
+        return analyticsTeiSettingRepository;
     }
 }

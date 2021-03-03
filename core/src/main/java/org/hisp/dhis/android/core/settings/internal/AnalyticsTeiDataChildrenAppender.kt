@@ -27,40 +27,43 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithoutUidStore
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.settings.AnalyticsTeiAttribute
+import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
+import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicator
 import org.hisp.dhis.android.core.settings.AnalyticsTeiSetting
-import org.hisp.dhis.android.core.settings.AnalyticsTeiSettingTableInfo
+import org.hisp.dhis.android.core.settings.internal.SettingsAppHelper.buildAnalyticsTeiSetting
 
-@Suppress("MagicNumber")
-internal object AnalyticsTeiSettingStore {
+@Reusable
+internal class AnalyticsTeiDataChildrenAppender @Inject constructor(
+    private val analyticsTeiDataElementStore: LinkStore<AnalyticsTeiDataElement>,
+    private val analyticsTeiIndicatorStore: LinkStore<AnalyticsTeiIndicator>,
+    private val analyticsTeiAttributeStore: LinkStore<AnalyticsTeiAttribute>
+) : ChildrenAppender<AnalyticsTeiSetting>() {
 
-    private val BINDER = StatementBinder { o: AnalyticsTeiSetting, w: StatementWrapper ->
-        w.bind(1, o.uid())
-        w.bind(2, o.name())
-        w.bind(3, o.shortName())
-        w.bind(4, o.program())
-        w.bind(5, o.period())
-        w.bind(6, o.type())
+    companion object {
+        const val KEY = "DATA"
     }
 
-    private val WHERE_UPDATE_BINDER = WhereStatementBinder {
-        _: AnalyticsTeiSetting, _: StatementWrapper ->
+    private var dataElements: List<AnalyticsTeiDataElement>? = null
+    private var indicators: List<AnalyticsTeiIndicator>? = null
+    private var attributes: List<AnalyticsTeiAttribute>? = null
+
+    override fun prepareChildren(collection: Collection<AnalyticsTeiSetting>) {
+        dataElements = analyticsTeiDataElementStore.selectAll()
+        indicators = analyticsTeiIndicatorStore.selectAll()
+        attributes = analyticsTeiAttributeStore.selectAll()
     }
 
-    private val WHERE_DELETE_BINDER = WhereStatementBinder {
-        _: AnalyticsTeiSetting, _: StatementWrapper ->
-    }
-
-    fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<AnalyticsTeiSetting> {
-        return objectWithoutUidStore(
-            databaseAdapter, AnalyticsTeiSettingTableInfo.TABLE_INFO, BINDER,
-            WHERE_UPDATE_BINDER, WHERE_DELETE_BINDER
-        ) { cursor: Cursor -> AnalyticsTeiSetting.create(cursor) }
+    override fun appendChildren(analyticsTeiSetting: AnalyticsTeiSetting): AnalyticsTeiSetting {
+        return buildAnalyticsTeiSetting(
+            analyticsTeiSetting,
+            dataElements!!,
+            indicators!!,
+            attributes!!
+        )
     }
 }

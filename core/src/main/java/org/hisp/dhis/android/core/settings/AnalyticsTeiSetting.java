@@ -52,6 +52,8 @@ public abstract class AnalyticsTeiSetting implements CoreObject, ObjectWithUidIn
 
     public abstract String shortName();
 
+    public abstract String program();
+
     @ColumnAdapter(PeriodTypeColumnAdapter.class)
     public abstract PeriodType period();
 
@@ -81,6 +83,8 @@ public abstract class AnalyticsTeiSetting implements CoreObject, ObjectWithUidIn
         public abstract Builder name(String name);
 
         public abstract Builder shortName(String shortName);
+
+        public abstract Builder program(String program);
 
         public abstract Builder period(PeriodType period);
 

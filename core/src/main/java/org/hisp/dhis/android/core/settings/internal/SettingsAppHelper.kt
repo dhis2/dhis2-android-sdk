@@ -120,28 +120,28 @@ internal object SettingsAppHelper {
     }
 
     @JvmStatic
-    fun buildAnalyticsSettings(
+    fun buildAnalyticsTeiSettings(
         teiSettings: List<AnalyticsTeiSetting>,
         teiDataElements: List<AnalyticsTeiDataElement>,
         teiIndicators: List<AnalyticsTeiIndicator>,
         teiAttributes: List<AnalyticsTeiAttribute>
-    ): AnalyticsSettings? {
-        return if (teiSettings.isNullOrEmpty()) {
-            null
-        } else {
-            val teiSettingsWithData = teiSettings.map { item ->
-                val data = AnalyticsTeiData.builder()
-                    .dataElements(teiDataElements.filter { it.teiSetting() == item.uid() })
-                    .indicators(teiIndicators.filter { it.teiSetting() == item.uid() })
-                    .attributes(teiAttributes.filter { it.teiSetting() == item.uid() })
-                    .build()
+    ): List<AnalyticsTeiSetting> {
+        return teiSettings.map { buildAnalyticsTeiSetting(it, teiDataElements, teiIndicators, teiAttributes) }
+    }
 
-                item.toBuilder().data(data).build()
-            }
+    @JvmStatic
+    fun buildAnalyticsTeiSetting(
+        teiSetting: AnalyticsTeiSetting,
+        teiDataElements: List<AnalyticsTeiDataElement>,
+        teiIndicators: List<AnalyticsTeiIndicator>,
+        teiAttributes: List<AnalyticsTeiAttribute>
+    ): AnalyticsTeiSetting {
+        val data = AnalyticsTeiData.builder()
+            .dataElements(teiDataElements.filter { it.teiSetting() == teiSetting.uid() })
+            .indicators(teiIndicators.filter { it.teiSetting() == teiSetting.uid() })
+            .attributes(teiAttributes.filter { it.teiSetting() == teiSetting.uid() })
+            .build()
 
-            AnalyticsSettings.builder()
-                .tei(teiSettingsWithData)
-                .build()
-        }
+        return teiSetting.toBuilder().data(data).build()
     }
 }

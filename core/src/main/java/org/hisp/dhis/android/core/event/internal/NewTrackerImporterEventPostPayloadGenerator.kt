@@ -28,20 +28,35 @@
 package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper
-import org.hisp.dhis.android.core.common.DataObject
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface
-import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.event.Event
+import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
+import org.hisp.dhis.android.core.event.NewTrackerImporterEventTransformer
+import org.hisp.dhis.android.core.note.NewTrackerImporterNoteTransformer
+import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityDataValueTransformer
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
 import javax.inject.Inject
 
 @Reusable
-internal class EventPostStateManager @Inject internal constructor(
-    private val eventStore: EventStore
+internal class NewTrackerImporterEventPostPayloadGenerator @Inject internal constructor(
+    private val trackedEntityDataValueStore: TrackedEntityDataValueStore,
+    private val noteStore: NewTrackerImporterNoteStore
 ) {
 
-    fun <T> markObjectsAs(events: Collection<T>, forcedState: State?) where T: ObjectWithUidInterface, T: DataObject  {
-        for (e in events) {
-            eventStore.setState(e.uid(), DataStateHelper.forcedOrOwn(e, forcedState))
-        }
+    fun getEvents(events: List<Event>): List<NewTrackerImporterEvent> {
+        val noteTransformer = NewTrackerImporterNoteTransformer()
+        val dataValueTransformer = NewTrackerImporterTrackedEntityDataValueTransformer()
+        val eventTransformer = NewTrackerImporterEventTransformer()
+
+        val dataValueMap = trackedEntityDataValueStore.querySingleEventsTrackedEntityDataValues()
+        val notes = noteStore.queryNotes().map { noteTransformer.transform(it) }
+        return events
+            .map { eventTransformer.transform(it) }
+            .map { event ->
+                val dataValues = dataValueMap[event.uid()]?.map { dataValueTransformer.transform(it) }
+                event.toBuilder()
+                    .trackedEntityDataValues(dataValues)
+                    .notes(notes.filter { it.event() == event.uid() })
+                    .build()
+            }
     }
 }

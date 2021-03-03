@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
 import io.reactivex.Observable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper
@@ -37,10 +36,11 @@ import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.tracker.importer.internal.JobQueryCall
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterService
+import javax.inject.Inject
 
 @Reusable
 internal class EventTrackerImporterPostCall @Inject internal constructor(
-    private val payloadGenerator: EventPostPayloadGenerator,
+    private val payloadGenerator: NewTrackerImporterEventPostPayloadGenerator,
     private val stateManager: EventPostStateManager,
     private val service: TrackerImporterService,
     private val apiCallExecutor: APICallExecutor,
@@ -50,14 +50,10 @@ internal class EventTrackerImporterPostCall @Inject internal constructor(
         events: List<Event>
     ): Observable<D2Progress> {
         return Observable.defer {
-            val eventPayload = EventPayload()
             val eventsToPost = payloadGenerator.getEvents(events)
-            eventPayload.events = eventsToPost
-
+            val eventPayload = NewTrackerImporterEventPayload(eventsToPost)
             try {
-                val webResponse = apiCallExecutor.executeObjectCall(
-                    service.postEvents(eventPayload)
-                )
+                val webResponse = apiCallExecutor.executeObjectCall(service.postEvents(eventPayload))
                 jobQueryCall.storeAndQueryJob(webResponse.response().uid())
             } catch (d2Error: D2Error) {
                 stateManager.markObjectsAs(eventsToPost, DataStateHelper.errorIfOnline(d2Error))

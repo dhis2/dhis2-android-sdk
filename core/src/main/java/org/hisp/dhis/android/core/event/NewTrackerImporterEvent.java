@@ -49,9 +49,9 @@ import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.event.internal.EventFields;
-import org.hisp.dhis.android.core.note.Note;
+import org.hisp.dhis.android.core.note.NewTrackerImporterNote;
 import org.hisp.dhis.android.core.relationship.Relationship;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
+import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityDataValue;
 
 import java.util.Date;
 import java.util.List;
@@ -137,12 +137,12 @@ public abstract class NewTrackerImporterEvent extends BaseDeletableDataObject im
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreNoteListColumnAdapter.class)
-    public abstract List<Note> notes();
+    public abstract List<NewTrackerImporterNote> notes();
 
     @Nullable
     @JsonProperty(EventFields.TRACKED_ENTITY_DATA_VALUES)
     @ColumnAdapter(IgnoreTrackedEntityDataValueListColumnAdapter.class)
-    public abstract List<TrackedEntityDataValue> trackedEntityDataValues();
+    public abstract List<NewTrackerImporterTrackedEntityDataValue> trackedEntityDataValues();
 
     @Nullable
     @JsonProperty()
@@ -198,10 +198,11 @@ public abstract class NewTrackerImporterEvent extends BaseDeletableDataObject im
 
         public abstract Builder assignedUser(String assignedUser);
 
-        public abstract Builder notes(List<Note> notes);
+        public abstract Builder notes(List<NewTrackerImporterNote> notes);
 
         @JsonProperty(EventFields.TRACKED_ENTITY_DATA_VALUES)
-        public abstract Builder trackedEntityDataValues(List<TrackedEntityDataValue> trackedEntityDataValues);
+        public abstract Builder trackedEntityDataValues(
+                List<NewTrackerImporterTrackedEntityDataValue> trackedEntityDataValues);
 
         public abstract Builder relationships(List<Relationship> relationships);
 

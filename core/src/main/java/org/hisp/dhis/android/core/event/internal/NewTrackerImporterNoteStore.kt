@@ -28,20 +28,26 @@
 package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper
-import org.hisp.dhis.android.core.common.DataObject
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.note.Note
+import org.hisp.dhis.android.core.note.NoteTableInfo
 import javax.inject.Inject
 
 @Reusable
-internal class EventPostStateManager @Inject internal constructor(
-    private val eventStore: EventStore
+internal class NewTrackerImporterNoteStore @Inject internal constructor(
+    private val noteStore: IdentifiableObjectStore<Note>
 ) {
 
-    fun <T> markObjectsAs(events: Collection<T>, forcedState: State?) where T: ObjectWithUidInterface, T: DataObject  {
-        for (e in events) {
-            eventStore.setState(e.uid(), DataStateHelper.forcedOrOwn(e, forcedState))
-        }
+    fun queryNotes(): List<Note> {
+        val whereNotesClause = WhereClauseBuilder()
+            .appendInKeyStringValues(
+                DataColumns.STATE, State.uploadableStatesIncludingError().map { it.name }
+            )
+            .appendKeyStringValue(NoteTableInfo.Columns.NOTE_TYPE, Note.NoteType.EVENT_NOTE)
+            .build()
+        return noteStore.selectWhere(whereNotesClause)
     }
 }

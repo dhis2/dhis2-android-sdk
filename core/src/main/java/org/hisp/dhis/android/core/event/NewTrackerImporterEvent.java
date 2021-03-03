@@ -42,9 +42,9 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EventStatusColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNoteListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewTackerImporterTrackedEntityDataValueListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewTrackerImporterNoteListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreRelationshipListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreTrackedEntityDataValueListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
@@ -136,12 +136,12 @@ public abstract class NewTrackerImporterEvent extends BaseDeletableDataObject im
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(IgnoreNoteListColumnAdapter.class)
+    @ColumnAdapter(IgnoreNewTrackerImporterNoteListColumnAdapter.class)
     public abstract List<NewTrackerImporterNote> notes();
 
     @Nullable
     @JsonProperty(EventFields.TRACKED_ENTITY_DATA_VALUES)
-    @ColumnAdapter(IgnoreTrackedEntityDataValueListColumnAdapter.class)
+    @ColumnAdapter(IgnoreNewTackerImporterTrackedEntityDataValueListColumnAdapter.class)
     public abstract List<NewTrackerImporterTrackedEntityDataValue> trackedEntityDataValues();
 
     @Nullable

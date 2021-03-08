@@ -36,6 +36,7 @@ object AnalyticsSettingsSamples {
         AnalyticsTeiDataElement.builder()
             .id(1L)
             .teiSetting("tei_setting")
+            .whoComponent(WHONutritionComponent.X)
             .programStage("programStage")
             .dataElement("dataElement")
             .build()
@@ -43,6 +44,7 @@ object AnalyticsSettingsSamples {
     val analyticsTeiIndicator: AnalyticsTeiIndicator =
         AnalyticsTeiIndicator.builder()
             .id(1L)
+            .whoComponent(WHONutritionComponent.X)
             .teiSetting("tei_setting")
             .indicator("indicator")
             .build()
@@ -50,6 +52,7 @@ object AnalyticsSettingsSamples {
     val analyticsTeiAttribute: AnalyticsTeiAttribute =
         AnalyticsTeiAttribute.builder()
             .id(1L)
+            .whoComponent(WHONutritionComponent.X)
             .teiSetting("tei_setting")
             .attribute("attribute")
             .build()

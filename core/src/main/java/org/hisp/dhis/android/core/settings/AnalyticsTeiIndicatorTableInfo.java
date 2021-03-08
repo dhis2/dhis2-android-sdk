@@ -52,6 +52,7 @@ public final class AnalyticsTeiIndicatorTableInfo {
 
     public static class Columns extends CoreColumns {
         public static final String TEI_SETTING = "teiSetting";
+        public static final String WHO_COMPONENT = "whoComponent";
         public static final String PROGRAM_STAGE = "programStage";
         public static final String INDICATOR = "indicator";
 
@@ -59,6 +60,7 @@ public final class AnalyticsTeiIndicatorTableInfo {
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
                     TEI_SETTING,
+                    WHO_COMPONENT,
                     PROGRAM_STAGE,
                     INDICATOR
             );

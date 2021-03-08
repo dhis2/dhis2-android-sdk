@@ -34,8 +34,10 @@ import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.WHONutritionComponentColumnAdapter;
 import org.hisp.dhis.android.core.arch.json.internal.AnalyticsTEIDataElementDeserializer;
 import org.hisp.dhis.android.core.common.CoreObject;
 
@@ -45,6 +47,10 @@ public abstract class AnalyticsTeiDataElement implements CoreObject {
 
     @Nullable
     public abstract String teiSetting();
+
+    @Nullable
+    @ColumnAdapter(WHONutritionComponentColumnAdapter.class)
+    public abstract WHONutritionComponent whoComponent();
 
     @Nullable
     public abstract String programStage();
@@ -67,6 +73,8 @@ public abstract class AnalyticsTeiDataElement implements CoreObject {
         public abstract Builder id(Long id);
 
         public abstract Builder teiSetting(String teiSetting);
+
+        public abstract Builder whoComponent(WHONutritionComponent component);
 
         public abstract Builder programStage(String programStage);
 

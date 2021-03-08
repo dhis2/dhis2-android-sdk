@@ -40,7 +40,8 @@ internal object AnalyticsTeiAttributeStore {
 
     private val BINDER = StatementBinder { o: AnalyticsTeiAttribute, w: StatementWrapper ->
         w.bind(1, o.teiSetting())
-        w.bind(2, o.attribute())
+        w.bind(2, o.whoComponent())
+        w.bind(3, o.attribute())
     }
 
     fun create(databaseAdapter: DatabaseAdapter): LinkStore<AnalyticsTeiAttribute> {

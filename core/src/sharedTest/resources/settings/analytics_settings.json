@@ -29,6 +29,34 @@
       "period": "Weekly",
       "program": "lxAQ7Zs9VYR",
       "shortName": "W. gain"
+    },
+    {
+      "WHONutrition": {
+        "chartType": "WFH",
+        "gender": {
+          "attribute": "cejWyOfXge6",
+          "values": {
+            "female": "female",
+            "male": "male"
+          }
+        },
+        "x": {
+          "dataElements": [
+            "ZzYYXq4fJie.GQY2lXrypjO"
+          ]
+        },
+        "y": {
+          "indicators": [
+            "TQY2lXrypjO"
+          ]
+        }
+      },
+      "name": "Who chart",
+      "program": "IpHINAT79UW",
+      "programStage": "ZzYYXq4fJie",
+      "shortName": "Who chart",
+      "type": "WHO_NUTRITION",
+      "uid": "yEdtdG7ql9K"
     }
   ]
 }

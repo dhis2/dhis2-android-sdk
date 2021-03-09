@@ -45,7 +45,8 @@ class AnalyticsTeiWHONutritionDataHandlerShould {
 
     private val whoData: AnalyticsTeiWHONutritionData = mock()
 
-    private lateinit var analyticsTeiSettingHandler:  LinkHandler<AnalyticsTeiWHONutritionData, AnalyticsTeiWHONutritionData>
+    private lateinit var analyticsTeiSettingHandler:
+        LinkHandler<AnalyticsTeiWHONutritionData, AnalyticsTeiWHONutritionData>
 
     @Before
     @Throws(Exception::class)

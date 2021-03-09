@@ -140,7 +140,7 @@ internal object SettingsAppHelper {
         teiAttributes: List<AnalyticsTeiAttribute>,
         teiWhoNutritionData: List<AnalyticsTeiWHONutritionData>
     ): AnalyticsTeiSetting {
-        return when(teiSetting.type()) {
+        return when (teiSetting.type()) {
             ChartType.WHO_NUTRITION -> {
                 val whoData = teiWhoNutritionData.find { it.teiSetting() == teiSetting.uid() }?.let {
                     it.toBuilder()
@@ -162,17 +162,23 @@ internal object SettingsAppHelper {
         }
     }
 
-    private fun buildWhoComponent(teiSetting: AnalyticsTeiSetting,
-                                  whoComponent: WHONutritionComponent,
-                                  teiDataElements: List<AnalyticsTeiDataElement>,
-                                  teiIndicators: List<AnalyticsTeiIndicator>): AnalyticsTeiWHONutritionItem {
+    private fun buildWhoComponent(
+        teiSetting: AnalyticsTeiSetting,
+        whoComponent: WHONutritionComponent,
+        teiDataElements: List<AnalyticsTeiDataElement>,
+        teiIndicators: List<AnalyticsTeiIndicator>
+    ): AnalyticsTeiWHONutritionItem {
         return AnalyticsTeiWHONutritionItem.builder()
-            .dataElements(teiDataElements.filter {
-                it.teiSetting() == teiSetting.uid() && it.whoComponent() == whoComponent
-            })
-            .indicators(teiIndicators.filter {
-                it.teiSetting() == teiSetting.uid() && it.whoComponent() == whoComponent
-            })
+            .dataElements(
+                teiDataElements.filter {
+                    it.teiSetting() == teiSetting.uid() && it.whoComponent() == whoComponent
+                }
+            )
+            .indicators(
+                teiIndicators.filter {
+                    it.teiSetting() == teiSetting.uid() && it.whoComponent() == whoComponent
+                }
+            )
             .build()
     }
 }

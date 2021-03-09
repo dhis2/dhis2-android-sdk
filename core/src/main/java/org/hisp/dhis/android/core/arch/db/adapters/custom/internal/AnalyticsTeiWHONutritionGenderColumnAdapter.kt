@@ -43,10 +43,12 @@ internal class AnalyticsTeiWHONutritionGenderColumnAdapter : ColumnTypeAdapter<A
 
         return AnalyticsTeiWHONutritionGender.builder()
             .attribute(cursor.getString(attributeIndex))
-            .values(AnalyticsTeiWHONutritionGenderValues.builder()
-                .female(cursor.getString(femaleIndex))
-                .male(cursor.getString(maleIndex))
-                .build())
+            .values(
+                AnalyticsTeiWHONutritionGenderValues.builder()
+                    .female(cursor.getString(femaleIndex))
+                    .male(cursor.getString(maleIndex))
+                    .build()
+            )
             .build()
     }
 

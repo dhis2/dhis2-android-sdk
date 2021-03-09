@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkStore
 import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionData
 import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionDataTableInfo
 
+@Suppress("MagicNumber")
 internal object AnalyticsTeiWHONutritionDataStore {
 
     private val BINDER = StatementBinder { o: AnalyticsTeiWHONutritionData, w: StatementWrapper ->

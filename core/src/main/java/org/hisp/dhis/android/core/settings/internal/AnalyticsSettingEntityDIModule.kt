@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.settings.*
 
 @Module
+@Suppress("TooManyFunctions")
 internal class AnalyticsSettingEntityDIModule {
 
     @Provides

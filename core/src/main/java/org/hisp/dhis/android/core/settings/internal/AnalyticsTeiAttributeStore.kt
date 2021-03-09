@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkStore
 import org.hisp.dhis.android.core.settings.AnalyticsTeiAttribute
 import org.hisp.dhis.android.core.settings.AnalyticsTeiAttributeTableInfo
 
+@Suppress("MagicNumber")
 internal object AnalyticsTeiAttributeStore {
 
     private val BINDER = StatementBinder { o: AnalyticsTeiAttribute, w: StatementWrapper ->

@@ -28,62 +28,41 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import com.nhaarman.mockitokotlin2.*
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
-import org.hisp.dhis.android.core.settings.*
+import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
+import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicator
+import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionData
 import org.junit.Before
 import org.junit.Test
 
-class AnalyticsTeiSettingHandlerShould {
+class AnalyticsTeiWHONutritionDataHandlerShould {
 
-    private val analyticsTeiSettingStore: ObjectWithoutUidStore<AnalyticsTeiSetting> = mock()
-
-    private val analyticsTeiSetting: AnalyticsTeiSetting = mock()
-
-    private lateinit var analyticsTeiSettingHandler: Handler<AnalyticsTeiSetting>
+    private val store: LinkStore<AnalyticsTeiWHONutritionData> = mock()
 
     private val teiDataElementHandler: LinkHandler<AnalyticsTeiDataElement, AnalyticsTeiDataElement> = mock()
     private val teiIndicatorHandler: LinkHandler<AnalyticsTeiIndicator, AnalyticsTeiIndicator> = mock()
-    private val teiAttributeHandler: LinkHandler<AnalyticsTeiAttribute, AnalyticsTeiAttribute> = mock()
-    private val whoDataHandler: LinkHandler<AnalyticsTeiWHONutritionData, AnalyticsTeiWHONutritionData> = mock()
 
-    private val analyticsTeiSettingList: List<AnalyticsTeiSetting> = listOf(analyticsTeiSetting)
+    private val whoData: AnalyticsTeiWHONutritionData = mock()
+
+    private lateinit var analyticsTeiSettingHandler:  LinkHandler<AnalyticsTeiWHONutritionData, AnalyticsTeiWHONutritionData>
 
     @Before
     @Throws(Exception::class)
     fun setUp() {
-        whenever(analyticsTeiSettingStore.updateOrInsertWhere(any())) doReturn HandleAction.Insert
-        whenever(analyticsTeiSetting.uid()) doReturn "tei_setting_uid"
+        whenever(whoData.teiSetting()) doReturn "tei_setting"
 
-        analyticsTeiSettingHandler = AnalyticsTeiSettingHandler(
-            analyticsTeiSettingStore, teiDataElementHandler,
-            teiIndicatorHandler, teiAttributeHandler, whoDataHandler
+        analyticsTeiSettingHandler = AnalyticsTeiWHONutritionDataHandler(
+            store, teiDataElementHandler,
+            teiIndicatorHandler
         )
     }
 
     @Test
-    fun clean_database_before_insert_collection() {
-        analyticsTeiSettingHandler.handleMany(analyticsTeiSettingList)
-        verify(analyticsTeiSettingStore).delete()
-        verify(analyticsTeiSettingStore).updateOrInsertWhere(analyticsTeiSetting)
-    }
-
-    @Test
-    fun clean_database_if_empty_collection() {
-        analyticsTeiSettingHandler.handleMany(emptyList())
-        verify(analyticsTeiSettingStore).delete()
-        verify(analyticsTeiSettingStore, never()).updateOrInsertWhere(analyticsTeiSetting)
-    }
-
-    @Test
     fun call_data_handlers() {
-        analyticsTeiSettingHandler.handleMany(analyticsTeiSettingList)
+        analyticsTeiSettingHandler.handleMany(whoData.teiSetting()!!, listOf(whoData)) { x -> x }
 
-        verify(teiDataElementHandler).handleMany(any(), any(), any())
-        verify(teiIndicatorHandler).handleMany(any(), any(), any())
-        verify(teiAttributeHandler).handleMany(any(), any(), any())
-        verify(whoDataHandler).handleMany(any(), any(), any())
+        verify(teiDataElementHandler, times(2)).handleMany(any(), any(), any())
+        verify(teiIndicatorHandler, times(2)).handleMany(any(), any(), any())
     }
 }

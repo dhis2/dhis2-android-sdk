@@ -28,44 +28,32 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
 import org.hisp.dhis.android.core.settings.*
 import javax.inject.Inject
 
 @Reusable
-internal class AnalyticsTeiSettingHandler @Inject constructor(
-    store: ObjectWithoutUidStore<AnalyticsTeiSetting>,
+internal class AnalyticsTeiWHONutritionDataHandler @Inject constructor(
+    store: LinkStore<AnalyticsTeiWHONutritionData>,
     private val teiDataElementHandler: LinkHandler<AnalyticsTeiDataElement, AnalyticsTeiDataElement>,
-    private val teiIndicatorHandler: LinkHandler<AnalyticsTeiIndicator, AnalyticsTeiIndicator>,
-    private val teiAttributeHandler: LinkHandler<AnalyticsTeiAttribute, AnalyticsTeiAttribute>,
-    private val whoNutritionDataHandler: LinkHandler<AnalyticsTeiWHONutritionData, AnalyticsTeiWHONutritionData>
-) : ObjectWithoutUidHandlerImpl<AnalyticsTeiSetting>(store) {
+    private val teiIndicatorHandler: LinkHandler<AnalyticsTeiIndicator, AnalyticsTeiIndicator>
+) : LinkHandlerImpl<AnalyticsTeiWHONutritionData, AnalyticsTeiWHONutritionData>(store) {
 
-    override fun beforeCollectionHandled(
-        oCollection: Collection<AnalyticsTeiSetting>
-    ): Collection<AnalyticsTeiSetting> {
-        store.delete()
-        return oCollection
+    override fun afterObjectHandled(o: AnalyticsTeiWHONutritionData) {
+        handleWhoNutritionItem(o.teiSetting()!!, o.x(), WHONutritionComponent.X)
+        handleWhoNutritionItem(o.teiSetting()!!, o.y(), WHONutritionComponent.Y)
     }
 
-    override fun afterObjectHandled(o: AnalyticsTeiSetting, action: HandleAction) {
-        teiDataElementHandler.handleMany(o.uid(), o.data()?.dataElements() ?: emptyList()) { de ->
-            de.toBuilder().teiSetting(o.uid()).build()
+    private fun handleWhoNutritionItem(teiSetting: String, item: AnalyticsTeiWHONutritionItem?,
+                                       whoComponent: WHONutritionComponent) {
+        teiDataElementHandler.handleMany(teiSetting, item?.dataElements() ?: emptyList()) { de ->
+            de.toBuilder().teiSetting(teiSetting).whoComponent(whoComponent).build()
         }
 
-        teiIndicatorHandler.handleMany(o.uid(), o.data()?.indicators() ?: emptyList()) { ind ->
-            ind.toBuilder().teiSetting(o.uid()).build()
-        }
-
-        teiAttributeHandler.handleMany(o.uid(), o.data()?.attributes() ?: emptyList()) { att ->
-            att.toBuilder().teiSetting(o.uid()).build()
-        }
-
-        whoNutritionDataHandler.handleMany(o.uid(), listOfNotNull(o.whoNutritionData())) { whoData ->
-            whoData.toBuilder().teiSetting(o.uid()).build()
+        teiIndicatorHandler.handleMany(teiSetting, item?.indicators() ?: emptyList()) { ind ->
+            ind.toBuilder().teiSetting(teiSetting).whoComponent(whoComponent).build()
         }
     }
 }

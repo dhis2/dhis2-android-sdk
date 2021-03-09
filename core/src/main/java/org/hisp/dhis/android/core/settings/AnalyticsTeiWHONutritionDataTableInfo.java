@@ -25,34 +25,47 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-import android.content.ContentValues
-import android.database.Cursor
-import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
-import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionDataTableInfo.Columns
-import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionGender
-import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionGenderValues
+package org.hisp.dhis.android.core.settings;
 
-internal class AnalyticsTeiWHONutritionGenderColumnAdapter : ColumnTypeAdapter<AnalyticsTeiWHONutritionGender> {
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
-    override fun fromCursor(cursor: Cursor, columnName: String): AnalyticsTeiWHONutritionGender {
-        val attributeIndex = cursor.getColumnIndex(Columns.GENDER_ATTRIBUTE)
-        val femaleIndex = cursor.getColumnIndex(Columns.GENDER_FEMALE)
-        val maleIndex = cursor.getColumnIndex(Columns.GENDER_MALE)
+public final class AnalyticsTeiWHONutritionDataTableInfo {
 
-        return AnalyticsTeiWHONutritionGender.builder()
-            .attribute(cursor.getString(attributeIndex))
-            .values(AnalyticsTeiWHONutritionGenderValues.builder()
-                .female(cursor.getString(femaleIndex))
-                .male(cursor.getString(maleIndex))
-                .build())
-            .build()
+    private AnalyticsTeiWHONutritionDataTableInfo() {
     }
 
-    override fun toContentValues(values: ContentValues, columnName: String, value: AnalyticsTeiWHONutritionGender?) {
-        value?.attribute()?.let { values.put(Columns.GENDER_ATTRIBUTE, it) }
-        value?.values()?.female()?.let { values.put(Columns.GENDER_FEMALE, it) }
-        value?.values()?.male()?.let { values.put(Columns.GENDER_MALE, it) }
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "AnalyticsTeiWHONutritionData";
+        }
+
+        @Override
+        public CoreColumns columns() {
+            return new Columns();
+        }
+    };
+
+    public static class Columns extends CoreColumns {
+        public static final String TEI_SETTING = "teiSetting";
+        public static final String CHART_TYPE = "chartType";
+        public static final String GENDER_ATTRIBUTE = "genderAttribute";
+        public static final String GENDER_FEMALE = "genderFemale";
+        public static final String GENDER_MALE = "genderMale";
+
+        @Override
+        public String[] all() {
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    TEI_SETTING,
+                    CHART_TYPE,
+                    GENDER_ATTRIBUTE,
+                    GENDER_FEMALE,
+                    GENDER_MALE
+            );
+        }
     }
 }

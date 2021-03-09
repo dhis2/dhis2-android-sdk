@@ -25,34 +25,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
+package org.hisp.dhis.android.core.settings.internal
 
-import android.content.ContentValues
 import android.database.Cursor
-import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
-import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionDataTableInfo.Columns
-import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionGender
-import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionGenderValues
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkStore
+import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionData
+import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionDataTableInfo
 
-internal class AnalyticsTeiWHONutritionGenderColumnAdapter : ColumnTypeAdapter<AnalyticsTeiWHONutritionGender> {
+internal object AnalyticsTeiWHONutritionDataStore {
 
-    override fun fromCursor(cursor: Cursor, columnName: String): AnalyticsTeiWHONutritionGender {
-        val attributeIndex = cursor.getColumnIndex(Columns.GENDER_ATTRIBUTE)
-        val femaleIndex = cursor.getColumnIndex(Columns.GENDER_FEMALE)
-        val maleIndex = cursor.getColumnIndex(Columns.GENDER_MALE)
-
-        return AnalyticsTeiWHONutritionGender.builder()
-            .attribute(cursor.getString(attributeIndex))
-            .values(AnalyticsTeiWHONutritionGenderValues.builder()
-                .female(cursor.getString(femaleIndex))
-                .male(cursor.getString(maleIndex))
-                .build())
-            .build()
+    private val BINDER = StatementBinder { o: AnalyticsTeiWHONutritionData, w: StatementWrapper ->
+        w.bind(1, o.teiSetting())
+        w.bind(2, o.chartType())
+        w.bind(3, o.gender().attribute())
+        w.bind(4, o.gender().values().female())
+        w.bind(5, o.gender().values().male())
     }
 
-    override fun toContentValues(values: ContentValues, columnName: String, value: AnalyticsTeiWHONutritionGender?) {
-        value?.attribute()?.let { values.put(Columns.GENDER_ATTRIBUTE, it) }
-        value?.values()?.female()?.let { values.put(Columns.GENDER_FEMALE, it) }
-        value?.values()?.male()?.let { values.put(Columns.GENDER_MALE, it) }
+    fun create(databaseAdapter: DatabaseAdapter): LinkStore<AnalyticsTeiWHONutritionData> {
+        return linkStore(
+            databaseAdapter, AnalyticsTeiWHONutritionDataTableInfo.TABLE_INFO,
+            AnalyticsTeiWHONutritionDataTableInfo.Columns.TEI_SETTING, BINDER
+        ) { cursor: Cursor -> AnalyticsTeiWHONutritionData.create(cursor) }
     }
 }

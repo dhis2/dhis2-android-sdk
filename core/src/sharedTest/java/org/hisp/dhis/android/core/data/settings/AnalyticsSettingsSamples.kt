@@ -68,4 +68,20 @@ object AnalyticsSettingsSamples {
             .type(ChartType.LINE)
             .data(AnalyticsTeiData.builder().build())
             .build()
+
+    val analyticsTeiWHONutritionData: AnalyticsTeiWHONutritionData =
+        AnalyticsTeiWHONutritionData.builder()
+            .id(1L)
+            .teiSetting("tei_setting")
+            .chartType(WHONutritionChartType.WFH)
+            .gender(AnalyticsTeiWHONutritionGender.builder()
+                .attribute("gender_attribute")
+                .values(AnalyticsTeiWHONutritionGenderValues.builder()
+                    .female("female")
+                    .male("male")
+                    .build())
+                .build())
+            .x(AnalyticsTeiWHONutritionItem.builder().build())
+            .y(AnalyticsTeiWHONutritionItem.builder().build())
+            .build()
 }

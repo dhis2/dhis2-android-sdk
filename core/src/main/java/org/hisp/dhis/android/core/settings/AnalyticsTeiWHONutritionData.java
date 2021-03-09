@@ -28,6 +28,10 @@
 
 package org.hisp.dhis.android.core.settings;
 
+import android.database.Cursor;
+
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
@@ -42,6 +46,9 @@ import org.hisp.dhis.android.core.common.CoreObject;
 @JsonDeserialize(builder = AutoValue_AnalyticsTeiWHONutritionData.Builder.class)
 public abstract class AnalyticsTeiWHONutritionData implements CoreObject {
 
+    @Nullable
+    public abstract String teiSetting();
+
     @ColumnAdapter(WHONutritionChartTypeColumnAdapter.class)
     public abstract WHONutritionChartType chartType();
 
@@ -54,6 +61,10 @@ public abstract class AnalyticsTeiWHONutritionData implements CoreObject {
     @ColumnAdapter(IgnoreAnalyticsTeiWHODataItemColumnAdapter.class)
     public abstract AnalyticsTeiWHONutritionItem y();
 
+    public static AnalyticsTeiWHONutritionData create(Cursor cursor) {
+        return AutoValue_AnalyticsTeiWHONutritionData.createFromCursor(cursor);
+    }
+
     public abstract Builder toBuilder();
 
     public static Builder builder() {
@@ -64,6 +75,8 @@ public abstract class AnalyticsTeiWHONutritionData implements CoreObject {
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
         public abstract Builder id(Long id);
+
+        public abstract Builder teiSetting(String teiSetting);
 
         public abstract Builder chartType(WHONutritionChartType chartType);
 

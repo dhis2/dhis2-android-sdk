@@ -28,25 +28,6 @@
 
 package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
 
-import android.content.ContentValues;
-import android.database.Cursor;
-
-import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
-
 import org.hisp.dhis.android.core.settings.AnalyticsTeiData;
 
-public final class IgnoreAnalyticsTeiDataColumnAdapter implements ColumnTypeAdapter<AnalyticsTeiData> {
-
-    @Override
-    public AnalyticsTeiData fromCursor(Cursor cursor, String columnName) {
-        return AnalyticsTeiData.builder().build();
-    }
-
-    @Override
-    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
-    public void toContentValues(ContentValues values, String columnName, AnalyticsTeiData value) {
-        /* Method is not abstract since empty action is the default action and we don't want it to
-         * be unnecessarily written in every child.
-         */
-    }
-}
+public final class IgnoreAnalyticsTeiDataColumnAdapter extends IgnoreColumnAdapter<AnalyticsTeiData> { }

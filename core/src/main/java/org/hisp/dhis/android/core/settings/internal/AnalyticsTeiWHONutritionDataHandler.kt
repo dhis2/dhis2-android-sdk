@@ -42,18 +42,28 @@ internal class AnalyticsTeiWHONutritionDataHandler @Inject constructor(
 ) : LinkHandlerImpl<AnalyticsTeiWHONutritionData, AnalyticsTeiWHONutritionData>(store) {
 
     override fun afterObjectHandled(o: AnalyticsTeiWHONutritionData) {
-        handleWhoNutritionItem(o.teiSetting()!!, o.x(), WHONutritionComponent.X)
-        handleWhoNutritionItem(o.teiSetting()!!, o.y(), WHONutritionComponent.Y)
+        val dataElementList =
+            getDataElements(o.x(), WHONutritionComponent.X) + getDataElements(o.y(), WHONutritionComponent.Y)
+
+        val indicatorList =
+            getIndicators(o.x(), WHONutritionComponent.X) + getIndicators(o.y(), WHONutritionComponent.Y)
+
+        teiDataElementHandler.handleMany(o.teiSetting()!!, dataElementList) {
+            it.toBuilder().teiSetting(o.teiSetting()).build()
+        }
+
+        teiIndicatorHandler.handleMany(o.teiSetting()!!, indicatorList) {
+            it.toBuilder().teiSetting(o.teiSetting()).build()
+        }
     }
 
-    private fun handleWhoNutritionItem(teiSetting: String, item: AnalyticsTeiWHONutritionItem?,
-                                       whoComponent: WHONutritionComponent) {
-        teiDataElementHandler.handleMany(teiSetting, item?.dataElements() ?: emptyList()) { de ->
-            de.toBuilder().teiSetting(teiSetting).whoComponent(whoComponent).build()
-        }
+    private fun getDataElements(item: AnalyticsTeiWHONutritionItem?,
+                                whoComponent: WHONutritionComponent): List<AnalyticsTeiDataElement> {
+        return item?.dataElements()?.map { it.toBuilder().whoComponent(whoComponent).build() } ?: emptyList()
+    }
 
-        teiIndicatorHandler.handleMany(teiSetting, item?.indicators() ?: emptyList()) { ind ->
-            ind.toBuilder().teiSetting(teiSetting).whoComponent(whoComponent).build()
-        }
+    private fun getIndicators(item: AnalyticsTeiWHONutritionItem?,
+                              whoComponent: WHONutritionComponent): List<AnalyticsTeiIndicator> {
+        return item?.indicators()?.map { it.toBuilder().whoComponent(whoComponent).build() } ?: emptyList()
     }
 }

@@ -62,7 +62,7 @@ class AnalyticsTeiWHONutritionDataHandlerShould {
     fun call_data_handlers() {
         analyticsTeiSettingHandler.handleMany(whoData.teiSetting()!!, listOf(whoData)) { x -> x }
 
-        verify(teiDataElementHandler, times(2)).handleMany(any(), any(), any())
-        verify(teiIndicatorHandler, times(2)).handleMany(any(), any(), any())
+        verify(teiDataElementHandler).handleMany(any(), any(), any())
+        verify(teiIndicatorHandler).handleMany(any(), any(), any())
     }
 }

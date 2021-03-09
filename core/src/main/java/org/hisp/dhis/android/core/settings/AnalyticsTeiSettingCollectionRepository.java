@@ -76,6 +76,10 @@ public class AnalyticsTeiSettingCollectionRepository
         return cf.string(AnalyticsTeiSettingTableInfo.Columns.PROGRAM);
     }
 
+    public StringFilterConnector<AnalyticsTeiSettingCollectionRepository> byProgramStage() {
+        return cf.string(AnalyticsTeiSettingTableInfo.Columns.PROGRAM_STAGE);
+    }
+
     public EnumFilterConnector<AnalyticsTeiSettingCollectionRepository, PeriodType> byPeriod() {
         return cf.enumC(AnalyticsTeiSettingTableInfo.Columns.PERIOD);
     }

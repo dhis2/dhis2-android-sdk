@@ -51,6 +51,7 @@ class AnalyticsSettingShould : BaseObjectShould("settings/analytics_settings.jso
                     assertThat(tei.name()).isEqualTo("Height evolution")
                     assertThat(tei.shortName()).isEqualTo("H. evolution")
                     assertThat(tei.program()).isEqualTo("IpHINAT79UW")
+                    assertThat(tei.programStage()).isEqualTo("dBwrot7S420")
                     assertThat(tei.period()).isEquivalentAccordingToCompareTo(PeriodType.Monthly)
                     assertThat(tei.type()).isEquivalentAccordingToCompareTo(ChartType.LINE)
                     assertThat(tei.data()?.dataElements()?.size).isEqualTo(2)

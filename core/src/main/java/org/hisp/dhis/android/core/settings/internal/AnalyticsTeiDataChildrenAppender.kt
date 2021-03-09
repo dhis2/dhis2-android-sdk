@@ -31,17 +31,15 @@ import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.settings.AnalyticsTeiAttribute
-import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
-import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicator
-import org.hisp.dhis.android.core.settings.AnalyticsTeiSetting
+import org.hisp.dhis.android.core.settings.*
 import org.hisp.dhis.android.core.settings.internal.SettingsAppHelper.buildAnalyticsTeiSetting
 
 @Reusable
 internal class AnalyticsTeiDataChildrenAppender @Inject constructor(
     private val analyticsTeiDataElementStore: LinkStore<AnalyticsTeiDataElement>,
     private val analyticsTeiIndicatorStore: LinkStore<AnalyticsTeiIndicator>,
-    private val analyticsTeiAttributeStore: LinkStore<AnalyticsTeiAttribute>
+    private val analyticsTeiAttributeStore: LinkStore<AnalyticsTeiAttribute>,
+    private val analyticsTeiWHONutritionDataStore: LinkStore<AnalyticsTeiWHONutritionData>
 ) : ChildrenAppender<AnalyticsTeiSetting>() {
 
     companion object {
@@ -51,11 +49,13 @@ internal class AnalyticsTeiDataChildrenAppender @Inject constructor(
     private var dataElements: List<AnalyticsTeiDataElement>? = null
     private var indicators: List<AnalyticsTeiIndicator>? = null
     private var attributes: List<AnalyticsTeiAttribute>? = null
+    private var whoNutritionData: List<AnalyticsTeiWHONutritionData>? = null
 
     override fun prepareChildren(collection: Collection<AnalyticsTeiSetting>) {
         dataElements = analyticsTeiDataElementStore.selectAll()
         indicators = analyticsTeiIndicatorStore.selectAll()
         attributes = analyticsTeiAttributeStore.selectAll()
+        whoNutritionData = analyticsTeiWHONutritionDataStore.selectAll()
     }
 
     override fun appendChildren(analyticsTeiSetting: AnalyticsTeiSetting): AnalyticsTeiSetting {
@@ -63,7 +63,8 @@ internal class AnalyticsTeiDataChildrenAppender @Inject constructor(
             analyticsTeiSetting,
             dataElements!!,
             indicators!!,
-            attributes!!
+            attributes!!,
+            whoNutritionData!!
         )
     }
 }

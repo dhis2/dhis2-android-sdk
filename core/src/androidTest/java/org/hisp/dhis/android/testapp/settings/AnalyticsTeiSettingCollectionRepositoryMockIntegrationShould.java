@@ -47,7 +47,7 @@ public class AnalyticsTeiSettingCollectionRepositoryMockIntegrationShould extend
     public void find_analytics_tei_settings() {
         List<AnalyticsTeiSetting> teiSettings = d2.settingModule().analyticsSetting().teis().blockingGet();
 
-        assertThat(teiSettings.size()).isEqualTo(2);
+        assertThat(teiSettings.size()).isEqualTo(3);
     }
 
     @Test
@@ -76,7 +76,15 @@ public class AnalyticsTeiSettingCollectionRepositoryMockIntegrationShould extend
         List<AnalyticsTeiSetting> teiSettings = d2.settingModule().analyticsSetting().teis()
                 .byProgram().eq("IpHINAT79UW")
                 .blockingGet();
-        assertThat(teiSettings.size()).isEqualTo(1);
+        assertThat(teiSettings.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void filter_by_program_stage() {
+        List<AnalyticsTeiSetting> teiSettings = d2.settingModule().analyticsSetting().teis()
+                .byProgramStage().eq("dBwrot7S420")
+                .blockingGet();
+        assertThat(teiSettings.size()).isEqualTo(2);
     }
 
     @Test

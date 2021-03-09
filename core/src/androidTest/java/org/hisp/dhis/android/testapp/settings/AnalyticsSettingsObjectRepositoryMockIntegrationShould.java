@@ -30,8 +30,6 @@ package org.hisp.dhis.android.testapp.settings;
 
 import org.hisp.dhis.android.core.settings.AnalyticsSettings;
 import org.hisp.dhis.android.core.settings.AnalyticsTeiSetting;
-import org.hisp.dhis.android.core.settings.DataSyncPeriod;
-import org.hisp.dhis.android.core.settings.GeneralSettings;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
@@ -45,17 +43,25 @@ public class AnalyticsSettingsObjectRepositoryMockIntegrationShould extends Base
     @Test
     public void find_analytics_settings() {
         AnalyticsSettings analyticsSettings = d2.settingModule().analyticsSetting().blockingGet();
-        assertThat(analyticsSettings.tei().size()).isEqualTo(2);
+        assertThat(analyticsSettings.tei().size()).isEqualTo(3);
 
         for (AnalyticsTeiSetting teiSetting : analyticsSettings.tei()) {
             if ("fqEx2avRp1L".equals(teiSetting.uid())) {
                 assertThat(teiSetting.data().dataElements().size()).isEqualTo(2);
                 assertThat(teiSetting.data().indicators().size()).isEqualTo(0);
                 assertThat(teiSetting.data().attributes().size()).isEqualTo(0);
+                assertThat(teiSetting.whoNutritionData()).isNull();
             } else if ("XQUhloISaQJ".equals(teiSetting.uid())) {
                 assertThat(teiSetting.data().dataElements().size()).isEqualTo(0);
                 assertThat(teiSetting.data().indicators().size()).isEqualTo(1);
                 assertThat(teiSetting.data().attributes().size()).isEqualTo(1);
+                assertThat(teiSetting.whoNutritionData()).isNull();
+            } else if("yEdtdG7ql9K".equals(teiSetting.uid())) {
+                assertThat(teiSetting.data()).isNull();
+                assertThat(teiSetting.whoNutritionData().x().dataElements().size()).isEqualTo(1);
+                assertThat(teiSetting.whoNutritionData().x().indicators().size()).isEqualTo(0);
+                assertThat(teiSetting.whoNutritionData().y().dataElements().size()).isEqualTo(0);
+                assertThat(teiSetting.whoNutritionData().y().indicators().size()).isEqualTo(1);
             }
         }
     }

@@ -64,6 +64,7 @@ object AnalyticsSettingsSamples {
             .name("name")
             .shortName("short_name")
             .program("program")
+            .programStage("program_stage")
             .period(PeriodType.Monthly)
             .type(ChartType.LINE)
             .data(AnalyticsTeiData.builder().build())

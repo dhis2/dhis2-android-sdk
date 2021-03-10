@@ -32,10 +32,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
-import org.hisp.dhis.android.core.settings.AnalyticsTeiAttribute
-import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
-import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicator
-import org.hisp.dhis.android.core.settings.AnalyticsTeiSetting
+import org.hisp.dhis.android.core.settings.*
 import org.junit.Before
 import org.junit.Test
 
@@ -50,6 +47,7 @@ class AnalyticsTeiSettingHandlerShould {
     private val teiDataElementHandler: LinkHandler<AnalyticsTeiDataElement, AnalyticsTeiDataElement> = mock()
     private val teiIndicatorHandler: LinkHandler<AnalyticsTeiIndicator, AnalyticsTeiIndicator> = mock()
     private val teiAttributeHandler: LinkHandler<AnalyticsTeiAttribute, AnalyticsTeiAttribute> = mock()
+    private val whoDataHandler: LinkHandler<AnalyticsTeiWHONutritionData, AnalyticsTeiWHONutritionData> = mock()
 
     private val analyticsTeiSettingList: List<AnalyticsTeiSetting> = listOf(analyticsTeiSetting)
 
@@ -61,7 +59,7 @@ class AnalyticsTeiSettingHandlerShould {
 
         analyticsTeiSettingHandler = AnalyticsTeiSettingHandler(
             analyticsTeiSettingStore, teiDataElementHandler,
-            teiIndicatorHandler, teiAttributeHandler
+            teiIndicatorHandler, teiAttributeHandler, whoDataHandler
         )
     }
 
@@ -86,5 +84,6 @@ class AnalyticsTeiSettingHandlerShould {
         verify(teiDataElementHandler).handleMany(any(), any(), any())
         verify(teiIndicatorHandler).handleMany(any(), any(), any())
         verify(teiAttributeHandler).handleMany(any(), any(), any())
+        verify(whoDataHandler).handleMany(any(), any(), any())
     }
 }

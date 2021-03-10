@@ -28,58 +28,55 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import android.database.Cursor;
-
-import androidx.annotation.Nullable;
-
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.WHONutritionComponentColumnAdapter;
-import org.hisp.dhis.android.core.arch.json.internal.AnalyticsTEIDataElementDeserializer;
-import org.hisp.dhis.android.core.common.CoreObject;
+import java.util.Collections;
+import java.util.List;
 
 @AutoValue
-@JsonDeserialize(using = AnalyticsTEIDataElementDeserializer.class)
-public abstract class AnalyticsTeiDataElement implements CoreObject {
+@JsonDeserialize(builder = AutoValue_AnalyticsTeiWHONutritionItem.Builder.class)
+public abstract class AnalyticsTeiWHONutritionItem {
 
-    @Nullable
-    public abstract String teiSetting();
+    public abstract List<AnalyticsTeiDataElement> dataElements();
 
-    @Nullable
-    @ColumnAdapter(WHONutritionComponentColumnAdapter.class)
-    public abstract WHONutritionComponent whoComponent();
-
-    @Nullable
-    public abstract String programStage();
-
-    public abstract String dataElement();
-
-    public static AnalyticsTeiDataElement create(Cursor cursor) {
-        return AutoValue_AnalyticsTeiDataElement.createFromCursor(cursor);
-    }
-
-    public abstract Builder toBuilder();
+    public abstract List<AnalyticsTeiIndicator> indicators();
 
     public static Builder builder() {
-        return new AutoValue_AnalyticsTeiDataElement.Builder();
+        return new AutoValue_AnalyticsTeiWHONutritionItem.Builder()
+                .dataElements(Collections.emptyList())
+                .indicators(Collections.emptyList());
     }
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
-        public abstract Builder id(Long id);
+        public abstract Builder dataElements(List<AnalyticsTeiDataElement> dataElements);
 
-        public abstract Builder teiSetting(String teiSetting);
+        public abstract Builder indicators(List<AnalyticsTeiIndicator> indicators);
 
-        public abstract Builder whoComponent(WHONutritionComponent component);
 
-        public abstract Builder programStage(String programStage);
+        //Auxiliary fields
+        abstract AnalyticsTeiWHONutritionItem autoBuild();
 
-        public abstract Builder dataElement(String dataElement);
+        abstract List<AnalyticsTeiDataElement> dataElements();
+        abstract List<AnalyticsTeiIndicator> indicators();
 
-        public abstract AnalyticsTeiDataElement build();
+        public AnalyticsTeiWHONutritionItem build() {
+            try {
+                dataElements();
+            } catch (IllegalStateException e) {
+                dataElements(Collections.emptyList());
+            }
+
+            try {
+                indicators();
+            } catch (IllegalStateException e) {
+                indicators(Collections.emptyList());
+            }
+
+            return autoBuild();
+        }
     }
 }

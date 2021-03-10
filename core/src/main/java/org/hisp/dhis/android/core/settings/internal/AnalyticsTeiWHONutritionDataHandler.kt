@@ -30,41 +30,44 @@ package org.hisp.dhis.android.core.settings.internal
 import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
 import org.hisp.dhis.android.core.settings.*
-import org.hisp.dhis.android.core.settings.internal.SettingsAppHelper.buildAnalyticsTeiSetting
 
 @Reusable
-internal class AnalyticsTeiDataChildrenAppender @Inject constructor(
-    private val analyticsTeiDataElementStore: LinkStore<AnalyticsTeiDataElement>,
-    private val analyticsTeiIndicatorStore: LinkStore<AnalyticsTeiIndicator>,
-    private val analyticsTeiAttributeStore: LinkStore<AnalyticsTeiAttribute>,
-    private val analyticsTeiWHONutritionDataStore: LinkStore<AnalyticsTeiWHONutritionData>
-) : ChildrenAppender<AnalyticsTeiSetting>() {
+internal class AnalyticsTeiWHONutritionDataHandler @Inject constructor(
+    store: LinkStore<AnalyticsTeiWHONutritionData>,
+    private val teiDataElementHandler: LinkHandler<AnalyticsTeiDataElement, AnalyticsTeiDataElement>,
+    private val teiIndicatorHandler: LinkHandler<AnalyticsTeiIndicator, AnalyticsTeiIndicator>
+) : LinkHandlerImpl<AnalyticsTeiWHONutritionData, AnalyticsTeiWHONutritionData>(store) {
 
-    companion object {
-        const val KEY = "DATA"
+    override fun afterObjectHandled(o: AnalyticsTeiWHONutritionData) {
+        val dataElementList =
+            getDataElements(o.x(), WHONutritionComponent.X) + getDataElements(o.y(), WHONutritionComponent.Y)
+
+        val indicatorList =
+            getIndicators(o.x(), WHONutritionComponent.X) + getIndicators(o.y(), WHONutritionComponent.Y)
+
+        teiDataElementHandler.handleMany(o.teiSetting()!!, dataElementList) {
+            it.toBuilder().teiSetting(o.teiSetting()).build()
+        }
+
+        teiIndicatorHandler.handleMany(o.teiSetting()!!, indicatorList) {
+            it.toBuilder().teiSetting(o.teiSetting()).build()
+        }
     }
 
-    private var dataElements: List<AnalyticsTeiDataElement>? = null
-    private var indicators: List<AnalyticsTeiIndicator>? = null
-    private var attributes: List<AnalyticsTeiAttribute>? = null
-    private var whoNutritionData: List<AnalyticsTeiWHONutritionData>? = null
-
-    override fun prepareChildren(collection: Collection<AnalyticsTeiSetting>) {
-        dataElements = analyticsTeiDataElementStore.selectAll()
-        indicators = analyticsTeiIndicatorStore.selectAll()
-        attributes = analyticsTeiAttributeStore.selectAll()
-        whoNutritionData = analyticsTeiWHONutritionDataStore.selectAll()
+    private fun getDataElements(
+        item: AnalyticsTeiWHONutritionItem?,
+        whoComponent: WHONutritionComponent
+    ): List<AnalyticsTeiDataElement> {
+        return item?.dataElements()?.map { it.toBuilder().whoComponent(whoComponent).build() } ?: emptyList()
     }
 
-    override fun appendChildren(analyticsTeiSetting: AnalyticsTeiSetting): AnalyticsTeiSetting {
-        return buildAnalyticsTeiSetting(
-            analyticsTeiSetting,
-            dataElements!!,
-            indicators!!,
-            attributes!!,
-            whoNutritionData!!
-        )
+    private fun getIndicators(
+        item: AnalyticsTeiWHONutritionItem?,
+        whoComponent: WHONutritionComponent
+    ): List<AnalyticsTeiIndicator> {
+        return item?.indicators()?.map { it.toBuilder().whoComponent(whoComponent).build() } ?: emptyList()
     }
 }

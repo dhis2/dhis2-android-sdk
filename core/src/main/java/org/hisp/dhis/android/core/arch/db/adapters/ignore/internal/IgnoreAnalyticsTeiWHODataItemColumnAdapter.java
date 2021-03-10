@@ -26,44 +26,28 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.CoreColumns;
+import android.content.ContentValues;
+import android.database.Cursor;
 
-public final class AnalyticsTeiDataElementTableInfo {
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
-    private AnalyticsTeiDataElementTableInfo() {
+import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionItem;
+
+public final class IgnoreAnalyticsTeiWHODataItemColumnAdapter
+        implements ColumnTypeAdapter<AnalyticsTeiWHONutritionItem> {
+
+    @Override
+    public AnalyticsTeiWHONutritionItem fromCursor(Cursor cursor, String columnName) {
+        return AnalyticsTeiWHONutritionItem.builder().build();
     }
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
-
-        @Override
-        public String name() {
-            return "AnalyticsTeiDataElement";
-        }
-
-        @Override
-        public CoreColumns columns() {
-            return new Columns();
-        }
-    };
-
-    public static class Columns extends CoreColumns {
-        public static final String TEI_SETTING = "teiSetting";
-        public static final String WHO_COMPONENT = "whoComponent";
-        public static final String PROGRAM_STAGE = "programStage";
-        public static final String DATA_ELEMENT = "dataElement";
-
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(),
-                    TEI_SETTING,
-                    WHO_COMPONENT,
-                    PROGRAM_STAGE,
-                    DATA_ELEMENT
-            );
-        }
+    @Override
+    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
+    public void toContentValues(ContentValues values, String columnName, AnalyticsTeiWHONutritionItem value) {
+        /* Method is not abstract since empty action is the default action and we don't want it to
+         * be unnecessarily written in every child.
+         */
     }
 }

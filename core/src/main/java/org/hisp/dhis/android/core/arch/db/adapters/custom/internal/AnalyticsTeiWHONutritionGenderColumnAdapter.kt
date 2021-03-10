@@ -25,30 +25,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings.internal
+package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
+import android.content.ContentValues
 import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkStore
-import org.hisp.dhis.android.core.settings.AnalyticsTeiAttribute
-import org.hisp.dhis.android.core.settings.AnalyticsTeiAttributeTableInfo
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
+import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionDataTableInfo.Columns
+import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionGender
+import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionGenderValues
 
-@Suppress("MagicNumber")
-internal object AnalyticsTeiAttributeStore {
+internal class AnalyticsTeiWHONutritionGenderColumnAdapter : ColumnTypeAdapter<AnalyticsTeiWHONutritionGender> {
 
-    private val BINDER = StatementBinder { o: AnalyticsTeiAttribute, w: StatementWrapper ->
-        w.bind(1, o.teiSetting())
-        w.bind(2, o.whoComponent())
-        w.bind(3, o.attribute())
+    override fun fromCursor(cursor: Cursor, columnName: String): AnalyticsTeiWHONutritionGender {
+        val attributeIndex = cursor.getColumnIndex(Columns.GENDER_ATTRIBUTE)
+        val femaleIndex = cursor.getColumnIndex(Columns.GENDER_FEMALE)
+        val maleIndex = cursor.getColumnIndex(Columns.GENDER_MALE)
+
+        return AnalyticsTeiWHONutritionGender.builder()
+            .attribute(cursor.getString(attributeIndex))
+            .values(
+                AnalyticsTeiWHONutritionGenderValues.builder()
+                    .female(cursor.getString(femaleIndex))
+                    .male(cursor.getString(maleIndex))
+                    .build()
+            )
+            .build()
     }
 
-    fun create(databaseAdapter: DatabaseAdapter): LinkStore<AnalyticsTeiAttribute> {
-        return linkStore(
-            databaseAdapter, AnalyticsTeiAttributeTableInfo.TABLE_INFO,
-            AnalyticsTeiAttributeTableInfo.Columns.TEI_SETTING, BINDER
-        ) { cursor: Cursor -> AnalyticsTeiAttribute.create(cursor) }
+    override fun toContentValues(values: ContentValues, columnName: String, value: AnalyticsTeiWHONutritionGender?) {
+        value?.attribute()?.let { values.put(Columns.GENDER_ATTRIBUTE, it) }
+        value?.values()?.female()?.let { values.put(Columns.GENDER_FEMALE, it) }
+        value?.values()?.male()?.let { values.put(Columns.GENDER_MALE, it) }
     }
 }

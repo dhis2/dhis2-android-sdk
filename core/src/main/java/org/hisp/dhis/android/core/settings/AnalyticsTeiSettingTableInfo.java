@@ -57,6 +57,7 @@ public final class AnalyticsTeiSettingTableInfo {
         public static final String NAME = IdentifiableColumns.NAME;
         public static final String SHORT_NAME = NameableColumns.SHORT_NAME;
         public static final String PROGRAM = "program";
+        public static final String PROGRAM_STAGE = "programStage";
         public static final String PERIOD = "period";
         public static final String TYPE = "type";
 
@@ -67,6 +68,7 @@ public final class AnalyticsTeiSettingTableInfo {
                     NAME,
                     SHORT_NAME,
                     PROGRAM,
+                    PROGRAM_STAGE,
                     PERIOD,
                     TYPE
             );

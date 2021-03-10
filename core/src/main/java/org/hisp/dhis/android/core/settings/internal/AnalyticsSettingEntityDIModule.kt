@@ -37,12 +37,10 @@ import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.settings.AnalyticsTeiAttribute
-import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
-import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicator
-import org.hisp.dhis.android.core.settings.AnalyticsTeiSetting
+import org.hisp.dhis.android.core.settings.*
 
 @Module
+@Suppress("TooManyFunctions")
 internal class AnalyticsSettingEntityDIModule {
 
     @Provides
@@ -67,6 +65,12 @@ internal class AnalyticsSettingEntityDIModule {
     @Reusable
     fun analyticsTeiAttributeStore(databaseAdapter: DatabaseAdapter): LinkStore<AnalyticsTeiAttribute> {
         return AnalyticsTeiAttributeStore.create(databaseAdapter)
+    }
+
+    @Provides
+    @Reusable
+    fun analyticsTeiWHONutritionDataStore(databaseAdapter: DatabaseAdapter): LinkStore<AnalyticsTeiWHONutritionData> {
+        return AnalyticsTeiWHONutritionDataStore.create(databaseAdapter)
     }
 
     @Provides
@@ -97,6 +101,14 @@ internal class AnalyticsSettingEntityDIModule {
         store: LinkStore<AnalyticsTeiAttribute>
     ): LinkHandler<AnalyticsTeiAttribute, AnalyticsTeiAttribute> {
         return LinkHandlerImpl(store)
+    }
+
+    @Provides
+    @Reusable
+    fun analyticsTeiWhoNutritionDataHandler(
+        impl: AnalyticsTeiWHONutritionDataHandler
+    ): LinkHandler<AnalyticsTeiWHONutritionData, AnalyticsTeiWHONutritionData> {
+        return impl
     }
 
     @Provides

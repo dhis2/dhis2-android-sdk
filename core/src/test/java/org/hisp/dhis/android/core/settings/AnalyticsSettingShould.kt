@@ -43,7 +43,7 @@ class AnalyticsSettingShould : BaseObjectShould("settings/analytics_settings.jso
     override fun map_from_json_string() {
         val analyticsSettings = objectMapper.readValue(jsonStream, AnalyticsSettings::class.java)
 
-        assertThat(analyticsSettings.tei().size).isEqualTo(2)
+        assertThat(analyticsSettings.tei().size).isEqualTo(3)
 
         analyticsSettings.tei().forEach { tei ->
             when (tei.uid()) {
@@ -51,18 +51,19 @@ class AnalyticsSettingShould : BaseObjectShould("settings/analytics_settings.jso
                     assertThat(tei.name()).isEqualTo("Height evolution")
                     assertThat(tei.shortName()).isEqualTo("H. evolution")
                     assertThat(tei.program()).isEqualTo("IpHINAT79UW")
+                    assertThat(tei.programStage()).isEqualTo("dBwrot7S420")
                     assertThat(tei.period()).isEquivalentAccordingToCompareTo(PeriodType.Monthly)
                     assertThat(tei.type()).isEquivalentAccordingToCompareTo(ChartType.LINE)
-                    assertThat(tei.data().dataElements().size).isEqualTo(2)
+                    assertThat(tei.data()?.dataElements()?.size).isEqualTo(2)
 
                     assertThat(
-                        tei.data().dataElements().any { dataElement ->
+                        tei.data()?.dataElements()?.any { dataElement ->
                             dataElement.dataElement() == "sWoqcoByYmD" && dataElement.programStage() == "dBwrot7S420"
                         }
                     ).isTrue()
 
                     assertThat(
-                        tei.data().dataElements().any { dataElement ->
+                        tei.data()?.dataElements()?.any { dataElement ->
                             dataElement.dataElement() == "Ok9OQpitjQr" && dataElement.programStage() == "dBwrot7S421"
                         }
                     ).isTrue()
@@ -70,15 +71,31 @@ class AnalyticsSettingShould : BaseObjectShould("settings/analytics_settings.jso
                 "XQUhloISaQJ" -> {
                     assertThat(tei.name()).isEqualTo("Weight gain")
 
-                    assertThat(tei.data().indicators().size).isEqualTo(1)
+                    assertThat(tei.data()?.indicators()?.size).isEqualTo(1)
                     assertThat(
-                        tei.data().indicators().first()?.let {
+                        tei.data()?.indicators()?.first()?.let {
                             it.indicator() == "GSae40Fyppf" && it.programStage() == "dBwrot7S420"
                         }
                     ).isTrue()
 
-                    assertThat(tei.data().attributes().size).isEqualTo(1)
-                    assertThat(tei.data().attributes().first().attribute() == "cejWyOfXge6").isTrue()
+                    assertThat(tei.data()?.attributes()?.size).isEqualTo(1)
+                    assertThat(tei.data()?.attributes()?.first()?.attribute() == "cejWyOfXge6").isTrue()
+                }
+                "yEdtdG7ql9K" -> {
+                    assertThat(tei.name()).isEqualTo("Who chart")
+
+                    assertThat(tei.whoNutritionData()).isNotNull()
+                    assertThat(tei.whoNutritionData()?.chartType())
+                        .isEquivalentAccordingToCompareTo(WHONutritionChartType.WFH)
+
+                    assertThat(tei.whoNutritionData()?.gender()?.attribute()).isEqualTo("cejWyOfXge6")
+                    assertThat(tei.whoNutritionData()?.gender()?.values()?.male()).isEqualTo("male")
+                    assertThat(tei.whoNutritionData()?.gender()?.values()?.female()).isEqualTo("female")
+
+                    assertThat(tei.whoNutritionData()?.x()?.dataElements()?.size).isEqualTo(1)
+                    assertThat(tei.whoNutritionData()?.x()?.indicators()?.size).isEqualTo(0)
+                    assertThat(tei.whoNutritionData()?.y()?.dataElements()?.size).isEqualTo(0)
+                    assertThat(tei.whoNutritionData()?.y()?.indicators()?.size).isEqualTo(1)
                 }
                 else -> fail("Unexpected tei uid")
             }

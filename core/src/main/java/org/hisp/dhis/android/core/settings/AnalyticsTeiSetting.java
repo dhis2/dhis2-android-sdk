@@ -30,6 +30,9 @@ package org.hisp.dhis.android.core.settings;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
@@ -38,6 +41,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.ChartTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreAnalyticsTeiDataColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreAnalyticsTeiWHONutritionDataColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.period.PeriodType;
@@ -54,14 +58,23 @@ public abstract class AnalyticsTeiSetting implements CoreObject, ObjectWithUidIn
 
     public abstract String program();
 
+    @Nullable
+    public abstract String programStage();
+
+    @Nullable
     @ColumnAdapter(PeriodTypeColumnAdapter.class)
     public abstract PeriodType period();
 
     @ColumnAdapter(ChartTypeColumnAdapter.class)
     public abstract ChartType type();
 
+    @Nullable
     @ColumnAdapter(IgnoreAnalyticsTeiDataColumnAdapter.class)
     public abstract AnalyticsTeiData data();
+
+    @Nullable
+    @ColumnAdapter(IgnoreAnalyticsTeiWHONutritionDataColumnAdapter.class)
+    public abstract AnalyticsTeiWHONutritionData whoNutritionData();
 
     public static AnalyticsTeiSetting create(Cursor cursor) {
         return AutoValue_AnalyticsTeiSetting.createFromCursor(cursor);
@@ -86,25 +99,18 @@ public abstract class AnalyticsTeiSetting implements CoreObject, ObjectWithUidIn
 
         public abstract Builder program(String program);
 
+        public abstract Builder programStage(String programStage);
+
         public abstract Builder period(PeriodType period);
 
         public abstract Builder type(ChartType type);
 
         public abstract Builder data(AnalyticsTeiData data);
 
-        abstract AnalyticsTeiSetting autoBuild();
+        @JsonProperty("WHONutrition")
+        public abstract Builder whoNutritionData(AnalyticsTeiWHONutritionData whoNutritionData);
 
-        // Auxiliary fields
-        abstract AnalyticsTeiData data();
+        public abstract AnalyticsTeiSetting build();
 
-        public AnalyticsTeiSetting build() {
-            try {
-                data();
-            } catch (IllegalStateException e) {
-                data(AnalyticsTeiData.builder().build());
-            }
-
-            return autoBuild();
-        }
     }
 }

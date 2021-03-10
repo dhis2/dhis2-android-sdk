@@ -28,58 +28,31 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import android.database.Cursor;
-
-import androidx.annotation.Nullable;
-
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.WHONutritionComponentColumnAdapter;
-import org.hisp.dhis.android.core.arch.json.internal.AnalyticsTEIDataElementDeserializer;
-import org.hisp.dhis.android.core.common.CoreObject;
-
 @AutoValue
-@JsonDeserialize(using = AnalyticsTEIDataElementDeserializer.class)
-public abstract class AnalyticsTeiDataElement implements CoreObject {
+@JsonDeserialize(builder = AutoValue_AnalyticsTeiWHONutritionGenderValues.Builder.class)
+public abstract class AnalyticsTeiWHONutritionGenderValues {
 
-    @Nullable
-    public abstract String teiSetting();
+    public abstract String female();
 
-    @Nullable
-    @ColumnAdapter(WHONutritionComponentColumnAdapter.class)
-    public abstract WHONutritionComponent whoComponent();
-
-    @Nullable
-    public abstract String programStage();
-
-    public abstract String dataElement();
-
-    public static AnalyticsTeiDataElement create(Cursor cursor) {
-        return AutoValue_AnalyticsTeiDataElement.createFromCursor(cursor);
-    }
+    public abstract String male();
 
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new AutoValue_AnalyticsTeiDataElement.Builder();
+        return new AutoValue_AnalyticsTeiWHONutritionGenderValues.Builder();
     }
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
-        public abstract Builder id(Long id);
+        public abstract Builder female(String female);
 
-        public abstract Builder teiSetting(String teiSetting);
+        public abstract Builder male(String male);
 
-        public abstract Builder whoComponent(WHONutritionComponent component);
-
-        public abstract Builder programStage(String programStage);
-
-        public abstract Builder dataElement(String dataElement);
-
-        public abstract AnalyticsTeiDataElement build();
+        public abstract AnalyticsTeiWHONutritionGenderValues build();
     }
 }

@@ -52,12 +52,14 @@ public final class AnalyticsTeiAttributeTableInfo {
 
     public static class Columns extends CoreColumns {
         public static final String TEI_SETTING = "teiSetting";
+        public static final String WHO_COMPONENT = "whoComponent";
         public static final String ATTRIBUTE = "attribute";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
                     TEI_SETTING,
+                    WHO_COMPONENT,
                     ATTRIBUTE
             );
         }

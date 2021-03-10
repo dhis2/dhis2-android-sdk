@@ -27,44 +27,43 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import dagger.Reusable
-import javax.inject.Inject
+import com.nhaarman.mockitokotlin2.*
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.settings.*
-import org.hisp.dhis.android.core.settings.internal.SettingsAppHelper.buildAnalyticsTeiSetting
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
+import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
+import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicator
+import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionData
+import org.junit.Before
+import org.junit.Test
 
-@Reusable
-internal class AnalyticsTeiDataChildrenAppender @Inject constructor(
-    private val analyticsTeiDataElementStore: LinkStore<AnalyticsTeiDataElement>,
-    private val analyticsTeiIndicatorStore: LinkStore<AnalyticsTeiIndicator>,
-    private val analyticsTeiAttributeStore: LinkStore<AnalyticsTeiAttribute>,
-    private val analyticsTeiWHONutritionDataStore: LinkStore<AnalyticsTeiWHONutritionData>
-) : ChildrenAppender<AnalyticsTeiSetting>() {
+class AnalyticsTeiWHONutritionDataHandlerShould {
 
-    companion object {
-        const val KEY = "DATA"
-    }
+    private val store: LinkStore<AnalyticsTeiWHONutritionData> = mock()
 
-    private var dataElements: List<AnalyticsTeiDataElement>? = null
-    private var indicators: List<AnalyticsTeiIndicator>? = null
-    private var attributes: List<AnalyticsTeiAttribute>? = null
-    private var whoNutritionData: List<AnalyticsTeiWHONutritionData>? = null
+    private val teiDataElementHandler: LinkHandler<AnalyticsTeiDataElement, AnalyticsTeiDataElement> = mock()
+    private val teiIndicatorHandler: LinkHandler<AnalyticsTeiIndicator, AnalyticsTeiIndicator> = mock()
 
-    override fun prepareChildren(collection: Collection<AnalyticsTeiSetting>) {
-        dataElements = analyticsTeiDataElementStore.selectAll()
-        indicators = analyticsTeiIndicatorStore.selectAll()
-        attributes = analyticsTeiAttributeStore.selectAll()
-        whoNutritionData = analyticsTeiWHONutritionDataStore.selectAll()
-    }
+    private val whoData: AnalyticsTeiWHONutritionData = mock()
 
-    override fun appendChildren(analyticsTeiSetting: AnalyticsTeiSetting): AnalyticsTeiSetting {
-        return buildAnalyticsTeiSetting(
-            analyticsTeiSetting,
-            dataElements!!,
-            indicators!!,
-            attributes!!,
-            whoNutritionData!!
+    private lateinit var analyticsTeiSettingHandler:
+        LinkHandler<AnalyticsTeiWHONutritionData, AnalyticsTeiWHONutritionData>
+
+    @Before
+    @Throws(Exception::class)
+    fun setUp() {
+        whenever(whoData.teiSetting()) doReturn "tei_setting"
+
+        analyticsTeiSettingHandler = AnalyticsTeiWHONutritionDataHandler(
+            store, teiDataElementHandler,
+            teiIndicatorHandler
         )
+    }
+
+    @Test
+    fun call_data_handlers() {
+        analyticsTeiSettingHandler.handleMany(whoData.teiSetting()!!, listOf(whoData)) { x -> x }
+
+        verify(teiDataElementHandler).handleMany(any(), any(), any())
+        verify(teiIndicatorHandler).handleMany(any(), any(), any())
     }
 }

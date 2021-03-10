@@ -25,45 +25,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings
 
-package org.hisp.dhis.android.core.settings;
-
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.CoreColumns;
-
-public final class AnalyticsTeiDataElementTableInfo {
-
-    private AnalyticsTeiDataElementTableInfo() {
-    }
-
-    public static final TableInfo TABLE_INFO = new TableInfo() {
-
-        @Override
-        public String name() {
-            return "AnalyticsTeiDataElement";
-        }
-
-        @Override
-        public CoreColumns columns() {
-            return new Columns();
-        }
-    };
-
-    public static class Columns extends CoreColumns {
-        public static final String TEI_SETTING = "teiSetting";
-        public static final String WHO_COMPONENT = "whoComponent";
-        public static final String PROGRAM_STAGE = "programStage";
-        public static final String DATA_ELEMENT = "dataElement";
-
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(),
-                    TEI_SETTING,
-                    WHO_COMPONENT,
-                    PROGRAM_STAGE,
-                    DATA_ELEMENT
-            );
-        }
-    }
+enum class WHONutritionComponent {
+    X,
+    Y
 }

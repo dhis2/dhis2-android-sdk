@@ -124,9 +124,12 @@ internal object SettingsAppHelper {
         teiSettings: List<AnalyticsTeiSetting>,
         teiDataElements: List<AnalyticsTeiDataElement>,
         teiIndicators: List<AnalyticsTeiIndicator>,
-        teiAttributes: List<AnalyticsTeiAttribute>
+        teiAttributes: List<AnalyticsTeiAttribute>,
+        teiWhoNutritionData: List<AnalyticsTeiWHONutritionData>
     ): List<AnalyticsTeiSetting> {
-        return teiSettings.map { buildAnalyticsTeiSetting(it, teiDataElements, teiIndicators, teiAttributes) }
+        return teiSettings.map {
+            buildAnalyticsTeiSetting(it, teiDataElements, teiIndicators, teiAttributes, teiWhoNutritionData)
+        }
     }
 
     @JvmStatic
@@ -134,14 +137,48 @@ internal object SettingsAppHelper {
         teiSetting: AnalyticsTeiSetting,
         teiDataElements: List<AnalyticsTeiDataElement>,
         teiIndicators: List<AnalyticsTeiIndicator>,
-        teiAttributes: List<AnalyticsTeiAttribute>
+        teiAttributes: List<AnalyticsTeiAttribute>,
+        teiWhoNutritionData: List<AnalyticsTeiWHONutritionData>
     ): AnalyticsTeiSetting {
-        val data = AnalyticsTeiData.builder()
-            .dataElements(teiDataElements.filter { it.teiSetting() == teiSetting.uid() })
-            .indicators(teiIndicators.filter { it.teiSetting() == teiSetting.uid() })
-            .attributes(teiAttributes.filter { it.teiSetting() == teiSetting.uid() })
-            .build()
+        return when (teiSetting.type()) {
+            ChartType.WHO_NUTRITION -> {
+                val whoData = teiWhoNutritionData.find { it.teiSetting() == teiSetting.uid() }?.let {
+                    it.toBuilder()
+                        .x(buildWhoComponent(teiSetting, WHONutritionComponent.X, teiDataElements, teiIndicators))
+                        .y(buildWhoComponent(teiSetting, WHONutritionComponent.Y, teiDataElements, teiIndicators))
+                        .build()
+                }
+                teiSetting.toBuilder().whoNutritionData(whoData).build()
+            }
+            else -> {
+                val data = AnalyticsTeiData.builder()
+                    .dataElements(teiDataElements.filter { it.teiSetting() == teiSetting.uid() })
+                    .indicators(teiIndicators.filter { it.teiSetting() == teiSetting.uid() })
+                    .attributes(teiAttributes.filter { it.teiSetting() == teiSetting.uid() })
+                    .build()
 
-        return teiSetting.toBuilder().data(data).build()
+                teiSetting.toBuilder().data(data).build()
+            }
+        }
+    }
+
+    private fun buildWhoComponent(
+        teiSetting: AnalyticsTeiSetting,
+        whoComponent: WHONutritionComponent,
+        teiDataElements: List<AnalyticsTeiDataElement>,
+        teiIndicators: List<AnalyticsTeiIndicator>
+    ): AnalyticsTeiWHONutritionItem {
+        return AnalyticsTeiWHONutritionItem.builder()
+            .dataElements(
+                teiDataElements.filter {
+                    it.teiSetting() == teiSetting.uid() && it.whoComponent() == whoComponent
+                }
+            )
+            .indicators(
+                teiIndicators.filter {
+                    it.teiSetting() == teiSetting.uid() && it.whoComponent() == whoComponent
+                }
+            )
+            .build()
     }
 }

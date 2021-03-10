@@ -32,16 +32,16 @@ import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.CoreColumns;
 
-public final class AnalyticsTeiDataElementTableInfo {
+public final class AnalyticsTeiWHONutritionDataTableInfo {
 
-    private AnalyticsTeiDataElementTableInfo() {
+    private AnalyticsTeiWHONutritionDataTableInfo() {
     }
 
     public static final TableInfo TABLE_INFO = new TableInfo() {
 
         @Override
         public String name() {
-            return "AnalyticsTeiDataElement";
+            return "AnalyticsTeiWHONutritionData";
         }
 
         @Override
@@ -52,17 +52,19 @@ public final class AnalyticsTeiDataElementTableInfo {
 
     public static class Columns extends CoreColumns {
         public static final String TEI_SETTING = "teiSetting";
-        public static final String WHO_COMPONENT = "whoComponent";
-        public static final String PROGRAM_STAGE = "programStage";
-        public static final String DATA_ELEMENT = "dataElement";
+        public static final String CHART_TYPE = "chartType";
+        public static final String GENDER_ATTRIBUTE = "genderAttribute";
+        public static final String GENDER_FEMALE = "genderFemale";
+        public static final String GENDER_MALE = "genderMale";
 
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
                     TEI_SETTING,
-                    WHO_COMPONENT,
-                    PROGRAM_STAGE,
-                    DATA_ELEMENT
+                    CHART_TYPE,
+                    GENDER_ATTRIBUTE,
+                    GENDER_FEMALE,
+                    GENDER_MALE
             );
         }
     }

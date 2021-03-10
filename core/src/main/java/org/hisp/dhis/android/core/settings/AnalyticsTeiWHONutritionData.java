@@ -37,34 +37,38 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.WHONutritionComponentColumnAdapter;
-import org.hisp.dhis.android.core.arch.json.internal.AnalyticsTEIDataElementDeserializer;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.AnalyticsTeiWHONutritionGenderColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.WHONutritionChartTypeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreAnalyticsTeiWHODataItemColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
-@JsonDeserialize(using = AnalyticsTEIDataElementDeserializer.class)
-public abstract class AnalyticsTeiDataElement implements CoreObject {
+@JsonDeserialize(builder = AutoValue_AnalyticsTeiWHONutritionData.Builder.class)
+public abstract class AnalyticsTeiWHONutritionData implements CoreObject {
 
     @Nullable
     public abstract String teiSetting();
 
-    @Nullable
-    @ColumnAdapter(WHONutritionComponentColumnAdapter.class)
-    public abstract WHONutritionComponent whoComponent();
+    @ColumnAdapter(WHONutritionChartTypeColumnAdapter.class)
+    public abstract WHONutritionChartType chartType();
 
-    @Nullable
-    public abstract String programStage();
+    @ColumnAdapter(AnalyticsTeiWHONutritionGenderColumnAdapter.class)
+    public abstract AnalyticsTeiWHONutritionGender gender();
 
-    public abstract String dataElement();
+    @ColumnAdapter(IgnoreAnalyticsTeiWHODataItemColumnAdapter.class)
+    public abstract AnalyticsTeiWHONutritionItem x();
 
-    public static AnalyticsTeiDataElement create(Cursor cursor) {
-        return AutoValue_AnalyticsTeiDataElement.createFromCursor(cursor);
+    @ColumnAdapter(IgnoreAnalyticsTeiWHODataItemColumnAdapter.class)
+    public abstract AnalyticsTeiWHONutritionItem y();
+
+    public static AnalyticsTeiWHONutritionData create(Cursor cursor) {
+        return AutoValue_AnalyticsTeiWHONutritionData.createFromCursor(cursor);
     }
 
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new AutoValue_AnalyticsTeiDataElement.Builder();
+        return new AutoValue_AnalyticsTeiWHONutritionData.Builder();
     }
 
     @AutoValue.Builder
@@ -74,12 +78,14 @@ public abstract class AnalyticsTeiDataElement implements CoreObject {
 
         public abstract Builder teiSetting(String teiSetting);
 
-        public abstract Builder whoComponent(WHONutritionComponent component);
+        public abstract Builder chartType(WHONutritionChartType chartType);
 
-        public abstract Builder programStage(String programStage);
+        public abstract Builder gender(AnalyticsTeiWHONutritionGender gender);
 
-        public abstract Builder dataElement(String dataElement);
+        public abstract Builder x(AnalyticsTeiWHONutritionItem x);
 
-        public abstract AnalyticsTeiDataElement build();
+        public abstract Builder y(AnalyticsTeiWHONutritionItem y);
+
+        public abstract AnalyticsTeiWHONutritionData build();
     }
 }

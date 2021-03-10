@@ -33,17 +33,15 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
-import org.hisp.dhis.android.core.settings.AnalyticsTeiAttribute
-import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
-import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicator
-import org.hisp.dhis.android.core.settings.AnalyticsTeiSetting
+import org.hisp.dhis.android.core.settings.*
 
 @Reusable
 internal class AnalyticsTeiSettingHandler @Inject constructor(
     store: ObjectWithoutUidStore<AnalyticsTeiSetting>,
     private val teiDataElementHandler: LinkHandler<AnalyticsTeiDataElement, AnalyticsTeiDataElement>,
     private val teiIndicatorHandler: LinkHandler<AnalyticsTeiIndicator, AnalyticsTeiIndicator>,
-    private val teiAttributeHandler: LinkHandler<AnalyticsTeiAttribute, AnalyticsTeiAttribute>
+    private val teiAttributeHandler: LinkHandler<AnalyticsTeiAttribute, AnalyticsTeiAttribute>,
+    private val whoNutritionDataHandler: LinkHandler<AnalyticsTeiWHONutritionData, AnalyticsTeiWHONutritionData>
 ) : ObjectWithoutUidHandlerImpl<AnalyticsTeiSetting>(store) {
 
     override fun beforeCollectionHandled(
@@ -64,6 +62,10 @@ internal class AnalyticsTeiSettingHandler @Inject constructor(
 
         teiAttributeHandler.handleMany(o.uid(), o.data()?.attributes() ?: emptyList()) { att ->
             att.toBuilder().teiSetting(o.uid()).build()
+        }
+
+        whoNutritionDataHandler.handleMany(o.uid(), listOfNotNull(o.whoNutritionData())) { whoData ->
+            whoData.toBuilder().teiSetting(o.uid()).build()
         }
     }
 }

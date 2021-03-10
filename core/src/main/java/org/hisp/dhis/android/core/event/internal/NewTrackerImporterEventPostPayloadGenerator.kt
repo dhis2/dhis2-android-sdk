@@ -28,38 +28,35 @@
 package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
-import io.reactivex.Observable
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
-import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper
 import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.tracker.importer.internal.JobQueryCall
-import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterService
+import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
+import org.hisp.dhis.android.core.event.NewTrackerImporterEventTransformer
+import org.hisp.dhis.android.core.note.NewTrackerImporterNoteTransformer
+import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityDataValueTransformer
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
 
 @Reusable
-internal class EventTrackerImporterPostCall @Inject internal constructor(
-    private val payloadGenerator: NewTrackerImporterEventPostPayloadGenerator,
-    private val stateManager: EventPostStateManager,
-    private val service: TrackerImporterService,
-    private val apiCallExecutor: APICallExecutor,
-    private val jobQueryCall: JobQueryCall
+internal class NewTrackerImporterEventPostPayloadGenerator @Inject internal constructor(
+    private val trackedEntityDataValueStore: TrackedEntityDataValueStore,
+    private val noteStore: EventPostNoteStore
 ) {
-    fun uploadEvents(
-        events: List<Event>
-    ): Observable<D2Progress> {
-        return Observable.defer {
-            val eventsToPost = payloadGenerator.getEvents(events)
-            val eventPayload = NewTrackerImporterEventPayload(eventsToPost)
-            try {
-                val webResponse = apiCallExecutor.executeObjectCall(service.postEvents(eventPayload))
-                jobQueryCall.storeAndQueryJob(webResponse.response().uid())
-            } catch (d2Error: D2Error) {
-                stateManager.markObjectsAs(eventsToPost, DataStateHelper.errorIfOnline(d2Error))
-                Observable.error<D2Progress>(d2Error)
-                // TODO different treatment when offline error
+
+    fun getEvents(events: List<Event>): List<NewTrackerImporterEvent> {
+        val noteTransformer = NewTrackerImporterNoteTransformer()
+        val dataValueTransformer = NewTrackerImporterTrackedEntityDataValueTransformer()
+        val eventTransformer = NewTrackerImporterEventTransformer()
+
+        val dataValueMap = trackedEntityDataValueStore.querySingleEventsTrackedEntityDataValues()
+        val notes = noteStore.queryNotes().map { noteTransformer.transform(it) }
+        return events
+            .map { eventTransformer.transform(it) }
+            .map { event ->
+                val dataValues = dataValueMap[event.uid()]?.map { dataValueTransformer.transform(it) }
+                event.toBuilder()
+                    .trackedEntityDataValues(dataValues)
+                    .notes(notes.filter { it.event() == event.uid() })
+                    .build()
             }
-        }
     }
 }

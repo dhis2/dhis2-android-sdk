@@ -25,23 +25,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.event.internal
+package org.hisp.dhis.android.core.trackedentity
 
-import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper
-import org.hisp.dhis.android.core.common.DataObject
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface
-import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 
-@Reusable
-internal class EventPostStateManager @Inject internal constructor(
-    private val eventStore: EventStore
-) {
+internal class NewTrackerImporterTrackedEntityDataValueTransformer :
+    Transformer<TrackedEntityDataValue, NewTrackerImporterTrackedEntityDataValue> {
 
-    fun <T> markObjectsAs(events: Collection<T>, forcedState: State?) where T : ObjectWithUidInterface, T : DataObject {
-        for (e in events) {
-            eventStore.setState(e.uid(), DataStateHelper.forcedOrOwn(e, forcedState))
-        }
+    override fun transform(o: TrackedEntityDataValue): NewTrackerImporterTrackedEntityDataValue {
+        return NewTrackerImporterTrackedEntityDataValue.builder()
+            .id(o.id())
+            .event(o.event())
+            .createdAt(o.created())
+            .updatedAt(o.lastUpdated())
+            .dataElement(o.dataElement())
+            .storedBy(o.storedBy())
+            .value(o.value())
+            .providedElsewhere(o.providedElsewhere())
+            .build()
     }
 }

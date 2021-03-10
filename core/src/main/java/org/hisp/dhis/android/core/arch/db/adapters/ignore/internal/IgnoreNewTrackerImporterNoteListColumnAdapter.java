@@ -25,23 +25,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.event.internal
 
-import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper
-import org.hisp.dhis.android.core.common.DataObject
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface
-import org.hisp.dhis.android.core.common.State
+package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
 
-@Reusable
-internal class EventPostStateManager @Inject internal constructor(
-    private val eventStore: EventStore
-) {
+import org.hisp.dhis.android.core.note.NewTrackerImporterNote;
 
-    fun <T> markObjectsAs(events: Collection<T>, forcedState: State?) where T : ObjectWithUidInterface, T : DataObject {
-        for (e in events) {
-            eventStore.setState(e.uid(), DataStateHelper.forcedOrOwn(e, forcedState))
-        }
-    }
+import java.util.List;
+
+public final class IgnoreNewTrackerImporterNoteListColumnAdapter
+        extends IgnoreColumnAdapter<List<NewTrackerImporterNote>> {
 }

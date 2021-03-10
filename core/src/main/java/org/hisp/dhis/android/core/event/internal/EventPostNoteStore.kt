@@ -28,38 +28,26 @@
 package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
-import io.reactivex.Observable
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
-import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper
-import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.tracker.importer.internal.JobQueryCall
-import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterService
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.common.DataColumns
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.note.Note
+import org.hisp.dhis.android.core.note.NoteTableInfo
 
 @Reusable
-internal class EventTrackerImporterPostCall @Inject internal constructor(
-    private val payloadGenerator: NewTrackerImporterEventPostPayloadGenerator,
-    private val stateManager: EventPostStateManager,
-    private val service: TrackerImporterService,
-    private val apiCallExecutor: APICallExecutor,
-    private val jobQueryCall: JobQueryCall
+internal class EventPostNoteStore @Inject internal constructor(
+    private val noteStore: IdentifiableObjectStore<Note>
 ) {
-    fun uploadEvents(
-        events: List<Event>
-    ): Observable<D2Progress> {
-        return Observable.defer {
-            val eventsToPost = payloadGenerator.getEvents(events)
-            val eventPayload = NewTrackerImporterEventPayload(eventsToPost)
-            try {
-                val webResponse = apiCallExecutor.executeObjectCall(service.postEvents(eventPayload))
-                jobQueryCall.storeAndQueryJob(webResponse.response().uid())
-            } catch (d2Error: D2Error) {
-                stateManager.markObjectsAs(eventsToPost, DataStateHelper.errorIfOnline(d2Error))
-                Observable.error<D2Progress>(d2Error)
-                // TODO different treatment when offline error
-            }
-        }
+
+    fun queryNotes(): List<Note> {
+        val whereNotesClause = WhereClauseBuilder()
+            .appendInKeyStringValues(
+                DataColumns.STATE, State.uploadableStatesIncludingError().map { it.name }
+            )
+            .appendKeyStringValue(NoteTableInfo.Columns.NOTE_TYPE, Note.NoteType.EVENT_NOTE)
+            .build()
+        return noteStore.selectWhere(whereNotesClause)
     }
 }

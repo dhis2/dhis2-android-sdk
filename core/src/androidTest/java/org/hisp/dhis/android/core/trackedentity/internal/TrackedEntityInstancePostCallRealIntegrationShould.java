@@ -67,7 +67,6 @@ import java.util.Date;
 import java.util.List;
 
 import io.reactivex.observers.TestObserver;
-import retrofit2.Response;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -143,8 +142,6 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
     * */
     //@Test
     public void response_true_when_data_sync() throws Exception {
-
-        Response response = null;
         downloadMetadata();
 
 

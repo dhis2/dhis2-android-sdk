@@ -99,7 +99,7 @@ public abstract class GeneralSettings implements CoreObject {
     public abstract String smsResultSender();
 
     @Nullable
-    public abstract String matomoID();
+    public abstract Integer matomoID();
 
     @Nullable
     public abstract String matomoURL();
@@ -137,7 +137,7 @@ public abstract class GeneralSettings implements CoreObject {
         @JsonAlias("numberSmsConfirmation")
         public abstract Builder smsResultSender(String smsGateway);
 
-        public abstract Builder matomoID(String matomoID);
+        public abstract Builder matomoID(Integer matomoID);
 
         public abstract Builder matomoURL(String matomoURL);
 

@@ -41,7 +41,7 @@ public class GeneralSettingsSamples {
                 .reservedValues(100)
                 .smsGateway("+34678456123")
                 .smsResultSender("+34654321456")
-                .matomoID("123abc")
+                .matomoID(123)
                 .matomoURL("https://www.matomo.org")
                 .build();
     }

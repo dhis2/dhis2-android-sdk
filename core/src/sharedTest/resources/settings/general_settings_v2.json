@@ -1,5 +1,5 @@
 {
-  "matomoID": "123abc",
+  "matomoID": 123,
   "encryptDB": false,
   "matomoURL": "https://www.matomo.org",
   "smsGateway": "+84566464",

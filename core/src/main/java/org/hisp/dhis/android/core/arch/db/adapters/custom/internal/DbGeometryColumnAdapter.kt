@@ -58,7 +58,7 @@ class DbGeometryColumnAdapter : ColumnTypeAdapter<Geometry> {
     override fun toContentValues(values: ContentValues, columnName: String, value: Geometry?) {
         value?.let {
             if (GeometryHelper.isDefinedAndValid(it)) {
-                values.put(GEOMETRY_TYPE, value.type()!!.geometryType)
+                values.put(GEOMETRY_TYPE, value.type()?.geometryType)
                 values.put(GEOMETRY_COORDINATES, it.coordinates())
             }
         }

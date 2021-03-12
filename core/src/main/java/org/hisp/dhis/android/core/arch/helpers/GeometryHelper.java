@@ -83,7 +83,8 @@ public final class GeometryHelper {
      * @return The converted {@code List<Double>} object with format {@code [longitude, latitude]}.
      */
     public static List<Double> getPoint(Geometry geometry) throws D2Error {
-        return getGeometryObject(geometry, FeatureType.POINT, new TypeReference<List<Double>>(){});
+        return getGeometryObject(geometry, FeatureType.POINT, new TypeReference<List<Double>>() {
+        });
     }
 
     /**
@@ -94,7 +95,8 @@ public final class GeometryHelper {
      * @return The converted {@code List<List<List<Double>>>} object with format {@code [longitude, latitude]}.
      */
     public static List<List<List<Double>>> getPolygon(Geometry geometry) throws D2Error {
-        return getGeometryObject(geometry, FeatureType.POLYGON, new TypeReference<List<List<List<Double>>>>(){});
+        return getGeometryObject(geometry, FeatureType.POLYGON, new TypeReference<List<List<List<Double>>>>() {
+        });
     }
 
     /**
@@ -106,14 +108,15 @@ public final class GeometryHelper {
      */
     public static List<List<List<List<Double>>>> getMultiPolygon(Geometry geometry) throws D2Error {
         return getGeometryObject(geometry, FeatureType.MULTI_POLYGON,
-                new TypeReference<List<List<List<List<Double>>>>>(){});
+                new TypeReference<List<List<List<List<Double>>>>>() {
+                });
     }
 
     /**
      * Build a {@link Geometry} object of type point from a longitude and a latitude.
      *
      * @param longitude The longitude of a coordinate.
-     * @param latitude The latitude of a coordinate.
+     * @param latitude  The latitude of a coordinate.
      * @return The {@link Geometry} object of type point created.
      */
     public static Geometry createPointGeometry(Double longitude, Double latitude) {
@@ -166,16 +169,23 @@ public final class GeometryHelper {
     public static boolean isDefinedAndValid(Geometry geometry) {
         boolean valid = false;
         if (geometry != null && geometry.type() != null && geometry.coordinates() != null) {
-            switch (geometry.type()) {
-                case POINT:
-                    valid = containsAPoint(geometry);
-                    break;
-                case POLYGON:
-                    valid = containsAPolygon(geometry);
-                    break;
-                case MULTI_POLYGON:
-                    valid = containsAMultiPolygon(geometry);
-                    break;
+            try {
+                switch (geometry.type()) {
+                    case POINT:
+                        getPoint(geometry);
+                        valid = true;
+                        break;
+                    case POLYGON:
+                        getPolygon(geometry);
+                        valid = true;
+                        break;
+                    case MULTI_POLYGON:
+                        getMultiPolygon(geometry);
+                        valid = true;
+                        break;
+                }
+            } catch (D2Error error) {
+                valid = false;
             }
         }
         return valid;

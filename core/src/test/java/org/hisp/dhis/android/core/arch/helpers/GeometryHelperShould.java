@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.arch.helpers;
 
 import com.google.common.collect.Lists;
 
+import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.junit.Test;
@@ -114,5 +115,40 @@ public class GeometryHelperShould {
 
         String expectedCoordinates = "[" + longitude1 + "," + latitude1 + "]";
         assertThat(geometry.coordinates()).isEqualTo(expectedCoordinates);
+    }
+
+    @Test
+    public void should_return_invalid_or_empty_geometry() {
+        assertThat(GeometryHelper.isDefinedAndValid(null)).isFalse();
+
+        Geometry empty = Geometry.builder().build();
+        assertThat(GeometryHelper.isDefinedAndValid(empty)).isFalse();
+
+        Geometry incomplete = Geometry.builder().type(FeatureType.POINT).build();
+        assertThat(GeometryHelper.isDefinedAndValid(incomplete)).isFalse();
+
+        Geometry invalid = Geometry.builder().type(FeatureType.POINT).coordinates("invalid_coordinates").build();
+        assertThat(GeometryHelper.isDefinedAndValid(invalid)).isFalse();
+
+        Geometry invalid2 = Geometry.builder().type(FeatureType.NONE).coordinates("[2.4, 4.5]").build();
+        assertThat(GeometryHelper.isDefinedAndValid(invalid2)).isFalse();
+    }
+
+    @Test
+    public void should_return_valid_empty_geometry() {
+        Geometry point = Geometry.builder()
+                .type(FeatureType.POINT)
+                .coordinates("[2.4, 4.5]").build();
+        assertThat(GeometryHelper.isDefinedAndValid(point)).isTrue();
+
+        Geometry polygon = Geometry.builder()
+                .type(FeatureType.POLYGON)
+                .coordinates("[[[2.4, 4.5]],[[4.4, 2.5]]]").build();
+        assertThat(GeometryHelper.isDefinedAndValid(polygon)).isTrue();
+
+        Geometry multiPolygon = Geometry.builder()
+                .type(FeatureType.MULTI_POLYGON)
+                .coordinates("[[[[2.4, 4.5]]],[[[4.4, 2.5]]]]").build();
+        assertThat(GeometryHelper.isDefinedAndValid(multiPolygon)).isTrue();
     }
 }

@@ -183,6 +183,8 @@ public final class GeometryHelper {
                         getMultiPolygon(geometry);
                         valid = true;
                         break;
+                    default:
+                        break;
                 }
             } catch (D2Error error) {
                 valid = false;

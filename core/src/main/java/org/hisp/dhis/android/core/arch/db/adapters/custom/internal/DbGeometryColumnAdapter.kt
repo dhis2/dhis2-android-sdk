@@ -44,11 +44,8 @@ class DbGeometryColumnAdapter : ColumnTypeAdapter<Geometry> {
         val geometryCoordinates = cursor.getString(geometryCoordinatesColumnIndex)
 
         return if (geometryTypeStr != null && geometryCoordinates != null) {
-            try {
-                val geometryType = FeatureType.valueOfFeatureType(geometryTypeStr)
+            FeatureType.valueOfFeatureType(geometryTypeStr)?.let { geometryType ->
                 Geometry.builder().type(geometryType).coordinates(geometryCoordinates).build()
-            } catch (exception: Exception) {
-                throw RuntimeException("Unknown FeatureType type", exception)
             }
         } else {
             null

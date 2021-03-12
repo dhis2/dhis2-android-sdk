@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStoreImpl;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.arch.helpers.GeometryHelper;
 import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper;
 import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
@@ -57,6 +58,8 @@ public final class EventStoreImpl extends IdentifiableDeletableDataObjectStoreIm
     private static final String QUERY_SINGLE_EVENTS = "SELECT Event.* FROM Event WHERE Event.enrollment IS NULL";
 
     private static final StatementBinder<Event> BINDER = (o, w) -> {
+        boolean isValidAndDefinedGeometry = GeometryHelper.isDefinedAndValid(o.geometry());
+
         w.bind(1, o.uid());
         w.bind(2, o.enrollment());
         w.bind(3, o.created());
@@ -64,8 +67,8 @@ public final class EventStoreImpl extends IdentifiableDeletableDataObjectStoreIm
         w.bind(5, o.createdAtClient());
         w.bind(6, o.lastUpdatedAtClient());
         w.bind(7, o.status());
-        w.bind(8, o.geometry() == null ? null : o.geometry().type());
-        w.bind(9, o.geometry() == null ? null : o.geometry().coordinates());
+        w.bind(8, isValidAndDefinedGeometry ? o.geometry().type() : null);
+        w.bind(9, isValidAndDefinedGeometry ? o.geometry().coordinates() : null);
         w.bind(10, o.program());
         w.bind(11, o.programStage());
         w.bind(12, o.organisationUnit());

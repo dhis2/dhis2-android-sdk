@@ -87,6 +87,20 @@ public class TrackedEntityInstanceObjectRepositoryMockIntegrationShould extends 
         repository.blockingDelete();
     }
 
+    @Test
+    public void update_invalid_geometry() throws D2Error {
+        Geometry geometry = Geometry.builder()
+                .type(FeatureType.POINT)
+                .build();
+
+        TrackedEntityInstanceObjectRepository repository = objectRepository();
+
+        repository.setGeometry(geometry);
+        assertThat(repository.blockingGet().geometry()).isNull();
+
+        repository.blockingDelete();
+    }
+
     private TrackedEntityInstanceObjectRepository objectRepository() throws D2Error {
         String teiUid = d2.trackedEntityModule().trackedEntityInstances().blockingAdd(
                 TrackedEntityInstanceCreateProjection.create("DiszpKrYNg8", "nEenWmSyUEp"));

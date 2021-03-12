@@ -163,6 +163,24 @@ public final class GeometryHelper {
                 .build();
     }
 
+    public static boolean isDefinedAndValid(Geometry geometry) {
+        boolean valid = false;
+        if (geometry != null && geometry.type() != null && geometry.coordinates() != null) {
+            switch (geometry.type()) {
+                case POINT:
+                    valid = containsAPoint(geometry);
+                    break;
+                case POLYGON:
+                    valid = containsAPolygon(geometry);
+                    break;
+                case MULTI_POLYGON:
+                    valid = containsAMultiPolygon(geometry);
+                    break;
+            }
+        }
+        return valid;
+    }
+
     private static <T> T getGeometryObject(Geometry geometry, FeatureType type, TypeReference<T> typeReference)
             throws D2Error {
         if (geometry.type() != type) {

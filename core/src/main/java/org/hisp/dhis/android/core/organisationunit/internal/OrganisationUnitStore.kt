@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableStatem
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
+import org.hisp.dhis.android.core.arch.helpers.GeometryHelper
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
@@ -43,12 +44,14 @@ internal object OrganisationUnitStore {
     private val BINDER = object : NameableStatementBinder<OrganisationUnit>() {
         override fun bindToStatement(o: OrganisationUnit, w: StatementWrapper) {
             super.bindToStatement(o, w)
+            val isValidAndDefinedGeometry = GeometryHelper.isDefinedAndValid(o.geometry())
+
             w.bind(11, o.path())
             w.bind(12, o.openingDate())
             w.bind(13, o.closedDate())
             w.bind(14, o.level())
-            w.bind(15, o.geometry()?.type())
-            w.bind(16, o.geometry()?.coordinates())
+            w.bind(15, if (isValidAndDefinedGeometry) o.geometry()?.type() else null)
+            w.bind(16, if (isValidAndDefinedGeometry) o.geometry()?.coordinates() else null)
             w.bind(17, getUidOrNull(o.parent()))
             w.bind(18, StringArrayColumnAdapter.serialize(o.displayNamePath()))
         }

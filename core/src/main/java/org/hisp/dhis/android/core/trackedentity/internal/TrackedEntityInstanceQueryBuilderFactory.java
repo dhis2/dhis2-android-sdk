@@ -140,13 +140,18 @@ class TrackedEntityInstanceQueryBuilderFactory {
             ouMode = OrganisationUnitMode.SELECTED;
             orgUnits = getLinkedCaptureOrgUnitUids(programUid);
         } else {
-            ouMode = OrganisationUnitMode.DESCENDANTS;
-            orgUnits = getRootCaptureOrgUnitUids();
+            if (params.uids().isEmpty()) {
+                ouMode = OrganisationUnitMode.DESCENDANTS;
+                orgUnits = getRootCaptureOrgUnitUids();
+            } else {
+                ouMode = OrganisationUnitMode.ACCESSIBLE;
+                orgUnits = Collections.emptyList();
+            }
         }
 
         List<TeiQuery.Builder> builders = new ArrayList<>();
 
-        if (hasLimitByOrgUnit) {
+        if (hasLimitByOrgUnit && !orgUnits.isEmpty()) {
             for (String orgUnitUid : orgUnits) {
                 builders.add(getBuilderFor(lastUpdated, Collections.singletonList(orgUnitUid), ouMode, params, limit)
                         .program(programUid).programStatus(programStatus).programStartDate(programStartDate));

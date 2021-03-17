@@ -136,6 +136,9 @@ class TrackedEntityInstanceQueryBuilderFactory {
         if (params.orgUnits().size() > 0) {
             ouMode = OrganisationUnitMode.SELECTED;
             orgUnits = params.orgUnits();
+        } else if (params.uids().size() > 0) {
+            ouMode = OrganisationUnitMode.ACCESSIBLE;
+            orgUnits = Collections.emptyList();
         } else if (hasLimitByOrgUnit) {
             ouMode = OrganisationUnitMode.SELECTED;
             orgUnits = getLinkedCaptureOrgUnitUids(programUid);
@@ -146,7 +149,7 @@ class TrackedEntityInstanceQueryBuilderFactory {
 
         List<TeiQuery.Builder> builders = new ArrayList<>();
 
-        if (hasLimitByOrgUnit) {
+        if (hasLimitByOrgUnit && !orgUnits.isEmpty()) {
             for (String orgUnitUid : orgUnits) {
                 builders.add(getBuilderFor(lastUpdated, Collections.singletonList(orgUnitUid), ouMode, params, limit)
                         .program(programUid).programStatus(programStatus).programStartDate(programStartDate));
@@ -177,6 +180,9 @@ class TrackedEntityInstanceQueryBuilderFactory {
         if (params.orgUnits().size() > 0) {
             ouMode = OrganisationUnitMode.SELECTED;
             orgUnits = params.orgUnits();
+        } else if (params.uids().size() > 0) {
+            ouMode = OrganisationUnitMode.ACCESSIBLE;
+            orgUnits = Collections.emptyList();
         } else if (hasLimitByOrgUnit) {
             ouMode = OrganisationUnitMode.SELECTED;
             orgUnits = getCaptureOrgUnitUids();
@@ -187,7 +193,7 @@ class TrackedEntityInstanceQueryBuilderFactory {
 
         List<TeiQuery.Builder> builders = new ArrayList<>();
 
-        if (hasLimitByOrgUnit) {
+        if (hasLimitByOrgUnit && !orgUnits.isEmpty()) {
             for (String orgUnitUid : orgUnits) {
                 builders.add(getBuilderFor(lastUpdated, Collections.singletonList(orgUnitUid), ouMode, params, limit));
             }

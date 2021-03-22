@@ -41,15 +41,13 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreEnrollmentListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewTrackerImporterEnrollmentListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreRelationship229CompatibleListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreStringColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreTrackedEntityAttributeValueListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
-import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment;
 import org.hisp.dhis.android.core.relationship.internal.Relationship229Compatible;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
 
@@ -57,22 +55,22 @@ import java.util.Date;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_TrackedEntityInstance.Builder.class)
+@JsonDeserialize(builder = AutoValue_NewTrackerImporterTrackedEntityInstance.Builder.class)
 public abstract class NewTrackerImporterTrackedEntityInstance extends BaseDeletableDataObject implements ObjectWithUidInterface {
 
     @Override
-    @JsonProperty(TrackedEntityInstanceFields.UID)
+    @JsonProperty()
     public abstract String uid();
 
     @Nullable
     @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
-    public abstract Date created();
+    public abstract Date createdAt();
 
     @Nullable
     @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
-    public abstract Date lastUpdated();
+    public abstract Date updatedAt();
 
     @Nullable
     @JsonIgnore()
@@ -82,7 +80,7 @@ public abstract class NewTrackerImporterTrackedEntityInstance extends BaseDeleta
     @Nullable
     @JsonIgnore()
     @ColumnAdapter(DbDateColumnAdapter.class)
-    public abstract Date lastUpdatedAtClient();
+    public abstract Date updatedAtClient();
 
     @Nullable
     @JsonProperty(TrackedEntityInstanceFields.ORGANISATION_UNIT)
@@ -91,15 +89,6 @@ public abstract class NewTrackerImporterTrackedEntityInstance extends BaseDeleta
     @Nullable
     @JsonProperty()
     public abstract String trackedEntityType();
-
-    /**
-     * @deprecated since 2.30, replaced by {@link #geometry()}
-     */
-    @Nullable
-    @JsonProperty()
-    @Deprecated
-    @ColumnAdapter(IgnoreStringColumnAdapter.class)
-    abstract String coordinates();
 
     @Nullable
     @JsonProperty()
@@ -118,15 +107,15 @@ public abstract class NewTrackerImporterTrackedEntityInstance extends BaseDeleta
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(IgnoreEnrollmentListColumnAdapter.class)
-    abstract List<Enrollment> enrollments();
+    @ColumnAdapter(IgnoreNewTrackerImporterEnrollmentListColumnAdapter.class)
+    abstract List<NewTrackerImporterEnrollment> enrollments();
 
     public static Builder builder() {
-        return new $$AutoValue_TrackedEntityInstance.Builder();
+        return new $$AutoValue_NewTrackerImporterTrackedEntityInstance.Builder();
     }
 
     public static NewTrackerImporterTrackedEntityInstance create(Cursor cursor) {
-        return $AutoValue_TrackedEntityInstance.createFromCursor(cursor);
+        return $AutoValue_NewTrackerImporterTrackedEntityInstance.createFromCursor(cursor);
     }
 
     public abstract Builder toBuilder();
@@ -136,27 +125,21 @@ public abstract class NewTrackerImporterTrackedEntityInstance extends BaseDeleta
     public abstract static class Builder extends BaseDeletableDataObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
-        @JsonProperty(TrackedEntityInstanceFields.UID)
+        @JsonProperty()
         public abstract Builder uid(String uid);
 
-        public abstract Builder created(Date created);
+        public abstract Builder createdAt(Date created);
 
-        public abstract Builder lastUpdated(Date lastUpdated);
+        public abstract Builder updatedAt(Date updatedAt);
 
         public abstract Builder createdAtClient(Date createdAtClient);
 
-        public abstract Builder lastUpdatedAtClient(Date lastUpdatedAtClient);
+        public abstract Builder updatedAtClient(Date updatedAtClient);
 
         @JsonProperty(TrackedEntityInstanceFields.ORGANISATION_UNIT)
         public abstract Builder organisationUnit(String organisationUnit);
 
         public abstract Builder trackedEntityType(String trackedEntityType);
-
-        /**
-         * @deprecated since 2.30, replaced by {@link #geometry()}
-         */
-        @Deprecated
-        abstract Builder coordinates(String coordinates);
 
         public abstract Builder geometry(Geometry geometry);
 
@@ -166,25 +149,8 @@ public abstract class NewTrackerImporterTrackedEntityInstance extends BaseDeleta
 
         abstract Builder relationships(List<Relationship229Compatible> relationships);
 
-        abstract Builder enrollments(List<Enrollment> enrollments);
+        abstract Builder enrollments(List<NewTrackerImporterEnrollment> enrollments);
 
-        abstract NewTrackerImporterTrackedEntityInstance autoBuild();
-
-        // Auxiliary fields to access values
-        abstract String coordinates();
-        abstract Geometry geometry();
-        public NewTrackerImporterTrackedEntityInstance build() {
-            if (geometry() == null) {
-                if (coordinates() != null) {
-                    geometry(Geometry.builder()
-                            .type(FeatureType.POINT)
-                            .coordinates(coordinates())
-                            .build());
-                }
-            } else {
-                coordinates(geometry().coordinates());
-            }
-            return autoBuild();
-        }
+        abstract NewTrackerImporterTrackedEntityInstance build();
     }
 }

@@ -78,6 +78,8 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
         return when {
             params.orgUnits().size > 0 ->
                 Pair(OrganisationUnitMode.SELECTED, params.orgUnits())
+            params.uids().size > 0 ->
+                Pair(OrganisationUnitMode.ACCESSIBLE, emptyList())
             hasLimitByOrgUnit ->
                 Pair(OrganisationUnitMode.SELECTED, byLimitExtractor.invoke())
             else ->

@@ -43,8 +43,8 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EnrollmentStatusColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreEventListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewTrackerImporterEventListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewTrackerImporterNoteListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreRelationshipListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.Geometry;
@@ -58,7 +58,7 @@ import java.util.Date;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_Enrollment.Builder.class)
+@JsonDeserialize(builder = AutoValue_NewTrackerImporterEnrollment.Builder.class)
 public abstract class NewTrackerImporterEnrollment extends BaseDeletableDataObject implements ObjectWithUidInterface {
 
     @Override
@@ -129,12 +129,12 @@ public abstract class NewTrackerImporterEnrollment extends BaseDeletableDataObje
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(IgnoreEventListColumnAdapter.class) // TODO
+    @ColumnAdapter(IgnoreNewTrackerImporterEventListColumnAdapter.class)
     abstract List<NewTrackerImporterEvent> events();
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(IgnoreNewTrackerImporterEventListColumnAdapter.class)
+    @ColumnAdapter(IgnoreNewTrackerImporterNoteListColumnAdapter.class)
     public abstract List<NewTrackerImporterNote> notes();
 
     @Nullable

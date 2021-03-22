@@ -46,7 +46,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeV
 import java.util.Date;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_TrackedEntityAttributeValue.Builder.class)
+@JsonDeserialize(builder = AutoValue_NewTrackerImporterTrackedEntityAttributeValue.Builder.class)
 public abstract class NewTrackerImporterTrackedEntityAttributeValue implements CoreObject {
 
     @Nullable
@@ -60,23 +60,23 @@ public abstract class NewTrackerImporterTrackedEntityAttributeValue implements C
     @Nullable
     @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
-    public abstract Date created();
+    public abstract Date createdAt();
 
     @Nullable
     @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
-    public abstract Date lastUpdated();
+    public abstract Date updatedAt();
 
     @Nullable
     @JsonIgnore()
     public abstract String trackedEntityInstance();
 
     public static Builder builder() {
-        return new $$AutoValue_TrackedEntityAttributeValue.Builder();
+        return new $$AutoValue_NewTrackerImporterTrackedEntityAttributeValue.Builder();
     }
 
     public static NewTrackerImporterTrackedEntityAttributeValue create(Cursor cursor) {
-        return $AutoValue_TrackedEntityAttributeValue.createFromCursor(cursor);
+        return $AutoValue_NewTrackerImporterTrackedEntityAttributeValue.createFromCursor(cursor);
     }
 
     public abstract Builder toBuilder();
@@ -91,9 +91,9 @@ public abstract class NewTrackerImporterTrackedEntityAttributeValue implements C
 
         public abstract Builder value(String value);
 
-        public abstract Builder created(Date created);
+        public abstract Builder createdAt(Date createdAt);
 
-        public abstract Builder lastUpdated(Date lastUpdated);
+        public abstract Builder updatedAt(Date updatedAt);
 
         public abstract Builder trackedEntityInstance(String trackedEntityInstance);
 

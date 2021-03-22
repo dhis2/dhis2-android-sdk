@@ -43,18 +43,15 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EnrollmentStatusColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreCoordinatesColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreEventListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNoteListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewTrackerImporterEventListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreRelationshipListColumnAdapter;
-import org.hisp.dhis.android.core.arch.helpers.CoordinateHelper;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
-import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.note.Note;
+import org.hisp.dhis.android.core.event.NewTrackerImporterEvent;
+import org.hisp.dhis.android.core.note.NewTrackerImporterNote;
 import org.hisp.dhis.android.core.relationship.Relationship;
 
 import java.util.Date;
@@ -71,12 +68,12 @@ public abstract class NewTrackerImporterEnrollment extends BaseDeletableDataObje
     @Nullable
     @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
-    public abstract Date created();
+    public abstract Date createdAt();
 
     @Nullable
     @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
-    public abstract Date lastUpdated();
+    public abstract Date updatedAt();
 
     @Nullable
     @JsonIgnore()
@@ -86,7 +83,7 @@ public abstract class NewTrackerImporterEnrollment extends BaseDeletableDataObje
     @Nullable
     @JsonIgnore()
     @ColumnAdapter(DbDateColumnAdapter.class)
-    public abstract Date lastUpdatedAtClient();
+    public abstract Date updatedAtClient();
 
     @Nullable
     @JsonProperty(EnrollmentFields.ORGANISATION_UNIT)
@@ -99,17 +96,17 @@ public abstract class NewTrackerImporterEnrollment extends BaseDeletableDataObje
     @Nullable
     @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
-    public abstract Date enrollmentDate();
+    public abstract Date enrolledAt();
 
     @Nullable
     @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
-    public abstract Date incidentDate();
+    public abstract Date occurredAt();
 
     @Nullable
     @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
-    public abstract Date completedDate();
+    public abstract Date completedAt();
 
     @Nullable
     @JsonProperty(EnrollmentTableInfo.Columns.FOLLOW_UP)
@@ -125,15 +122,6 @@ public abstract class NewTrackerImporterEnrollment extends BaseDeletableDataObje
     @JsonIgnore()
     public abstract String trackedEntityInstance();
 
-    /**
-     * @deprecated since 2.30, replaced by {@link #geometry()}
-     */
-    @Nullable
-    @JsonProperty()
-    @Deprecated
-    @ColumnAdapter(IgnoreCoordinatesColumnAdapter.class)
-    abstract Coordinates coordinate();
-
     @Nullable
     @JsonProperty()
     @ColumnAdapter(DbGeometryColumnAdapter.class)
@@ -141,13 +129,13 @@ public abstract class NewTrackerImporterEnrollment extends BaseDeletableDataObje
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(IgnoreEventListColumnAdapter.class)
-    abstract List<Event> events();
+    @ColumnAdapter(IgnoreEventListColumnAdapter.class) // TODO
+    abstract List<NewTrackerImporterEvent> events();
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(IgnoreNoteListColumnAdapter.class)
-    public abstract List<Note> notes();
+    @ColumnAdapter(IgnoreNewTrackerImporterEventListColumnAdapter.class)
+    public abstract List<NewTrackerImporterNote> notes();
 
     @Nullable
     @JsonProperty()
@@ -155,11 +143,11 @@ public abstract class NewTrackerImporterEnrollment extends BaseDeletableDataObje
     abstract List<Relationship> relationships();
 
     public static Builder builder() {
-        return new $$AutoValue_Enrollment.Builder();
+        return new $$AutoValue_NewTrackerImporterEnrollment.Builder();
     }
 
     public static NewTrackerImporterEnrollment create(Cursor cursor) {
-        return $AutoValue_Enrollment.createFromCursor(cursor);
+        return $AutoValue_NewTrackerImporterEnrollment.createFromCursor(cursor);
     }
 
     public abstract Builder toBuilder();
@@ -172,24 +160,24 @@ public abstract class NewTrackerImporterEnrollment extends BaseDeletableDataObje
         @JsonProperty(EnrollmentFields.UID)
         public abstract Builder uid(String uid);
 
-        public abstract Builder created(Date created);
+        public abstract Builder createdAt(Date createdAt);
 
-        public abstract Builder lastUpdated(Date lastUpdated);
+        public abstract Builder updatedAt(Date lastUpdatedAt);
 
         public abstract Builder createdAtClient(Date createdAtClient);
 
-        public abstract Builder lastUpdatedAtClient(Date lastUpdatedAtClient);
+        public abstract Builder updatedAtClient(Date updatedAtClient);
 
         @JsonProperty(EnrollmentFields.ORGANISATION_UNIT)
         public abstract Builder organisationUnit(String organisationUnit);
 
         public abstract Builder program(String program);
 
-        public abstract Builder enrollmentDate(Date enrollmentDate);
+        public abstract Builder enrolledAt(Date enrolledAt);
 
-        public abstract Builder incidentDate(Date incidentDate);
+        public abstract Builder occurredAt(Date occurredAt);
 
-        public abstract Builder completedDate(Date completedDate);
+        public abstract Builder completedAt(Date completedAt);
 
         @JsonProperty(EnrollmentTableInfo.Columns.FOLLOW_UP)
         public abstract Builder followUp(Boolean followUp);
@@ -198,33 +186,14 @@ public abstract class NewTrackerImporterEnrollment extends BaseDeletableDataObje
 
         public abstract Builder trackedEntityInstance(String trackedEntityInstance);
 
-        /**
-         * @deprecated since 2.30, replaced by {@link #geometry(Geometry geometry)}
-         */
-        abstract Builder coordinate(Coordinates coordinate);
-
         public abstract Builder geometry(Geometry geometry);
 
-        abstract Builder events(List<Event> events);
+        abstract Builder events(List<NewTrackerImporterEvent> events);
 
-        public abstract Builder notes(List<Note> notes);
+        public abstract Builder notes(List<NewTrackerImporterNote> notes);
 
         public abstract Builder relationships(List<Relationship> relationships);
 
-        abstract NewTrackerImporterEnrollment autoBuild();
-
-        // Auxiliary fields to access values
-        abstract Coordinates coordinate();
-        abstract Geometry geometry();
-        public NewTrackerImporterEnrollment build() {
-            if (geometry() == null) {
-                if (coordinate() != null) {
-                    geometry(CoordinateHelper.getGeometryFromCoordinates(coordinate()));
-                }
-            } else {
-                coordinate(CoordinateHelper.getCoordinatesFromGeometry(geometry()));
-            }
-            return autoBuild();
-        }
+        public abstract NewTrackerImporterEnrollment build();
     }
 }

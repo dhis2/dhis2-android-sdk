@@ -56,7 +56,7 @@ import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_NewTrackerImporterTrackedEntityInstance.Builder.class)
-public abstract class NewTrackerImporterTrackedEntityInstance extends BaseDeletableDataObject implements ObjectWithUidInterface {
+public abstract class NewTrackerImporterTrackedEntity extends BaseDeletableDataObject implements ObjectWithUidInterface {
 
     @Override
     @JsonProperty()
@@ -114,7 +114,7 @@ public abstract class NewTrackerImporterTrackedEntityInstance extends BaseDeleta
         return new $$AutoValue_NewTrackerImporterTrackedEntityInstance.Builder();
     }
 
-    public static NewTrackerImporterTrackedEntityInstance create(Cursor cursor) {
+    public static NewTrackerImporterTrackedEntity create(Cursor cursor) {
         return $AutoValue_NewTrackerImporterTrackedEntityInstance.createFromCursor(cursor);
     }
 
@@ -151,6 +151,6 @@ public abstract class NewTrackerImporterTrackedEntityInstance extends BaseDeleta
 
         abstract Builder enrollments(List<NewTrackerImporterEnrollment> enrollments);
 
-        abstract NewTrackerImporterTrackedEntityInstance build();
+        abstract NewTrackerImporterTrackedEntity build();
     }
 }

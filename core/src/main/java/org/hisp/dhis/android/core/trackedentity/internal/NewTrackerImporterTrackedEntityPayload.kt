@@ -30,4 +30,5 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntity
 
 internal data class NewTrackerImporterTrackedEntityPayload(
-    val trackedEntities: List<NewTrackerImporterTrackedEntity>)
+    val trackedEntities: List<NewTrackerImporterTrackedEntity>
+)

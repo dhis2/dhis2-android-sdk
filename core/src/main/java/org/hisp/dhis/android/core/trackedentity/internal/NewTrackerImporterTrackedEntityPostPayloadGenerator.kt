@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
@@ -43,7 +44,6 @@ import org.hisp.dhis.android.core.note.NewTrackerImporterNote
 import org.hisp.dhis.android.core.note.NewTrackerImporterNoteTransformer
 import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.trackedentity.*
-import javax.inject.Inject
 
 @Reusable
 internal class NewTrackerImporterTrackedEntityPostPayloadGenerator @Inject internal constructor(
@@ -58,27 +58,35 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGenerator @Inject inter
     fun getTrackedEntities(
         filteredTrackedEntityInstances: List<TrackedEntityInstance>
     ): List<NewTrackerImporterTrackedEntity> {
-        val dataValueMap = transformMap(trackedEntityDataValueStore.queryTrackerTrackedEntityDataValues(),
-            NewTrackerImporterTrackedEntityDataValueTransformer())
-        val eventMap = transformMap(eventStore.queryEventsAttachedToEnrollmentToPost(),
-            NewTrackerImporterEventTransformer())
-        val enrollmentMap = transformMap(enrollmentStore.queryEnrollmentsToPost(),
-            NewTrackerImporterEnrollmentTransformer())
-        val attributeValueMap = transformMap(trackedEntityAttributeValueStore.queryTrackedEntityAttributeValueToPost(),
-            NewTrackerImporterTrackedEntityAttributeValueTransformer())
+        val dataValueMap = transformMap(
+            trackedEntityDataValueStore.queryTrackerTrackedEntityDataValues(),
+            NewTrackerImporterTrackedEntityDataValueTransformer()
+        )
+        val eventMap = transformMap(
+            eventStore.queryEventsAttachedToEnrollmentToPost(),
+            NewTrackerImporterEventTransformer()
+        )
+        val enrollmentMap = transformMap(
+            enrollmentStore.queryEnrollmentsToPost(),
+            NewTrackerImporterEnrollmentTransformer()
+        )
+        val attributeValueMap = transformMap(
+            trackedEntityAttributeValueStore.queryTrackedEntityAttributeValueToPost(),
+            NewTrackerImporterTrackedEntityAttributeValueTransformer()
+        )
         val notes = getNotes()
 
         val trackedEntityTransformer = NewTrackerImporterTranckedEntityTransformer()
 
         val trackedEntitiesToSync = filteredTrackedEntityInstances.map {
-                addTrackedEntityChildren(
-                    trackedEntityTransformer.transform(it),
-                    dataValueMap,
-                    eventMap,
-                    enrollmentMap,
-                    attributeValueMap,
-                    notes
-                )
+            addTrackedEntityChildren(
+                trackedEntityTransformer.transform(it),
+                dataValueMap,
+                eventMap,
+                enrollmentMap,
+                attributeValueMap,
+                notes
+            )
         }
 
         stateManager.setStates(trackedEntitiesToSync, State.UPLOADING)
@@ -95,9 +103,14 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGenerator @Inject inter
         return noteStore.selectWhere(whereNotesClause).map { notesTransformer.transform(it) }
     }
 
-    private fun <A, B>transformMap(map: MutableMap<String, MutableList<A>>, transformer: Transformer<A, B>): Map<String, List<B>> {
-        return map
-            .mapValues { v -> v.value.map { transformer.transform(it) } }
+    private fun <A, B> transformMap(
+        map: MutableMap<String, MutableList<A>>,
+        transformer: Transformer<A, B>
+    ): Map<String, List<B>> {
+        return map.mapValues {
+            v ->
+            v.value.map { transformer.transform(it) }
+        }
     }
 
     @Suppress("LongParameterList")

@@ -29,7 +29,8 @@ package org.hisp.dhis.android.core.trackedentity
 
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 
-internal class NewTrackerImporterTranckedEntityTransformer : Transformer<TrackedEntityInstance, NewTrackerImporterTrackedEntity> {
+internal class NewTrackerImporterTranckedEntityTransformer :
+    Transformer<TrackedEntityInstance, NewTrackerImporterTrackedEntity> {
     override fun transform(o: TrackedEntityInstance): NewTrackerImporterTrackedEntity {
         return NewTrackerImporterTrackedEntity.builder()
             .id(o.id())

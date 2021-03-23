@@ -54,7 +54,8 @@ import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_NewTrackerImporterTrackedEntity.Builder.class)
-public abstract class NewTrackerImporterTrackedEntity extends BaseDeletableDataObject implements ObjectWithUidInterface {
+public abstract class NewTrackerImporterTrackedEntity extends BaseDeletableDataObject
+        implements ObjectWithUidInterface {
 
     @Override
     @JsonProperty()

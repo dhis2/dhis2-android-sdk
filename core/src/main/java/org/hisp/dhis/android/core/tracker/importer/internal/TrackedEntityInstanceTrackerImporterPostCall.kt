@@ -36,13 +36,13 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipDeleteCall
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterTrackedEntityPayload
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterTrackedEntityPostPayloadGenerator
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostStateManager
+import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterTrackedEntityPostStateManager
 import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstanceTrackerImporterPostCall @Inject internal constructor(
     private val payloadGenerator: NewTrackerImporterTrackedEntityPostPayloadGenerator,
-    private val stateManager: TrackedEntityInstancePostStateManager,
+    private val stateManager: NewTrackerImporterTrackedEntityPostStateManager,
     private val service: TrackerImporterService,
     private val apiCallExecutor: APICallExecutor,
     private val jobQueryCall: JobQueryCall,
@@ -54,10 +54,12 @@ internal class TrackedEntityInstanceTrackerImporterPostCall @Inject internal con
         return Observable.defer {
 
             val trackedEntitiesToPost =
-                payloadGenerator.getTrackedEntityInstancesPartitions(filteredTrackedEntityInstances)
+                payloadGenerator.getTrackedEntities(filteredTrackedEntityInstances)
 
+            // TODO HANDLE DELETIONS
+            // TODO HANDLE STUFF
             // TODO HANDLE DELETED RELATIONSHIPS
-            //  val thisPartition = relationshipDeleteCall.postDeletedRelationships(partition)
+            //  relationshipDeleteCall.postDeletedRelationships(partition)
             val trackedEntityInstancePayload = NewTrackerImporterTrackedEntityPayload(trackedEntitiesToPost)
             try {
                 val webResponse = apiCallExecutor.executeObjectCall(
@@ -65,7 +67,8 @@ internal class TrackedEntityInstanceTrackerImporterPostCall @Inject internal con
                 )
                 jobQueryCall.storeAndQueryJob(webResponse.response().uid())
             } catch (d2Error: D2Error) {
-                // TODO stateManager.restorePartitionStates(trackedEntitiesToPost)
+                // TODO handle observable errors
+                stateManager.restoreStates(trackedEntitiesToPost)
                 Observable.error<D2Progress>(d2Error)
                 // TODO different treatment when offline error
             }

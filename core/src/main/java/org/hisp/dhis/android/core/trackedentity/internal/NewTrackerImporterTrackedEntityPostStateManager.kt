@@ -28,54 +28,36 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.common.CoreColumns
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.internal.EventStore
-import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
+import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntity
 import javax.inject.Inject
 
 @Reusable
-internal class TrackedEntityInstancePostStateManager @Inject internal constructor(
-    private val versionManager: DHISVersionManager,
+internal class NewTrackerImporterTrackedEntityPostStateManager @Inject internal constructor(
     private val trackedEntityInstanceStore: TrackedEntityInstanceStore,
     private val enrollmentStore: EnrollmentStore,
     private val eventStore: EventStore,
-    private val relationshipStore: RelationshipStore,
     private val h: StatePersistorHelper
 ) {
 
-    fun restorePartitionStates(partition: List<TrackedEntityInstance>) {
-        setPartitionStates(partition, null)
+    fun restoreStates(trackedEntities: List<NewTrackerImporterTrackedEntity>) {
+        setStates(trackedEntities, null)
     }
 
     @Suppress("NestedBlockDepth")
-    fun setPartitionStates(partition: List<TrackedEntityInstance>, forcedState: State?) {
-        val teiMap: MutableMap<State, MutableList<String>> = mutableMapOf()
-        val enrollmentMap: MutableMap<State, MutableList<String>> = mutableMapOf()
-        val eventMap: MutableMap<State, MutableList<String>> = mutableMapOf()
-        val relationshipMap: MutableMap<State, MutableList<String>> = mutableMapOf()
+    fun setStates(trackedEntities: List<NewTrackerImporterTrackedEntity>, forcedState: State?) {
+        val teiMap = mutableMapOf<State, MutableList<String>>()
+        val enrollmentMap = mutableMapOf<State, MutableList<String>>()
+        val eventMap = mutableMapOf<State, MutableList<String>>()
 
-        for (instance in partition) {
-            h.addState(teiMap, instance, forcedState)
-            for (enrollment in TrackedEntityInstanceInternalAccessor.accessEnrollments(instance)) {
+        for (trackedEntity in trackedEntities) {
+            h.addState(teiMap, trackedEntity, forcedState)
+            for (enrollment in trackedEntity.enrollments()!!) {
                 h.addState(enrollmentMap, enrollment, forcedState)
-                for (event in EnrollmentInternalAccessor.accessEvents(enrollment)) {
+                for (event in enrollment.events()!!) {
                     h.addState(eventMap, event, forcedState)
-                }
-            }
-            for (r in TrackedEntityInstanceInternalAccessor.accessRelationships(instance)) {
-                if (versionManager.is2_29) {
-                    val whereClause = WhereClauseBuilder().appendKeyStringValue(CoreColumns.ID, r.id()).build()
-                    val dbRelationship = relationshipStore.selectOneWhere(whereClause)
-                    dbRelationship?.let { h.addState(relationshipMap, it, forcedState) }
-                } else {
-                    h.addState(relationshipMap, r, forcedState)
                 }
             }
         }
@@ -83,6 +65,5 @@ internal class TrackedEntityInstancePostStateManager @Inject internal constructo
         h.persistStates(teiMap, trackedEntityInstanceStore)
         h.persistStates(enrollmentMap, enrollmentStore)
         h.persistStates(eventMap, eventStore)
-        h.persistStates(relationshipMap, relationshipStore)
     }
 }

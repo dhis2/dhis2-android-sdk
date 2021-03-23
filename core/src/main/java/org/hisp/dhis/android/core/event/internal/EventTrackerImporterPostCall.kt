@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
 import io.reactivex.Observable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper
@@ -37,6 +36,7 @@ import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.tracker.importer.internal.JobQueryCall
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterService
+import javax.inject.Inject
 
 @Reusable
 internal class EventTrackerImporterPostCall @Inject internal constructor(
@@ -56,6 +56,7 @@ internal class EventTrackerImporterPostCall @Inject internal constructor(
                 val webResponse = apiCallExecutor.executeObjectCall(service.postEvents(eventPayload))
                 jobQueryCall.storeAndQueryJob(webResponse.response().uid())
             } catch (d2Error: D2Error) {
+                // TODO handle observable errors
                 stateManager.markObjectsAs(eventsToPost, DataStateHelper.errorIfOnline(d2Error))
                 Observable.error<D2Progress>(d2Error)
                 // TODO different treatment when offline error

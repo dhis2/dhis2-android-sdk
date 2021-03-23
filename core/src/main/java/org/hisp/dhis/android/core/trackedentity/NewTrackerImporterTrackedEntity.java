@@ -42,20 +42,18 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewTrackerImporterEnrollmentListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreRelationship229CompatibleListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreTrackedEntityAttributeValueListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewTrackerImporterTrackedEntityAttributeValueListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment;
-import org.hisp.dhis.android.core.relationship.internal.Relationship229Compatible;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
 
 import java.util.Date;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_NewTrackerImporterTrackedEntityInstance.Builder.class)
+@JsonDeserialize(builder = AutoValue_NewTrackerImporterTrackedEntity.Builder.class)
 public abstract class NewTrackerImporterTrackedEntity extends BaseDeletableDataObject implements ObjectWithUidInterface {
 
     @Override
@@ -97,25 +95,20 @@ public abstract class NewTrackerImporterTrackedEntity extends BaseDeletableDataO
 
     @Nullable
     @JsonProperty(TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES)
-    @ColumnAdapter(IgnoreTrackedEntityAttributeValueListColumnAdapter.class)
-    public abstract List<TrackedEntityAttributeValue> trackedEntityAttributeValues();
-
-    @Nullable
-    @JsonProperty()
-    @ColumnAdapter(IgnoreRelationship229CompatibleListColumnAdapter.class)
-    abstract List<Relationship229Compatible> relationships();
+    @ColumnAdapter(IgnoreNewTrackerImporterTrackedEntityAttributeValueListColumnAdapter.class)
+    public abstract List<NewTrackerImporterTrackedEntityAttributeValue> trackedEntityAttributeValues();
 
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreNewTrackerImporterEnrollmentListColumnAdapter.class)
-    abstract List<NewTrackerImporterEnrollment> enrollments();
+    public abstract List<NewTrackerImporterEnrollment> enrollments();
 
     public static Builder builder() {
-        return new $$AutoValue_NewTrackerImporterTrackedEntityInstance.Builder();
+        return new $$AutoValue_NewTrackerImporterTrackedEntity.Builder();
     }
 
     public static NewTrackerImporterTrackedEntity create(Cursor cursor) {
-        return $AutoValue_NewTrackerImporterTrackedEntityInstance.createFromCursor(cursor);
+        return $AutoValue_NewTrackerImporterTrackedEntity.createFromCursor(cursor);
     }
 
     public abstract Builder toBuilder();
@@ -145,12 +138,10 @@ public abstract class NewTrackerImporterTrackedEntity extends BaseDeletableDataO
 
         @JsonProperty(TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES)
         public abstract Builder trackedEntityAttributeValues(
-                List<TrackedEntityAttributeValue> trackedEntityAttributeValues);
+                List<NewTrackerImporterTrackedEntityAttributeValue> trackedEntityAttributeValues);
 
-        abstract Builder relationships(List<Relationship229Compatible> relationships);
+        public abstract Builder enrollments(List<NewTrackerImporterEnrollment> enrollments);
 
-        abstract Builder enrollments(List<NewTrackerImporterEnrollment> enrollments);
-
-        abstract NewTrackerImporterTrackedEntity build();
+        public abstract NewTrackerImporterTrackedEntity build();
     }
 }

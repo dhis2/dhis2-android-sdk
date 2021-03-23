@@ -130,7 +130,7 @@ public abstract class NewTrackerImporterEnrollment extends BaseDeletableDataObje
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreNewTrackerImporterEventListColumnAdapter.class)
-    abstract List<NewTrackerImporterEvent> events();
+    public abstract List<NewTrackerImporterEvent> events();
 
     @Nullable
     @JsonProperty()
@@ -188,7 +188,7 @@ public abstract class NewTrackerImporterEnrollment extends BaseDeletableDataObje
 
         public abstract Builder geometry(Geometry geometry);
 
-        abstract Builder events(List<NewTrackerImporterEvent> events);
+        public abstract Builder events(List<NewTrackerImporterEvent> events);
 
         public abstract Builder notes(List<NewTrackerImporterNote> notes);
 

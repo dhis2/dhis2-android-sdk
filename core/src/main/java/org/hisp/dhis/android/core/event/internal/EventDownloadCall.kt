@@ -78,7 +78,7 @@ class EventDownloadCall @Inject internal constructor(
                 val bundleOrgUnits = bundle.orgUnits().ifEmpty { listOf(null) }
                 val bundlePrograms = bundle.commonParams().programs.ifEmpty { listOf(null) }
 
-                for (orgunitUid in  bundleOrgUnits) {
+                for (orgunitUid in bundleOrgUnits) {
                     if (eventsCount >= bundle.commonParams().limit) {
                         break
                     }

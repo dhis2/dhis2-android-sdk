@@ -57,7 +57,7 @@ internal class TrackedEntityInstanceTrackerImporterPostCall @Inject internal con
                 payloadGenerator.getTrackedEntities(filteredTrackedEntityInstances)
 
             // TODO HANDLE DELETIONS
-            // TODO HANDLE STUFF
+            // TODO HANDLE RELATIONSHIPS
             // TODO HANDLE DELETED RELATIONSHIPS
             //  relationshipDeleteCall.postDeletedRelationships(partition)
             val trackedEntityInstancePayload = NewTrackerImporterTrackedEntityPayload(trackedEntitiesToPost)

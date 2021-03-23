@@ -68,9 +68,16 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGenerator @Inject inter
             NewTrackerImporterTrackedEntityAttributeValueTransformer())
         val notes = getNotes()
 
-        val trackedEntitiesToSync = filteredTrackedEntityInstances.map { trackedEntityInstance ->
-                getTrackedEntity(
-                    trackedEntityInstance, dataValueMap, eventMap, enrollmentMap, attributeValueMap, notes
+        val trackedEntityTransformer = NewTrackerImporterTranckedEntityTransformer()
+
+        val trackedEntitiesToSync = filteredTrackedEntityInstances.map {
+                addTrackedEntityChildren(
+                    trackedEntityTransformer.transform(it),
+                    dataValueMap,
+                    eventMap,
+                    enrollmentMap,
+                    attributeValueMap,
+                    notes
                 )
         }
 
@@ -94,19 +101,17 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGenerator @Inject inter
     }
 
     @Suppress("LongParameterList")
-    private fun getTrackedEntity(
-        trackedEntityInstance: TrackedEntityInstance,
+    private fun addTrackedEntityChildren(
+        trackedEntity: NewTrackerImporterTrackedEntity,
         dataValueMap: Map<String, List<NewTrackerImporterTrackedEntityDataValue>>,
         eventMap: Map<String, List<NewTrackerImporterEvent>>,
         enrollmentMap: Map<String, List<NewTrackerImporterEnrollment>>,
         attributeValueMap: Map<String, List<NewTrackerImporterTrackedEntityAttributeValue>>,
         notes: List<NewTrackerImporterNote>
     ): NewTrackerImporterTrackedEntity {
-        val enrollments = getEnrollments(dataValueMap, eventMap, enrollmentMap, notes, trackedEntityInstance.uid())
-        val attributeValues = attributeValueMap[trackedEntityInstance.uid()]
-        return NewTrackerImporterTrackedEntity.builder()
-            .enrollments(enrollments)
-            .trackedEntityAttributeValues(attributeValues ?: emptyList())
+        return trackedEntity.toBuilder()
+            .enrollments(getEnrollments(dataValueMap, eventMap, enrollmentMap, notes, trackedEntity.uid()))
+            .trackedEntityAttributeValues(attributeValueMap[trackedEntity.uid()] ?: emptyList())
             .build()
     }
 

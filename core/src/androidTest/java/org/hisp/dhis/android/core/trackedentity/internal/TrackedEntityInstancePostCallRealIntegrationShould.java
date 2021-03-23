@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
@@ -50,6 +51,8 @@ import org.hisp.dhis.android.core.event.internal.EventStoreImpl;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
 import org.hisp.dhis.android.core.relationship.RelationshipHelper;
@@ -60,6 +63,7 @@ import org.hisp.dhis.android.core.relationship.RelationshipTypeCollectionReposit
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection;
 import org.junit.Before;
 
 import java.io.IOException;
@@ -152,6 +156,57 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         createDummyDataToPost(
                 orgUnitUid, programUid, programStageUid, trackedEntityUid, coordinates, geometry,
                 event1Uid, enrollment1Uid, trackedEntityInstance1Uid, trackedEntityAttributeUid, dataElementUid);
+
+        d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
+    }
+
+    //@Test
+    public void add_and_post_tei_using_repositories() throws Exception {
+
+        downloadMetadata();
+
+        String childProgramUid = "IpHINAT79UW";
+
+
+        // Organisation unit module -> get one organisation unit
+        OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits().one().blockingGet();
+
+        // Program module -> get the program by its uid
+        Program program = d2.programModule().programs()
+                .uid(childProgramUid)
+                .blockingGet();
+
+        // Tracked entity module -> add a new tracked entity instance
+        String teiUid = d2.trackedEntityModule().trackedEntityInstances()
+                .blockingAdd(TrackedEntityInstanceCreateProjection.builder()
+                        .organisationUnit(organisationUnit.uid())
+                        .trackedEntityType(program.trackedEntityType().uid())
+                        .build());
+
+        // Enrollment module -> enroll the tracked entity instance to the program
+        d2.enrollmentModule().enrollments().add(
+                EnrollmentCreateProjection.builder()
+                        .organisationUnit(organisationUnit.uid())
+                        .program(program.uid())
+                        .trackedEntityInstance(teiUid)
+                        .build()
+        );
+
+        // Program module -> get the program tracked entity attributes of the program
+        /*List<ProgramTrackedEntityAttribute> attributes = d2.programModule()
+                .programTrackedEntityAttributes()
+                .byProgram().eq(program.uid())
+                .blockingGet();
+
+        // Iterate the program tracked entity attributes
+        for (ProgramTrackedEntityAttribute at : attributes) {
+            if (at.mandatory()) {
+                // For each one, if mandatory: Tracked entity module -> set a tracked entity attribute value.
+                d2.trackedEntityModule().trackedEntityAttributeValues()
+                        .value(at.trackedEntityAttribute().uid(), teiUid)
+                        .blockingSet(at.name() + " - value");
+            }
+        }*/
 
         d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
     }

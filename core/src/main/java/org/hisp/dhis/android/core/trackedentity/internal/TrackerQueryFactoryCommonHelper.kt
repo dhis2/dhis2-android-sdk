@@ -78,6 +78,8 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
         return when {
             params.orgUnits().size > 0 ->
                 Pair(OrganisationUnitMode.SELECTED, params.orgUnits())
+            params.uids().size > 0 ->
+                Pair(OrganisationUnitMode.ACCESSIBLE, emptyList())
             hasLimitByOrgUnit ->
                 Pair(OrganisationUnitMode.SELECTED, byLimitExtractor.invoke())
             else ->
@@ -181,7 +183,7 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
         hasLimitByOrgUnit: Boolean,
         builder: (List<String>) -> O
     ): List<O> {
-        return if (hasLimitByOrgUnit) {
+        return if (hasLimitByOrgUnit && orgUnits.isNotEmpty()) {
             orgUnits.map { builder.invoke(listOf(it)) }
         } else {
             listOf(builder.invoke(orgUnits))

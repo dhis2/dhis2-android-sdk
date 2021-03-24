@@ -62,7 +62,7 @@ internal class EventQueryBundleInternalFactory constructor(
         orgUnitByLimitExtractor: () -> List<String>
     ): List<EventQueryBundle> {
         val limit = commonHelper.getLimit(params, programSettings, programUid) { it?.eventsDownload() }
-        if (limit == 0) {
+        if (limit == 0 || programs.isEmpty()) {
             return emptyList()
         }
         val commonParams: TrackerQueryCommonParams = commonHelper.getCommonParams(

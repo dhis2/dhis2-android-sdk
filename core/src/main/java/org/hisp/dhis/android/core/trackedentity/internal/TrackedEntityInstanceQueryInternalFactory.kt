@@ -42,7 +42,7 @@ internal class TrackedEntityInstanceQueryInternalFactory constructor(
     override fun queryGlobal(
         programs: List<String>
     ): List<TeiQuery> {
-        return queryInternal(programs, null, null) {
+        return queryInternal(programs, null) {
             commonHelper.getCaptureOrgUnitUids()
         }
     }
@@ -50,8 +50,7 @@ internal class TrackedEntityInstanceQueryInternalFactory constructor(
     override fun queryPerProgram(
         programUid: String?
     ): List<TeiQuery> {
-        val programStatus = getProgramStatus(params, programSettings, programUid)
-        return queryInternal(listOf(programUid!!), programUid, programStatus) {
+        return queryInternal(listOf(programUid!!), programUid) {
             commonHelper.getLinkedCaptureOrgUnitUids(programUid)
         }
     }
@@ -59,17 +58,18 @@ internal class TrackedEntityInstanceQueryInternalFactory constructor(
     private fun queryInternal(
         programs: List<String>,
         programUid: String?,
-        programStatus: EnrollmentStatus?,
         orgUnitByLimitExtractor: () -> List<String>
     ): List<TeiQuery> {
         val limit = commonHelper.getLimit(params, programSettings, programUid) { it?.teiDownload() }
-        if (limit == 0) {
+        if (limit == 0 || programs.isEmpty()) {
             return emptyList()
         }
         val commonParams: TrackerQueryCommonParams = commonHelper.getCommonParams(
             params, programSettings, programs,
             programUid, limit, specificSettingScope, orgUnitByLimitExtractor
         ) { it?.enrollmentDateDownload() }
+
+        val programStatus = getProgramStatus(params, programSettings, programUid)
 
         val builder = TeiQuery.builder()
             .commonParams(commonParams)

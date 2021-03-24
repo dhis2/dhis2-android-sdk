@@ -25,23 +25,21 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.helpers.internal
 
-package org.hisp.dhis.android.core.arch.helpers.internal;
+import org.hisp.dhis.android.core.common.DataObject
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.maintenance.D2Error
 
-import org.hisp.dhis.android.core.common.DataObject;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.maintenance.D2Error;
+object DataStateHelper {
 
-public final class DataStateHelper {
-
-    private DataStateHelper() {
+    @JvmStatic
+    fun errorIfOnline(d2Error: Throwable): State? {
+        return if (d2Error is D2Error && d2Error.isOffline) null else State.ERROR
     }
 
-    public static State errorIfOnline(D2Error d2Error) {
-        return d2Error.isOffline() ? null : State.ERROR;
-    }
-
-    public static State forcedOrOwn(DataObject o, State forcedState) {
-        return forcedState == null ? o.state() : forcedState;
+    @JvmStatic
+    fun forcedOrOwn(o: DataObject, forcedState: State?): State {
+        return forcedState ?: o.state()
     }
 }

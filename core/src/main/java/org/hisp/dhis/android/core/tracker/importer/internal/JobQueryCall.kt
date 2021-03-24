@@ -46,9 +46,10 @@ internal class JobQueryCall @Inject internal constructor(
 ) {
 
     fun storeAndQueryJob(jobId: String): Observable<D2Progress> {
-        val job = StorableObjectWithUid.builder().uid(jobId).build()
-        trackerJobStore.insert(job)
-        return queryJob(job.uid(), true)
+        return Observable.defer {
+            trackerJobStore.insert(StorableObjectWithUid.create(jobId))
+            queryJob(jobId, true)
+        }
     }
 
     fun queryPendingJobs(): Observable<D2Progress> {

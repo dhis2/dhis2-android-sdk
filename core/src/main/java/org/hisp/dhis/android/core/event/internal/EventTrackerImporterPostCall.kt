@@ -33,6 +33,7 @@ import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper
+import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.tracker.importer.internal.JobQueryCall
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterService
@@ -50,6 +51,7 @@ internal class EventTrackerImporterPostCall @Inject internal constructor(
     ): Observable<D2Progress> {
         return Observable.defer {
             val eventsToPost = payloadGenerator.getEvents(events)
+            stateManager.markObjectsAs(eventsToPost, State.UPLOADING)
             Observable.defer {
                 val eventPayload = NewTrackerImporterEventPayload(eventsToPost)
                 val webResponse = apiCallExecutor.executeObjectCall(service.postEvents(eventPayload))

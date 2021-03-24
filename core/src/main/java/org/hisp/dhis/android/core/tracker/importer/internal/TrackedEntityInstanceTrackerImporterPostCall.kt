@@ -35,14 +35,14 @@ import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDeleteCall
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePayload
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostPayloadGenerator
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostStateManager
+import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterTrackedEntityPayload
+import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterTrackedEntityPostPayloadGenerator
+import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterTrackedEntityPostStateManager
 
 @Reusable
 internal class TrackedEntityInstanceTrackerImporterPostCall @Inject internal constructor(
-    private val payloadGenerator: TrackedEntityInstancePostPayloadGenerator,
-    private val stateManager: TrackedEntityInstancePostStateManager,
+    private val payloadGenerator: NewTrackerImporterTrackedEntityPostPayloadGenerator,
+    private val stateManager: NewTrackerImporterTrackedEntityPostStateManager,
     private val service: TrackerImporterService,
     private val apiCallExecutor: APICallExecutor,
     private val jobQueryCall: JobQueryCall,
@@ -53,20 +53,22 @@ internal class TrackedEntityInstanceTrackerImporterPostCall @Inject internal con
     ): Observable<D2Progress> {
         return Observable.defer {
 
-            // TODO do not partition
-            val teisToPost =
-                payloadGenerator.getTrackedEntityInstancesPartitions(filteredTrackedEntityInstances).flatten()
+            val trackedEntitiesToPost =
+                payloadGenerator.getTrackedEntities(filteredTrackedEntityInstances)
 
+            // TODO HANDLE DELETIONS
+            // TODO HANDLE RELATIONSHIPS
             // TODO HANDLE DELETED RELATIONSHIPS
-            //  val thisPartition = relationshipDeleteCall.postDeletedRelationships(partition)
-            val trackedEntityInstancePayload = TrackedEntityInstancePayload.create(teisToPost)
+            //  relationshipDeleteCall.postDeletedRelationships(partition)
+            val trackedEntityInstancePayload = NewTrackerImporterTrackedEntityPayload(trackedEntitiesToPost)
             try {
                 val webResponse = apiCallExecutor.executeObjectCall(
                     service.postTrackedEntityInstances(trackedEntityInstancePayload)
                 )
                 jobQueryCall.storeAndQueryJob(webResponse.response().uid())
             } catch (d2Error: D2Error) {
-                stateManager.restorePartitionStates(teisToPost)
+                // TODO handle observable errors
+                stateManager.restoreStates(trackedEntitiesToPost)
                 Observable.error<D2Progress>(d2Error)
                 // TODO different treatment when offline error
             }

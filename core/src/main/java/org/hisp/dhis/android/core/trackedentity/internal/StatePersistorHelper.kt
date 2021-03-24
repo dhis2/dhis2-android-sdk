@@ -25,32 +25,39 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.tracker.importer.internal
+package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.event.internal.NewTrackerImporterEventPayload
-import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterTrackedEntityPayload
-import org.hisp.dhis.android.core.trackedentity.internal.ObjectWithUidWebResponse
-import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
+import dagger.Reusable
+import java.util.ArrayList
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore
+import org.hisp.dhis.android.core.common.DataObject
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+import org.hisp.dhis.android.core.common.State
 
-internal interface TrackerImporterService {
+@Reusable
+internal class StatePersistorHelper @Inject internal constructor() {
 
-    @POST("tracker")
-    fun postTrackedEntityInstances(
-        @Body payload: NewTrackerImporterTrackedEntityPayload
-    ): Call<ObjectWithUidWebResponse>
+    fun <O> addState(
+        stateMap: MutableMap<State, MutableList<String>>,
+        o: O,
+        forcedState: State?
+    ) where O : DataObject, O : ObjectWithUidInterface {
+        val s = getStateToSet(o, forcedState)
+        if (!stateMap.containsKey(s)) {
+            stateMap[s] = ArrayList()
+        }
+        stateMap[s]!!.add(o.uid())
+    }
 
-    @POST("tracker")
-    fun postEvents(
-        @Body events: NewTrackerImporterEventPayload
-    ): Call<ObjectWithUidWebResponse>
+    private fun <O> getStateToSet(o: O, forcedState: State?): State where O : DataObject, O : ObjectWithUidInterface {
+        return forcedState
+            ?: if (o.state() == State.UPLOADING) State.TO_UPDATE else o.state()
+    }
 
-    @GET("tracker/jobs/{jobId}")
-    fun getJob(@Path("jobId") jobId: String): Call<List<JobInfo>>
-
-    @GET("tracker/jobs/{jobId}/report")
-    fun getJobReport(@Path("jobId") jobId: String): Call<JobReport>
+    fun persistStates(map: Map<State, MutableList<String>>, store: IdentifiableDeletableDataObjectStore<*>) {
+        for ((key, value) in map) {
+            store.setState(value, key)
+        }
+    }
 }

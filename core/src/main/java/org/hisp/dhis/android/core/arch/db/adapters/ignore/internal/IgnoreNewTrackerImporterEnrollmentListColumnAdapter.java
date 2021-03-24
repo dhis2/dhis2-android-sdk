@@ -25,32 +25,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.tracker.importer.internal
 
-import org.hisp.dhis.android.core.event.internal.NewTrackerImporterEventPayload
-import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterTrackedEntityPayload
-import org.hisp.dhis.android.core.trackedentity.internal.ObjectWithUidWebResponse
-import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
+package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
 
-internal interface TrackerImporterService {
+import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment;
 
-    @POST("tracker")
-    fun postTrackedEntityInstances(
-        @Body payload: NewTrackerImporterTrackedEntityPayload
-    ): Call<ObjectWithUidWebResponse>
+import java.util.List;
 
-    @POST("tracker")
-    fun postEvents(
-        @Body events: NewTrackerImporterEventPayload
-    ): Call<ObjectWithUidWebResponse>
-
-    @GET("tracker/jobs/{jobId}")
-    fun getJob(@Path("jobId") jobId: String): Call<List<JobInfo>>
-
-    @GET("tracker/jobs/{jobId}/report")
-    fun getJobReport(@Path("jobId") jobId: String): Call<JobReport>
+public final class IgnoreNewTrackerImporterEnrollmentListColumnAdapter
+        extends IgnoreColumnAdapter<List<NewTrackerImporterEnrollment>> {
 }

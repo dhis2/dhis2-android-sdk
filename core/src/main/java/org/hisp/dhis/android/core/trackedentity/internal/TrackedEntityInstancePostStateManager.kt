@@ -28,13 +28,9 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import java.util.ArrayList
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore
 import org.hisp.dhis.android.core.common.CoreColumns
-import org.hisp.dhis.android.core.common.DataObject
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
@@ -50,7 +46,8 @@ internal class TrackedEntityInstancePostStateManager @Inject internal constructo
     private val trackedEntityInstanceStore: TrackedEntityInstanceStore,
     private val enrollmentStore: EnrollmentStore,
     private val eventStore: EventStore,
-    private val relationshipStore: RelationshipStore
+    private val relationshipStore: RelationshipStore,
+    private val h: StatePersistorHelper
 ) {
 
     fun restorePartitionStates(partition: List<TrackedEntityInstance>) {
@@ -63,50 +60,29 @@ internal class TrackedEntityInstancePostStateManager @Inject internal constructo
         val enrollmentMap: MutableMap<State, MutableList<String>> = mutableMapOf()
         val eventMap: MutableMap<State, MutableList<String>> = mutableMapOf()
         val relationshipMap: MutableMap<State, MutableList<String>> = mutableMapOf()
+
         for (instance in partition) {
-            addState(teiMap, instance, forcedState)
+            h.addState(teiMap, instance, forcedState)
             for (enrollment in TrackedEntityInstanceInternalAccessor.accessEnrollments(instance)) {
-                addState(enrollmentMap, enrollment, forcedState)
+                h.addState(enrollmentMap, enrollment, forcedState)
                 for (event in EnrollmentInternalAccessor.accessEvents(enrollment)) {
-                    addState(eventMap, event, forcedState)
+                    h.addState(eventMap, event, forcedState)
                 }
             }
             for (r in TrackedEntityInstanceInternalAccessor.accessRelationships(instance)) {
                 if (versionManager.is2_29) {
                     val whereClause = WhereClauseBuilder().appendKeyStringValue(CoreColumns.ID, r.id()).build()
                     val dbRelationship = relationshipStore.selectOneWhere(whereClause)
-                    dbRelationship?.let { addState(relationshipMap, it, forcedState) }
+                    dbRelationship?.let { h.addState(relationshipMap, it, forcedState) }
                 } else {
-                    addState(relationshipMap, r, forcedState)
+                    h.addState(relationshipMap, r, forcedState)
                 }
             }
         }
-        persistStates(teiMap, trackedEntityInstanceStore)
-        persistStates(enrollmentMap, enrollmentStore)
-        persistStates(eventMap, eventStore)
-        persistStates(relationshipMap, relationshipStore)
-    }
 
-    private fun <O> addState(
-        stateMap: MutableMap<State, MutableList<String>>,
-        o: O,
-        forcedState: State?
-    ) where O : DataObject, O : ObjectWithUidInterface {
-        val s = getStateToSet(o, forcedState)
-        if (!stateMap.containsKey(s)) {
-            stateMap[s] = ArrayList()
-        }
-        stateMap[s]!!.add(o.uid())
-    }
-
-    private fun <O> getStateToSet(o: O, forcedState: State?): State where O : DataObject, O : ObjectWithUidInterface {
-        return forcedState
-            ?: if (o.state() == State.UPLOADING) State.TO_UPDATE else o.state()
-    }
-
-    private fun persistStates(map: Map<State, MutableList<String>>, store: IdentifiableDeletableDataObjectStore<*>) {
-        for ((key, value) in map) {
-            store.setState(value, key)
-        }
+        h.persistStates(teiMap, trackedEntityInstanceStore)
+        h.persistStates(enrollmentMap, enrollmentStore)
+        h.persistStates(eventMap, eventStore)
+        h.persistStates(relationshipMap, relationshipStore)
     }
 }

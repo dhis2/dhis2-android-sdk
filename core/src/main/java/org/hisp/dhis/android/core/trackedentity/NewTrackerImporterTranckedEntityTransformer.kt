@@ -25,32 +25,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.tracker.importer.internal
+package org.hisp.dhis.android.core.trackedentity
 
-import org.hisp.dhis.android.core.event.internal.NewTrackerImporterEventPayload
-import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterTrackedEntityPayload
-import org.hisp.dhis.android.core.trackedentity.internal.ObjectWithUidWebResponse
-import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 
-internal interface TrackerImporterService {
-
-    @POST("tracker")
-    fun postTrackedEntityInstances(
-        @Body payload: NewTrackerImporterTrackedEntityPayload
-    ): Call<ObjectWithUidWebResponse>
-
-    @POST("tracker")
-    fun postEvents(
-        @Body events: NewTrackerImporterEventPayload
-    ): Call<ObjectWithUidWebResponse>
-
-    @GET("tracker/jobs/{jobId}")
-    fun getJob(@Path("jobId") jobId: String): Call<List<JobInfo>>
-
-    @GET("tracker/jobs/{jobId}/report")
-    fun getJobReport(@Path("jobId") jobId: String): Call<JobReport>
+internal class NewTrackerImporterTranckedEntityTransformer :
+    Transformer<TrackedEntityInstance, NewTrackerImporterTrackedEntity> {
+    override fun transform(o: TrackedEntityInstance): NewTrackerImporterTrackedEntity {
+        return NewTrackerImporterTrackedEntity.builder()
+            .id(o.id())
+            .uid(o.uid())
+            .deleted(o.deleted())
+            .createdAt(o.created())
+            .updatedAt(o.lastUpdated())
+            .createdAtClient(o.createdAtClient())
+            .updatedAtClient(o.lastUpdatedAtClient())
+            .organisationUnit(o.organisationUnit())
+            .trackedEntityType(o.trackedEntityType())
+            .geometry(o.geometry())
+            .build()
+    }
 }

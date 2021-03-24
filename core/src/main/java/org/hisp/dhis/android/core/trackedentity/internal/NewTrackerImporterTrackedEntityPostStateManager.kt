@@ -25,42 +25,45 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.event.internal
+package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import io.reactivex.Observable
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
-import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper
-import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.tracker.importer.internal.JobQueryCall
-import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterService
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
+import org.hisp.dhis.android.core.event.internal.EventStore
+import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntity
 
 @Reusable
-internal class EventTrackerImporterPostCall @Inject internal constructor(
-    private val payloadGenerator: NewTrackerImporterEventPostPayloadGenerator,
-    private val stateManager: EventPostStateManager,
-    private val service: TrackerImporterService,
-    private val apiCallExecutor: APICallExecutor,
-    private val jobQueryCall: JobQueryCall
+internal class NewTrackerImporterTrackedEntityPostStateManager @Inject internal constructor(
+    private val trackedEntityInstanceStore: TrackedEntityInstanceStore,
+    private val enrollmentStore: EnrollmentStore,
+    private val eventStore: EventStore,
+    private val h: StatePersistorHelper
 ) {
-    fun uploadEvents(
-        events: List<Event>
-    ): Observable<D2Progress> {
-        return Observable.defer {
-            val eventsToPost = payloadGenerator.getEvents(events)
-            val eventPayload = NewTrackerImporterEventPayload(eventsToPost)
-            try {
-                val webResponse = apiCallExecutor.executeObjectCall(service.postEvents(eventPayload))
-                jobQueryCall.storeAndQueryJob(webResponse.response().uid())
-            } catch (d2Error: D2Error) {
-                // TODO handle observable errors
-                stateManager.markObjectsAs(eventsToPost, DataStateHelper.errorIfOnline(d2Error))
-                Observable.error<D2Progress>(d2Error)
-                // TODO different treatment when offline error
+
+    fun restoreStates(trackedEntities: List<NewTrackerImporterTrackedEntity>) {
+        setStates(trackedEntities, null)
+    }
+
+    @Suppress("NestedBlockDepth")
+    fun setStates(trackedEntities: List<NewTrackerImporterTrackedEntity>, forcedState: State?) {
+        val teiMap = mutableMapOf<State, MutableList<String>>()
+        val enrollmentMap = mutableMapOf<State, MutableList<String>>()
+        val eventMap = mutableMapOf<State, MutableList<String>>()
+
+        for (trackedEntity in trackedEntities) {
+            h.addState(teiMap, trackedEntity, forcedState)
+            for (enrollment in trackedEntity.enrollments()!!) {
+                h.addState(enrollmentMap, enrollment, forcedState)
+                for (event in enrollment.events()!!) {
+                    h.addState(eventMap, event, forcedState)
+                }
             }
         }
+
+        h.persistStates(teiMap, trackedEntityInstanceStore)
+        h.persistStates(enrollmentMap, enrollmentStore)
+        h.persistStates(eventMap, eventStore)
     }
 }

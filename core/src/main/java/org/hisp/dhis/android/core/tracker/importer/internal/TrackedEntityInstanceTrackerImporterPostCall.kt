@@ -29,14 +29,16 @@ package org.hisp.dhis.android.core.tracker.importer.internal
 
 import dagger.Reusable
 import io.reactivex.Observable
-import javax.inject.Inject
+import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDeleteCall
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterTrackedEntityPayload
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterTrackedEntityPostPayloadGenerator
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterTrackedEntityPostStateManager
+import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstanceTrackerImporterPostCall @Inject internal constructor(
@@ -52,18 +54,21 @@ internal class TrackedEntityInstanceTrackerImporterPostCall @Inject internal con
     ): Observable<D2Progress> {
         return Observable.defer {
             val trackedEntitiesToPost = payloadGenerator.getTrackedEntities(filteredTrackedEntityInstances)
-            Observable.defer {
+            Single.fromCallable {
                 // TODO HANDLE DELETIONS
                 // TODO HANDLE RELATIONSHIPS
                 // TODO HANDLE DELETED RELATIONSHIPS
                 //  relationshipDeleteCall.postDeletedRelationships(partition)
                 val trackedEntityInstancePayload = NewTrackerImporterTrackedEntityPayload(trackedEntitiesToPost)
-                val webResponse = apiCallExecutor.executeObjectCall(
+                apiCallExecutor.executeObjectCall(
                     service.postTrackedEntityInstances(trackedEntityInstancePayload)
                 )
-                jobQueryCall.storeAndQueryJob(webResponse.response().uid())
             }.doOnError {
                 stateManager.restoreStates(trackedEntitiesToPost)
+            }.flatMapObservable {
+                jobQueryCall.storeAndQueryJob(it.response().uid()).onErrorReturn {
+                    D2ProgressManager(1).increaseProgress(TrackedEntityInstance::class.java, true)
+                }
             }
         }
     }

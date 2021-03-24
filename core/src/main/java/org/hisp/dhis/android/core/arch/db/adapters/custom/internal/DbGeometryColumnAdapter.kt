@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 import android.content.ContentValues
 import android.database.Cursor
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
-import org.hisp.dhis.android.core.arch.helpers.GeometryHelper
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.Geometry
 
@@ -54,10 +53,8 @@ class DbGeometryColumnAdapter : ColumnTypeAdapter<Geometry> {
 
     override fun toContentValues(values: ContentValues, columnName: String, value: Geometry?) {
         value?.let {
-            if (GeometryHelper.isDefinedAndValid(it)) {
-                values.put(GEOMETRY_TYPE, value.type()?.geometryType)
-                values.put(GEOMETRY_COORDINATES, it.coordinates())
-            }
+            values.put(GEOMETRY_TYPE, it.type()?.geometryType)
+            values.put(GEOMETRY_COORDINATES, it.coordinates())
         }
     }
 

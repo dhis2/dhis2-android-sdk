@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.organisationunit.internal;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
@@ -36,6 +38,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl;
+import org.hisp.dhis.android.core.arch.helpers.GeometryHelper;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink;
 import org.hisp.dhis.android.core.dataset.internal.DataSetOrganisationUnitLinkStore;
@@ -97,6 +100,17 @@ class OrganisationUnitHandlerImpl extends IdentifiableHandlerImpl<OrganisationUn
     public void setData(User user, OrganisationUnit.Scope scope) {
         this.user = user;
         this.scope = scope;
+    }
+
+    @Override
+    protected OrganisationUnit beforeObjectHandled(OrganisationUnit organisationUnit) {
+        if (GeometryHelper.isValid(organisationUnit.geometry())) {
+            return organisationUnit;
+        } else {
+            Log.i(this.getClass().getSimpleName(),
+                    "OrganisationUnit " + organisationUnit.uid() + " has invalid geometryValue");
+            return organisationUnit.toBuilder().geometry(null).build();
+        }
     }
 
     @Override

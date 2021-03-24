@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBui
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStoreImpl;
-import org.hisp.dhis.android.core.arch.helpers.GeometryHelper;
 import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper;
 import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.State;
@@ -54,8 +53,6 @@ public final class EnrollmentStoreImpl
         extends IdentifiableDeletableDataObjectStoreImpl<Enrollment> implements EnrollmentStore {
 
     private static final StatementBinder<Enrollment> BINDER = (o, w) -> {
-        boolean isValidAndDefinedGeometry = GeometryHelper.isDefinedAndValid(o.geometry());
-
         w.bind(1, o.uid());
         w.bind(2, o.created());
         w.bind(3, o.lastUpdated());
@@ -69,8 +66,8 @@ public final class EnrollmentStoreImpl
         w.bind(11, o.followUp());
         w.bind(12, o.status());
         w.bind(13, o.trackedEntityInstance());
-        w.bind(14, isValidAndDefinedGeometry ? o.geometry().type() : null);
-        w.bind(15, isValidAndDefinedGeometry ? o.geometry().coordinates() : null);
+        w.bind(14, o.geometry() == null ? null : o.geometry().type());
+        w.bind(15, o.geometry() == null ? null : o.geometry().coordinates());
         w.bind(16, o.state());
         w.bind(17, o.deleted());
     };

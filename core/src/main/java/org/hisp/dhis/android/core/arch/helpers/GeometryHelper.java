@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.arch.helpers;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -191,6 +193,19 @@ public final class GeometryHelper {
             }
         }
         return valid;
+    }
+
+    public static Boolean isValid(@Nullable Geometry geometry) {
+        return geometry == null || isDefinedAndValid(geometry);
+    }
+
+    public static void validateGeometry(@Nullable Geometry geometry) throws D2Error {
+        if (!isValid(geometry)) {
+            throw D2Error.builder()
+                    .errorCode(D2ErrorCode.INVALID_GEOMETRY_VALUE)
+                    .errorDescription("Invalid geometry value")
+                    .build();
+        }
     }
 
     private static <T> T getGeometryObject(Geometry geometry, FeatureType type, TypeReference<T> typeReference)

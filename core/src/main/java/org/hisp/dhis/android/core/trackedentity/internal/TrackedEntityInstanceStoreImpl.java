@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBui
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStoreImpl;
-import org.hisp.dhis.android.core.arch.helpers.GeometryHelper;
 import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper;
 import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.State;
@@ -47,8 +46,6 @@ public final class TrackedEntityInstanceStoreImpl
         implements TrackedEntityInstanceStore {
 
     private static final StatementBinder<TrackedEntityInstance> BINDER = (o, w) -> {
-        boolean isValidAndDefinedGeometry = GeometryHelper.isDefinedAndValid(o.geometry());
-
         w.bind(1, o.uid());
         w.bind(2, o.created());
         w.bind(3, o.lastUpdated());
@@ -56,8 +53,8 @@ public final class TrackedEntityInstanceStoreImpl
         w.bind(5, o.lastUpdatedAtClient());
         w.bind(6, o.organisationUnit());
         w.bind(7, o.trackedEntityType());
-        w.bind(8, isValidAndDefinedGeometry ? o.geometry().type() : null);
-        w.bind(9, isValidAndDefinedGeometry ? o.geometry().coordinates() : null);
+        w.bind(8, o.geometry() == null ? null : o.geometry().type());
+        w.bind(9, o.geometry() == null ? null : o.geometry().coordinates());
         w.bind(10, o.state());
         w.bind(11, o.deleted());
     };

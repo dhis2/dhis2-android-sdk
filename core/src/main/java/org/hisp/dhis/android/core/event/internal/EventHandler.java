@@ -30,11 +30,14 @@ package org.hisp.dhis.android.core.event.internal;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerImpl;
+import org.hisp.dhis.android.core.arch.helpers.GeometryHelper;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventInternalAccessor;
@@ -81,6 +84,17 @@ final class EventHandler extends IdentifiableDataHandlerImpl<Event> {
         this.noteVersionManager = noteVersionManager;
         this.noteUniquenessManager = noteUniquenessManager;
         this.relationshipOrphanCleaner = relationshipOrphanCleaner;
+    }
+
+    @NonNull
+    @Override
+    protected Event beforeObjectHandled(Event event, Boolean overwrite) {
+        if (GeometryHelper.isValid(event.geometry())) {
+            return event;
+        } else {
+            Log.i(this.getClass().getSimpleName(), "Event " + event.uid() + " has invalid geometry value");
+            return event.toBuilder().geometry(null).build();
+        }
     }
 
     @Override

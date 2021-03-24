@@ -151,4 +151,9 @@ public class GeometryHelperShould {
                 .coordinates("[[[[2.4, 4.5]]],[[[4.4, 2.5]]]]").build();
         assertThat(GeometryHelper.isDefinedAndValid(multiPolygon)).isTrue();
     }
+
+    @Test
+    public void should_return_valid_geometry_if_empty() {
+        assertThat(GeometryHelper.isValid(null)).isTrue();
+    }
 }

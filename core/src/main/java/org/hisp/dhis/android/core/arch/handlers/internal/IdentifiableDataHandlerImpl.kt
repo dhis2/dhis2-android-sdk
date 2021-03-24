@@ -184,7 +184,7 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
         return false
     }
 
-    protected fun beforeObjectHandled(o: O, overwrite: Boolean?): O {
+    protected open fun beforeObjectHandled(o: O, overwrite: Boolean?): O {
         return o
     }
 

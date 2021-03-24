@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import org.hisp.dhis.android.core.arch.helpers.GeometryHelper;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadWriteWithUidDataObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
@@ -58,6 +59,7 @@ public final class TrackedEntityInstanceObjectRepository
     }
 
     public Unit setGeometry(Geometry geometry) throws D2Error {
+        GeometryHelper.validateGeometry(geometry);
         return updateObject(updateBuilder().geometry(geometry).build());
     }
 

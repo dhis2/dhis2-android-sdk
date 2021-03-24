@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.event.EventCreateProjection;
 import org.hisp.dhis.android.core.event.EventObjectRepository;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
@@ -46,6 +47,7 @@ import org.junit.runner.RunWith;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.fail;
 
 @RunWith(D2JunitRunner.class)
 public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -152,6 +154,24 @@ public class EventObjectRepositoryMockIntegrationShould extends BaseMockIntegrat
         assertThat(repository.blockingGet().geometry()).isEqualTo(geometry);
 
         repository.blockingDelete();
+    }
+
+    @Test
+    public void update_invalid_geometry() throws D2Error {
+        Geometry geometry = Geometry.builder()
+                .type(FeatureType.POINT)
+                .build();
+
+        EventObjectRepository repository = objectRepository();
+
+        try {
+            repository.setGeometry(geometry);
+            fail("Invalid geometry should fail");
+        } catch (D2Error d2Error) {
+            assertThat(d2Error.errorCode()).isEquivalentAccordingToCompareTo(D2ErrorCode.INVALID_GEOMETRY_VALUE);
+        } finally {
+            repository.blockingDelete();
+        }
     }
 
     @Test

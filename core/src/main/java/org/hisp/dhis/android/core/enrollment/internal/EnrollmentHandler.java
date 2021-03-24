@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.enrollment.internal;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
@@ -35,6 +37,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerImpl;
+import org.hisp.dhis.android.core.arch.helpers.GeometryHelper;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor;
@@ -98,6 +101,18 @@ final class EnrollmentHandler extends IdentifiableDataHandlerImpl<Enrollment> {
     @Override
     protected void deleteOrphans(Enrollment o) {
         relationshipOrphanCleaner.deleteOrphan(o, EnrollmentInternalAccessor.accessRelationships(o));
+    }
+
+    @NonNull
+    @Override
+    protected Enrollment beforeObjectHandled(Enrollment enrollment, Boolean override) {
+        if (GeometryHelper.isValid(enrollment.geometry())) {
+            return enrollment;
+        } else {
+            Log.i(this.getClass().getSimpleName(),
+                    "Enrollment " + enrollment.uid() + " has invalid geometry value");
+            return enrollment.toBuilder().geometry(null).build();
+        }
     }
 
     @Override

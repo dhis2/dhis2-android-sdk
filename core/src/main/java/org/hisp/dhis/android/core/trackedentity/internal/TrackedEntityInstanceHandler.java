@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
@@ -35,6 +37,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerImpl;
+import org.hisp.dhis.android.core.arch.helpers.GeometryHelper;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.relationship.Relationship;
@@ -76,6 +79,18 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
         this.enrollmentHandler = enrollmentHandler;
         this.enrollmentOrphanCleaner = enrollmentOrphanCleaner;
         this.relationshipOrphanCleaner = relationshipOrphanCleaner;
+    }
+
+    @NonNull
+    @Override
+    protected TrackedEntityInstance beforeObjectHandled(TrackedEntityInstance tei, Boolean override) {
+        if (GeometryHelper.isValid(tei.geometry())) {
+            return tei;
+        } else {
+            Log.i(this.getClass().getSimpleName(),
+                    "TrackedEntityInstance " + tei.uid() + " has invalid geometry value");
+            return tei.toBuilder().geometry(null).build();
+        }
     }
 
     @Override

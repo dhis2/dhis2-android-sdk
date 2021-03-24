@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.arch.helpers;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -83,7 +85,8 @@ public final class GeometryHelper {
      * @return The converted {@code List<Double>} object with format {@code [longitude, latitude]}.
      */
     public static List<Double> getPoint(Geometry geometry) throws D2Error {
-        return getGeometryObject(geometry, FeatureType.POINT, new TypeReference<List<Double>>(){});
+        return getGeometryObject(geometry, FeatureType.POINT, new TypeReference<List<Double>>() {
+        });
     }
 
     /**
@@ -94,7 +97,8 @@ public final class GeometryHelper {
      * @return The converted {@code List<List<List<Double>>>} object with format {@code [longitude, latitude]}.
      */
     public static List<List<List<Double>>> getPolygon(Geometry geometry) throws D2Error {
-        return getGeometryObject(geometry, FeatureType.POLYGON, new TypeReference<List<List<List<Double>>>>(){});
+        return getGeometryObject(geometry, FeatureType.POLYGON, new TypeReference<List<List<List<Double>>>>() {
+        });
     }
 
     /**
@@ -106,14 +110,15 @@ public final class GeometryHelper {
      */
     public static List<List<List<List<Double>>>> getMultiPolygon(Geometry geometry) throws D2Error {
         return getGeometryObject(geometry, FeatureType.MULTI_POLYGON,
-                new TypeReference<List<List<List<List<Double>>>>>(){});
+                new TypeReference<List<List<List<List<Double>>>>>() {
+                });
     }
 
     /**
      * Build a {@link Geometry} object of type point from a longitude and a latitude.
      *
      * @param longitude The longitude of a coordinate.
-     * @param latitude The latitude of a coordinate.
+     * @param latitude  The latitude of a coordinate.
      * @return The {@link Geometry} object of type point created.
      */
     public static Geometry createPointGeometry(Double longitude, Double latitude) {
@@ -161,6 +166,46 @@ public final class GeometryHelper {
                 .type(FeatureType.MULTI_POLYGON)
                 .coordinates(pointListToCoordinates(multiPolygon))
                 .build();
+    }
+
+    public static boolean isDefinedAndValid(Geometry geometry) {
+        boolean valid = false;
+        if (geometry != null && geometry.type() != null && geometry.coordinates() != null) {
+            try {
+                switch (geometry.type()) {
+                    case POINT:
+                        getPoint(geometry);
+                        valid = true;
+                        break;
+                    case POLYGON:
+                        getPolygon(geometry);
+                        valid = true;
+                        break;
+                    case MULTI_POLYGON:
+                        getMultiPolygon(geometry);
+                        valid = true;
+                        break;
+                    default:
+                        break;
+                }
+            } catch (D2Error error) {
+                valid = false;
+            }
+        }
+        return valid;
+    }
+
+    public static Boolean isValid(@Nullable Geometry geometry) {
+        return geometry == null || isDefinedAndValid(geometry);
+    }
+
+    public static void validateGeometry(@Nullable Geometry geometry) throws D2Error {
+        if (!isValid(geometry)) {
+            throw D2Error.builder()
+                    .errorCode(D2ErrorCode.INVALID_GEOMETRY_VALUE)
+                    .errorDescription("Invalid geometry value")
+                    .build();
+        }
     }
 
     private static <T> T getGeometryObject(Geometry geometry, FeatureType type, TypeReference<T> typeReference)

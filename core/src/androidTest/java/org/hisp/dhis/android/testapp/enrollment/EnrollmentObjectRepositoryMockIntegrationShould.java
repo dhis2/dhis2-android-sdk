@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
 import org.hisp.dhis.android.core.enrollment.EnrollmentObjectRepository;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
@@ -44,6 +45,7 @@ import org.junit.runner.RunWith;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.fail;
 
 @RunWith(D2JunitRunner.class)
 public class EnrollmentObjectRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -160,6 +162,24 @@ public class EnrollmentObjectRepositoryMockIntegrationShould extends BaseMockInt
         assertThat(repository.blockingGet().geometry()).isEqualTo(geometry);
 
         repository.blockingDelete();
+    }
+
+    @Test
+    public void update_invalid_geometry() throws D2Error {
+        Geometry geometry = Geometry.builder()
+                .type(FeatureType.POINT)
+                .build();
+
+        EnrollmentObjectRepository repository = objectRepository();
+
+        try {
+            repository.setGeometry(geometry);
+            fail("Invalid geometry should fail");
+        } catch (D2Error d2Error) {
+            assertThat(d2Error.errorCode()).isEquivalentAccordingToCompareTo(D2ErrorCode.INVALID_GEOMETRY_VALUE);
+        } finally {
+            repository.blockingDelete();
+        }
     }
 
     private EnrollmentObjectRepository objectRepository() throws D2Error {

@@ -32,7 +32,6 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDeleteCall
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterTrackedEntityPayload
@@ -60,15 +59,16 @@ internal class TrackedEntityInstanceTrackerImporterPostCall @Inject internal con
                 // TODO HANDLE DELETED RELATIONSHIPS
                 //  relationshipDeleteCall.postDeletedRelationships(partition)
                 val trackedEntityInstancePayload = NewTrackerImporterTrackedEntityPayload(trackedEntitiesToPost)
-                apiCallExecutor.executeObjectCall(
+                val res = apiCallExecutor.executeObjectCall(
                     service.postTrackedEntityInstances(trackedEntityInstancePayload)
                 )
+                val jobId = res.response().uid()
+                jobQueryCall.storeJob(jobId)
+                jobId
             }.doOnError {
                 stateManager.restoreStates(trackedEntitiesToPost)
             }.flatMapObservable {
-                jobQueryCall.storeAndQueryJob(it.response().uid()).onErrorReturn {
-                    D2ProgressManager(1).increaseProgress(TrackedEntityInstance::class.java, true)
-                }
+                jobQueryCall.queryJob(it)
             }
         }
     }

@@ -32,7 +32,6 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.event.Event
@@ -56,13 +55,14 @@ internal class EventTrackerImporterPostCall @Inject internal constructor(
             stateManager.markObjectsAs(eventsToPost, State.UPLOADING)
             Single.fromCallable {
                 val eventPayload = NewTrackerImporterEventPayload(eventsToPost)
-                apiCallExecutor.executeObjectCall(service.postEvents(eventPayload))
+                val res = apiCallExecutor.executeObjectCall(service.postEvents(eventPayload))
+                val jobId = res.response().uid()
+                jobQueryCall.storeJob(jobId)
+                jobId
             }.doOnError {
                 stateManager.markObjectsAs(eventsToPost, DataStateHelper.errorIfOnline(it))
             }.flatMapObservable {
-                jobQueryCall.storeAndQueryJob(it.response().uid()).onErrorReturn {
-                    D2ProgressManager(1).increaseProgress(Event::class.java, true)
-                }
+                jobQueryCall.queryJob(it)
             }
         }
     }

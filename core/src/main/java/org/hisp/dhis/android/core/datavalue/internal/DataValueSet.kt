@@ -25,18 +25,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.datavalue.internal
 
-package org.hisp.dhis.android.core.datavalue.internal;
+import org.hisp.dhis.android.core.datavalue.DataValue
 
-import org.hisp.dhis.android.core.datavalue.DataValue;
-
-import java.util.Collection;
-
-class DataValueSet {
-
-    public Collection<DataValue> dataValues;
-
-    DataValueSet(Collection<DataValue> dataValues) {
-        this.dataValues = dataValues;
-    }
-}
+internal class DataValueSet constructor(val dataValues: List<DataValue>)

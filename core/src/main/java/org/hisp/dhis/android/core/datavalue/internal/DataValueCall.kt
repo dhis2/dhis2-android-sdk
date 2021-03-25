@@ -46,7 +46,7 @@ internal class DataValueCall @Inject constructor(
 
     override fun download(query: DataValueQuery): Single<List<DataValue>> {
         val b = query.bundle()
-        return apiDownloader.download(
+        return apiDownloader.downloadList(
             handler,
             service.getDataValues(
                 DataValueFields.allFields,
@@ -57,7 +57,7 @@ internal class DataValueCall @Inject constructor(
                 true,
                 false,
                 true
-            )
+            ).map { it.dataValues }
         )
     }
 }

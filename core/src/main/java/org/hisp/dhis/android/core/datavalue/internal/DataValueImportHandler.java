@@ -71,18 +71,18 @@ final class DataValueImportHandler {
         if (state == State.WARNING) {
             handleDataValueWarnings(dataValueSet, dataValueImportSummary);
         } else {
-            setStateToDataValues(state, dataValueSet.dataValues);
+            setStateToDataValues(state, dataValueSet.getDataValues());
         }
     }
 
     private void handleDataValueWarnings(DataValueSet dataValueSet, DataValueImportSummary dataValueImportSummary) {
         if (dataValueImportSummary.importConflicts() == null) {
-            setStateToDataValues(State.WARNING, dataValueSet.dataValues);
+            setStateToDataValues(State.WARNING, dataValueSet.getDataValues());
         } else {
             Set<DataValue> dataValueConflicts = new HashSet<>();
             boolean setStateOnlyForConflicts = Boolean.TRUE;
             for (ImportConflict importConflict : dataValueImportSummary.importConflicts()) {
-                List<DataValue> dataValues = getDataValues(importConflict, dataValueSet.dataValues);
+                List<DataValue> dataValues = getDataValues(importConflict, dataValueSet.getDataValues());
                 if (dataValues.isEmpty()) {
                     setStateOnlyForConflicts = Boolean.FALSE;
                 }
@@ -96,7 +96,7 @@ final class DataValueImportHandler {
                                     Set<DataValue> dataValueConflicts,
                                     boolean setStateOnlyForConflicts) {
         if (setStateOnlyForConflicts) {
-            Iterator<DataValue> i = dataValueSet.dataValues.iterator();
+            Iterator<DataValue> i = dataValueSet.getDataValues().iterator();
             while (i.hasNext()) {
                 if (dataValueConflicts.contains(i.next())) {
                     i.remove();
@@ -104,7 +104,7 @@ final class DataValueImportHandler {
             }
             setStateToDataValues(State.WARNING, dataValueConflicts);
         }
-        setStateToDataValues(State.SYNCED, dataValueSet.dataValues);
+        setStateToDataValues(State.SYNCED, dataValueSet.getDataValues());
     }
 
     private List<DataValue> getDataValues(ImportConflict importConflict, Collection<DataValue> dataValues)

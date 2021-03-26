@@ -70,8 +70,10 @@ class SynchronizationSettingsHandlerShould {
     @Test
     fun call_dataSet_and_program_handlers_after_insert_item() {
         synchronizationSettingsHandler.handleMany(synchronizationSettingsList)
-        verify(dataSetSettingHandler).handleMany(any())
-        verify(programSettingHandler).handleMany(any())
+
+        // Two times: first one to remove existing values, second one to store new ones
+        verify(dataSetSettingHandler, times(2)).handleMany(any())
+        verify(programSettingHandler, times(2)).handleMany(any())
     }
 
     @Test

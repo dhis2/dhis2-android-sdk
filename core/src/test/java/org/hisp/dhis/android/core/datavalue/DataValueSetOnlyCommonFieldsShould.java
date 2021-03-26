@@ -25,8 +25,26 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.datavalue.internal
 
-import org.hisp.dhis.android.core.datavalue.DataValue
+package org.hisp.dhis.android.core.datavalue;
 
-internal class DataValueSet constructor(val dataValues: List<DataValue> = emptyList())
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.hisp.dhis.android.core.datavalue.internal.DataValueSet;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.text.ParseException;
+
+public class DataValueSetOnlyCommonFieldsShould extends BaseObjectShould implements ObjectShould {
+
+    public DataValueSetOnlyCommonFieldsShould() {
+        super("datavalue/data_values_only_common_fields.json");
+    }
+
+    @Override
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        objectMapper.readValue(jsonStream, DataValueSet.class);
+    }
+}

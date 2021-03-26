@@ -25,10 +25,39 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings.internal
 
-internal sealed class SettingsAppVersion {
-    class Valid(val dataStore: SettingsAppDataStoreVersion, val app: String) : SettingsAppVersion()
-    object Unsupported : SettingsAppVersion()
-    object NotInstalled : SettingsAppVersion()
+package org.hisp.dhis.android.core.settings;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
+
+@AutoValue
+@JsonDeserialize(builder = AutoValue_AppMetadata.Builder.class)
+public abstract class AppMetadata {
+
+    public abstract String name();
+
+    public abstract String version();
+
+    public abstract String key();
+
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_AppMetadata.Builder();
+    }
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder {
+
+        public abstract Builder name(String name);
+
+        public abstract Builder version(String version);
+
+        public abstract Builder key(String key);
+
+        public abstract AppMetadata build();
+    }
 }

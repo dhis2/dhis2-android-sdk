@@ -44,7 +44,7 @@ internal class SynchronizationSettingHandler(
     override fun beforeCollectionHandled(
         oCollection: Collection<SynchronizationSettings>
     ): Collection<SynchronizationSettings> {
-        store.delete()
+        removeExistingValue()
         return oCollection
     }
 
@@ -54,5 +54,11 @@ internal class SynchronizationSettingHandler(
 
         val programSettings = o.programSettings()?.let { SettingsAppHelper.getProgramSettingList(it) } ?: emptyList()
         programSettingHandler.handleMany(programSettings)
+    }
+
+    private fun removeExistingValue() {
+        store.delete()
+        dataSetSettingHandler.handleMany(emptyList())
+        programSettingHandler.handleMany(emptyList())
     }
 }

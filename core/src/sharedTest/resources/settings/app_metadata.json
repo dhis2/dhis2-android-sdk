@@ -1,0 +1,29 @@
+{
+  "version": "1.1.0",
+  "name": "Android Settings",
+  "appType": "APP",
+  "appStorageSource": "JCLOUDS",
+  "folderName": "apps/dhis2-android-settings-app-1.1.0/",
+  "icons": {
+    "48": "dhis2-app-icon.png"
+  },
+  "developer": {
+    "name": "Milagros Rodriguez",
+    "email": "sharmynrodriguez@gmail.com"
+  },
+  "activities": {
+    "dhis": {
+      "href": "*"
+    }
+  },
+  "launchUrl": "https://play.dhis2.org/android-current/api/apps/android-settings-app/index.html",
+  "baseUrl": "https://play.dhis2.org/android-current/api/apps/android-settings-app",
+  "authorities": [],
+  "appState": "OK",
+  "bundled": false,
+  "key": "android-settings-app",
+  "launch_path": "index.html",
+  "default_locale": "en",
+  "short_name": "android-settings-app",
+  "core_app": false
+}

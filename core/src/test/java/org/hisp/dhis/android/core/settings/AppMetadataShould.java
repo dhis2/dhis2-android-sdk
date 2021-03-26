@@ -25,10 +25,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings.internal
 
-internal sealed class SettingsAppVersion {
-    class Valid(val dataStore: SettingsAppDataStoreVersion, val app: String) : SettingsAppVersion()
-    object Unsupported : SettingsAppVersion()
-    object NotInstalled : SettingsAppVersion()
+package org.hisp.dhis.android.core.settings;
+
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.text.ParseException;
+
+import static com.google.common.truth.Truth.assertThat;
+
+public class AppMetadataShould extends BaseObjectShould implements ObjectShould {
+
+    public AppMetadataShould() {
+        super("settings/app_metadata.json");
+    }
+
+    @Override
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        AppMetadata appMetadata = objectMapper.readValue(jsonStream, AppMetadata.class);
+
+        assertThat(appMetadata.name()).isEqualTo("Android Settings");
+        assertThat(appMetadata.version()).isEqualTo("1.1.0");
+        assertThat(appMetadata.key()).isEqualTo("android-settings-app");
+    }
 }

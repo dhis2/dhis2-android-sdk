@@ -41,8 +41,13 @@ internal class SettingsAppInfoManagerImpl @Inject constructor(
     private var settingsAppVersion: SettingsAppVersion? = null
 
     private val unsupportedVersion = D2Error.builder()
-        .errorCode(D2ErrorCode.UNSUPPORTED_APP_DATASTORE_VERSION)
+        .errorCode(D2ErrorCode.SETTINGS_APP_NOT_SUPPORTED)
         .errorDescription("Unsupported dataStore version")
+        .build()
+
+    private val notInstalled = D2Error.builder()
+        .errorCode(D2ErrorCode.SETTINGS_APP_NOT_INSTALLED)
+        .errorDescription("Settings app not installed")
         .build()
 
     override fun getDataStoreVersion(): Single<SettingsAppDataStoreVersion> {
@@ -50,6 +55,7 @@ internal class SettingsAppInfoManagerImpl @Inject constructor(
             when (it) {
                 is SettingsAppVersion.Valid -> Single.just(it.dataStore)
                 is SettingsAppVersion.Unsupported -> Single.error(unsupportedVersion)
+                is SettingsAppVersion.NotInstalled -> Single.error(notInstalled)
             }
         }
     }
@@ -59,6 +65,7 @@ internal class SettingsAppInfoManagerImpl @Inject constructor(
             when (it) {
                 is SettingsAppVersion.Valid -> Single.just(it.app)
                 is SettingsAppVersion.Unsupported -> Single.error(unsupportedVersion)
+                is SettingsAppVersion.NotInstalled -> Single.error(notInstalled)
             }
         }
     }

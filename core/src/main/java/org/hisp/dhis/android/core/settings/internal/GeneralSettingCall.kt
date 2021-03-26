@@ -64,6 +64,7 @@ internal class GeneralSettingCall @Inject constructor(
     }
 
     fun isDatabaseEncrypted(): Single<Boolean> {
+        // TODO Should we decrypt the database if the settings app is uninstalled?
         return appVersionManager.updateAppVersion()
             .flatMap { appVersionManager.getDataStoreVersion() }
             .flatMap { version ->

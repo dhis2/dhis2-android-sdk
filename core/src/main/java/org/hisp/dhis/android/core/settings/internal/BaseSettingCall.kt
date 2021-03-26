@@ -46,15 +46,16 @@ internal abstract class BaseSettingCall<T> : CompletableProvider {
         return fetch(storeError)
             .doOnSuccess { process(it) }
             .doOnError { throwable: Throwable ->
-                if (throwable is D2Error &&
-                    (
-                        throwable.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND ||
-                            throwable.errorCode() == D2ErrorCode.UNSUPPORTED_APP_DATASTORE_VERSION
-                        )
-                ) {
+                if (throwable is D2Error && isExpectedError(throwable)) {
                     process(null)
                 }
             }
+    }
+
+    private fun isExpectedError(throwable: D2Error): Boolean {
+        return throwable.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND ||
+            throwable.errorCode() == D2ErrorCode.SETTINGS_APP_NOT_SUPPORTED ||
+            throwable.errorCode() == D2ErrorCode.SETTINGS_APP_NOT_INSTALLED
     }
 
     abstract fun fetch(storeError: Boolean): Single<T>

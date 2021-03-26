@@ -45,6 +45,16 @@ internal class SettingsAppInfoCall @Inject constructor(
     }
 
     fun fetch(storeError: Boolean): Single<SettingsAppVersion> {
+        return isAppInstalled(storeError)
+            .flatMap { isAppInstalled ->
+                return@flatMap if (isAppInstalled)
+                    fetchAppVersion(storeError)
+                else
+                    Single.just(SettingsAppVersion.NotInstalled)
+            }
+    }
+
+    private fun fetchAppVersion(storeError: Boolean): Single<SettingsAppVersion> {
         return apiCallExecutor.wrapSingle(settingAppService.info(), storeError)
             .map<SettingsAppVersion> {
                 SettingsAppVersion.Valid(it.dataStoreVersion(), it.androidSettingsVersion() ?: unknown)
@@ -55,6 +65,21 @@ internal class SettingsAppInfoCall @Inject constructor(
                         Single.just(SettingsAppVersion.Valid(SettingsAppDataStoreVersion.V1_1, unknown))
                     throwable is D2Error && throwable.originalException() is InvalidFormatException ->
                         Single.just(SettingsAppVersion.Unsupported)
+                    else ->
+                        Single.error(throwable)
+                }
+            }
+    }
+
+    private fun isAppInstalled(storeError: Boolean): Single<Boolean> {
+        return apiCallExecutor.wrapSingle(settingAppService.appMetadata(), storeError)
+            .map { appMetadataList ->
+                return@map appMetadataList.size == 1 && appMetadataList.first().key() != null
+            }
+            .onErrorResumeNext { throwable: Throwable ->
+                return@onErrorResumeNext when {
+                    throwable is D2Error && throwable.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND ->
+                        Single.just(false)
                     else ->
                         Single.error(throwable)
                 }

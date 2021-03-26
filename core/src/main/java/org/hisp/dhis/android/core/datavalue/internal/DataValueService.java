@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.datavalue.internal;
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
 import org.hisp.dhis.android.core.arch.api.filters.internal.Which;
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary;
 
@@ -43,7 +42,7 @@ import retrofit2.http.Query;
 
 interface DataValueService {
     @GET("dataValueSets")
-    Single<Payload<DataValue>> getDataValues(@Query("fields") @Which Fields<DataValue> fields,
+    Single<DataValueSet> getDataValues(@Query("fields") @Which Fields<DataValue> fields,
                                              @Query("lastUpdated") String lastUpdated,
                                              @Query("dataSet") String dataSetUids,
                                              @Query("period") String periodIds,

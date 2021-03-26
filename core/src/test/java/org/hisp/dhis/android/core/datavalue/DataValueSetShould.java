@@ -25,39 +25,26 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.datavalue.internal
 
-import dagger.Reusable
-import io.reactivex.Single
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedCollectionValues
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedUids
-import org.hisp.dhis.android.core.datavalue.DataValue
+package org.hisp.dhis.android.core.datavalue;
 
-@Reusable
-internal class DataValueCall @Inject constructor(
-    private val service: DataValueService,
-    private val handler: Handler<DataValue>,
-    private val apiDownloader: APIDownloader
-) : QueryCall<DataValue, DataValueQuery> {
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.hisp.dhis.android.core.datavalue.internal.DataValueSet;
+import org.junit.Test;
 
-    override fun download(query: DataValueQuery): Single<List<DataValue>> {
-        val b = query.bundle()
-        return apiDownloader.downloadList(
-            handler,
-            service.getDataValues(
-                DataValueFields.allFields,
-                b.key().lastUpdatedStr(),
-                commaSeparatedUids(b.dataSets()),
-                commaSeparatedCollectionValues(b.periodIds()),
-                commaSeparatedCollectionValues(b.rootOrganisationUnitUids()),
-                true,
-                false,
-                true
-            ).map { it.dataValues }
-        )
+import java.io.IOException;
+import java.text.ParseException;
+
+public class DataValueSetShould extends BaseObjectShould implements ObjectShould {
+
+    public DataValueSetShould() {
+        super("datavalue/data_values.json");
+    }
+
+    @Override
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        objectMapper.readValue(jsonStream, DataValueSet.class);
     }
 }

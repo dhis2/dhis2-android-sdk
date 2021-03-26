@@ -26,17 +26,25 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue.internal;
+package org.hisp.dhis.android.core.datavalue;
 
-import org.hisp.dhis.android.core.datavalue.DataValue;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.hisp.dhis.android.core.datavalue.internal.DataValueSet;
+import org.junit.Test;
 
-import java.util.Collection;
+import java.io.IOException;
+import java.text.ParseException;
 
-class DataValueSet {
+public class DataValueSetSinglePeriodShould extends BaseObjectShould implements ObjectShould {
 
-    public Collection<DataValue> dataValues;
+    public DataValueSetSinglePeriodShould() {
+        super("datavalue/data_values_single_period.json");
+    }
 
-    DataValueSet(Collection<DataValue> dataValues) {
-        this.dataValues = dataValues;
+    @Override
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        objectMapper.readValue(jsonStream, DataValueSet.class);
     }
 }

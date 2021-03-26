@@ -39,8 +39,7 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.never;
@@ -57,7 +56,6 @@ public class DataValueImportHandlerShould {
     @Mock
     DataValueImportSummary dataValueImportSummary;
 
-    @Mock
     DataValueSet dataValueSet;
 
     @Mock
@@ -69,10 +67,7 @@ public class DataValueImportHandlerShould {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
-        Collection<DataValue> dataValueCollection = new ArrayList<>();
-        dataValueCollection.add(dataValue);
-
-        dataValueSet.dataValues = dataValueCollection;
+        dataValueSet = new DataValueSet(Collections.singletonList(dataValue));
 
         dataValueImportHandler = new DataValueImportHandler(dataValueStore);
     }

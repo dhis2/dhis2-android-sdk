@@ -35,6 +35,7 @@ import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.data.maintenance.D2ErrorSamples
 import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.settings.AppMetadata
 import org.hisp.dhis.android.core.settings.SettingsAppInfo
 import org.junit.Assert.assertThrows
 import org.junit.Assert.fail
@@ -48,13 +49,25 @@ class SettingsAppInfoCallShould {
     private val service: SettingAppService = mock()
     private val apiCallExecutor: RxAPICallExecutor = mock()
 
+    private val settingAppMetadataSingle: Single<List<AppMetadata>> = mock()
     private val settingAppInfoSingle: Single<SettingsAppInfo> = mock()
+
+    private val appMetadata = AppMetadata.builder()
+        .name("Settings App")
+        .version("1.1.0")
+        .key("android-settings-app")
+        .build()
 
     private lateinit var dataSetSettingCall: SettingsAppInfoCall
 
     @Before
     fun setUp() {
         whenever(service.info()) doReturn settingAppInfoSingle
+
+        whenever(service.appMetadata()) doReturn settingAppMetadataSingle
+        whenever(apiCallExecutor.wrapSingle(settingAppMetadataSingle, false)) doReturn
+            Single.just(listOf(appMetadata))
+
         dataSetSettingCall = SettingsAppInfoCall(service, apiCallExecutor)
     }
 
@@ -73,7 +86,29 @@ class SettingsAppInfoCallShould {
     }
 
     @Test
-    fun throws_D2_exception_if_other_error_than_not_found() {
+    fun return_not_installed() {
+        whenever(apiCallExecutor.wrapSingle(settingAppMetadataSingle, false)) doReturn
+            Single.error(D2ErrorSamples.notFound())
+
+        val version = dataSetSettingCall.fetch(false).blockingGet()
+
+        assertThat(version is SettingsAppVersion.NotInstalled).isTrue()
+    }
+
+    @Test
+    fun throws_D2_exception_if_other_error_than_not_found_in_metadata() {
+        whenever(apiCallExecutor.wrapSingle(settingAppMetadataSingle, false)) doReturn
+            Single.error(D2ErrorSamples.get())
+
+        val exception = assertThrows(RuntimeException::class.java) {
+            dataSetSettingCall.fetch(false).blockingGet()
+        }
+
+        assertThat(exception.cause).isInstanceOf(D2Error::class.java)
+    }
+
+    @Test
+    fun throws_D2_exception_if_other_error_than_not_found_in_info() {
         whenever(apiCallExecutor.wrapSingle(settingAppInfoSingle, false)) doReturn
             Single.error(D2ErrorSamples.get())
 

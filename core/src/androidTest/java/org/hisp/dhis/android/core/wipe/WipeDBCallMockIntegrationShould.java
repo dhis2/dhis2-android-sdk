@@ -88,6 +88,6 @@ public class WipeDBCallMockIntegrationShould extends BaseMockIntegrationTestEmpt
         TrackerImportConflictStore.create(databaseAdapter).insert(TrackerImportConflict.builder().build());
 
         FileResourceStoreImpl.create(databaseAdapter).insert(FileResource.builder().uid("uid").build());
-        TrackerJobStore.create(databaseAdapter).insert(StorableObjectWithUid.builder().uid("uid").build());
+        TrackerJobStore.create(databaseAdapter).insert(StorableObjectWithUid.create("uid"));
     }
 }

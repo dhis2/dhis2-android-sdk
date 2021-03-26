@@ -33,7 +33,6 @@ import android.database.Cursor;
 import androidx.annotation.NonNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.UID;
@@ -51,18 +50,7 @@ public abstract class StorableObjectWithUid extends BaseObject implements Object
         return AutoValue_StorableObjectWithUid.createFromCursor(cursor);
     }
 
-    public static Builder builder() {
-        return new $$AutoValue_StorableObjectWithUid.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseObject.Builder<Builder> {
-        public abstract Builder uid(String uid);
-
-        public abstract StorableObjectWithUid build();
-
+    public static StorableObjectWithUid create(String uid) {
+        return new AutoValue_StorableObjectWithUid(null, uid);
     }
 }

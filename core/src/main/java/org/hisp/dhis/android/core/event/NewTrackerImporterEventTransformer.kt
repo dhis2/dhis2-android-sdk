@@ -50,6 +50,7 @@ internal class NewTrackerImporterEventTransformer : Transformer<Event, NewTracke
             .scheduledAt(o.dueDate())
             .attributeOptionCombo(o.attributeOptionCombo())
             .assignedUser(o.assignedUser())
+            .state(o.state())
             .build()
     }
 }

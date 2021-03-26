@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.common.StorableObjectWithUid
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
 @Reusable
 internal class JobQueryCall @Inject internal constructor(
@@ -45,10 +44,8 @@ internal class JobQueryCall @Inject internal constructor(
     private val trackerJobStore: IdentifiableObjectStore<StorableObjectWithUid>
 ) {
 
-    fun storeAndQueryJob(jobId: String): Observable<D2Progress> {
-        val job = StorableObjectWithUid.builder().uid(jobId).build()
-        trackerJobStore.insert(job)
-        return queryJob(job.uid(), true)
+    fun storeJob(jobId: String) {
+        trackerJobStore.insert(StorableObjectWithUid.create(jobId))
     }
 
     fun queryPendingJobs(): Observable<D2Progress> {
@@ -60,6 +57,10 @@ internal class JobQueryCall @Inject internal constructor(
             .flatMap { jobWithIsLast -> queryJob(jobWithIsLast.first.uid(), jobWithIsLast.second) }
     }
 
+    fun queryJob(jobId: String): Observable<D2Progress> {
+        return queryJob(jobId, true)
+    }
+
     private fun queryJob(jobId: String, isLastJob: Boolean): Observable<D2Progress> {
         val progressManager = D2ProgressManager(null)
         @Suppress("MagicNumber")
@@ -69,16 +70,28 @@ internal class JobQueryCall @Inject internal constructor(
             }
             .map { it.any { ji -> ji.completed } }
             .takeUntil { it }
+            .doOnNext {
+                if (it) {
+                    val jobReport = apiCallExecutor.executeObjectCall(service.getJobReport(jobId))
+                    trackerJobStore.delete(jobId)
+                    println(jobReport)
+                    // TODO manage status
+                }
+            }
+            .take(3)
             .map {
                 progressManager.increaseProgress(
-                    TrackedEntityInstance::class.java,
+                    JobReport::class.java,
                     it && isLastJob
                 )
-            }.doOnComplete {
-                val jobReport = apiCallExecutor.executeObjectCall(service.getJobReport(jobId))
-                trackerJobStore.delete(jobId)
-                println(jobReport)
-                // TODO manage status
+            }
+            .onErrorResumeNext { _: Throwable ->
+                return@onErrorResumeNext Observable.just(
+                    progressManager.increaseProgress(
+                        JobReport::class.java,
+                        false
+                    )
+                )
             }
     }
 }

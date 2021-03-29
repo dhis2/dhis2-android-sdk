@@ -46,6 +46,7 @@ internal class EventEndpointCallFactory @Inject constructor(
                 eventQuery.orgUnit(),
                 eventQuery.commonParams().ouMode.name,
                 eventQuery.commonParams().program,
+                getEventStartDate(eventQuery),
                 EventFields.allFields,
                 true,
                 eventQuery.page(),
@@ -60,5 +61,12 @@ internal class EventEndpointCallFactory @Inject constructor(
 
     private fun getUidStr(query: EventQuery): String? {
         return if (query.uids().isEmpty()) null else CollectionsHelper.joinCollectionWithSeparator(query.uids(), ";")
+    }
+
+    private fun getEventStartDate(query: EventQuery): String? {
+        return when {
+            query.commonParams().program != null -> query.commonParams().startDate
+            else -> null
+        }
     }
 }

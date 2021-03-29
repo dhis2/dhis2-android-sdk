@@ -47,6 +47,7 @@ public interface EventService {
     String OU_MODE = "ouMode";
     String PROGRAM = "program";
     String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
+    String START_DATE = "startDate";
     String FIELDS = "fields";
     String PAGING = "paging";
     String PAGE_SIZE = "pageSize";
@@ -66,6 +67,7 @@ public interface EventService {
             @Query(ORG_UNIT) String orgUnit,
             @Query(OU_MODE) String orgUnitMode,
             @Query(PROGRAM) String program,
+            @Query(START_DATE) String startDate,
             @Query(FIELDS) @Which Fields<Event> fields,
             @Query(PAGING) Boolean paging,
             @Query(PAGE) int page,

@@ -29,10 +29,10 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
 import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstancesEndpointCallFactory @Inject constructor(
@@ -45,8 +45,9 @@ internal class TrackedEntityInstancesEndpointCallFactory @Inject constructor(
             getUidStr(query),
             getOuStr(query),
             query.commonParams().ouMode.name,
-            query.commonParams().program, getProgramStatus(query),
-            query.commonParams().startDate,
+            query.commonParams().program,
+            getProgramStatus(query),
+            getProgramStartDate(query),
             TrackedEntityInstanceFields.allFields,
             true, query.page(),
             query.pageSize(),
@@ -68,6 +69,16 @@ internal class TrackedEntityInstancesEndpointCallFactory @Inject constructor(
     }
 
     private fun getProgramStatus(query: TeiQuery): String? {
-        return if (query.programStatus() == null) null else query.programStatus().toString()
+        return when {
+            query.commonParams().program != null -> query.programStatus()?.toString()
+            else -> null
+        }
+    }
+
+    private fun getProgramStartDate(query: TeiQuery): String? {
+        return when {
+            query.commonParams().program != null -> query.commonParams().startDate
+            else -> null
+        }
     }
 }

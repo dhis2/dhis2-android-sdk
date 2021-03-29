@@ -65,8 +65,7 @@ ext {
             jexl            : "2.1.1",
             jodaTime        : "2.10.6",
             smsCompression  : "0.2.0",
-            antlr           : "4.7.2", // Upgrading throws a runtime warning
-            expressionParser: "1.0.11",
+            expressionParser: "1.0.15",
 
             // test dependencies
             coreTesting     : "1.1.1",
@@ -205,7 +204,6 @@ dependencies {
     api "com.github.dhis2:sms-compression:${libraries.smsCompression}"
 
     // DHIS 2 antlr expression parser
-    api "org.antlr:antlr4-runtime:${libraries.antlr}"
     api "org.hisp.dhis.parser:dhis-antlr-expression-parser:${libraries.expressionParser}"
 
     // Extension which generates mappers for work with cursor and content values

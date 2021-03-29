@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.Transaction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.resource.internal.Resource;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
@@ -50,6 +51,7 @@ import java.util.Date;
 import io.reactivex.Single;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -162,7 +164,13 @@ public class SystemInfoCallShould {
         when(systemInfo.version()).thenReturn("2.28");
         when(apiCallExecutor.wrapSingle(systemInfoSingle, true)).thenReturn(Single.just(systemInfo));
 
-        systemInfoSyncCall.getCompletable(true).subscribe();
+        try {
+            systemInfoSyncCall.getCompletable(true).blockingAwait();
+            fail("It should not get here");
+        } catch (RuntimeException e) {
+            assertThat(((D2Error) e.getCause()).errorCode())
+                    .isEquivalentAccordingToCompareTo(D2ErrorCode.INVALID_DHIS_VERSION);
+        }
 
         verify(systemInfoHandler, never()).handle(systemInfo);
         verify(resourceHandler, never()).handleResource(eq(Resource.Type.SYSTEM_INFO));

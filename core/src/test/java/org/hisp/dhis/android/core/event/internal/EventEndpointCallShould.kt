@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.event.internal
 
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.mock
+import java.util.concurrent.Callable
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutorImpl
 import org.hisp.dhis.android.core.arch.api.testutils.RetrofitFactory
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
@@ -42,7 +43,6 @@ import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
 import retrofit2.Retrofit
-import java.util.concurrent.Callable
 
 class EventEndpointCallShould {
 
@@ -117,21 +117,29 @@ class EventEndpointCallShould {
     }
 
     private fun givenACallForQuery(eventQuery: EventQuery): Callable<List<Event>> {
-        return EventEndpointCallFactory(retrofit.create(EventService::class.java),
-            APICallExecutorImpl.create(databaseAdapter)).getCall(eventQuery)
+        return EventEndpointCallFactory(
+            retrofit.create(EventService::class.java),
+            APICallExecutorImpl.create(databaseAdapter)
+        ).getCall(eventQuery)
     }
 
-    private fun givenAEventCallByOrgUnitAndProgram(orgUnit: String, program: String?,
-                                                   startDate: String? = null): Callable<List<Event>> {
+    private fun givenAEventCallByOrgUnitAndProgram(
+        orgUnit: String,
+        program: String?,
+        startDate: String? = null
+    ): Callable<List<Event>> {
         val eventQuery = EventQuery.builder()
             .orgUnit(orgUnit)
-            .commonParams(TrackerQueryCommonParams(listOfNotNull(program),
-                program,
-                startDate,
-                false,
-                OrganisationUnitMode.SELECTED, listOf(orgUnit),
-                10
-            ))
+            .commonParams(
+                TrackerQueryCommonParams(
+                    listOfNotNull(program),
+                    program,
+                    startDate,
+                    false,
+                    OrganisationUnitMode.SELECTED, listOf(orgUnit),
+                    10
+                )
+            )
             .build()
         return givenACallForQuery(eventQuery)
     }

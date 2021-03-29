@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
+import java.util.*
+import javax.inject.Inject
 import org.apache.commons.lang3.time.DateUtils
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
@@ -41,8 +43,6 @@ import org.hisp.dhis.android.core.settings.LimitScope
 import org.hisp.dhis.android.core.settings.ProgramSetting
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
-import java.util.*
-import javax.inject.Inject
 
 @Suppress("TooManyFunctions")
 @Reusable

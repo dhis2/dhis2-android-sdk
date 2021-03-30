@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.tracker.importer.internal
 import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.event.internal.TrackerImporterEventHandlerHelper
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
@@ -37,17 +38,29 @@ import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
 @Reusable
 internal class JobReportHandler @Inject internal constructor(
     private val conflictStore: TrackerImportConflictStore,
+    private val eventStore: EventStore,
     private val eventHandlerHelper: TrackerImporterEventHandlerHelper
 ) {
 
     fun handle(o: JobReport) {
         o.validationReport.errorReports.forEach { errorReport ->
             if (errorReport.trackerType == "EVENT") {
-                conflictStore.deleteEventConflicts(errorReport.uid)
-                eventHandlerHelper.handleEventNotes(errorReport.uid, State.ERROR)
+                handleEvent(errorReport.uid, State.ERROR)
                 storeEventConflict(errorReport)
             }
         }
+        
+        if (o.bundleReport != null) {
+            o.bundleReport.typeReportMap.event.objectReports.forEach { objectReport ->
+                handleEvent(objectReport.uid, State.SYNCED)
+            }
+        }
+    }
+    
+    private fun handleEvent(uid: String, state: State) {
+        eventStore.setState(uid, state)
+        conflictStore.deleteEventConflicts(uid)
+        eventHandlerHelper.handleEventNotes(uid, state)
     }
 
     private fun storeEventConflict(error: JobValidationError) {

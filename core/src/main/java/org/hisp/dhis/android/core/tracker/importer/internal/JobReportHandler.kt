@@ -49,14 +49,14 @@ internal class JobReportHandler @Inject internal constructor(
                 storeEventConflict(errorReport)
             }
         }
-        
+
         if (o.bundleReport != null) {
             o.bundleReport.typeReportMap.event.objectReports.forEach { objectReport ->
                 handleEvent(objectReport.uid, State.SYNCED)
             }
         }
     }
-    
+
     private fun handleEvent(uid: String, state: State) {
         eventStore.setState(uid, state)
         conflictStore.deleteEventConflicts(uid)

@@ -35,8 +35,10 @@ import org.hisp.dhis.android.core.arch.helpers.UidGenerator;
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.event.EventCreateProjection;
+import org.hisp.dhis.android.core.event.EventObjectRepository;
 import org.hisp.dhis.android.core.event.EventStatus;
-import org.hisp.dhis.android.core.program.ProgramStage;
+import org.hisp.dhis.android.core.program.ProgramType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl;
@@ -89,6 +91,28 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
 
         d2.eventModule().events().blockingUpload();
     }
+
+    //@Test
+    public void create_event_with_repository() throws Exception {
+        downloadMetadata();
+
+        String eventUid = d2.eventModule().events().blockingAdd(
+                EventCreateProjection.builder()
+                        .organisationUnit(orgUnitUid)
+                        .program(programUid)
+                        .programStage(programStageUid)
+                        .attributeOptionCombo(attributeOptionCombo)
+                        .build()
+        );
+
+        EventObjectRepository repo = d2.eventModule().events().uid(eventUid);
+
+        repo.setEventDate(new Date());
+
+        d2.eventModule().events().blockingUpload();
+    }
+
+
 
     // commented out since it is a flaky test that works against a real server.
     //@Test
@@ -190,18 +214,26 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
         d2.userModule().logIn(username, password, url).blockingGet();
         d2.metadataModule().blockingDownload();
 
-        orgUnitUid = d2.organisationUnitModule().organisationUnits().one().blockingGet().uid();
-        String program = "q04UBOqq3rp"; // Checked in Sierra Leona that metadata is correct.
+        orgUnitUid = d2.organisationUnitModule().organisationUnits()
+                .one().blockingGet()
+                .uid();
+        programUid = d2.programModule().programs()
+                .byOrganisationUnitUid(orgUnitUid)
+                .byProgramType().eq(ProgramType.WITHOUT_REGISTRATION)
+                .one().blockingGet()
+                .uid();
         // Before running, make sure no data elements are compulsory
-        ProgramStage programStage = d2.programModule().programStages()
-                .byProgramUid().eq(program)
-                .one().blockingGet();
-        programStageUid = programStage.uid();
-        programUid = programStage.program().uid();
+        programStageUid = d2.programModule().programStages()
+                .byProgramUid().eq(programUid)
+                .one().blockingGet()
+                .uid();
         dataElementUid = d2.programModule().programStageDataElements()
                 .byProgramStage().eq(programStageUid)
-                .one().blockingGet().dataElement().uid();
-        attributeOptionCombo = d2.categoryModule().categoryOptionCombos().one().blockingGet().uid();
+                .one().blockingGet().dataElement()
+                .uid();
+        attributeOptionCombo = d2.categoryModule().categoryOptionCombos()
+                .one().blockingGet()
+                .uid();
     }
 
     private boolean verifyPushedEventIsInPullList(Event event, List<Event> eventList) {

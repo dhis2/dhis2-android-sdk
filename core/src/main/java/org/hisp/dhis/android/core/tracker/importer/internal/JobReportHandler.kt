@@ -25,28 +25,39 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.tracker.importer.internal
 
-package org.hisp.dhis.android.core.imports.internal;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.event.internal.TrackerImporterEventHandlerHelper
+import org.hisp.dhis.android.core.imports.ImportStatus
+import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
 
-import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.imports.TrackerImportConflictSamples;
-import org.hisp.dhis.android.core.imports.TrackerImportConflict;
-import org.hisp.dhis.android.core.imports.TrackerImportConflictTableInfo;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.runner.RunWith;
+@Reusable
+internal class JobReportHandler @Inject internal constructor(
+    private val conflictStore: TrackerImportConflictStore,
+    private val eventHandlerHelper: TrackerImporterEventHandlerHelper
+) {
 
-@RunWith(D2JunitRunner.class)
-public class TrackerImportConflictStoreIntegrationShould
-        extends ObjectStoreAbstractIntegrationShould<TrackerImportConflict> {
-
-    public TrackerImportConflictStoreIntegrationShould() {
-        super(TrackerImportConflictStoreImpl.create(TestDatabaseAdapterFactory.get()),
-                TrackerImportConflictTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+    fun handle(o: JobReport) {
+        o.validationReport.errorReports.forEach { errorReport ->
+            if (errorReport.trackerType == "EVENT") {
+                conflictStore.deleteEventConflicts(errorReport.uid)
+                eventHandlerHelper.handleEventNotes(errorReport.uid, State.ERROR)
+                storeEventConflict(errorReport)
+            }
+        }
     }
 
-    @Override
-    protected TrackerImportConflict buildObject() {
-        return TrackerImportConflictSamples.get();
+    private fun storeEventConflict(error: JobValidationError) {
+        conflictStore.insert(
+            eventHandlerHelper.getConflictBuilder(null, null, error.uid, ImportStatus.ERROR)
+                .conflict(error.message)
+                .displayDescription(error.message)
+                .value(error.uid)
+                .errorCode(error.errorCode)
+                .build()
+        )
     }
 }

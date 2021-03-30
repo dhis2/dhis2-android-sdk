@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
@@ -42,6 +41,7 @@ import org.hisp.dhis.android.core.imports.internal.EnrollmentImportSummaries;
 import org.hisp.dhis.android.core.imports.internal.ImportConflict;
 import org.hisp.dhis.android.core.imports.internal.TEIImportSummary;
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser;
+import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
 import org.hisp.dhis.android.core.relationship.RelationshipHelper;
@@ -63,7 +63,7 @@ import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getS
 public final class TrackedEntityInstanceImportHandler {
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
     private final EnrollmentImportHandler enrollmentImportHandler;
-    private final ObjectStore<TrackerImportConflict> trackerImportConflictStore;
+    private final TrackerImportConflictStore trackerImportConflictStore;
     private final TrackerImportConflictParser trackerImportConflictParser;
     private final RelationshipStore relationshipStore;
     private final DataStatePropagator dataStatePropagator;
@@ -73,7 +73,7 @@ public final class TrackedEntityInstanceImportHandler {
     @Inject
     TrackedEntityInstanceImportHandler(@NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
                                        @NonNull EnrollmentImportHandler enrollmentImportHandler,
-                                       @NonNull ObjectStore<TrackerImportConflict> trackerImportConflictStore,
+                                       @NonNull TrackerImportConflictStore trackerImportConflictStore,
                                        @NonNull TrackerImportConflictParser trackerImportConflictParser,
                                        @NonNull RelationshipStore relationshipStore,
                                        @NonNull DataStatePropagator dataStatePropagator,

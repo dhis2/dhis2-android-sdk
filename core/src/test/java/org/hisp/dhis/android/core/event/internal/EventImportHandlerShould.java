@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.imports.internal.EventImportSummary;
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser;
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
+import org.hisp.dhis.android.core.tracker.importer.internal.JobReportEventHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -69,7 +70,7 @@ public class EventImportHandlerShould {
     private TrackerImportConflictStore trackerImportConflictStore;
 
     @Mock
-    private TrackerImporterEventHandlerHelper eventHandlerHelper;
+    private JobReportEventHandler jobReportEventHandler;
 
     @Mock
     private TrackerImportConflictParser trackerImportConflictParser;
@@ -84,7 +85,7 @@ public class EventImportHandlerShould {
         when(importSummary.status()).thenReturn(ImportStatus.SUCCESS);
 
         eventImportHandler = new EventImportHandler(eventStore, enrollmentStore, trackedEntityInstanceStore,
-                trackerImportConflictStore, trackerImportConflictParser, eventHandlerHelper);
+                trackerImportConflictStore, trackerImportConflictParser, jobReportEventHandler);
     }
 
     @Test

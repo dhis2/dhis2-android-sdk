@@ -28,14 +28,18 @@
 
 package org.hisp.dhis.android.core.imports.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStoreImpl;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.event.EventTableInfo;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 import org.hisp.dhis.android.core.imports.TrackerImportConflictTableInfo;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo;
 import org.jetbrains.annotations.NotNull;
 
 public final class TrackerImportConflictStoreImpl extends ObjectStoreImpl<TrackerImportConflict>
@@ -71,14 +75,25 @@ public final class TrackerImportConflictStoreImpl extends ObjectStoreImpl<Tracke
 
     @Override
     public void deleteEventConflicts(@NotNull String eventUid) {
+        deleteTypeConflicts(TrackerImportConflictTableInfo.Columns.EVENT,
+                EventTableInfo.TABLE_INFO,
+                eventUid);
+    }
+
+    @Override
+    public void deleteTrackedEntityConflicts(@NonNull String teiUid) {
+        deleteTypeConflicts(TrackerImportConflictTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
+                TrackedEntityInstanceTableInfo.TABLE_INFO,
+                teiUid);
+    }
+
+    private void deleteTypeConflicts(String column, TableInfo tableInfo, String uid) {
         String whereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(TrackerImportConflictTableInfo.Columns.EVENT, eventUid)
+                .appendKeyStringValue(column, uid)
                 .appendKeyStringValue(
                         TrackerImportConflictTableInfo.Columns.TABLE_REFERENCE,
-                        EventTableInfo.TABLE_INFO.name()
-                )
+                        tableInfo.name())
                 .build();
         deleteWhereIfExists(whereClause);
-
     }
 }

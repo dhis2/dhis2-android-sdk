@@ -32,4 +32,5 @@ import org.hisp.dhis.android.core.imports.TrackerImportConflict
 
 internal interface TrackerImportConflictStore : ObjectStore<TrackerImportConflict> {
     fun deleteEventConflicts(eventUid: String)
+    fun deleteTrackedEntityConflicts(tackedEntityUid: String)
 }

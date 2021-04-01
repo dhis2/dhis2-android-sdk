@@ -29,35 +29,31 @@ package org.hisp.dhis.android.core.tracker.importer.internal
 
 import dagger.Reusable
 import javax.inject.Inject
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
+import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
 
 @Reusable
-internal class JobReportHandler @Inject internal constructor(
-    private val eventHandler: JobReportEventHandler,
-    private val enrollmentHandler: JobReportEnrollmentHandler,
-    private val trackedEntityHandler: JobReportTrackedEntityHandler
-) {
+internal class JobReportEnrollmentHandler @Inject internal constructor(
+    private val enrollmentStore: EnrollmentStore,
+    private val conflictStore: TrackerImportConflictStore,
+    private val conflictHelper: TrackerConflictHelper
+) : JobReportTypeHandler() {
 
-    fun handle(o: JobReport) {
-        o.validationReport.errorReports.forEach { errorReport ->
-            when (errorReport.trackerType) {
-                "EVENT" -> eventHandler.handleError(errorReport)
-                "ENROLLMENT" -> enrollmentHandler.handleError(errorReport)
-                "TRACKED_ENTITY" -> eventHandler.handleError(errorReport)
-                else -> println("Unsupported type") // TODO
-            }
-        }
-
-        if (o.bundleReport != null) {
-            val typeMap = o.bundleReport.typeReportMap
-            applySuccess(typeMap.event, eventHandler)
-            applySuccess(typeMap.enrollment, enrollmentHandler)
-            applySuccess(typeMap.trackedEntity, trackedEntityHandler)
-        }
+    override fun handleObject(uid: String, state: State) {
+        enrollmentStore.setState(uid, state)
+        conflictStore.deleteEnrollmentConflicts(uid)
     }
 
-    private fun applySuccess(typeReport: JobTypeReport, typeHandler: JobReportTypeHandler) {
-        typeReport.objectReports.forEach { objectReport ->
-            typeHandler.handleSuccess(objectReport.uid)
-        }
+    override fun storeConflict(errorReport: JobValidationError) {
+        val enrollment = enrollmentStore.selectByUid(errorReport.uid)
+        conflictStore.insert(
+            conflictHelper.getConflictBuilder(errorReport)
+                .tableReference(EnrollmentTableInfo.TABLE_INFO.name())
+                .enrollment(errorReport.uid)
+                .trackedEntityInstance(enrollment!!.trackedEntityInstance())
+                .build()
+        )
     }
 }

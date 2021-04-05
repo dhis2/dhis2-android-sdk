@@ -53,15 +53,19 @@ internal abstract class TrackerQueryFactory<T, S : TrackerBaseSync> constructor(
         lastUpdatedManager.prepare(programSettings, params)
         return if (params.program() == null) {
             val programs = programStore.getUidsByProgramType(programType)
-            if (commonHelper.hasLimitByProgram(params, programSettings)) {
-                programs.flatMap { internalFactory.queryPerProgram(it) }
-            } else {
-                val specificSettings = programSettings?.specificSettings() ?: emptyMap()
-                val globalPrograms = programs.toList() - specificSettings.keys
-                specificSettings
-                    .filterKeys { programs.contains(it) }
-                    .flatMap { internalFactory.queryPerProgram(it.key) } +
-                    internalFactory.queryGlobal(globalPrograms)
+            when {
+                params.uids().isNotEmpty() ->
+                    internalFactory.queryGlobal(programs)
+                commonHelper.hasLimitByProgram(params, programSettings) ->
+                    programs.flatMap { internalFactory.queryPerProgram(it) }
+                else -> {
+                    val specificSettings = programSettings?.specificSettings() ?: emptyMap()
+                    val globalPrograms = programs.toList() - specificSettings.keys
+                    specificSettings
+                        .filterKeys { programs.contains(it) }
+                        .flatMap { internalFactory.queryPerProgram(it.key) } +
+                        internalFactory.queryGlobal(globalPrograms)
+                }
             }
         } else {
             internalFactory.queryPerProgram(params.program())

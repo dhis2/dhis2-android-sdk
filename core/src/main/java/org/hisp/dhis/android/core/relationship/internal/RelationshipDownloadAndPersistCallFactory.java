@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.internal.EventFields;
 import org.hisp.dhis.android.core.event.internal.EventPersistenceCallFactory;
 import org.hisp.dhis.android.core.event.internal.EventService;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipItem;
 import org.hisp.dhis.android.core.relationship.RelationshipItemEnrollment;
@@ -178,7 +179,10 @@ public final class RelationshipDownloadAndPersistCallFactory {
                 for (String uid : teiRelationships) {
                     Single<Payload<TrackedEntityInstance>> single =
                             trackedEntityInstanceService.getTrackedEntityInstance(uid,
-                                    TrackedEntityInstanceFields.asRelationshipFields, true, true)
+                                    OrganisationUnitMode.ACCESSIBLE.name(),
+                                    TrackedEntityInstanceFields.asRelationshipFields,
+                                    true,
+                                    true)
                                     .onErrorResumeNext((err) -> {
                                         failedTeis.add(uid);
                                         return Single.just(Payload.emptyPayload());

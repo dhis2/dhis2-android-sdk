@@ -16,6 +16,8 @@
 
 apply plugin: "maven-publish"
 apply plugin: "signing"
+apply plugin: "org.jetbrains.dokka"
+
 
 def isReleaseBuild() {
     return !VERSION_NAME.contains("SNAPSHOT")
@@ -59,18 +61,22 @@ gradle.taskGraph.whenReady { taskGraph ->
     }
 }
 
-task androidJavadocs(type: Javadoc) {
-    source = android.sourceSets.main.java.sourceFiles
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-    classpath += configurations.compile
-    exclude "org/hisp/dhis/android/core/**/internal/**"
-    exclude "org/hisp/dhis/android/core/**/*InternalAccessor.java"
-    exclude "org/hisp/dhis/android/core/**/**.kt"
+tasks.named("dokkaJavadoc") {
+    outputDirectory = file("$buildDir/dokkaJavadoc")
+
+    dokkaSourceSets {
+        configureEach {
+            perPackageOption {
+                matchingRegex.set(".*.internal.*")
+                suppress.set(true)
+            }
+        }
+    }
 }
 
-task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
+task androidJavadocsJar(type: Jar, dependsOn: dokkaJavadoc) {
     archiveClassifier.set('javadoc')
-    from androidJavadocs.destinationDir
+    from dokkaJavadoc.outputDirectory
 }
 
 task androidSourcesJar(type: Jar) {

@@ -84,6 +84,7 @@ public interface TrackedEntityInstanceService {
     @GET(TRACKED_ENTITY_INSTANCES)
     Single<Payload<TrackedEntityInstance>> getTrackedEntityInstance(
             @Query(TRACKED_ENTITY_INSTACE) String trackedEntityInstance,
+            @Query(OU_MODE) String orgUnitMode,
             @Query(FIELDS) @Which Fields<TrackedEntityInstance> fields,
             @Query(INCLUDE_ALL_ATTRIBUTES) boolean includeAllAttributes,
             @Query(INCLUDE_DELETED) boolean includeDeleted);

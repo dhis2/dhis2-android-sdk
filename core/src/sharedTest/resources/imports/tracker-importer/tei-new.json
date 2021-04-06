@@ -1,0 +1,76 @@
+{
+  "status": "OK",
+  "validationReport": {
+    "errorReports": []
+  },
+  "stats": {
+    "created": 1,
+    "updated": 0,
+    "deleted": 0,
+    "ignored": 0,
+    "total": 1
+  },
+  "bundleReport": {
+    "status": "OK",
+    "typeReportMap": {
+      "EVENT": {
+        "trackerType": "EVENT",
+        "stats": {
+          "created": 0,
+          "updated": 0,
+          "deleted": 0,
+          "ignored": 0,
+          "total": 0
+        },
+        "objectReports": []
+      },
+      "ENROLLMENT": {
+        "trackerType": "ENROLLMENT",
+        "stats": {
+          "created": 0,
+          "updated": 0,
+          "deleted": 0,
+          "ignored": 0,
+          "total": 0
+        },
+        "objectReports": []
+      },
+      "RELATIONSHIP": {
+        "trackerType": "RELATIONSHIP",
+        "stats": {
+          "created": 0,
+          "updated": 0,
+          "deleted": 0,
+          "ignored": 0,
+          "total": 0
+        },
+        "objectReports": []
+      },
+      "TRACKED_ENTITY": {
+        "trackerType": "TRACKED_ENTITY",
+        "stats": {
+          "created": 1,
+          "updated": 0,
+          "deleted": 0,
+          "ignored": 0,
+          "total": 1
+        },
+        "objectReports": [
+          {
+            "trackerType": "TRACKED_ENTITY",
+            "uid": "e34WObjXCwl",
+            "index": 0,
+            "errorReports": []
+          }
+        ]
+      }
+    },
+    "stats": {
+      "created": 1,
+      "updated": 0,
+      "deleted": 0,
+      "ignored": 0,
+      "total": 1
+    }
+  }
+}

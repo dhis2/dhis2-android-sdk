@@ -32,7 +32,6 @@ import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper;
 import org.hisp.dhis.android.core.common.DataColumns;
@@ -41,11 +40,11 @@ import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.event.internal.EventImportHandler;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
-import org.hisp.dhis.android.core.imports.TrackerImportConflictTableInfo;
 import org.hisp.dhis.android.core.imports.internal.EnrollmentImportSummary;
 import org.hisp.dhis.android.core.imports.internal.EventImportSummaries;
 import org.hisp.dhis.android.core.imports.internal.ImportConflict;
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser;
+import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore;
 import org.hisp.dhis.android.core.note.Note;
 import org.hisp.dhis.android.core.note.NoteTableInfo;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
@@ -66,7 +65,7 @@ public class EnrollmentImportHandler {
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
     private final IdentifiableObjectStore<Note> noteStore;
     private final EventImportHandler eventImportHandler;
-    private final ObjectStore<TrackerImportConflict> trackerImportConflictStore;
+    private final TrackerImportConflictStore trackerImportConflictStore;
     private final TrackerImportConflictParser trackerImportConflictParser;
     private final DataStatePropagator dataStatePropagator;
 
@@ -75,7 +74,7 @@ public class EnrollmentImportHandler {
                                    @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
                                    @NonNull IdentifiableObjectStore<Note> noteStore,
                                    @NonNull EventImportHandler eventImportHandler,
-                                   @NonNull ObjectStore<TrackerImportConflict> trackerImportConflictStore,
+                                   @NonNull TrackerImportConflictStore trackerImportConflictStore,
                                    @NonNull TrackerImportConflictParser trackerImportConflictParser,
                                    @NonNull DataStatePropagator dataStatePropagator) {
         this.enrollmentStore = enrollmentStore;
@@ -110,7 +109,7 @@ public class EnrollmentImportHandler {
                     dataStatePropagator.resetUploadingEventStates(enrollmentImportSummary.reference());
                 }
 
-                deleteEnrollmentConflicts(enrollmentImportSummary.reference());
+                trackerImportConflictStore.deleteEnrollmentConflicts(enrollmentImportSummary.reference());
             }
 
             if (handleAction != HandleAction.Delete) {
@@ -181,16 +180,6 @@ public class EnrollmentImportHandler {
         if (parentState != null && teiUid != null) {
             trackedEntityInstanceStore.setState(teiUid, parentState);
         }
-    }
-
-    private void deleteEnrollmentConflicts(String enrollmentUid) {
-        String whereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(TrackerImportConflictTableInfo.Columns.ENROLLMENT, enrollmentUid)
-                .appendKeyStringValue(
-                        TrackerImportConflictTableInfo.Columns.TABLE_REFERENCE,
-                        EnrollmentTableInfo.TABLE_INFO.name())
-                .build();
-        trackerImportConflictStore.deleteWhereIfExists(whereClause);
     }
 
     private TrackerImportConflict.Builder getConflictBuilder(String trackedEntityInstanceUid,

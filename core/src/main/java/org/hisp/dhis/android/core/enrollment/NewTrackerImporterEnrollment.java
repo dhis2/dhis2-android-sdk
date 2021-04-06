@@ -62,7 +62,7 @@ import java.util.List;
 public abstract class NewTrackerImporterEnrollment extends BaseDeletableDataObject implements ObjectWithUidInterface {
 
     @Override
-    @JsonProperty()
+    @JsonProperty("enrollment")
     public abstract String uid();
 
     @Nullable
@@ -157,7 +157,7 @@ public abstract class NewTrackerImporterEnrollment extends BaseDeletableDataObje
     public abstract static class Builder extends BaseDeletableDataObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
-        @JsonProperty()
+        @JsonProperty("enrollment")
         public abstract Builder uid(String uid);
 
         public abstract Builder createdAt(Date createdAt);

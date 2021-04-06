@@ -32,8 +32,8 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.data.imports.TrackerImportConflictSamples;
 import org.hisp.dhis.android.core.data.maintenance.D2ErrorSamples;
 import org.hisp.dhis.android.core.imports.ImportStatus;
-import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore;
+import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStoreImpl;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
@@ -109,8 +109,8 @@ public abstract class BaseMockIntegrationTestFullDispatcher extends BaseMockInte
     }
 
     private static void storeSomeConflicts() {
-        ObjectStore<TrackerImportConflict> trackerImportConflictStore =
-                TrackerImportConflictStore.create(databaseAdapter);
+        TrackerImportConflictStore trackerImportConflictStore =
+                TrackerImportConflictStoreImpl.create(databaseAdapter);
         trackerImportConflictStore.insert(TrackerImportConflictSamples.get().toBuilder()
                 .trackedEntityInstance(null)
                 .enrollment(null)

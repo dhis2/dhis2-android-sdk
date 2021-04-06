@@ -41,7 +41,8 @@ import org.hisp.dhis.android.core.common.StorableObjectWithUid
 internal class JobQueryCall @Inject internal constructor(
     private val service: TrackerImporterService,
     private val apiCallExecutor: APICallExecutor,
-    private val trackerJobStore: IdentifiableObjectStore<StorableObjectWithUid>
+    private val trackerJobStore: IdentifiableObjectStore<StorableObjectWithUid>,
+    private val handler: JobReportHandler
 ) {
 
     fun storeJob(jobId: String) {
@@ -74,8 +75,7 @@ internal class JobQueryCall @Inject internal constructor(
                 if (it) {
                     val jobReport = apiCallExecutor.executeObjectCall(service.getJobReport(jobId))
                     trackerJobStore.delete(jobId)
-                    println(jobReport)
-                    // TODO manage status
+                    handler.handle(jobReport)
                 }
             }
             .take(3)

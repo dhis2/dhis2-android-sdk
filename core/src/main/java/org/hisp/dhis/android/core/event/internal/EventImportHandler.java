@@ -30,22 +30,15 @@ package org.hisp.dhis.android.core.event.internal;
 
 import androidx.annotation.NonNull;
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper;
-import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
 import org.hisp.dhis.android.core.event.EventTableInfo;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
-import org.hisp.dhis.android.core.imports.TrackerImportConflictTableInfo;
 import org.hisp.dhis.android.core.imports.internal.EventImportSummary;
 import org.hisp.dhis.android.core.imports.internal.ImportConflict;
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser;
-import org.hisp.dhis.android.core.note.Note;
-import org.hisp.dhis.android.core.note.NoteTableInfo;
+import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
 
 import java.util.ArrayList;
@@ -62,24 +55,24 @@ import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getS
 public class EventImportHandler {
     private final EventStore eventStore;
     private final EnrollmentStore enrollmentStore;
-    private final IdentifiableObjectStore<Note> noteStore;
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
-    private final ObjectStore<TrackerImportConflict> trackerImportConflictStore;
+    private final TrackerImportConflictStore trackerImportConflictStore;
     private final TrackerImportConflictParser trackerImportConflictParser;
+    private final TrackerImporterEventHandlerHelper eventHandlerHelper;
 
     @Inject
     public EventImportHandler(@NonNull EventStore eventStore,
                               @NonNull EnrollmentStore enrollmentStore,
-                              @NonNull IdentifiableObjectStore<Note> noteStore,
                               @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
-                              @NonNull ObjectStore<TrackerImportConflict> trackerImportConflictStore,
-                              @NonNull TrackerImportConflictParser trackerImportConflictParser) {
+                              @NonNull TrackerImportConflictStore trackerImportConflictStore,
+                              @NonNull TrackerImportConflictParser trackerImportConflictParser,
+                              TrackerImporterEventHandlerHelper eventHandlerHelper) {
         this.eventStore = eventStore;
         this.enrollmentStore = enrollmentStore;
-        this.noteStore = noteStore;
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
         this.trackerImportConflictStore = trackerImportConflictStore;
         this.trackerImportConflictParser = trackerImportConflictParser;
+        this.eventHandlerHelper = eventHandlerHelper;
     }
 
     public void handleEventImportSummaries(List<EventImportSummary> eventImportSummaries,
@@ -105,11 +98,11 @@ public class EventImportHandler {
                     parentState = parentState == State.ERROR ? State.ERROR : state;
                 }
 
-                deleteEventConflicts(eventImportSummary.reference());
+                trackerImportConflictStore.deleteEventConflicts(eventImportSummary.reference());
             }
 
             if (handleAction != HandleAction.Delete) {
-                handleNoteImportSummary(eventImportSummary.reference(), state);
+                eventHandlerHelper.handleEventNotes(eventImportSummary.reference(), state);
 
                 storeEventImportConflicts(eventImportSummary, teiUid, enrollmentUid);
             }
@@ -151,28 +144,6 @@ public class EventImportHandler {
             if (enrollmentUid != null) {
                 enrollmentStore.setState(enrollmentUid, parentState);
             }
-        }
-    }
-
-    private void deleteEventConflicts(String eventUid) {
-        String whereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(TrackerImportConflictTableInfo.Columns.EVENT, eventUid)
-                .appendKeyStringValue(
-                        TrackerImportConflictTableInfo.Columns.TABLE_REFERENCE,
-                        EventTableInfo.TABLE_INFO.name())
-                .build();
-        trackerImportConflictStore.deleteWhereIfExists(whereClause);
-    }
-
-    private void handleNoteImportSummary(String eventUid, State state) {
-        State newNoteState = state.equals(State.SYNCED) ? State.SYNCED : State.TO_POST;
-        String whereClause = new WhereClauseBuilder()
-                .appendInKeyStringValues(
-                        DataColumns.STATE, EnumHelper.asStringList(State.uploadableStatesIncludingError()))
-                .appendKeyStringValue(NoteTableInfo.Columns.EVENT, eventUid).build();
-        List<Note> notes = noteStore.selectWhere(whereClause);
-        for (Note note : notes) {
-            noteStore.update(note.toBuilder().state(newNoteState).build());
         }
     }
 

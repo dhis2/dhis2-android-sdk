@@ -40,7 +40,6 @@ import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.event.internal.EventImportHandler;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
-import org.hisp.dhis.android.core.imports.TrackerImportConflictTableInfo;
 import org.hisp.dhis.android.core.imports.internal.EnrollmentImportSummary;
 import org.hisp.dhis.android.core.imports.internal.EventImportSummaries;
 import org.hisp.dhis.android.core.imports.internal.ImportConflict;
@@ -110,7 +109,7 @@ public class EnrollmentImportHandler {
                     dataStatePropagator.resetUploadingEventStates(enrollmentImportSummary.reference());
                 }
 
-                deleteEnrollmentConflicts(enrollmentImportSummary.reference());
+                trackerImportConflictStore.deleteEnrollmentConflicts(enrollmentImportSummary.reference());
             }
 
             if (handleAction != HandleAction.Delete) {
@@ -181,16 +180,6 @@ public class EnrollmentImportHandler {
         if (parentState != null && teiUid != null) {
             trackedEntityInstanceStore.setState(teiUid, parentState);
         }
-    }
-
-    private void deleteEnrollmentConflicts(String enrollmentUid) {
-        String whereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(TrackerImportConflictTableInfo.Columns.ENROLLMENT, enrollmentUid)
-                .appendKeyStringValue(
-                        TrackerImportConflictTableInfo.Columns.TABLE_REFERENCE,
-                        EnrollmentTableInfo.TABLE_INFO.name())
-                .build();
-        trackerImportConflictStore.deleteWhereIfExists(whereClause);
     }
 
     private TrackerImportConflict.Builder getConflictBuilder(String trackedEntityInstanceUid,

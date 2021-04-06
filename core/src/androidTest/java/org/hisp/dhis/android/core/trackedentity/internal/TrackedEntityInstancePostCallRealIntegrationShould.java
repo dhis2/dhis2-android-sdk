@@ -184,7 +184,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
                         .build());
 
         // Enrollment module -> enroll the tracked entity instance to the program
-        d2.enrollmentModule().enrollments().add(
+        d2.enrollmentModule().enrollments().blockingAdd(
                 EnrollmentCreateProjection.builder()
                         .organisationUnit(organisationUnit.uid())
                         .program(program.uid())

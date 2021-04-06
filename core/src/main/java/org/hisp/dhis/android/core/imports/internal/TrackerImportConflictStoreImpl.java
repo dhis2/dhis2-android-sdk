@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStoreImpl;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.event.EventTableInfo;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 import org.hisp.dhis.android.core.imports.TrackerImportConflictTableInfo;
@@ -78,6 +79,13 @@ public final class TrackerImportConflictStoreImpl extends ObjectStoreImpl<Tracke
         deleteTypeConflicts(TrackerImportConflictTableInfo.Columns.EVENT,
                 EventTableInfo.TABLE_INFO,
                 eventUid);
+    }
+
+    @Override
+    public void deleteEnrollmentConflicts(@NotNull String enrollmentUid) {
+        deleteTypeConflicts(TrackerImportConflictTableInfo.Columns.ENROLLMENT,
+                EnrollmentTableInfo.TABLE_INFO,
+                enrollmentUid);
     }
 
     @Override

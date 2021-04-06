@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.imports.internal.ImportConflict;
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser;
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
+import org.hisp.dhis.android.core.tracker.importer.internal.JobReportEventHandler;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -58,7 +59,7 @@ public class EventImportHandler {
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
     private final TrackerImportConflictStore trackerImportConflictStore;
     private final TrackerImportConflictParser trackerImportConflictParser;
-    private final TrackerImporterEventHandlerHelper eventHandlerHelper;
+    private final JobReportEventHandler jobReportEventHandler;
 
     @Inject
     public EventImportHandler(@NonNull EventStore eventStore,
@@ -66,13 +67,13 @@ public class EventImportHandler {
                               @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
                               @NonNull TrackerImportConflictStore trackerImportConflictStore,
                               @NonNull TrackerImportConflictParser trackerImportConflictParser,
-                              TrackerImporterEventHandlerHelper eventHandlerHelper) {
+                              JobReportEventHandler jobReportEventHandler) {
         this.eventStore = eventStore;
         this.enrollmentStore = enrollmentStore;
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
         this.trackerImportConflictStore = trackerImportConflictStore;
         this.trackerImportConflictParser = trackerImportConflictParser;
-        this.eventHandlerHelper = eventHandlerHelper;
+        this.jobReportEventHandler = jobReportEventHandler;
     }
 
     public void handleEventImportSummaries(List<EventImportSummary> eventImportSummaries,
@@ -102,7 +103,7 @@ public class EventImportHandler {
             }
 
             if (handleAction != HandleAction.Delete) {
-                eventHandlerHelper.handleEventNotes(eventImportSummary.reference(), state);
+                jobReportEventHandler.handleEventNotes(eventImportSummary.reference(), state);
 
                 storeEventImportConflicts(eventImportSummary, teiUid, enrollmentUid);
             }

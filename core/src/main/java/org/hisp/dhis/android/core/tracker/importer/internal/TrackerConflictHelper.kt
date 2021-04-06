@@ -28,33 +28,21 @@
 package org.hisp.dhis.android.core.tracker.importer.internal
 
 import dagger.Reusable
+import java.util.Date
 import javax.inject.Inject
+import org.hisp.dhis.android.core.imports.ImportStatus
+import org.hisp.dhis.android.core.imports.TrackerImportConflict
 
 @Reusable
-internal class JobReportHandler @Inject internal constructor(
-    private val eventHandler: JobReportEventHandler,
-    private val trackedEntityHandler: JobReportTrackedEntityHandler
-) {
+internal class TrackerConflictHelper @Inject internal constructor() {
 
-    fun handle(o: JobReport) {
-        o.validationReport.errorReports.forEach { errorReport ->
-            when (errorReport.trackerType) {
-                "EVENT" -> eventHandler.handleError(errorReport)
-                "TRACKED_ENTITY" -> eventHandler.handleError(errorReport)
-                else -> println("Unsupported type") // TODO
-            }
-        }
-
-        if (o.bundleReport != null) {
-            val typeMap = o.bundleReport.typeReportMap
-            applySuccess(typeMap.event, eventHandler)
-            applySuccess(typeMap.trackedEntity, trackedEntityHandler)
-        }
-    }
-
-    private fun applySuccess(typeReport: JobTypeReport, typeHandler: JobReportTypeHandler) {
-        typeReport.objectReports.forEach { objectReport ->
-            typeHandler.handleSuccess(objectReport.uid)
-        }
+    fun getConflictBuilder(errorReport: JobValidationError): TrackerImportConflict.Builder {
+        return TrackerImportConflict.builder()
+            .conflict(errorReport.message)
+            .displayDescription(errorReport.message)
+            .value(errorReport.uid)
+            .errorCode(errorReport.errorCode)
+            .status(ImportStatus.ERROR)
+            .created(Date())
     }
 }

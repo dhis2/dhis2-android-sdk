@@ -30,13 +30,11 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 
 import androidx.annotation.NonNull;
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentImportHandler;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
-import org.hisp.dhis.android.core.imports.TrackerImportConflictTableInfo;
 import org.hisp.dhis.android.core.imports.internal.EnrollmentImportSummaries;
 import org.hisp.dhis.android.core.imports.internal.ImportConflict;
 import org.hisp.dhis.android.core.imports.internal.TEIImportSummary;
@@ -112,7 +110,7 @@ public final class TrackedEntityInstanceImportHandler {
                     setRelationshipsState(teiImportSummary.reference(), State.SYNCED);
                 }
 
-                deleteTEIConflicts(teiImportSummary.reference());
+                trackerImportConflictStore.deleteTrackedEntityConflicts(teiImportSummary.reference());
             }
 
             if (handleAction != HandleAction.Delete) {
@@ -149,16 +147,6 @@ public final class TrackedEntityInstanceImportHandler {
         for (TrackerImportConflict trackerImportConflict : trackerImportConflicts) {
             trackerImportConflictStore.insert(trackerImportConflict);
         }
-    }
-
-    private void deleteTEIConflicts(String teiUid) {
-        String whereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(TrackerImportConflictTableInfo.Columns.TRACKED_ENTITY_INSTANCE, teiUid)
-                .appendKeyStringValue(
-                        TrackerImportConflictTableInfo.Columns.TABLE_REFERENCE,
-                        TrackedEntityInstanceTableInfo.TABLE_INFO.name())
-                .build();
-        trackerImportConflictStore.deleteWhereIfExists(whereClause);
     }
 
     private void setRelationshipsState(String trackedEntityInstanceUid, State state) {

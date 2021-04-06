@@ -27,34 +27,19 @@
  */
 package org.hisp.dhis.android.core.tracker.importer.internal
 
-import dagger.Reusable
-import javax.inject.Inject
+import org.hisp.dhis.android.core.common.State
 
-@Reusable
-internal class JobReportHandler @Inject internal constructor(
-    private val eventHandler: JobReportEventHandler,
-    private val trackedEntityHandler: JobReportTrackedEntityHandler
-) {
+internal abstract class JobReportTypeHandler {
 
-    fun handle(o: JobReport) {
-        o.validationReport.errorReports.forEach { errorReport ->
-            when (errorReport.trackerType) {
-                "EVENT" -> eventHandler.handleError(errorReport)
-                "TRACKED_ENTITY" -> eventHandler.handleError(errorReport)
-                else -> println("Unsupported type") // TODO
-            }
-        }
-
-        if (o.bundleReport != null) {
-            val typeMap = o.bundleReport.typeReportMap
-            applySuccess(typeMap.event, eventHandler)
-            applySuccess(typeMap.trackedEntity, trackedEntityHandler)
-        }
+    fun handleSuccess(uid: String) {
+        handleObject(uid, State.SYNCED)
     }
 
-    private fun applySuccess(typeReport: JobTypeReport, typeHandler: JobReportTypeHandler) {
-        typeReport.objectReports.forEach { objectReport ->
-            typeHandler.handleSuccess(objectReport.uid)
-        }
+    fun handleError(errorReport: JobValidationError) {
+        handleObject(errorReport.uid, State.ERROR)
+        storeConflict(errorReport)
     }
+
+    abstract fun handleObject(uid: String, state: State)
+    abstract fun storeConflict(errorReport: JobValidationError)
 }

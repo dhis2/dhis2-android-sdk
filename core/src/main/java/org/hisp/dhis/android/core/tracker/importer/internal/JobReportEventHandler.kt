@@ -25,25 +25,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.event.internal
+package org.hisp.dhis.android.core.tracker.importer.internal
 
 import dagger.Reusable
-import java.util.Date
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.event.EventTableInfo
-import org.hisp.dhis.android.core.imports.ImportStatus
-import org.hisp.dhis.android.core.imports.TrackerImportConflict
+import org.hisp.dhis.android.core.event.internal.EventStore
+import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
 import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.note.NoteTableInfo
 
 @Reusable
-internal class TrackerImporterEventHandlerHelper @Inject internal constructor(
-    private val noteStore: IdentifiableObjectStore<Note>
-) {
+internal class JobReportEventHandler @Inject internal constructor(
+    private val noteStore: IdentifiableObjectStore<Note>,
+    private val conflictStore: TrackerImportConflictStore,
+    private val eventStore: EventStore,
+    private val conflictHelper: TrackerConflictHelper
+) : JobReportTypeHandler() {
 
     fun handleEventNotes(eventUid: String, state: State) {
         val newNoteState = if (state == State.SYNCED) State.SYNCED else State.TO_POST
@@ -52,24 +54,22 @@ internal class TrackerImporterEventHandlerHelper @Inject internal constructor(
                 DataColumns.STATE, State.uploadableStatesIncludingError().map { it.name }
             )
             .appendKeyStringValue(NoteTableInfo.Columns.EVENT, eventUid).build()
-        val notes: List<Note> = noteStore.selectWhere(whereClause)
-        for (note in notes) {
+        for (note in noteStore.selectWhere(whereClause)) {
             noteStore.update(note.toBuilder().state(newNoteState).build())
         }
     }
 
-    fun getConflictBuilder(
-        trackedEntityUid: String?,
-        enrollmentUid: String?,
-        eventUid: String,
-        status: ImportStatus
-    ): TrackerImportConflict.Builder {
-        return TrackerImportConflict.builder()
-            .trackedEntityInstance(trackedEntityUid)
-            .enrollment(enrollmentUid)
-            .event(eventUid)
-            .tableReference(EventTableInfo.TABLE_INFO.name())
-            .status(status)
-            .created(Date())
+    override fun handleObject(uid: String, state: State) {
+        eventStore.setState(uid, state)
+        conflictStore.deleteEventConflicts(uid)
+        handleEventNotes(uid, state)
+    }
+
+    override fun storeConflict(errorReport: JobValidationError) {
+        conflictStore.insert(
+            conflictHelper.getConflictBuilder(errorReport)
+                .tableReference(EventTableInfo.TABLE_INFO.name())
+                .event(errorReport.uid).build()
+        )
     }
 }

@@ -2,7 +2,49 @@
 
 <!--DHIS2-SECTION-ID:debugging-->
 
-Besides the regular debugging tools in AndroidStudio, the library [Stetho](http://facebook.github.io/stetho/) allows the use of Chrome Developer Tools for debugging network traffic and explore the database.
+## Android Studio
+You can debug your DHIS2 Android App using Android Studio. Follow the [instructions from the Android Developer Portal](https://developer.android.com/studio/debug) 
+
+## Flipper (recommended)
+Flipper is a platform for debugging mobile apps on iOS and Android developed by Facebook. Flipper provides many features, 
+provided by different plugins.
+
+Specially relevant plugins to debug the SDK: 
+- Network: see each request and response exchanged between the app and the web API, their data and timing
+- Database: see table content and perform custom SQL queries
+
+Steps to install it and configure it:
+1. Ensure you have the Android SDK installed (you probably will if you are planning to debug an Android app)
+2. Download Flipper from [its website](https://fbflipper.com/)
+3. Add the diagnostic activity to the Android Manifest:
+
+```xml
+<activity android:name="com.facebook.flipper.android.diagnostics.FlipperDiagnosticActivity"
+            android:exported="true"/>
+```
+
+4. Set up the plugins while configuring the SDK: 
+
+```java
+        // This will be null if not debug mode to make sure your data is safe 
+        Interceptor flipperInterceptor = FlipperManager.setUp(context);
+
+        List<Interceptor> networkInterceptors = new ArrayList<>();
+        if (flipperInterceptor != null) {
+            networkInterceptors.add(flipperInterceptor);
+        }
+
+        return D2Configuration.builder()
+                ...
+                .networkInterceptors(networkInterceptors)
+                .build();
+```
+
+If you want to use any other Flipper plugins to debug other aspects of the app, we recommend you to go through [the documentation](https://fbflipper.com/docs/getting-started/android-native). 
+
+## Stetho (legacy)
+[Stetho](http://facebook.github.io/stetho/) is a sophisticated debug bridge for Android applications enabling developers 
+debug their Android apps using the Chrome Developer Tools.
 
 Setup up Stetho by adding the following dependencies in your gradle file:
 
@@ -23,7 +65,7 @@ D2Configuration.builder()
     .build();
 ```
 
-Finally enable initialize Stetho in the `Application` class:
+Finally initialize Stetho in the `Application` class:
 
 ```java
 if (DEBUG) {

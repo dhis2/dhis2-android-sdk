@@ -46,8 +46,8 @@ class ExpressionHelperShould {
     @Test
     fun map_data_elements_only() {
         val dataValues: List<DataValue> = listOf(
-            dv(dataElement1, cocDefault, "4"),
-            dv(dataElement2, cocDefault, "6")
+                dv(dataElement1, cocDefault, "4"),
+                dv(dataElement2, cocDefault, "6")
         )
         val valueMap = getValueMap(dataValues)
         Truth.assertThat(valueMap.keys.size).isEqualTo(4)
@@ -60,10 +60,10 @@ class ExpressionHelperShould {
     @Test
     fun map_data_elements_and_operands() {
         val dataValues: List<DataValue> = listOf(
-            dv(dataElement1, coc1, "4"),
-            dv(dataElement1, coc2, "5"),
-            dv(dataElement2, coc1, "6"),
-            dv(dataElement2, coc2, "7")
+                dv(dataElement1, coc1, "4"),
+                dv(dataElement1, coc2, "5"),
+                dv(dataElement2, coc1, "6"),
+                dv(dataElement2, coc2, "7")
         )
         val valueMap = getValueMap(dataValues)
         Truth.assertThat(valueMap.keys.size).isEqualTo(6)
@@ -75,35 +75,63 @@ class ExpressionHelperShould {
         assertContainsEntry(valueMap, dataElement2, coc2, 7.0)
     }
 
+    @Test
+    fun ignore_non_numeric_values() {
+        val dataValues: List<DataValue> = listOf(
+                dv(dataElement1, coc1, "4"),
+                dv(dataElement1, coc2, "5"),
+                dv(dataElement2, coc1, "text1"),
+                dv(dataElement2, coc2, "text2")
+        )
+        val valueMap = getValueMap(dataValues)
+        Truth.assertThat(valueMap.keys.size).isEqualTo(3)
+        assertNotContainsEntry(valueMap, dataElement2, null)
+        assertNotContainsEntry(valueMap, dataElement2, coc1)
+        assertNotContainsEntry(valueMap, dataElement2, coc2)
+    }
+
     private fun dv(dataElementId: String, categoryOptionComboId: String, value: String): DataValue {
         return DataValue.builder()
-            .dataElement(dataElementId)
-            .categoryOptionCombo(categoryOptionComboId)
-            .value(value)
-            .build()
+                .dataElement(dataElementId)
+                .categoryOptionCombo(categoryOptionComboId)
+                .value(value)
+                .build()
     }
 
     private fun assertContainsEntry(
-        valueMap: Map<DimensionalItemObject, Double>,
-        dataElementId: String,
-        value: Double
+            valueMap: Map<DimensionalItemObject, Double>,
+            dataElementId: String,
+            value: Double
     ) {
         assertContainsEntry(valueMap, dataElementId, null, value)
     }
 
     private fun assertContainsEntry(
-        valueMap: Map<DimensionalItemObject, Double>,
-        dataElementId: String,
-        categoryOptionComboId: String?,
-        value: Double
+            valueMap: Map<DimensionalItemObject, Double>,
+            dataElementId: String,
+            categoryOptionComboId: String?,
+            value: Double
     ) {
         val key =
-            if (categoryOptionComboId == null) DataElementObject.create(dataElementId)
-            else DataElementOperandObject.create(dataElementId, categoryOptionComboId)
+                if (categoryOptionComboId == null) DataElementObject.create(dataElementId)
+                else DataElementOperandObject.create(dataElementId, categoryOptionComboId)
 
         val entry = valueMap.entries.find { it.key == key }
 
         Truth.assertThat(entry).isNotNull()
         Truth.assertThat(entry!!.value).isEqualTo(value)
     }
+
+    private fun assertNotContainsEntry(
+            valueMap: Map<DimensionalItemObject, Double>,
+            dataElementId: String,
+            categoryOptionComboId: String?
+    ) {
+        val key =
+                if (categoryOptionComboId == null) DataElementObject.create(dataElementId)
+                else DataElementOperandObject.create(dataElementId, categoryOptionComboId)
+
+        valueMap.entries.none { it.key == key }
+    }
+
 }

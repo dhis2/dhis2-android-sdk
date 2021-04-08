@@ -29,11 +29,38 @@
 package org.hisp.dhis.android.core.arch.helpers
 
 import org.hisp.dhis.android.core.common.ValueType
+import org.hisp.dhis.android.core.common.valuetype.validation.validators.IntegerPositiveValidator
 
 object ValueTypeValidator {
 
     @JvmStatic
     fun validate(value: String, valueType: ValueType): Result<String, Throwable> {
-        return Result.Success(value)
+        return when (valueType) {
+            ValueType.TEXT -> TODO()
+            ValueType.LONG_TEXT -> TODO()
+            ValueType.LETTER -> TODO()
+            ValueType.BOOLEAN -> TODO()
+            ValueType.TRUE_ONLY -> TODO()
+            ValueType.DATE -> TODO()
+            ValueType.DATETIME -> TODO()
+            ValueType.TIME -> TODO()
+            ValueType.NUMBER -> TODO()
+            ValueType.UNIT_INTERVAL -> TODO()
+            ValueType.PERCENTAGE -> TODO()
+            ValueType.INTEGER -> TODO()
+            ValueType.INTEGER_POSITIVE -> IntegerPositiveValidator.validate(value)
+            ValueType.INTEGER_NEGATIVE -> TODO()
+            ValueType.INTEGER_ZERO_OR_POSITIVE -> TODO()
+            ValueType.FILE_RESOURCE -> TODO()
+            ValueType.COORDINATE -> TODO()
+            ValueType.PHONE_NUMBER -> TODO()
+            ValueType.EMAIL -> TODO()
+            ValueType.USERNAME -> TODO()
+            ValueType.ORGANISATION_UNIT -> TODO()
+            ValueType.TRACKER_ASSOCIATE -> TODO()
+            ValueType.AGE -> TODO()
+            ValueType.URL -> TODO()
+            ValueType.IMAGE -> TODO()
+        }
     }
 }

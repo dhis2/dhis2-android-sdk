@@ -46,11 +46,14 @@ public class ProgramItemAttribute
         TrackedEntityAttributeValue attributeValue =
                 visitor.getProgramIndicatorContext().attributeValues().get(attributeUid);
 
-        String value = attributeValue == null ? null : attributeValue.value();
-
         TrackedEntityAttribute attribute = visitor.getTrackedEntityAttributeStore().selectByUid(attributeUid);
 
-        return formatValue(String.valueOf(visitor.handleNulls(value)), attribute.valueType());
+        String value = attributeValue == null ? null : attributeValue.value();
+
+        Object handledValue = visitor.handleNulls(value);
+        String strValue = handledValue == null ? null : handledValue.toString();
+
+        return formatValue(strValue, attribute.valueType());
     }
 
 

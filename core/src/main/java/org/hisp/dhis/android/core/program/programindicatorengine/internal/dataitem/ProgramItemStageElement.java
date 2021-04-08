@@ -69,7 +69,10 @@ public class ProgramItemStageElement
 
         DataElement dataElement = visitor.getDataElementStore().selectByUid(dataElementId);
 
-        return formatValue(String.valueOf(visitor.handleNulls(value)), dataElement.valueType());
+        Object handledValue = visitor.handleNulls(value);
+        String strValue = handledValue == null ? null : handledValue.toString();
+
+        return formatValue(strValue, dataElement.valueType());
     }
 
     private List<TrackedEntityDataValue> getCandidates(List<Event> events, String dataElement) {

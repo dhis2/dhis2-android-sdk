@@ -25,104 +25,66 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.common;
+import org.hisp.dhis.android.core.common.valuetype.validation.validators.DefaultValidator
+import org.hisp.dhis.android.core.common.valuetype.validation.validators.IntegerNegativeValidator
+import org.hisp.dhis.android.core.common.valuetype.validation.validators.IntegerPositiveValidator
+import org.hisp.dhis.android.core.common.valuetype.validation.validators.ValueTypeValidator
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import java.util.*
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+enum class ValueType(javaClass: Class<*>, val validator: ValueTypeValidator) {
+    TEXT(String::class.java, DefaultValidator),
+    LONG_TEXT(String::class.java, DefaultValidator),
+    LETTER(String::class.java, DefaultValidator),
+    BOOLEAN(Boolean::class.java, DefaultValidator),
+    TRUE_ONLY(Boolean::class.java, DefaultValidator),
+    DATE(Date::class.java, DefaultValidator),
+    DATETIME(Date::class.java, DefaultValidator),
+    TIME(String::class.java, DefaultValidator),
+    NUMBER(Double::class.java, DefaultValidator),
+    UNIT_INTERVAL(Double::class.java, DefaultValidator),
+    PERCENTAGE(Double::class.java, DefaultValidator),
+    INTEGER(Int::class.java, DefaultValidator),
+    INTEGER_POSITIVE(Int::class.java, IntegerPositiveValidator),
+    INTEGER_NEGATIVE(Int::class.java, IntegerNegativeValidator),
+    INTEGER_ZERO_OR_POSITIVE(Int::class.java, DefaultValidator),
+    FILE_RESOURCE(String::class.java, DefaultValidator),
+    COORDINATE(String::class.java, DefaultValidator),
+    PHONE_NUMBER(String::class.java, DefaultValidator),
+    EMAIL(String::class.java, DefaultValidator),
+    USERNAME(String::class.java, DefaultValidator),
+    ORGANISATION_UNIT(OrganisationUnit::class.java, DefaultValidator),
+    TRACKER_ASSOCIATE(TrackedEntityInstance::class.java, DefaultValidator),
+    AGE(Date::class.java, DefaultValidator),
+    URL(String::class.java, DefaultValidator),
+    IMAGE(String::class.java, DefaultValidator);
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+    val isInteger: Boolean
+        get() = INTEGER_TYPES.contains(this)
+    val isNumeric: Boolean
+        get() = NUMERIC_TYPES.contains(this)
+    val isBoolean: Boolean
+        get() = BOOLEAN_TYPES.contains(this)
+    val isText: Boolean
+        get() = TEXT_TYPES.contains(this)
+    val isDate: Boolean
+        get() = DATE_TYPES.contains(this)
+    val isFile: Boolean
+        get() = this == FILE_RESOURCE
+    val isCoordinate: Boolean
+        get() = this == COORDINATE
 
-public enum ValueType {
-    TEXT(String.class),
-    LONG_TEXT(String.class),
-    LETTER(String.class),
-    BOOLEAN(Boolean.class),
-    TRUE_ONLY(Boolean.class),
-    DATE(Date.class),
-    DATETIME(Date.class),
-    TIME(String.class),
-    NUMBER(Double.class),
-    UNIT_INTERVAL(Double.class),
-    PERCENTAGE(Double.class),
-    INTEGER(Integer.class),
-    INTEGER_POSITIVE(Integer.class),
-    INTEGER_NEGATIVE(Integer.class),
-    INTEGER_ZERO_OR_POSITIVE(Integer.class),
-    FILE_RESOURCE(String.class),
-    COORDINATE(String.class),
-
-    // TODO: Categorize
-    PHONE_NUMBER(String.class),
-    EMAIL(String.class),
-    USERNAME(String.class),
-
-    // TODO: Implement later
-    ORGANISATION_UNIT(OrganisationUnit.class),
-    TRACKER_ASSOCIATE(TrackedEntityInstance.class),
-
-    //New values:
-    AGE(Date.class),
-    URL(String.class),
-
-    IMAGE(String.class);
-
-    private static final Set<ValueType> INTEGER_TYPES = new HashSet<>(Arrays.asList(INTEGER,
-            INTEGER_POSITIVE, INTEGER_NEGATIVE, INTEGER_ZERO_OR_POSITIVE));
-
-    private static final Set<ValueType> NUMERIC_TYPES = new HashSet<>(Arrays.asList(INTEGER, NUMBER,
-            INTEGER_POSITIVE, INTEGER_NEGATIVE, INTEGER_ZERO_OR_POSITIVE, UNIT_INTERVAL, PERCENTAGE));
-
-    private static final Set<ValueType> BOOLEAN_TYPES = new HashSet<>(Arrays.asList(BOOLEAN,
-            TRUE_ONLY));
-
-    private static final Set<ValueType> TEXT_TYPES = new HashSet<>(Arrays.asList(TEXT, LONG_TEXT,
-            LETTER, COORDINATE, TIME, IMAGE));
-
-    private static final Set<ValueType> DATE_TYPES = new HashSet<>(Arrays.asList(DATE, DATETIME));
-
-    private final Class<?> javaClass;
-
-    ValueType() {
-        this.javaClass = null;
-    }
-
-    ValueType(Class<?> javaClass) {
-        this.javaClass = javaClass;
-    }
-
-    public Class<?> getJavaClass() {
-        return javaClass;
-    }
-
-    public boolean isInteger() {
-        return INTEGER_TYPES.contains(this);
-    }
-
-    public boolean isNumeric() {
-        return NUMERIC_TYPES.contains(this);
-    }
-
-    public boolean isBoolean() {
-        return BOOLEAN_TYPES.contains(this);
-    }
-
-    public boolean isText() {
-        return TEXT_TYPES.contains(this);
-    }
-
-    public boolean isDate() {
-        return DATE_TYPES.contains(this);
-    }
-
-    public boolean isFile() {
-        return this == FILE_RESOURCE;
-    }
-
-    public boolean isCoordinate() {
-        return this == COORDINATE;
+    companion object {
+        private val INTEGER_TYPES: Set<ValueType> =
+                HashSet(listOf(INTEGER, INTEGER_POSITIVE, INTEGER_NEGATIVE, INTEGER_ZERO_OR_POSITIVE))
+        private val NUMERIC_TYPES: Set<ValueType> =
+                HashSet(listOf(INTEGER, NUMBER, INTEGER_POSITIVE, INTEGER_NEGATIVE, INTEGER_ZERO_OR_POSITIVE,
+                        UNIT_INTERVAL, PERCENTAGE))
+        private val BOOLEAN_TYPES: Set<ValueType> = HashSet(listOf(BOOLEAN, TRUE_ONLY))
+        private val TEXT_TYPES: Set<ValueType> = HashSet(listOf(TEXT, LONG_TEXT, LETTER, COORDINATE, TIME, IMAGE))
+        private val DATE_TYPES: Set<ValueType> = HashSet(listOf(DATE, DATETIME))
     }
 }

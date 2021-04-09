@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.arch.helpers
 
 import org.hisp.dhis.android.core.common.ValueType
+import org.hisp.dhis.android.core.common.valuetype.validation.validators.IntegerNegativeValidator
 import org.hisp.dhis.android.core.common.valuetype.validation.validators.IntegerPositiveValidator
 
 object ValueTypeValidator {
@@ -49,7 +50,7 @@ object ValueTypeValidator {
             ValueType.PERCENTAGE -> TODO()
             ValueType.INTEGER -> TODO()
             ValueType.INTEGER_POSITIVE -> IntegerPositiveValidator.validate(value)
-            ValueType.INTEGER_NEGATIVE -> TODO()
+            ValueType.INTEGER_NEGATIVE -> IntegerNegativeValidator.validate(value)
             ValueType.INTEGER_ZERO_OR_POSITIVE -> TODO()
             ValueType.FILE_RESOURCE -> TODO()
             ValueType.COORDINATE -> TODO()

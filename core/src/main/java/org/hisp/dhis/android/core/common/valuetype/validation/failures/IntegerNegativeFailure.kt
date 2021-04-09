@@ -26,10 +26,10 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common.valuetype.validation.validators
+package org.hisp.dhis.android.core.common.valuetype.validation.failures
 
-import org.hisp.dhis.android.core.arch.helpers.Result
-
-interface ValueTypeValidator {
-    fun validate(value: String): Result<String, Throwable>
+sealed class IntegerNegativeFailure : Throwable() {
+    object NumberFormatException : IntegerNegativeFailure()
+    object ValueIsZero : IntegerNegativeFailure()
+    object ValueIsPositive : IntegerNegativeFailure()
 }

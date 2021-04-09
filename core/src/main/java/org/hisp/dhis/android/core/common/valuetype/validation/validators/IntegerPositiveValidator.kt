@@ -46,7 +46,7 @@ object IntegerPositiveValidator : ValueTypeValidator {
                     Result.Success(value)
                 }
             }
-        } catch (e: Throwable) {
+        } catch (e: NumberFormatException) {
             Result.Failure(IntegerPositiveFailure.NumberFormatException)
         }
     }

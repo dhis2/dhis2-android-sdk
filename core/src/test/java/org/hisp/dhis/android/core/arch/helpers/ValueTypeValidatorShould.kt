@@ -49,12 +49,13 @@ class ValueTypeValidatorShould {
     fun `Should return the same value when succeeding using fold`() {
         val value = "5"
         valueTypeValidator.validate(value, ValueType.INTEGER_POSITIVE).fold(
-                onSuccess = {
-                    Truth.assertThat(it).isEqualTo(value)
-                },
-                onFailure = {
-                    fail()
-                })
+            onSuccess = {
+                Truth.assertThat(it).isEqualTo(value)
+            },
+            onFailure = {
+                fail()
+            }
+        )
     }
 
     @Test

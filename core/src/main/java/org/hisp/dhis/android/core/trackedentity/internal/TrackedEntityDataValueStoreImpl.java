@@ -88,14 +88,23 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
     }
 
     @Override
-    public int deleteByEventAndNotInDataElements(@NonNull String eventUid,
+    public boolean deleteByEventAndNotInDataElements(@NonNull String eventUid,
                                                  @NonNull List<String> dataElementUids) {
         String whereClause = new WhereClauseBuilder()
                 .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.EVENT, eventUid)
                 .appendNotInKeyStringValues(TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT, dataElementUids)
                 .build();
 
-        return getDatabaseAdapter().delete(TrackedEntityDataValueTableInfo.TABLE_INFO.name(), whereClause, null);
+        return deleteWhere(whereClause);
+    }
+
+    @Override
+    public boolean deleteByEvent(@NonNull String eventUid) {
+        String whereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.EVENT, eventUid)
+                .build();
+
+        return deleteWhere(whereClause);
     }
 
     @Override

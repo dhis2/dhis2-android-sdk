@@ -38,7 +38,9 @@ import androidx.annotation.NonNull;
 
 public interface TrackedEntityDataValueStore extends ObjectWithoutUidStore<TrackedEntityDataValue> {
 
-    int deleteByEventAndNotInDataElements(String eventUid, List<String> dataElementUids);
+    boolean deleteByEventAndNotInDataElements(String eventUid, List<String> dataElementUids);
+
+    boolean deleteByEvent(String eventUid);
 
     List<TrackedEntityDataValue> queryTrackedEntityDataValuesByEventUid(@NonNull String eventUid);
 

@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.trackedentity.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 
@@ -51,7 +50,7 @@ public final class TrackedEntityDataValueEntityDIModule {
 
     @Provides
     @Reusable
-    public HandlerWithTransformer<TrackedEntityDataValue> handler(TrackedEntityDataValueStore store) {
+    public TrackedEntityDataValueHandler handler(TrackedEntityDataValueStore store) {
         return new TrackedEntityDataValueHandler(store);
     }
 

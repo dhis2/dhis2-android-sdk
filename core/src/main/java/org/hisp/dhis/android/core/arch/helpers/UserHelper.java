@@ -47,11 +47,20 @@ public final class UserHelper {
      *
      * @param username The username of the user account.
      * @param password The password of the user account.
-     * @return A encoded base 64 {@link String}.
+     * @return An encoded base 64 {@link String}.
      */
     public static String base64(String username, String password) {
-        String usernameAndPassword = username + ":" + password;
-        byte[] bytes = usernameAndPassword.getBytes(StandardCharsets.ISO_8859_1);
+        return base64(username + ":" + password);
+    }
+
+    /**
+     * Encode the given string to a base 64 {@link String}.
+     *
+     * @param value The value to encode
+     * @return An encoded base 64 {@link String}.
+     */
+    public static String base64(String value) {
+        byte[] bytes = value.getBytes(StandardCharsets.ISO_8859_1);
         return ByteString.of(bytes).base64();
     }
 
@@ -60,7 +69,7 @@ public final class UserHelper {
      *
      * @param username The username of the user account.
      * @param password The password of the user account.
-     * @return A encoded MD5 {@link String}.
+     * @return An encoded MD5 {@link String}.
      */
     @SuppressWarnings({"PMD.UseLocaleWithCaseConversions"})
     public static String md5(String username, String password) {

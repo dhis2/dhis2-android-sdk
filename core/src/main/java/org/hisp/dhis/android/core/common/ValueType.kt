@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import java.util.*
 
 enum class ValueType(javaClass: Class<*>, val validator: ValueTypeValidator) {
-    TEXT(String::class.java, DefaultValidator),
+    TEXT(String::class.java, TextValidator),
     LONG_TEXT(String::class.java, DefaultValidator),
     LETTER(String::class.java, DefaultValidator),
     BOOLEAN(Boolean::class.java, DefaultValidator),

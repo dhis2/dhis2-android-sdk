@@ -280,6 +280,7 @@ Additionally, the repository offers different strategies to fetch data:
   instances.
 - `byStates()`. Filter by sync status. Using this filter forces
   **offline only** mode.
+- `byTrackedEntityInstanceFilter()`. Also know as **working lists**, trackedEntityInstanceFilters are a predefined set of query parameters.
 
 Example:
 
@@ -296,6 +297,25 @@ d2.trackedEntityModule().trackedEntityInstanceQuery()
 >
 > TrackedEntityInstances retrieved using this repository are not persisted in the database. It is possible
 to fully download them using the `byUid()` filter of the `TrackedEntityInstanceDownloader` within the tracked entity instance module.
+
+It could happen that you add filters to the query repository in different parts of the application and you don't have a clear picture about the filters applied, specially when using working lists because they add a set of parameters. In order to solve this, you can access the filter scope at any moment in the repository:
+
+```java
+d2.trackedEntityModule().trackedEntityInstanceQuery()
+    .[ filters ]
+    .getScope();
+```
+
+
+*Working lists / Tracked entity instance filters*
+
+Tracked entity instance filters are a predefined set of search parameters. They are defined in the server and can be used to create task-oriented filters for end-users.
+
+```java
+d2.trackedEntityModule().trackedEntityInstanceFilters()
+    .[ filters ]
+    .get();
+```
 
 [//]: # (Include glass protected download)
 

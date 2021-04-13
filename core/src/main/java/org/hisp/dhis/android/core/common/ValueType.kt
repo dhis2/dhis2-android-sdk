@@ -27,10 +27,7 @@
  */
 package org.hisp.dhis.android.core.common
 
-import org.hisp.dhis.android.core.common.valuetype.validation.validators.DefaultValidator
-import org.hisp.dhis.android.core.common.valuetype.validation.validators.IntegerNegativeValidator
-import org.hisp.dhis.android.core.common.valuetype.validation.validators.IntegerPositiveValidator
-import org.hisp.dhis.android.core.common.valuetype.validation.validators.ValueTypeValidator
+import org.hisp.dhis.android.core.common.valuetype.validation.validators.*
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import java.util.*
@@ -50,7 +47,7 @@ enum class ValueType(javaClass: Class<*>, val validator: ValueTypeValidator) {
     INTEGER(Int::class.java, DefaultValidator),
     INTEGER_POSITIVE(Int::class.java, IntegerPositiveValidator),
     INTEGER_NEGATIVE(Int::class.java, IntegerNegativeValidator),
-    INTEGER_ZERO_OR_POSITIVE(Int::class.java, DefaultValidator),
+    INTEGER_ZERO_OR_POSITIVE(Int::class.java, IntegerZeroOrPositiveValidator),
     FILE_RESOURCE(String::class.java, DefaultValidator),
     COORDINATE(String::class.java, DefaultValidator),
     PHONE_NUMBER(String::class.java, DefaultValidator),

@@ -28,28 +28,28 @@
 
 package org.hisp.dhis.android.core.common.valuetype.validation.validators
 
-import org.hisp.dhis.android.core.common.valuetype.validation.failures.IntegerNegativeFailure
+import org.hisp.dhis.android.core.common.valuetype.validation.failures.IntegerPositiveFailure
 import org.junit.Test
 
-class IntegerNegativeValidatorShould : ValidatorShouldHelper(IntegerNegativeValidator) {
+class IntegerPositiveValidatorShould : ValidatorShouldHelper(IntegerPositiveValidator) {
 
     @Test
     fun `Should return the same value when succeeding`() {
-        valueShouldSuccess("-15")
+        valueShouldSuccess("15")
     }
 
     @Test
-    fun `Should fail with a value is positive exception when value is positive`() {
-        valueShouldFail("5", IntegerNegativeFailure.ValueIsPositive)
+    fun `Should fail with a value is negative exception when value is negative`() {
+        valueShouldFail("-5", IntegerPositiveFailure.ValueIsNegative)
     }
 
     @Test
     fun `Should fail with a value is zero exception when value is zero`() {
-        valueShouldFail("0", IntegerNegativeFailure.ValueIsZero)
+        valueShouldFail("0", IntegerPositiveFailure.ValueIsZero)
     }
 
     @Test
     fun `Should fail with a number format exception when value is malformed`() {
-        valueShouldFail("5fe2", IntegerNegativeFailure.NumberFormatException)
+        valueShouldFail("5fe2", IntegerPositiveFailure.NumberFormatException)
     }
 }

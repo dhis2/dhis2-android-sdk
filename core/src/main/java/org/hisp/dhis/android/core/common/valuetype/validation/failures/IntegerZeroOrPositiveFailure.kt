@@ -26,30 +26,9 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common.valuetype.validation.validators
+package org.hisp.dhis.android.core.common.valuetype.validation.failures
 
-import org.hisp.dhis.android.core.common.valuetype.validation.failures.IntegerNegativeFailure
-import org.junit.Test
-
-class IntegerNegativeValidatorShould : ValidatorShouldHelper(IntegerNegativeValidator) {
-
-    @Test
-    fun `Should return the same value when succeeding`() {
-        valueShouldSuccess("-15")
-    }
-
-    @Test
-    fun `Should fail with a value is positive exception when value is positive`() {
-        valueShouldFail("5", IntegerNegativeFailure.ValueIsPositive)
-    }
-
-    @Test
-    fun `Should fail with a value is zero exception when value is zero`() {
-        valueShouldFail("0", IntegerNegativeFailure.ValueIsZero)
-    }
-
-    @Test
-    fun `Should fail with a number format exception when value is malformed`() {
-        valueShouldFail("5fe2", IntegerNegativeFailure.NumberFormatException)
-    }
+sealed class IntegerZeroOrPositiveFailure : Throwable() {
+    object NumberFormatException : IntegerZeroOrPositiveFailure()
+    object ValueIsNegative : IntegerZeroOrPositiveFailure()
 }

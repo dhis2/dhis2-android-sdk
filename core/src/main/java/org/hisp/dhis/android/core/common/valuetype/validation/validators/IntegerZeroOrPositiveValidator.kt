@@ -28,28 +28,23 @@
 
 package org.hisp.dhis.android.core.common.valuetype.validation.validators
 
-import org.hisp.dhis.android.core.common.valuetype.validation.failures.IntegerNegativeFailure
-import org.junit.Test
+import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.common.valuetype.validation.failures.IntegerZeroOrPositiveFailure
 
-class IntegerNegativeValidatorShould : ValidatorShouldHelper(IntegerNegativeValidator) {
-
-    @Test
-    fun `Should return the same value when succeeding`() {
-        valueShouldSuccess("-15")
-    }
-
-    @Test
-    fun `Should fail with a value is positive exception when value is positive`() {
-        valueShouldFail("5", IntegerNegativeFailure.ValueIsPositive)
-    }
-
-    @Test
-    fun `Should fail with a value is zero exception when value is zero`() {
-        valueShouldFail("0", IntegerNegativeFailure.ValueIsZero)
-    }
-
-    @Test
-    fun `Should fail with a number format exception when value is malformed`() {
-        valueShouldFail("5fe2", IntegerNegativeFailure.NumberFormatException)
+object IntegerZeroOrPositiveValidator : ValueTypeValidator {
+    override fun validate(value: String): Result<String, IntegerZeroOrPositiveFailure> {
+        return try {
+            val convertedValue = value.toInt()
+            when {
+                convertedValue < 0 -> {
+                    Result.Failure(IntegerZeroOrPositiveFailure.ValueIsNegative)
+                }
+                else -> {
+                    Result.Success(value)
+                }
+            }
+        } catch (e: NumberFormatException) {
+            Result.Failure(IntegerZeroOrPositiveFailure.NumberFormatException)
+        }
     }
 }

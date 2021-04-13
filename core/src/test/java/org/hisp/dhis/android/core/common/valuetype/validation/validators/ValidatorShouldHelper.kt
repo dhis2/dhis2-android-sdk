@@ -28,28 +28,25 @@
 
 package org.hisp.dhis.android.core.common.valuetype.validation.validators
 
-import org.hisp.dhis.android.core.common.valuetype.validation.failures.IntegerNegativeFailure
-import org.junit.Test
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.arch.helpers.Result
+import org.junit.Assert.fail
 
-class IntegerNegativeValidatorShould : ValidatorShouldHelper(IntegerNegativeValidator) {
+open class ValidatorShouldHelper(v: ValueTypeValidator) {
 
-    @Test
-    fun `Should return the same value when succeeding`() {
-        valueShouldSuccess("-15")
+    private val validator = v
+
+    fun valueShouldSuccess(value: String) {
+        when (val result = validator.validate(value)) {
+            is Result.Success -> Truth.assertThat(result.value).isEqualTo(value)
+            is Result.Failure -> fail()
+        }
     }
 
-    @Test
-    fun `Should fail with a value is positive exception when value is positive`() {
-        valueShouldFail("5", IntegerNegativeFailure.ValueIsPositive)
-    }
-
-    @Test
-    fun `Should fail with a value is zero exception when value is zero`() {
-        valueShouldFail("0", IntegerNegativeFailure.ValueIsZero)
-    }
-
-    @Test
-    fun `Should fail with a number format exception when value is malformed`() {
-        valueShouldFail("5fe2", IntegerNegativeFailure.NumberFormatException)
+    fun valueShouldFail(value: String, failure: Throwable) {
+        when (val result = validator.validate(value)) {
+            is Result.Success -> fail()
+            is Result.Failure -> Truth.assertThat(result.failure).isEqualTo(failure)
+        }
     }
 }

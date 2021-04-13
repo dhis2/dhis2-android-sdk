@@ -34,7 +34,7 @@ import java.util.*
 
 enum class ValueType(javaClass: Class<*>, val validator: ValueTypeValidator) {
     TEXT(String::class.java, TextValidator),
-    LONG_TEXT(String::class.java, DefaultValidator),
+    LONG_TEXT(String::class.java, LongTextValidator),
     LETTER(String::class.java, DefaultValidator),
     BOOLEAN(Boolean::class.java, DefaultValidator),
     TRUE_ONLY(Boolean::class.java, DefaultValidator),
@@ -76,10 +76,14 @@ enum class ValueType(javaClass: Class<*>, val validator: ValueTypeValidator) {
 
     companion object {
         private val INTEGER_TYPES: Set<ValueType> =
-                HashSet(listOf(INTEGER, INTEGER_POSITIVE, INTEGER_NEGATIVE, INTEGER_ZERO_OR_POSITIVE))
+            HashSet(listOf(INTEGER, INTEGER_POSITIVE, INTEGER_NEGATIVE, INTEGER_ZERO_OR_POSITIVE))
         private val NUMERIC_TYPES: Set<ValueType> =
-                HashSet(listOf(INTEGER, NUMBER, INTEGER_POSITIVE, INTEGER_NEGATIVE, INTEGER_ZERO_OR_POSITIVE,
-                        UNIT_INTERVAL, PERCENTAGE))
+            HashSet(
+                listOf(
+                    INTEGER, NUMBER, INTEGER_POSITIVE, INTEGER_NEGATIVE, INTEGER_ZERO_OR_POSITIVE,
+                    UNIT_INTERVAL, PERCENTAGE
+                )
+            )
         private val BOOLEAN_TYPES: Set<ValueType> = HashSet(listOf(BOOLEAN, TRUE_ONLY))
         private val TEXT_TYPES: Set<ValueType> = HashSet(listOf(TEXT, LONG_TEXT, LETTER, COORDINATE, TIME, IMAGE))
         private val DATE_TYPES: Set<ValueType> = HashSet(listOf(DATE, DATETIME))

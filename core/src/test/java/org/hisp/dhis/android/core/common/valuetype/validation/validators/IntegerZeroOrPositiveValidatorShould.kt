@@ -34,12 +34,8 @@ import org.junit.Test
 class IntegerZeroOrPositiveValidatorShould : ValidatorShouldHelper(IntegerZeroOrPositiveValidator) {
 
     @Test
-    fun `Should success when passing a positive integer`() {
+    fun `Should success when passing valid values`() {
         valueShouldSuccess("15")
-    }
-
-    @Test
-    fun `Should success when passing a zero`() {
         valueShouldSuccess("0")
     }
 

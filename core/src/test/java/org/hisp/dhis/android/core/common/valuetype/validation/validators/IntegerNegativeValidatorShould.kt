@@ -34,7 +34,7 @@ import org.junit.Test
 class IntegerNegativeValidatorShould : ValidatorShouldHelper(IntegerNegativeValidator) {
 
     @Test
-    fun `Should return the same value when succeeding`() {
+    fun `Should success when passing valid values`() {
         valueShouldSuccess("-15")
     }
 

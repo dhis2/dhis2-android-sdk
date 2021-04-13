@@ -44,7 +44,7 @@ enum class ValueType(javaClass: Class<*>, val validator: ValueTypeValidator) {
     NUMBER(Double::class.java, DefaultValidator),
     UNIT_INTERVAL(Double::class.java, DefaultValidator),
     PERCENTAGE(Double::class.java, DefaultValidator),
-    INTEGER(Int::class.java, DefaultValidator),
+    INTEGER(Int::class.java, IntegerValidator),
     INTEGER_POSITIVE(Int::class.java, IntegerPositiveValidator),
     INTEGER_NEGATIVE(Int::class.java, IntegerNegativeValidator),
     INTEGER_ZERO_OR_POSITIVE(Int::class.java, IntegerZeroOrPositiveValidator),

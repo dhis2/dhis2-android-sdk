@@ -32,7 +32,6 @@ import android.content.Context;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import org.hisp.dhis.android.core.FlipperManager;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore;

@@ -76,7 +76,7 @@ ext {
             truth           : "1.1.2",
             testRunner      : "1.2.0",
             equalsVerifier  : "3.4.1",
-            flipper         : "0.75.0",
+            flipper         : "0.83.0",
             soloader        : "0.10.1",
             liveDataTesting : "1.1.2",
             commonsLogging  : "1.2",
@@ -237,9 +237,11 @@ dependencies {
     androidTestImplementation("com.google.truth:truth:${libraries.truth}") {
         exclude group: 'junit' // Android has JUnit built in.
     }
-    debugImplementation "com.facebook.flipper:flipper:${libraries.flipper}"
-    debugImplementation "com.facebook.soloader:soloader:${libraries.soloader}"
-    debugImplementation "com.facebook.flipper:flipper-network-plugin:${libraries.flipper}"
+    api "com.facebook.flipper:flipper:${libraries.flipper}"
+    api "com.facebook.soloader:soloader:${libraries.soloader}"
+    api ("com.facebook.flipper:flipper-network-plugin:${libraries.flipper}") {
+        exclude group: 'com.squareup.okhttp3'
+    }
 
     releaseImplementation "com.facebook.flipper:flipper-noop:${libraries.flipper}"
 

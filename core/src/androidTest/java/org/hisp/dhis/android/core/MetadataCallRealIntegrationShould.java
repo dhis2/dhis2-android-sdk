@@ -31,17 +31,18 @@ package org.hisp.dhis.android.core;
 import android.util.Log;
 
 import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import java.io.IOException;
 
 import io.reactivex.schedulers.Schedulers;
 
+@Ignore("Tests deactivated because they depend on a real server. " +
+        "It might fail if the server is unreachable or the metadata/data has changed" +
+        "See the SDK debugging documentation for more info.")
 public class MetadataCallRealIntegrationShould extends BaseRealIntegrationTest {
-    /**
-     * A quick integration test that is probably flaky, but will help with finding bugs related to
-     * the
-     * metadataSyncCall. It works against the demo server.
-     */
+   
     private D2 d2;
 
     @Before
@@ -51,40 +52,14 @@ public class MetadataCallRealIntegrationShould extends BaseRealIntegrationTest {
         d2 = D2Factory.forNewDatabase();
     }
 
-
-   /* How to extract database from tests:
-    edit: AbsStoreTestCase.java (adding database name.)
-    DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext()
-    .getApplicationContext(),
-    "test.db");
-    make a debugger break point where desired (after sync complete)
-
-    Then while on the breakpoint :
-    Android/platform-tools/adb pull /data/user/0/org.hisp.dhis.android.test/databases/test.db
-    test.db
-
-    in datagrip:
-    pragma foreign_keys = on;
-    pragma foreign_key_check;*/
-
-    //This test is uncommented because technically it is flaky.
-    //It depends on a live server to operate and the login is hardcoded here.
-    //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
-    //@Test
+    @Test
     public void response_successful_on_sync_meta_data_once() throws Exception {
         d2.userModule().logIn(username, password, url).blockingGet();
 
         d2.metadataModule().blockingDownload();
-
-
-        //TODO: add additional sync + break point.
-        //when debugger stops at the new break point manually change metadata online & resume.
-        //This way I can make sure that additive (updates) work as well.
-        //The changes could be to one of the programs, adding stuff to it.
-        // adding a new program..etc.
     }
 
-    //@Test
+    @Test
     public void download_metadata_in_io_scheduler() throws Exception {
         d2.userModule().logIn(username, password, url)
                 .flatMapObservable(user -> d2.metadataModule().download())
@@ -94,8 +69,8 @@ public class MetadataCallRealIntegrationShould extends BaseRealIntegrationTest {
         Thread.sleep(60000);
     }
 
-    //@Test
-    public void response_successful_on_sync_meta_data_two_times() throws Exception {
+    @Test
+    public void response_successful_on_sync_meta_data_two_times() {
         d2.userModule().logIn(username, password, url).blockingGet();
 
         //first sync:
@@ -105,7 +80,7 @@ public class MetadataCallRealIntegrationShould extends BaseRealIntegrationTest {
         d2.metadataModule().blockingDownload();
     }
 
-    //@Test
+    @Test
     public void response_successful_on_login_wipe_db_and_login() throws Exception {
         d2.userModule().logIn(username, password, url).blockingGet();
 
@@ -114,8 +89,8 @@ public class MetadataCallRealIntegrationShould extends BaseRealIntegrationTest {
         d2.userModule().logIn(username, password, url).blockingGet();
     }
 
-    //@Test
-    public void response_successful_on_login_logout_and_login() throws Exception {
+    @Test
+    public void response_successful_on_login_logout_and_login() {
         d2.userModule().logIn(username, password, url).blockingGet();
 
         d2.userModule().logOut().blockingAwait();

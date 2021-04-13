@@ -35,7 +35,7 @@ import java.util.*
 enum class ValueType(javaClass: Class<*>, val validator: ValueTypeValidator) {
     TEXT(String::class.java, TextValidator),
     LONG_TEXT(String::class.java, LongTextValidator),
-    LETTER(String::class.java, DefaultValidator),
+    LETTER(String::class.java, LetterValidator),
     BOOLEAN(Boolean::class.java, DefaultValidator),
     TRUE_ONLY(Boolean::class.java, DefaultValidator),
     DATE(Date::class.java, DefaultValidator),

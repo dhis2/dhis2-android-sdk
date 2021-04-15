@@ -237,9 +237,9 @@ dependencies {
     androidTestImplementation("com.google.truth:truth:${libraries.truth}") {
         exclude group: 'junit' // Android has JUnit built in.
     }
-    api "com.facebook.flipper:flipper:${libraries.flipper}"
-    api "com.facebook.soloader:soloader:${libraries.soloader}"
-    api ("com.facebook.flipper:flipper-network-plugin:${libraries.flipper}") {
+    debugImplementation "com.facebook.flipper:flipper:${libraries.flipper}"
+    debugImplementation "com.facebook.soloader:soloader:${libraries.soloader}"
+    debugImplementation ("com.facebook.flipper:flipper-network-plugin:${libraries.flipper}") {
         exclude group: 'com.squareup.okhttp3'
     }
 

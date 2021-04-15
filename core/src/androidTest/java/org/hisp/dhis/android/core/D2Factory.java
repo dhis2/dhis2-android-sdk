@@ -32,7 +32,7 @@ import android.content.Context;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import org.hisp.dhis.android.core.arch.debug.FlipperManager;
+import org.hisp.dhis.android.core.debug.flipper.debug.FlipperManager;
 import org.hisp.dhis.android.core.arch.storage.internal.AndroidInsecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore;

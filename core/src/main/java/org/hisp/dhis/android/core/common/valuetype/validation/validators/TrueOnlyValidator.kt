@@ -28,25 +28,25 @@
 
 package org.hisp.dhis.android.core.common.valuetype.validation.validators
 
-import com.google.common.truth.Truth
 import org.hisp.dhis.android.core.arch.helpers.Result
-import org.junit.Assert.fail
+import org.hisp.dhis.android.core.common.valuetype.validation.failures.TrueOnlyFailure
 
-open class ValidatorShouldHelper<F : Throwable>(v: ValueTypeValidator) {
+object TrueOnlyValidator : ValueTypeValidator {
 
-    private val validator = v
-
-    fun valueShouldSuccess(value: String) {
-        when (val result = validator.validate(value)) {
-            is Result.Success -> Truth.assertThat(result.value).isEqualTo(value)
-            is Result.Failure -> fail()
-        }
-    }
-
-    fun valueShouldFail(value: String, failure: F) {
-        when (val result = validator.validate(value)) {
-            is Result.Success -> fail()
-            is Result.Failure -> Truth.assertThat(result.failure).isEqualTo(failure)
+    override fun validate(value: String): Result<String, TrueOnlyFailure> {
+        return when (value) {
+            "false" -> {
+                Result.Failure(TrueOnlyFailure.FalseIsNotAValidValueException)
+            }
+            "1" -> {
+                Result.Failure(TrueOnlyFailure.OneIsNotTrueException)
+            }
+            "true" -> {
+                Result.Success(value)
+            }
+            else -> {
+                Result.Failure(TrueOnlyFailure.BooleanMalformedException)
+            }
         }
     }
 }

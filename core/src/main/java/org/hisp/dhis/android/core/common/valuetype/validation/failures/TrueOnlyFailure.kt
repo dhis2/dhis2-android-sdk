@@ -26,27 +26,10 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common.valuetype.validation.validators
+package org.hisp.dhis.android.core.common.valuetype.validation.failures
 
-import com.google.common.truth.Truth
-import org.hisp.dhis.android.core.arch.helpers.Result
-import org.junit.Assert.fail
-
-open class ValidatorShouldHelper<F : Throwable>(v: ValueTypeValidator) {
-
-    private val validator = v
-
-    fun valueShouldSuccess(value: String) {
-        when (val result = validator.validate(value)) {
-            is Result.Success -> Truth.assertThat(result.value).isEqualTo(value)
-            is Result.Failure -> fail()
-        }
-    }
-
-    fun valueShouldFail(value: String, failure: F) {
-        when (val result = validator.validate(value)) {
-            is Result.Success -> fail()
-            is Result.Failure -> Truth.assertThat(result.failure).isEqualTo(failure)
-        }
-    }
+sealed class TrueOnlyFailure : Throwable() {
+    object OneIsNotTrueException : TrueOnlyFailure()
+    object FalseIsNotAValidValueException : TrueOnlyFailure()
+    object BooleanMalformedException : TrueOnlyFailure()
 }

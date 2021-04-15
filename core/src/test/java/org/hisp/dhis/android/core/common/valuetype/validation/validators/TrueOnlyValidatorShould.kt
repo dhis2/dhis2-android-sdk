@@ -28,25 +28,29 @@
 
 package org.hisp.dhis.android.core.common.valuetype.validation.validators
 
-import com.google.common.truth.Truth
-import org.hisp.dhis.android.core.arch.helpers.Result
-import org.junit.Assert.fail
+import org.hisp.dhis.android.core.common.valuetype.validation.failures.TrueOnlyFailure
+import org.junit.Test
 
-open class ValidatorShouldHelper<F : Throwable>(v: ValueTypeValidator) {
+class TrueOnlyValidatorShould : ValidatorShouldHelper<TrueOnlyFailure>(TrueOnlyValidator) {
 
-    private val validator = v
-
-    fun valueShouldSuccess(value: String) {
-        when (val result = validator.validate(value)) {
-            is Result.Success -> Truth.assertThat(result.value).isEqualTo(value)
-            is Result.Failure -> fail()
-        }
+    @Test
+    fun `Should success when passing valid values`() {
+        valueShouldSuccess("true")
     }
 
-    fun valueShouldFail(value: String, failure: F) {
-        when (val result = validator.validate(value)) {
-            is Result.Success -> fail()
-            is Result.Failure -> Truth.assertThat(result.failure).isEqualTo(failure)
-        }
+    @Test
+    fun `Should fail when passing false as string`() {
+        valueShouldFail("false", TrueOnlyFailure.FalseIsNotAValidValueException)
+    }
+
+    @Test
+    fun `Should fail when passing one as string`() {
+        valueShouldFail("1", TrueOnlyFailure.OneIsNotTrueException)
+    }
+
+    @Test
+    fun `Should fail when passing malformed values`() {
+        valueShouldFail("asg", TrueOnlyFailure.BooleanMalformedException)
+        valueShouldFail("", TrueOnlyFailure.BooleanMalformedException)
     }
 }

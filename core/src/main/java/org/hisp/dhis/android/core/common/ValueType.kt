@@ -37,7 +37,7 @@ enum class ValueType(javaClass: Class<*>, val validator: ValueTypeValidator) {
     LONG_TEXT(String::class.java, LongTextValidator),
     LETTER(String::class.java, LetterValidator),
     BOOLEAN(Boolean::class.java, BooleanValidator),
-    TRUE_ONLY(Boolean::class.java, DefaultValidator),
+    TRUE_ONLY(Boolean::class.java, TrueOnlyValidator),
     DATE(Date::class.java, DefaultValidator),
     DATETIME(Date::class.java, DefaultValidator),
     TIME(String::class.java, DefaultValidator),

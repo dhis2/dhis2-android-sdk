@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.common.valuetype.validation.failures.IntegerZe
 import org.junit.Test
 
 class IntegerZeroOrPositiveValidatorShould :
-        ValidatorShouldHelper<IntegerZeroOrPositiveFailure>(IntegerZeroOrPositiveValidator) {
+    ValidatorShouldHelper<IntegerZeroOrPositiveFailure>(IntegerZeroOrPositiveValidator) {
 
     @Test
     fun `Should success when passing valid values`() {

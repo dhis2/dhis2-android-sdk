@@ -54,5 +54,4 @@ class BooleanValidatorShould : ValidatorShouldHelper<BooleanFailure>(BooleanVali
         valueShouldFail("asg", BooleanFailure.BooleanMalformedException)
         valueShouldFail("", BooleanFailure.BooleanMalformedException)
     }
-
 }

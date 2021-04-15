@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.common.valuetype.validation.validators
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.common.valuetype.validation.failures.PercentageFailure
 
-object PercentageValidator : ValueTypeValidator {
+object PercentageValidator : ValueTypeValidator<PercentageFailure> {
     override fun validate(value: String): Result<String, PercentageFailure> {
         return try {
             val convertedValue = value.toInt()

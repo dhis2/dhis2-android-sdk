@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.common.valuetype.validation.validators
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.common.valuetype.validation.failures.LetterFailure
 
-object LetterValidator : ValueTypeValidator {
+object LetterValidator : ValueTypeValidator<LetterFailure> {
 
     private val LETTER_PATTERN = "[a-zA-Z]".toRegex()
 

@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.common.valuetype.validation.validators
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.common.valuetype.validation.failures.TextFailure
 
-object TextValidator : ValueTypeValidator {
+object TextValidator : ValueTypeValidator<TextFailure> {
     override fun validate(value: String): Result<String, TextFailure> {
         return if (value.count() > 50000) {
             Result.Failure(TextFailure.TooLargeTextException)

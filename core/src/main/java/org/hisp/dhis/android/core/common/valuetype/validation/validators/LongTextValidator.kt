@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.common.valuetype.validation.validators
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.common.valuetype.validation.failures.LongTextFailure
 
-object LongTextValidator : ValueTypeValidator {
+object LongTextValidator : ValueTypeValidator<LongTextFailure> {
     override fun validate(value: String): Result<String, LongTextFailure> {
         return Result.Success(value)
     }

@@ -28,26 +28,19 @@
 
 package org.hisp.dhis.android.core.common.valuetype.validation.validators
 
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.helpers.Result
-import org.hisp.dhis.android.core.common.valuetype.validation.failures.IntegerPositiveFailure
+import org.hisp.dhis.android.core.common.valuetype.validation.failures.DateFailure
+import java.text.ParseException
 
-object IntegerPositiveValidator : ValueTypeValidator<IntegerPositiveFailure> {
-    override fun validate(value: String): Result<String, IntegerPositiveFailure> {
+object DateValidator : ValueTypeValidator<DateFailure> {
+
+    override fun validate(value: String): Result<String, DateFailure> {
         return try {
-            val convertedValue = value.toInt()
-            when {
-                convertedValue == 0 -> {
-                    Result.Failure(IntegerPositiveFailure.ValueIsZero)
-                }
-                convertedValue < 0 -> {
-                    Result.Failure(IntegerPositiveFailure.ValueIsNegative)
-                }
-                else -> {
-                    Result.Success(value)
-                }
-            }
-        } catch (e: NumberFormatException) {
-            Result.Failure(IntegerPositiveFailure.NumberFormatException)
+            DateUtils.DATE_FORMAT.parse(value)
+            Result.Success(value)
+        } catch (e: ParseException) {
+            Result.Failure(DateFailure.ParseException)
         }
     }
 }

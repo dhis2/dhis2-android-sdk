@@ -32,7 +32,7 @@ import com.google.common.truth.Truth
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.junit.Assert.fail
 
-open class ValidatorShouldHelper<F : Throwable>(v: ValueTypeValidator) {
+open class ValidatorShouldHelper<F : Throwable>(v: ValueTypeValidator<F>) {
 
     private val validator = v
 

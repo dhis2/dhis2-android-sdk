@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.common.valuetype.validation.validators
 
 import org.hisp.dhis.android.core.arch.helpers.Result
 
-object DefaultValidator : ValueTypeValidator {
+object DefaultValidator : ValueTypeValidator<Throwable> {
     override fun validate(value: String): Result<String, Throwable> {
         return Result.Success(value)
     }

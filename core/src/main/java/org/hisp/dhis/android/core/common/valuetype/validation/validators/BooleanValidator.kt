@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.common.valuetype.validation.validators
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.common.valuetype.validation.failures.BooleanFailure
 
-object BooleanValidator : ValueTypeValidator {
+object BooleanValidator : ValueTypeValidator<BooleanFailure> {
 
     override fun validate(value: String): Result<String, BooleanFailure> {
         return when (value) {

@@ -32,13 +32,13 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import java.util.*
 
-enum class ValueType(javaClass: Class<*>, val validator: ValueTypeValidator) {
+enum class ValueType(javaClass: Class<*>, val validator: ValueTypeValidator<*>) {
     TEXT(String::class.java, TextValidator),
     LONG_TEXT(String::class.java, LongTextValidator),
     LETTER(String::class.java, LetterValidator),
     BOOLEAN(Boolean::class.java, BooleanValidator),
     TRUE_ONLY(Boolean::class.java, TrueOnlyValidator),
-    DATE(Date::class.java, DefaultValidator),
+    DATE(Date::class.java, DateValidator),
     DATETIME(Date::class.java, DefaultValidator),
     TIME(String::class.java, DefaultValidator),
     NUMBER(Double::class.java, DefaultValidator),

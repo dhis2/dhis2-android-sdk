@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.common.valuetype.validation.validators
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.common.valuetype.validation.failures.TrueOnlyFailure
 
-object TrueOnlyValidator : ValueTypeValidator {
+object TrueOnlyValidator : ValueTypeValidator<TrueOnlyFailure> {
 
     override fun validate(value: String): Result<String, TrueOnlyFailure> {
         return when (value) {

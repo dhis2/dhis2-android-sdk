@@ -26,28 +26,8 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common.valuetype.validation.validators
+package org.hisp.dhis.android.core.common.valuetype.validation.failures
 
-import org.hisp.dhis.android.core.arch.helpers.Result
-import org.hisp.dhis.android.core.common.valuetype.validation.failures.IntegerPositiveFailure
-
-object IntegerPositiveValidator : ValueTypeValidator<IntegerPositiveFailure> {
-    override fun validate(value: String): Result<String, IntegerPositiveFailure> {
-        return try {
-            val convertedValue = value.toInt()
-            when {
-                convertedValue == 0 -> {
-                    Result.Failure(IntegerPositiveFailure.ValueIsZero)
-                }
-                convertedValue < 0 -> {
-                    Result.Failure(IntegerPositiveFailure.ValueIsNegative)
-                }
-                else -> {
-                    Result.Success(value)
-                }
-            }
-        } catch (e: NumberFormatException) {
-            Result.Failure(IntegerPositiveFailure.NumberFormatException)
-        }
-    }
+sealed class DateFailure : Throwable() {
+    object ParseException : DateFailure()
 }

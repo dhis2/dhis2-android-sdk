@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.common.valuetype.validation.validators
 import org.hisp.dhis.android.core.common.valuetype.validation.failures.TextFailure
 import org.junit.Test
 
-class TextValidatorShould : ValidatorShouldHelper(TextValidator) {
+class TextValidatorShould : ValidatorShouldHelper<TextFailure>(TextValidator) {
 
     @Test
     fun `Should success when passing valid values`() {

@@ -26,33 +26,10 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common.valuetype.validation.validators
+package org.hisp.dhis.android.core.common.valuetype.validation.failures
 
-import org.hisp.dhis.android.core.common.valuetype.validation.failures.LetterFailure
-import org.junit.Test
-
-class LetterValidatorShould : ValidatorShouldHelper<LetterFailure>(LetterValidator) {
-
-    @Test
-    fun `Should success when passing valid values`() {
-        valueShouldSuccess("a")
-        valueShouldSuccess("Z")
-    }
-
-    @Test
-    fun `Should fail when passing an empty string`() {
-        valueShouldFail("", LetterFailure.EmptyStringException)
-    }
-
-    @Test
-    fun `Should fail when passing a string with more than one char`() {
-        valueShouldFail("as", LetterFailure.MoreThanOneLetterException)
-    }
-
-    @Test
-    fun `Should fail when passing chars that are not letters`() {
-        valueShouldFail("4", LetterFailure.StringIsNotALetterException)
-        valueShouldFail("ñ", LetterFailure.StringIsNotALetterException)
-        valueShouldFail("Á", LetterFailure.StringIsNotALetterException)
-    }
+sealed class BooleanFailure : Throwable() {
+    object OneIsNotTrueException : BooleanFailure()
+    object ZeroIsNotFalseException : BooleanFailure()
+    object BooleanMalformedException : BooleanFailure()
 }

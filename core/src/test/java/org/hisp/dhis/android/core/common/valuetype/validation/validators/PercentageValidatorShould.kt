@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.common.valuetype.validation.validators
 import org.hisp.dhis.android.core.common.valuetype.validation.failures.PercentageFailure
 import org.junit.Test
 
-class PercentageValidatorShould : ValidatorShouldHelper(PercentageValidator) {
+class PercentageValidatorShould : ValidatorShouldHelper<PercentageFailure>(PercentageValidator) {
 
     @Test
     fun `Should success when passing valid values`() {

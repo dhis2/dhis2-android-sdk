@@ -32,7 +32,7 @@ import com.google.common.truth.Truth
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.junit.Assert.fail
 
-open class ValidatorShouldHelper(v: ValueTypeValidator) {
+open class ValidatorShouldHelper<F: Throwable>(v: ValueTypeValidator) {
 
     private val validator = v
 
@@ -43,7 +43,7 @@ open class ValidatorShouldHelper(v: ValueTypeValidator) {
         }
     }
 
-    fun valueShouldFail(value: String, failure: Throwable) {
+    fun valueShouldFail(value: String, failure: F) {
         when (val result = validator.validate(value)) {
             is Result.Success -> fail()
             is Result.Failure -> Truth.assertThat(result.failure).isEqualTo(failure)

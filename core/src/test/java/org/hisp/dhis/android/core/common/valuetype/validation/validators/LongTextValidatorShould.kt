@@ -28,9 +28,10 @@
 
 package org.hisp.dhis.android.core.common.valuetype.validation.validators
 
+import org.hisp.dhis.android.core.common.valuetype.validation.failures.LongTextFailure
 import org.junit.Test
 
-class LongTextValidatorShould : ValidatorShouldHelper(LongTextValidator) {
+class LongTextValidatorShould : ValidatorShouldHelper<LongTextFailure>(LongTextValidator) {
 
     @Test
     fun `Should success when passing any value`() {

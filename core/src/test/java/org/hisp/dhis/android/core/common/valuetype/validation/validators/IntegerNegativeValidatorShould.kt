@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.common.valuetype.validation.validators
 import org.hisp.dhis.android.core.common.valuetype.validation.failures.IntegerNegativeFailure
 import org.junit.Test
 
-class IntegerNegativeValidatorShould : ValidatorShouldHelper(IntegerNegativeValidator) {
+class IntegerNegativeValidatorShould : ValidatorShouldHelper<IntegerNegativeFailure>(IntegerNegativeValidator) {
 
     @Test
     fun `Should success when passing valid values`() {

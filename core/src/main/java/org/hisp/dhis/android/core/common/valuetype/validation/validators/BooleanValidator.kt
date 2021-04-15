@@ -28,31 +28,25 @@
 
 package org.hisp.dhis.android.core.common.valuetype.validation.validators
 
-import org.hisp.dhis.android.core.common.valuetype.validation.failures.LetterFailure
-import org.junit.Test
+import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.common.valuetype.validation.failures.BooleanFailure
 
-class LetterValidatorShould : ValidatorShouldHelper<LetterFailure>(LetterValidator) {
+object BooleanValidator : ValueTypeValidator {
 
-    @Test
-    fun `Should success when passing valid values`() {
-        valueShouldSuccess("a")
-        valueShouldSuccess("Z")
-    }
-
-    @Test
-    fun `Should fail when passing an empty string`() {
-        valueShouldFail("", LetterFailure.EmptyStringException)
-    }
-
-    @Test
-    fun `Should fail when passing a string with more than one char`() {
-        valueShouldFail("as", LetterFailure.MoreThanOneLetterException)
-    }
-
-    @Test
-    fun `Should fail when passing chars that are not letters`() {
-        valueShouldFail("4", LetterFailure.StringIsNotALetterException)
-        valueShouldFail("ñ", LetterFailure.StringIsNotALetterException)
-        valueShouldFail("Á", LetterFailure.StringIsNotALetterException)
+    override fun validate(value: String): Result<String, BooleanFailure> {
+        return when (value) {
+            "0" -> {
+                Result.Failure(BooleanFailure.ZeroIsNotFalseException)
+            }
+            "1" -> {
+                Result.Failure(BooleanFailure.OneIsNotTrueException)
+            }
+            "true", "false" -> {
+                Result.Success(value)
+            }
+            else -> {
+                Result.Failure(BooleanFailure.BooleanMalformedException)
+            }
+        }
     }
 }

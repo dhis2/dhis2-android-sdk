@@ -25,7 +25,7 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.debug.flipper.debug
+package org.hisp.dhis.android.core.arch
 
 import android.content.Context
 import com.facebook.flipper.android.AndroidFlipperClient

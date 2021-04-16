@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.program.programindicatorengine.internal
 
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.mapByUid
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
@@ -43,22 +42,23 @@ import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicato
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
+import javax.inject.Inject
 
 internal class ProgramIndicatorEngineImpl @Inject constructor(
-    private val programIndicatorStore: IdentifiableObjectStore<ProgramIndicator>,
-    private val dataElementStore: IdentifiableObjectStore<DataElement>,
-    private val trackedEntityAttributeStore: IdentifiableObjectStore<TrackedEntityAttribute>,
-    private val enrollmentStore: EnrollmentStore,
-    private val eventRepository: EventCollectionRepository,
-    private val programRepository: ProgramStageCollectionRepository,
-    private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore,
-    private val constantStore: IdentifiableObjectStore<Constant>
+        private val programIndicatorStore: IdentifiableObjectStore<ProgramIndicator>,
+        private val dataElementStore: IdentifiableObjectStore<DataElement>,
+        private val trackedEntityAttributeStore: IdentifiableObjectStore<TrackedEntityAttribute>,
+        private val enrollmentStore: EnrollmentStore,
+        private val eventRepository: EventCollectionRepository,
+        private val programRepository: ProgramStageCollectionRepository,
+        private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore,
+        private val constantStore: IdentifiableObjectStore<Constant>
 ) : ProgramIndicatorEngine {
 
     override fun getProgramIndicatorValue(
-        enrollmentUid: String?,
-        eventUid: String?,
-        programIndicatorUid: String
+            enrollmentUid: String?,
+            eventUid: String?,
+            programIndicatorUid: String
     ): String? {
         return when {
             eventUid != null -> getEventProgramIndicatorValue(eventUid, programIndicatorUid)
@@ -71,13 +71,14 @@ internal class ProgramIndicatorEngineImpl @Inject constructor(
         val programIndicator = programIndicatorStore.selectByUid(programIndicatorUid) ?: return null
 
         val enrollment = enrollmentStore.selectByUid(enrollmentUid)
+                ?: throw RuntimeException("Enrollment $enrollmentUid does not exist.")
 
         val programIndicatorContext = ProgramIndicatorContext.builder()
-            .programIndicator(programIndicator)
-            .attributeValues(getAttributeValues(enrollment))
-            .enrollment(enrollment)
-            .events(getEnrollmentEvents(enrollment))
-            .build()
+                .programIndicator(programIndicator)
+                .attributeValues(getAttributeValues(enrollment))
+                .enrollment(enrollment)
+                .events(getEnrollmentEvents(enrollment))
+                .build()
 
         return evaluateProgramIndicatorContext(programIndicatorContext)
     }
@@ -86,31 +87,31 @@ internal class ProgramIndicatorEngineImpl @Inject constructor(
         val programIndicator = programIndicatorStore.selectByUid(programIndicatorUid) ?: return null
 
         val event = eventRepository
-            .withTrackedEntityDataValues()
-            .byDeleted().isFalse
-            .uid(eventUid)
-            .blockingGet()
+                .withTrackedEntityDataValues()
+                .byDeleted().isFalse
+                .uid(eventUid)
+                .blockingGet() ?: throw RuntimeException("Event $eventUid does not exist or is deleted.")
 
         val enrollment = event.enrollment()?.let {
             enrollmentStore.selectByUid(it)
         }
 
         val programIndicatorContext = ProgramIndicatorContext.builder()
-            .programIndicator(programIndicator)
-            .attributeValues(getAttributeValues(enrollment))
-            .enrollment(enrollment)
-            .events(mapOf(event.programStage() to listOf(event)))
-            .build()
+                .programIndicator(programIndicator)
+                .attributeValues(getAttributeValues(enrollment))
+                .enrollment(enrollment)
+                .events(mapOf(event.programStage() to listOf(event)))
+                .build()
 
         return evaluateProgramIndicatorContext(programIndicatorContext)
     }
 
     private fun evaluateProgramIndicatorContext(context: ProgramIndicatorContext): String? {
         val executor = ProgramIndicatorExecutor(
-            constantMap,
-            context,
-            dataElementStore,
-            trackedEntityAttributeStore
+                constantMap,
+                context,
+                dataElementStore,
+                trackedEntityAttributeStore
         )
 
         return executor.getProgramIndicatorValue(context.programIndicator().expression())
@@ -128,8 +129,8 @@ internal class ProgramIndicatorEngineImpl @Inject constructor(
         } ?: return mapOf()
 
         return trackedEntityAttributeValues
-            .filter { it.trackedEntityAttribute() != null }
-            .map { it.trackedEntityAttribute()!! to it }.toMap()
+                .filter { it.trackedEntityAttribute() != null }
+                .map { it.trackedEntityAttribute()!! to it }.toMap()
     }
 
     private fun getEnrollmentEvents(enrollment: Enrollment?): Map<String, List<Event>> {
@@ -137,13 +138,13 @@ internal class ProgramIndicatorEngineImpl @Inject constructor(
 
         return programStageUids.map { programStageUid ->
             val programStageEvents = eventRepository
-                .byProgramStageUid().eq(programStageUid)
-                .byEnrollmentUid().eq(enrollment.uid())
-                .byDeleted().isFalse
-                .orderByEventDate(RepositoryScope.OrderByDirection.ASC)
-                .orderByLastUpdated(RepositoryScope.OrderByDirection.ASC)
-                .withTrackedEntityDataValues()
-                .blockingGet()
+                    .byProgramStageUid().eq(programStageUid)
+                    .byEnrollmentUid().eq(enrollment.uid())
+                    .byDeleted().isFalse
+                    .orderByEventDate(RepositoryScope.OrderByDirection.ASC)
+                    .orderByLastUpdated(RepositoryScope.OrderByDirection.ASC)
+                    .withTrackedEntityDataValues()
+                    .blockingGet()
 
             programStageUid to programStageEvents
         }.toMap()

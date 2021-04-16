@@ -58,6 +58,7 @@ internal class EventLineListServiceImpl @Inject constructor(
         var repoBuilder = eventRepository
             .byProgramStageUid().eq(params.programStage)
             .orderByTimeline(RepositoryScope.OrderByDirection.ASC)
+            .byDeleted().isFalse
 
         if (params.organisationUnits.isNotEmpty()) {
             repoBuilder = repoBuilder.byOrganisationUnitUid().`in`(params.organisationUnits)

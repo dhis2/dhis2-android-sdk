@@ -20,6 +20,7 @@ applicable_txt: 'Applicable to version 1.3.2'
 !INCLUDE "content/developer/workflow.md"
 !INCLUDE "content/developer/analytics.md"
 !INCLUDE "content/developer/settings.md"
+!INCLUDE "content/developer/dhis2-services.md"
 !INCLUDE "content/developer/error-management.md"
 !INCLUDE "content/developer/sms.md"
 !INCLUDE "content/developer/object-style.md"

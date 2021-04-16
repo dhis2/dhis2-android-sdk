@@ -44,16 +44,29 @@ class EnrollmentService @Inject constructor(
     private val organisationUnitRepository: OrganisationUnitCollectionRepository
 ) {
 
+    /**
+     * Blocking version of [isOpen].
+     *
+     * @see isOpen
+     */
     fun blockingIsOpen(enrollmentUid: String): Boolean {
         val enrollment = enrollmentRepository.uid(enrollmentUid).blockingGet() ?: return true
 
         return enrollment.status()?.equals(EnrollmentStatus.ACTIVE) ?: false
     }
 
+    /**
+     * Checks if the enrollment status is ACTIVE.
+     */
     fun isOpen(enrollmentUid: String): Single<Boolean> {
         return Single.fromCallable { blockingIsOpen(enrollmentUid) }
     }
 
+    /**
+     * Blocking version of [getEnrollmentAccess].
+     *
+     * @see getEnrollmentAccess
+     */
     fun blockingGetEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): EnrollmentAccess {
         val program = programRepository.uid(programUid).blockingGet() ?: return EnrollmentAccess.NO_ACCESS
 
@@ -73,6 +86,12 @@ class EnrollmentService @Inject constructor(
         }
     }
 
+    /**
+     * Evaluates the access level of the user to this program and trackedEntityInstance.
+     *
+     * It checks the data access level to the program, the program access level (OPEN, PROTECTED,...)
+     * and the enrollment orgunit scope (SEARCH or CAPTURE).
+     */
     fun getEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): Single<EnrollmentAccess> {
         return Single.fromCallable { blockingGetEnrollmentAccess(trackedEntityInstanceUid, programUid) }
     }

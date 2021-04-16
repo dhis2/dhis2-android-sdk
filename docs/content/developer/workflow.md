@@ -7,7 +7,7 @@ Currently, the SDK is primarily oriented to build apps that work in an offline m
 A typical workflow would be like this:
 
 1. **Login**
-2. **Sync metadata:** the SDK downloads a subset of the server metadata so it is available to be used at any time. Metadata sync is totally user-dependent (see [Synchronization](#metadata-synchronization) for more details)
+2. **Sync metadata:** the SDK downloads a subset of the server metadata so it is available to be used at any time. Metadata sync is totally user-dependent (see [Synchronization](#metadata_synchronization) for more details)
 3. **Download data:** if you want to have existing data available in the device even when offline, you can download and save existing tracker and aggregated data in the device.
 4. **Do the work:** at this point the app is able to create the data entry forms and show some existing data. Then the user can edit/delete/update data.
 5. **Upload data:** from time to time, the work done in the local database instance is sent to the server.

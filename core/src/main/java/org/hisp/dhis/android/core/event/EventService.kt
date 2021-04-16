@@ -52,6 +52,11 @@ class EventService @Inject constructor(
     private val eventDateUtils: EventDateUtils
 ) {
 
+    /**
+     * Blocking version of [hasDataWriteAccess].
+     *
+     * @see hasDataWriteAccess
+     */
     fun blockingHasDataWriteAccess(eventUid: String): Boolean {
         val event = eventRepository.uid(eventUid).blockingGet() ?: return false
 
@@ -59,10 +64,21 @@ class EventService @Inject constructor(
             programStageRepository.uid(event.programStage()).blockingGet()?.access()?.data()?.write() ?: false
     }
 
+    /**
+     * Check if user has data write access to a particular event.
+     *
+     * It returns true if the user has data write access to both the program and the program stage.
+     * If the event does not exist, returns null
+     */
     fun hasDataWriteAccess(eventUid: String): Single<Boolean> {
         return Single.just(blockingHasDataWriteAccess(eventUid))
     }
 
+    /**
+     * Blocking version of [isInOrgunitRange].
+     *
+     * @see isInOrgunitRange
+     */
     fun blockingIsInOrgunitRange(event: Event): Boolean {
         return event.eventDate()?.let { eventDate ->
             event.organisationUnit()?.let { orgunitUid ->
@@ -71,28 +87,54 @@ class EventService @Inject constructor(
         } ?: true
     }
 
+    /**
+     * Check if the event has the event date within the opening period of the assigned organisation unit.
+     */
     fun isInOrgunitRange(event: Event): Single<Boolean> {
         return Single.just(blockingIsInOrgunitRange(event))
     }
 
+    /**
+     * Blocking version of [hasCategoryComboAccess].
+     *
+     * @see hasCategoryComboAccess
+     */
     fun blockingHasCategoryComboAccess(event: Event): Boolean {
         return event.attributeOptionCombo()?.let {
             categoryOptionComboService.blockingHasAccess(it, event.eventDate())
         } ?: true
     }
 
+    /**
+     * Check if user has access to the categoryCombo linked to the event and also if the categoryCombo is active
+     * in the event date.
+     */
     fun hasCategoryComboAccess(event: Event): Single<Boolean> {
         return Single.just(blockingHasCategoryComboAccess(event))
     }
 
+    /**
+     * Blocking version of [isEditable].
+     *
+     * @see isEditable
+     */
     fun blockingIsEditable(eventUid: String): Boolean {
         return blockingGetEditableStatus(eventUid) is EventEditableStatus.Editable
     }
 
+    /**
+     * Check if the event can be edited or not. If you want to know the reason why the event is not editable, check
+     * the method [getEditableStatus] for a richer description of the status.
+     */
     fun isEditable(eventUid: String): Single<Boolean> {
         return Single.just(blockingIsEditable(eventUid))
     }
 
+    /**
+     * Blocking version of [getEditableStatus].
+     *
+     * @see getEditableStatus
+     */
     @Suppress("ComplexMethod")
     fun blockingGetEditableStatus(eventUid: String): EventEditableStatus {
         val event = eventRepository.uid(eventUid).blockingGet()
@@ -131,10 +173,19 @@ class EventService @Inject constructor(
         }
     }
 
+    /**
+     * Returns the editable status of an event. In case the event is not editable, the result also includes the
+     * reason why it is not editable.
+     */
     fun getEditableStatus(eventUid: String): Single<EventEditableStatus> {
         return Single.just(blockingGetEditableStatus(eventUid))
     }
 
+    /**
+     * Blocking version of [canAddEventToEnrollment].
+     *
+     * @see canAddEventToEnrollment
+     */
     fun blockingCanAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Boolean {
         val enrollment = enrollmentRepository.uid(enrollmentUid).blockingGet()
         val programStage = programStageRepository.uid(programStageUid).blockingGet()
@@ -152,6 +203,11 @@ class EventService @Inject constructor(
         return isActiveEnrollment && acceptMoreEvents
     }
 
+    /**
+     * Evaluates if an enrollments accepts more events for a particular programStage.
+     *
+     * It takes into account the enrollment status and if the program stage is repeatable or not.
+     */
     fun canAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Single<Boolean> {
         return Single.just(blockingCanAddEventToEnrollment(enrollmentUid, programStageUid))
     }

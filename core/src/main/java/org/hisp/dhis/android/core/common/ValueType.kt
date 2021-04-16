@@ -39,7 +39,7 @@ enum class ValueType(javaClass: Class<*>, val validator: ValueTypeValidator<*>) 
     BOOLEAN(Boolean::class.java, BooleanValidator),
     TRUE_ONLY(Boolean::class.java, TrueOnlyValidator),
     DATE(Date::class.java, DateValidator),
-    DATETIME(Date::class.java, DefaultValidator),
+    DATETIME(Date::class.java, DateTimeValidator),
     TIME(String::class.java, TimeValidator),
     NUMBER(Double::class.java, NumberValidator),
     UNIT_INTERVAL(Double::class.java, DefaultValidator),

@@ -396,7 +396,9 @@ d2.trackedEntityModule().reservedValueManager().getValue("attributeUid", "orguni
 
 ### Tracker data: relationships
 
-Currently the SDK only supports relatinships from TEI to TEI. They accessed by using the relationships module.
+Currently the SDK has partial support for relationships. Relationship from TEI to TEI are fully supported. Other kind of relationships (TEI-event, event-event,...) are downloaded and can be accessed, but they cannot be created or modified. 
+
+Relationships are accessed by using the relationships module.
 
 Query relationships associated to a TEI.
 

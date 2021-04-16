@@ -7,7 +7,7 @@ Currently, the SDK is primarily oriented to build apps that work in an offline m
 A typical workflow would be like this:
 
 1. **Login**
-2. **Sync metadata:** the SDK downloads a subset of the server metadata so it is available to be used at any time. Metadata sync is totally user-dependent (see [Synchronization](#metadata-synchronization) for more details)
+2. **Sync metadata:** the SDK downloads a subset of the server metadata so it is available to be used at any time. Metadata sync is totally user-dependent (see [Synchronization](#metadata_synchronization) for more details)
 3. **Download data:** if you want to have existing data available in the device even when offline, you can download and save existing tracker and aggregated data in the device.
 4. **Do the work:** at this point the app is able to create the data entry forms and show some existing data. Then the user can edit/delete/update data.
 5. **Upload data:** from time to time, the work done in the local database instance is sent to the server.
@@ -280,6 +280,7 @@ Additionally, the repository offers different strategies to fetch data:
   instances.
 - `byStates()`. Filter by sync status. Using this filter forces
   **offline only** mode.
+- `byTrackedEntityInstanceFilter()`. Also know as **working lists**, trackedEntityInstanceFilters are a predefined set of query parameters.
 
 Example:
 
@@ -296,6 +297,25 @@ d2.trackedEntityModule().trackedEntityInstanceQuery()
 >
 > TrackedEntityInstances retrieved using this repository are not persisted in the database. It is possible
 to fully download them using the `byUid()` filter of the `TrackedEntityInstanceDownloader` within the tracked entity instance module.
+
+It could happen that you add filters to the query repository in different parts of the application and you don't have a clear picture about the filters applied, specially when using working lists because they add a set of parameters. In order to solve this, you can access the filter scope at any moment in the repository:
+
+```java
+d2.trackedEntityModule().trackedEntityInstanceQuery()
+    .[ filters ]
+    .getScope();
+```
+
+
+*Working lists / Tracked entity instance filters*
+
+Tracked entity instance filters are a predefined set of search parameters. They are defined in the server and can be used to create task-oriented filters for end-users.
+
+```java
+d2.trackedEntityModule().trackedEntityInstanceFilters()
+    .[ filters ]
+    .get();
+```
 
 [//]: # (Include glass protected download)
 
@@ -376,7 +396,9 @@ d2.trackedEntityModule().reservedValueManager().getValue("attributeUid", "orguni
 
 ### Tracker data: relationships
 
-Currently the SDK only supports relatinships from TEI to TEI. They accessed by using the relationships module.
+Currently the SDK has partial support for relationships. Relationship from TEI to TEI are fully supported. Other kind of relationships (TEI-event, event-event,...) are downloaded and can be accessed, but they cannot be created or modified. 
+
+Relationships are accessed by using the relationships module.
 
 Query relationships associated to a TEI.
 

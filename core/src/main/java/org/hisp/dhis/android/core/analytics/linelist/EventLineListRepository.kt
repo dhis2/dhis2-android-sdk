@@ -33,15 +33,39 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterCon
 
 interface EventLineListRepository : BaseRepository {
 
+    /**
+     * Restrict the events to the given tracked entity instance.
+     */
     fun byTrackedEntityInstance(): EqFilterConnector<EventLineListRepository, String>
 
+    /**
+     * Restrict the events to the given program stage. This parameter is mandatory.
+     */
     fun byProgramStage(): EqFilterConnector<EventLineListRepository, String>
 
+    /**
+     * Include the given data element in the response. This method does not replace the list of
+     * data elements but appends a new one to the response.
+     */
     fun withDataElement(dataElementUid: String): EventLineListRepository
 
+    /**
+     * Include the given program indicator in the response. This method does not replace the list of
+     * program indicators but appends a new one to the response.
+     */
     fun withProgramIndicator(programIndicatorUid: String): EventLineListRepository
 
+    /**
+     * Evaluate the given parameters and get a list of events in the format of [LineListResponse].
+     *
+     * It is mandatory to specify a programStage using the method [byProgramStage]. Other parameters are optional.
+     */
     fun evaluate(): Single<List<LineListResponse>>
 
+    /**
+     * Blocking version of [evaluate].
+     *
+     * @see evaluate
+     */
     fun blockingEvaluate(): List<LineListResponse>
 }

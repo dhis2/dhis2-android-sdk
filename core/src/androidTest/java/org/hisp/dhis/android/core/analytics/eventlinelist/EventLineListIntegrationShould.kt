@@ -264,6 +264,29 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
     }
 
     @Test
+    fun should_ignore_deleted_events() {
+        val event1 = createEvent(program1Stage2.uid(), "2020-08-01T00:00:00.000")
+        val deletedEvent = createDeletedEvent(program1Stage2.uid(), "2020-09-02T00:00:00.000")
+
+        createDataValue(event1.uid(), dataElement1.uid(), "1.0")
+        createDataValue(deletedEvent.uid(), dataElement1.uid(), "10.0")
+
+        val programIndicator = createProgramIndicator("#{${program1Stage2.uid()}.${dataElement1.uid()}}")
+
+        val eventListParams = EventLineListParams(
+                programStage = program1Stage2.uid(),
+                trackedEntityInstance = trackedEntityInstance.uid(),
+                programIndicators = listOf(LineListItem(programIndicator.uid()))
+        )
+
+        val result = eventLineListService.evaluate(eventListParams)
+
+        assertThat(result.size).isEqualTo(1)
+        assertThat(result.first().values.size).isEqualTo(1)
+        assertThat(result.first().values.first().value).isEqualTo("1")
+    }
+
+    @Test
     fun should_return_program_stage_period_if_defined() {
         val event1 = createEvent(program1Stage2.uid(), "2020-08-01T00:00:00.000")
         val event2 = createEvent(program1Stage2.uid(), "2020-09-02T00:00:00.000")
@@ -328,6 +351,14 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
 
     private fun createDueEvent(programStageId: String, dueDate: String): Event {
         val event = EventLineListSamples.dueEvent(programStageId, BaseIdentifiableObject.parseDate(dueDate))
+        eventStore.insert(event)
+        return event
+    }
+
+    private fun createDeletedEvent(programStageId: String, eventDate: String): Event {
+        val event = EventLineListSamples
+                .event(programStageId, BaseIdentifiableObject.parseDate(eventDate))
+                .toBuilder().deleted(true).build()
         eventStore.insert(event)
         return event
     }

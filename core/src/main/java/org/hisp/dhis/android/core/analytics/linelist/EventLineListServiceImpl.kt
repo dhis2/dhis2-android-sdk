@@ -40,14 +40,14 @@ import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicato
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueCollectionRepository
 
 internal class EventLineListServiceImpl @Inject constructor(
-    private val eventRepository: EventCollectionRepository,
-    private val dataValueRepository: TrackedEntityDataValueCollectionRepository,
-    private val dataElementRepository: DataElementCollectionRepository,
-    private val programIndicatorRepository: ProgramIndicatorCollectionRepository,
-    private val organisationUnitRepository: OrganisationUnitCollectionRepository,
-    private val programStageRepository: ProgramStageCollectionRepository,
-    private val programIndicatorEngine: ProgramIndicatorEngine,
-    private val periodHelper: PeriodHelper
+        private val eventRepository: EventCollectionRepository,
+        private val dataValueRepository: TrackedEntityDataValueCollectionRepository,
+        private val dataElementRepository: DataElementCollectionRepository,
+        private val programIndicatorRepository: ProgramIndicatorCollectionRepository,
+        private val organisationUnitRepository: OrganisationUnitCollectionRepository,
+        private val programStageRepository: ProgramStageCollectionRepository,
+        private val programIndicatorEngine: ProgramIndicatorEngine,
+        private val periodHelper: PeriodHelper
 ) : EventLineListService {
 
     override fun evaluate(params: EventLineListParams): List<LineListResponse> {
@@ -56,8 +56,9 @@ internal class EventLineListServiceImpl @Inject constructor(
 
     private fun evaluateEvents(params: EventLineListParams): List<LineListResponse> {
         var repoBuilder = eventRepository
-            .byProgramStageUid().eq(params.programStage)
-            .orderByTimeline(RepositoryScope.OrderByDirection.ASC)
+                .byProgramStageUid().eq(params.programStage)
+                .orderByTimeline(RepositoryScope.OrderByDirection.ASC)
+                .byDeleted().isFalse
 
         if (params.organisationUnits.isNotEmpty()) {
             repoBuilder = repoBuilder.byOrganisationUnitUid().`in`(params.organisationUnits)
@@ -76,15 +77,15 @@ internal class EventLineListServiceImpl @Inject constructor(
         val events = repoBuilder.blockingGet()
 
         val metadataMap = getMetadataMap(
-            params.dataElements, params.programIndicators,
-            events.map { it.organisationUnit()!! }.toHashSet()
+                params.dataElements, params.programIndicators,
+                events.map { it.organisationUnit()!! }.toHashSet()
         )
 
         val dataElementValues = if (params.dataElements.isNotEmpty()) {
             dataValueRepository
-                .byEvent().`in`(events.map { it.uid() })
-                .byDataElement().`in`(params.dataElements.map { it.uid })
-                .blockingGet()
+                    .byEvent().`in`(events.map { it.uid() })
+                    .byDataElement().`in`(params.dataElements.map { it.uid })
+                    .blockingGet()
         } else {
             listOf()
         }
@@ -97,60 +98,60 @@ internal class EventLineListServiceImpl @Inject constructor(
                 val eventDataValues = params.dataElements.map { de ->
                     val dv = dataElementValues.find { dv -> dv.event() == it.uid() && dv.dataElement() == de.uid }
                     LineListResponseValue(
-                        uid = de.uid,
-                        displayName = metadataMap[de.uid] ?: de.uid,
-                        value = dv?.value()
+                            uid = de.uid,
+                            displayName = metadataMap[de.uid] ?: de.uid,
+                            value = dv?.value()
                     )
                 }
 
                 val programIndicatorValues = params.programIndicators.map { pi ->
                     val value = programIndicatorEngine.getEventProgramIndicatorValue(it.uid(), pi.uid)
                     LineListResponseValue(
-                        uid = pi.uid,
-                        displayName = metadataMap[pi.uid] ?: pi.uid,
-                        value = value
+                            uid = pi.uid,
+                            displayName = metadataMap[pi.uid] ?: pi.uid,
+                            value = value
                     )
                 }
 
                 LineListResponse(
-                    uid = it.uid(),
-                    date = referenceDate,
-                    period = eventPeriod,
-                    organisationUnit = it.organisationUnit()!!,
-                    organisationUnitName = metadataMap[it.organisationUnit()!!] ?: it.organisationUnit()!!,
-                    values = eventDataValues + programIndicatorValues
+                        uid = it.uid(),
+                        date = referenceDate,
+                        period = eventPeriod,
+                        organisationUnit = it.organisationUnit()!!,
+                        organisationUnitName = metadataMap[it.organisationUnit()!!] ?: it.organisationUnit()!!,
+                        values = eventDataValues + programIndicatorValues
                 )
             }
         }
     }
 
     private fun getMetadataMap(
-        dataElements: List<LineListItem>,
-        programIndicators: List<LineListItem>,
-        organisationUnitUids: HashSet<String>
+            dataElements: List<LineListItem>,
+            programIndicators: List<LineListItem>,
+            organisationUnitUids: HashSet<String>
     ): Map<String, String> {
         val dataElementNameMap = if (dataElements.isNotEmpty()) {
             dataElementRepository
-                .byUid().`in`(dataElements.map { it.uid })
-                .blockingGet()
-                .map { it.uid()!! to it.displayName()!! }.toMap()
+                    .byUid().`in`(dataElements.map { it.uid })
+                    .blockingGet()
+                    .map { it.uid()!! to it.displayName()!! }.toMap()
         } else {
             mapOf()
         }
 
         val programIndicatorNameMap = if (programIndicators.isNotEmpty()) {
             programIndicatorRepository
-                .byUid().`in`(programIndicators.map { it.uid })
-                .blockingGet()
-                .map { it.uid()!! to it.displayName()!! }.toMap()
+                    .byUid().`in`(programIndicators.map { it.uid })
+                    .blockingGet()
+                    .map { it.uid()!! to it.displayName()!! }.toMap()
         } else {
             mapOf()
         }
 
         val organisationUnitNameMap = organisationUnitRepository
-            .byUid().`in`(organisationUnitUids)
-            .blockingGet()
-            .map { it.uid()!! to it.displayName()!! }.toMap()
+                .byUid().`in`(organisationUnitUids)
+                .blockingGet()
+                .map { it.uid()!! to it.displayName()!! }.toMap()
 
         return dataElementNameMap + programIndicatorNameMap + organisationUnitNameMap
     }

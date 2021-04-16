@@ -274,9 +274,9 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         val programIndicator = createProgramIndicator("#{${program1Stage2.uid()}.${dataElement1.uid()}}")
 
         val eventListParams = EventLineListParams(
-                programStage = program1Stage2.uid(),
-                trackedEntityInstance = trackedEntityInstance.uid(),
-                programIndicators = listOf(LineListItem(programIndicator.uid()))
+            programStage = program1Stage2.uid(),
+            trackedEntityInstance = trackedEntityInstance.uid(),
+            programIndicators = listOf(LineListItem(programIndicator.uid()))
         )
 
         val result = eventLineListService.evaluate(eventListParams)
@@ -357,8 +357,8 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
 
     private fun createDeletedEvent(programStageId: String, eventDate: String): Event {
         val event = EventLineListSamples
-                .event(programStageId, BaseIdentifiableObject.parseDate(eventDate))
-                .toBuilder().deleted(true).build()
+            .event(programStageId, BaseIdentifiableObject.parseDate(eventDate))
+            .toBuilder().deleted(true).build()
         eventStore.insert(event)
         return event
     }

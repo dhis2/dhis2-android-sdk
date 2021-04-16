@@ -29,29 +29,17 @@
 package org.hisp.dhis.android.core.common.valuetype.validation.validators
 
 import org.hisp.dhis.android.core.arch.helpers.Result
-import org.hisp.dhis.android.core.common.valuetype.validation.failures.IntegerPositiveFailure
 
-object IntegerPositiveValidator : IntegerValidatorBase<IntegerPositiveFailure>() {
-    override fun validate(value: String): Result<String, IntegerPositiveFailure> {
+abstract class IntegerValidatorBase<T : Throwable> : ValueTypeValidator<T> {
+    fun catchOverflowFailure(value: String, overflowFailure: T, formatFailure: T): Result<String, T> {
         return try {
-            val convertedValue = value.toInt()
-            when {
-                convertedValue == 0 -> {
-                    Result.Failure(IntegerPositiveFailure.ValueIsZero)
-                }
-                convertedValue < 0 -> {
-                    Result.Failure(IntegerPositiveFailure.ValueIsNegative)
-                }
-                convertedValue < 0 -> {
-                    Result.Failure(IntegerPositiveFailure.ValueIsNegative)
-                }
-                else -> {
-                    Result.Success(value)
-                }
+            val convertedValue = value.toLong()
+            if (convertedValue > Integer.MAX_VALUE || convertedValue < Integer.MIN_VALUE) {
+                return Result.Failure(overflowFailure)
             }
+            Result.Failure(formatFailure)
         } catch (e: NumberFormatException) {
-            catchOverflowFailure(value, IntegerPositiveFailure.IntegerOverflow,
-                    IntegerPositiveFailure.NumberFormatException)
+            Result.Failure(formatFailure)
         }
     }
 }

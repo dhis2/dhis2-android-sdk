@@ -36,6 +36,7 @@ class IntegerNegativeValidatorShould : ValidatorShouldHelper<IntegerNegativeFail
     @Test
     fun `Should success when passing valid values`() {
         valueShouldSuccess("-15")
+        valueShouldSuccess(Integer.MIN_VALUE.toString())
     }
 
     @Test
@@ -46,6 +47,12 @@ class IntegerNegativeValidatorShould : ValidatorShouldHelper<IntegerNegativeFail
     @Test
     fun `Should fail with a value is zero exception when value is zero`() {
         valueShouldFail("0", IntegerNegativeFailure.ValueIsZero)
+    }
+
+    @Test
+    fun `Should fail with a integer overflow exception when value is too big`() {
+        valueShouldFail("2147483648", IntegerNegativeFailure.IntegerOverflow)
+        valueShouldFail("-2147483649", IntegerNegativeFailure.IntegerOverflow)
     }
 
     @Test

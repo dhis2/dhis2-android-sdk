@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.common.valuetype.validation.failures
 
 sealed class IntegerNegativeFailure : Throwable() {
     object NumberFormatException : IntegerNegativeFailure()
+    object IntegerOverflow : IntegerNegativeFailure()
     object ValueIsZero : IntegerNegativeFailure()
     object ValueIsPositive : IntegerNegativeFailure()
 }

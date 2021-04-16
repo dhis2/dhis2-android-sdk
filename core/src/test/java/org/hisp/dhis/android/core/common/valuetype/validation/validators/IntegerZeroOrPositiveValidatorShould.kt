@@ -38,11 +38,18 @@ class IntegerZeroOrPositiveValidatorShould :
     fun `Should success when passing valid values`() {
         valueShouldSuccess("15")
         valueShouldSuccess("0")
+        valueShouldSuccess(Integer.MAX_VALUE.toString())
     }
 
     @Test
     fun `Should fail with a value is negative exception when value is negative`() {
         valueShouldFail("-5", IntegerZeroOrPositiveFailure.ValueIsNegative)
+    }
+
+    @Test
+    fun `Should fail with a integer overflow exception when value is too big`() {
+        valueShouldFail("2147483648", IntegerZeroOrPositiveFailure.IntegerOverflow)
+        valueShouldFail("-2147483649", IntegerZeroOrPositiveFailure.IntegerOverflow)
     }
 
     @Test

@@ -38,6 +38,14 @@ class IntegerValidatorShould : ValidatorShouldHelper<IntegerFailure>(IntegerVali
         valueShouldSuccess("15")
         valueShouldSuccess("-15")
         valueShouldSuccess("0")
+        valueShouldSuccess(Integer.MAX_VALUE.toString())
+        valueShouldSuccess(Integer.MIN_VALUE.toString())
+    }
+
+    @Test
+    fun `Should fail with a integer overflow exception when value is too big`() {
+        valueShouldFail("2147483648", IntegerFailure.IntegerOverflow)
+        valueShouldFail("-2147483649", IntegerFailure.IntegerOverflow)
     }
 
     @Test

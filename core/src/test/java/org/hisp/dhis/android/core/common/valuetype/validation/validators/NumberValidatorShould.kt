@@ -51,6 +51,7 @@ class NumberValidatorShould : ValidatorShouldHelper<NumberFailure>(NumberValidat
         valueShouldFail("3e-1", NumberFailure.ScientificNotationException)
         valueShouldFail("12e10", NumberFailure.ScientificNotationException)
         valueShouldFail("3.2e23", NumberFailure.ScientificNotationException)
+        valueShouldFail("37.e88", NumberFailure.ScientificNotationException)
     }
 
     @Test
@@ -67,6 +68,5 @@ class NumberValidatorShould : ValidatorShouldHelper<NumberFailure>(NumberValidat
         valueShouldFail("π", NumberFailure.NumberFormatException)
         valueShouldFail("ln(2)", NumberFailure.NumberFormatException)
         valueShouldFail("2/3", NumberFailure.NumberFormatException)
-        valueShouldFail("37.e88", NumberFailure.NumberFormatException)
     }
 }

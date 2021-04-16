@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.common.valuetype.validation.validators
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.common.valuetype.validation.failures.IntegerZeroOrPositiveFailure
 
-object IntegerZeroOrPositiveValidator : ValueTypeValidator<IntegerZeroOrPositiveFailure> {
+object IntegerZeroOrPositiveValidator : IntegerValidatorBase<IntegerZeroOrPositiveFailure>() {
     override fun validate(value: String): Result<String, IntegerZeroOrPositiveFailure> {
         return try {
             val convertedValue = value.toInt()
@@ -44,7 +44,8 @@ object IntegerZeroOrPositiveValidator : ValueTypeValidator<IntegerZeroOrPositive
                 }
             }
         } catch (e: NumberFormatException) {
-            Result.Failure(IntegerZeroOrPositiveFailure.NumberFormatException)
+            catchOverflowFailure(value, IntegerZeroOrPositiveFailure.IntegerOverflow,
+                    IntegerZeroOrPositiveFailure.NumberFormatException)
         }
     }
 }

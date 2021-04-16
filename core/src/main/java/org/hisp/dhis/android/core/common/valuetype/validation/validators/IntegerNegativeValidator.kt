@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.common.valuetype.validation.validators
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.common.valuetype.validation.failures.IntegerNegativeFailure
 
-object IntegerNegativeValidator : ValueTypeValidator<IntegerNegativeFailure> {
+object IntegerNegativeValidator : IntegerValidatorBase<IntegerNegativeFailure>() {
     override fun validate(value: String): Result<String, IntegerNegativeFailure> {
         return try {
             val convertedValue = value.toInt()
@@ -47,7 +47,8 @@ object IntegerNegativeValidator : ValueTypeValidator<IntegerNegativeFailure> {
                 }
             }
         } catch (e: NumberFormatException) {
-            Result.Failure(IntegerNegativeFailure.NumberFormatException)
+            catchOverflowFailure(value, IntegerNegativeFailure.IntegerOverflow,
+                    IntegerNegativeFailure.NumberFormatException)
         }
     }
 }

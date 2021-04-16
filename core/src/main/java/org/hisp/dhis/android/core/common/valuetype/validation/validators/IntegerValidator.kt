@@ -31,13 +31,13 @@ package org.hisp.dhis.android.core.common.valuetype.validation.validators
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.common.valuetype.validation.failures.IntegerFailure
 
-object IntegerValidator : ValueTypeValidator<IntegerFailure> {
+object IntegerValidator : IntegerValidatorBase<IntegerFailure>() {
     override fun validate(value: String): Result<String, IntegerFailure> {
         return try {
             value.toInt()
             Result.Success(value)
         } catch (e: NumberFormatException) {
-            Result.Failure(IntegerFailure.NumberFormatException)
+            catchOverflowFailure(value, IntegerFailure.IntegerOverflow, IntegerFailure.NumberFormatException)
         }
     }
 }

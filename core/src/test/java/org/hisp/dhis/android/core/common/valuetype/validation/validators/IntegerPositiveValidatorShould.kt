@@ -36,6 +36,7 @@ class IntegerPositiveValidatorShould : ValidatorShouldHelper<IntegerPositiveFail
     @Test
     fun `Should success when passing valid values`() {
         valueShouldSuccess("15")
+        valueShouldSuccess(Integer.MAX_VALUE.toString())
     }
 
     @Test
@@ -46,6 +47,12 @@ class IntegerPositiveValidatorShould : ValidatorShouldHelper<IntegerPositiveFail
     @Test
     fun `Should fail with a value is zero exception when value is zero`() {
         valueShouldFail("0", IntegerPositiveFailure.ValueIsZero)
+    }
+
+    @Test
+    fun `Should fail with a integer overflow exception when value is too big`() {
+        valueShouldFail("2147483648", IntegerPositiveFailure.IntegerOverflow)
+        valueShouldFail("-2147483649", IntegerPositiveFailure.IntegerOverflow)
     }
 
     @Test

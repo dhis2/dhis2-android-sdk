@@ -28,21 +28,30 @@
 
 package org.hisp.dhis.android.core.common.valuetype.validation.validators
 
-import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.common.valuetype.validation.failures.DateFailure
+import org.junit.Test
 
-object DateValidator : ValueTypeValidator<DateFailure> {
+class DateValidatorShould : ValidatorShouldHelper<DateFailure>(DateValidator) {
 
-    private val DATE_PATTERN = "^\\d{4}-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])\$".toRegex()
+    @Test
+    fun `Should success when passing valid values`() {
+        valueShouldSuccess("2021-04-14")
+        valueShouldSuccess("0001-01-01")
+        valueShouldSuccess("9999-12-31")
+        valueShouldSuccess("0001-01-1")
+        valueShouldSuccess("0001-1-1")
+    }
 
-    override fun validate(value: String): Result<String, DateFailure> {
-        return when (value.matches(DATE_PATTERN)) {
-            true -> {
-                Result.Success(value)
-            }
-            else -> {
-                Result.Failure(DateFailure.ParseException)
-            }
-        }
+    @Test
+    fun `Should fail when passing malformed values`() {
+        valueShouldFail("", DateFailure.ParseException)
+        valueShouldFail("asd", DateFailure.ParseException)
+        valueShouldFail("-5221-01-14", DateFailure.ParseException)
+        valueShouldFail("5221-01-14-", DateFailure.ParseException)
+        valueShouldFail("2021/01/10", DateFailure.ParseException)
+        valueShouldFail("2021-01-94", DateFailure.ParseException)
+        valueShouldFail("2021-33-04", DateFailure.ParseException)
+        valueShouldFail("2021-00-04", DateFailure.ParseException)
+        valueShouldFail("2021-02-00", DateFailure.ParseException)
     }
 }

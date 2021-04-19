@@ -49,7 +49,7 @@ enum class ValueType(javaClass: Class<*>, val validator: ValueTypeValidator<*>) 
     INTEGER_NEGATIVE(Int::class.java, IntegerNegativeValidator),
     INTEGER_ZERO_OR_POSITIVE(Int::class.java, IntegerZeroOrPositiveValidator),
     FILE_RESOURCE(String::class.java, DefaultValidator),
-    COORDINATE(String::class.java, DefaultValidator),
+    COORDINATE(String::class.java, CoordinateValidator),
     PHONE_NUMBER(String::class.java, DefaultValidator),
     EMAIL(String::class.java, DefaultValidator),
     USERNAME(String::class.java, DefaultValidator),

@@ -26,25 +26,11 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common.valuetype.validation.validators
+package org.hisp.dhis.android.core.common.valuetype.validation.failures
 
-import org.hisp.dhis.android.core.arch.helpers.Result
-import org.hisp.dhis.android.core.common.valuetype.validation.failures.NumberFailure
-
-object NumberValidator : ValueTypeValidator<NumberFailure> {
-
-    val SCIENTIFIC_NOTATION_PATTERN = "[+\\-]?(?:0|[1-9]\\d*)(?:\\.\\d*)?(?:[eE][+\\-]?\\d+)".toRegex()
-
-    override fun validate(value: String): Result<String, NumberFailure> {
-        return try {
-            value.toDouble()
-            if (value.matches(SCIENTIFIC_NOTATION_PATTERN)) {
-                Result.Failure(NumberFailure.ScientificNotationException)
-            } else {
-                Result.Success(value)
-            }
-        } catch (e: NumberFormatException) {
-            Result.Failure(NumberFailure.NumberFormatException)
-        }
-    }
+sealed class UnitIntervalFailure : Throwable() {
+    object ScientificNotationException : UnitIntervalFailure()
+    object NumberFormatException : UnitIntervalFailure()
+    object GreaterThanOneException : UnitIntervalFailure()
+    object SmallerThanZeroException : UnitIntervalFailure()
 }

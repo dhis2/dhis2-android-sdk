@@ -29,22 +29,29 @@
 package org.hisp.dhis.android.core.common.valuetype.validation.validators
 
 import org.hisp.dhis.android.core.arch.helpers.Result
-import org.hisp.dhis.android.core.common.valuetype.validation.failures.NumberFailure
+import org.hisp.dhis.android.core.common.valuetype.validation.failures.UnitIntervalFailure
 
-object NumberValidator : ValueTypeValidator<NumberFailure> {
+object UnitIntervalValidator : ValueTypeValidator<UnitIntervalFailure> {
 
-    val SCIENTIFIC_NOTATION_PATTERN = "[+\\-]?(?:0|[1-9]\\d*)(?:\\.\\d*)?(?:[eE][+\\-]?\\d+)".toRegex()
-
-    override fun validate(value: String): Result<String, NumberFailure> {
+    override fun validate(value: String): Result<String, UnitIntervalFailure> {
         return try {
-            value.toDouble()
-            if (value.matches(SCIENTIFIC_NOTATION_PATTERN)) {
-                Result.Failure(NumberFailure.ScientificNotationException)
-            } else {
-                Result.Success(value)
+            val convertedValue = value.toDouble()
+            when {
+                value.matches(NumberValidator.SCIENTIFIC_NOTATION_PATTERN) -> {
+                    Result.Failure(UnitIntervalFailure.ScientificNotationException)
+                }
+                convertedValue > 1 -> {
+                    Result.Failure(UnitIntervalFailure.GreaterThanOneException)
+                }
+                convertedValue < 0 -> {
+                    Result.Failure(UnitIntervalFailure.SmallerThanZeroException)
+                }
+                else -> {
+                    Result.Success(value)
+                }
             }
         } catch (e: NumberFormatException) {
-            Result.Failure(NumberFailure.NumberFormatException)
+            Result.Failure(UnitIntervalFailure.NumberFormatException)
         }
     }
 }

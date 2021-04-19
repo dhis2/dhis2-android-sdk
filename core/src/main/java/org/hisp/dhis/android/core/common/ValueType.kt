@@ -42,7 +42,7 @@ enum class ValueType(javaClass: Class<*>, val validator: ValueTypeValidator<*>) 
     DATETIME(Date::class.java, DateTimeValidator),
     TIME(String::class.java, TimeValidator),
     NUMBER(Double::class.java, NumberValidator),
-    UNIT_INTERVAL(Double::class.java, DefaultValidator),
+    UNIT_INTERVAL(Double::class.java, UnitIntervalValidator),
     PERCENTAGE(Double::class.java, PercentageValidator),
     INTEGER(Int::class.java, IntegerValidator),
     INTEGER_POSITIVE(Int::class.java, IntegerPositiveValidator),

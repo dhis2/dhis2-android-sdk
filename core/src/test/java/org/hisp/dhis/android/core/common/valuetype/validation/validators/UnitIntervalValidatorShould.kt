@@ -28,23 +28,41 @@
 
 package org.hisp.dhis.android.core.common.valuetype.validation.validators
 
-import org.hisp.dhis.android.core.arch.helpers.Result
-import org.hisp.dhis.android.core.common.valuetype.validation.failures.NumberFailure
+import org.hisp.dhis.android.core.common.valuetype.validation.failures.UnitIntervalFailure
+import org.junit.Test
 
-object NumberValidator : ValueTypeValidator<NumberFailure> {
+class UnitIntervalValidatorShould : ValidatorShouldHelper<UnitIntervalFailure>(UnitIntervalValidator) {
 
-    val SCIENTIFIC_NOTATION_PATTERN = "[+\\-]?(?:0|[1-9]\\d*)(?:\\.\\d*)?(?:[eE][+\\-]?\\d+)".toRegex()
+    @Test
+    fun `Should success when passing valid values`() {
+        valueShouldSuccess("0")
+        valueShouldSuccess("0.2")
+        valueShouldSuccess("0.6666666666")
+        valueShouldSuccess("1")
+    }
 
-    override fun validate(value: String): Result<String, NumberFailure> {
-        return try {
-            value.toDouble()
-            if (value.matches(SCIENTIFIC_NOTATION_PATTERN)) {
-                Result.Failure(NumberFailure.ScientificNotationException)
-            } else {
-                Result.Success(value)
-            }
-        } catch (e: NumberFormatException) {
-            Result.Failure(NumberFailure.NumberFormatException)
-        }
+    @Test
+    fun `Should fail when passing scientific notation values`() {
+        valueShouldFail("3e-01", UnitIntervalFailure.ScientificNotationException)
+    }
+
+    @Test
+    fun `Should fail when passing values greater than one`() {
+        valueShouldFail("20", UnitIntervalFailure.GreaterThanOneException)
+        valueShouldFail("1.0001", UnitIntervalFailure.GreaterThanOneException)
+    }
+
+    @Test
+    fun `Should fail when passing values smaller than zero`() {
+        valueShouldFail("-0.0001", UnitIntervalFailure.SmallerThanZeroException)
+        valueShouldFail("-15", UnitIntervalFailure.SmallerThanZeroException)
+    }
+
+    @Test
+    fun `Should fail when passing malformed values`() {
+        valueShouldFail("", UnitIntervalFailure.NumberFormatException)
+        valueShouldFail("sdf", UnitIntervalFailure.NumberFormatException)
+        valueShouldFail("254,3", UnitIntervalFailure.NumberFormatException)
+        valueShouldFail("25.035,21", UnitIntervalFailure.NumberFormatException)
     }
 }

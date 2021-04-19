@@ -1,12 +1,8 @@
-# Analytics
-
-<!--DHIS2-SECTION-ID:analytics-->
+# Analytics { #android_sdk_analytics }
 
 Analytics module offers some kind of local analytic data, i.e, some analytic values based on the data stored in the device. Currently, there is no integration with server-analytics although they share basic concepts.
 
-## Event line list
-
-<!--DHIS2-SECTION-ID:event_line_list-->
+## Event line list { #android_sdk_event_line_list }
 
 They are event-based analytics. If you are familiar with web analytic tools, it is very similar to Event Reports (line list).
 

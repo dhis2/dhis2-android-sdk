@@ -1,6 +1,4 @@
-# Program indicator engine
-
-<!--DHIS2-SECTION-ID:program_indicator_engine-->
+# Program indicator engine { #android_sdk_program_indicator_engine }
 
 The SDK includes its own Program Indicator engine for the evaluation of **in-line Program Indicators**. These kind of indicators are evaluated within the context of an enrollment or an event (single or tracker) and they are usually placed in the data entry form offering additional information to the data encoder. This means that, even though they are regular Program Indicators and can be calculated across enrollments, they have provide useful information within a single enrollment.
 

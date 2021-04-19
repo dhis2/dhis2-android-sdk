@@ -1,6 +1,4 @@
-# DHIS2 services
-
-<!--DHIS2-SECTION-ID:dhis2_services-->
+# DHIS2 services { #android_sdk_dhis2_services }
 
 SDK repositories give access to metadata and allow to create and modify data, but they are lazy when it comes to validation of data. For example, in case an enrollment is COMPLETED, the user should be not allowed to create new events. SDK repositories do not validate this and will just create the new event; the app is responsible for blocking the creation of new events.
 

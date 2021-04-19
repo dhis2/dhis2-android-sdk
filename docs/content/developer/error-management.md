@@ -1,6 +1,4 @@
-# Error management
-
-<!--DHIS2-SECTION-ID:error_management-->
+# Error management { #android_sdk_error_management }
 
 Errors that happen in the context of the SDK are wrapped in a type of exception: `D2Error`, with the following fields:
 

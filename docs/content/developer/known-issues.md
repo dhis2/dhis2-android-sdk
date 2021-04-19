@@ -1,6 +1,4 @@
-# Known issues
-
-<!--DHIS2-SECTION-ID:known_issues-->
+# Known issues { #android_sdk_known_issues }
 
 ## Data set completion
 

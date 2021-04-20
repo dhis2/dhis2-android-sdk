@@ -33,11 +33,15 @@ import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.event.Event
+import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
 import org.hisp.dhis.android.core.tracker.importer.internal.JobQueryCall
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterService
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObject
+import java.util.Date
 
 @Reusable
 internal class EventTrackerImporterPostCall @Inject internal constructor(
@@ -45,7 +49,8 @@ internal class EventTrackerImporterPostCall @Inject internal constructor(
     private val stateManager: EventPostStateManager,
     private val service: TrackerImporterService,
     private val apiCallExecutor: APICallExecutor,
-    private val jobQueryCall: JobQueryCall
+    private val jobQueryCall: JobQueryCall,
+    private val jobObjectHandler: Handler<TrackerJobObject>
 ) {
     fun uploadEvents(
         events: List<Event>
@@ -57,13 +62,25 @@ internal class EventTrackerImporterPostCall @Inject internal constructor(
                 val eventPayload = NewTrackerImporterEventPayload(eventsToPost)
                 val res = apiCallExecutor.executeObjectCall(service.postEvents(eventPayload))
                 val jobId = res.response().uid()
-                // TODO generate objects and call handler jobQueryCall.storeJob(jobId)
+                jobObjectHandler.handleMany(generateJobObjects(eventsToPost, jobId))
                 jobId
             }.doOnError {
                 stateManager.markObjectsAs(eventsToPost, DataStateHelper.errorIfOnline(it))
             }.flatMapObservable {
                 jobQueryCall.queryJob(it)
             }
+        }
+    }
+
+    private fun generateJobObjects(events: List<NewTrackerImporterEvent>, jobUid: String): List<TrackerJobObject> {
+        val lastUpdated = Date()
+        return events.map { TrackerJobObject
+            .builder()
+            .objectType("EVENT")
+            .objectUid(it.uid())
+            .jobUid(jobUid)
+            .lastUpdated(lastUpdated)
+            .build()
         }
     }
 }

@@ -30,8 +30,9 @@ package org.hisp.dhis.android.core.tracker.importer.internal
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectStore
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithoutUidStore
 
 internal object TrackerJobObjectStore {
 
@@ -42,12 +43,24 @@ internal object TrackerJobObjectStore {
         w.bind(4, o.lastUpdated())
     }
 
+    private val WHERE_UPDATE_BINDER = WhereStatementBinder { o: TrackerJobObject, w: StatementWrapper ->
+        w.bind(5, o.objectType())
+        w.bind(6, o.objectUid())
+    }
+
+    private val DELETE_UPDATE_BINDER = WhereStatementBinder { o: TrackerJobObject, w: StatementWrapper ->
+        w.bind(1, o.objectType())
+        w.bind(2, o.objectUid())
+    }
+
     @JvmStatic
-    fun create(databaseAdapter: DatabaseAdapter): ObjectStore<TrackerJobObject> {
-        return objectStore(
+    fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<TrackerJobObject> {
+        return objectWithoutUidStore(
             databaseAdapter,
             TrackerJobObjectTableInfo.TABLE_INFO,
-            BINDER
+            BINDER,
+            WHERE_UPDATE_BINDER,
+            DELETE_UPDATE_BINDER
         ) { TrackerJobObject.create(it) }
     }
 }

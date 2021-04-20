@@ -29,7 +29,9 @@
 package org.hisp.dhis.android.core.tracker.importer.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
 
 import dagger.Module;
 import dagger.Provides;
@@ -47,7 +49,13 @@ public final class TrackerImporterPackageDIModule {
 
     @Provides
     @Reusable
-    ObjectStore<TrackerJobObject> store(DatabaseAdapter databaseAdapter) {
+    ObjectWithoutUidStore<TrackerJobObject> store(DatabaseAdapter databaseAdapter) {
         return TrackerJobObjectStore.create(databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    Handler<TrackerJobObject> handler(ObjectWithoutUidStore<TrackerJobObject> store) {
+        return new ObjectWithoutUidHandlerImpl<>(store);
     }
 }

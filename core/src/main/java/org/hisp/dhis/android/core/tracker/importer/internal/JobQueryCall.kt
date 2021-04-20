@@ -32,7 +32,7 @@ import io.reactivex.Observable
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -40,7 +40,7 @@ import javax.inject.Inject
 internal class JobQueryCall @Inject internal constructor(
     private val service: TrackerImporterService,
     private val apiCallExecutor: APICallExecutor,
-    private val trackerJobObjectStore: ObjectStore<TrackerJobObject>,
+    private val trackerJobObjectStore: ObjectWithoutUidStore<TrackerJobObject>,
     private val handler: JobReportHandler
 ) {
 

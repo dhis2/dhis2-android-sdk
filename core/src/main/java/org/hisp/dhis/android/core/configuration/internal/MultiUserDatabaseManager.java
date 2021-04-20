@@ -103,7 +103,7 @@ public class MultiUserDatabaseManager {
             databaseAdapterFactory.deleteDatabase(oldestUserConfig);
         }
         DatabaseUserConfiguration userConfiguration = addNewConfigurationInternal(serverUrl, username, encrypt);
-        localDbRepository.clear().blockingAwait();
+        localDbRepository.blockingClear();
         databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, userConfiguration);
     }
 

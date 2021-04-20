@@ -32,6 +32,7 @@ import io.reactivex.Observable
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -72,7 +73,10 @@ internal class JobQueryCall @Inject internal constructor(
             .doOnNext {
                 if (it) {
                     val jobReport = apiCallExecutor.executeObjectCall(service.getJobReport(jobId))
-                    // TODO delete trackerJobObjectStore.delete(jobId)
+                    val whereClause = WhereClauseBuilder()
+                        .appendKeyStringValue(TrackerJobObjectTableInfo.Columns.JOB_UID, jobId)
+                        .build()
+                    trackerJobObjectStore.deleteWhere(whereClause)
                     handler.handle(jobReport)
                 }
             }

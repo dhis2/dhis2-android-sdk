@@ -1,6 +1,4 @@
-# Modules and repositories
-
-<!--DHIS2-SECTION-ID:modules_and_repositories-->
+# Modules and repositories { #android_sdk_modules_and_repositories }
 
 `D2` object is the entry point to interact with the SDK. The SDK forces the `D2` object to be a singleton across the application.
 
@@ -8,9 +6,7 @@ Modules are the layer below `D2`. They act as a wrapper for related functionalit
 
 Repositories act as a facade for the DB (or web API in some cases). They offer read capabilities for metadata and read/write for data.
 
-## Dealing with return types: RxJava
-
-<!--DHIS2-SECTION-ID:dealing_with_rxjava-->
+## Dealing with return types: RxJava { #android_sdk_dealing_with_rxjava }
 
 The SDK uses RxJava classes (Observable, Single, Completable, Flowable) as the preferred return type for all the methods. The reasons for choosing RxJava classes are mainly two:
 
@@ -49,9 +45,7 @@ Accessing the database is time consuming and it's recommended to do it in a sepa
 methods. However, procedures that involve accessing the web API, like log in, metadata or data download or upload **must**
 run in a separate thread, otherwise Android will throw an error.
 
-## Query building
-
-<!--DHIS2-SECTION-ID:query_building-->
+## Query building { #android_sdk_query_building }
 
 Repositories offer a builder syntax with compile-time validation to access the resources. A typical query is composed of some modifiers (filter, order, nested fields) and ends with an action (get, count, getPaged,...).
 
@@ -70,9 +64,7 @@ d2.eventModule().events()
     .get();
 ```
 
-### Filters
-
-<!--DHIS2-SECTION-ID:filters-->
+### Filters { #android_sdk_filters }
 
 Repositories expose the list of available filters prefixed by the keyword "by". The list of filter operators available for each filter is dependant on the filter value type: for example, a value type `Date` will offer operators like `after`, `before`, `inPeriods`, while a value type `Boolean` will offer `isFalse` or `isTrue`.
 
@@ -87,9 +79,7 @@ d2.eventModule().events()
 
 will return the events assigned to the orgunit "DiszpKrYNg8" **AND** whose eventDate is after "2019-05-05".
 
-### Order by
-
-<!--DHIS2-SECTION-ID:order_by-->
+### Order by { #android_sdk_order_by }
 
 Ordering modifiers are prefixed by the keyword "orderBy".
 
@@ -104,9 +94,7 @@ d2.eventModule().events()
 
 will order by EventDate descendant in first place, and then by LastUpdated descendant.
 
-### Include nested fields
-
-<!--DHIS2-SECTION-ID:nested_fields-->
+### Include nested fields { #android_sdk_nested_fields }
 
 Repositories return classes that are not an exact match of database tables: they are more complex objects that might include some properties obtained from other tables. For example, the `Event` class has a property called `trackedEntityDataValues` that include a list of TrackedEntityDataValues. The main reason to choose this kind of objects is to absorb the complexity of dealing with link tables so the app does not have to care about building links between objects.
 
@@ -122,9 +110,7 @@ d2.programModule().programs()
 
 will return a nested `TrackedEntityType` object.
 
-## Helpers
-
-<!--DHIS2-SECTION-ID:helpers-->
+## Helpers { #android_sdk_helpers }
 
 The SDK include some helpers in the package `org.hisp.dhis.android.core.arch.helpers`. They can be easily found in Android Studio by searching `Helper` in class names. They include some helpful methods to perform common operations:
 
@@ -135,9 +121,7 @@ The SDK include some helpers in the package `org.hisp.dhis.android.core.arch.hel
 - `UidsHelper`: common operations to collections of objects with uid.
 - `UserHelper`: operations related to user authentication.
 
-## Module list
-
-<!--DHIS2-SECTION-ID:module_list-->
+## Module list { #android_sdk_module_list }
 
 System modules:
 

@@ -1,6 +1,4 @@
-# Database
-
-<!--DHIS2-SECTION-ID:database-->
+# Database { #android_sdk_database }
 
 ## Database scope
 The SDK keeps the data of a [server, user] pair in an isolated database.

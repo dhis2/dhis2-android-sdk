@@ -1,21 +1,17 @@
-# Workflow
-
-<!--DHIS2-SECTION-ID:workflow-->
+# Workflow { #android_sdk_workflow }
 
 Currently, the SDK is primarily oriented to build apps that work in an offline mode. In short, the SDK maintains a local database instance that is used to get the work done locally (create forms, manage data, ...). When requested by the client, this local database is synchronized with the server.
 
 A typical workflow would be like this:
 
 1. **Login**
-2. **Sync metadata:** the SDK downloads a subset of the server metadata so it is available to be used at any time. Metadata sync is totally user-dependent (see [Synchronization](#metadata_synchronization) for more details)
+2. **Sync metadata:** the SDK downloads a subset of the server metadata so it is available to be used at any time. Metadata sync is totally user-dependent (see [Synchronization](#android_sdk_metadata_synchronization) for more details)
 3. **Download data:** if you want to have existing data available in the device even when offline, you can download and save existing tracker and aggregated data in the device.
 4. **Do the work:** at this point the app is able to create the data entry forms and show some existing data. Then the user can edit/delete/update data.
 5. **Upload data:** from time to time, the work done in the local database instance is sent to the server.
 6. **Sync metadata:** it is recommended to sync metadata quite often to detect changes in metadata configuration.
 
-## Login/Logout
-
-<!--DHIS2-SECTION-ID:login_logout-->
+## Login/Logout { #android_sdk_login_logout }
 
 Before interacting with the server it is required to login into the DHIS 2 instance. Currently, the SDK does only support one pair "user - server" simultaneously. That means that only one user can be authenticated in only one server at the same time.
 
@@ -43,9 +39,7 @@ Calling module or repository methods before a successful login or after a logout
 
 Logout method removes user credentials, so a new login is required before any interaction with the server. Metadata and data is preserved so a user is able to logout/login without losing any information.
 
-## Metadata synchronization
-
-<!--DHIS2-SECTION-ID:metadata_synchronization-->
+## Metadata synchronization { #android_sdk_metadata_synchronization }
 
 Metadata synchronization is usually the first step after login. It fetches and persists the metadata needed by the current user. To launch metadata synchronization we must execute:
 
@@ -89,9 +83,7 @@ The SDK does not fail the synchronization, but it stores the errors in a table f
 d2.maintenanceModule().foreignKeyViolations()
 ```
 
-## Data states
-
-<!--DHIS2-SECTION-ID:data_states-->
+## Data states { #android_sdk_data_states }
 
 Data objects have a read-only `state` property that indicates the current state of the object in terms of synchronization with the server. This state is maintained by the SDK.
 
@@ -110,15 +102,13 @@ Additionally, in `TrackedEntityInstance` we might have:
 
 - **RELATIONSHIP**. This TrackedEntityInstance has been downloaded with the sole purpose of fulfilling a relationship to another TEI. This `RELATIONSHIP` TEI only has basic information (uid, type, etc) and the list of TrackedEntityAttributes to be able to print meaningful information about the relationship. Other data such as enrollments, events or relationships are not downloaded for this TEI. Also, this TEI cannot be modified or uploaded to the server.
 
-## Tracker data
-
-<!--DHIS2-SECTION-ID:tracker_data-->
+## Tracker data { #android_sdk_tracker_data }
 
 ### Tracker data download
 
 > **Important**
 >
-> See [Settings App](#settings_app) section to know how this application can be used to control synchronization parameters.
+> See [Settings App](#android_sdk_settings_app) section to know how this application can be used to control synchronization parameters.
 
 By default, the SDK only downloads TrackedEntityInstances and Events
 that are located in user capture scope, but it is also possible to
@@ -423,15 +413,13 @@ d2.trackedEntityModule().trackedEntityInstanceService()
     .inheritAttributes("fromTeiUid", "toTeiUid", "programUid");
 ```
 
-## Aggregated data
-
-<!--DHIS2-SECTION-ID:aggregated_data-->
+## Aggregated data { #android_sdk_aggregated_data }
 
 ### Aggregated data download
 
 > **Important**
 >
-> See [Settings App](#settings_app) section to know how this application can be used to control synchronization parameters.
+> See [Settings App](#android_sdk_settings_app) section to know how this application can be used to control synchronization parameters.
 
 ```java
 d2.aggregatedModule().data().download()
@@ -566,9 +554,7 @@ d2.dataSetModule().dataSetInstances()
 
 If you only need a high level overview of the aggregated data status, you can use the repository `DataSetInstanceSummary`. It accepts the same filters and returns a count of `DataSetInstance` for each combination.
 
-## Dealing with FileResources
-
-<!--DHIS2-SECTION-ID:file_resources-->
+## Dealing with FileResources { #android_sdk_file_resources }
 
 The SDK offers a module (the `FileResourceModule`) and two helpers (the `FileResourceDirectoryHelper` and `FileResizerHelper`) that allow to work with files.
 

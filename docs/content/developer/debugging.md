@@ -1,6 +1,4 @@
-# Debugging
-
-<!--DHIS2-SECTION-ID:debugging-->
+# Debugging { #android_sdk_debugging }
 
 ## Android Studio
 You can debug your DHIS2 Android App using Android Studio. Follow the [instructions from the Android Developer Portal](https://developer.android.com/studio/debug) 

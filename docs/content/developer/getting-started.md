@@ -1,10 +1,6 @@
-# Getting started
+# Getting started { #android_sdk_getting_started }
 
-<!--DHIS2-SECTION-ID:getting_started-->
-
-## Installation
-
-<!--DHIS2-SECTION-ID:installation-->
+## Installation { #android_sdk_installation }
 
 Include dependency in build.gradle.
 
@@ -26,11 +22,9 @@ allprojects {
 }
 ```
 
-## D2 initialization
+## D2 initialization { #android_sdk_initialization }
 
 <!--TODO-->
-
-<!--DHIS2-SECTION-ID:initialization-->
 
 In order to start using the SDK, the first step is to initialize a `D2` object. The helper class `D2Manager` offers static methods to setup and initialize the `D2` instance. Also, it ensures that `D2` is a singleton across the application.
 

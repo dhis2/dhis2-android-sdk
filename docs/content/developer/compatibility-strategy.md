@@ -1,8 +1,6 @@
-# DHIS2 version compatibility strategy
+# DHIS2 version compatibility strategy { #android_sdk_compatibility_strategy }
 
-<!--DHIS2-SECTION-ID:compatibility_strategy-->
-
-The SDK guarantees compatibility with the latest three DHIS 2 releases (see [Compatibility](#compatibility)). In case the SDK is still compatible with previous DHIS2 versions and no major issues have been detected, compatibility could be extended to previous versions.
+The SDK guarantees compatibility with the latest three DHIS 2 releases (see [Compatibility](#android_sdk_compatibility)). In case the SDK is still compatible with previous DHIS2 versions and no major issues have been detected, compatibility could be extended to previous versions.
 
 In order to avoid accidental login into unsupported DHIS 2 instances, the SDK blocks connections to version that are not supported yet or that have been deprecated.
 

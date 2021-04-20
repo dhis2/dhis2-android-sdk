@@ -1,6 +1,4 @@
-# Compatibility: SDK / core / Android
-
-<!--DHIS2-SECTION-ID:compatibility-->
+# Compatibility: SDK / core / Android { #android_sdk_compatibility }
 
 Compatibility table between DHIS2 Android SDK library, DHIS2 core and Android SDK API.
 

@@ -41,7 +41,7 @@ public final class TrackerJobObjectTableInfo {
 
         @Override
         public String name() {
-            return "TrackerJobTableInfo";
+            return "TrackerJobObject";
         }
 
         @Override

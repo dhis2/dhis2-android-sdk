@@ -63,7 +63,7 @@ internal class TrackedEntityInstanceTrackerImporterPostCall @Inject internal con
                     service.postTrackedEntityInstances(trackedEntityInstancePayload)
                 )
                 val jobId = res.response().uid()
-                jobQueryCall.storeJob(jobId)
+                // TODO generate objects and handle jobQueryCall.storeJob(jobId)
                 jobId
             }.doOnError {
                 stateManager.restoreStates(trackedEntitiesToPost)

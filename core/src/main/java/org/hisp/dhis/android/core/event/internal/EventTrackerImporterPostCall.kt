@@ -57,7 +57,7 @@ internal class EventTrackerImporterPostCall @Inject internal constructor(
                 val eventPayload = NewTrackerImporterEventPayload(eventsToPost)
                 val res = apiCallExecutor.executeObjectCall(service.postEvents(eventPayload))
                 val jobId = res.response().uid()
-                jobQueryCall.storeJob(jobId)
+                // TODO generate objects and call handler jobQueryCall.storeJob(jobId)
                 jobId
             }.doOnError {
                 stateManager.markObjectsAs(eventsToPost, DataStateHelper.errorIfOnline(it))

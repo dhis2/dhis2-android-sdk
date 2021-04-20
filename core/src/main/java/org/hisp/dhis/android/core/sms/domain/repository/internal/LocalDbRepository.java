@@ -112,6 +112,8 @@ public interface LocalDbRepository {
 
     Completable clear();
 
+    void blockingClear();
+
     class TooManySubmissionsException extends IllegalStateException {
         public TooManySubmissionsException() {
             super("Too many ongoing submissions at the same time >255");

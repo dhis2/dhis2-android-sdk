@@ -34,12 +34,14 @@ import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseExport;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.common.BaseCallShould;
+import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -59,6 +61,9 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
 
     @Mock
     private DatabaseExport databaseExport;
+
+    @Mock
+    private LocalDbRepository localDbRepository;
 
     @Mock
     private DatabaseAdapterFactory databaseAdapterFactory;
@@ -97,7 +102,7 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
     public void setUp() throws Exception {
         super.setUp();
         manager = new MultiUserDatabaseManager(databaseAdapter, databaseConfigurationSecureStore, configurationHelper,
-                databaseAdapterFactory, databaseExport);
+                databaseAdapterFactory, databaseExport, localDbRepository);
     }
 
     @Test
@@ -110,6 +115,7 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
         manager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(SERVER_URL, USERNAME, encrypt);
 
         verify(databaseAdapterFactory).createOrOpenDatabase(databaseAdapter, userConfigurationUnencrypted);
+        verify(localDbRepository).blockingClear();
     }
 
     @Test
@@ -127,6 +133,8 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
         verify(databaseExport).encrypt(SERVER_URL, userConfigurationUnencrypted);
 
         verify(databaseAdapterFactory).deleteDatabase(userConfigurationEncrypted);
+
+        verifyNoMoreInteractions(localDbRepository);
     }
 
     @Test
@@ -134,6 +142,8 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
         manager.loadExistingKeepingEncryption(SERVER_URL, USERNAME);
 
         verifyNoMoreInteractions(databaseAdapterFactory);
+
+        verifyNoMoreInteractions(localDbRepository);
     }
 
     @Test
@@ -146,5 +156,7 @@ public class MultiUserDatabaseManagerUnitShould extends BaseCallShould {
         manager.loadExistingKeepingEncryption(SERVER_URL, USERNAME);
 
         verify(databaseAdapterFactory).createOrOpenDatabase(databaseAdapter, userConfigurationUnencrypted);
+
+        verifyNoMoreInteractions(localDbRepository);
     }
 }

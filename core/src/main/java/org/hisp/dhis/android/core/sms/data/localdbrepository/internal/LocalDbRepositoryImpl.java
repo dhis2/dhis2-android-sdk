@@ -411,6 +411,11 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
         );
     }
 
+    @Override
+    public void blockingClear() {
+        clear().blockingAwait();
+    }
+
     private SharedPreferences prefs() {
         return context.getSharedPreferences(CONFIG_FILE, Context.MODE_PRIVATE);
     }

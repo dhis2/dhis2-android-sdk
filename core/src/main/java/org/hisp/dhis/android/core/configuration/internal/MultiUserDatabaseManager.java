@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseExport;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
+import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
 
 import javax.inject.Inject;
 
@@ -50,6 +51,7 @@ public class MultiUserDatabaseManager {
     private final DatabaseConfigurationHelper configurationHelper;
     private final DatabaseAdapterFactory databaseAdapterFactory;
     private final DatabaseExport databaseExport;
+    private final LocalDbRepository localDbRepository;
 
     private static int maxServerUserPairs = 1;
 
@@ -59,12 +61,14 @@ public class MultiUserDatabaseManager {
             @NonNull ObjectKeyValueStore<DatabasesConfiguration> databaseConfigurationSecureStore,
             @NonNull DatabaseConfigurationHelper configurationHelper,
             @NonNull DatabaseAdapterFactory databaseAdapterFactory,
-            @NonNull DatabaseExport databaseExport) {
+            @NonNull DatabaseExport databaseExport,
+            @NonNull LocalDbRepository localDbRepository) {
         this.databaseAdapter = databaseAdapter;
         this.databaseConfigurationSecureStore = databaseConfigurationSecureStore;
         this.configurationHelper = configurationHelper;
         this.databaseAdapterFactory = databaseAdapterFactory;
         this.databaseExport = databaseExport;
+        this.localDbRepository = localDbRepository;
     }
 
     public static void setMaxServerUserPairs(int pairs) {
@@ -99,6 +103,7 @@ public class MultiUserDatabaseManager {
             databaseAdapterFactory.deleteDatabase(oldestUserConfig);
         }
         DatabaseUserConfiguration userConfiguration = addNewConfigurationInternal(serverUrl, username, encrypt);
+        localDbRepository.blockingClear();
         databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, userConfiguration);
     }
 

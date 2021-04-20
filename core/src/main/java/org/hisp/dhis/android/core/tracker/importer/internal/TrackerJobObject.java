@@ -35,25 +35,30 @@ import androidx.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseObject;
+
+import java.util.Date;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_TrackerJobObject.Builder.class)
 public abstract class TrackerJobObject extends BaseObject {
 
     @NonNull
-    @JsonProperty()
     public abstract String objectType();
 
     @NonNull
-    @JsonProperty()
     public abstract String objectUid();
 
     @NonNull
-    @JsonProperty()
     public abstract String jobUid();
+
+    @NonNull
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date lastUpdated();
 
 
     @NonNull
@@ -74,6 +79,8 @@ public abstract class TrackerJobObject extends BaseObject {
         public abstract Builder objectUid(String objectUid);
 
         public abstract Builder jobUid(String jobUid);
+
+        public abstract Builder lastUpdated(Date lastUpdated);
 
         public abstract TrackerJobObject build();
     }

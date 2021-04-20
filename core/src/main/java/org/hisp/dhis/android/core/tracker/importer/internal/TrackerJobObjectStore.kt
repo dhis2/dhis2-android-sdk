@@ -39,6 +39,7 @@ internal object TrackerJobObjectStore {
         w.bind(1, o.objectType())
         w.bind(2, o.objectUid())
         w.bind(3, o.jobUid())
+        w.bind(4, o.lastUpdated())
     }
 
     @JvmStatic

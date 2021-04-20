@@ -41,6 +41,8 @@ import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObjectStor
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher;
 import org.junit.Test;
 
+import java.util.Date;
+
 public class WipeDBCallMockIntegrationShould extends BaseMockIntegrationTestEmptyDispatcher {
 
     @Test
@@ -89,7 +91,12 @@ public class WipeDBCallMockIntegrationShould extends BaseMockIntegrationTestEmpt
 
         FileResourceStoreImpl.create(databaseAdapter).insert(FileResource.builder().uid("uid").build());
         TrackerJobObjectStore.create(databaseAdapter).insert(
-                TrackerJobObject.builder().jobUid("uid").objectType("type").objectUid("oUid").build()
+                TrackerJobObject.builder()
+                        .jobUid("uid")
+                        .objectType("type")
+                        .objectUid("oUid")
+                        .lastUpdated(new Date())
+                        .build()
         );
     }
 }

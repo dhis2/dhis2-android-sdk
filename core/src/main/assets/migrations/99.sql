@@ -1,3 +1,3 @@
 # New table for tracker importer
 DROP TABLE TrackerJob;
-CREATE TABLE TrackerJobObject (_id INTEGER PRIMARY KEY AUTOINCREMENT, objectType TEXT, objectUid TEXT, jobUid TEXT);
+CREATE TABLE TrackerJobObject (_id INTEGER PRIMARY KEY AUTOINCREMENT, objectType TEXT NOT NULL, objectUid TEXT NOT NULL, jobUid TEXT NOT NULL, lastUpdated TEXT NOT NULL);

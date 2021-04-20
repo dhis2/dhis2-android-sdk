@@ -32,6 +32,8 @@ import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.CoreColumns;
 
+import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.LAST_UPDATED;
+
 public final class TrackerJobObjectTableInfo {
 
     private TrackerJobObjectTableInfo() {
@@ -60,7 +62,7 @@ public final class TrackerJobObjectTableInfo {
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    OBJECT_TYPE, OBJECT_UID, JOB_UID);
+                    OBJECT_TYPE, OBJECT_UID, JOB_UID, LAST_UPDATED);
         }
 
         @Override

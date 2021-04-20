@@ -48,6 +48,7 @@ internal class JobQueryCall @Inject internal constructor(
         return Observable.just(true)
             .flatMapIterable {
                 val pendingJobs = trackerJobObjectStore.selectAll()
+                    .sortedBy { it.lastUpdated() }
                     .map { it.jobUid() }
                     .distinct()
                 pendingJobs.withIndex().map { ij -> Pair(ij.value, ij.index == pendingJobs.size - 1) }

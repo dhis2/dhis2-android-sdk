@@ -104,10 +104,6 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
-
-        manifestPlaceholders = [
-                appAuthRedirectScheme: ''
-        ]
     }
 
     compileOptions {

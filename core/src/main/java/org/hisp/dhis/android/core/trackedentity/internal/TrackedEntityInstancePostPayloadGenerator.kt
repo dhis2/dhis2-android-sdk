@@ -203,6 +203,6 @@ internal class TrackedEntityInstancePostPayloadGenerator @Inject internal constr
     }
 
     companion object {
-        private const val DEFAULT_PAGE_SIZE = 10
+        private const val DEFAULT_PAGE_SIZE = 20
     }
 }

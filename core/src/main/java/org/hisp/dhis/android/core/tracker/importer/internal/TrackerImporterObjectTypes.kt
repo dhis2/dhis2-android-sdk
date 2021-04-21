@@ -27,40 +27,9 @@
  */
 package org.hisp.dhis.android.core.tracker.importer.internal
 
-import dagger.Reusable
-import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectTypes.ENROLLMENT
-import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectTypes.EVENT
-import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectTypes.TRACKED_ENTITY
-import javax.inject.Inject
-
-@Reusable
-internal class JobReportHandler @Inject internal constructor(
-    private val eventHandler: JobReportEventHandler,
-    private val enrollmentHandler: JobReportEnrollmentHandler,
-    private val trackedEntityHandler: JobReportTrackedEntityHandler
-) {
-
-    fun handle(o: JobReport) {
-        o.validationReport.errorReports.forEach { errorReport ->
-            when (errorReport.trackerType) {
-                EVENT -> eventHandler.handleError(errorReport)
-                ENROLLMENT -> enrollmentHandler.handleError(errorReport)
-                TRACKED_ENTITY -> trackedEntityHandler.handleError(errorReport)
-                else -> println("Unsupported type") // TODO
-            }
-        }
-
-        if (o.bundleReport != null) {
-            val typeMap = o.bundleReport.typeReportMap
-            applySuccess(typeMap.event, eventHandler)
-            applySuccess(typeMap.enrollment, enrollmentHandler)
-            applySuccess(typeMap.trackedEntity, trackedEntityHandler)
-        }
-    }
-
-    private fun applySuccess(typeReport: JobTypeReport, typeHandler: JobReportTypeHandler) {
-        typeReport.objectReports.forEach { objectReport ->
-            typeHandler.handleSuccess(objectReport.uid)
-        }
-    }
+internal object TrackerImporterObjectTypes {
+    const val EVENT = "EVENT"
+    const val TRACKED_ENTITY = "TRACKED_ENTITY"
+    const val ENROLLMENT = "ENROLLMENT"
+    const val RELATIONSHIP = "RELATIONSHIP"
 }

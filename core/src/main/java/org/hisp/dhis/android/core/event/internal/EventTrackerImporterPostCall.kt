@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.event.internal
 import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
@@ -39,9 +38,11 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
 import org.hisp.dhis.android.core.tracker.importer.internal.JobQueryCall
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectTypes.EVENT
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterService
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObject
 import java.util.Date
+import javax.inject.Inject
 
 @Reusable
 internal class EventTrackerImporterPostCall @Inject internal constructor(
@@ -76,7 +77,7 @@ internal class EventTrackerImporterPostCall @Inject internal constructor(
         val lastUpdated = Date()
         return events.map { TrackerJobObject
             .builder()
-            .objectType("EVENT")
+            .objectType(EVENT)
             .objectUid(it.uid())
             .jobUid(jobUid)
             .lastUpdated(lastUpdated)

@@ -86,6 +86,10 @@ public final class CategoryOptionCollectionRepository
         );
     }
 
+    /**
+     * @deprecated this property is not used due to performance issues.
+     */
+    @Deprecated
     public CategoryOptionCollectionRepository withOrganisationUnits() {
         return cf.withChild(CategoryOptionFields.ORGANISATION_UNITS);
     }

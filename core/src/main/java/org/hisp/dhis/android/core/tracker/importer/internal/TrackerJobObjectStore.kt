@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatement
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithoutUidStore
 
+@Suppress("MagicNumber")
 internal object TrackerJobObjectStore {
 
     private val BINDER = StatementBinder { o: TrackerJobObject, w: StatementWrapper ->

@@ -28,61 +28,30 @@
 
 package org.hisp.dhis.android.core.tracker.importer.internal;
 
-import android.database.Cursor;
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.tracker.importer.internal.TrackerJobObjectSamples;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.runner.RunWith;
 
-import androidx.annotation.NonNull;
+@RunWith(D2JunitRunner.class)
+public class TrackerJobObjectStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<TrackerJobObject> {
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseObject;
-
-import java.util.Date;
-
-@AutoValue
-@JsonDeserialize(builder = $$AutoValue_TrackerJobObject.Builder.class)
-public abstract class TrackerJobObject extends BaseObject {
-
-    @NonNull
-    public abstract String objectType();
-
-    @NonNull
-    public abstract String objectUid();
-
-    @NonNull
-    public abstract String jobUid();
-
-    @NonNull
-    @ColumnAdapter(DbDateColumnAdapter.class)
-    public abstract Date lastUpdated();
-
-
-    @NonNull
-    public static TrackerJobObject create(Cursor cursor) {
-        return AutoValue_TrackerJobObject.createFromCursor(cursor);
+    public TrackerJobObjectStoreIntegrationShould() {
+        super(TrackerJobObjectStore.create(TestDatabaseAdapterFactory.get()), TrackerJobObjectTableInfo.TABLE_INFO,
+                TestDatabaseAdapterFactory.get());
     }
 
-
-    public static Builder builder() {
-        return new AutoValue_TrackerJobObject.Builder();
+    @Override
+    protected TrackerJobObject buildObject() {
+        return TrackerJobObjectSamples.get1();
     }
 
-    abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
-        public abstract Builder objectType(String objectType);
-
-        public abstract Builder objectUid(String objectUid);
-
-        public abstract Builder jobUid(String jobUid);
-
-        public abstract Builder lastUpdated(Date lastUpdated);
-
-        public abstract TrackerJobObject build();
+    @Override
+    protected TrackerJobObject buildObjectToUpdate() {
+        return TrackerJobObjectSamples.get1()
+                .toBuilder()
+                .jobUid("anotherJobId")
+                .build();
     }
 }

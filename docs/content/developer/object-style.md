@@ -1,6 +1,4 @@
-# Object style
-
-<!--DHIS2-SECTION-ID:object-style-->
+# Object style { #android_sdk_object_style }
 
 Some elements include a property called "style" that defines an icon and a color. This visual information is very useful to quickly navigate through the application. Some typical use cases:
 

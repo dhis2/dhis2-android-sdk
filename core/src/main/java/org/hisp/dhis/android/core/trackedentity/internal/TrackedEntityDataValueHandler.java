@@ -36,12 +36,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-final class TrackedEntityDataValueHandler extends ObjectWithoutUidHandlerImpl<TrackedEntityDataValue> {
+public final class TrackedEntityDataValueHandler extends ObjectWithoutUidHandlerImpl<TrackedEntityDataValue> {
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
 
     TrackedEntityDataValueHandler(TrackedEntityDataValueStore trackedEntityDataValueStore) {
         super(trackedEntityDataValueStore);
         this.trackedEntityDataValueStore = trackedEntityDataValueStore;
+    }
+
+    public void removeEventDataValues(String eventUid) {
+        trackedEntityDataValueStore.deleteByEvent(eventUid);
     }
 
     @Override

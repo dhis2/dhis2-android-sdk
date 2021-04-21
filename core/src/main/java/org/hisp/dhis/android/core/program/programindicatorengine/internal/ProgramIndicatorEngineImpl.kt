@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.program.programindicatorengine.internal
 
+import java.util.*
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.mapByUid
@@ -71,6 +72,7 @@ internal class ProgramIndicatorEngineImpl @Inject constructor(
         val programIndicator = programIndicatorStore.selectByUid(programIndicatorUid) ?: return null
 
         val enrollment = enrollmentStore.selectByUid(enrollmentUid)
+            ?: throw NoSuchElementException("Enrollment $enrollmentUid does not exist.")
 
         val programIndicatorContext = ProgramIndicatorContext.builder()
             .programIndicator(programIndicator)
@@ -89,7 +91,7 @@ internal class ProgramIndicatorEngineImpl @Inject constructor(
             .withTrackedEntityDataValues()
             .byDeleted().isFalse
             .uid(eventUid)
-            .blockingGet()
+            .blockingGet() ?: throw NoSuchElementException("Event $eventUid does not exist or is deleted.")
 
         val enrollment = event.enrollment()?.let {
             enrollmentStore.selectByUid(it)

@@ -1,6 +1,4 @@
-# Settings
-
-<!--DHIS2-SECTION-ID:settings-->
+# Settings { #android_sdk_settings }
 
 Settings are downloaded on every metadata synchronization. There are different kinds of settings:
 
@@ -14,34 +12,60 @@ d2.settingModule()
 
 
 
-## Settings app
-
-<!--DHIS2-SECTION-ID:settings_app-->
+## Settings app { #android_sdk_settings_app }
 
 The DHIS2 instance might include a web application called "Android Settings" that allow to have remote control over certain parameters in the application. The installation and configuration of this application is optional.
 
-This SDK downloads this configuration in every metadata synchronization and persist it in the database. Some of these parameters are automatically consumed by the SDK (in bold).
+This SDK downloads this configuration in every metadata synchronization and persist it in the database. Some of these parameters are automatically consumed by the SDK (they are marked in bold below), although most of them might be overridden by the app.
 
-General:
-
-- Metadata/data sync frequency: this value must be consumed by the application and used to trigger the synchronization in the SDK.
-- Mobile configuration: gateway number, sender number. They must be consumed by the application and used to configure the SMS module in the SDK.
-- **Reserved values**: number of attribute values to reserve.
-- **Encrypt database**: whether or not to encrypt local database.
-
-**Programs:** this section controls the program data synchronization parameters. It has a section to define global or default parameters to be used in the synchronization of all programs. Additionally it allows to set specific settings for particular programs. All these parameters are consumed by the SDK and used in the synchronization process.
-
-**DataSets:** this section controls the aggregated data synchronization parameters. It has a section to define global or default parameters to be used in the synchronization of all dataSets. Additionally it allows to set specific setting for particular dataSets. All these parameters are consumed by the SDK and used in the synchronization process.
+### General settings { #android_sdk_general_settings }
 
 ```java
-// General settings
-d2.settingModule().generalSetting().get();
-
-// Program settings
-d2.settingModule().programSetting().get();
-
-// DataSet settings
-d2.settingModule().dataSetSetting().get();
+d2.settingModule().generalSetting()
 ```
 
-Although these parameters are automatically consumed by the SDK, the application might override some of those values in the synchronization process. For example, it might define a different TEI or event limit or a different download strategy (limitByOrgUnit, limitByProgram).
+It gives additional information about app settings:
+
+- **Encrypt database**: whether or not to encrypt local database.
+- **Reserved values**: number of attribute values to reserve. It might be overridden by the app.
+- Mobile configuration: gateway number, result sender number. They must be consumed by the application and used to configure the SMS module in the SDK.
+- Matomo configuration: if you have your own Matomo instance, you can expose this information to the app in order to configure its Matomo client.
+
+### Synchronization settings { #android_sdk_synchronization_settings }
+
+```java
+d2.settingModule().synchronizationSettings()
+```
+
+If offers additional parameters to control metadata/data synchronization.
+
+- MetadataSync, DataSync: these two parameters define the periodicity of metadata/data sync. They must be used by the app to create scheduled jobs.
+- **ProgramSettings:** this section controls the program data synchronization parameters. It has a section to define global or default parameters to be used in the synchronization of all programs. Additionally it allows to set specific settings for particular programs. All these parameters are consumed by the SDK and used in the synchronization process.
+- **DataSetsSettings:** this section controls the aggregated data synchronization parameters. It has a section to define global or default parameters to be used in the synchronization of all dataSets. Additionally it allows to set specific setting for particular dataSets. All these parameters are consumed by the SDK and used in the synchronization process.
+
+### Appearance settings { #android_sdk_appearance_settings }
+
+```java
+d2.settingModule().appearanceSettings()
+```
+
+These settings give control over the appearance of the data entry form. 
+
+- FilterSorting: it defines the filters that must be enabled in the different app menus.
+- CompletionSpinner: it turn on/off the completion spinner that shows the progress in the data entry form.
+
+These settings refer to visual components so they must be consumed by the app.
+
+### Analytic settings { #android_sdk_analytic_settings }
+
+```java
+d2.settingModule().analyticsSetting()
+
+d2.settingModule().analyticsSetting().teis()
+```
+
+Analytics settings define the analytic elements (charts, tables,...) that must be displayed to the user.
+
+- teis collection: they define analytic elements referred to the context of a single TEI. These elements are intended to be displayed in a TEI dashboard.
+
+These settings refer to visual components so they must be consumed by the app.

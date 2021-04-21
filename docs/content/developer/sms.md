@@ -1,6 +1,4 @@
-# SMS module
-
-<!--DHIS2-SECTION-ID:sms_module-->
+# SMS module { #android_sdk_sms_module }
 
 SMS Module can be used as a fallback method to upload data when an Internet connection is not available. It requires an additional setup in the server: an SMS gateway must be configured in the server to be able to receive SMS; optionally, the server might have the capability to send SMS back to the clients with the response.
 
@@ -51,9 +49,7 @@ case.send().blockingSubscribe();
 >
 > The app is responsible for asking the user for permissions (READ_PHONE_STATE, SEND_SMS, READ_SMS, RECEIVE_SMS). Otherwise, SMS module will fail.
 
-## SMS version
-
-<!--DHIS2-SECTION-ID:sms_version-->
+## SMS version { #android_sdk_sms_version }
 
 SMSs are sent in a compressed format from/to the server. This task is done by the [SMS Compression library](https://github.com/dhis2/sms-compression), which is responsible for doing the conversion between the plain text and the compressed format.
 
@@ -79,9 +75,7 @@ Version 2:
 
 For more information, please check [SMS compression repository](https://github.com/dhis2/sms-compression).
 
-## ConfigCase
-
-<!--DHIS2-SECTION-ID:sms_module_config_case-->
+## ConfigCase { #android_sdk_sms_config_case }
 
 ```java
 d2.smsModule().configCase()
@@ -95,9 +89,7 @@ Use this case to configure the SMS Module before using it. It is required, at le
 
 There are other optional parameters to control if the SDK should wait a response from the server or not and the response timeout. Also, it is possible to specify the sender number so messages received from other senders are ignored.
 
-## SmsSubmitCase
-
-<!--DHIS2-SECTION-ID:sms_module_submit_case-->
+## SmsSubmitCase { #android_sdk_sms_submit_case }
 
 Use this case to create a new submission and send it. Submission cases are not reusable and can only be sent once. To create a new submission case call the method:
 
@@ -169,9 +161,7 @@ conditions are not satisfied. The preconditions errors are:
 - `NO_METADATA_DOWNLOADED`.
 - `SMS_MODULE_DISABLED`.
 
-## QrCodeCase
-
-<!--DHIS2-SECTION-ID:sms_module_qr_code_case-->
+## QrCodeCase { #android_sdk_sms_qr_code_case }
 
 ```java
 d2.smsModule().qrCodeCase()

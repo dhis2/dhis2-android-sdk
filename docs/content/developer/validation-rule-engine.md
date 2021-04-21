@@ -1,6 +1,4 @@
-# Validation rule engine
-
-<!--DHIS2-SECTION-ID:validation_rule_engine-->
+# Validation rule engine { #android_sdk_validation_rule_engine }
 
 Validation rules associated to a particular dataSet can be evaluated using the validation rule module. It only suppports the evaluation of validation rules in the context of a data entry form, i.e, validation rules that use data values contained in a particular combination of dataSet, period, organisationUnit and attributeOptionCombo.
 

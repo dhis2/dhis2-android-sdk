@@ -35,7 +35,6 @@ import androidx.annotation.NonNull;
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerImpl;
 import org.hisp.dhis.android.core.arch.helpers.GeometryHelper;
 import org.hisp.dhis.android.core.common.State;
@@ -49,7 +48,7 @@ import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueHandler;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -62,7 +61,7 @@ import dagger.Reusable;
 
 @Reusable
 final class EventHandler extends IdentifiableDataHandlerImpl<Event> {
-    private final HandlerWithTransformer<TrackedEntityDataValue> trackedEntityDataValueHandler;
+    private final TrackedEntityDataValueHandler trackedEntityDataValueHandler;
     private final Handler<Note> noteHandler;
     private final NoteDHISVersionManager noteVersionManager;
     private final NoteUniquenessManager noteUniquenessManager;
@@ -73,7 +72,7 @@ final class EventHandler extends IdentifiableDataHandlerImpl<Event> {
             RelationshipDHISVersionManager relationshipVersionManager,
             RelationshipHandler relationshipHandler,
             EventStore eventStore,
-            HandlerWithTransformer<TrackedEntityDataValue> trackedEntityDataValueHandler,
+            TrackedEntityDataValueHandler trackedEntityDataValueHandler,
             Handler<Note> noteHandler,
             NoteDHISVersionManager noteVersionManager,
             NoteUniquenessManager noteUniquenessManager,
@@ -105,8 +104,12 @@ final class EventHandler extends IdentifiableDataHandlerImpl<Event> {
         if (action == HandleAction.Delete) {
             Log.d(this.getClass().getSimpleName(), eventUid + " with no org. unit, invalid eventDate or deleted");
         } else {
-            trackedEntityDataValueHandler.handleMany(event.trackedEntityDataValues(),
-                    dataValue -> dataValue.toBuilder().event(eventUid).build());
+            if (event.trackedEntityDataValues() == null || event.trackedEntityDataValues().isEmpty()) {
+                trackedEntityDataValueHandler.removeEventDataValues(eventUid);
+            } else {
+                trackedEntityDataValueHandler.handleMany(event.trackedEntityDataValues(),
+                        dataValue -> dataValue.toBuilder().event(eventUid).build());
+            }
 
             Collection<Note> notes = new ArrayList<>();
             if (event.notes() != null) {

@@ -238,6 +238,11 @@ public class MockLocalDbRepository implements LocalDbRepository {
     }
 
     @Override
+    public void blockingClear() {
+        clear().blockingAwait();
+    }
+
+    @Override
     public Single<Relationship> getRelationship(String relationshipUid) {
         return Single.fromCallable(MockObjects::getRelationship);
     }

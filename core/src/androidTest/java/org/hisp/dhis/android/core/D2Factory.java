@@ -32,9 +32,7 @@ import android.content.Context;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import com.facebook.flipper.plugins.network.FlipperOkhttpInterceptor;
-import com.facebook.flipper.plugins.network.NetworkFlipperPlugin;
-
+import org.hisp.dhis.android.core.debug.flipper.debug.FlipperManager;
 import org.hisp.dhis.android.core.arch.storage.internal.AndroidInsecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore;
@@ -77,15 +75,12 @@ public class D2Factory {
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
 
-        NetworkFlipperPlugin flipperPlugin = new NetworkFlipperPlugin();
-        FlipperManager.setUp(flipperPlugin);
-
         return D2Configuration.builder()
                 .appVersion("1.0.0")
                 .readTimeoutInSeconds(30)
                 .connectTimeoutInSeconds(30)
                 .writeTimeoutInSeconds(30)
-                .networkInterceptors(Collections.singletonList(new FlipperOkhttpInterceptor(flipperPlugin)))
+                .networkInterceptors(Collections.singletonList(FlipperManager.setUp(context)))
                 .interceptors(Collections.singletonList(loggingInterceptor))
                 .context(context)
                 .build();

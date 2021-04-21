@@ -37,15 +37,12 @@ import org.hisp.dhis.android.core.arch.helpers.internal.UrlLengthHelper
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.internal.DataAccessFields
-import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 
 @Reusable
 internal class CategoryOptionCall @Inject constructor(
     private val handler: Handler<CategoryOption>,
     private val service: CategoryOptionService,
-    private val apiDownloader: APIDownloader,
-    private val versionManager: DHISVersionManager
+    private val apiDownloader: APIDownloader
 ) : UidsCall<CategoryOption> {
 
     companion object {
@@ -59,18 +56,17 @@ internal class CategoryOptionCall @Inject constructor(
 
     override fun download(uids: Set<String>): Single<List<CategoryOption>> {
         val accessDataReadFilter = "access.data." + DataAccessFields.read.eq(true).generateString()
-        val askForOrgUnits = versionManager.isGreaterOrEqualThan(DHISVersion.V2_35)
         return apiDownloader.downloadPartitioned(
             uids,
             UrlLengthHelper.getHowManyUidsFitInURL(QUERY_WITHOUT_UIDS_LENGTH),
             handler
         ) { partitionUids: Set<String> ->
             service.getCategoryOptions(
-                CategoryOptionFields.allFields(askForOrgUnits),
+                CategoryOptionFields.allFields(false),
                 "categories." + ObjectWithUid.uid.`in`(partitionUids).generateString(),
                 accessDataReadFilter,
                 paging = false,
-                restrictToCaptureScope = if (askForOrgUnits) true else null
+                restrictToCaptureScope = null
             )
         }
     }

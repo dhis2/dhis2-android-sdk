@@ -31,7 +31,6 @@ import dagger.Reusable
 import javax.inject.Inject
 import okhttp3.Interceptor
 import okhttp3.Request
-import org.hisp.dhis.android.core.arch.helpers.UserHelper
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
 
 @Reusable
@@ -46,7 +45,6 @@ internal class UserIdAuthenticatorHelper @Inject constructor(
 
     fun builderWithUserId(chain: Interceptor.Chain): Request.Builder {
         val req = chain.request()
-        val value = UserHelper.base64(userIdStore.get()!!)
-        return req.newBuilder().addHeader(USER_ID_KEY, value)
+        return req.newBuilder().addHeader(USER_ID_KEY, userIdStore.get()!!)
     }
 }

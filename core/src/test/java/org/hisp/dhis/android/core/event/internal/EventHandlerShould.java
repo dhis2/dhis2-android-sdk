@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.event.internal;
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.note.Note;
@@ -41,6 +40,7 @@ import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -67,7 +67,10 @@ public class EventHandlerShould {
     private EventStore eventStore;
 
     @Mock
-    private HandlerWithTransformer<TrackedEntityDataValue> trackedEntityDataValueHandler;
+    private TrackedEntityDataValueHandler trackedEntityDataValueHandler;
+
+    @Mock
+    private TrackedEntityDataValue trackedEntityDataValue;
 
     @Mock
     private Handler<Note> noteHandler;
@@ -102,6 +105,10 @@ public class EventHandlerShould {
 
         when(event.uid()).thenReturn("test_event_uid");
         when(event.notes()).thenReturn(Collections.singletonList(note));
+        when(event.organisationUnit()).thenReturn("org_unit_uid");
+        when(event.status()).thenReturn(EventStatus.SCHEDULE);
+        when(event.trackedEntityDataValues()).thenReturn(Collections.singletonList(trackedEntityDataValue));
+        when(eventStore.updateOrInsert(any(Event.class))).thenReturn(HandleAction.Insert);
 
         eventHandler = new EventHandler(relationshipVersionManager, relationshipHandler, eventStore,
                 trackedEntityDataValueHandler, noteHandler, noteVersionManager, noteUniquenessManager,
@@ -152,5 +159,15 @@ public class EventHandlerShould {
 
         // verify that delete is never invoked
         verify(eventStore, never()).deleteIfExists(anyString());
+    }
+
+    @Test
+    public void delete_event_data_values_if_empty_list() {
+        when(event.trackedEntityDataValues()).thenReturn(Collections.emptyList());
+
+        eventHandler.handleMany(Collections.singletonList(event), o -> o, false);
+
+        verify(trackedEntityDataValueHandler, times(1)).removeEventDataValues(anyString());
+        verify(trackedEntityDataValueHandler, never()).handleMany(anyCollection(), any());
     }
 }

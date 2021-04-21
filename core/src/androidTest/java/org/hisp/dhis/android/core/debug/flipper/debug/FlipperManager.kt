@@ -25,30 +25,40 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core
+package org.hisp.dhis.android.core.debug.flipper.debug
 
-import androidx.test.platform.app.InstrumentationRegistry
+import android.content.Context
 import com.facebook.flipper.android.AndroidFlipperClient
 import com.facebook.flipper.android.utils.FlipperUtils
 import com.facebook.flipper.plugins.databases.DatabasesFlipperPlugin
 import com.facebook.flipper.plugins.inspector.DescriptorMapping
 import com.facebook.flipper.plugins.inspector.InspectorFlipperPlugin
+import com.facebook.flipper.plugins.network.FlipperOkhttpInterceptor
 import com.facebook.flipper.plugins.network.NetworkFlipperPlugin
 import com.facebook.soloader.SoLoader
+import okhttp3.Interceptor
 import org.hisp.dhis.android.BuildConfig
 
-internal object FlipperManager {
+object FlipperManager {
 
+    /**
+     * The set up will only apply in debug mode to make sure your data is safe in the production app
+     * In production, the interceptor will be null
+     */
     @JvmStatic
-    fun setUp(networkPlugin: NetworkFlipperPlugin) {
-        val context = InstrumentationRegistry.getInstrumentation().context.applicationContext
-        SoLoader.init(context, false)
-        if (BuildConfig.DEBUG && FlipperUtils.shouldEnableFlipper(context)) {
-            val client = AndroidFlipperClient.getInstance(context)
+    fun setUp(context: Context): Interceptor? {
+        val appContext = context.applicationContext
+        return if (BuildConfig.DEBUG && FlipperUtils.shouldEnableFlipper(appContext)) {
+            val networkPlugin = NetworkFlipperPlugin()
+            SoLoader.init(appContext, false)
+            val client = AndroidFlipperClient.getInstance(appContext)
             client.addPlugin(networkPlugin)
-            client.addPlugin(DatabasesFlipperPlugin(context))
-            client.addPlugin(InspectorFlipperPlugin(context, DescriptorMapping.withDefaults()))
+            client.addPlugin(DatabasesFlipperPlugin(appContext))
+            client.addPlugin(InspectorFlipperPlugin(appContext, DescriptorMapping.withDefaults()))
             client.start()
+            FlipperOkhttpInterceptor(networkPlugin)
+        } else {
+            null
         }
     }
 }

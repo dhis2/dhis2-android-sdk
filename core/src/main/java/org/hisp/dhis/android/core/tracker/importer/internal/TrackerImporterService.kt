@@ -31,26 +31,37 @@ import org.hisp.dhis.android.core.event.internal.NewTrackerImporterEventPayload
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterTrackedEntityPayload
 import org.hisp.dhis.android.core.trackedentity.internal.ObjectWithUidWebResponse
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.*
+
+internal const val TRACKER_URL = "tracker"
+internal const val JOBS_URL = "tracker/jobs/"
+
+internal const val ATOMIC_MODE = "atomicMode"
+internal const val ATOMIC_MODE_OBJECT = "OBJECT"
+
+internal const val IMPORT_STRATEGY = "importStrategy"
+internal const val IMPORT_STRATEGY_CREATE_AND_UPDATE = "CREATE_AND_UPDATE"
+internal const val JOB_ID = "jobId"
 
 internal interface TrackerImporterService {
 
-    @POST("tracker")
+    @POST(TRACKER_URL)
     fun postTrackedEntityInstances(
-        @Body payload: NewTrackerImporterTrackedEntityPayload
+        @Body payload: NewTrackerImporterTrackedEntityPayload,
+        @Query(ATOMIC_MODE) atomicMode: String,
+        @Query(IMPORT_STRATEGY) importStrategy: String
     ): Call<ObjectWithUidWebResponse>
 
-    @POST("tracker")
+    @POST(TRACKER_URL)
     fun postEvents(
-        @Body events: NewTrackerImporterEventPayload
+        @Body events: NewTrackerImporterEventPayload,
+        @Query(ATOMIC_MODE) atomicMode: String,
+        @Query(IMPORT_STRATEGY) importStrategy: String
     ): Call<ObjectWithUidWebResponse>
 
-    @GET("tracker/jobs/{jobId}")
-    fun getJob(@Path("jobId") jobId: String): Call<List<JobInfo>>
+    @GET("$JOBS_URL{jobId}")
+    fun getJob(@Path(JOB_ID) jobId: String): Call<List<JobInfo>>
 
-    @GET("tracker/jobs/{jobId}/report")
-    fun getJobReport(@Path("jobId") jobId: String): Call<JobReport>
+    @GET("$JOBS_URL{jobId}/report")
+    fun getJobReport(@Path(JOB_ID) jobId: String): Call<JobReport>
 }

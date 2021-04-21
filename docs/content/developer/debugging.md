@@ -78,3 +78,14 @@ At this point you should be able to debug the app/sdk by using Chrome Inspector 
 - Select the remote target and click on Inspect. A new windows will appear showing the Chrome developer tools.
 - Explore database in "Resources > Web SQL".
 - Explore network traffic in "Network".
+
+## User ID header
+Starting on the version 1.4, cookie authentication has been adopted, so basic authentication is not used in every single
+request anymore. For that reason, the username is no longer sent in the HTTP request headers. As a replacement, 
+we are sending the user id as plain text in a custom header `x-dhis2-user-id`.
+
+Example: 
+
+```
+x-dhis2-user-id: DXyJmlo9rge
+```

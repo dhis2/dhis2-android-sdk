@@ -38,19 +38,19 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWit
 internal object TrackerJobObjectStore {
 
     private val BINDER = StatementBinder { o: TrackerJobObject, w: StatementWrapper ->
-        w.bind(1, o.objectType())
+        w.bind(1, o.trackerType())
         w.bind(2, o.objectUid())
         w.bind(3, o.jobUid())
         w.bind(4, o.lastUpdated())
     }
 
     private val WHERE_UPDATE_BINDER = WhereStatementBinder { o: TrackerJobObject, w: StatementWrapper ->
-        w.bind(5, o.objectType())
+        w.bind(5, o.trackerType())
         w.bind(6, o.objectUid())
     }
 
     private val DELETE_UPDATE_BINDER = WhereStatementBinder { o: TrackerJobObject, w: StatementWrapper ->
-        w.bind(1, o.objectType())
+        w.bind(1, o.trackerType())
         w.bind(2, o.objectUid())
     }
 

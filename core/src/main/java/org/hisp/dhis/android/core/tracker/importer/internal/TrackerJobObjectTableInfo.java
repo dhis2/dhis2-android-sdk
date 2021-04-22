@@ -54,7 +54,7 @@ public final class TrackerJobObjectTableInfo {
 
     public static class Columns extends CoreColumns {
 
-        public static final String OBJECT_TYPE = "objectType";
+        public static final String TRACKER_TYPE = "trackerType";
         public static final String OBJECT_UID = "objectUid";
         public static final String JOB_UID = "jobUid";
 
@@ -62,12 +62,12 @@ public final class TrackerJobObjectTableInfo {
         @Override
         public String[] all() {
             return CollectionsHelper.appendInNewArray(super.all(),
-                    OBJECT_TYPE, OBJECT_UID, JOB_UID, LAST_UPDATED);
+                    TRACKER_TYPE, OBJECT_UID, JOB_UID, LAST_UPDATED);
         }
 
         @Override
         public String[] whereUpdate() {
-            return new String[]{OBJECT_TYPE, OBJECT_UID};
+            return new String[]{TRACKER_TYPE, OBJECT_UID};
         }
     }
 }

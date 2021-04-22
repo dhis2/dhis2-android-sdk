@@ -38,7 +38,7 @@ public class TrackerJobObjectSamples {
     public static TrackerJobObject get1() {
         return TrackerJobObject.builder()
                 .id(1L)
-                .objectType(EVENT)
+                .trackerType(EVENT)
                 .objectUid("oUid")
                 .jobUid("jUid")
                 .lastUpdated(parseDate("2017-11-29T11:27:46.935"))

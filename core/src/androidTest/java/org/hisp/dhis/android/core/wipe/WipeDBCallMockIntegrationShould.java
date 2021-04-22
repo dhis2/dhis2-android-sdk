@@ -93,7 +93,7 @@ public class WipeDBCallMockIntegrationShould extends BaseMockIntegrationTestEmpt
         TrackerJobObjectStore.create(databaseAdapter).insert(
                 TrackerJobObject.builder()
                         .jobUid("uid")
-                        .objectType("type")
+                        .trackerType("type")
                         .objectUid("oUid")
                         .lastUpdated(new Date())
                         .build()

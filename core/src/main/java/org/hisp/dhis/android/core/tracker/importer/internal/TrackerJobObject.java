@@ -47,7 +47,7 @@ import java.util.Date;
 public abstract class TrackerJobObject extends BaseObject {
 
     @NonNull
-    public abstract String objectType();
+    public abstract String trackerType();
 
     @NonNull
     public abstract String objectUid();
@@ -75,7 +75,7 @@ public abstract class TrackerJobObject extends BaseObject {
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseObject.Builder<Builder> {
-        public abstract Builder objectType(String objectType);
+        public abstract Builder trackerType(String trackerType);
 
         public abstract Builder objectUid(String objectUid);
 

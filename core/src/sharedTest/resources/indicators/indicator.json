@@ -16,5 +16,6 @@
   "annualized": false,
   "indicatorType": {
     "id": "bWuNrMHEoZ0"
-  }
+  },
+  "decimals": 3
 }

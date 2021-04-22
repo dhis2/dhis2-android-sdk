@@ -1,29 +1,29 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ *  Copyright (c) 2004-2021, University of Oslo
+ *  All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *  Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
  *
- * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- * Neither the name of the HISP project nor the names of its contributors may
- * be used to endorse or promote products derived from this software without
- * specific prior written permission.
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ *  Neither the name of the HISP project nor the names of its contributors may
+ *  be used to endorse or promote products derived from this software without
+ *  specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.hisp.dhis.android.core.trackedentity;
 
@@ -84,6 +84,7 @@ public final class TrackedEntityAttributeReservedValueManager {
     private final LinkStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore;
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
     private final GeneralSettingObjectRepository generalSettingObjectRepository;
+    private final IdentifiableObjectStore<ReservedValueSetting> reservedValueSettingStore;
     private final D2CallExecutor executor;
     private final QueryCallFactory<TrackedEntityAttributeReservedValue,
             TrackedEntityAttributeReservedValueQuery> reservedValueQueryCallFactory;
@@ -99,6 +100,7 @@ public final class TrackedEntityAttributeReservedValueManager {
             LinkStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore,
             UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
             GeneralSettingObjectRepository generalSettingObjectRepository,
+            IdentifiableObjectStore<ReservedValueSetting> reservedValueSettingStore,
             D2CallExecutor executor,
             QueryCallFactory<TrackedEntityAttributeReservedValue,
                     TrackedEntityAttributeReservedValueQuery> reservedValueQueryCallFactory) {
@@ -109,6 +111,7 @@ public final class TrackedEntityAttributeReservedValueManager {
         this.organisationUnitProgramLinkStore = organisationUnitProgramLinkStore;
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
         this.generalSettingObjectRepository = generalSettingObjectRepository;
+        this.reservedValueSettingStore = reservedValueSettingStore;
         this.executor = executor;
         this.reservedValueQueryCallFactory = reservedValueQueryCallFactory;
     }
@@ -271,13 +274,16 @@ public final class TrackedEntityAttributeReservedValueManager {
                 List<OrganisationUnit> organisationUnits = getOrgUnitsLinkedToAttribute(trackedEntityAttribute.uid());
                 for (OrganisationUnit organisationUnit : organisationUnits) {
                     builder.organisationUnit(organisationUnit)
-                            .count(blockingCount(trackedEntityAttribute.uid(), organisationUnit.uid()));
+                            .count(blockingCount(trackedEntityAttribute.uid(), organisationUnit.uid()))
+                            .numberOfValuesToFillUp(getFillUpToValue(null, trackedEntityAttribute.uid()));
+                    reservedValueSummaries.add(builder.build());
                 }
             } else {
-                builder.count(blockingCount(trackedEntityAttribute.uid(), null));
+                builder.count(blockingCount(trackedEntityAttribute.uid(), null))
+                        .numberOfValuesToFillUp(getFillUpToValue(null, trackedEntityAttribute.uid()));
+                reservedValueSummaries.add(builder.build());
             }
 
-            reservedValueSummaries.add(builder.build());
         }
 
         return reservedValueSummaries;
@@ -314,7 +320,7 @@ public final class TrackedEntityAttributeReservedValueManager {
             // Using local date. It's not worth it to make a system info call
             store.deleteExpired(new Date());
 
-            Integer fillUpTo = getFillUpToValue(minNumberOfValuesToHave);
+            Integer fillUpTo = getFillUpToValue(minNumberOfValuesToHave, attribute);
 
             String pattern = trackedEntityAttributeStore.selectByUid(attribute).pattern();
             int remainingValues = store.count(
@@ -393,15 +399,22 @@ public final class TrackedEntityAttributeReservedValueManager {
         return pattern != null && pattern.contains("ORG_UNIT_CODE");
     }
 
-    private Integer getFillUpToValue(Integer minNumberOfValuesToHave) {
+    private Integer getFillUpToValue(Integer minNumberOfValuesToHave, String attribute) {
         if (minNumberOfValuesToHave == null) {
-            GeneralSettings generalSettings = generalSettingObjectRepository.blockingGet();
-            if (generalSettings == null || generalSettings.reservedValues() == null) {
-                return FILL_UP_TO;
+            ReservedValueSetting reservedValueSetting = reservedValueSettingStore.selectByUid(attribute);
+            if (reservedValueSetting == null || reservedValueSetting.numberOfValuesToReserve() == null) {
+                GeneralSettings generalSettings = generalSettingObjectRepository.blockingGet();
+                if (generalSettings == null || generalSettings.reservedValues() == null) {
+                    return FILL_UP_TO;
+                } else {
+                    return generalSettings.reservedValues();
+                }
             } else {
-                return generalSettings.reservedValues();
+                return reservedValueSetting.numberOfValuesToReserve();
             }
         } else {
+            this.reservedValueSettingStore.updateOrInsert(ReservedValueSetting.builder()
+                    .uid(attribute).numberOfValuesToReserve(minNumberOfValuesToHave).build());
             return minNumberOfValuesToHave;
         }
     }

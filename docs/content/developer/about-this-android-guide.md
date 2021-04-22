@@ -1,6 +1,4 @@
-# About this guide
-
-<!--DHIS2-SECTION-ID:about_this_guide_-->
+# About this guide { #android_sdk_about_this_guide }
 
 The DHIS 2 documentation is a collective effort and has been developed by
 the development team and users. While the guide strives to be complete,

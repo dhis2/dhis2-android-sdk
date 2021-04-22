@@ -1,37 +1,37 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ *  Copyright (c) 2004-2021, University of Oslo
+ *  All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *  Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
  *
- * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- * Neither the name of the HISP project nor the names of its contributors may
- * be used to endorse or promote products derived from this software without
- * specific prior written permission.
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ *  Neither the name of the HISP project nor the names of its contributors may
+ *  be used to endorse or promote products derived from this software without
+ *  specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 package org.hisp.dhis.android.core.arch.d2.internal;
 
-import android.content.Context;
-
 import androidx.annotation.VisibleForTesting;
 
+import org.hisp.dhis.android.core.D2Configuration;
+import org.hisp.dhis.android.core.analytics.AnalyticsPackageDIModule;
 import org.hisp.dhis.android.core.arch.api.internal.APIClientDIModule;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory;
@@ -46,10 +46,13 @@ import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.KeyValueStorageDIModule;
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
+import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore;
+import org.hisp.dhis.android.core.attribute.internal.AttributePackageDIModule;
 import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.category.internal.CategoryPackageDIModule;
 import org.hisp.dhis.android.core.common.internal.CommonPackageDIModule;
 import org.hisp.dhis.android.core.configuration.internal.ConfigurationPackageDIModule;
+import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManagerForD2Manager;
 import org.hisp.dhis.android.core.constant.internal.ConstantPackageDIModule;
 import org.hisp.dhis.android.core.dataapproval.internal.DataApprovalPackageDIModule;
 import org.hisp.dhis.android.core.dataelement.DataElement;
@@ -62,7 +65,7 @@ import org.hisp.dhis.android.core.domain.aggregated.internal.AggregatedModuleImp
 import org.hisp.dhis.android.core.domain.metadata.internal.MetadataModuleImpl;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentPackageDIModule;
 import org.hisp.dhis.android.core.event.internal.EventPackageDIModule;
-import org.hisp.dhis.android.core.event.internal.EventPostCall;
+import org.hisp.dhis.android.core.event.internal.EventPostPayloadGenerator;
 import org.hisp.dhis.android.core.fileresource.internal.FileResourcePackageDIModule;
 import org.hisp.dhis.android.core.imports.internal.ImportPackageDIModule;
 import org.hisp.dhis.android.core.indicator.internal.IndicatorPackageDIModule;
@@ -85,7 +88,8 @@ import org.hisp.dhis.android.core.sms.internal.SmsDIModule;
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoPackageDIModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityPackageDIModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostCall;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostPayloadGenerator;
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterPackageDIModule;
 import org.hisp.dhis.android.core.user.internal.UserPackageDIModule;
 import org.hisp.dhis.android.core.validation.internal.ValidationPackageDIModule;
 import org.hisp.dhis.android.core.wipe.internal.WipeDIModule;
@@ -101,6 +105,7 @@ import retrofit2.Retrofit;
 @Component(modules = {
         AppContextDIModule.class,
         APIClientDIModule.class,
+        AttributePackageDIModule.class,
         DatabaseDIModule.class,
         JSONSerializationDIModule.class,
         KeyValueStorageDIModule.class,
@@ -108,6 +113,7 @@ import retrofit2.Retrofit;
         RepositoriesDIModule.class,
 
         AggregatedDataPackageDIModule.class,
+        AnalyticsPackageDIModule.class,
         CategoryPackageDIModule.class,
         CommonPackageDIModule.class,
         ConfigurationPackageDIModule.class,
@@ -134,6 +140,7 @@ import retrofit2.Retrofit;
         SystemInfoPackageDIModule.class,
         SettingPackageDIModule.class,
         TrackedEntityPackageDIModule.class,
+        TrackerImporterPackageDIModule.class,
         SmsDIModule.class,
         UserPackageDIModule.class,
         ValidationPackageDIModule.class}
@@ -146,6 +153,13 @@ public interface D2DIComponent {
     AggregatedModuleImpl aggregatedModule();
     WipeModule wipeModule();
 
+    DatabaseAdapter databaseAdapter();
+    UserIdInMemoryStore userIdInMemoryStore();
+    MultiUserDatabaseManagerForD2Manager multiUserDatabaseManagerForD2Manager();
+    ObjectKeyValueStore<Credentials> credentialsSecureStore();
+
+    @VisibleForTesting
+    Retrofit retrofit();
     @VisibleForTesting
     D2InternalModules internalModules();
     @VisibleForTesting
@@ -163,25 +177,22 @@ public interface D2DIComponent {
     @VisibleForTesting
     Handler<TrackedEntityType> trackedEntityTypeHandler();
     @VisibleForTesting
-    TrackedEntityInstancePostCall trackedEntityInstancePostCall();
+    TrackedEntityInstancePostPayloadGenerator trackedEntityInstancePostPayloadGenerator();
     @VisibleForTesting
-    EventPostCall eventPostCall();
+    EventPostPayloadGenerator eventPostPayloadGenerator();
     @VisibleForTesting
     IdentifiableObjectStore<CategoryOption> categoryOptionStore();
-    @VisibleForTesting
-    ObjectKeyValueStore<Credentials> credentialsSecureStore();
     @VisibleForTesting
     PeriodHandler periodHandler();
 
     @Component.Builder
     interface Builder {
         Builder appContextDIModule(AppContextDIModule appContextDIModule);
-        Builder apiClientDIModule(APIClientDIModule apiClientDIModule);
-        Builder databaseDIModule(DatabaseDIModule databaseDIModule);
         Builder secureStorageDIModule(KeyValueStorageDIModule secureStoregeDIModule);
         Builder wipeDIModule(WipeDIModule wipeDIModule);
         Builder repositoriesDIModule(RepositoriesDIModule repositoriesDIModule);
 
+        Builder analyticsPackageDIModule(AnalyticsPackageDIModule analyticsPackageDIModule);
         Builder categoryPackageDIModule(CategoryPackageDIModule categoryPackageDIModule);
         Builder commonPackageDIModule(CommonPackageDIModule commonPackageDIModule);
         Builder configurationPackageDIModule(ConfigurationPackageDIModule configurationPackageDIModule);
@@ -206,19 +217,18 @@ public interface D2DIComponent {
         Builder systemInfoPackageDIModule(SystemInfoPackageDIModule systemInfoPackageDIModule);
         Builder systemSettingPackageDIModule(SettingPackageDIModule settingPackageDIModule);
         Builder trackedEntityPackageDIModule(TrackedEntityPackageDIModule trackedEntityPackageDIModule);
+        Builder trackerImporterPackageDIModule(TrackerImporterPackageDIModule trackerImporterPackageDIModule);
         Builder userPackageDIModule(UserPackageDIModule userPackageDIModule);
         Builder validationPackageDIModule(ValidationPackageDIModule validationPackageDIModule);
         D2DIComponent build();
     }
 
-    static D2DIComponent create(Context context, Retrofit retrofit, DatabaseAdapter databaseAdapter,
-                                SecureStore secureStore, InsecureStore insecureStore,
-                                ObjectKeyValueStore<Credentials> credentialsSecureStore) {
+    static D2DIComponent create(D2Configuration d2Configuration,
+                                SecureStore secureStore,
+                                InsecureStore insecureStore) {
         return DaggerD2DIComponent.builder()
-                .appContextDIModule(new AppContextDIModule(context))
-                .databaseDIModule(new DatabaseDIModule(databaseAdapter))
-                .apiClientDIModule(new APIClientDIModule(retrofit))
-                .secureStorageDIModule(new KeyValueStorageDIModule(secureStore, insecureStore, credentialsSecureStore))
+                .appContextDIModule(new AppContextDIModule(d2Configuration))
+                .secureStorageDIModule(new KeyValueStorageDIModule(secureStore, insecureStore))
                 .build();
     }
 }

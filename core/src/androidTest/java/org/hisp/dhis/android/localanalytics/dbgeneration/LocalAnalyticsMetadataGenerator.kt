@@ -1,29 +1,29 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ *  Copyright (c) 2004-2021, University of Oslo
+ *  All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *  Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
  *
- * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- * Neither the name of the HISP project nor the names of its contributors may
- * be used to endorse or promote products derived from this software without
- * specific prior written permission.
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ *  Neither the name of the HISP project nor the names of its contributors may
+ *  be used to endorse or promote products derived from this software without
+ *  specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.hisp.dhis.android.localanalytics.dbgeneration
 
@@ -55,8 +55,10 @@ internal class LocalAnalyticsMetadataGenerator(private val params: LocalAnalytic
 
     private fun getOrganisationUnitChildren(parent: OrganisationUnit): List<OrganisationUnit> {
         return (1..params.organisationUnitChildren).map { i ->
-            OrganisationUnitSamples.getOrganisationUnit("${parent.name()} $i", parent.level()!! + 1,
-                    parent)
+            OrganisationUnitSamples.getOrganisationUnit(
+                "${parent.name()} $i", parent.level()!! + 1,
+                parent
+            )
         }
     }
 
@@ -83,20 +85,32 @@ internal class LocalAnalyticsMetadataGenerator(private val params: LocalAnalytic
     fun getDataElementsAggregated(categoryCombos: List<CategoryCombo>): List<DataElement> {
         return categoryCombos.flatMap { categoryCombo ->
             (1..params.dataElementsAggregated).map { i ->
-                DataElementSamples.getDataElement("DE Aggr $i", null, ObjectWithUid.create(categoryCombo.uid()), "AGGREGATE")
+                DataElementSamples.getDataElement(
+                    "DE Aggr $i", null,
+                    ObjectWithUid.create(categoryCombo.uid()), "AGGREGATE"
+                )
             }
         }
     }
 
     fun getDataElementsTracker(categoryCombo: CategoryCombo): List<DataElement> {
         return (1..params.dataElementsTracker).map { i ->
-            DataElementSamples.getDataElement("DE Tracker $i", null, ObjectWithUid.create(categoryCombo.uid()), "TRACKER")
+            DataElementSamples.getDataElement(
+                "DE Tracker $i", null,
+                ObjectWithUid.create(categoryCombo.uid()), "TRACKER"
+            )
         }
     }
 
     fun getPrograms(categoryCombo: CategoryCombo): List<Program> {
-        val withReg = ProgramSamples.getProgram("Program with registration", ProgramType.WITH_REGISTRATION, categoryCombo)
-        val withoutReg = ProgramSamples.getProgram("Program without registration", ProgramType.WITHOUT_REGISTRATION, categoryCombo)
+        val withReg = ProgramSamples.getProgram(
+            "Program with registration",
+            ProgramType.WITH_REGISTRATION, categoryCombo
+        )
+        val withoutReg = ProgramSamples.getProgram(
+            "Program without registration",
+            ProgramType.WITHOUT_REGISTRATION, categoryCombo
+        )
         return listOf(withReg, withoutReg)
     }
 

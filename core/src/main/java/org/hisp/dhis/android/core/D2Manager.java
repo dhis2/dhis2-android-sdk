@@ -1,46 +1,44 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ *  Copyright (c) 2004-2021, University of Oslo
+ *  All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *  Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
  *
- * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- * Neither the name of the HISP project nor the names of its contributors may
- * be used to endorse or promote products derived from this software without
- * specific prior written permission.
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ *  Neither the name of the HISP project nor the names of its contributors may
+ *  be used to endorse or promote products derived from this software without
+ *  specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 package org.hisp.dhis.android.core;
 
+import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.VisibleForTesting;
 
 import org.hisp.dhis.android.core.arch.api.ssl.internal.SSLContextInitializer;
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent;
 import org.hisp.dhis.android.core.arch.storage.internal.AndroidInsecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore;
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials;
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreImpl;
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore;
-import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManagerForD2Manager;
 
@@ -54,8 +52,6 @@ import io.reactivex.annotations.NonNull;
 public final class D2Manager {
 
     private static D2 d2;
-    private static D2Configuration d2Configuration;
-    private static DatabaseAdapter databaseAdapter;
     private static boolean isTestMode;
     private static SecureStore testingSecureStore;
     private static InsecureStore testingInsecureStore;
@@ -96,42 +92,40 @@ public final class D2Manager {
     public static Single<D2> instantiateD2(@NonNull D2Configuration d2Config) {
         return Single.fromCallable(() -> {
             long startTime = System.currentTimeMillis();
-            SecureStore secureStore = testingSecureStore == null ? new AndroidSecureStore(d2Config.context())
-                    : testingSecureStore;
-            InsecureStore insecureStore = testingInsecureStore == null ? new AndroidInsecureStore(d2Config.context())
-                    : testingInsecureStore;
-            DatabaseAdapterFactory databaseAdapterFactory = DatabaseAdapterFactory.create(d2Config.context(),
-                    secureStore);
+            Context context = d2Config.context();
 
-            d2Configuration = D2ConfigurationValidator.validateAndSetDefaultValues(d2Config);
-            databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter();
+            SecureStore secureStore = testingSecureStore == null ? new AndroidSecureStore(context)
+                    : testingSecureStore;
+            InsecureStore insecureStore = testingInsecureStore == null ? new AndroidInsecureStore(context)
+                    : testingInsecureStore;
+
+            D2Configuration d2Configuration = D2ConfigurationValidator.validateAndSetDefaultValues(d2Config);
+            D2DIComponent d2DIComponent = D2DIComponent.create(d2Configuration, secureStore, insecureStore);
 
             if (isTestMode) {
                 NotClosedObjectsDetector.enableNotClosedObjectsDetection();
             } else {
                 /* SSLContextInitializer, necessary to ensure everything works in Android 4.4 crashes
                  when running the StrictMode above. That's why it's in the else clause */
-                SSLContextInitializer.initializeSSLContext(d2Configuration.context());
+                SSLContextInitializer.initializeSSLContext(context);
             }
 
-            ObjectKeyValueStore<Credentials> credentialsSecureStore = new CredentialsSecureStoreImpl(secureStore);
-            MultiUserDatabaseManagerForD2Manager multiUserDatabaseManager = MultiUserDatabaseManagerForD2Manager
-                    .create(databaseAdapter, d2Config.context(), insecureStore, databaseAdapterFactory);
+            Credentials credentials = d2DIComponent.credentialsSecureStore().get();
+
+            MultiUserDatabaseManagerForD2Manager multiUserDatabaseManager =
+                    d2DIComponent.multiUserDatabaseManagerForD2Manager();
             if (wantToImportDBForExternalTesting()) {
                 multiUserDatabaseManager.loadDbForTesting(testingDatabaseName, false, testingUsername);
             } else {
-                multiUserDatabaseManager.loadIfLogged(credentialsSecureStore.get());
+                multiUserDatabaseManager.loadIfLogged(credentials);
             }
 
-            d2 = new D2(
-                    RetrofitFactory.retrofit(
-                            OkHttpClientFactory.okHttpClient(d2Configuration, credentialsSecureStore)),
-                    databaseAdapter,
-                    d2Configuration.context(),
-                    secureStore,
-                    insecureStore,
-                    credentialsSecureStore
-            );
+            d2 = new D2(d2DIComponent);
+
+            if (credentials != null) {
+                String uid = d2.userModule().user().blockingGet().uid();
+                d2DIComponent.userIdInMemoryStore().set(uid);
+            }
 
             long setUpTime = System.currentTimeMillis() - startTime;
             Log.i(D2Manager.class.getName(), "D2 instantiation took " + setUpTime + "ms");
@@ -177,9 +171,7 @@ public final class D2Manager {
 
     @VisibleForTesting
     static void clear() {
-        d2Configuration = null;
         d2 = null;
-        databaseAdapter =  null;
         testingSecureStore = null;
         testingInsecureStore = null;
         testingDatabaseName = null;

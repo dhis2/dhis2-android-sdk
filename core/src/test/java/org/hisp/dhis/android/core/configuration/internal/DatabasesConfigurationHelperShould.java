@@ -1,29 +1,29 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ *  Copyright (c) 2004-2021, University of Oslo
+ *  All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *  Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
  *
- * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- * Neither the name of the HISP project nor the names of its contributors may
- * be used to endorse or promote products derived from this software without
- * specific prior written permission.
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ *  Neither the name of the HISP project nor the names of its contributors may
+ *  be used to endorse or promote products derived from this software without
+ *  specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 package org.hisp.dhis.android.core.configuration.internal;
@@ -33,7 +33,7 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 public class DatabasesConfigurationHelperShould {
 
@@ -113,13 +113,13 @@ public class DatabasesConfigurationHelperShould {
 
     @Test
     public void get_logged_configuration_when_one_server_user() {
-        assertThat(helper.getLoggedUserConfiguration(SINGLE_SERVER_SINGLE_USER_CONFIG, USERNAME_1)).isSameAs(USER_CONFIG_11);
+        assertThat(helper.getLoggedUserConfiguration(SINGLE_SERVER_SINGLE_USER_CONFIG, USERNAME_1)).isSameInstanceAs(USER_CONFIG_11);
     }
 
     @Test
     public void get_logged_configuration_when_one_server_and_2_users() {
-        assertThat(helper.getLoggedUserConfiguration(SINGLE_SERVER_2_USERS_CONFIG, USERNAME_1)).isSameAs(USER_CONFIG_11);
-        assertThat(helper.getLoggedUserConfiguration(SINGLE_SERVER_2_USERS_CONFIG, USERNAME_2)).isSameAs(USER_CONFIG_12);
+        assertThat(helper.getLoggedUserConfiguration(SINGLE_SERVER_2_USERS_CONFIG, USERNAME_1)).isSameInstanceAs(USER_CONFIG_11);
+        assertThat(helper.getLoggedUserConfiguration(SINGLE_SERVER_2_USERS_CONFIG, USERNAME_2)).isSameInstanceAs(USER_CONFIG_12);
     }
 
     @Test
@@ -136,7 +136,7 @@ public class DatabasesConfigurationHelperShould {
                                 .build()
         )).build();
 
-        assertThat(helper.getLoggedUserConfiguration(configuration, USERNAME_1)).isSameAs(USER_CONFIG_11);
+        assertThat(helper.getLoggedUserConfiguration(configuration, USERNAME_1)).isSameInstanceAs(USER_CONFIG_11);
     }
 
     @Test(expected = RuntimeException.class)
@@ -146,8 +146,8 @@ public class DatabasesConfigurationHelperShould {
 
     @Test
     public void get_logged_configuration_when_2_servers_with_two_users_in_first() {
-        assertThat(helper.getLoggedUserConfiguration(TWO_SERVERS_TWO_USERS_FIRST, USERNAME_1)).isSameAs(USER_CONFIG_11);
-        assertThat(helper.getLoggedUserConfiguration(TWO_SERVERS_TWO_USERS_FIRST, USERNAME_2)).isSameAs(USER_CONFIG_12);
+        assertThat(helper.getLoggedUserConfiguration(TWO_SERVERS_TWO_USERS_FIRST, USERNAME_1)).isSameInstanceAs(USER_CONFIG_11);
+        assertThat(helper.getLoggedUserConfiguration(TWO_SERVERS_TWO_USERS_FIRST, USERNAME_2)).isSameInstanceAs(USER_CONFIG_12);
     }
 
     @Test

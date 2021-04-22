@@ -41,6 +41,7 @@
       "displayName": "Age",
       "expression": "expression",
       "generated": true,
+      "pattern": "RANDOM(##)",
       "unique": true,
       "inherit": true,
       "optionSet": {

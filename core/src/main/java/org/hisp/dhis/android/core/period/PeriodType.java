@@ -1,29 +1,29 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ *  Copyright (c) 2004-2021, University of Oslo
+ *  All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *  Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
  *
- * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- * Neither the name of the HISP project nor the names of its contributors may
- * be used to endorse or promote products derived from this software without
- * specific prior written permission.
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ *  Neither the name of the HISP project nor the names of its contributors may
+ *  be used to endorse or promote products derived from this software without
+ *  specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 package org.hisp.dhis.android.core.period;
@@ -31,43 +31,43 @@ package org.hisp.dhis.android.core.period;
 import java.util.Calendar;
 
 public enum PeriodType {
-    Daily(59, 1, "\\b(\\d{4})(\\d{2})(\\d{2})\\b"),
-    Weekly(12, 1, "\\b(\\d{4})W(\\d[\\d]?)\\b"),
-    WeeklyWednesday(12, 1, "\\b(\\d{4})WedW(\\d[\\d]?)\\b"),
-    WeeklyThursday(12, 1, "\\b(\\d{4})ThuW(\\d[\\d]?)\\b"),
-    WeeklySaturday(12, 1, "\\b(\\d{4})SatW(\\d[\\d]?)\\b"),
-    WeeklySunday(12, 1, "\\b(\\d{4})SunW(\\d[\\d]?)\\b"),
-    BiWeekly(12, 1, "\\b(\\d{4})BiW(\\d[\\d]?)\\b"),
-    Monthly(11, 1, "\\b(\\d{4})[-]?(\\d{2})\\b"),
-    BiMonthly(5, 1, "\\b(\\d{4})(\\d{2})B\\b"),
-    Quarterly(4, 1, "\\b(\\d{4})Q(\\d)\\b"),
-    SixMonthly(4, 1, "\\b(\\d{4})S(\\d)\\b"),
-    SixMonthlyApril(4, 1, "\\b(\\d{4})AprilS(\\d)\\b"),
-    SixMonthlyNov(4, 1, "\\b(\\d{4})NovS(\\d)\\b"),
-    Yearly(4, 1, "\\b(\\d{4})\\b"),
-    FinancialApril(4, 1, "\\b(\\d{4})April\\b"),
-    FinancialJuly(4, 1, "\\b(\\d{4})July\\b"),
-    FinancialOct(4, 1, "\\b(\\d{4})Oct\\b"),
-    FinancialNov(4, 1, "\\b(\\d{4})Nov\\b");
+    Daily(-59, 1, "\\b(\\d{4})(\\d{2})(\\d{2})\\b"),
+    Weekly(-12, 1, "\\b(\\d{4})W(\\d[\\d]?)\\b"),
+    WeeklyWednesday(-12, 1, "\\b(\\d{4})WedW(\\d[\\d]?)\\b"),
+    WeeklyThursday(-12, 1, "\\b(\\d{4})ThuW(\\d[\\d]?)\\b"),
+    WeeklySaturday(-12, 1, "\\b(\\d{4})SatW(\\d[\\d]?)\\b"),
+    WeeklySunday(-12, 1, "\\b(\\d{4})SunW(\\d[\\d]?)\\b"),
+    BiWeekly(-12, 1, "\\b(\\d{4})BiW(\\d[\\d]?)\\b"),
+    Monthly(-11, 1, "\\b(\\d{4})[-]?(\\d{2})\\b"),
+    BiMonthly(-5, 1, "\\b(\\d{4})(\\d{2})B\\b"),
+    Quarterly(-4, 1, "\\b(\\d{4})Q(\\d)\\b"),
+    SixMonthly(-4, 1, "\\b(\\d{4})S(\\d)\\b"),
+    SixMonthlyApril(-4, 1, "\\b(\\d{4})AprilS(\\d)\\b"),
+    SixMonthlyNov(-4, 1, "\\b(\\d{4})NovS(\\d)\\b"),
+    Yearly(-4, 1, "\\b(\\d{4})\\b"),
+    FinancialApril(-4, 1, "\\b(\\d{4})April\\b"),
+    FinancialJuly(-4, 1, "\\b(\\d{4})July\\b"),
+    FinancialOct(-4, 1, "\\b(\\d{4})Oct\\b"),
+    FinancialNov(-4, 1, "\\b(\\d{4})Nov\\b");
 
-    private Integer defaultPastPeriods;
+    private final Integer defaultStartPeriods;
 
-    private Integer defaultFuturePeriods;
+    private final Integer defaultEndPeriods;
 
-    private String pattern;
+    private final String pattern;
 
-    PeriodType(Integer defaultPastPeriods, Integer defaultFuturePeriods, String pattern) {
-        this.defaultPastPeriods = defaultPastPeriods;
-        this.defaultFuturePeriods = defaultFuturePeriods;
+    PeriodType(Integer defaultStartPeriods, Integer defaultEndPeriods, String pattern) {
+        this.defaultStartPeriods = defaultStartPeriods;
+        this.defaultEndPeriods = defaultEndPeriods;
         this.pattern = pattern;
     }
 
-    public Integer getDefaultPastPeriods() {
-        return this.defaultPastPeriods;
+    public Integer getDefaultStartPeriods() {
+        return this.defaultStartPeriods;
     }
 
-    public Integer getDefaultFuturePeriods() {
-        return this.defaultFuturePeriods;
+    public Integer getDefaultEndPeriods() {
+        return this.defaultEndPeriods;
     }
 
     public String getPattern() {

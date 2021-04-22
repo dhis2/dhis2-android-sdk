@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-apply plugin: "maven"
+apply plugin: "maven-publish"
 apply plugin: "signing"
+apply plugin: "org.jetbrains.dokka"
+
 
 def isReleaseBuild() {
     return !VERSION_NAME.contains("SNAPSHOT")
@@ -51,8 +53,6 @@ def gpgPassphrase() {
     return hasProperty("GPG_PASSPHRASE") ? GPG_PASSPHRASE : ""
 }
 
-def tempBuildFolder = "$rootDir/build/deploy"
-
 gradle.taskGraph.whenReady { taskGraph ->
     if (taskGraph.allTasks.any { it instanceof Sign }) {
         allprojects { ext."signing.keyId" = gpgKeyId() }
@@ -61,194 +61,86 @@ gradle.taskGraph.whenReady { taskGraph ->
     }
 }
 
-afterEvaluate { project ->
+tasks.named("dokkaJavadoc") {
+    outputDirectory = file("$buildDir/dokkaJavadoc")
 
-    uploadArchives {
-        doFirst {
-            mkdir "file:/$tempBuildFolder"
+    dokkaSourceSets {
+        configureEach {
+            perPackageOption {
+                matchingRegex.set(".*.internal.*")
+                suppress.set(true)
+            }
         }
-        repositories {
-            mavenDeployer {
-                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+    }
+}
 
-                pom.groupId = GROUP
-                pom.artifactId = POM_ARTIFACT_ID
-                pom.version = VERSION_NAME
+task androidJavadocsJar(type: Jar, dependsOn: dokkaJavadoc) {
+    archiveClassifier.set('javadoc')
+    from dokkaJavadoc.outputDirectory
+}
 
-                // Hack: Deploy to a local repository first, then upload to Sonatype using scripts.
-                repository(url: "file://localhost/$tempBuildFolder") {
-                    authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())
-                }
-                snapshotRepository(url: getSnapshotRepositoryUrl()) {
-                    authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())
-                }
+task androidSourcesJar(type: Jar) {
+    archiveClassifier.set('sources')
+    from android.sourceSets.main.java.srcDirs
+}
 
-                pom.project {
-                    name POM_NAME
-                    packaging POM_PACKAGING
-                    description POM_DESCRIPTION
-                    url POM_URL
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
 
-                    scm {
-                        url POM_SCM_URL
-                        connection POM_SCM_CONNECTION
-                        developerConnection POM_SCM_DEV_CONNECTION
-                    }
+                // Artifacts
+                artifact androidJavadocsJar
+                artifact androidSourcesJar
 
+                groupId = GROUP
+                artifactId = POM_ARTIFACT_ID
+                version = VERSION_NAME
+
+                pom {
+                    name = POM_NAME
+                    packaging = POM_PACKAGING
+                    description = POM_DESCRIPTION
+                    url = POM_URL
                     licenses {
                         license {
-                            name POM_LICENCE_NAME
-                            url POM_LICENCE_URL
-                            distribution POM_LICENCE_DIST
+                            name = POM_LICENCE_NAME
+                            url = POM_LICENCE_URL
+                            distribution = POM_LICENCE_DIST
                         }
                     }
-
                     developers {
                         developer {
-                            id POM_DEVELOPER_ID
-                            name POM_DEVELOPER_NAME
+                            id = POM_DEVELOPER_ID
+                            name = POM_DEVELOPER_NAME
                         }
                     }
+                    scm {
+                        connection = POM_SCM_CONNECTION
+                        developerConnection = POM_SCM_DEV_CONNECTION
+                        url = POM_SCM_URL
+                    }
+                }
+            }
+        }
+
+        repositories {
+            maven {
+                def releasesRepoUrl = getReleaseRepositoryUrl()
+                def snapshotsRepoUrl = getSnapshotRepositoryUrl()
+                url = isReleaseBuild() ? releasesRepoUrl : snapshotsRepoUrl
+
+                credentials {
+                    username = getRepositoryUsername()
+                    password = getRepositoryPassword()
                 }
             }
         }
     }
 
     signing {
-        required { isReleaseBuild() && gradle.taskGraph.hasTask("uploadArchives") }
-        sign configurations.archives
-    }
-
-    if (project.getPlugins().hasPlugin("com.android.application") ||
-            project.getPlugins().hasPlugin("com.android.library")) {
-        task install(type: Upload, dependsOn: assemble) {
-            repositories.mavenInstaller {
-                configuration = configurations.archives
-
-                pom.groupId = GROUP
-                pom.artifactId = POM_ARTIFACT_ID
-                pom.version = VERSION_NAME
-
-                pom.project {
-                    name POM_NAME
-                    packaging POM_PACKAGING
-                    description POM_DESCRIPTION
-                    url POM_URL
-
-                    scm {
-                        url POM_SCM_URL
-                        connection POM_SCM_CONNECTION
-                        developerConnection POM_SCM_DEV_CONNECTION
-                    }
-
-                    licenses {
-                        license {
-                            name POM_LICENCE_NAME
-                            url POM_LICENCE_URL
-                            distribution POM_LICENCE_DIST
-                        }
-                    }
-
-                    developers {
-                        developer {
-                            id POM_DEVELOPER_ID
-                            name POM_DEVELOPER_NAME
-                        }
-                    }
-                }
-            }
-        }
-
-        task androidJavadocs(type: Javadoc) {
-            source = android.sourceSets.main.java.source
-            classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-            exclude "org/hisp/dhis/android/core/**/internal/**"
-            exclude "org/hisp/dhis/android/core/**/*InternalAccessor.java"
-            exclude "org/hisp/dhis/android/core/**/**.kt"
-        }
-
-        task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
-            classifier = "javadoc"
-            from androidJavadocs.destinationDir
-        }
-
-        task androidSourcesJar(type: Jar) {
-            classifier = "sources"
-            from android.sourceSets.main.java.source
-        }
-    } else {
-        install {
-            repositories.mavenInstaller {
-                pom.groupId = GROUP
-                pom.artifactId = POM_ARTIFACT_ID
-                pom.version = VERSION_NAME
-
-                pom.project {
-                    name POM_NAME
-                    packaging POM_PACKAGING
-                    description POM_DESCRIPTION
-                    url POM_URL
-
-                    scm {
-                        url POM_SCM_URL
-                        connection POM_SCM_CONNECTION
-                        developerConnection POM_SCM_DEV_CONNECTION
-                    }
-
-                    licenses {
-                        license {
-                            name POM_LICENCE_NAME
-                            url POM_LICENCE_URL
-                            distribution POM_LICENCE_DIST
-                        }
-                    }
-
-                    developers {
-                        developer {
-                            id POM_DEVELOPER_ID
-                            name POM_DEVELOPER_NAME
-                        }
-                    }
-                }
-            }
-        }
-
-        task sourcesJar(type: Jar, dependsOn: classes) {
-            classifier = "sources"
-            from sourceSets.main.allSource
-        }
-
-        task javadocJar(type: Jar, dependsOn: javadoc) {
-            classifier = "javadoc"
-            from javadoc.destinationDir
-        }
-    }
-
-    artifacts {
-        if (project.getPlugins().hasPlugin("com.android.application") ||
-                project.getPlugins().hasPlugin("com.android.library")) {
-            archives androidSourcesJar
-            archives androidJavadocsJar
-        } else {
-            archives sourcesJar
-            archives javadocJar
-        }
-    }
-
-}
-
-// Scripted hack, inpired from:
-// https://github.com/osmlab/atlas/blob/dev/gradle/deployment.gradle
-def uploadToNexusStaging(def username, def password, def repoDir) {
-    def proc = ['./uploadToNexusStaging.sh', username, password, repoDir].execute([], file("${rootDir.toString()}/core/plugins"))
-    proc.waitForProcessOutput(System.out, System.err)
-}
-
-task publishToNexus(dependsOn: 'uploadArchives') {
-    doLast {
-        if (isReleaseBuild()) {
-            uploadToNexusStaging(getRepositoryUsername(), getRepositoryPassword(), tempBuildFolder)
-        }
-        // If is not a release build, artifacts are deployed in uploadArchives directive
+        required { isReleaseBuild() && gradle.taskGraph.hasTask("publishing") }
+        sign publishing.publications.release
     }
 }

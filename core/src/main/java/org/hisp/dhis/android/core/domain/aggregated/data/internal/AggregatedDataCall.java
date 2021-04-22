@@ -1,29 +1,29 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ *  Copyright (c) 2004-2021, University of Oslo
+ *  All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *  Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
  *
- * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- * Neither the name of the HISP project nor the names of its contributors may
- * be used to endorse or promote products derived from this software without
- * specific prior written permission.
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ *  Neither the name of the HISP project nor the names of its contributors may
+ *  be used to endorse or promote products derived from this software without
+ *  specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 package org.hisp.dhis.android.core.domain.aggregated.data.internal;
@@ -32,12 +32,11 @@ import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
-import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory;
+import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall;
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore;
 import org.hisp.dhis.android.core.dataapproval.DataApproval;
@@ -49,7 +48,7 @@ import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.datavalue.internal.DataValueQuery;
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
-import org.hisp.dhis.android.core.systeminfo.SystemInfo;
+import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -67,12 +66,12 @@ import io.reactivex.Single;
 @SuppressWarnings({"PMD.ExcessiveImports"})
 final class AggregatedDataCall {
 
-    private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
+    private final SystemInfoModuleDownloader systemInfoModuleDownloader;
     private final DHISVersionManager dhisVersionManager;
-    private final QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory;
-    private final QueryCallFactory<DataSetCompleteRegistration,
-            DataSetCompleteRegistrationQuery> dataSetCompleteRegistrationCallFactory;
-    private final QueryCallFactory<DataApproval, DataApprovalQuery> dataApprovalCallFactory;
+    private final QueryCall<DataValue, DataValueQuery> dataValueCall;
+    private final QueryCall<DataSetCompleteRegistration,
+            DataSetCompleteRegistrationQuery> dataSetCompleteRegistrationCall;
+    private final QueryCall<DataApproval, DataApprovalQuery> dataApprovalCall;
     private final CategoryOptionComboStore categoryOptionComboStore;
     private final RxAPICallExecutor rxCallExecutor;
     private final ObjectWithoutUidStore<AggregatedDataSync> aggregatedDataSyncStore;
@@ -82,23 +81,23 @@ final class AggregatedDataCall {
 
 
     @Inject
-    AggregatedDataCall(@NonNull ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
+    AggregatedDataCall(@NonNull SystemInfoModuleDownloader systemInfoModuleDownloader,
                        @NonNull DHISVersionManager dhisVersionManager,
-                       @NonNull QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory,
-                       @NonNull QueryCallFactory<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery>
-                               dataSetCompleteRegistrationCallFactory,
-                       @NonNull QueryCallFactory<DataApproval, DataApprovalQuery> dataApprovalCallFactory,
+                       @NonNull QueryCall<DataValue, DataValueQuery> dataValueCall,
+                       @NonNull QueryCall<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery>
+                               dataSetCompleteRegistrationCall,
+                       @NonNull QueryCall<DataApproval, DataApprovalQuery> dataApprovalCall,
                        @NonNull CategoryOptionComboStore categoryOptionComboStore,
                        @NonNull RxAPICallExecutor rxCallExecutor,
                        @NonNull ObjectWithoutUidStore<AggregatedDataSync> aggregatedDataSyncStore,
                        @NonNull AggregatedDataCallBundleFactory aggregatedDataCallBundleFactory,
                        @NonNull ResourceHandler resourceHandler,
                        @NonNull AggregatedDataSyncHashHelper hashHelper) {
-        this.systemInfoRepository = systemInfoRepository;
+        this.systemInfoModuleDownloader = systemInfoModuleDownloader;
         this.dhisVersionManager = dhisVersionManager;
-        this.dataValueCallFactory = dataValueCallFactory;
-        this.dataSetCompleteRegistrationCallFactory = dataSetCompleteRegistrationCallFactory;
-        this.dataApprovalCallFactory = dataApprovalCallFactory;
+        this.dataValueCall = dataValueCall;
+        this.dataSetCompleteRegistrationCall = dataSetCompleteRegistrationCall;
+        this.dataApprovalCall = dataApprovalCall;
         this.categoryOptionComboStore = categoryOptionComboStore;
         this.rxCallExecutor = rxCallExecutor;
         this.aggregatedDataSyncStore = aggregatedDataSyncStore;
@@ -111,9 +110,8 @@ final class AggregatedDataCall {
     Observable<D2Progress> download() {
         D2ProgressManager progressManager = new D2ProgressManager(null);
 
-        Observable<D2Progress> observable = systemInfoRepository.download()
-                .toSingle(() -> progressManager.increaseProgress(SystemInfo.class, false))
-                .flatMapObservable(progress -> selectDataSetsAndDownload(progressManager, progress));
+        Observable<D2Progress> observable = systemInfoModuleDownloader.downloadWithProgressManager(progressManager)
+                .flatMap(progress -> selectDataSetsAndDownload(progressManager, progress));
         return rxCallExecutor.wrapObservableTransactionally(observable, true);
     }
 
@@ -131,15 +129,15 @@ final class AggregatedDataCall {
                                                     D2Progress systemInfoProgress) {
         DataValueQuery dataValueQuery = DataValueQuery.create(bundle);
 
-        Single<D2Progress> dataValueSingle = Single.fromCallable(dataValueCallFactory.create(dataValueQuery))
+        Single<D2Progress> dataValueSingle = dataValueCall.download(dataValueQuery)
                 .map(dataValues -> progressManager.increaseProgress(DataValue.class, false));
 
         DataSetCompleteRegistrationQuery dataSetCompleteRegistrationQuery =
                 DataSetCompleteRegistrationQuery.create(UidsHelper.getUids(bundle.dataSets()),
                         bundle.periodIds(), bundle.rootOrganisationUnitUids(), bundle.key().lastUpdatedStr());
 
-        Single<D2Progress> dataSetCompleteRegistrationSingle = Single.fromCallable(
-                dataSetCompleteRegistrationCallFactory.create(dataSetCompleteRegistrationQuery)).map(dscr ->
+        Single<D2Progress> dataSetCompleteRegistrationSingle = dataSetCompleteRegistrationCall
+                .download(dataSetCompleteRegistrationQuery).map(dscr ->
                 progressManager.increaseProgress(DataSetCompleteRegistration.class, false));
 
 
@@ -201,8 +199,7 @@ final class AggregatedDataCall {
                     bundle.allOrganisationUnitUidsSet(), bundle.periodIds(), attributeOptionComboUids,
                     bundle.key().lastUpdatedStr());
 
-            return Single.fromCallable(
-                    dataApprovalCallFactory.create(dataApprovalQuery)).map(dataApprovals ->
+            return dataApprovalCall.download(dataApprovalQuery).map(dataApprovals ->
                     progressManager.increaseProgress(DataApproval.class, false));
         }
     }

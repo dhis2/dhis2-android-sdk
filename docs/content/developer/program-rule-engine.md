@@ -1,6 +1,4 @@
-# Program rule engine
-
-<!--DHIS2-SECTION-ID:program_rule_engine-->
+# Program rule engine { #android_sdk_program_rule_engine }
 
 The program rule engine is not provided within the SDK. It is implemented in a separate library, so the same code is used by backend and android apps.
 

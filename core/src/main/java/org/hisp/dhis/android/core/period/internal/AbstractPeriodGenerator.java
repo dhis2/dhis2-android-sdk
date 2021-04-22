@@ -1,29 +1,29 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ *  Copyright (c) 2004-2021, University of Oslo
+ *  All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *  Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
  *
- * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- * Neither the name of the HISP project nor the names of its contributors may
- * be used to endorse or promote products derived from this software without
- * specific prior written permission.
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ *  Neither the name of the HISP project nor the names of its contributors may
+ *  be used to endorse or promote products derived from this software without
+ *  specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 package org.hisp.dhis.android.core.period.internal;
@@ -54,26 +54,19 @@ abstract class AbstractPeriodGenerator implements PeriodGenerator {
     }
 
     @Override
-    public final List<Period> generatePeriods(int past, int future) throws RuntimeException {
+    public final List<Period> generatePeriods(int start, int end) throws RuntimeException {
         this.calendar = (Calendar) initialCalendar.clone();
-        if (past < 0) {
-            throw new RuntimeException("Number of past periods can't be negative.");
-        }
 
-        if (future < 0) {
-            throw new RuntimeException("Number of future periods can't be negative.");
-        }
-
-        if (future + past < 1) {
+        if (start >= end) {
             return Collections.emptyList();
         }
 
         List<Period> periods = new ArrayList<>();
         setCalendarToStartTimeOfADay(calendar);
         moveToStartOfCurrentPeriod();
-        movePeriods(1 - past - 1);
+        movePeriods(start);
 
-        for (int i = 0; i < past + future; i++) {
+        for (int i = 0; i < end - start; i++) {
             Date startDate = calendar.getTime();
             String periodId = generateId();
 
@@ -95,12 +88,13 @@ abstract class AbstractPeriodGenerator implements PeriodGenerator {
     }
 
     @Override
-    public final Period generatePeriod(Date date) {
+    public final Period generatePeriod(Date date, int periodOffset) {
         this.calendar = (Calendar) initialCalendar.clone();
 
         calendar.setTime(date);
         setCalendarToStartTimeOfADay(calendar);
         moveToStartOfCurrentPeriod();
+        this.movePeriods(periodOffset);
 
         Date startDate = calendar.getTime();
         String periodId = generateId();
@@ -114,6 +108,33 @@ abstract class AbstractPeriodGenerator implements PeriodGenerator {
                 .periodId(periodId)
                 .endDate(endDate)
                 .build();
+    }
+
+    @Override
+    public List<Period> generatePeriodsInYear(int yearOffset) {
+        this.calendar = (Calendar) initialCalendar.clone();
+
+        int targetYear = calendar.get(Calendar.YEAR) + yearOffset;
+        calendar.set(Calendar.YEAR, targetYear);
+        setCalendarToStartTimeOfADay(calendar);
+        moveToStartOfCurrentYear();
+
+        List<Period> periods = new ArrayList<>();
+        Period period;
+
+        while (true) {
+            period = generatePeriod(calendar.getTime(), 0);
+
+            if (period.periodId() != null &&
+                    period.periodId().startsWith(Integer.toString(targetYear))) {
+                periods.add(period);
+                movePeriods(1);
+            } else {
+                break;
+            }
+        }
+
+        return periods;
     }
 
     static void setCalendarToStartTimeOfADay(Calendar calendar) {
@@ -130,4 +151,6 @@ abstract class AbstractPeriodGenerator implements PeriodGenerator {
     protected String generateId() {
         return idFormatter.format(calendar.getTime());
     }
+
+    protected abstract void moveToStartOfCurrentYear();
 }

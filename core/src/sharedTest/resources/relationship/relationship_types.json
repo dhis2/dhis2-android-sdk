@@ -1,6 +1,41 @@
 {
   "relationshipTypes": [
     {
+      "created": "2014-04-14T13:53:38.659",
+      "lastUpdated": "2018-02-07T08:06:28.369",
+      "code": "216595_B_(Person-Person)",
+      "name": "Lab Sample to Person",
+      "id": "WiH6923nMtb",
+      "bidirectional": true,
+      "displayName": "Sibling_b-to-a_(Person-Person)",
+      "fromToName": "Sibling_b-to-a_(Person-Person)",
+      "toFromName": "Sibling_a-to-b_(Person-Person)",
+      "access": {
+        "read": true,
+        "update": true,
+        "externalize": false,
+        "delete": true,
+        "write": true,
+        "manage": true,
+        "data": {
+          "read": true,
+          "write": false
+        }
+      },
+      "toConstraint": {
+        "relationshipEntity": "PROGRAM_INSTANCE",
+        "program": {
+          "id": "lxAQ7Zs9VYR"
+        }
+      },
+      "fromConstraint": {
+        "relationshipEntity": "TRACKED_ENTITY_INSTANCE",
+        "trackedEntityType": {
+          "id": "nEenWmSyUEp"
+        }
+      }
+    },
+    {
       "created": "2013-09-19T15:17:41.000",
       "lastUpdated": "2014-04-14T13:53:20.166",
       "name": "Mother-Child",
@@ -17,6 +52,15 @@
       "displayName": "Sibling",
       "bIsToA": "Sibling",
       "aIsToB": "Sibling"
+    },
+    {
+      "created": "2014-04-14T13:53:38.659",
+      "lastUpdated": "2014-04-14T13:53:41.066",
+      "name": "Event-Event",
+      "id": "eventsRelationshipType",
+      "displayName": "Event-Event",
+      "bIsToA": "Child event",
+      "aIsToB": "Parent event"
     }
   ]
 }

@@ -1,29 +1,29 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ *  Copyright (c) 2004-2021, University of Oslo
+ *  All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *  Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
  *
- * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- * Neither the name of the HISP project nor the names of its contributors may
- * be used to endorse or promote products derived from this software without
- * specific prior written permission.
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ *  Neither the name of the HISP project nor the names of its contributors may
+ *  be used to endorse or promote products derived from this software without
+ *  specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 package org.hisp.dhis.android.testapp.enrollment;
@@ -45,8 +45,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -54,18 +53,18 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
     @Test
     public void allow_access_to_all_enrollments_without_children() {
         List<Enrollment> enrollments = d2.enrollmentModule().enrollments().blockingGet();
-        assertThat(enrollments.size(), is(2));
+        assertThat(enrollments.size()).isEqualTo(2);
 
         Enrollment enrollment = enrollments.get(0);
-        assertThat(enrollment.uid(), is("enroll1"));
-        assertThat(enrollment.program(), is("lxAQ7Zs9VYR"));
+        assertThat(enrollment.uid()).isEqualTo("enroll1");
+        assertThat(enrollment.program()).isEqualTo("lxAQ7Zs9VYR");
     }
 
     @Test
     public void allow_access_to_one_enrollment_without_children() {
         Enrollment enrollment = d2.enrollmentModule().enrollments().uid("enroll1").blockingGet();
-        assertThat(enrollment.uid(), is("enroll1"));
-        assertThat(enrollment.program(), is("lxAQ7Zs9VYR"));
+        assertThat(enrollment.uid()).isEqualTo("enroll1");
+        assertThat(enrollment.program()).isEqualTo("lxAQ7Zs9VYR");
     }
 
     @Test
@@ -74,8 +73,8 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
                 .withNotes().uid("enroll1").blockingGet();
         Enrollment enrollment2 = d2.enrollmentModule().enrollments()
                 .withNotes().uid("enroll2").blockingGet();
-        assertThat(enrollment1.notes().size(), is(2));
-        assertThat(enrollment2.notes().size(), is(2));
+        assertThat(enrollment1.notes().size()).isEqualTo(2);
+        assertThat(enrollment2.notes().size()).isEqualTo(2);
     }
 
     @Test
@@ -83,8 +82,8 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
         Enrollment enrollment = d2.enrollmentModule().enrollments()
                 .byUid().eq("enroll1")
                 .one().blockingGet();
-        assertThat(enrollment.uid(), is("enroll1"));
-        assertThat(enrollment.program(), is("lxAQ7Zs9VYR"));
+        assertThat(enrollment.uid()).isEqualTo("enroll1");
+        assertThat(enrollment.program()).isEqualTo("lxAQ7Zs9VYR");
     }
 
     @Test
@@ -93,7 +92,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
         List<Enrollment> enrollments = d2.enrollmentModule().enrollments()
                 .byCreated().eq(created)
                 .blockingGet();
-        assertThat(enrollments.size(), is(1));
+        assertThat(enrollments.size()).isEqualTo(1);
     }
 
     @Test
@@ -102,7 +101,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
         List<Enrollment> enrollments = d2.enrollmentModule().enrollments()
                 .byLastUpdated().eq(lastUpdated)
                 .blockingGet();
-        assertThat(enrollments.size(), is(1));
+        assertThat(enrollments.size()).isEqualTo(1);
     }
 
     @Test
@@ -110,7 +109,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
         List<Enrollment> enrollments = d2.enrollmentModule().enrollments()
                 .byCreatedAtClient().eq("2018-01-08T13:40:28.718")
                 .blockingGet();
-        assertThat(enrollments.size(), is(1));
+        assertThat(enrollments.size()).isEqualTo(1);
     }
 
     @Test
@@ -118,7 +117,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
         List<Enrollment> enrollments = d2.enrollmentModule().enrollments()
                 .byLastUpdatedAtClient().eq("2018-01-11T13:40:28.718")
                 .blockingGet();
-        assertThat(enrollments.size(), is(1));
+        assertThat(enrollments.size()).isEqualTo(1);
     }
 
     @Test
@@ -126,7 +125,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
         List<Enrollment> enrollments = d2.enrollmentModule().enrollments()
                 .byOrganisationUnit().eq("DiszpKrYNg8")
                 .blockingGet();
-        assertThat(enrollments.size(), is(2));
+        assertThat(enrollments.size()).isEqualTo(2);
     }
 
     @Test
@@ -134,7 +133,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
         List<Enrollment> enrollments = d2.enrollmentModule().enrollments()
                 .byProgram().eq("lxAQ7Zs9VYR")
                 .blockingGet();
-        assertThat(enrollments.size(), is(2));
+        assertThat(enrollments.size()).isEqualTo(2);
     }
 
     @Test
@@ -143,7 +142,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
         List<Enrollment> enrollments = d2.enrollmentModule().enrollments()
                 .byEnrollmentDate().eq(created)
                 .blockingGet();
-        assertThat(enrollments.size(), is(1));
+        assertThat(enrollments.size()).isEqualTo(1);
     }
 
     @Test
@@ -152,7 +151,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
         List<Enrollment> enrollments = d2.enrollmentModule().enrollments()
                 .byIncidentDate().eq(lastUpdated)
                 .blockingGet();
-        assertThat(enrollments.size(), is(1));
+        assertThat(enrollments.size()).isEqualTo(1);
     }
 
     @Test
@@ -160,7 +159,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
         List<Enrollment> enrollments = d2.enrollmentModule().enrollments()
                 .byFollowUp().isTrue()
                 .blockingGet();
-        assertThat(enrollments.size(), is(1));
+        assertThat(enrollments.size()).isEqualTo(1);
     }
 
     @Test
@@ -168,7 +167,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
         List<Enrollment> enrollments = d2.enrollmentModule().enrollments()
                 .byStatus().eq(EnrollmentStatus.ACTIVE)
                 .blockingGet();
-        assertThat(enrollments.size(), is(2));
+        assertThat(enrollments.size()).isEqualTo(2);
     }
 
     @Test
@@ -176,7 +175,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
         List<Enrollment> enrollments = d2.enrollmentModule().enrollments()
                 .byTrackedEntityInstance().eq("nWrB0TfWlvD")
                 .blockingGet();
-        assertThat(enrollments.size(), is(1));
+        assertThat(enrollments.size()).isEqualTo(1);
     }
 
     @Test
@@ -184,7 +183,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
         List<Enrollment> enrollments = d2.enrollmentModule().enrollments()
                 .byState().eq(State.SYNCED)
                 .blockingGet();
-        assertThat(enrollments.size(), is(2));
+        assertThat(enrollments.size()).isEqualTo(2);
     }
 
     @Test
@@ -192,7 +191,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
         List<Enrollment> enrollments = d2.enrollmentModule().enrollments()
                 .byDeleted().isFalse()
                 .blockingGet();
-        assertThat(enrollments.size(), is(2));
+        assertThat(enrollments.size()).isEqualTo(2);
     }
 
     @Test
@@ -201,7 +200,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
                         .byGeometryType().eq(FeatureType.POLYGON)
                         .blockingGet();
 
-        assertThat(enrollments.size(), is(1));
+        assertThat(enrollments.size()).isEqualTo(1);
     }
 
     @Test
@@ -210,7 +209,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
                         .byGeometryCoordinates().eq("[4.1, 2.6]")
                         .blockingGet();
 
-        assertThat(enrollments.size(), is(1));
+        assertThat(enrollments.size()).isEqualTo(1);
     }
 
     @Test
@@ -219,8 +218,8 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
                 .orderByCreated(RepositoryScope.OrderByDirection.DESC)
                 .blockingGet();
 
-        assertThat(enrollments.get(0).uid(), is("enroll1"));
-        assertThat(enrollments.get(1).uid(), is("enroll2"));
+        assertThat(enrollments.get(0).uid()).isEqualTo("enroll1");
+        assertThat(enrollments.get(1).uid()).isEqualTo("enroll2");
     }
 
     @Test
@@ -229,8 +228,8 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
                 .orderByCreatedAtClient(RepositoryScope.OrderByDirection.DESC)
                 .blockingGet();
 
-        assertThat(enrollments.get(0).uid(), is("enroll2"));
-        assertThat(enrollments.get(1).uid(), is("enroll1"));
+        assertThat(enrollments.get(0).uid()).isEqualTo("enroll2");
+        assertThat(enrollments.get(1).uid()).isEqualTo("enroll1");
     }
 
     @Test
@@ -239,8 +238,8 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
                 .orderByLastUpdated(RepositoryScope.OrderByDirection.DESC)
                 .blockingGet();
 
-        assertThat(enrollments.get(0).uid(), is("enroll1"));
-        assertThat(enrollments.get(1).uid(), is("enroll2"));
+        assertThat(enrollments.get(0).uid()).isEqualTo("enroll1");
+        assertThat(enrollments.get(1).uid()).isEqualTo("enroll2");
     }
 
     @Test
@@ -249,8 +248,8 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
                 .orderByLastUpdatedAtClient(RepositoryScope.OrderByDirection.DESC)
                 .blockingGet();
 
-        assertThat(enrollments.get(0).uid(), is("enroll2"));
-        assertThat(enrollments.get(1).uid(), is("enroll1"));
+        assertThat(enrollments.get(0).uid()).isEqualTo("enroll2");
+        assertThat(enrollments.get(1).uid()).isEqualTo("enroll1");
     }
 
     @Test
@@ -259,8 +258,8 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
                 .orderByEnrollmentDate(RepositoryScope.OrderByDirection.DESC)
                 .blockingGet();
 
-        assertThat(enrollments.get(0).uid(), is("enroll1"));
-        assertThat(enrollments.get(1).uid(), is("enroll2"));
+        assertThat(enrollments.get(0).uid()).isEqualTo("enroll1");
+        assertThat(enrollments.get(1).uid()).isEqualTo("enroll2");
     }
 
     @Test
@@ -269,23 +268,23 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
                 .orderByIncidentDate(RepositoryScope.OrderByDirection.DESC)
                 .blockingGet();
 
-        assertThat(enrollments.get(0).uid(), is("enroll1"));
-        assertThat(enrollments.get(1).uid(), is("enroll2"));
+        assertThat(enrollments.get(0).uid()).isEqualTo("enroll1");
+        assertThat(enrollments.get(1).uid()).isEqualTo("enroll2");
     }
 
     @Test
     public void add_enrollments_to_the_repository() throws D2Error {
         List<Enrollment> enrollments1 = d2.enrollmentModule().enrollments().blockingGet();
-        assertThat(enrollments1.size(), is(2));
+        assertThat(enrollments1.size()).isEqualTo(2);
 
         String enrolmentUid = d2.enrollmentModule().enrollments().blockingAdd(EnrollmentCreateProjection.create(
                 "DiszpKrYNg8", "lxAQ7Zs9VYR", "nWrB0TfWlvh"));
 
         List<Enrollment> enrollments2 = d2.enrollmentModule().enrollments().blockingGet();
-        assertThat(enrollments2.size(), is(3));
+        assertThat(enrollments2.size()).isEqualTo(3);
 
         Enrollment enrollment = d2.enrollmentModule().enrollments().uid(enrolmentUid).blockingGet();
-        assertThat(enrollment.uid(), is(enrolmentUid));
+        assertThat(enrollment.uid()).isEqualTo(enrolmentUid);
 
         d2.enrollmentModule().enrollments().uid(enrolmentUid).blockingDelete();
     }

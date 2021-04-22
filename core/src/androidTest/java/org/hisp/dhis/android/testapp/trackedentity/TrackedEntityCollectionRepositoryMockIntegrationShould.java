@@ -1,29 +1,29 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ *  Copyright (c) 2004-2021, University of Oslo
+ *  All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *  Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
  *
- * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- * Neither the name of the HISP project nor the names of its contributors may
- * be used to endorse or promote products derived from this software without
- * specific prior written permission.
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ *  Neither the name of the HISP project nor the names of its contributors may
+ *  be used to endorse or promote products derived from this software without
+ *  specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 package org.hisp.dhis.android.testapp.trackedentity;
@@ -43,8 +43,7 @@ import org.junit.runner.RunWith;
 import java.text.ParseException;
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class TrackedEntityCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -55,7 +54,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                 d2.trackedEntityModule().trackedEntityInstances()
                         .blockingGet();
 
-        assertThat(trackedEntityInstances.size(), is(2));
+        assertThat(trackedEntityInstances.size()).isEqualTo(2);
     }
 
     @Test
@@ -65,7 +64,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                         .byUid().eq("nWrB0TfWlvD")
                         .blockingGet();
 
-        assertThat(trackedEntityInstances.size(), is(1));
+        assertThat(trackedEntityInstances.size()).isEqualTo(1);
     }
 
     @Test
@@ -75,7 +74,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                         .byCreated().eq(BaseNameableObject.DATE_FORMAT.parse("2019-01-10T13:40:27.987"))
                         .blockingGet();
 
-        assertThat(trackedEntityInstances.size(), is(1));
+        assertThat(trackedEntityInstances.size()).isEqualTo(1);
     }
 
     @Test
@@ -85,7 +84,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                         .byLastUpdated().eq(BaseNameableObject.DATE_FORMAT.parse("2018-01-10T13:40:28.592"))
                         .blockingGet();
 
-        assertThat(trackedEntityInstances.size(), is(1));
+        assertThat(trackedEntityInstances.size()).isEqualTo(1);
     }
 
     @Test
@@ -95,7 +94,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                         .byCreatedAtClient().eq("2019-01-22T18:38:15.845")
                         .blockingGet();
 
-        assertThat(trackedEntityInstances.size(), is(1));
+        assertThat(trackedEntityInstances.size()).isEqualTo(1);
     }
 
     @Test
@@ -105,7 +104,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                         .byLastUpdatedAtClient().isNotNull()
                         .blockingGet();
 
-        assertThat(trackedEntityInstances.size(), is(2));
+        assertThat(trackedEntityInstances.size()).isEqualTo(2);
     }
 
     @Test
@@ -115,7 +114,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                         .byOrganisationUnitUid().eq("DiszpKrYNg8")
                         .blockingGet();
 
-        assertThat(trackedEntityInstances.size(), is(2));
+        assertThat(trackedEntityInstances.size()).isEqualTo(2);
     }
 
     @Test
@@ -125,7 +124,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                         .byTrackedEntityType().eq("nEenWmSyUEp")
                         .blockingGet();
 
-        assertThat(trackedEntityInstances.size(), is(2));
+        assertThat(trackedEntityInstances.size()).isEqualTo(2);
     }
 
     @Test
@@ -135,7 +134,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                         .byGeometryType().eq(FeatureType.POINT)
                         .blockingGet();
 
-        assertThat(trackedEntityInstances.size(), is(1));
+        assertThat(trackedEntityInstances.size()).isEqualTo(1);
     }
 
     @Test
@@ -145,7 +144,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                         .byGeometryCoordinates().eq("[9.0, 9.0]")
                         .blockingGet();
 
-        assertThat(trackedEntityInstances.size(), is(1));
+        assertThat(trackedEntityInstances.size()).isEqualTo(1);
     }
 
     @Test
@@ -155,8 +154,8 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                         .byState().eq(State.SYNCED)
                         .blockingGet();
 
-        // TODO set to assertThat(trackedEntityInstances.size(), is(2)); after moving write tests to another db
-        assertThat(trackedEntityInstances.size(), is(1));
+        // TODO set to assertThat(trackedEntityInstances.size()).isEqualTo(2); after moving write tests to another db
+        assertThat(trackedEntityInstances.size()).isEqualTo(1);
     }
 
     @Test
@@ -166,7 +165,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                         .byDeleted().isFalse()
                         .blockingGet();
 
-        assertThat(trackedEntityInstances.size(), is(2));
+        assertThat(trackedEntityInstances.size()).isEqualTo(2);
     }
 
     @Test
@@ -176,7 +175,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                         .byProgramUids(Lists.newArrayList("lxAQ7Zs9VYR"))
                         .blockingGet();
 
-        assertThat(trackedEntityInstances.size(), is(2));
+        assertThat(trackedEntityInstances.size()).isEqualTo(2);
     }
 
     @Test
@@ -185,8 +184,8 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                         .orderByCreated(RepositoryScope.OrderByDirection.ASC)
                         .blockingGet();
 
-        assertThat(trackedEntityInstances.get(0).uid(), is("nWrB0TfWlvD"));
-        assertThat(trackedEntityInstances.get(1).uid(), is("nWrB0TfWlvh"));
+        assertThat(trackedEntityInstances.get(0).uid()).isEqualTo("nWrB0TfWlvD");
+        assertThat(trackedEntityInstances.get(1).uid()).isEqualTo("nWrB0TfWlvh");
     }
 
     @Test
@@ -195,8 +194,8 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                         .orderByCreatedAtClient(RepositoryScope.OrderByDirection.ASC)
                         .blockingGet();
 
-        assertThat(trackedEntityInstances.get(0).uid(), is("nWrB0TfWlvD"));
-        assertThat(trackedEntityInstances.get(1).uid(), is("nWrB0TfWlvh"));
+        assertThat(trackedEntityInstances.get(0).uid()).isEqualTo("nWrB0TfWlvD");
+        assertThat(trackedEntityInstances.get(1).uid()).isEqualTo("nWrB0TfWlvh");
     }
 
     @Test
@@ -205,8 +204,8 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                         .orderByLastUpdated(RepositoryScope.OrderByDirection.ASC)
                         .blockingGet();
 
-        assertThat(trackedEntityInstances.get(0).uid(), is("nWrB0TfWlvD"));
-        assertThat(trackedEntityInstances.get(1).uid(), is("nWrB0TfWlvh"));
+        assertThat(trackedEntityInstances.get(0).uid()).isEqualTo("nWrB0TfWlvD");
+        assertThat(trackedEntityInstances.get(1).uid()).isEqualTo("nWrB0TfWlvh");
     }
 
     @Test
@@ -215,7 +214,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                         .orderByLastUpdatedAtClient(RepositoryScope.OrderByDirection.ASC)
                         .blockingGet();
 
-        assertThat(trackedEntityInstances.get(0).uid(), is("nWrB0TfWlvD"));
-        assertThat(trackedEntityInstances.get(1).uid(), is("nWrB0TfWlvh"));
+        assertThat(trackedEntityInstances.get(0).uid()).isEqualTo("nWrB0TfWlvD");
+        assertThat(trackedEntityInstances.get(1).uid()).isEqualTo("nWrB0TfWlvh");
     }
 }

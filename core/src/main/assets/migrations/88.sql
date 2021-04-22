@@ -1,0 +1,2 @@
+# Drops unused table ProgramOrganisationUnitLastUpdated
+DROP TABLE ProgramOrganisationUnitLastUpdated;

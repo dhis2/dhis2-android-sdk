@@ -1,41 +1,38 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ *  Copyright (c) 2004-2021, University of Oslo
+ *  All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *  Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
  *
- * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- * Neither the name of the HISP project nor the names of its contributors may
- * be used to endorse or promote products derived from this software without
- * specific prior written permission.
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ *  Neither the name of the HISP project nor the names of its contributors may
+ *  be used to endorse or promote products derived from this software without
+ *  specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.hisp.dhis.android.core.domain.metadata
 
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
+import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
-import org.assertj.core.util.Lists
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.category.internal.CategoryModuleDownloader
@@ -59,7 +56,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.AdditionalAnswers
-import org.mockito.ArgumentMatchers
 import org.mockito.Mockito
 
 @RunWith(JUnit4::class)
@@ -74,7 +70,6 @@ class MetadataCallShould : BaseCallShould() {
     private val organisationUnitDownloader: OrganisationUnitModuleDownloader = mock()
     private val dataSetDownloader: DataSetModuleDownloader = mock()
     private val constantDownloader: ConstantModuleDownloader = mock()
-    private val d2ErrorStore: ObjectStore<D2Error> = mock()
     private val smsModule: SmsModule = mock()
     private val configCase: ConfigCase = mock()
     private val generalSettingCall: GeneralSettingCall = mock()
@@ -90,37 +85,49 @@ class MetadataCallShould : BaseCallShould() {
         super.setUp()
 
         // Calls
-        whenever(systemInfoDownloader.downloadMetadata()).thenReturn(Completable.complete())
+        whenever(systemInfoDownloader.downloadWithProgressManager(any()))
+            .thenReturn(Observable.just(D2Progress.empty(10)))
         whenever(systemSettingDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(userDownloader.downloadMetadata()).thenReturn(Single.just(user))
-        whenever(programDownloader.downloadMetadata(ArgumentMatchers.anySet())).thenReturn(Single.just(Lists.emptyList()))
-        whenever(organisationUnitDownloader.downloadMetadata(ArgumentMatchers.same(user))).thenReturn(Single.just(Lists.emptyList()))
-        whenever(dataSetDownloader.downloadMetadata(ArgumentMatchers.anySet())).thenReturn(Single.just(Lists.emptyList()))
-        whenever(constantDownloader.downloadMetadata()).thenReturn(Single.just(Lists.emptyList()))
+        whenever(programDownloader.downloadMetadata(any())).thenReturn(
+            Single.just(emptyList())
+        )
+        whenever(organisationUnitDownloader.downloadMetadata(same(user))).thenReturn(
+            Single.just(emptyList())
+        )
+        whenever(dataSetDownloader.downloadMetadata(any())).thenReturn(
+            Single.just(emptyList())
+        )
+        whenever(constantDownloader.downloadMetadata()).thenReturn(Single.just(emptyList()))
         whenever(categoryDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(smsModule.configCase()).thenReturn(configCase)
         whenever(configCase.refreshMetadataIdsCallable()).thenReturn(Completable.complete())
-        whenever(generalSettingCall.isDatabaseEncrypted).thenReturn(Single.just(false))
-        whenever(d2ErrorStore.insert(ArgumentMatchers.any(D2Error::class.java))).thenReturn(0L)
-        Mockito.`when`<Observable<D2Progress>>(rxAPICallExecutor.wrapObservableTransactionally(ArgumentMatchers.any(), ArgumentMatchers.anyBoolean()))
-                .then(AdditionalAnswers.returnsFirstArg<Any>())
+        whenever(generalSettingCall.isDatabaseEncrypted()).thenReturn(Single.just(false))
+        Mockito.`when`<Observable<D2Progress>>(
+            rxAPICallExecutor.wrapObservableTransactionally(
+                any(),
+                any()
+            )
+        )
+            .then(AdditionalAnswers.returnsFirstArg<Any>())
 
         // Metadata call
         metadataCall = MetadataCall(
-                rxAPICallExecutor,
-                systemInfoDownloader,
-                systemSettingDownloader,
-                userDownloader,
-                categoryDownloader,
-                programDownloader,
-                organisationUnitDownloader,
-                dataSetDownloader,
-                constantDownloader,
-                smsModule,
-                databaseAdapter,
-                generalSettingCall,
-                multiUserDatabaseManager,
-                credentialsSecureStore)
+            rxAPICallExecutor,
+            systemInfoDownloader,
+            systemSettingDownloader,
+            userDownloader,
+            categoryDownloader,
+            programDownloader,
+            organisationUnitDownloader,
+            dataSetDownloader,
+            constantDownloader,
+            smsModule,
+            databaseAdapter,
+            generalSettingCall,
+            multiUserDatabaseManager,
+            credentialsSecureStore
+        )
     }
 
     @Test
@@ -130,7 +137,7 @@ class MetadataCallShould : BaseCallShould() {
 
     @Test
     fun fail_when_system_info_call_fail() {
-        whenever(systemInfoDownloader.downloadMetadata()).thenReturn(Completable.error(d2Error))
+        whenever(systemInfoDownloader.downloadWithProgressManager(any())).thenReturn(Observable.error(d2Error))
         downloadAndAssertError()
     }
 
@@ -160,7 +167,7 @@ class MetadataCallShould : BaseCallShould() {
 
     @Test
     fun fail_when_program_call_fail() {
-        whenever(programDownloader.downloadMetadata(ArgumentMatchers.anySet())).thenReturn(Single.error(d2Error))
+        whenever(programDownloader.downloadMetadata(any())).thenReturn(Single.error(d2Error))
         downloadAndAssertError()
     }
 
@@ -172,7 +179,7 @@ class MetadataCallShould : BaseCallShould() {
 
     @Test
     fun fail_when_dataset_parent_call_fail() {
-        whenever(dataSetDownloader.downloadMetadata(ArgumentMatchers.anySet())).thenReturn(Single.error(d2Error))
+        whenever(dataSetDownloader.downloadMetadata(any())).thenReturn(Single.error(d2Error))
         downloadAndAssertError()
     }
 
@@ -185,7 +192,10 @@ class MetadataCallShould : BaseCallShould() {
     @Test
     fun call_wrapObservableTransactionally() {
         metadataCall!!.blockingDownload()
-        Mockito.verify(rxAPICallExecutor).wrapObservableTransactionally<D2Progress>(ArgumentMatchers.any(), ArgumentMatchers.eq(true))
+        Mockito.verify(rxAPICallExecutor).wrapObservableTransactionally<D2Progress>(
+            any(),
+            eq(true)
+        )
     }
 
     @Test

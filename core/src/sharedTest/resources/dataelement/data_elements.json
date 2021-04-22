@@ -193,7 +193,92 @@
       "style": {
         "color": "#645",
         "icon": "data-element-icon"
-      }
+      },
+      "legendSets": [
+        {
+          "code": "AGE10YINT2",
+          "created": "2017-06-02T11:40:33.452",
+          "lastUpdated": "2017-06-02T11:41:01.999",
+          "name": "Age 15y interval",
+          "id": "QiOkbpGEud4",
+          "displayName": "Age 15y interval",
+          "symbolizer": "color",
+          "legends": [
+            {
+              "id": "AzQkRWHS7lu",
+              "name": "45 - 60",
+              "startValue": 25,
+              "endValue": 40,
+              "color": "#G38026"
+            },
+            {
+              "id": "TEf6QhFVMab",
+              "name": "15 - 30",
+              "startValue": 10,
+              "endValue": 25,
+              "color": "#A6AE5E"
+            }
+          ]
+        }
+      ],
+      "attributeValues": [
+        {
+          "value": "Direct",
+          "attribute": {
+            "lastUpdated": "2015-04-20T12:36:33.754",
+            "id": "qXS2NDUEAOS",
+            "created": "2015-04-20T12:23:04.044",
+            "name": "Collection method",
+            "code": "Collection method",
+            "indicatorAttribute": false,
+            "indicatorGroupAttribute": false,
+            "publicAccess": "rw------",
+            "userGroupAttribute": false,
+            "dataElementAttribute": true,
+            "constantAttribute": false,
+            "valueType": "LONG_TEXT",
+            "categoryOptionAttribute": false,
+            "optionSetAttribute": false,
+            "sqlViewAttribute": false,
+            "legendSetAttribute": false,
+            "displayFormName": "Collection method",
+            "trackedEntityAttributeAttribute": false,
+            "organisationUnitAttribute": false,
+            "dataSetAttribute": false,
+            "documentAttribute": false,
+            "unique": false,
+            "validationRuleGroupAttribute": false,
+            "favorite": false,
+            "dataElementGroupAttribute": false,
+            "sectionAttribute": false,
+            "trackedEntityTypeAttribute": false,
+            "userAttribute": false,
+            "displayName": "Collection method",
+            "mandatory": false,
+            "categoryOptionGroupAttribute": false,
+            "externalAccess": false,
+            "programStageAttribute": false,
+            "programAttribute": false,
+            "categoryAttribute": false,
+            "categoryOptionComboAttribute": false,
+            "categoryOptionGroupSetAttribute": false,
+            "validationRuleAttribute": false,
+            "programIndicatorAttribute": false,
+            "organisationUnitGroupAttribute": false,
+            "dataElementGroupSetAttribute": false,
+            "organisationUnitGroupSetAttribute": false,
+            "optionAttribute": false,
+            "access": {
+              "read": true,
+              "update": true,
+              "externalize": true,
+              "delete": true,
+              "write": true,
+              "manage": true
+            }
+          }
+        }
+      ]
     }
   ]
 }

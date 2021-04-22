@@ -1,29 +1,29 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ *  Copyright (c) 2004-2021, University of Oslo
+ *  All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *  Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
  *
- * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- * Neither the name of the HISP project nor the names of its contributors may
- * be used to endorse or promote products derived from this software without
- * specific prior written permission.
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ *  Neither the name of the HISP project nor the names of its contributors may
+ *  be used to endorse or promote products derived from this software without
+ *  specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 package org.hisp.dhis.android.testapp.organisationunit;
@@ -40,9 +40,7 @@ import java.text.ParseException;
 import java.util.Collections;
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -50,42 +48,42 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
     @Test
     public void find_all() {
         List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits().blockingGet();
-        assertThat(organisationUnits.size(), is(1));
+        assertThat(organisationUnits.size()).isEqualTo(1);
     }
 
     @Test
     public void filter_by_parent_uid() {
         List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits()
                 .byParentUid().eq("YuQRtpLP10I").blockingGet();
-        assertThat(organisationUnits.size(), is(1));
+        assertThat(organisationUnits.size()).isEqualTo(1);
     }
 
     @Test
     public void filter_by_path() {
         List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits()
                 .byPath().eq("/ImspTQPwCqd/O6uvpzGd5pu/YuQRtpLP10I/DiszpKrYNg8").blockingGet();
-        assertThat(organisationUnits.size(), is(1));
+        assertThat(organisationUnits.size()).isEqualTo(1);
     }
 
     @Test
     public void filter_by_opening_date() throws ParseException {
         List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits()
                 .byOpeningDate().eq(BaseIdentifiableObject.parseDate("1970-01-01T00:00:00.000")).blockingGet();
-        assertThat(organisationUnits.size(), is(1));
+        assertThat(organisationUnits.size()).isEqualTo(1);
     }
 
     @Test
     public void filter_by_closed_date() throws ParseException {
         List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits()
                 .byClosedDate().eq(BaseIdentifiableObject.parseDate("2018-05-22T15:21:48.516")).blockingGet();
-        assertThat(organisationUnits.size(), is(1));
+        assertThat(organisationUnits.size()).isEqualTo(1);
     }
 
     @Test
     public void filter_by_level() {
         List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits()
                 .byLevel().eq(4).blockingGet();
-        assertThat(organisationUnits.size(), is(1));
+        assertThat(organisationUnits.size()).isEqualTo(1);
     }
 
     @Test
@@ -93,12 +91,12 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
         List<OrganisationUnit> captureOrganisationUnits = d2.organisationUnitModule().organisationUnits()
                 .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
                 .blockingGet();
-        assertThat(captureOrganisationUnits.size(), is(1));
+        assertThat(captureOrganisationUnits.size()).isEqualTo(1);
 
         List<OrganisationUnit> searchOrganisationUnits = d2.organisationUnitModule().organisationUnits()
                 .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH)
                 .blockingGet();
-        assertThat(searchOrganisationUnits.size(), is(0));
+        assertThat(searchOrganisationUnits.size()).isEqualTo(0);
     }
 
     @Test
@@ -106,12 +104,12 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
         List<OrganisationUnit> rootOrganisationUnits = d2.organisationUnitModule().organisationUnits()
                 .byRootOrganisationUnit(Boolean.TRUE)
                 .blockingGet();
-        assertThat(rootOrganisationUnits.size(), is(1));
+        assertThat(rootOrganisationUnits.size()).isEqualTo(1);
 
         List<OrganisationUnit> notRootOrganisationUnits = d2.organisationUnitModule().organisationUnits()
                 .byRootOrganisationUnit(Boolean.FALSE)
                 .blockingGet();
-        assertThat(notRootOrganisationUnits.size(), is(0));
+        assertThat(notRootOrganisationUnits.size()).isEqualTo(0);
     }
 
     @Test
@@ -119,7 +117,7 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
         List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits()
                 .byProgramUids(Collections.singletonList("lxAQ7Zs9VYR"))
                 .blockingGet();
-        assertThat(organisationUnits.size(), is(1));
+        assertThat(organisationUnits.size()).isEqualTo(1);
     }
 
     @Test
@@ -127,7 +125,7 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
         List<OrganisationUnit> organisationUnits = d2.organisationUnitModule().organisationUnits()
                 .byDataSetUids(Collections.singletonList("lyLU2wR22tC"))
                 .blockingGet();
-        assertThat(organisationUnits.size(), is(1));
+        assertThat(organisationUnits.size()).isEqualTo(1);
     }
 
     @Test
@@ -136,16 +134,16 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
                 .byRootOrganisationUnit(Boolean.TRUE)
                 .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
                 .blockingGet();
-        assertThat(rootOrganisationUnits.size(), is(1));
+        assertThat(rootOrganisationUnits.size()).isEqualTo(1);
     }
 
     @Test
     public void include_programs_as_children() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits()
                 .withProgramUids().one().blockingGet();
-        assertThat(organisationUnit.programs().size(), is(2));
+        assertThat(organisationUnit.programs().size()).isEqualTo(2);
         for (ObjectWithUid program : organisationUnit.programs()) {
-            assertThat(program.uid(), notNullValue());
+            assertThat(program.uid()).isNotNull();
         }
     }
 
@@ -153,9 +151,9 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
     public void include_data_sets_as_children() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits()
                 .withDataSetUids().one().blockingGet();
-        assertThat(organisationUnit.dataSets().size(), is(2));
+        assertThat(organisationUnit.dataSets().size()).isEqualTo(2);
         for (ObjectWithUid dataSet : organisationUnit.dataSets()) {
-            assertThat(dataSet.uid(), notNullValue());
+            assertThat(dataSet.uid()).isNotNull();
         }
     }
 
@@ -163,16 +161,16 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
     public void include_organisation_unit_groups_as_children() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits()
                 .withOrganisationUnitGroups().one().blockingGet();
-        assertThat(organisationUnit.organisationUnitGroups().get(0).name(), is("CHC"));
+        assertThat(organisationUnit.organisationUnitGroups().get(0).name()).isEqualTo("CHC");
     }
 
     @Test
     public void include_programs_as_children_in_collection_repository_when_all_selected() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits()
                 .withProgramUids().blockingGet().get(0);
-        assertThat(organisationUnit.programs().size(), is(2));
+        assertThat(organisationUnit.programs().size()).isEqualTo(2);
         for (ObjectWithUid program : organisationUnit.programs()) {
-            assertThat(program.uid(), notNullValue());
+            assertThat(program.uid()).isNotNull();
         }
     }
 
@@ -180,9 +178,9 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
     public void include_data_sets_as_children_in_collection_repository_when_all_selected() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits()
                 .withDataSetUids().blockingGet().get(0);
-        assertThat(organisationUnit.dataSets().size(), is(2));
+        assertThat(organisationUnit.dataSets().size()).isEqualTo(2);
         for (ObjectWithUid dataSet : organisationUnit.dataSets()) {
-            assertThat(dataSet.uid(), notNullValue());
+            assertThat(dataSet.uid()).isNotNull();
         }
     }
 
@@ -190,16 +188,16 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
     public void include_organisation_unit_groups_as_children_in_collection_repository_when_all_selected() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits()
                 .withOrganisationUnitGroups().blockingGet().get(0);
-        assertThat(organisationUnit.organisationUnitGroups().get(0).name(), is("CHC"));
+        assertThat(organisationUnit.organisationUnitGroups().get(0).name()).isEqualTo("CHC");
     }
 
     @Test
     public void include_programs_as_children_in_object_repository_when_all_selected() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits()
                 .withProgramUids().one().blockingGet();
-        assertThat(organisationUnit.programs().size(), is(2));
+        assertThat(organisationUnit.programs().size()).isEqualTo(2);
         for (ObjectWithUid program : organisationUnit.programs()) {
-            assertThat(program.uid(), notNullValue());
+            assertThat(program.uid()).isNotNull();
         }
     }
 
@@ -207,9 +205,9 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
     public void include_data_sets_as_children_in_object_repository_when_all_selected() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits()
                 .withDataSetUids().one().blockingGet();
-        assertThat(organisationUnit.dataSets().size(), is(2));
+        assertThat(organisationUnit.dataSets().size()).isEqualTo(2);
         for (ObjectWithUid dataSet : organisationUnit.dataSets()) {
-            assertThat(dataSet.uid(), notNullValue());
+            assertThat(dataSet.uid()).isNotNull();
         }
     }
 
@@ -217,6 +215,6 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends B
     public void include_organisation_unit_groups_as_children_in_object_repository_when_all_selected() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits()
                 .withOrganisationUnitGroups().one().blockingGet();
-        assertThat(organisationUnit.organisationUnitGroups().get(0).name(), is("CHC"));
+        assertThat(organisationUnit.organisationUnitGroups().get(0).name()).isEqualTo("CHC");
     }
 }

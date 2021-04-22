@@ -1,29 +1,29 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ *  Copyright (c) 2004-2021, University of Oslo
+ *  All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *  Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
  *
- * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- * Neither the name of the HISP project nor the names of its contributors may
- * be used to endorse or promote products derived from this software without
- * specific prior written permission.
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ *  Neither the name of the HISP project nor the names of its contributors may
+ *  be used to endorse or promote products derived from this software without
+ *  specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 package org.hisp.dhis.android.core.fileresource.internal;
@@ -45,8 +45,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTest {
 
@@ -68,11 +67,11 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         List<FileResource> fileResources = d2.fileResourceModule().fileResources().blockingGet();
 
-        assertThat(fileResources.size(), is(2));
+        assertThat(fileResources.size()).isEqualTo(2);
 
         File file = new File(fileResources.get(0).path());
 
-        assertThat(file.exists(), is(true));
+        assertThat(file.exists()).isTrue();
     }
 
     //@Test
@@ -85,7 +84,7 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         File file = new File(fileResources.get(0).path());
 
-        assertThat(file.exists(), is(true));
+        assertThat(file.exists()).isTrue();
 
         String valueUid = d2.fileResourceModule().fileResources().blockingAdd(file);
 
@@ -104,14 +103,14 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         File file2 = new File(fileResources2.get(1).path());
 
-        assertThat(file2.exists(), is(true));
+        assertThat(file2.exists()).isTrue();
 
         d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
 
         TrackedEntityInstance trackedEntityInstance2 =
                 d2.trackedEntityModule().trackedEntityInstances().blockingGet().get(0);
 
-        assertThat(trackedEntityInstance2.state(), is(State.SYNCED));
+        assertThat(trackedEntityInstance2.state()).isEqualTo(State.SYNCED);
     }
 
     //@Test
@@ -124,7 +123,7 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         File file = new File(fileResources.get(0).path());
 
-        assertThat(file.exists(), is(true));
+        assertThat(file.exists()).isTrue();
 
         String valueUid = d2.fileResourceModule().fileResources().blockingAdd(file);
 
@@ -141,7 +140,7 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         File file2 = new File(fileResources2.get(1).path());
 
-        assertThat(file2.exists(), is(true));
+        assertThat(file2.exists()).isTrue();
     }
 
     //@Test
@@ -156,7 +155,7 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
 
         List<FileResource> fileResources2 = d2.fileResourceModule().fileResources().blockingGet();
 
-        assertThat(fileResources.size(), is(fileResources2.size()));
+        assertThat(fileResources.size()).isEqualTo(fileResources2.size());
     }
 
     private void syncDataAndMetadata() throws Exception {

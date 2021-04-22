@@ -1,0 +1,87 @@
+{
+  "dataSync": "24h",
+  "metadataSync": "12h",
+  "newTrackerImporter": false,
+  "dataSetSettings": {
+    "globalSettings": {
+      "lastUpdated": "2020-01-31T22:42:57.763Z",
+      "periodDSDownload": 30,
+      "periodDSDBTrimming": 40
+    },
+    "specificSettings": {
+      "BfMAe6Itzgt": {
+        "id": "BfMAe6Itzgt",
+        "name": "Child Health",
+        "lastUpdated": "2020-01-31T22:38:20.210Z",
+        "periodDSDownload": 10,
+        "periodDSDBTrimming": 15
+      },
+      "EKWVBc5C0ms": {
+        "id": "lyLU2wR22tC",
+        "name": "ART monthly summary",
+        "lastUpdated": "2020-01-23T20:01:53.667Z",
+        "periodDSDownload": 10,
+        "periodDSDBTrimming": 2
+      }
+    }
+  },
+  "programSettings": {
+    "globalSettings": {
+      "lastUpdated": "2020-02-01T20:02:46.145Z",
+      "teiDownload": 500,
+      "teiDBTrimming": 500,
+      "eventsDownload": 1000,
+      "updateDownload": "ANY",
+      "settingDownload": "PER_ORG_UNIT",
+      "eventsDBTrimming": 1000,
+      "updateDBTrimming": "ANY",
+      "settingDBTrimming": "GLOBAL",
+      "enrollmentDownload": "ALL",
+      "eventDateDownload": "ANY",
+      "enrollmentDBTrimming": "ALL",
+      "eventDateDBTrimming": "ANY",
+      "enrollmentDateDownload": "ANY",
+      "enrollmentDateDBTrimming": "ANY"
+    },
+    "specificSettings": {
+      "IpHINAT79UW": {
+        "id": "IpHINAT79UW",
+        "name": "Child Programme",
+        "lastUpdated": "2020-02-01T19:55:32.002Z",
+        "teiDownload": "40",
+        "teiDBTrimming": "20",
+        "eventsDownload": "30",
+        "updateDownload": "ANY",
+        "settingDownload": "ALL_ORG_UNITS",
+        "eventsDBTrimming": "20",
+        "updateDBTrimming": "LAST_3_MONTHS",
+        "settingDBTrimming": "PER_ORG_UNIT",
+        "enrollmentDownload": "ALL",
+        "eventDateDownload": "ANY",
+        "enrollmentDBTrimming": "ONLY_ACTIVE",
+        "eventDateDBTrimming": "LAST_MONTH",
+        "enrollmentDateDownload": "ANY",
+        "enrollmentDateDBTrimming": "LAST_MONTH"
+      },
+      "lxAQ7Zs9VYR": {
+        "id": "lxAQ7Zs9VYR",
+        "name": "Antenatal care visit",
+        "lastUpdated": "2020-02-01T20:02:20.450Z",
+        "teiDownload": "20",
+        "teiDBTrimming": "10",
+        "eventsDownload": "10",
+        "updateDownload": "ANY",
+        "settingDownload": "ALL_ORG_UNITS",
+        "eventsDBTrimming": "10",
+        "updateDBTrimming": "LAST_3_MONTHS",
+        "settingDBTrimming": "PER_ORG_UNIT",
+        "enrollmentDownload": "ALL",
+        "eventDateDownload": "ANY",
+        "enrollmentDBTrimming": "ALL",
+        "eventDateDBTrimming": "LAST_3_MONTHS",
+        "enrollmentDateDownload": "LAST_MONTH",
+        "enrollmentDateDBTrimming": "LAST_3_MONTHS"
+      }
+    }
+  }
+}

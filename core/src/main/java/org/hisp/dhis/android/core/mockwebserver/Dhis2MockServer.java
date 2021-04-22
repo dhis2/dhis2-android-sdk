@@ -1,29 +1,29 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ *  Copyright (c) 2004-2021, University of Oslo
+ *  All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *  Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
  *
- * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- * Neither the name of the HISP project nor the names of its contributors may
- * be used to endorse or promote products derived from this software without
- * specific prior written permission.
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ *  Neither the name of the HISP project nor the names of its contributors may
+ *  be used to endorse or promote products derived from this software without
+ *  specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 package org.hisp.dhis.android.core.mockwebserver;
@@ -55,13 +55,22 @@ public class Dhis2MockServer {
     private static final String AUTHORITIES_JSON = "user/authorities.json";
     private static final String SYSTEM_INFO_JSON = "systeminfo/system_info.json";
     private static final String SYSTEM_SETTINGS_JSON = "settings/system_settings.json";
-    private static final String GENERAL_SETTINGS_JSON = "settings/general_settings.json";
+    private static final String ANDROID_SETTINGS_METADATA_JSON = "settings/app_metadata_list.json";
+    private static final String ANDROID_SETTINGS_INFO_JSON = "settings/app_info.json";
+    private static final String GENERAL_SETTINGS_V1_JSON = "settings/general_settings_v1.json";
+    private static final String GENERAL_SETTINGS_V2_JSON = "settings/general_settings_v2.json";
     private static final String DATASET_SETTINGS_JSON = "settings/dataset_settings.json";
     private static final String PROGRAM_SETTINGS_JSON = "settings/program_settings.json";
+    private static final String SYNCHRONIZATION_SETTTINGS_JSON = "settings/synchronization_settings.json";
+    private static final String APPEARANCE_SETTINGS_JSON = "settings/appearance_settings.json";
+    private static final String ANALYTICS_SETTINGS_JSON = "settings/analytics_settings.json";
     private static final String USER_SETTINGS_JSON = "settings/user_settings.json";
     private static final String PROGRAMS_JSON = "program/programs.json";
     private static final String PROGRAM_STAGES_JSON = "program/program_stages.json";
     private static final String PROGRAM_RULES_JSON = "program/program_rules.json";
+    private static final String TRACKED_ENTITY_INSTANCE_FILTERS_JSON =
+            "trackedentity/tracked_entity_instance_filters.json";
+    private static final String EVENT_FILTERS_JSON = "event/event_filters.json";
     private static final String TRACKED_ENTITY_TYPES_JSON = "trackedentity/tracked_entity_types.json";
     private static final String TRACKED_ENTITY_ATTRIBUTES_JSON = "trackedentity/tracked_entity_attributes.json";
     private static final String RELATIONSHIP_TYPES_JSON = "relationship/relationship_types.json";
@@ -76,6 +85,7 @@ public class Dhis2MockServer {
     private static final String INDICATOR_TYPES_JSON = "indicators/indicator_types.json";
     private static final String CATEGORY_COMBOS_JSON = "category/category_combos.json";
     private static final String CATEGORIES_JSON = "category/categories.json";
+    private static final String CATEGORY_OPTIONS_JSON = "category/category_options.json";
     private static final String ORGANISATION_UNIT_LEVELS_JSON = "organisationunit/organisation_unit_levels.json";
     private static final String CONSTANTS_JSON = "constant/constants.json";
     private static final String USER_JSON = "user/user.json";
@@ -85,6 +95,7 @@ public class Dhis2MockServer {
     private static final String DATA_SET_COMPLETE_REGISTRATIONS_JSON = "dataset/data_set_complete_registrations.json";
     private static final String DATA_APPROVALS_MULTIPLE_JSON = "dataapproval/data_approvals_multiple.json";
     private static final String ORGANISATION_UNITS_JSON = "organisationunit/organisation_units.json";
+    private static final String RESERVE_VALUES_JSON = "trackedentity/tracked_entity_attribute_reserved_values.json";
     private static final String MOCKWEBSERVER = "Dhis2MockWebServer";
 
     private MockWebServer server;
@@ -158,24 +169,40 @@ public class Dhis2MockServer {
                     return createMockResponse(SYSTEM_INFO_JSON);
                 } else if (path.startsWith("/api/systemSettings?")) {
                     return createMockResponse(SYSTEM_SETTINGS_JSON);
+                } else if (path.startsWith("/api/apps?filter")) {
+                    return createMockResponse(ANDROID_SETTINGS_METADATA_JSON);
+                } else if (path.startsWith("/api/dataStore/ANDROID_SETTINGS_APP/info")) {
+                    return createMockResponse(ANDROID_SETTINGS_INFO_JSON);
                 } else if (path.startsWith("/api/dataStore/ANDROID_SETTING_APP/general_settings")) {
-                    return createMockResponse(GENERAL_SETTINGS_JSON);
+                    return createMockResponse(GENERAL_SETTINGS_V1_JSON);
                 } else if (path.startsWith("/api/dataStore/ANDROID_SETTING_APP/dataSet_settings")) {
                     return createMockResponse(DATASET_SETTINGS_JSON);
                 } else if (path.startsWith("/api/dataStore/ANDROID_SETTING_APP/program_settings")) {
                     return createMockResponse(PROGRAM_SETTINGS_JSON);
+                } else if (path.startsWith("/api/dataStore/ANDROID_SETTINGS_APP/generalSettings")) {
+                    return createMockResponse(GENERAL_SETTINGS_V2_JSON);
+                } else if (path.startsWith("/api/dataStore/ANDROID_SETTINGS_APP/synchronization")) {
+                    return createMockResponse(SYNCHRONIZATION_SETTTINGS_JSON);
+                } else if (path.startsWith("/api/dataStore/ANDROID_SETTINGS_APP/appearance")) {
+                    return createMockResponse(APPEARANCE_SETTINGS_JSON);
+                } else if (path.startsWith("/api/dataStore/ANDROID_SETTINGS_APP/analytics")) {
+                    return createMockResponse(ANALYTICS_SETTINGS_JSON);
                 } else if (path.startsWith("/api/userSettings?")) {
                     return createMockResponse(USER_SETTINGS_JSON);
                 } else if (path.startsWith("/api/programs?")) {
                     return createMockResponse(PROGRAMS_JSON);
                 } else if (path.startsWith("/api/programStages?")) {
                     return createMockResponse(PROGRAM_STAGES_JSON);
-                } else if (path.startsWith("/api/programRules?")) {
-                    return createMockResponse(PROGRAM_RULES_JSON);
                 } else if (path.startsWith("/api/trackedEntityTypes?")) {
                     return createMockResponse(TRACKED_ENTITY_TYPES_JSON);
                 } else if (path.startsWith("/api/trackedEntityAttributes?")) {
                     return createMockResponse(TRACKED_ENTITY_ATTRIBUTES_JSON);
+                } else if (path.startsWith("/api/programRules?")) {
+                    return createMockResponse(PROGRAM_RULES_JSON);
+                } else if (path.startsWith("/api/trackedEntityInstanceFilters?")) {
+                    return createMockResponse(TRACKED_ENTITY_INSTANCE_FILTERS_JSON);
+                } else if (path.startsWith("/api/eventFilters?")) {
+                    return createMockResponse(EVENT_FILTERS_JSON);
                 } else if (path.startsWith("/api/relationshipTypes?")) {
                     return createMockResponse(RELATIONSHIP_TYPES_JSON);
                 } else if (path.startsWith("/api/optionSets?")) {
@@ -200,6 +227,8 @@ public class Dhis2MockServer {
                     return createMockResponse(CATEGORY_COMBOS_JSON);
                 } else if (path.startsWith("/api/categories?")) {
                     return createMockResponse(CATEGORIES_JSON);
+                } else if (path.startsWith("/api/categoryOptions?")) {
+                    return createMockResponse(CATEGORY_OPTIONS_JSON);
                 } else if (path.startsWith("/api/organisationUnits?")) {
                     return createMockResponse(ORGANISATION_UNITS_JSON);
                 } else if (path.startsWith("/api/organisationUnitLevels?")) {
@@ -216,6 +245,8 @@ public class Dhis2MockServer {
                     return createMockResponse(DATA_SET_COMPLETE_REGISTRATIONS_JSON);
                 } else if (path.startsWith("/api/dataApprovals/multiple?")) {
                     return createMockResponse(DATA_APPROVALS_MULTIPLE_JSON);
+                } else if (path.startsWith("/api/trackedEntityAttributes/aejWyOfXge6/generateAndReserve")) {
+                    return createMockResponse(RESERVE_VALUES_JSON);
                 } else {
                     return new MockResponse()
                             .setResponseCode(404)
@@ -228,16 +259,25 @@ public class Dhis2MockServer {
 
     public void enqueueLoginResponses() {
         enqueueMockResponse(USER_JSON);
-        enqueueMockResponse(GENERAL_SETTINGS_JSON);
+        enqueueMockResponse(ANDROID_SETTINGS_METADATA_JSON);
+        enqueueMockResponse(ANDROID_SETTINGS_INFO_JSON);
+        enqueueMockResponse(GENERAL_SETTINGS_V2_JSON);
+        enqueueMockResponse(SYSTEM_INFO_JSON);
+    }
+
+    public void enqueueSystemInfoResponse() {
         enqueueMockResponse(SYSTEM_INFO_JSON);
     }
 
     public void enqueueMetadataResponses() {
-        enqueueMockResponse(GENERAL_SETTINGS_JSON);
+        enqueueMockResponse(ANDROID_SETTINGS_METADATA_JSON);
+        enqueueMockResponse(ANDROID_SETTINGS_INFO_JSON);
+        enqueueMockResponse(GENERAL_SETTINGS_V2_JSON);
         enqueueMockResponse(SYSTEM_INFO_JSON);
-        enqueueMockResponse(GENERAL_SETTINGS_JSON);
-        enqueueMockResponse(DATASET_SETTINGS_JSON);
-        server.enqueue(getErrorResponse());
+        enqueueMockResponse(GENERAL_SETTINGS_V2_JSON);
+        enqueueMockResponse(SYNCHRONIZATION_SETTTINGS_JSON);
+        enqueueMockResponse(APPEARANCE_SETTINGS_JSON);
+        enqueueMockResponse(ANALYTICS_SETTINGS_JSON);
         enqueueMockResponse(USER_SETTINGS_JSON);
         enqueueMockResponse(SYSTEM_SETTINGS_JSON);
         enqueueMockResponse(CONSTANTS_JSON);
@@ -250,6 +290,8 @@ public class Dhis2MockServer {
         enqueueMockResponse(TRACKED_ENTITY_TYPES_JSON);
         enqueueMockResponse(TRACKED_ENTITY_ATTRIBUTES_JSON);
         enqueueMockResponse(PROGRAM_RULES_JSON);
+        enqueueMockResponse(TRACKED_ENTITY_INSTANCE_FILTERS_JSON);
+        enqueueMockResponse(EVENT_FILTERS_JSON);
         enqueueMockResponse(RELATIONSHIP_TYPES_JSON);
         enqueueMockResponse(OPTION_SETS_JSON);
         enqueueMockResponse(OPTIONS_JSON);
@@ -263,6 +305,7 @@ public class Dhis2MockServer {
         enqueueMockResponse(VALIDATION_RULES_JSON);
         enqueueMockResponse(CATEGORY_COMBOS_JSON);
         enqueueMockResponse(CATEGORIES_JSON);
+        enqueueMockResponse(CATEGORY_OPTIONS_JSON);
     }
 
     @NonNull
@@ -280,6 +323,10 @@ public class Dhis2MockServer {
 
     private MockResponse getErrorResponse() {
         return new MockResponse().setResponseCode(500).setBody("Error");
+    }
+
+    private MockResponse getErrorNotFoundResponse() {
+        return new MockResponse().setResponseCode(404).setBody("Not found");
     }
 
     public void enqueueMockResponse(String fileName, Date dateHeader) {

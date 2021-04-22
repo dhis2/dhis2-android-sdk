@@ -1,8 +1,6 @@
-# Program indicator engine
+# Program indicator engine { #android_sdk_program_indicator_engine }
 
-<!--DHIS2-SECTION-ID:program_indicator_engine-->
-
-The SDK includes its own Program Indicator engine for the evaluation of **in-line Program Indicators**. These kind of indicators are evaluated within the context of an enrollment or a single event and they are usually placed in the data entry form offering additional information to the data encoder. This means that, even though they are regular Program Indicators and can be calculated across enrollments, they have provide useful information within a single enrollment.
+The SDK includes its own Program Indicator engine for the evaluation of **in-line Program Indicators**. These kind of indicators are evaluated within the context of an enrollment or an event (single or tracker) and they are usually placed in the data entry form offering additional information to the data encoder. This means that, even though they are regular Program Indicators and can be calculated across enrollments, they have provide useful information within a single enrollment.
 
 A good example, "Average time between visits".
 
@@ -13,10 +11,12 @@ In order to trigger the Program Indicator Engine, just execute:
 ```java
 d2.programModule()
     .programIndicatorEngine()
-    .getProgramIndicatorValue(<enrollment-uid>, <event-uid>, <program-indicator-uid>);
-```
+    .getEnrollmentProgramIndicatorValue(<enrollment-uid>, <program-indicator-uid>);
 
-Either enrollment-uid or event-uid must be non-null.
+d2.programModule()
+    .programIndicatorEngine()
+    .getEventProgramIndicatorValue(<event-uid>, <program-indicator-uid>);
+```
 
 Compatibility table:
 

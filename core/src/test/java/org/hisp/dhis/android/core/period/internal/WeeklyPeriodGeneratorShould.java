@@ -1,33 +1,34 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ *  Copyright (c) 2004-2021, University of Oslo
+ *  All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *  Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
  *
- * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- * Neither the name of the HISP project nor the names of its contributors may
- * be used to endorse or promote products derived from this software without
- * specific prior written permission.
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ *  Neither the name of the HISP project nor the names of its contributors may
+ *  be used to endorse or promote products derived from this software without
+ *  specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.hisp.dhis.android.core.period.internal;
 
-import org.assertj.core.util.Lists;
+import com.google.common.collect.Lists;
+
 import org.hisp.dhis.android.core.period.Period;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.junit.Test;
@@ -39,7 +40,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(JUnit4.class)
 public class WeeklyPeriodGeneratorShould {
@@ -58,7 +59,7 @@ public class WeeklyPeriodGeneratorShould {
 
 
         List<Period> generatedPeriods = WeeklyPeriodGeneratorFactory.weekly(calendar)
-                .generatePeriods(1, 0);
+                .generatePeriods(-1, 0);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period));
     }
@@ -72,7 +73,7 @@ public class WeeklyPeriodGeneratorShould {
         calendar.set(2018, 2, 22);
 
         List<Period> generatedPeriods = WeeklyPeriodGeneratorFactory.weekly(calendar)
-                .generatePeriods(2, 0);
+                .generatePeriods(-2, 0);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period1, period2));
     }
@@ -88,7 +89,7 @@ public class WeeklyPeriodGeneratorShould {
         calendar.set(2017, 0, 21);
 
         List<Period> generatedPeriods = WeeklyPeriodGeneratorFactory.weekly(calendar)
-                .generatePeriods(3, 0);
+                .generatePeriods(-3, 0);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period1, period2, period3));
     }
@@ -111,15 +112,15 @@ public class WeeklyPeriodGeneratorShould {
         calendar.set(2018, 0, 11);
 
         List<Period> generatedPeriods = WeeklyPeriodGeneratorFactory
-                .weekly(calendar).generatePeriods(1, 0);
+                .weekly(calendar).generatePeriods(-1, 0);
         List<Period> generatedWedPeriods = WeeklyPeriodGeneratorFactory
-                .wednesday(calendar).generatePeriods(1, 0);
+                .wednesday(calendar).generatePeriods(-1, 0);
         List<Period> generatedThuPeriods = WeeklyPeriodGeneratorFactory
-                .thursday(calendar).generatePeriods(1, 0);
+                .thursday(calendar).generatePeriods(-1, 0);
         List<Period> generatedSatPeriods = WeeklyPeriodGeneratorFactory
-                .saturday(calendar).generatePeriods(1, 0);
+                .saturday(calendar).generatePeriods(-1, 0);
         List<Period> generatedSunPeriods = WeeklyPeriodGeneratorFactory
-                .sunday(calendar).generatePeriods(1, 0);
+                .sunday(calendar).generatePeriods(-1, 0);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period));
         assertThat(generatedWedPeriods).isEqualTo(Lists.newArrayList(periodWednesday));
@@ -133,24 +134,80 @@ public class WeeklyPeriodGeneratorShould {
         SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
         PeriodGenerator saturdayGenerator = WeeklyPeriodGeneratorFactory.saturday(calendar);
-        assertThat("2019SatW51").isEqualTo(saturdayGenerator.generatePeriod(dateFormatter.parse("2019-12-20")).periodId());
-        assertThat("2019SatW52").isEqualTo(saturdayGenerator.generatePeriod(dateFormatter.parse("2019-12-21")).periodId());
+        assertThat("2019SatW51").isEqualTo(saturdayGenerator.generatePeriod(dateFormatter.parse("2019-12-20"), 0).periodId());
+        assertThat("2019SatW52").isEqualTo(saturdayGenerator.generatePeriod(dateFormatter.parse("2019-12-21"), 0).periodId());
 
         PeriodGenerator sundayGenerator = WeeklyPeriodGeneratorFactory.sunday(calendar);
-        assertThat("2019SunW51").isEqualTo(sundayGenerator.generatePeriod(dateFormatter.parse("2019-12-21")).periodId());
-        assertThat("2019SunW52").isEqualTo(sundayGenerator.generatePeriod(dateFormatter.parse("2019-12-22")).periodId());
+        assertThat("2019SunW51").isEqualTo(sundayGenerator.generatePeriod(dateFormatter.parse("2019-12-21"), 0).periodId());
+        assertThat("2019SunW52").isEqualTo(sundayGenerator.generatePeriod(dateFormatter.parse("2019-12-22"), 0).periodId());
 
         PeriodGenerator weeklyGenerator = WeeklyPeriodGeneratorFactory.weekly(calendar);
-        assertThat("2019W51").isEqualTo(weeklyGenerator.generatePeriod(dateFormatter.parse("2019-12-22")).periodId());
-        assertThat("2019W52").isEqualTo(weeklyGenerator.generatePeriod(dateFormatter.parse("2019-12-23")).periodId());
+        assertThat("2019W51").isEqualTo(weeklyGenerator.generatePeriod(dateFormatter.parse("2019-12-22"), 0).periodId());
+        assertThat("2019W52").isEqualTo(weeklyGenerator.generatePeriod(dateFormatter.parse("2019-12-23"), 0).periodId());
 
         PeriodGenerator wednesdayGenerator = WeeklyPeriodGeneratorFactory.wednesday(calendar);
-        assertThat("2019WedW51").isEqualTo(wednesdayGenerator.generatePeriod(dateFormatter.parse("2019-12-24")).periodId());
-        assertThat("2019WedW52").isEqualTo(wednesdayGenerator.generatePeriod(dateFormatter.parse("2019-12-25")).periodId());
+        assertThat("2019WedW51").isEqualTo(wednesdayGenerator.generatePeriod(dateFormatter.parse("2019-12-24"), 0).periodId());
+        assertThat("2019WedW52").isEqualTo(wednesdayGenerator.generatePeriod(dateFormatter.parse("2019-12-25"), 0).periodId());
 
         PeriodGenerator thursdayGenerator = WeeklyPeriodGeneratorFactory.thursday(calendar);
-        assertThat("2019ThuW51").isEqualTo(thursdayGenerator.generatePeriod(dateFormatter.parse("2019-12-25")).periodId());
-        assertThat("2019ThuW52").isEqualTo(thursdayGenerator.generatePeriod(dateFormatter.parse("2019-12-26")).periodId());
+        assertThat("2019ThuW51").isEqualTo(thursdayGenerator.generatePeriod(dateFormatter.parse("2019-12-25"), 0).periodId());
+        assertThat("2019ThuW52").isEqualTo(thursdayGenerator.generatePeriod(dateFormatter.parse("2019-12-26"), 0).periodId());
+    }
+
+    @Test
+    public void generate_period_id_with_offsets() throws ParseException {
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        PeriodGenerator saturdayGenerator = WeeklyPeriodGeneratorFactory.saturday(calendar);
+        assertThat("2019SatW52").isEqualTo(saturdayGenerator.generatePeriod(dateFormatter.parse("2019-12-20"), 1).periodId());
+        assertThat("2019SatW51").isEqualTo(saturdayGenerator.generatePeriod(dateFormatter.parse("2019-12-21"), -1).periodId());
+
+        PeriodGenerator sundayGenerator = WeeklyPeriodGeneratorFactory.sunday(calendar);
+        assertThat("2019SunW52").isEqualTo(sundayGenerator.generatePeriod(dateFormatter.parse("2019-12-21"), 1).periodId());
+        assertThat("2019SunW51").isEqualTo(sundayGenerator.generatePeriod(dateFormatter.parse("2019-12-22"), -1).periodId());
+
+        PeriodGenerator weeklyGenerator = WeeklyPeriodGeneratorFactory.weekly(calendar);
+        assertThat("2020W1").isEqualTo(weeklyGenerator.generatePeriod(dateFormatter.parse("2019-12-22"), 2).periodId());
+        assertThat("2019W50").isEqualTo(weeklyGenerator.generatePeriod(dateFormatter.parse("2019-12-23"), -2).periodId());
+
+        PeriodGenerator wednesdayGenerator = WeeklyPeriodGeneratorFactory.wednesday(calendar);
+        assertThat("2019WedW52").isEqualTo(wednesdayGenerator.generatePeriod(dateFormatter.parse("2019-12-24"), 1).periodId());
+        assertThat("2019WedW51").isEqualTo(wednesdayGenerator.generatePeriod(dateFormatter.parse("2019-12-25"), -1).periodId());
+
+        PeriodGenerator thursdayGenerator = WeeklyPeriodGeneratorFactory.thursday(calendar);
+        assertThat("2019ThuW52").isEqualTo(thursdayGenerator.generatePeriod(dateFormatter.parse("2019-12-25"), 1).periodId());
+        assertThat("2019ThuW51").isEqualTo(thursdayGenerator.generatePeriod(dateFormatter.parse("2019-12-26"), -1).periodId());
+    }
+
+    @Test
+    public void generate_periods_in_this_year() {
+        calendar.set(2019, 7, 29);
+        PeriodGenerator generator = WeeklyPeriodGeneratorFactory.weekly(calendar);
+
+        List<Period> mondayPeriods = WeeklyPeriodGeneratorFactory.weekly(calendar).generatePeriodsInYear(0);
+        assertThat(mondayPeriods.size()).isEqualTo(52);
+        assertThat(mondayPeriods.get(0).periodId()).isEqualTo("2019W1");
+        assertThat(mondayPeriods.get(51).periodId()).isEqualTo("2019W52");
+
+        List<Period> saturdayPeriods = WeeklyPeriodGeneratorFactory.saturday(calendar).generatePeriodsInYear(0);
+        assertThat(saturdayPeriods.size()).isEqualTo(53);
+        assertThat(saturdayPeriods.get(0).periodId()).isEqualTo("2019SatW1");
+        assertThat(saturdayPeriods.get(52).periodId()).isEqualTo("2019SatW53");
+
+        List<Period> sundayPeriods = WeeklyPeriodGeneratorFactory.sunday(calendar).generatePeriodsInYear(0);
+        assertThat(sundayPeriods.size()).isEqualTo(52);
+        assertThat(sundayPeriods.get(0).periodId()).isEqualTo("2019SunW1");
+        assertThat(sundayPeriods.get(51).periodId()).isEqualTo("2019SunW52");
+
+        List<Period> wednesdayPeriods = WeeklyPeriodGeneratorFactory.wednesday(calendar).generatePeriodsInYear(0);
+        assertThat(wednesdayPeriods.size()).isEqualTo(52);
+        assertThat(wednesdayPeriods.get(0).periodId()).isEqualTo("2019WedW1");
+        assertThat(wednesdayPeriods.get(51).periodId()).isEqualTo("2019WedW52");
+
+        List<Period> thursdayPeriods = WeeklyPeriodGeneratorFactory.thursday(calendar).generatePeriodsInYear(0);
+        assertThat(thursdayPeriods.size()).isEqualTo(52);
+        assertThat(thursdayPeriods.get(0).periodId()).isEqualTo("2019ThuW1");
+        assertThat(thursdayPeriods.get(51).periodId()).isEqualTo("2019ThuW52");
     }
 
     private Period generateExpectedPeriod(String id, Calendar cal, int weekStartDay, PeriodType periodType) {

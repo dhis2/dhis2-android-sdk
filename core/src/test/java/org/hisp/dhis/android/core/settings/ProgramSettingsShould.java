@@ -1,29 +1,29 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ *  Copyright (c) 2004-2021, University of Oslo
+ *  All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *  Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
  *
- * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- * Neither the name of the HISP project nor the names of its contributors may
- * be used to endorse or promote products derived from this software without
- * specific prior written permission.
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ *  Neither the name of the HISP project nor the names of its contributors may
+ *  be used to endorse or promote products derived from this software without
+ *  specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 package org.hisp.dhis.android.core.settings;
@@ -36,7 +36,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.text.ParseException;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 public class ProgramSettingsShould extends BaseObjectShould implements ObjectShould {
 
@@ -57,16 +57,16 @@ public class ProgramSettingsShould extends BaseObjectShould implements ObjectSho
         assertThat(global.teiDBTrimming()).isEqualTo(500);
         assertThat(global.eventsDownload()).isEqualTo(1000);
         assertThat(global.eventsDBTrimming()).isEqualTo(1000);
-        assertThat(global.updateDownload()).isEqualByComparingTo(DownloadPeriod.ANY);
-        assertThat(global.updateDBTrimming()).isEqualByComparingTo(DownloadPeriod.ANY);
-        assertThat(global.settingDownload()).isEqualByComparingTo(LimitScope.PER_ORG_UNIT);
-        assertThat(global.settingDBTrimming()).isEqualByComparingTo(LimitScope.GLOBAL);
-        assertThat(global.enrollmentDownload()).isEqualByComparingTo(EnrollmentScope.ALL);
-        assertThat(global.enrollmentDBTrimming()).isEqualByComparingTo(EnrollmentScope.ALL);
-        assertThat(global.eventDateDownload()).isEqualByComparingTo(DownloadPeriod.ANY);
-        assertThat(global.eventDateDBTrimming()).isEqualByComparingTo(DownloadPeriod.ANY);
-        assertThat(global.enrollmentDateDownload()).isEqualByComparingTo(DownloadPeriod.ANY);
-        assertThat(global.enrollmentDateDBTrimming()).isEqualByComparingTo(DownloadPeriod.ANY);
+        assertThat(global.updateDownload()).isEqualTo(DownloadPeriod.ANY);
+        assertThat(global.updateDBTrimming()).isEqualTo(DownloadPeriod.ANY);
+        assertThat(global.settingDownload()).isEqualTo(LimitScope.PER_ORG_UNIT);
+        assertThat(global.settingDBTrimming()).isEqualTo(LimitScope.GLOBAL);
+        assertThat(global.enrollmentDownload()).isEqualTo(EnrollmentScope.ALL);
+        assertThat(global.enrollmentDBTrimming()).isEqualTo(EnrollmentScope.ALL);
+        assertThat(global.eventDateDownload()).isEqualTo(DownloadPeriod.ANY);
+        assertThat(global.eventDateDBTrimming()).isEqualTo(DownloadPeriod.ANY);
+        assertThat(global.enrollmentDateDownload()).isEqualTo(DownloadPeriod.ANY);
+        assertThat(global.enrollmentDateDBTrimming()).isEqualTo(DownloadPeriod.ANY);
 
         ProgramSetting childProgramme = programSettings.specificSettings().get("IpHINAT79UW");
         assertThat(childProgramme).isNotNull();
@@ -77,15 +77,15 @@ public class ProgramSettingsShould extends BaseObjectShould implements ObjectSho
         assertThat(childProgramme.teiDBTrimming()).isEqualTo(20);
         assertThat(childProgramme.eventsDownload()).isEqualTo(30);
         assertThat(childProgramme.eventsDBTrimming()).isEqualTo(20);
-        assertThat(childProgramme.updateDownload()).isEqualByComparingTo(DownloadPeriod.ANY);
-        assertThat(childProgramme.updateDBTrimming()).isEqualByComparingTo(DownloadPeriod.LAST_3_MONTHS);
-        assertThat(childProgramme.settingDownload()).isEqualByComparingTo(LimitScope.ALL_ORG_UNITS);
-        assertThat(childProgramme.settingDBTrimming()).isEqualByComparingTo(LimitScope.PER_ORG_UNIT);
-        assertThat(childProgramme.enrollmentDownload()).isEqualByComparingTo(EnrollmentScope.ALL);
-        assertThat(childProgramme.enrollmentDBTrimming()).isEqualByComparingTo(EnrollmentScope.ONLY_ACTIVE);
-        assertThat(childProgramme.eventDateDownload()).isEqualByComparingTo(DownloadPeriod.ANY);
-        assertThat(childProgramme.eventDateDBTrimming()).isEqualByComparingTo(DownloadPeriod.LAST_MONTH);
-        assertThat(childProgramme.enrollmentDateDownload()).isEqualByComparingTo(DownloadPeriod.ANY);
-        assertThat(childProgramme.enrollmentDateDBTrimming()).isEqualByComparingTo(DownloadPeriod.LAST_MONTH);
+        assertThat(childProgramme.updateDownload()).isEqualTo(DownloadPeriod.ANY);
+        assertThat(childProgramme.updateDBTrimming()).isEqualTo(DownloadPeriod.LAST_3_MONTHS);
+        assertThat(childProgramme.settingDownload()).isEqualTo(LimitScope.ALL_ORG_UNITS);
+        assertThat(childProgramme.settingDBTrimming()).isEqualTo(LimitScope.PER_ORG_UNIT);
+        assertThat(childProgramme.enrollmentDownload()).isEqualTo(EnrollmentScope.ALL);
+        assertThat(childProgramme.enrollmentDBTrimming()).isEqualTo(EnrollmentScope.ONLY_ACTIVE);
+        assertThat(childProgramme.eventDateDownload()).isEqualTo(DownloadPeriod.ANY);
+        assertThat(childProgramme.eventDateDBTrimming()).isEqualTo(DownloadPeriod.LAST_MONTH);
+        assertThat(childProgramme.enrollmentDateDownload()).isEqualTo(DownloadPeriod.ANY);
+        assertThat(childProgramme.enrollmentDateDBTrimming()).isEqualTo(DownloadPeriod.LAST_MONTH);
     }
 }

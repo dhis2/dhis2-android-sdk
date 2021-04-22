@@ -1,29 +1,29 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ *  Copyright (c) 2004-2021, University of Oslo
+ *  All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *  Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
  *
- * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- * Neither the name of the HISP project nor the names of its contributors may
- * be used to endorse or promote products derived from this software without
- * specific prior written permission.
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ *  Neither the name of the HISP project nor the names of its contributors may
+ *  be used to endorse or promote products derived from this software without
+ *  specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 package org.hisp.dhis.android.testapp.fileresource;
@@ -54,8 +54,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -68,7 +67,7 @@ public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseM
                 d2.fileResourceModule().fileResources()
                         .blockingGet();
 
-        assertThat(fileResources.size(), is(1));
+        assertThat(fileResources.size()).isEqualTo(1);
     }
 
     @Test
@@ -80,7 +79,7 @@ public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseM
                         .byUid().eq(fileUid)
                         .blockingGet();
 
-        assertThat(fileResources.size(), is(1));
+        assertThat(fileResources.size()).isEqualTo(1);
     }
 
     @Test
@@ -92,7 +91,7 @@ public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseM
                         .byName().eq(fileUid+ ".png")
                         .blockingGet();
 
-        assertThat(fileResources.size(), is(1));
+        assertThat(fileResources.size()).isEqualTo(1);
     }
     @Test
     public void filter_by_last_updated() throws D2Error, IOException, ParseException {
@@ -106,7 +105,7 @@ public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseM
                         .byLastUpdated().after(created)
                         .blockingGet();
 
-        assertThat(fileResources.size(), is(1));
+        assertThat(fileResources.size()).isEqualTo(1);
     }
 
     @Test
@@ -118,7 +117,7 @@ public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseM
                         .byContentType().eq("image/png")
                         .blockingGet();
 
-        assertThat(fileResources.size(), is(1));
+        assertThat(fileResources.size()).isEqualTo(1);
     }
 
     @Test
@@ -130,7 +129,7 @@ public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseM
                         .byPath().like("files/sdk_resources")
                         .blockingGet();
 
-        assertThat(fileResources.size(), is(1));
+        assertThat(fileResources.size()).isEqualTo(1);
     }
 
     @Test
@@ -142,7 +141,7 @@ public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseM
                         .byState().eq(State.TO_POST)
                         .blockingGet();
 
-        assertThat(fileResources.size(), is(1));
+        assertThat(fileResources.size()).isEqualTo(1);
     }
 
     @Test
@@ -154,28 +153,28 @@ public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseM
                         .byContentLength().eq(1024L)
                         .blockingGet();
 
-        assertThat(fileResources.size(), is(1));
+        assertThat(fileResources.size()).isEqualTo(1);
     }
 
     @Test
     public void add_fileResources_to_the_repository() throws D2Error, IOException {
         cleanFileResources();
         List<FileResource> fileResources1 = d2.fileResourceModule().fileResources().blockingGet();
-        assertThat(fileResources1.size(), is(0));
+        assertThat(fileResources1.size()).isEqualTo(0);
 
         File file = getFile();
-        assertThat(file.exists(), is(true));
+        assertThat(file.exists()).isTrue();
 
         String fileResourceUid = d2.fileResourceModule().fileResources().blockingAdd(file);
 
         List<FileResource> fileResources2 = d2.fileResourceModule().fileResources().blockingGet();
-        assertThat(fileResources2.size(), is(1));
+        assertThat(fileResources2.size()).isEqualTo(1);
 
         FileResource fileResource = d2.fileResourceModule().fileResources().uid(fileResourceUid).blockingGet();
-        assertThat(fileResource.uid(), is(fileResourceUid));
+        assertThat(fileResource.uid()).isEqualTo(fileResourceUid);
 
         File savedFile = new File(fileResource.path());
-        assertThat(savedFile.exists(), is(true));
+        assertThat(savedFile.exists()).isTrue();
     }
 
     private File getFile() {

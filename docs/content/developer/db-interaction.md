@@ -1,6 +1,4 @@
-# Direct database interaction
-
-<!--DHIS2-SECTION-ID:db_interaction-->
+# Direct database interaction { #android_sdk_database_interaction }
 
 Repository methods cover most of the needs of the application. But in some cases the application might want to interact directly with the database.
 

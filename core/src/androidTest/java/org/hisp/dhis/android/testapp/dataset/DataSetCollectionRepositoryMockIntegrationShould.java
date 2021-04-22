@@ -1,29 +1,29 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ *  Copyright (c) 2004-2021, University of Oslo
+ *  All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *  Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
  *
- * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- * Neither the name of the HISP project nor the names of its contributors may
- * be used to endorse or promote products derived from this software without
- * specific prior written permission.
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ *  Neither the name of the HISP project nor the names of its contributors may
+ *  be used to endorse or promote products derived from this software without
+ *  specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 package org.hisp.dhis.android.testapp.dataset;
@@ -39,8 +39,7 @@ import org.junit.runner.RunWith;
 import java.util.Collections;
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
@@ -49,7 +48,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
     public void find_all() {
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .blockingGet();
-        assertThat(dataSets.size(), is(2));
+        assertThat(dataSets.size()).isEqualTo(2);
     }
 
     @Test
@@ -57,7 +56,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byPeriodType().eq(PeriodType.Monthly)
                 .blockingGet();
-        assertThat(dataSets.size(), is(2));
+        assertThat(dataSets.size()).isEqualTo(2);
     }
 
     @Test
@@ -65,7 +64,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byCategoryComboUid().eq("m2jTvAj5kkm")
                 .blockingGet();
-        assertThat(dataSets.size(), is(2));
+        assertThat(dataSets.size()).isEqualTo(2);
     }
 
     @Test
@@ -73,7 +72,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byMobile().isFalse()
                 .blockingGet();
-        assertThat(dataSets.size(), is(1));
+        assertThat(dataSets.size()).isEqualTo(1);
     }
 
     @Test
@@ -81,7 +80,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byVersion().eq(22)
                 .blockingGet();
-        assertThat(dataSets.size(), is(1));
+        assertThat(dataSets.size()).isEqualTo(1);
     }
 
     @Test
@@ -89,7 +88,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byVersion().biggerThan(21)
                 .blockingGet();
-        assertThat(dataSets.size(), is(1));
+        assertThat(dataSets.size()).isEqualTo(1);
     }
 
     @Test
@@ -97,7 +96,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byVersion().biggerThan(22)
                 .blockingGet();
-        assertThat(dataSets.size(), is(0));
+        assertThat(dataSets.size()).isEqualTo(0);
     }
 
     @Test
@@ -105,7 +104,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byVersion().smallerThan(21)
                 .blockingGet();
-        assertThat(dataSets.size(), is(1));
+        assertThat(dataSets.size()).isEqualTo(1);
     }
 
     @Test
@@ -113,7 +112,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byVersion().smallerThan(23)
                 .blockingGet();
-        assertThat(dataSets.size(), is(2));
+        assertThat(dataSets.size()).isEqualTo(2);
     }
 
     @Test
@@ -121,7 +120,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byExpiryDays().eq(1)
                 .blockingGet();
-        assertThat(dataSets.size(), is(1));
+        assertThat(dataSets.size()).isEqualTo(1);
     }
 
     @Test
@@ -129,7 +128,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byTimelyDays().eq(3)
                 .blockingGet();
-        assertThat(dataSets.size(), is(1));
+        assertThat(dataSets.size()).isEqualTo(1);
     }
 
     @Test
@@ -137,7 +136,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byNotifyCompletingUser().isFalse()
                 .blockingGet();
-        assertThat(dataSets.size(), is(1));
+        assertThat(dataSets.size()).isEqualTo(1);
     }
 
     @Test
@@ -145,7 +144,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byOpenFuturePeriods().eq(3)
                 .blockingGet();
-        assertThat(dataSets.size(), is(2));
+        assertThat(dataSets.size()).isEqualTo(2);
     }
 
     @Test
@@ -153,7 +152,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byFieldCombinationRequired().isFalse()
                 .blockingGet();
-        assertThat(dataSets.size(), is(1));
+        assertThat(dataSets.size()).isEqualTo(1);
     }
 
     @Test
@@ -161,7 +160,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byValidCompleteOnly().isFalse()
                 .blockingGet();
-        assertThat(dataSets.size(), is(1));
+        assertThat(dataSets.size()).isEqualTo(1);
     }
 
     @Test
@@ -169,7 +168,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byNoValueRequiresComment().isTrue()
                 .blockingGet();
-        assertThat(dataSets.size(), is(1));
+        assertThat(dataSets.size()).isEqualTo(1);
     }
 
     @Test
@@ -177,7 +176,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .bySkipOffline().isFalse()
                 .blockingGet();
-        assertThat(dataSets.size(), is(1));
+        assertThat(dataSets.size()).isEqualTo(1);
     }
 
     @Test
@@ -185,7 +184,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byDataElementDecoration().isTrue()
                 .blockingGet();
-        assertThat(dataSets.size(), is(1));
+        assertThat(dataSets.size()).isEqualTo(1);
     }
 
     @Test
@@ -193,7 +192,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byRenderAsTabs().isTrue()
                 .blockingGet();
-        assertThat(dataSets.size(), is(1));
+        assertThat(dataSets.size()).isEqualTo(1);
     }
 
     @Test
@@ -201,7 +200,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byRenderHorizontally().isFalse()
                 .blockingGet();
-        assertThat(dataSets.size(), is(1));
+        assertThat(dataSets.size()).isEqualTo(1);
     }
 
     @Test
@@ -209,7 +208,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byAccessDataWrite().isTrue()
                 .blockingGet();
-        assertThat(dataSets.size(), is(2));
+        assertThat(dataSets.size()).isEqualTo(2);
     }
 
     @Test
@@ -217,7 +216,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byColor().eq("#000")
                 .blockingGet();
-        assertThat(dataSets.size(), is(1));
+        assertThat(dataSets.size()).isEqualTo(1);
     }
 
     @Test
@@ -225,7 +224,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byIcon().eq("my-icon-name")
                 .blockingGet();
-        assertThat(dataSets.size(), is(1));
+        assertThat(dataSets.size()).isEqualTo(1);
     }
 
     @Test
@@ -233,7 +232,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byOrganisationUnitUid("DiszpKrYNg8")
                 .blockingGet();
-        assertThat(dataSets.size(), is(2));
+        assertThat(dataSets.size()).isEqualTo(2);
     }
 
     @Test
@@ -241,7 +240,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSets = d2.dataSetModule().dataSets()
                 .byOrganisationUnitList(Collections.singletonList("DiszpKrYNg8"))
                 .blockingGet();
-        assertThat(dataSets.size(), is(2));
+        assertThat(dataSets.size()).isEqualTo(2);
     }
 
     @Test
@@ -249,12 +248,12 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         List<DataSet> dataSetCapture = d2.dataSetModule().dataSets()
                 .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
                 .blockingGet();
-        assertThat(dataSetCapture.size(), is(2));
+        assertThat(dataSetCapture.size()).isEqualTo(2);
 
         List<DataSet> dataSetSearch = d2.dataSetModule().dataSets()
                 .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH)
                 .blockingGet();
-        assertThat(dataSetSearch.size(), is(0));
+        assertThat(dataSetSearch.size()).isEqualTo(0);
     }
 
     @Test
@@ -262,7 +261,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         DataSet dataSet = d2.dataSetModule().dataSets()
                 .withCompulsoryDataElementOperands()
                 .one().blockingGet();
-        assertThat(dataSet.compulsoryDataElementOperands().size(), is(1));
+        assertThat(dataSet.compulsoryDataElementOperands().size()).isEqualTo(1);
     }
 
     @Test
@@ -270,7 +269,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         DataSet dataSet = d2.dataSetModule().dataSets()
                 .withDataInputPeriods()
                 .one().blockingGet();
-        assertThat(dataSet.dataInputPeriods().size(), is(1));
+        assertThat(dataSet.dataInputPeriods().size()).isEqualTo(1);
     }
 
     @Test
@@ -278,7 +277,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         DataSet dataSet = d2.dataSetModule().dataSets()
                 .withDataSetElements()
                 .one().blockingGet();
-        assertThat(dataSet.dataSetElements().size(), is(1));
+        assertThat(dataSet.dataSetElements().size()).isEqualTo(1);
     }
 
     @Test
@@ -287,7 +286,7 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
                 .withDataSetElements()
                 .uid("lyLU2wR22tC")
                 .blockingGet();
-        assertThat(dataSet.dataSetElements().size(), is(1));
+        assertThat(dataSet.dataSetElements().size()).isEqualTo(1);
     }
 
     @Test
@@ -295,6 +294,6 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends BaseMockIn
         DataSet dataSet = d2.dataSetModule().dataSets()
                 .withIndicators()
                 .one().blockingGet();
-        assertThat(dataSet.indicators().size(), is(1));
+        assertThat(dataSet.indicators().size()).isEqualTo(1);
     }
 }

@@ -1,29 +1,29 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ *  Copyright (c) 2004-2021, University of Oslo
+ *  All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *  Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
  *
- * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- * Neither the name of the HISP project nor the names of its contributors may
- * be used to endorse or promote products derived from this software without
- * specific prior written permission.
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ *  Neither the name of the HISP project nor the names of its contributors may
+ *  be used to endorse or promote products derived from this software without
+ *  specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 package org.hisp.dhis.android.core.trackedentity;
@@ -64,10 +64,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import static org.hamcrest.CoreMatchers.is;
+import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.FUTURE_DATE;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -173,11 +172,11 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
 //    @Test
     public void get_one_reserved_value() throws D2Error {
 
-        assertThat(selectAll().size(), is(3));
+        assertThat(selectAll().size()).isEqualTo(3);
 
         String value1 = d2.trackedEntityModule().reservedValueManager().blockingGetValue(ownerUid, organisationUnitUid);
 
-        assertThat(value1, is("value1"));
+        assertThat(value1).isEqualTo("value1");
     }
 
 //    @Test
@@ -186,85 +185,85 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
         String value2 = d2.trackedEntityModule().reservedValueManager().blockingGetValue(ownerUid, organisationUnitUid);
         String value3 = d2.trackedEntityModule().reservedValueManager().blockingGetValue(ownerUid, organisationUnitUid);
 
-        assertThat(value1, is("value1"));
-        assertThat(value2, is("value2"));
-        assertThat(value3, is("value3"));
+        assertThat(value1).isEqualTo("value1");
+        assertThat(value2).isEqualTo("value2");
+        assertThat(value3).isEqualTo("value3");
     }
 
 //    @Test
     public void sync_reserved_values_for_one_tracked_entity_attribute() {
         d2.trackedEntityModule().reservedValueManager().blockingDownloadReservedValues(ownerUid, 100);
-        assertThat(selectAll().size(), is(100));
+        assertThat(selectAll().size()).isEqualTo(100);
     }
 
 //    @Test
     public void sync_20_reserved_values_for_one_tracked_entity_attribute() {
         d2.trackedEntityModule().reservedValueManager().blockingDownloadReservedValues(ownerUid, 20);
-        assertThat(selectAll().size(), is(20));
+        assertThat(selectAll().size()).isEqualTo(20);
     }
 
 //    @Test
     public void sync_100_reserved_values_when_not_number_of_values_to_reserve_is_specified() {
         d2.trackedEntityModule().reservedValueManager().blockingDownloadReservedValues(ownerUid, null);
-        assertThat(selectAll().size(), is(100));
+        assertThat(selectAll().size()).isEqualTo(100);
     }
 
 //    @Test
     public void sync_pop_sync_again_and_have_99_reserved_values_when_not_number_of_values_to_reserve_is_specified()
             throws D2Error {
         d2.trackedEntityModule().reservedValueManager().blockingDownloadReservedValues(ownerUid, null);
-        assertThat(selectAll().size(), is(100));
+        assertThat(selectAll().size()).isEqualTo(100);
         d2.trackedEntityModule().reservedValueManager().blockingGetValue(ownerUid, organisationUnitUid);
-        assertThat(selectAll().size(), is(99));
+        assertThat(selectAll().size()).isEqualTo(99);
         d2.trackedEntityModule().reservedValueManager().blockingDownloadReservedValues(ownerUid, null);
-        assertThat(selectAll().size(), is(99));
+        assertThat(selectAll().size()).isEqualTo(99);
     }
 
 //    @Test
     public void fill_up_to_100_values_if_db_does_not_have_at_least_50_values_when_not_number_of_values_to_reserve_is_specified()
             throws D2Error {
         d2.trackedEntityModule().reservedValueManager().blockingDownloadReservedValues(ownerUid, 50);
-        assertThat(selectAll().size(), is(50));
+        assertThat(selectAll().size()).isEqualTo(50);
         d2.trackedEntityModule().reservedValueManager().blockingDownloadReservedValues(ownerUid, null);
-        assertThat(selectAll().size(), is(50));
+        assertThat(selectAll().size()).isEqualTo(50);
         d2.trackedEntityModule().reservedValueManager().blockingGetValue(ownerUid, organisationUnitUid);
-        assertThat(selectAll().size(), is(49));
+        assertThat(selectAll().size()).isEqualTo(49);
         d2.trackedEntityModule().reservedValueManager().blockingDownloadReservedValues(ownerUid, null);
-        assertThat(selectAll().size(), is(100));
+        assertThat(selectAll().size()).isEqualTo(100);
     }
 
 //    @Test
     public void sync_pop_sync_again_and_have_99_reserved_values_if_less_than_existing_values_are_requested()
             throws D2Error {
         d2.trackedEntityModule().reservedValueManager().blockingDownloadReservedValues(ownerUid, 100);
-        assertThat(selectAll().size(), is(100));
+        assertThat(selectAll().size()).isEqualTo(100);
         d2.trackedEntityModule().reservedValueManager().blockingGetValue(ownerUid, organisationUnitUid);
-        assertThat(selectAll().size(), is(99));
+        assertThat(selectAll().size()).isEqualTo(99);
         d2.trackedEntityModule().reservedValueManager().blockingDownloadReservedValues(ownerUid, 20);
-        assertThat(selectAll().size(), is(99));
+        assertThat(selectAll().size()).isEqualTo(99);
     }
 
 //    @Test
     public void reserve_100_new_values_and_take_one() throws D2Error {
         d2.trackedEntityModule().reservedValueManager().blockingGetValue(ownerUid, organisationUnitUid);
-        assertThat(selectAll().size(), is(99));
+        assertThat(selectAll().size()).isEqualTo(99);
     }
 
 //    @Test
     public void have_98_values_after_sync_and_take_two() throws D2Error {
         d2.trackedEntityModule().reservedValueManager().blockingGetValue(ownerUid, organisationUnitUid);
         d2.trackedEntityModule().reservedValueManager().blockingGetValue(ownerUid, organisationUnitUid);
-        assertThat(selectAll().size(), is(98));
+        assertThat(selectAll().size()).isEqualTo(98);
     }
 
 //    @Test
     public void sync_all_tracked_entity_instances() throws Exception {
-        assertThat(selectAll().size(), is(3));
+        assertThat(selectAll().size()).isEqualTo(3);
         d2.metadataModule().blockingDownload();
         d2.trackedEntityModule().reservedValueManager().blockingDownloadAllReservedValues(null);
 
         /* 100 Reserved values by default * 2 TEA with generated property true on server = 200 */
-        assertThat(selectAll().size(), is(200));
+        assertThat(selectAll().size()).isEqualTo(200);
     }
 
 //    @Test
@@ -342,10 +341,10 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
         verify(trackedEntityAttributeReservedValueQueryCallFactory).create(trackedEntityAttributeReservedValueQueryCaptor.capture());
 
         TrackedEntityAttributeReservedValueQuery query = trackedEntityAttributeReservedValueQueryCaptor.getValue();
-        assertThat(query.organisationUnit().uid(), is(organisationUnit.uid()));
-        assertThat(query.numberToReserve(), is(numberOfValuesExpected)); // values expected - 3 that it had before.
-        assertThat(query.trackedEntityAttributePattern(), is(pattern));
-        assertThat(query.trackedEntityAttributeUid(), is(ownerUid));
+        assertThat(query.organisationUnit().uid()).isEqualTo(organisationUnit.uid());
+        assertThat(query.numberToReserve()).isEqualTo(numberOfValuesExpected); // values expected - 3 that it had before.
+        assertThat(query.trackedEntityAttributePattern()).isEqualTo(pattern);
+        assertThat(query.trackedEntityAttributeUid()).isEqualTo(ownerUid);
     }
 
 }

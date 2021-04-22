@@ -50,14 +50,14 @@
           "lastUpdated": "2015-05-28T12:05:00.000",
           "created": "2015-05-28T12:05:00.000",
           "dataElement": "uFAQYm3UgBL",
-          "value": "11",
+          "value": "2019-02-05",
           "providedElsewhere": false
         },
         {
           "lastUpdated": "2015-06-28T12:05:00.000",
           "created": "2015-06-28T12:05:00.000",
           "dataElement": "hB9F8vKFmlk",
-          "value": "3843",
+          "value": "3842",
           "providedElsewhere": false
         },
         {
@@ -80,6 +80,26 @@
           "storedDate": "2018-03-19T15:20:55.058",
           "storedBy": "android",
           "value": "Event note 2"
+        }
+      ],
+      "relationships": [
+        {
+          "lastUpdated": "2020-06-11T15:08:37.523",
+          "created": "2020-06-11T15:08:37.523",
+          "relationshipName": "Relationship test (Event - Event)",
+          "bidirectional": false,
+          "relationshipType": "WiH6923nMtb",
+          "relationship": "relationship1",
+          "from": {
+            "event": {
+              "event": "single1"
+            }
+          },
+          "to": {
+            "event": {
+              "event": "single2"
+            }
+          }
         }
       ]
     },

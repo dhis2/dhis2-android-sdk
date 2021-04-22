@@ -11,7 +11,7 @@
 
 ## Public API overview
 
-D2 class is the entrypoint to access the whole SDK functionality.
+D2 class is the entry point to access the whole SDK functionality.
 
 ## Package structure
 

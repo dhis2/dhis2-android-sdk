@@ -1,29 +1,29 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ *  Copyright (c) 2004-2021, University of Oslo
+ *  All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *  Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
  *
- * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- * Neither the name of the HISP project nor the names of its contributors may
- * be used to endorse or promote products derived from this software without
- * specific prior written permission.
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ *  Neither the name of the HISP project nor the names of its contributors may
+ *  be used to endorse or promote products derived from this software without
+ *  specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 package org.hisp.dhis.android.core.relationship.internal;
@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.relationship.BaseRelationship;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipHelper;
 import org.hisp.dhis.android.core.relationship.RelationshipItem;
+import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
@@ -90,7 +91,7 @@ public class RelationshipDHISVersionManager {
                     .uid(relationship.relationshipType())
                     .trackedEntityInstanceA(relationship.from().trackedEntityInstance().trackedEntityInstance())
                     .trackedEntityInstanceB(relationship.to().trackedEntityInstance().trackedEntityInstance())
-                    .relative(getRelative230(relationship, teiUid))
+                    .relative(getRelativeTEI230(relationship, teiUid))
                     .build();
         } else {
             return builder
@@ -139,7 +140,7 @@ public class RelationshipDHISVersionManager {
         if (versionManager.is2_29()) {
             return relationship229Compatible.relative();
         } else {
-            return getRelative230(relationship229Compatible, teiUid);
+            return getRelativeTEI230(relationship229Compatible, teiUid);
         }
     }
 
@@ -155,9 +156,9 @@ public class RelationshipDHISVersionManager {
         }
     }
 
-    private TrackedEntityInstance getRelative230(BaseRelationship relationship229Compatible, String teiUid) {
-        String fromTEIUid = RelationshipHelper.getTeiUid(relationship229Compatible.from());
-        String toTEIUid = RelationshipHelper.getTeiUid(relationship229Compatible.to());
+    public TrackedEntityInstance getRelativeTEI230(BaseRelationship baseRelationship, String teiUid) {
+        String fromTEIUid = RelationshipHelper.getTeiUid(baseRelationship.from());
+        String toTEIUid = RelationshipHelper.getTeiUid(baseRelationship.to());
 
         if (fromTEIUid == null || toTEIUid == null) {
             return null;
@@ -170,5 +171,40 @@ public class RelationshipDHISVersionManager {
                 .uid(relatedTEIUid)
                 .deleted(false)
                 .build();
+    }
+
+    public RelationshipItem getRelatedRelationshipItem(BaseRelationship baseRelationship, String parentUid) {
+        String fromUid = baseRelationship.from() == null ? null : baseRelationship.from().elementUid();
+        String toUid = baseRelationship.to() == null ? null : baseRelationship.to().elementUid();
+
+        if (fromUid == null || toUid == null) {
+            return null;
+        }
+
+        return parentUid.equals(fromUid) ? baseRelationship.to() : baseRelationship.from();
+    }
+
+    public void saveRelativesIfNotExist(Collection<Relationship> relationships,
+                                        String parentUid,
+                                        RelationshipItemRelatives relatives,
+                                        RelationshipHandler relationshipHandler) {
+        for (BaseRelationship relationship : relationships) {
+            RelationshipItem item = getRelatedRelationshipItem(relationship, parentUid);
+            if (item != null && !relationshipHandler.doesRelationshipItemExist(item)) {
+                switch (item.elementType()) {
+                    case RelationshipItemTableInfo.Columns.TRACKED_ENTITY_INSTANCE:
+                        relatives.addTrackedEntityInstance(item.elementUid());
+                        break;
+                    case RelationshipItemTableInfo.Columns.ENROLLMENT:
+                        relatives.addEnrollment(item.elementUid());
+                        break;
+                    case RelationshipItemTableInfo.Columns.EVENT:
+                        relatives.addEvent(item.elementUid());
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
     }
 }

@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="copyright" pattern="file[dhis2-android-sdk.core]:src/androidTest/java//*||file[dhis2-android-sdk.core]:src/sharedTest/java//*||file[dhis2-android-sdk.core]:src/test/java//*||file[dhis2-android-sdk.core]:src/main/java//*" />
+</component>

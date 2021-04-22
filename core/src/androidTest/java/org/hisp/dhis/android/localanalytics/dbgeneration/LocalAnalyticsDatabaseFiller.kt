@@ -1,29 +1,29 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ *  Copyright (c) 2004-2021, University of Oslo
+ *  All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *  Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
  *
- * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- * Neither the name of the HISP project nor the names of its contributors may
- * be used to endorse or promote products derived from this software without
- * specific prior written permission.
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ *  Neither the name of the HISP project nor the names of its contributors may
+ *  be used to endorse or promote products derived from this software without
+ *  specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.hisp.dhis.android.localanalytics.dbgeneration
 
@@ -52,14 +52,16 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeV
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl
 
-internal data class MetadataForDataFilling(val organisationUnits: List<OrganisationUnit>,
-                                           val periods: List<Period>,
-                                           val categoryOptionCombos: List<CategoryOptionCombo>,
-                                           val aggregatedDataElements: List<DataElement>,
-                                           val trackerDataElements: List<DataElement>,
-                                           val programs: List<Program>,
-                                           val programStages: List<ProgramStage>,
-                                           val trackedEntityAttributes: List<TrackedEntityAttribute>)
+internal data class MetadataForDataFilling(
+    val organisationUnits: List<OrganisationUnit>,
+    val periods: List<Period>,
+    val categoryOptionCombos: List<CategoryOptionCombo>,
+    val aggregatedDataElements: List<DataElement>,
+    val trackerDataElements: List<DataElement>,
+    val programs: List<Program>,
+    val programStages: List<ProgramStage>,
+    val trackedEntityAttributes: List<TrackedEntityAttribute>
+)
 
 internal class LocalAnalyticsDatabaseFiller(private val d2: D2) {
     private val da = d2.databaseAdapter()
@@ -102,8 +104,10 @@ internal class LocalAnalyticsDatabaseFiller(private val d2: D2) {
 
         val periods = d2.periodModule().periods().byPeriodType().eq(PeriodType.Daily).blockingGet()
 
-        return MetadataForDataFilling(organisationUnits, periods, categoryOptionCombos, aggregatedDataElements,
-                trackerDataElements, programs, programStages, trackedEntityAttributes)
+        return MetadataForDataFilling(
+            organisationUnits, periods, categoryOptionCombos, aggregatedDataElements,
+            trackerDataElements, programs, programStages, trackedEntityAttributes
+        )
     }
 
     private fun fillData(dataParams: LocalAnalyticsDataParams, metadata: MetadataForDataFilling) {
@@ -119,14 +123,15 @@ internal class LocalAnalyticsDatabaseFiller(private val d2: D2) {
         EnrollmentStoreImpl.create(da).insert(enrollments)
 
         val events = generator.generateEventsWithoutRegistration(metadata) +
-                generator.generateEventsRegistration(metadata, enrollments)
+            generator.generateEventsRegistration(metadata, enrollments)
         EventStoreImpl.create(da).insert(events)
 
         TrackedEntityAttributeValueStoreImpl.create(da).insert(
-                generator.generateTrackedEntityAttributeValues(metadata.trackedEntityAttributes, teis))
+            generator.generateTrackedEntityAttributeValues(metadata.trackedEntityAttributes, teis)
+        )
 
         TrackedEntityDataValueStoreImpl.create(da).insert(
-                generator.generateTrackedEntityDataValues(metadata.trackerDataElements, events)
+            generator.generateTrackedEntityDataValues(metadata.trackerDataElements, events)
         )
     }
 }

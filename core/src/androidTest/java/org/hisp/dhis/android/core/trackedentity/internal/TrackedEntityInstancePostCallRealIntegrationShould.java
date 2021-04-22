@@ -1,29 +1,29 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ *  Copyright (c) 2004-2021, University of Oslo
+ *  All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *  Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
  *
- * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- * Neither the name of the HISP project nor the names of its contributors may
- * be used to endorse or promote products derived from this software without
- * specific prior written permission.
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ *  Neither the name of the HISP project nor the names of its contributors may
+ *  be used to endorse or promote products derived from this software without
+ *  specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 package org.hisp.dhis.android.core.trackedentity.internal;
@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
@@ -50,6 +51,8 @@ import org.hisp.dhis.android.core.event.internal.EventStoreImpl;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
 import org.hisp.dhis.android.core.relationship.RelationshipHelper;
@@ -60,6 +63,7 @@ import org.hisp.dhis.android.core.relationship.RelationshipTypeCollectionReposit
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection;
 import org.junit.Before;
 
 import java.io.IOException;
@@ -67,7 +71,6 @@ import java.util.Date;
 import java.util.List;
 
 import io.reactivex.observers.TestObserver;
-import retrofit2.Response;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -143,8 +146,6 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
     * */
     //@Test
     public void response_true_when_data_sync() throws Exception {
-
-        Response response = null;
         downloadMetadata();
 
 
@@ -155,6 +156,57 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         createDummyDataToPost(
                 orgUnitUid, programUid, programStageUid, trackedEntityUid, coordinates, geometry,
                 event1Uid, enrollment1Uid, trackedEntityInstance1Uid, trackedEntityAttributeUid, dataElementUid);
+
+        d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
+    }
+
+    //@Test
+    public void add_and_post_tei_using_repositories() throws Exception {
+
+        downloadMetadata();
+
+        String childProgramUid = "IpHINAT79UW";
+
+
+        // Organisation unit module -> get one organisation unit
+        OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits().one().blockingGet();
+
+        // Program module -> get the program by its uid
+        Program program = d2.programModule().programs()
+                .uid(childProgramUid)
+                .blockingGet();
+
+        // Tracked entity module -> add a new tracked entity instance
+        String teiUid = d2.trackedEntityModule().trackedEntityInstances()
+                .blockingAdd(TrackedEntityInstanceCreateProjection.builder()
+                        .organisationUnit(organisationUnit.uid())
+                        .trackedEntityType(program.trackedEntityType().uid())
+                        .build());
+
+        // Enrollment module -> enroll the tracked entity instance to the program
+        d2.enrollmentModule().enrollments().add(
+                EnrollmentCreateProjection.builder()
+                        .organisationUnit(organisationUnit.uid())
+                        .program(program.uid())
+                        .trackedEntityInstance(teiUid)
+                        .build()
+        );
+
+        // Program module -> get the program tracked entity attributes of the program
+        /*List<ProgramTrackedEntityAttribute> attributes = d2.programModule()
+                .programTrackedEntityAttributes()
+                .byProgram().eq(program.uid())
+                .blockingGet();
+
+        // Iterate the program tracked entity attributes
+        for (ProgramTrackedEntityAttribute at : attributes) {
+            if (at.mandatory()) {
+                // For each one, if mandatory: Tracked entity module -> set a tracked entity attribute value.
+                d2.trackedEntityModule().trackedEntityAttributeValues()
+                        .value(at.trackedEntityAttribute().uid(), teiUid)
+                        .blockingSet(at.name() + " - value");
+            }
+        }*/
 
         d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
     }
@@ -446,7 +498,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
             }
         }
 
-        assertThat(deleted).isEqualTo(true);
+        assertThat(deleted).isTrue();
     }
 
     private void insertATei(String uid, TrackedEntityInstance tei, Geometry geometry) {

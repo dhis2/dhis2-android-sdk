@@ -1,0 +1,164 @@
+{
+  "pager": {
+    "page": 1,
+    "pageCount": 1,
+    "total": 3,
+    "pageSize": 50
+  },
+  "eventFilters": [
+    {
+      "created": "2019-09-27T00:19:06.590",
+      "lastUpdated": "2019-09-27T00:19:06.590",
+      "id": "UjoQ7Zs9Ijo",
+      "code": "tb_events",
+      "publicAccess": "rw------",
+      "program": "lxAQ7Zs9VYR",
+      "programStage": "dBwrot7S420",
+      "description": "Simple Filter for TB events",
+      "name": "TB events",
+      "displayName": "TB events",
+      "externalAccess": false,
+      "favorite": false,
+      "lastUpdatedBy": {
+        "displayName": "John Traore",
+        "id": "xE7jOejl9FI",
+        "username": "admin"
+      },
+      "eventQueryCriteria": {
+        "assignedUserMode": "CURRENT",
+        "organisationUnit": "DiszpKrYNg8",
+        "eventStatus": "ACTIVE",
+        "order": "dueDate:asc,createdDate:desc",
+        "followUp": false,
+        "programStatus": "ACTIVE",
+        "ouMode": "ACCESSIBLE",
+        "assignedUsers": [
+          "a3kGcGDCuk7",
+          "a3kGcGDCuk8"
+        ],
+        "trackedEntityInstance": "a3kGcGDCuk6",
+        "eventDate": {
+          "startDate": "2014-05-01",
+          "endDate": "2014-05-01",
+          "type": "ABSOLUTE"
+        },
+        "dueDate": {
+          "period": "LAST_2_SIXMONTHS",
+          "type": "RELATIVE"
+        },
+        "lastUpdatedDate": {
+          "startBuffer": -5,
+          "endBuffer": 5,
+          "type": "RELATIVE"
+        },
+        "completedDate": {
+          "period": "TODAY",
+          "type": "RELATIVE"
+        },
+        "displayColumnOrder": [
+          "eventDate",
+          "status",
+          "assignedUser",
+          "qrur9Dvnyt5",
+          "oZg33kd9taw"
+        ],
+        "events": [
+          "event1Uid",
+          "event2Uid"
+        ],
+        "dataFilters": [
+          {
+            "dataItem": "abcDataElementUid",
+            "le": "20",
+            "ge": "10",
+            "lt": "20",
+            "gt": "10",
+            "in": [
+              "India",
+              "Norway"
+            ],
+            "like": "abc"
+          },
+          {
+            "dataItem": "dateDataElementUid",
+            "dateFilter": {
+              "startDate": "2014-05-01",
+              "endDate": "2019-03-20",
+              "type": "ABSOLUTE"
+            }
+          },
+          {
+            "dataItem": "anotherDateDataElementUid",
+            "dateFilter": {
+              "startBuffer": -5,
+              "endBuffer": 5,
+              "type": "RELATIVE"
+            }
+          },
+          {
+            "dataItem": "yetAnotherDateDataElementUid",
+            "dateFilter": {
+              "period": "LAST_WEEK",
+              "type": "RELATIVE"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "created": "2019-09-27T00:19:06.590",
+      "lastUpdated": "2019-09-27T00:19:06.590",
+      "id": "atoQ7Zs9Ijo",
+      "code": "test",
+      "publicAccess": "rw------",
+      "program": "lxAQ7Zs9VYR",
+      "programStage": "dBwrot7S420",
+      "description": "Sample filter",
+      "name": "Sample filter",
+      "displayName": "Sample filter",
+      "externalAccess": false,
+      "favorite": false,
+      "eventQueryCriteria": {
+        "organisationUnit": "DiszpKrYNg8",
+        "eventStatus": "COMPLETED",
+        "order": "dueDate:asc,createdDate:desc",
+        "ouMode": "ACCESSIBLE",
+        "eventDate": {
+          "startDate": "2017-02-25T00:00:00.000",
+          "endDate": "2018-02-28T00:00:00.000",
+          "type": "ABSOLUTE"
+        },
+        "displayColumnOrder": [
+          "eventDate",
+          "status",
+          "assignedUser",
+          "qrur9Dvnyt5",
+          "oZg33kd9taw"
+        ],
+        "dataFilters": [
+          {
+            "dataItem": "hB9F8vKFmlk",
+            "le": "3842",
+            "ge": "2000"
+          },
+          {
+            "dataItem": "uFAQYm3UgBL",
+            "dateFilter": {
+              "startDate": "2019-02-01",
+              "endDate": "2019-02-07",
+              "type": "ABSOLUTE"
+            }
+          },
+          {
+            "dataItem": "jDx8LZlznYu",
+            "in": [
+              "NVP only",
+              "AZT and NVP"
+            ],
+            "like": "NVP"
+          }
+        ]
+      }
+    }
+  ]
+}

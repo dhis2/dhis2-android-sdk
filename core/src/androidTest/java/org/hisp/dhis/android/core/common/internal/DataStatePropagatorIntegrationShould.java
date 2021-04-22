@@ -1,29 +1,29 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ *  Copyright (c) 2004-2021, University of Oslo
+ *  All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *  Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
  *
- * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- * Neither the name of the HISP project nor the names of its contributors may
- * be used to endorse or promote products derived from this software without
- * specific prior written permission.
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ *  Neither the name of the HISP project nor the names of its contributors may
+ *  be used to endorse or promote products derived from this software without
+ *  specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 package org.hisp.dhis.android.core.common.internal;
@@ -57,8 +57,6 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
@@ -119,7 +117,7 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
     public void do_not_fail_with_events_without_registration() throws D2Error {
         String eventUid = d2.eventModule().events().blockingAdd(sampleEventProjection(null));
 
-        assertThat(eventStore.selectByUid(eventUid).state(), is(State.TO_POST));
+        assertThat(eventStore.selectByUid(eventUid).state()).isEqualTo(State.TO_POST);
         eventStore.delete(eventUid);
     }
 
@@ -138,12 +136,12 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
 
         propagator.resetUploadingEnrollmentAndEventStates(teiUid);
 
-        assertThat(enrollmentStore.getState(enrolmentUid1), is(State.TO_UPDATE));
-        assertThat(enrollmentStore.getState(enrolmentUid2), is(State.TO_POST));
+        assertThat(enrollmentStore.getState(enrolmentUid1)).isEqualTo(State.TO_UPDATE);
+        assertThat(enrollmentStore.getState(enrolmentUid2)).isEqualTo(State.TO_POST);
 
-        assertThat(eventStore.getState(eventUid1), is(State.TO_UPDATE));
-        assertThat(eventStore.getState(eventUid2), is(State.TO_POST));
-        assertThat(eventStore.getState(eventUid3), is(State.TO_POST));
+        assertThat(eventStore.getState(eventUid1)).isEqualTo(State.TO_UPDATE);
+        assertThat(eventStore.getState(eventUid2)).isEqualTo(State.TO_POST);
+        assertThat(eventStore.getState(eventUid3)).isEqualTo(State.TO_POST);
 
         trackedEntityInstanceStore.delete(teiUid);
     }
@@ -187,7 +185,7 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
 
         propagator.propagateRelationshipUpdate(fromItem);
 
-        assertThat(trackedEntityInstanceStore.selectByUid(teiUid).state(), is(State.TO_UPDATE));
+        assertThat(trackedEntityInstanceStore.selectByUid(teiUid).state()).isEqualTo(State.TO_UPDATE);
 
         trackedEntityInstanceStore.delete(teiUid);
     }
@@ -200,8 +198,8 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
 
         propagator.propagateRelationshipUpdate(fromItem);
 
-        assertThat(trackedEntityInstanceStore.selectByUid(teiUid).state(), is(State.TO_UPDATE));
-        assertThat(enrollmentStore.selectByUid(enrollmentUid).state(), is(State.TO_UPDATE));
+        assertThat(trackedEntityInstanceStore.selectByUid(teiUid).state()).isEqualTo(State.TO_UPDATE);
+        assertThat(enrollmentStore.selectByUid(enrollmentUid).state()).isEqualTo(State.TO_UPDATE);
 
         trackedEntityInstanceStore.delete(teiUid);
     }
@@ -215,9 +213,9 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
 
         propagator.propagateRelationshipUpdate(fromItem);
 
-        assertThat(trackedEntityInstanceStore.selectByUid(teiUid).state(), is(State.TO_UPDATE));
-        assertThat(enrollmentStore.selectByUid(enrollmentUid).state(), is(State.TO_UPDATE));
-        assertThat(eventStore.selectByUid(eventUid).state(), is(State.TO_UPDATE));
+        assertThat(trackedEntityInstanceStore.selectByUid(teiUid).state()).isEqualTo(State.TO_UPDATE);
+        assertThat(enrollmentStore.selectByUid(enrollmentUid).state()).isEqualTo(State.TO_UPDATE);
+        assertThat(eventStore.selectByUid(eventUid).state()).isEqualTo(State.TO_UPDATE);
 
         trackedEntityInstanceStore.delete(teiUid);
     }
@@ -227,7 +225,7 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
 
         propagator.propagateEnrollmentUpdate(Enrollment.builder().uid("uid").trackedEntityInstance(teiUid).build());
 
-        assertThat(trackedEntityInstanceStore.selectByUid(teiUid).state(), is(State.TO_UPDATE));
+        assertThat(trackedEntityInstanceStore.selectByUid(teiUid).state()).isEqualTo(State.TO_UPDATE);
         trackedEntityInstanceStore.delete(teiUid);
     }
 
@@ -236,7 +234,7 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
 
         propagator.propagateEnrollmentUpdate(Enrollment.builder().uid("uid").trackedEntityInstance(teiUid).build());
 
-        assertThat(trackedEntityInstanceStore.selectByUid(teiUid).state(), is(state));
+        assertThat(trackedEntityInstanceStore.selectByUid(teiUid).state()).isEqualTo(state);
         trackedEntityInstanceStore.delete(teiUid);
     }
 
@@ -248,8 +246,8 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
 
         propagator.propagateEventUpdate(Event.builder().uid("uid").enrollment(enrolmentUid).build());
 
-        assertThat(trackedEntityInstanceStore.selectByUid(teiUid).state(), is(State.TO_UPDATE));
-        assertThat(enrollmentStore.selectByUid(enrolmentUid).state(), is(State.TO_UPDATE));
+        assertThat(trackedEntityInstanceStore.selectByUid(teiUid).state()).isEqualTo(State.TO_UPDATE);
+        assertThat(enrollmentStore.selectByUid(enrolmentUid).state()).isEqualTo(State.TO_UPDATE);
         trackedEntityInstanceStore.delete(teiUid);
     }
 
@@ -259,8 +257,8 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
 
         propagator.propagateEventUpdate(Event.builder().uid("uid").enrollment(enrolmentUid).build());
 
-        assertThat(trackedEntityInstanceStore.selectByUid(teiUid).state(), is(state));
-        assertThat(enrollmentStore.selectByUid(enrolmentUid).state(), is(state));
+        assertThat(trackedEntityInstanceStore.selectByUid(teiUid).state()).isEqualTo(state);
+        assertThat(enrollmentStore.selectByUid(enrolmentUid).state()).isEqualTo(state);
         trackedEntityInstanceStore.delete(teiUid);
     }
 
@@ -271,9 +269,9 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
 
         propagator.propagateTrackedEntityDataValueUpdate(TrackedEntityDataValue.builder().event(eventUid).build());
 
-        assertThat(trackedEntityInstanceStore.selectByUid(teiUid).state(), is(State.TO_UPDATE));
-        assertThat(enrollmentStore.selectByUid(enrolmentUid).state(), is(State.TO_UPDATE));
-        assertThat(eventStore.selectByUid(eventUid).state(), is(State.TO_UPDATE));
+        assertThat(trackedEntityInstanceStore.selectByUid(teiUid).state()).isEqualTo(State.TO_UPDATE);
+        assertThat(enrollmentStore.selectByUid(enrolmentUid).state()).isEqualTo(State.TO_UPDATE);
+        assertThat(eventStore.selectByUid(eventUid).state()).isEqualTo(State.TO_UPDATE);
         trackedEntityInstanceStore.delete(teiUid);
     }
 
@@ -284,9 +282,9 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
 
         propagator.propagateTrackedEntityDataValueUpdate(TrackedEntityDataValue.builder().event(eventUid).build());
 
-        assertThat(trackedEntityInstanceStore.selectByUid(teiUid).state(), is(state));
-        assertThat(enrollmentStore.selectByUid(enrolmentUid).state(), is(state));
-        assertThat(eventStore.selectByUid(eventUid).state(), is(state));
+        assertThat(trackedEntityInstanceStore.selectByUid(teiUid).state()).isEqualTo(state);
+        assertThat(enrollmentStore.selectByUid(enrolmentUid).state()).isEqualTo(state);
+        assertThat(eventStore.selectByUid(eventUid).state()).isEqualTo(state);
         trackedEntityInstanceStore.delete(teiUid);
     }
 

@@ -9,8 +9,13 @@
 *.iws
 out
 
-# ignore .idea directory
-.idea/
+# ignore .idea directory, except copyright
+!.idea
+.idea/*
+!.idea/copyright
+!.idea/scopes
+.idea/scopes/*
+!.idea/scopes/copyright.xml
 
 # Ant
 build.xml

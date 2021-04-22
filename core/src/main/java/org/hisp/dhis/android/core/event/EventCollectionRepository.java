@@ -1,29 +1,29 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ *  Copyright (c) 2004-2021, University of Oslo
+ *  All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *  Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
  *
- * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- * Neither the name of the HISP project nor the names of its contributors may
- * be used to endorse or promote products derived from this software without
- * specific prior written permission.
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ *  Neither the name of the HISP project nor the names of its contributors may
+ *  be used to endorse or promote products derived from this software without
+ *  specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.hisp.dhis.android.core.event;
 
@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterC
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.ValueSubQueryFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.common.FeatureType;
@@ -45,10 +46,12 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.event.internal.EventFields;
-import org.hisp.dhis.android.core.event.internal.EventPostCall;
+import org.hisp.dhis.android.core.event.internal.EventPostParentCall;
 import org.hisp.dhis.android.core.event.internal.EventStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -59,12 +62,13 @@ import io.reactivex.Observable;
 
 import static org.hisp.dhis.android.core.event.EventTableInfo.Columns;
 
+@SuppressWarnings("PMD.ExcessiveImports")
 @Reusable
 public final class EventCollectionRepository
         extends ReadWriteWithUidCollectionRepositoryImpl<Event, EventCreateProjection, EventCollectionRepository>
         implements ReadWriteWithUploadWithUidCollectionRepository<Event, EventCreateProjection> {
 
-    private final EventPostCall postCall;
+    private final EventPostParentCall postCall;
 
     private final EventStore store;
     private final DataStatePropagator dataStatePropagator;
@@ -73,7 +77,7 @@ public final class EventCollectionRepository
     EventCollectionRepository(final EventStore store,
                               final Map<String, ChildrenAppender<Event>> childrenAppenders,
                               final RepositoryScope scope,
-                              final EventPostCall postCall,
+                              final EventPostParentCall postCall,
                               final Transformer<EventCreateProjection, Event> transformer,
                               final DataStatePropagator dataStatePropagator) {
         super(store, childrenAppenders, scope, transformer,
@@ -184,6 +188,24 @@ public final class EventCollectionRepository
         );
     }
 
+    public ValueSubQueryFilterConnector<EventCollectionRepository> byDataValue(String dataElementId) {
+        return cf.valueSubQuery(
+                IdentifiableColumns.UID,
+                TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
+                TrackedEntityDataValueTableInfo.Columns.EVENT,
+                TrackedEntityDataValueTableInfo.Columns.VALUE,
+                TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT,
+                dataElementId);
+    }
+
+    public EventCollectionRepository byFollowUp(Boolean followUp) {
+        return cf.subQuery(Columns.ENROLLMENT).inLinkTable(
+                EnrollmentTableInfo.TABLE_INFO.name(),
+                IdentifiableColumns.UID,
+                EnrollmentTableInfo.Columns.FOLLOW_UP,
+                Collections.singletonList(followUp ? "1" : "0")
+        );    }
+
     public StringFilterConnector<EventCollectionRepository> byAssignedUser() {
         return cf.string(Columns.ASSIGNED_USER);
     }
@@ -241,6 +263,17 @@ public final class EventCollectionRepository
                 Columns.DUE_DATE,
                 direction
         );
+    }
+
+    public EventCollectionRepository orderByDataElement(RepositoryScope.OrderByDirection direction,
+                                                        String dataElement) {
+        return cf.withExternalOrderBy(
+                TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
+                TrackedEntityDataValueTableInfo.Columns.VALUE,
+                TrackedEntityDataValueTableInfo.Columns.EVENT,
+                Columns.UID,
+                direction,
+                TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT + " = '" + dataElement + "'");
     }
 
     public int countTrackedEntityInstances() {

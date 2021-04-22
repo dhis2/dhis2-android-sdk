@@ -53,9 +53,11 @@ internal class JobQueryCall @Inject internal constructor(
                     .groupBy { it.jobUid() }
                     .toList()
 
-                pendingJobs.withIndex().map { ij -> Pair(ij.value, ij.index == pendingJobs.size - 1) }
+                pendingJobs.withIndex().map {
+                    Triple(it.value.first, it.value.second, it.index == pendingJobs.size - 1)
+                }
             }
-            .flatMap { jobPairIndex -> queryJob(jobPairIndex.first.first, jobPairIndex.first.second, jobPairIndex.second) }
+            .flatMap { queryJob(it.first, it.second, it.third) }
     }
 
     fun queryJob(jobId: String): Observable<D2Progress> {
@@ -64,7 +66,11 @@ internal class JobQueryCall @Inject internal constructor(
         return queryJob(jobId, jobObjects, true)
     }
 
-    private fun queryJob(jobId: String, jobObjects: List<TrackerJobObject>, isLastJob: Boolean): Observable<D2Progress> {
+    private fun queryJob(
+        jobId: String,
+        jobObjects: List<TrackerJobObject>,
+        isLastJob: Boolean
+    ): Observable<D2Progress> {
         val progressManager = D2ProgressManager(null)
         @Suppress("MagicNumber")
         return Observable.interval(0, 5, TimeUnit.SECONDS)

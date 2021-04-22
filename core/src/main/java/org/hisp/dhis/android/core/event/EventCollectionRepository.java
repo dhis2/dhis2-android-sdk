@@ -50,6 +50,7 @@ import org.hisp.dhis.android.core.event.internal.EventPostParentCall;
 import org.hisp.dhis.android.core.event.internal.EventStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo;
+import org.hisp.dhis.android.core.tracker.importer.internal.JobQueryCall;
 
 import java.util.Collections;
 import java.util.List;
@@ -72,6 +73,7 @@ public final class EventCollectionRepository
 
     private final EventStore store;
     private final DataStatePropagator dataStatePropagator;
+    private final JobQueryCall jobQueryCall;
 
     @Inject
     EventCollectionRepository(final EventStore store,
@@ -79,21 +81,26 @@ public final class EventCollectionRepository
                               final RepositoryScope scope,
                               final EventPostParentCall postCall,
                               final Transformer<EventCreateProjection, Event> transformer,
-                              final DataStatePropagator dataStatePropagator) {
+                              final DataStatePropagator dataStatePropagator,
+                              final JobQueryCall jobQueryCall) {
         super(store, childrenAppenders, scope, transformer,
                 new FilterConnectorFactory<>(scope, s -> new EventCollectionRepository(
-                        store, childrenAppenders, s, postCall, transformer, dataStatePropagator)));
+                        store, childrenAppenders, s, postCall, transformer, dataStatePropagator, jobQueryCall)));
         this.store = store;
         this.postCall = postCall;
         this.dataStatePropagator = dataStatePropagator;
+        this.jobQueryCall = jobQueryCall;
     }
 
     @Override
     public Observable<D2Progress> upload() {
-        return Observable.fromCallable(() -> byState().in(State.uploadableStates())
-                .byEnrollmentUid().isNull()
-                .blockingGetWithoutChildren())
-                .flatMap(postCall::uploadEvents);
+        return Observable.concat(
+                jobQueryCall.queryPendingJobs(),
+                Observable.fromCallable(() -> byState().in(State.uploadableStates())
+                        .byEnrollmentUid().isNull()
+                        .blockingGetWithoutChildren())
+                        .flatMap(postCall::uploadEvents)
+        );
     }
 
     @Override

@@ -83,7 +83,7 @@ internal class EventTrackerImporterPostCall @Inject internal constructor(
         return events.map {
             TrackerJobObject
                 .builder()
-                .objectType(EVENT)
+                .trackerType(EVENT)
                 .objectUid(it.uid())
                 .jobUid(jobUid)
                 .lastUpdated(lastUpdated)

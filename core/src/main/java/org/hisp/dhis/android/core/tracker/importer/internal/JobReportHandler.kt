@@ -42,7 +42,7 @@ internal class JobReportHandler @Inject internal constructor(
 ) {
 
     fun handle(o: JobReport, jobObjects: List<TrackerJobObject>) {
-        val jobObjectsMap = jobObjects.groupBy { jo -> Pair(jo.objectType(), jo.objectUid()) }
+        val jobObjectsMap = jobObjects.groupBy { jo -> Pair(jo.trackerType(), jo.objectUid()) }
         handleErrors(o, jobObjectsMap)
         handleSuccesses(o, jobObjectsMap)
         handleNotPresentObjects(o, jobObjects)
@@ -85,7 +85,7 @@ internal class JobReportHandler @Inject internal constructor(
             Pair(it.trackerType, it.uid)
         }.toSet()
 
-        val expectedObjects = jobObjectsMap.map { Pair(it.objectType(), it.objectUid()) }
+        val expectedObjects = jobObjectsMap.map { Pair(it.trackerType(), it.objectUid()) }
 
         val notPresentObjects = expectedObjects - presentSuccesses - presentErrors
 

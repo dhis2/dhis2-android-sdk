@@ -105,7 +105,7 @@ internal class TrackedEntityInstanceTrackerImporterPostCall @Inject internal con
     ): List<TrackerJobObject> {
         return objects.map {
             builder
-                .objectType(objectType)
+                .trackerType(objectType)
                 .objectUid(it.uid())
                 .build()
         }

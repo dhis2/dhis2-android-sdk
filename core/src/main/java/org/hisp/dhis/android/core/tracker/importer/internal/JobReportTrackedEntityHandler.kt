@@ -44,8 +44,6 @@ internal class JobReportTrackedEntityHandler @Inject internal constructor(
     override fun handleObject(uid: String, state: State) {
         trackedEntityStore.setState(uid, state)
         conflictStore.deleteTrackedEntityConflicts(uid)
-        // TODO setRelationshipsState??
-        // TODO handle enrollments
     }
 
     override fun storeConflict(errorReport: JobValidationError) {

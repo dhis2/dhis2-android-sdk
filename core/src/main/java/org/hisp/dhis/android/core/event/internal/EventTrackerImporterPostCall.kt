@@ -39,10 +39,10 @@ import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
+import org.hisp.dhis.android.core.tracker.importer.internal.*
 import org.hisp.dhis.android.core.tracker.importer.internal.JobQueryCall
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectTypes.EVENT
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterService
-import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObject
 
 @Reusable
 internal class EventTrackerImporterPostCall @Inject internal constructor(
@@ -61,7 +61,12 @@ internal class EventTrackerImporterPostCall @Inject internal constructor(
             stateManager.markObjectsAs(eventsToPost, State.UPLOADING)
             Single.fromCallable {
                 val eventPayload = NewTrackerImporterEventPayload(eventsToPost)
-                val res = apiCallExecutor.executeObjectCall(service.postEvents(eventPayload))
+                val res = apiCallExecutor.executeObjectCall(
+                    service.postEvents(
+                        eventPayload, ATOMIC_MODE_OBJECT,
+                        IMPORT_STRATEGY_CREATE_AND_UPDATE
+                    )
+                )
                 val jobId = res.response().uid()
                 jobObjectHandler.handleMany(generateJobObjects(eventsToPost, jobId))
                 jobId

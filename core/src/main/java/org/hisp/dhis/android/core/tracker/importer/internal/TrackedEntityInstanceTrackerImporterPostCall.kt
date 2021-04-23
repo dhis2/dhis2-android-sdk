@@ -65,7 +65,10 @@ internal class TrackedEntityInstanceTrackerImporterPostCall @Inject internal con
                 //  relationshipDeleteCall.postDeletedRelationships(partition)
                 val trackedEntityInstancePayload = NewTrackerImporterTrackedEntityPayload(trackedEntitiesToPost)
                 val res = apiCallExecutor.executeObjectCall(
-                    service.postTrackedEntityInstances(trackedEntityInstancePayload)
+                    service.postTrackedEntityInstances(
+                        trackedEntityInstancePayload, ATOMIC_MODE_OBJECT,
+                        IMPORT_STRATEGY_CREATE_AND_UPDATE
+                    )
                 )
                 val jobId = res.response().uid()
                 jobObjectHandler.handleMany(generateJobObjects(trackedEntitiesToPost, jobId))

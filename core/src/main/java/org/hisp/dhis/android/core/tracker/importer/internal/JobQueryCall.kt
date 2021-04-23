@@ -37,6 +37,8 @@ import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 
+internal const val ATTEMPTS_AFTER_UPLOAD = 3
+internal const val ATTEMPTS_WHEN_QUERYING = 1
 @Reusable
 internal class JobQueryCall @Inject internal constructor(
     private val service: TrackerImporterService,
@@ -57,19 +59,20 @@ internal class JobQueryCall @Inject internal constructor(
                     Triple(it.value.first, it.value.second, it.index == pendingJobs.size - 1)
                 }
             }
-            .flatMap { queryJob(it.first, it.second, it.third) }
+            .flatMap { queryJobForever(it.first, it.second, it.third, ATTEMPTS_WHEN_QUERYING) }
     }
 
     fun queryJob(jobId: String): Observable<D2Progress> {
         val jobObjects = trackerJobObjectStore.selectAll()
             .filter { it.jobUid() == jobId }
-        return queryJob(jobId, jobObjects, true)
+        return queryJobForever(jobId, jobObjects, true, ATTEMPTS_AFTER_UPLOAD)
     }
 
-    private fun queryJob(
+    private fun queryJobForever(
         jobId: String,
         jobObjects: List<TrackerJobObject>,
-        isLastJob: Boolean
+        isLastJob: Boolean,
+        attempts: Int
     ): Observable<D2Progress> {
         val progressManager = D2ProgressManager(null)
         @Suppress("MagicNumber")
@@ -89,7 +92,7 @@ internal class JobQueryCall @Inject internal constructor(
                     handler.handle(jobReport, jobObjects)
                 }
             }
-            .take(3)
+            .take(attempts.toLong())
             .map {
                 progressManager.increaseProgress(
                     JobReport::class.java,

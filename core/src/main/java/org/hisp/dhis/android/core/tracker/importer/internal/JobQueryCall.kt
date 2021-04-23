@@ -50,18 +50,27 @@ internal class JobQueryCall @Inject internal constructor(
             .flatMapIterable {
                 val pendingJobs = trackerJobObjectStore.selectAll()
                     .sortedBy { it.lastUpdated() }
-                    .map { it.jobUid() }
-                    .distinct()
-                pendingJobs.withIndex().map { ij -> Pair(ij.value, ij.index == pendingJobs.size - 1) }
+                    .groupBy { it.jobUid() }
+                    .toList()
+
+                pendingJobs.withIndex().map {
+                    Triple(it.value.first, it.value.second, it.index == pendingJobs.size - 1)
+                }
             }
-            .flatMap { jobWithIsLast -> queryJob(jobWithIsLast.first, jobWithIsLast.second) }
+            .flatMap { queryJob(it.first, it.second, it.third) }
     }
 
     fun queryJob(jobId: String): Observable<D2Progress> {
-        return queryJob(jobId, true)
+        val jobObjects = trackerJobObjectStore.selectAll()
+            .filter { it.jobUid() == jobId }
+        return queryJob(jobId, jobObjects, true)
     }
 
-    private fun queryJob(jobId: String, isLastJob: Boolean): Observable<D2Progress> {
+    private fun queryJob(
+        jobId: String,
+        jobObjects: List<TrackerJobObject>,
+        isLastJob: Boolean
+    ): Observable<D2Progress> {
         val progressManager = D2ProgressManager(null)
         @Suppress("MagicNumber")
         return Observable.interval(0, 5, TimeUnit.SECONDS)
@@ -77,7 +86,7 @@ internal class JobQueryCall @Inject internal constructor(
                         .appendKeyStringValue(TrackerJobObjectTableInfo.Columns.JOB_UID, jobId)
                         .build()
                     trackerJobObjectStore.deleteWhere(whereClause)
-                    handler.handle(jobReport)
+                    handler.handle(jobReport, jobObjects)
                 }
             }
             .take(3)

@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.tracker.importer.internal
 
 import dagger.Reusable
 import javax.inject.Inject
+import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectTypes.ENROLLMENT
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectTypes.EVENT
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectTypes.TRACKED_ENTITY
@@ -40,27 +41,71 @@ internal class JobReportHandler @Inject internal constructor(
     private val trackedEntityHandler: JobReportTrackedEntityHandler
 ) {
 
-    fun handle(o: JobReport) {
-        o.validationReport.errorReports.forEach { errorReport ->
-            when (errorReport.trackerType) {
-                EVENT -> eventHandler.handleError(errorReport)
-                ENROLLMENT -> enrollmentHandler.handleError(errorReport)
-                TRACKED_ENTITY -> trackedEntityHandler.handleError(errorReport)
-                else -> println("Unsupported type") // TODO
-            }
-        }
+    fun handle(o: JobReport, jobObjects: List<TrackerJobObject>) {
+        val jobObjectsMap = jobObjects.groupBy { jo -> Pair(jo.objectType(), jo.objectUid()) }
+        handleErrors(o, jobObjectsMap)
+        handleSuccesses(o, jobObjectsMap)
+        handleNotPresentObjects(o, jobObjects)
+    }
 
-        if (o.bundleReport != null) {
-            val typeMap = o.bundleReport.typeReportMap
-            applySuccess(typeMap.event, eventHandler)
-            applySuccess(typeMap.enrollment, enrollmentHandler)
-            applySuccess(typeMap.trackedEntity, trackedEntityHandler)
+    private fun handleErrors(o: JobReport, jobObjectsMap: Map<Pair<String, String>, List<TrackerJobObject>>) {
+        o.validationReport.errorReports.forEach { errorReport ->
+            if (jobObjectsMap.containsKey(Pair(errorReport.trackerType, errorReport.uid))) {
+                when (errorReport.trackerType) {
+                    EVENT -> eventHandler.handleError(errorReport)
+                    ENROLLMENT -> enrollmentHandler.handleError(errorReport)
+                    TRACKED_ENTITY -> trackedEntityHandler.handleError(errorReport)
+                    else -> println("Unsupported type") // TODO
+                }
+            }
         }
     }
 
-    private fun applySuccess(typeReport: JobTypeReport, typeHandler: JobReportTypeHandler) {
-        typeReport.objectReports.forEach { objectReport ->
-            typeHandler.handleSuccess(objectReport.uid)
+    private fun handleSuccesses(o: JobReport, jobObjectsMap: Map<Pair<String, String>, List<TrackerJobObject>>) {
+        if (o.bundleReport != null) {
+            val typeMap = o.bundleReport.typeReportMap
+            applySuccess(typeMap.event, jobObjectsMap, eventHandler)
+            applySuccess(typeMap.enrollment, jobObjectsMap, enrollmentHandler)
+            applySuccess(typeMap.trackedEntity, jobObjectsMap, trackedEntityHandler)
         }
+    }
+
+    private fun handleNotPresentObjects(
+        o: JobReport,
+        jobObjectsMap: List<TrackerJobObject>
+    ) {
+        val presentSuccesses = if (o.bundleReport == null) emptySet<Pair<String, String>>() else {
+            val tm = o.bundleReport.typeReportMap
+            setOf(tm.event, tm.trackedEntity, tm.enrollment, tm.relationship).flatMap {
+                it.objectReports
+            }.map { Pair(it.trackerType, it.uid) }
+        }
+
+        val presentErrors = o.validationReport.errorReports.map {
+            Pair(it.trackerType, it.uid)
+        }.toSet()
+
+        val expectedObjects = jobObjectsMap.map { Pair(it.objectType(), it.objectUid()) }
+
+        val notPresentObjects = expectedObjects - presentSuccesses - presentErrors
+
+        for (p in notPresentObjects) {
+            when (p.first) {
+                EVENT -> eventHandler.handleObject(p.second, State.TO_UPDATE)
+                ENROLLMENT -> enrollmentHandler.handleObject(p.second, State.TO_UPDATE)
+                TRACKED_ENTITY -> trackedEntityHandler.handleObject(p.second, State.TO_UPDATE)
+                else -> println("Unsupported type") // TODO
+            }
+        }
+    }
+
+    private fun applySuccess(
+        typeReport: JobTypeReport,
+        jobObjects: Map<Pair<String, String>, List<TrackerJobObject>>,
+        typeHandler: JobReportTypeHandler
+    ) {
+        typeReport.objectReports
+            .filter { jobObjects.containsKey(Pair(it.trackerType, it.uid)) }
+            .forEach { typeHandler.handleSuccess(it.uid) }
     }
 }

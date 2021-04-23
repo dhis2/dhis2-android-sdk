@@ -29,18 +29,39 @@ package org.hisp.dhis.android.core.tracker.importer.internal
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithUidStore
-import org.hisp.dhis.android.core.common.StorableObjectWithUid
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithoutUidStore
 
-internal object TrackerJobStore {
+@Suppress("MagicNumber")
+internal object TrackerJobObjectStore {
+
+    private val BINDER = StatementBinder { o: TrackerJobObject, w: StatementWrapper ->
+        w.bind(1, o.objectType())
+        w.bind(2, o.objectUid())
+        w.bind(3, o.jobUid())
+        w.bind(4, o.lastUpdated())
+    }
+
+    private val WHERE_UPDATE_BINDER = WhereStatementBinder { o: TrackerJobObject, w: StatementWrapper ->
+        w.bind(5, o.objectType())
+        w.bind(6, o.objectUid())
+    }
+
+    private val DELETE_UPDATE_BINDER = WhereStatementBinder { o: TrackerJobObject, w: StatementWrapper ->
+        w.bind(1, o.objectType())
+        w.bind(2, o.objectUid())
+    }
 
     @JvmStatic
-    fun create(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<StorableObjectWithUid> {
-        return objectWithUidStore(
+    fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<TrackerJobObject> {
+        return objectWithoutUidStore(
             databaseAdapter,
-            TrackerJobTableInfo.TABLE_INFO,
-            StatementBinder { o, w -> w.bind(1, o.uid()) }
-        ) { StorableObjectWithUid.create(it) }
+            TrackerJobObjectTableInfo.TABLE_INFO,
+            BINDER,
+            WHERE_UPDATE_BINDER,
+            DELETE_UPDATE_BINDER
+        ) { TrackerJobObject.create(it) }
     }
 }

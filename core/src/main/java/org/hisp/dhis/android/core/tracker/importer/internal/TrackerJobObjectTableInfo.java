@@ -25,42 +25,49 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.tracker.importer.internal
 
-import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectTypes.ENROLLMENT
-import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectTypes.EVENT
-import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectTypes.TRACKED_ENTITY
+package org.hisp.dhis.android.core.tracker.importer.internal;
 
-@Reusable
-internal class JobReportHandler @Inject internal constructor(
-    private val eventHandler: JobReportEventHandler,
-    private val enrollmentHandler: JobReportEnrollmentHandler,
-    private val trackedEntityHandler: JobReportTrackedEntityHandler
-) {
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
-    fun handle(o: JobReport) {
-        o.validationReport.errorReports.forEach { errorReport ->
-            when (errorReport.trackerType) {
-                EVENT -> eventHandler.handleError(errorReport)
-                ENROLLMENT -> enrollmentHandler.handleError(errorReport)
-                TRACKED_ENTITY -> trackedEntityHandler.handleError(errorReport)
-                else -> println("Unsupported type") // TODO
-            }
-        }
+import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.LAST_UPDATED;
 
-        if (o.bundleReport != null) {
-            val typeMap = o.bundleReport.typeReportMap
-            applySuccess(typeMap.event, eventHandler)
-            applySuccess(typeMap.enrollment, enrollmentHandler)
-            applySuccess(typeMap.trackedEntity, trackedEntityHandler)
-        }
+public final class TrackerJobObjectTableInfo {
+
+    private TrackerJobObjectTableInfo() {
     }
 
-    private fun applySuccess(typeReport: JobTypeReport, typeHandler: JobReportTypeHandler) {
-        typeReport.objectReports.forEach { objectReport ->
-            typeHandler.handleSuccess(objectReport.uid)
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "TrackerJobObject";
+        }
+
+        @Override
+        public CoreColumns columns() {
+            return new Columns();
+        }
+    };
+
+    public static class Columns extends CoreColumns {
+
+        public static final String OBJECT_TYPE = "objectType";
+        public static final String OBJECT_UID = "objectUid";
+        public static final String JOB_UID = "jobUid";
+
+
+        @Override
+        public String[] all() {
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    OBJECT_TYPE, OBJECT_UID, JOB_UID, LAST_UPDATED);
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return new String[]{OBJECT_TYPE, OBJECT_UID};
         }
     }
 }

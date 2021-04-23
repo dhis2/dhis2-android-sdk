@@ -34,28 +34,27 @@ import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.common.StorableObjectWithUid
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 
 @Reusable
 internal class JobQueryCall @Inject internal constructor(
     private val service: TrackerImporterService,
     private val apiCallExecutor: APICallExecutor,
-    private val trackerJobStore: IdentifiableObjectStore<StorableObjectWithUid>,
+    private val trackerJobObjectStore: ObjectWithoutUidStore<TrackerJobObject>,
     private val handler: JobReportHandler
 ) {
-
-    fun storeJob(jobId: String) {
-        trackerJobStore.insert(StorableObjectWithUid.create(jobId))
-    }
 
     fun queryPendingJobs(): Observable<D2Progress> {
         return Observable.just(true)
             .flatMapIterable {
-                val pendingJobs = trackerJobStore.selectAll()
+                val pendingJobs = trackerJobObjectStore.selectAll()
+                    .sortedBy { it.lastUpdated() }
+                    .map { it.jobUid() }
+                    .distinct()
                 pendingJobs.withIndex().map { ij -> Pair(ij.value, ij.index == pendingJobs.size - 1) }
             }
-            .flatMap { jobWithIsLast -> queryJob(jobWithIsLast.first.uid(), jobWithIsLast.second) }
+            .flatMap { jobWithIsLast -> queryJob(jobWithIsLast.first, jobWithIsLast.second) }
     }
 
     fun queryJob(jobId: String): Observable<D2Progress> {
@@ -74,7 +73,10 @@ internal class JobQueryCall @Inject internal constructor(
             .doOnNext {
                 if (it) {
                     val jobReport = apiCallExecutor.executeObjectCall(service.getJobReport(jobId))
-                    trackerJobStore.delete(jobId)
+                    val whereClause = WhereClauseBuilder()
+                        .appendKeyStringValue(TrackerJobObjectTableInfo.Columns.JOB_UID, jobId)
+                        .build()
+                    trackerJobObjectStore.deleteWhere(whereClause)
                     handler.handle(jobReport)
                 }
             }

@@ -28,40 +28,61 @@
 
 package org.hisp.dhis.android.core.tracker.importer.internal;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.CoreColumns;
+import android.database.Cursor;
 
-import static org.hisp.dhis.android.core.common.IdentifiableColumns.UID;
+import androidx.annotation.NonNull;
 
-public final class TrackerJobTableInfo {
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.google.auto.value.AutoValue;
 
-    private TrackerJobTableInfo() {
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.common.BaseObject;
+
+import java.util.Date;
+
+@AutoValue
+@JsonDeserialize(builder = $$AutoValue_TrackerJobObject.Builder.class)
+public abstract class TrackerJobObject extends BaseObject {
+
+    @NonNull
+    public abstract String objectType();
+
+    @NonNull
+    public abstract String objectUid();
+
+    @NonNull
+    public abstract String jobUid();
+
+    @NonNull
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date lastUpdated();
+
+
+    @NonNull
+    public static TrackerJobObject create(Cursor cursor) {
+        return AutoValue_TrackerJobObject.createFromCursor(cursor);
     }
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-        @Override
-        public String name() {
-            return "TrackerJob";
-        }
+    public static Builder builder() {
+        return new AutoValue_TrackerJobObject.Builder();
+    }
 
-        @Override
-        public CoreColumns columns() {
-            return new Columns();
-        }
-    };
+    abstract Builder toBuilder();
 
-    public static class Columns extends CoreColumns {
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder extends BaseObject.Builder<Builder> {
+        public abstract Builder objectType(String objectType);
 
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(), UID);
-        }
+        public abstract Builder objectUid(String objectUid);
 
-        @Override
-        public String[] whereUpdate() {
-            return new String[]{UID};
-        }
+        public abstract Builder jobUid(String jobUid);
+
+        public abstract Builder lastUpdated(Date lastUpdated);
+
+        public abstract TrackerJobObject build();
     }
 }

@@ -40,7 +40,7 @@ class TrackerJobModuleWiper @Inject internal constructor(private val tableWiper:
 
     override fun wipeData() {
         tableWiper.wipeTables(
-            TrackerJobTableInfo.TABLE_INFO
+            TrackerJobObjectTableInfo.TABLE_INFO
         )
     }
 }

@@ -12,6 +12,7 @@ Specially relevant plugins to debug the SDK:
 - Database: see table content and perform custom SQL queries
 
 Steps to install it and configure it:
+
 1. Ensure you have the Android SDK installed (you probably will if you are planning to debug an Android app)
 2. Download Flipper from [its website](https://fbflipper.com/)
 3. Modify your build.gradle to install Flipper dependencies.

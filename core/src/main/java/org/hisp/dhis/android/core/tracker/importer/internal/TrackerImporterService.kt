@@ -41,6 +41,7 @@ internal const val ATOMIC_MODE_OBJECT = "OBJECT"
 
 internal const val IMPORT_STRATEGY = "importStrategy"
 internal const val IMPORT_STRATEGY_CREATE_AND_UPDATE = "CREATE_AND_UPDATE"
+internal const val IMPORT_STRATEGY_DELETE = "DELETE"
 internal const val JOB_ID = "jobId"
 
 internal interface TrackerImporterService {

@@ -58,7 +58,11 @@ internal class EventTrackerImporterPostCall @Inject internal constructor(
     ): Observable<D2Progress> {
         return Observable.defer {
             val eventsToPost = payloadGenerator.getEvents(events)
-            doPostCall(eventsToPost, IMPORT_STRATEGY_CREATE_AND_UPDATE)
+            val partition = eventsToPost.partition { it.deleted()!! }
+            Observable.concat(
+                doPostCall(partition.first, IMPORT_STRATEGY_DELETE),
+                doPostCall(partition.second, IMPORT_STRATEGY_CREATE_AND_UPDATE)
+            )
         }
     }
 
@@ -76,13 +80,17 @@ internal class EventTrackerImporterPostCall @Inject internal constructor(
     }
 
     private fun doPostCall(events: List<NewTrackerImporterEvent>, importStrategy: String): Observable<D2Progress> {
-        stateManager.markObjectsAs(events, State.UPLOADING)
-        return Single.fromCallable {
-            doPostCallInternal(events, importStrategy)
-        }.doOnError {
-            stateManager.markObjectsAs(events, DataStateHelper.errorIfOnline(it))
-        }.flatMapObservable {
-            jobQueryCall.queryJob(it)
+        return if (events.isEmpty()) {
+            Observable.empty<D2Progress>()
+        } else {
+            stateManager.markObjectsAs(events, State.UPLOADING)
+            Single.fromCallable {
+                doPostCallInternal(events, importStrategy)
+            }.doOnError {
+                stateManager.markObjectsAs(events, DataStateHelper.errorIfOnline(it))
+            }.flatMapObservable {
+                jobQueryCall.queryJob(it)
+            }
         }
     }
 

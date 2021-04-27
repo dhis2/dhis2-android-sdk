@@ -58,23 +58,7 @@ internal class EventTrackerImporterPostCall @Inject internal constructor(
     ): Observable<D2Progress> {
         return Observable.defer {
             val eventsToPost = payloadGenerator.getEvents(events)
-            stateManager.markObjectsAs(eventsToPost, State.UPLOADING)
-            Single.fromCallable {
-                val eventPayload = NewTrackerImporterEventPayload(eventsToPost)
-                val res = apiCallExecutor.executeObjectCall(
-                    service.postEvents(
-                        eventPayload, ATOMIC_MODE_OBJECT,
-                        IMPORT_STRATEGY_CREATE_AND_UPDATE
-                    )
-                )
-                val jobId = res.response().uid()
-                jobObjectHandler.handleMany(generateJobObjects(eventsToPost, jobId))
-                jobId
-            }.doOnError {
-                stateManager.markObjectsAs(eventsToPost, DataStateHelper.errorIfOnline(it))
-            }.flatMapObservable {
-                jobQueryCall.queryJob(it)
-            }
+            doPostCall(eventsToPost, IMPORT_STRATEGY_CREATE_AND_UPDATE)
         }
     }
 
@@ -89,5 +73,26 @@ internal class EventTrackerImporterPostCall @Inject internal constructor(
                 .lastUpdated(lastUpdated)
                 .build()
         }
+    }
+
+    private fun doPostCall(events: List<NewTrackerImporterEvent>, importStrategy: String): Observable<D2Progress> {
+        stateManager.markObjectsAs(events, State.UPLOADING)
+        return Single.fromCallable {
+            doPostCallInternal(events, importStrategy)
+        }.doOnError {
+            stateManager.markObjectsAs(events, DataStateHelper.errorIfOnline(it))
+        }.flatMapObservable {
+            jobQueryCall.queryJob(it)
+        }
+    }
+
+    private fun doPostCallInternal(events: List<NewTrackerImporterEvent>, importStrategy: String): String {
+        val eventPayload = NewTrackerImporterEventPayload(events)
+        val res = apiCallExecutor.executeObjectCall(
+            service.postEvents(eventPayload, ATOMIC_MODE_OBJECT, importStrategy)
+        )
+        val jobId = res.response().uid()
+        jobObjectHandler.handleMany(generateJobObjects(events, jobId))
+        return jobId
     }
 }

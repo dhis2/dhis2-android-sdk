@@ -59,16 +59,16 @@ internal class JobQueryCall @Inject internal constructor(
                     Triple(it.value.first, it.value.second, it.index == pendingJobs.size - 1)
                 }
             }
-            .flatMap { queryJobForever(it.first, it.second, it.third, ATTEMPTS_WHEN_QUERYING) }
+            .flatMap { queryJobInternal(it.first, it.second, it.third, ATTEMPTS_WHEN_QUERYING) }
     }
 
     fun queryJob(jobId: String): Observable<D2Progress> {
         val jobObjects = trackerJobObjectStore.selectAll()
             .filter { it.jobUid() == jobId }
-        return queryJobForever(jobId, jobObjects, true, ATTEMPTS_AFTER_UPLOAD)
+        return queryJobInternal(jobId, jobObjects, true, ATTEMPTS_AFTER_UPLOAD)
     }
 
-    private fun queryJobForever(
+    private fun queryJobInternal(
         jobId: String,
         jobObjects: List<TrackerJobObject>,
         isLastJob: Boolean,
@@ -78,20 +78,14 @@ internal class JobQueryCall @Inject internal constructor(
         @Suppress("MagicNumber")
         return Observable.interval(0, 5, TimeUnit.SECONDS)
             .map {
-                apiCallExecutor.executeObjectCall(service.getJob(jobId))
-            }
-            .map { it.any { ji -> ji.completed } }
-            .takeUntil { it }
-            .doOnNext {
-                if (it) {
-                    val jobReport = apiCallExecutor.executeObjectCall(service.getJobReport(jobId))
-                    val whereClause = WhereClauseBuilder()
-                        .appendKeyStringValue(TrackerJobObjectTableInfo.Columns.JOB_UID, jobId)
-                        .build()
-                    trackerJobObjectStore.deleteWhere(whereClause)
-                    handler.handle(jobReport, jobObjects)
+                try {
+                    downloadAndHandle(jobId, jobObjects)
+                    true
+                } catch (_: Throwable) {
+                    false
                 }
             }
+            .takeUntil { it }
             .take(attempts.toLong())
             .map {
                 progressManager.increaseProgress(
@@ -99,13 +93,14 @@ internal class JobQueryCall @Inject internal constructor(
                     it && isLastJob
                 )
             }
-            .onErrorResumeNext { _: Throwable ->
-                return@onErrorResumeNext Observable.just(
-                    progressManager.increaseProgress(
-                        JobReport::class.java,
-                        false
-                    )
-                )
-            }
+    }
+
+    private fun downloadAndHandle(jobId: String, jobObjects: List<TrackerJobObject>) {
+        val jobReport = apiCallExecutor.executeObjectCall(service.getJobReport(jobId))
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(TrackerJobObjectTableInfo.Columns.JOB_UID, jobId)
+            .build()
+        trackerJobObjectStore.deleteWhere(whereClause)
+        handler.handle(jobReport, jobObjects)
     }
 }

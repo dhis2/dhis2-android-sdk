@@ -59,9 +59,6 @@ internal interface TrackerImporterService {
         @Query(IMPORT_STRATEGY) importStrategy: String
     ): Call<ObjectWithUidWebResponse>
 
-    @GET("$JOBS_URL{jobId}")
-    fun getJob(@Path(JOB_ID) jobId: String): Call<List<JobInfo>>
-
     @GET("$JOBS_URL{jobId}/report")
     fun getJobReport(@Path(JOB_ID) jobId: String): Call<JobReport>
 }

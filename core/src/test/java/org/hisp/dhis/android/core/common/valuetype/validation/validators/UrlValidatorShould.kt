@@ -28,10 +28,28 @@
 
 package org.hisp.dhis.android.core.common.valuetype.validation.validators
 
-import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.common.valuetype.validation.failures.UrlFailure
+import org.junit.Test
 
-object DefaultValidator : ValueTypeValidator<Throwable> {
-    override fun validate(value: String): Result<String, Throwable> {
-        return Result.Success(value)
+class UrlValidatorShould : ValidatorShouldHelper<UrlFailure>(UrlValidator) {
+
+    @Test
+    fun `Should success when passing valid values`() {
+        valueShouldSuccess("https://dhis2.org/resources/")
+        valueShouldSuccess("http://www.dhis2.org")
+        valueShouldSuccess("http://dhis2.org")
+        valueShouldSuccess("https://dhis2.org")
+        valueShouldSuccess("http://localhost:4200/demo")
+
+        // TODO Review what to do with those urls
+        //valueShouldSuccess("dhis2.org")
+        //valueShouldSuccess("dhis2.org/demo")
+        //valueShouldSuccess("www.dhis2.org")
+        //valueShouldSuccess("255.255.255.255")
+    }
+
+    @Test
+    fun `Should fail when value is malformed`() {
+        valueShouldFail("5fe2", UrlFailure.MalformedUrlException)
     }
 }

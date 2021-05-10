@@ -54,10 +54,10 @@ enum class ValueType(javaClass: Class<*>, val validator: ValueTypeValidator<*>) 
     EMAIL(String::class.java, EmailValidator),
     USERNAME(String::class.java, TextValidator),
     ORGANISATION_UNIT(OrganisationUnit::class.java, UidValidator),
-    TRACKER_ASSOCIATE(TrackedEntityInstance::class.java, DefaultValidator),
-    AGE(Date::class.java, DefaultValidator),
-    URL(String::class.java, DefaultValidator),
-    IMAGE(String::class.java, DefaultValidator);
+    TRACKER_ASSOCIATE(TrackedEntityInstance::class.java, UidValidator),
+    AGE(Date::class.java, DateValidator),
+    URL(String::class.java, TextValidator),
+    IMAGE(String::class.java, UidValidator);
 
     val isInteger: Boolean
         get() = INTEGER_TYPES.contains(this)

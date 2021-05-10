@@ -14,7 +14,7 @@ Main goals:
 
 ## Documentation
 
-Developer-oriented documentation can be found in [Documentation section](https://docs.dhis2.org/master/en/dhis2_android_sdk_developer_guide/about-this-guide.html) in DHIS2 web. It is intended to be used by developers.
+Developer-oriented documentation can be found in [Documentation section](https://docs.dhis2.org/en/develop/developing-with-the-android-sdk/about-this-guide.html) in DHIS2 web. It is intended to be used by developers.
 
 ## Examples
 
@@ -24,4 +24,4 @@ Code examples can be found in the [Android Skeleton app](https://github.com/dhis
 
 Community support can be found in [Android SDK Development](https://community.dhis2.org/c/development/sdk-android-development) category in the community portal. Any feedback on the SDK will be highly appreciated.
 
-To report bugs or request new features, there is project in DHIS2 Jira named [ANDROSDK](https://jira.dhis2.org/projects/ANDROSDK). Please do not hesitate to create an issue with your request.
+To report bugs or request new features, there is project in DHIS2 Jira named [ANDROSDK](https://jira.dhis2.org/projects/ANDROSDK/issues). Please do not hesitate to create an issue with your request.

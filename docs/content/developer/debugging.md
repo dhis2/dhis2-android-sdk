@@ -12,31 +12,95 @@ Specially relevant plugins to debug the SDK:
 - Database: see table content and perform custom SQL queries
 
 Steps to install it and configure it:
+
 1. Ensure you have the Android SDK installed (you probably will if you are planning to debug an Android app)
 2. Download Flipper from [its website](https://fbflipper.com/)
-3. Add the diagnostic activity to the Android Manifest:
+3. Modify your build.gradle to install Flipper dependencies.
 
-```xml
-<activity android:name="com.facebook.flipper.android.diagnostics.FlipperDiagnosticActivity"
-            android:exported="true"/>
-```
-
-4. Set up the plugins while configuring the SDK: 
-
-```java
-        // This will be null if not debug mode to make sure your data is safe 
-        Interceptor flipperInterceptor = FlipperManager.setUp(context);
-
-        List<Interceptor> networkInterceptors = new ArrayList<>();
-        if (flipperInterceptor != null) {
-            networkInterceptors.add(flipperInterceptor);
+    ```gradle
+    dependencies {
+        ...
+        debugImplementation "com.facebook.flipper:flipper:0.83.0"
+        debugImplementation "com.facebook.soloader:soloader:0.10.1"
+        debugImplementation ("com.facebook.flipper:flipper-network-plugin:0.83.0") {
+            exclude group: 'com.squareup.okhttp3'
         }
 
-        return D2Configuration.builder()
-                ...
-                .networkInterceptors(networkInterceptors)
-                .build();
-```
+        releaseImplementation "com.facebook.flipper:flipper-noop:0.83.0"
+    }
+    ```
+
+4. DHIS2 Android SDK includes a no-op version of Flipper in the release version. It should be excluded to avoid duplicated classes.
+
+    ```gradle
+    dependencies {
+        ...
+        implementation ("org.hisp.dhis:android-core:x.x.x") {
+            exclude group: 'com.facebook.flipper'
+        }
+    }
+    ```
+
+5. Add the diagnostic activity to the Android Manifest:
+
+    ```xml
+    <activity android:name="com.facebook.flipper.android.diagnostics.FlipperDiagnosticActivity"
+                android:exported="true"/>
+    ```
+
+6. It is recommended to create a helper class to initialize Flipper and create the network interceptor:
+
+    ```java
+    import android.content.Context;
+
+    import com.example.android.androidskeletonapp.BuildConfig;
+    import com.facebook.flipper.android.AndroidFlipperClient;
+    import com.facebook.flipper.android.utils.FlipperUtils;
+    import com.facebook.flipper.core.FlipperClient;
+    import com.facebook.flipper.plugins.databases.DatabasesFlipperPlugin;
+    import com.facebook.flipper.plugins.inspector.DescriptorMapping;
+    import com.facebook.flipper.plugins.inspector.InspectorFlipperPlugin;
+    import com.facebook.flipper.plugins.network.FlipperOkhttpInterceptor;
+    import com.facebook.flipper.plugins.network.NetworkFlipperPlugin;
+    import com.facebook.soloader.SoLoader;
+
+    import okhttp3.Interceptor;
+
+    public class FlipperManager {
+
+        public static Interceptor setUp(Context appContext) {
+            if (BuildConfig.DEBUG && FlipperUtils.shouldEnableFlipper(appContext)) {
+                NetworkFlipperPlugin networkPlugin = new NetworkFlipperPlugin();
+                SoLoader.init(appContext, false);
+                FlipperClient client = AndroidFlipperClient.getInstance(appContext);
+                client.addPlugin(networkPlugin);
+                client.addPlugin(new DatabasesFlipperPlugin(appContext));
+                client.addPlugin(new InspectorFlipperPlugin(appContext, DescriptorMapping.withDefaults()));
+                client.start();
+                return new FlipperOkhttpInterceptor(networkPlugin);
+            } else {
+                return null;
+            }
+        }
+    }
+    ```
+
+7. Set up the plugins while configuring the SDK: 
+
+    ```java
+            // This will be null if not debug mode to make sure your data is safe 
+            Interceptor flipperInterceptor = FlipperManager.setUp(context.getApplicationContext());
+
+            List<Interceptor> networkInterceptors = new ArrayList<>();
+            if (flipperInterceptor != null) {
+                networkInterceptors.add(flipperInterceptor);
+            }
+
+            return D2Configuration.builder()
+                    ...
+                    .networkInterceptors(networkInterceptors)
+                    .build();
+    ```
 
 If you want to use any other Flipper plugins to debug other aspects of the app, we recommend you to go through [the documentation](https://fbflipper.com/docs/getting-started/android-native). 
 

@@ -45,7 +45,7 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo.Columns;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceParentPostCall;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostParentCall;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
 import org.hisp.dhis.android.core.tracker.importer.internal.JobQueryCall;
 
@@ -64,7 +64,7 @@ public final class TrackedEntityInstanceCollectionRepository
         implements ReadWriteWithUploadWithUidCollectionRepository
         <TrackedEntityInstance, TrackedEntityInstanceCreateProjection> {
 
-    private final TrackedEntityInstanceParentPostCall postCall;
+    private final TrackedEntityInstancePostParentCall postCall;
     private final TrackedEntityInstanceStore store;
     private final JobQueryCall jobQueryCall;
 
@@ -74,7 +74,7 @@ public final class TrackedEntityInstanceCollectionRepository
             final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders,
             final RepositoryScope scope,
             final Transformer<TrackedEntityInstanceCreateProjection, TrackedEntityInstance> transformer,
-            final TrackedEntityInstanceParentPostCall postCall,
+            final TrackedEntityInstancePostParentCall postCall,
             final JobQueryCall jobQueryCall) {
         super(store, childrenAppenders, scope, transformer, new FilterConnectorFactory<>(scope, s ->
                 new TrackedEntityInstanceCollectionRepository(store, childrenAppenders, s, transformer, postCall,

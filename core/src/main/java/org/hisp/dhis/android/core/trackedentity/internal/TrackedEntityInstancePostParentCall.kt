@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackedEntityInstanceTrackerImporterPostCall
 
 @Reusable
-internal class TrackedEntityInstanceParentPostCall @Inject internal constructor(
+internal class TrackedEntityInstancePostParentCall @Inject internal constructor(
     private val oldCall: OldTrackedEntityInstancePostCall,
     private val trackerImporterCall: TrackedEntityInstanceTrackerImporterPostCall
 ) {

@@ -34,16 +34,17 @@ import org.hisp.dhis.android.core.common.valuetype.validation.failures.UidFailur
 object UidValidator : ValueTypeValidator<UidFailure> {
 
     private val UID_PATTERN = "^[a-zA-Z0-9]{11}\$".toRegex()
+    private const val NUMBER_OF_UID_CHARS = 11
 
     override fun validate(value: String): Result<String, UidFailure> {
         return when {
             value.matches(UID_PATTERN) -> {
                 Result.Success(value)
             }
-            value.length < 11 -> {
+            value.length < NUMBER_OF_UID_CHARS -> {
                 Result.Failure(UidFailure.LessThanElevenCharsException)
             }
-            value.length > 11 -> {
+            value.length > NUMBER_OF_UID_CHARS -> {
                 Result.Failure(UidFailure.MoreThanElevenCharsException)
             }
             else -> {

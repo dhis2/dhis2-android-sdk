@@ -34,8 +34,8 @@ import org.hisp.dhis.android.core.common.valuetype.validation.failures.Coordinat
 object CoordinateValidator : ValueTypeValidator<CoordinateFailure> {
 
     private val COORDINATE_PATTERN =
-            "^\\[[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?),\\s*[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)]\$"
-                    .toRegex()
+        "^\\[[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?),\\s*[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)]\$"
+            .toRegex()
 
     override fun validate(value: String): Result<String, CoordinateFailure> {
         return when (value.matches(COORDINATE_PATTERN)) {

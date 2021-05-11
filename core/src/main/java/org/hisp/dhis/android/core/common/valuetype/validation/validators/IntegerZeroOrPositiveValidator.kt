@@ -44,8 +44,10 @@ object IntegerZeroOrPositiveValidator : IntegerValidatorBase<IntegerZeroOrPositi
                 }
             }
         } catch (e: NumberFormatException) {
-            catchOverflowFailure(value, IntegerZeroOrPositiveFailure.IntegerOverflow,
-                    IntegerZeroOrPositiveFailure.NumberFormatException)
+            catchOverflowFailure(
+                value, IntegerZeroOrPositiveFailure.IntegerOverflow,
+                IntegerZeroOrPositiveFailure.NumberFormatException
+            )
         }
     }
 }

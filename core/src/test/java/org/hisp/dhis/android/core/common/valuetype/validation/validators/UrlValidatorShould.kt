@@ -42,10 +42,10 @@ class UrlValidatorShould : ValidatorShouldHelper<UrlFailure>(UrlValidator) {
         valueShouldSuccess("http://localhost:4200/demo")
 
         // TODO Review what to do with those urls
-        //valueShouldSuccess("dhis2.org")
-        //valueShouldSuccess("dhis2.org/demo")
-        //valueShouldSuccess("www.dhis2.org")
-        //valueShouldSuccess("255.255.255.255")
+        // valueShouldSuccess("dhis2.org")
+        // valueShouldSuccess("dhis2.org/demo")
+        // valueShouldSuccess("www.dhis2.org")
+        // valueShouldSuccess("255.255.255.255")
     }
 
     @Test

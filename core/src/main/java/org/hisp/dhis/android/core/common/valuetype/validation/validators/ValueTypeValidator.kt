@@ -30,6 +30,6 @@ package org.hisp.dhis.android.core.common.valuetype.validation.validators
 
 import org.hisp.dhis.android.core.arch.helpers.Result
 
-interface ValueTypeValidator<T: Throwable> {
+interface ValueTypeValidator<T : Throwable> {
     fun validate(value: String): Result<String, T>
 }

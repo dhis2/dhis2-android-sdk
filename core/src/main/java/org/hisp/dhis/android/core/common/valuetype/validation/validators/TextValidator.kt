@@ -32,8 +32,10 @@ import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.common.valuetype.validation.failures.TextFailure
 
 object TextValidator : ValueTypeValidator<TextFailure> {
+    private const val MAX_CHARS = 50000
+
     override fun validate(value: String): Result<String, TextFailure> {
-        return if (value.count() > 50000) {
+        return if (value.count() > MAX_CHARS) {
             Result.Failure(TextFailure.TooLargeTextException)
         } else {
             Result.Success(value)

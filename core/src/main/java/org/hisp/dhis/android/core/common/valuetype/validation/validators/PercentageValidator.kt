@@ -32,14 +32,16 @@ import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.common.valuetype.validation.failures.PercentageFailure
 
 object PercentageValidator : ValueTypeValidator<PercentageFailure> {
+    private const val ONE_HUNDRED_PERCENT = 100
+    private const val ZERO_PERCENT = 0
     override fun validate(value: String): Result<String, PercentageFailure> {
         return try {
             val convertedValue = value.toInt()
             when {
-                convertedValue > 100 -> {
+                convertedValue > ONE_HUNDRED_PERCENT -> {
                     Result.Failure(PercentageFailure.ValueGreaterThan100)
                 }
-                convertedValue < 0 -> {
+                convertedValue < ZERO_PERCENT -> {
                     Result.Failure(PercentageFailure.ValueIsNegative)
                 }
                 else -> {

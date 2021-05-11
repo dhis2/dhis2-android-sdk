@@ -42,16 +42,15 @@ object IntegerPositiveValidator : IntegerValidatorBase<IntegerPositiveFailure>()
                 convertedValue < 0 -> {
                     Result.Failure(IntegerPositiveFailure.ValueIsNegative)
                 }
-                convertedValue < 0 -> {
-                    Result.Failure(IntegerPositiveFailure.ValueIsNegative)
-                }
                 else -> {
                     Result.Success(value)
                 }
             }
         } catch (e: NumberFormatException) {
-            catchOverflowFailure(value, IntegerPositiveFailure.IntegerOverflow,
-                    IntegerPositiveFailure.NumberFormatException)
+            catchOverflowFailure(
+                value, IntegerPositiveFailure.IntegerOverflow,
+                IntegerPositiveFailure.NumberFormatException
+            )
         }
     }
 }

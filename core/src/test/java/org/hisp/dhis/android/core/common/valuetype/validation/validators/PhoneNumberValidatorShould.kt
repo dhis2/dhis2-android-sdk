@@ -40,6 +40,7 @@ class PhoneNumberValidatorShould : ValidatorShouldHelper<PhoneNumberFailure>(Pho
         valueShouldSuccess("0034 521 587 422")
         valueShouldSuccess("0034521587422")
         valueShouldSuccess("+34521587422")
+        // valueShouldSuccess("+34 (521)-58 7422")
     }
 
     @Test

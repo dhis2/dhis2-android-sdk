@@ -33,8 +33,10 @@ import org.hisp.dhis.android.core.common.valuetype.validation.failures.EmailFail
 
 object EmailValidator : ValueTypeValidator<EmailFailure> {
 
-    private val EMAIL_PATTERN = ("^[a-zA-Z0-9.!#\$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?" +
-            "(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\$").toRegex()
+    private val EMAIL_PATTERN = (
+        "^[a-zA-Z0-9.!#\$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?" +
+            "(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\$"
+        ).toRegex()
 
     override fun validate(value: String): Result<String, EmailFailure> {
         return when (value.matches(EMAIL_PATTERN)) {

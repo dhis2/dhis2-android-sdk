@@ -39,17 +39,17 @@ class UrlValidatorShould : ValidatorShouldHelper<UrlFailure>(UrlValidator) {
         valueShouldSuccess("http://www.dhis2.org")
         valueShouldSuccess("http://dhis2.org")
         valueShouldSuccess("https://dhis2.org")
-        valueShouldSuccess("http://localhost:4200/demo")
-
-        // TODO Review what to do with those urls
-        // valueShouldSuccess("dhis2.org")
-        // valueShouldSuccess("dhis2.org/demo")
-        // valueShouldSuccess("www.dhis2.org")
-        // valueShouldSuccess("255.255.255.255")
+        valueShouldSuccess("https://dhis2.org/demo")
+        valueShouldSuccess("https://dhis2.org/demo/yo-yo")
     }
 
     @Test
     fun `Should fail when value is malformed`() {
         valueShouldFail("5fe2", UrlFailure.MalformedUrlException)
+        valueShouldFail("", UrlFailure.MalformedUrlException)
+        valueShouldFail("dhis2.org", UrlFailure.MalformedUrlException)
+        valueShouldFail("www.dhis2.org", UrlFailure.MalformedUrlException)
+        valueShouldFail("dhis2.org/demo", UrlFailure.MalformedUrlException)
+        valueShouldFail("http://localhost:4200/demo", UrlFailure.MalformedUrlException)
     }
 }

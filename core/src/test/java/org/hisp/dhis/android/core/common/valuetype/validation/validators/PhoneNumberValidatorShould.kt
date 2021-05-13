@@ -40,13 +40,25 @@ class PhoneNumberValidatorShould : ValidatorShouldHelper<PhoneNumberFailure>(Pho
         valueShouldSuccess("0034 521 587 422")
         valueShouldSuccess("0034521587422")
         valueShouldSuccess("+34521587422")
-        // valueShouldSuccess("+34 (521)-58 7422")
+        valueShouldSuccess("+34 (521)-58 7422")
+        valueShouldSuccess("+55 11 99999-5555")
+        valueShouldSuccess("+65 6511 9266")
+        valueShouldSuccess("+86 21 2230 1000")
+        valueShouldSuccess("+9124 4723300")
+        valueShouldSuccess("+821012345678")
+        valueShouldSuccess("+593 7 282-3889")
+        valueShouldSuccess("(+44) 0848 9123 456")
+        valueShouldSuccess("+1 284 852 5500")
+        valueShouldSuccess("+1 345 9490088")
+        valueShouldSuccess("+32 2 702-9200")
     }
 
     @Test
     fun `Should fail with a number format exception when value is malformed`() {
         valueShouldFail("5fe2", PhoneNumberFailure.MalformedPhoneNumberException)
         valueShouldFail("987", PhoneNumberFailure.MalformedPhoneNumberException)
+        valueShouldFail("984534534432324325347", PhoneNumberFailure.MalformedPhoneNumberException)
+        valueShouldFail("234234234234ó", PhoneNumberFailure.MalformedPhoneNumberException)
         valueShouldFail("", PhoneNumberFailure.MalformedPhoneNumberException)
     }
 }

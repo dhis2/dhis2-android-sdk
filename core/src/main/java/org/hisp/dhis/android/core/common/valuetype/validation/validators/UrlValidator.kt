@@ -30,16 +30,20 @@ package org.hisp.dhis.android.core.common.valuetype.validation.validators
 
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.common.valuetype.validation.failures.UrlFailure
-import java.net.MalformedURLException
-import java.net.URL
 
 object UrlValidator : ValueTypeValidator<UrlFailure> {
+
+    private val URL_PATTERN = "^(http|https):\\/\\/[a-z0-9]+([-.]{1}[a-z0-9]+)*\\.[a-z]{2,6}(:[0-9]{1,5})?(\\/.*)?\$"
+        .toRegex()
+
     override fun validate(value: String): Result<String, UrlFailure> {
-        return try {
-            URL(value)
-            Result.Success(value)
-        } catch (e: MalformedURLException) {
-            Result.Failure(UrlFailure.MalformedUrlException)
+        return when (value.matches(URL_PATTERN)) {
+            true -> {
+                Result.Success(value)
+            }
+            else -> {
+                Result.Failure(UrlFailure.MalformedUrlException)
+            }
         }
     }
 }

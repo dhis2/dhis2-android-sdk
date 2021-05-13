@@ -33,11 +33,10 @@ import org.hisp.dhis.android.core.common.valuetype.validation.failures.PhoneNumb
 
 object PhoneNumberValidator : ValueTypeValidator<PhoneNumberFailure> {
 
-    private val INTERNATIONAL_PHONE_PATTERN = "^(\\+)?(?:[0-9].?){4,14}[0-9]$".toRegex()
+    private val PHONE_PATTERN = "^[0-9+(][0-9+\\-() ]{2,18}[0-9]$".toRegex()
 
     override fun validate(value: String): Result<String, PhoneNumberFailure> {
-        // TODO Review pattern used
-        return when (value.matches(INTERNATIONAL_PHONE_PATTERN)) {
+        return when (value.matches(PHONE_PATTERN)) {
             true -> {
                 Result.Success(value)
             }

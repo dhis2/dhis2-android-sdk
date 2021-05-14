@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.common
 
+import java.util.*
 import org.hisp.dhis.android.core.common.valuetype.validation.validators.*
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import java.util.*
 
 enum class ValueType(javaClass: Class<*>, val validator: ValueTypeValidator<*>) {
     TEXT(String::class.java, TextValidator),

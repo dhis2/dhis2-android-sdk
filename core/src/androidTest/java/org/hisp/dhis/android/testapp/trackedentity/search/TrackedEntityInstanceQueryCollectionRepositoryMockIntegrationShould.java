@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.testapp.trackedentity.search;
 
+import org.hisp.dhis.android.core.arch.helpers.DateUtils;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryRepositoryScope;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
@@ -35,6 +36,8 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -61,6 +64,34 @@ public class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould
                         .blockingGetUids();
 
         assertThat(trackedEntityInstanceUids.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void find_by_enrollment_date() throws ParseException {
+        Date refDate = DateUtils.DATE_FORMAT.parse("2017-01-20T00:00:00.000");
+
+        List<TrackedEntityInstance> trackedEntityInstances =
+                d2.trackedEntityModule().trackedEntityInstanceQuery()
+                        .byProgram().eq("lxAQ7Zs9VYR")
+                        .byProgramDate().afterOrEqual(refDate)
+                        .byProgramDate().beforeOrEqual(refDate)
+                        .blockingGet();
+
+        assertThat(trackedEntityInstances.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void find_by_event_date() throws ParseException {
+        Date refDate = DateUtils.DATE_FORMAT.parse("2017-01-20T00:00:00.000");
+
+        List<TrackedEntityInstance> trackedEntityInstances =
+                d2.trackedEntityModule().trackedEntityInstanceQuery()
+                        .byProgram().eq("lxAQ7Zs9VYR")
+                        .byEventDate().afterOrEqual(refDate)
+                        .byEventDate().beforeOrEqual(refDate)
+                        .blockingGet();
+
+        assertThat(trackedEntityInstances.size()).isEqualTo(1);
     }
 
     @Test

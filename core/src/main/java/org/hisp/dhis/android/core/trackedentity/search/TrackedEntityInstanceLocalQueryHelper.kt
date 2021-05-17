@@ -163,18 +163,16 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
             where.appendKeyStringValue(dot(enrollmentAlias, program), escapeQuotes(scope.program()))
         }
         if (scope.programDate() != null) {
+            val enrollmentDateStr = "date(${dot(enrollmentAlias, enrollmentDate)})"
+
             dateFilterPeriodHelper.getStartDate(scope.programDate()!!)?.let { startDate ->
-                where.appendKeyGreaterOrEqStringValue(
-                    dot(enrollmentAlias, enrollmentDate),
-                    DateUtils.SIMPLE_DATE_FORMAT.format(startDate)
-                )
+                val startDateStr = DateUtils.SIMPLE_DATE_FORMAT.format(startDate)
+                where.appendKeyGreaterOrEqStringValue(enrollmentDateStr, startDateStr)
             }
 
             dateFilterPeriodHelper.getEndDate(scope.programDate()!!)?.let { endDate ->
-                where.appendKeyLessThanOrEqStringValue(
-                    dot(enrollmentAlias, enrollmentDate),
-                    DateUtils.SIMPLE_DATE_FORMAT.format(endDate)
-                )
+                val endDateStr = DateUtils.SIMPLE_DATE_FORMAT.format(endDate)
+                where.appendKeyLessThanOrEqStringValue(enrollmentDateStr, endDateStr)
             }
         }
         if (scope.enrollmentStatus() != null) {
@@ -369,11 +367,11 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
         if (eventFilter.eventDate() != null) {
             dateFilterPeriodHelper.getStartDate(eventFilter.eventDate()!!)?.let { startDate ->
                 val dateStr = DateUtils.SIMPLE_DATE_FORMAT.format(startDate)
-                where.appendKeyGreaterOrEqStringValue(dot(eventAlias, refDate), dateStr)
+                where.appendKeyGreaterOrEqStringValue("date(${dot(eventAlias, refDate)})", dateStr)
             }
             dateFilterPeriodHelper.getEndDate(eventFilter.eventDate()!!)?.let { endDate ->
                 val dateStr = DateUtils.SIMPLE_DATE_FORMAT.format(endDate)
-                where.appendKeyLessThanOrEqStringValue(dot(eventAlias, refDate), dateStr)
+                where.appendKeyLessThanOrEqStringValue("date(${dot(eventAlias, refDate)})", dateStr)
             }
         }
     }

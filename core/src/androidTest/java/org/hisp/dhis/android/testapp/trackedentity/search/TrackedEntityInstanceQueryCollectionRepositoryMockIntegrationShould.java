@@ -68,7 +68,7 @@ public class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould
 
     @Test
     public void find_by_enrollment_date() throws ParseException {
-        Date refDate = DateUtils.DATE_FORMAT.parse("2017-01-20T00:00:00.000");
+        Date refDate = DateUtils.DATE_FORMAT.parse("2018-01-10T00:00:00.000");
 
         List<TrackedEntityInstance> trackedEntityInstances =
                 d2.trackedEntityModule().trackedEntityInstanceQuery()
@@ -82,7 +82,7 @@ public class TrackedEntityInstanceQueryCollectionRepositoryMockIntegrationShould
 
     @Test
     public void find_by_event_date() throws ParseException {
-        Date refDate = DateUtils.DATE_FORMAT.parse("2017-01-20T00:00:00.000");
+        Date refDate = DateUtils.DATE_FORMAT.parse("2015-05-01T00:00:00.000");
 
         List<TrackedEntityInstance> trackedEntityInstances =
                 d2.trackedEntityModule().trackedEntityInstanceQuery()

@@ -36,4 +36,4 @@ class SimpleDateFilterConnector<R : BaseRepository> internal constructor(
     repositoryFactory: BaseRepositoryFactory<R>,
     scope: RepositoryScope,
     key: String
-) : DateFilterConnector<R>(repositoryFactory, scope, "date(${key})", DateUtils.SIMPLE_DATE_FORMAT)
+) : DateFilterConnector<R>(repositoryFactory, scope, "date($key)", DateUtils.SIMPLE_DATE_FORMAT)

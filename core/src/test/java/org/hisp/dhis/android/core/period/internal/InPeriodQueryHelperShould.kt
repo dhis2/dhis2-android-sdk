@@ -59,8 +59,8 @@ class InPeriodQueryHelperShould {
         val inPeriodQuery = buildInPeriodsQuery("COL1", datePeriods, formatter)
         Truth.assertThat(inPeriodQuery).isEqualTo(
             "(COL1 >= '2001-12-24T12:24:25.203' AND COL1 <= '2002-12-24T12:24:25.203') OR " +
-                    "(COL1 >= '2003-12-24T12:24:25.203' AND COL1 <= '2004-12-24T12:24:25.203') OR " +
-                    "(COL1 >= '2005-12-24T12:24:25.203' AND COL1 <= '2006-12-24T12:24:25.203')"
+                "(COL1 >= '2003-12-24T12:24:25.203' AND COL1 <= '2004-12-24T12:24:25.203') OR " +
+                "(COL1 >= '2005-12-24T12:24:25.203' AND COL1 <= '2006-12-24T12:24:25.203')"
         )
     }
 
@@ -82,7 +82,7 @@ class InPeriodQueryHelperShould {
         val inPeriodQuery = buildInPeriodsQuery("date(COL1)", datePeriods, formatter)
         Truth.assertThat(inPeriodQuery).isEqualTo(
             "(date(COL1) >= '2001-12-24' AND date(COL1) <= '2002-12-24') OR " +
-                    "(date(COL1) >= '2003-12-24' AND date(COL1) <= '2004-12-24')"
+                "(date(COL1) >= '2003-12-24' AND date(COL1) <= '2004-12-24')"
         )
     }
 }

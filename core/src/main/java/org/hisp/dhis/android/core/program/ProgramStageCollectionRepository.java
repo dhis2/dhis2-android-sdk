@@ -73,6 +73,10 @@ public final class ProgramStageCollectionRepository
         return cf.string(Columns.EXECUTION_DATE_LABEL);
     }
 
+    public StringFilterConnector<ProgramStageCollectionRepository> byDueDateLabel() {
+        return cf.string(Columns.DUE_DATE_LABEL);
+    }
+
     public BooleanFilterConnector<ProgramStageCollectionRepository> byAllowGenerateNextVisit() {
         return cf.bool(Columns.ALLOW_GENERATE_NEXT_VISIT);
     }

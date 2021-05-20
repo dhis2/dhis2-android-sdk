@@ -51,6 +51,7 @@ public class ProgramStageSamples {
                 .description("description")
                 .displayDescription("display_description")
                 .executionDateLabel("execution_date_label")
+                .dueDateLabel("due_date_label")
                 .allowGenerateNextVisit(Boolean.FALSE)
                 .validCompleteOnly(Boolean.TRUE)
                 .reportDateToUse("report_date_to_use")

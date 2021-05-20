@@ -17,6 +17,7 @@
   "enableUserAssignment": "true",
   "captureCoordinates": true,
   "formType": "DEFAULT",
+  "dueDateLabel": "Due date",
   "remindCompleted": false,
   "displayGenerateEventBox": false,
   "generatedByEnrollmentDate": false,

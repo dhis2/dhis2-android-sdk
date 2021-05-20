@@ -88,6 +88,17 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends BaseM
     }
 
     @Test
+    public void filter_by_due_date_label() {
+        List<ProgramStage> programStages =
+                d2.programModule().programStages()
+                        .byDueDateLabel()
+                        .eq("Due date")
+                        .blockingGet();
+
+        assertThat(programStages.size()).isEqualTo(1);
+    }
+
+    @Test
     public void filter_by_allow_generate_next_visit() {
         List<ProgramStage> programStages =
                 d2.programModule().programStages()

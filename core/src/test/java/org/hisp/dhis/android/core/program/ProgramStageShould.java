@@ -70,6 +70,7 @@ public class ProgramStageShould  extends BaseObjectShould implements ObjectShoul
         assertThat(programStage.captureCoordinates()).isTrue();
         assertThat(programStage.displayGenerateEventBox()).isFalse();
         assertThat(programStage.executionDateLabel()).isNull();
+        assertThat(programStage.dueDateLabel()).isEqualTo("Due date");
         assertThat(programStage.formType()).isEqualTo(FormType.DEFAULT);
         assertThat(programStage.generatedByEnrollmentDate()).isFalse();
         assertThat(programStage.hideDueDate()).isFalse();

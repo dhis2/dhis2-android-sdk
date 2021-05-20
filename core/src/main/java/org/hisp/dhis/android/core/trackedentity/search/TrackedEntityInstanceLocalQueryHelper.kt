@@ -334,7 +334,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
                         statusWhere.appendIsNullValue(EventTableInfo.Columns.EVENT_DATE)
                         statusWhere.appendIsNotNullValue(dot(eventAlias, EventTableInfo.Columns.STATUS))
                         statusWhere.appendKeyGreaterOrEqStringValue(
-                            dot(eventAlias, EventTableInfo.Columns.DUE_DATE), nowStr
+                            "date(${dot(eventAlias, EventTableInfo.Columns.DUE_DATE)})", nowStr
                         )
                     }
                     EventStatus.OVERDUE -> {
@@ -342,7 +342,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
                         statusWhere.appendIsNullValue(EventTableInfo.Columns.EVENT_DATE)
                         statusWhere.appendIsNotNullValue(dot(eventAlias, EventTableInfo.Columns.STATUS))
                         statusWhere.appendKeyLessThanStringValue(
-                            dot(eventAlias, EventTableInfo.Columns.DUE_DATE), nowStr
+                            "date(${dot(eventAlias, EventTableInfo.Columns.DUE_DATE)})", nowStr
                         )
                     }
                     EventStatus.SKIPPED -> {
@@ -365,13 +365,14 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
         refDate: String
     ) {
         if (eventFilter.eventDate() != null) {
+            val refDateStr = "date(${dot(eventAlias, refDate)})"
             dateFilterPeriodHelper.getStartDate(eventFilter.eventDate()!!)?.let { startDate ->
-                val dateStr = DateUtils.SIMPLE_DATE_FORMAT.format(startDate)
-                where.appendKeyGreaterOrEqStringValue("date(${dot(eventAlias, refDate)})", dateStr)
+                val startDateStr = DateUtils.SIMPLE_DATE_FORMAT.format(startDate)
+                where.appendKeyGreaterOrEqStringValue(refDateStr, startDateStr)
             }
             dateFilterPeriodHelper.getEndDate(eventFilter.eventDate()!!)?.let { endDate ->
-                val dateStr = DateUtils.SIMPLE_DATE_FORMAT.format(endDate)
-                where.appendKeyLessThanOrEqStringValue("date(${dot(eventAlias, refDate)})", dateStr)
+                val endDateStr = DateUtils.SIMPLE_DATE_FORMAT.format(endDate)
+                where.appendKeyLessThanOrEqStringValue(refDateStr, endDateStr)
             }
         }
     }

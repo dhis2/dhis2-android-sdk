@@ -25,31 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
-package org.hisp.dhis.android.core.arch.repositories.filters.internal;
+import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
+import org.hisp.dhis.android.core.period.DatePeriod
+import org.hisp.dhis.android.core.period.Period
+import org.hisp.dhis.android.core.period.internal.InPeriodQueryHelper
+import java.util.*
 
-import androidx.annotation.NonNull;
-
-import org.hisp.dhis.android.core.arch.helpers.DateUtils;
-import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator;
-import org.hisp.dhis.android.core.period.DatePeriod;
-import org.hisp.dhis.android.core.period.Period;
-import org.hisp.dhis.android.core.period.internal.InPeriodQueryHelper;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-public final class DateFilterConnector<R extends BaseRepository> extends BaseAbstractFilterConnector<R, Date> {
-
-    DateFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
-                        RepositoryScope scope,
-                        String key) {
-        super(repositoryFactory, scope, key);
-    }
+abstract class DateFilterConnector<R : BaseRepository> internal constructor(
+    repositoryFactory: BaseRepositoryFactory<R>,
+    scope: RepositoryScope,
+    key: String,
+    val formatter: SafeDateFormat
+) : BaseAbstractFilterConnector<R, Date>(repositoryFactory, scope, key) {
 
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
@@ -57,8 +50,8 @@ public final class DateFilterConnector<R extends BaseRepository> extends BaseAbs
      * @param value value to compare with the target field
      * @return the new repository
      */
-    public R before(Date value) {
-        return newWithWrappedScope(FilterItemOperator.LT, value);
+    fun before(value: Date): R {
+        return newWithWrappedScope(FilterItemOperator.LT, value)
     }
 
     /**
@@ -67,8 +60,8 @@ public final class DateFilterConnector<R extends BaseRepository> extends BaseAbs
      * @param value value to compare with the target field
      * @return the new repository
      */
-    public R beforeOrEqual(Date value) {
-        return newWithWrappedScope(FilterItemOperator.LE, value);
+    fun beforeOrEqual(value: Date): R {
+        return newWithWrappedScope(FilterItemOperator.LE, value)
     }
 
     /**
@@ -77,8 +70,8 @@ public final class DateFilterConnector<R extends BaseRepository> extends BaseAbs
      * @param value value to compare with the target field
      * @return the new repository
      */
-    public R after(Date value) {
-        return newWithWrappedScope(FilterItemOperator.GT, value);
+    fun after(value: Date): R {
+        return newWithWrappedScope(FilterItemOperator.GT, value)
     }
 
     /**
@@ -87,8 +80,8 @@ public final class DateFilterConnector<R extends BaseRepository> extends BaseAbs
      * @param value value to compare with the target field
      * @return the new repository
      */
-    public R afterOrEqual(Date value) {
-        return newWithWrappedScope(FilterItemOperator.GE, value);
+    fun afterOrEqual(value: Date): R {
+        return newWithWrappedScope(FilterItemOperator.GE, value)
     }
 
     /**
@@ -98,8 +91,8 @@ public final class DateFilterConnector<R extends BaseRepository> extends BaseAbs
      * @param datePeriods date periods to compare with the target field
      * @return the new repository
      */
-    public R inDatePeriods(@NonNull List<DatePeriod> datePeriods) {
-        return newWithWrappedScope(InPeriodQueryHelper.buildInPeriodsQuery(key, datePeriods));
+    fun inDatePeriods(datePeriods: List<DatePeriod>): R {
+        return newWithWrappedScope(InPeriodQueryHelper.buildInPeriodsQuery(key, datePeriods, formatter))
     }
 
     /**
@@ -109,15 +102,15 @@ public final class DateFilterConnector<R extends BaseRepository> extends BaseAbs
      * @param periods periods to compare with the target field
      * @return the new repository
      */
-    public R inPeriods(@NonNull List<Period> periods) {
-        List<DatePeriod> datePeriods = new ArrayList<>();
-        for (Period period : periods) {
-            datePeriods.add(DatePeriod.builder().startDate(period.startDate()).endDate(period.endDate()).build());
+    fun inPeriods(periods: List<Period>): R {
+        val datePeriods: MutableList<DatePeriod> = ArrayList()
+        for (period in periods) {
+            datePeriods.add(DatePeriod.builder().startDate(period.startDate()).endDate(period.endDate()).build())
         }
-        return inDatePeriods(datePeriods);
+        return inDatePeriods(datePeriods)
     }
 
-    protected String wrapValue(Date value) {
-        return "'" + DateUtils.DATE_FORMAT.format(value) + "'";
+    override fun wrapValue(value: Date): String {
+        return "'${formatter.format(value)}'"
     }
 }

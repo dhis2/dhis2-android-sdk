@@ -25,40 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.period.internal
 
-package org.hisp.dhis.android.core.period.internal;
+import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.period.DatePeriod
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.period.DatePeriod;
+internal object InPeriodQueryHelper {
 
-import java.util.List;
-
-public final class InPeriodQueryHelper {
-
-    private InPeriodQueryHelper(){
-    }
-
-    public static String buildInPeriodsQuery(String key, List<DatePeriod> datePeriods) {
-        WhereClauseBuilder builder = new WhereClauseBuilder();
-        for (int i = 0; i < datePeriods.size(); i++) {
-            builder.appendComplexQuery(buildWhereClause(key, datePeriods, i));
-
-            if (i != datePeriods.size() - 1) {
+    fun buildInPeriodsQuery(key: String, datePeriods: List<DatePeriod>, formatter: SafeDateFormat): String {
+        val builder = WhereClauseBuilder()
+        datePeriods.forEachIndexed { index, datePeriod ->
+            builder.appendComplexQuery(buildWhereClause(key, datePeriod, formatter))
+            if (index != datePeriods.size - 1) {
                 builder
-                        .appendOperator(" OR ");
+                    .appendOperator(" OR ")
             }
         }
-
-        return builder.build();
+        return builder.build()
     }
 
-    private static String buildWhereClause(String key, List<DatePeriod> datePeriods, int i) {
-        return new WhereClauseBuilder()
-                .appendKeyGreaterOrEqStringValue(key,
-                        BaseIdentifiableObject.DATE_FORMAT.format(datePeriods.get(i).startDate()))
-                .appendKeyLessThanOrEqStringValue(key,
-                        BaseIdentifiableObject.DATE_FORMAT.format(datePeriods.get(i).endDate()))
-                .build();
+    private fun buildWhereClause(key: String, datePeriod: DatePeriod, formatter: SafeDateFormat): String {
+        return WhereClauseBuilder()
+            .appendKeyGreaterOrEqStringValue(key, formatter.format(datePeriod.startDate()))
+            .appendKeyLessThanOrEqStringValue(key, formatter.format(datePeriod.endDate()))
+            .build()
     }
 }

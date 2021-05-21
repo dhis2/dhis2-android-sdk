@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.program.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableWithStyleStatementBinder;
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
@@ -39,8 +41,6 @@ import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageTableInfo;
 
-import androidx.annotation.NonNull;
-
 public final class ProgramStageStore {
 
     private static StatementBinder<ProgramStage> BINDER = new IdentifiableWithStyleStatementBinder<ProgramStage>() {
@@ -51,26 +51,27 @@ public final class ProgramStageStore {
             w.bind(9, o.description());
             w.bind(10, o.displayDescription());
             w.bind(11, o.executionDateLabel());
-            w.bind(12, o.allowGenerateNextVisit());
-            w.bind(13, o.validCompleteOnly());
-            w.bind(14, o.reportDateToUse());
-            w.bind(15, o.openAfterEnrollment());
-            w.bind(16, o.repeatable());
-            w.bind(17, o.formType().name());
-            w.bind(18, o.displayGenerateEventBox());
-            w.bind(19, o.generatedByEnrollmentDate());
-            w.bind(20, o.autoGenerateEvent());
-            w.bind(21, o.sortOrder());
-            w.bind(22, o.hideDueDate());
-            w.bind(23, o.blockEntryForm());
-            w.bind(24, o.minDaysFromStart());
-            w.bind(25, o.standardInterval());
-            w.bind(26, UidsHelper.getUidOrNull(o.program()));
-            w.bind(27, o.periodType());
-            w.bind(28, o.access().data().write());
-            w.bind(29, o.remindCompleted());
-            w.bind(30, o.featureType());
-            w.bind(31, o.enableUserAssignment());
+            w.bind(12, o.dueDateLabel());
+            w.bind(13, o.allowGenerateNextVisit());
+            w.bind(14, o.validCompleteOnly());
+            w.bind(15, o.reportDateToUse());
+            w.bind(16, o.openAfterEnrollment());
+            w.bind(17, o.repeatable());
+            w.bind(18, o.formType().name());
+            w.bind(19, o.displayGenerateEventBox());
+            w.bind(20, o.generatedByEnrollmentDate());
+            w.bind(21, o.autoGenerateEvent());
+            w.bind(22, o.sortOrder());
+            w.bind(23, o.hideDueDate());
+            w.bind(24, o.blockEntryForm());
+            w.bind(25, o.minDaysFromStart());
+            w.bind(26, o.standardInterval());
+            w.bind(27, UidsHelper.getUidOrNull(o.program()));
+            w.bind(28, o.periodType());
+            w.bind(29, o.access().data().write());
+            w.bind(30, o.remindCompleted());
+            w.bind(31, o.featureType());
+            w.bind(32, o.enableUserAssignment());
         }
     };
 

@@ -65,6 +65,7 @@ public final class ProgramStageFields {
                     fh.<String>field(Columns.DESCRIPTION),
                     fh.<String>field(Columns.DISPLAY_DESCRIPTION),
                     fh.<String>field(Columns.EXECUTION_DATE_LABEL),
+                    fh.<String>field(Columns.DUE_DATE_LABEL),
                     fh.<Boolean>field(Columns.ALLOW_GENERATE_NEXT_VISIT),
                     fh.<Boolean>field(Columns.VALID_COMPLETE_ONLY),
                     fh.<String>field(Columns.REPORT_DATE_TO_USE),

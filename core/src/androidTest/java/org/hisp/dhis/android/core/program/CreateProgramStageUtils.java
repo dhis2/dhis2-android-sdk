@@ -40,6 +40,7 @@ public class CreateProgramStageUtils {
     private static final String DISPLAY_NAME = "test_display_name";
 
     private static final String EXECUTION_DATE_LABEL = "test_executionDateLabel";
+    private static final String DUE_DATE_LABEL = "test_dueDateLabel";
     private static final Integer ALLOW_GENERATE_NEXT_VISIT = 0;
     private static final Integer VALID_COMPLETE_ONLY = 0;
     private static final String REPORT_DATE_TO_USE = "test_reportDateToUse";
@@ -69,6 +70,7 @@ public class CreateProgramStageUtils {
         programStage.put(IdentifiableColumns.CREATED, DATE);
         programStage.put(IdentifiableColumns.LAST_UPDATED, DATE);
         programStage.put(ProgramStageTableInfo.Columns.EXECUTION_DATE_LABEL, EXECUTION_DATE_LABEL);
+        programStage.put(ProgramStageTableInfo.Columns.DUE_DATE_LABEL, DUE_DATE_LABEL);
         programStage.put(ProgramStageTableInfo.Columns.ALLOW_GENERATE_NEXT_VISIT, ALLOW_GENERATE_NEXT_VISIT);
         programStage.put(ProgramStageTableInfo.Columns.VALID_COMPLETE_ONLY, VALID_COMPLETE_ONLY);
         programStage.put(ProgramStageTableInfo.Columns.REPORT_DATE_TO_USE, REPORT_DATE_TO_USE);

@@ -55,6 +55,7 @@ public final class ProgramStageTableInfo {
         public static final String DESCRIPTION = "description";
         public static final String DISPLAY_DESCRIPTION = "displayDescription";
         public static final String EXECUTION_DATE_LABEL = "executionDateLabel";
+        public static final String DUE_DATE_LABEL = "dueDateLabel";
         public static final String ALLOW_GENERATE_NEXT_VISIT = "allowGenerateNextVisit";
         public static final String VALID_COMPLETE_ONLY = "validCompleteOnly";
         public static final String REPORT_DATE_TO_USE = "reportDateToUse";
@@ -82,6 +83,7 @@ public final class ProgramStageTableInfo {
                     DESCRIPTION,
                     DISPLAY_DESCRIPTION,
                     EXECUTION_DATE_LABEL,
+                    DUE_DATE_LABEL,
                     ALLOW_GENERATE_NEXT_VISIT,
                     VALID_COMPLETE_ONLY,
                     REPORT_DATE_TO_USE,

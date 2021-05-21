@@ -81,6 +81,10 @@ public abstract class ProgramStage extends BaseIdentifiableObject
 
     @Nullable
     @JsonProperty()
+    public abstract String dueDateLabel();
+
+    @Nullable
+    @JsonProperty()
     public abstract Boolean allowGenerateNextVisit();
 
     @Nullable
@@ -209,6 +213,8 @@ public abstract class ProgramStage extends BaseIdentifiableObject
         public abstract Builder displayDescription(String displayDescription);
 
         public abstract Builder executionDateLabel(String executionDateLabel);
+
+        public abstract Builder dueDateLabel(String dueDateLabel);
 
         public abstract Builder allowGenerateNextVisit(Boolean allowGenerateNextVisit);
 

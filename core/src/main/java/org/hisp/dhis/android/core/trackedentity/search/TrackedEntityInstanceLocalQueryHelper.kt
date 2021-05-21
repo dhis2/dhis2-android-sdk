@@ -327,14 +327,24 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
             for (eventStatus in statusList) {
                 val statusWhere = WhereClauseBuilder()
                 when (eventStatus) {
-                    EventStatus.ACTIVE, EventStatus.COMPLETED, EventStatus.VISITED -> {
-                        statusWhere.appendKeyStringValue(dot(eventAlias, EventTableInfo.Columns.STATUS), eventStatus)
+                    EventStatus.ACTIVE -> {
                         appendEventDates(statusWhere, eventFilter, EventTableInfo.Columns.EVENT_DATE)
+                        statusWhere.appendInKeyEnumValues(
+                            dot(eventAlias, EventTableInfo.Columns.STATUS),
+                            listOf(EventStatus.ACTIVE, EventStatus.SCHEDULE, EventStatus.OVERDUE)
+                        )
+                    }
+                    EventStatus.COMPLETED, EventStatus.VISITED -> {
+                        appendEventDates(statusWhere, eventFilter, EventTableInfo.Columns.EVENT_DATE)
+                        statusWhere.appendKeyStringValue(dot(eventAlias, EventTableInfo.Columns.STATUS), eventStatus)
                     }
                     EventStatus.SCHEDULE -> {
                         appendEventDates(statusWhere, eventFilter, EventTableInfo.Columns.DUE_DATE)
                         statusWhere.appendIsNullValue(EventTableInfo.Columns.EVENT_DATE)
-                        statusWhere.appendIsNotNullValue(dot(eventAlias, EventTableInfo.Columns.STATUS))
+                        statusWhere.appendInKeyEnumValues(
+                            dot(eventAlias, EventTableInfo.Columns.STATUS),
+                            listOf(EventStatus.SCHEDULE, EventStatus.OVERDUE)
+                        )
                         statusWhere.appendKeyGreaterOrEqStringValue(
                             dot(eventAlias, EventTableInfo.Columns.DUE_DATE), nowStr
                         )
@@ -342,7 +352,10 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
                     EventStatus.OVERDUE -> {
                         appendEventDates(statusWhere, eventFilter, EventTableInfo.Columns.DUE_DATE)
                         statusWhere.appendIsNullValue(EventTableInfo.Columns.EVENT_DATE)
-                        statusWhere.appendIsNotNullValue(dot(eventAlias, EventTableInfo.Columns.STATUS))
+                        statusWhere.appendInKeyEnumValues(
+                            dot(eventAlias, EventTableInfo.Columns.STATUS),
+                            listOf(EventStatus.SCHEDULE, EventStatus.OVERDUE)
+                        )
                         statusWhere.appendKeyLessThanStringValue(
                             dot(eventAlias, EventTableInfo.Columns.DUE_DATE), nowStr
                         )

@@ -163,18 +163,16 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
             where.appendKeyStringValue(dot(enrollmentAlias, program), escapeQuotes(scope.program()))
         }
         if (scope.programDate() != null) {
+            val enrollmentDateStr = "date(${dot(enrollmentAlias, enrollmentDate)})"
+
             dateFilterPeriodHelper.getStartDate(scope.programDate()!!)?.let { startDate ->
-                where.appendKeyGreaterOrEqStringValue(
-                    dot(enrollmentAlias, enrollmentDate),
-                    DateUtils.SIMPLE_DATE_FORMAT.format(startDate)
-                )
+                val startDateStr = DateUtils.SIMPLE_DATE_FORMAT.format(startDate)
+                where.appendKeyGreaterOrEqStringValue(enrollmentDateStr, startDateStr)
             }
 
             dateFilterPeriodHelper.getEndDate(scope.programDate()!!)?.let { endDate ->
-                where.appendKeyLessThanOrEqStringValue(
-                    dot(enrollmentAlias, enrollmentDate),
-                    DateUtils.SIMPLE_DATE_FORMAT.format(endDate)
-                )
+                val endDateStr = DateUtils.SIMPLE_DATE_FORMAT.format(endDate)
+                where.appendKeyLessThanOrEqStringValue(enrollmentDateStr, endDateStr)
             }
         }
         if (scope.enrollmentStatus() != null) {
@@ -346,7 +344,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
                             listOf(EventStatus.SCHEDULE, EventStatus.OVERDUE)
                         )
                         statusWhere.appendKeyGreaterOrEqStringValue(
-                            dot(eventAlias, EventTableInfo.Columns.DUE_DATE), nowStr
+                            "date(${dot(eventAlias, EventTableInfo.Columns.DUE_DATE)})", nowStr
                         )
                     }
                     EventStatus.OVERDUE -> {
@@ -357,7 +355,7 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
                             listOf(EventStatus.SCHEDULE, EventStatus.OVERDUE)
                         )
                         statusWhere.appendKeyLessThanStringValue(
-                            dot(eventAlias, EventTableInfo.Columns.DUE_DATE), nowStr
+                            "date(${dot(eventAlias, EventTableInfo.Columns.DUE_DATE)})", nowStr
                         )
                     }
                     EventStatus.SKIPPED -> {
@@ -380,13 +378,14 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
         refDate: String
     ) {
         if (eventFilter.eventDate() != null) {
+            val refDateStr = "date(${dot(eventAlias, refDate)})"
             dateFilterPeriodHelper.getStartDate(eventFilter.eventDate()!!)?.let { startDate ->
-                val dateStr = DateUtils.SIMPLE_DATE_FORMAT.format(startDate)
-                where.appendKeyGreaterOrEqStringValue(dot(eventAlias, refDate), dateStr)
+                val startDateStr = DateUtils.SIMPLE_DATE_FORMAT.format(startDate)
+                where.appendKeyGreaterOrEqStringValue(refDateStr, startDateStr)
             }
             dateFilterPeriodHelper.getEndDate(eventFilter.eventDate()!!)?.let { endDate ->
-                val dateStr = DateUtils.SIMPLE_DATE_FORMAT.format(endDate)
-                where.appendKeyLessThanOrEqStringValue(dot(eventAlias, refDate), dateStr)
+                val endDateStr = DateUtils.SIMPLE_DATE_FORMAT.format(endDate)
+                where.appendKeyLessThanOrEqStringValue(refDateStr, endDateStr)
             }
         }
     }

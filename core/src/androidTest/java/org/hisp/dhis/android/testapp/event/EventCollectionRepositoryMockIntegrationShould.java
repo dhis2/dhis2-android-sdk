@@ -36,12 +36,14 @@ import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventCreateProjection;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.period.Period;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -181,9 +183,14 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
 
     @Test
     public void filter_by_event_date() throws ParseException {
+        List<Period> periods = new ArrayList<>();
+        periods.add(Period.builder()
+                .startDate(BaseNameableObject.DATE_FORMAT.parse("2017-02-27T00:00:00.000"))
+                .endDate(BaseNameableObject.DATE_FORMAT.parse("2017-02-27T00:00:00.000"))
+                .build());
         List<Event> events =
                 d2.eventModule().events()
-                        .byEventDate().eq(BaseNameableObject.DATE_FORMAT.parse("2017-02-27T00:00:00.000"))
+                        .byEventDate().inPeriods(periods)
                         .blockingGet();
 
         assertThat(events.size()).isEqualTo(1);
@@ -193,7 +200,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     public void filter_by_complete_date() throws ParseException {
         List<Event> events =
                 d2.eventModule().events()
-                        .byCompleteDate().eq(BaseNameableObject.DATE_FORMAT.parse("2016-02-27T00:00:00.000"))
+                        .byCompleteDate().eq(BaseNameableObject.DATE_FORMAT.parse("2016-02-27T14:34:00.000"))
                         .blockingGet();
 
         assertThat(events.size()).isEqualTo(1);
@@ -203,10 +210,11 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     public void filter_by_due_date() throws ParseException {
         List<Event> events =
                 d2.eventModule().events()
-                        .byDueDate().eq(BaseNameableObject.DATE_FORMAT.parse("2017-01-28T00:00:00.000"))
+                        .byDueDate()
+                        .afterOrEqual(BaseNameableObject.DATE_FORMAT.parse("2017-01-28T12:35:00.000"))
                         .blockingGet();
 
-        assertThat(events.size()).isEqualTo(1);
+        assertThat(events.size()).isEqualTo(2);
     }
 
     @Test

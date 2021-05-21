@@ -25,40 +25,15 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
-package org.hisp.dhis.android.core.period.internal;
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.period.DatePeriod;
-
-import java.util.List;
-
-public final class InPeriodQueryHelper {
-
-    private InPeriodQueryHelper(){
-    }
-
-    public static String buildInPeriodsQuery(String key, List<DatePeriod> datePeriods) {
-        WhereClauseBuilder builder = new WhereClauseBuilder();
-        for (int i = 0; i < datePeriods.size(); i++) {
-            builder.appendComplexQuery(buildWhereClause(key, datePeriods, i));
-
-            if (i != datePeriods.size() - 1) {
-                builder
-                        .appendOperator(" OR ");
-            }
-        }
-
-        return builder.build();
-    }
-
-    private static String buildWhereClause(String key, List<DatePeriod> datePeriods, int i) {
-        return new WhereClauseBuilder()
-                .appendKeyGreaterOrEqStringValue(key,
-                        BaseIdentifiableObject.DATE_FORMAT.format(datePeriods.get(i).startDate()))
-                .appendKeyLessThanOrEqStringValue(key,
-                        BaseIdentifiableObject.DATE_FORMAT.format(datePeriods.get(i).endDate()))
-                .build();
-    }
-}
+class SimpleDateFilterConnector<R : BaseRepository> internal constructor(
+    repositoryFactory: BaseRepositoryFactory<R>,
+    scope: RepositoryScope,
+    key: String
+) : DateFilterConnector<R>(repositoryFactory, scope, "date($key)", DateUtils.SIMPLE_DATE_FORMAT)

@@ -133,18 +133,28 @@ public class BiWeeklyPeriodGeneratorShould {
     }
 
     @Test
-    public void generate_periods_in_this_year() {
+    public void generate_periods_in_this_year() throws ParseException {
         calendar.set(2020, 7, 29);
         PeriodGenerator generator = new BiWeeklyPeriodGenerator(calendar);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
         List<Period> periods = generator.generatePeriodsInYear(0);
 
-        // TODO Related to https://jira.dhis2.org/browse/ANDROSDK-1315
-        /*
         assertThat(periods.size()).isEqualTo(27);
         assertThat(periods.get(0).periodId()).isEqualTo("2020BiW1");
         assertThat(periods.get(26).periodId()).isEqualTo("2020BiW27");
-         */
+
+        assertThat(periods.get(26).startDate()).isEqualTo(format.parse("2020-12-28"));
+        assertThat(periods.get(26).endDate()).isEqualTo(format.parse("2021-1-10"));
+
+        calendar.set(2021, 4, 15);
+        generator = new BiWeeklyPeriodGenerator(calendar);
+
+        periods = generator.generatePeriodsInYear(0);
+
+        assertThat(periods.get(0).periodId()).isEqualTo("2021BiW1");
+        assertThat(periods.get(0).startDate()).isEqualTo(format.parse("2021-1-4"));
+        assertThat(periods.get(0).endDate()).isEqualTo(format.parse("2021-1-17"));
     }
 
     @Test

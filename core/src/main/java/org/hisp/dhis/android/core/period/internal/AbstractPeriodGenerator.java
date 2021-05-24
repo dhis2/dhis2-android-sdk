@@ -91,16 +91,15 @@ abstract class AbstractPeriodGenerator implements PeriodGenerator {
     public final Period generatePeriod(Date date, int periodOffset) {
         this.calendar = (Calendar) initialCalendar.clone();
 
-        calendar.setTime(date);
-        setCalendarToStartTimeOfADay(calendar);
-        moveToStartOfCurrentPeriod();
-        this.movePeriods(periodOffset);
+        moveToStartOfThePeriodOfADayWithOffset(date, periodOffset);
 
         Date startDate = calendar.getTime();
         String periodId = generateId();
         this.movePeriods(1);
         calendar.add(Calendar.MILLISECOND, -1);
         Date endDate = calendar.getTime();
+
+        moveToStartOfThePeriodOfADayWithOffset(date, periodOffset);
 
         return Period.builder()
                 .periodType(periodType)
@@ -135,6 +134,13 @@ abstract class AbstractPeriodGenerator implements PeriodGenerator {
         }
 
         return periods;
+    }
+
+    private void moveToStartOfThePeriodOfADayWithOffset(Date date, int periodOffset) {
+        this.calendar.setTime(date);
+        setCalendarToStartTimeOfADay(calendar);
+        moveToStartOfCurrentPeriod();
+        this.movePeriods(periodOffset);
     }
 
     static void setCalendarToStartTimeOfADay(Calendar calendar) {

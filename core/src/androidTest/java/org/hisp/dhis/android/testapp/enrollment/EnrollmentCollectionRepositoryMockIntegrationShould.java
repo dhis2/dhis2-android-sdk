@@ -138,7 +138,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
 
     @Test
     public void filter_by_enrollment_date() throws ParseException {
-        Date created = BaseIdentifiableObject.DATE_FORMAT.parse("2018-01-10T00:00:00.000");
+        Date created = BaseIdentifiableObject.DATE_FORMAT.parse("2018-01-10T13:45:00.000");
         List<Enrollment> enrollments = d2.enrollmentModule().enrollments()
                 .byEnrollmentDate().eq(created)
                 .blockingGet();
@@ -147,7 +147,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
 
     @Test
     public void filter_by_incident_date() throws ParseException {
-        Date lastUpdated = BaseIdentifiableObject.DATE_FORMAT.parse("2019-01-10T00:00:00.000");
+        Date lastUpdated = BaseIdentifiableObject.DATE_FORMAT.parse("2019-01-10T12:23:00.000");
         List<Enrollment> enrollments = d2.enrollmentModule().enrollments()
                 .byIncidentDate().eq(lastUpdated)
                 .blockingGet();

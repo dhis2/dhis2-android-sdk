@@ -163,15 +163,15 @@ public final class EventCollectionRepository
     }
 
     public DateFilterConnector<EventCollectionRepository> byEventDate() {
-        return cf.date(Columns.EVENT_DATE);
+        return cf.simpleDate(Columns.EVENT_DATE);
     }
 
     public DateFilterConnector<EventCollectionRepository> byCompleteDate() {
-        return cf.date(Columns.COMPLETE_DATE);
+        return cf.simpleDate(Columns.COMPLETE_DATE);
     }
 
     public DateFilterConnector<EventCollectionRepository> byDueDate() {
-        return cf.date(Columns.DUE_DATE);
+        return cf.simpleDate(Columns.DUE_DATE);
     }
 
     public EnumFilterConnector<EventCollectionRepository, State> byState() {

@@ -100,8 +100,8 @@ public class TrackedEntityInstanceLocalQueryHelperShould {
                 .build();
 
         String sqlQuery = localQueryHelper.getSqlQuery(scope, Collections.emptySet(), 50);
-        assertThat(sqlQuery).contains("enrollmentDate >= '2019-04-15'");
-        assertThat(sqlQuery).contains("enrollmentDate <= '2019-05-19'");
+        assertThat(sqlQuery).contains("date(en.enrollmentDate) >= '2019-04-15'");
+        assertThat(sqlQuery).contains("date(en.enrollmentDate) <= '2019-05-19'");
     }
 
     @Test

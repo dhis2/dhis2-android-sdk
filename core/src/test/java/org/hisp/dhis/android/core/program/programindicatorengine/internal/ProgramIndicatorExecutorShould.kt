@@ -363,6 +363,15 @@ class ProgramIndicatorExecutorShould {
         assertThat(result).isEqualTo("5.3")
     }
 
+    @Test
+    @Throws(ParseException::class)
+    fun evaluate_tei_count() {
+        setExpression(`var`("tei_count"))
+
+        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression())
+        assertThat(result).isEqualTo("1")
+    }
+
     // -------------------------------------------------------------------------
     // Supportive methods
     // -------------------------------------------------------------------------

@@ -28,7 +28,18 @@
 
 package org.hisp.dhis.android.core.common;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 public enum AggregationType {
     SUM, AVERAGE, AVERAGE_SUM_ORG_UNIT, LAST, LAST_AVERAGE_ORG_UNIT, COUNT,
-    STDDEV, VARIANCE, MIN, MAX, NONE, CUSTOM, DEFAULT
+    STDDEV, VARIANCE, MIN, MAX, NONE, CUSTOM, DEFAULT;
+
+    private static final Set<AggregationType> numericOrBooleanAggregations = new HashSet<>(Arrays.asList(SUM, AVERAGE, AVERAGE_SUM_ORG_UNIT, STDDEV, VARIANCE, MIN, MAX));
+
+    public boolean isNumericOrBooleanOnly() {
+        return numericOrBooleanAggregations.contains(this);
+    }
+
 }

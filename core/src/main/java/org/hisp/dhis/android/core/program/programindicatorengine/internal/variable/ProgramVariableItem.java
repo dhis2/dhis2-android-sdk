@@ -46,6 +46,7 @@ import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.V_ENROLLMEN
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.V_EVENT_COUNT;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.V_EVENT_DATE;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.V_INCIDENT_DATE;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.V_TEI_COUNT;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.V_VALUE_COUNT;
 import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.V_ZERO_POS_VALUE_COUNT;
 
@@ -63,6 +64,7 @@ public class ProgramVariableItem extends ProgramExpressionItem {
             .put(V_CREATION_DATE, new VCreationDate())
             .put(V_COMPLETED_DATE, new VCompletedDate())
 
+            .put(V_TEI_COUNT, new VTeiCount())
             .put(V_ENROLLMENT_STATUS, new VEnrollmentStatus())
             .put(V_ENROLLMENT_COUNT, new VEnrollmentCount())
 

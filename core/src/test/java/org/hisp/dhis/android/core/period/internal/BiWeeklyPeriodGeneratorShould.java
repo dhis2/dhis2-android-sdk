@@ -39,6 +39,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -74,6 +75,20 @@ public class BiWeeklyPeriodGeneratorShould {
         List<Period> generatedPeriods = new BiWeeklyPeriodGenerator(calendar).generatePeriods(-2, 0);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period1, period2));
+    }
+
+    @Test
+    public void generate_all_bi_weekly_periods() {
+        calendar.set(2021, 2, 25);
+
+        List<Period> generatedPeriods = new BiWeeklyPeriodGenerator(calendar).generatePeriods(
+                PeriodType.BiWeekly.getDefaultStartPeriods(),
+                PeriodType.BiWeekly.getDefaultEndPeriods());
+
+        List<String> periodIds = generatedPeriods.stream().map(period -> period.periodId()).collect(Collectors.toList());
+
+        assertThat(periodIds.contains("2020BiW27")).isTrue();
+        assertThat(generatedPeriods.size()).isEqualTo(13);
     }
 
     @Test

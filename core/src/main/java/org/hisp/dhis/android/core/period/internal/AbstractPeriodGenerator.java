@@ -67,22 +67,11 @@ abstract class AbstractPeriodGenerator implements PeriodGenerator {
         movePeriods(start);
 
         for (int i = 0; i < end - start; i++) {
-            Date startDate = calendar.getTime();
-            String periodId = generateId();
-
-            this.movePeriods(1);
-            calendar.add(Calendar.MILLISECOND, -1);
-            Date endDate = calendar.getTime();
-
-            Period period = Period.builder()
-                    .periodType(periodType)
-                    .startDate(startDate)
-                    .periodId(periodId)
-                    .endDate(endDate)
-                    .build();
+            Period period = generatePeriod(calendar.getTime(), 0);
             periods.add(period);
 
-            calendar.add(Calendar.MILLISECOND, 1);
+            calendar.setTime(period.startDate());
+            this.movePeriods(1);
         }
         return periods;
     }

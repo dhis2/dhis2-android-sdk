@@ -25,25 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.analytics
 
-import dagger.Reusable
-import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepository
-import org.hisp.dhis.android.core.analytics.aggregated.VisualizationsRepository
-import org.hisp.dhis.android.core.analytics.linelist.EventLineListRepository
-import javax.inject.Inject
+package org.hisp.dhis.android.core.analytics.aggregated
 
-@Reusable
-internal class AnalyticsModuleImpl @Inject constructor(
-    private val eventLineListRepository: EventLineListRepository,
-    private val analyticsRepository: AnalyticsRepository,
-    private val visualizationsRepository: VisualizationsRepository
-) : AnalyticsModule {
+import io.reactivex.Single
 
-    override fun eventLineList(): EventLineListRepository = eventLineListRepository
+interface VisualizationsRepository {
 
-    override fun analytics(): AnalyticsRepository = analyticsRepository
+    fun withVisualization(visualization: String): VisualizationsRepository
 
-    override fun visualizations(): VisualizationsRepository = visualizationsRepository
+    fun evaluate(): Single<GridAnalyticsResponse>
+
+    fun blockingEvaluate(): GridAnalyticsResponse
 
 }

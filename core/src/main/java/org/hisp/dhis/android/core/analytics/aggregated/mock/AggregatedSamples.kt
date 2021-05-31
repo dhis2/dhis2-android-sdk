@@ -1,19 +1,19 @@
 /*
  *  Copyright (c) 2004-2021, University of Oslo
  *  All rights reserved.
- *
+ *  
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions are met:
  *  Redistributions of source code must retain the above copyright notice, this
  *  list of conditions and the following disclaimer.
- *
+ *  
  *  Redistributions in binary form must reproduce the above copyright notice,
  *  this list of conditions and the following disclaimer in the documentation
  *  and/or other materials provided with the distribution.
  *  Neither the name of the HISP project nor the names of its contributors may
  *  be used to endorse or promote products derived from this software without
  *  specific prior written permission.
- *
+ *  
  *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -25,25 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.analytics
 
-import dagger.Reusable
-import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepository
-import org.hisp.dhis.android.core.analytics.aggregated.VisualizationsRepository
-import org.hisp.dhis.android.core.analytics.linelist.EventLineListRepository
-import javax.inject.Inject
+package org.hisp.dhis.android.core.analytics.aggregated.mock
 
-@Reusable
-internal class AnalyticsModuleImpl @Inject constructor(
-    private val eventLineListRepository: EventLineListRepository,
-    private val analyticsRepository: AnalyticsRepository,
-    private val visualizationsRepository: VisualizationsRepository
-) : AnalyticsModule {
+object AggregatedSamples {
+    val dataElement1 = "fbfJHSPpUQD"    //ANC 1st visit
+    val dataElement2 = "cYeuwXTCPkU"    //ANC 2nd visit
 
-    override fun eventLineList(): EventLineListRepository = eventLineListRepository
+    val cc1 = "fMZEcRHuamy"             //Fixed / Outreach
+    val co1 = "pq2XI5kz2BY"             //Fixed
+    val co2 = "PT59n8BQbqM"             //Outreach
 
-    override fun analytics(): AnalyticsRepository = analyticsRepository
+    val period1 = "202103"
+    val period2 = "202102"
 
-    override fun visualizations(): VisualizationsRepository = visualizationsRepository
-
+    val orgunit1 = "DiszpKrYNg8"        //Ngelehun
+    val orgunit2 = "g8upMTyEZGZ"        //Njandama
 }

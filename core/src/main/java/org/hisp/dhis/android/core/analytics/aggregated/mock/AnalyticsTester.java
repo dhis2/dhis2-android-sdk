@@ -25,25 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.analytics
 
-import dagger.Reusable
-import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepository
-import org.hisp.dhis.android.core.analytics.aggregated.VisualizationsRepository
-import org.hisp.dhis.android.core.analytics.linelist.EventLineListRepository
-import javax.inject.Inject
+package org.hisp.dhis.android.core.analytics.aggregated.mock;
 
-@Reusable
-internal class AnalyticsModuleImpl @Inject constructor(
-    private val eventLineListRepository: EventLineListRepository,
-    private val analyticsRepository: AnalyticsRepository,
-    private val visualizationsRepository: VisualizationsRepository
-) : AnalyticsModule {
+import org.hisp.dhis.android.core.analytics.aggregated.Dimension;
+import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem;
+import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse;
 
-    override fun eventLineList(): EventLineListRepository = eventLineListRepository
+import java.util.ArrayList;
+import java.util.List;
 
-    override fun analytics(): AnalyticsRepository = analyticsRepository
+public class AnalyticsTester {
 
-    override fun visualizations(): VisualizationsRepository = visualizationsRepository
+    void test() {
+        DimensionalResponse response = DimensionalSamples.INSTANCE.getSample1();
 
+        DimensionItem dataElement = new DimensionItem.DataItem.DataElement("uid");
+        DimensionItem cat = new DimensionItem.CategoryItem("uid", new ArrayList<>());
+
+        List<DimensionItem> items = new ArrayList<>();
+
+        items.add(dataElement);
+        items.add(cat);
+
+    }
 }

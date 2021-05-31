@@ -25,25 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.analytics
 
-import dagger.Reusable
-import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepository
-import org.hisp.dhis.android.core.analytics.aggregated.VisualizationsRepository
-import org.hisp.dhis.android.core.analytics.linelist.EventLineListRepository
-import javax.inject.Inject
+package org.hisp.dhis.android.core.analytics.aggregated
 
-@Reusable
-internal class AnalyticsModuleImpl @Inject constructor(
-    private val eventLineListRepository: EventLineListRepository,
-    private val analyticsRepository: AnalyticsRepository,
-    private val visualizationsRepository: VisualizationsRepository
-) : AnalyticsModule {
+data class DimensionalResponse(
+    val metadata: Map<String, MetadataItem>,
+    val dimensions: List<Dimension>,
+    val filters: List<String>,
+    val values: List<DimensionalValue>
+)
 
-    override fun eventLineList(): EventLineListRepository = eventLineListRepository
-
-    override fun analytics(): AnalyticsRepository = analyticsRepository
-
-    override fun visualizations(): VisualizationsRepository = visualizationsRepository
-
-}
+data class DimensionalValue(
+    val dimensions: List<String>,
+    val value: String?
+)

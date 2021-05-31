@@ -25,25 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.analytics
+
+package org.hisp.dhis.android.core.analytics.aggregated.mock
 
 import dagger.Reusable
+import io.reactivex.Single
 import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepository
-import org.hisp.dhis.android.core.analytics.aggregated.VisualizationsRepository
-import org.hisp.dhis.android.core.analytics.linelist.EventLineListRepository
+import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
+import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
 import javax.inject.Inject
 
 @Reusable
-internal class AnalyticsModuleImpl @Inject constructor(
-    private val eventLineListRepository: EventLineListRepository,
-    private val analyticsRepository: AnalyticsRepository,
-    private val visualizationsRepository: VisualizationsRepository
-) : AnalyticsModule {
+class MockAnalyticsRepository @Inject constructor() : AnalyticsRepository {
 
-    override fun eventLineList(): EventLineListRepository = eventLineListRepository
+    override fun withDimension(dimensionItem: DimensionItem): AnalyticsRepository = this
 
-    override fun analytics(): AnalyticsRepository = analyticsRepository
+    override fun withFilter(dimensionItem: DimensionItem): AnalyticsRepository = this
 
-    override fun visualizations(): VisualizationsRepository = visualizationsRepository
+    override fun evaluate(): Single<DimensionalResponse> {
+        return Single.fromCallable { blockingEvaluate() }
+    }
+
+    override fun blockingEvaluate(): DimensionalResponse = DimensionalSamples.sample1
 
 }

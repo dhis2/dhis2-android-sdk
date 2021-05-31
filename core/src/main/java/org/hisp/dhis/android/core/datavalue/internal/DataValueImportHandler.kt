@@ -64,34 +64,36 @@ internal class DataValueImportHandler @Inject constructor(
         dataValueSet: DataValueSet,
         dataValueImportSummary: DataValueImportSummary
     ) {
-        dataValueImportSummary.importConflicts()?.let { conflicts ->
-            val dataValueConflicts: MutableSet<DataValue> = HashSet()
-            var setStateOnlyForConflicts = true
-            conflicts.forEach { importConflict ->
-                val dataValues = getDataValues(importConflict, dataValueSet.dataValues)
+        getValuesWithConflicts(dataValueSet, dataValueImportSummary)?.let { dataValueConflicts ->
+            setDataValueStates(dataValueSet, dataValueConflicts)
+        } ?: setStateToDataValues(State.WARNING, dataValueSet.dataValues)
+    }
+
+    private fun getValuesWithConflicts(
+        dataValueSet: DataValueSet,
+        dataValueImportSummary: DataValueImportSummary
+    ) = dataValueImportSummary.importConflicts()?.let { conflicts ->
+        val dataValueConflicts: MutableSet<DataValue> = HashSet()
+        conflicts.forEach { importConflict ->
+            getDataValues(importConflict, dataValueSet.dataValues).let { dataValues ->
                 if (dataValues.isEmpty()) {
-                    setStateOnlyForConflicts = false
+                    return null
                 }
                 dataValueConflicts.addAll(dataValues)
             }
-            setDataValueStates(dataValueSet, dataValueConflicts, setStateOnlyForConflicts)
-        } ?: setStateToDataValues(State.WARNING, dataValueSet.dataValues)
+        }
+        dataValueConflicts
     }
 
     private fun setDataValueStates(
         dataValueSet: DataValueSet,
-        dataValueConflicts: Set<DataValue>,
-        setStateOnlyForConflicts: Boolean
+        dataValueConflicts: Set<DataValue>
     ) {
-        if (setStateOnlyForConflicts) {
-            val syncedValues = dataValueSet.dataValues.filter { dataValue ->
-                !dataValueConflicts.contains(dataValue)
-            }
-            setStateToDataValues(State.WARNING, dataValueConflicts)
-            setStateToDataValues(State.SYNCED, syncedValues)
-        } else {
-            setStateToDataValues(State.WARNING, dataValueSet.dataValues)
+        val syncedValues = dataValueSet.dataValues.filter { dataValue ->
+            !dataValueConflicts.contains(dataValue)
         }
+        setStateToDataValues(State.WARNING, dataValueConflicts)
+        setStateToDataValues(State.SYNCED, syncedValues)
     }
 
     private fun getDataValues(

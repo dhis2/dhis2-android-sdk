@@ -25,116 +25,104 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.datavalue.internal
 
-package org.hisp.dhis.android.core.datavalue.internal;
-
-import androidx.annotation.NonNull;
-
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.datavalue.DataValue;
-import org.hisp.dhis.android.core.imports.ImportStatus;
-import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary;
-import org.hisp.dhis.android.core.imports.internal.ImportConflict;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.datavalue.DataValue
+import org.hisp.dhis.android.core.imports.ImportStatus
+import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
+import org.hisp.dhis.android.core.imports.internal.ImportConflict
+import java.util.ArrayList
+import java.util.HashSet
+import java.util.regex.Pattern
+import javax.inject.Inject
 
 @Reusable
-final class DataValueImportHandler {
+internal class DataValueImportHandler @Inject constructor(
+    private val dataValueStore: DataValueStore
+) {
 
-    private final DataValueStore dataValueStore;
-
-    @Inject
-    DataValueImportHandler(DataValueStore dataValueStore) {
-        this.dataValueStore = dataValueStore;
-    }
-
-    void handleImportSummary(@NonNull DataValueSet dataValueSet,
-                             @NonNull DataValueImportSummary dataValueImportSummary) {
-        if (dataValueImportSummary == null || dataValueSet == null) {
-            return;
+    fun handleImportSummary(
+        dataValueSet: DataValueSet,
+        dataValueImportSummary: DataValueImportSummary
+    ) {
+        val state = when (dataValueImportSummary.importStatus()) {
+            ImportStatus.ERROR -> State.ERROR
+            ImportStatus.WARNING -> State.WARNING
+            else -> State.SYNCED
         }
-
-        State state = (dataValueImportSummary.importStatus() == ImportStatus.ERROR) ? State.ERROR :
-                (dataValueImportSummary.importStatus() == ImportStatus.WARNING) ? State.WARNING : State.SYNCED;
 
         if (state == State.WARNING) {
-            handleDataValueWarnings(dataValueSet, dataValueImportSummary);
+            handleDataValueWarnings(dataValueSet, dataValueImportSummary)
         } else {
-            setStateToDataValues(state, dataValueSet.getDataValues());
+            setStateToDataValues(state, dataValueSet.dataValues)
         }
     }
 
-    private void handleDataValueWarnings(DataValueSet dataValueSet, DataValueImportSummary dataValueImportSummary) {
-        if (dataValueImportSummary.importConflicts() == null) {
-            setStateToDataValues(State.WARNING, dataValueSet.getDataValues());
-        } else {
-            Set<DataValue> dataValueConflicts = new HashSet<>();
-            boolean setStateOnlyForConflicts = Boolean.TRUE;
-            for (ImportConflict importConflict : dataValueImportSummary.importConflicts()) {
-                List<DataValue> dataValues = getDataValues(importConflict, dataValueSet.getDataValues());
+    private fun handleDataValueWarnings(
+        dataValueSet: DataValueSet,
+        dataValueImportSummary: DataValueImportSummary
+    ) {
+        dataValueImportSummary.importConflicts()?.let { conflicts ->
+            val dataValueConflicts: MutableSet<DataValue> = HashSet()
+            var setStateOnlyForConflicts = true
+            conflicts.forEach { importConflict ->
+                val dataValues = getDataValues(importConflict, dataValueSet.dataValues)
                 if (dataValues.isEmpty()) {
-                    setStateOnlyForConflicts = Boolean.FALSE;
+                    setStateOnlyForConflicts = false
                 }
-                dataValueConflicts.addAll(dataValues);
+                dataValueConflicts.addAll(dataValues)
             }
-            setDataValueStates(dataValueSet, dataValueConflicts, setStateOnlyForConflicts);
-        }
+            setDataValueStates(dataValueSet, dataValueConflicts, setStateOnlyForConflicts)
+        } ?: setStateToDataValues(State.WARNING, dataValueSet.dataValues)
     }
 
-    private void setDataValueStates(DataValueSet dataValueSet,
-                                    Set<DataValue> dataValueConflicts,
-                                    boolean setStateOnlyForConflicts) {
+    private fun setDataValueStates(
+        dataValueSet: DataValueSet,
+        dataValueConflicts: Set<DataValue>,
+        setStateOnlyForConflicts: Boolean
+    ) {
         if (setStateOnlyForConflicts) {
-            Iterator<DataValue> i = dataValueSet.getDataValues().iterator();
-            while (i.hasNext()) {
-                if (dataValueConflicts.contains(i.next())) {
-                    i.remove();
-                }
+            val syncedValues = dataValueSet.dataValues.filter { dataValue ->
+                !dataValueConflicts.contains(dataValue)
             }
-            setStateToDataValues(State.WARNING, dataValueConflicts);
+            setStateToDataValues(State.WARNING, dataValueConflicts)
+            setStateToDataValues(State.SYNCED, syncedValues)
+        } else {
+            setStateToDataValues(State.WARNING, dataValueSet.dataValues)
         }
-        setStateToDataValues(State.SYNCED, dataValueSet.getDataValues());
     }
 
-    private List<DataValue> getDataValues(ImportConflict importConflict, Collection<DataValue> dataValues)
-            throws IllegalArgumentException {
-        String patternStr = "(?<=:\\s)[a-zA-Z0-9]{11}";
-        Pattern pattern = Pattern.compile(patternStr);
-        Matcher matcher = pattern.matcher(importConflict.value());
+    private fun getDataValues(
+        importConflict: ImportConflict,
+        dataValues: Collection<DataValue>
+    ): List<DataValue> {
+        val patternStr = "(?<=:\\s)[a-zA-Z0-9]{11}"
+        val pattern = Pattern.compile(patternStr)
+        val matcher = pattern.matcher(importConflict.value())
 
-        List<DataValue> foundDataValues = new ArrayList<>();
+        val foundDataValues: MutableList<DataValue> = ArrayList()
 
         if (matcher.find()) {
-            String value = importConflict.object();
-            String dataElementUid = matcher.group(0);
-            for (DataValue dataValue : dataValues) {
-                if (dataValue.value().equals(value) && dataValue.dataElement().equals(dataElementUid)) {
-                    foundDataValues.add(dataValue);
+            val value = importConflict.`object`()
+            val dataElementUid = matcher.group(0)
+            for (dataValue in dataValues) {
+                if (dataValue.value() == value && dataValue.dataElement() == dataElementUid) {
+                    foundDataValues.add(dataValue)
                 }
             }
         }
-
-        return foundDataValues;
+        return foundDataValues
     }
 
-    private void setStateToDataValues(State state, Collection<DataValue> dataValues) {
-        for (DataValue dataValue : dataValues) {
+    private fun setStateToDataValues(state: State, dataValues: Collection<DataValue>) {
+        for (dataValue in dataValues) {
             if (dataValueStore.isDataValueBeingUpload(dataValue)) {
                 if (state == State.SYNCED && dataValueStore.isDeleted(dataValue)) {
-                    dataValueStore.deleteWhere(dataValue);
+                    dataValueStore.deleteWhere(dataValue)
                 } else {
-                    dataValueStore.setState(dataValue, state);
+                    dataValueStore.setState(dataValue, state)
                 }
             }
         }

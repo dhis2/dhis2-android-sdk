@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.program.programindicatorengine.internal.dataitem;
 
-import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
@@ -55,15 +54,8 @@ public class ProgramItemStageElement
         if (eventList != null) {
             List<TrackedEntityDataValue> candidates = getCandidates(eventList, dataElementId);
 
-            AggregationType aggregationType = visitor.getProgramIndicatorContext().programIndicator().aggregationType();
-
             if (!candidates.isEmpty()) {
-                if (AggregationType.LAST.equals(aggregationType) ||
-                        AggregationType.LAST_AVERAGE_ORG_UNIT.equals(aggregationType)) {
-                    value = candidates.get(candidates.size() - 1).value();
-                } else {
-                    value = candidates.get(0).value();
-                }
+                value = candidates.get(candidates.size() - 1).value();
             }
         }
 

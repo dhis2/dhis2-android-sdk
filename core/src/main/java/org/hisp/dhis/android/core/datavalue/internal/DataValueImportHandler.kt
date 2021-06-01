@@ -28,15 +28,15 @@
 package org.hisp.dhis.android.core.datavalue.internal
 
 import dagger.Reusable
+import java.util.ArrayList
+import java.util.HashSet
+import java.util.regex.Pattern
+import javax.inject.Inject
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
-import java.util.ArrayList
-import java.util.HashSet
-import java.util.regex.Pattern
-import javax.inject.Inject
 
 @Reusable
 internal class DataValueImportHandler @Inject constructor(
@@ -47,7 +47,7 @@ internal class DataValueImportHandler @Inject constructor(
         dataValueSet: DataValueSet?,
         dataValueImportSummary: DataValueImportSummary?
     ) {
-        if  (dataValueSet == null || dataValueImportSummary == null) {
+        if (dataValueSet == null || dataValueImportSummary == null) {
             return
         }
 
@@ -76,9 +76,9 @@ internal class DataValueImportHandler @Inject constructor(
     private fun getValuesWithConflicts(
         dataValueSet: DataValueSet,
         dataValueImportSummary: DataValueImportSummary
-    ) = dataValueImportSummary.importConflicts()?.let { conflicts ->
+    ): Set<DataValue>? {
         val dataValueConflicts: MutableSet<DataValue> = HashSet()
-        conflicts.forEach { importConflict ->
+        dataValueImportSummary.importConflicts()?.forEach { importConflict ->
             getDataValues(importConflict, dataValueSet.dataValues).let { dataValues ->
                 if (dataValues.isEmpty()) {
                     return null
@@ -86,7 +86,7 @@ internal class DataValueImportHandler @Inject constructor(
                 dataValueConflicts.addAll(dataValues)
             }
         }
-        dataValueConflicts
+        return dataValueConflicts
     }
 
     private fun setDataValueStates(

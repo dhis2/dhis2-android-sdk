@@ -29,6 +29,8 @@ package org.hisp.dhis.android.core.period.internal;
 
 import com.google.common.collect.Lists;
 
+import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat;
+import org.hisp.dhis.android.core.arch.helpers.DateUtils;
 import org.hisp.dhis.android.core.period.Period;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.junit.Test;
@@ -47,6 +49,8 @@ import static com.google.common.truth.Truth.assertThat;
 public class BiWeeklyPeriodGeneratorShould {
 
     protected final Calendar calendar;
+
+    private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
     public BiWeeklyPeriodGeneratorShould() {
         this.calendar = Calendar.getInstance();
@@ -145,6 +149,26 @@ public class BiWeeklyPeriodGeneratorShould {
         PeriodGenerator biWeeklyGenerator = new BiWeeklyPeriodGenerator(calendar);
         assertThat("2020BiW2").isEqualTo(biWeeklyGenerator.generatePeriod(dateFormatter.parse("2019-12-23"), 2).periodId());
         assertThat("2019BiW25").isEqualTo(biWeeklyGenerator.generatePeriod(dateFormatter.parse("2020-01-02"), -2).periodId());
+    }
+
+    @Test
+    public void generate_last_periods_in_53_weeks_year() {
+        calendar.set(2021, 0, 18);
+        SafeDateFormat dateFormat = DateUtils.SIMPLE_DATE_FORMAT;
+
+        PeriodGenerator biWeeklyGenerator = new BiWeeklyPeriodGenerator(calendar);
+        List<Period> periods = biWeeklyGenerator.generatePeriods(-3, 0);
+
+        Period first2021 = periods.get(periods.size() - 1);
+        Period last2020 = periods.get(periods.size() - 2);
+
+        assertThat(first2021.periodId()).isEqualTo("2021BiW1");
+        assertThat(dateFormat.format(first2021.startDate())).isEqualTo("2021-01-04");
+        assertThat(dateFormat.format(first2021.endDate())).isEqualTo("2021-01-17");
+
+        assertThat(last2020.periodId()).isEqualTo("2020BiW27");
+        assertThat(dateFormat.format(last2020.startDate())).isEqualTo("2020-12-28T");
+        assertThat(dateFormat.format(last2020.endDate())).isEqualTo("2021-12-03T");
     }
 
     @Test

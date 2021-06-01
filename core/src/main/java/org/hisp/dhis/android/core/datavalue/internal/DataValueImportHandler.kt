@@ -44,9 +44,13 @@ internal class DataValueImportHandler @Inject constructor(
 ) {
 
     fun handleImportSummary(
-        dataValueSet: DataValueSet,
-        dataValueImportSummary: DataValueImportSummary
+        dataValueSet: DataValueSet?,
+        dataValueImportSummary: DataValueImportSummary?
     ) {
+        if  (dataValueSet == null || dataValueImportSummary == null) {
+            return
+        }
+
         val state = when (dataValueImportSummary.importStatus()) {
             ImportStatus.ERROR -> State.ERROR
             ImportStatus.WARNING -> State.WARNING

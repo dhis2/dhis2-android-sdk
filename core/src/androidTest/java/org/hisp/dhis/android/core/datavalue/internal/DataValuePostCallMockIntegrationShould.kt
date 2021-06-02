@@ -20,57 +20,60 @@ class DataValuePostCallMockIntegrationShould : BaseMockIntegrationTestMetadataEn
 
     @Test
     fun post_dataValues_success() {
+        // Given user sets correct data values
         dhis2MockServer.enqueueMockResponse("datavalueset/data_value_set_success.json")
+        provideDataValues("30", "40")
 
-        provideCorrectDataValues()
-
+        // When user sync data in order to upload the data values
         d2.dataValueModule().dataValues().blockingUpload()
+
+        // Then all data set should be properly synced
         val warnings = d2.dataValueModule().dataValues().byState().eq(State.SYNCED).blockingGet()
         assertThat(warnings.size).isEqualTo(2)
     }
 
     @Test
     fun post_dataValues_warning() {
+        // Given user sets one unsupported type of data value
         dhis2MockServer.enqueueMockResponse("datavalueset/data_value_set_warning.json")
+        provideDataValues("30", "40L")
 
-        provideWarningDataValues()
-
+        // When user sync data in order to upload the data values
         d2.dataValueModule().dataValues().blockingUpload()
+
+        // Then one data set should marked as WARNING
         val warnings = d2.dataValueModule().dataValues().byState().eq(State.WARNING).blockingGet()
         assertThat(warnings.size).isEqualTo(1)
     }
 
-    private fun provideCorrectDataValues() {
-        d2.dataValueModule().dataValues().value(
-            "20191021",
-            "DiszpKrYNg8",
-            "Ok9OQpitjQr",
-            "DwrQJzeChWp",
-            "DwrQJzeChWp"
-        ).blockingSet("30")
-        d2.dataValueModule().dataValues().value(
-            "20191021",
-            "DiszpKrYNg8",
-            "vANAXwtLwcT",
-            "bRowv6yZOF2",
-            "bRowv6yZOF2"
-        ).blockingSet("40")
+    @Test
+    fun post_dataValues_undetermined_warning() {
+        // Given user sets one undetermined data value
+        dhis2MockServer.enqueueMockResponse("datavalueset/data_value_set_warning.json")
+        provideDataValues("40", "50L")
+
+        // When user sync data in order to upload the data values
+        d2.dataValueModule().dataValues().blockingUpload()
+
+        // Then all data values should be marked as WARNING
+        val warnings = d2.dataValueModule().dataValues().byState().eq(State.WARNING).blockingGet()
+        assertThat(warnings.size).isEqualTo(2)
     }
 
-    private fun provideWarningDataValues() {
+    private fun provideDataValues(value1: String, value2: String) {
         d2.dataValueModule().dataValues().value(
             "20191021",
             "DiszpKrYNg8",
             "Ok9OQpitjQr",
             "DwrQJzeChWp",
             "DwrQJzeChWp"
-        ).blockingSet("30")
+        ).blockingSet(value1)
         d2.dataValueModule().dataValues().value(
             "20191021",
             "DiszpKrYNg8",
             "vANAXwtLwcT",
             "bRowv6yZOF2",
             "bRowv6yZOF2"
-        ).blockingSet("40L")
+        ).blockingSet(value2)
     }
 }

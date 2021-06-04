@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
+import android.database.Cursor;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
@@ -82,8 +85,13 @@ public abstract class DataValueConflict extends BaseObject {
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date created();
 
+    @NonNull
+    public static DataValueConflict create(Cursor cursor) {
+        return AutoValue_DataValueConflict.createFromCursor(cursor);
+    }
+
     public static Builder builder() {
-        return new $AutoValue_DataValueConflict.Builder();
+        return new $$AutoValue_DataValueConflict.Builder();
     }
 
     public abstract Builder toBuilder();

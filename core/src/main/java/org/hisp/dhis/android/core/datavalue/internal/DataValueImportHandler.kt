@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.datavalue.internal
 
 import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
@@ -39,7 +40,8 @@ import javax.inject.Inject
 @Reusable
 internal class DataValueImportHandler @Inject constructor(
     private val dataValueStore: DataValueStore,
-    private val dataValueImportConflictParser: DataValueImportConflictParser
+    private val dataValueConflictParser: DataValueConflictParser,
+    private val dataValueConflictStore: ObjectStore<DataValueConflict>
 ) {
 
     fun handleImportSummary(
@@ -82,7 +84,7 @@ internal class DataValueImportHandler @Inject constructor(
         val dataValueImportConflicts: MutableList<DataValueConflict> = mutableListOf()
         importConflicts?.forEach { importConflict ->
 
-            val valuesPerConflict = dataValueImportConflictParser
+            val valuesPerConflict = dataValueConflictParser
                 .getDataValueConflicts(importConflict, dataValues)
 
             if (valuesPerConflict.isEmpty()) {
@@ -90,9 +92,12 @@ internal class DataValueImportHandler @Inject constructor(
             }
             dataValueImportConflicts.addAll(valuesPerConflict)
 
-            //TODO INSERT AND DELETE CONFLICTS in DataBase, SEE TrackedEntityInstanceImportHandler
+            //TODO DELETE CONFLICTS in DataBase, SEE TrackedEntityInstanceImportHandler
             //Delete only dataValues conflicts that i uploaded and have no more conflicts
         }
+
+        dataValueConflictStore.insert(dataValueImportConflicts)
+
         return dataValueImportConflicts.mapNotNull { dataValueConflict ->
             dataValues.find { dataValue ->
                 dataValue.attributeOptionCombo().equals(dataValueConflict.attributeOptionCombo()) &&

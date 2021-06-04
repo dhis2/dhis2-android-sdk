@@ -28,28 +28,33 @@
 
 package org.hisp.dhis.android.core.datavalue.internal
 
-import dagger.Reusable
-import org.hisp.dhis.android.core.datavalue.DataValue
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
-import org.hisp.dhis.android.core.datavalue.internal.conflicts.InvalidDataElementTypeConflict
-import org.hisp.dhis.android.core.imports.internal.ImportConflict
-import javax.inject.Inject
+import org.hisp.dhis.android.core.datavalue.DataValueConflictTableInfo
 
-@Reusable
-internal class DataValueImportConflictParser @Inject constructor(
+internal object DataValueConflictStore {
+    private val BINDER = StatementBinder<DataValueConflict> { o, w ->
+        w.bind(1, o.conflict())
+        w.bind(2, o.value())
+        w.bind(3, o.attributeOptionCombo())
+        w.bind(4, o.categoryOptionCombo())
+        w.bind(5, o.dataElement())
+        w.bind(6, o.period())
+        w.bind(7, o.orgUnit())
+        w.bind(8, o.tableReference())
+        w.bind(9, o.errorCode())
+        w.bind(10, o.displayDescription())
+        w.bind(11, o.status())
+        w.bind(12, o.created())
+    }
 
-) {
-
-    private val conflicts = listOf(
-        InvalidDataElementTypeConflict
-    )
-
-    fun getDataValueConflicts(
-        conflict: ImportConflict,
-        dataValues: List<DataValue>
-    ): List<DataValueConflict> {
-        return conflicts.find {
-            it.matches(conflict)
-        }?.getDataValues(conflict, dataValues) ?: emptyList()
+    @JvmStatic
+    fun create(databaseAdapter: DatabaseAdapter): ObjectStore<DataValueConflict> {
+        return StoreFactory.objectStore(databaseAdapter, DataValueConflictTableInfo.TABLE_INFO, BINDER) {
+            DataValueConflict.create(it)
+        }
     }
 }

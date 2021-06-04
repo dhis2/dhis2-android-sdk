@@ -167,8 +167,28 @@ public class BiWeeklyPeriodGeneratorShould {
         assertThat(dateFormat.format(first2021.endDate())).isEqualTo("2021-01-17");
 
         assertThat(last2020.periodId()).isEqualTo("2020BiW27");
-        assertThat(dateFormat.format(last2020.startDate())).isEqualTo("2020-12-28T");
-        assertThat(dateFormat.format(last2020.endDate())).isEqualTo("2021-12-03T");
+        assertThat(dateFormat.format(last2020.startDate())).isEqualTo("2020-12-28");
+        assertThat(dateFormat.format(last2020.endDate())).isEqualTo("2021-01-10");
+    }
+
+    @Test
+    public void generate_last_periods_in_53_weeks_year_starting_past_year() {
+        calendar.set(2020, 11, 2);
+        SafeDateFormat dateFormat = DateUtils.SIMPLE_DATE_FORMAT;
+
+        PeriodGenerator biWeeklyGenerator = new BiWeeklyPeriodGenerator(calendar);
+        List<Period> periods = biWeeklyGenerator.generatePeriods(1, 5);
+
+        Period first2021 = periods.get(periods.size() - 2);
+        Period last2020 = periods.get(periods.size() - 3);
+
+        assertThat(first2021.periodId()).isEqualTo("2021BiW1");
+        assertThat(dateFormat.format(first2021.startDate())).isEqualTo("2021-01-04");
+        assertThat(dateFormat.format(first2021.endDate())).isEqualTo("2021-01-17");
+
+        assertThat(last2020.periodId()).isEqualTo("2020BiW27");
+        assertThat(dateFormat.format(last2020.startDate())).isEqualTo("2020-12-28");
+        assertThat(dateFormat.format(last2020.endDate())).isEqualTo("2021-01-10");
     }
 
     @Test

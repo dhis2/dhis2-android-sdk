@@ -64,14 +64,14 @@ abstract class AbstractPeriodGenerator implements PeriodGenerator {
         List<Period> periods = new ArrayList<>();
         setCalendarToStartTimeOfADay(calendar);
         moveToStartOfCurrentPeriod();
-        movePeriods(start);
+        moveToTheFirstPeriod(start);
 
         for (int i = 0; i < end - start; i++) {
             Period period = generatePeriod(calendar.getTime(), 0);
             periods.add(period);
 
             calendar.setTime(period.startDate());
-            this.movePeriods(1);
+            movePeriods(1);
         }
         return periods;
     }
@@ -123,6 +123,21 @@ abstract class AbstractPeriodGenerator implements PeriodGenerator {
         }
 
         return periods;
+    }
+
+    private void moveToTheFirstPeriod(int start) {
+        int periods = 0;
+        while (periods < Math.abs(start)) {
+            Period period = generatePeriod(calendar.getTime(), 0);
+            if (start > 0) {
+                calendar.setTime(period.startDate());
+                movePeriods(1);
+            } else {
+                calendar.setTime(period.startDate());
+                calendar.add(Calendar.MILLISECOND, -1);
+            }
+            periods++;
+        }
     }
 
     private void moveToStartOfThePeriodOfADayWithOffset(Date date, int periodOffset) {

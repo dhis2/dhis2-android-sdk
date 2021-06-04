@@ -29,8 +29,10 @@
 package org.hisp.dhis.android.core.datavalue.internal
 
 import dagger.Reusable
+import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
 import org.hisp.dhis.android.core.datavalue.internal.conflicts.InvalidDataElementTypeConflict
+import org.hisp.dhis.android.core.imports.internal.ImportConflict
 import javax.inject.Inject
 
 @Reusable
@@ -42,18 +44,12 @@ internal class DataValueImportConflictParser @Inject constructor(
         InvalidDataElementTypeConflict
     )
 
-    fun getDataValueConflict(
-        conflict: DataValueImportConflict,
-        conflictBuilder: DataValueConflict.Builder
-    ): DataValueConflict {
-        return evaluateConflicts(conflict, conflictBuilder, conflicts)
-    }
-
-    private fun evaluateConflicts(
-        conflict: DataValueImportConflict,
-        conflictBuilder: DataValueConflict.Builder,
-        conflicts: List<InvalidDataElementTypeConflict>
-    ): DataValueConflict {
-        TODO("Not yet implemented")
+    fun getDataValueConflicts(
+        conflict: ImportConflict,
+        dataValues: List<DataValue>
+    ): List<DataValueConflict> {
+        return conflicts.find {
+            it.matches(conflict)
+        }?.getDataValues(conflict, dataValues) ?: emptyList()
     }
 }

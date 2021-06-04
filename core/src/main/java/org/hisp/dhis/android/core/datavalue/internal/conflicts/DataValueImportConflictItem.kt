@@ -28,9 +28,11 @@
 
 package org.hisp.dhis.android.core.datavalue.internal.conflicts
 
-import org.hisp.dhis.android.core.datavalue.internal.DataValueImportConflict
+import org.hisp.dhis.android.core.datavalue.DataValue
+import org.hisp.dhis.android.core.datavalue.DataValueConflict
+import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
 internal interface DataValueImportConflictItem {
-    fun matches(conflict: DataValueImportConflict): Boolean
-    fun getDataValues(conflict: DataValueImportConflict): String
+    fun matches(conflict: ImportConflict): Boolean
+    fun getDataValues(conflict: ImportConflict, dataValues: List<DataValue>): List<DataValueConflict>
 }

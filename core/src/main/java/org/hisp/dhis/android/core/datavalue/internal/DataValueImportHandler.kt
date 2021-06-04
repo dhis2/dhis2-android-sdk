@@ -28,19 +28,18 @@
 package org.hisp.dhis.android.core.datavalue.internal
 
 import dagger.Reusable
-import java.util.ArrayList
-import java.util.HashSet
-import java.util.regex.Pattern
-import javax.inject.Inject
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.DataValue
+import org.hisp.dhis.android.core.datavalue.DataValueConflict
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
+import javax.inject.Inject
 
 @Reusable
 internal class DataValueImportHandler @Inject constructor(
-    private val dataValueStore: DataValueStore
+    private val dataValueStore: DataValueStore,
+    private val dataValueImportConflictParser: DataValueImportConflictParser
 ) {
 
     fun handleImportSummary(
@@ -68,25 +67,38 @@ internal class DataValueImportHandler @Inject constructor(
         dataValueSet: DataValueSet,
         dataValueImportSummary: DataValueImportSummary
     ) {
-        getValuesWithConflicts(dataValueSet, dataValueImportSummary)?.let { dataValueConflicts ->
+        getValuesWithConflicts(
+            dataValueSet.dataValues,
+            dataValueImportSummary.importConflicts()
+        )?.let { dataValueConflicts ->
             setDataValueStates(dataValueSet, dataValueConflicts)
         } ?: setStateToDataValues(State.WARNING, dataValueSet.dataValues)
     }
 
     private fun getValuesWithConflicts(
-        dataValueSet: DataValueSet,
-        dataValueImportSummary: DataValueImportSummary
+        dataValues: List<DataValue>,
+        importConflicts: List<ImportConflict>?
     ): Set<DataValue>? {
-        val dataValueConflicts: MutableSet<DataValue> = HashSet()
-        dataValueImportSummary.importConflicts()?.forEach { importConflict ->
-            getDataValues(importConflict, dataValueSet.dataValues).let { dataValues ->
-                if (dataValues.isEmpty()) {
-                    return null
-                }
-                dataValueConflicts.addAll(dataValues)
+        val dataValueImportConflicts: MutableList<DataValueConflict> = mutableListOf()
+        importConflicts?.forEach { importConflict ->
+
+            val valuesPerConflict = dataValueImportConflictParser
+                .getDataValueConflicts(importConflict, dataValues)
+
+            if (valuesPerConflict.isEmpty()) {
+                return null
             }
+            dataValueImportConflicts.addAll(valuesPerConflict)
+
+            //TODO INSERT AND DELETE CONFLICTS in DataBase, SEE TrackedEntityInstanceImportHandler
+            //Delete only dataValues conflicts that i uploaded and have no more conflicts
         }
-        return dataValueConflicts
+        return dataValueImportConflicts.mapNotNull { dataValueConflict ->
+            dataValues.find { dataValue ->
+                dataValue.attributeOptionCombo().equals(dataValueConflict.attributeOptionCombo()) &&
+                    dataValue.categoryOptionCombo().equals(dataValueConflict.categoryOptionCombo())
+            }
+        }.toSet()
     }
 
     private fun setDataValueStates(
@@ -98,28 +110,6 @@ internal class DataValueImportHandler @Inject constructor(
         }
         setStateToDataValues(State.WARNING, dataValueConflicts)
         setStateToDataValues(State.SYNCED, syncedValues)
-    }
-
-    private fun getDataValues(
-        importConflict: ImportConflict,
-        dataValues: Collection<DataValue>
-    ): List<DataValue> {
-        val patternStr = "(?<=:\\s)[a-zA-Z0-9]{11}"
-        val pattern = Pattern.compile(patternStr)
-        val matcher = pattern.matcher(importConflict.value())
-
-        val foundDataValues: MutableList<DataValue> = ArrayList()
-
-        if (matcher.find()) {
-            val value = importConflict.`object`()
-            val dataElementUid = matcher.group(0)
-            for (dataValue in dataValues) {
-                if (dataValue.value() == value && dataValue.dataElement() == dataElementUid) {
-                    foundDataValues.add(dataValue)
-                }
-            }
-        }
-        return foundDataValues
     }
 
     private fun setStateToDataValues(state: State, dataValues: Collection<DataValue>) {

@@ -34,7 +34,9 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.ImportStatusColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.imports.ImportStatus;
 
 import java.util.Date;
 
@@ -48,13 +50,33 @@ public abstract class DataValueConflict extends BaseObject {
     public abstract String value();
 
     @Nullable
+    public abstract String attributeOptionCombo();
+
+    @Nullable
+    public abstract String categoryOptionCombo();
+
+    @Nullable
     public abstract String dataElement();
+
+    @Nullable
+    public abstract String period();
+
+    @Nullable
+    public abstract String orgUnit();
 
     @Nullable
     public abstract String tableReference();
 
     @Nullable
     public abstract String errorCode();
+
+    // TODO legible description chade id by data elemtn type
+    @Nullable
+    public abstract String displayDescription();
+
+    @Nullable
+    @ColumnAdapter(ImportStatusColumnAdapter.class)
+    public abstract ImportStatus status();
 
     @Nullable
     @ColumnAdapter(DbDateColumnAdapter.class)
@@ -72,11 +94,23 @@ public abstract class DataValueConflict extends BaseObject {
 
         public abstract Builder value(String value);
 
+        public abstract Builder attributeOptionCombo(String attributeOptionCombo);
+
+        public abstract Builder categoryOptionCombo(String categoryOptionCombo);
+
         public abstract Builder dataElement(String dataElement);
+
+        public abstract Builder period(String period);
+
+        public abstract Builder orgUnit(String orgUnit);
 
         public abstract Builder tableReference(String tableReference);
 
         public abstract Builder errorCode(String errorCode);
+
+        public abstract Builder displayDescription(String displayDescription);
+
+        public abstract Builder status(ImportStatus status);
 
         public abstract Builder created(Date created);
 

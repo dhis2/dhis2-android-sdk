@@ -64,25 +64,14 @@ abstract class AbstractPeriodGenerator implements PeriodGenerator {
         List<Period> periods = new ArrayList<>();
         setCalendarToStartTimeOfADay(calendar);
         moveToStartOfCurrentPeriod();
-        movePeriods(start);
+        moveToTheFirstPeriod(start);
 
         for (int i = 0; i < end - start; i++) {
-            Date startDate = calendar.getTime();
-            String periodId = generateId();
-
-            this.movePeriods(1);
-            calendar.add(Calendar.MILLISECOND, -1);
-            Date endDate = calendar.getTime();
-
-            Period period = Period.builder()
-                    .periodType(periodType)
-                    .startDate(startDate)
-                    .periodId(periodId)
-                    .endDate(endDate)
-                    .build();
+            Period period = generatePeriod(calendar.getTime(), 0);
             periods.add(period);
 
-            calendar.add(Calendar.MILLISECOND, 1);
+            calendar.setTime(period.startDate());
+            movePeriods(1);
         }
         return periods;
     }
@@ -91,16 +80,15 @@ abstract class AbstractPeriodGenerator implements PeriodGenerator {
     public final Period generatePeriod(Date date, int periodOffset) {
         this.calendar = (Calendar) initialCalendar.clone();
 
-        calendar.setTime(date);
-        setCalendarToStartTimeOfADay(calendar);
-        moveToStartOfCurrentPeriod();
-        this.movePeriods(periodOffset);
+        moveToStartOfThePeriodOfADayWithOffset(date, periodOffset);
 
         Date startDate = calendar.getTime();
         String periodId = generateId();
         this.movePeriods(1);
         calendar.add(Calendar.MILLISECOND, -1);
         Date endDate = calendar.getTime();
+
+        moveToStartOfThePeriodOfADayWithOffset(date, periodOffset);
 
         return Period.builder()
                 .periodType(periodType)
@@ -135,6 +123,28 @@ abstract class AbstractPeriodGenerator implements PeriodGenerator {
         }
 
         return periods;
+    }
+
+    private void moveToTheFirstPeriod(int start) {
+        int periods = 0;
+        while (periods < Math.abs(start)) {
+            Period period = generatePeriod(calendar.getTime(), 0);
+            if (start > 0) {
+                calendar.setTime(period.startDate());
+                movePeriods(1);
+            } else {
+                calendar.setTime(period.startDate());
+                calendar.add(Calendar.MILLISECOND, -1);
+            }
+            periods++;
+        }
+    }
+
+    private void moveToStartOfThePeriodOfADayWithOffset(Date date, int periodOffset) {
+        this.calendar.setTime(date);
+        setCalendarToStartTimeOfADay(calendar);
+        moveToStartOfCurrentPeriod();
+        this.movePeriods(periodOffset);
     }
 
     static void setCalendarToStartTimeOfADay(Calendar calendar) {

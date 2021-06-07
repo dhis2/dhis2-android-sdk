@@ -40,7 +40,7 @@ internal class DataValueConflictDIModule {
 
     @Provides
     @Reusable
-    fun store (databaseAdapter: DatabaseAdapter): ObjectStore<DataValueConflict> {
+    fun store(databaseAdapter: DatabaseAdapter): ObjectStore<DataValueConflict> {
         return DataValueConflictStore.create(databaseAdapter)
     }
 }

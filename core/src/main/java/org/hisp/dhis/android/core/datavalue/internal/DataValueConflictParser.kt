@@ -29,16 +29,14 @@
 package org.hisp.dhis.android.core.datavalue.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
 import org.hisp.dhis.android.core.datavalue.internal.conflicts.InvalidDataElementTypeConflict
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
-import javax.inject.Inject
 
 @Reusable
-internal class DataValueConflictParser @Inject constructor(
-
-) {
+internal class DataValueConflictParser @Inject constructor() {
 
     private val conflicts = listOf(
         InvalidDataElementTypeConflict

@@ -28,14 +28,20 @@
 package org.hisp.dhis.android.core.datavalue.internal
 
 import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
 import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.common.State.ERROR
+import org.hisp.dhis.android.core.common.State.SYNCED
+import org.hisp.dhis.android.core.common.State.WARNING
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
+import org.hisp.dhis.android.core.datavalue.DataValueConflictTableInfo
+import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
-import javax.inject.Inject
 
 @Reusable
 internal class DataValueImportHandler @Inject constructor(
@@ -53,28 +59,61 @@ internal class DataValueImportHandler @Inject constructor(
         }
 
         val state = when (dataValueImportSummary.importStatus()) {
-            ImportStatus.ERROR -> State.ERROR
-            ImportStatus.WARNING -> State.WARNING
-            else -> State.SYNCED
+            ImportStatus.ERROR -> ERROR
+            ImportStatus.WARNING -> WARNING
+            else -> SYNCED
         }
 
-        if (state == State.WARNING) {
-            handleDataValueWarnings(dataValueSet, dataValueImportSummary)
+        deleteDataValueConflicts(dataValueSet.dataValues)
+
+        if (state == WARNING || state == ERROR) {
+            handleDataValueWarnings(dataValueSet.dataValues, dataValueImportSummary)
         } else {
             setStateToDataValues(state, dataValueSet.dataValues)
         }
     }
 
+    private fun deleteDataValueConflicts(dataValues: List<DataValue>) {
+        dataValues.forEach { dataValue ->
+            val whereClause = WhereClauseBuilder()
+                .appendKeyStringValue(
+                    DataValueConflictTableInfo.Columns.TABLE_REFERENCE,
+                    DataValueTableInfo.TABLE_INFO.name()
+                )
+                .appendKeyStringValue(
+                    DataValueConflictTableInfo.Columns.ATTRIBUTE_OPTION_COMBO,
+                    dataValue.attributeOptionCombo()
+                )
+                .appendKeyStringValue(
+                    DataValueConflictTableInfo.Columns.CATEGORY_OPTION_COMBO,
+                    dataValue.categoryOptionCombo()
+                )
+                .appendKeyStringValue(
+                    DataValueConflictTableInfo.Columns.DATA_ELEMENT,
+                    dataValue.dataElement()
+                )
+                .appendKeyStringValue(
+                    DataValueConflictTableInfo.Columns.PERIOD,
+                    dataValue.period()
+                )
+                .appendKeyStringValue(
+                    DataValueConflictTableInfo.Columns.ORG_UNIT,
+                    dataValue.organisationUnit()
+                ).build()
+            dataValueConflictStore.deleteWhereIfExists(whereClause)
+        }
+    }
+
     private fun handleDataValueWarnings(
-        dataValueSet: DataValueSet,
+        dataValues: List<DataValue>,
         dataValueImportSummary: DataValueImportSummary
     ) {
         getValuesWithConflicts(
-            dataValueSet.dataValues,
+            dataValues,
             dataValueImportSummary.importConflicts()
         )?.let { dataValueConflicts ->
-            setDataValueStates(dataValueSet, dataValueConflicts)
-        } ?: setStateToDataValues(State.WARNING, dataValueSet.dataValues)
+            setDataValueStates(dataValues, dataValueConflicts)
+        } ?: setStateToDataValues(WARNING, dataValues)
     }
 
     private fun getValuesWithConflicts(
@@ -91,9 +130,6 @@ internal class DataValueImportHandler @Inject constructor(
                 return null
             }
             dataValueImportConflicts.addAll(valuesPerConflict)
-
-            //TODO DELETE CONFLICTS in DataBase, SEE TrackedEntityInstanceImportHandler
-            //Delete only dataValues conflicts that i uploaded and have no more conflicts
         }
 
         dataValueConflictStore.insert(dataValueImportConflicts)
@@ -107,20 +143,20 @@ internal class DataValueImportHandler @Inject constructor(
     }
 
     private fun setDataValueStates(
-        dataValueSet: DataValueSet,
+        dataValues: List<DataValue>,
         dataValueConflicts: Set<DataValue>
     ) {
-        val syncedValues = dataValueSet.dataValues.filter { dataValue ->
+        val syncedValues = dataValues.filter { dataValue ->
             !dataValueConflicts.contains(dataValue)
         }
-        setStateToDataValues(State.WARNING, dataValueConflicts)
-        setStateToDataValues(State.SYNCED, syncedValues)
+        setStateToDataValues(WARNING, dataValueConflicts)
+        setStateToDataValues(SYNCED, syncedValues)
     }
 
     private fun setStateToDataValues(state: State, dataValues: Collection<DataValue>) {
         for (dataValue in dataValues) {
             if (dataValueStore.isDataValueBeingUpload(dataValue)) {
-                if (state == State.SYNCED && dataValueStore.isDeleted(dataValue)) {
+                if (state == SYNCED && dataValueStore.isDeleted(dataValue)) {
                     dataValueStore.deleteWhere(dataValue)
                 } else {
                     dataValueStore.setState(dataValue, state)

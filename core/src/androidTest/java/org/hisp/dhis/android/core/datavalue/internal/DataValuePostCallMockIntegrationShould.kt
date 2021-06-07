@@ -28,8 +28,8 @@ class DataValuePostCallMockIntegrationShould : BaseMockIntegrationTestMetadataEn
         d2.dataValueModule().dataValues().blockingUpload()
 
         // Then all data set should be properly synced
-        val warnings = d2.dataValueModule().dataValues().byState().eq(State.SYNCED).blockingGet()
-        assertThat(warnings.size).isEqualTo(2)
+        val synced = d2.dataValueModule().dataValues().byState().eq(State.SYNCED).blockingGet()
+        assertThat(synced.size).isEqualTo(2)
     }
 
     @Test

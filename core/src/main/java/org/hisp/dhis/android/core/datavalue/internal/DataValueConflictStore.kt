@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
 import org.hisp.dhis.android.core.datavalue.DataValueConflictTableInfo
 
+@Suppress("MagicNumber")
 internal object DataValueConflictStore {
     private val BINDER = StatementBinder<DataValueConflict> { o, w ->
         w.bind(1, o.conflict())

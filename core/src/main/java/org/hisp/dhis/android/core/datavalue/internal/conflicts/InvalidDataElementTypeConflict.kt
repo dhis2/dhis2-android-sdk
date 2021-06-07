@@ -28,14 +28,14 @@
 
 package org.hisp.dhis.android.core.datavalue.internal.conflicts
 
+import java.util.ArrayList
+import java.util.Date
+import java.util.regex.Pattern
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
-import java.util.ArrayList
-import java.util.Date
-import java.util.regex.Pattern
 
 internal object InvalidDataElementTypeConflict : DataValueImportConflictItem {
 

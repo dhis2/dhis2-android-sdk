@@ -26,30 +26,37 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue.internal
+package org.hisp.dhis.android.core.datavalue.internal.conflicts
 
-import dagger.Reusable
-import javax.inject.Inject
+import java.util.ArrayList
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
-import org.hisp.dhis.android.core.datavalue.internal.conflicts.InvalidDataElementTypeConflict
-import org.hisp.dhis.android.core.datavalue.internal.conflicts.PastExpiryDate
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
-@Reusable
-internal class DataValueConflictParser @Inject constructor() {
+internal object PastExpiryDate : DataValueImportConflictItem {
 
-    private val conflicts = listOf(
-        InvalidDataElementTypeConflict,
-        PastExpiryDate
-    )
+    val regex: Regex = Regex("Current date is past expiry days for period (\\d+) and data set: (\\w{11})")
 
-    fun getDataValueConflicts(
-        conflict: ImportConflict,
-        dataValues: List<DataValue>
-    ): List<DataValueConflict> {
-        return conflicts.find {
-            it.matches(conflict)
-        }?.getDataValues(conflict, dataValues) ?: emptyList()
+    override fun matches(conflict: ImportConflict): Boolean {
+        return regex.matches(conflict.value())
+    }
+
+    override fun getDataValues(conflict: ImportConflict, dataValues: List<DataValue>): List<DataValueConflict> {
+        val foundDataValuesConflicts: MutableList<DataValueConflict> = ArrayList()
+        val period = conflict.`object`()
+        val dataSet = regex.find(conflict.value())?.groupValues?.get(1)
+        dataValues.forEach { dataValue ->
+            if (dataValue.period() == period) {
+                foundDataValuesConflicts.add(
+                    getConflictBuilder(
+                        dataValue = dataValue,
+                        conflict = conflict,
+                        displayDescription = conflict.value()
+                    ).build()
+                )
+            }
+        }
+
+        return foundDataValuesConflicts
     }
 }

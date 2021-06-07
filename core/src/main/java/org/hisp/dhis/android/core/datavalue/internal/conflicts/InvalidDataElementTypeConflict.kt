@@ -29,57 +29,38 @@
 package org.hisp.dhis.android.core.datavalue.internal.conflicts
 
 import java.util.ArrayList
-import java.util.Date
-import java.util.regex.Pattern
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
-import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
-import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
 internal object InvalidDataElementTypeConflict : DataValueImportConflictItem {
 
-    private val regex: Regex = Regex("must match data element type: (\\w{11})")
+    private val regex: Regex = Regex(".*, must match data element type: (\\w{11})")
+    private fun description(value: String, elementType: String) =
+        "DataValue $value must match with data element type $elementType"
 
     override fun matches(conflict: ImportConflict): Boolean {
-        val patternStr = "(?<=:\\s)[a-zA-Z0-9]{11}"
-        val pattern = Pattern.compile(patternStr)
-        val matcher = pattern.matcher(conflict.value())
-        return matcher.find()
+        return regex.matches(conflict.value())
     }
 
     override fun getDataValues(conflict: ImportConflict, dataValues: List<DataValue>): List<DataValueConflict> {
-        val patternStr = "(?<=:\\s)[a-zA-Z0-9]{11}"
-        val pattern = Pattern.compile(patternStr)
-        val matcher = pattern.matcher(conflict.value())
-
         val foundDataValuesConflicts: MutableList<DataValueConflict> = ArrayList()
-        if (matcher.find()) {
-            val value = conflict.`object`()
-            val dataElementUid = matcher.group(0)
-            for (dataValue in dataValues) {
-                if (dataValue.value() == value && dataValue.dataElement() == dataElementUid) {
-                    foundDataValuesConflicts.add(getConflictBuilder(dataValue).build())
-                }
+        val value = conflict.`object`()
+        val dataElementUid = regex.find(conflict.value())?.groupValues?.get(1)
+        for (dataValue in dataValues) {
+            if (dataValue.value() == value && dataValue.dataElement() == dataElementUid) {
+                foundDataValuesConflicts.add(
+                    getConflictBuilder(
+                        dataValue = dataValue,
+                        conflict = conflict,
+                        displayDescription = dataValue.dataElement()?.let {
+                            description(conflict.`object`(), it)
+                        } ?: conflict.value()
+                    ).build()
+                )
             }
         }
 
         return foundDataValuesConflicts
-    }
-
-    private fun getConflictBuilder(dataValue: DataValue): DataValueConflict.Builder {
-        return DataValueConflict.builder()
-            .conflict("")
-            .value(dataValue.value())
-            .attributeOptionCombo(dataValue.attributeOptionCombo())
-            .categoryOptionCombo(dataValue.categoryOptionCombo())
-            .dataElement(dataValue.dataElement())
-            .orgUnit(dataValue.organisationUnit())
-            .period(dataValue.period())
-            .tableReference(DataValueTableInfo.TABLE_INFO.name())
-            .status(ImportStatus.WARNING)
-            .errorCode("")
-            .displayDescription("")
-            .created(Date())
     }
 }

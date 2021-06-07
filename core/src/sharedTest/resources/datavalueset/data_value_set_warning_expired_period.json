@@ -32,13 +32,17 @@
   "importCount": {
     "imported": 0,
     "updated": 0,
-    "ignored": 1,
+    "ignored": 2,
     "deleted": 0
   },
   "conflicts": [
     {
-      "object": "40L",
-      "value": "Data value is not a positive integer, must match data element type: vANAXwtLwcT"
+      "object": "202104",
+      "value": "Current date is past expiry days for period 202104 and data set: BfMAe6Itzgt"
+    },
+    {
+      "object": "202103",
+      "value": "Current date is past expiry days for period 202103 and data set: BfMAe6Itzgt"
     }
   ],
   "dataSetComplete": "false"

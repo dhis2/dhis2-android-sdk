@@ -27,16 +27,22 @@
  */
 package org.hisp.dhis.android.core.tracker.importer.internal
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter
+import dagger.Reusable
 import java.util.Date
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter
+import javax.inject.Inject
+import org.hisp.dhis.android.core.imports.ImportStatus
+import org.hisp.dhis.android.core.imports.TrackerImportConflict
 
-internal data class JobInfo(
-    val id: String,
-    val uid: String,
-    val level: String,
-    val category: String,
-    @ColumnAdapter(DbDateColumnAdapter::class) val time: Date,
-    val message: String,
-    val completed: Boolean
-)
+@Reusable
+internal class TrackerConflictHelper @Inject internal constructor() {
+
+    fun getConflictBuilder(errorReport: JobValidationError): TrackerImportConflict.Builder {
+        return TrackerImportConflict.builder()
+            .conflict(errorReport.message)
+            .displayDescription(errorReport.message)
+            .value(errorReport.uid)
+            .errorCode(errorReport.errorCode)
+            .status(ImportStatus.ERROR)
+            .created(Date())
+    }
+}

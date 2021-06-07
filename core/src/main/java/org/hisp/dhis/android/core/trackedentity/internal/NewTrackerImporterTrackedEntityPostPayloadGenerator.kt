@@ -142,7 +142,7 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGenerator @Inject inter
                     .notes(notes.filter { it.event() == event.uid() })
                 eventBuilder.build()
             } ?: emptyList()
-            NewTrackerImporterEnrollment.builder()
+            enrollment.toBuilder()
                 .events(events)
                 .notes(notes.filter { it.enrollment() == enrollment.uid() })
                 .build()

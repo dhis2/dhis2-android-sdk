@@ -25,32 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.tracker.importer
+package org.hisp.dhis.android.core.tracker.importer.internal
 
-import com.google.common.truth.Truth.assertThat
-import java.io.IOException
-import java.text.ParseException
-import org.hisp.dhis.android.core.Inject
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject
-import org.hisp.dhis.android.core.common.BaseObjectShould
-import org.hisp.dhis.android.core.common.ObjectShould
-import org.hisp.dhis.android.core.tracker.importer.internal.JobInfo
-import org.junit.Test
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
+import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
 
-class JobInfoShould : BaseObjectShould("tracker/importer/jobinfo.json"), ObjectShould {
+@Reusable
+internal class JobReportEnrollmentHandler @Inject internal constructor(
+    private val enrollmentStore: EnrollmentStore,
+    private val conflictStore: TrackerImportConflictStore,
+    private val conflictHelper: TrackerConflictHelper
+) : JobReportTypeHandler() {
 
-    @Test
-    @Throws(IOException::class, ParseException::class)
-    override fun map_from_json_string() {
-        val objectMapper = Inject.objectMapper()
-        val jobInfo = objectMapper.readValue(jsonStream, JobInfo::class.java)
+    override fun handleObject(uid: String, state: State) {
+        enrollmentStore.setState(uid, state)
+        conflictStore.deleteEnrollmentConflicts(uid)
+    }
 
-        assertThat(jobInfo.id).isEqualTo("id")
-        assertThat(jobInfo.uid).isEqualTo("uid")
-        assertThat(jobInfo.level).isEqualTo("INFO")
-        assertThat(jobInfo.category).isEqualTo("TRACKER_IMPORT_JOB")
-        assertThat(jobInfo.time).isEqualTo(BaseIdentifiableObject.DATE_FORMAT.parse("2021-01-25T12:09:18.571"))
-        assertThat(jobInfo.message).isEqualTo("(android) Import:Done took 0.360910 sec.")
-        assertThat(jobInfo.completed).isTrue()
+    override fun storeConflict(errorReport: JobValidationError) {
+        val enrollment = enrollmentStore.selectByUid(errorReport.uid)
+        conflictStore.insert(
+            conflictHelper.getConflictBuilder(errorReport)
+                .tableReference(EnrollmentTableInfo.TABLE_INFO.name())
+                .enrollment(errorReport.uid)
+                .trackedEntityInstance(enrollment!!.trackedEntityInstance())
+                .build()
+        )
     }
 }

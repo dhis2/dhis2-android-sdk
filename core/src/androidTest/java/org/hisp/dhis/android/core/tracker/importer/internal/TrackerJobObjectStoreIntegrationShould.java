@@ -26,37 +26,32 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.imports.internal;
+package org.hisp.dhis.android.core.tracker.importer.internal;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.imports.TrackerImportConflict;
-import org.hisp.dhis.android.core.imports.TrackerImportConflictTableInfo;
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.tracker.importer.internal.TrackerJobObjectSamples;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.runner.RunWith;
 
-public final class TrackerImportConflictStore {
+@RunWith(D2JunitRunner.class)
+public class TrackerJobObjectStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<TrackerJobObject> {
 
-    private static final StatementBinder<TrackerImportConflict> BINDER = (o, w) -> {
-        w.bind(1, o.conflict());
-        w.bind(2, o.value());
-        w.bind(3, o.trackedEntityInstance());
-        w.bind(4, o.enrollment());
-        w.bind(5, o.event());
-        w.bind(6, o.trackedEntityAttribute());
-        w.bind(7, o.dataElement());
-        w.bind(8, o.tableReference());
-        w.bind(9, o.errorCode());
-        w.bind(10, o.status());
-        w.bind(11, o.created());
-        w.bind(12, o.displayDescription());
-    };
-
-    private TrackerImportConflictStore() {
+    public TrackerJobObjectStoreIntegrationShould() {
+        super(TrackerJobObjectStore.create(TestDatabaseAdapterFactory.get()), TrackerJobObjectTableInfo.TABLE_INFO,
+                TestDatabaseAdapterFactory.get());
     }
 
-    public static ObjectStore<TrackerImportConflict> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectStore(databaseAdapter, TrackerImportConflictTableInfo.TABLE_INFO, BINDER,
-                TrackerImportConflict::create);
+    @Override
+    protected TrackerJobObject buildObject() {
+        return TrackerJobObjectSamples.get1();
+    }
+
+    @Override
+    protected TrackerJobObject buildObjectToUpdate() {
+        return TrackerJobObjectSamples.get1()
+                .toBuilder()
+                .jobUid("anotherJobId")
+                .build();
     }
 }

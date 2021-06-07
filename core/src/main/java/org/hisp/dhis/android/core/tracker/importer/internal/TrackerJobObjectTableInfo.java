@@ -32,18 +32,18 @@ import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.CoreColumns;
 
-import static org.hisp.dhis.android.core.common.IdentifiableColumns.UID;
+import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.LAST_UPDATED;
 
-public final class TrackerJobTableInfo {
+public final class TrackerJobObjectTableInfo {
 
-    private TrackerJobTableInfo() {
+    private TrackerJobObjectTableInfo() {
     }
 
     public static final TableInfo TABLE_INFO = new TableInfo() {
 
         @Override
         public String name() {
-            return "TrackerJob";
+            return "TrackerJobObject";
         }
 
         @Override
@@ -54,14 +54,20 @@ public final class TrackerJobTableInfo {
 
     public static class Columns extends CoreColumns {
 
+        public static final String TRACKER_TYPE = "trackerType";
+        public static final String OBJECT_UID = "objectUid";
+        public static final String JOB_UID = "jobUid";
+
+
         @Override
         public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(), UID);
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    TRACKER_TYPE, OBJECT_UID, JOB_UID, LAST_UPDATED);
         }
 
         @Override
         public String[] whereUpdate() {
-            return new String[]{UID};
+            return new String[]{TRACKER_TYPE, OBJECT_UID};
         }
     }
 }

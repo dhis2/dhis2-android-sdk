@@ -29,11 +29,17 @@
 package org.hisp.dhis.android.core.datavalue.internal.conflicts
 
 import java.util.ArrayList
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
+import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
-internal class PastExpiryDateConflict : DataValueImportConflictItem {
+internal class PastExpiryDateConflict(
+    private val dataValueStore: DataValueStore,
+    private val dataSetStore: IdentifiableObjectStore<DataSet>
+) : DataValueImportConflictItem {
 
     override val regex: Regex
         get() = Regex("Current date is past expiry days for period (\\d+) and data set: (\\w{11})")
@@ -41,14 +47,14 @@ internal class PastExpiryDateConflict : DataValueImportConflictItem {
     override fun getDataValues(conflict: ImportConflict, dataValues: List<DataValue>): List<DataValueConflict> {
         val foundDataValuesConflicts: MutableList<DataValueConflict> = ArrayList()
         val period = conflict.`object`()
-        val dataSet = regex.find(conflict.value())?.groupValues?.get(1)
+        val dataSetUid = regex.find(conflict.value())?.groupValues?.get(2)
         dataValues.forEach { dataValue ->
-            if (dataValue.period() == period) {
+            if (dataValue.period() == period && dataValueStore.existsInDataSet(dataValue, dataSetUid)) {
                 foundDataValuesConflicts.add(
                     getConflictBuilder(
                         dataValue = dataValue,
                         conflict = conflict,
-                        displayDescription = conflict.value()
+                        displayDescription = getDisplayDescription(conflict, dataValue, dataSetUid!!)
                     ).build()
                 )
             }
@@ -56,4 +62,9 @@ internal class PastExpiryDateConflict : DataValueImportConflictItem {
 
         return foundDataValuesConflicts
     }
+
+    private fun getDisplayDescription(conflict: ImportConflict, dataValue: DataValue, dataSetUid: String) =
+        dataSetStore.selectByUid(dataSetUid)?.let { dataSet ->
+            "Current date is past expiry days for period ${dataValue.period()} and data set: ${dataSet.displayName()}"
+        } ?: conflict.value()
 }

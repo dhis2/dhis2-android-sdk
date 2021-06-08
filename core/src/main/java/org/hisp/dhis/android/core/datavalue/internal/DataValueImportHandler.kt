@@ -66,7 +66,7 @@ internal class DataValueImportHandler @Inject constructor(
 
         deleteDataValueConflicts(dataValueSet.dataValues)
 
-        if (state == WARNING || state == ERROR) {
+        if (state == WARNING) {
             handleDataValueWarnings(dataValueSet.dataValues, dataValueImportSummary)
         } else {
             setStateToDataValues(state, dataValueSet.dataValues)

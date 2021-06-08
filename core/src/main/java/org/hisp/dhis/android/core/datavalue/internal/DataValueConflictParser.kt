@@ -32,6 +32,7 @@ import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
 import org.hisp.dhis.android.core.datavalue.internal.conflicts.InvalidDataElementTypeConflict
@@ -41,12 +42,14 @@ import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
 @Reusable
 internal class DataValueConflictParser @Inject constructor(
-    dataElementStore: IdentifiableObjectStore<DataElement>
+    dataElementStore: IdentifiableObjectStore<DataElement>,
+    dataValueStore: DataValueStore,
+    dataSetStore: IdentifiableObjectStore<DataSet>
 ) {
 
     private val conflicts = listOf(
         InvalidDataElementTypeConflict(dataElementStore),
-        PastExpiryDateConflict(),
+        PastExpiryDateConflict(dataValueStore, dataSetStore),
         PeriodAfterLatestOpenFutureConflict(dataElementStore)
     )
 

@@ -46,14 +46,13 @@ internal class InvalidDataElementTypeConflict(
         val foundDataValuesConflicts: MutableList<DataValueConflict> = ArrayList()
         val value = conflict.`object`()
         val dataElementUid = regex.find(conflict.value())?.groupValues?.get(1)
-        for (dataValue in dataValues) {
+        dataValues.forEach { dataValue ->
             if (dataValue.value() == value && dataValue.dataElement() == dataElementUid) {
                 foundDataValuesConflicts.add(
                     getConflictBuilder(
                         dataValue = dataValue,
                         conflict = conflict,
-                        displayDescription = getDisplayDescription(conflict.`object`(), dataValue.dataElement())
-                            ?: conflict.value()
+                        displayDescription = getDisplayDescription(conflict, value, dataValue.dataElement())
                     ).build()
                 )
             }
@@ -62,8 +61,9 @@ internal class InvalidDataElementTypeConflict(
         return foundDataValuesConflicts
     }
 
-    private fun getDisplayDescription(value: String, dataElementUid: String?) = dataElementUid?.let {
-        val dataElementType = dataElementStore.selectByUid(it)?.valueType().toString()
-        "DataValue $value must match with data element type $dataElementType"
-    }
+    private fun getDisplayDescription(conflict: ImportConflict, value: String, dataElementUid: String?) =
+        dataElementUid?.let {
+            val dataElementType = dataElementStore.selectByUid(it)?.valueType().toString()
+            "DataValue $value must match with data element type $dataElementType"
+        } ?: conflict.value()
 }

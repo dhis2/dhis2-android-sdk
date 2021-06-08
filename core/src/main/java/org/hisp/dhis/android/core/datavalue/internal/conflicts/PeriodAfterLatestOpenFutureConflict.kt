@@ -47,14 +47,13 @@ internal class PeriodAfterLatestOpenFutureConflict(
         val foundDataValuesConflicts: MutableList<DataValueConflict> = ArrayList()
         val period = conflict.`object`()
         val dataElementUid = regex.find(conflict.value())?.groupValues?.get(3)
-        for (dataValue in dataValues) {
+        dataValues.forEach { dataValue ->
             if (dataValue.period() == period && dataValue.dataElement() == dataElementUid) {
                 foundDataValuesConflicts.add(
                     getConflictBuilder(
                         dataValue = dataValue,
                         conflict = conflict,
-                        displayDescription = getDisplayDescription(conflict.`object`(), dataValue.dataElement())
-                            ?: conflict.value()
+                        displayDescription = getDisplayDescription(conflict, period, dataValue.dataElement())
                     ).build()
                 )
             }
@@ -63,8 +62,9 @@ internal class PeriodAfterLatestOpenFutureConflict(
         return foundDataValuesConflicts
     }
 
-    private fun getDisplayDescription(value: String, dataElementUid: String?) = dataElementUid?.let {
-        val dataElementType = dataElementStore.selectByUid(it)?.valueType().toString()
-        "Period $value is after latest open future period for data element: $dataElementType"
-    }
+    private fun getDisplayDescription(conflict: ImportConflict, period: String, dataElementUid: String?) =
+        dataElementUid?.let {
+            val dataElementType = dataElementStore.selectByUid(it)?.valueType().toString()
+            "Period $period is after latest open future period for data element: $dataElementType"
+        } ?: conflict.value()
 }

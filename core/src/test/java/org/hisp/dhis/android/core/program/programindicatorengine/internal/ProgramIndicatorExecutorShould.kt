@@ -33,7 +33,6 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import java.text.ParseException
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.constant.Constant
@@ -157,14 +156,8 @@ class ProgramIndicatorExecutorShould {
     fun evaluate_data_elements_in_stage() {
         val expression = "${de(programStage1, dataElementUid1)} + ${de(programStage2, dataElementUid2)}"
         whenever(dataValue1.value()) doReturn "4.5"
-        whenever(dataValue2_1.value()) doReturn "0.8"
         whenever(dataValue2_2.value()) doReturn "20.6"
 
-        whenever(programIndicator.aggregationType()) doReturn AggregationType.NONE
-        val resultNone = programIndicatorExecutor.getProgramIndicatorValue(expression)
-        assertThat(resultNone).isEqualTo("5.3")
-
-        whenever(programIndicator.aggregationType()) doReturn AggregationType.LAST
         val resultLast = programIndicatorExecutor.getProgramIndicatorValue(expression)
         assertThat(resultLast).isEqualTo("25.1")
     }
@@ -176,7 +169,7 @@ class ProgramIndicatorExecutorShould {
                 `var`("value_count")
         )
         whenever(dataValue1.value()) doReturn "4.5"
-        whenever(dataValue2_1.value()) doReturn "1.9"
+        whenever(dataValue2_2.value()) doReturn "1.9"
 
         val resultNone = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression())
         assertThat(resultNone).isEqualTo("3.2")
@@ -189,7 +182,7 @@ class ProgramIndicatorExecutorShould {
                 `var`("zero_pos_value_count")
         )
         whenever(dataValue1.value()) doReturn "7.5"
-        whenever(dataValue2_1.value()) doReturn "-1.5"
+        whenever(dataValue2_2.value()) doReturn "-1.5"
 
         val resultNone = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression())
         assertThat(resultNone).isEqualTo("6")
@@ -361,6 +354,15 @@ class ProgramIndicatorExecutorShould {
 
         val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression())
         assertThat(result).isEqualTo("5.3")
+    }
+
+    @Test
+    @Throws(ParseException::class)
+    fun evaluate_tei_count() {
+        setExpression(`var`("tei_count"))
+
+        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression())
+        assertThat(result).isEqualTo("1")
     }
 
     // -------------------------------------------------------------------------

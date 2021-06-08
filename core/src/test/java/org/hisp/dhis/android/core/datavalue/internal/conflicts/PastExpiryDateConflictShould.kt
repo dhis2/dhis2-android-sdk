@@ -25,27 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.datavalue.internal
 
-import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.datavalue.DataValueConflictTableInfo
-import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
-import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataSyncTableInfo
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
-import org.hisp.dhis.android.core.wipe.internal.TableWiper
+package org.hisp.dhis.android.core.datavalue.internal.conflicts
 
-@Reusable
-class DataValueModuleWiper @Inject internal constructor(private val tableWiper: TableWiper) : ModuleWiper {
-    override fun wipeMetadata() {
-        // No metadata to wipe
+import com.nhaarman.mockitokotlin2.mock
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.dataset.DataSet
+import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
+import org.junit.Before
+import org.junit.Test
+
+internal class PastExpiryDateConflictShould {
+
+    private lateinit var pastExpiryDateConflict: PastExpiryDateConflict
+    private val dataValueStore: DataValueStore = mock()
+    private val dataSetStore: IdentifiableObjectStore<DataSet> = mock()
+
+    @Before
+    fun setUp() {
+        pastExpiryDateConflict = PastExpiryDateConflict(dataValueStore, dataSetStore)
     }
 
-    override fun wipeData() {
-        tableWiper.wipeTables(
-            DataValueTableInfo.TABLE_INFO,
-            AggregatedDataSyncTableInfo.TABLE_INFO,
-            DataValueConflictTableInfo.TABLE_INFO
-        )
+    @Test
+    fun `Should match error messages`() {
+        assert(pastExpiryDateConflict.matches(DataValueImportConflictSamples.pastExpiryDate()))
     }
 }

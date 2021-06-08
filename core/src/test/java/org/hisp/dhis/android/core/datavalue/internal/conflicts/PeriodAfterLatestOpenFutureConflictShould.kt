@@ -25,27 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.datavalue.internal
 
-import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.datavalue.DataValueConflictTableInfo
-import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
-import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataSyncTableInfo
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
-import org.hisp.dhis.android.core.wipe.internal.TableWiper
+package org.hisp.dhis.android.core.datavalue.internal.conflicts
 
-@Reusable
-class DataValueModuleWiper @Inject internal constructor(private val tableWiper: TableWiper) : ModuleWiper {
-    override fun wipeMetadata() {
-        // No metadata to wipe
+import com.nhaarman.mockitokotlin2.mock
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.dataelement.DataElement
+import org.junit.Before
+import org.junit.Test
+
+internal class PeriodAfterLatestOpenFutureConflictShould {
+    private lateinit var periodAfterLatestOpenFutureConflict: PeriodAfterLatestOpenFutureConflict
+    private val dataElementStore: IdentifiableObjectStore<DataElement> = mock()
+
+    @Before
+    fun setUp() {
+        periodAfterLatestOpenFutureConflict = PeriodAfterLatestOpenFutureConflict(dataElementStore)
     }
 
-    override fun wipeData() {
-        tableWiper.wipeTables(
-            DataValueTableInfo.TABLE_INFO,
-            AggregatedDataSyncTableInfo.TABLE_INFO,
-            DataValueConflictTableInfo.TABLE_INFO
+    @Test
+    fun `Should match error messages`() {
+        assert(
+            periodAfterLatestOpenFutureConflict.matches(DataValueImportConflictSamples.periodAfterLatestOpenFuture())
         )
     }
 }

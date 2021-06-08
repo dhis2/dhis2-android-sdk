@@ -25,27 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.datavalue.internal
 
-import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.datavalue.DataValueConflictTableInfo
-import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
-import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataSyncTableInfo
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
-import org.hisp.dhis.android.core.wipe.internal.TableWiper
+package org.hisp.dhis.android.core.datavalue.internal.conflicts
 
-@Reusable
-class DataValueModuleWiper @Inject internal constructor(private val tableWiper: TableWiper) : ModuleWiper {
-    override fun wipeMetadata() {
-        // No metadata to wipe
-    }
+import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
-    override fun wipeData() {
-        tableWiper.wipeTables(
-            DataValueTableInfo.TABLE_INFO,
-            AggregatedDataSyncTableInfo.TABLE_INFO,
-            DataValueConflictTableInfo.TABLE_INFO
-        )
-    }
+object DataValueImportConflictSamples {
+
+    fun invalidDataElementType(): ImportConflict = ImportConflict.create(
+        "40L",
+        "Data value is not a positive integer, must match data element type: vANAXwtLwcT"
+    )
+
+    fun pastExpiryDate(): ImportConflict = ImportConflict.create(
+        "202104",
+        "Current date is past expiry days for period 202104 and data set: BfMAe6Itzgt"
+    )
+
+    fun periodAfterLatestOpenFuture(): ImportConflict = ImportConflict.create(
+        "202111",
+        "Period: 202111 is after latest open future period: 202105 for data element: UOlfIjgN8X6"
+    )
 }

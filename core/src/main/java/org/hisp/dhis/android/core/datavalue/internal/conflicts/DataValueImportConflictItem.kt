@@ -36,8 +36,13 @@ import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
 internal interface DataValueImportConflictItem {
-    fun matches(conflict: ImportConflict): Boolean
+    val regex: Regex
+
     fun getDataValues(conflict: ImportConflict, dataValues: List<DataValue>): List<DataValueConflict>
+
+    fun matches(conflict: ImportConflict): Boolean {
+        return regex.matches(conflict.value())
+    }
 
     fun getConflictBuilder(
         dataValue: DataValue,

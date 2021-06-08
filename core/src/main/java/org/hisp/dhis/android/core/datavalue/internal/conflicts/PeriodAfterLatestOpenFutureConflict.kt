@@ -35,19 +35,20 @@ import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
-internal class InvalidDataElementTypeConflict(
+@Suppress("MagicNumber")
+internal class PeriodAfterLatestOpenFutureConflict(
     private val dataElementStore: IdentifiableObjectStore<DataElement>
 ) : DataValueImportConflictItem {
 
     override val regex: Regex
-        get() = Regex(".*, must match data element type: (\\w{11})")
+        get() = Regex("Period: (\\d+) is after latest open future period: (\\d+) for data element: (\\w{11})")
 
     override fun getDataValues(conflict: ImportConflict, dataValues: List<DataValue>): List<DataValueConflict> {
         val foundDataValuesConflicts: MutableList<DataValueConflict> = ArrayList()
-        val value = conflict.`object`()
-        val dataElementUid = regex.find(conflict.value())?.groupValues?.get(1)
+        val period = conflict.`object`()
+        val dataElementUid = regex.find(conflict.value())?.groupValues?.get(3)
         for (dataValue in dataValues) {
-            if (dataValue.value() == value && dataValue.dataElement() == dataElementUid) {
+            if (dataValue.period() == period && dataValue.dataElement() == dataElementUid) {
                 foundDataValuesConflicts.add(
                     getConflictBuilder(
                         dataValue = dataValue,
@@ -64,6 +65,6 @@ internal class InvalidDataElementTypeConflict(
 
     private fun getDisplayDescription(value: String, dataElementUid: String?) = dataElementUid?.let {
         val dataElementType = dataElementStore.selectByUid(it)?.valueType().toString()
-        "DataValue $value must match with data element type $dataElementType"
+        "Period $value is after latest open future period for data element: $dataElementType"
     }
 }

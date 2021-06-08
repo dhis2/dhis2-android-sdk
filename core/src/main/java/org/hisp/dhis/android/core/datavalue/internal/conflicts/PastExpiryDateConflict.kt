@@ -33,13 +33,10 @@ import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
-internal object PastExpiryDate : DataValueImportConflictItem {
+internal class PastExpiryDateConflict : DataValueImportConflictItem {
 
-    val regex: Regex = Regex("Current date is past expiry days for period (\\d+) and data set: (\\w{11})")
-
-    override fun matches(conflict: ImportConflict): Boolean {
-        return regex.matches(conflict.value())
-    }
+    override val regex: Regex
+        get() = Regex("Current date is past expiry days for period (\\d+) and data set: (\\w{11})")
 
     override fun getDataValues(conflict: ImportConflict, dataValues: List<DataValue>): List<DataValueConflict> {
         val foundDataValuesConflicts: MutableList<DataValueConflict> = ArrayList()

@@ -28,16 +28,18 @@
 
 package org.hisp.dhis.android.core.datavalue.internal.conflicts
 
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.dataelement.DataElement
 import java.util.ArrayList
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
-internal object InvalidDataElementTypeConflict : DataValueImportConflictItem {
+internal data class InvalidDataElementTypeConflict(
+    private val dataElementStore: IdentifiableObjectStore<DataElement>
+) : DataValueImportConflictItem {
 
     private val regex: Regex = Regex(".*, must match data element type: (\\w{11})")
-    private fun description(value: String, elementType: String) =
-        "DataValue $value must match with data element type $elementType"
 
     override fun matches(conflict: ImportConflict): Boolean {
         return regex.matches(conflict.value())
@@ -53,14 +55,18 @@ internal object InvalidDataElementTypeConflict : DataValueImportConflictItem {
                     getConflictBuilder(
                         dataValue = dataValue,
                         conflict = conflict,
-                        displayDescription = dataValue.dataElement()?.let {
-                            description(conflict.`object`(), it)
-                        } ?: conflict.value()
+                        displayDescription = getDisplayDescription(conflict.`object`(), dataValue.dataElement())
+                            ?: conflict.value()
                     ).build()
                 )
             }
         }
 
         return foundDataValuesConflicts
+    }
+
+    private fun getDisplayDescription(value: String, dataElementUid: String?) = dataElementUid?.let {
+        val dataElementType = dataElementStore.selectByUid(it)?.valueType().toString()
+        "DataValue $value must match with data element type $dataElementType"
     }
 }

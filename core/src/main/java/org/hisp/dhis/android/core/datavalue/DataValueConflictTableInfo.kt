@@ -54,7 +54,6 @@ object DataValueConflictTableInfo {
                 DATA_ELEMENT,
                 PERIOD,
                 ORG_UNIT,
-                TABLE_REFERENCE,
                 ERROR_CODE,
                 DISPLAY_DESCRIPTION,
                 STATUS,
@@ -70,7 +69,6 @@ object DataValueConflictTableInfo {
             const val DATA_ELEMENT = "dataElement"
             const val PERIOD = "period"
             const val ORG_UNIT = "orgUnit"
-            const val TABLE_REFERENCE = "tableReference"
             const val ERROR_CODE = "errorCode"
             const val DISPLAY_DESCRIPTION = "displayDescription"
             const val STATUS = "status"

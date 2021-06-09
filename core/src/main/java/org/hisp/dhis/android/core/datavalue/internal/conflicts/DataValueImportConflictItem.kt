@@ -57,7 +57,6 @@ internal interface DataValueImportConflictItem {
             .dataElement(dataValue.dataElement())
             .orgUnit(dataValue.organisationUnit())
             .period(dataValue.period())
-            .tableReference(DataValueTableInfo.TABLE_INFO.name())
             .status(ImportStatus.WARNING)
             .displayDescription(displayDescription)
             .created(Date())

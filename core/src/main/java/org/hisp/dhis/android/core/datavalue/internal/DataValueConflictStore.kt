@@ -45,11 +45,10 @@ internal object DataValueConflictStore {
         w.bind(5, o.dataElement())
         w.bind(6, o.period())
         w.bind(7, o.orgUnit())
-        w.bind(8, o.tableReference())
-        w.bind(9, o.errorCode())
-        w.bind(10, o.displayDescription())
-        w.bind(11, o.status())
-        w.bind(12, o.created())
+        w.bind(8, o.errorCode())
+        w.bind(9, o.displayDescription())
+        w.bind(10, o.status())
+        w.bind(11, o.created())
     }
 
     @JvmStatic

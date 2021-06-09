@@ -77,10 +77,6 @@ internal class DataValueImportHandler @Inject constructor(
         dataValues.forEach { dataValue ->
             val whereClause = WhereClauseBuilder()
                 .appendKeyStringValue(
-                    DataValueConflictTableInfo.Columns.TABLE_REFERENCE,
-                    DataValueTableInfo.TABLE_INFO.name()
-                )
-                .appendKeyStringValue(
                     DataValueConflictTableInfo.Columns.ATTRIBUTE_OPTION_COMBO,
                     dataValue.attributeOptionCombo()
                 )

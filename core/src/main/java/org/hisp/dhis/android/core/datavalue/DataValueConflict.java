@@ -68,12 +68,8 @@ public abstract class DataValueConflict extends BaseObject {
     public abstract String orgUnit();
 
     @Nullable
-    public abstract String tableReference();
-
-    @Nullable
     public abstract String errorCode();
 
-    // TODO legible description chade id by data elemtn type
     @Nullable
     public abstract String displayDescription();
 
@@ -111,8 +107,6 @@ public abstract class DataValueConflict extends BaseObject {
         public abstract Builder period(String period);
 
         public abstract Builder orgUnit(String orgUnit);
-
-        public abstract Builder tableReference(String tableReference);
 
         public abstract Builder errorCode(String errorCode);
 

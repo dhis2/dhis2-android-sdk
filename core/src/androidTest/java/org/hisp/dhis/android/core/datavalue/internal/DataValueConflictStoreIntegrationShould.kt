@@ -26,38 +26,23 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue.internal.conflicts
+package org.hisp.dhis.android.core.datavalue.internal
 
-import java.util.Date
-import org.hisp.dhis.android.core.datavalue.DataValue
+import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.datavalue.DataValueConflictSamples
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
-import org.hisp.dhis.android.core.imports.ImportStatus
-import org.hisp.dhis.android.core.imports.internal.ImportConflict
+import org.hisp.dhis.android.core.datavalue.DataValueConflictTableInfo
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-internal interface DataValueImportConflictItem {
-    val regex: Regex
-
-    fun getDataValues(conflict: ImportConflict, dataValues: List<DataValue>): List<DataValueConflict>
-
-    fun matches(conflict: ImportConflict): Boolean {
-        return regex.matches(conflict.value())
-    }
-
-    fun getConflictBuilder(
-        dataValue: DataValue,
-        conflict: ImportConflict,
-        displayDescription: String
-    ): DataValueConflict.Builder {
-        return DataValueConflict.builder()
-            .conflict(conflict.value())
-            .value(dataValue.value())
-            .attributeOptionCombo(dataValue.attributeOptionCombo())
-            .categoryOptionCombo(dataValue.categoryOptionCombo())
-            .dataElement(dataValue.dataElement())
-            .orgUnit(dataValue.organisationUnit())
-            .period(dataValue.period())
-            .status(ImportStatus.WARNING)
-            .displayDescription(displayDescription)
-            .created(Date())
+@RunWith(D2JunitRunner::class)
+class DataValueConflictStoreIntegrationShould : ObjectStoreAbstractIntegrationShould<DataValueConflict>(
+    DataValueConflictStore.create(TestDatabaseAdapterFactory.get()),
+    DataValueConflictTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get()
+) {
+    override fun buildObject(): DataValueConflict {
+        return DataValueConflictSamples.get()
     }
 }

@@ -26,38 +26,32 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue.internal.conflicts
+package org.hisp.dhis.android.core.data.datavalue
 
+import java.text.ParseException
 import java.util.Date
-import org.hisp.dhis.android.core.datavalue.DataValue
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
-import org.hisp.dhis.android.core.imports.ImportStatus
-import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
-internal interface DataValueImportConflictItem {
-    val regex: Regex
+object DataValueConflictSamples {
 
-    fun getDataValues(conflict: ImportConflict, dataValues: List<DataValue>): List<DataValueConflict>
-
-    fun matches(conflict: ImportConflict): Boolean {
-        return regex.matches(conflict.value())
+    fun get(): DataValueConflict {
+        return DataValueConflict.builder()
+            .value("KKK")
+            .attributeOptionCombo("HllvX50cXC0")
+            .categoryOptionCombo("Prlt0C1RF0s")
+            .created(getDate("021-06-02T12:38:53.743"))
+            .dataElement("UOlfIjgN8X6")
+            .period("202101")
+            .orgUnit("DiszpKrYNg8").build()
     }
 
-    fun getConflictBuilder(
-        dataValue: DataValue,
-        conflict: ImportConflict,
-        displayDescription: String
-    ): DataValueConflict.Builder {
-        return DataValueConflict.builder()
-            .conflict(conflict.value())
-            .value(dataValue.value())
-            .attributeOptionCombo(dataValue.attributeOptionCombo())
-            .categoryOptionCombo(dataValue.categoryOptionCombo())
-            .dataElement(dataValue.dataElement())
-            .orgUnit(dataValue.organisationUnit())
-            .period(dataValue.period())
-            .status(ImportStatus.WARNING)
-            .displayDescription(displayDescription)
-            .created(Date())
+    private fun getDate(dateStr: String): Date? {
+        return try {
+            BaseIdentifiableObject.DATE_FORMAT.parse(dateStr)
+        } catch (e: ParseException) {
+            e.printStackTrace()
+            null
+        }
     }
 }

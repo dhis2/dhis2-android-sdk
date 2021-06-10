@@ -59,6 +59,7 @@ import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.internal.DataElementPackageDIModule;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.internal.DataSetPackageDIModule;
+import org.hisp.dhis.android.core.datavalue.internal.DataValueConflictDIModule;
 import org.hisp.dhis.android.core.datavalue.internal.DataValuePackageDIModule;
 import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataPackageDIModule;
 import org.hisp.dhis.android.core.domain.aggregated.internal.AggregatedModuleImpl;
@@ -143,7 +144,8 @@ import retrofit2.Retrofit;
         TrackerImporterPackageDIModule.class,
         SmsDIModule.class,
         UserPackageDIModule.class,
-        ValidationPackageDIModule.class}
+        ValidationPackageDIModule.class,
+        DataValueConflictDIModule.class}
 )
 
 public interface D2DIComponent {
@@ -220,6 +222,7 @@ public interface D2DIComponent {
         Builder trackerImporterPackageDIModule(TrackerImporterPackageDIModule trackerImporterPackageDIModule);
         Builder userPackageDIModule(UserPackageDIModule userPackageDIModule);
         Builder validationPackageDIModule(ValidationPackageDIModule validationPackageDIModule);
+        Builder dataValueConflictDIModule(DataValueConflictDIModule dataValueConflictDIModule);
         D2DIComponent build();
     }
 

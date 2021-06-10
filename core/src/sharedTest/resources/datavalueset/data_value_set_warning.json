@@ -38,7 +38,7 @@
   "conflicts": [
     {
       "object": "40L",
-      "value": "El valor de dato no es un entero, must match data element type: vANAXwtLwcT"
+      "value": "Data value is not a positive integer, must match data element type: vANAXwtLwcT"
     }
   ],
   "dataSetComplete": "false"

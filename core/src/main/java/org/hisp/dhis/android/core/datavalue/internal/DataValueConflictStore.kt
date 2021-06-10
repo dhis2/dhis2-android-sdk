@@ -26,44 +26,35 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.datavalue.internal
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
+import org.hisp.dhis.android.core.datavalue.DataValueConflict
+import org.hisp.dhis.android.core.datavalue.DataValueConflictTableInfo
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 101;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+@Suppress("MagicNumber")
+internal object DataValueConflictStore {
+    private val BINDER = StatementBinder<DataValueConflict> { o, w ->
+        w.bind(1, o.conflict())
+        w.bind(2, o.value())
+        w.bind(3, o.attributeOptionCombo())
+        w.bind(4, o.categoryOptionCombo())
+        w.bind(5, o.dataElement())
+        w.bind(6, o.period())
+        w.bind(7, o.orgUnit())
+        w.bind(8, o.errorCode())
+        w.bind(9, o.displayDescription())
+        w.bind(10, o.status())
+        w.bind(11, o.created())
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
+    @JvmStatic
+    fun create(databaseAdapter: DatabaseAdapter): ObjectStore<DataValueConflict> {
+        return StoreFactory.objectStore(databaseAdapter, DataValueConflictTableInfo.TABLE_INFO, BINDER) {
+            DataValueConflict.create(it)
         }
-
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
     }
 }

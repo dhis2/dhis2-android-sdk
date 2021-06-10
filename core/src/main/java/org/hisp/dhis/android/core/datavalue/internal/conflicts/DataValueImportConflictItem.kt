@@ -26,44 +26,38 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.datavalue.internal.conflicts
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+import java.util.Date
+import org.hisp.dhis.android.core.datavalue.DataValue
+import org.hisp.dhis.android.core.datavalue.DataValueConflict
+import org.hisp.dhis.android.core.imports.ImportStatus
+import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+internal interface DataValueImportConflictItem {
+    val regex: Regex
 
-class BaseDatabaseOpenHelper {
+    fun getDataValues(conflict: ImportConflict, dataValues: List<DataValue>): List<DataValueConflict>
 
-    static final int VERSION = 101;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    fun matches(conflict: ImportConflict): Boolean {
+        return regex.matches(conflict.value())
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    fun getConflictBuilder(
+        dataValue: DataValue,
+        conflict: ImportConflict,
+        displayDescription: String
+    ): DataValueConflict.Builder {
+        return DataValueConflict.builder()
+            .conflict(conflict.value())
+            .value(dataValue.value())
+            .attributeOptionCombo(dataValue.attributeOptionCombo())
+            .categoryOptionCombo(dataValue.categoryOptionCombo())
+            .dataElement(dataValue.dataElement())
+            .orgUnit(dataValue.organisationUnit())
+            .period(dataValue.period())
+            .status(ImportStatus.WARNING)
+            .displayDescription(displayDescription)
+            .created(Date())
     }
 }

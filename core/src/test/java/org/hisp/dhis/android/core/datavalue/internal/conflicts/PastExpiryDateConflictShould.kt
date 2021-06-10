@@ -26,44 +26,28 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.datavalue.internal.conflicts
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+import com.nhaarman.mockitokotlin2.mock
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.dataset.DataSet
+import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
+import org.junit.Before
+import org.junit.Test
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+internal class PastExpiryDateConflictShould {
 
-class BaseDatabaseOpenHelper {
+    private lateinit var pastExpiryDateConflict: PastExpiryDateConflict
+    private val dataValueStore: DataValueStore = mock()
+    private val dataSetStore: IdentifiableObjectStore<DataSet> = mock()
 
-    static final int VERSION = 101;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    @Before
+    fun setUp() {
+        pastExpiryDateConflict = PastExpiryDateConflict(dataValueStore, dataSetStore)
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    @Test
+    fun `Should match error messages`() {
+        assert(pastExpiryDateConflict.matches(DataValueImportConflictSamples.pastExpiryDate()))
     }
 }

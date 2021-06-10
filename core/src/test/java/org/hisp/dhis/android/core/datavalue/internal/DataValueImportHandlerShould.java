@@ -28,8 +28,10 @@
 
 package org.hisp.dhis.android.core.datavalue.internal;
 
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.datavalue.DataValue;
+import org.hisp.dhis.android.core.datavalue.DataValueConflict;
 import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary;
 import org.junit.Before;
@@ -54,6 +56,12 @@ public class DataValueImportHandlerShould {
     DataValueStore dataValueStore;
 
     @Mock
+    DataValueConflictParser dataValueConflictParser;
+
+    @Mock
+    ObjectStore<DataValueConflict> dataValueConflictStore;
+
+    @Mock
     DataValueImportSummary dataValueImportSummary;
 
     DataValueSet dataValueSet;
@@ -69,7 +77,7 @@ public class DataValueImportHandlerShould {
 
         dataValueSet = new DataValueSet(Collections.singletonList(dataValue));
 
-        dataValueImportHandler = new DataValueImportHandler(dataValueStore);
+        dataValueImportHandler = new DataValueImportHandler(dataValueStore, dataValueConflictParser, dataValueConflictStore);
     }
 
     @Test

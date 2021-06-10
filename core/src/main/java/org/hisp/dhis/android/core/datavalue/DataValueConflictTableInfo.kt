@@ -26,37 +26,53 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue.internal;
+package org.hisp.dhis.android.core.datavalue
 
-import org.hisp.dhis.android.core.datavalue.DataValueTableInfo;
-import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataSyncTableInfo;
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.internal.TableWiper;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.common.CoreColumns
 
-import javax.inject.Inject;
+object DataValueConflictTableInfo {
+    val TABLE_INFO: TableInfo = object : TableInfo() {
+        override fun name(): String {
+            return "DataValueConflict"
+        }
 
-import dagger.Reusable;
-
-@Reusable
-public final class DataValueModuleWiper implements ModuleWiper {
-
-    private final TableWiper tableWiper;
-
-    @Inject
-    DataValueModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+        override fun columns(): CoreColumns {
+            return Columns()
+        }
     }
 
-    @Override
-    public void wipeMetadata() {
-        // No metadata to wipe
-    }
+    class Columns : CoreColumns() {
+        override fun all(): Array<String> {
+            return CollectionsHelper.appendInNewArray(
+                super.all(),
+                CONFLICT,
+                VALUE,
+                ATTRIBUTE_OPTION_COMBO,
+                CATEGORY_OPTION_COMBO,
+                DATA_ELEMENT,
+                PERIOD,
+                ORG_UNIT,
+                ERROR_CODE,
+                DISPLAY_DESCRIPTION,
+                STATUS,
+                CREATED
+            )
+        }
 
-    @Override
-    public void wipeData() {
-        tableWiper.wipeTables(
-                DataValueTableInfo.TABLE_INFO,
-                AggregatedDataSyncTableInfo.TABLE_INFO
-        );
+        companion object {
+            const val CONFLICT = "conflict"
+            const val VALUE = "value"
+            const val ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo"
+            const val CATEGORY_OPTION_COMBO = "categoryOptionCombo"
+            const val DATA_ELEMENT = "dataElement"
+            const val PERIOD = "period"
+            const val ORG_UNIT = "orgUnit"
+            const val ERROR_CODE = "errorCode"
+            const val DISPLAY_DESCRIPTION = "displayDescription"
+            const val STATUS = "status"
+            const val CREATED = "created"
+        }
     }
 }

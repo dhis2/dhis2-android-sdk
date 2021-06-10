@@ -26,44 +26,39 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.datavalue.internal
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.dataset.DataSet
+import org.hisp.dhis.android.core.datavalue.DataValue
+import org.hisp.dhis.android.core.datavalue.DataValueConflict
+import org.hisp.dhis.android.core.datavalue.internal.conflicts.InvalidDataElementTypeConflict
+import org.hisp.dhis.android.core.datavalue.internal.conflicts.PastExpiryDateConflict
+import org.hisp.dhis.android.core.datavalue.internal.conflicts.PeriodAfterLatestOpenFutureConflict
+import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+@Reusable
+internal class DataValueConflictParser @Inject constructor(
+    dataElementStore: IdentifiableObjectStore<DataElement>,
+    dataValueStore: DataValueStore,
+    dataSetStore: IdentifiableObjectStore<DataSet>
+) {
 
-class BaseDatabaseOpenHelper {
+    private val conflicts = listOf(
+        InvalidDataElementTypeConflict(dataElementStore),
+        PastExpiryDateConflict(dataValueStore, dataSetStore),
+        PeriodAfterLatestOpenFutureConflict(dataElementStore)
+    )
 
-    static final int VERSION = 101;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
-    }
-
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    fun getDataValueConflicts(
+        conflict: ImportConflict,
+        dataValues: List<DataValue>
+    ): List<DataValueConflict> {
+        return conflicts.find {
+            it.matches(conflict)
+        }?.getDataValues(conflict, dataValues) ?: emptyList()
     }
 }

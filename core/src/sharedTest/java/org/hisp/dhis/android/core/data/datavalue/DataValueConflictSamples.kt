@@ -26,44 +26,32 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.data.datavalue
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+import java.text.ParseException
+import java.util.Date
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.datavalue.DataValueConflict
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+object DataValueConflictSamples {
 
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 101;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    fun get(): DataValueConflict {
+        return DataValueConflict.builder()
+            .value("KKK")
+            .attributeOptionCombo("HllvX50cXC0")
+            .categoryOptionCombo("Prlt0C1RF0s")
+            .created(getDate("021-06-02T12:38:53.743"))
+            .dataElement("UOlfIjgN8X6")
+            .period("202101")
+            .orgUnit("DiszpKrYNg8").build()
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
+    private fun getDate(dateStr: String): Date? {
+        return try {
+            BaseIdentifiableObject.DATE_FORMAT.parse(dateStr)
+        } catch (e: ParseException) {
+            e.printStackTrace()
+            null
         }
-
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
     }
 }

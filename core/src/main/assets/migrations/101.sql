@@ -1,0 +1,1 @@
+CREATE TABLE DataValueConflict (_id INTEGER PRIMARY KEY AUTOINCREMENT, conflict TEXT, value TEXT, attributeOptionCombo TEXT, categoryOptionCombo TEXT, dataElement TEXT, period TEXT, orgUnit TEXT, errorCode TEXT, status TEXT, created TEXT, displayDescription TEXT);

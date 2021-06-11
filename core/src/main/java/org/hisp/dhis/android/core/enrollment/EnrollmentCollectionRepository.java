@@ -107,11 +107,11 @@ public final class EnrollmentCollectionRepository extends ReadWriteWithUidCollec
     }
 
     public DateFilterConnector<EnrollmentCollectionRepository> byEnrollmentDate() {
-        return cf.date(Columns.ENROLLMENT_DATE);
+        return cf.simpleDate(Columns.ENROLLMENT_DATE);
     }
 
     public DateFilterConnector<EnrollmentCollectionRepository> byIncidentDate() {
-        return cf.date(Columns.INCIDENT_DATE);
+        return cf.simpleDate(Columns.INCIDENT_DATE);
     }
 
     public BooleanFilterConnector<EnrollmentCollectionRepository> byFollowUp() {

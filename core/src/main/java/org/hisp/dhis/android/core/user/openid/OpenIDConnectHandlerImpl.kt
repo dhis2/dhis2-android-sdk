@@ -33,6 +33,7 @@ import android.content.Intent
 import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 import net.openid.appauth.*
 import org.hisp.dhis.android.core.user.User
@@ -71,9 +72,11 @@ internal class OpenIDConnectHandlerImpl @Inject constructor(
                 Single.error<User>(ex)
             } else {
                 val response = AuthorizationResponse.fromIntent(intent)!!
-                downloadToken(response.createTokenExchangeRequest()).map {
-                    logInCall.blockingLogInOpenIDConnect(serverUrl, it)
-                }
+                downloadToken(response.createTokenExchangeRequest())
+                    .observeOn(Schedulers.io())
+                    .map {
+                        logInCall.blockingLogInOpenIDConnect(serverUrl, it)
+                    }
             }
         } else {
             Single.error<User>(RuntimeException("Unexpected intent or request code"))

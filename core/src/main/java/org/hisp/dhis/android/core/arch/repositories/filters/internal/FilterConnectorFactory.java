@@ -55,7 +55,11 @@ public class FilterConnectorFactory<R extends BaseRepository> {
     }
 
     public DateFilterConnector<R> date(String key) {
-        return new DateFilterConnector<>(repositoryFactory, scope, key);
+        return new DateTimeFilterConnector<>(repositoryFactory, scope, key);
+    }
+
+    public DateFilterConnector<R> simpleDate(String key) {
+        return new SimpleDateFilterConnector<>(repositoryFactory, scope, key);
     }
 
     public BooleanFilterConnector<R> bool(String key) {

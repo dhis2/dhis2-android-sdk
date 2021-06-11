@@ -26,44 +26,20 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.program.programindicatorengine.internal.variable;
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+public class VTeiCount
+        implements ExpressionItem {
 
-class BaseDatabaseOpenHelper {
+    @Override
+    public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
 
-    static final int VERSION = 99;
+        int count = visitor.getProgramIndicatorContext().enrollment() == null ? 0 : 1;
 
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
-    }
-
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+        return String.valueOf(count);
     }
 }

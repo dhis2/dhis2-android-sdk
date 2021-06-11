@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOpe
 import java.util.Arrays;
 import java.util.Collection;
 
-abstract class BaseAbstractFilterConnector<R extends BaseRepository, V> extends AbstractFilterConnector<R, V> {
+public abstract class BaseAbstractFilterConnector<R extends BaseRepository, V> extends AbstractFilterConnector<R, V> {
 
     BaseAbstractFilterConnector(BaseRepositoryFactory<R> repositoryFactory,
                                 RepositoryScope scope,

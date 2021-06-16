@@ -30,9 +30,9 @@ package org.hisp.dhis.android.core.analytics.aggregated.mock
 
 import dagger.Reusable
 import io.reactivex.Single
+import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.GridAnalyticsResponse
 import org.hisp.dhis.android.core.analytics.aggregated.VisualizationsRepository
-import javax.inject.Inject
 
 @Reusable
 class MockVisualizationsRepository @Inject constructor() : VisualizationsRepository {
@@ -43,6 +43,5 @@ class MockVisualizationsRepository @Inject constructor() : VisualizationsReposit
         return Single.fromCallable { blockingEvaluate() }
     }
 
-    override fun blockingEvaluate(): GridAnalyticsResponse = GridSamples.sample1
-
+    override fun blockingEvaluate(): GridAnalyticsResponse = GridAnalyticsResponseSamples.sample1
 }

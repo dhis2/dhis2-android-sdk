@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated
 
+import java.util.*
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.period.PeriodType
-import java.util.*
 
 sealed class MetadataItem(val id: String, val displayName: String) {
     class DataElement(uid: String, displayName: String) : MetadataItem(uid, displayName)
@@ -40,9 +40,18 @@ sealed class MetadataItem(val id: String, val displayName: String) {
     class Category(uid: String, displayName: String) : MetadataItem(uid, displayName)
     class CategoryOption(uid: String, displayName: String, val category: String) : MetadataItem(uid, displayName)
     class CategoryOptionGroupSet(uid: String, displayName: String) : MetadataItem(uid, displayName)
-    class CategoryOptionGroup(uid: String, displayName: String, val categoryOptionGroupSet: String) : MetadataItem(uid, displayName)
+    class CategoryOptionGroup(
+        uid: String,
+        displayName: String,
+        val categoryOptionGroupSet: String
+    ) : MetadataItem(uid, displayName)
     class OrganisationUnit(uid: String, displayName: String) : MetadataItem(uid, displayName)
-    class Period(periodId: String, val periodType: PeriodType, val startData: Date, val endDate: Date) : MetadataItem(periodId, periodId)
+    class Period(
+        periodId: String,
+        val periodType: PeriodType,
+        val startData: Date,
+        val endDate: Date
+    ) : MetadataItem(periodId, periodId)
 }
 
 sealed class Dimension {
@@ -75,5 +84,8 @@ sealed class DimensionItem(val dimension: Dimension) {
 
     class CategoryItem(val uid: String, val categoryOptions: List<String>) : DimensionItem(Dimension.Category(uid))
 
-    class CategoryOptionGroupSetItem(val uid: String, val categoryOptionGroups: List<String>) : DimensionItem(Dimension.CategoryOptionGroupSet(uid))
+    class CategoryOptionGroupSetItem(
+        val uid: String,
+        val categoryOptionGroups: List<String>
+    ) : DimensionItem(Dimension.CategoryOptionGroupSet(uid))
 }

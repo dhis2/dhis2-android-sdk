@@ -37,5 +37,4 @@ interface VisualizationsRepository {
     fun evaluate(): Single<GridAnalyticsResponse>
 
     fun blockingEvaluate(): GridAnalyticsResponse
-
 }

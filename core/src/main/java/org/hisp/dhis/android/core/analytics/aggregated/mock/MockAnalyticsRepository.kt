@@ -30,10 +30,10 @@ package org.hisp.dhis.android.core.analytics.aggregated.mock
 
 import dagger.Reusable
 import io.reactivex.Single
+import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepository
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
-import javax.inject.Inject
 
 @Reusable
 class MockAnalyticsRepository @Inject constructor() : AnalyticsRepository {
@@ -46,6 +46,5 @@ class MockAnalyticsRepository @Inject constructor() : AnalyticsRepository {
         return Single.fromCallable { blockingEvaluate() }
     }
 
-    override fun blockingEvaluate(): DimensionalResponse = DimensionalSamples.sample1
-
+    override fun blockingEvaluate(): DimensionalResponse = DimensionalResponseSamples.sample1
 }

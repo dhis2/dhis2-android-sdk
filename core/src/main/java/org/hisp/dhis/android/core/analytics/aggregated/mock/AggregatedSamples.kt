@@ -29,16 +29,16 @@
 package org.hisp.dhis.android.core.analytics.aggregated.mock
 
 object AggregatedSamples {
-    val dataElement1 = "fbfJHSPpUQD"    //ANC 1st visit
-    val dataElement2 = "cYeuwXTCPkU"    //ANC 2nd visit
+    const val dataElement1 = "fbfJHSPpUQD" // ANC 1st visit
+    const val dataElement2 = "cYeuwXTCPkU" // ANC 2nd visit
 
-    val cc1 = "fMZEcRHuamy"             //Fixed / Outreach
-    val co1 = "pq2XI5kz2BY"             //Fixed
-    val co2 = "PT59n8BQbqM"             //Outreach
+    const val cc1 = "fMZEcRHuamy" // Fixed / Outreach
+    const val co1 = "pq2XI5kz2BY" // Fixed
+    const val co2 = "PT59n8BQbqM" // Outreach
 
-    val period1 = "202103"
-    val period2 = "202102"
+    const val period1 = "202103"
+    const val period2 = "202102"
 
-    val orgunit1 = "DiszpKrYNg8"        //Ngelehun
-    val orgunit2 = "g8upMTyEZGZ"        //Njandama
+    const val orgunit1 = "DiszpKrYNg8" // Ngelehun
+    const val orgunit2 = "g8upMTyEZGZ" // Njandama
 }

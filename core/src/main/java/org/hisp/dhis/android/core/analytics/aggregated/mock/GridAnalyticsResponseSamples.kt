@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.mock
 
+import java.util.*
 import org.hisp.dhis.android.core.analytics.aggregated.*
 import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples.cc1
 import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples.co1
@@ -39,9 +40,8 @@ import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples.or
 import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples.period1
 import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples.period2
 import org.hisp.dhis.android.core.period.PeriodType
-import java.util.*
 
-object GridSamples {
+object GridAnalyticsResponseSamples {
     val sample1 = GridAnalyticsResponse(
         metadata = mapOf(
             dataElement1 to MetadataItem.DataElement(dataElement1, "ANC 1st visit"),

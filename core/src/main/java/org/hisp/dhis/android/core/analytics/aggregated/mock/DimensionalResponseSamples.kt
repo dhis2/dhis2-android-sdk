@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.mock
 
+import java.util.*
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionalValue
@@ -42,10 +43,8 @@ import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples.or
 import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples.period1
 import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples.period2
 import org.hisp.dhis.android.core.period.PeriodType
-import java.util.*
 
-
-object DimensionalSamples {
+object DimensionalResponseSamples {
     val sample1 = DimensionalResponse(
         metadata = mapOf(
             dataElement1 to MetadataItem.DataElement(dataElement1, "ANC 1st visit"),

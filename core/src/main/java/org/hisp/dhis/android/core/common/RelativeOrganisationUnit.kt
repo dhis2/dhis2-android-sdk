@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.common
 
-enum class RelativeOrganisationUnit  {
+enum class RelativeOrganisationUnit {
     USER_ORGUNIT,
     USER_ORGUNIT_CHILDREN,
     USER_ORGUNIT_GRANDCHILDREN

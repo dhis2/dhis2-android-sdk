@@ -39,5 +39,4 @@ interface AnalyticsRepository {
     fun evaluate(): Single<DimensionalResponse>
 
     fun blockingEvaluate(): DimensionalResponse
-
 }

@@ -28,10 +28,10 @@
 package org.hisp.dhis.android.core.analytics
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepository
 import org.hisp.dhis.android.core.analytics.aggregated.VisualizationsRepository
 import org.hisp.dhis.android.core.analytics.linelist.EventLineListRepository
-import javax.inject.Inject
 
 @Reusable
 internal class AnalyticsModuleImpl @Inject constructor(
@@ -45,5 +45,4 @@ internal class AnalyticsModuleImpl @Inject constructor(
     override fun analytics(): AnalyticsRepository = analyticsRepository
 
     override fun visualizations(): VisualizationsRepository = visualizationsRepository
-
 }

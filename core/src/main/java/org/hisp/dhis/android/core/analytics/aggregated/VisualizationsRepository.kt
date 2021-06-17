@@ -25,17 +25,16 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.analytics
 
-import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepository
-import org.hisp.dhis.android.core.analytics.aggregated.VisualizationsRepository
-import org.hisp.dhis.android.core.analytics.linelist.EventLineListRepository
+package org.hisp.dhis.android.core.analytics.aggregated
 
-interface AnalyticsModule {
+import io.reactivex.Single
 
-    fun eventLineList(): EventLineListRepository
+interface VisualizationsRepository {
 
-    fun analytics(): AnalyticsRepository
+    fun withVisualization(visualization: String): VisualizationsRepository
 
-    fun visualizations(): VisualizationsRepository
+    fun evaluate(): Single<GridAnalyticsResponse>
+
+    fun blockingEvaluate(): GridAnalyticsResponse
 }

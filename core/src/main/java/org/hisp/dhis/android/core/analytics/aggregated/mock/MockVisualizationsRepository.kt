@@ -25,17 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.analytics
 
-import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepository
+package org.hisp.dhis.android.core.analytics.aggregated.mock
+
+import dagger.Reusable
+import io.reactivex.Single
+import javax.inject.Inject
+import org.hisp.dhis.android.core.analytics.aggregated.GridAnalyticsResponse
 import org.hisp.dhis.android.core.analytics.aggregated.VisualizationsRepository
-import org.hisp.dhis.android.core.analytics.linelist.EventLineListRepository
 
-interface AnalyticsModule {
+@Reusable
+class MockVisualizationsRepository @Inject constructor() : VisualizationsRepository {
 
-    fun eventLineList(): EventLineListRepository
+    override fun withVisualization(visualization: String): VisualizationsRepository = TODO()
 
-    fun analytics(): AnalyticsRepository
+    override fun evaluate(): Single<GridAnalyticsResponse> {
+        return Single.fromCallable { blockingEvaluate() }
+    }
 
-    fun visualizations(): VisualizationsRepository
+    override fun blockingEvaluate(): GridAnalyticsResponse = GridAnalyticsResponseSamples.sample1
 }

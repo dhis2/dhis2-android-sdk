@@ -25,17 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.analytics
+package org.hisp.dhis.android.core.analytics.aggregated
 
-import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepository
-import org.hisp.dhis.android.core.analytics.aggregated.VisualizationsRepository
-import org.hisp.dhis.android.core.analytics.linelist.EventLineListRepository
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.analytics.aggregated.mock.MockAnalyticsRepository
+import org.hisp.dhis.android.core.analytics.aggregated.mock.MockVisualizationsRepository
 
-interface AnalyticsModule {
+@Module
+internal class AggregatedEntityDIModule {
 
-    fun eventLineList(): EventLineListRepository
+    @Provides
+    @Reusable
+    fun analytics(impl: MockAnalyticsRepository): AnalyticsRepository {
+        return impl
+    }
 
-    fun analytics(): AnalyticsRepository
-
-    fun visualizations(): VisualizationsRepository
+    @Provides
+    @Reusable
+    fun visualizations(impl: MockVisualizationsRepository): VisualizationsRepository {
+        return impl
+    }
 }

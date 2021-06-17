@@ -25,17 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.analytics
 
+package org.hisp.dhis.android.core.analytics.aggregated.mock
+
+import dagger.Reusable
+import io.reactivex.Single
+import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepository
-import org.hisp.dhis.android.core.analytics.aggregated.VisualizationsRepository
-import org.hisp.dhis.android.core.analytics.linelist.EventLineListRepository
+import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
+import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
 
-interface AnalyticsModule {
+@Reusable
+class MockAnalyticsRepository @Inject constructor() : AnalyticsRepository {
 
-    fun eventLineList(): EventLineListRepository
+    override fun withDimension(dimensionItem: DimensionItem): AnalyticsRepository = this
 
-    fun analytics(): AnalyticsRepository
+    override fun withFilter(dimensionItem: DimensionItem): AnalyticsRepository = this
 
-    fun visualizations(): VisualizationsRepository
+    override fun evaluate(): Single<DimensionalResponse> {
+        return Single.fromCallable { blockingEvaluate() }
+    }
+
+    override fun blockingEvaluate(): DimensionalResponse = DimensionalResponseSamples.sample1
 }

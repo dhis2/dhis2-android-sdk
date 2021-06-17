@@ -25,17 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.analytics
 
-import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepository
-import org.hisp.dhis.android.core.analytics.aggregated.VisualizationsRepository
-import org.hisp.dhis.android.core.analytics.linelist.EventLineListRepository
+package org.hisp.dhis.android.core.analytics.aggregated
 
-interface AnalyticsModule {
+data class GridAnalyticsResponse(
+    val metadata: Map<String, MetadataItem>,
+    val headers: GridHeader,
+    val dimensions: GridDimension,
+    val filters: List<String>,
+    val values: List<List<GridResponseValue>>
+)
 
-    fun eventLineList(): EventLineListRepository
+data class GridHeader(
+    val columns: List<List<GridHeaderItem>>,
+    val rows: List<List<GridHeaderItem>>
+)
 
-    fun analytics(): AnalyticsRepository
+data class GridHeaderItem(
+    val id: String,
+    val width: Int
+)
 
-    fun visualizations(): VisualizationsRepository
-}
+data class GridDimension(
+    val columns: List<Dimension>,
+    val rows: List<Dimension>
+)
+
+data class GridResponseValue(
+    val columns: List<String>,
+    val rows: List<String>,
+    val value: String?
+)

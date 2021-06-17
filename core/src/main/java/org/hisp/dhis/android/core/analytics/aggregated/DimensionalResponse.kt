@@ -25,17 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.analytics
 
-import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepository
-import org.hisp.dhis.android.core.analytics.aggregated.VisualizationsRepository
-import org.hisp.dhis.android.core.analytics.linelist.EventLineListRepository
+package org.hisp.dhis.android.core.analytics.aggregated
 
-interface AnalyticsModule {
+data class DimensionalResponse(
+    val metadata: Map<String, MetadataItem>,
+    val dimensions: List<Dimension>,
+    val filters: List<String>,
+    val values: List<DimensionalValue>
+)
 
-    fun eventLineList(): EventLineListRepository
-
-    fun analytics(): AnalyticsRepository
-
-    fun visualizations(): VisualizationsRepository
-}
+data class DimensionalValue(
+    val dimensions: List<String>,
+    val value: String?
+)

@@ -148,7 +148,7 @@ public final class DataValueCollectionRepository
     }
 
     public EnumFilterConnector<DataValueCollectionRepository, State> byState() {
-        return cf.enumC(Columns.STATE);
+        return cf.enumC(Columns.SYNC_STATE);
     }
 
     public BooleanFilterConnector<DataValueCollectionRepository> byDeleted() {

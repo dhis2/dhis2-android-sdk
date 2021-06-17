@@ -57,7 +57,7 @@ final class NoteProjectionTransformer implements Transformer<NoteCreateProjectio
     public Note transform(NoteCreateProjection projection) {
         return Note.builder()
                 .uid(new UidGeneratorImpl().generate())
-                .state(State.TO_POST)
+                .syncState(State.TO_POST)
                 .noteType(projection.noteType())
                 .event(projection.event())
                 .enrollment(projection.enrollment())

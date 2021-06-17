@@ -153,7 +153,7 @@ public final class DataStatePropagatorImpl implements DataStatePropagator {
         if (event != null) {
             Date now = new Date();
             Event updatedEvent = event.toBuilder()
-                    .state(getStateForUpdate(event.state()))
+                    .syncState(getStateForUpdate(event.state()))
                     .lastUpdated(getMaxDate(event.lastUpdated(), now))
                     .lastUpdatedAtClient(getMaxDate(event.lastUpdatedAtClient(), now))
                     .build();

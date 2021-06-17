@@ -98,7 +98,7 @@ public final class DataValueObjectRepository
         if (dataValue.state() == State.TO_POST) {
             super.delete(dataValue);
         } else {
-            setObject(dataValue.toBuilder().deleted(true).state(State.TO_UPDATE).build());
+            setObject(dataValue.toBuilder().deleted(true).syncState(State.TO_UPDATE).build());
         }
     }
 
@@ -108,11 +108,11 @@ public final class DataValueObjectRepository
             DataValue dataValue = blockingGetWithoutChildren();
             State state = dataValue.state() == State.TO_POST ? State.TO_POST : State.TO_UPDATE;
             return dataValue.toBuilder()
-                    .state(state)
+                    .syncState(state)
                     .lastUpdated(date);
         } else {
             return DataValue.builder()
-                    .state(State.TO_POST)
+                    .syncState(State.TO_POST)
                     .created(date)
                     .lastUpdated(date)
                     .followUp(Boolean.FALSE)

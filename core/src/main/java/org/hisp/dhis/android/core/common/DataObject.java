@@ -30,4 +30,5 @@ package org.hisp.dhis.android.core.common;
 
 public interface DataObject extends CoreObject {
     State state();
+    State syncState();
 }

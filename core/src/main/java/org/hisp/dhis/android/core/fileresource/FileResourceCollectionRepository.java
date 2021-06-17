@@ -157,6 +157,6 @@ public final class FileResourceCollectionRepository
     }
 
     public EnumFilterConnector<FileResourceCollectionRepository, State> byState() {
-        return cf.enumC(Columns.STATE);
+        return cf.enumC(Columns.SYNC_STATE);
     }
 }

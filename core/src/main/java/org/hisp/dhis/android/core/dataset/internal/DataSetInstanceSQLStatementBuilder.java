@@ -131,8 +131,8 @@ public class DataSetInstanceSQLStatementBuilder implements ReadOnlySQLStatementB
     private static final String LAST_UPDATED =
             "MAX(" + LAST_UPDATED_VALUES + ", COALESCE(" + COMPLETION_DATE + ", 0))";
 
-    private static final String VALUE_STATE = DATAVALUE_TABLE_ALIAS + "." + DataColumns.STATE;
-    private static final String COMPLETION_STATE = COMPLETE_TABLE_ALIAS + "." + DataColumns.STATE;
+    private static final String VALUE_STATE = DATAVALUE_TABLE_ALIAS + "." + DataColumns.SYNC_STATE;
+    private static final String COMPLETION_STATE = COMPLETE_TABLE_ALIAS + "." + DataColumns.SYNC_STATE;
 
     private static final String SELECT_VALUE_STATE_ORDERING = " MAX(CASE " +
             "WHEN " + VALUE_STATE + " IN ('" + State.SYNCED + "','" + State.SYNCED_VIA_SMS + "') THEN 1 " +

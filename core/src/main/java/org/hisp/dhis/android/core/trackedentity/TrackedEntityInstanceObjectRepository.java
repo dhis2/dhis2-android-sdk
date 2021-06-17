@@ -79,6 +79,7 @@ public final class TrackedEntityInstanceObjectRepository
 
         return trackedEntityInstance.toBuilder()
                 .state(state)
+                .syncState(state)
                 .lastUpdated(updateDate)
                 .lastUpdatedAtClient(updateDate);
     }

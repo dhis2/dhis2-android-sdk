@@ -100,13 +100,13 @@ public final class DataSetCompleteRegistrationObjectRepository
                             .attributeOptionCombo(attributeOptionCombo)
                             .date(new Date())
                             .storedBy(username)
-                            .state(State.TO_POST)
+                            .syncState(State.TO_POST)
                             .deleted(false)
                             .build());
         } else {
             DataSetCompleteRegistration newRecord = dataSetCompleteRegistration.toBuilder()
                     .deleted(false)
-                    .state(dataSetCompleteRegistration.state() == State.TO_POST ? State.TO_POST : State.TO_UPDATE)
+                    .syncState(dataSetCompleteRegistration.state() == State.TO_POST ? State.TO_POST : State.TO_UPDATE)
                     .build();
             dataSetCompleteRegistrationStore.updateWhere(newRecord);
         }
@@ -134,7 +134,7 @@ public final class DataSetCompleteRegistrationObjectRepository
             } else {
                 DataSetCompleteRegistration deletedRecord = dataSetCompleteRegistration.toBuilder()
                         .deleted(true)
-                        .state(State.TO_UPDATE)
+                        .syncState(State.TO_UPDATE)
                         .build();
                 dataSetCompleteRegistrationStore.updateWhere(deletedRecord);
             }

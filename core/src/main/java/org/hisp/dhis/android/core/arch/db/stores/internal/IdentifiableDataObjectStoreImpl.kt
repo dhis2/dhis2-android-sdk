@@ -55,9 +55,9 @@ internal open class IdentifiableDataObjectStoreImpl<O>(
         if (setStateStatement == null) {
             val whereUid = " WHERE " + IdentifiableColumns.UID + " =?"
             val setState = "UPDATE " + tableName + " SET " +
-                DataColumns.STATE + " =?" + whereUid
+                DataColumns.SYNC_STATE + " =?" + whereUid
             setStateStatement = databaseAdapter.compileStatement(setState)
-            selectStateQuery = "SELECT " + DataColumns.STATE + " FROM " + tableName + whereUid
+            selectStateQuery = "SELECT " + DataColumns.SYNC_STATE + " FROM " + tableName + whereUid
             existsQuery = "SELECT 1 FROM $tableName$whereUid"
         }
     }
@@ -88,7 +88,7 @@ internal open class IdentifiableDataObjectStoreImpl<O>(
 
     override fun setState(uids: List<String>, state: State): Int {
         val updates = ContentValues()
-        updates.put(DataColumns.STATE, state.toString())
+        updates.put(DataColumns.SYNC_STATE, state.toString())
         val whereClause = WhereClauseBuilder()
             .appendInKeyStringValues(IdentifiableColumns.UID, uids)
             .build()

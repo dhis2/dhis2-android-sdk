@@ -95,6 +95,7 @@ public final class EnrollmentObjectRepository
 
         return enrollment.toBuilder()
                 .state(state)
+                .syncState(state)
                 .lastUpdated(updateDate)
                 .lastUpdatedAtClient(updateDate);
     }

@@ -55,8 +55,9 @@ public final class TrackedEntityInstanceStoreImpl
         w.bind(7, o.trackedEntityType());
         w.bind(8, o.geometry() == null ? null : o.geometry().type());
         w.bind(9, o.geometry() == null ? null : o.geometry().coordinates());
-        w.bind(10, o.state());
-        w.bind(11, o.deleted());
+        w.bind(10, o.syncState());
+        w.bind(11, o.state());
+        w.bind(12, o.deleted());
     };
 
     public TrackedEntityInstanceStoreImpl(DatabaseAdapter databaseAdapter,

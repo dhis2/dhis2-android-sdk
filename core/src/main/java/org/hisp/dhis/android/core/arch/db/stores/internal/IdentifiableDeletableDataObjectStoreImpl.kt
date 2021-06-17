@@ -57,8 +57,8 @@ internal open class IdentifiableDeletableDataObjectStoreImpl<O>(
         if (setStateIfUploadingStatement == null) {
             val whereUid = " WHERE " + IdentifiableColumns.UID + " =?"
             val setState = "UPDATE " + tableName + " SET " +
-                DataColumns.STATE + " =?" + whereUid
-            val setStateIfUploading = setState + " AND " + DataColumns.STATE + EQ + "'" + State.UPLOADING + "'"
+                DataColumns.SYNC_STATE + " =?" + whereUid
+            val setStateIfUploading = setState + " AND " + DataColumns.SYNC_STATE + EQ + "'" + State.UPLOADING + "'"
             setStateIfUploadingStatement = databaseAdapter.compileStatement(setStateIfUploading)
             val setDeleted = "UPDATE " + tableName + " SET " +
                 DeletableDataColumns.DELETED + " = 1" + whereUid
@@ -87,7 +87,7 @@ internal open class IdentifiableDeletableDataObjectStoreImpl<O>(
             val whereClause = WhereClauseBuilder()
                 .appendKeyStringValue(IdentifiableColumns.UID, uid)
                 .appendKeyNumberValue(DeletableDataColumns.DELETED, 1)
-                .appendKeyStringValue(DataColumns.STATE, State.UPLOADING)
+                .appendKeyStringValue(DataColumns.SYNC_STATE, State.UPLOADING)
                 .build()
             deleted = deleteWhere(whereClause)
         }

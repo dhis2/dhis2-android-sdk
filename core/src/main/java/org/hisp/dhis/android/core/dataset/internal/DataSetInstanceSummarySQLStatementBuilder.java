@@ -44,7 +44,7 @@ public class DataSetInstanceSummarySQLStatementBuilder extends DataSetInstanceSQ
     private static final String DS_LIST_TABLE_ALIAS = "dslist";
     private static final String DS_INSTANCE_ALIAS = "dsinstance";
 
-    private static final String STATE = DataColumns.STATE;
+    private static final String STATE = DataColumns.SYNC_STATE;
 
     private static final String SELECT_STATE_ORDERING = " MAX(CASE " +
             "WHEN " + STATE + " IN ('" + State.SYNCED + "','" + State.SYNCED_VIA_SMS + "') THEN 1 " +

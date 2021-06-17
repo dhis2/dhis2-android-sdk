@@ -37,18 +37,22 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.StateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreEnrollmentListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreRelationship229CompatibleListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreStringColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreTrackedEntityAttributeValueListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
+import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.relationship.internal.Relationship229Compatible;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
@@ -121,6 +125,12 @@ public abstract class TrackedEntityInstance extends BaseDeletableDataObject impl
     @ColumnAdapter(IgnoreEnrollmentListColumnAdapter.class)
     abstract List<Enrollment> enrollments();
 
+    @Override
+    @Nullable
+    @ColumnName(DataColumns.STATE)
+    @ColumnAdapter(StateColumnAdapter.class)
+    public abstract State state();
+
     public static Builder builder() {
         return new $$AutoValue_TrackedEntityInstance.Builder();
     }
@@ -163,6 +173,8 @@ public abstract class TrackedEntityInstance extends BaseDeletableDataObject impl
         @JsonProperty(TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES)
         public abstract Builder trackedEntityAttributeValues(
                 List<TrackedEntityAttributeValue> trackedEntityAttributeValues);
+
+        public abstract Builder state(State state);
 
         abstract Builder relationships(List<Relationship229Compatible> relationships);
 

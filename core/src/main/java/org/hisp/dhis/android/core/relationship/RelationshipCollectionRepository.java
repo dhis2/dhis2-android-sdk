@@ -134,7 +134,7 @@ public class RelationshipCollectionRepository
 
             if (isUpdatableState(fromState)) {
                 relationshipHandler.handle(relationshipWithUid, r -> r.toBuilder()
-                        .state(State.TO_POST)
+                        .syncState(State.TO_POST)
                         .deleted(false)
                         .build());
                 dataStatePropagator.propagateRelationshipUpdate(from);

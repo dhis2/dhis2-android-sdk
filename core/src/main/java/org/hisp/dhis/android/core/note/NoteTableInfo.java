@@ -70,7 +70,7 @@ public final class NoteTableInfo {
                     STORED_BY,
                     STORED_DATE,
                     IdentifiableColumns.UID,
-                    STATE,
+                    SYNC_STATE,
                     DELETED
             );
         }

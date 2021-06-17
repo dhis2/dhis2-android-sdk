@@ -96,7 +96,7 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGenerator @Inject inter
     private fun getNotes(): List<NewTrackerImporterNote> {
         val whereNotesClause = WhereClauseBuilder()
             .appendInKeyStringValues(
-                DataColumns.STATE, State.uploadableStatesIncludingError().map { it.name }
+                DataColumns.SYNC_STATE, State.uploadableStatesIncludingError().map { it.name }
             )
             .build()
         val notesTransformer = NewTrackerImporterNoteTransformer()

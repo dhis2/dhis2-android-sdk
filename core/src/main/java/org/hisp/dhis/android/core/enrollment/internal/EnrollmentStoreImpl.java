@@ -68,8 +68,9 @@ public final class EnrollmentStoreImpl
         w.bind(13, o.trackedEntityInstance());
         w.bind(14, o.geometry() == null ? null : o.geometry().type());
         w.bind(15, o.geometry() == null ? null : o.geometry().coordinates());
-        w.bind(16, o.state());
-        w.bind(17, o.deleted());
+        w.bind(16, o.syncState());
+        w.bind(17, o.state());
+        w.bind(18, o.deleted());
     };
 
     private EnrollmentStoreImpl(DatabaseAdapter databaseAdapter,

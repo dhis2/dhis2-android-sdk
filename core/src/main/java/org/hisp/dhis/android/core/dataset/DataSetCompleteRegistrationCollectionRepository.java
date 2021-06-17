@@ -138,7 +138,7 @@ public final class DataSetCompleteRegistrationCollectionRepository
     }
 
     public EnumFilterConnector<DataSetCompleteRegistrationCollectionRepository, State> byState() {
-        return cf.enumC(Columns.STATE);
+        return cf.enumC(Columns.SYNC_STATE);
     }
 
 }

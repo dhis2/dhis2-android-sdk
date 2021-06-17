@@ -43,6 +43,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EnrollmentStatusColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.StateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreCoordinatesColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreEventListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNoteListColumnAdapter;
@@ -50,8 +51,10 @@ import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreRelatio
 import org.hisp.dhis.android.core.arch.helpers.CoordinateHelper;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.Coordinates;
+import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.note.Note;
@@ -154,6 +157,12 @@ public abstract class Enrollment extends BaseDeletableDataObject implements Obje
     @ColumnAdapter(IgnoreRelationshipListColumnAdapter.class)
     abstract List<Relationship> relationships();
 
+    @Override
+    @Nullable
+    @ColumnName(DataColumns.STATE)
+    @ColumnAdapter(StateColumnAdapter.class)
+    public abstract State state();
+
     public static Builder builder() {
         return new $$AutoValue_Enrollment.Builder();
     }
@@ -210,6 +219,8 @@ public abstract class Enrollment extends BaseDeletableDataObject implements Obje
         public abstract Builder notes(List<Note> notes);
 
         public abstract Builder relationships(List<Relationship> relationships);
+
+        public abstract Builder state(State state);
 
         abstract Enrollment autoBuild();
 

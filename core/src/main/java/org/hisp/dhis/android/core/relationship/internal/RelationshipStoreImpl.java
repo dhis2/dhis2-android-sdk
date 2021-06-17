@@ -49,7 +49,7 @@ public final class RelationshipStoreImpl extends IdentifiableDeletableDataObject
         w.bind(3, o.created());
         w.bind(4, o.lastUpdated());
         w.bind(5, o.relationshipType());
-        w.bind(6, o.state());
+        w.bind(6, o.syncState());
         w.bind(7, o.deleted());
     };
 

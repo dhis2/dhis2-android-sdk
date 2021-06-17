@@ -30,4 +30,5 @@ package org.hisp.dhis.android.core.common;
 
 public class DataColumns extends CoreColumns {
     public static final String STATE = "state";
+    public static final String SYNC_STATE = "syncState";
 }

@@ -175,7 +175,7 @@ public final class EventCollectionRepository
     }
 
     public EnumFilterConnector<EventCollectionRepository, State> byState() {
-        return cf.enumC(Columns.STATE);
+        return cf.enumC(Columns.SYNC_STATE);
     }
 
     public StringFilterConnector<EventCollectionRepository> byAttributeOptionComboUid() {

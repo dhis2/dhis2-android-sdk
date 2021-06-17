@@ -87,7 +87,7 @@ public final class EventTableInfo {
                     EVENT_DATE,
                     COMPLETE_DATE,
                     DUE_DATE,
-                    STATE,
+                    SYNC_STATE,
                     ATTRIBUTE_OPTION_COMBO,
                     DELETED,
                     ASSIGNED_USER

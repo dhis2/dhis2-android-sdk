@@ -126,9 +126,9 @@ internal class TrackedEntityInstanceLocalQueryHelper @Inject constructor(
         }
 
         if (scope.states() == null) {
-            where.appendNotKeyStringValue(dot(teiAlias, DataColumns.STATE), State.RELATIONSHIP.name)
+            where.appendNotKeyStringValue(dot(teiAlias, DataColumns.SYNC_STATE), State.RELATIONSHIP.name)
         } else {
-            where.appendInKeyEnumValues(dot(teiAlias, DataColumns.STATE), scope.states())
+            where.appendInKeyEnumValues(dot(teiAlias, DataColumns.SYNC_STATE), scope.states())
         }
 
         if (!scope.includeDeleted()) {

@@ -83,7 +83,7 @@ public class RelationshipDHISVersionManager {
                 .name(relationship.name())
                 .created(relationship.created())
                 .lastUpdated(relationship.lastUpdated())
-                .state(relationship.state())
+                .syncState(relationship.syncState())
                 .deleted(relationship.deleted());
 
         if (versionManager.is2_29()) {
@@ -108,7 +108,7 @@ public class RelationshipDHISVersionManager {
                 .name(relationship229Compatible.name())
                 .created(relationship229Compatible.created())
                 .lastUpdated(relationship229Compatible.lastUpdated())
-                .state(relationship229Compatible.state())
+                .syncState(relationship229Compatible.syncState())
                 .deleted(relationship229Compatible.deleted());
 
         if (versionManager.is2_29()) {

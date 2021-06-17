@@ -144,11 +144,11 @@ public class EnrollmentImportHandler {
         State newNoteState = state.equals(State.SYNCED) ? State.SYNCED : State.TO_POST;
         String whereClause = new WhereClauseBuilder()
                 .appendInKeyStringValues(
-                        DataColumns.STATE, EnumHelper.asStringList(State.uploadableStatesIncludingError()))
+                        DataColumns.SYNC_STATE, EnumHelper.asStringList(State.uploadableStatesIncludingError()))
                 .appendKeyStringValue(NoteTableInfo.Columns.ENROLLMENT, enrollmentUid).build();
         List<Note> notes = noteStore.selectWhere(whereClause);
         for (Note note : notes) {
-            noteStore.update(note.toBuilder().state(newNoteState).build());
+            noteStore.update(note.toBuilder().syncState(newNoteState).build());
         }
     }
 

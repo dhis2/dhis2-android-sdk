@@ -145,6 +145,10 @@ public final class TrackedEntityInstanceCollectionRepository
         return cf.enumC(Columns.STATE);
     }
 
+    public EnumFilterConnector<TrackedEntityInstanceCollectionRepository, State> bySyncState() {
+        return cf.enumC(Columns.SYNC_STATE);
+    }
+
     public BooleanFilterConnector<TrackedEntityInstanceCollectionRepository> byDeleted() {
         return cf.bool(Columns.DELETED);
     }

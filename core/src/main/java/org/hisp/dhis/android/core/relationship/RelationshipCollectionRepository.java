@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUidCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseReadOnlyWithUidCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
@@ -246,6 +247,10 @@ public class RelationshipCollectionRepository
 
     public StringFilterConnector<RelationshipCollectionRepository> byRelationshipType() {
         return cf.string(RelationshipTableInfo.Columns.RELATIONSHIP_TYPE);
+    }
+
+    public EnumFilterConnector<RelationshipCollectionRepository, State> bySyncState() {
+        return cf.enumC(RelationshipTableInfo.Columns.SYNC_STATE);
     }
 
     public RelationshipCollectionRepository withItems() {

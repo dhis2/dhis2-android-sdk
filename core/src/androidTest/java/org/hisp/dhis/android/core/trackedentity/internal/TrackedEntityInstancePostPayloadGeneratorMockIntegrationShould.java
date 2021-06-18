@@ -365,7 +365,7 @@ public class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould exte
                 .organisationUnit(orgUnit.uid())
                 .program(program.uid())
                 .programStage(programStage.uid())
-                .state(State.TO_UPDATE)
+                .syncState(State.TO_UPDATE)
                 .trackedEntityDataValues(Collections.singletonList(dataValue1))
                 .build();
 
@@ -375,6 +375,7 @@ public class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould exte
                 .program(program.uid())
                 .organisationUnit(orgUnit.uid())
                 .state(State.TO_POST)
+                .syncState(State.TO_POST)
                 .trackedEntityInstance(teiId)
                 .build();
 
@@ -386,7 +387,7 @@ public class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould exte
                 .organisationUnit(orgUnit.uid())
                 .program(program.uid())
                 .programStage(programStage.uid())
-                .state(State.SYNCED_VIA_SMS)
+                .syncState(State.SYNCED_VIA_SMS)
                 .trackedEntityDataValues(Collections.singletonList(dataValue2))
                 .build();
 
@@ -396,6 +397,7 @@ public class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould exte
                 .program(program.uid())
                 .organisationUnit(orgUnit.uid())
                 .state(State.TO_POST)
+                .syncState(State.TO_POST)
                 .trackedEntityInstance(teiId)
                 .build();
 
@@ -407,7 +409,7 @@ public class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould exte
                 .organisationUnit(orgUnit.uid())
                 .program(program.uid())
                 .programStage(programStage.uid())
-                .state(State.ERROR)
+                .syncState(State.ERROR)
                 .trackedEntityDataValues(Collections.singletonList(dataValue3))
                 .build();
 
@@ -417,6 +419,7 @@ public class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould exte
                 .program(program.uid())
                 .organisationUnit(orgUnit.uid())
                 .state(State.SYNCED)
+                .syncState(State.SYNCED)
                 .trackedEntityInstance(teiId)
                 .build();
 
@@ -426,6 +429,7 @@ public class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould exte
                 .trackedEntityType(teiType.uid())
                 .organisationUnit(orgUnit.uid())
                 .state(State.TO_POST)
+                .syncState(State.TO_POST)
                 .build();
 
         TrackedEntityInstanceStoreImpl.create(databaseAdapter).insert(tei);
@@ -450,6 +454,7 @@ public class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould exte
                         .trackedEntityType(teiType.uid())
                         .organisationUnit(orgUnit.uid())
                         .state(state)
+                        .syncState(state)
                         .build());
     }
 

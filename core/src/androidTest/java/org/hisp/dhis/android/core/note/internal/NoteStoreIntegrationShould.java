@@ -53,7 +53,7 @@ public class NoteStoreIntegrationShould extends IdentifiableObjectStoreAbstractI
     @Override
     protected Note buildObjectToUpdate() {
         return NoteSamples.getNote().toBuilder()
-                .state(State.SYNCED)
+                .syncState(State.SYNCED)
                 .build();
     }
 }

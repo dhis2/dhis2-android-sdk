@@ -96,7 +96,7 @@ public final class EventCollectionRepository
     public Observable<D2Progress> upload() {
         return Observable.concat(
                 jobQueryCall.queryPendingJobs(),
-                Observable.fromCallable(() -> byState().in(State.uploadableStates())
+                Observable.fromCallable(() -> bySyncState().in(State.uploadableStates())
                         .byEnrollmentUid().isNull()
                         .blockingGetWithoutChildren())
                         .flatMap(postCall::uploadEvents)
@@ -174,7 +174,17 @@ public final class EventCollectionRepository
         return cf.simpleDate(Columns.DUE_DATE);
     }
 
+    /**
+     * @deprecated Use {@link #bySyncState()} instead.
+     *
+     * @return
+     */
+    @Deprecated
     public EnumFilterConnector<EventCollectionRepository, State> byState() {
+        return bySyncState();
+    }
+
+    public EnumFilterConnector<EventCollectionRepository, State> bySyncState() {
         return cf.enumC(Columns.SYNC_STATE);
     }
 

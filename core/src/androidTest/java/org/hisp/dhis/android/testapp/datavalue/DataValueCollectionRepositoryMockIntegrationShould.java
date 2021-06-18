@@ -179,7 +179,7 @@ public class DataValueCollectionRepositoryMockIntegrationShould extends BaseMock
     public void filter_by_state() {
         List<DataValue> dataValues =
                 d2.dataValueModule().dataValues()
-                        .byState().eq(State.SYNCED)
+                        .bySyncState().eq(State.SYNCED)
                         .blockingGet();
 
         assertThat(dataValues.size()).isEqualTo(5);

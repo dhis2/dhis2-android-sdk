@@ -506,6 +506,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
                 .uid(uid)
                 .geometry(geometry)
                 .state(State.TO_POST)
+                .syncState(State.TO_POST)
                 .build();
 
         trackedEntityInstanceStore.insert(trackedEntityInstance);
@@ -526,6 +527,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
                 .trackedEntityType(trackedEntityUid)
                 .geometry(geometry)
                 .state(State.TO_POST)
+                .syncState(State.TO_POST)
                 .build();
 
         trackedEntityInstanceStore.insert(trackedEntityInstance);
@@ -535,7 +537,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
                 .program(programUid).incidentDate(refDate).completedDate(refDate).enrollmentDate(refDate)
                 .followUp(Boolean.FALSE).status(EnrollmentStatus.ACTIVE).trackedEntityInstance(trackedEntityInstanceUid)
                 .geometry(Geometry.builder().type(FeatureType.POINT).coordinates("[10.33, 12.231]").build())
-                .state(State.TO_POST).build();
+                .state(State.TO_POST).syncState(State.TO_POST).build();
 
         enrollmentStore.insert(enrollment);
 
@@ -544,7 +546,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
                 .status(EventStatus.ACTIVE).program(programUid)
                 .geometry(Geometry.builder().type(FeatureType.POINT).coordinates("[12.21, 13.21]").build())
                 .programStage(programStageUid).organisationUnit(orgUnitUid).eventDate(refDate).dueDate(refDate)
-                .completedDate(refDate).state(State.TO_POST).attributeOptionCombo(categoryComboOptionUid)
+                .completedDate(refDate).syncState(State.TO_POST).attributeOptionCombo(categoryComboOptionUid)
                 .build();
 
         eventStore.insert(event);

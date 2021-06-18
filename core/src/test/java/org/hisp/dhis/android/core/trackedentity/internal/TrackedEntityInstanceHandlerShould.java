@@ -124,6 +124,7 @@ public class TrackedEntityInstanceHandlerShould {
         when(trackedEntityInstance.uid()).thenReturn(TEI_UID);
         when(trackedEntityInstance.toBuilder()).thenReturn(teiBuilder);
         when(teiBuilder.state(State.SYNCED)).thenReturn(teiBuilder);
+        when(teiBuilder.syncState(State.SYNCED)).thenReturn(teiBuilder);
         when(teiBuilder.build()).thenReturn(trackedEntityInstance);
         when(TrackedEntityInstanceInternalAccessor.accessEnrollments(trackedEntityInstance))
                 .thenReturn(Collections.singletonList(enrollment));
@@ -223,6 +224,7 @@ public class TrackedEntityInstanceHandlerShould {
         when(relationshipVersionManager.getRelativeTei(relationship229Compatible, TEI_UID)).thenReturn(relative);
         when(relative.toBuilder()).thenReturn(relativeBuilder);
         when(relativeBuilder.state(any(State.class))).thenReturn(relativeBuilder);
+        when(relativeBuilder.syncState(any(State.class))).thenReturn(relativeBuilder);
         when(relativeBuilder.build()).thenReturn(relative);
 
         trackedEntityInstanceHandler.handleMany(Collections.singletonList(trackedEntityInstance), false,

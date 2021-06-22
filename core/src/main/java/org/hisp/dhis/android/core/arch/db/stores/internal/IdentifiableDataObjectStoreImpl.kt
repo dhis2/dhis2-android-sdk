@@ -75,7 +75,7 @@ internal open class IdentifiableDataObjectStoreImpl<O>(
         }
     }
 
-    override fun setState(uid: String, state: State): Int {
+    override fun setSyncState(uid: String, state: State): Int {
         compileStatements()
         setStateStatement!!.bind(1, state)
 
@@ -86,7 +86,7 @@ internal open class IdentifiableDataObjectStoreImpl<O>(
         return updatedRow
     }
 
-    override fun setState(uids: List<String>, state: State): Int {
+    override fun setSyncState(uids: List<String>, state: State): Int {
         val updates = ContentValues()
         updates.put(DataColumns.SYNC_STATE, state.toString())
         val whereClause = WhereClauseBuilder()
@@ -95,7 +95,7 @@ internal open class IdentifiableDataObjectStoreImpl<O>(
         return databaseAdapter.update(tableName, updates, whereClause, null)
     }
 
-    override fun getState(uid: String): State? {
+    override fun getSyncState(uid: String): State? {
         compileStatements()
         val cursor = databaseAdapter.rawQuery(selectStateQuery, uid)
         var state: State? = null

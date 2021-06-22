@@ -382,7 +382,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         String teiBUid = uidGenerator.generate();
         insertATei(teiBUid, teiA, geometry);
 
-        trackedEntityInstanceStore.setState(teiA.uid(), State.TO_POST);
+        trackedEntityInstanceStore.setSyncState(teiA.uid(), State.TO_POST);
 
         Relationship newRelationship = RelationshipHelper.teiToTeiRelationship(teiA.uid(),
                 teiBUid, relationshipType.uid());
@@ -481,8 +481,8 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         Event event = eventStore.selectFirst();
         String eventUid = event.uid();
 
-        trackedEntityInstanceStore.setState(tei.uid(), State.TO_UPDATE);
-        enrollmentStore.setState(enrollment.uid(), State.TO_UPDATE);
+        trackedEntityInstanceStore.setSyncState(tei.uid(), State.TO_UPDATE);
+        enrollmentStore.setSyncState(enrollment.uid(), State.TO_UPDATE);
         d2.eventModule().events().uid(eventUid).blockingDelete();
 
         d2.trackedEntityModule().trackedEntityInstances().blockingUpload();

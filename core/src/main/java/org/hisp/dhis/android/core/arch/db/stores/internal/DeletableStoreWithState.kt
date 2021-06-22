@@ -31,6 +31,6 @@ import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
 
 internal interface DeletableStoreWithState : StoreWithState {
-    fun setStateOrDelete(uid: String, state: State): HandleAction
+    fun setSyncStateOrDelete(uid: String, state: State): HandleAction
     fun setDeleted(uid: String): Int
 }

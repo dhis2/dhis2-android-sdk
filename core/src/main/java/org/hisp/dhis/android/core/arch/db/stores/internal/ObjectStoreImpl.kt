@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.db.stores.internal
 
+import android.content.ContentValues
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder
@@ -123,6 +124,10 @@ internal open class ObjectStoreImpl<O : CoreObject> internal constructor(
 
     override fun deleteWhere(clause: String): Boolean {
         return databaseAdapter.delete(builder.tableName, clause, null) > 0
+    }
+
+    override fun updateWhere(updates: ContentValues, whereClause: String): Int {
+        return databaseAdapter.update(builder.tableName, updates, whereClause, null)
     }
 
     @Throws(RuntimeException::class)

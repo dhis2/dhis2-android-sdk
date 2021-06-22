@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.event.internal;
 
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
 import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.hisp.dhis.android.core.imports.internal.EventImportSummary;
@@ -61,12 +62,6 @@ public class EventImportHandlerShould {
     private EventStore eventStore;
 
     @Mock
-    private EnrollmentStore enrollmentStore;
-
-    @Mock
-    private TrackedEntityInstanceStore trackedEntityInstanceStore;
-
-    @Mock
     private TrackerImportConflictStore trackerImportConflictStore;
 
     @Mock
@@ -74,6 +69,9 @@ public class EventImportHandlerShould {
 
     @Mock
     private TrackerImportConflictParser trackerImportConflictParser;
+
+    @Mock
+    private DataStatePropagator dataStatePropagator;
 
     // object to test
     private EventImportHandler eventImportHandler;
@@ -84,15 +82,15 @@ public class EventImportHandlerShould {
 
         when(importSummary.status()).thenReturn(ImportStatus.SUCCESS);
 
-        eventImportHandler = new EventImportHandler(eventStore, enrollmentStore, trackedEntityInstanceStore,
-                trackerImportConflictStore, trackerImportConflictParser, jobReportEventHandler);
+        eventImportHandler = new EventImportHandler(eventStore, trackerImportConflictStore,
+                trackerImportConflictParser, jobReportEventHandler, dataStatePropagator);
     }
 
     @Test
     public void do_nothing_when_passing_null_argument() throws Exception {
         eventImportHandler.handleEventImportSummaries(null, null, null);
 
-        verify(eventStore, never()).setStateOrDelete(anyString(), any(State.class));
+        verify(eventStore, never()).setSyncStateOrDelete(anyString(), any(State.class));
     }
 
     @Test
@@ -103,7 +101,7 @@ public class EventImportHandlerShould {
         eventImportHandler.handleEventImportSummaries(Collections.singletonList(importSummary),
                 "test_enrollment_uid", "test_tei_uid");
 
-        verify(eventStore, times(1)).setStateOrDelete("test_event_uid", State.SYNCED);
+        verify(eventStore, times(1)).setSyncStateOrDelete("test_event_uid", State.SYNCED);
     }
 
     @Test
@@ -114,6 +112,6 @@ public class EventImportHandlerShould {
         eventImportHandler.handleEventImportSummaries(Collections.singletonList(importSummary),
                 "test_enrollment_uid", "test_tei_uid");
 
-        verify(eventStore, times(1)).setStateOrDelete("test_event_uid", State.ERROR);
+        verify(eventStore, times(1)).setSyncStateOrDelete("test_event_uid", State.ERROR);
     }
 }

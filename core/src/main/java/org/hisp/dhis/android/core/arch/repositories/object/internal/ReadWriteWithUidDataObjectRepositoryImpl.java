@@ -101,7 +101,7 @@ public class ReadWriteWithUidDataObjectRepositoryImpl
                 store.delete(object.uid());
             } else {
                 store.setDeleted(object.uid());
-                store.setState(object.uid(), State.TO_UPDATE);
+                store.setSyncState(object.uid(), State.TO_UPDATE);
                 propagateState(object);
             }
         }

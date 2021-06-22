@@ -25,30 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common.internal
 
-package org.hisp.dhis.android.core.common.internal;
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.enrollment.Enrollment
+import org.hisp.dhis.android.core.event.Event
+import org.hisp.dhis.android.core.note.Note
+import org.hisp.dhis.android.core.relationship.RelationshipItem
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 
-import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.note.Note;
-import org.hisp.dhis.android.core.relationship.RelationshipItem;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
+interface DataStatePropagator {
 
-public interface DataStatePropagator {
-    void propagateEnrollmentUpdate(Enrollment enrollment);
+    fun propagateEnrollmentUpdate(enrollment: Enrollment?)
 
-    void propagateEventUpdate(Event event);
+    fun propagateEventUpdate(event: Event?)
 
-    void propagateTrackedEntityDataValueUpdate(TrackedEntityDataValue dataValue);
+    fun propagateTrackedEntityDataValueUpdate(dataValue: TrackedEntityDataValue?)
 
-    void propagateTrackedEntityAttributeUpdate(TrackedEntityAttributeValue trackedEntityAttributeValue);
+    fun propagateTrackedEntityAttributeUpdate(trackedEntityAttributeValue: TrackedEntityAttributeValue?)
 
-    void propagateNoteCreation(Note note);
+    fun propagateNoteCreation(note: Note?)
 
-    void propagateRelationshipUpdate(RelationshipItem item);
+    fun propagateRelationshipUpdate(item: RelationshipItem?)
 
-    void resetUploadingEnrollmentAndEventStates(String trackedEntityInstanceUid);
+    fun resetUploadingEnrollmentAndEventStates(trackedEntityInstanceUid: String?)
 
-    void resetUploadingEventStates(String enrollmentUid);
+    fun resetUploadingEventStates(enrollmentUid: String?)
+
+    fun propagateEnrollmentError(enrollmentUid: String?, state: State?)
+
+    fun propagateTrackedEntityInstanceError(trackedEntityInstanceUid: String?, state: State?)
 }

@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
+import android.content.ContentValues;
+
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
@@ -35,6 +37,7 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinde
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStoreImpl;
 import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper;
 import org.hisp.dhis.android.core.common.DataColumns;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo;
@@ -100,6 +103,17 @@ public final class TrackedEntityInstanceStoreImpl
                 .build();
 
         return selectUidsWhere(whereRelationshipsClause);
+    }
+
+    @Override
+    public int setState(String uid, State state) {
+        ContentValues updates = new ContentValues();
+        updates.put(DataColumns.STATE, state.toString());
+        String whereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(IdentifiableColumns.UID, uid)
+                .build();
+
+        return updateWhere(updates, whereClause);
     }
 
     public static TrackedEntityInstanceStore create(DatabaseAdapter databaseAdapter) {

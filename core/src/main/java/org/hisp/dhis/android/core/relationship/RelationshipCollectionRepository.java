@@ -131,7 +131,7 @@ public class RelationshipCollectionRepository
             }
 
             StoreWithState fromStore = storeSelector.getElementStore(from);
-            State fromState = fromStore.getState(from.elementUid());
+            State fromState = fromStore.getSyncState(from.elementUid());
 
             if (isUpdatableState(fromState)) {
                 relationshipHandler.handle(relationshipWithUid, r -> r.toBuilder()

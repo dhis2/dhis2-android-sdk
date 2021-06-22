@@ -137,7 +137,7 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
 
     private fun relationshipTransformer(): (O) -> O {
         return { o: O ->
-            val currentState = store.getState(o.uid())
+            val currentState = store.getSyncState(o.uid())
             if (currentState == State.RELATIONSHIP || currentState == null) {
                 addRelationshipState(o)
             } else {

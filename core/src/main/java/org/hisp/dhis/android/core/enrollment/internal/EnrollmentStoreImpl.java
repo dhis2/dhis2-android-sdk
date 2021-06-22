@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.enrollment.internal;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
@@ -37,6 +38,7 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinde
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStoreImpl;
 import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper;
 import org.hisp.dhis.android.core.common.DataColumns;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
@@ -104,6 +106,17 @@ public final class EnrollmentStoreImpl
                 .build();
 
         return selectUidsWhere(whereRelationshipsClause);
+    }
+
+    @Override
+    public int setState(String uid, State state) {
+        ContentValues updates = new ContentValues();
+        updates.put(DataColumns.STATE, state.toString());
+        String whereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(IdentifiableColumns.UID, uid)
+                .build();
+
+        return updateWhere(updates, whereClause);
     }
 
     private void addEnrollmentToMap(Map<String, List<Enrollment>> enrollmentMap, Enrollment enrollment) {

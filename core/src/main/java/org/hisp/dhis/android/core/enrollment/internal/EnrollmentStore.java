@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.enrollment.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 
 import java.util.List;
@@ -39,4 +40,6 @@ public interface EnrollmentStore extends IdentifiableDeletableDataObjectStore<En
     Map<String, List<Enrollment>> queryEnrollmentsToPost();
 
     List<String> queryMissingRelationshipsUids();
+
+    int setState(String uid, State state);
 }

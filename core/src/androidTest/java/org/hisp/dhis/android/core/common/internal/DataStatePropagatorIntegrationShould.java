@@ -131,17 +131,17 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
         String eventUid2 = d2.eventModule().events().blockingAdd(sampleEventProjection(enrolmentUid1));
         String eventUid3 = d2.eventModule().events().blockingAdd(sampleEventProjection(enrolmentUid2));
 
-        enrollmentStore.setState(enrolmentUid1, State.UPLOADING);
-        eventStore.setState(eventUid1, State.UPLOADING);
+        enrollmentStore.setSyncState(enrolmentUid1, State.UPLOADING);
+        eventStore.setSyncState(eventUid1, State.UPLOADING);
 
         propagator.resetUploadingEnrollmentAndEventStates(teiUid);
 
-        assertThat(enrollmentStore.getState(enrolmentUid1)).isEqualTo(State.TO_UPDATE);
-        assertThat(enrollmentStore.getState(enrolmentUid2)).isEqualTo(State.TO_POST);
+        assertThat(enrollmentStore.getSyncState(enrolmentUid1)).isEqualTo(State.TO_UPDATE);
+        assertThat(enrollmentStore.getSyncState(enrolmentUid2)).isEqualTo(State.TO_POST);
 
-        assertThat(eventStore.getState(eventUid1)).isEqualTo(State.TO_UPDATE);
-        assertThat(eventStore.getState(eventUid2)).isEqualTo(State.TO_POST);
-        assertThat(eventStore.getState(eventUid3)).isEqualTo(State.TO_POST);
+        assertThat(eventStore.getSyncState(eventUid1)).isEqualTo(State.TO_UPDATE);
+        assertThat(eventStore.getSyncState(eventUid2)).isEqualTo(State.TO_POST);
+        assertThat(eventStore.getSyncState(eventUid3)).isEqualTo(State.TO_POST);
 
         trackedEntityInstanceStore.delete(teiUid);
     }
@@ -302,7 +302,7 @@ public class DataStatePropagatorIntegrationShould extends BaseMockIntegrationTes
 
     private String createEventWithState(State state, String enrolmentUid) throws D2Error {
         String eventUid = d2.eventModule().events().blockingAdd(sampleEventProjection(enrolmentUid));
-        eventStore.setState(eventUid, state);
+        eventStore.setSyncState(eventUid, state);
         return eventUid;
     }
 

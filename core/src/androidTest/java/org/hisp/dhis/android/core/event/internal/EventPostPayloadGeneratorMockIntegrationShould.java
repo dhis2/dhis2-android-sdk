@@ -110,9 +110,9 @@ public class EventPostPayloadGeneratorMockIntegrationShould extends BaseMockInte
         d2.eventModule().events().blockingUpload();
         assertThat(d2.importModule().trackerImportConflicts().blockingCount()).isEqualTo(3);
 
-        eventStore.setState(event1Id, State.TO_POST);
-        eventStore.setState(event2Id, State.TO_POST);
-        eventStore.setState(event3Id, State.TO_POST);
+        eventStore.setSyncState(event1Id, State.TO_POST);
+        eventStore.setSyncState(event2Id, State.TO_POST);
+        eventStore.setSyncState(event3Id, State.TO_POST);
 
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_event_import_conflicts2.json");
         d2.eventModule().events().blockingUpload();

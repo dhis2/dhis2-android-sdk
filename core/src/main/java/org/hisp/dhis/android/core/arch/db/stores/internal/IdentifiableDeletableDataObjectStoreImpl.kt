@@ -81,7 +81,7 @@ internal open class IdentifiableDeletableDataObjectStoreImpl<O>(
         }
     }
 
-    override fun setStateOrDelete(uid: String, state: State): HandleAction {
+    override fun setSyncStateOrDelete(uid: String, state: State): HandleAction {
         var deleted = false
         if (state == State.SYNCED) {
             val whereClause = WhereClauseBuilder()

@@ -147,6 +147,7 @@ public class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould exte
     public void build_payload_without_events_marked_as_error() {
         storeTrackedEntityInstance();
 
+        EnrollmentStoreImpl.create(databaseAdapter).setSyncState("enrollment3Id", State.TO_POST);
         EnrollmentStoreImpl.create(databaseAdapter).setState("enrollment3Id", State.TO_POST);
         List<List<TrackedEntityInstance>> partitions = getPartitions();
 
@@ -184,11 +185,14 @@ public class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould exte
         assertThat(d2.importModule().trackerImportConflicts().blockingCount()).isEqualTo(3);
 
 
+        TrackedEntityInstanceStoreImpl.create(databaseAdapter).setSyncState("teiId", State.TO_POST);
         TrackedEntityInstanceStoreImpl.create(databaseAdapter).setState("teiId", State.TO_POST);
+        EnrollmentStoreImpl.create(databaseAdapter).setSyncState("enrollment1Id", State.TO_POST);
         EnrollmentStoreImpl.create(databaseAdapter).setState("enrollment1Id", State.TO_POST);
+        EnrollmentStoreImpl.create(databaseAdapter).setSyncState("enrollment2Id", State.TO_POST);
         EnrollmentStoreImpl.create(databaseAdapter).setState("enrollment2Id", State.TO_POST);
-        EventStoreImpl.create(databaseAdapter).setState("event1Id", State.TO_POST);
-        EventStoreImpl.create(databaseAdapter).setState("event2Id", State.TO_POST);
+        EventStoreImpl.create(databaseAdapter).setSyncState("event1Id", State.TO_POST);
+        EventStoreImpl.create(databaseAdapter).setSyncState("event2Id", State.TO_POST);
 
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_import_conflicts_3.json");
         d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
@@ -247,14 +251,14 @@ public class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould exte
         List<List<TrackedEntityInstance>> partitions = getPartitions();
 
         TrackedEntityInstance instance = TrackedEntityInstanceStoreImpl.create(databaseAdapter).selectFirst();
-        assertThat(instance.state()).isEqualTo(State.UPLOADING);
+        assertThat(instance.syncState()).isEqualTo(State.UPLOADING);
 
         List<Enrollment> enrollments = EnrollmentStoreImpl.create(databaseAdapter).selectAll();
         for (Enrollment enrollment : enrollments) {
             if ("enrollment1Id".equals(enrollment.uid()) || "enrollment2Id".equals(enrollment.uid())) {
-                assertThat(enrollment.state()).isEqualTo(State.UPLOADING);
+                assertThat(enrollment.syncState()).isEqualTo(State.UPLOADING);
             } else {
-                assertThat(enrollment.state()).isNotEqualTo(State.UPLOADING);
+                assertThat(enrollment.syncState()).isNotEqualTo(State.UPLOADING);
             }
         }
 

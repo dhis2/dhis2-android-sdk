@@ -57,7 +57,7 @@ internal class StatePersistorHelper @Inject internal constructor() {
 
     fun persistStates(map: Map<State, MutableList<String>>, store: IdentifiableDeletableDataObjectStore<*>) {
         for ((key, value) in map) {
-            store.setState(value, key)
+            store.setSyncState(value, key)
         }
     }
 }

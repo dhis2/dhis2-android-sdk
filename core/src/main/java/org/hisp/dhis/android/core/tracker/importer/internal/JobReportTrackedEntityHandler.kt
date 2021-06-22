@@ -42,7 +42,7 @@ internal class JobReportTrackedEntityHandler @Inject internal constructor(
 ) : JobReportTypeHandler() {
 
     override fun handleObject(uid: String, state: State) {
-        trackedEntityStore.setState(uid, state)
+        trackedEntityStore.setSyncState(uid, state)
         conflictStore.deleteTrackedEntityConflicts(uid)
     }
 

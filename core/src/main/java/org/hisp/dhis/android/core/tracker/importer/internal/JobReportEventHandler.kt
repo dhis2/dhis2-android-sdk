@@ -60,7 +60,7 @@ internal class JobReportEventHandler @Inject internal constructor(
     }
 
     override fun handleObject(uid: String, state: State) {
-        eventStore.setState(uid, state)
+        eventStore.setSyncState(uid, state)
         conflictStore.deleteEventConflicts(uid)
         handleEventNotes(uid, state)
     }

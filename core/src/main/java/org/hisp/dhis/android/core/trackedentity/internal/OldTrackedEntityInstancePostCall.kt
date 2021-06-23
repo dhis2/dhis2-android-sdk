@@ -70,7 +70,7 @@ internal class OldTrackedEntityInstancePostCall @Inject internal constructor(
                         listOf(409),
                         TEIWebResponse::class.java
                     )
-                    teiWebResponseHandler.handleWebResponse(webResponse)
+                    teiWebResponseHandler.handleWebResponse(webResponse, thisPartition)
                     emitter.onNext(progressManager.increaseProgress(TrackedEntityInstance::class.java, false))
                 } catch (d2Error: D2Error) {
                     stateManager.restorePartitionStates(thisPartition)

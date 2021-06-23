@@ -60,46 +60,51 @@ internal class EnrollmentImportHandler @Inject constructor(
     fun handleEnrollmentImportSummary(
         enrollmentImportSummaries: List<EnrollmentImportSummary?>?,
         teiUid: String
-    ) {
-        if (enrollmentImportSummaries == null) {
-            return
-        }
-        var parentState: State = State.SYNCED
+    ): State {
+        var globalState: State = State.SYNCED
 
-        enrollmentImportSummaries.filterNotNull().forEach { enrollmentImportSummary ->
+        enrollmentImportSummaries?.filterNotNull()?.forEach { enrollmentImportSummary ->
             val syncState = getSyncState(enrollmentImportSummary.status())
 
             enrollmentImportSummary.reference()?.let { enrollmentUid ->
                 val handleAction = enrollmentStore.setSyncStateOrDelete(enrollmentUid, syncState)
 
-                if (syncState == State.ERROR || syncState == State.WARNING) {
-                    parentState = if (parentState == State.ERROR) State.ERROR else syncState
-                    dataStatePropagator.resetUploadingEventStates(enrollmentUid)
-                }
                 trackerImportConflictStore.deleteEnrollmentConflicts(enrollmentUid)
 
                 if (handleAction !== HandleAction.Delete) {
                     handleNoteImportSummary(enrollmentUid, syncState)
                     storeEnrollmentImportConflicts(enrollmentImportSummary, teiUid)
-                    handleEventImportSummaries(enrollmentImportSummary, teiUid)
+
+                    if (syncState == State.ERROR || syncState == State.WARNING) {
+                        globalState = if (globalState == State.ERROR) State.ERROR else syncState
+                        dataStatePropagator.resetUploadingEventStates(enrollmentUid)
+                    } else {
+
+                    }
+
+                    val eventState = handleEventImportSummaries(enrollmentImportSummary, teiUid)
+
+                    if (globalState == State.ERROR || globalState == State.WARNING) {
+                        globalState = if (globalState == State.ERROR) State.ERROR else eventState
+                    }
                 }
             }
         }
 
-        updateParentState(parentState, teiUid)
+        return globalState
     }
 
     private fun handleEventImportSummaries(
         enrollmentImportSummary: EnrollmentImportSummary,
         teiUid: String
-    ) {
-        enrollmentImportSummary.events()?.importSummaries()?.let { importSummaries ->
+    ): State {
+        return enrollmentImportSummary.events()?.importSummaries()?.let { importSummaries ->
             eventImportHandler.handleEventImportSummaries(
                 importSummaries,
                 enrollmentImportSummary.reference()!!,
                 teiUid
             )
-        }
+        } ?: State.SYNCED
     }
 
     private fun handleNoteImportSummary(enrollmentUid: String, state: State) {
@@ -139,12 +144,6 @@ internal class EnrollmentImportHandler @Inject constructor(
         }
 
         trackerImportConflicts.forEach { trackerImportConflictStore.insert(it) }
-    }
-
-    private fun updateParentState(parentState: State, teiUid: String?) {
-        if (parentState != State.SYNCED && teiUid != null) {
-            dataStatePropagator.propagateTrackedEntityInstanceError(teiUid, parentState)
-        }
     }
 
     private fun getConflictBuilder(

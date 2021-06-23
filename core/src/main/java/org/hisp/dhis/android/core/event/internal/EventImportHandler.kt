@@ -31,7 +31,6 @@ import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getSyncState
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.imports.TrackerImportConflict
 import org.hisp.dhis.android.core.imports.internal.EventImportSummary
@@ -46,16 +45,15 @@ internal class EventImportHandler @Inject constructor(
     private val eventStore: EventStore,
     private val trackerImportConflictStore: TrackerImportConflictStore,
     private val trackerImportConflictParser: TrackerImportConflictParser,
-    private val jobReportEventHandler: JobReportEventHandler,
-    private val dataStatePropagator: DataStatePropagator
+    private val jobReportEventHandler: JobReportEventHandler
 ) {
 
     fun handleEventImportSummaries(
         eventImportSummaries: List<EventImportSummary?>?,
         enrollmentUid: String?,
         teiUid: String?
-    ) {
-        var parentState: State = State.SYNCED
+    ): State {
+        var globalState: State = State.SYNCED
 
         eventImportSummaries?.filterNotNull()?.forEach { eventImportSummary ->
             val state = getSyncState(eventImportSummary.status())
@@ -63,7 +61,7 @@ internal class EventImportHandler @Inject constructor(
             eventImportSummary.reference()?.let { eventUid ->
                 val handleAction = eventStore.setSyncStateOrDelete(eventUid, state)
                 if (state == State.ERROR || state == State.WARNING) {
-                    parentState = if (parentState == State.ERROR) State.ERROR else state
+                    globalState = if (globalState == State.ERROR) State.ERROR else state
                 }
                 trackerImportConflictStore.deleteEventConflicts(eventUid)
 
@@ -74,7 +72,7 @@ internal class EventImportHandler @Inject constructor(
             }
         }
 
-        updateParentState(parentState, enrollmentUid)
+        return globalState
     }
 
     private fun storeEventImportConflicts(
@@ -102,12 +100,6 @@ internal class EventImportHandler @Inject constructor(
         }
 
         trackerImportConflicts.forEach { trackerImportConflictStore.insert(it) }
-    }
-
-    private fun updateParentState(parentState: State, enrollmentUid: String?) {
-        if (parentState != State.SYNCED && enrollmentUid != null) {
-            dataStatePropagator.propagateEnrollmentError(enrollmentUid, parentState)
-        }
     }
 
     private fun getConflictBuilder(

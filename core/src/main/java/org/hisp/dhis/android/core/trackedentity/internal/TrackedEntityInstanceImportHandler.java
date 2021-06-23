@@ -114,18 +114,17 @@ public final class TrackedEntityInstanceImportHandler {
                     setRelationshipsState(teiUid, State.TO_UPDATE);
                 } else {
                     setRelationshipsState(teiUid, State.SYNCED);
+                }
 
-                    if (handleAction != HandleAction.Delete) {
-                        storeTEIImportConflicts(teiImportSummary);
+                if (handleAction != HandleAction.Delete) {
+                    storeTEIImportConflicts(teiImportSummary);
+                    if (teiImportSummary.enrollments() != null) {
+                        EnrollmentImportSummaries importEnrollment = teiImportSummary.enrollments();
 
-                        if (teiImportSummary.enrollments() != null) {
-                            EnrollmentImportSummaries importEnrollment = teiImportSummary.enrollments();
-
-                            enrollmentImportHandler.handleEnrollmentImportSummary(
-                                    importEnrollment.importSummaries(),
-                                    getEnrollments(teiUid, instances),
-                                    teiUid);
-                        }
+                        enrollmentImportHandler.handleEnrollmentImportSummary(
+                                importEnrollment.importSummaries(),
+                                getEnrollments(teiUid, instances),
+                                teiUid);
                     }
                 }
             }

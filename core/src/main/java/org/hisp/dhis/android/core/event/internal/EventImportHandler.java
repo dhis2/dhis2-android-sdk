@@ -105,11 +105,11 @@ public class EventImportHandler {
 
                 if (state == State.ERROR || state == State.WARNING) {
                     parentState = parentState == State.ERROR ? State.ERROR : state;
-                } else {
-                    if (handleAction != HandleAction.Delete) {
-                        handleNoteImportSummary(eventUid, state);
-                        storeEventImportConflicts(eventImportSummary, teiUid, enrollmentUid);
-                    }
+                }
+
+                if (handleAction != HandleAction.Delete) {
+                    storeEventImportConflicts(eventImportSummary, teiUid, enrollmentUid);
+                    handleNoteImportSummary(eventUid, state);
                 }
             }
         }

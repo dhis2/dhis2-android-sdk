@@ -113,13 +113,14 @@ public class EnrollmentImportHandler {
                 if (state.equals(State.ERROR) || state.equals(State.WARNING)) {
                     parentState = parentState == State.ERROR ? State.ERROR : state;
                     dataStatePropagator.resetUploadingEventStates(enrollmentUid);
-                } else {
-                    if (handleAction != HandleAction.Delete) {
-                        handleNoteImportSummary(enrollmentUid, state);
-                        storeEnrollmentImportConflicts(enrollmentImportSummary, teiUid);
-                        handleEventImportSummaries(enrollmentImportSummary, enrollments, teiUid);
-                    }
                 }
+
+                if (handleAction != HandleAction.Delete) {
+                    storeEnrollmentImportConflicts(enrollmentImportSummary, teiUid);
+                    handleNoteImportSummary(enrollmentUid, state);
+                    handleEventImportSummaries(enrollmentImportSummary, enrollments, teiUid);
+                }
+
             }
         }
 

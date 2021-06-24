@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper;
 import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.State;
@@ -43,6 +42,7 @@ import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventTableInfo;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 import org.hisp.dhis.android.core.imports.TrackerImportConflictTableInfo;
+import org.hisp.dhis.android.core.imports.internal.BaseImportSummaryHelper;
 import org.hisp.dhis.android.core.imports.internal.EventImportSummary;
 import org.hisp.dhis.android.core.imports.internal.ImportConflict;
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser;
@@ -114,7 +114,7 @@ public class EventImportHandler {
             }
         }
 
-        List<String> processedEvents = UidsHelper.getReferences(eventImportSummaries);
+        List<String> processedEvents = BaseImportSummaryHelper.getReferences(eventImportSummaries);
         for (Event event : events) {
             if (!processedEvents.contains(event.uid())) {
                 State state = State.TO_UPDATE;

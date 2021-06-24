@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper;
 import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.State;
@@ -46,6 +45,7 @@ import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.internal.EventImportHandler;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 import org.hisp.dhis.android.core.imports.TrackerImportConflictTableInfo;
+import org.hisp.dhis.android.core.imports.internal.BaseImportSummaryHelper;
 import org.hisp.dhis.android.core.imports.internal.EnrollmentImportSummary;
 import org.hisp.dhis.android.core.imports.internal.EventImportSummaries;
 import org.hisp.dhis.android.core.imports.internal.ImportConflict;
@@ -66,6 +66,7 @@ import dagger.Reusable;
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getState;
 
 @Reusable
+@SuppressWarnings("PMD.ExcessiveImports")
 public class EnrollmentImportHandler {
     private final EnrollmentStore enrollmentStore;
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
@@ -124,7 +125,7 @@ public class EnrollmentImportHandler {
             }
         }
 
-        List<String> processedEnrollments = UidsHelper.getReferences(enrollmentImportSummaries);
+        List<String> processedEnrollments = BaseImportSummaryHelper.getReferences(enrollmentImportSummaries);
         for (Enrollment enrollment : enrollments) {
             if (!processedEnrollments.contains(enrollment.uid())) {
                 State state = State.TO_UPDATE;

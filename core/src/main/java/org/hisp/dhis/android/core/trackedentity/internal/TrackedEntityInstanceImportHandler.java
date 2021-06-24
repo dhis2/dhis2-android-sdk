@@ -33,13 +33,13 @@ import androidx.annotation.NonNull;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentImportHandler;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 import org.hisp.dhis.android.core.imports.TrackerImportConflictTableInfo;
+import org.hisp.dhis.android.core.imports.internal.BaseImportSummaryHelper;
 import org.hisp.dhis.android.core.imports.internal.EnrollmentImportSummaries;
 import org.hisp.dhis.android.core.imports.internal.ImportConflict;
 import org.hisp.dhis.android.core.imports.internal.TEIImportSummary;
@@ -65,6 +65,7 @@ import dagger.Reusable;
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getState;
 
 @Reusable
+@SuppressWarnings("PMD.ExcessiveImports")
 public final class TrackedEntityInstanceImportHandler {
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
     private final EnrollmentImportHandler enrollmentImportHandler;
@@ -180,7 +181,7 @@ public final class TrackedEntityInstanceImportHandler {
     private void processIgnoredTEIs(List<TEIImportSummary> teiImportSummaries,
                                     List<TrackedEntityInstance> instances) {
 
-        List<String> processedTEIs = UidsHelper.getReferences(teiImportSummaries);
+        List<String> processedTEIs = BaseImportSummaryHelper.getReferences(teiImportSummaries);
         for (TrackedEntityInstance instance : instances) {
             if (!processedTEIs.contains(instance.uid())) {
                 trackedEntityInstanceStore.setStateOrDelete(instance.uid(), State.TO_UPDATE);
@@ -192,7 +193,7 @@ public final class TrackedEntityInstanceImportHandler {
 
     private List<Enrollment> getEnrollments(String trackedEntityInstanceUid,
                                             List<TrackedEntityInstance> instances) {
-        for(TrackedEntityInstance instance : instances) {
+        for (TrackedEntityInstance instance : instances) {
             if (trackedEntityInstanceUid.equals(instance.uid())) {
                 return TrackedEntityInstanceInternalAccessor.accessEnrollments(instance);
             }

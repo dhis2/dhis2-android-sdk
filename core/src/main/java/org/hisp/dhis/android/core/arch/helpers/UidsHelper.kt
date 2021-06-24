@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.arch.helpers
 
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
-import org.hisp.dhis.android.core.imports.internal.BaseImportSummary
 
 object UidsHelper {
     /**
@@ -145,16 +144,5 @@ object UidsHelper {
         objects: Collection<O>
     ): String {
         return CollectionsHelper.commaAndSpaceSeparatedArrayValues(getUidsArray(objects))
-    }
-
-    /**
-     * Return a [List] of references from a BaseImportSummary list.
-     *
-     * @param objects   A collection of BaseImportSummary.
-     * @return The list of references.
-     */
-    @JvmStatic
-    fun getReferences(objects: Collection<BaseImportSummary?>?): List<String> {
-        return objects?.mapNotNull { it?.reference() } ?: listOf()
     }
 }

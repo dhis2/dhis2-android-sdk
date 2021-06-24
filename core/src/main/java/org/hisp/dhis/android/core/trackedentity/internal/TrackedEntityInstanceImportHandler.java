@@ -35,9 +35,11 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentImportHandler;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 import org.hisp.dhis.android.core.imports.TrackerImportConflictTableInfo;
+import org.hisp.dhis.android.core.imports.internal.BaseImportSummaryHelper;
 import org.hisp.dhis.android.core.imports.internal.EnrollmentImportSummaries;
 import org.hisp.dhis.android.core.imports.internal.ImportConflict;
 import org.hisp.dhis.android.core.imports.internal.TEIImportSummary;
@@ -47,9 +49,12 @@ import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
 import org.hisp.dhis.android.core.relationship.RelationshipHelper;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -60,6 +65,7 @@ import dagger.Reusable;
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getState;
 
 @Reusable
+@SuppressWarnings("PMD.ExcessiveImports")
 public final class TrackedEntityInstanceImportHandler {
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
     private final EnrollmentImportHandler enrollmentImportHandler;
@@ -89,44 +95,43 @@ public final class TrackedEntityInstanceImportHandler {
         this.relationshipRepository = relationshipRepository;
     }
 
-    public void handleTrackedEntityInstanceImportSummaries(List<TEIImportSummary> teiImportSummaries) {
-        if (teiImportSummaries == null) {
-            return;
-        }
+    public void handleTrackedEntityInstanceImportSummaries(List<TEIImportSummary> teiImportSummaries,
+                                                           List<TrackedEntityInstance> instances) {
+        if (teiImportSummaries != null) {
+            for (TEIImportSummary teiImportSummary : teiImportSummaries) {
+                String teiUid = teiImportSummary == null ? null : teiImportSummary.reference();
 
-        for (TEIImportSummary teiImportSummary : teiImportSummaries) {
-            if (teiImportSummary == null) {
-                break;
-            }
+                if (teiUid == null) {
+                    continue;
+                }
 
-            State state = getState(teiImportSummary.status());
-            HandleAction handleAction = null;
+                State state = getState(teiImportSummary.status());
+                deleteTEIConflicts(teiUid);
 
-            if (teiImportSummary.reference() != null) {
-                handleAction = trackedEntityInstanceStore.setStateOrDelete(teiImportSummary.reference(), state);
+                HandleAction handleAction = trackedEntityInstanceStore.setStateOrDelete(teiUid, state);
 
                 if (state.equals(State.ERROR) || state.equals(State.WARNING)) {
-                    dataStatePropagator.resetUploadingEnrollmentAndEventStates(teiImportSummary.reference());
-                    setRelationshipsState(teiImportSummary.reference(), State.TO_UPDATE);
+                    dataStatePropagator.resetUploadingEnrollmentAndEventStates(teiUid);
+                    setRelationshipsState(teiUid, State.TO_UPDATE);
                 } else {
-                    setRelationshipsState(teiImportSummary.reference(), State.SYNCED);
+                    setRelationshipsState(teiUid, State.SYNCED);
                 }
 
-                deleteTEIConflicts(teiImportSummary.reference());
-            }
+                if (handleAction != HandleAction.Delete) {
+                    storeTEIImportConflicts(teiImportSummary);
+                    if (teiImportSummary.enrollments() != null) {
+                        EnrollmentImportSummaries importEnrollment = teiImportSummary.enrollments();
 
-            if (handleAction != HandleAction.Delete) {
-                storeTEIImportConflicts(teiImportSummary);
-
-                if (teiImportSummary.enrollments() != null) {
-                    EnrollmentImportSummaries importEnrollment = teiImportSummary.enrollments();
-
-                    enrollmentImportHandler.handleEnrollmentImportSummary(
-                            importEnrollment.importSummaries(),
-                            teiImportSummary.reference());
+                        enrollmentImportHandler.handleEnrollmentImportSummary(
+                                importEnrollment.importSummaries(),
+                                getEnrollments(teiUid, instances),
+                                teiUid);
+                    }
                 }
             }
         }
+
+        processIgnoredTEIs(teiImportSummaries, instances);
     }
 
     private void storeTEIImportConflicts(TEIImportSummary teiImportSummary) {
@@ -171,6 +176,29 @@ public final class TrackedEntityInstanceImportHandler {
         for (Relationship relationship : ownedRelationships) {
             relationshipStore.setStateOrDelete(relationship.uid(), state);
         }
+    }
+
+    private void processIgnoredTEIs(List<TEIImportSummary> teiImportSummaries,
+                                    List<TrackedEntityInstance> instances) {
+
+        List<String> processedTEIs = BaseImportSummaryHelper.getReferences(teiImportSummaries);
+        for (TrackedEntityInstance instance : instances) {
+            if (!processedTEIs.contains(instance.uid())) {
+                trackedEntityInstanceStore.setStateOrDelete(instance.uid(), State.TO_UPDATE);
+                dataStatePropagator.resetUploadingEnrollmentAndEventStates(instance.uid());
+                setRelationshipsState(instance.uid(), State.TO_UPDATE);
+            }
+        }
+    }
+
+    private List<Enrollment> getEnrollments(String trackedEntityInstanceUid,
+                                            List<TrackedEntityInstance> instances) {
+        for (TrackedEntityInstance instance : instances) {
+            if (trackedEntityInstanceUid.equals(instance.uid())) {
+                return TrackedEntityInstanceInternalAccessor.accessEnrollments(instance);
+            }
+        }
+        return Collections.emptyList();
     }
 
     private TrackerImportConflict.Builder getConflictBuilder(TEIImportSummary teiImportSummary) {

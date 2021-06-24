@@ -66,7 +66,7 @@ internal class OldEventPostCall @Inject internal constructor(
                     listOf(409),
                     EventWebResponse::class.java
                 )
-                handleWebResponse(webResponse)
+                handleWebResponse(webResponse, eventsToPost)
                 Observable.just<D2Progress>(progressManager.increaseProgress(Event::class.java, true))
             } catch (e: D2Error) {
                 stateManager.markObjectsAs(eventsToPost, DataStateHelper.errorIfOnline(e))
@@ -75,12 +75,13 @@ internal class OldEventPostCall @Inject internal constructor(
         }
     }
 
-    private fun handleWebResponse(webResponse: EventWebResponse?) {
+    private fun handleWebResponse(webResponse: EventWebResponse?, events: List<Event>) {
         if (webResponse?.response() == null) {
             return
         }
         eventImportHandler.handleEventImportSummaries(
             webResponse.response()!!.importSummaries(),
+            events,
             null,
             null
         )

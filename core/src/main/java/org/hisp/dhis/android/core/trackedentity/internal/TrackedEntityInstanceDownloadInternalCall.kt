@@ -58,19 +58,19 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
         relatives: RelationshipItemRelatives
     ): Observable<D2Progress> {
         return Observable.defer {
-            val teiQueries = queryFactory.getQueries(params)
-            val teiDownloadObservable = Observable.fromIterable(teiQueries)
-                .flatMap { getTrackedEntityInstancesWithPaging(it) }
             // TODO .subscribeOn(teiDownloadScheduler);
-            val isFullUpdate = params.program() == null
+            val teiQueries = queryFactory.getQueries(params)
             val overwrite = params.overwrite()
-            teiDownloadObservable.flatMapSingle { teiList: List<TrackedEntityInstance> ->
-                persistenceCallFactory.persistTEIs(teiList, isFullUpdate, overwrite, relatives)
-                    .toSingle {
-                        progressManager.increaseProgress(
-                            TrackedEntityInstance::class.java, false
-                        )
-                    }
+            Observable.fromIterable(teiQueries).flatMap { teiQuery ->
+                val isFullUpdate = teiQuery.commonParams().program == null
+                getTrackedEntityInstancesWithPaging(teiQuery).flatMapSingle { teiList ->
+                    persistenceCallFactory.persistTEIs(teiList, isFullUpdate, overwrite, relatives)
+                        .toSingle {
+                            progressManager.increaseProgress(
+                                TrackedEntityInstance::class.java, false
+                            )
+                        }
+                }
             }
         }
     }

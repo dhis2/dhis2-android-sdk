@@ -51,6 +51,8 @@ internal class OldTrackedEntityInstancePostCall @Inject internal constructor(
     private val apiCallExecutor: APICallExecutor,
     private val relationshipDeleteCall: RelationshipDeleteCall
 ) {
+
+    @Suppress("TooGenericExceptionCaught")
     fun uploadTrackedEntityInstances(
         filteredTrackedEntityInstances: List<TrackedEntityInstance>
     ): Observable<D2Progress> {
@@ -72,10 +74,11 @@ internal class OldTrackedEntityInstancePostCall @Inject internal constructor(
                     )
                     teiWebResponseHandler.handleWebResponse(webResponse, thisPartition)
                     emitter.onNext(progressManager.increaseProgress(TrackedEntityInstance::class.java, false))
-                } catch (d2Error: D2Error) {
+                } catch (e: Exception) {
                     stateManager.restorePartitionStates(thisPartition)
-                    if (d2Error.isOffline) {
-                        emitter.onError(d2Error)
+
+                    if (e is D2Error && e.isOffline) {
+                        emitter.onError(e)
                         break
                     } else {
                         emitter.onNext(

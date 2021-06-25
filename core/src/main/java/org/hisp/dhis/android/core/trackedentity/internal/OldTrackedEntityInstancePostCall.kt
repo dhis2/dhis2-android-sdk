@@ -51,6 +51,8 @@ internal class OldTrackedEntityInstancePostCall @Inject internal constructor(
     private val apiCallExecutor: APICallExecutor,
     private val relationshipDeleteCall: RelationshipDeleteCall
 ) {
+
+    @Suppress("TooGenericExceptionCaught")
     fun uploadTrackedEntityInstances(
         filteredTrackedEntityInstances: List<TrackedEntityInstance>
     ): Observable<D2Progress> {

@@ -47,6 +47,8 @@ internal class OldEventPostCall @Inject internal constructor(
     private val eventImportHandler: EventImportHandler,
     private val stateManager: EventPostStateManager
 ) {
+
+    @Suppress("TooGenericExceptionCaught")
     fun uploadEvents(filteredEvents: List<Event>): Observable<D2Progress> {
         return Observable.defer {
             val eventPayload = EventPayload()

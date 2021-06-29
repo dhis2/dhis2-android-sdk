@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.imports.internal;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 
@@ -45,8 +44,8 @@ public final class TrackerImportConflictEntityDIModule {
 
     @Provides
     @Reusable
-    public ObjectStore<TrackerImportConflict> store(DatabaseAdapter databaseAdapter) {
-        return TrackerImportConflictStore.create(databaseAdapter);
+    public TrackerImportConflictStore store(DatabaseAdapter databaseAdapter) {
+        return TrackerImportConflictStoreImpl.create(databaseAdapter);
     }
 
     @Provides

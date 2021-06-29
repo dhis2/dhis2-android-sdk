@@ -58,7 +58,7 @@ public abstract class NewTrackerImporterTrackedEntity extends BaseDeletableDataO
         implements ObjectWithUidInterface {
 
     @Override
-    @JsonProperty()
+    @JsonProperty("trackedEntity")
     public abstract String uid();
 
     @Nullable
@@ -119,7 +119,7 @@ public abstract class NewTrackerImporterTrackedEntity extends BaseDeletableDataO
     public abstract static class Builder extends BaseDeletableDataObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
-        @JsonProperty()
+        @JsonProperty("trackedEntity")
         public abstract Builder uid(String uid);
 
         public abstract Builder createdAt(Date created);

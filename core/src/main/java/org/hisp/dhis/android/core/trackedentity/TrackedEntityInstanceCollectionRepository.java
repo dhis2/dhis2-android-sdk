@@ -45,8 +45,9 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo.Columns;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceParentPostCall;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostParentCall;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
+import org.hisp.dhis.android.core.tracker.importer.internal.JobQueryCall;
 
 import java.util.List;
 import java.util.Map;
@@ -63,8 +64,9 @@ public final class TrackedEntityInstanceCollectionRepository
         implements ReadWriteWithUploadWithUidCollectionRepository
         <TrackedEntityInstance, TrackedEntityInstanceCreateProjection> {
 
-    private final TrackedEntityInstanceParentPostCall postCall;
+    private final TrackedEntityInstancePostParentCall postCall;
     private final TrackedEntityInstanceStore store;
+    private final JobQueryCall jobQueryCall;
 
     @Inject
     TrackedEntityInstanceCollectionRepository(
@@ -72,18 +74,24 @@ public final class TrackedEntityInstanceCollectionRepository
             final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders,
             final RepositoryScope scope,
             final Transformer<TrackedEntityInstanceCreateProjection, TrackedEntityInstance> transformer,
-            final TrackedEntityInstanceParentPostCall postCall) {
+            final TrackedEntityInstancePostParentCall postCall,
+            final JobQueryCall jobQueryCall) {
         super(store, childrenAppenders, scope, transformer, new FilterConnectorFactory<>(scope, s ->
-                new TrackedEntityInstanceCollectionRepository(store, childrenAppenders, s, transformer, postCall)));
+                new TrackedEntityInstanceCollectionRepository(store, childrenAppenders, s, transformer, postCall,
+                        jobQueryCall)));
         this.postCall = postCall;
         this.store = store;
+        this.jobQueryCall = jobQueryCall;
     }
 
     @Override
     public Observable<D2Progress> upload() {
-        return Observable.fromCallable(() ->
-                byState().in(State.uploadableStates()).blockingGetWithoutChildren()
-        ).flatMap(postCall::uploadTrackedEntityInstances);
+        return Observable.concat(
+                jobQueryCall.queryPendingJobs(),
+                Observable.fromCallable(() ->
+                        byState().in(State.uploadableStates()).blockingGetWithoutChildren()
+                ).flatMap(postCall::uploadTrackedEntityInstances)
+        );
     }
 
     @Override

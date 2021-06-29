@@ -30,10 +30,14 @@ package org.hisp.dhis.android.core.tracker.importer.internal
 import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.Single
+import java.util.Date
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDeleteCall
+import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntity
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterTrackedEntityPayload
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterTrackedEntityPostPayloadGenerator
@@ -46,6 +50,7 @@ internal class TrackedEntityInstanceTrackerImporterPostCall @Inject internal con
     private val service: TrackerImporterService,
     private val apiCallExecutor: APICallExecutor,
     private val jobQueryCall: JobQueryCall,
+    private val jobObjectHandler: Handler<TrackerJobObject>,
     private val relationshipDeleteCall: RelationshipDeleteCall
 ) {
     fun uploadTrackedEntityInstances(
@@ -60,16 +65,49 @@ internal class TrackedEntityInstanceTrackerImporterPostCall @Inject internal con
                 //  relationshipDeleteCall.postDeletedRelationships(partition)
                 val trackedEntityInstancePayload = NewTrackerImporterTrackedEntityPayload(trackedEntitiesToPost)
                 val res = apiCallExecutor.executeObjectCall(
-                    service.postTrackedEntityInstances(trackedEntityInstancePayload)
+                    service.postTrackedEntityInstances(
+                        trackedEntityInstancePayload, ATOMIC_MODE_OBJECT,
+                        IMPORT_STRATEGY_CREATE_AND_UPDATE
+                    )
                 )
                 val jobId = res.response().uid()
-                jobQueryCall.storeJob(jobId)
+                jobObjectHandler.handleMany(generateJobObjects(trackedEntitiesToPost, jobId))
                 jobId
             }.doOnError {
                 stateManager.restoreStates(trackedEntitiesToPost)
             }.flatMapObservable {
                 jobQueryCall.queryJob(it)
             }
+        }
+    }
+
+    private fun generateJobObjects(
+        trackedEntities: List<NewTrackerImporterTrackedEntity>,
+        jobUid: String
+    ): List<TrackerJobObject> {
+        val builder = TrackerJobObject
+            .builder()
+            .jobUid(jobUid)
+            .lastUpdated(Date())
+
+        val enrollments = trackedEntities.flatMap { it.enrollments()!! }
+        val events = enrollments.flatMap { it.events()!! }
+
+        return generateTypeObjects(builder, TrackerImporterObjectTypes.TRACKED_ENTITY, trackedEntities) +
+            generateTypeObjects(builder, TrackerImporterObjectTypes.ENROLLMENT, enrollments) +
+            generateTypeObjects(builder, TrackerImporterObjectTypes.EVENT, events)
+    }
+
+    private fun generateTypeObjects(
+        builder: TrackerJobObject.Builder,
+        objectType: String,
+        objects: List<ObjectWithUidInterface>
+    ): List<TrackerJobObject> {
+        return objects.map {
+            builder
+                .trackerType(objectType)
+                .objectUid(it.uid())
+                .build()
         }
     }
 }

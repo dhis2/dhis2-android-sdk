@@ -28,16 +28,15 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentImportHandler;
 import org.hisp.dhis.android.core.imports.ImportStatus;
-import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 import org.hisp.dhis.android.core.imports.internal.EnrollmentImportSummaries;
 import org.hisp.dhis.android.core.imports.internal.EnrollmentImportSummary;
 import org.hisp.dhis.android.core.imports.internal.TEIImportSummary;
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser;
+import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore;
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore;
@@ -81,7 +80,7 @@ public class TrackedEntityInstanceImportHandlerShould {
     private EnrollmentImportSummaries importEnrollment;
 
     @Mock
-    private ObjectStore<TrackerImportConflict> trackerImportConflictStore;
+    private TrackerImportConflictStore trackerImportConflictStore;
 
     @Mock
     private TrackerImportConflictParser trackerImportConflictParser;

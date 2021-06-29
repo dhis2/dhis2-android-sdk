@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatement
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.datavalue.DataValue;
+import org.hisp.dhis.android.core.datavalue.DataValueByDataSetQueryHelper;
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo;
 
 import java.util.Collection;
@@ -100,7 +101,7 @@ public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
 
     /**
      * @param dataValue DataValue element you want to update
-     * @param newState The new state to be set for the DataValue
+     * @param newState  The new state to be set for the DataValue
      */
     public void setState(DataValue dataValue, State newState) {
 
@@ -134,5 +135,14 @@ public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
                 .appendKeyStringValue(Columns.ORGANISATION_UNIT, dataValue.organisationUnit())
                 .appendKeyStringValue(Columns.CATEGORY_OPTION_COMBO, dataValue.categoryOptionCombo())
                 .appendKeyStringValue(Columns.ATTRIBUTE_OPTION_COMBO, dataValue.attributeOptionCombo());
+    }
+
+    public Boolean existsInDataSet(DataValue dataValue, String dataSetUid) {
+        WhereClauseBuilder whereClauseBuilder = uniqueWhereClauseBuilder(dataValue)
+                .appendInSubQuery(
+                        DataValueByDataSetQueryHelper.getKey(),
+                        DataValueByDataSetQueryHelper.whereClause(dataSetUid)
+                );
+        return selectWhere(whereClauseBuilder.build()).size() > 0;
     }
 }

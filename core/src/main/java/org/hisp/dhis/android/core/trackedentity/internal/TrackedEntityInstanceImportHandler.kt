@@ -32,8 +32,10 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getSyncStat
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
+import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentImportHandler
 import org.hisp.dhis.android.core.imports.TrackerImportConflict
+import org.hisp.dhis.android.core.imports.internal.BaseImportSummaryHelper.getReferences
 import org.hisp.dhis.android.core.imports.internal.TEIImportSummary
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
@@ -41,6 +43,8 @@ import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
 import java.util.*
 import javax.inject.Inject
@@ -57,15 +61,16 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
     private val relationshipRepository: RelationshipCollectionRepository
 ) {
 
-    fun handleTrackedEntityInstanceImportSummaries(teiImportSummaries: List<TEIImportSummary?>?) {
-        if (teiImportSummaries == null) {
-            return
-        }
-
-        teiImportSummaries.filterNotNull().forEach { teiImportSummary ->
-            val state = getSyncState(teiImportSummary.status())
-
+    fun handleTrackedEntityInstanceImportSummaries(
+        teiImportSummaries: List<TEIImportSummary?>?,
+        instances: List<TrackedEntityInstance>
+    ) {
+        teiImportSummaries?.filterNotNull()?.forEach { teiImportSummary ->
             teiImportSummary.reference()?.let { teiUid ->
+
+                val state = getSyncState(teiImportSummary.status())
+                trackerImportConflictStore.deleteTrackedEntityConflicts(teiUid)
+
                 val handleAction = trackedEntityInstanceStore.setSyncStateOrDelete(teiUid, state)
 
                 if (state == State.ERROR || state == State.WARNING) {
@@ -74,17 +79,19 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
                 } else {
                     setRelationshipsState(teiUid, State.SYNCED)
                 }
-                trackerImportConflictStore.deleteTrackedEntityConflicts(teiUid)
 
                 if (handleAction !== HandleAction.Delete) {
                     storeTEIImportConflicts(teiImportSummary)
 
                     teiImportSummary.enrollments()?.importSummaries().let {
-                        enrollmentImportHandler.handleEnrollmentImportSummary(it, teiUid)
+                        enrollmentImportHandler.handleEnrollmentImportSummary(it,
+                            getEnrollments(teiUid, instances), teiUid)
                     }
                 }
             }
         }
+
+        processIgnoredTEIs(teiImportSummaries, instances)
     }
 
     private fun storeTEIImportConflicts(teiImportSummary: TEIImportSummary) {
@@ -116,6 +123,28 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
         for (relationship in ownedRelationships) {
             relationshipStore.setSyncStateOrDelete(relationship.uid()!!, state)
         }
+    }
+
+    private fun processIgnoredTEIs(
+        teiImportSummaries: List<TEIImportSummary?>?,
+        instances: List<TrackedEntityInstance>
+    ) {
+        val processedTEIs = getReferences(teiImportSummaries)
+
+        instances.filterNot { processedTEIs.contains(it.uid()) }.forEach { instance ->
+            trackedEntityInstanceStore.setSyncStateOrDelete(instance.uid(), State.TO_UPDATE)
+            dataStatePropagator.resetUploadingEnrollmentAndEventStates(instance.uid())
+            setRelationshipsState(instance.uid(), State.TO_UPDATE)
+        }
+    }
+
+    private fun getEnrollments(
+        trackedEntityInstanceUid: String,
+        instances: List<TrackedEntityInstance>
+    ): List<Enrollment> {
+        return instances.find { it.uid() == trackedEntityInstanceUid }?.let {
+            TrackedEntityInstanceInternalAccessor.accessEnrollments(it)
+        } ?: listOf()
     }
 
     private fun getConflictBuilder(teiImportSummary: TEIImportSummary): TrackerImportConflict.Builder {

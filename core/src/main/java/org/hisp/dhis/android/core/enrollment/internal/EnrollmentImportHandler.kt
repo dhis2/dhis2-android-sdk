@@ -36,9 +36,13 @@ import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
+import org.hisp.dhis.android.core.enrollment.Enrollment
+import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventImportHandler
 import org.hisp.dhis.android.core.imports.TrackerImportConflict
+import org.hisp.dhis.android.core.imports.internal.BaseImportSummaryHelper.getReferences
 import org.hisp.dhis.android.core.imports.internal.EnrollmentImportSummary
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
@@ -59,30 +63,29 @@ internal class EnrollmentImportHandler @Inject constructor(
 
     fun handleEnrollmentImportSummary(
         enrollmentImportSummaries: List<EnrollmentImportSummary?>?,
+        enrollments: List<Enrollment>,
         teiUid: String
     ): State {
         var globalState: State = State.SYNCED
 
         enrollmentImportSummaries?.filterNotNull()?.forEach { enrollmentImportSummary ->
-            val syncState = getSyncState(enrollmentImportSummary.status())
-
             enrollmentImportSummary.reference()?.let { enrollmentUid ->
+
+                val syncState = getSyncState(enrollmentImportSummary.status())
+                trackerImportConflictStore.deleteEnrollmentConflicts(enrollmentUid)
+
                 val handleAction = enrollmentStore.setSyncStateOrDelete(enrollmentUid, syncState)
 
-                trackerImportConflictStore.deleteEnrollmentConflicts(enrollmentUid)
+                if (syncState == State.ERROR || syncState == State.WARNING) {
+                    globalState = if (globalState == State.ERROR) State.ERROR else syncState
+                    dataStatePropagator.resetUploadingEventStates(enrollmentUid)
+                }
 
                 if (handleAction !== HandleAction.Delete) {
                     handleNoteImportSummary(enrollmentUid, syncState)
                     storeEnrollmentImportConflicts(enrollmentImportSummary, teiUid)
 
-                    if (syncState == State.ERROR || syncState == State.WARNING) {
-                        globalState = if (globalState == State.ERROR) State.ERROR else syncState
-                        dataStatePropagator.resetUploadingEventStates(enrollmentUid)
-                    } else {
-
-                    }
-
-                    val eventState = handleEventImportSummaries(enrollmentImportSummary, teiUid)
+                    val eventState = handleEventImportSummaries(enrollmentImportSummary, enrollments, teiUid)
 
                     if (globalState == State.ERROR || globalState == State.WARNING) {
                         globalState = if (globalState == State.ERROR) State.ERROR else eventState
@@ -91,17 +94,30 @@ internal class EnrollmentImportHandler @Inject constructor(
             }
         }
 
+        val processedEnrollments = getReferences(enrollmentImportSummaries)
+
+        enrollments.filterNot { processedEnrollments.contains(it.uid()) }.forEach { enrollment ->
+            val state = State.TO_UPDATE
+            trackerImportConflictStore.deleteEnrollmentConflicts(enrollment.uid())
+            enrollmentStore.setSyncStateOrDelete(enrollment.uid(), state)
+            globalState = if (globalState == State.ERROR || globalState == State.WARNING) globalState else state
+            dataStatePropagator.resetUploadingEventStates(enrollment.uid())
+        }
+
         return globalState
     }
 
     private fun handleEventImportSummaries(
         enrollmentImportSummary: EnrollmentImportSummary,
+        enrollments: List<Enrollment>,
         teiUid: String
     ): State {
         return enrollmentImportSummary.events()?.importSummaries()?.let { importSummaries ->
+            val enrollmentUid = enrollmentImportSummary.reference()!!
             eventImportHandler.handleEventImportSummaries(
                 importSummaries,
-                enrollmentImportSummary.reference()!!,
+                getEvents(enrollmentUid, enrollments),
+                enrollmentUid,
                 teiUid
             )
         } ?: State.SYNCED
@@ -144,6 +160,15 @@ internal class EnrollmentImportHandler @Inject constructor(
         }
 
         trackerImportConflicts.forEach { trackerImportConflictStore.insert(it) }
+    }
+
+    private fun getEvents(
+        enrollmentUid: String,
+        enrollments: List<Enrollment>
+    ): List<Event> {
+        return enrollments.find { it.uid() == enrollmentUid }?.let {
+            EnrollmentInternalAccessor.accessEvents(it)
+        } ?: listOf()
     }
 
     private fun getConflictBuilder(

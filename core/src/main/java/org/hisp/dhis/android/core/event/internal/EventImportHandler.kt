@@ -31,8 +31,10 @@ import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getSyncState
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.imports.TrackerImportConflict
+import org.hisp.dhis.android.core.imports.internal.BaseImportSummaryHelper.getReferences
 import org.hisp.dhis.android.core.imports.internal.EventImportSummary
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
@@ -50,26 +52,37 @@ internal class EventImportHandler @Inject constructor(
 
     fun handleEventImportSummaries(
         eventImportSummaries: List<EventImportSummary?>?,
+        events: List<Event>,
         enrollmentUid: String?,
         teiUid: String?
     ): State {
         var globalState: State = State.SYNCED
 
         eventImportSummaries?.filterNotNull()?.forEach { eventImportSummary ->
-            val state = getSyncState(eventImportSummary.status())
-
             eventImportSummary.reference()?.let { eventUid ->
+
+                val state = getSyncState(eventImportSummary.status())
+                trackerImportConflictStore.deleteEventConflicts(eventUid)
+
                 val handleAction = eventStore.setSyncStateOrDelete(eventUid, state)
+
                 if (state == State.ERROR || state == State.WARNING) {
                     globalState = if (globalState == State.ERROR) State.ERROR else state
                 }
-                trackerImportConflictStore.deleteEventConflicts(eventUid)
 
                 if (handleAction !== HandleAction.Delete) {
                     jobReportEventHandler.handleEventNotes(eventUid, state)
                     storeEventImportConflicts(eventImportSummary, teiUid, enrollmentUid)
                 }
             }
+        }
+
+        val processedEvents = getReferences(eventImportSummaries)
+        events.filterNot { processedEvents.contains(it.uid()) }.forEach { event ->
+            val state = State.TO_UPDATE
+            trackerImportConflictStore.deleteEventConflicts(event.uid())
+            eventStore.setSyncStateOrDelete(event.uid(), state)
+            globalState = if (globalState == State.ERROR || globalState == State.WARNING) globalState else state
         }
 
         return globalState

@@ -33,11 +33,9 @@ import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
-import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.imports.internal.EventWebResponse
-import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 
 @Reusable
@@ -49,6 +47,8 @@ internal class OldEventPostCall @Inject internal constructor(
     private val eventImportHandler: EventImportHandler,
     private val stateManager: EventPostStateManager
 ) {
+
+    @Suppress("TooGenericExceptionCaught")
     fun uploadEvents(filteredEvents: List<Event>): Observable<D2Progress> {
         return Observable.defer {
             val eventPayload = EventPayload()
@@ -66,21 +66,22 @@ internal class OldEventPostCall @Inject internal constructor(
                     listOf(409),
                     EventWebResponse::class.java
                 )
-                handleWebResponse(webResponse)
+                handleWebResponse(webResponse, eventsToPost)
                 Observable.just<D2Progress>(progressManager.increaseProgress(Event::class.java, true))
-            } catch (e: D2Error) {
-                stateManager.markObjectsAs(eventsToPost, DataStateHelper.errorIfOnline(e))
+            } catch (e: Exception) {
+                stateManager.markObjectsAs(eventsToPost, State.TO_UPDATE)
                 Observable.error<D2Progress>(e)
             }
         }
     }
 
-    private fun handleWebResponse(webResponse: EventWebResponse?) {
+    private fun handleWebResponse(webResponse: EventWebResponse?, events: List<Event>) {
         if (webResponse?.response() == null) {
             return
         }
         eventImportHandler.handleEventImportSummaries(
             webResponse.response()!!.importSummaries(),
+            events,
             null,
             null
         )

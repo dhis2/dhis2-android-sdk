@@ -35,6 +35,8 @@ import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
+import org.hisp.dhis.android.core.systeminfo.DHISVersion;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService;
 import org.junit.Before;
@@ -79,6 +81,9 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
     private SearchGridMapper mapper;
 
     @Mock
+    private DHISVersionManager dhisVersionManager;
+
+    @Mock
     private SearchGrid searchGrid;
 
     @Mock
@@ -118,9 +123,10 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
         whenServiceQuery().thenReturn(searchGridCall);
         when(apiCallExecutor.executeObjectCall(searchGridCall)).thenReturn(searchGrid);
         when(mapper.transform(any(SearchGrid.class))).thenReturn(teis);
+        when(dhisVersionManager.isGreaterThan(DHISVersion.V2_33)).thenReturn(true);
 
         // Metadata call
-        call = new TrackedEntityInstanceQueryCallFactory(service, mapper, apiCallExecutor).getCall(query);
+        call = new TrackedEntityInstanceQueryCallFactory(service, mapper, apiCallExecutor, dhisVersionManager).getCall(query);
     }
 
     @Test
@@ -140,26 +146,7 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
     public void call_service_with_query_parameters() throws Exception {
         call.call();
 
-        verify(service).query(
-                eq(query.orgUnits().get(0) + ";" + query.orgUnits().get(1)),
-                eq(query.orgUnitMode().toString()),
-                eq(query.program()),
-                eq(query.formattedProgramStartDate()),
-                eq(query.formattedProgramEndDate()),
-                eq(query.enrollmentStatus().toString()),
-                eq(query.followUp()),
-                eq(query.formattedEventStartDate()),
-                eq(query.formattedEventEndDate()),
-                eq(query.eventStatus().toString()),
-                eq(query.trackedEntityType()),
-                eq(query.query()),
-                eq(query.attribute()),
-                eq(query.filter()),
-                eq(query.assignedUserMode().toString()),
-                eq(query.order()),
-                eq(query.paging()),
-                eq(query.page()),
-                eq(query.pageSize()));
+        verifyService(query);
         verifyNoMoreInteractions(service);
     }
 
@@ -186,6 +173,64 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
     public void throw_D2CallException_when_mapper_throws_exception() throws Exception {
         when(mapper.transform(searchGrid)).thenThrow(ParseException.class);
         call.call();
+    }
+
+    @Test()
+    public void should_not_map_active_event_status_if_greater_than_2_33() throws Exception {
+        when(dhisVersionManager.isGreaterThan(DHISVersion.V2_33)).thenReturn(true);
+
+        TrackedEntityInstanceQueryOnline activeQuery = query.toBuilder().eventStatus(EventStatus.ACTIVE).build();
+        Callable<List<TrackedEntityInstance>> activeCall =
+                new TrackedEntityInstanceQueryCallFactory(service, mapper, apiCallExecutor, dhisVersionManager).getCall(activeQuery);
+
+        activeCall.call();
+        verifyService(activeQuery, EventStatus.ACTIVE);
+    }
+
+    @Test()
+    public void should_map_active_event_status_if_not_greater_than_2_33() throws Exception {
+        when(dhisVersionManager.isGreaterThan(DHISVersion.V2_33)).thenReturn(false);
+
+        TrackedEntityInstanceQueryOnline activeQuery = query.toBuilder().eventStatus(EventStatus.ACTIVE).build();
+        Callable<List<TrackedEntityInstance>> activeCall =
+                new TrackedEntityInstanceQueryCallFactory(service, mapper, apiCallExecutor, dhisVersionManager).getCall(activeQuery);
+
+        activeCall.call();
+        verifyService(activeQuery, EventStatus.VISITED);
+
+        TrackedEntityInstanceQueryOnline nonActiveQuery = query.toBuilder().eventStatus(EventStatus.SCHEDULE).build();
+        Callable<List<TrackedEntityInstance>> nonActiveCall =
+                new TrackedEntityInstanceQueryCallFactory(service, mapper, apiCallExecutor, dhisVersionManager).getCall(nonActiveQuery);
+
+        nonActiveCall.call();
+        verifyService(activeQuery, EventStatus.SCHEDULE);
+    }
+
+    private void verifyService(TrackedEntityInstanceQueryOnline query) {
+        verifyService(query, query.eventStatus());
+    }
+
+    private void verifyService(TrackedEntityInstanceQueryOnline query, EventStatus expectedStatus) {
+        verify(service).query(
+                eq(query.orgUnits().get(0) + ";" + query.orgUnits().get(1)),
+                eq(query.orgUnitMode().toString()),
+                eq(query.program()),
+                eq(query.formattedProgramStartDate()),
+                eq(query.formattedProgramEndDate()),
+                eq(query.enrollmentStatus().toString()),
+                eq(query.followUp()),
+                eq(query.formattedEventStartDate()),
+                eq(query.formattedEventEndDate()),
+                eq(expectedStatus.toString()),
+                eq(query.trackedEntityType()),
+                eq(query.query()),
+                eq(query.attribute()),
+                eq(query.filter()),
+                eq(query.assignedUserMode().toString()),
+                eq(query.order()),
+                eq(query.paging()),
+                eq(query.page()),
+                eq(query.pageSize()));
     }
 
     private OngoingStubbing<Call<SearchGrid>> whenServiceQuery() {

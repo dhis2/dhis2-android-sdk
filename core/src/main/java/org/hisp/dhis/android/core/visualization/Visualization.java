@@ -35,10 +35,21 @@ import androidx.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.DigitGroupSeparatorColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.DisplayDensityColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.HideEmptyItemStrategyColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.VisualizationTypeColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.common.RelativePeriod;
+
+import java.util.HashMap;
+import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_Visualization.Builder.class)
@@ -55,6 +66,145 @@ public abstract class Visualization extends BaseIdentifiableObject implements Co
     @Nullable
     @JsonProperty()
     public abstract String displayFormName();
+
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(VisualizationTypeColumnAdapter.class)
+    public abstract VisualizationType type();
+
+    @Nullable
+    @JsonProperty()
+    public abstract Boolean hideTitle();
+
+    @Nullable
+    @JsonProperty()
+    public abstract Boolean hideSubtitle();
+
+    @Nullable
+    @JsonProperty()
+    public abstract Boolean hideEmptyColumns();
+
+    @Nullable
+    @JsonProperty()
+    public abstract Boolean hideEmptyRows();
+
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(HideEmptyItemStrategyColumnAdapter.class)
+    public abstract HideEmptyItemStrategy hideEmptyRowItems();
+
+    @Nullable
+    @JsonProperty()
+    public abstract Boolean hideLegend();
+
+    @Nullable
+    @JsonProperty()
+    public abstract Boolean showHierarchy();
+
+    @Nullable
+    @JsonProperty()
+    public abstract Boolean rowTotals();
+
+    @Nullable
+    @JsonProperty()
+    public abstract Boolean rowSubTotals();
+
+    @Nullable
+    @JsonProperty()
+    public abstract Boolean colTotals();
+
+    @Nullable
+    @JsonProperty()
+    public abstract Boolean colSubTotals();
+
+    @Nullable
+    @JsonProperty()
+    public abstract Boolean showDimensionLabels();
+
+    @Nullable
+    @JsonProperty()
+    public abstract Boolean percentStackedValues();
+
+    @Nullable
+    @JsonProperty()
+    public abstract Boolean noSpaceBetweenColumns();
+
+    @Nullable
+    @JsonProperty()
+    public abstract Boolean skipRounding();
+
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(DisplayDensityColumnAdapter.class)
+    public abstract DisplayDensity displayDensity();
+
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(DigitGroupSeparatorColumnAdapter.class)
+    public abstract DigitGroupSeparator digitGroupSeparator();
+
+    @Nullable
+    @JsonProperty()
+    public abstract HashMap<RelativePeriod, Boolean> relativePeriods();
+
+    @Nullable
+    @JsonProperty()
+    public abstract List<CategoryDimension> categoryDimensions();
+
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(StringListColumnAdapter.class)
+    public abstract List<String> filterDimensions();
+
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(StringListColumnAdapter.class)
+    public abstract List<String> rowDimensions();
+
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(StringListColumnAdapter.class)
+    public abstract List<String> columnDimensions();
+
+    @Nullable
+    @JsonProperty()
+    public abstract List<DataDimensionItem> dataDimensionItems();
+
+    @Nullable
+    @JsonProperty()
+    public abstract List<Integer> organisationUnitLevels();
+
+    @Nullable
+    @JsonProperty()
+    public abstract Boolean userOrganisationUnit();
+
+    @Nullable
+    @JsonProperty()
+    public abstract Boolean userOrganisationUnitChildren();
+
+    @Nullable
+    @JsonProperty()
+    public abstract Boolean userOrganisationUnitGrandChildren();
+
+    @Nullable
+    @JsonProperty()
+    public abstract List<ObjectWithUid> organisationUnits();
+
+    @Nullable
+    @JsonProperty()
+    public abstract List<ObjectWithUid> columns();
+
+    @Nullable
+    @JsonProperty()
+    public abstract List<ObjectWithUid> periods();
+
+    @Nullable
+    @JsonProperty()
+    public abstract List<ObjectWithUid> filters();
+
+    @Nullable
+    @JsonProperty()
+    public abstract List<ObjectWithUid> rows();
 
     public static Builder builder() {
         return new $$AutoValue_Visualization.Builder();
@@ -77,6 +227,72 @@ public abstract class Visualization extends BaseIdentifiableObject implements Co
         public abstract Builder displayDescription(String displayDescription);
 
         public abstract Builder displayFormName(String displayFormName);
+
+        public abstract Builder type(VisualizationType type);
+
+        public abstract Builder hideTitle(Boolean hideTitle);
+
+        public abstract Builder hideSubtitle(Boolean hideSubtitle);
+
+        public abstract Builder hideEmptyColumns(Boolean hideEmptyColumns);
+
+        public abstract Builder hideEmptyRows(Boolean hideEmptyRows);
+
+        public abstract Builder hideEmptyRowItems(HideEmptyItemStrategy hideEmptyRowItems);
+
+        public abstract Builder hideLegend(Boolean hideLegend);
+
+        public abstract Builder showHierarchy(Boolean showHierarchy);
+
+        public abstract Builder rowTotals(Boolean rowTotals);
+
+        public abstract Builder rowSubTotals(Boolean rowSubTotals);
+
+        public abstract Builder colTotals(Boolean colTotals);
+
+        public abstract Builder colSubTotals(Boolean colSubTotals);
+
+        public abstract Builder showDimensionLabels(Boolean showDimensionLabels);
+
+        public abstract Builder percentStackedValues(Boolean percentStackedValues);
+
+        public abstract Builder noSpaceBetweenColumns(Boolean noSpaceBetweenColumns);
+
+        public abstract Builder skipRounding(Boolean skipRounding);
+
+        public abstract Builder displayDensity(DisplayDensity displayDensity);
+
+        public abstract Builder digitGroupSeparator(DigitGroupSeparator digitGroupSeparator);
+
+        public abstract Builder relativePeriods(HashMap<RelativePeriod, Boolean> relativePeriods);
+
+        public abstract Builder categoryDimension(CategoryDimension categoryDimension);
+
+        public abstract Builder filterDimensions(List<String> filterDimensions);
+
+        public abstract Builder rowDimensions(List<String> rowDimensions);
+
+        public abstract Builder columnDimensions(List<String> columnDimensions);
+
+        public abstract Builder dataDimensionItems(List<DataDimensionItem> dataDimensionItems);
+
+        public abstract Builder organisationUnitLevels(List<Integer> organisationUnitLevels);
+
+        public abstract Builder userOrganisationUnit(Boolean userOrganisationUnit);
+
+        public abstract Builder userOrganisationUnitChildren(Boolean userOrganisationUnitChildren);
+
+        public abstract Builder userOrganisationUnitGrandChildren(Boolean userOrganisationUnitGrandChildren);
+
+        public abstract Builder organisationUnits(List<ObjectWithUid> organisationUnits);
+
+        public abstract Builder columns(List<ObjectWithUid> columns);
+
+        public abstract Builder periods(List<ObjectWithUid> periods);
+
+        public abstract Builder filters(List<ObjectWithUid> filters);
+
+        public abstract Builder rows(List<ObjectWithUid> rows);
 
         public abstract Visualization build();
     }

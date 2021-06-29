@@ -38,11 +38,16 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.CategoryDimensionListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.IntegerListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.ObjectWithUidListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.RelativePeriodsColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.DigitGroupSeparatorColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.DisplayDensityColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.HideEmptyItemStrategyColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.VisualizationTypeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreDataDimensionItemListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
@@ -145,10 +150,12 @@ public abstract class Visualization extends BaseIdentifiableObject implements Co
 
     @Nullable
     @JsonProperty()
+    @ColumnAdapter(RelativePeriodsColumnAdapter.class)
     public abstract HashMap<RelativePeriod, Boolean> relativePeriods();
 
     @Nullable
     @JsonProperty()
+    @ColumnAdapter(CategoryDimensionListColumnAdapter.class)
     public abstract List<CategoryDimension> categoryDimensions();
 
     @Nullable
@@ -168,10 +175,12 @@ public abstract class Visualization extends BaseIdentifiableObject implements Co
 
     @Nullable
     @JsonProperty()
+    @ColumnAdapter(IgnoreDataDimensionItemListColumnAdapter.class)
     public abstract List<DataDimensionItem> dataDimensionItems();
 
     @Nullable
     @JsonProperty()
+    @ColumnAdapter(IntegerListColumnAdapter.class)
     public abstract List<Integer> organisationUnitLevels();
 
     @Nullable
@@ -188,22 +197,27 @@ public abstract class Visualization extends BaseIdentifiableObject implements Co
 
     @Nullable
     @JsonProperty()
+    @ColumnAdapter(ObjectWithUidListColumnAdapter.class)
     public abstract List<ObjectWithUid> organisationUnits();
 
     @Nullable
     @JsonProperty()
+    @ColumnAdapter(ObjectWithUidListColumnAdapter.class)
     public abstract List<ObjectWithUid> columns();
 
     @Nullable
     @JsonProperty()
+    @ColumnAdapter(ObjectWithUidListColumnAdapter.class)
     public abstract List<ObjectWithUid> periods();
 
     @Nullable
     @JsonProperty()
+    @ColumnAdapter(ObjectWithUidListColumnAdapter.class)
     public abstract List<ObjectWithUid> filters();
 
     @Nullable
     @JsonProperty()
+    @ColumnAdapter(ObjectWithUidListColumnAdapter.class)
     public abstract List<ObjectWithUid> rows();
 
     public static Builder builder() {
@@ -266,7 +280,7 @@ public abstract class Visualization extends BaseIdentifiableObject implements Co
 
         public abstract Builder relativePeriods(HashMap<RelativePeriod, Boolean> relativePeriods);
 
-        public abstract Builder categoryDimension(CategoryDimension categoryDimension);
+        public abstract Builder categoryDimensions(List<CategoryDimension> categoryDimensions);
 
         public abstract Builder filterDimensions(List<String> filterDimensions);
 

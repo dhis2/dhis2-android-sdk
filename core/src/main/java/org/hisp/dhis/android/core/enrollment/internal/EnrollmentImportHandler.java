@@ -103,7 +103,7 @@ public class EnrollmentImportHandler {
                 String enrollmentUid = enrollmentImportSummary == null ? null : enrollmentImportSummary.reference();
 
                 if (enrollmentUid == null) {
-                    break;
+                    continue;
                 }
 
                 State state = getState(enrollmentImportSummary.status());

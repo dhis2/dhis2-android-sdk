@@ -26,39 +26,12 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.imports.internal;
+package org.hisp.dhis.android.core.imports.internal
 
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceImportHandler;
+internal object BaseImportSummaryHelper {
 
-import javax.inject.Inject;
-
-import androidx.annotation.NonNull;
-
-import java.util.List;
-
-import dagger.Reusable;
-
-@Reusable
-public final class TEIWebResponseHandler {
-    private final TrackedEntityInstanceImportHandler trackedEntityInstanceImportHandler;
-
-    @Inject
-    public TEIWebResponseHandler(@NonNull TrackedEntityInstanceImportHandler trackedEntityInstanceImportHandler) {
-        this.trackedEntityInstanceImportHandler = trackedEntityInstanceImportHandler;
-    }
-
-    public void handleWebResponse(@NonNull TEIWebResponse webResponse,
-                                  @NonNull List<TrackedEntityInstance> instances) {
-        if (webResponse == null || webResponse.response() == null) {
-            return;
-        }
-
-        TEIImportSummaries importSummaries = webResponse.response();
-
-        trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
-                importSummaries.importSummaries(), instances
-        );
-
+    @JvmStatic
+    fun getReferences(objects: Collection<BaseImportSummary?>?): List<String> {
+        return objects?.mapNotNull { it?.reference() } ?: listOf()
     }
 }

@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
+import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 import org.hisp.dhis.android.core.imports.internal.EventImportSummary;
@@ -45,7 +46,9 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -77,6 +80,11 @@ public class EventImportHandlerShould {
     @Mock
     private TrackerImportConflictParser trackerImportConflictParser;
 
+    private final List<Event> events = new ArrayList<>();
+
+    @Mock
+    private Event event;
+
     // object to test
     private EventImportHandler eventImportHandler;
 
@@ -91,31 +99,47 @@ public class EventImportHandlerShould {
     }
 
     @Test
-    public void do_nothing_when_passing_null_argument() throws Exception {
-        eventImportHandler.handleEventImportSummaries(null, null, null);
+    public void do_nothing_when_passing_null_argument() {
+        eventImportHandler.handleEventImportSummaries(null, events, null, null);
 
         verify(eventStore, never()).setStateOrDelete(anyString(), any(State.class));
     }
 
     @Test
-    public void invoke_set_state_after_handle_event_import_summaries_with_success_status_and_reference() throws Exception {
+    public void invoke_set_state_after_handle_event_import_summaries_with_success_status_and_reference() {
         when(importSummary.status()).thenReturn(ImportStatus.SUCCESS);
         when(importSummary.reference()).thenReturn("test_event_uid");
 
-        eventImportHandler.handleEventImportSummaries(Collections.singletonList(importSummary),
+        eventImportHandler.handleEventImportSummaries(Collections.singletonList(importSummary), events,
                 "test_enrollment_uid", "test_tei_uid");
 
         verify(eventStore, times(1)).setStateOrDelete("test_event_uid", State.SYNCED);
     }
 
     @Test
-    public void invoke_set_state_after_handle_event_import_summaries_with_error_status_and_reference() throws Exception {
+    public void invoke_set_state_after_handle_event_import_summaries_with_error_status_and_reference() {
         when(importSummary.status()).thenReturn(ImportStatus.ERROR);
         when(importSummary.reference()).thenReturn("test_event_uid");
 
-        eventImportHandler.handleEventImportSummaries(Collections.singletonList(importSummary),
+        eventImportHandler.handleEventImportSummaries(Collections.singletonList(importSummary), events,
                 "test_enrollment_uid", "test_tei_uid");
 
         verify(eventStore, times(1)).setStateOrDelete("test_event_uid", State.ERROR);
+    }
+
+    @Test
+    public void mark_as_to_update_events_not_present_in_the_response() {
+        when(importSummary.status()).thenReturn(ImportStatus.SUCCESS);
+        when(importSummary.reference()).thenReturn("test_event_uid");
+
+        List<Event> events = new ArrayList<>();
+        events.add(event);
+        when(event.uid()).thenReturn("missing_event_uid");
+
+        eventImportHandler.handleEventImportSummaries(Collections.singletonList(importSummary), events,
+                "test_enrollment_uid", "test_tei_uid");
+
+        verify(eventStore, times(1)).setStateOrDelete("test_event_uid", State.SYNCED);
+        verify(eventStore, times(1)).setStateOrDelete("missing_event_uid", State.TO_UPDATE);
     }
 }

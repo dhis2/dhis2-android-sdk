@@ -32,9 +32,12 @@ import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
+import org.hisp.dhis.android.core.systeminfo.DHISVersion;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService;
 
@@ -55,15 +58,18 @@ class TrackedEntityInstanceQueryCallFactory {
     private final TrackedEntityInstanceService service;
     private final SearchGridMapper mapper;
     private final APICallExecutor apiCallExecutor;
+    private final DHISVersionManager dhisVersionManager;
 
     @Inject
     TrackedEntityInstanceQueryCallFactory(
             @NonNull TrackedEntityInstanceService service,
             @NonNull SearchGridMapper mapper,
-            APICallExecutor apiCallExecutor) {
+            APICallExecutor apiCallExecutor,
+            DHISVersionManager dhisVersionManager) {
         this.service = service;
         this.mapper = mapper;
         this.apiCallExecutor = apiCallExecutor;
+        this.dhisVersionManager = dhisVersionManager;
     }
 
     Callable<List<TrackedEntityInstance>> getCall(final TrackedEntityInstanceQueryOnline query) {
@@ -78,7 +84,7 @@ class TrackedEntityInstanceQueryCallFactory {
 
         String assignedUserModeStr = query.assignedUserMode() == null ? null : query.assignedUserMode().toString();
         String enrollmentStatus = query.enrollmentStatus() == null ? null : query.enrollmentStatus().toString();
-        String eventStatus = query.eventStatus() == null ? null : query.eventStatus().toString();
+        String eventStatus = getEventStatus(query);
         String orgUnits = query.orgUnits().isEmpty() ? null :
                 CollectionsHelper.joinCollectionWithSeparator(query.orgUnits(), ";");
 
@@ -114,6 +120,17 @@ class TrackedEntityInstanceQueryCallFactory {
                     .errorDescription("Search Grid mapping exception")
                     .originalException(pe)
                     .build();
+        }
+    }
+
+    private String getEventStatus(TrackedEntityInstanceQueryOnline query) {
+        if (query.eventStatus() == null) {
+            return null;
+        } else if (!dhisVersionManager.isGreaterThan(DHISVersion.V2_33) &&
+                query.eventStatus().equals(EventStatus.ACTIVE)) {
+            return EventStatus.VISITED.toString();
+        } else {
+            return query.eventStatus().toString();
         }
     }
 }

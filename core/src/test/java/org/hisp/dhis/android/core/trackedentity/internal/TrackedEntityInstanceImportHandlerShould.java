@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser;
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,9 +49,11 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -95,6 +98,11 @@ public class TrackedEntityInstanceImportHandlerShould {
     @Mock
     private RelationshipCollectionRepository relationshipCollectionRepository;
 
+    @Mock
+    private TrackedEntityInstance trackedEntityInstance;
+
+    private final List<TrackedEntityInstance> instances = new ArrayList<>();
+
     // object to test
     private TrackedEntityInstanceImportHandler trackedEntityInstanceImportHandler;
 
@@ -110,8 +118,8 @@ public class TrackedEntityInstanceImportHandlerShould {
     }
 
     @Test
-    public void do_nothing_when_passing_null_argument() throws Exception {
-        trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(null);
+    public void do_nothing_when_passing_null_argument() {
+        trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(null, instances);
 
         verify(trackedEntityInstanceStore, never()).setStateOrDelete(anyString(), any(State.class));
     }
@@ -122,7 +130,7 @@ public class TrackedEntityInstanceImportHandlerShould {
         when(importSummary.reference()).thenReturn("test_tei_uid");
 
         trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
-                Collections.singletonList(importSummary)
+                Collections.singletonList(importSummary), instances
         );
 
         verify(trackedEntityInstanceStore, times(1)).setStateOrDelete("test_tei_uid", State.SYNCED);
@@ -134,7 +142,7 @@ public class TrackedEntityInstanceImportHandlerShould {
         when(importSummary.reference()).thenReturn("test_tei_uid");
 
         trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
-                Collections.singletonList(importSummary)
+                Collections.singletonList(importSummary), instances
         );
 
         verify(trackedEntityInstanceStore, times(1)).setStateOrDelete("test_tei_uid", State.ERROR);
@@ -149,11 +157,28 @@ public class TrackedEntityInstanceImportHandlerShould {
         when(importEnrollment.importSummaries()).thenReturn(enrollmentSummaries);
 
         trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
-                Collections.singletonList(importSummary)
+                Collections.singletonList(importSummary), instances
         );
 
         verify(trackedEntityInstanceStore, times(1)).setStateOrDelete("test_tei_uid", State.SYNCED);
         verify(enrollmentImportHandler, times(1)).handleEnrollmentImportSummary(
-                eq(enrollmentSummaries), anyString());
+                eq(enrollmentSummaries), anyList(), anyString());
+    }
+
+    @Test
+    public void mark_as_to_update_tracked_entity_instances_not_present_in_the_response() throws Exception {
+        when(importSummary.status()).thenReturn(ImportStatus.SUCCESS);
+        when(importSummary.reference()).thenReturn("test_tei_uid");
+
+        List<TrackedEntityInstance> instances = new ArrayList<>();
+        instances.add(trackedEntityInstance);
+        when(trackedEntityInstance.uid()).thenReturn("missing_tei_uid");
+
+        trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
+                Collections.singletonList(importSummary), instances
+        );
+
+        verify(trackedEntityInstanceStore, times(1)).setStateOrDelete("test_tei_uid", State.SYNCED);
+        verify(trackedEntityInstanceStore, times(1)).setStateOrDelete("missing_tei_uid", State.TO_UPDATE);
     }
 }

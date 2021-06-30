@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 
 class BaseDatabaseOpenHelper {
 
-    static final int VERSION = 99;
+    static final int VERSION = 101;
 
     private final AssetManager assetManager;
     private final int targetVersion;

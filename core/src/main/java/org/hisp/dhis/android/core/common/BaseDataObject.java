@@ -35,6 +35,7 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.StateColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreStateColumnAdapter;
 
 public abstract class BaseDataObject extends BaseObject implements DataObject {
 
@@ -44,6 +45,7 @@ public abstract class BaseDataObject extends BaseObject implements DataObject {
     @Deprecated
     @Override
     @Nullable
+    @ColumnAdapter(IgnoreStateColumnAdapter.class)
     public State state() {
         return syncState();
     }
@@ -57,5 +59,13 @@ public abstract class BaseDataObject extends BaseObject implements DataObject {
     @JsonPOJOBuilder(withPrefix = "")
     protected static abstract class Builder<T extends Builder> extends BaseObject.Builder<T> {
         public abstract T syncState(@Nullable State syncState);
+
+        /**
+         * @deprecated Use {@link #syncState(State)} instead.
+         */
+        @Deprecated
+        public T state(State state) {
+            return syncState(state);
+        }
     }
 }

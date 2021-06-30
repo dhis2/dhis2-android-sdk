@@ -25,21 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.enrollment.internal
 
-package org.hisp.dhis.android.core.enrollment.internal;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.enrollment.Enrollment
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.enrollment.Enrollment;
+internal interface EnrollmentStore : IdentifiableDeletableDataObjectStore<Enrollment> {
 
-import java.util.List;
-import java.util.Map;
+    fun queryEnrollmentsToPost(): Map<String, List<Enrollment>>
 
-public interface EnrollmentStore extends IdentifiableDeletableDataObjectStore<Enrollment> {
+    fun queryMissingRelationshipsUids(): List<String>
 
-    Map<String, List<Enrollment>> queryEnrollmentsToPost();
+    fun setAggregatedSyncState(uid: String, state: State): Int
 
-    List<String> queryMissingRelationshipsUids();
-
-    int setState(String uid, State state);
+    fun selectAggregatedSyncStateWhere(whereClause: String): List<State>
 }

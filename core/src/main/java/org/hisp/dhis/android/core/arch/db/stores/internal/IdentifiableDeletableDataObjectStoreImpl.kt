@@ -116,4 +116,9 @@ internal open class IdentifiableDeletableDataObjectStoreImpl<O>(
         setDeletedStatement!!.clearBindings()
         return updatedRow
     }
+
+    override fun selectSyncStateWhere(where: String): List<State> {
+        val statesStr = selectStringColumnsWhereClause(DataColumns.SYNC_STATE, where)
+        return statesStr.map { State.valueOf(it) }
+    }
 }

@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
@@ -44,6 +43,7 @@ import org.hisp.dhis.android.core.note.NewTrackerImporterNote
 import org.hisp.dhis.android.core.note.NewTrackerImporterNoteTransformer
 import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.trackedentity.*
+import javax.inject.Inject
 
 @Reusable
 internal class NewTrackerImporterTrackedEntityPostPayloadGenerator @Inject internal constructor(
@@ -104,7 +104,7 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGenerator @Inject inter
     }
 
     private fun <A, B> transformMap(
-        map: MutableMap<String, MutableList<A>>,
+        map: Map<String, List<A>>,
         transformer: Transformer<A, B>
     ): Map<String, List<B>> {
         return map.mapValues {

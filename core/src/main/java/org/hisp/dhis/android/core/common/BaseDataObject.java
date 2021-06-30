@@ -38,6 +38,10 @@ import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.StateColumnAda
 
 public abstract class BaseDataObject extends BaseObject implements DataObject {
 
+    /**
+     * @deprecated Use {@link #syncState()} instead.
+     */
+    @Deprecated
     @Override
     @Nullable
     public State state() {

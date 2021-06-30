@@ -165,7 +165,7 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
                         .bySyncState().eq(State.SYNCED)
                         .blockingGet();
 
-        assertThat(trackedEntityInstances.size()).isEqualTo(2);
+        assertThat(trackedEntityInstances.size()).isEqualTo(1);
     }
 
     @Test

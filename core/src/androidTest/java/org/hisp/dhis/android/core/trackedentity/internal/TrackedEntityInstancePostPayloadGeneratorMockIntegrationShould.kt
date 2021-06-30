@@ -130,7 +130,7 @@ class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould : BaseMockI
     fun build_payload_without_events_marked_as_error() {
         storeTrackedEntityInstance()
 
-        enrollmentStore.setState(enrollment3Id, State.TO_POST)
+        enrollmentStore.setAggregatedSyncState(enrollment3Id, State.TO_POST)
 
         val partitions = partitions
         assertThat(partitions.size).isEqualTo(1)
@@ -169,9 +169,9 @@ class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould : BaseMockI
 
         assertThat(d2.importModule().trackerImportConflicts().blockingCount()).isEqualTo(3)
 
-        teiStore.setState("teiId", State.TO_POST)
-        enrollmentStore.setState("enrollment1Id", State.TO_POST)
-        enrollmentStore.setState("enrollment2Id", State.TO_POST)
+        teiStore.setAggregatedSyncState("teiId", State.TO_POST)
+        enrollmentStore.setAggregatedSyncState("enrollment1Id", State.TO_POST)
+        enrollmentStore.setAggregatedSyncState("enrollment2Id", State.TO_POST)
         eventStore.setSyncStateOrDelete("event1Id", State.TO_POST)
         eventStore.setSyncStateOrDelete("event2Id", State.TO_POST)
 
@@ -344,7 +344,7 @@ class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould : BaseMockI
         storeTrackedEntityInstance()
 
         // Only enrollment1 and event1 are TO_UPDATE
-        enrollmentStore.setState(enrollment2Id, State.SYNCED)
+        enrollmentStore.setAggregatedSyncState(enrollment2Id, State.SYNCED)
         enrollmentStore.setSyncState(enrollment2Id, State.SYNCED)
         eventStore.setSyncState(event2Id, State.SYNCED)
 
@@ -386,7 +386,8 @@ class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould : BaseMockI
             .uid(enrollment1Id)
             .program(program.uid())
             .organisationUnit(orgUnit.uid())
-            .state(State.TO_POST)
+            .syncState(State.TO_POST)
+            .aggregatedSyncState(State.TO_POST)
             .trackedEntityInstance(teiId)
             .build()
         val dataValue2 = TrackedEntityDataValueSamples.get().toBuilder().event(event2Id).build()
@@ -405,7 +406,8 @@ class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould : BaseMockI
             .uid(enrollment2Id)
             .program(program.uid())
             .organisationUnit(orgUnit.uid())
-            .state(State.TO_POST)
+            .syncState(State.TO_POST)
+            .aggregatedSyncState(State.TO_POST)
             .trackedEntityInstance(teiId)
             .build()
 
@@ -425,7 +427,8 @@ class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould : BaseMockI
             .uid(enrollment3Id)
             .program(program.uid())
             .organisationUnit(orgUnit.uid())
-            .state(State.SYNCED)
+            .syncState(State.TO_POST)
+            .aggregatedSyncState(State.SYNCED)
             .trackedEntityInstance(teiId)
             .build()
 
@@ -435,7 +438,8 @@ class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould : BaseMockI
             .uid(teiId)
             .trackedEntityType(teiType!!.uid())
             .organisationUnit(orgUnit.uid())
-            .state(State.TO_POST)
+            .syncState(State.TO_POST)
+            .aggregatedSyncState(State.TO_POST)
             .build()
 
         teiStore.insert(tei)

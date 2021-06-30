@@ -71,6 +71,9 @@ public class EventImportHandlerShould {
     private JobReportEventHandler jobReportEventHandler;
 
     @Mock
+    private DataStatePropagator dataStatePropagator;
+
+    @Mock
     private TrackerImportConflictParser trackerImportConflictParser;
 
     private final List<Event> events = new ArrayList<>();
@@ -88,7 +91,7 @@ public class EventImportHandlerShould {
         when(importSummary.status()).thenReturn(ImportStatus.SUCCESS);
 
         eventImportHandler = new EventImportHandler(eventStore, trackerImportConflictStore,
-                trackerImportConflictParser, jobReportEventHandler);
+                trackerImportConflictParser, jobReportEventHandler, dataStatePropagator);
     }
 
     @Test

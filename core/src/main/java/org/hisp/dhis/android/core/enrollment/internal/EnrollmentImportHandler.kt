@@ -65,8 +65,7 @@ internal class EnrollmentImportHandler @Inject constructor(
         enrollmentImportSummaries: List<EnrollmentImportSummary?>?,
         enrollments: List<Enrollment>,
         teiUid: String
-    ): State {
-        var globalState: State = State.SYNCED
+    ) {
 
         enrollmentImportSummaries?.filterNotNull()?.forEach { enrollmentImportSummary ->
             enrollmentImportSummary.reference()?.let { enrollmentUid ->
@@ -77,7 +76,6 @@ internal class EnrollmentImportHandler @Inject constructor(
                 val handleAction = enrollmentStore.setSyncStateOrDelete(enrollmentUid, syncState)
 
                 if (syncState == State.ERROR || syncState == State.WARNING) {
-                    globalState = if (globalState == State.ERROR) State.ERROR else syncState
                     dataStatePropagator.resetUploadingEventStates(enrollmentUid)
                 }
 
@@ -85,11 +83,7 @@ internal class EnrollmentImportHandler @Inject constructor(
                     handleNoteImportSummary(enrollmentUid, syncState)
                     storeEnrollmentImportConflicts(enrollmentImportSummary, teiUid)
 
-                    val eventState = handleEventImportSummaries(enrollmentImportSummary, enrollments, teiUid)
-
-                    if (globalState == State.ERROR || globalState == State.WARNING) {
-                        globalState = if (globalState == State.ERROR) State.ERROR else eventState
-                    }
+                    handleEventImportSummaries(enrollmentImportSummary, enrollments, teiUid)
                 }
             }
         }
@@ -100,19 +94,18 @@ internal class EnrollmentImportHandler @Inject constructor(
             val state = State.TO_UPDATE
             trackerImportConflictStore.deleteEnrollmentConflicts(enrollment.uid())
             enrollmentStore.setSyncStateOrDelete(enrollment.uid(), state)
-            globalState = if (globalState == State.ERROR || globalState == State.WARNING) globalState else state
             dataStatePropagator.resetUploadingEventStates(enrollment.uid())
         }
 
-        return globalState
+        dataStatePropagator.refreshTrackedEntityInstanceAggregatedSyncState(teiUid)
     }
 
     private fun handleEventImportSummaries(
         enrollmentImportSummary: EnrollmentImportSummary,
         enrollments: List<Enrollment>,
         teiUid: String
-    ): State {
-        return enrollmentImportSummary.events()?.importSummaries()?.let { importSummaries ->
+    ) {
+        enrollmentImportSummary.events()?.importSummaries()?.let { importSummaries ->
             val enrollmentUid = enrollmentImportSummary.reference()!!
             eventImportHandler.handleEventImportSummaries(
                 importSummaries,
@@ -120,7 +113,7 @@ internal class EnrollmentImportHandler @Inject constructor(
                 enrollmentUid,
                 teiUid
             )
-        } ?: State.SYNCED
+        }
     }
 
     private fun handleNoteImportSummary(enrollmentUid: String, state: State) {

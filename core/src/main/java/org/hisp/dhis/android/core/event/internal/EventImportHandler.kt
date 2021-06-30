@@ -31,6 +31,7 @@ import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getSyncState
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.imports.TrackerImportConflict
@@ -47,7 +48,8 @@ internal class EventImportHandler @Inject constructor(
     private val eventStore: EventStore,
     private val trackerImportConflictStore: TrackerImportConflictStore,
     private val trackerImportConflictParser: TrackerImportConflictParser,
-    private val jobReportEventHandler: JobReportEventHandler
+    private val jobReportEventHandler: JobReportEventHandler,
+    private val dataStatePropagator: DataStatePropagator
 ) {
 
     fun handleEventImportSummaries(
@@ -55,9 +57,7 @@ internal class EventImportHandler @Inject constructor(
         events: List<Event>,
         enrollmentUid: String?,
         teiUid: String?
-    ): State {
-        var globalState: State = State.SYNCED
-
+    ) {
         eventImportSummaries?.filterNotNull()?.forEach { eventImportSummary ->
             eventImportSummary.reference()?.let { eventUid ->
 
@@ -65,10 +65,6 @@ internal class EventImportHandler @Inject constructor(
                 trackerImportConflictStore.deleteEventConflicts(eventUid)
 
                 val handleAction = eventStore.setSyncStateOrDelete(eventUid, state)
-
-                if (state == State.ERROR || state == State.WARNING) {
-                    globalState = if (globalState == State.ERROR) State.ERROR else state
-                }
 
                 if (handleAction !== HandleAction.Delete) {
                     jobReportEventHandler.handleEventNotes(eventUid, state)
@@ -82,10 +78,11 @@ internal class EventImportHandler @Inject constructor(
             val state = State.TO_UPDATE
             trackerImportConflictStore.deleteEventConflicts(event.uid())
             eventStore.setSyncStateOrDelete(event.uid(), state)
-            globalState = if (globalState == State.ERROR || globalState == State.WARNING) globalState else state
         }
 
-        return globalState
+        enrollmentUid?.let {
+            dataStatePropagator.refreshEnrollmentAggregatedSyncState(it)
+        }
     }
 
     private fun storeEventImportConflicts(

@@ -109,6 +109,11 @@ public final class EventCollectionRepository
     }
 
     @Override
+    protected void propagateState(Event event) {
+        dataStatePropagator.propagateEventUpdate(event);
+    }
+
+    @Override
     public EventObjectRepository uid(String uid) {
         RepositoryScope updatedScope = RepositoryScopeHelper.withUidFilterItem(scope, uid);
         return new EventObjectRepository(store, uid, childrenAppenders, updatedScope, dataStatePropagator);

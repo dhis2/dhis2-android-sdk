@@ -73,6 +73,11 @@ public final class EnrollmentCollectionRepository extends ReadWriteWithUidCollec
     }
 
     @Override
+    protected void propagateState(Enrollment enrollment) {
+        dataStatePropagator.propagateEnrollmentUpdate(enrollment);
+    }
+
+    @Override
     public EnrollmentObjectRepository uid(String uid) {
         RepositoryScope updatedScope = RepositoryScopeHelper.withUidFilterItem(scope, uid);
         return new EnrollmentObjectRepository(store, uid, childrenAppenders, updatedScope, dataStatePropagator);

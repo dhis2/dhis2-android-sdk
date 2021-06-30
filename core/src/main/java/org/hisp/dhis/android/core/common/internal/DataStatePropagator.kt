@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.common.internal
 
-import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.note.Note
@@ -53,7 +52,7 @@ interface DataStatePropagator {
 
     fun resetUploadingEventStates(enrollmentUid: String?)
 
-    fun propagateEnrollmentError(enrollmentUid: String?, state: State?)
+    fun refreshTrackedEntityInstanceAggregatedSyncState(trackedEntityInstanceUid: String)
 
-    fun propagateTrackedEntityInstanceError(trackedEntityInstanceUid: String?, state: State?)
+    fun refreshEnrollmentAggregatedSyncState(enrollmentUid: String)
 }

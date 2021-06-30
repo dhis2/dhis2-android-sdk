@@ -44,5 +44,5 @@ public interface TrackedEntityInstanceStore extends IdentifiableDeletableDataObj
 
     List<String> queryMissingRelationshipsUids();
 
-    int setState(String uid, State state);
+    int setAggregatedSyncState(String uid, State state);
 }

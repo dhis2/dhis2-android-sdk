@@ -46,7 +46,7 @@ final class EnrollmentProjectionTransformer implements Transformer<EnrollmentCre
 
         return Enrollment.builder()
                 .uid(generatedUid)
-                .state(State.TO_POST)
+                .aggregatedSyncState(State.TO_POST)
                 .syncState(State.TO_POST)
                 .created(creationDate)
                 .lastUpdated(creationDate)

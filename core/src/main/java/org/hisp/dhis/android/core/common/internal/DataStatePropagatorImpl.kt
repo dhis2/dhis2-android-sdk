@@ -53,33 +53,37 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
 ) : DataStatePropagator {
 
     override fun propagateEnrollmentUpdate(enrollment: Enrollment?) {
-        if (enrollment != null) {
-            setTeiState(enrollment.trackedEntityInstance(), getStateForUpdate)
+        enrollment?.let {
+            refreshTrackedEntityInstanceAggregatedSyncState(it.trackedEntityInstance()!!)
+            refreshTrackedEntityInstanceLastUpdated(it.trackedEntityInstance()!!)
         }
     }
 
     override fun propagateEventUpdate(event: Event?) {
-        if (event?.enrollment() != null) {
-            val enrollment = setEnrollmentState(event.enrollment(), getStateForUpdate)
+        event?.enrollment()?.let { enrollmentUid ->
+            refreshEnrollmentAggregatedSyncState(enrollmentUid)
+            refreshEnrollmentLastUpdated(enrollmentUid)
+            val enrollment = enrollmentStore.selectByUid(enrollmentUid)
             propagateEnrollmentUpdate(enrollment)
         }
     }
 
     override fun propagateTrackedEntityDataValueUpdate(dataValue: TrackedEntityDataValue?) {
-        val event = setEventState(dataValue!!.event(), getStateForUpdate)
+        val event = setEventSyncState(dataValue!!.event(), getStateForUpdate)
         propagateEventUpdate(event)
     }
 
     override fun propagateTrackedEntityAttributeUpdate(trackedEntityAttributeValue: TrackedEntityAttributeValue?) {
-        setTeiState(trackedEntityAttributeValue!!.trackedEntityInstance(), getStateForUpdate)
+        setTeiSyncState(trackedEntityAttributeValue!!.trackedEntityInstance(), getStateForUpdate)
     }
 
     override fun propagateNoteCreation(note: Note?) {
         if (note!!.noteType() == Note.NoteType.ENROLLMENT_NOTE) {
-            val enrollment = setEnrollmentState(note.enrollment(), getStateForUpdate)
+            setEnrollmentSyncState(note.enrollment()!!, getStateForUpdate)
+            val enrollment = enrollmentStore.selectByUid(note.enrollment()!!)
             propagateEnrollmentUpdate(enrollment)
         } else if (note.noteType() == Note.NoteType.EVENT_NOTE) {
-            val event = setEventState(note.event(), getStateForUpdate)
+            val event = setEventSyncState(note.event(), getStateForUpdate)
             propagateEventUpdate(event)
         }
     }
@@ -87,53 +91,42 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
     override fun propagateRelationshipUpdate(item: RelationshipItem?) {
         if (item != null) {
             if (item.hasTrackedEntityInstance()) {
-                setTeiState(item.trackedEntityInstance()!!.trackedEntityInstance(), getStateForUpdate)
+                setTeiSyncState(item.trackedEntityInstance()!!.trackedEntityInstance(), getStateForUpdate)
             } else if (item.hasEnrollment()) {
-                val enrollment = setEnrollmentState(item.enrollment()!!.enrollment(), getStateForUpdate)
+                setEnrollmentSyncState(item.enrollment()!!.enrollment(), getStateForUpdate)
+                val enrollment = enrollmentStore.selectByUid(item.enrollment()!!.enrollment())
                 propagateEnrollmentUpdate(enrollment)
             } else if (item.hasEvent()) {
-                val event = setEventState(item.event()!!.event(), getStateForUpdate)
+                val event = setEventSyncState(item.event()!!.event(), getStateForUpdate)
                 propagateEventUpdate(event)
             }
         }
     }
 
-    private fun setTeiState(trackedEntityInstanceUid: String?, getState: (State?) -> State): TrackedEntityInstance? {
-        var instance = trackedEntityInstanceStore.selectByUid(trackedEntityInstanceUid!!)
+    private fun setTeiSyncState(trackedEntityInstanceUid: String?, getState: (State?) -> State) {
+        val instance = trackedEntityInstanceStore.selectByUid(trackedEntityInstanceUid!!)
         if (instance != null) {
-            val now = Date()
-            val updatedTEI = instance.toBuilder()
-                .state(getState(instance.state()))
-                .lastUpdated(getMaxDate(instance.lastUpdated(), now))
-                .lastUpdatedAtClient(getMaxDate(instance.lastUpdatedAtClient(), now))
-                .build()
-            trackedEntityInstanceStore.update(updatedTEI)
-            instance = updatedTEI
+            trackedEntityInstanceStore.setSyncState(trackedEntityInstanceUid, getState(instance.syncState()))
+            refreshTrackedEntityInstanceAggregatedSyncState(trackedEntityInstanceUid)
+            refreshTrackedEntityInstanceLastUpdated(trackedEntityInstanceUid)
         }
-        return instance
     }
 
-    private fun setEnrollmentState(enrollmentUid: String?, getState: (State?) -> State): Enrollment? {
-        var enrollment = enrollmentStore.selectByUid(enrollmentUid!!)
+    private fun setEnrollmentSyncState(enrollmentUid: String, getState: (State?) -> State) {
+        val enrollment = enrollmentStore.selectByUid(enrollmentUid)
         if (enrollment != null) {
-            val now = Date()
-            val updatedEnrollment = enrollment.toBuilder()
-                .state(getState(enrollment.state()))
-                .lastUpdated(getMaxDate(enrollment.lastUpdated(), now))
-                .lastUpdatedAtClient(getMaxDate(enrollment.lastUpdatedAtClient(), now))
-                .build()
-            enrollmentStore.update(updatedEnrollment)
-            enrollment = updatedEnrollment
+            enrollmentStore.setSyncState(enrollmentUid, getState(enrollment.aggregatedSyncState()))
+            refreshEnrollmentAggregatedSyncState(enrollmentUid)
+            refreshEnrollmentLastUpdated(enrollmentUid)
         }
-        return enrollment
     }
 
-    private fun setEventState(eventUid: String?, getState: (State?) -> State): Event? {
+    private fun setEventSyncState(eventUid: String?, getState: (State?) -> State): Event? {
         var event = eventStore.selectByUid(eventUid!!)
         if (event != null) {
             val now = Date()
             val updatedEvent = event.toBuilder()
-                .syncState(getState(event.state()))
+                .syncState(getState(event.syncState()))
                 .lastUpdated(getMaxDate(event.lastUpdated(), now))
                 .lastUpdatedAtClient(getMaxDate(event.lastUpdatedAtClient(), now))
                 .build()
@@ -141,6 +134,28 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
             event = updatedEvent
         }
         return event
+    }
+
+    private fun refreshEnrollmentLastUpdated(enrollmentUid: String) {
+        enrollmentStore.selectByUid(enrollmentUid)?.let { enrollment ->
+            val now = Date()
+            val updatedEnrollment = enrollment.toBuilder()
+                .lastUpdated(getMaxDate(enrollment.lastUpdated(), now))
+                .lastUpdatedAtClient(getMaxDate(enrollment.lastUpdatedAtClient(), now))
+                .build()
+            enrollmentStore.update(updatedEnrollment)
+        }
+    }
+
+    private fun refreshTrackedEntityInstanceLastUpdated(trackedEntityInstanceUid: String) {
+        trackedEntityInstanceStore.selectByUid(trackedEntityInstanceUid)?.let { instance ->
+            val now = Date()
+            val updatedInstance = instance.toBuilder()
+                .lastUpdated(getMaxDate(instance.lastUpdated(), now))
+                .lastUpdatedAtClient(getMaxDate(instance.lastUpdatedAtClient(), now))
+                .build()
+            trackedEntityInstanceStore.update(updatedInstance)
+        }
     }
 
     override fun resetUploadingEnrollmentAndEventStates(trackedEntityInstanceUid: String?) {
@@ -174,15 +189,6 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
         }
     }
 
-    override fun propagateEnrollmentError(enrollmentUid: String?, state: State?) {
-        val enrollment = setEnrollmentState(enrollmentUid) {  state!! }
-        propagateTrackedEntityInstanceError(enrollment?.trackedEntityInstance(), state)
-    }
-
-    override fun propagateTrackedEntityInstanceError(trackedEntityInstanceUid: String?, state: State?) {
-        setTeiState(trackedEntityInstanceUid) {  state!! }
-    }
-
     private fun getMaxDate(existing: Date?, today: Date?): Date? {
         return if (existing == null) {
             today
@@ -198,6 +204,44 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
             existingState
         } else {
             State.TO_UPDATE
+        }
+    }
+
+    override fun refreshEnrollmentAggregatedSyncState(enrollmentUid: String) {
+        enrollmentStore.selectByUid(enrollmentUid)?.let { enrollment ->
+            val whereClause = WhereClauseBuilder()
+                .appendKeyStringValue(EventTableInfo.Columns.ENROLLMENT, enrollmentUid)
+                .build()
+            val eventStates = eventStore.selectSyncStateWhere(whereClause)
+
+            val enrollmentAggregatedSyncState = getAggregatedSyncState(eventStates + enrollment.syncState()!!)
+            enrollmentStore.setAggregatedSyncState(enrollmentUid, enrollmentAggregatedSyncState)
+        }
+    }
+
+    override fun refreshTrackedEntityInstanceAggregatedSyncState(trackedEntityInstanceUid: String) {
+        trackedEntityInstanceStore.selectByUid(trackedEntityInstanceUid)?.let { trackedEntityInstance ->
+            val whereClause = WhereClauseBuilder()
+                .appendKeyStringValue(EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE, trackedEntityInstanceUid)
+                .build()
+            val enrollmentStates = enrollmentStore.selectAggregatedSyncStateWhere(whereClause)
+
+            val teiAggregatedSyncState = getAggregatedSyncState(enrollmentStates + trackedEntityInstance.syncState()!!)
+            trackedEntityInstanceStore.setAggregatedSyncState(trackedEntityInstanceUid, teiAggregatedSyncState)
+        }
+    }
+
+    private fun getAggregatedSyncState(states: List<State>): State {
+        return when {
+            states.contains(State.RELATIONSHIP) -> State.RELATIONSHIP
+            states.contains(State.ERROR) -> State.ERROR
+            states.contains(State.WARNING) -> State.WARNING
+            states.contains(State.UPLOADING) ||
+            states.contains(State.SENT_VIA_SMS) ||
+            states.contains(State.SYNCED_VIA_SMS) ||
+            states.contains(State.TO_POST) ||
+            states.contains(State.TO_UPDATE) -> State.TO_UPDATE
+            else -> State.SYNCED
         }
     }
 }

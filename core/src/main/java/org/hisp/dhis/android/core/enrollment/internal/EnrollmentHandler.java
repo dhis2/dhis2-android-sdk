@@ -90,12 +90,12 @@ final class EnrollmentHandler extends IdentifiableDataHandlerImpl<Enrollment> {
 
     @Override
     protected Enrollment addRelationshipState(Enrollment o) {
-        return o.toBuilder().state(State.RELATIONSHIP).syncState(State.RELATIONSHIP).build();
+        return o.toBuilder().aggregatedSyncState(State.RELATIONSHIP).syncState(State.RELATIONSHIP).build();
     }
 
     @Override
     protected Enrollment addSyncedState(Enrollment o) {
-        return o.toBuilder().state(State.SYNCED).syncState(State.SYNCED).build();
+        return o.toBuilder().aggregatedSyncState(State.SYNCED).syncState(State.SYNCED).build();
     }
 
     @Override

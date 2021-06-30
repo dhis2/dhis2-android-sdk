@@ -65,7 +65,7 @@ public final class TrackedEntityInstanceObjectRepository
 
     private TrackedEntityInstance.Builder updateBuilder() throws D2Error {
         TrackedEntityInstance trackedEntityInstance = blockingGetWithoutChildren();
-        State state = trackedEntityInstance.state();
+        State state = trackedEntityInstance.aggregatedSyncState();
         if (state == State.RELATIONSHIP) {
             throw D2Error
                     .builder()
@@ -78,8 +78,8 @@ public final class TrackedEntityInstanceObjectRepository
         state = state == State.TO_POST ? state : State.TO_UPDATE;
 
         return trackedEntityInstance.toBuilder()
-                .state(state)
                 .syncState(state)
+                .aggregatedSyncState(state)
                 .lastUpdated(updateDate)
                 .lastUpdatedAtClient(updateDate);
     }

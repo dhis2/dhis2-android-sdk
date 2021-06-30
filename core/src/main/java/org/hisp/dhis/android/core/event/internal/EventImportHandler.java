@@ -33,8 +33,10 @@ import androidx.annotation.NonNull;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
+import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventTableInfo;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
+import org.hisp.dhis.android.core.imports.internal.BaseImportSummaryHelper;
 import org.hisp.dhis.android.core.imports.internal.EventImportSummary;
 import org.hisp.dhis.android.core.imports.internal.ImportConflict;
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser;
@@ -77,35 +79,44 @@ public class EventImportHandler {
     }
 
     public void handleEventImportSummaries(List<EventImportSummary> eventImportSummaries,
+                                           List<Event> events,
                                            String enrollmentUid,
                                            String teiUid) {
-        if (eventImportSummaries == null) {
-            return;
-        }
-
         State parentState = null;
-        for (EventImportSummary eventImportSummary : eventImportSummaries) {
-            if (eventImportSummary == null) {
-                break;
-            }
 
-            State state = getState(eventImportSummary.status());
+        if (eventImportSummaries != null) {
+            for (EventImportSummary eventImportSummary : eventImportSummaries) {
+                String eventUid = eventImportSummary == null ? null : eventImportSummary.reference();
 
-            HandleAction handleAction = null;
+                if (eventUid == null) {
+                    break;
+                }
 
-            if (eventImportSummary.reference() != null) {
-                handleAction = eventStore.setStateOrDelete(eventImportSummary.reference(), state);
+                State state = getState(eventImportSummary.status());
+                trackerImportConflictStore.deleteEventConflicts(eventUid);
+
+                HandleAction handleAction = eventStore.setStateOrDelete(eventUid, state);
+
                 if (state == State.ERROR || state == State.WARNING) {
                     parentState = parentState == State.ERROR ? State.ERROR : state;
                 }
 
-                trackerImportConflictStore.deleteEventConflicts(eventImportSummary.reference());
+                if (handleAction != HandleAction.Delete) {
+                    jobReportEventHandler.handleEventNotes(eventUid, state);
+
+                    storeEventImportConflicts(eventImportSummary, teiUid, enrollmentUid);
+                }
             }
+        }
 
-            if (handleAction != HandleAction.Delete) {
-                jobReportEventHandler.handleEventNotes(eventImportSummary.reference(), state);
+        List<String> processedEvents = BaseImportSummaryHelper.getReferences(eventImportSummaries);
+        for (Event event : events) {
+            if (!processedEvents.contains(event.uid())) {
+                State state = State.TO_UPDATE;
+                eventStore.setStateOrDelete(event.uid(), state);
+                parentState = parentState == State.ERROR || parentState == State.WARNING ? parentState : state;
 
-                storeEventImportConflicts(eventImportSummary, teiUid, enrollmentUid);
+                trackerImportConflictStore.deleteEventConflicts(event.uid());
             }
         }
 

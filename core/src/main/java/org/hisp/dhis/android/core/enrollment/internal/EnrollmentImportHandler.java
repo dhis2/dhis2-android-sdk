@@ -37,9 +37,13 @@ import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper;
 import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
+import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.internal.EventImportHandler;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
+import org.hisp.dhis.android.core.imports.internal.BaseImportSummaryHelper;
 import org.hisp.dhis.android.core.imports.internal.EnrollmentImportSummary;
 import org.hisp.dhis.android.core.imports.internal.EventImportSummaries;
 import org.hisp.dhis.android.core.imports.internal.ImportConflict;
@@ -50,6 +54,7 @@ import org.hisp.dhis.android.core.note.NoteTableInfo;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -60,6 +65,7 @@ import dagger.Reusable;
 import static org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getState;
 
 @Reusable
+@SuppressWarnings("PMD.ExcessiveImports")
 public class EnrollmentImportHandler {
     private final EnrollmentStore enrollmentStore;
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
@@ -87,37 +93,46 @@ public class EnrollmentImportHandler {
     }
 
     public void handleEnrollmentImportSummary(List<EnrollmentImportSummary> enrollmentImportSummaries,
+                                              List<Enrollment> enrollments,
                                               String teiUid) {
-        if (enrollmentImportSummaries == null) {
-            return;
-        }
-
         State parentState = null;
-        for (EnrollmentImportSummary enrollmentImportSummary : enrollmentImportSummaries) {
-            if (enrollmentImportSummary == null) {
-                break;
-            }
 
-            State state = getState(enrollmentImportSummary.status());
+        if (enrollmentImportSummaries != null) {
+            for (EnrollmentImportSummary enrollmentImportSummary : enrollmentImportSummaries) {
+                String enrollmentUid = enrollmentImportSummary == null ? null : enrollmentImportSummary.reference();
 
-            HandleAction handleAction = null;
-
-            if (enrollmentImportSummary.reference() != null) {
-                handleAction = enrollmentStore.setStateOrDelete(enrollmentImportSummary.reference(), state);
-                if (state == State.ERROR || state == State.WARNING) {
-                    parentState = parentState == State.ERROR ? State.ERROR : state;
-                    dataStatePropagator.resetUploadingEventStates(enrollmentImportSummary.reference());
+                if (enrollmentUid == null) {
+                    break;
                 }
 
-                trackerImportConflictStore.deleteEnrollmentConflicts(enrollmentImportSummary.reference());
+                State state = getState(enrollmentImportSummary.status());
+                trackerImportConflictStore.deleteEnrollmentConflicts(enrollmentUid);
+
+                HandleAction handleAction = enrollmentStore.setStateOrDelete(enrollmentUid, state);
+
+                if (state.equals(State.ERROR) || state.equals(State.WARNING)) {
+                    parentState = parentState == State.ERROR ? State.ERROR : state;
+                    dataStatePropagator.resetUploadingEventStates(enrollmentUid);
+                }
+
+                if (handleAction != HandleAction.Delete) {
+                    storeEnrollmentImportConflicts(enrollmentImportSummary, teiUid);
+                    handleNoteImportSummary(enrollmentUid, state);
+                    handleEventImportSummaries(enrollmentImportSummary, enrollments, teiUid);
+                }
+
             }
+        }
 
-            if (handleAction != HandleAction.Delete) {
-                handleNoteImportSummary(enrollmentImportSummary.reference(), state);
+        List<String> processedEnrollments = BaseImportSummaryHelper.getReferences(enrollmentImportSummaries);
+        for (Enrollment enrollment : enrollments) {
+            if (!processedEnrollments.contains(enrollment.uid())) {
+                State state = State.TO_UPDATE;
+                enrollmentStore.setStateOrDelete(enrollment.uid(), state);
+                parentState = parentState == State.ERROR || parentState == State.WARNING ? parentState : state;
+                dataStatePropagator.resetUploadingEventStates(enrollment.uid());
 
-                storeEnrollmentImportConflicts(enrollmentImportSummary, teiUid);
-
-                handleEventImportSummaries(enrollmentImportSummary, teiUid);
+                trackerImportConflictStore.deleteEnrollmentConflicts(enrollment.uid());
             }
         }
 
@@ -125,6 +140,7 @@ public class EnrollmentImportHandler {
     }
 
     private void handleEventImportSummaries(EnrollmentImportSummary enrollmentImportSummary,
+                                            List<Enrollment> enrollments,
                                             String teiUid) {
 
         if (enrollmentImportSummary.events() != null) {
@@ -133,9 +149,9 @@ public class EnrollmentImportHandler {
             if (eventImportSummaries.importSummaries() != null) {
                 eventImportHandler.handleEventImportSummaries(
                         eventImportSummaries.importSummaries(),
+                        getEvents(enrollmentImportSummary.reference(), enrollments),
                         enrollmentImportSummary.reference(),
                         teiUid);
-
             }
         }
     }
@@ -180,6 +196,16 @@ public class EnrollmentImportHandler {
         if (parentState != null && teiUid != null) {
             trackedEntityInstanceStore.setState(teiUid, parentState);
         }
+    }
+
+    private List<Event> getEvents(String enrollmentUid,
+                                  List<Enrollment> enrollments) {
+        for (Enrollment enrollment : enrollments) {
+            if (enrollmentUid.equals(enrollment.uid())) {
+                return EnrollmentInternalAccessor.accessEvents(enrollment);
+            }
+        }
+        return Collections.emptyList();
     }
 
     private TrackerImportConflict.Builder getConflictBuilder(String trackedEntityInstanceUid,

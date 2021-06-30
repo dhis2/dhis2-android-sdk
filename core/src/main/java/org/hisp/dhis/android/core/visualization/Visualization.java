@@ -38,7 +38,6 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.CategoryDimensionListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.IntegerListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.ObjectWithUidListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.RelativePeriodsColumnAdapter;
@@ -47,6 +46,7 @@ import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.DigitGroupSepa
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.DisplayDensityColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.HideEmptyItemStrategyColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.VisualizationTypeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreCategoryDimensionListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreDataDimensionItemListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
@@ -151,12 +151,12 @@ public abstract class Visualization extends BaseIdentifiableObject implements Co
     @Nullable
     @JsonProperty()
     @ColumnAdapter(RelativePeriodsColumnAdapter.class)
-    public abstract HashMap<RelativePeriod, Boolean> relativePeriods();
+    public abstract HashMap<RelativePeriod, Boolean> relativePeriods(); // Cell, but delete false
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(CategoryDimensionListColumnAdapter.class)
-    public abstract List<CategoryDimension> categoryDimensions();
+    @ColumnAdapter(IgnoreCategoryDimensionListColumnAdapter.class)
+    public abstract List<CategoryDimension> categoryDimensions(); // Table with visualization, category and coptino
 
     @Nullable
     @JsonProperty()
@@ -176,7 +176,7 @@ public abstract class Visualization extends BaseIdentifiableObject implements Co
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreDataDimensionItemListColumnAdapter.class)
-    public abstract List<DataDimensionItem> dataDimensionItems();
+    public abstract List<DataDimensionItem> dataDimensionItems(); // Table with visualization id, type and uids with FK.
 
     @Nullable
     @JsonProperty()
@@ -198,27 +198,12 @@ public abstract class Visualization extends BaseIdentifiableObject implements Co
     @Nullable
     @JsonProperty()
     @ColumnAdapter(ObjectWithUidListColumnAdapter.class)
-    public abstract List<ObjectWithUid> organisationUnits();
-
-    @Nullable
-    @JsonProperty()
-    @ColumnAdapter(ObjectWithUidListColumnAdapter.class)
-    public abstract List<ObjectWithUid> columns();
+    public abstract List<ObjectWithUid> organisationUnits(); // Cell
 
     @Nullable
     @JsonProperty()
     @ColumnAdapter(ObjectWithUidListColumnAdapter.class)
     public abstract List<ObjectWithUid> periods();
-
-    @Nullable
-    @JsonProperty()
-    @ColumnAdapter(ObjectWithUidListColumnAdapter.class)
-    public abstract List<ObjectWithUid> filters();
-
-    @Nullable
-    @JsonProperty()
-    @ColumnAdapter(ObjectWithUidListColumnAdapter.class)
-    public abstract List<ObjectWithUid> rows();
 
     public static Builder builder() {
         return new $$AutoValue_Visualization.Builder();
@@ -300,13 +285,7 @@ public abstract class Visualization extends BaseIdentifiableObject implements Co
 
         public abstract Builder organisationUnits(List<ObjectWithUid> organisationUnits);
 
-        public abstract Builder columns(List<ObjectWithUid> columns);
-
         public abstract Builder periods(List<ObjectWithUid> periods);
-
-        public abstract Builder filters(List<ObjectWithUid> filters);
-
-        public abstract Builder rows(List<ObjectWithUid> rows);
 
         public abstract Visualization build();
     }

@@ -177,7 +177,7 @@ public class TrackedEntityInstanceImportHandlerShould {
                 Collections.singletonList(importSummary), instances
         );
 
-        verify(trackedEntityInstanceStore, times(1)).setStateOrDelete("test_tei_uid", State.SYNCED);
-        verify(trackedEntityInstanceStore, times(1)).setStateOrDelete("missing_tei_uid", State.TO_UPDATE);
+        verify(trackedEntityInstanceStore, times(1)).setSyncStateOrDelete("test_tei_uid", State.SYNCED);
+        verify(trackedEntityInstanceStore, times(1)).setSyncStateOrDelete("missing_tei_uid", State.TO_UPDATE);
     }
 }

@@ -26,9 +26,9 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
 
-public class DataColumns extends CoreColumns {
-    public static final String AGGREGATED_SYNC_STATE = "aggregatedSyncState";
-    public static final String SYNC_STATE = "syncState";
+import org.hisp.dhis.android.core.common.State;
+
+public final class IgnoreStateColumnAdapter extends IgnoreColumnAdapter<State> {
 }

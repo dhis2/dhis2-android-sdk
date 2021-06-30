@@ -86,7 +86,7 @@ public final class EnrollmentTableInfo {
                     GEOMETRY_TYPE,
                     GEOMETRY_COORDINATES,
                     SYNC_STATE,
-                    STATE,
+                    AGGREGATED_SYNC_STATE,
                     DELETED
             );
         }

@@ -218,7 +218,7 @@ class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould : BaseMockI
 
         val partitions = payloadGenerator.getTrackedEntityInstancesPartitions(
             d2.trackedEntityModule().trackedEntityInstances().byUid().eq(tei1)
-                .byState().`in`(*State.uploadableStates()).blockingGet()
+                .byAggregatedSyncState().`in`(*State.uploadableStates()).blockingGet()
         )
 
         assertThat(partitions.size).isEqualTo(1)

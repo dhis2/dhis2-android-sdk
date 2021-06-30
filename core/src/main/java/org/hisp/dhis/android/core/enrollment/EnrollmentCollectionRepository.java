@@ -134,8 +134,16 @@ public final class EnrollmentCollectionRepository extends ReadWriteWithUidCollec
         return cf.string(EnrollmentTableInfo.Columns.GEOMETRY_COORDINATES);
     }
 
+    public EnumFilterConnector<EnrollmentCollectionRepository, State> byAggregatedSyncState() {
+        return cf.enumC(DataColumns.AGGREGATED_SYNC_STATE);
+    }
+
+    /**
+     * Use {@link #byAggregatedSyncState()} instead.
+     */
+    @Deprecated
     public EnumFilterConnector<EnrollmentCollectionRepository, State> byState() {
-        return cf.enumC(DataColumns.STATE);
+        return byAggregatedSyncState();
     }
 
     public EnumFilterConnector<EnrollmentCollectionRepository, State> bySyncState() {

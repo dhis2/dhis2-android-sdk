@@ -85,7 +85,7 @@ public final class EnrollmentStoreImpl
     @Override
     public Map<String, List<Enrollment>> queryEnrollmentsToPost() {
         String enrollmentsToPostQuery = new WhereClauseBuilder()
-                .appendInKeyStringValues(DataColumns.STATE,
+                .appendInKeyStringValues(DataColumns.AGGREGATED_SYNC_STATE,
                         EnumHelper.asStringList(State.uploadableStatesIncludingError())).build();
 
         List<Enrollment> enrollmentList = selectWhere(enrollmentsToPostQuery);
@@ -101,7 +101,7 @@ public final class EnrollmentStoreImpl
     @Override
     public List<String> queryMissingRelationshipsUids() {
         String whereRelationshipsClause = new WhereClauseBuilder()
-                .appendKeyStringValue(DataColumns.STATE, State.RELATIONSHIP)
+                .appendKeyStringValue(DataColumns.AGGREGATED_SYNC_STATE, State.RELATIONSHIP)
                 .appendIsNullValue(EventTableInfo.Columns.ORGANISATION_UNIT)
                 .build();
 
@@ -111,7 +111,7 @@ public final class EnrollmentStoreImpl
     @Override
     public int setState(String uid, State state) {
         ContentValues updates = new ContentValues();
-        updates.put(DataColumns.STATE, state.toString());
+        updates.put(DataColumns.AGGREGATED_SYNC_STATE, state.toString());
         String whereClause = new WhereClauseBuilder()
                 .appendKeyStringValue(IdentifiableColumns.UID, uid)
                 .build();

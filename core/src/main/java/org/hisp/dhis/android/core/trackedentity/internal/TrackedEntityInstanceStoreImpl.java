@@ -70,8 +70,9 @@ public final class TrackedEntityInstanceStoreImpl
 
     @Override
     public List<TrackedEntityInstance> queryTrackedEntityInstancesToSync() {
+        List<String> uploadableStatesString = EnumHelper.asStringList(State.uploadableStates());
         String whereToSyncClause = new WhereClauseBuilder()
-                .appendInKeyStringValues(DataColumns.STATE, EnumHelper.asStringList(State.uploadableStates()))
+                .appendInKeyStringValues(DataColumns.AGGREGATED_SYNC_STATE, uploadableStatesString)
                 .build();
 
         return selectWhere(whereToSyncClause);
@@ -80,7 +81,7 @@ public final class TrackedEntityInstanceStoreImpl
     @Override
     public List<TrackedEntityInstance> queryTrackedEntityInstancesToPost() {
         String whereToPostClause = new WhereClauseBuilder()
-                .appendKeyStringValue(DataColumns.STATE, State.TO_POST.name())
+                .appendKeyStringValue(DataColumns.AGGREGATED_SYNC_STATE, State.TO_POST.name())
                 .build();
 
         return selectWhere(whereToPostClause);
@@ -89,7 +90,7 @@ public final class TrackedEntityInstanceStoreImpl
     @Override
     public List<String> querySyncedTrackedEntityInstanceUids() {
         String whereSyncedClause = new WhereClauseBuilder()
-                .appendKeyStringValue(DataColumns.STATE, State.SYNCED)
+                .appendKeyStringValue(DataColumns.AGGREGATED_SYNC_STATE, State.SYNCED)
                 .build();
 
         return selectUidsWhere(whereSyncedClause);
@@ -98,7 +99,7 @@ public final class TrackedEntityInstanceStoreImpl
     @Override
     public List<String> queryMissingRelationshipsUids() {
         String whereRelationshipsClause = new WhereClauseBuilder()
-                .appendKeyStringValue(DataColumns.STATE, State.RELATIONSHIP)
+                .appendKeyStringValue(DataColumns.AGGREGATED_SYNC_STATE, State.RELATIONSHIP)
                 .appendIsNullValue(TrackedEntityInstanceTableInfo.Columns.ORGANISATION_UNIT)
                 .build();
 
@@ -108,7 +109,7 @@ public final class TrackedEntityInstanceStoreImpl
     @Override
     public int setState(String uid, State state) {
         ContentValues updates = new ContentValues();
-        updates.put(DataColumns.STATE, state.toString());
+        updates.put(DataColumns.AGGREGATED_SYNC_STATE, state.toString());
         String whereClause = new WhereClauseBuilder()
                 .appendKeyStringValue(IdentifiableColumns.UID, uid)
                 .build();

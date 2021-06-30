@@ -148,14 +148,24 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
     }
 
     @Test
-    public void filter_by_state() {
+    public void filter_by_aggregated_sync_state() {
         List<TrackedEntityInstance> trackedEntityInstances =
                 d2.trackedEntityModule().trackedEntityInstances()
-                        .byState().eq(State.SYNCED)
+                        .byAggregatedSyncState().eq(State.SYNCED)
                         .blockingGet();
 
         // TODO set to assertThat(trackedEntityInstances.size()).isEqualTo(2); after moving write tests to another db
         assertThat(trackedEntityInstances.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_sync_state() {
+        List<TrackedEntityInstance> trackedEntityInstances =
+                d2.trackedEntityModule().trackedEntityInstances()
+                        .bySyncState().eq(State.SYNCED)
+                        .blockingGet();
+
+        assertThat(trackedEntityInstances.size()).isEqualTo(2);
     }
 
     @Test

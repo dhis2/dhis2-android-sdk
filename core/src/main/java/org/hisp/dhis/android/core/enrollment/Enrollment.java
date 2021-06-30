@@ -48,6 +48,7 @@ import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreCoordin
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreEventListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNoteListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreRelationshipListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreStateColumnAdapter;
 import org.hisp.dhis.android.core.arch.helpers.CoordinateHelper;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.Coordinates;
@@ -157,11 +158,20 @@ public abstract class Enrollment extends BaseDeletableDataObject implements Obje
     @ColumnAdapter(IgnoreRelationshipListColumnAdapter.class)
     abstract List<Relationship> relationships();
 
-    @Override
     @Nullable
-    @ColumnName(DataColumns.STATE)
+    @ColumnName(DataColumns.AGGREGATED_SYNC_STATE)
     @ColumnAdapter(StateColumnAdapter.class)
-    public abstract State state();
+    public abstract State aggregatedSyncState();
+
+    /**
+     * @deprecated Use {@link #aggregatedSyncState()} instead.
+     */
+    @Deprecated
+    @Nullable
+    @ColumnAdapter(IgnoreStateColumnAdapter.class)
+    public State state() {
+        return aggregatedSyncState();
+    }
 
     public static Builder builder() {
         return new $$AutoValue_Enrollment.Builder();
@@ -220,7 +230,15 @@ public abstract class Enrollment extends BaseDeletableDataObject implements Obje
 
         public abstract Builder relationships(List<Relationship> relationships);
 
-        public abstract Builder state(State state);
+        public abstract Builder aggregatedSyncState(State aggregatedSyncState);
+
+        /**
+         * @deprecated Use {@link #aggregatedSyncState(State)} instead.
+         */
+        @Deprecated
+        public Builder state(State state) {
+            return aggregatedSyncState(state);
+        }
 
         abstract Enrollment autoBuild();
 

@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryCol
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.StateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreEnrollmentListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreRelationship229CompatibleListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreStateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreStringColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreTrackedEntityAttributeValueListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
@@ -125,11 +126,20 @@ public abstract class TrackedEntityInstance extends BaseDeletableDataObject impl
     @ColumnAdapter(IgnoreEnrollmentListColumnAdapter.class)
     abstract List<Enrollment> enrollments();
 
-    @Override
     @Nullable
-    @ColumnName(DataColumns.STATE)
+    @ColumnName(DataColumns.AGGREGATED_SYNC_STATE)
     @ColumnAdapter(StateColumnAdapter.class)
-    public abstract State state();
+    public abstract State aggregatedSyncState();
+
+    /**
+     * @deprecated Use {@link #aggregatedSyncState()} instead.
+     */
+    @Deprecated
+    @Nullable
+    @ColumnAdapter(IgnoreStateColumnAdapter.class)
+    public State state() {
+        return aggregatedSyncState();
+    }
 
     public static Builder builder() {
         return new $$AutoValue_TrackedEntityInstance.Builder();
@@ -174,7 +184,15 @@ public abstract class TrackedEntityInstance extends BaseDeletableDataObject impl
         public abstract Builder trackedEntityAttributeValues(
                 List<TrackedEntityAttributeValue> trackedEntityAttributeValues);
 
-        public abstract Builder state(State state);
+        public abstract Builder aggregatedSyncState(State state);
+
+        /**
+         * @deprecated Use {@link #aggregatedSyncState(State)} instead.
+         */
+        @Deprecated
+        public Builder state(State state) {
+            return aggregatedSyncState(state);
+        }
 
         abstract Builder relationships(List<Relationship229Compatible> relationships);
 

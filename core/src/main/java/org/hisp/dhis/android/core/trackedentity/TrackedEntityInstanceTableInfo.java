@@ -74,7 +74,7 @@ public final class TrackedEntityInstanceTableInfo {
                     GEOMETRY_TYPE,
                     GEOMETRY_COORDINATES,
                     SYNC_STATE,
-                    STATE,
+                    AGGREGATED_SYNC_STATE,
                     DELETED
             );
         }

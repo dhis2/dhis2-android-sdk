@@ -25,23 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
-import org.hisp.dhis.android.core.visualization.CategoryDimension
+package org.hisp.dhis.android.core.visualization;
 
-internal class CategoryDimensionListColumnAdapter : JSONObjectListColumnAdapter<CategoryDimension>() {
-    override fun getObjectClass(): Class<List<CategoryDimension>> {
-        return ArrayList<CategoryDimension>().javaClass
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.hisp.dhis.android.core.data.visualization.VisualizationSamples;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.text.ParseException;
+
+import static com.google.common.truth.Truth.assertThat;
+
+public class VisualizationShould extends BaseObjectShould implements ObjectShould {
+
+    public VisualizationShould() {
+        super("visualization/visualization.json");
     }
 
-    override fun serialize(o: List<CategoryDimension>?): String? = CategoryDimensionListColumnAdapter.serialize(o)
-
-    companion object {
-        fun serialize(o: List<CategoryDimension>?): String? {
-            return o?.let {
-                ObjectMapperFactory.objectMapper().writeValueAsString(it)
-            }
-        }
+    @Override
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        Visualization jsonVisualization = objectMapper.readValue(jsonStream, Visualization.class);
+        Visualization expectedVisualization = VisualizationSamples.get().toBuilder().id(null).build();
+        assertThat(jsonVisualization).isEqualTo(expectedVisualization);
     }
 }

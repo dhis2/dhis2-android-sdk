@@ -26,6 +26,7 @@
   "displayDensity": "NORMAL",
   "digitGroupSeparator": "COMMA",
   "relativePeriods": {
+    "today": true,
     "thisYear": false,
     "quartersLastYear": false,
     "last30Days": false,
@@ -193,17 +194,6 @@
       "id": "vWbkYPRmKyS"
     }
   ],
-  "columns": [
-    {
-      "id": "dx"
-    },
-    {
-      "id": "fMZEcRHuamy"
-    },
-    {
-      "id": "fkAkrdC7eJF"
-    }
-  ],
   "periods": [
     {
       "id": "202102"
@@ -213,6 +203,20 @@
     },
     {
       "id": "2021S2"
+    }
+  ],
+
+
+
+  "columns": [
+    {
+      "id": "dx"
+    },
+    {
+      "id": "fMZEcRHuamy"
+    },
+    {
+      "id": "fkAkrdC7eJF"
     }
   ],
   "filters": [

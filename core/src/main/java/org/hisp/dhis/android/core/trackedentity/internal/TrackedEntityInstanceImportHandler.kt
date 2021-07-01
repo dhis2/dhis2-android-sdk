@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
+import java.util.*
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getSyncState
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
@@ -46,8 +48,6 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
-import java.util.*
-import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
@@ -83,15 +83,26 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
                 if (handleAction !== HandleAction.Delete) {
                     storeTEIImportConflicts(teiImportSummary)
 
-                    teiImportSummary.enrollments()?.importSummaries().let {
-                        enrollmentImportHandler.handleEnrollmentImportSummary(it,
-                            getEnrollments(teiUid, instances), teiUid)
-                    }
+                    handleEnrollmentImportSummaries(teiImportSummary, instances)
                 }
             }
         }
 
         processIgnoredTEIs(teiImportSummaries, instances)
+    }
+
+    private fun handleEnrollmentImportSummaries(
+        teiImportSummary: TEIImportSummary,
+        instances: List<TrackedEntityInstance>
+    ) {
+        teiImportSummary.enrollments()?.importSummaries().let { importSummaries ->
+            val teiUid = teiImportSummary.reference()!!
+            enrollmentImportHandler.handleEnrollmentImportSummary(
+                importSummaries,
+                getEnrollments(teiUid, instances),
+                teiUid
+            )
+        }
     }
 
     private fun storeTEIImportConflicts(teiImportSummary: TEIImportSummary) {

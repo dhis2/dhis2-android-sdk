@@ -55,7 +55,7 @@ internal class EnrollmentStoreImpl private constructor(
         val enrollmentsToPostQuery = WhereClauseBuilder()
             .appendInKeyStringValues(
                 DataColumns.AGGREGATED_SYNC_STATE,
-                EnumHelper.asStringList(*State.uploadableStatesIncludingError())
+                EnumHelper.asStringList(State.uploadableStatesIncludingError().toList())
             ).build()
         val enrollmentList: List<Enrollment> = selectWhere(enrollmentsToPostQuery)
 

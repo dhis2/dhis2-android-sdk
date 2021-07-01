@@ -65,6 +65,7 @@ import java.util.Date;
 import java.util.List;
 
 @AutoValue
+@SuppressWarnings("PMD.ExcessiveImports")
 @JsonDeserialize(builder = AutoValue_Enrollment.Builder.class)
 public abstract class Enrollment extends BaseDeletableDataObject implements ObjectWithUidInterface {
 

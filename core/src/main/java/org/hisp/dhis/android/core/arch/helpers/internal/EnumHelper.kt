@@ -25,22 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.helpers.internal
 
-package org.hisp.dhis.android.core.arch.helpers.internal;
+internal object EnumHelper {
 
-import java.util.ArrayList;
-import java.util.List;
-
-public final class EnumHelper {
-
-    public static List<String> asStringList(Enum<?>... enums) {
-        List<String> enumsStr = new ArrayList<>(enums.length);
-        for (Enum<?> e: enums) {
-            enumsStr.add(e.name());
-        }
-        return enumsStr;
+    @JvmStatic
+    fun asStringList(enums: Collection<Enum<*>>): List<String> {
+        return enums.map { it.name }
     }
 
-    private EnumHelper() {
+    @JvmStatic
+    fun asStringList(vararg enums: Enum<*>): List<String> {
+        return asStringList(enums.toList())
     }
 }

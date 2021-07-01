@@ -40,7 +40,7 @@ internal class RelativePeriodsColumnAdapter : JSONObjectHashMapColumnAdapter<Rel
     companion object {
         fun serialize(o: HashMap<RelativePeriod, Boolean>?): String? {
             return o?.let {
-                ObjectMapperFactory.objectMapper().writeValueAsString(it)
+                ObjectMapperFactory.objectMapper().writeValueAsString(it.filter { it.value })
             }
         }
     }

@@ -26,7 +26,6 @@
   "displayDensity": "NORMAL",
   "digitGroupSeparator": "COMMA",
   "relativePeriods": {
-    "today": true,
     "thisYear": false,
     "quartersLastYear": false,
     "last30Days": false,

@@ -151,7 +151,7 @@ public abstract class Visualization extends BaseIdentifiableObject implements Co
     @Nullable
     @JsonProperty()
     @ColumnAdapter(RelativePeriodsColumnAdapter.class)
-    public abstract HashMap<RelativePeriod, Boolean> relativePeriods(); // Cell, but delete false
+    public abstract HashMap<RelativePeriod, Boolean> relativePeriods();
 
     @Nullable
     @JsonProperty()

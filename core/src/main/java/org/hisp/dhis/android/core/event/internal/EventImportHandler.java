@@ -89,7 +89,7 @@ public class EventImportHandler {
                 String eventUid = eventImportSummary == null ? null : eventImportSummary.reference();
 
                 if (eventUid == null) {
-                    break;
+                    continue;
                 }
 
                 State state = getState(eventImportSummary.status());

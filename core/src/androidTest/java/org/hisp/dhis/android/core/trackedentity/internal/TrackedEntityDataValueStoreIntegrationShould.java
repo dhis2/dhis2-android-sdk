@@ -155,7 +155,8 @@ public class TrackedEntityDataValueStoreIntegrationShould
 
         EnrollmentStore enrollmentStore = EnrollmentStoreImpl.create(TestDatabaseAdapterFactory.get());
         Enrollment enrollment = Enrollment.builder().uid("enrollment").organisationUnit("organisation_unit")
-                .program("program").trackedEntityInstance("tei_uid").state(State.TO_POST).build();
+                .program("program").trackedEntityInstance("tei_uid")
+                .aggregatedSyncState(State.TO_POST).syncState(State.TO_POST).build();
         enrollmentStore.insert(enrollment);
 
         EventStore eventStore = EventStoreImpl.create(TestDatabaseAdapterFactory.get());

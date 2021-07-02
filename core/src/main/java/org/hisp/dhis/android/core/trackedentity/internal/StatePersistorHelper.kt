@@ -52,7 +52,7 @@ internal class StatePersistorHelper @Inject internal constructor() {
 
     private fun <O> getStateToSet(o: O, forcedState: State?): State where O : DataObject, O : ObjectWithUidInterface {
         return forcedState
-            ?: if (o.state() == State.UPLOADING) State.TO_UPDATE else o.state()
+            ?: if (o.syncState() == State.UPLOADING) State.TO_UPDATE else o.syncState()
     }
 
     fun persistStates(map: Map<State, MutableList<String>>, store: IdentifiableDeletableDataObjectStore<*>) {

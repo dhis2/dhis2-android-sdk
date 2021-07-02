@@ -106,7 +106,8 @@ public final class DataSetCompleteRegistrationObjectRepository
         } else {
             DataSetCompleteRegistration newRecord = dataSetCompleteRegistration.toBuilder()
                     .deleted(false)
-                    .syncState(dataSetCompleteRegistration.state() == State.TO_POST ? State.TO_POST : State.TO_UPDATE)
+                    .syncState(dataSetCompleteRegistration.syncState() == State.TO_POST ?
+                            State.TO_POST : State.TO_UPDATE)
                     .build();
             dataSetCompleteRegistrationStore.updateWhere(newRecord);
         }
@@ -129,7 +130,7 @@ public final class DataSetCompleteRegistrationObjectRepository
                             "because no longer exists")
                     .build();
         } else {
-            if (dataSetCompleteRegistration.state() == State.TO_POST) {
+            if (dataSetCompleteRegistration.syncState() == State.TO_POST) {
                 dataSetCompleteRegistrationStore.deleteWhere(dataSetCompleteRegistration);
             } else {
                 DataSetCompleteRegistration deletedRecord = dataSetCompleteRegistration.toBuilder()

@@ -58,7 +58,8 @@ public class TrackedEntityInstanceSamples {
                         .type(FeatureType.POLYGON)
                         .coordinates("[11.0, 11.0]")
                         .build())
-                .state(State.TO_POST)
+                .syncState(State.TO_POST)
+                .aggregatedSyncState(State.TO_POST)
                 .deleted(false)
                 .build();
     }

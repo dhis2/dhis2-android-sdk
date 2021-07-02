@@ -48,7 +48,7 @@ public class VisualizationShould extends BaseObjectShould implements ObjectShoul
     @Test
     public void map_from_json_string() throws IOException, ParseException {
         Visualization jsonVisualization = objectMapper.readValue(jsonStream, Visualization.class);
-        Visualization expectedVisualization = VisualizationSamples.INSTANCE.visualization().toBuilder().id(null).build();
+        Visualization expectedVisualization = VisualizationSamples.get().toBuilder().id(null).build();
         assertThat(jsonVisualization).isEqualTo(expectedVisualization);
     }
 }

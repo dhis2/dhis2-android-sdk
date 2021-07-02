@@ -156,7 +156,7 @@ public abstract class Visualization extends BaseIdentifiableObject implements Co
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreCategoryDimensionListColumnAdapter.class)
-    public abstract List<CategoryDimension> categoryDimensions();
+    public abstract List<CategoryDimension> categoryDimensions(); // Table with visualization, category and coptino
 
     @Nullable
     @JsonProperty()
@@ -176,7 +176,7 @@ public abstract class Visualization extends BaseIdentifiableObject implements Co
     @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreDataDimensionItemListColumnAdapter.class)
-    public abstract List<DataDimensionItem> dataDimensionItems();
+    public abstract List<DataDimensionItem> dataDimensionItems(); // Table with visualization id, type and uids with FK.
 
     @Nullable
     @JsonProperty()
@@ -198,7 +198,7 @@ public abstract class Visualization extends BaseIdentifiableObject implements Co
     @Nullable
     @JsonProperty()
     @ColumnAdapter(ObjectWithUidListColumnAdapter.class)
-    public abstract List<ObjectWithUid> organisationUnits();
+    public abstract List<ObjectWithUid> organisationUnits(); // Cell
 
     @Nullable
     @JsonProperty()

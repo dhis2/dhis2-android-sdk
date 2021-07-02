@@ -29,6 +29,10 @@ package org.hisp.dhis.android.core.visualization
 
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.IntegerListColumnAdapter
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.ObjectWithUidListColumnAdapter
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.RelativePeriodsColumnAdapter
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringListColumnAdapter
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
@@ -52,7 +56,7 @@ internal object VisualizationStore {
             w.bind(17, o.showHierarchy())
             w.bind(18, o.rowTotals())
             w.bind(19, o.rowSubTotals())
-            w.bind(10, o.colTotals())
+            w.bind(20, o.colTotals())
             w.bind(21, o.colSubTotals())
             w.bind(22, o.showDimensionLabels())
             w.bind(23, o.percentStackedValues())
@@ -60,16 +64,16 @@ internal object VisualizationStore {
             w.bind(25, o.skipRounding())
             w.bind(26, o.displayDensity())
             w.bind(27, o.digitGroupSeparator())
-            w.bind(28, o.relativePeriods())
-            w.bind(29, o.filterDimensions())
-            w.bind(20, o.rowDimensions())
-            w.bind(31, o.columnDimensions())
-            w.bind(32, o.organisationUnitLevels())
+            w.bind(28, RelativePeriodsColumnAdapter.serialize(o.relativePeriods()))
+            w.bind(29, StringListColumnAdapter.serialize(o.filterDimensions()))
+            w.bind(30, StringListColumnAdapter.serialize(o.rowDimensions()))
+            w.bind(31, StringListColumnAdapter.serialize(o.columnDimensions()))
+            w.bind(32, IntegerListColumnAdapter.serialize(o.organisationUnitLevels()))
             w.bind(33, o.userOrganisationUnit())
             w.bind(34, o.userOrganisationUnitChildren())
             w.bind(35, o.userOrganisationUnitGrandChildren())
-            w.bind(36, o.organisationUnits())
-            w.bind(37, o.periods()))
+            w.bind(36, ObjectWithUidListColumnAdapter.serialize(o.organisationUnits()))
+            w.bind(37, ObjectWithUidListColumnAdapter.serialize(o.periods()))
         }
     }
 

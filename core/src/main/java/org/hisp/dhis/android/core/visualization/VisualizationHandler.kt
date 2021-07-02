@@ -25,30 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.visualization
 
-package org.hisp.dhis.android.core.visualization;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
+import javax.inject.Inject
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.hisp.dhis.android.core.data.visualization.VisualizationSamples;
-import org.junit.Test;
+@Reusable
+internal class VisualizationHandler @Inject constructor(
+    store: ObjectWithoutUidStore<Visualization>
+) : ObjectWithoutUidHandlerImpl<Visualization>(store) {
 
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class VisualizationShould extends BaseObjectShould implements ObjectShould {
-
-    public VisualizationShould() {
-        super("visualization/visualization.json");
+    override fun beforeCollectionHandled(
+        oCollection: Collection<Visualization>
+    ): Collection<Visualization> {
+        store.delete()
+        return oCollection
     }
 
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        Visualization jsonVisualization = objectMapper.readValue(jsonStream, Visualization.class);
-        Visualization expectedVisualization = VisualizationSamples.INSTANCE.visualization().toBuilder().id(null).build();
-        assertThat(jsonVisualization).isEqualTo(expectedVisualization);
+    override fun afterObjectHandled(o: Visualization, action: HandleAction) {
     }
 }

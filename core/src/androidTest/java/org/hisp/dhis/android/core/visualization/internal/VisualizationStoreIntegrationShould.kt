@@ -25,34 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.visualization.internal
 
-package org.hisp.dhis.android.core.data.visualization;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.visualization.VisualizationSamples
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.core.visualization.HideEmptyItemStrategy
+import org.hisp.dhis.android.core.visualization.Visualization
+import org.hisp.dhis.android.core.visualization.VisualizationStore
+import org.hisp.dhis.android.core.visualization.VisualizationTableInfo
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.visualization.Visualization;
-
-import java.text.ParseException;
-import java.util.Date;
-
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
-
-public class VisualizationSamples {
-
-    public static Visualization get() {
-        Visualization.Builder builder = Visualization.builder();
-
-        fillIdentifiableProperties(builder);
-        return builder
-                .id(1L)
-                .build();
+@RunWith(D2JunitRunner::class)
+class VisualizationStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<Visualization>(
+    VisualizationStore.create(TestDatabaseAdapterFactory.get()),
+    VisualizationTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get()
+) {
+    override fun buildObject(): Visualization {
+        return VisualizationSamples.visualization()
     }
 
-    private static Date getDate(String dateStr) {
-        try {
-            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
+    override fun buildObjectToUpdate(): Visualization {
+        return VisualizationSamples.visualization().toBuilder()
+            .hideEmptyRowItems(HideEmptyItemStrategy.AFTER_LAST)
+            .build()
     }
 }

@@ -79,7 +79,7 @@ sealed class DimensionItem(val dimension: Dimension) {
     sealed class OrganisationUnitItem : DimensionItem(Dimension.OrganisationUnit) {
         data class Absolute(val uid: String) : OrganisationUnitItem(), AbsoluteDimensionItem
         data class Relative(val relative: RelativeOrganisationUnit) : OrganisationUnitItem()
-        data class Level(val uid: String) : OrganisationUnitItem()
+        data class Level(val level: Int) : OrganisationUnitItem()
         data class Group(val uid: String) : OrganisationUnitItem()
     }
 

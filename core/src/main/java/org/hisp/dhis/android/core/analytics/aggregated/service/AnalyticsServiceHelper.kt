@@ -28,11 +28,21 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.service
 
-import org.hisp.dhis.android.core.analytics.aggregated.*
+import org.hisp.dhis.android.core.analytics.aggregated.AbsoluteDimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepositoryParams
+import org.hisp.dhis.android.core.analytics.aggregated.Dimension
+import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
+import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
 import javax.inject.Inject
 
-internal class AnalyticsServiceHelper @Inject constructor() {
+internal class AnalyticsServiceHelper @Inject constructor(
+    private val periodGenerator: ParentPeriodGenerator,
+    private val organisationUnitStore: IdentifiableObjectStore<OrganisationUnit>
+) {
 
     fun getDimensions(params: AnalyticsRepositoryParams): Set<Dimension> {
         return params.dimensions.map { it.dimension }.toSet()
@@ -45,7 +55,7 @@ internal class AnalyticsServiceHelper @Inject constructor() {
         val absoluteDimensionItemList = dimensions.map { dimension ->
             params.dimensions
                 .filter { it.dimension == dimension }
-                .map { item -> toAbsoluteDimensionItems(item) }
+                .flatMap { item -> toAbsoluteDimensionItems(item) }
         }
 
         val dimensionCartesianProductList = absoluteDimensionItemList
@@ -67,18 +77,31 @@ internal class AnalyticsServiceHelper @Inject constructor() {
             is DimensionItem.PeriodItem ->
                 when(item) {
                     is DimensionItem.PeriodItem.Absolute -> listOf(item)
-                    is DimensionItem.PeriodItem.Relative -> listOf()
+                    is DimensionItem.PeriodItem.Relative ->
+                        periodGenerator.generateRelativePeriods(item.relative).map { period ->
+                            DimensionItem.PeriodItem.Absolute(period.periodId()!!)
+                        }
                 }
             is DimensionItem.OrganisationUnitItem ->
                 when(item) {
-                    // TODO
                     is DimensionItem.OrganisationUnitItem.Absolute -> listOf(item)
-                    is DimensionItem.OrganisationUnitItem.Relative -> listOf()
-                    is DimensionItem.OrganisationUnitItem.Level -> listOf()
-                    is DimensionItem.OrganisationUnitItem.Group -> listOf()
+                    is DimensionItem.OrganisationUnitItem.Relative -> TODO()
+                    is DimensionItem.OrganisationUnitItem.Level ->
+                        queryOrgunitsByLevel(item.level).map { orgunitUid ->
+                            DimensionItem.OrganisationUnitItem.Absolute(orgunitUid)
+                        }
+                    is DimensionItem.OrganisationUnitItem.Group -> TODO()
                 }
             is DimensionItem.CategoryItem -> listOf(item)
             is DimensionItem.CategoryOptionGroupSetItem -> listOf(item)
         }
+    }
+
+    private fun queryOrgunitsByLevel(level: Int): List<String> {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyNumberValue(OrganisationUnitTableInfo.Columns.LEVEL, level)
+            .build()
+
+        return organisationUnitStore.selectUidsWhere(whereClause)
     }
 }

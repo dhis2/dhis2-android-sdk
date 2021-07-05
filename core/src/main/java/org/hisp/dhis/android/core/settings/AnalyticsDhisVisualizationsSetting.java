@@ -33,27 +33,34 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import java.util.List;
+import java.util.Map;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_AnalyticsSettings.Builder.class)
-public abstract class AnalyticsSettings {
+@JsonDeserialize(builder = AutoValue_AnalyticsDhisVisualizationsSetting.Builder.class)
+public abstract class AnalyticsDhisVisualizationsSetting {
 
-    public abstract List<AnalyticsTeiSetting> tei();
+    public abstract List<AnalyticsDhisVisualizationsGroup> home();
 
-    public abstract AnalyticsDhisVisualizationsSetting dhisVisualizations();
+    public abstract Map<String, List<AnalyticsDhisVisualizationsGroup>> program();
+
+    public abstract Map<String, List<AnalyticsDhisVisualizationsGroup>> dataSet();
+
+    public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new AutoValue_AnalyticsSettings.Builder();
+        return new AutoValue_AnalyticsDhisVisualizationsSetting.Builder();
     }
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
 
-        public abstract Builder tei(List<AnalyticsTeiSetting> tei);
+        public abstract Builder home(List<AnalyticsDhisVisualizationsGroup> home);
 
-        public abstract Builder dhisVisualizations(AnalyticsDhisVisualizationsSetting dhisVisualizations);
+        public abstract Builder program(Map<String, List<AnalyticsDhisVisualizationsGroup>> program);
 
-        public abstract AnalyticsSettings build();
+        public abstract Builder dataSet(Map<String, List<AnalyticsDhisVisualizationsGroup>> dataSet);
+
+        public abstract AnalyticsDhisVisualizationsSetting build();
     }
 }

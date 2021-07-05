@@ -35,25 +35,31 @@ import com.google.auto.value.AutoValue;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_AnalyticsSettings.Builder.class)
-public abstract class AnalyticsSettings {
+@JsonDeserialize(builder = AutoValue_AnalyticsDhisVisualizationsGroup.Builder.class)
+public abstract class AnalyticsDhisVisualizationsGroup {
 
-    public abstract List<AnalyticsTeiSetting> tei();
+    public abstract String name();
 
-    public abstract AnalyticsDhisVisualizationsSetting dhisVisualizations();
+    public abstract String id();
+
+    public abstract List<AnalyticsDhisVisualization> visualizations();
+
+    public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new AutoValue_AnalyticsSettings.Builder();
+        return new AutoValue_AnalyticsDhisVisualizationsGroup.Builder();
     }
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
 
-        public abstract Builder tei(List<AnalyticsTeiSetting> tei);
+        public abstract Builder name(String name);
 
-        public abstract Builder dhisVisualizations(AnalyticsDhisVisualizationsSetting dhisVisualizations);
+        public abstract Builder id(String id);
 
-        public abstract AnalyticsSettings build();
+        public abstract Builder visualizations(List<AnalyticsDhisVisualization> visualizations);
+
+        public abstract AnalyticsDhisVisualizationsGroup build();
     }
 }

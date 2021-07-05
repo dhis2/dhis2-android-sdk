@@ -28,32 +28,67 @@
 
 package org.hisp.dhis.android.core.settings;
 
+import android.database.Cursor;
+
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
-import java.util.List;
+import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_AnalyticsSettings.Builder.class)
-public abstract class AnalyticsSettings {
+@JsonDeserialize(builder = AutoValue_AnalyticsDhisVisualization.Builder.class)
+public abstract class AnalyticsDhisVisualization implements CoreObject, ObjectWithUidInterface {
 
-    public abstract List<AnalyticsTeiSetting> tei();
+    @Nullable
+    public abstract String scopeUid();
 
-    public abstract AnalyticsDhisVisualizationsSetting dhisVisualizations();
+    @Nullable
+    public abstract String idGroup();
+
+    @Nullable
+    public abstract String name();
+
+    @Nullable
+    public abstract String scope();
+
+    @Nullable
+    public abstract String uid();
+
+    @Nullable
+    public abstract String timeStamp();
+
+    public static AnalyticsDhisVisualization create(Cursor cursor) {
+        return AutoValue_AnalyticsDhisVisualization.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new AutoValue_AnalyticsSettings.Builder();
+        return new AutoValue_AnalyticsDhisVisualization.Builder();
     }
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
 
-        public abstract Builder tei(List<AnalyticsTeiSetting> tei);
+        public abstract Builder id(Long id);
 
-        public abstract Builder dhisVisualizations(AnalyticsDhisVisualizationsSetting dhisVisualizations);
+        public abstract Builder scopeUid(String scopeUid);
 
-        public abstract AnalyticsSettings build();
+        public abstract Builder idGroup(String idGroup);
+
+        public abstract Builder name(String name);
+
+        public abstract Builder scope(String scope);
+
+        public abstract Builder uid(String uid);
+
+        public abstract Builder timeStamp(String timeStamp);
+
+        public abstract AnalyticsDhisVisualization build();
     }
 }

@@ -99,7 +99,7 @@ public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockInte
         assertThat(repository.blockingGet().syncState()).isEqualTo(State.ERROR);
         repository.blockingDelete();
         assertThat(repository.blockingExists()).isEqualTo(Boolean.TRUE);
-        assertThat(repository.blockingGet().syncState()).isEqualTo(Boolean.TRUE);
+        assertThat(repository.blockingGet().deleted()).isEqualTo(Boolean.TRUE);
         assertThat(repository.blockingGet().syncState()).isEqualTo(State.TO_UPDATE);
     }
 
@@ -111,12 +111,12 @@ public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockInte
         DataValueStore.create(databaseAdapter).setState(repository.blockingGet(), State.TO_UPDATE);
 
         repository.blockingDelete();
-        assertThat(repository.blockingGet().syncState()).isEqualTo(State.TO_UPDATE);
         assertThat(repository.blockingGet().deleted()).isEqualTo(Boolean.TRUE);
+        assertThat(repository.blockingGet().syncState()).isEqualTo(State.TO_UPDATE);
 
         repository.blockingSet("new_value");
+        assertThat(repository.blockingGet().deleted()).isEqualTo(Boolean.FALSE);
         assertThat(repository.blockingGet().syncState()).isEqualTo(State.TO_UPDATE);
-        assertThat(repository.blockingGet().syncState()).isEqualTo(Boolean.FALSE);
     }
 
     @Test

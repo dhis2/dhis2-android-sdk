@@ -26,16 +26,42 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.analytics.aggregated
+package org.hisp.dhis.android.core.analytics.aggregated.service
 
-data class DimensionalResponse(
-    val metadata: Map<String, MetadataItem>,
-    val dimensions: Set<Dimension>,
-    val filters: List<String>,
-    val values: List<DimensionalValue>
-)
+import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepositoryParams
+import org.hisp.dhis.android.core.analytics.aggregated.Dimension
+import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
+import org.hisp.dhis.android.core.analytics.aggregated.DimensionalValue
+import javax.inject.Inject
 
-data class DimensionalValue(
-    val dimensions: List<String>,
-    val value: String?
-)
+internal class AnalyticsService @Inject constructor(
+    private val analyticsServiceHelper: AnalyticsServiceHelper
+) {
+
+    fun evaluate(params: AnalyticsRepositoryParams): DimensionalResponse {
+        if (params.dimensions.isEmpty()) {
+            throw RuntimeException("At least one dimension must be specified")
+        }
+
+        if ((params.dimensions + params.filters).none { it.dimension == Dimension.Data }) {
+            throw RuntimeException("At least one data dimension must be specified")
+        }
+
+        val dimensions = analyticsServiceHelper.getDimensions(params)
+        val evaluationItems = analyticsServiceHelper.getEvaluationItems(params, dimensions)
+
+        val values = evaluationItems.map { evaluateItem(it) }
+
+        // TODO
+        return DimensionalResponse(
+            metadata = emptyMap(),
+            dimensions = dimensions,
+            filters = listOf(),
+            values = values
+        )
+    }
+
+    private fun evaluateItem(evaluationItem: AnalyticsServiceEvaluationItem): DimensionalValue {
+        TODO()
+    }
+}

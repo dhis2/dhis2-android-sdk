@@ -26,16 +26,12 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.analytics.aggregated
+package org.hisp.dhis.android.core.analytics.aggregated.service
 
-data class DimensionalResponse(
-    val metadata: Map<String, MetadataItem>,
-    val dimensions: Set<Dimension>,
-    val filters: List<String>,
-    val values: List<DimensionalValue>
-)
+import org.hisp.dhis.android.core.analytics.aggregated.AbsoluteDimensionItem
+import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 
-data class DimensionalValue(
-    val dimensions: List<String>,
-    val value: String?
+internal data class AnalyticsServiceEvaluationItem(
+    val dimensionItems: List<AbsoluteDimensionItem>,
+    val filters: List<DimensionItem>
 )

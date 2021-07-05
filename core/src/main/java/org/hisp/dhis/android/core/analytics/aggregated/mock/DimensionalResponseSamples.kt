@@ -57,7 +57,7 @@ object DimensionalResponseSamples {
             orgunit1 to MetadataItem.OrganisationUnit(orgunit1, "Ngelehun CHC"),
             orgunit2 to MetadataItem.OrganisationUnit(orgunit2, "Njandama MCHP")
         ),
-        dimensions = listOf(Dimension.Data, Dimension.Category(co1), Dimension.Period),
+        dimensions = setOf(Dimension.Data, Dimension.Category(co1), Dimension.Period),
         filters = listOf(orgunit1, orgunit2),
         values = listOf(
             DimensionalValue(

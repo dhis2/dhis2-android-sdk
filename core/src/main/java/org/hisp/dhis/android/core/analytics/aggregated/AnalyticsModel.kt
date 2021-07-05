@@ -45,6 +45,7 @@ sealed class MetadataItem(val id: String, val displayName: String) {
         displayName: String,
         val categoryOptionGroupSet: String
     ) : MetadataItem(uid, displayName)
+
     class OrganisationUnit(uid: String, displayName: String) : MetadataItem(uid, displayName)
     class Period(
         periodId: String,
@@ -58,12 +59,12 @@ sealed class Dimension {
     object Data : Dimension()
     object Period : Dimension()
     object OrganisationUnit : Dimension()
-    class Category(val uid: String) : Dimension()
-    class CategoryOptionGroupSet(val uid: String) : Dimension()
+    data class Category(val uid: String) : Dimension()
+    data class CategoryOptionGroupSet(val uid: String) : Dimension()
 }
 
 sealed class DimensionItem(val dimension: Dimension) {
-    sealed class DataItem : DimensionItem(Dimension.Data) {
+    sealed class DataItem : DimensionItem(Dimension.Data), AbsoluteDimensionItem {
         data class DataElement(val uid: String) : DataItem()
         data class DataElementOperand(val uid: String, val categoryOptionCombo: String) : DataItem()
         data class Indicator(val uid: String) : DataItem()
@@ -71,21 +72,27 @@ sealed class DimensionItem(val dimension: Dimension) {
     }
 
     sealed class PeriodItem : DimensionItem(Dimension.Period) {
-        data class Absolute(val periodId: String) : PeriodItem()
+        data class Absolute(val periodId: String) : PeriodItem(), AbsoluteDimensionItem
         data class Relative(val relative: RelativePeriod) : PeriodItem()
     }
 
     sealed class OrganisationUnitItem : DimensionItem(Dimension.OrganisationUnit) {
-        data class Absolute(val uids: List<String>) : OrganisationUnitItem()
+        data class Absolute(val uid: String) : OrganisationUnitItem(), AbsoluteDimensionItem
         data class Relative(val relative: RelativeOrganisationUnit) : OrganisationUnitItem()
         data class Level(val uid: String) : OrganisationUnitItem()
         data class Group(val uid: String) : OrganisationUnitItem()
     }
 
-    class CategoryItem(val uid: String, val categoryOptions: List<String>) : DimensionItem(Dimension.Category(uid))
+    class CategoryItem(
+        val uid: String,
+        val categoryOption: String
+    ) : DimensionItem(Dimension.Category(uid)), AbsoluteDimensionItem
+
 
     class CategoryOptionGroupSetItem(
         val uid: String,
-        val categoryOptionGroups: List<String>
-    ) : DimensionItem(Dimension.CategoryOptionGroupSet(uid))
+        val categoryOptionGroup: String
+    ) : DimensionItem(Dimension.CategoryOptionGroupSet(uid)), AbsoluteDimensionItem
 }
+
+interface AbsoluteDimensionItem

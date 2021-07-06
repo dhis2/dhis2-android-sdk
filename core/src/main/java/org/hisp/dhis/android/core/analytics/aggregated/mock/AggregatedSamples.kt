@@ -31,8 +31,10 @@ package org.hisp.dhis.android.core.analytics.aggregated.mock
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.period.Period
+import org.hisp.dhis.android.core.program.ProgramIndicator
 
 object AggregatedSamples {
     val dataElement1 = DataElement.builder()
@@ -45,19 +47,39 @@ object AggregatedSamples {
         .displayName("ANC 2nd visit")
         .build()
 
+    val programIndicator1 = ProgramIndicator.builder()
+        .uid("p2Zxg0wcPQ3")
+        .displayName("BCG doses")
+        .build()
+
+    val indicator1 = Indicator.builder()
+        .uid("Uvn6LCg7dVU")
+        .displayName("ANC 1 Coverage")
+        .build()
+
     val cc1 = Category.builder()
         .uid("fMZEcRHuamy")
         .displayName("Fixed / Outreach")
         .build()
 
-    val co1 = CategoryOption.builder()
+    val co11 = CategoryOption.builder()
         .uid("pq2XI5kz2BY")
         .displayName("Fixed")
         .build()
 
-    val co2 = CategoryOption.builder()
+    val co12 = CategoryOption.builder()
         .uid("PT59n8BQbqM")
-        .name("Outreach")
+        .displayName("Outreach")
+        .build()
+
+    val cc2 = Category.builder()
+        .uid("cX5k9anHEHd")
+        .displayName("Gender")
+        .build()
+
+    val co21 = CategoryOption.builder()
+        .uid("jRbMi0aBjYn")
+        .displayName("Male")
         .build()
 
     val period1 = Period.builder()
@@ -75,6 +97,6 @@ object AggregatedSamples {
 
     val orgunit2 = OrganisationUnit.builder()
         .uid("g8upMTyEZGZ")
-        .name("Njandama")
+        .displayName("Njandama")
         .build()
 }

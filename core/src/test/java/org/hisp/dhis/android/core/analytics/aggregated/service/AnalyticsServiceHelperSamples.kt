@@ -29,25 +29,26 @@
 package org.hisp.dhis.android.core.analytics.aggregated.service
 
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
+import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples
 import org.hisp.dhis.android.core.common.RelativePeriod
 
 object AnalyticsServiceHelperSamples {
 
-    val dataElementItem1 = DimensionItem.DataItem.DataElementItem("uid1")
-    val dataElementItem2 = DimensionItem.DataItem.DataElementItem("uid2")
-    val programIndicatorItem = DimensionItem.DataItem.ProgramIndicatorItem("pi1")
-    val indicatorItem = DimensionItem.DataItem.IndicatorItem("i1")
+    val dataElementItem1 = DimensionItem.DataItem.DataElementItem(AggregatedSamples.dataElement1.uid())
+    val dataElementItem2 = DimensionItem.DataItem.DataElementItem(AggregatedSamples.dataElement2.uid())
+    val programIndicatorItem = DimensionItem.DataItem.ProgramIndicatorItem(AggregatedSamples.programIndicator1.uid())
+    val indicatorItem = DimensionItem.DataItem.IndicatorItem(AggregatedSamples.indicator1.uid())
 
-    val periodAbsolute1 = DimensionItem.PeriodItem.Absolute("202101")
-    val periodAbsolute2 = DimensionItem.PeriodItem.Absolute("202102")
+    val periodAbsolute1 = DimensionItem.PeriodItem.Absolute(AggregatedSamples.period1.periodId()!!)
+    val periodAbsolute2 = DimensionItem.PeriodItem.Absolute(AggregatedSamples.period2.periodId()!!)
     val periodLast3Days = DimensionItem.PeriodItem.Relative(RelativePeriod.LAST_3_DAYS)
 
-    val orgunitAbsolute = DimensionItem.OrganisationUnitItem.Absolute("ou1")
+    val orgunitAbsolute = DimensionItem.OrganisationUnitItem.Absolute(AggregatedSamples.orgunit1.uid())
     val orgunitLevel3 = DimensionItem.OrganisationUnitItem.Level(3)
 
-    val categoryItem1_1 = DimensionItem.CategoryItem("c1", "co11")
-    val categoryItem1_2 = DimensionItem.CategoryItem("c1", "co12")
-    val categoryItem2_1 = DimensionItem.CategoryItem("c2", "co21")
+    val categoryItem1_1 = DimensionItem.CategoryItem(AggregatedSamples.cc1.uid(), AggregatedSamples.co11.uid())
+    val categoryItem1_2 = DimensionItem.CategoryItem(AggregatedSamples.cc1.uid(), AggregatedSamples.co12.uid())
+    val categoryItem2_1 = DimensionItem.CategoryItem(AggregatedSamples.cc2.uid(), AggregatedSamples.co21.uid())
 
     val categoryOptionGroupSetItem1_1 = DimensionItem.CategoryOptionGroupSetItem("cogs1", "cog11")
     val categoryOptionGroupSetItem1_2 = DimensionItem.CategoryOptionGroupSetItem("cogs1", "cog12")

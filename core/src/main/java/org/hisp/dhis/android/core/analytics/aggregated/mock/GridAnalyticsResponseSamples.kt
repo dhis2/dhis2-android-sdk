@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.analytics.aggregated.mock
 
 import org.hisp.dhis.android.core.analytics.aggregated.*
 import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples.cc1
-import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples.co1
-import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples.co2
+import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples.co11
+import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples.co12
 import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples.dataElement1
 import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples.dataElement2
 import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples.orgunit1
@@ -44,8 +44,8 @@ object GridAnalyticsResponseSamples {
         metadata = mapOf(
             dataElement1.uid() to MetadataItem.DataElementItem(dataElement1),
             dataElement2.uid() to MetadataItem.DataElementItem(dataElement2),
-            co1.uid() to MetadataItem.CategoryOptionItem(co1),
-            co2.uid() to MetadataItem.CategoryOptionItem(co2),
+            co11.uid() to MetadataItem.CategoryOptionItem(co11),
+            co12.uid() to MetadataItem.CategoryOptionItem(co12),
             cc1.uid() to MetadataItem.CategoryItem(cc1),
             period1.periodId()!! to MetadataItem.PeriodItem(period1),
             period2.periodId()!! to MetadataItem.PeriodItem(period2),
@@ -59,10 +59,10 @@ object GridAnalyticsResponseSamples {
                     GridHeaderItem(dataElement2.uid(), 2)
                 ),
                 listOf(
-                    GridHeaderItem(co1.uid(), 1),
-                    GridHeaderItem(co2.uid(), 1),
-                    GridHeaderItem(co1.uid(), 1),
-                    GridHeaderItem(co2.uid(), 1)
+                    GridHeaderItem(co11.uid(), 1),
+                    GridHeaderItem(co12.uid(), 1),
+                    GridHeaderItem(co11.uid(), 1),
+                    GridHeaderItem(co12.uid(), 1)
                 )
             ),
             rows = listOf(
@@ -80,44 +80,44 @@ object GridAnalyticsResponseSamples {
         values = listOf(
             listOf(
                 GridResponseValue(
-                    listOf(dataElement1.uid(), co1.uid()),
+                    listOf(dataElement1.uid(), co11.uid()),
                     listOf(period1.periodId()!!),
                     "34.5"
                 ),
                 GridResponseValue(
-                    listOf(dataElement1.uid(), co2.uid()),
+                    listOf(dataElement1.uid(), co12.uid()),
                     listOf(period1.periodId()!!),
                     "10.0"
                 ),
                 GridResponseValue(
-                    listOf(dataElement2.uid(), co1.uid()),
+                    listOf(dataElement2.uid(), co11.uid()),
                     listOf(period1.periodId()!!),
                     "13"
                 ),
                 GridResponseValue(
-                    listOf(dataElement2.uid(), co2.uid()),
+                    listOf(dataElement2.uid(), co12.uid()),
                     listOf(period1.periodId()!!),
                     "15"
                 )
             ),
             listOf(
                 GridResponseValue(
-                    listOf(dataElement1.uid(), co1.uid()),
+                    listOf(dataElement1.uid(), co11.uid()),
                     listOf(period2.periodId()!!),
                     "34.5"
                 ),
                 GridResponseValue(
-                    listOf(dataElement1.uid(), co2.uid()),
+                    listOf(dataElement1.uid(), co12.uid()),
                     listOf(period2.periodId()!!),
                     "10.0"
                 ),
                 GridResponseValue(
-                    listOf(dataElement2.uid(), co1.uid()),
+                    listOf(dataElement2.uid(), co11.uid()),
                     listOf(period2.periodId()!!),
                     "13"
                 ),
                 GridResponseValue(
-                    listOf(dataElement2.uid(), co2.uid()),
+                    listOf(dataElement2.uid(), co12.uid()),
                     listOf(period2.periodId()!!),
                     "15"
                 )

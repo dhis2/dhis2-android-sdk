@@ -33,8 +33,8 @@ import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionalValue
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples.cc1
-import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples.co1
-import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples.co2
+import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples.co11
+import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples.co12
 import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples.dataElement1
 import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples.dataElement2
 import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples.orgunit1
@@ -47,8 +47,8 @@ object DimensionalResponseSamples {
         metadata = mapOf(
             dataElement1.uid() to MetadataItem.DataElementItem(dataElement1),
             dataElement2.uid() to MetadataItem.DataElementItem(dataElement2),
-            co1.uid() to MetadataItem.CategoryOptionItem(co1),
-            co2.uid() to MetadataItem.CategoryOptionItem(co2),
+            co11.uid() to MetadataItem.CategoryOptionItem(co11),
+            co12.uid() to MetadataItem.CategoryOptionItem(co12),
             cc1.uid() to MetadataItem.CategoryItem(cc1),
             period1.periodId()!! to MetadataItem.PeriodItem(period1),
             period2.periodId()!! to MetadataItem.PeriodItem(period2),
@@ -59,35 +59,35 @@ object DimensionalResponseSamples {
         filters = listOf(orgunit1.uid(), orgunit2.uid()),
         values = listOf(
             DimensionalValue(
-                listOf(dataElement1.uid(), co1.uid(), period1.periodId()!!),
+                listOf(dataElement1.uid(), co11.uid(), period1.periodId()!!),
                 "34.5"
             ),
             DimensionalValue(
-                listOf(dataElement1.uid(), co2.uid(), period1.periodId()!!),
+                listOf(dataElement1.uid(), co12.uid(), period1.periodId()!!),
                 "10.0"
             ),
             DimensionalValue(
-                listOf(dataElement2.uid(), co1.uid(), period1.periodId()!!),
+                listOf(dataElement2.uid(), co11.uid(), period1.periodId()!!),
                 "13"
             ),
             DimensionalValue(
-                listOf(dataElement2.uid(), co2.uid(), period1.periodId()!!),
+                listOf(dataElement2.uid(), co12.uid(), period1.periodId()!!),
                 "15"
             ),
             DimensionalValue(
-                listOf(dataElement1.uid(), co1.uid(), period2.periodId()!!),
+                listOf(dataElement1.uid(), co11.uid(), period2.periodId()!!),
                 "34.5"
             ),
             DimensionalValue(
-                listOf(dataElement1.uid(), co2.uid(), period2.periodId()!!),
+                listOf(dataElement1.uid(), co12.uid(), period2.periodId()!!),
                 "10.0"
             ),
             DimensionalValue(
-                listOf(dataElement2.uid(), co1.uid(), period2.periodId()!!),
+                listOf(dataElement2.uid(), co11.uid(), period2.periodId()!!),
                 "13"
             ),
             DimensionalValue(
-                listOf(dataElement2.uid(), co2.uid(), period2.periodId()!!),
+                listOf(dataElement2.uid(), co12.uid(), period2.periodId()!!),
                 "15"
             )
         )

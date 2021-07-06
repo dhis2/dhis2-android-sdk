@@ -65,7 +65,8 @@ public class EnrollmentSamples {
                 .geometry(Geometry.builder()
                         .type(FeatureType.POINT)
                         .coordinates("[21.21, 23.23]").build())
-                .state(State.TO_POST)
+                .syncState(State.TO_POST)
+                .aggregatedSyncState(State.TO_POST)
                 .deleted(false)
                 .build();
     }

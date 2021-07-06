@@ -25,18 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common.internal
 
-package org.hisp.dhis.android.core.enrollment.internal;
+import org.hisp.dhis.android.core.enrollment.Enrollment
+import org.hisp.dhis.android.core.event.Event
+import org.hisp.dhis.android.core.note.Note
+import org.hisp.dhis.android.core.relationship.RelationshipItem
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore;
-import org.hisp.dhis.android.core.enrollment.Enrollment;
+interface DataStatePropagator {
 
-import java.util.List;
-import java.util.Map;
+    fun propagateEnrollmentUpdate(enrollment: Enrollment?)
 
-public interface EnrollmentStore extends IdentifiableDeletableDataObjectStore<Enrollment> {
+    fun propagateEventUpdate(event: Event?)
 
-    Map<String, List<Enrollment>> queryEnrollmentsToPost();
+    fun propagateTrackedEntityDataValueUpdate(dataValue: TrackedEntityDataValue?)
 
-    List<String> queryMissingRelationshipsUids();
+    fun propagateTrackedEntityAttributeUpdate(trackedEntityAttributeValue: TrackedEntityAttributeValue?)
+
+    fun propagateNoteCreation(note: Note?)
+
+    fun propagateRelationshipUpdate(item: RelationshipItem?)
+
+    fun resetUploadingEnrollmentAndEventStates(trackedEntityInstanceUid: String?)
+
+    fun resetUploadingEventStates(enrollmentUid: String?)
+
+    fun refreshTrackedEntityInstanceAggregatedSyncState(trackedEntityInstanceUid: String)
+
+    fun refreshEnrollmentAggregatedSyncState(enrollmentUid: String)
 }

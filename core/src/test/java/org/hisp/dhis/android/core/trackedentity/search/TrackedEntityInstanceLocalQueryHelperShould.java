@@ -113,7 +113,7 @@ public class TrackedEntityInstanceLocalQueryHelperShould {
                 .build();
 
         String sqlQuery = localQueryHelper.getSqlQuery(scope, Collections.emptySet(), 50);
-        assertThat(sqlQuery).contains("state IN ('SYNCED', 'TO_POST', 'TO_UPDATE')");
+        assertThat(sqlQuery).contains("aggregatedSyncState IN ('SYNCED', 'TO_POST', 'TO_UPDATE')");
     }
 
     @Test
@@ -123,7 +123,7 @@ public class TrackedEntityInstanceLocalQueryHelperShould {
                 .build();
 
         String sqlQuery = localQueryHelper.getSqlQuery(scope, Collections.emptySet(), 50);
-        assertThat(sqlQuery).contains("state != 'RELATIONSHIP'");
+        assertThat(sqlQuery).contains("aggregatedSyncState != 'RELATIONSHIP'");
     }
 
     @Test

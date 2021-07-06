@@ -179,9 +179,17 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends BaseMoc
     }
 
     @Test
-    public void filter_by_state() {
+    public void filter_by_aggregated_sync_state() {
         List<Enrollment> enrollments = d2.enrollmentModule().enrollments()
-                .byState().eq(State.SYNCED)
+                .byAggregatedSyncState().eq(State.SYNCED)
+                .blockingGet();
+        assertThat(enrollments.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void filter_by_sync_state() {
+        List<Enrollment> enrollments = d2.enrollmentModule().enrollments()
+                .bySyncState().eq(State.SYNCED)
                 .blockingGet();
         assertThat(enrollments.size()).isEqualTo(2);
     }

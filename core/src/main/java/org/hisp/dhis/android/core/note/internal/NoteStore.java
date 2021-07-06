@@ -46,7 +46,7 @@ public final class NoteStore {
         w.bind(5, o.storedBy());
         w.bind(6, o.storedDate());
         w.bind(7, o.uid());
-        w.bind(8, o.state());
+        w.bind(8, o.syncState());
         w.bind(9, o.deleted());
     };
 

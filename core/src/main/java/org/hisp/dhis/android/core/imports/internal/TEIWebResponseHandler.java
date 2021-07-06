@@ -28,14 +28,14 @@
 
 package org.hisp.dhis.android.core.imports.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceImportHandler;
 
-import javax.inject.Inject;
-
-import androidx.annotation.NonNull;
-
 import java.util.List;
+
+import javax.inject.Inject;
 
 import dagger.Reusable;
 

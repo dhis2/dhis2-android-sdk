@@ -91,7 +91,7 @@ public final class FileResourceCollectionRepository
 
     @Override
     public Observable<D2Progress> upload() {
-        return Observable.fromCallable(() -> byState().in(State.uploadableStates())
+        return Observable.fromCallable(() -> bySyncState().in(State.uploadableStates())
                 .blockingGetWithoutChildren())
                 .flatMap(postCall::uploadFileResources);
     }
@@ -156,7 +156,17 @@ public final class FileResourceCollectionRepository
         return cf.string(Columns.PATH);
     }
 
+    /**
+     * @deprecated Use {@link #bySyncState()} instead.
+     *
+     * @return
+     */
+    @Deprecated
     public EnumFilterConnector<FileResourceCollectionRepository, State> byState() {
-        return cf.enumC(Columns.STATE);
+        return bySyncState();
+    }
+
+    public EnumFilterConnector<FileResourceCollectionRepository, State> bySyncState() {
+        return cf.enumC(Columns.SYNC_STATE);
     }
 }

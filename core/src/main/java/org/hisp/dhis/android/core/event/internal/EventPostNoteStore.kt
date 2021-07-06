@@ -44,7 +44,7 @@ internal class EventPostNoteStore @Inject internal constructor(
     fun queryNotes(): List<Note> {
         val whereNotesClause = WhereClauseBuilder()
             .appendInKeyStringValues(
-                DataColumns.STATE, State.uploadableStatesIncludingError().map { it.name }
+                DataColumns.SYNC_STATE, State.uploadableStatesIncludingError().map { it.name }
             )
             .appendKeyStringValue(NoteTableInfo.Columns.NOTE_TYPE, Note.NoteType.EVENT_NOTE)
             .build()

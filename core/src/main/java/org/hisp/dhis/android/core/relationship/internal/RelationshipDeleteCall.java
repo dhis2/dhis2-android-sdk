@@ -122,7 +122,7 @@ public final class RelationshipDeleteCall {
                 } else {
                     // TODO Implement better handling
                     // The relationship is marked as error, but there is no handling in the TEI. The TEI is being posted
-                    relationshipStore.setState(relationship.uid(), State.ERROR);
+                    relationshipStore.setSyncState(relationship.uid(), State.ERROR);
                 }
                 return httpResponse;
             }

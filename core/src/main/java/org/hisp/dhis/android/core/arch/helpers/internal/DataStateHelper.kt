@@ -40,6 +40,6 @@ object DataStateHelper {
 
     @JvmStatic
     fun forcedOrOwn(o: DataObject, forcedState: State?): State {
-        return forcedState ?: o.state()
+        return forcedState ?: o.syncState()
     }
 }

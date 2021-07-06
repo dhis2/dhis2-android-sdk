@@ -26,21 +26,9 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.helpers.internal;
+package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.hisp.dhis.android.core.common.State;
 
-public final class EnumHelper {
-
-    public static List<String> asStringList(Enum<?>... enums) {
-        List<String> enumsStr = new ArrayList<>(enums.length);
-        for (Enum<?> e: enums) {
-            enumsStr.add(e.name());
-        }
-        return enumsStr;
-    }
-
-    private EnumHelper() {
-    }
+public final class IgnoreStateColumnAdapter extends IgnoreColumnAdapter<State> {
 }

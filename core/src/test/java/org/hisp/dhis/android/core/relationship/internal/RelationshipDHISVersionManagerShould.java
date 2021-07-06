@@ -102,7 +102,7 @@ public class RelationshipDHISVersionManagerShould extends RelationshipSamples {
         assert230Fields(compatible);
         assertThat(compatible.uid()).isEqualTo(UID);
         assertThat(compatible.relative()).isNull();
-        assertThat(compatible.state()).isEqualTo(STATE);
+        assertThat(compatible.syncState()).isEqualTo(STATE);
         assertThat(compatible.deleted()).isEqualTo(DELETED);
     }
 
@@ -121,7 +121,7 @@ public class RelationshipDHISVersionManagerShould extends RelationshipSamples {
         assertThat(compatible.trackedEntityInstanceA()).isEqualTo(FROM_UID);
         assertThat(compatible.trackedEntityInstanceB()).isEqualTo(TO_UID);
         assertThat(compatible.uid()).isEqualTo(TYPE);
-        assertThat(compatible.state()).isEqualTo(STATE);
+        assertThat(compatible.syncState()).isEqualTo(STATE);
         assertThat(compatible.deleted()).isEqualTo(DELETED);
     }
 

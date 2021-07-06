@@ -210,7 +210,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockInte
         List<Enrollment> downloadedEnrollmentsWithoutIdAndDeleteFalse = new ArrayList<>();
         for (Enrollment enrollment : downloadedEnrollments) {
             downloadedEnrollmentsWithoutIdAndDeleteFalse.add(
-                    enrollment.toBuilder().id(null).deleted(false).state(null).notes(new ArrayList<>()).build());
+                    enrollment.toBuilder().id(null).deleted(false).notes(new ArrayList<>()).build());
         }
 
         EventStore eventStore = EventStoreImpl.create(databaseAdapter);
@@ -219,7 +219,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockInte
         List<Event> downloadedEventsWithoutValuesAndDeleteFalse = new ArrayList<>();
         for (Event event : downloadedEventsWithoutValues) {
             downloadedEventsWithoutValuesAndDeleteFalse.add(
-                    event.toBuilder().id(null).deleted(false).state(null).build());
+                    event.toBuilder().id(null).deleted(false).build());
         }
 
         List<TrackedEntityDataValue> dataValueList = TrackedEntityDataValueStoreImpl.create(databaseAdapter).selectAll();
@@ -282,7 +282,6 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends BaseMockInte
                                 downloadedTei.toBuilder(), relationships),
                         downloadedEnrollments)
                         .id(null)
-                        .state(null)
                         .deleted(false)
                         .trackedEntityAttributeValues(attValuesWithoutIdAndTEI)
                         .build();

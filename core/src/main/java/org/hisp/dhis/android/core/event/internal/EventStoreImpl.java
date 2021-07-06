@@ -72,7 +72,7 @@ public final class EventStoreImpl extends IdentifiableDeletableDataObjectStoreIm
         w.bind(13, o.eventDate());
         w.bind(14, o.completedDate());
         w.bind(15, o.dueDate());
-        w.bind(16, o.state());
+        w.bind(16, o.syncState());
         w.bind(17, o.attributeOptionCombo());
         w.bind(18, o.deleted());
         w.bind(19, o.assignedUser());
@@ -89,7 +89,7 @@ public final class EventStoreImpl extends IdentifiableDeletableDataObjectStoreIm
     public Map<String, List<Event>> queryEventsAttachedToEnrollmentToPost() {
         String eventsAttachedToEnrollmentsQuery = new WhereClauseBuilder()
                 .appendIsNotNullValue(Columns.ENROLLMENT)
-                .appendInKeyStringValues(Columns.STATE, EnumHelper.asStringList(State.uploadableStates())).build();
+                .appendInKeyStringValues(Columns.SYNC_STATE, EnumHelper.asStringList(State.uploadableStates())).build();
 
         List<Event> eventList = selectWhere(eventsAttachedToEnrollmentsQuery);
 
@@ -106,7 +106,7 @@ public final class EventStoreImpl extends IdentifiableDeletableDataObjectStoreIm
         String states = CollectionsHelper.commaAndSpaceSeparatedArrayValues(
                 CollectionsHelper.withSingleQuotationMarksArray(EnumHelper.asStringList(State.uploadableStates())));
         String singleEventsToPostQuery = QUERY_SINGLE_EVENTS +
-                " AND (Event.state IN (" + states + "))";
+                " AND (" + Columns.SYNC_STATE + " IN (" + states + "))";
         return eventListFromQuery(singleEventsToPostQuery);
     }
 
@@ -165,7 +165,7 @@ public final class EventStoreImpl extends IdentifiableDeletableDataObjectStoreIm
     @Override
     public List<String> queryMissingRelationshipsUids() {
         String whereRelationshipsClause = new WhereClauseBuilder()
-                .appendKeyStringValue(DataColumns.STATE, State.RELATIONSHIP)
+                .appendKeyStringValue(DataColumns.SYNC_STATE, State.RELATIONSHIP)
                 .appendIsNullValue(EventTableInfo.Columns.ORGANISATION_UNIT)
                 .build();
 

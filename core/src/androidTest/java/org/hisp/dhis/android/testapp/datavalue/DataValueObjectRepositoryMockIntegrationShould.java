@@ -84,7 +84,7 @@ public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockInte
 
         repository.blockingSet("value");
         assertThat(repository.blockingExists()).isEqualTo(Boolean.TRUE);
-        assertThat(repository.blockingGet().state()).isEqualTo(State.TO_POST);
+        assertThat(repository.blockingGet().syncState()).isEqualTo(State.TO_POST);
         repository.blockingDelete();
         assertThat(repository.blockingExists()).isEqualTo(Boolean.FALSE);
     }
@@ -96,11 +96,11 @@ public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockInte
         repository.blockingSet("value");
         DataValueStore.create(databaseAdapter).setState(repository.blockingGet(), State.ERROR);
         assertThat(repository.blockingExists()).isEqualTo(Boolean.TRUE);
-        assertThat(repository.blockingGet().state()).isEqualTo(State.ERROR);
+        assertThat(repository.blockingGet().syncState()).isEqualTo(State.ERROR);
         repository.blockingDelete();
         assertThat(repository.blockingExists()).isEqualTo(Boolean.TRUE);
         assertThat(repository.blockingGet().deleted()).isEqualTo(Boolean.TRUE);
-        assertThat(repository.blockingGet().state()).isEqualTo(State.TO_UPDATE);
+        assertThat(repository.blockingGet().syncState()).isEqualTo(State.TO_UPDATE);
     }
 
     @Test
@@ -111,12 +111,12 @@ public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockInte
         DataValueStore.create(databaseAdapter).setState(repository.blockingGet(), State.TO_UPDATE);
 
         repository.blockingDelete();
-        assertThat(repository.blockingGet().state()).isEqualTo(State.TO_UPDATE);
         assertThat(repository.blockingGet().deleted()).isEqualTo(Boolean.TRUE);
+        assertThat(repository.blockingGet().syncState()).isEqualTo(State.TO_UPDATE);
 
         repository.blockingSet("new_value");
-        assertThat(repository.blockingGet().state()).isEqualTo(State.TO_UPDATE);
         assertThat(repository.blockingGet().deleted()).isEqualTo(Boolean.FALSE);
+        assertThat(repository.blockingGet().syncState()).isEqualTo(State.TO_UPDATE);
     }
 
     @Test

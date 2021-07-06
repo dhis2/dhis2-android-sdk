@@ -89,7 +89,7 @@ public final class TrackedEntityInstanceCollectionRepository
         return Observable.concat(
                 jobQueryCall.queryPendingJobs(),
                 Observable.fromCallable(() ->
-                        byState().in(State.uploadableStates()).blockingGetWithoutChildren()
+                        byAggregatedSyncState().in(State.uploadableStates()).blockingGetWithoutChildren()
                 ).flatMap(postCall::uploadTrackedEntityInstances)
         );
     }
@@ -141,8 +141,20 @@ public final class TrackedEntityInstanceCollectionRepository
         return cf.string(Columns.GEOMETRY_COORDINATES);
     }
 
+    /**
+     * @deprecated Use {@link #byAggregatedSyncState()} instead.
+     */
+    @Deprecated
     public EnumFilterConnector<TrackedEntityInstanceCollectionRepository, State> byState() {
-        return cf.enumC(Columns.STATE);
+        return byAggregatedSyncState();
+    }
+
+    public EnumFilterConnector<TrackedEntityInstanceCollectionRepository, State> bySyncState() {
+        return cf.enumC(Columns.SYNC_STATE);
+    }
+
+    public EnumFilterConnector<TrackedEntityInstanceCollectionRepository, State> byAggregatedSyncState() {
+        return cf.enumC(Columns.AGGREGATED_SYNC_STATE);
     }
 
     public BooleanFilterConnector<TrackedEntityInstanceCollectionRepository> byDeleted() {

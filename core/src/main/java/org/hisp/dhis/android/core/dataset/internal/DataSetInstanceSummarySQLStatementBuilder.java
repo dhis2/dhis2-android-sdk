@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.dataset.internal;
 
 import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType;
-import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.DeletableDataColumns;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.dataset.DataSetTableInfo;
@@ -44,7 +43,7 @@ public class DataSetInstanceSummarySQLStatementBuilder extends DataSetInstanceSQ
     private static final String DS_LIST_TABLE_ALIAS = "dslist";
     private static final String DS_INSTANCE_ALIAS = "dsinstance";
 
-    private static final String STATE = DataColumns.STATE;
+    private static final String STATE = STATE_ALIAS;
 
     private static final String SELECT_STATE_ORDERING = " MAX(CASE " +
             "WHEN " + STATE + " IN ('" + State.SYNCED + "','" + State.SYNCED_VIA_SMS + "') THEN 1 " +

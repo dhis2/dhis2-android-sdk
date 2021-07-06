@@ -90,11 +90,12 @@ public final class EnrollmentObjectRepository
     private Enrollment.Builder updateBuilder() {
         Enrollment enrollment = blockingGetWithoutChildren();
         Date updateDate = new Date();
-        State state = enrollment.state();
+        State state = enrollment.aggregatedSyncState();
         state = state == State.TO_POST ? state : State.TO_UPDATE;
 
         return enrollment.toBuilder()
-                .state(state)
+                .syncState(state)
+                .aggregatedSyncState(state)
                 .lastUpdated(updateDate)
                 .lastUpdatedAtClient(updateDate);
     }

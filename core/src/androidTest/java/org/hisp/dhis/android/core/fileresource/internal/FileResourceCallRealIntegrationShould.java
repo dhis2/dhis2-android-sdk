@@ -110,7 +110,7 @@ public class FileResourceCallRealIntegrationShould extends BaseRealIntegrationTe
         TrackedEntityInstance trackedEntityInstance2 =
                 d2.trackedEntityModule().trackedEntityInstances().blockingGet().get(0);
 
-        assertThat(trackedEntityInstance2.state()).isEqualTo(State.SYNCED);
+        assertThat(trackedEntityInstance2.syncState()).isEqualTo(State.SYNCED);
     }
 
     //@Test

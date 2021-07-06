@@ -42,7 +42,7 @@ internal class JobReportEnrollmentHandler @Inject internal constructor(
 ) : JobReportTypeHandler() {
 
     override fun handleObject(uid: String, state: State) {
-        enrollmentStore.setState(uid, state)
+        enrollmentStore.setSyncState(uid, state)
         conflictStore.deleteEnrollmentConflicts(uid)
     }
 

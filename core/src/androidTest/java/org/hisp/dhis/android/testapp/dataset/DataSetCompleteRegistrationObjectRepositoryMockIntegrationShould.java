@@ -57,7 +57,7 @@ public class DataSetCompleteRegistrationObjectRepositoryMockIntegrationShould ex
         DataSetCompleteRegistration dataSetCompleteRegistration = objectRepository().blockingGet();
 
         assertThat(dataSetCompleteRegistration.deleted()).isTrue();
-        assertThat(dataSetCompleteRegistration.state()).isEqualTo(State.TO_UPDATE);
+        assertThat(dataSetCompleteRegistration.syncState()).isEqualTo(State.TO_UPDATE);
     }
 
     @Test

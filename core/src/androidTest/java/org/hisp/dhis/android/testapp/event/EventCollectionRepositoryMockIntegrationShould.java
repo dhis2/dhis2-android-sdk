@@ -221,7 +221,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends BaseMockInte
     public void filter_by_state() {
         List<Event> events =
                 d2.eventModule().events()
-                        .byState().eq(State.SYNCED)
+                        .bySyncState().eq(State.SYNCED)
                         .blockingGet();
 
         assertThat(events.size()).isEqualTo(4);

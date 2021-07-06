@@ -85,7 +85,8 @@ public final class EnrollmentTableInfo {
                     TRACKED_ENTITY_INSTANCE,
                     GEOMETRY_TYPE,
                     GEOMETRY_COORDINATES,
-                    STATE,
+                    SYNC_STATE,
+                    AGGREGATED_SYNC_STATE,
                     DELETED
             );
         }

@@ -41,7 +41,7 @@ internal class NewTrackerImporterNoteTransformer : Transformer<Note, NewTrackerI
             .value(o.value())
             .storedBy(o.storedBy())
             .storedAt(o.storedDate())
-            .state(o.state())
+            .syncState(o.syncState())
             .build()
     }
 }

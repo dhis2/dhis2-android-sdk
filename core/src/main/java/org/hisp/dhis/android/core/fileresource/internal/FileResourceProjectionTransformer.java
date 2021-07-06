@@ -43,7 +43,7 @@ final class FileResourceProjectionTransformer implements Transformer<File, FileR
         Date creationDate = new Date();
 
         return FileResource.builder()
-                .state(State.TO_POST)
+                .syncState(State.TO_POST)
                 .name(file.getName())
                 .created(creationDate)
                 .lastUpdated(creationDate)

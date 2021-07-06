@@ -207,7 +207,7 @@ public final class FileResourcePostCall {
     private void updateFileResource(FileResource fileResource, FileResource downloadedFileResource, File file) {
         fileResourceStore.delete(fileResource.uid());
         fileResourceHandler.handle(downloadedFileResource.toBuilder()
-                .state(State.SYNCED)
+                .syncState(State.SYNCED)
                 .path(file.getAbsolutePath())
                 .build());
     }

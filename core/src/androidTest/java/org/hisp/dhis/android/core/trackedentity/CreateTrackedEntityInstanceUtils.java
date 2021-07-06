@@ -50,7 +50,7 @@ public class CreateTrackedEntityInstanceUtils {
         trackedEntityInstance.put(Columns.LAST_UPDATED, DATE);
         trackedEntityInstance.put(Columns.ORGANISATION_UNIT, organisationUnit);
         trackedEntityInstance.put(Columns.TRACKED_ENTITY_TYPE, trackedEntityType);
-        trackedEntityInstance.put(Columns.STATE, STATE.name());
+        trackedEntityInstance.put(Columns.SYNC_STATE, STATE.name());
         return trackedEntityInstance;
     }
 }

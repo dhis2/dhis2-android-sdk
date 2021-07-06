@@ -78,7 +78,7 @@ public class DataValueTableInfo {
                     LAST_UPDATED,
                     COMMENT,
                     FOLLOW_UP,
-                    STATE,
+                    SYNC_STATE,
                     DELETED);
         }
 

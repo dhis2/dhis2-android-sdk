@@ -58,7 +58,7 @@ public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
         w.bind(9, dataValue.lastUpdated());
         w.bind(10, dataValue.comment());
         w.bind(11, dataValue.followUp());
-        w.bind(12, dataValue.state());
+        w.bind(12, dataValue.syncState());
         w.bind(13, dataValue.deleted());
     };
 
@@ -95,7 +95,7 @@ public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
 
     Collection<DataValue> getDataValuesWithState(State state) {
         String whereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(Columns.STATE, state.name()).build();
+                .appendKeyStringValue(Columns.SYNC_STATE, state.name()).build();
         return selectWhere(whereClause);
     }
 
@@ -105,7 +105,7 @@ public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
      */
     public void setState(DataValue dataValue, State newState) {
 
-        DataValue updatedDataValue = dataValue.toBuilder().state(newState).build();
+        DataValue updatedDataValue = dataValue.toBuilder().syncState(newState).build();
 
         updateWhere(updatedDataValue);
     }
@@ -116,7 +116,7 @@ public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
 
     boolean isDataValueBeingUpload(DataValue dataValue) {
         String whereClause = uniqueWhereClauseBuilder(dataValue)
-                .appendKeyStringValue(Columns.STATE, State.UPLOADING)
+                .appendKeyStringValue(Columns.SYNC_STATE, State.UPLOADING)
                 .build();
         return selectWhere(whereClause).size() > 0;
     }

@@ -35,7 +35,8 @@ import org.hisp.dhis.android.core.analytics.aggregated.DimensionalValue
 import javax.inject.Inject
 
 internal class AnalyticsService @Inject constructor(
-    private val analyticsServiceHelper: AnalyticsServiceHelper
+    private val analyticsServiceHelper: AnalyticsServiceHelper,
+    private val analyticsServiceMetadataHelper: AnalyticsServiceMetadataHelper
 ) {
 
     fun evaluate(params: AnalyticsRepositoryParams): DimensionalResponse {
@@ -50,11 +51,13 @@ internal class AnalyticsService @Inject constructor(
         val dimensions = analyticsServiceHelper.getDimensions(params)
         val evaluationItems = analyticsServiceHelper.getEvaluationItems(params, dimensions)
 
+        val metadata = analyticsServiceMetadataHelper.getMetadata(evaluationItems)
+
         val values = evaluationItems.map { evaluateItem(it) }
 
         // TODO
         return DimensionalResponse(
-            metadata = emptyMap(),
+            metadata = metadata,
             dimensions = dimensions,
             filters = listOf(),
             values = values

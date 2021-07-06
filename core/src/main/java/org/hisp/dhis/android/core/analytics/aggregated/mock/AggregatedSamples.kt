@@ -28,17 +28,53 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.mock
 
+import org.hisp.dhis.android.core.category.Category
+import org.hisp.dhis.android.core.category.CategoryOption
+import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.period.Period
+
 object AggregatedSamples {
-    const val dataElement1 = "fbfJHSPpUQD" // ANC 1st visit
-    const val dataElement2 = "cYeuwXTCPkU" // ANC 2nd visit
+    val dataElement1 = DataElement.builder()
+        .uid("fbfJHSPpUQD")
+        .displayName("ANC 1st visit")
+        .build()
 
-    const val cc1 = "fMZEcRHuamy" // Fixed / Outreach
-    const val co1 = "pq2XI5kz2BY" // Fixed
-    const val co2 = "PT59n8BQbqM" // Outreach
+    val dataElement2 = DataElement.builder()
+        .uid("cYeuwXTCPkU")
+        .displayName("ANC 2nd visit")
+        .build()
 
-    const val period1 = "202103"
-    const val period2 = "202102"
+    val cc1 = Category.builder()
+        .uid("fMZEcRHuamy")
+        .displayName("Fixed / Outreach")
+        .build()
 
-    const val orgunit1 = "DiszpKrYNg8" // Ngelehun
-    const val orgunit2 = "g8upMTyEZGZ" // Njandama
+    val co1 = CategoryOption.builder()
+        .uid("pq2XI5kz2BY")
+        .displayName("Fixed")
+        .build()
+
+    val co2 = CategoryOption.builder()
+        .uid("PT59n8BQbqM")
+        .name("Outreach")
+        .build()
+
+    val period1 = Period.builder()
+        .periodId("202103")
+        .build()
+
+    val period2 = Period.builder()
+        .periodId("202104")
+        .build()
+
+    val orgunit1 = OrganisationUnit.builder()
+        .uid("DiszpKrYNg8")
+        .displayName("Ngelehun")
+        .build()
+
+    val orgunit2 = OrganisationUnit.builder()
+        .uid("g8upMTyEZGZ")
+        .name("Njandama")
+        .build()
 }

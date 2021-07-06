@@ -33,10 +33,10 @@ import org.hisp.dhis.android.core.common.RelativePeriod
 
 object AnalyticsServiceHelperSamples {
 
-    val dataElementItem1 = DimensionItem.DataItem.DataElement("uid1")
-    val dataElementItem2 = DimensionItem.DataItem.DataElement("uid2")
-    val programIndicatorItem = DimensionItem.DataItem.ProgramIndicator("pi1")
-    val indicatorItem = DimensionItem.DataItem.Indicator("i1")
+    val dataElementItem1 = DimensionItem.DataItem.DataElementItem("uid1")
+    val dataElementItem2 = DimensionItem.DataItem.DataElementItem("uid2")
+    val programIndicatorItem = DimensionItem.DataItem.ProgramIndicatorItem("pi1")
+    val indicatorItem = DimensionItem.DataItem.IndicatorItem("i1")
 
     val periodAbsolute1 = DimensionItem.PeriodItem.Absolute("202101")
     val periodAbsolute2 = DimensionItem.PeriodItem.Absolute("202102")

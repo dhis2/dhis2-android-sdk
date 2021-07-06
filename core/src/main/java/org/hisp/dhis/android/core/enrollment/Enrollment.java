@@ -234,11 +234,11 @@ public abstract class Enrollment extends BaseDeletableDataObject implements Obje
         public abstract Builder aggregatedSyncState(State aggregatedSyncState);
 
         /**
-         * @deprecated Use {@link #aggregatedSyncState(State)} instead.
+         * @deprecated Use {@link #aggregatedSyncState(State)} and {@link #syncState(State)} instead.
          */
         @Deprecated
         public Builder state(State state) {
-            return aggregatedSyncState(state);
+            return aggregatedSyncState(state).syncState(state);
         }
 
         abstract Enrollment autoBuild();

@@ -187,11 +187,11 @@ public abstract class TrackedEntityInstance extends BaseDeletableDataObject impl
         public abstract Builder aggregatedSyncState(State state);
 
         /**
-         * @deprecated Use {@link #aggregatedSyncState(State)} instead.
+         * @deprecated Use {@link #aggregatedSyncState(State)} and {@link #syncState(State)} instead.
          */
         @Deprecated
         public Builder state(State state) {
-            return aggregatedSyncState(state);
+            return aggregatedSyncState(state).syncState(state);
         }
 
         abstract Builder relationships(List<Relationship229Compatible> relationships);

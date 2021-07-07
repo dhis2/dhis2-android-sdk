@@ -25,26 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization
+package org.hisp.dhis.android.core.visualization.internal
 
-import dagger.Reusable
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
-import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
+import org.hisp.dhis.android.core.visualization.VisualizationCategoryDimensionLink
+import org.hisp.dhis.android.core.visualization.VisualizationCategoryDimensionLinkTableInfo
 
-@Reusable
-internal class VisualizationHandler @Inject constructor(
-    store: ObjectWithoutUidStore<Visualization>
-) : ObjectWithoutUidHandlerImpl<Visualization>(store) {
-
-    override fun beforeCollectionHandled(
-        oCollection: Collection<Visualization>
-    ): Collection<Visualization> {
-        store.delete()
-        return oCollection
+internal object VisualizationCategoryDimensionLinkStore {
+    private val BINDER = StatementBinder { o: VisualizationCategoryDimensionLink, w: StatementWrapper ->
+        w.bind(1, o.visualization())
+        w.bind(2, o.category())
+        w.bind(3, o.categoryOption())
     }
 
-    override fun afterObjectHandled(o: Visualization, action: HandleAction) {
+    fun create(databaseAdapter: DatabaseAdapter): LinkStore<VisualizationCategoryDimensionLink> {
+        return StoreFactory.linkStore(
+            databaseAdapter,
+            VisualizationCategoryDimensionLinkTableInfo.TABLE_INFO,
+            VisualizationCategoryDimensionLinkTableInfo.Columns.CATEGORY_OPTION,
+            BINDER
+        ) { VisualizationCategoryDimensionLink.create(it) }
     }
 }

@@ -25,30 +25,50 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization.internal
 
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
-import org.hisp.dhis.android.core.data.visualization.VisualizationSamples
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
-import org.hisp.dhis.android.core.visualization.HideEmptyItemStrategy
-import org.hisp.dhis.android.core.visualization.Visualization
-import org.hisp.dhis.android.core.visualization.VisualizationTableInfo
-import org.junit.runner.RunWith
+package org.hisp.dhis.android.core.visualization;
 
-@RunWith(D2JunitRunner::class)
-class VisualizationStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<Visualization>(
-    VisualizationStore.create(TestDatabaseAdapterFactory.get()),
-    VisualizationTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
-) {
-    override fun buildObject(): Visualization {
-        return VisualizationSamples.visualization()
+import android.database.Cursor;
+
+import androidx.annotation.NonNull;
+
+import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.CoreObject;
+
+@AutoValue
+public abstract class VisualizationCategoryDimensionLink implements CoreObject {
+
+    @NonNull
+    public abstract String visualization();
+
+    @NonNull
+    public abstract String category();
+
+    @NonNull
+    public abstract String categoryOption();
+
+    public static Builder builder() {
+        return new $$AutoValue_VisualizationCategoryDimensionLink.Builder();
     }
 
-    override fun buildObjectToUpdate(): Visualization {
-        return VisualizationSamples.visualization().toBuilder()
-            .hideEmptyRowItems(HideEmptyItemStrategy.AFTER_LAST)
-            .build()
+    public abstract Builder toBuilder();
+
+    public static VisualizationCategoryDimensionLink create(Cursor cursor) {
+        return $AutoValue_VisualizationCategoryDimensionLink.createFromCursor(cursor);
+    }
+
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseObject.Builder<Builder> {
+        public abstract Builder id(Long id);
+
+        public abstract Builder visualization(String visualization);
+
+        public abstract Builder category(String category);
+
+        public abstract Builder categoryOption(String categoryOption);
+
+        public abstract VisualizationCategoryDimensionLink build();
     }
 }

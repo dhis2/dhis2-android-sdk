@@ -27,28 +27,29 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
-import org.hisp.dhis.android.core.data.visualization.VisualizationSamples
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
-import org.hisp.dhis.android.core.visualization.HideEmptyItemStrategy
-import org.hisp.dhis.android.core.visualization.Visualization
-import org.hisp.dhis.android.core.visualization.VisualizationTableInfo
-import org.junit.runner.RunWith
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.visualization.VisualizationCategoryDimensionLink
 
-@RunWith(D2JunitRunner::class)
-class VisualizationStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<Visualization>(
-    VisualizationStore.create(TestDatabaseAdapterFactory.get()),
-    VisualizationTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
-) {
-    override fun buildObject(): Visualization {
-        return VisualizationSamples.visualization()
+@Module
+internal class VisualizationCategoryDimensionEntityDIModule {
+
+    @Provides
+    @Reusable
+    fun store(databaseAdapter: DatabaseAdapter): LinkStore<VisualizationCategoryDimensionLink> {
+        return VisualizationCategoryDimensionLinkStore.create(databaseAdapter)
     }
 
-    override fun buildObjectToUpdate(): Visualization {
-        return VisualizationSamples.visualization().toBuilder()
-            .hideEmptyRowItems(HideEmptyItemStrategy.AFTER_LAST)
-            .build()
-    }
+    @Provides
+    @Reusable
+    fun handler(store: LinkStore<VisualizationCategoryDimensionLink>):
+        LinkHandler<ObjectWithUid, VisualizationCategoryDimensionLink> {
+            return LinkHandlerImpl(store)
+        }
 }

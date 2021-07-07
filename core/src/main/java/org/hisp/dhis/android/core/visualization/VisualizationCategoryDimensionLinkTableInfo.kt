@@ -25,30 +25,38 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization.internal
 
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
-import org.hisp.dhis.android.core.data.visualization.VisualizationSamples
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
-import org.hisp.dhis.android.core.visualization.HideEmptyItemStrategy
-import org.hisp.dhis.android.core.visualization.Visualization
-import org.hisp.dhis.android.core.visualization.VisualizationTableInfo
-import org.junit.runner.RunWith
+package org.hisp.dhis.android.core.visualization
 
-@RunWith(D2JunitRunner::class)
-class VisualizationStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<Visualization>(
-    VisualizationStore.create(TestDatabaseAdapterFactory.get()),
-    VisualizationTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
-) {
-    override fun buildObject(): Visualization {
-        return VisualizationSamples.visualization()
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.common.CoreColumns
+
+object VisualizationCategoryDimensionLinkTableInfo {
+    val TABLE_INFO: TableInfo = object : TableInfo() {
+        override fun name(): String {
+            return "VisualizationCategoryDimensionLink"
+        }
+
+        override fun columns(): CoreColumns {
+            return Columns()
+        }
     }
 
-    override fun buildObjectToUpdate(): Visualization {
-        return VisualizationSamples.visualization().toBuilder()
-            .hideEmptyRowItems(HideEmptyItemStrategy.AFTER_LAST)
-            .build()
+    class Columns : CoreColumns() {
+        override fun all(): Array<String> {
+            return CollectionsHelper.appendInNewArray(
+                super.all(),
+                VISUALIZATION,
+                CATEGORY,
+                CATEGORY_OPTION
+            )
+        }
+
+        companion object {
+            const val VISUALIZATION = "visualization"
+            const val CATEGORY = "category"
+            const val CATEGORY_OPTION = "categoryOption"
+        }
     }
 }

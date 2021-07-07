@@ -28,10 +28,13 @@
 
 package org.hisp.dhis.android.core.settings;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
+import java.util.Collections;
 import java.util.List;
 
 @AutoValue
@@ -40,6 +43,7 @@ public abstract class AnalyticsSettings {
 
     public abstract List<AnalyticsTeiSetting> tei();
 
+    @Nullable
     public abstract AnalyticsDhisVisualizationsSetting dhisVisualizations();
 
     public static Builder builder() {
@@ -54,6 +58,21 @@ public abstract class AnalyticsSettings {
 
         public abstract Builder dhisVisualizations(AnalyticsDhisVisualizationsSetting dhisVisualizations);
 
-        public abstract AnalyticsSettings build();
+        public abstract AnalyticsSettings autoBuild();
+
+        //Auxiliary fields
+        abstract AnalyticsDhisVisualizationsSetting dhisVisualizations();
+
+        public AnalyticsSettings build() {
+            if (dhisVisualizations() == null) {
+                dhisVisualizations(AnalyticsDhisVisualizationsSetting.builder()
+                        .home(Collections.emptyList())
+                        .program(Collections.emptyMap())
+                        .dataSet(Collections.emptyMap())
+                        .build());
+            }
+
+            return autoBuild();
+        }
     }
 }

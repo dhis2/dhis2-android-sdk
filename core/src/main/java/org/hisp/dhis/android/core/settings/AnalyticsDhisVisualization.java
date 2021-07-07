@@ -47,10 +47,10 @@ public abstract class AnalyticsDhisVisualization implements CoreObject, ObjectWi
     public abstract String scopeUid();
 
     @Nullable
-    public abstract String idGroup();
+    public abstract String groupUid();
 
     @Nullable
-    public abstract String name();
+    public abstract String groupName();
 
     @Nullable
     public abstract String scope();
@@ -79,9 +79,9 @@ public abstract class AnalyticsDhisVisualization implements CoreObject, ObjectWi
 
         public abstract Builder scopeUid(String scopeUid);
 
-        public abstract Builder idGroup(String idGroup);
+        public abstract Builder groupUid(String groupUid);
 
-        public abstract Builder name(String name);
+        public abstract Builder groupName(String groupName);
 
         public abstract Builder scope(String scope);
 

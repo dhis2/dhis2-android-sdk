@@ -41,13 +41,14 @@ import static com.google.common.truth.Truth.assertThat;
 public class VisualizationShould extends BaseObjectShould implements ObjectShould {
 
     public VisualizationShould() {
-        super("visualization/visualization.json");
+        super("visualization/visualization_simplified.json");
     }
 
     @Override
     @Test
     public void map_from_json_string() throws IOException, ParseException {
-        Visualization jsonVisualization = objectMapper.readValue(jsonStream, Visualization.class);
+        Visualization jsonVisualization = objectMapper.readValue(jsonStream, Visualization.class)
+                .toBuilder().id(null).build();
         Visualization expectedVisualization = VisualizationSamples.INSTANCE.visualization()
                 .toBuilder().id(null).build();
         assertThat(jsonVisualization).isEqualTo(expectedVisualization);

@@ -15,7 +15,7 @@
   "hideEmptyRowItems": "NONE",
   "hideLegend": false,
   "showHierarchy": false,
-  "rowTotals": false,
+  "rowTotals": true,
   "rowSubTotals": false,
   "colTotals": false,
   "colSubTotals": false,

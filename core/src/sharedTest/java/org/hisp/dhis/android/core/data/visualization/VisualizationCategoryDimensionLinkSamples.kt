@@ -25,29 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.visualization.internal
+package org.hisp.dhis.android.core.data.visualization
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
 import org.hisp.dhis.android.core.visualization.VisualizationCategoryDimensionLink
-import org.hisp.dhis.android.core.visualization.VisualizationCategoryDimensionLinkTableInfo
 
-internal object VisualizationCategoryDimensionLinkStore {
-    private val BINDER = StatementBinder { o: VisualizationCategoryDimensionLink, w: StatementWrapper ->
-        w.bind(1, o.visualization())
-        w.bind(2, o.category())
-        w.bind(3, o.categoryOption())
-    }
+object VisualizationCategoryDimensionLinkSamples {
 
-    fun create(databaseAdapter: DatabaseAdapter): LinkStore<VisualizationCategoryDimensionLink> {
-        return StoreFactory.linkStore(
-            databaseAdapter,
-            VisualizationCategoryDimensionLinkTableInfo.TABLE_INFO,
-            VisualizationCategoryDimensionLinkTableInfo.Columns.VISUALIZATION,
-            BINDER
-        ) { VisualizationCategoryDimensionLink.create(it) }
-    }
+    fun visualizationCategoryDimensionLinkSamples(): VisualizationCategoryDimensionLink =
+        VisualizationCategoryDimensionLink.builder()
+        .id(1L)
+        .visualization("visualization_uid")
+        .category("category_uid")
+        .categoryOption("category_option_uid")
+        .build()
 }

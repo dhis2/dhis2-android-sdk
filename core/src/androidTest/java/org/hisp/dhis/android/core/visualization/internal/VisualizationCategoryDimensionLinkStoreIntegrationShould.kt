@@ -27,27 +27,32 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.visualization.VisualizationCategoryDimensionLinkSamples
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.hisp.dhis.android.core.visualization.VisualizationCategoryDimensionLink
 import org.hisp.dhis.android.core.visualization.VisualizationCategoryDimensionLinkTableInfo
+import org.junit.runner.RunWith
 
-internal object VisualizationCategoryDimensionLinkStore {
-    private val BINDER = StatementBinder { o: VisualizationCategoryDimensionLink, w: StatementWrapper ->
-        w.bind(1, o.visualization())
-        w.bind(2, o.category())
-        w.bind(3, o.categoryOption())
+@RunWith(D2JunitRunner::class)
+class VisualizationCategoryDimensionLinkStoreIntegrationShould :
+    LinkStoreAbstractIntegrationShould<VisualizationCategoryDimensionLink>(
+    VisualizationCategoryDimensionLinkStore.create(TestDatabaseAdapterFactory.get()),
+    VisualizationCategoryDimensionLinkTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get()
+) {
+    override fun addMasterUid(): String {
+        return VisualizationCategoryDimensionLinkSamples.visualizationCategoryDimensionLinkSamples().visualization()
     }
 
-    fun create(databaseAdapter: DatabaseAdapter): LinkStore<VisualizationCategoryDimensionLink> {
-        return StoreFactory.linkStore(
-            databaseAdapter,
-            VisualizationCategoryDimensionLinkTableInfo.TABLE_INFO,
-            VisualizationCategoryDimensionLinkTableInfo.Columns.VISUALIZATION,
-            BINDER
-        ) { VisualizationCategoryDimensionLink.create(it) }
+    override fun buildObject(): VisualizationCategoryDimensionLink {
+        return VisualizationCategoryDimensionLinkSamples.visualizationCategoryDimensionLinkSamples()
+    }
+
+    override fun buildObjectWithOtherMasterUid(): VisualizationCategoryDimensionLink {
+        return VisualizationCategoryDimensionLinkSamples.visualizationCategoryDimensionLinkSamples().toBuilder()
+            .visualization("visualization_uid_2")
+            .build()
     }
 }

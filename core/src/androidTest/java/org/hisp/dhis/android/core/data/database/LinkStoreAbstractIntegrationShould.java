@@ -73,8 +73,8 @@ public abstract class LinkStoreAbstractIntegrationShould<M extends CoreObject>
 
     @Test
     public void delete_links_for_master_should_delete_only_objects_with_the_master_key() {
-        store.insert(objectWithOtherMasterUid);
         store.insert(object);
+        store.insert(objectWithOtherMasterUid);
         store.deleteLinksForMasterUid(masterUid);
         M objectFromDb = store.selectFirst();
         assertEqualsIgnoreId(objectFromDb, objectWithOtherMasterUid);

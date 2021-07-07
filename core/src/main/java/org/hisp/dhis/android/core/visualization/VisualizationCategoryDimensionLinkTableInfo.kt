@@ -53,6 +53,15 @@ object VisualizationCategoryDimensionLinkTableInfo {
             )
         }
 
+        override fun whereUpdate(): Array<String?> {
+            return CollectionsHelper.appendInNewArray(
+                super.all(),
+                VISUALIZATION,
+                CATEGORY,
+                CATEGORY_OPTION
+            )
+        }
+
         companion object {
             const val VISUALIZATION = "visualization"
             const val CATEGORY = "category"

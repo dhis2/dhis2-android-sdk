@@ -26,52 +26,10 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
-
-import java.util.Collections;
-import java.util.List;
-
-@AutoValue
-@JsonDeserialize(builder = AutoValue_AnalyticsSettings.Builder.class)
-public abstract class AnalyticsSettings {
-
-    public abstract List<AnalyticsTeiSetting> tei();
-
-    public abstract AnalyticsDhisVisualizationsSetting dhisVisualizations();
-
-    public static Builder builder() {
-        return new AutoValue_AnalyticsSettings.Builder();
-    }
-
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-
-        public abstract Builder tei(List<AnalyticsTeiSetting> tei);
-
-        public abstract Builder dhisVisualizations(AnalyticsDhisVisualizationsSetting dhisVisualizations);
-
-        public abstract AnalyticsSettings autoBuild();
-
-        //Auxiliary fields
-        abstract AnalyticsDhisVisualizationsSetting dhisVisualizations();
-
-        public AnalyticsSettings build() {
-            try {
-                dhisVisualizations();
-            } catch (IllegalStateException e) {
-                dhisVisualizations(AnalyticsDhisVisualizationsSetting.builder()
-                        .home(Collections.emptyList())
-                        .program(Collections.emptyMap())
-                        .dataSet(Collections.emptyMap())
-                        .build());
-            }
-
-            return autoBuild();
-        }
-    }
+enum class AnalyticsDhisVisualizationScope {
+    HOME,
+    PROGRAM,
+    DATA_SET
 }

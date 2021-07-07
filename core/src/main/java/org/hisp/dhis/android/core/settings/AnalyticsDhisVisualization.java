@@ -34,8 +34,10 @@ import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.AnalyticsDhisVisualizationScopeColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
@@ -53,7 +55,8 @@ public abstract class AnalyticsDhisVisualization implements CoreObject, ObjectWi
     public abstract String groupName();
 
     @Nullable
-    public abstract String scope();
+    @ColumnAdapter(AnalyticsDhisVisualizationScopeColumnAdapter.class)
+    public abstract AnalyticsDhisVisualizationScope scope();
 
     @Nullable
     public abstract String uid();
@@ -83,7 +86,7 @@ public abstract class AnalyticsDhisVisualization implements CoreObject, ObjectWi
 
         public abstract Builder groupName(String groupName);
 
-        public abstract Builder scope(String scope);
+        public abstract Builder scope(AnalyticsDhisVisualizationScope scope);
 
         public abstract Builder uid(String uid);
 

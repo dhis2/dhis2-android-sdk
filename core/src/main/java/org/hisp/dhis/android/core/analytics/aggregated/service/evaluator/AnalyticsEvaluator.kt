@@ -26,43 +26,14 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.adapters.custom.internal;
+package org.hisp.dhis.android.core.analytics.aggregated.service.evaluator
 
-import android.content.ContentValues;
-import android.database.Cursor;
+import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
+import org.hisp.dhis.android.core.analytics.aggregated.service.AnalyticsServiceEvaluationItem
+import javax.inject.Inject
 
-import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
+internal interface AnalyticsEvaluator {
 
-import org.hisp.dhis.android.core.arch.helpers.DateUtils;
-
-import java.text.ParseException;
-import java.util.Date;
-
-public final class DbDateColumnAdapter implements ColumnTypeAdapter<Date> {
-
-    @Override
-    public Date fromCursor(Cursor cursor, String columnName) {
-        // infer index from column name
-        int columnIndex = cursor.getColumnIndex(columnName);
-        String sourceDate = cursor.getString(columnIndex);
-
-        Date date = null;
-        if (sourceDate != null) {
-            try {
-                date = DateUtils.DATE_FORMAT.parse(sourceDate);
-            } catch (ParseException parseException) {
-                // wrap checked exception into unchecked
-                throw new RuntimeException(parseException);
-            }
-        }
-
-        return date;
-    }
-
-    @Override
-    public void toContentValues(ContentValues contentValues, String columnName, Date date) {
-        if (date != null) {
-            contentValues.put(columnName, DateUtils.DATE_FORMAT.format(date));
-        }
-    }
+    fun evaluate(evaluationItem: AnalyticsServiceEvaluationItem,
+                 metadata: Map<String, MetadataItem>): String?
 }

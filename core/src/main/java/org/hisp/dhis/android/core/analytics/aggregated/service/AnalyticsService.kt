@@ -31,12 +31,12 @@ package org.hisp.dhis.android.core.analytics.aggregated.service
 import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepositoryParams
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
-import org.hisp.dhis.android.core.analytics.aggregated.DimensionalValue
 import javax.inject.Inject
 
 internal class AnalyticsService @Inject constructor(
     private val analyticsServiceHelper: AnalyticsServiceHelper,
-    private val analyticsServiceMetadataHelper: AnalyticsServiceMetadataHelper
+    private val analyticsServiceMetadataHelper: AnalyticsServiceMetadataHelper,
+    private val analyticsServiceEvaluatorHelper: AnalyticsServiceEvaluatorHelper
 ) {
 
     fun evaluate(params: AnalyticsRepositoryParams): DimensionalResponse {
@@ -53,18 +53,13 @@ internal class AnalyticsService @Inject constructor(
 
         val metadata = analyticsServiceMetadataHelper.getMetadata(evaluationItems)
 
-        val values = evaluationItems.map { evaluateItem(it) }
+        val values = evaluationItems.map { analyticsServiceEvaluatorHelper.evaluate(it, metadata) }
 
-        // TODO
         return DimensionalResponse(
             metadata = metadata,
             dimensions = dimensions,
-            filters = listOf(),
+            filters = params.filters.map { it.id },
             values = values
         )
-    }
-
-    private fun evaluateItem(evaluationItem: AnalyticsServiceEvaluationItem): DimensionalValue {
-        TODO()
     }
 }

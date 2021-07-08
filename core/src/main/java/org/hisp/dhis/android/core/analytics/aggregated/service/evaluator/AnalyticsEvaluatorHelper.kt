@@ -26,43 +26,35 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.adapters.custom.internal;
+package org.hisp.dhis.android.core.analytics.aggregated.service.evaluator
 
-import android.content.ContentValues;
-import android.database.Cursor;
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
+import org.hisp.dhis.android.core.period.Period
+import org.hisp.dhis.android.core.period.PeriodTableInfo
 
-import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
+internal object AnalyticsEvaluatorHelper {
 
-import org.hisp.dhis.android.core.arch.helpers.DateUtils;
-
-import java.text.ParseException;
-import java.util.Date;
-
-public final class DbDateColumnAdapter implements ColumnTypeAdapter<Date> {
-
-    @Override
-    public Date fromCursor(Cursor cursor, String columnName) {
-        // infer index from column name
-        int columnIndex = cursor.getColumnIndex(columnName);
-        String sourceDate = cursor.getString(columnIndex);
-
-        Date date = null;
-        if (sourceDate != null) {
-            try {
-                date = DateUtils.DATE_FORMAT.parse(sourceDate);
-            } catch (ParseException parseException) {
-                // wrap checked exception into unchecked
-                throw new RuntimeException(parseException);
-            }
-        }
-
-        return date;
+    fun getPeriodsClause(period: Period): String {
+        return "SELECT ${PeriodTableInfo.Columns.PERIOD_ID} " +
+                "FROM ${PeriodTableInfo.TABLE_INFO.name()} " +
+                "WHERE " +
+                "${PeriodTableInfo.Columns.START_DATE} >= '${DateUtils.DATE_FORMAT.format(period.startDate()!!)}' " +
+                "AND " +
+                "${PeriodTableInfo.Columns.END_DATE} <= '${DateUtils.DATE_FORMAT.format(period.endDate()!!)}'"
     }
 
-    @Override
-    public void toContentValues(ContentValues contentValues, String columnName, Date date) {
-        if (date != null) {
-            contentValues.put(columnName, DateUtils.DATE_FORMAT.format(date));
-        }
+    fun getOrgunitClause(orgunitUid: String): String {
+        return "SELECT ${OrganisationUnitTableInfo.Columns.UID} " +
+                "FROM ${OrganisationUnitTableInfo.TABLE_INFO.name()} " +
+                "WHERE " +
+                "${OrganisationUnitTableInfo.Columns.PATH} LIKE '%$orgunitUid%'"
+    }
+
+    fun getLevelOrgunitClause(level: Int): String {
+        return "SELECT ${OrganisationUnitTableInfo.Columns.UID} " +
+                "FROM ${OrganisationUnitTableInfo.TABLE_INFO.name()} " +
+                "WHERE " +
+                "${OrganisationUnitTableInfo.Columns.LEVEL} = $level"
     }
 }

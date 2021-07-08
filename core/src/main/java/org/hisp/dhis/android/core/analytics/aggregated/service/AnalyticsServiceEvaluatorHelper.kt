@@ -26,43 +26,38 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.adapters.custom.internal;
+package org.hisp.dhis.android.core.analytics.aggregated.service
 
-import android.content.ContentValues;
-import android.database.Cursor;
+import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
+import org.hisp.dhis.android.core.analytics.aggregated.DimensionalValue
+import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
+import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.AnalyticsEvaluator
+import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluator
+import javax.inject.Inject
 
-import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
+internal class AnalyticsServiceEvaluatorHelper @Inject constructor(
+    private val dataElementEvaluator: DataElementEvaluator
+) {
 
-import org.hisp.dhis.android.core.arch.helpers.DateUtils;
+    fun evaluate(evaluationItem: AnalyticsServiceEvaluationItem,
+                 metadata: Map<String, MetadataItem>): DimensionalValue {
+        val dataItem = evaluationItem.dimensionItems.find { it is DimensionItem.DataItem }
 
-import java.text.ParseException;
-import java.util.Date;
+        if (dataItem == null) {
+            TODO()
+        }
 
-public final class DbDateColumnAdapter implements ColumnTypeAdapter<Date> {
-
-    @Override
-    public Date fromCursor(Cursor cursor, String columnName) {
-        // infer index from column name
-        int columnIndex = cursor.getColumnIndex(columnName);
-        String sourceDate = cursor.getString(columnIndex);
-
-        Date date = null;
-        if (sourceDate != null) {
-            try {
-                date = DateUtils.DATE_FORMAT.parse(sourceDate);
-            } catch (ParseException parseException) {
-                // wrap checked exception into unchecked
-                throw new RuntimeException(parseException);
+        val evaluator: AnalyticsEvaluator =
+            when (dataItem as DimensionItem.DataItem) {
+                is DimensionItem.DataItem.DataElementItem -> dataElementEvaluator
+                is DimensionItem.DataItem.DataElementOperandItem -> TODO()
+                is DimensionItem.DataItem.ProgramIndicatorItem -> TODO()
+                is DimensionItem.DataItem.IndicatorItem -> TODO()
             }
-        }
 
-        return date;
-    }
-
-    @Override
-    public void toContentValues(ContentValues contentValues, String columnName, Date date) {
-        if (date != null) {
-            contentValues.put(columnName, DateUtils.DATE_FORMAT.format(date));
-        }
+        return DimensionalValue(
+            dimensions = evaluationItem.dimensionItems.map { (it as DimensionItem).id },
+            value = evaluator.evaluate(evaluationItem, metadata)
+        )
     }
 }

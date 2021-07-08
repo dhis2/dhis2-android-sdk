@@ -27,38 +27,45 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.visualization.CategoryDimension
 import org.hisp.dhis.android.core.visualization.Visualization
-import java.util.*
+import org.hisp.dhis.android.core.visualization.VisualizationCategoryDimensionLink
+import org.hisp.dhis.android.core.visualization.VisualizationCategoryDimensionLinkTableInfo
 
-@Module
-internal class VisualizationEntityDIModule : IdentifiableStoreProvider<Visualization> {
+internal class VisualizationCategoryDimensionChildrenAppender
+private constructor(private val childStore: LinkStore<VisualizationCategoryDimensionLink>) :
+    ChildrenAppender<Visualization>() {
 
-    @Provides
-    @Reusable
-    override fun store(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<Visualization> {
-        return VisualizationStore.create(databaseAdapter)
+    override fun appendChildren(visualization: Visualization): Visualization {
+        val builder = visualization.toBuilder()
+        builder.categoryDimensions(getChildren(visualization))
+        return builder.build()
     }
 
-    @Provides
-    @Reusable
-    fun handler(impl: VisualizationHandler): Handler<Visualization> {
-        return impl
+    private fun getChildren(o: Visualization): List<CategoryDimension> {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(VisualizationCategoryDimensionLinkTableInfo.Columns.VISUALIZATION, o.uid())
+            .build()
+        return this.childStore.selectWhere(whereClause)
+            .groupBy { it.category() }
+            .map {
+                CategoryDimension.builder()
+                    .category(ObjectWithUid.create(it.key))
+                    .categoryOptions(it.value.map { ObjectWithUid.create(it.categoryOption()) })
+                    .build()
+            }
     }
 
-    @Provides
-    @Reusable
-    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<Visualization>> {
-        return Collections.singletonMap(
-            VisualizationFields.CATEGORY_DIMENSIONS,
-            VisualizationCategoryDimensionChildrenAppender.create(databaseAdapter)
-        )
+    companion object {
+        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<Visualization> {
+            return VisualizationCategoryDimensionChildrenAppender(
+                VisualizationCategoryDimensionLinkStore.create(databaseAdapter)
+            )
+        }
     }
 }

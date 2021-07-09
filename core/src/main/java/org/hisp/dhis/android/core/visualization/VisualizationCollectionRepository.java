@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnly
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.visualization.VisualizationTableInfo.Columns;
@@ -144,22 +145,21 @@ public final class VisualizationCollectionRepository
         return cf.string(Columns.RELATIVE_PERIODS);
     }
 
-    // CATEGORY_DIMENSIONS
-
     public StringFilterConnector<VisualizationCollectionRepository> byFilterDimensions() {
         return cf.string(Columns.FILTER_DIMENSIONS);
     }
 
-    // FILTER_DIMENSIONS
+    public StringFilterConnector<VisualizationCollectionRepository> byRowDimensions() {
+        return cf.string(Columns.ROW_DIMENSIONS);
+    }
 
-    // ROW_DIMENSIONS
+    public StringFilterConnector<VisualizationCollectionRepository> byColumnDimensions() {
+        return cf.string(Columns.COLUMN_DIMENSIONS);
+    }
 
-    // COLUMN_DIMENSIONS
-
-    // DATA_DIMENSION_ITEMS
-
-    // ORGANISATION_UNIT_LEVELS
-
+    public IntegerFilterConnector<VisualizationCollectionRepository> byOrganisationUnitLevels() {
+        return cf.integer(Columns.ORGANISATION_UNIT_LEVELS);
+    }
 
     public BooleanFilterConnector<VisualizationCollectionRepository> byUserOrganisationUnit() {
         return cf.bool(Columns.USER_ORGANISATION_UNIT);
@@ -173,11 +173,11 @@ public final class VisualizationCollectionRepository
         return cf.bool(Columns.USER_ORGANISATION_UNIT_GRAND_CHILDREN);
     }
 
-    // ORGANISATION_UNITS
-
-    // PERIODS
-
     public VisualizationCollectionRepository withCategoryDimensions() {
         return cf.withChild(VisualizationFields.CATEGORY_DIMENSIONS);
+    }
+
+    public VisualizationCollectionRepository withDataDimensionItems() {
+        return cf.withChild(VisualizationFields.DATA_DIMENSION_ITEMS);
     }
 }

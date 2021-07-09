@@ -37,8 +37,8 @@ internal object VisualizationFields {
     private val fh = FieldsHelper<Visualization>()
     val uid = fh.uid()
 
-    fun allFields(): Fields<Visualization> {
-        return Fields.builder<Visualization>()
+    val allFields: Fields<Visualization> =
+        Fields.builder<Visualization>()
             .fields(fh.getIdentifiableFields())
             .fields(
                 fh.field<String>(VisualizationTableInfo.Columns.DESCRIPTION),
@@ -76,5 +76,5 @@ internal object VisualizationFields {
                 fh.nestedFieldWithUid(VisualizationTableInfo.Columns.PERIODS)
             )
             .build()
-    }
+
 }

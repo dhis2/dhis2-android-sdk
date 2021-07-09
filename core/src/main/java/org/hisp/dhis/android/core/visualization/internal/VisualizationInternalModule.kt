@@ -27,44 +27,13 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
+import androidx.annotation.VisibleForTesting
 import dagger.Reusable
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.visualization.CategoryDimension
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.visualization.Visualization
-import org.hisp.dhis.android.core.visualization.VisualizationCategoryDimensionLink
 import javax.inject.Inject
 
 @Reusable
-internal class VisualizationHandler @Inject constructor(
-    store: IdentifiableObjectStore<Visualization>,
-    private val visualizationCategoryDimensionLinkHandler:
-    LinkHandler<ObjectWithUid, VisualizationCategoryDimensionLink>
-) : IdentifiableHandlerImpl<Visualization>(store) {
-
-    override fun beforeCollectionHandled(
-        oCollection: Collection<Visualization>
-    ): Collection<Visualization> {
-        store.delete()
-        return oCollection
-    }
-
-    override fun afterObjectHandled(o: Visualization, action: HandleAction) {
-        o.categoryDimensions()?.forEach { categoryDimension: CategoryDimension ->
-            categoryDimension.category()?.let {
-                visualizationCategoryDimensionLinkHandler.handleMany(
-                    it.uid(), categoryDimension.categoryOptions()
-                ) { categoryOption: ObjectWithUid ->
-                    VisualizationCategoryDimensionLink.builder()
-                        .visualization(o.uid())
-                        .categoryOption(categoryDimension.category()?.uid())
-                        .categoryOption(categoryOption.uid())
-                        .build()
-                }
-            }
-        }
-    }
-}
+internal class VisualizationInternalModule @Inject internal constructor(
+    @field:VisibleForTesting val visualizationCall: UidsCall<Visualization>
+)

@@ -26,28 +26,38 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.d2.internal;
+package org.hisp.dhis.android.core.visualization.internal;
 
-import org.hisp.dhis.android.core.category.internal.CategoryInternalModule;
-import org.hisp.dhis.android.core.user.internal.UserInternalModule;
-import org.hisp.dhis.android.core.visualization.internal.VisualizationInternalModule;
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
+import org.hisp.dhis.android.core.visualization.Visualization;
+import org.hisp.dhis.android.core.visualization.VisualizationModule;
 
-import javax.inject.Inject;
-
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
+import retrofit2.Retrofit;
 
-@Reusable
-public final class D2InternalModules {
-    public final CategoryInternalModule category;
-    public final VisualizationInternalModule visualization;
-    public final UserInternalModule user;
+@Module(includes = {
+        VisualizationEntityDIModule.class,
+        VisualizationCategoryDimensionEntityDIModule.class
+})
+public final class VisualizationPackageDIModule {
 
-    @Inject
-    public D2InternalModules(CategoryInternalModule category,
-                             VisualizationInternalModule visualization,
-                             UserInternalModule user) {
-        this.category = category;
-        this.visualization = visualization;
-        this.user = user;
+    @Provides
+    @Reusable
+    UidsCall<Visualization> visualizationCall(VisualizationCall impl) {
+        return impl;
+    }
+
+    @Provides
+    @Reusable
+    VisualizationService visualizationService(Retrofit retrofit) {
+        return retrofit.create(VisualizationService.class);
+    }
+
+    @Provides
+    @Reusable
+    VisualizationModule module(VisualizationModuleImpl impl) {
+        return impl;
     }
 }

@@ -25,29 +25,8 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.visualization
 
-package org.hisp.dhis.android.core.arch.d2.internal;
-
-import org.hisp.dhis.android.core.category.internal.CategoryInternalModule;
-import org.hisp.dhis.android.core.user.internal.UserInternalModule;
-import org.hisp.dhis.android.core.visualization.internal.VisualizationInternalModule;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
-
-@Reusable
-public final class D2InternalModules {
-    public final CategoryInternalModule category;
-    public final VisualizationInternalModule visualization;
-    public final UserInternalModule user;
-
-    @Inject
-    public D2InternalModules(CategoryInternalModule category,
-                             VisualizationInternalModule visualization,
-                             UserInternalModule user) {
-        this.category = category;
-        this.visualization = visualization;
-        this.user = user;
-    }
+interface VisualizationModule {
+    fun visualizations(): VisualizationCollectionRepository
 }

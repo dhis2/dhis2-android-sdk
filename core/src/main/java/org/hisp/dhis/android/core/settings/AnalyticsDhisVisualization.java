@@ -30,8 +30,10 @@ package org.hisp.dhis.android.core.settings;
 
 import android.database.Cursor;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
@@ -40,6 +42,8 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.AnalyticsDhisVisualizationScopeColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+
+import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.UID;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_AnalyticsDhisVisualization.Builder.class)
@@ -58,11 +62,12 @@ public abstract class AnalyticsDhisVisualization implements CoreObject, ObjectWi
     @ColumnAdapter(AnalyticsDhisVisualizationScopeColumnAdapter.class)
     public abstract AnalyticsDhisVisualizationScope scope();
 
-    @Nullable
+    @NonNull
+    @JsonProperty(UID)
     public abstract String uid();
 
     @Nullable
-    public abstract String timeStamp();
+    public abstract String timestamp();
 
     public static AnalyticsDhisVisualization create(Cursor cursor) {
         return AutoValue_AnalyticsDhisVisualization.createFromCursor(cursor);
@@ -88,9 +93,11 @@ public abstract class AnalyticsDhisVisualization implements CoreObject, ObjectWi
 
         public abstract Builder scope(AnalyticsDhisVisualizationScope scope);
 
+        @JsonProperty(UID)
         public abstract Builder uid(String uid);
 
-        public abstract Builder timeStamp(String timeStamp);
+        @JsonProperty("timestamp")
+        public abstract Builder timestamp(String timestamp);
 
         public abstract AnalyticsDhisVisualization build();
     }

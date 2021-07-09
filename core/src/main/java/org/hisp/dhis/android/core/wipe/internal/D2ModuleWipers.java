@@ -55,6 +55,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityModuleWipe
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobModuleWiper;
 import org.hisp.dhis.android.core.user.internal.UserModuleWiper;
 import org.hisp.dhis.android.core.validation.internal.ValidationModuleWiper;
+import org.hisp.dhis.android.core.visualization.internal.VisualizationModuleWiper;
 
 import java.util.Arrays;
 import java.util.List;
@@ -99,7 +100,8 @@ final class D2ModuleWipers {
             UserModuleWiper user,
             TrackedEntityModuleWiper trackedEntity,
             AttributeModuleWiper attribute,
-            TrackerJobModuleWiper trackerJob) {
+            TrackerJobModuleWiper trackerJob,
+            VisualizationModuleWiper visualization) {
 
         this.wipers = Arrays.asList(
                 category,
@@ -131,6 +133,7 @@ final class D2ModuleWipers {
                 user,
                 trackedEntity,
                 attribute,
-                trackerJob);
+                trackerJob,
+                visualization);
     }
 }

@@ -60,7 +60,7 @@ internal class VisualizationHandler @Inject constructor(
                 ) { categoryOption: ObjectWithUid ->
                     VisualizationCategoryDimensionLink.builder()
                         .visualization(o.uid())
-                        .categoryOption(categoryDimension.category()?.uid())
+                        .category(categoryDimension.category()?.uid())
                         .categoryOption(categoryOption.uid())
                         .build()
                 }

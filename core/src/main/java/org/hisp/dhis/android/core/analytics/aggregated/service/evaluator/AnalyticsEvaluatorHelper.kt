@@ -35,11 +35,20 @@ import org.hisp.dhis.android.core.period.PeriodTableInfo
 
 internal object AnalyticsEvaluatorHelper {
 
-    fun getPeriodsClause(period: Period): String {
+    fun getInPeriodClause(period: Period): String {
         return "SELECT ${PeriodTableInfo.Columns.PERIOD_ID} " +
                 "FROM ${PeriodTableInfo.TABLE_INFO.name()} " +
-                "WHERE " +
-                "${PeriodTableInfo.Columns.START_DATE} >= '${DateUtils.DATE_FORMAT.format(period.startDate()!!)}' " +
+                "WHERE ${getPeriodWhereClause(period)}"
+    }
+
+    fun getInPeriodsClause(periods: List<Period>): String {
+        return "SELECT ${PeriodTableInfo.Columns.PERIOD_ID} " +
+                "FROM ${PeriodTableInfo.TABLE_INFO.name()} " +
+                "WHERE ${periods.joinToString(" OR ") { "(${getPeriodWhereClause(it)})" }}"
+    }
+
+    private fun getPeriodWhereClause(period: Period): String {
+        return "${PeriodTableInfo.Columns.START_DATE} >= '${DateUtils.DATE_FORMAT.format(period.startDate()!!)}' " +
                 "AND " +
                 "${PeriodTableInfo.Columns.END_DATE} <= '${DateUtils.DATE_FORMAT.format(period.endDate()!!)}'"
     }

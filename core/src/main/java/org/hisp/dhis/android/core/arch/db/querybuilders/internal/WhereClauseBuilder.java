@@ -129,6 +129,10 @@ public class WhereClauseBuilder {
         return appendKeyValue(column, subQuery, AND, IN, PARENTHESES_END);
     }
 
+    public WhereClauseBuilder appendOrInSubQuery(String column, String subQuery) {
+        return appendKeyValue(column, subQuery, OR, IN, PARENTHESES_END);
+    }
+
     public WhereClauseBuilder appendIsNullValue(String column) {
         return appendKeyValue(column, "", AND, IS_NULL, "");
     }

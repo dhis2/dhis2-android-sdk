@@ -38,15 +38,18 @@ import org.hisp.dhis.android.core.analytics.eventlinelist.aggregated.service.eva
 import org.hisp.dhis.android.core.analytics.eventlinelist.aggregated.service.evaluator.DataElementEvaluatorSamples.orgunitChild1
 import org.hisp.dhis.android.core.analytics.eventlinelist.aggregated.service.evaluator.DataElementEvaluatorSamples.orgunitChild2
 import org.hisp.dhis.android.core.analytics.eventlinelist.aggregated.service.evaluator.DataElementEvaluatorSamples.orgunitParent
-import org.hisp.dhis.android.core.analytics.eventlinelist.aggregated.service.evaluator.DataElementEvaluatorSamples.periodJune
-import org.hisp.dhis.android.core.analytics.eventlinelist.aggregated.service.evaluator.DataElementEvaluatorSamples.periodMay
-import org.hisp.dhis.android.core.analytics.eventlinelist.aggregated.service.evaluator.DataElementEvaluatorSamples.periodQ2
+import org.hisp.dhis.android.core.analytics.eventlinelist.aggregated.service.evaluator.DataElementEvaluatorSamples.periodDec
+import org.hisp.dhis.android.core.analytics.eventlinelist.aggregated.service.evaluator.DataElementEvaluatorSamples.periodNov
+import org.hisp.dhis.android.core.analytics.eventlinelist.aggregated.service.evaluator.DataElementEvaluatorSamples.periodQ4
 import org.hisp.dhis.android.core.category.internal.CategoryComboStore
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStoreImpl
+import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
+import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory
+import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl
 import org.hisp.dhis.android.core.period.internal.PeriodStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
@@ -58,7 +61,9 @@ import org.junit.runner.RunWith
 @RunWith(D2JunitRunner::class)
 class DataElementEvaluatorIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() {
 
-    private val dataElementEvaluator = DataElementEvaluator(databaseAdapter)
+    private val periodGenerator = ParentPeriodGeneratorImpl.create(CalendarProviderFactory.createFixed())
+
+    private val dataElementEvaluator = DataElementEvaluator(databaseAdapter, periodGenerator)
 
     // Stores
     private val dataValueStore = DataValueStore.create(databaseAdapter)
@@ -73,9 +78,9 @@ class DataElementEvaluatorIntegrationShould : BaseMockIntegrationTestEmptyDispat
         orgunitChild1.uid() to MetadataItem.OrganisationUnitItem(orgunitChild1),
         orgunitChild2.uid() to MetadataItem.OrganisationUnitItem(orgunitChild2),
         dataElement.uid() to MetadataItem.DataElementItem(dataElement),
-        periodMay.periodId()!! to MetadataItem.PeriodItem(periodMay),
-        periodJune.periodId()!! to MetadataItem.PeriodItem(periodJune),
-        periodQ2.periodId()!! to MetadataItem.PeriodItem(periodQ2)
+        periodNov.periodId()!! to MetadataItem.PeriodItem(periodNov),
+        periodDec.periodId()!! to MetadataItem.PeriodItem(periodDec),
+        periodQ4.periodId()!! to MetadataItem.PeriodItem(periodQ4)
     )
 
     @Before
@@ -91,9 +96,9 @@ class DataElementEvaluatorIntegrationShould : BaseMockIntegrationTestEmptyDispat
 
         dataElementStore.insert(dataElement)
 
-        periodStore.insert(periodMay)
-        periodStore.insert(periodJune)
-        periodStore.insert(periodQ2)
+        periodStore.insert(periodNov)
+        periodStore.insert(periodDec)
+        periodStore.insert(periodQ4)
     }
 
     @After
@@ -115,7 +120,7 @@ class DataElementEvaluatorIntegrationShould : BaseMockIntegrationTestEmptyDispat
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
                 DimensionItem.DataItem.DataElementItem(dataElement.uid()),
-                DimensionItem.PeriodItem.Absolute(periodJune.periodId()!!)
+                DimensionItem.PeriodItem.Absolute(periodDec.periodId()!!)
             ),
             filters = listOf(
                 DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid())
@@ -129,16 +134,37 @@ class DataElementEvaluatorIntegrationShould : BaseMockIntegrationTestEmptyDispat
 
     @Test
     fun should_aggregate_value_in_time() {
-        createDataValue("2", periodId = periodMay.periodId()!!)
-        createDataValue("3", periodId = periodJune.periodId()!!)
+        createDataValue("2", periodId = periodNov.periodId()!!)
+        createDataValue("3", periodId = periodDec.periodId()!!)
 
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
                 DimensionItem.DataItem.DataElementItem(dataElement.uid()),
-                DimensionItem.PeriodItem.Absolute(periodQ2.periodId()!!)
+                DimensionItem.PeriodItem.Absolute(periodQ4.periodId()!!)
             ),
             filters = listOf(
                 DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid())
+            )
+        )
+
+        val value = dataElementEvaluator.evaluate(evaluationItem, metadata)
+
+        assertThat(value).isEqualTo("5")
+    }
+
+    @Test
+    fun should_aggregate_relative_periods() {
+        createDataValue("2", periodId = periodNov.periodId()!!)
+        createDataValue("3", periodId = periodDec.periodId()!!)
+
+        val evaluationItem = AnalyticsServiceEvaluationItem(
+            dimensionItems = listOf(
+                DimensionItem.DataItem.DataElementItem(dataElement.uid())
+            ),
+            filters = listOf(
+                DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid()),
+                DimensionItem.PeriodItem.Relative(RelativePeriod.LAST_3_MONTHS),
+                DimensionItem.PeriodItem.Relative(RelativePeriod.THIS_MONTH)
             )
         )
 
@@ -151,7 +177,7 @@ class DataElementEvaluatorIntegrationShould : BaseMockIntegrationTestEmptyDispat
         value: String,
         dataElementUid: String = dataElement.uid(),
         orgunitUid: String = orgunitParent.uid(),
-        periodId: String = periodJune.periodId()!!
+        periodId: String = periodDec.periodId()!!
     ) {
         val dataValue = DataValue.builder()
             .value(value)

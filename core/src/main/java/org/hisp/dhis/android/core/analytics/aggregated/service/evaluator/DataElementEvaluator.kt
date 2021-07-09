@@ -28,27 +28,38 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.service.evaluator
 
+import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.service.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
+import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
 import javax.inject.Inject
 
 internal class DataElementEvaluator @Inject constructor(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
+    private val parentPeriodGenerator: ParentPeriodGenerator
 ) : AnalyticsEvaluator {
 
     override fun evaluate(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>
     ): String? {
-        val items = (evaluationItem.dimensionItems + evaluationItem.filters).map { it as DimensionItem }
+        val items = (evaluationItem.dimensionItems + evaluationItem.filters)
+            .map { it as DimensionItem }
+            .groupBy { it.dimension }
 
         val whereClause =
-            items.foldRight(WhereClauseBuilder()) { item, builder ->
-                appendWhereClause(item, builder, metadata)
+            items.entries.fold(WhereClauseBuilder()) { builder, entry ->
+                when (entry.key) {
+                    is Dimension.Data -> appendDataWhereClause(entry.value, builder)
+                    is Dimension.Period -> appendPeriodWhereClause(entry.value, builder, metadata)
+                    is Dimension.OrganisationUnit -> appendOrgunitWhereClause(entry.value, builder, metadata)
+                    is Dimension.Category -> appendCategoryWhereClause(entry.value, builder, metadata)
+                    is Dimension.CategoryOptionGroupSet -> appendCOGSWhereClause(entry.value, builder, metadata)
+                }
             }
                 .appendKeyNumberValue(DataValueTableInfo.Columns.DELETED, 0)
                 .build()
@@ -64,51 +75,91 @@ internal class DataElementEvaluator @Inject constructor(
         }
     }
 
-    private fun appendWhereClause(
-        item: DimensionItem,
+    private fun appendDataWhereClause(
+        items: List<DimensionItem>,
+        builder: WhereClauseBuilder
+    ): WhereClauseBuilder {
+        val innerClause = items.map { it as DimensionItem.DataItem }
+            .foldRight(WhereClauseBuilder()) { item, innerBuilder ->
+                when (item) {
+                    is DimensionItem.DataItem.DataElementItem ->
+                        innerBuilder.appendOrKeyStringValue(DataValueTableInfo.Columns.DATA_ELEMENT, item.uid)
+                    else -> TODO()
+                }
+            }.build()
+
+        return builder.appendComplexQuery(innerClause)
+    }
+
+    private fun appendPeriodWhereClause(
+        items: List<DimensionItem>,
         builder: WhereClauseBuilder,
         metadata: Map<String, MetadataItem>
     ): WhereClauseBuilder {
-        return when (item) {
-            is DimensionItem.DataItem ->
-                when (item) {
-                    is DimensionItem.DataItem.DataElementItem ->
-                        builder.appendKeyStringValue(DataValueTableInfo.Columns.DATA_ELEMENT, item.uid)
-                    else -> TODO()
-
-                }
-
-            is DimensionItem.PeriodItem ->
+        val innerClause = items.map { it as DimensionItem.PeriodItem }
+            .foldRight(WhereClauseBuilder()) { item, innerBuilder ->
                 when (item) {
                     is DimensionItem.PeriodItem.Absolute -> {
                         val periodItem = metadata[item.periodId] as MetadataItem.PeriodItem
-                        builder.appendInSubQuery(
+                        innerBuilder.appendOrInSubQuery(
                             DataValueTableInfo.Columns.PERIOD,
-                            AnalyticsEvaluatorHelper.getPeriodsClause(periodItem.item)
+                            AnalyticsEvaluatorHelper.getInPeriodClause(periodItem.item)
                         )
                     }
-                    is DimensionItem.PeriodItem.Relative -> TODO()
+                    is DimensionItem.PeriodItem.Relative -> {
+                        val periods = parentPeriodGenerator.generateRelativePeriods(item.relative)
+                        innerBuilder.appendOrInSubQuery(
+                            DataValueTableInfo.Columns.PERIOD,
+                            AnalyticsEvaluatorHelper.getInPeriodsClause(periods)
+                        )
+                    }
                 }
+            }.build()
 
-            is DimensionItem.OrganisationUnitItem ->
+        return builder.appendComplexQuery(innerClause)
+    }
+
+    private fun appendOrgunitWhereClause(
+        items: List<DimensionItem>,
+        builder: WhereClauseBuilder,
+        metadata: Map<String, MetadataItem>
+    ): WhereClauseBuilder {
+        val innerClause = items.map { it as DimensionItem.OrganisationUnitItem }
+            .foldRight(WhereClauseBuilder()) { item, innerBuilder ->
                 when (item) {
                     is DimensionItem.OrganisationUnitItem.Absolute ->
-                        builder.appendInSubQuery(
+                        innerBuilder.appendOrInSubQuery(
                             DataValueTableInfo.Columns.ORGANISATION_UNIT,
                             AnalyticsEvaluatorHelper.getOrgunitClause(item.uid)
                         )
                     is DimensionItem.OrganisationUnitItem.Level ->
-                        builder.appendInSubQuery(
+                        innerBuilder.appendOrInSubQuery(
                             DataValueTableInfo.Columns.ORGANISATION_UNIT,
                             AnalyticsEvaluatorHelper.getLevelOrgunitClause(item.level)
                         )
                     is DimensionItem.OrganisationUnitItem.Relative -> TODO()
                     is DimensionItem.OrganisationUnitItem.Group -> TODO()
                 }
+            }.build()
 
-            is DimensionItem.CategoryItem -> TODO()
+        return builder.appendComplexQuery(innerClause)
+    }
 
-            is DimensionItem.CategoryOptionGroupSetItem -> TODO()
-        }
+    private fun appendCategoryWhereClause(
+        items: List<DimensionItem>,
+        builder: WhereClauseBuilder,
+        metadata: Map<String, MetadataItem>
+    ): WhereClauseBuilder {
+        // TODO
+        return builder
+    }
+
+    private fun appendCOGSWhereClause(
+        items: List<DimensionItem>,
+        builder: WhereClauseBuilder,
+        metadata: Map<String, MetadataItem>
+    ): WhereClauseBuilder {
+        // TODO
+        return builder
     }
 }

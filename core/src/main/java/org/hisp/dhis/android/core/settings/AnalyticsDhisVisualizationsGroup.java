@@ -32,46 +32,34 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
-import java.util.Collections;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_AnalyticsSettings.Builder.class)
-public abstract class AnalyticsSettings {
+@JsonDeserialize(builder = AutoValue_AnalyticsDhisVisualizationsGroup.Builder.class)
+public abstract class AnalyticsDhisVisualizationsGroup {
 
-    public abstract List<AnalyticsTeiSetting> tei();
+    public abstract String name();
 
-    public abstract AnalyticsDhisVisualizationsSetting dhisVisualizations();
+    public abstract String id();
+
+    public abstract List<AnalyticsDhisVisualization> visualizations();
+
+    public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new AutoValue_AnalyticsSettings.Builder();
+        return new AutoValue_AnalyticsDhisVisualizationsGroup.Builder();
     }
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
 
-        public abstract Builder tei(List<AnalyticsTeiSetting> tei);
+        public abstract Builder name(String name);
 
-        public abstract Builder dhisVisualizations(AnalyticsDhisVisualizationsSetting dhisVisualizations);
+        public abstract Builder id(String id);
 
-        public abstract AnalyticsSettings autoBuild();
+        public abstract Builder visualizations(List<AnalyticsDhisVisualization> visualizations);
 
-        //Auxiliary fields
-        abstract AnalyticsDhisVisualizationsSetting dhisVisualizations();
-
-        public AnalyticsSettings build() {
-            try {
-                dhisVisualizations();
-            } catch (IllegalStateException e) {
-                dhisVisualizations(AnalyticsDhisVisualizationsSetting.builder()
-                        .home(Collections.emptyList())
-                        .program(Collections.emptyMap())
-                        .dataSet(Collections.emptyMap())
-                        .build());
-            }
-
-            return autoBuild();
-        }
+        public abstract AnalyticsDhisVisualizationsGroup build();
     }
 }

@@ -28,50 +28,77 @@
 
 package org.hisp.dhis.android.core.settings;
 
+import android.database.Cursor;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import java.util.Collections;
-import java.util.List;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.AnalyticsDhisVisualizationScopeColumnAdapter;
+import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+
+import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.UID;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_AnalyticsSettings.Builder.class)
-public abstract class AnalyticsSettings {
+@JsonDeserialize(builder = AutoValue_AnalyticsDhisVisualization.Builder.class)
+public abstract class AnalyticsDhisVisualization implements CoreObject, ObjectWithUidInterface {
 
-    public abstract List<AnalyticsTeiSetting> tei();
+    @Nullable
+    public abstract String scopeUid();
 
-    public abstract AnalyticsDhisVisualizationsSetting dhisVisualizations();
+    @Nullable
+    public abstract String groupUid();
+
+    @Nullable
+    public abstract String groupName();
+
+    @Nullable
+    @ColumnAdapter(AnalyticsDhisVisualizationScopeColumnAdapter.class)
+    public abstract AnalyticsDhisVisualizationScope scope();
+
+    @NonNull
+    @JsonProperty(UID)
+    public abstract String uid();
+
+    @Nullable
+    public abstract String timestamp();
+
+    public static AnalyticsDhisVisualization create(Cursor cursor) {
+        return AutoValue_AnalyticsDhisVisualization.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new AutoValue_AnalyticsSettings.Builder();
+        return new AutoValue_AnalyticsDhisVisualization.Builder();
     }
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
 
-        public abstract Builder tei(List<AnalyticsTeiSetting> tei);
+        public abstract Builder id(Long id);
 
-        public abstract Builder dhisVisualizations(AnalyticsDhisVisualizationsSetting dhisVisualizations);
+        public abstract Builder scopeUid(String scopeUid);
 
-        public abstract AnalyticsSettings autoBuild();
+        public abstract Builder groupUid(String groupUid);
 
-        //Auxiliary fields
-        abstract AnalyticsDhisVisualizationsSetting dhisVisualizations();
+        public abstract Builder groupName(String groupName);
 
-        public AnalyticsSettings build() {
-            try {
-                dhisVisualizations();
-            } catch (IllegalStateException e) {
-                dhisVisualizations(AnalyticsDhisVisualizationsSetting.builder()
-                        .home(Collections.emptyList())
-                        .program(Collections.emptyMap())
-                        .dataSet(Collections.emptyMap())
-                        .build());
-            }
+        public abstract Builder scope(AnalyticsDhisVisualizationScope scope);
 
-            return autoBuild();
-        }
+        @JsonProperty(UID)
+        public abstract Builder uid(String uid);
+
+        @JsonProperty("timestamp")
+        public abstract Builder timestamp(String timestamp);
+
+        public abstract AnalyticsDhisVisualization build();
     }
 }

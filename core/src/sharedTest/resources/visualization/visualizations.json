@@ -21,7 +21,7 @@
       "hideSubtitle": false,
       "hideEmptyColumns": false,
       "hideEmptyRows": false,
-      "hideEmptyRowItems": "NONE",
+      "hideEmptyRowItems": "AFTER_LAST",
       "hideLegend": false,
       "showHierarchy": false,
       "rowTotals": true,
@@ -41,14 +41,17 @@
       "categoryDimensions": [
         {
           "category": {
-            "id": "fMZEcRHuamy"
+            "id": "KfdsGBcoiCa"
           },
           "categoryOptions": [
             {
-              "id": "qkPbeWaFsnU"
+              "id": "TNYQzTHdoxL"
             },
             {
-              "id": "wbrDrL2aYEc"
+              "id": "TXGfLxZlInA"
+            },
+            {
+              "id": "uZUnebiT5DI"
             }
           ]
         }
@@ -113,8 +116,8 @@
       "displayFormName": "Android SDK Visualization sample 2",
       "lastUpdated": "2021-06-16T14:26:50.195",
       "created": "2021-06-16T14:26:50.195",
-      "type": "PIVOT_TABLE",
-      "hideTitle": false,
+      "type": "COLUMN",
+      "hideTitle": true,
       "hideSubtitle": false,
       "hideEmptyColumns": false,
       "hideEmptyRows": false,
@@ -138,14 +141,14 @@
       "categoryDimensions": [
         {
           "category": {
-            "id": "fMZEcRHuamy"
+            "id": "cX5k9anHEHd"
           },
           "categoryOptions": [
             {
-              "id": "qkPbeWaFsnU"
+              "id": "apsOixVZlf1"
             },
             {
-              "id": "wbrDrL2aYEc"
+              "id": "jRbMi0aBjYn"
             }
           ]
         }

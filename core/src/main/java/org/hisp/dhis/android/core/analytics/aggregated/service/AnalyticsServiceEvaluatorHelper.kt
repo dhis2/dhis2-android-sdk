@@ -33,31 +33,56 @@ import org.hisp.dhis.android.core.analytics.aggregated.DimensionalValue
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.AnalyticsEvaluator
 import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluator
+import java.lang.RuntimeException
 import javax.inject.Inject
 
 internal class AnalyticsServiceEvaluatorHelper @Inject constructor(
     private val dataElementEvaluator: DataElementEvaluator
 ) {
 
-    fun evaluate(evaluationItem: AnalyticsServiceEvaluationItem,
-                 metadata: Map<String, MetadataItem>): DimensionalValue {
-        val dataItem = evaluationItem.dimensionItems.find { it is DimensionItem.DataItem }
-
-        if (dataItem == null) {
-            TODO()
-        }
-
-        val evaluator: AnalyticsEvaluator =
-            when (dataItem as DimensionItem.DataItem) {
-                is DimensionItem.DataItem.DataElementItem -> dataElementEvaluator
-                is DimensionItem.DataItem.DataElementOperandItem -> TODO()
-                is DimensionItem.DataItem.ProgramIndicatorItem -> TODO()
-                is DimensionItem.DataItem.IndicatorItem -> TODO()
-            }
+    fun evaluate(
+        evaluationItem: AnalyticsServiceEvaluationItem,
+        metadata: Map<String, MetadataItem>
+    ): DimensionalValue {
+        val evaluator = getEvaluator(evaluationItem)
 
         return DimensionalValue(
             dimensions = evaluationItem.dimensionItems.map { (it as DimensionItem).id },
             value = evaluator.evaluate(evaluationItem, metadata)
         )
+    }
+
+    private fun getEvaluator(evaluationItem: AnalyticsServiceEvaluationItem): AnalyticsEvaluator {
+        val dimensionDataItems = evaluationItem.dimensionItems.filterIsInstance<DimensionItem.DataItem>()
+
+        return when (dimensionDataItems.size) {
+            0 -> getEvaluatorFromFilters(evaluationItem.filters)
+            1 -> getEvaluatorFromDataDimension(dimensionDataItems.first())
+            else -> throw RuntimeException("Invalid arguments: more than one data item as dimension.")
+        }
+    }
+
+    private fun getEvaluatorFromFilters(filters: List<DimensionItem>): AnalyticsEvaluator {
+        val filterDataItems = filters.filterIsInstance<DimensionItem.DataItem>()
+
+        val allAreDataElements = filterDataItems.all {
+            it is DimensionItem.DataItem.DataElementItem || it is DimensionItem.DataItem.DataElementOperandItem
+        }
+
+        return when {
+            filterDataItems.isEmpty() -> throw RuntimeException("Invalid arguments: no data dimension is specified.")
+            filterDataItems.size == 1 -> getEvaluatorFromDataDimension(filterDataItems.first())
+            allAreDataElements -> dataElementEvaluator
+            else -> throw RuntimeException("Invalid arguments: Only a single indicator can be specified as filter.")
+        }
+    }
+
+    private fun getEvaluatorFromDataDimension(item: DimensionItem.DataItem): AnalyticsEvaluator {
+        return when (item) {
+            is DimensionItem.DataItem.DataElementItem -> dataElementEvaluator
+            is DimensionItem.DataItem.DataElementOperandItem -> dataElementEvaluator
+            is DimensionItem.DataItem.ProgramIndicatorItem -> TODO()
+            is DimensionItem.DataItem.IndicatorItem -> TODO()
+        }
     }
 }

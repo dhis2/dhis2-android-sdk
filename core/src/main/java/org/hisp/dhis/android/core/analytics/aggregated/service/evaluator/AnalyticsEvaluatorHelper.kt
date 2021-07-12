@@ -29,11 +29,18 @@
 package org.hisp.dhis.android.core.analytics.aggregated.service.evaluator
 
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodTableInfo
 
 internal object AnalyticsEvaluatorHelper {
+
+    const val Sum = "SUM"
+    const val Avg = "AVG"
+    const val Count = "COUNT"
+    const val Max = "MAX"
+    const val Min = "Min"
 
     fun getInPeriodClause(period: Period): String {
         return "SELECT ${PeriodTableInfo.Columns.PERIOD_ID} " +
@@ -65,5 +72,16 @@ internal object AnalyticsEvaluatorHelper {
                 "FROM ${OrganisationUnitTableInfo.TABLE_INFO.name()} " +
                 "WHERE " +
                 "${OrganisationUnitTableInfo.Columns.LEVEL} = $level"
+    }
+
+    fun getDataElementAggregator(aggregationType: String?): String {
+        return when (aggregationType?.let { AggregationType.valueOf(it) } ?: AggregationType.SUM) {
+            AggregationType.SUM -> Sum
+            AggregationType.AVERAGE -> Avg
+            AggregationType.COUNT -> Count
+            AggregationType.MAX -> Max
+            AggregationType.MIN -> Min
+            else -> Sum
+        }
     }
 }

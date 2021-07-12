@@ -31,6 +31,7 @@ import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
 import org.hisp.dhis.android.core.category.CategoryCombo
 import org.hisp.dhis.android.core.category.CategoryOptionCombo
+import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.dataelement.DataElement
@@ -80,10 +81,19 @@ object DataElementEvaluatorSamples {
         .categoryCombo(ObjectWithUid.fromIdentifiable(categoryCombo))
         .build()
 
-    val dataElement = DataElement.builder()
+    val dataElement1 = DataElement.builder()
         .uid(generator.generate())
-        .displayName("Data element")
+        .displayName("Data element 1")
         .valueType(ValueType.NUMBER)
+        .aggregationType(AggregationType.SUM.name)
+        .categoryCombo(ObjectWithUid.fromIdentifiable(categoryCombo))
+        .build()
+
+    val dataElement2 = DataElement.builder()
+        .uid(generator.generate())
+        .displayName("Data element 2")
+        .valueType(ValueType.INTEGER)
+        .aggregationType(AggregationType.AVERAGE.name)
         .categoryCombo(ObjectWithUid.fromIdentifiable(categoryCombo))
         .build()
 

@@ -34,7 +34,8 @@ import org.hisp.dhis.android.core.analytics.aggregated.service.AnalyticsServiceE
 import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluator
 import org.hisp.dhis.android.core.analytics.eventlinelist.aggregated.service.evaluator.DataElementEvaluatorSamples.categoryCombo
 import org.hisp.dhis.android.core.analytics.eventlinelist.aggregated.service.evaluator.DataElementEvaluatorSamples.categoryOptionCombo
-import org.hisp.dhis.android.core.analytics.eventlinelist.aggregated.service.evaluator.DataElementEvaluatorSamples.dataElement
+import org.hisp.dhis.android.core.analytics.eventlinelist.aggregated.service.evaluator.DataElementEvaluatorSamples.dataElement1
+import org.hisp.dhis.android.core.analytics.eventlinelist.aggregated.service.evaluator.DataElementEvaluatorSamples.dataElement2
 import org.hisp.dhis.android.core.analytics.eventlinelist.aggregated.service.evaluator.DataElementEvaluatorSamples.orgunitChild1
 import org.hisp.dhis.android.core.analytics.eventlinelist.aggregated.service.evaluator.DataElementEvaluatorSamples.orgunitChild2
 import org.hisp.dhis.android.core.analytics.eventlinelist.aggregated.service.evaluator.DataElementEvaluatorSamples.orgunitParent
@@ -77,7 +78,8 @@ class DataElementEvaluatorIntegrationShould : BaseMockIntegrationTestEmptyDispat
         orgunitParent.uid() to MetadataItem.OrganisationUnitItem(orgunitParent),
         orgunitChild1.uid() to MetadataItem.OrganisationUnitItem(orgunitChild1),
         orgunitChild2.uid() to MetadataItem.OrganisationUnitItem(orgunitChild2),
-        dataElement.uid() to MetadataItem.DataElementItem(dataElement),
+        dataElement1.uid() to MetadataItem.DataElementItem(dataElement1),
+        dataElement2.uid() to MetadataItem.DataElementItem(dataElement2),
         periodNov.periodId()!! to MetadataItem.PeriodItem(periodNov),
         periodDec.periodId()!! to MetadataItem.PeriodItem(periodDec),
         periodQ4.periodId()!! to MetadataItem.PeriodItem(periodQ4)
@@ -94,7 +96,8 @@ class DataElementEvaluatorIntegrationShould : BaseMockIntegrationTestEmptyDispat
         categoryComboStore.insert(categoryCombo)
         categoryOptionComboStore.insert(categoryOptionCombo)
 
-        dataElementStore.insert(dataElement)
+        dataElementStore.insert(dataElement1)
+        dataElementStore.insert(dataElement2)
 
         periodStore.insert(periodNov)
         periodStore.insert(periodDec)
@@ -119,7 +122,7 @@ class DataElementEvaluatorIntegrationShould : BaseMockIntegrationTestEmptyDispat
 
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
-                DimensionItem.DataItem.DataElementItem(dataElement.uid()),
+                DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
                 DimensionItem.PeriodItem.Absolute(periodDec.periodId()!!)
             ),
             filters = listOf(
@@ -139,7 +142,7 @@ class DataElementEvaluatorIntegrationShould : BaseMockIntegrationTestEmptyDispat
 
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
-                DimensionItem.DataItem.DataElementItem(dataElement.uid()),
+                DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
                 DimensionItem.PeriodItem.Absolute(periodQ4.periodId()!!)
             ),
             filters = listOf(
@@ -159,7 +162,7 @@ class DataElementEvaluatorIntegrationShould : BaseMockIntegrationTestEmptyDispat
 
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
-                DimensionItem.DataItem.DataElementItem(dataElement.uid())
+                DimensionItem.DataItem.DataElementItem(dataElement1.uid())
             ),
             filters = listOf(
                 DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid()),
@@ -173,9 +176,50 @@ class DataElementEvaluatorIntegrationShould : BaseMockIntegrationTestEmptyDispat
         assertThat(value).isEqualTo("5")
     }
 
+    @Test
+    fun should_aggregate_data_elements_if_defined_as_filter() {
+        createDataValue("2", dataElementUid = dataElement1.uid())
+        createDataValue("3", dataElementUid = dataElement2.uid())
+
+        val evaluationItem = AnalyticsServiceEvaluationItem(
+            dimensionItems = listOf(
+                DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid())
+            ),
+            filters = listOf(
+                DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
+                DimensionItem.DataItem.DataElementItem(dataElement2.uid()),
+                DimensionItem.PeriodItem.Relative(RelativePeriod.THIS_MONTH)
+            )
+        )
+
+        val value = dataElementEvaluator.evaluate(evaluationItem, metadata)
+
+        assertThat(value).isEqualTo("5")
+    }
+
+    @Test
+    fun should_use_data_element_aggregation_type() {
+        createDataValue("2", orgunitUid = orgunitChild1.uid(), dataElementUid = dataElement2.uid())
+        createDataValue("3", orgunitUid = orgunitChild2.uid(), dataElementUid = dataElement2.uid())
+
+        val evaluationItem = AnalyticsServiceEvaluationItem(
+            dimensionItems = listOf(
+                DimensionItem.DataItem.DataElementItem(dataElement2.uid())
+            ),
+            filters = listOf(
+                DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid()),
+                DimensionItem.PeriodItem.Relative(RelativePeriod.THIS_MONTH)
+            )
+        )
+
+        val value = dataElementEvaluator.evaluate(evaluationItem, metadata)
+
+        assertThat(value).isEqualTo("2.5")
+    }
+
     private fun createDataValue(
         value: String,
-        dataElementUid: String = dataElement.uid(),
+        dataElementUid: String = dataElement1.uid(),
         orgunitUid: String = orgunitParent.uid(),
         periodId: String = periodDec.periodId()!!
     ) {

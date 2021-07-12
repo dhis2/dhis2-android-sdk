@@ -34,8 +34,10 @@ import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.service.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
+import java.lang.RuntimeException
 import javax.inject.Inject
 
 internal class DataElementEvaluator @Inject constructor(
@@ -56,16 +58,18 @@ internal class DataElementEvaluator @Inject constructor(
                 when (entry.key) {
                     is Dimension.Data -> appendDataWhereClause(entry.value, builder)
                     is Dimension.Period -> appendPeriodWhereClause(entry.value, builder, metadata)
-                    is Dimension.OrganisationUnit -> appendOrgunitWhereClause(entry.value, builder, metadata)
-                    is Dimension.Category -> appendCategoryWhereClause(entry.value, builder, metadata)
-                    is Dimension.CategoryOptionGroupSet -> appendCOGSWhereClause(entry.value, builder, metadata)
+                    is Dimension.OrganisationUnit -> appendOrgunitWhereClause(entry.value, builder)
+                    is Dimension.Category -> TODO()
+                    is Dimension.CategoryOptionGroupSet -> TODO()
                 }
             }
                 .appendKeyNumberValue(DataValueTableInfo.Columns.DELETED, 0)
                 .build()
 
+        val aggregator = getAggregator(evaluationItem, metadata)
+
         val sqlQuery =
-            "SELECT SUM(${DataValueTableInfo.Columns.VALUE}) " +
+            "SELECT ${aggregator}(${DataValueTableInfo.Columns.VALUE}) " +
                     "FROM ${DataValueTableInfo.TABLE_INFO.name()} " +
                     "WHERE $whereClause"
 
@@ -121,8 +125,7 @@ internal class DataElementEvaluator @Inject constructor(
 
     private fun appendOrgunitWhereClause(
         items: List<DimensionItem>,
-        builder: WhereClauseBuilder,
-        metadata: Map<String, MetadataItem>
+        builder: WhereClauseBuilder
     ): WhereClauseBuilder {
         val innerClause = items.map { it as DimensionItem.OrganisationUnitItem }
             .foldRight(WhereClauseBuilder()) { item, innerBuilder ->
@@ -145,21 +148,31 @@ internal class DataElementEvaluator @Inject constructor(
         return builder.appendComplexQuery(innerClause)
     }
 
-    private fun appendCategoryWhereClause(
-        items: List<DimensionItem>,
-        builder: WhereClauseBuilder,
+    private fun getAggregator(
+        evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>
-    ): WhereClauseBuilder {
-        // TODO
-        return builder
-    }
+    ): String {
+        val dimensionDataItem = evaluationItem.dimensionItems.filterIsInstance<DimensionItem.DataItem>()
 
-    private fun appendCOGSWhereClause(
-        items: List<DimensionItem>,
-        builder: WhereClauseBuilder,
-        metadata: Map<String, MetadataItem>
-    ): WhereClauseBuilder {
-        // TODO
-        return builder
+        val dataItemList = when (dimensionDataItem.size) {
+            0 -> evaluationItem.filters.filterIsInstance<DimensionItem.DataItem>()
+            1 -> dimensionDataItem
+            else -> throw RuntimeException("Invalid arguments: more than one data item as dimension.")
+        }
+
+        return when (dataItemList.size) {
+            0 -> throw RuntimeException("Invalid arguments: no data dimension is specified.")
+            1 -> {
+                val item = metadata[dataItemList.first().id]
+                val aggregationType = when (item) {
+                    is MetadataItem.DataElementItem -> item.item.aggregationType()
+                    is MetadataItem.DataElementOperandItem -> item.item.dataElement()?.uid()
+                    else -> throw RuntimeException("Invalid arguments: dimension is not dataelement or operand.")
+                }
+                AnalyticsEvaluatorHelper.getDataElementAggregator(aggregationType)
+            }
+            else -> AnalyticsEvaluatorHelper.getDataElementAggregator(AggregationType.SUM.name)
+        }
+
     }
 }

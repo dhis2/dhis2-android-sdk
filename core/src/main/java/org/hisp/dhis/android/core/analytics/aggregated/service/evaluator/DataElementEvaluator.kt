@@ -88,6 +88,16 @@ internal class DataElementEvaluator @Inject constructor(
                 when (item) {
                     is DimensionItem.DataItem.DataElementItem ->
                         innerBuilder.appendOrKeyStringValue(DataValueTableInfo.Columns.DATA_ELEMENT, item.uid)
+                    is DimensionItem.DataItem.DataElementOperandItem -> {
+                        val operandClause = WhereClauseBuilder()
+                            .appendKeyStringValue(DataValueTableInfo.Columns.DATA_ELEMENT, item.dataElement)
+                            .appendKeyStringValue(
+                                DataValueTableInfo.Columns.CATEGORY_OPTION_COMBO,
+                                item.categoryOptionCombo
+                            )
+                            .build()
+                        innerBuilder.appendOrComplexQuery(operandClause)
+                    }
                     else -> TODO()
                 }
             }.build()
@@ -181,7 +191,10 @@ internal class DataElementEvaluator @Inject constructor(
                 val item = metadata[dataItemList.first().id]
                 val aggregationType = when (item) {
                     is MetadataItem.DataElementItem -> item.item.aggregationType()
-                    is MetadataItem.DataElementOperandItem -> item.item.dataElement()?.uid()
+                    is MetadataItem.DataElementOperandItem ->
+                        metadata[item.item.dataElement()?.uid()]?.let {
+                            (it as MetadataItem.DataElementItem).item.aggregationType()
+                        }
                     else -> throw RuntimeException("Invalid arguments: dimension is not dataelement or operand.")
                 }
                 AnalyticsEvaluatorHelper.getDataElementAggregator(aggregationType)

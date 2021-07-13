@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodType
@@ -117,6 +118,12 @@ object DataElementEvaluatorSamples {
         .valueType(ValueType.INTEGER)
         .aggregationType(AggregationType.AVERAGE.name)
         .categoryCombo(ObjectWithUid.fromIdentifiable(categoryCombo))
+        .build()
+
+    val dataElementOperand = DataElementOperand.builder()
+        .uid("${dataElement1.uid()}.${categoryOptionCombo.uid()}")
+        .dataElement(ObjectWithUid.create(dataElement1.uid()))
+        .categoryOptionCombo(ObjectWithUid.create(categoryOptionCombo.uid()))
         .build()
 
     val periodNov: Period = Period.builder()

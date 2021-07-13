@@ -73,7 +73,9 @@ sealed class Dimension {
 sealed class DimensionItem(val dimension: Dimension, val id: String) {
     sealed class DataItem(id: String) : DimensionItem(Dimension.Data, id), AbsoluteDimensionItem {
         data class DataElementItem(val uid: String) : DataItem(uid)
-        data class DataElementOperandItem(val uid: String, val categoryOptionCombo: String) : DataItem(uid)
+        data class DataElementOperandItem(val dataElement: String, val categoryOptionCombo: String) :
+            DataItem("$dataElement.$categoryOptionCombo")
+
         data class IndicatorItem(val uid: String) : DataItem(uid)
         data class ProgramIndicatorItem(val uid: String) : DataItem(uid)
     }

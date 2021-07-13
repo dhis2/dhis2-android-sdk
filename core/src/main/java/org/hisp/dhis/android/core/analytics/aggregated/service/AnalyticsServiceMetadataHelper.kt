@@ -83,7 +83,7 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
                     is DimensionItem.DataItem.DataElementItem -> dataElementStore.selectByUid(item.uid)!!
                         .let { dataElement -> MetadataItem.DataElementItem(dataElement) }
                     // TODO Build a meaningful name for DataElementOperand
-                    is DimensionItem.DataItem.DataElementOperandItem -> dataElementOperandStore.selectByUid(item.uid)!!
+                    is DimensionItem.DataItem.DataElementOperandItem -> dataElementOperandStore.selectByUid(item.id)!!
                         .let { dataElementOperand -> MetadataItem.DataElementOperandItem(dataElementOperand) }
                     is DimensionItem.DataItem.IndicatorItem -> indicatorStore.selectByUid(item.uid)!!
                         .let { indicator -> MetadataItem.IndicatorItem(indicator) }

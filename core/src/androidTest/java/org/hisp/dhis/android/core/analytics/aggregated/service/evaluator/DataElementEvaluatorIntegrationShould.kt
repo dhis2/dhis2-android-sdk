@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataEle
 import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.categoryOptionComboCategoryOptionLink
 import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.dataElement1
 import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.dataElement2
+import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.dataElementOperand
 import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.orgunitChild1
 import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.orgunitChild2
 import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.orgunitParent
@@ -90,6 +91,7 @@ class DataElementEvaluatorIntegrationShould : BaseMockIntegrationTestEmptyDispat
         orgunitChild2.uid() to MetadataItem.OrganisationUnitItem(orgunitChild2),
         dataElement1.uid() to MetadataItem.DataElementItem(dataElement1),
         dataElement2.uid() to MetadataItem.DataElementItem(dataElement2),
+        dataElementOperand.uid()!! to MetadataItem.DataElementOperandItem(dataElementOperand),
         periodNov.periodId()!! to MetadataItem.PeriodItem(periodNov),
         periodDec.periodId()!! to MetadataItem.PeriodItem(periodDec),
         periodQ4.periodId()!! to MetadataItem.PeriodItem(periodQ4)
@@ -275,6 +277,25 @@ class DataElementEvaluatorIntegrationShould : BaseMockIntegrationTestEmptyDispat
         val value = dataElementEvaluator.evaluate(evaluationItem, metadata)
 
         assertThat(value).isNull()
+    }
+
+    @Test
+    fun should_evaluate_data_element_operand() {
+        createDataValue("2")
+
+        val evaluationItem = AnalyticsServiceEvaluationItem(
+            dimensionItems = listOf(
+                DimensionItem.DataItem.DataElementOperandItem(dataElement1.uid(), categoryOptionCombo.uid())
+            ),
+            filters = listOf(
+                DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid()),
+                DimensionItem.PeriodItem.Relative(RelativePeriod.THIS_MONTH)
+            )
+        )
+
+        val value = dataElementEvaluator.evaluate(evaluationItem, metadata)
+
+        assertThat(value).isEqualTo("2")
     }
 
     private fun createDataValue(

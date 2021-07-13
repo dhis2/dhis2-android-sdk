@@ -30,6 +30,7 @@ package org.hisp.dhis.android.testapp.visualization;
 
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.hisp.dhis.android.core.visualization.DataDimensionItemType;
 import org.hisp.dhis.android.core.visualization.HideEmptyItemStrategy;
 import org.hisp.dhis.android.core.visualization.Visualization;
 import org.hisp.dhis.android.core.visualization.VisualizationType;
@@ -118,5 +119,13 @@ public class VisualizationCollectionRepositoryMockIntegrationShould extends Base
         assertThat(visualization.categoryDimensions().get(0).categoryOptions().get(0).uid()).isEqualTo("TNYQzTHdoxL");
         assertThat(visualization.categoryDimensions().get(0).categoryOptions().get(1).uid()).isEqualTo("TXGfLxZlInA");
         assertThat(visualization.categoryDimensions().get(0).categoryOptions().get(2).uid()).isEqualTo("uZUnebiT5DI");
+    }
+
+    @Test
+    public void include_data_dimension_item_as_children() {
+        Visualization visualization = d2.visualizationModule().visualizations()
+                .withDataDimensionItems().one().blockingGet();
+        assertThat(visualization.dataDimensionItems().get(0).dataDimensionItemType()).isEqualTo(DataDimensionItemType.DATA_ELEMENT);
+        assertThat(visualization.dataDimensionItems().get(0).dataDimensionItem()).isEqualTo("cYeuwXTCPkU");
     }
 }

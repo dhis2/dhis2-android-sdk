@@ -48,6 +48,9 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 public abstract class DataDimensionItem implements CoreObject {
 
     @Nullable
+    public abstract String visualization();
+
+    @Nullable
     @JsonProperty()
     @ColumnAdapter(DataDimensionItemTypeColumnAdapter.class)
     public abstract DataDimensionItemType dataDimensionItemType();
@@ -86,7 +89,50 @@ public abstract class DataDimensionItem implements CoreObject {
     @JsonProperty()
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid programAttribute();
-    
+
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid validationRule();
+
+    @Nullable
+    public String dataDimensionItem() {
+        ObjectWithUid item = dataDimensionItemObject();
+        if (item == null) {
+            return null;
+        } else {
+            return item.uid();
+        }
+    }
+
+    @Nullable
+    private ObjectWithUid dataDimensionItemObject() {
+        DataDimensionItemType type = dataDimensionItemType();
+        if (type == null) {
+            return null;
+        } else {
+            switch (type) {
+                case INDICATOR:
+                    return indicator();
+                case DATA_ELEMENT:
+                    return dataElement();
+                case PROGRAM_ATTRIBUTE:
+                    return programAttribute();
+                case PROGRAM_DATA_ELEMENT:
+                    return programDataElement();
+                case PROGRAM_INDICATOR:
+                    return programIndicator();
+                case REPORTING_RATE:
+                    return reportingRate();
+                case DATA_ELEMENT_OPERAND:
+                    return dataElementOperand();
+                case VALIDATION_RULE:
+                    return validationRule();
+                default:
+                    return null;
+            }
+        }
+    }
 
     public static Builder builder() {
         return new $$AutoValue_DataDimensionItem.Builder();
@@ -104,6 +150,8 @@ public abstract class DataDimensionItem implements CoreObject {
 
         public abstract Builder id(Long id);
 
+        public abstract Builder visualization(String visualization);
+
         public abstract Builder dataDimensionItemType(DataDimensionItemType dataDimensionItemType);
 
         public abstract Builder indicator(ObjectWithUid indicator);
@@ -119,6 +167,8 @@ public abstract class DataDimensionItem implements CoreObject {
         public abstract Builder programDataElement(ObjectWithUid programDataElement);
 
         public abstract Builder programAttribute(ObjectWithUid programAttribute);
+
+        public abstract Builder validationRule(ObjectWithUid validationRule);
 
         public abstract DataDimensionItem build();
     }

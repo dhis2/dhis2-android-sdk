@@ -34,7 +34,6 @@ import java.text.ParseException
 import org.hisp.dhis.android.core.common.BaseObjectShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.core.period.PeriodType
-import org.junit.Assert
 import org.junit.Test
 
 class AnalyticsSettingV2Should : BaseObjectShould("settings/analytics_settings_v2.json"), ObjectShould {
@@ -44,19 +43,18 @@ class AnalyticsSettingV2Should : BaseObjectShould("settings/analytics_settings_v
     override fun map_from_json_string() {
         val analyticsSettings = objectMapper.readValue(jsonStream, AnalyticsSettings::class.java)
 
-        Truth.assertThat(analyticsSettings.tei().size).isEqualTo(1)
+        Truth.assertThat(analyticsSettings.tei().size).isEqualTo(3)
 
         analyticsSettings.tei().forEach { tei ->
             when (tei.uid()) {
-                "Lryd0j1jhho" -> {
-                    Truth.assertThat(tei.name()).isEqualTo("Lab monitoring weekly weight")
-                    Truth.assertThat(tei.shortName()).isEqualTo("line_weekly_kg")
-                    Truth.assertThat(tei.program()).isEqualTo("ur1Edk5Oe2n")
-                    Truth.assertThat(tei.programStage()).isEqualTo("EPEcjy3FWmI")
-                    Truth.assertThat(tei.period()).isEquivalentAccordingToCompareTo(PeriodType.Weekly)
+                "fqEx2avRp1L" -> {
+                    Truth.assertThat(tei.name()).isEqualTo("Height evolution")
+                    Truth.assertThat(tei.shortName()).isEqualTo("H. evolution")
+                    Truth.assertThat(tei.program()).isEqualTo("IpHINAT79UW")
+                    Truth.assertThat(tei.programStage()).isEqualTo("dBwrot7S420")
+                    Truth.assertThat(tei.period()).isEquivalentAccordingToCompareTo(PeriodType.Monthly)
                     Truth.assertThat(tei.type()).isEquivalentAccordingToCompareTo(ChartType.LINE)
                 }
-                else -> Assert.fail("Unexpected tei uid")
             }
         }
 

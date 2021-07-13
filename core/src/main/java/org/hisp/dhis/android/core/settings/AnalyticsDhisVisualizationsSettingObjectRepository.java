@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyAnyO
 import org.hisp.dhis.android.core.settings.internal.AnalyticsSettingCall;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,7 +98,7 @@ public class AnalyticsDhisVisualizationsSettingObjectRepository
                         group = createGroup(analyticsDhisVisualization);
                         program.put(
                                 analyticsDhisVisualization.scopeUid(),
-                                Collections.singletonList(group)
+                                createGroupList(group)
                         );
                     } else {
                         AnalyticsDhisVisualizationsGroup updatedGroup = updateGroup(group, analyticsDhisVisualization);
@@ -117,7 +117,7 @@ public class AnalyticsDhisVisualizationsSettingObjectRepository
                         group = createGroup(analyticsDhisVisualization);
                         dataSet.put(
                                 analyticsDhisVisualization.scopeUid(),
-                                Collections.singletonList(group)
+                                createGroupList(group)
                         );
                     } else {
                         AnalyticsDhisVisualizationsGroup updatedGroup = updateGroup(group, analyticsDhisVisualization);
@@ -157,7 +157,7 @@ public class AnalyticsDhisVisualizationsSettingObjectRepository
                 .builder()
                 .id(analyticsDhisVisualization.groupUid())
                 .name(analyticsDhisVisualization.groupName())
-                .visualizations(Collections.singletonList(analyticsDhisVisualization))
+                .visualizations(new ArrayList<>(Arrays.asList(analyticsDhisVisualization)))
                 .build();
     }
 
@@ -172,5 +172,9 @@ public class AnalyticsDhisVisualizationsSettingObjectRepository
                 .toBuilder()
                 .visualizations(updatedVisualizations)
                 .build();
+    }
+
+    private List<AnalyticsDhisVisualizationsGroup> createGroupList(AnalyticsDhisVisualizationsGroup group) {
+        return new ArrayList<>(Arrays.asList(group));
     }
 }

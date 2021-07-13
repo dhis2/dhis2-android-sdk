@@ -1,18 +1,63 @@
 {
   "tei": [
     {
-      "uid": "Lryd0j1jhho",
+      "uid": "fqEx2avRp1L",
       "data": {
-        "attributes": [
-          "OvY4VVhSDeJ"
+        "dataElements": [
+          "dBwrot7S420.sWoqcoByYmD",
+          "dBwrot7S421.Ok9OQpitjQr"
         ]
       },
-      "name": "Lab monitoring weekly weight",
+      "name": "Height evolution",
       "type": "LINE",
+      "period": "Monthly",
+      "program": "IpHINAT79UW",
+      "programStage": "dBwrot7S420",
+      "shortName": "H. evolution"
+    },
+    {
+      "uid": "XQUhloISaQJ",
+      "data": {
+        "indicators": [
+          "dBwrot7S420.GSae40Fyppf"
+        ],
+        "attributes": [
+          "cejWyOfXge6"
+        ]
+      },
+      "name": "Weight gain",
+      "type": "BAR",
       "period": "Weekly",
-      "program": "ur1Edk5Oe2n",
-      "shortName": "line_weekly_kg",
-      "programStage": "EPEcjy3FWmI"
+      "program": "lxAQ7Zs9VYR",
+      "shortName": "W. gain"
+    },
+    {
+      "WHONutrition": {
+        "chartType": "WFH",
+        "gender": {
+          "attribute": "cejWyOfXge6",
+          "values": {
+            "female": "female",
+            "male": "male"
+          }
+        },
+        "x": {
+          "dataElements": [
+            "dBwrot7S420.sWoqcoByYmD"
+          ]
+        },
+        "y": {
+          "indicators": [
+            "GSae40Fyppf"
+          ]
+        }
+      },
+      "name": "Who chart",
+      "program": "IpHINAT79UW",
+      "programStage": "dBwrot7S420",
+      "shortName": "Who chart",
+      "type": "WHO_NUTRITION",
+      "uid": "yEdtdG7ql9K"
     }
   ],
   "lastUpdated": "2021-06-02T04:30:16.877Z",

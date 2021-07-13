@@ -54,8 +54,6 @@ import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
-import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory
-import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl
 import org.hisp.dhis.android.core.period.internal.PeriodStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
@@ -67,9 +65,7 @@ import org.junit.runner.RunWith
 @RunWith(D2JunitRunner::class)
 class DataElementEvaluatorIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() {
 
-    private val periodGenerator = ParentPeriodGeneratorImpl.create(CalendarProviderFactory.createFixed())
-
-    private val dataElementEvaluator = DataElementEvaluator(databaseAdapter, periodGenerator)
+    private val dataElementEvaluator = DataElementEvaluator(databaseAdapter)
 
     // Stores
     private val dataValueStore = DataValueStore.create(databaseAdapter)
@@ -103,6 +99,14 @@ class DataElementEvaluatorIntegrationShould : BaseMockIntegrationTestEmptyDispat
         RelativeOrganisationUnit.USER_ORGUNIT_CHILDREN.name to MetadataItem.OrganisationUnitRelativeItem(
             RelativeOrganisationUnit.USER_ORGUNIT_CHILDREN,
             listOf(orgunitChild1, orgunitChild2)
+        ),
+        RelativePeriod.THIS_MONTH.name to MetadataItem.RelativePeriodItem(
+            RelativePeriod.THIS_MONTH,
+            listOf(periodDec)
+        ),
+        RelativePeriod.LAST_MONTH.name to MetadataItem.RelativePeriodItem(
+            RelativePeriod.LAST_MONTH,
+            listOf(periodNov)
         )
     )
 
@@ -197,7 +201,7 @@ class DataElementEvaluatorIntegrationShould : BaseMockIntegrationTestEmptyDispat
             ),
             filters = listOf(
                 DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid()),
-                DimensionItem.PeriodItem.Relative(RelativePeriod.LAST_3_MONTHS),
+                DimensionItem.PeriodItem.Relative(RelativePeriod.LAST_MONTH),
                 DimensionItem.PeriodItem.Relative(RelativePeriod.THIS_MONTH)
             )
         )

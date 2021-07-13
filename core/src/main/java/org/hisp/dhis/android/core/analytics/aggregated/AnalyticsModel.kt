@@ -51,7 +51,6 @@ sealed class MetadataItem(val id: String, val displayName: String) {
     class CategoryOptionItem(val item: CategoryOption) : MetadataItem(item.uid(), item.displayName()!!)
 
     class CategoryOptionGroupSetItem(uid: String, displayName: String) : MetadataItem(uid, displayName)
-    class CategoryOptionGroupItem(uid: String, displayName: String) : MetadataItem(uid, displayName)
 
     class OrganisationUnitItem(val item: OrganisationUnit) : MetadataItem(item.uid(), item.displayName()!!)
     class OrganisationUnitLevelItem(val item: OrganisationUnitLevel) : MetadataItem(item.uid(), item.displayName()!!)
@@ -62,7 +61,7 @@ sealed class MetadataItem(val id: String, val displayName: String) {
     ) : MetadataItem(item.name, item.name)
 
     class PeriodItem(val item: Period) : MetadataItem(item.periodId()!!, item.periodId()!!)
-    class RelativePeriodItem(val item: RelativePeriod) : MetadataItem(item.name, item.name)
+    class RelativePeriodItem(val item: RelativePeriod, val periods: List<Period>) : MetadataItem(item.name, item.name)
 }
 
 sealed class Dimension {
@@ -70,7 +69,6 @@ sealed class Dimension {
     object Period : Dimension()
     object OrganisationUnit : Dimension()
     data class Category(val uid: String) : Dimension()
-    data class CategoryOptionGroupSet(val uid: String) : Dimension()
 }
 
 sealed class DimensionItem(val dimension: Dimension, val id: String) {
@@ -99,11 +97,6 @@ sealed class DimensionItem(val dimension: Dimension, val id: String) {
         val uid: String,
         val categoryOption: String
     ) : DimensionItem(Dimension.Category(uid), categoryOption), AbsoluteDimensionItem
-
-    class CategoryOptionGroupSetItem(
-        val uid: String,
-        val categoryOptionGroup: String
-    ) : DimensionItem(Dimension.CategoryOptionGroupSet(uid), categoryOptionGroup), AbsoluteDimensionItem
 }
 
 internal interface AbsoluteDimensionItem

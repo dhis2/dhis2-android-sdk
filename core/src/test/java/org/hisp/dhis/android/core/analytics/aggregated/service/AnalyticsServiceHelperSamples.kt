@@ -49,8 +49,4 @@ object AnalyticsServiceHelperSamples {
     val categoryItem1_1 = DimensionItem.CategoryItem(AggregatedSamples.cc1.uid(), AggregatedSamples.co11.uid())
     val categoryItem1_2 = DimensionItem.CategoryItem(AggregatedSamples.cc1.uid(), AggregatedSamples.co12.uid())
     val categoryItem2_1 = DimensionItem.CategoryItem(AggregatedSamples.cc2.uid(), AggregatedSamples.co21.uid())
-
-    val categoryOptionGroupSetItem1_1 = DimensionItem.CategoryOptionGroupSetItem("cogs1", "cog11")
-    val categoryOptionGroupSetItem1_2 = DimensionItem.CategoryOptionGroupSetItem("cogs1", "cog12")
-    val categoryOptionGroupSetItem2_1 = DimensionItem.CategoryOptionGroupSetItem("cogs2", "cog21")
 }

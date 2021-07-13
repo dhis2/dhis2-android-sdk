@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.service.evaluator
 
-import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
@@ -38,11 +37,10 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
-import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
+import javax.inject.Inject
 
 internal class DataElementEvaluator @Inject constructor(
-    private val databaseAdapter: DatabaseAdapter,
-    private val parentPeriodGenerator: ParentPeriodGenerator
+    private val databaseAdapter: DatabaseAdapter
 ) : AnalyticsEvaluator {
 
     override fun evaluate(
@@ -60,7 +58,6 @@ internal class DataElementEvaluator @Inject constructor(
                     is Dimension.Period -> appendPeriodWhereClause(entry.value, builder, metadata)
                     is Dimension.OrganisationUnit -> appendOrgunitWhereClause(entry.value, builder, metadata)
                     is Dimension.Category -> appendCategoryWhereClause(entry.value, builder)
-                    is Dimension.CategoryOptionGroupSet -> TODO()
                 }
             }
                 .appendKeyNumberValue(DataValueTableInfo.Columns.DELETED, 0)
@@ -125,10 +122,10 @@ internal class DataElementEvaluator @Inject constructor(
                         )
                     }
                     is DimensionItem.PeriodItem.Relative -> {
-                        val periods = parentPeriodGenerator.generateRelativePeriods(item.relative)
+                        val relativeItem = metadata[item.id] as MetadataItem.RelativePeriodItem
                         innerBuilder.appendOrInSubQuery(
                             DataValueTableInfo.Columns.PERIOD,
-                            AnalyticsEvaluatorHelper.getInPeriodsClause(periods)
+                            AnalyticsEvaluatorHelper.getInPeriodsClause(relativeItem.periods)
                         )
                     }
                 }

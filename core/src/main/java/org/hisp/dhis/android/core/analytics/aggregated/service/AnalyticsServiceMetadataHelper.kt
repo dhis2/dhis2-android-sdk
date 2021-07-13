@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.service
 
-import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
@@ -42,8 +41,10 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevelTableInfo
+import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.hisp.dhis.android.core.program.ProgramIndicator
+import javax.inject.Inject
 
 @Suppress("LongParameterList")
 internal class AnalyticsServiceMetadataHelper @Inject constructor(
@@ -57,6 +58,7 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
     private val organisationUnitLevelStore: IdentifiableObjectStore<OrganisationUnitLevel>,
     private val programIndicatorStore: IdentifiableObjectStore<ProgramIndicator>,
     private val analyticsOrganisationUnitHelper: AnalyticsOrganisationUnitHelper,
+    private val parentPeriodGenerator: ParentPeriodGenerator,
     private val periodHelper: PeriodHelper
 ) {
 
@@ -110,8 +112,10 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
                     is DimensionItem.PeriodItem.Absolute ->
                         periodHelper.blockingGetPeriodForPeriodId(item.periodId)
                             .let { period -> MetadataItem.PeriodItem(period) }
-                    is DimensionItem.PeriodItem.Relative ->
-                        MetadataItem.RelativePeriodItem(item.relative)
+                    is DimensionItem.PeriodItem.Relative -> {
+                        val periods = parentPeriodGenerator.generateRelativePeriods(item.relative)
+                        MetadataItem.RelativePeriodItem(item.relative, periods)
+                    }
                 }
             )
 
@@ -143,9 +147,6 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
                 categoryOptionStore.selectByUid(item.categoryOption)!!
                     .let { categoryOption -> MetadataItem.CategoryOptionItem(categoryOption) }
             )
-
-            // TODO
-            is DimensionItem.CategoryOptionGroupSetItem -> listOf()
         }
     }
 }

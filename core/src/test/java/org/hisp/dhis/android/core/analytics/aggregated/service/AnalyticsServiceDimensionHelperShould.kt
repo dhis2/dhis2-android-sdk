@@ -67,8 +67,7 @@ class AnalyticsServiceDimensionHelperShould {
                 s.categoryItem1_1,
                 s.orgunitAbsolute,
                 s.categoryItem1_2,
-                s.categoryItem2_1,
-                s.categoryOptionGroupSetItem1_1
+                s.categoryItem2_1
             ),
             filters = listOf()
         )
@@ -80,8 +79,7 @@ class AnalyticsServiceDimensionHelperShould {
             Dimension.Period,
             Dimension.OrganisationUnit,
             Dimension.Category(s.categoryItem1_1.uid),
-            Dimension.Category(s.categoryItem2_1.uid),
-            Dimension.CategoryOptionGroupSet(s.categoryOptionGroupSetItem1_1.uid)
+            Dimension.Category(s.categoryItem2_1.uid)
         )
     }
 

@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.visualization.CategoryDimension
+import org.hisp.dhis.android.core.visualization.DataDimensionItem
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.VisualizationCategoryDimensionLink
 import javax.inject.Inject
@@ -42,7 +43,8 @@ import javax.inject.Inject
 internal class VisualizationHandler @Inject constructor(
     store: IdentifiableObjectStore<Visualization>,
     private val visualizationCategoryDimensionLinkHandler:
-    LinkHandler<ObjectWithUid, VisualizationCategoryDimensionLink>
+    LinkHandler<ObjectWithUid, VisualizationCategoryDimensionLink>,
+    private val dataDimensionItemHandler: LinkHandler<DataDimensionItem, DataDimensionItem>
 ) : IdentifiableHandlerImpl<Visualization>(store) {
 
     override fun beforeCollectionHandled(
@@ -65,6 +67,10 @@ internal class VisualizationHandler @Inject constructor(
                         .build()
                 }
             }
+        }
+
+        dataDimensionItemHandler.handleMany(o.uid(), o.dataDimensionItems()) {
+            it.toBuilder().visualization(o.uid()).build()
         }
     }
 }

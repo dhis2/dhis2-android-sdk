@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.visualization.Visualization
-import java.util.*
 
 @Module
 internal class VisualizationEntityDIModule : IdentifiableStoreProvider<Visualization> {
@@ -56,9 +55,15 @@ internal class VisualizationEntityDIModule : IdentifiableStoreProvider<Visualiza
     @Provides
     @Reusable
     fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<Visualization>> {
-        return Collections.singletonMap(
-            VisualizationFields.CATEGORY_DIMENSIONS,
-            VisualizationCategoryDimensionChildrenAppender.create(databaseAdapter)
+        return mapOf(
+            Pair(
+                VisualizationFields.CATEGORY_DIMENSIONS,
+                VisualizationCategoryDimensionChildrenAppender.create(databaseAdapter)
+            ),
+            Pair(
+                VisualizationFields.DATA_DIMENSION_ITEMS,
+                VisualizationDataDimensionItemChildrenAppender.create(databaseAdapter)
+            )
         )
     }
 }

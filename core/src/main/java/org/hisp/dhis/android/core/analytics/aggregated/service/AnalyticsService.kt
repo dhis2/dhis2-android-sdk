@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
 import javax.inject.Inject
 
 internal class AnalyticsService @Inject constructor(
-    private val analyticsServiceHelper: AnalyticsServiceHelper,
+    private val analyticsServiceDimensionHelper: AnalyticsServiceDimensionHelper,
     private val analyticsServiceMetadataHelper: AnalyticsServiceMetadataHelper,
     private val analyticsServiceEvaluatorHelper: AnalyticsServiceEvaluatorHelper
 ) {
@@ -48,8 +48,8 @@ internal class AnalyticsService @Inject constructor(
             throw RuntimeException("At least one data dimension must be specified")
         }
 
-        val dimensions = analyticsServiceHelper.getDimensions(params)
-        val evaluationItems = analyticsServiceHelper.getEvaluationItems(params, dimensions)
+        val dimensions = analyticsServiceDimensionHelper.getDimensions(params)
+        val evaluationItems = analyticsServiceDimensionHelper.getEvaluationItems(params, dimensions)
 
         val metadata = analyticsServiceMetadataHelper.getMetadata(evaluationItems)
 

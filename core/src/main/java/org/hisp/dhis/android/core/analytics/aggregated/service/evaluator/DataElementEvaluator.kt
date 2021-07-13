@@ -58,7 +58,7 @@ internal class DataElementEvaluator @Inject constructor(
                 when (entry.key) {
                     is Dimension.Data -> appendDataWhereClause(entry.value, builder)
                     is Dimension.Period -> appendPeriodWhereClause(entry.value, builder, metadata)
-                    is Dimension.OrganisationUnit -> appendOrgunitWhereClause(entry.value, builder)
+                    is Dimension.OrganisationUnit -> appendOrgunitWhereClause(entry.value, builder, metadata)
                     is Dimension.Category -> appendCategoryWhereClause(entry.value, builder)
                     is Dimension.CategoryOptionGroupSet -> TODO()
                 }
@@ -98,7 +98,8 @@ internal class DataElementEvaluator @Inject constructor(
                             .build()
                         innerBuilder.appendOrComplexQuery(operandClause)
                     }
-                    else -> TODO()
+                    else -> throw RuntimeException("Invalid arguments: unexpected dataItem ${item.javaClass.name} " +
+                            "in DataElement Evaluator.")
                 }
             }.build()
 
@@ -135,7 +136,8 @@ internal class DataElementEvaluator @Inject constructor(
 
     private fun appendOrgunitWhereClause(
         items: List<DimensionItem>,
-        builder: WhereClauseBuilder
+        builder: WhereClauseBuilder,
+        metadata: Map<String, MetadataItem>
     ): WhereClauseBuilder {
         val innerClause = items.map { it as DimensionItem.OrganisationUnitItem }
             .foldRight(WhereClauseBuilder()) { item, innerBuilder ->
@@ -150,7 +152,15 @@ internal class DataElementEvaluator @Inject constructor(
                             DataValueTableInfo.Columns.ORGANISATION_UNIT,
                             AnalyticsEvaluatorHelper.getLevelOrgunitClause(item.level)
                         )
-                    is DimensionItem.OrganisationUnitItem.Relative -> TODO()
+                    is DimensionItem.OrganisationUnitItem.Relative -> {
+                        val metadataItem = metadata[item.id] as MetadataItem.OrganisationUnitRelativeItem
+                        val orgunits = metadataItem.organisationUnits.map { it.uid() }
+
+                        innerBuilder.appendOrInSubQuery(
+                            DataValueTableInfo.Columns.ORGANISATION_UNIT,
+                            AnalyticsEvaluatorHelper.getOrgunitListClause(orgunits)
+                        )
+                    }
                     is DimensionItem.OrganisationUnitItem.Group -> TODO()
                 }
             }.build()

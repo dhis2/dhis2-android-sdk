@@ -47,4 +47,11 @@ internal class AggregatedEntityDIModule {
     fun visualizations(impl: MockVisualizationsRepository): VisualizationsRepository {
         return impl
     }
+
+    @Provides
+    @Reusable
+    fun emptyAnalyticsParams(): AnalyticsRepositoryParams {
+        return AnalyticsRepositoryParams(listOf(), listOf())
+    }
+
 }

@@ -55,6 +55,7 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
     private val organisationUnitGroupStore: IdentifiableObjectStore<OrganisationUnitGroup>,
     private val organisationUnitLevelStore: IdentifiableObjectStore<OrganisationUnitLevel>,
     private val programIndicatorStore: IdentifiableObjectStore<ProgramIndicator>,
+    private val analyticsOrganisationUnitHelper: AnalyticsOrganisationUnitHelper,
     private val periodHelper: PeriodHelper
 ) {
 
@@ -103,8 +104,10 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
                 when (item) {
                     is DimensionItem.OrganisationUnitItem.Absolute -> organisationUnitStore.selectByUid(item.uid)!!
                         .let { organisationUnit -> MetadataItem.OrganisationUnitItem(organisationUnit) }
-                    is DimensionItem.OrganisationUnitItem.Relative ->
-                        MetadataItem.OrganisationUnitRelativeItem(item.relative)
+                    is DimensionItem.OrganisationUnitItem.Relative -> {
+                        val orgunitUids = analyticsOrganisationUnitHelper.getRelativeOrganisationUnits(item.relative)
+                        MetadataItem.OrganisationUnitRelativeItem(item.relative, orgunitUids)
+                    }
                     is DimensionItem.OrganisationUnitItem.Level -> {
                         val levelClauseBuilder = WhereClauseBuilder()
                             .appendKeyNumberValue(OrganisationUnitLevelTableInfo.Columns.LEVEL, item.level)

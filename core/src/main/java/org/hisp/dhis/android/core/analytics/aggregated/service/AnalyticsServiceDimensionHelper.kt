@@ -32,16 +32,12 @@ import org.hisp.dhis.android.core.analytics.aggregated.AbsoluteDimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepositoryParams
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
 import javax.inject.Inject
 
-internal class AnalyticsServiceHelper @Inject constructor(
+internal class AnalyticsServiceDimensionHelper @Inject constructor(
     private val periodGenerator: ParentPeriodGenerator,
-    private val organisationUnitStore: IdentifiableObjectStore<OrganisationUnit>
+    private val analyticsOrganisationUnitHelper: AnalyticsOrganisationUnitHelper
 ) {
 
     fun getDimensions(params: AnalyticsRepositoryParams): Set<Dimension> {
@@ -85,23 +81,18 @@ internal class AnalyticsServiceHelper @Inject constructor(
             is DimensionItem.OrganisationUnitItem ->
                 when(item) {
                     is DimensionItem.OrganisationUnitItem.Absolute -> listOf(item)
-                    is DimensionItem.OrganisationUnitItem.Relative -> TODO()
+                    is DimensionItem.OrganisationUnitItem.Relative ->
+                        analyticsOrganisationUnitHelper.getRelativeOrganisationUnitUids(item.relative).map {
+                            DimensionItem.OrganisationUnitItem.Absolute(it)
+                        }
                     is DimensionItem.OrganisationUnitItem.Level ->
-                        queryOrgunitsByLevel(item.level).map { orgunitUid ->
-                            DimensionItem.OrganisationUnitItem.Absolute(orgunitUid)
+                        analyticsOrganisationUnitHelper.getOrganisationUnitUidsByLevel(item.level).map {
+                            DimensionItem.OrganisationUnitItem.Absolute(it)
                         }
                     is DimensionItem.OrganisationUnitItem.Group -> TODO()
                 }
             is DimensionItem.CategoryItem -> listOf(item)
             is DimensionItem.CategoryOptionGroupSetItem -> listOf(item)
         }
-    }
-
-    private fun queryOrgunitsByLevel(level: Int): List<String> {
-        val whereClause = WhereClauseBuilder()
-            .appendKeyNumberValue(OrganisationUnitTableInfo.Columns.LEVEL, level)
-            .build()
-
-        return organisationUnitStore.selectUidsWhere(whereClause)
     }
 }

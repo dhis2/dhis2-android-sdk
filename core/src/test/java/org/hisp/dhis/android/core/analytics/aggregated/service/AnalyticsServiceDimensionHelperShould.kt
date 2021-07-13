@@ -37,23 +37,21 @@ import org.hisp.dhis.android.core.analytics.aggregated.AbsoluteDimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepositoryParams
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.period.Period
-import org.hisp.dhis.android.core.analytics.aggregated.service.AnalyticsServiceHelperSamples as s
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.hisp.dhis.android.core.analytics.aggregated.service.AnalyticsServiceHelperSamples as s
 
 @RunWith(JUnit4::class)
-class AnalyticsServiceHelperShould {
+class AnalyticsServiceDimensionHelperShould {
 
     private val periodGenerator: ParentPeriodGenerator = mock()
 
-    private val organisationUnitStore: IdentifiableObjectStore<OrganisationUnit> = mock()
+    private val organisationUnitHelper: AnalyticsOrganisationUnitHelper = mock()
 
-    private val helper = AnalyticsServiceHelper(periodGenerator, organisationUnitStore)
+    private val helper = AnalyticsServiceDimensionHelper(periodGenerator, organisationUnitHelper)
 
     @Test
     fun `Should extract unique dimension values`() {
@@ -168,7 +166,7 @@ class AnalyticsServiceHelperShould {
 
     @Test
     fun `Should evaluate orgunits by level`() {
-        whenever(organisationUnitStore.selectUidsWhere(any())).thenReturn(listOf("orgunit1", "orgunit2", "orgunit3"))
+        whenever(organisationUnitHelper.getOrganisationUnitUidsByLevel(any())).thenReturn(listOf("orgunit1", "orgunit2", "orgunit3"))
 
         val params = AnalyticsRepositoryParams(
             dimensions = listOf(

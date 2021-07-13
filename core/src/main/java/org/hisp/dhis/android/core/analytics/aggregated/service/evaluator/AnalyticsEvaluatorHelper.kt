@@ -33,6 +33,8 @@ import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkTableInfo as
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLinkTableInfo as cocToCoInfo
 import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo as cocInfo
 import org.hisp.dhis.android.core.common.AggregationType
+import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodTableInfo
@@ -75,6 +77,13 @@ internal object AnalyticsEvaluatorHelper {
                 "FROM ${OrganisationUnitTableInfo.TABLE_INFO.name()} " +
                 "WHERE " +
                 "${OrganisationUnitTableInfo.Columns.LEVEL} = $level"
+    }
+
+    fun getOrgunitListClause(orgunitUids: List<String>): String {
+        return "SELECT ${OrganisationUnitTableInfo.Columns.UID} " +
+                "FROM ${OrganisationUnitTableInfo.TABLE_INFO.name()} " +
+                "WHERE " +
+                orgunitUids.joinToString(" OR ") { "${OrganisationUnitTableInfo.Columns.PATH} LIKE '%$it%'" }
     }
 
     fun getCategoryOptionClause(categoryUid: String, categoryOptionUid: String): String {

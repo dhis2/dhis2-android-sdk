@@ -60,6 +60,7 @@ class AnalyticsServiceMetadataHelperShould {
     private val organisationUnitGroupStore: IdentifiableObjectStore<OrganisationUnitGroup> = mock()
     private val organisationUnitLevelStore: IdentifiableObjectStore<OrganisationUnitLevel> = mock()
     private val programIndicatorStore: IdentifiableObjectStore<ProgramIndicator> = mock()
+    private val analyticsOrganisationUnitHelper: AnalyticsOrganisationUnitHelper = mock()
     private val periodHelper: PeriodHelper = mock()
 
     private val helper = AnalyticsServiceMetadataHelper(
@@ -72,6 +73,7 @@ class AnalyticsServiceMetadataHelperShould {
         organisationUnitGroupStore,
         organisationUnitLevelStore,
         programIndicatorStore,
+        analyticsOrganisationUnitHelper,
         periodHelper
     )
 

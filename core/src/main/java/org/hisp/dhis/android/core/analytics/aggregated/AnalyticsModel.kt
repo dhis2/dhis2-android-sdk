@@ -56,7 +56,10 @@ sealed class MetadataItem(val id: String, val displayName: String) {
     class OrganisationUnitItem(val item: OrganisationUnit) : MetadataItem(item.uid(), item.displayName()!!)
     class OrganisationUnitLevelItem(val item: OrganisationUnitLevel) : MetadataItem(item.uid(), item.displayName()!!)
     class OrganisationUnitGroupItem(val item: OrganisationUnitGroup) : MetadataItem(item.uid(), item.displayName()!!)
-    class OrganisationUnitRelativeItem(val item: RelativeOrganisationUnit) : MetadataItem(item.name, item.name)
+    class OrganisationUnitRelativeItem(
+        val item: RelativeOrganisationUnit,
+        val organisationUnits: List<OrganisationUnit>
+    ) : MetadataItem(item.name, item.name)
 
     class PeriodItem(val item: Period) : MetadataItem(item.periodId()!!, item.periodId()!!)
     class RelativePeriodItem(val item: RelativePeriod) : MetadataItem(item.name, item.name)

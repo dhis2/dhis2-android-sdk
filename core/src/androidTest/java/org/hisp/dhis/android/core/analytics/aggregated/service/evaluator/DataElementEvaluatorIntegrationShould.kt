@@ -48,6 +48,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataEle
 import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.periodNov
 import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.periodQ4
 import org.hisp.dhis.android.core.category.internal.*
+import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.datavalue.DataValue
@@ -94,7 +95,15 @@ class DataElementEvaluatorIntegrationShould : BaseMockIntegrationTestEmptyDispat
         dataElementOperand.uid()!! to MetadataItem.DataElementOperandItem(dataElementOperand),
         periodNov.periodId()!! to MetadataItem.PeriodItem(periodNov),
         periodDec.periodId()!! to MetadataItem.PeriodItem(periodDec),
-        periodQ4.periodId()!! to MetadataItem.PeriodItem(periodQ4)
+        periodQ4.periodId()!! to MetadataItem.PeriodItem(periodQ4),
+        RelativeOrganisationUnit.USER_ORGUNIT.name to MetadataItem.OrganisationUnitRelativeItem(
+            RelativeOrganisationUnit.USER_ORGUNIT,
+            listOf(orgunitParent)
+        ),
+        RelativeOrganisationUnit.USER_ORGUNIT_CHILDREN.name to MetadataItem.OrganisationUnitRelativeItem(
+            RelativeOrganisationUnit.USER_ORGUNIT_CHILDREN,
+            listOf(orgunitChild1, orgunitChild2)
+        )
     )
 
     @Before
@@ -296,6 +305,46 @@ class DataElementEvaluatorIntegrationShould : BaseMockIntegrationTestEmptyDispat
         val value = dataElementEvaluator.evaluate(evaluationItem, metadata)
 
         assertThat(value).isEqualTo("2")
+    }
+
+    @Test
+    fun should_evaluate_relative_user_orgunit() {
+        createDataValue("2", orgunitUid = orgunitChild1.uid())
+        createDataValue("3", orgunitUid = orgunitChild2.uid())
+
+        val evaluationItem = AnalyticsServiceEvaluationItem(
+            dimensionItems = listOf(
+                DimensionItem.DataItem.DataElementItem(dataElement1.uid())
+            ),
+            filters = listOf(
+                DimensionItem.OrganisationUnitItem.Relative(RelativeOrganisationUnit.USER_ORGUNIT),
+                DimensionItem.PeriodItem.Relative(RelativePeriod.THIS_MONTH)
+            )
+        )
+
+        val value = dataElementEvaluator.evaluate(evaluationItem, metadata)
+
+        assertThat(value).isEqualTo("5")
+    }
+
+    @Test
+    fun should_aggregate_relative_user_children_as_filter() {
+        createDataValue("2", orgunitUid = orgunitChild1.uid())
+        createDataValue("3", orgunitUid = orgunitChild2.uid())
+
+        val evaluationItem = AnalyticsServiceEvaluationItem(
+            dimensionItems = listOf(
+                DimensionItem.DataItem.DataElementItem(dataElement1.uid())
+            ),
+            filters = listOf(
+                DimensionItem.OrganisationUnitItem.Relative(RelativeOrganisationUnit.USER_ORGUNIT_CHILDREN),
+                DimensionItem.PeriodItem.Relative(RelativePeriod.THIS_MONTH)
+            )
+        )
+
+        val value = dataElementEvaluator.evaluate(evaluationItem, metadata)
+
+        assertThat(value).isEqualTo("5")
     }
 
     private fun createDataValue(

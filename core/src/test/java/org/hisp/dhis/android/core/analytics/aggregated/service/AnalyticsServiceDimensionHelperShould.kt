@@ -37,12 +37,12 @@ import org.hisp.dhis.android.core.analytics.aggregated.AbsoluteDimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepositoryParams
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
+import org.hisp.dhis.android.core.analytics.aggregated.service.AnalyticsServiceHelperSamples as s
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.hisp.dhis.android.core.analytics.aggregated.service.AnalyticsServiceHelperSamples as s
 
 @RunWith(JUnit4::class)
 class AnalyticsServiceDimensionHelperShould {
@@ -99,20 +99,22 @@ class AnalyticsServiceDimensionHelperShould {
             ),
             filters = listOf()
         )
-        val dimensions = setOf(Dimension.Period, Dimension.Data, Dimension.OrganisationUnit,
-            Dimension.Category(s.categoryItem1_1.uid))
+        val dimensions = setOf(
+            Dimension.Period, Dimension.Data, Dimension.OrganisationUnit,
+            Dimension.Category(s.categoryItem1_1.uid)
+        )
 
         val items = helper.getEvaluationItems(params, dimensions)
 
         assertThat(items).containsExactly(
-            item(s.periodAbsolute1, s.dataElementItem1, s.orgunitAbsolute, s.categoryItem1_1 ),
-            item(s.periodAbsolute1, s.dataElementItem1, s.orgunitAbsolute, s.categoryItem1_2 ),
-            item(s.periodAbsolute1, s.indicatorItem, s.orgunitAbsolute, s.categoryItem1_1 ),
-            item(s.periodAbsolute1, s.indicatorItem, s.orgunitAbsolute, s.categoryItem1_2 ),
-            item(s.periodAbsolute2, s.dataElementItem1, s.orgunitAbsolute, s.categoryItem1_1 ),
-            item(s.periodAbsolute2, s.dataElementItem1, s.orgunitAbsolute, s.categoryItem1_2 ),
-            item(s.periodAbsolute2, s.indicatorItem, s.orgunitAbsolute, s.categoryItem1_1 ),
-            item(s.periodAbsolute2, s.indicatorItem, s.orgunitAbsolute, s.categoryItem1_2 )
+            item(s.periodAbsolute1, s.dataElementItem1, s.orgunitAbsolute, s.categoryItem1_1),
+            item(s.periodAbsolute1, s.dataElementItem1, s.orgunitAbsolute, s.categoryItem1_2),
+            item(s.periodAbsolute1, s.indicatorItem, s.orgunitAbsolute, s.categoryItem1_1),
+            item(s.periodAbsolute1, s.indicatorItem, s.orgunitAbsolute, s.categoryItem1_2),
+            item(s.periodAbsolute2, s.dataElementItem1, s.orgunitAbsolute, s.categoryItem1_1),
+            item(s.periodAbsolute2, s.dataElementItem1, s.orgunitAbsolute, s.categoryItem1_2),
+            item(s.periodAbsolute2, s.indicatorItem, s.orgunitAbsolute, s.categoryItem1_1),
+            item(s.periodAbsolute2, s.indicatorItem, s.orgunitAbsolute, s.categoryItem1_2)
         )
     }
 
@@ -139,11 +141,13 @@ class AnalyticsServiceDimensionHelperShould {
     @Test
     fun `Should evaluate relative periods`() {
         whenever(periodGenerator.generateRelativePeriods(s.periodLast3Days.relative))
-            .thenReturn(listOf(
-                Period.builder().periodId("20210701").build(),
-                Period.builder().periodId("20210702").build(),
-                Period.builder().periodId("20210703").build()
-            ))
+            .thenReturn(
+                listOf(
+                    Period.builder().periodId("20210701").build(),
+                    Period.builder().periodId("20210702").build(),
+                    Period.builder().periodId("20210703").build()
+                )
+            )
 
         val params = AnalyticsRepositoryParams(
             dimensions = listOf(
@@ -166,7 +170,8 @@ class AnalyticsServiceDimensionHelperShould {
 
     @Test
     fun `Should evaluate orgunits by level`() {
-        whenever(organisationUnitHelper.getOrganisationUnitUidsByLevel(any())).thenReturn(listOf("orgunit1", "orgunit2", "orgunit3"))
+        whenever(organisationUnitHelper.getOrganisationUnitUidsByLevel(any()))
+            .thenReturn(listOf("orgunit1", "orgunit2", "orgunit3"))
 
         val params = AnalyticsRepositoryParams(
             dimensions = listOf(

@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.service
 
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
-import javax.inject.Inject
 
 internal class AnalyticsOrganisationUnitHelper @Inject constructor(
     private val userOrganisationUnitStore: UserOrganisationUnitLinkStore,

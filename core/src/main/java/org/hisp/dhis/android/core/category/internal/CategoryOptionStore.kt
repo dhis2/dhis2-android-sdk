@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWit
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.CategoryOptionTableInfo
 
+@Suppress("MagicNumber")
 internal object CategoryOptionStore {
 
     private val BINDER: StatementBinder<CategoryOption> = object : NameableStatementBinder<CategoryOption>() {

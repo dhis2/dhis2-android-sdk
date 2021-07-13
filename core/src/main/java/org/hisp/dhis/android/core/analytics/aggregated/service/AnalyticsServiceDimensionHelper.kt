@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.service
 
+import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.AbsoluteDimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepositoryParams
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
-import javax.inject.Inject
 
 internal class AnalyticsServiceDimensionHelper @Inject constructor(
     private val periodGenerator: ParentPeriodGenerator,
@@ -68,10 +68,10 @@ internal class AnalyticsServiceDimensionHelper @Inject constructor(
     }
 
     private fun toAbsoluteDimensionItems(item: DimensionItem): List<AbsoluteDimensionItem> {
-        return when(item) {
+        return when (item) {
             is DimensionItem.DataItem -> listOf(item)
             is DimensionItem.PeriodItem ->
-                when(item) {
+                when (item) {
                     is DimensionItem.PeriodItem.Absolute -> listOf(item)
                     is DimensionItem.PeriodItem.Relative ->
                         periodGenerator.generateRelativePeriods(item.relative).map { period ->
@@ -79,7 +79,7 @@ internal class AnalyticsServiceDimensionHelper @Inject constructor(
                         }
                 }
             is DimensionItem.OrganisationUnitItem ->
-                when(item) {
+                when (item) {
                     is DimensionItem.OrganisationUnitItem.Absolute -> listOf(item)
                     is DimensionItem.OrganisationUnitItem.Relative ->
                         analyticsOrganisationUnitHelper.getRelativeOrganisationUnitUids(item.relative).map {

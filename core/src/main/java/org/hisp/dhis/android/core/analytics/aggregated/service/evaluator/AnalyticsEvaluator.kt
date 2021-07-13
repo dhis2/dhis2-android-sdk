@@ -30,10 +30,11 @@ package org.hisp.dhis.android.core.analytics.aggregated.service.evaluator
 
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.service.AnalyticsServiceEvaluationItem
-import javax.inject.Inject
 
 internal interface AnalyticsEvaluator {
 
-    fun evaluate(evaluationItem: AnalyticsServiceEvaluationItem,
-                 metadata: Map<String, MetadataItem>): String?
+    fun evaluate(
+        evaluationItem: AnalyticsServiceEvaluationItem,
+        metadata: Map<String, MetadataItem>
+    ): String?
 }

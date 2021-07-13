@@ -28,10 +28,6 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.service
 
-import org.hisp.dhis.android.core.analytics.aggregated.AbsoluteDimensionItem
-import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
-
-internal data class AnalyticsServiceEvaluationItem(
-    val dimensionItems: List<AbsoluteDimensionItem>,
-    val filters: List<DimensionItem>
-)
+sealed class AnalyticsException(message: String) : Throwable(message) {
+    class InvalidArguments(message: String) : AnalyticsException(message)
+}

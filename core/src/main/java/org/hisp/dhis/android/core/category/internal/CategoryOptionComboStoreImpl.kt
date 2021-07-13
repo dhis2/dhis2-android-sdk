@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
 import org.hisp.dhis.android.core.category.CategoryOptionCombo
 import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo
 
+@Suppress("MagicNumber")
 internal class CategoryOptionComboStoreImpl private constructor(
     databaseAdapter: DatabaseAdapter,
     statementBuilder: SQLStatementBuilderImpl
@@ -46,7 +47,9 @@ internal class CategoryOptionComboStoreImpl private constructor(
     databaseAdapter,
     statementBuilder,
     BINDER,
-    { cursor: Cursor -> CategoryOptionCombo.create(cursor) }), CategoryOptionComboStore {
+    { cursor: Cursor -> CategoryOptionCombo.create(cursor) }
+),
+    CategoryOptionComboStore {
 
     override fun getForCategoryCombo(categoryComboUid: String): List<CategoryOptionCombo> {
         val whereClause = WhereClauseBuilder()

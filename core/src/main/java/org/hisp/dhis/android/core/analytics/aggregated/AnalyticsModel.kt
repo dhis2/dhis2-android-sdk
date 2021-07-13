@@ -100,7 +100,6 @@ sealed class DimensionItem(val dimension: Dimension, val id: String) {
         val categoryOption: String
     ) : DimensionItem(Dimension.Category(uid), categoryOption), AbsoluteDimensionItem
 
-
     class CategoryOptionGroupSetItem(
         val uid: String,
         val categoryOptionGroup: String

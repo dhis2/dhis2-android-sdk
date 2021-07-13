@@ -48,7 +48,7 @@ object DataElementEvaluatorSamples {
         OrganisationUnit.builder()
             .uid(uid)
             .displayName("Child 1")
-            .path("/${uid}")
+            .path("/$uid")
             .build()
     }
 
@@ -58,7 +58,7 @@ object DataElementEvaluatorSamples {
             .uid(uid)
             .displayName("Child 1")
             .parent(ObjectWithUid.create(orgunitParent.uid()))
-            .path("/${orgunitParent.uid()}/${uid}")
+            .path("/${orgunitParent.uid()}/$uid")
             .build()
     }
 
@@ -68,7 +68,7 @@ object DataElementEvaluatorSamples {
             .uid(uid)
             .displayName("Child 2")
             .parent(ObjectWithUid.create(orgunitParent.uid()))
-            .path("/${orgunitParent.uid()}/${uid}")
+            .path("/${orgunitParent.uid()}/$uid")
             .build()
     }
 
@@ -146,5 +146,4 @@ object DataElementEvaluatorSamples {
         .startDate(DateUtils.DATE_FORMAT.parse("2019-10-01T00:00:00.000"))
         .endDate(DateUtils.DATE_FORMAT.parse("2021-12-31T23:59:59.999"))
         .build()
-
 }

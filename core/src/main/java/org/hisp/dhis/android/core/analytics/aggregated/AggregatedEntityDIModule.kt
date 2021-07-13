@@ -53,5 +53,4 @@ internal class AggregatedEntityDIModule {
     fun emptyAnalyticsParams(): AnalyticsRepositoryParams {
         return AnalyticsRepositoryParams(listOf(), listOf())
     }
-
 }

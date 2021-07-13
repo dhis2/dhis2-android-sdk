@@ -53,5 +53,4 @@ object AnalyticsServiceHelperSamples {
     val categoryOptionGroupSetItem1_1 = DimensionItem.CategoryOptionGroupSetItem("cogs1", "cog11")
     val categoryOptionGroupSetItem1_2 = DimensionItem.CategoryOptionGroupSetItem("cogs1", "cog12")
     val categoryOptionGroupSetItem2_1 = DimensionItem.CategoryOptionGroupSetItem("cogs2", "cog21")
-
 }

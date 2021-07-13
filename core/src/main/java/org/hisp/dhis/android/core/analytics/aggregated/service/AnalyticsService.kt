@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.service
 
+import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepositoryParams
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
-import javax.inject.Inject
 
 internal class AnalyticsService @Inject constructor(
     private val analyticsServiceDimensionHelper: AnalyticsServiceDimensionHelper,
@@ -41,11 +41,11 @@ internal class AnalyticsService @Inject constructor(
 
     fun evaluate(params: AnalyticsRepositoryParams): DimensionalResponse {
         if (params.dimensions.isEmpty()) {
-            throw RuntimeException("At least one dimension must be specified")
+            throw AnalyticsException.InvalidArguments("At least one dimension must be specified")
         }
 
         if ((params.dimensions + params.filters).none { it.dimension == Dimension.Data }) {
-            throw RuntimeException("At least one data dimension must be specified")
+            throw AnalyticsException.InvalidArguments("At least one data dimension must be specified")
         }
 
         val dimensions = analyticsServiceDimensionHelper.getDimensions(params)

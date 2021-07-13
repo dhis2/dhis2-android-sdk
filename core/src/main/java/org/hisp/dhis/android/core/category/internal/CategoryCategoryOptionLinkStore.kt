@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkStore
 import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink
 import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkTableInfo
 
+@Suppress("MagicNumber")
 internal object CategoryCategoryOptionLinkStore {
 
     private val BINDER = StatementBinder { o: CategoryCategoryOptionLink, w: StatementWrapper ->

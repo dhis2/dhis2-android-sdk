@@ -33,8 +33,6 @@ import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkTableInfo as
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLinkTableInfo as cocToCoInfo
 import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo as cocInfo
 import org.hisp.dhis.android.core.common.AggregationType
-import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodTableInfo
@@ -49,60 +47,60 @@ internal object AnalyticsEvaluatorHelper {
 
     fun getInPeriodClause(period: Period): String {
         return "SELECT ${PeriodTableInfo.Columns.PERIOD_ID} " +
-                "FROM ${PeriodTableInfo.TABLE_INFO.name()} " +
-                "WHERE ${getPeriodWhereClause(period)}"
+            "FROM ${PeriodTableInfo.TABLE_INFO.name()} " +
+            "WHERE ${getPeriodWhereClause(period)}"
     }
 
     fun getInPeriodsClause(periods: List<Period>): String {
         return "SELECT ${PeriodTableInfo.Columns.PERIOD_ID} " +
-                "FROM ${PeriodTableInfo.TABLE_INFO.name()} " +
-                "WHERE ${periods.joinToString(" OR ") { "(${getPeriodWhereClause(it)})" }}"
+            "FROM ${PeriodTableInfo.TABLE_INFO.name()} " +
+            "WHERE ${periods.joinToString(" OR ") { "(${getPeriodWhereClause(it)})" }}"
     }
 
     private fun getPeriodWhereClause(period: Period): String {
         return "${PeriodTableInfo.Columns.START_DATE} >= '${DateUtils.DATE_FORMAT.format(period.startDate()!!)}' " +
-                "AND " +
-                "${PeriodTableInfo.Columns.END_DATE} <= '${DateUtils.DATE_FORMAT.format(period.endDate()!!)}'"
+            "AND " +
+            "${PeriodTableInfo.Columns.END_DATE} <= '${DateUtils.DATE_FORMAT.format(period.endDate()!!)}'"
     }
 
     fun getOrgunitClause(orgunitUid: String): String {
         return "SELECT ${OrganisationUnitTableInfo.Columns.UID} " +
-                "FROM ${OrganisationUnitTableInfo.TABLE_INFO.name()} " +
-                "WHERE " +
-                "${OrganisationUnitTableInfo.Columns.PATH} LIKE '%$orgunitUid%'"
+            "FROM ${OrganisationUnitTableInfo.TABLE_INFO.name()} " +
+            "WHERE " +
+            "${OrganisationUnitTableInfo.Columns.PATH} LIKE '%$orgunitUid%'"
     }
 
     fun getLevelOrgunitClause(level: Int): String {
         return "SELECT ${OrganisationUnitTableInfo.Columns.UID} " +
-                "FROM ${OrganisationUnitTableInfo.TABLE_INFO.name()} " +
-                "WHERE " +
-                "${OrganisationUnitTableInfo.Columns.LEVEL} = $level"
+            "FROM ${OrganisationUnitTableInfo.TABLE_INFO.name()} " +
+            "WHERE " +
+            "${OrganisationUnitTableInfo.Columns.LEVEL} = $level"
     }
 
     fun getOrgunitListClause(orgunitUids: List<String>): String {
         return "SELECT ${OrganisationUnitTableInfo.Columns.UID} " +
-                "FROM ${OrganisationUnitTableInfo.TABLE_INFO.name()} " +
-                "WHERE " +
-                orgunitUids.joinToString(" OR ") { "${OrganisationUnitTableInfo.Columns.PATH} LIKE '%$it%'" }
+            "FROM ${OrganisationUnitTableInfo.TABLE_INFO.name()} " +
+            "WHERE " +
+            orgunitUids.joinToString(" OR ") { "${OrganisationUnitTableInfo.Columns.PATH} LIKE '%$it%'" }
     }
 
     fun getCategoryOptionClause(categoryUid: String, categoryOptionUid: String): String {
         return "SELECT ${cocInfo.Columns.UID} " +
-                "FROM ${cocInfo.TABLE_INFO.name()} " +
-                "WHERE " +
-                "${cocInfo.Columns.UID} IN " +
-                "(" +
-                    "SELECT ${cocToCoInfo.Columns.CATEGORY_OPTION_COMBO} " +
-                    "FROM ${cocToCoInfo.TABLE_INFO.name()} " +
-                    "WHERE ${cocToCoInfo.Columns.CATEGORY_OPTION} = '${categoryOptionUid}'" +
-                ") " +
-                "AND " +
-                "${cocInfo.Columns.CATEGORY_COMBO} IN " +
-                "(" +
-                    "SELECT ${cToCcInfo.Columns.CATEGORY_COMBO} " +
-                    "FROM ${cToCcInfo.TABLE_INFO.name()} " +
-                    "WHERE ${cToCcInfo.Columns.CATEGORY} = '${categoryUid}'" +
-                ") "
+            "FROM ${cocInfo.TABLE_INFO.name()} " +
+            "WHERE " +
+            "${cocInfo.Columns.UID} IN " +
+            "(" +
+            "SELECT ${cocToCoInfo.Columns.CATEGORY_OPTION_COMBO} " +
+            "FROM ${cocToCoInfo.TABLE_INFO.name()} " +
+            "WHERE ${cocToCoInfo.Columns.CATEGORY_OPTION} = '$categoryOptionUid'" +
+            ") " +
+            "AND " +
+            "${cocInfo.Columns.CATEGORY_COMBO} IN " +
+            "(" +
+            "SELECT ${cToCcInfo.Columns.CATEGORY_COMBO} " +
+            "FROM ${cToCcInfo.TABLE_INFO.name()} " +
+            "WHERE ${cToCcInfo.Columns.CATEGORY} = '$categoryUid'" +
+            ") "
     }
 
     fun getDataElementAggregator(aggregationType: String?): String {

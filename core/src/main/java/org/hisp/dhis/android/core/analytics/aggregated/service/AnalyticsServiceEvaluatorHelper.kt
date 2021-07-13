@@ -28,13 +28,12 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.service
 
+import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionalValue
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.AnalyticsEvaluator
 import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluator
-import java.lang.RuntimeException
-import javax.inject.Inject
 
 internal class AnalyticsServiceEvaluatorHelper @Inject constructor(
     private val dataElementEvaluator: DataElementEvaluator
@@ -58,7 +57,8 @@ internal class AnalyticsServiceEvaluatorHelper @Inject constructor(
         return when (dimensionDataItems.size) {
             0 -> getEvaluatorFromFilters(evaluationItem.filters)
             1 -> getEvaluatorFromDataDimension(dimensionDataItems.first())
-            else -> throw RuntimeException("Invalid arguments: more than one data item as dimension.")
+            else ->
+                throw AnalyticsException.InvalidArguments("Invalid arguments: more than one data item as dimension.")
         }
     }
 
@@ -70,10 +70,15 @@ internal class AnalyticsServiceEvaluatorHelper @Inject constructor(
         }
 
         return when {
-            filterDataItems.isEmpty() -> throw RuntimeException("Invalid arguments: no data dimension is specified.")
+            filterDataItems.isEmpty() ->
+                throw AnalyticsException.InvalidArguments("Invalid arguments: no data dimension is specified.")
             filterDataItems.size == 1 -> getEvaluatorFromDataDimension(filterDataItems.first())
             allAreDataElements -> dataElementEvaluator
-            else -> throw RuntimeException("Invalid arguments: Only a single indicator can be specified as filter.")
+            else ->
+                throw AnalyticsException.InvalidArguments(
+                    "Invalid arguments: Only a single indicator " +
+                        "can be specified as filter."
+                )
         }
     }
 

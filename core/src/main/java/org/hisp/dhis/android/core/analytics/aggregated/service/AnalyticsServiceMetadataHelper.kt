@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.service
 
+import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
@@ -43,8 +44,8 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevelTableInfo
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.hisp.dhis.android.core.program.ProgramIndicator
-import javax.inject.Inject
 
+@Suppress("LongParameterList")
 internal class AnalyticsServiceMetadataHelper @Inject constructor(
     private val categoryStore: IdentifiableObjectStore<Category>,
     private val categoryOptionStore: IdentifiableObjectStore<CategoryOption>,
@@ -63,16 +64,23 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
         val metadata: MutableMap<String, MetadataItem> = mutableMapOf()
 
         evaluationItems.forEach { evaluationItem ->
-            (evaluationItem.dimensionItems + evaluationItem.filters)
-                .map { it as DimensionItem }
-                .forEach { item ->
-                    if (!metadata.containsKey(item.id)) {
-                        getMetadataItems(item).forEach { metadataItem ->
-                            metadata += metadataItem.id to metadataItem
-                        }
-                    }
-                }
+            metadata += getMetadata(evaluationItem)
         }
+
+        return metadata
+    }
+
+    private fun getMetadata(evaluationItem: AnalyticsServiceEvaluationItem): Map<String, MetadataItem> {
+        val metadata: MutableMap<String, MetadataItem> = mutableMapOf()
+
+        (evaluationItem.dimensionItems + evaluationItem.filters)
+            .map { it as DimensionItem }
+            .forEach { item ->
+                if (!metadata.containsKey(item.id)) {
+                    val metadataItems = getMetadataItems(item).map { it.id to it }.toMap()
+                    metadata += metadataItems
+                }
+            }
 
         return metadata
     }
@@ -81,29 +89,37 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
         return when (item) {
             is DimensionItem.DataItem -> listOf(
                 when (item) {
-                    is DimensionItem.DataItem.DataElementItem -> dataElementStore.selectByUid(item.uid)!!
-                        .let { dataElement -> MetadataItem.DataElementItem(dataElement) }
+                    is DimensionItem.DataItem.DataElementItem ->
+                        dataElementStore.selectByUid(item.uid)!!
+                            .let { dataElement -> MetadataItem.DataElementItem(dataElement) }
                     // TODO Build a meaningful name for DataElementOperand
-                    is DimensionItem.DataItem.DataElementOperandItem -> dataElementOperandStore.selectByUid(item.id)!!
-                        .let { dataElementOperand -> MetadataItem.DataElementOperandItem(dataElementOperand) }
-                    is DimensionItem.DataItem.IndicatorItem -> indicatorStore.selectByUid(item.uid)!!
-                        .let { indicator -> MetadataItem.IndicatorItem(indicator) }
-                    is DimensionItem.DataItem.ProgramIndicatorItem -> programIndicatorStore.selectByUid(item.uid)!!
-                        .let { programIndicator -> MetadataItem.ProgramIndicatorItem(programIndicator) }
-                })
+                    is DimensionItem.DataItem.DataElementOperandItem ->
+                        dataElementOperandStore.selectByUid(item.id)!!
+                            .let { dataElementOperand -> MetadataItem.DataElementOperandItem(dataElementOperand) }
+                    is DimensionItem.DataItem.IndicatorItem ->
+                        indicatorStore.selectByUid(item.uid)!!
+                            .let { indicator -> MetadataItem.IndicatorItem(indicator) }
+                    is DimensionItem.DataItem.ProgramIndicatorItem ->
+                        programIndicatorStore.selectByUid(item.uid)!!
+                            .let { programIndicator -> MetadataItem.ProgramIndicatorItem(programIndicator) }
+                }
+            )
 
             is DimensionItem.PeriodItem -> listOf(
                 when (item) {
-                    is DimensionItem.PeriodItem.Absolute -> periodHelper.blockingGetPeriodForPeriodId(item.periodId)
-                        .let { period -> MetadataItem.PeriodItem(period) }
+                    is DimensionItem.PeriodItem.Absolute ->
+                        periodHelper.blockingGetPeriodForPeriodId(item.periodId)
+                            .let { period -> MetadataItem.PeriodItem(period) }
                     is DimensionItem.PeriodItem.Relative ->
                         MetadataItem.RelativePeriodItem(item.relative)
-                })
+                }
+            )
 
             is DimensionItem.OrganisationUnitItem -> listOf(
                 when (item) {
-                    is DimensionItem.OrganisationUnitItem.Absolute -> organisationUnitStore.selectByUid(item.uid)!!
-                        .let { organisationUnit -> MetadataItem.OrganisationUnitItem(organisationUnit) }
+                    is DimensionItem.OrganisationUnitItem.Absolute ->
+                        organisationUnitStore.selectByUid(item.uid)!!
+                            .let { organisationUnit -> MetadataItem.OrganisationUnitItem(organisationUnit) }
                     is DimensionItem.OrganisationUnitItem.Relative -> {
                         val orgunitUids = analyticsOrganisationUnitHelper.getRelativeOrganisationUnits(item.relative)
                         MetadataItem.OrganisationUnitRelativeItem(item.relative, orgunitUids)
@@ -115,9 +131,11 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
                         organisationUnitLevelStore.selectOneWhere(levelClauseBuilder)!!
                             .let { level -> MetadataItem.OrganisationUnitLevelItem(level) }
                     }
-                    is DimensionItem.OrganisationUnitItem.Group -> organisationUnitGroupStore.selectByUid(item.uid)!!
-                        .let { organisationUnitGroup -> MetadataItem.OrganisationUnitGroupItem(organisationUnitGroup) }
-                })
+                    is DimensionItem.OrganisationUnitItem.Group ->
+                        organisationUnitGroupStore.selectByUid(item.uid)!!
+                            .let { group -> MetadataItem.OrganisationUnitGroupItem(group) }
+                }
+            )
 
             is DimensionItem.CategoryItem -> listOf(
                 categoryStore.selectByUid(item.uid)!!

@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.analytics.aggregated
 
 import io.reactivex.Single
-import org.hisp.dhis.android.core.analytics.aggregated.service.AnalyticsService
 import javax.inject.Inject
+import org.hisp.dhis.android.core.analytics.aggregated.service.AnalyticsService
 
 internal class AnalyticsRepositoryImpl @Inject constructor(
     private val params: AnalyticsRepositoryParams,
@@ -49,7 +49,7 @@ internal class AnalyticsRepositoryImpl @Inject constructor(
         return Single.fromCallable { blockingEvaluate() }
     }
 
-    override  fun blockingEvaluate(): DimensionalResponse {
+    override fun blockingEvaluate(): DimensionalResponse {
         return analyticsService.evaluate(params)
     }
 

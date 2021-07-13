@@ -28,17 +28,17 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.service.evaluator
 
+import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
+import org.hisp.dhis.android.core.analytics.aggregated.service.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.service.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
-import java.lang.RuntimeException
-import javax.inject.Inject
 
 internal class DataElementEvaluator @Inject constructor(
     private val databaseAdapter: DatabaseAdapter,
@@ -69,9 +69,9 @@ internal class DataElementEvaluator @Inject constructor(
         val aggregator = getAggregator(evaluationItem, metadata)
 
         val sqlQuery =
-            "SELECT ${aggregator}(${DataValueTableInfo.Columns.VALUE}) " +
-                    "FROM ${DataValueTableInfo.TABLE_INFO.name()} " +
-                    "WHERE $whereClause"
+            "SELECT $aggregator(${DataValueTableInfo.Columns.VALUE}) " +
+                "FROM ${DataValueTableInfo.TABLE_INFO.name()} " +
+                "WHERE $whereClause"
 
         return databaseAdapter.rawQuery(sqlQuery)?.use { c ->
             c.moveToFirst()
@@ -98,8 +98,11 @@ internal class DataElementEvaluator @Inject constructor(
                             .build()
                         innerBuilder.appendOrComplexQuery(operandClause)
                     }
-                    else -> throw RuntimeException("Invalid arguments: unexpected dataItem ${item.javaClass.name} " +
-                            "in DataElement Evaluator.")
+                    else ->
+                        throw AnalyticsException.InvalidArguments(
+                            "Invalid arguments: unexpected " +
+                                "dataItem ${item.javaClass.name} in DataElement Evaluator."
+                        )
                 }
             }.build()
 
@@ -183,6 +186,7 @@ internal class DataElementEvaluator @Inject constructor(
         return builder.appendComplexQuery(innerClause)
     }
 
+    @Suppress("ThrowsCount")
     private fun getAggregator(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>
@@ -192,11 +196,12 @@ internal class DataElementEvaluator @Inject constructor(
         val dataItemList = when (dimensionDataItem.size) {
             0 -> evaluationItem.filters.filterIsInstance<DimensionItem.DataItem>()
             1 -> dimensionDataItem
-            else -> throw RuntimeException("Invalid arguments: more than one data item as dimension.")
+            else ->
+                throw AnalyticsException.InvalidArguments("Invalid arguments: more than one data item as dimension.")
         }
 
         return when (dataItemList.size) {
-            0 -> throw RuntimeException("Invalid arguments: no data dimension is specified.")
+            0 -> throw AnalyticsException.InvalidArguments("Invalid arguments: no data dimension is specified.")
             1 -> {
                 val item = metadata[dataItemList.first().id]
                 val aggregationType = when (item) {
@@ -205,12 +210,14 @@ internal class DataElementEvaluator @Inject constructor(
                         metadata[item.item.dataElement()?.uid()]?.let {
                             (it as MetadataItem.DataElementItem).item.aggregationType()
                         }
-                    else -> throw RuntimeException("Invalid arguments: dimension is not dataelement or operand.")
+                    else -> throw AnalyticsException.InvalidArguments(
+                        "Invalid arguments: dimension is not " +
+                            "dataelement or operand."
+                    )
                 }
                 AnalyticsEvaluatorHelper.getDataElementAggregator(aggregationType)
             }
             else -> AnalyticsEvaluatorHelper.getDataElementAggregator(AggregationType.SUM.name)
         }
-
     }
 }

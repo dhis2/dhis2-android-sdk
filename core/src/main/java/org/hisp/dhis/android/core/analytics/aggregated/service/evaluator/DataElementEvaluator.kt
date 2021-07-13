@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.service.evaluator
 
+import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
@@ -37,7 +38,6 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
-import javax.inject.Inject
 
 internal class DataElementEvaluator @Inject constructor(
     private val databaseAdapter: DatabaseAdapter

@@ -136,6 +136,6 @@ internal class AnalyticsSettingEntityDIModule {
     @Reusable
     fun teiChildrenAppenders(dataChildrenAppender: AnalyticsTeiDataChildrenAppender):
         Map<String, ChildrenAppender<AnalyticsTeiSetting>> {
-        return mapOf(AnalyticsTeiDataChildrenAppender.KEY to dataChildrenAppender)
-    }
+            return mapOf(AnalyticsTeiDataChildrenAppender.KEY to dataChildrenAppender)
+        }
 }

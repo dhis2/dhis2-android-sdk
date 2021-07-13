@@ -53,6 +53,7 @@ import org.hisp.dhis.android.core.settings.ProgramSetting
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.settings.WHONutritionComponent
 
+@Suppress("TooManyFunctions")
 internal object SettingsAppHelper {
 
     fun getDataSetSettingList(dataSetSettings: DataSetSettings): List<DataSetSetting> {

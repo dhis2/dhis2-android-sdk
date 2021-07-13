@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.arch.db.stores.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
-internal interface IdentifiableObjectStore<O : ObjectWithUidInterface> : ObjectStore<O> {
+interface IdentifiableObjectStore<O : ObjectWithUidInterface> : ObjectStore<O> {
     @Throws(RuntimeException::class)
     fun delete(uid: String)
 

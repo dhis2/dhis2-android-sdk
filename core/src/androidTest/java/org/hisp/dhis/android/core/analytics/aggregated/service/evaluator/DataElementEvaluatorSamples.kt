@@ -25,12 +25,11 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.analytics.eventlinelist.aggregated.service.evaluator
+package org.hisp.dhis.android.core.analytics.aggregated.service.evaluator
 
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
-import org.hisp.dhis.android.core.category.CategoryCombo
-import org.hisp.dhis.android.core.category.CategoryOptionCombo
+import org.hisp.dhis.android.core.category.*
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.ValueType
@@ -72,6 +71,19 @@ object DataElementEvaluatorSamples {
             .build()
     }
 
+    val category: Category = Category.builder()
+        .uid(generator.generate())
+        .build()
+
+    val categoryOption: CategoryOption = CategoryOption.builder()
+        .uid(generator.generate())
+        .build()
+
+    val categoryCategoryOptionLink: CategoryCategoryOptionLink = CategoryCategoryOptionLink.builder()
+        .category(category.uid())
+        .categoryOption(categoryOption.uid())
+        .build()
+
     val categoryCombo: CategoryCombo = CategoryCombo.builder()
         .uid(generator.generate())
         .build()
@@ -79,6 +91,16 @@ object DataElementEvaluatorSamples {
     val categoryOptionCombo: CategoryOptionCombo = CategoryOptionCombo.builder()
         .uid(generator.generate())
         .categoryCombo(ObjectWithUid.fromIdentifiable(categoryCombo))
+        .build()
+
+    val categoryCategoryComboLink: CategoryCategoryComboLink = CategoryCategoryComboLink.builder()
+        .category(category.uid())
+        .categoryCombo(categoryCombo.uid())
+        .build()
+
+    val categoryOptionComboCategoryOptionLink = CategoryOptionComboCategoryOptionLink.builder()
+        .categoryOption(categoryOption.uid())
+        .categoryOptionCombo(categoryOptionCombo.uid())
         .build()
 
     val dataElement1 = DataElement.builder()

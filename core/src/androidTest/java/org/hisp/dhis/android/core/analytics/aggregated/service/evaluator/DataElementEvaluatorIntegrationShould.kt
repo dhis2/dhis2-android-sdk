@@ -25,25 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.analytics.eventlinelist.aggregated.service.evaluator
+package org.hisp.dhis.android.core.analytics.aggregated.service.evaluator
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.service.AnalyticsServiceEvaluationItem
-import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluator
-import org.hisp.dhis.android.core.analytics.eventlinelist.aggregated.service.evaluator.DataElementEvaluatorSamples.categoryCombo
-import org.hisp.dhis.android.core.analytics.eventlinelist.aggregated.service.evaluator.DataElementEvaluatorSamples.categoryOptionCombo
-import org.hisp.dhis.android.core.analytics.eventlinelist.aggregated.service.evaluator.DataElementEvaluatorSamples.dataElement1
-import org.hisp.dhis.android.core.analytics.eventlinelist.aggregated.service.evaluator.DataElementEvaluatorSamples.dataElement2
-import org.hisp.dhis.android.core.analytics.eventlinelist.aggregated.service.evaluator.DataElementEvaluatorSamples.orgunitChild1
-import org.hisp.dhis.android.core.analytics.eventlinelist.aggregated.service.evaluator.DataElementEvaluatorSamples.orgunitChild2
-import org.hisp.dhis.android.core.analytics.eventlinelist.aggregated.service.evaluator.DataElementEvaluatorSamples.orgunitParent
-import org.hisp.dhis.android.core.analytics.eventlinelist.aggregated.service.evaluator.DataElementEvaluatorSamples.periodDec
-import org.hisp.dhis.android.core.analytics.eventlinelist.aggregated.service.evaluator.DataElementEvaluatorSamples.periodNov
-import org.hisp.dhis.android.core.analytics.eventlinelist.aggregated.service.evaluator.DataElementEvaluatorSamples.periodQ4
-import org.hisp.dhis.android.core.category.internal.CategoryComboStore
-import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStoreImpl
+import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.category
+import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.categoryCategoryComboLink
+import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.categoryCategoryOptionLink
+import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.categoryCombo
+import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.categoryOption
+import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.categoryOptionCombo
+import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.categoryOptionComboCategoryOptionLink
+import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.dataElement1
+import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.dataElement2
+import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.orgunitChild1
+import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.orgunitChild2
+import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.orgunitParent
+import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.periodDec
+import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.periodNov
+import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.periodQ4
+import org.hisp.dhis.android.core.category.internal.*
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.datavalue.DataValue
@@ -68,8 +71,15 @@ class DataElementEvaluatorIntegrationShould : BaseMockIntegrationTestEmptyDispat
 
     // Stores
     private val dataValueStore = DataValueStore.create(databaseAdapter)
+    private val categoryStore = CategoryStore.create(databaseAdapter)
+    private val categoryOptionStore = CategoryOptionStore.create(databaseAdapter)
+    private val categoryCategoryOptionStore = CategoryCategoryOptionLinkStore.create(databaseAdapter)
     private val categoryComboStore = CategoryComboStore.create(databaseAdapter)
     private val categoryOptionComboStore = CategoryOptionComboStoreImpl.create(databaseAdapter)
+    private val categoryCategoryComboLinkStore = CategoryCategoryComboLinkStore.create(databaseAdapter)
+    private val categoryOptionComboCategoryOptionLinkStore = CategoryOptionComboCategoryOptionLinkStore.create(
+        databaseAdapter
+    )
     private val dataElementStore = DataElementStore.create(databaseAdapter)
     private val organisationUnitStore = OrganisationUnitStore.create(databaseAdapter)
     private val periodStore = PeriodStoreImpl.create(databaseAdapter)
@@ -93,8 +103,13 @@ class DataElementEvaluatorIntegrationShould : BaseMockIntegrationTestEmptyDispat
         organisationUnitStore.insert(orgunitChild1)
         organisationUnitStore.insert(orgunitChild2)
 
+        categoryStore.insert(category)
+        categoryOptionStore.insert(categoryOption)
+        categoryCategoryOptionStore.insert(categoryCategoryOptionLink)
         categoryComboStore.insert(categoryCombo)
         categoryOptionComboStore.insert(categoryOptionCombo)
+        categoryCategoryComboLinkStore.insert(categoryCategoryComboLink)
+        categoryOptionComboCategoryOptionLinkStore.insert(categoryOptionComboCategoryOptionLink)
 
         dataElementStore.insert(dataElement1)
         dataElementStore.insert(dataElement2)
@@ -107,8 +122,13 @@ class DataElementEvaluatorIntegrationShould : BaseMockIntegrationTestEmptyDispat
     @After
     fun tearDown() {
         organisationUnitStore.delete()
+        categoryStore.delete()
+        categoryOptionStore.delete()
+        categoryCategoryOptionStore.delete()
         categoryComboStore.delete()
         categoryOptionComboStore.delete()
+        categoryCategoryComboLinkStore.delete()
+        categoryOptionComboCategoryOptionLinkStore.delete()
         dataElementStore.delete()
         periodStore.delete()
         dataValueStore.delete()
@@ -215,6 +235,46 @@ class DataElementEvaluatorIntegrationShould : BaseMockIntegrationTestEmptyDispat
         val value = dataElementEvaluator.evaluate(evaluationItem, metadata)
 
         assertThat(value).isEqualTo("2.5")
+    }
+
+    @Test
+    fun should_disaggregate_by_category_option() {
+        createDataValue("2")
+
+        val evaluationItem = AnalyticsServiceEvaluationItem(
+            dimensionItems = listOf(
+                DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
+                DimensionItem.CategoryItem(category.uid(), categoryOption.uid())
+            ),
+            filters = listOf(
+                DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid()),
+                DimensionItem.PeriodItem.Relative(RelativePeriod.THIS_MONTH)
+            )
+        )
+
+        val value = dataElementEvaluator.evaluate(evaluationItem, metadata)
+
+        assertThat(value).isEqualTo("2")
+    }
+
+    @Test
+    fun should_ignore_missing_category_option() {
+        createDataValue("2")
+
+        val evaluationItem = AnalyticsServiceEvaluationItem(
+            dimensionItems = listOf(
+                DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
+                DimensionItem.CategoryItem(category.uid(), categoryOption = "non-existing-co")
+            ),
+            filters = listOf(
+                DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid()),
+                DimensionItem.PeriodItem.Relative(RelativePeriod.THIS_MONTH)
+            )
+        )
+
+        val value = dataElementEvaluator.evaluate(evaluationItem, metadata)
+
+        assertThat(value).isNull()
     }
 
     private fun createDataValue(

@@ -59,7 +59,7 @@ internal class DataElementEvaluator @Inject constructor(
                     is Dimension.Data -> appendDataWhereClause(entry.value, builder)
                     is Dimension.Period -> appendPeriodWhereClause(entry.value, builder, metadata)
                     is Dimension.OrganisationUnit -> appendOrgunitWhereClause(entry.value, builder)
-                    is Dimension.Category -> TODO()
+                    is Dimension.Category -> appendCategoryWhereClause(entry.value, builder)
                     is Dimension.CategoryOptionGroupSet -> TODO()
                 }
             }
@@ -143,6 +143,21 @@ internal class DataElementEvaluator @Inject constructor(
                     is DimensionItem.OrganisationUnitItem.Relative -> TODO()
                     is DimensionItem.OrganisationUnitItem.Group -> TODO()
                 }
+            }.build()
+
+        return builder.appendComplexQuery(innerClause)
+    }
+
+    private fun appendCategoryWhereClause(
+        items: List<DimensionItem>,
+        builder: WhereClauseBuilder
+    ): WhereClauseBuilder {
+        val innerClause = items.map { it as DimensionItem.CategoryItem }
+            .foldRight(WhereClauseBuilder()) { item, innerBuilder ->
+                innerBuilder.appendOrInSubQuery(
+                    DataValueTableInfo.Columns.CATEGORY_OPTION_COMBO,
+                    AnalyticsEvaluatorHelper.getCategoryOptionClause(item.uid, item.categoryOption)
+                )
             }.build()
 
         return builder.appendComplexQuery(innerClause)

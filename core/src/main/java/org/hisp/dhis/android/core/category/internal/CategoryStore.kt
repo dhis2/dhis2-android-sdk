@@ -25,35 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.category.internal;
+import android.database.Cursor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithUidStore
+import org.hisp.dhis.android.core.category.Category
+import org.hisp.dhis.android.core.category.CategoryTableInfo
 
+internal object CategoryStore {
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.category.CategoryCombo;
-import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
-
-import androidx.annotation.NonNull;
-
-public final class CategoryComboStore {
-
-    private CategoryComboStore() {}
-
-    private static StatementBinder<CategoryCombo> BINDER = new IdentifiableStatementBinder<CategoryCombo>() {
-        @Override
-        public void bindToStatement(@NonNull CategoryCombo o, @NonNull StatementWrapper w) {
-            super.bindToStatement(o, w);
-            w.bind(7, o.isDefault());
+    private val BINDER: StatementBinder<Category> = object : IdentifiableStatementBinder<Category>() {
+        override fun bindToStatement(o: Category, w: StatementWrapper) {
+            super.bindToStatement(o, w)
+            w.bind(7, o.dataDimensionType())
         }
-    };
+    }
 
-    public static IdentifiableObjectStore<CategoryCombo> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, CategoryComboTableInfo.TABLE_INFO, BINDER,
-                CategoryCombo::create);
+    @JvmStatic
+    fun create(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<Category> {
+        return objectWithUidStore(
+            databaseAdapter,
+            CategoryTableInfo.TABLE_INFO,
+            BINDER
+        ) { cursor: Cursor -> Category.create(cursor) }
     }
 }

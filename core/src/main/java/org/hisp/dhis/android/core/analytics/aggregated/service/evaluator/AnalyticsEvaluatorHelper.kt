@@ -29,6 +29,9 @@
 package org.hisp.dhis.android.core.analytics.aggregated.service.evaluator
 
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkTableInfo as cToCcInfo
+import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLinkTableInfo as cocToCoInfo
+import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo as cocInfo
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
 import org.hisp.dhis.android.core.period.Period
@@ -72,6 +75,25 @@ internal object AnalyticsEvaluatorHelper {
                 "FROM ${OrganisationUnitTableInfo.TABLE_INFO.name()} " +
                 "WHERE " +
                 "${OrganisationUnitTableInfo.Columns.LEVEL} = $level"
+    }
+
+    fun getCategoryOptionClause(categoryUid: String, categoryOptionUid: String): String {
+        return "SELECT ${cocInfo.Columns.UID} " +
+                "FROM ${cocInfo.TABLE_INFO.name()} " +
+                "WHERE " +
+                "${cocInfo.Columns.UID} IN " +
+                "(" +
+                    "SELECT ${cocToCoInfo.Columns.CATEGORY_OPTION_COMBO} " +
+                    "FROM ${cocToCoInfo.TABLE_INFO.name()} " +
+                    "WHERE ${cocToCoInfo.Columns.CATEGORY_OPTION} = '${categoryOptionUid}'" +
+                ") " +
+                "AND " +
+                "${cocInfo.Columns.CATEGORY_COMBO} IN " +
+                "(" +
+                    "SELECT ${cToCcInfo.Columns.CATEGORY_COMBO} " +
+                    "FROM ${cToCcInfo.TABLE_INFO.name()} " +
+                    "WHERE ${cToCcInfo.Columns.CATEGORY} = '${categoryUid}'" +
+                ") "
     }
 
     fun getDataElementAggregator(aggregationType: String?): String {

@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.arch.db.stores.internal
 
 import org.hisp.dhis.android.core.common.CoreObject
 
-internal interface LinkStore<O : CoreObject> : ObjectStore<O> {
+interface LinkStore<O : CoreObject> : ObjectStore<O> {
     @Throws(RuntimeException::class)
     fun deleteLinksForMasterUid(masterUid: String)
     fun deleteAllLinks(): Int

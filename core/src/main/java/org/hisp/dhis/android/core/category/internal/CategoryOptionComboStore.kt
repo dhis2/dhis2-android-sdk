@@ -25,33 +25,11 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.category.internal;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.category.CategoryOptionCombo
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.category.CategoryTableInfo;
-
-import androidx.annotation.NonNull;
-
-final class CategoryStore {
-
-    private CategoryStore() {}
-
-    private static StatementBinder<Category> BINDER = new IdentifiableStatementBinder<Category>() {
-        @Override
-        public void bindToStatement(@NonNull Category o, @NonNull StatementWrapper w) {
-            super.bindToStatement(o, w);
-            w.bind(7, o.dataDimensionType());
-        }
-    };
-
-    public static IdentifiableObjectStore<Category> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, CategoryTableInfo.TABLE_INFO, BINDER, Category::create);
-    }
+internal interface CategoryOptionComboStore : IdentifiableObjectStore<CategoryOptionCombo> {
+    fun getForCategoryCombo(categoryComboUid: String): List<CategoryOptionCombo>
 }

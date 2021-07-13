@@ -25,37 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.category.internal;
+import android.database.Cursor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkStore
+import org.hisp.dhis.android.core.category.CategoryCategoryComboLink
+import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkTableInfo
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableStatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.category.CategoryOption;
-import org.hisp.dhis.android.core.category.CategoryOptionTableInfo;
+internal object CategoryCategoryComboLinkStore {
 
-import androidx.annotation.NonNull;
-
-final class CategoryOptionStore {
-
-    private CategoryOptionStore() {
+    private val BINDER = StatementBinder { o: CategoryCategoryComboLink, w: StatementWrapper ->
+        w.bind(1, o.category())
+        w.bind(2, o.categoryCombo())
+        w.bind(3, o.sortOrder())
     }
 
-    private static StatementBinder<CategoryOption> BINDER = new NameableStatementBinder<CategoryOption>() {
-        @Override
-        public void bindToStatement(@NonNull CategoryOption o, @NonNull StatementWrapper w) {
-            super.bindToStatement(o, w);
-            w.bind(11, o.startDate());
-            w.bind(12, o.endDate());
-            w.bind(13, o.access().data().write());
-        }
-    };
-
-    public static IdentifiableObjectStore<CategoryOption> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter,
-                CategoryOptionTableInfo.TABLE_INFO, BINDER, CategoryOption::create);
+    @JvmStatic
+    fun create(databaseAdapter: DatabaseAdapter): LinkStore<CategoryCategoryComboLink> {
+        return linkStore(
+            databaseAdapter, CategoryCategoryComboLinkTableInfo.TABLE_INFO,
+            CategoryCategoryComboLinkTableInfo.Columns.CATEGORY_COMBO, BINDER
+        ) { cursor: Cursor -> CategoryCategoryComboLink.create(cursor) }
     }
 }

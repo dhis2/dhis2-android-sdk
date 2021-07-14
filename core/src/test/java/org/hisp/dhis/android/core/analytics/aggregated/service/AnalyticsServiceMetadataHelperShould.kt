@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
+import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.junit.Test
@@ -61,6 +62,7 @@ class AnalyticsServiceMetadataHelperShould {
     private val organisationUnitLevelStore: IdentifiableObjectStore<OrganisationUnitLevel> = mock()
     private val programIndicatorStore: IdentifiableObjectStore<ProgramIndicator> = mock()
     private val analyticsOrganisationUnitHelper: AnalyticsOrganisationUnitHelper = mock()
+    private val parentPeriodGenerator: ParentPeriodGenerator = mock()
     private val periodHelper: PeriodHelper = mock()
 
     private val helper = AnalyticsServiceMetadataHelper(
@@ -74,6 +76,7 @@ class AnalyticsServiceMetadataHelperShould {
         organisationUnitLevelStore,
         programIndicatorStore,
         analyticsOrganisationUnitHelper,
+        parentPeriodGenerator,
         periodHelper
     )
 

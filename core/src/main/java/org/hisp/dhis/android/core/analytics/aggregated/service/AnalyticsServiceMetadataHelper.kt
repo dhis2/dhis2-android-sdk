@@ -109,9 +109,10 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
 
             is DimensionItem.PeriodItem -> listOf(
                 when (item) {
-                    is DimensionItem.PeriodItem.Absolute ->
-                        periodHelper.blockingGetPeriodForPeriodId(item.periodId)
-                            .let { period -> MetadataItem.PeriodItem(period) }
+                    is DimensionItem.PeriodItem.Absolute -> {
+                        val period = periodHelper.blockingGetPeriodForPeriodId(item.periodId)
+                        MetadataItem.PeriodItem(period)
+                    }
                     is DimensionItem.PeriodItem.Relative -> {
                         val periods = parentPeriodGenerator.generateRelativePeriods(item.relative)
                         MetadataItem.RelativePeriodItem(item.relative, periods)

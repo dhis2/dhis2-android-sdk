@@ -33,9 +33,9 @@ object VisualizationCategoryDimensionLinkSamples {
 
     fun visualizationCategoryDimensionLinkSamples(): VisualizationCategoryDimensionLink =
         VisualizationCategoryDimensionLink.builder()
-        .id(1L)
-        .visualization("visualization_uid")
-        .category("category_uid")
-        .categoryOption("category_option_uid")
-        .build()
+            .id(1L)
+            .visualization("visualization_uid")
+            .category("category_uid")
+            .categoryOption("category_option_uid")
+            .build()
 }

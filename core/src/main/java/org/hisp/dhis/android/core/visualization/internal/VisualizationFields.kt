@@ -76,5 +76,4 @@ internal object VisualizationFields {
                 fh.nestedFieldWithUid(VisualizationTableInfo.Columns.PERIODS)
             )
             .build()
-
 }

@@ -38,10 +38,10 @@ import org.junit.runner.RunWith
 @RunWith(D2JunitRunner::class)
 class DataDimensionItemStoreIntegrationShould :
     LinkStoreAbstractIntegrationShould<DataDimensionItem>(
-    DataDimensionItemStore.create(TestDatabaseAdapterFactory.get()),
-    DataDimensionItemTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
-) {
+        DataDimensionItemStore.create(TestDatabaseAdapterFactory.get()),
+        DataDimensionItemTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get()
+    ) {
     override fun addMasterUid(): String {
         return "visualization_uid"
     }

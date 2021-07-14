@@ -43,7 +43,7 @@ import javax.inject.Inject
 internal class VisualizationHandler @Inject constructor(
     store: IdentifiableObjectStore<Visualization>,
     private val visualizationCategoryDimensionLinkHandler:
-    LinkHandler<ObjectWithUid, VisualizationCategoryDimensionLink>,
+        LinkHandler<ObjectWithUid, VisualizationCategoryDimensionLink>,
     private val dataDimensionItemHandler: LinkHandler<DataDimensionItem, DataDimensionItem>
 ) : IdentifiableHandlerImpl<Visualization>(store) {
 

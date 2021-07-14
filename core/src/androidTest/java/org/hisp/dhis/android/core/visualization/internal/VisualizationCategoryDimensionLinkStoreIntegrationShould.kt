@@ -38,10 +38,10 @@ import org.junit.runner.RunWith
 @RunWith(D2JunitRunner::class)
 class VisualizationCategoryDimensionLinkStoreIntegrationShould :
     LinkStoreAbstractIntegrationShould<VisualizationCategoryDimensionLink>(
-    VisualizationCategoryDimensionLinkStore.create(TestDatabaseAdapterFactory.get()),
-    VisualizationCategoryDimensionLinkTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
-) {
+        VisualizationCategoryDimensionLinkStore.create(TestDatabaseAdapterFactory.get()),
+        VisualizationCategoryDimensionLinkTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get()
+    ) {
     override fun addMasterUid(): String {
         return VisualizationCategoryDimensionLinkSamples.visualizationCategoryDimensionLinkSamples().visualization()
     }

@@ -26,16 +26,8 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.analytics.aggregated
+package org.hisp.dhis.android.core.analytics.aggregated.service
 
-data class DimensionalResponse(
-    val metadata: Map<String, MetadataItem>,
-    val dimensions: Set<Dimension>,
-    val filters: List<String>,
-    val values: List<DimensionalValue>
-)
-
-data class DimensionalValue(
-    val dimensions: List<String>,
-    val value: String?
-)
+sealed class AnalyticsException(message: String) : Throwable(message) {
+    class InvalidArguments(message: String) : AnalyticsException(message)
+}

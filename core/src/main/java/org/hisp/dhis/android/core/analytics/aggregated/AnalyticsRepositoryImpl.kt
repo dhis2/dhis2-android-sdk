@@ -26,34 +26,36 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.category.internal;
+package org.hisp.dhis.android.core.analytics.aggregated
 
+import io.reactivex.Single
+import javax.inject.Inject
+import org.hisp.dhis.android.core.analytics.aggregated.service.AnalyticsService
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.category.CategoryCombo;
-import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
+internal class AnalyticsRepositoryImpl @Inject constructor(
+    private val params: AnalyticsRepositoryParams,
+    private val analyticsService: AnalyticsService
+) : AnalyticsRepository {
 
-import androidx.annotation.NonNull;
+    override fun withDimension(dimensionItem: DimensionItem): AnalyticsRepositoryImpl {
+        return updateParams { params -> params.copy(dimensions = params.dimensions + dimensionItem) }
+    }
 
-public final class CategoryComboStore {
+    override fun withFilter(dimensionItem: DimensionItem): AnalyticsRepositoryImpl {
+        return updateParams { params -> params.copy(filters = params.filters + dimensionItem) }
+    }
 
-    private CategoryComboStore() {}
+    override fun evaluate(): Single<DimensionalResponse> {
+        return Single.fromCallable { blockingEvaluate() }
+    }
 
-    private static StatementBinder<CategoryCombo> BINDER = new IdentifiableStatementBinder<CategoryCombo>() {
-        @Override
-        public void bindToStatement(@NonNull CategoryCombo o, @NonNull StatementWrapper w) {
-            super.bindToStatement(o, w);
-            w.bind(7, o.isDefault());
-        }
-    };
+    override fun blockingEvaluate(): DimensionalResponse {
+        return analyticsService.evaluate(params)
+    }
 
-    public static IdentifiableObjectStore<CategoryCombo> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, CategoryComboTableInfo.TABLE_INFO, BINDER,
-                CategoryCombo::create);
+    private fun updateParams(
+        func: (params: AnalyticsRepositoryParams) -> AnalyticsRepositoryParams
+    ): AnalyticsRepositoryImpl {
+        return AnalyticsRepositoryImpl(func(params), analyticsService)
     }
 }

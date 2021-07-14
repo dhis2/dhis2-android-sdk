@@ -25,30 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.category.internal;
+import android.database.Cursor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkStore
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkTableInfo
 
+@Suppress("MagicNumber")
+internal object CategoryCategoryOptionLinkStore {
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.category.CategoryCategoryComboLink;
-import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkTableInfo;
+    private val BINDER = StatementBinder { o: CategoryCategoryOptionLink, w: StatementWrapper ->
+        w.bind(1, o.category())
+        w.bind(2, o.categoryOption())
+        w.bind(3, o.sortOrder())
+    }
 
-final class CategoryCategoryComboLinkStore {
-
-    private static final StatementBinder<CategoryCategoryComboLink> BINDER = (o, w) -> {
-        w.bind(1, o.category());
-        w.bind(2, o.categoryCombo());
-        w.bind(3, o.sortOrder());
-    };
-
-    private CategoryCategoryComboLinkStore() {}
-
-    public static LinkStore<CategoryCategoryComboLink> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkStore(databaseAdapter, CategoryCategoryComboLinkTableInfo.TABLE_INFO,
-                CategoryCategoryComboLinkTableInfo.Columns.CATEGORY_COMBO, BINDER,
-                CategoryCategoryComboLink::create);
+    @JvmStatic
+    fun create(databaseAdapter: DatabaseAdapter): LinkStore<CategoryCategoryOptionLink> {
+        return linkStore(
+            databaseAdapter,
+            CategoryCategoryOptionLinkTableInfo.TABLE_INFO,
+            CategoryCategoryOptionLinkTableInfo.Columns.CATEGORY,
+            BINDER
+        ) { cursor: Cursor -> CategoryCategoryOptionLink.create(cursor) }
     }
 }

@@ -53,4 +53,7 @@ internal interface IdentifiableObjectStore<O : ObjectWithUidInterface> : ObjectS
 
     @Throws(RuntimeException::class)
     fun selectByUid(uid: String): O?
+
+    @Throws(RuntimeException::class)
+    fun selectByUids(uid: List<String>): List<O>
 }

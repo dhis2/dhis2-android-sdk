@@ -28,14 +28,7 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated
 
-data class DimensionalResponse(
-    val metadata: Map<String, MetadataItem>,
-    val dimensions: Set<Dimension>,
-    val filters: List<String>,
-    val values: List<DimensionalValue>
-)
-
-data class DimensionalValue(
-    val dimensions: List<String>,
-    val value: String?
+internal data class AnalyticsRepositoryParams(
+    val dimensions: List<DimensionItem>,
+    val filters: List<DimensionItem>
 )

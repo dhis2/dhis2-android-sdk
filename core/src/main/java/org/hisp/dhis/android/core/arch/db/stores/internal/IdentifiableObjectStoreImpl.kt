@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapp
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.IdentifiableColumns.UID
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
 @Suppress("TooManyFunctions")
@@ -143,6 +144,11 @@ internal open class IdentifiableObjectStoreImpl<O>(
     override fun selectByUid(uid: String): O? {
         val cursor = databaseAdapter.rawQuery(builder.selectByUid(), uid)
         return mapObjectFromCursor(cursor)
+    }
+
+    @Throws(RuntimeException::class)
+    override fun selectByUids(uid: List<String>): List<O> {
+        return selectWhere("$UID IN (${uid.joinToString(",") { "'$it'" }})")
     }
 
     private fun mapObjectFromCursor(cursor: Cursor): O? {

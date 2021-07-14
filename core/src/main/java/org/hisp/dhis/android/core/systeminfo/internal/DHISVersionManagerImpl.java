@@ -122,6 +122,16 @@ public class DHISVersionManagerImpl implements DHISVersionManager {
     }
 
     @Override
+    public boolean is2_36() {
+        return getVersion() == DHISVersion.V2_36;
+    }
+
+    @Override
+    public boolean is2_37() {
+        return getVersion() == DHISVersion.V2_37;
+    }
+
+    @Override
     public boolean isGreaterThan(DHISVersion version) {
         return version.compareTo(getVersion()) < 0;
     }

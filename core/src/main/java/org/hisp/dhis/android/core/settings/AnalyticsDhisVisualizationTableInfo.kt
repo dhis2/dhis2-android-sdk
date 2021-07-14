@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.common.IdentifiableColumns
 
 object AnalyticsDhisVisualizationTableInfo {
 
+    @JvmField
     val TABLE_INFO: TableInfo = object : TableInfo() {
         override fun name(): String {
             return "AnalyticsDhisVisualization"

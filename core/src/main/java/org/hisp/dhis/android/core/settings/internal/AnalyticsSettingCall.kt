@@ -75,8 +75,6 @@ internal class AnalyticsSettingCall @Inject constructor(
             SettingsAppHelper.getAnalyticsDhisVisualizations(it)
         } ?: emptyList()
 
-        item?.dhisVisualizations()?.let {
-            analyticsDhisVisualizationsSettingHandler.handleMany(analyticsDhisVisualizations)
-        }
+        analyticsDhisVisualizationsSettingHandler.handleMany(analyticsDhisVisualizations)
     }
 }

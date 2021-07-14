@@ -43,7 +43,7 @@ internal object AnalyticsEvaluatorHelper {
     const val Avg = "AVG"
     const val Count = "COUNT"
     const val Max = "MAX"
-    const val Min = "Min"
+    const val Min = "MIN"
 
     fun getInPeriodClause(period: Period): String {
         return "SELECT ${PeriodTableInfo.Columns.PERIOD_ID} " +

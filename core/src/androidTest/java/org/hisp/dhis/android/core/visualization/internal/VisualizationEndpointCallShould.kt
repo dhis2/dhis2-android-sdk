@@ -25,36 +25,45 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.visualization.internal
 
-package org.hisp.dhis.android.core.visualization.internal;
+import com.google.common.collect.Lists
+import com.google.common.truth.Truth
+import io.reactivex.Single
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.core.visualization.Visualization
+import org.junit.BeforeClass
+import org.junit.Test
+import org.junit.runner.RunWith
+import java.util.*
 
-import com.google.common.collect.Lists;
+@RunWith(D2JunitRunner::class)
+class VisualizationEndpointCallShould : BaseMockIntegrationTestEmptyEnqueable() {
 
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable;
-import org.hisp.dhis.android.core.visualization.Visualization;
-import org.junit.Test;
+    companion object {
+        private lateinit var visualizationsSingle: Single<List<Visualization>>
 
-import java.util.HashSet;
-import java.util.List;
-
-import io.reactivex.Single;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class VisualizationEndpointCallShould extends BaseMockIntegrationTestEmptyEnqueable {
+        @BeforeClass
+        @JvmStatic
+        @Throws(Exception::class)
+        internal fun setUpClass() {
+            BaseMockIntegrationTestEmptyEnqueable.setUpClass()
+            visualizationsSingle = objects.d2DIComponent.internalModules().visualization.visualizationCall.download(
+                HashSet(
+                    Lists.newArrayList("PYBH8ZaAQnC", "FAFa11yFeFe")
+                )
+            )
+            dhis2MockServer.enqueueMockResponse("visualization/visualizations.json")
+            d2.databaseAdapter().setForeignKeyConstraintsEnabled(false)
+        }
+    }
 
     @Test
-    public void download_visualization_successfully() {
-        Single<List<Visualization>> visualizationsSingle =
-                objects.d2DIComponent.internalModules().visualization.getVisualizationCall().download(new HashSet<>(
-                        Lists.newArrayList("PYBH8ZaAQnC", "FAFa11yFeFe")));
-
-        dhis2MockServer.enqueueMockResponse("visualization/visualizations.json");
-
-        d2.databaseAdapter().setForeignKeyConstraintsEnabled(false);
-        List<Visualization> visualizations = visualizationsSingle.blockingGet();
-        assertThat(visualizations.isEmpty()).isFalse();
-        visualizations = d2.visualizationModule().visualizations().blockingGet();
-        assertThat(visualizations.isEmpty()).isFalse();
+    fun download_persist_and_get_visualizations_successfully() {
+        var visualizations = visualizationsSingle.blockingGet()
+        Truth.assertThat(visualizations.isEmpty()).isFalse()
+        visualizations = d2.visualizationModule().visualizations().blockingGet()
+        Truth.assertThat(visualizations.isEmpty()).isFalse()
     }
 }

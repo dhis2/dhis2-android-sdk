@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.helpers.UidsHelper
 import org.hisp.dhis.android.core.visualization.DataDimensionItem
 import org.hisp.dhis.android.core.visualization.DataDimensionItemTableInfo
 
+@Suppress("MagicNumber")
 internal object DataDimensionItemStore {
     private val BINDER = StatementBinder { o: DataDimensionItem, w: StatementWrapper ->
         w.bind(1, o.visualization())

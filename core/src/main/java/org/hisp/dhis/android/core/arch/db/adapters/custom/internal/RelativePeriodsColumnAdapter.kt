@@ -30,15 +30,15 @@ package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 import org.hisp.dhis.android.core.common.RelativePeriod
 
-internal class RelativePeriodsColumnAdapter : JSONObjectHashMapColumnAdapter<RelativePeriod, Boolean>() {
-    override fun getObjectClass(): Class<HashMap<RelativePeriod, Boolean>> {
+internal class RelativePeriodsColumnAdapter : JSONObjectMapColumnAdapter<RelativePeriod, Boolean>() {
+    override fun getObjectClass(): Class<Map<RelativePeriod, Boolean>> {
         return HashMap<RelativePeriod, Boolean>().javaClass
     }
 
-    override fun serialize(o: HashMap<RelativePeriod, Boolean>?): String? = RelativePeriodsColumnAdapter.serialize(o)
+    override fun serialize(o: Map<RelativePeriod, Boolean>?): String? = RelativePeriodsColumnAdapter.serialize(o)
 
     companion object {
-        fun serialize(o: HashMap<RelativePeriod, Boolean>?): String? {
+        fun serialize(o: Map<RelativePeriod, Boolean>?): String? {
             return o?.let {
                 ObjectMapperFactory.objectMapper().writeValueAsString(it.filter { it.value })
             }

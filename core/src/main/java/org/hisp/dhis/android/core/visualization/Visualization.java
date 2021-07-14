@@ -53,11 +53,12 @@ import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.RelativePeriod;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_Visualization.Builder.class)
+@SuppressWarnings({"PMD.ExcessivePublicCount"})
 public abstract class Visualization extends BaseIdentifiableObject implements CoreObject {
 
     @Nullable
@@ -151,7 +152,7 @@ public abstract class Visualization extends BaseIdentifiableObject implements Co
     @Nullable
     @JsonProperty()
     @ColumnAdapter(RelativePeriodsColumnAdapter.class)
-    public abstract HashMap<RelativePeriod, Boolean> relativePeriods();
+    public abstract Map<RelativePeriod, Boolean> relativePeriods();
 
     @Nullable
     @JsonProperty()
@@ -263,7 +264,7 @@ public abstract class Visualization extends BaseIdentifiableObject implements Co
 
         public abstract Builder digitGroupSeparator(DigitGroupSeparator digitGroupSeparator);
 
-        public abstract Builder relativePeriods(HashMap<RelativePeriod, Boolean> relativePeriods);
+        public abstract Builder relativePeriods(Map<RelativePeriod, Boolean> relativePeriods);
 
         public abstract Builder categoryDimensions(List<CategoryDimension> categoryDimensions);
 

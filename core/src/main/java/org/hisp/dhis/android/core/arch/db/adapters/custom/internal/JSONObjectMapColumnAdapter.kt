@@ -34,10 +34,10 @@ import com.fasterxml.jackson.databind.JsonMappingException
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 
-internal abstract class JSONObjectHashMapColumnAdapter<P, O> : ColumnTypeAdapter<HashMap<P, O>> {
-    protected abstract fun getObjectClass(): Class<HashMap<P, O>>
+internal abstract class JSONObjectMapColumnAdapter<P, O> : ColumnTypeAdapter<Map<P, O>> {
+    protected abstract fun getObjectClass(): Class<Map<P, O>>
 
-    override fun fromCursor(cursor: Cursor, columnName: String): HashMap<P, O> {
+    override fun fromCursor(cursor: Cursor, columnName: String): Map<P, O> {
         val columnIndex = cursor.getColumnIndex(columnName)
         val str = cursor.getString(columnIndex)
         return try {
@@ -53,7 +53,7 @@ internal abstract class JSONObjectHashMapColumnAdapter<P, O> : ColumnTypeAdapter
         }
     }
 
-    override fun toContentValues(contentValues: ContentValues, columnName: String, o: HashMap<P, O>?) {
+    override fun toContentValues(contentValues: ContentValues, columnName: String, o: Map<P, O>?) {
         try {
             contentValues.put(columnName, serialize(o))
         } catch (e: JsonProcessingException) {
@@ -61,5 +61,5 @@ internal abstract class JSONObjectHashMapColumnAdapter<P, O> : ColumnTypeAdapter
         }
     }
 
-    abstract fun serialize(o: HashMap<P, O>?): String?
+    abstract fun serialize(o: Map<P, O>?): String?
 }

@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
 import org.hisp.dhis.android.core.visualization.VisualizationCategoryDimensionLink
 import org.hisp.dhis.android.core.visualization.VisualizationCategoryDimensionLinkTableInfo
 
+@Suppress("MagicNumber")
 internal object VisualizationCategoryDimensionLinkStore {
     private val BINDER = StatementBinder { o: VisualizationCategoryDimensionLink, w: StatementWrapper ->
         w.bind(1, o.visualization())

@@ -64,7 +64,15 @@ object DataDimensionItemTableInfo {
             return CollectionsHelper.appendInNewArray(
                 super.all(),
                 VISUALIZATION,
-                DATA_DIMENSION_ITEM_TYPE
+                DATA_DIMENSION_ITEM_TYPE,
+                INDICATOR,
+                DATA_ELEMENT,
+                DATA_ELEMENT_OPERAND,
+                REPORTING_RATE,
+                PROGRAM_INDICATOR,
+                PROGRAM_DATA_ELEMENT,
+                PROGRAM_ATTRIBUTE,
+                VALIDATION_RULE
             )
         }
 

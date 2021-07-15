@@ -43,7 +43,6 @@ internal interface VisualizationService {
     fun getVisualizations(
         @Query("fields") @Which fields: Fields<Visualization>,
         @Query("filter") @Where uids: Filter<Visualization, String>,
-        @Query("filter") accessDataReadFilter: String,
         @Query("paging") paging: Boolean
     ): Single<Payload<Visualization>>
 }

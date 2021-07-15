@@ -1,11 +1,4 @@
 {
-  "pager": {
-    "page": 1,
-    "pageCount": 6,
-    "total": 271,
-    "pageSize": 50,
-    "nextPage": "https://play.dhis2.org/2.36.3/api/visualizations.json?page=2"
-  },
   "visualizations": [
     {
       "id": "PYBH8ZaAQnC",

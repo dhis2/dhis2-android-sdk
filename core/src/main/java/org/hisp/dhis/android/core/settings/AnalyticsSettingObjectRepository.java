@@ -45,27 +45,40 @@ public class AnalyticsSettingObjectRepository
 
     private final AnalyticsTeiSettingCollectionRepository analyticsTeiSettingRepository;
 
+    private final AnalyticsDhisVisualizationsSettingObjectRepository analyticsDhisVisualizationsSettingObjectRepository;
+
     @Inject
-    AnalyticsSettingObjectRepository(AnalyticsTeiSettingCollectionRepository analyticsTeiSettingRepository,
-                                     AnalyticsSettingCall analyticsSettingCall) {
+    AnalyticsSettingObjectRepository(
+            AnalyticsTeiSettingCollectionRepository analyticsTeiSettingRepository,
+            AnalyticsSettingCall analyticsSettingCall,
+            AnalyticsDhisVisualizationsSettingObjectRepository analyticsDhisVisualizationsSettingObjectRepository
+    ) {
         super(analyticsSettingCall);
         this.analyticsTeiSettingRepository = analyticsTeiSettingRepository;
+        this.analyticsDhisVisualizationsSettingObjectRepository = analyticsDhisVisualizationsSettingObjectRepository;
     }
 
     @Override
     public AnalyticsSettings blockingGet() {
         List<AnalyticsTeiSetting> analyticsTeiSettings = analyticsTeiSettingRepository.blockingGet();
+        AnalyticsDhisVisualizationsSetting analyticsDhisVisualizationsSetting =
+                analyticsDhisVisualizationsSettingObjectRepository.blockingGet();
 
         if (analyticsTeiSettings.isEmpty()) {
             return null;
         } else {
             return AnalyticsSettings.builder()
                     .tei(analyticsTeiSettings)
+                    .dhisVisualizations(analyticsDhisVisualizationsSetting)
                     .build();
         }
     }
 
     public AnalyticsTeiSettingCollectionRepository teis() {
         return analyticsTeiSettingRepository;
+    }
+
+    public AnalyticsDhisVisualizationsSettingObjectRepository visualizationsSettings() {
+        return analyticsDhisVisualizationsSettingObjectRepository;
     }
 }

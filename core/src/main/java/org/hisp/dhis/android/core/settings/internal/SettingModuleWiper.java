@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.settings.internal;
 
+import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationTableInfo;
 import org.hisp.dhis.android.core.settings.AnalyticsTeiAttributeTableInfo;
 import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElementTableInfo;
 import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicatorTableInfo;
@@ -70,6 +71,7 @@ public final class SettingModuleWiper implements ModuleWiper {
         tableWiper.wipeTable(AnalyticsTeiIndicatorTableInfo.TABLE_INFO);
         tableWiper.wipeTable(AnalyticsTeiAttributeTableInfo.TABLE_INFO);
         tableWiper.wipeTable(UserSettingsTableInfo.TABLE_INFO);
+        tableWiper.wipeTable(AnalyticsDhisVisualizationTableInfo.TABLE_INFO);
     }
 
     @Override

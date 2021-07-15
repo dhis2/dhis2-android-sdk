@@ -63,7 +63,7 @@ public class Dhis2MockServer {
     private static final String PROGRAM_SETTINGS_JSON = "settings/program_settings.json";
     private static final String SYNCHRONIZATION_SETTTINGS_JSON = "settings/synchronization_settings.json";
     private static final String APPEARANCE_SETTINGS_JSON = "settings/appearance_settings.json";
-    private static final String ANALYTICS_SETTINGS_JSON = "settings/analytics_settings.json";
+    private static final String ANALYTICS_SETTINGS_JSON = "settings/analytics_settings_v2.json";
     private static final String USER_SETTINGS_JSON = "settings/user_settings.json";
     private static final String PROGRAMS_JSON = "program/programs.json";
     private static final String PROGRAM_STAGES_JSON = "program/program_stages.json";

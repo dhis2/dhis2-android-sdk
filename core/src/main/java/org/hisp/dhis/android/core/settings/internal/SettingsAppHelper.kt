@@ -27,8 +27,33 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.settings.*
+import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualization
+import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationScope
+import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationsGroup
+import org.hisp.dhis.android.core.settings.AnalyticsSettings
+import org.hisp.dhis.android.core.settings.AnalyticsTeiAttribute
+import org.hisp.dhis.android.core.settings.AnalyticsTeiData
+import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
+import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicator
+import org.hisp.dhis.android.core.settings.AnalyticsTeiSetting
+import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionData
+import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionItem
+import org.hisp.dhis.android.core.settings.AppearanceSettings
+import org.hisp.dhis.android.core.settings.ChartType
+import org.hisp.dhis.android.core.settings.CompletionSpinner
+import org.hisp.dhis.android.core.settings.DataSetFilter
+import org.hisp.dhis.android.core.settings.DataSetFilters
+import org.hisp.dhis.android.core.settings.DataSetSetting
+import org.hisp.dhis.android.core.settings.DataSetSettings
+import org.hisp.dhis.android.core.settings.FilterSetting
+import org.hisp.dhis.android.core.settings.HomeFilter
+import org.hisp.dhis.android.core.settings.ProgramFilter
+import org.hisp.dhis.android.core.settings.ProgramFilters
+import org.hisp.dhis.android.core.settings.ProgramSetting
+import org.hisp.dhis.android.core.settings.ProgramSettings
+import org.hisp.dhis.android.core.settings.WHONutritionComponent
 
+@Suppress("TooManyFunctions")
 internal object SettingsAppHelper {
 
     fun getDataSetSettingList(dataSetSettings: DataSetSettings): List<DataSetSetting> {
@@ -118,6 +143,60 @@ internal object SettingsAppHelper {
         }
         return list
     }
+
+    fun getAnalyticsDhisVisualizations(analyticsSettings: AnalyticsSettings): List<AnalyticsDhisVisualization> {
+        val result = mutableListOf<AnalyticsDhisVisualization>()
+
+        analyticsSettings.dhisVisualizations()?.let { visualizationsSetting ->
+
+            getHomeVisualizations(visualizationsSetting.home())?.let { result.addAll(it) }
+
+            getProgramVisualizations(visualizationsSetting.program())?.let { result.addAll(it) }
+
+            getDataSetVisualizations(visualizationsSetting.dataSet())?.let { result.addAll(it) }
+        }
+
+        return result
+    }
+
+    private fun getHomeVisualizations(analyticsDhisVisualizationsGroups: List<AnalyticsDhisVisualizationsGroup>?) =
+        analyticsDhisVisualizationsGroups?.flatMap { group ->
+            group.visualizations().map { visualization ->
+                visualization.toBuilder()
+                    .groupUid(group.id())
+                    .groupName(group.name())
+                    .scope(AnalyticsDhisVisualizationScope.HOME)
+                    .build()
+            }
+        }
+
+    private fun getProgramVisualizations(programVisualizations: Map<String, List<AnalyticsDhisVisualizationsGroup>>?) =
+        programVisualizations?.flatMap { entry ->
+            entry.value.flatMap { group ->
+                group.visualizations().map { visualization ->
+                    visualization.toBuilder()
+                        .groupUid(group.id())
+                        .groupName(group.name())
+                        .scope(AnalyticsDhisVisualizationScope.PROGRAM)
+                        .scopeUid(entry.key)
+                        .build()
+                }
+            }
+        }
+
+    private fun getDataSetVisualizations(dataSetVisualizations: Map<String, List<AnalyticsDhisVisualizationsGroup>>?) =
+        dataSetVisualizations?.flatMap { entry ->
+            entry.value.flatMap { group ->
+                group.visualizations().map { visualization ->
+                    visualization.toBuilder()
+                        .groupUid(group.id())
+                        .groupName(group.name())
+                        .scope(AnalyticsDhisVisualizationScope.DATA_SET)
+                        .scopeUid(entry.key)
+                        .build()
+                }
+            }
+        }
 
     @JvmStatic
     fun buildAnalyticsTeiSettings(

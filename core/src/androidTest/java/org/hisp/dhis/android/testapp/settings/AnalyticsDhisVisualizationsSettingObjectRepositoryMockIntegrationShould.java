@@ -26,44 +26,30 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.testapp.settings;
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationsSetting;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import static com.google.common.truth.Truth.assertThat;
 
-class BaseDatabaseOpenHelper {
+@RunWith(D2JunitRunner.class)
+public class AnalyticsDhisVisualizationsSettingObjectRepositoryMockIntegrationShould
+        extends BaseMockIntegrationTestFullDispatcher {
 
-    static final int VERSION = 105;
+    @Test
+    public void find_analytics_settings() {
+        AnalyticsDhisVisualizationsSetting analyticsDhisVisualizationsSetting = d2
+                .settingModule()
+                .analyticsSetting()
+                .visualizationsSettings()
+                .blockingGet();
 
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
-    }
-
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+        assertThat(analyticsDhisVisualizationsSetting.home().size()).isEqualTo(2);
+        assertThat(analyticsDhisVisualizationsSetting.program().size()).isEqualTo(1);
+        assertThat(analyticsDhisVisualizationsSetting.dataSet().size()).isEqualTo(1);
     }
 }

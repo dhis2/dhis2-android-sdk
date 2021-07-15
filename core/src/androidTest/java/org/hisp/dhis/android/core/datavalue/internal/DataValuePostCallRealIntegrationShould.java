@@ -109,7 +109,7 @@ public class DataValuePostCallRealIntegrationShould extends BaseRealIntegrationT
                         .period(d2.periodModule().periods().one().blockingGet().periodId())
                         .organisationUnit(d2.organisationUnitModule().organisationUnits().one().blockingGet().uid())
                         .value(String.valueOf(value))
-                        .state(state)
+                        .syncState(state)
                         .build();
     }
 }

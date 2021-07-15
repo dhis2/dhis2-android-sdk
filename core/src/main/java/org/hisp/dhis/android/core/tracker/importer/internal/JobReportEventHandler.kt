@@ -51,16 +51,16 @@ internal class JobReportEventHandler @Inject internal constructor(
         val newNoteState = if (state == State.SYNCED) State.SYNCED else State.TO_POST
         val whereClause = WhereClauseBuilder()
             .appendInKeyStringValues(
-                DataColumns.STATE, State.uploadableStatesIncludingError().map { it.name }
+                DataColumns.SYNC_STATE, State.uploadableStatesIncludingError().map { it.name }
             )
             .appendKeyStringValue(NoteTableInfo.Columns.EVENT, eventUid).build()
         for (note in noteStore.selectWhere(whereClause)) {
-            noteStore.update(note.toBuilder().state(newNoteState).build())
+            noteStore.update(note.toBuilder().syncState(newNoteState).build())
         }
     }
 
     override fun handleObject(uid: String, state: State) {
-        eventStore.setState(uid, state)
+        eventStore.setSyncState(uid, state)
         conflictStore.deleteEventConflicts(uid)
         handleEventNotes(uid, state)
     }

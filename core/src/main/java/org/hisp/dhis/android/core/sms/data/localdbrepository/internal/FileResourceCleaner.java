@@ -126,7 +126,7 @@ class FileResourceCleaner {
 
     private boolean isExistingAndNotSyncedFileResource(String resourceUid) {
         return fileResourceModule.fileResources()
-                .byState().notIn(State.SYNCED)
+                .bySyncState().notIn(State.SYNCED)
                 .uid(resourceUid)
                 .blockingExists();
     }

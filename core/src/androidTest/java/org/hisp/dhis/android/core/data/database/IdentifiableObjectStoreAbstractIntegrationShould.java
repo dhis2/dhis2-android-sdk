@@ -38,6 +38,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -65,6 +67,14 @@ public abstract class IdentifiableObjectStoreAbstractIntegrationShould<M extends
         store.insert(object);
         M objectFromDb = store.selectByUid(object.uid());
         assertEqualsIgnoreId(objectFromDb);
+    }
+
+    @Test
+    public void insert_and_select_by_uid_list() {
+        store.insert(object);
+        List<M> listFromDb = store.selectByUids(Collections.singletonList(object.uid()));
+        assertThat(listFromDb.size()).isEqualTo(1);
+        assertEqualsIgnoreId(listFromDb.get(0));
     }
 
     @Test

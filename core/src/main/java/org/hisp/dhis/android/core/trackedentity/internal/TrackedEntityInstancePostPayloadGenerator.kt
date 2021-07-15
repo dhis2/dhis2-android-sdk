@@ -78,7 +78,7 @@ internal class TrackedEntityInstancePostPayloadGenerator @Inject internal constr
         val attributeValueMap = trackedEntityAttributeValueStore.queryTrackedEntityAttributeValueToPost()
         val whereNotesClause = WhereClauseBuilder()
             .appendInKeyStringValues(
-                DataColumns.STATE, State.uploadableStatesIncludingError().map { it.name }
+                DataColumns.SYNC_STATE, State.uploadableStatesIncludingError().map { it.name }
             )
             .build()
         val notes = noteStore.selectWhere(whereNotesClause)

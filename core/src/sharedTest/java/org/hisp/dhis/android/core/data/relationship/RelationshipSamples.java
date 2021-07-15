@@ -64,7 +64,7 @@ public class RelationshipSamples {
             .created(CREATED)
             .lastUpdated(LAST_UPDATED)
             .name(NAME)
-            .state(STATE)
+            .syncState(STATE)
             .deleted(DELETED);
 
     private static Relationship.Builder commonBuilder = Relationship
@@ -72,7 +72,7 @@ public class RelationshipSamples {
             .created(CREATED)
             .lastUpdated(LAST_UPDATED)
             .name(NAME)
-            .state(STATE)
+            .syncState(STATE)
             .deleted(DELETED);
 
     public Relationship229Compatible get229Compatible() {

@@ -138,7 +138,7 @@ public class FileResourceCollectionRepositoryMockIntegrationShould extends BaseM
         d2.fileResourceModule().fileResources().blockingAdd(getFile());
         List<FileResource> fileResources =
                 d2.fileResourceModule().fileResources()
-                        .byState().eq(State.TO_POST)
+                        .bySyncState().eq(State.TO_POST)
                         .blockingGet();
 
         assertThat(fileResources.size()).isEqualTo(1);

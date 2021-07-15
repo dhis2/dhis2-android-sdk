@@ -70,7 +70,7 @@ public class FileResourceTableInfo {
                     CONTENT_TYPE,
                     CONTENT_LENGTH,
                     PATH,
-                    STATE);
+                    SYNC_STATE);
         }
 
         @Override

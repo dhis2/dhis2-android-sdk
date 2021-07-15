@@ -64,7 +64,7 @@ public class NoteUniquenessManager {
                 NoteTableInfo.Columns.EVENT;
 
         String whereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(DataColumns.STATE, State.TO_POST)
+                .appendKeyStringValue(DataColumns.SYNC_STATE, State.TO_POST)
                 .appendKeyStringValue(ownerColumn, ownerUid).build();
         List<Note> toPostNotes = noteStore.selectWhere(whereClause);
 
@@ -76,7 +76,7 @@ public class NoteUniquenessManager {
         for (Note note : notes) {
             uniqueNotes.add(note.toBuilder()
                     .id(null)
-                    .state(State.SYNCED)
+                    .syncState(State.SYNCED)
                     .build());
         }
 

@@ -64,7 +64,7 @@ public class ReadWriteWithUidDataObjectRepositoryImpl
     }
 
     /**
-     * Removes the object in scope in an asynchronous way. Field {@link DataObject#state()} is marked as
+     * Removes the object in scope in an asynchronous way. Field {@link DataObject#syncState()} is marked as
      * {@link State#TO_UPDATE} and {@link DeletableDataObject#deleted()} as true. In the next upload, it will be deleted
      * in the server. It returns a {@code Completable} that completes as soon as the object is deleted in the database.
      * The {@code Completable} fails if the object doesn't exist.
@@ -76,7 +76,7 @@ public class ReadWriteWithUidDataObjectRepositoryImpl
     }
 
     /**
-     * Removes the object in scope in a synchronous way. Field {@link DataObject#state()} is marked as
+     * Removes the object in scope in a synchronous way. Field {@link DataObject#syncState()} is marked as
      * {@link State#TO_UPDATE} and {@link DeletableDataObject#deleted()} as true. In the next upload, it will be deleted
      * in the server. It blocks the thread and finishes as soon as the object is deleted in the database.
      * It throws an exception if the object doesn't exist.
@@ -97,18 +97,18 @@ public class ReadWriteWithUidDataObjectRepositoryImpl
                     .errorDescription("Tried to delete non existing object")
                     .build();
         } else {
-            if (object.state() == State.TO_POST) {
+            if (object.syncState() == State.TO_POST) {
                 store.delete(object.uid());
             } else {
                 store.setDeleted(object.uid());
-                store.setState(object.uid(), State.TO_UPDATE);
+                store.setSyncState(object.uid(), State.TO_UPDATE);
                 propagateState(object);
             }
         }
     }
 
     /**
-     * Removes the object in scope in a synchronous way. Field {@link DataObject#state()} is marked as
+     * Removes the object in scope in a synchronous way. Field {@link DataObject#syncState()} is marked as
      * {@link State#TO_POST} and {@link DeletableDataObject#deleted()} as true. Unlike {@link #delete()},
      * it doesn't throw an exception if the object doesn't exist.
      * It returns a {@code Completable} that completes as soon as the object is deleted in the database.
@@ -120,7 +120,7 @@ public class ReadWriteWithUidDataObjectRepositoryImpl
     }
 
     /**
-     * Removes the object in scope in an asynchronous way. Field {@link DataObject#state()} is marked as
+     * Removes the object in scope in an asynchronous way. Field {@link DataObject#syncState()} is marked as
      * {@link State#TO_POST} and {@link DeletableDataObject#deleted()} as true.
      * Unlike {@link #blockingDelete()}, it doesn't throw an exception if the object doesn't exist.
      * It blocks the thread and finishes as soon as the object is deleted in the database.

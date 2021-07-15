@@ -60,7 +60,8 @@ public class EnrollmentStoreIntegrationShould extends IdentifiableDataObjectStor
     @Override
     protected Enrollment buildObjectWithToDeleteState() {
         return EnrollmentSamples.get().toBuilder()
-                .state(State.TO_UPDATE)
+                .syncState(State.TO_UPDATE)
+                .aggregatedSyncState(State.TO_UPDATE)
                 .deleted(true)
                 .build();
     }
@@ -68,7 +69,8 @@ public class EnrollmentStoreIntegrationShould extends IdentifiableDataObjectStor
     @Override
     protected Enrollment buildObjectWithSyncedState() {
         return EnrollmentSamples.get().toBuilder()
-                .state(State.SYNCED)
+                .syncState(State.SYNCED)
+                .aggregatedSyncState(State.SYNCED)
                 .build();
     }
 }

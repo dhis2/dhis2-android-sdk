@@ -28,17 +28,75 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.mock
 
+import org.hisp.dhis.android.core.category.Category
+import org.hisp.dhis.android.core.category.CategoryOption
+import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.indicator.Indicator
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.period.Period
+import org.hisp.dhis.android.core.program.ProgramIndicator
+
 object AggregatedSamples {
-    const val dataElement1 = "fbfJHSPpUQD" // ANC 1st visit
-    const val dataElement2 = "cYeuwXTCPkU" // ANC 2nd visit
+    val dataElement1 = DataElement.builder()
+        .uid("fbfJHSPpUQD")
+        .displayName("ANC 1st visit")
+        .build()
 
-    const val cc1 = "fMZEcRHuamy" // Fixed / Outreach
-    const val co1 = "pq2XI5kz2BY" // Fixed
-    const val co2 = "PT59n8BQbqM" // Outreach
+    val dataElement2 = DataElement.builder()
+        .uid("cYeuwXTCPkU")
+        .displayName("ANC 2nd visit")
+        .build()
 
-    const val period1 = "202103"
-    const val period2 = "202102"
+    val programIndicator1 = ProgramIndicator.builder()
+        .uid("p2Zxg0wcPQ3")
+        .displayName("BCG doses")
+        .build()
 
-    const val orgunit1 = "DiszpKrYNg8" // Ngelehun
-    const val orgunit2 = "g8upMTyEZGZ" // Njandama
+    val indicator1 = Indicator.builder()
+        .uid("Uvn6LCg7dVU")
+        .displayName("ANC 1 Coverage")
+        .build()
+
+    val cc1 = Category.builder()
+        .uid("fMZEcRHuamy")
+        .displayName("Fixed / Outreach")
+        .build()
+
+    val co11 = CategoryOption.builder()
+        .uid("pq2XI5kz2BY")
+        .displayName("Fixed")
+        .build()
+
+    val co12 = CategoryOption.builder()
+        .uid("PT59n8BQbqM")
+        .displayName("Outreach")
+        .build()
+
+    val cc2 = Category.builder()
+        .uid("cX5k9anHEHd")
+        .displayName("Gender")
+        .build()
+
+    val co21 = CategoryOption.builder()
+        .uid("jRbMi0aBjYn")
+        .displayName("Male")
+        .build()
+
+    val period1 = Period.builder()
+        .periodId("202103")
+        .build()
+
+    val period2 = Period.builder()
+        .periodId("202104")
+        .build()
+
+    val orgunit1 = OrganisationUnit.builder()
+        .uid("DiszpKrYNg8")
+        .displayName("Ngelehun")
+        .build()
+
+    val orgunit2 = OrganisationUnit.builder()
+        .uid("g8upMTyEZGZ")
+        .displayName("Njandama")
+        .build()
 }

@@ -90,6 +90,6 @@ public final class EnrollmentEntityDIModule {
     @Reusable
     OrphanCleaner<Enrollment, Event> eventOrphanCleaner(DatabaseAdapter databaseAdapter) {
         return new DataOrphanCleanerImpl<>(EventTableInfo.TABLE_INFO.name(), EventTableInfo.Columns.ENROLLMENT,
-                DataColumns.STATE, databaseAdapter);
+                DataColumns.SYNC_STATE, databaseAdapter);
     }
 }

@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreI
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper;
+import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo;
@@ -103,7 +104,10 @@ public final class TrackedEntityAttributeValueStoreImpl
     private String teiInUploadableState() {
         String states = CollectionsHelper.commaAndSpaceSeparatedArrayValues(
                 CollectionsHelper.withSingleQuotationMarksArray(EnumHelper.asStringList(State.uploadableStates())));
-        return "(TrackedEntityInstance.state IN (" + states + "))";
+        return "(" + TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE +
+                "." +
+                DataColumns.AGGREGATED_SYNC_STATE +
+                " IN (" + states + "))";
     }
 
     @Override

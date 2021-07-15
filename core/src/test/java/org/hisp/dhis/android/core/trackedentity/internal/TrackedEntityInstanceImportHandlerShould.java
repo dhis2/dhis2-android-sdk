@@ -120,7 +120,7 @@ public class TrackedEntityInstanceImportHandlerShould {
     public void do_nothing_when_passing_null_argument() {
         trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(null, instances);
 
-        verify(trackedEntityInstanceStore, never()).setStateOrDelete(anyString(), any(State.class));
+        verify(trackedEntityInstanceStore, never()).setSyncStateOrDelete(anyString(), any(State.class));
     }
 
     @Test
@@ -132,7 +132,7 @@ public class TrackedEntityInstanceImportHandlerShould {
                 Collections.singletonList(importSummary), instances
         );
 
-        verify(trackedEntityInstanceStore, times(1)).setStateOrDelete("test_tei_uid", State.SYNCED);
+        verify(trackedEntityInstanceStore, times(1)).setSyncStateOrDelete("test_tei_uid", State.SYNCED);
     }
 
     @Test
@@ -144,7 +144,7 @@ public class TrackedEntityInstanceImportHandlerShould {
                 Collections.singletonList(importSummary), instances
         );
 
-        verify(trackedEntityInstanceStore, times(1)).setStateOrDelete("test_tei_uid", State.ERROR);
+        verify(trackedEntityInstanceStore, times(1)).setSyncStateOrDelete("test_tei_uid", State.ERROR);
     }
 
     @Test
@@ -159,7 +159,7 @@ public class TrackedEntityInstanceImportHandlerShould {
                 Collections.singletonList(importSummary), instances
         );
 
-        verify(trackedEntityInstanceStore, times(1)).setStateOrDelete("test_tei_uid", State.SYNCED);
+        verify(trackedEntityInstanceStore, times(1)).setSyncStateOrDelete("test_tei_uid", State.SYNCED);
         verify(enrollmentImportHandler, times(1)).handleEnrollmentImportSummary(
                 eq(enrollmentSummaries), anyList(), anyString());
     }
@@ -177,7 +177,7 @@ public class TrackedEntityInstanceImportHandlerShould {
                 Collections.singletonList(importSummary), instances
         );
 
-        verify(trackedEntityInstanceStore, times(1)).setStateOrDelete("test_tei_uid", State.SYNCED);
-        verify(trackedEntityInstanceStore, times(1)).setStateOrDelete("missing_tei_uid", State.TO_UPDATE);
+        verify(trackedEntityInstanceStore, times(1)).setSyncStateOrDelete("test_tei_uid", State.SYNCED);
+        verify(trackedEntityInstanceStore, times(1)).setSyncStateOrDelete("missing_tei_uid", State.TO_UPDATE);
     }
 }

@@ -41,7 +41,7 @@ internal class EventPostStateManager @Inject internal constructor(
 
     fun <T> markObjectsAs(events: Collection<T>, forcedState: State?) where T : ObjectWithUidInterface, T : DataObject {
         for (e in events) {
-            eventStore.setState(e.uid(), DataStateHelper.forcedOrOwn(e, forcedState))
+            eventStore.setSyncState(e.uid(), DataStateHelper.forcedOrOwn(e, forcedState))
         }
     }
 }

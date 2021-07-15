@@ -26,36 +26,40 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.category.internal;
+package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableStatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.category.CategoryOption;
-import org.hisp.dhis.android.core.category.CategoryOptionTableInfo;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-import androidx.annotation.NonNull;
+import java.util.List;
 
-final class CategoryOptionStore {
+@AutoValue
+@JsonDeserialize(builder = AutoValue_AnalyticsDhisVisualizationsGroup.Builder.class)
+public abstract class AnalyticsDhisVisualizationsGroup {
 
-    private CategoryOptionStore() {
+    public abstract String name();
+
+    public abstract String id();
+
+    public abstract List<AnalyticsDhisVisualization> visualizations();
+
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_AnalyticsDhisVisualizationsGroup.Builder();
     }
 
-    private static StatementBinder<CategoryOption> BINDER = new NameableStatementBinder<CategoryOption>() {
-        @Override
-        public void bindToStatement(@NonNull CategoryOption o, @NonNull StatementWrapper w) {
-            super.bindToStatement(o, w);
-            w.bind(11, o.startDate());
-            w.bind(12, o.endDate());
-            w.bind(13, o.access().data().write());
-        }
-    };
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder {
 
-    public static IdentifiableObjectStore<CategoryOption> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter,
-                CategoryOptionTableInfo.TABLE_INFO, BINDER, CategoryOption::create);
+        public abstract Builder name(String name);
+
+        public abstract Builder id(String id);
+
+        public abstract Builder visualizations(List<AnalyticsDhisVisualization> visualizations);
+
+        public abstract AnalyticsDhisVisualizationsGroup build();
     }
 }

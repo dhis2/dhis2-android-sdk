@@ -43,7 +43,7 @@ public class NoteSamples {
                 .storedBy("user")
                 .storedDate("2018-03-19T15:20:55.058")
                 .uid("noteUId")
-                .state(State.TO_POST)
+                .syncState(State.TO_POST)
                 .build();
     }
 }

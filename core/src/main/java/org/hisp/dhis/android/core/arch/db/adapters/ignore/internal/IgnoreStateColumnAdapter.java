@@ -26,29 +26,9 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common.internal;
+package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
 
-import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.note.Note;
-import org.hisp.dhis.android.core.relationship.RelationshipItem;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
+import org.hisp.dhis.android.core.common.State;
 
-public interface DataStatePropagator {
-    void propagateEnrollmentUpdate(Enrollment enrollment);
-
-    void propagateEventUpdate(Event event);
-
-    void propagateTrackedEntityDataValueUpdate(TrackedEntityDataValue dataValue);
-
-    void propagateTrackedEntityAttributeUpdate(TrackedEntityAttributeValue trackedEntityAttributeValue);
-
-    void propagateNoteCreation(Note note);
-
-    void propagateRelationshipUpdate(RelationshipItem item);
-
-    void resetUploadingEnrollmentAndEventStates(String trackedEntityInstanceUid);
-
-    void resetUploadingEventStates(String enrollmentUid);
+public final class IgnoreStateColumnAdapter extends IgnoreColumnAdapter<State> {
 }

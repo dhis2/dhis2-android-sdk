@@ -26,17 +26,12 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment.internal;
+package org.hisp.dhis.android.core.analytics.aggregated.service
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore;
-import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.analytics.aggregated.AbsoluteDimensionItem
+import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 
-import java.util.List;
-import java.util.Map;
-
-public interface EnrollmentStore extends IdentifiableDeletableDataObjectStore<Enrollment> {
-
-    Map<String, List<Enrollment>> queryEnrollmentsToPost();
-
-    List<String> queryMissingRelationshipsUids();
-}
+internal data class AnalyticsServiceEvaluationItem(
+    val dimensionItems: List<AbsoluteDimensionItem>,
+    val filters: List<DimensionItem>
+)

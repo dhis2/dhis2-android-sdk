@@ -61,7 +61,8 @@ public class TrackedEntityInstanceStoreIntegrationShould extends
     @Override
     protected TrackedEntityInstance buildObjectWithToDeleteState() {
         return TrackedEntityInstanceSamples.get().toBuilder()
-                .state(State.TO_UPDATE)
+                .syncState(State.TO_UPDATE)
+                .aggregatedSyncState(State.TO_UPDATE)
                 .deleted(true)
                 .build();
     }
@@ -69,7 +70,8 @@ public class TrackedEntityInstanceStoreIntegrationShould extends
     @Override
     protected TrackedEntityInstance buildObjectWithSyncedState() {
         return TrackedEntityInstanceSamples.get().toBuilder()
-                .state(State.SYNCED)
+                .syncState(State.SYNCED)
+                .aggregatedSyncState(State.SYNCED)
                 .build();
     }
 }

@@ -25,31 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common.internal
 
-package org.hisp.dhis.android.core.category.internal;
+import org.hisp.dhis.android.core.enrollment.Enrollment
+import org.hisp.dhis.android.core.event.Event
+import org.hisp.dhis.android.core.note.Note
+import org.hisp.dhis.android.core.relationship.RelationshipItem
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink;
-import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkTableInfo;
+interface DataStatePropagator {
 
-final class CategoryCategoryOptionLinkStore {
+    fun propagateEnrollmentUpdate(enrollment: Enrollment?)
 
-    private static final StatementBinder<CategoryCategoryOptionLink> BINDER = (o, w) -> {
-        w.bind(1, o.category());
-        w.bind(2, o.categoryOption());
-        w.bind(3, o.sortOrder());
-    };
+    fun propagateEventUpdate(event: Event?)
 
-    private CategoryCategoryOptionLinkStore() {}
+    fun propagateTrackedEntityDataValueUpdate(dataValue: TrackedEntityDataValue?)
 
-    public static LinkStore<CategoryCategoryOptionLink> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkStore(databaseAdapter,
-                CategoryCategoryOptionLinkTableInfo.TABLE_INFO,
-                CategoryCategoryOptionLinkTableInfo.Columns.CATEGORY,
-                BINDER,
-                CategoryCategoryOptionLink::create);
-    }
+    fun propagateTrackedEntityAttributeUpdate(trackedEntityAttributeValue: TrackedEntityAttributeValue?)
+
+    fun propagateNoteCreation(note: Note?)
+
+    fun propagateRelationshipUpdate(item: RelationshipItem?)
+
+    fun resetUploadingEnrollmentAndEventStates(trackedEntityInstanceUid: String?)
+
+    fun resetUploadingEventStates(enrollmentUid: String?)
+
+    fun refreshTrackedEntityInstanceAggregatedSyncState(trackedEntityInstanceUid: String)
+
+    fun refreshEnrollmentAggregatedSyncState(enrollmentUid: String)
 }

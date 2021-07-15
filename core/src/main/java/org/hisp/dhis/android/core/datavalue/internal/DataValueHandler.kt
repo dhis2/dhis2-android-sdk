@@ -85,7 +85,7 @@ internal class DataValueHandler(store: ObjectWithoutUidStore<DataValue>) : Objec
         get() {
             val whereClause = WhereClauseBuilder()
                 .appendNotInKeyStringValues(
-                    DataValueTableInfo.Columns.STATE,
+                    DataValueTableInfo.Columns.SYNC_STATE,
                     Arrays.asList(State.SYNCED.name, State.SYNCED_VIA_SMS.name)
                 )
                 .build()

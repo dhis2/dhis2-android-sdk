@@ -160,7 +160,7 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
         eventStore.insert(Event.builder().uid(eventUid).created(new Date()).lastUpdated(new Date())
                 .status(EventStatus.ACTIVE).program(programUid)
                 .programStage(programStageUid).organisationUnit(orgUnitUid).eventDate(new Date())
-                .completedDate(new Date()).dueDate(new Date()).state(State.TO_POST)
+                .completedDate(new Date()).dueDate(new Date()).syncState(State.TO_POST)
                 .attributeOptionCombo(attributeOptionCombo).build());
 
         TrackedEntityDataValue trackedEntityDataValue = TrackedEntityDataValue.builder()

@@ -73,7 +73,7 @@ public final class DataValueCollectionRepository
     @Override
     public Observable<D2Progress> upload() {
         return Observable.fromCallable(() ->
-                byState().in(State.uploadableStatesIncludingError()).blockingGetWithoutChildren()
+                bySyncState().in(State.uploadableStatesIncludingError()).blockingGetWithoutChildren()
         ).flatMap(postCall::uploadDataValues);
     }
 
@@ -147,8 +147,18 @@ public final class DataValueCollectionRepository
         return cf.bool(Columns.FOLLOW_UP);
     }
 
+    /**
+     * @deprecated Use {@link #bySyncState()} instead.
+     *
+     * @return
+     */
+    @Deprecated
     public EnumFilterConnector<DataValueCollectionRepository, State> byState() {
-        return cf.enumC(Columns.STATE);
+        return bySyncState();
+    }
+
+    public EnumFilterConnector<DataValueCollectionRepository, State> bySyncState() {
+        return cf.enumC(Columns.SYNC_STATE);
     }
 
     public BooleanFilterConnector<DataValueCollectionRepository> byDeleted() {

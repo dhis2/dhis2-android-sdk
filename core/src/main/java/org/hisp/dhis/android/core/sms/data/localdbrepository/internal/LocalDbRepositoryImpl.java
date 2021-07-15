@@ -257,7 +257,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     private Single<List<Event>> getEventsForEnrollment(String enrollmentUid) {
         return eventModule.events()
                 .byEnrollmentUid().eq(enrollmentUid)
-                .byState().in(State.uploadableStates())
+                .bySyncState().in(State.uploadableStates())
                 .withTrackedEntityDataValues()
                 .get()
                 .flatMapObservable(Observable::fromIterable)
@@ -267,20 +267,20 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
 
     @Override
     public Completable updateEventSubmissionState(String eventUid, State state) {
-        return Completable.fromAction(() -> eventStore.setState(eventUid, state));
+        return Completable.fromAction(() -> eventStore.setSyncState(eventUid, state));
     }
 
     @Override
     public Completable updateEnrollmentSubmissionState(TrackedEntityInstance tei, State state) {
         return Completable.fromAction(() -> {
             Enrollment enrollment = TrackedEntityInstanceInternalAccessor.accessEnrollments(tei).get(0);
-            enrollmentStore.setState(enrollment.uid(), state);
-            trackedEntityInstanceStore.setState(enrollment.trackedEntityInstance(), state);
+            enrollmentStore.setSyncState(enrollment.uid(), state);
+            trackedEntityInstanceStore.setSyncState(enrollment.trackedEntityInstance(), state);
 
             List<Event> events = EnrollmentInternalAccessor.accessEvents(enrollment);
             if (events != null && !events.isEmpty()) {
                 List<String> eventUids = UidsHelper.getUidsList(events);
-                eventStore.setState(eventUids, state);
+                eventStore.setSyncState(eventUids, state);
             }
         });
     }

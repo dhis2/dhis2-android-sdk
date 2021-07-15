@@ -26,14 +26,36 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.category.internal;
+package org.hisp.dhis.android.core.analytics.aggregated
 
+import io.reactivex.Single
+import javax.inject.Inject
+import org.hisp.dhis.android.core.analytics.aggregated.service.AnalyticsService
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.category.CategoryOptionCombo;
+internal class AnalyticsRepositoryImpl @Inject constructor(
+    private val params: AnalyticsRepositoryParams,
+    private val analyticsService: AnalyticsService
+) : AnalyticsRepository {
 
-import java.util.List;
+    override fun withDimension(dimensionItem: DimensionItem): AnalyticsRepositoryImpl {
+        return updateParams { params -> params.copy(dimensions = params.dimensions + dimensionItem) }
+    }
 
-public interface CategoryOptionComboStore extends IdentifiableObjectStore<CategoryOptionCombo> {
-    List<CategoryOptionCombo> getForCategoryCombo(String categoryComboUid);
+    override fun withFilter(dimensionItem: DimensionItem): AnalyticsRepositoryImpl {
+        return updateParams { params -> params.copy(filters = params.filters + dimensionItem) }
+    }
+
+    override fun evaluate(): Single<DimensionalResponse> {
+        return Single.fromCallable { blockingEvaluate() }
+    }
+
+    override fun blockingEvaluate(): DimensionalResponse {
+        return analyticsService.evaluate(params)
+    }
+
+    private fun updateParams(
+        func: (params: AnalyticsRepositoryParams) -> AnalyticsRepositoryParams
+    ): AnalyticsRepositoryImpl {
+        return AnalyticsRepositoryImpl(func(params), analyticsService)
+    }
 }

@@ -25,35 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.category.internal;
+import android.database.Cursor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkStore
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkTableInfo
 
+@Suppress("MagicNumber")
+internal object CategoryCategoryOptionLinkStore {
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.category.CategoryCombo;
-import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
+    private val BINDER = StatementBinder { o: CategoryCategoryOptionLink, w: StatementWrapper ->
+        w.bind(1, o.category())
+        w.bind(2, o.categoryOption())
+        w.bind(3, o.sortOrder())
+    }
 
-import androidx.annotation.NonNull;
-
-public final class CategoryComboStore {
-
-    private CategoryComboStore() {}
-
-    private static StatementBinder<CategoryCombo> BINDER = new IdentifiableStatementBinder<CategoryCombo>() {
-        @Override
-        public void bindToStatement(@NonNull CategoryCombo o, @NonNull StatementWrapper w) {
-            super.bindToStatement(o, w);
-            w.bind(7, o.isDefault());
-        }
-    };
-
-    public static IdentifiableObjectStore<CategoryCombo> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, CategoryComboTableInfo.TABLE_INFO, BINDER,
-                CategoryCombo::create);
+    @JvmStatic
+    fun create(databaseAdapter: DatabaseAdapter): LinkStore<CategoryCategoryOptionLink> {
+        return linkStore(
+            databaseAdapter,
+            CategoryCategoryOptionLinkTableInfo.TABLE_INFO,
+            CategoryCategoryOptionLinkTableInfo.Columns.CATEGORY,
+            BINDER
+        ) { cursor: Cursor -> CategoryCategoryOptionLink.create(cursor) }
     }
 }

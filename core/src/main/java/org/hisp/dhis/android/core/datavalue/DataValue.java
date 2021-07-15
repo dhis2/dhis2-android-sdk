@@ -113,7 +113,7 @@ public abstract class DataValue extends BaseDeletableDataObject {
     public abstract static class Builder extends BaseDeletableDataObject.Builder<DataValue.Builder> {
 
         public Builder() {
-            state(State.SYNCED);
+            syncState(State.SYNCED);
         }
 
         public abstract DataValue.Builder dataElement(@NonNull String dataElement);

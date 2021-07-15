@@ -26,29 +26,15 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.category.internal;
+package org.hisp.dhis.android.core.analytics.aggregated.service.evaluator
 
+import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
+import org.hisp.dhis.android.core.analytics.aggregated.service.AnalyticsServiceEvaluationItem
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.category.CategoryCategoryComboLink;
-import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkTableInfo;
+internal interface AnalyticsEvaluator {
 
-final class CategoryCategoryComboLinkStore {
-
-    private static final StatementBinder<CategoryCategoryComboLink> BINDER = (o, w) -> {
-        w.bind(1, o.category());
-        w.bind(2, o.categoryCombo());
-        w.bind(3, o.sortOrder());
-    };
-
-    private CategoryCategoryComboLinkStore() {}
-
-    public static LinkStore<CategoryCategoryComboLink> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkStore(databaseAdapter, CategoryCategoryComboLinkTableInfo.TABLE_INFO,
-                CategoryCategoryComboLinkTableInfo.Columns.CATEGORY_COMBO, BINDER,
-                CategoryCategoryComboLink::create);
-    }
+    fun evaluate(
+        evaluationItem: AnalyticsServiceEvaluationItem,
+        metadata: Map<String, MetadataItem>
+    ): String?
 }

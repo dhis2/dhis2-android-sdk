@@ -177,7 +177,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ba
                         .organisationUnit("DiszpKrYNg8")
                         .date(dateFormat.parse("2010-03-02"))
                         .storedBy("android")
-                        .state(state)
+                        .syncState(state)
                         .build();
     }
 }

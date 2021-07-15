@@ -130,7 +130,7 @@ class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould : BaseMockI
     fun build_payload_without_events_marked_as_error() {
         storeTrackedEntityInstance()
 
-        enrollmentStore.setState(enrollment3Id, State.TO_POST)
+        enrollmentStore.setAggregatedSyncState(enrollment3Id, State.TO_POST)
 
         val partitions = partitions
         assertThat(partitions.size).isEqualTo(1)
@@ -169,11 +169,11 @@ class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould : BaseMockI
 
         assertThat(d2.importModule().trackerImportConflicts().blockingCount()).isEqualTo(3)
 
-        teiStore.setState("teiId", State.TO_POST)
-        enrollmentStore.setState("enrollment1Id", State.TO_POST)
-        enrollmentStore.setState("enrollment2Id", State.TO_POST)
-        eventStore.setState("event1Id", State.TO_POST)
-        eventStore.setState("event2Id", State.TO_POST)
+        teiStore.setAggregatedSyncState("teiId", State.TO_POST)
+        enrollmentStore.setAggregatedSyncState("enrollment1Id", State.TO_POST)
+        enrollmentStore.setAggregatedSyncState("enrollment2Id", State.TO_POST)
+        eventStore.setSyncStateOrDelete("event1Id", State.TO_POST)
+        eventStore.setSyncStateOrDelete("event2Id", State.TO_POST)
 
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_import_conflicts_3.json")
 
@@ -218,7 +218,7 @@ class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould : BaseMockI
 
         val partitions = payloadGenerator.getTrackedEntityInstancesPartitions(
             d2.trackedEntityModule().trackedEntityInstances().byUid().eq(tei1)
-                .byState().`in`(*State.uploadableStates()).blockingGet()
+                .byAggregatedSyncState().`in`(*State.uploadableStates()).blockingGet()
         )
 
         assertThat(partitions.size).isEqualTo(1)
@@ -234,23 +234,23 @@ class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould : BaseMockI
         val partitions = partitions
 
         val instance = teiStore.selectFirst()
-        assertThat(instance!!.state()).isEqualTo(State.UPLOADING)
+        assertThat(instance!!.syncState()).isEqualTo(State.UPLOADING)
 
         val enrollments = enrollmentStore.selectAll()
         for (enrollment in enrollments) {
             if ("enrollment1Id" == enrollment.uid() || "enrollment2Id" == enrollment.uid()) {
-                assertThat(enrollment.state()).isEqualTo(State.UPLOADING)
+                assertThat(enrollment.syncState()).isEqualTo(State.UPLOADING)
             } else {
-                assertThat(enrollment.state()).isNotEqualTo(State.UPLOADING)
+                assertThat(enrollment.syncState()).isNotEqualTo(State.UPLOADING)
             }
         }
 
         val events = eventStore.selectAll()
         for (event in events) {
             if (event1Id == event.uid() || event2Id == event.uid()) {
-                assertThat(event.state()).isEqualTo(State.UPLOADING)
+                assertThat(event.syncState()).isEqualTo(State.UPLOADING)
             } else {
-                assertThat(event.state()).isNotEqualTo(State.UPLOADING)
+                assertThat(event.syncState()).isNotEqualTo(State.UPLOADING)
             }
         }
     }
@@ -263,22 +263,22 @@ class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould : BaseMockI
         d2.trackedEntityModule().trackedEntityInstances().blockingUpload()
 
         val instance = teiStore.selectFirst()
-        assertThat(instance!!.state()).isEqualTo(State.TO_POST)
+        assertThat(instance!!.syncState()).isEqualTo(State.TO_POST)
 
         val enrollments = enrollmentStore.selectAll()
         for (enrollment in enrollments) {
             if (enrollment1Id == enrollment.uid() || enrollment2Id == enrollment.uid()) {
-                assertThat(enrollment.state()).isEqualTo(State.TO_POST)
+                assertThat(enrollment.syncState()).isEqualTo(State.TO_POST)
             }
         }
 
         val events = eventStore.selectAll()
         for (event in events) {
             if (event1Id == event.uid()) {
-                assertThat(event.state()).isEqualTo(State.TO_UPDATE)
+                assertThat(event.syncState()).isEqualTo(State.TO_UPDATE)
             }
             if (event2Id == event.uid()) {
-                assertThat(event.state()).isEqualTo(State.SYNCED_VIA_SMS)
+                assertThat(event.syncState()).isEqualTo(State.SYNCED_VIA_SMS)
             }
         }
     }
@@ -344,20 +344,24 @@ class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould : BaseMockI
         storeTrackedEntityInstance()
 
         // Only enrollment1 and event1 are TO_UPDATE
-        enrollmentStore.setState(enrollment2Id, State.SYNCED)
-        eventStore.setState(event2Id, State.SYNCED)
+        enrollmentStore.setAggregatedSyncState(enrollment2Id, State.SYNCED)
+        enrollmentStore.setSyncState(enrollment2Id, State.SYNCED)
+        eventStore.setSyncState(event2Id, State.SYNCED)
 
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_empty_events.json")
         d2.trackedEntityModule().trackedEntityInstances().blockingUpload()
 
         val trackedEntityInstance = teiStore.selectByUid(teiId)
-        assertThat(trackedEntityInstance!!.state()).isEqualTo(State.TO_UPDATE)
+        assertThat(trackedEntityInstance!!.syncState()).isEqualTo(State.SYNCED)
+        assertThat(trackedEntityInstance.aggregatedSyncState()).isEqualTo(State.TO_UPDATE)
 
-        assertThat(enrollmentStore.selectByUid(enrollment1Id)!!.state()).isEqualTo(State.TO_UPDATE)
-        assertThat(enrollmentStore.selectByUid(enrollment2Id)!!.state()).isEqualTo(State.SYNCED)
+        assertThat(enrollmentStore.selectByUid(enrollment1Id)!!.syncState()).isEqualTo(State.SYNCED)
+        assertThat(enrollmentStore.selectByUid(enrollment1Id)!!.aggregatedSyncState()).isEqualTo(State.TO_UPDATE)
+        assertThat(enrollmentStore.selectByUid(enrollment2Id)!!.syncState()).isEqualTo(State.SYNCED)
+        assertThat(enrollmentStore.selectByUid(enrollment2Id)!!.aggregatedSyncState()).isEqualTo(State.SYNCED)
 
-        assertThat(eventStore.selectByUid(event1Id)!!.state()).isEqualTo(State.TO_UPDATE)
-        assertThat(eventStore.selectByUid(event2Id)!!.state()).isEqualTo(State.SYNCED)
+        assertThat(eventStore.selectByUid(event1Id)!!.syncState()).isEqualTo(State.TO_UPDATE)
+        assertThat(eventStore.selectByUid(event2Id)!!.syncState()).isEqualTo(State.SYNCED)
     }
 
     private fun storeTrackedEntityInstance() {
@@ -374,7 +378,7 @@ class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould : BaseMockI
             .organisationUnit(orgUnit!!.uid())
             .program(program.uid())
             .programStage(programStage!!.uid())
-            .state(State.TO_UPDATE)
+            .syncState(State.TO_UPDATE)
             .trackedEntityDataValues(listOf(dataValue1))
             .build()
 
@@ -382,7 +386,8 @@ class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould : BaseMockI
             .uid(enrollment1Id)
             .program(program.uid())
             .organisationUnit(orgUnit.uid())
-            .state(State.TO_POST)
+            .syncState(State.TO_POST)
+            .aggregatedSyncState(State.TO_POST)
             .trackedEntityInstance(teiId)
             .build()
         val dataValue2 = TrackedEntityDataValueSamples.get().toBuilder().event(event2Id).build()
@@ -393,7 +398,7 @@ class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould : BaseMockI
             .organisationUnit(orgUnit.uid())
             .program(program.uid())
             .programStage(programStage.uid())
-            .state(State.SYNCED_VIA_SMS)
+            .syncState(State.SYNCED_VIA_SMS)
             .trackedEntityDataValues(listOf(dataValue2))
             .build()
 
@@ -401,7 +406,8 @@ class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould : BaseMockI
             .uid(enrollment2Id)
             .program(program.uid())
             .organisationUnit(orgUnit.uid())
-            .state(State.TO_POST)
+            .syncState(State.TO_POST)
+            .aggregatedSyncState(State.TO_POST)
             .trackedEntityInstance(teiId)
             .build()
 
@@ -413,7 +419,7 @@ class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould : BaseMockI
             .organisationUnit(orgUnit.uid())
             .program(program.uid())
             .programStage(programStage.uid())
-            .state(State.ERROR)
+            .syncState(State.ERROR)
             .trackedEntityDataValues(listOf(dataValue3))
             .build()
 
@@ -421,7 +427,8 @@ class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould : BaseMockI
             .uid(enrollment3Id)
             .program(program.uid())
             .organisationUnit(orgUnit.uid())
-            .state(State.SYNCED)
+            .syncState(State.TO_POST)
+            .aggregatedSyncState(State.SYNCED)
             .trackedEntityInstance(teiId)
             .build()
 
@@ -431,7 +438,8 @@ class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould : BaseMockI
             .uid(teiId)
             .trackedEntityType(teiType!!.uid())
             .organisationUnit(orgUnit.uid())
-            .state(State.TO_POST)
+            .syncState(State.TO_POST)
+            .aggregatedSyncState(State.TO_POST)
             .build()
 
         teiStore.insert(tei)
@@ -454,7 +462,8 @@ class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould : BaseMockI
                 .uid(teiUid)
                 .trackedEntityType(teiType!!.uid())
                 .organisationUnit(orgUnit!!.uid())
-                .state(state)
+                .syncState(state)
+                .aggregatedSyncState(state)
                 .build()
         )
     }
@@ -510,7 +519,7 @@ class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould : BaseMockI
         @JvmStatic
         @Throws(Exception::class)
         fun setUp() {
-            BaseMockIntegrationTestMetadataEnqueable.setUpClass()
+            setUpClass()
             payloadGenerator = objects.d2DIComponent.trackedEntityInstancePostPayloadGenerator()
             teiStore = TrackedEntityInstanceStoreImpl.create(databaseAdapter)
             teiDataValueStore = TrackedEntityDataValueStoreImpl.create(databaseAdapter)

@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.testapp.note;
 
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.note.Note;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
@@ -85,6 +86,12 @@ public class NoteCollectionRepositoryMockIntegrationShould extends BaseMockInteg
     @Test
     public void filter_by_stored_by() {
         List<Note> notes = d2.noteModule().notes().byStoredBy().eq("android").blockingGet();
+        assertThat(notes.size()).isEqualTo(10);
+    }
+
+    @Test
+    public void filter_by_state() {
+        List<Note> notes = d2.noteModule().notes().bySyncState().eq(State.SYNCED).blockingGet();
         assertThat(notes.size()).isEqualTo(10);
     }
 

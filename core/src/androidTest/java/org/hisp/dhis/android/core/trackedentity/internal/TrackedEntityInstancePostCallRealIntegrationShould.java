@@ -382,7 +382,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         String teiBUid = uidGenerator.generate();
         insertATei(teiBUid, teiA, geometry);
 
-        trackedEntityInstanceStore.setState(teiA.uid(), State.TO_POST);
+        trackedEntityInstanceStore.setSyncState(teiA.uid(), State.TO_POST);
 
         Relationship newRelationship = RelationshipHelper.teiToTeiRelationship(teiA.uid(),
                 teiBUid, relationshipType.uid());
@@ -481,8 +481,8 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         Event event = eventStore.selectFirst();
         String eventUid = event.uid();
 
-        trackedEntityInstanceStore.setState(tei.uid(), State.TO_UPDATE);
-        enrollmentStore.setState(enrollment.uid(), State.TO_UPDATE);
+        trackedEntityInstanceStore.setSyncState(tei.uid(), State.TO_UPDATE);
+        enrollmentStore.setSyncState(enrollment.uid(), State.TO_UPDATE);
         d2.eventModule().events().uid(eventUid).blockingDelete();
 
         d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
@@ -505,7 +505,8 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         TrackedEntityInstance trackedEntityInstance = tei.toBuilder()
                 .uid(uid)
                 .geometry(geometry)
-                .state(State.TO_POST)
+                .syncState(State.TO_POST)
+                .aggregatedSyncState(State.TO_POST)
                 .build();
 
         trackedEntityInstanceStore.insert(trackedEntityInstance);
@@ -525,7 +526,8 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
                 .organisationUnit(orgUnitUid)
                 .trackedEntityType(trackedEntityUid)
                 .geometry(geometry)
-                .state(State.TO_POST)
+                .syncState(State.TO_POST)
+                .aggregatedSyncState(State.TO_POST)
                 .build();
 
         trackedEntityInstanceStore.insert(trackedEntityInstance);
@@ -535,7 +537,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
                 .program(programUid).incidentDate(refDate).completedDate(refDate).enrollmentDate(refDate)
                 .followUp(Boolean.FALSE).status(EnrollmentStatus.ACTIVE).trackedEntityInstance(trackedEntityInstanceUid)
                 .geometry(Geometry.builder().type(FeatureType.POINT).coordinates("[10.33, 12.231]").build())
-                .state(State.TO_POST).build();
+                .syncState(State.TO_POST).aggregatedSyncState(State.TO_POST).build();
 
         enrollmentStore.insert(enrollment);
 
@@ -544,7 +546,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
                 .status(EventStatus.ACTIVE).program(programUid)
                 .geometry(Geometry.builder().type(FeatureType.POINT).coordinates("[12.21, 13.21]").build())
                 .programStage(programStageUid).organisationUnit(orgUnitUid).eventDate(refDate).dueDate(refDate)
-                .completedDate(refDate).state(State.TO_POST).attributeOptionCombo(categoryComboOptionUid)
+                .completedDate(refDate).syncState(State.TO_POST).attributeOptionCombo(categoryComboOptionUid)
                 .build();
 
         eventStore.insert(event);

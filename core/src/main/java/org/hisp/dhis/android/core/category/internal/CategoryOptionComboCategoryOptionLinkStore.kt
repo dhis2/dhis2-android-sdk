@@ -25,22 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.arch.helpers.internal;
+import android.database.Cursor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkStore
+import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLink
+import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLinkTableInfo
 
-import java.util.ArrayList;
-import java.util.List;
+@Suppress("MagicNumber")
+internal object CategoryOptionComboCategoryOptionLinkStore {
 
-public final class EnumHelper {
-
-    public static List<String> asStringList(Enum<?>... enums) {
-        List<String> enumsStr = new ArrayList<>(enums.length);
-        for (Enum<?> e: enums) {
-            enumsStr.add(e.name());
-        }
-        return enumsStr;
+    private val BINDER = StatementBinder { o: CategoryOptionComboCategoryOptionLink, w: StatementWrapper ->
+        w.bind(1, o.categoryOptionCombo())
+        w.bind(2, o.categoryOption())
     }
 
-    private EnumHelper() {
+    @JvmStatic
+    fun create(databaseAdapter: DatabaseAdapter): LinkStore<CategoryOptionComboCategoryOptionLink> {
+        return linkStore(
+            databaseAdapter, CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO,
+            CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION_COMBO, BINDER
+        ) { cursor: Cursor -> CategoryOptionComboCategoryOptionLink.create(cursor) }
     }
 }

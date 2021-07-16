@@ -27,11 +27,17 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import com.nhaarman.mockitokotlin2.*
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
+import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.data.maintenance.D2ErrorSamples
+import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualization
 import org.hisp.dhis.android.core.settings.AnalyticsSettings
 import org.hisp.dhis.android.core.settings.AnalyticsTeiSetting
 import org.junit.Before
@@ -42,6 +48,7 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class AnalyticsSettingCallShould {
     private val handler: Handler<AnalyticsTeiSetting> = mock()
+    private val analyticsDhisVisualizationsSettingHandler: Handler<AnalyticsDhisVisualization> = mock()
     private val service: SettingAppService = mock()
     private val analyticsSettingSingle: Single<AnalyticsSettings> = mock()
     private val apiCallExecutor: RxAPICallExecutor = mock()
@@ -53,7 +60,13 @@ class AnalyticsSettingCallShould {
     fun setUp() {
         whenever(appVersionManager.getDataStoreVersion()) doReturn Single.just(SettingsAppDataStoreVersion.V1_1)
         whenever(service.analyticsSettings(any())) doReturn analyticsSettingSingle
-        analyticsSettingCall = AnalyticsSettingCall(handler, service, apiCallExecutor, appVersionManager)
+        analyticsSettingCall = AnalyticsSettingCall(
+            handler,
+            analyticsDhisVisualizationsSettingHandler,
+            service,
+            apiCallExecutor,
+            appVersionManager
+        )
     }
 
     @Test

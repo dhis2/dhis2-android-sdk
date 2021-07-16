@@ -37,7 +37,12 @@ import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.settings.*
+import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualization
+import org.hisp.dhis.android.core.settings.AnalyticsTeiAttribute
+import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
+import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicator
+import org.hisp.dhis.android.core.settings.AnalyticsTeiSetting
+import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionData
 
 @Module
 @Suppress("TooManyFunctions")
@@ -47,6 +52,14 @@ internal class AnalyticsSettingEntityDIModule {
     @Reusable
     fun analyticsSettingStore(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<AnalyticsTeiSetting> {
         return AnalyticsTeiSettingStore.create(databaseAdapter)
+    }
+
+    @Provides
+    @Reusable
+    fun analyticsDhisVisualizationStore(
+        databaseAdapter: DatabaseAdapter
+    ): ObjectWithoutUidStore<AnalyticsDhisVisualization> {
+        return AnalyticsDhisVisualizationStore.create(databaseAdapter)
     }
 
     @Provides
@@ -76,6 +89,14 @@ internal class AnalyticsSettingEntityDIModule {
     @Provides
     @Reusable
     fun analyticsTeiSettingHandler(impl: AnalyticsTeiSettingHandler): Handler<AnalyticsTeiSetting> {
+        return impl
+    }
+
+    @Provides
+    @Reusable
+    fun analyticsDhisVisualizationsHandler(
+        impl: AnalyticsDhisVisualizationSettingHandler
+    ): Handler<AnalyticsDhisVisualization> {
         return impl
     }
 

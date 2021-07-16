@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.period.PeriodType
 import org.junit.Assert.fail
 import org.junit.Test
 
-class AnalyticsSettingShould : BaseObjectShould("settings/analytics_settings.json"), ObjectShould {
+class AnalyticsSettingV1Should : BaseObjectShould("settings/analytics_settings.json"), ObjectShould {
 
     @Test
     @Throws(IOException::class, ParseException::class)

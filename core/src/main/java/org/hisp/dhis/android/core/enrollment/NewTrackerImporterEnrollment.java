@@ -43,12 +43,15 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EnrollmentStatusColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.StateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewTrackerImporterEventListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewTrackerImporterNoteListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreRelationshipListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
+import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent;
 import org.hisp.dhis.android.core.note.NewTrackerImporterNote;
@@ -128,6 +131,11 @@ public abstract class NewTrackerImporterEnrollment extends BaseDeletableDataObje
     public abstract Geometry geometry();
 
     @Nullable
+    @ColumnName(DataColumns.AGGREGATED_SYNC_STATE)
+    @ColumnAdapter(StateColumnAdapter.class)
+    public abstract State aggregatedSyncState();
+
+    @Nullable
     @JsonProperty()
     @ColumnAdapter(IgnoreNewTrackerImporterEventListColumnAdapter.class)
     public abstract List<NewTrackerImporterEvent> events();
@@ -187,6 +195,8 @@ public abstract class NewTrackerImporterEnrollment extends BaseDeletableDataObje
         public abstract Builder trackedEntityInstance(String trackedEntityInstance);
 
         public abstract Builder geometry(Geometry geometry);
+
+        public abstract Builder aggregatedSyncState(State aggregatedSyncState);
 
         public abstract Builder events(List<NewTrackerImporterEvent> events);
 

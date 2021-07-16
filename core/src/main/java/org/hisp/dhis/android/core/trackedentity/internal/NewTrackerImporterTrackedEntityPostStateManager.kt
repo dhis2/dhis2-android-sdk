@@ -42,25 +42,23 @@ internal class NewTrackerImporterTrackedEntityPostStateManager @Inject internal 
     private val h: StatePersistorHelper
 ) {
 
-    fun restoreStates(trackedEntities: List<NewTrackerImporterTrackedEntity>) {
-        setStates(trackedEntities, null)
+    fun restoreStates(payload: NewTrackerImporterPayload) {
+        setStates(payload, null)
     }
 
     @Suppress("NestedBlockDepth")
-    fun setStates(trackedEntities: List<NewTrackerImporterTrackedEntity>, forcedState: State?) {
+    fun setStates(payload: NewTrackerImporterPayload, forcedState: State?) {
         val teiMap = mutableMapOf<State, MutableList<String>>()
         val enrollmentMap = mutableMapOf<State, MutableList<String>>()
         val eventMap = mutableMapOf<State, MutableList<String>>()
 
-        for (trackedEntity in trackedEntities) {
-            h.addState(teiMap, trackedEntity, forcedState)
-            for (enrollment in trackedEntity.enrollments()!!) {
-                h.addState(enrollmentMap, enrollment, forcedState)
-                for (event in enrollment.events()!!) {
-                    h.addState(eventMap, event, forcedState)
-                }
-            }
-        }
+        val trackedEntities = payload.trackedEntities
+        val enrollments = trackedEntities.flatMap { it.enrollments()!! } + payload.enrollments
+        val events = enrollments.flatMap { it.events()!! } + payload.events
+
+        trackedEntities.forEach { h.addState(teiMap, it, forcedState) }
+        enrollments.forEach { h.addState(enrollmentMap, it, forcedState) }
+        events.forEach { h.addState(eventMap, it, forcedState) }
 
         h.persistStates(teiMap, trackedEntityInstanceStore)
         h.persistStates(enrollmentMap, enrollmentStore)

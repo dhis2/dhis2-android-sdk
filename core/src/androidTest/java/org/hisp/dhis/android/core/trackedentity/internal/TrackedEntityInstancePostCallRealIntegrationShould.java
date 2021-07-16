@@ -474,15 +474,9 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
         downloadMetadata();
         d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq("LxMVYhJm3Jp").blockingDownload();
 
-        TrackedEntityInstance tei = trackedEntityInstanceStore.selectFirst();
-
-        Enrollment enrollment = enrollmentStore.selectFirst();
-
         Event event = eventStore.selectFirst();
         String eventUid = event.uid();
 
-        trackedEntityInstanceStore.setSyncState(tei.uid(), State.TO_UPDATE);
-        enrollmentStore.setSyncState(enrollment.uid(), State.TO_UPDATE);
         d2.eventModule().events().uid(eventUid).blockingDelete();
 
         d2.trackedEntityModule().trackedEntityInstances().blockingUpload();

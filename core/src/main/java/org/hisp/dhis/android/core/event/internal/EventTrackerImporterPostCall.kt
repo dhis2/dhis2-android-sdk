@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
+import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayload
 import org.hisp.dhis.android.core.tracker.importer.internal.*
 import org.hisp.dhis.android.core.tracker.importer.internal.JobQueryCall
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectTypes.EVENT
@@ -95,7 +96,7 @@ internal class EventTrackerImporterPostCall @Inject internal constructor(
     }
 
     private fun doPostCallInternal(events: List<NewTrackerImporterEvent>, importStrategy: String): String {
-        val eventPayload = NewTrackerImporterEventPayload(events)
+        val eventPayload = NewTrackerImporterPayload(events = events.toMutableList())
         val res = apiCallExecutor.executeObjectCall(
             service.postEvents(eventPayload, ATOMIC_MODE_OBJECT, importStrategy)
         )

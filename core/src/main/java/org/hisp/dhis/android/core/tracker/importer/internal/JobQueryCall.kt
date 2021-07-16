@@ -63,8 +63,7 @@ internal class JobQueryCall @Inject internal constructor(
     }
 
     fun queryJob(jobId: String): Observable<D2Progress> {
-        val jobObjects = trackerJobObjectStore.selectAll()
-            .filter { it.jobUid() == jobId }
+        val jobObjects = trackerJobObjectStore.selectWhere(byJobIdClause(jobId))
         return queryJobInternal(jobId, jobObjects, true, ATTEMPTS_AFTER_UPLOAD)
     }
 
@@ -97,10 +96,11 @@ internal class JobQueryCall @Inject internal constructor(
 
     private fun downloadAndHandle(jobId: String, jobObjects: List<TrackerJobObject>) {
         val jobReport = apiCallExecutor.executeObjectCall(service.getJobReport(jobId))
-        val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(TrackerJobObjectTableInfo.Columns.JOB_UID, jobId)
-            .build()
-        trackerJobObjectStore.deleteWhere(whereClause)
+        trackerJobObjectStore.deleteWhere(byJobIdClause(jobId))
         handler.handle(jobReport, jobObjects)
     }
+
+    private fun byJobIdClause(jobId: String) = WhereClauseBuilder()
+        .appendKeyStringValue(TrackerJobObjectTableInfo.Columns.JOB_UID, jobId)
+        .build()
 }

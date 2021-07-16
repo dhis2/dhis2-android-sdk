@@ -53,5 +53,8 @@ public enum ProgramFilter {
     ORG_UNIT,
 
     @JsonProperty("categoryCombo")
-    CAT_COMBO
+    CAT_COMBO,
+
+    @JsonProperty("followUp")
+    FOLLOW_UP
 }

@@ -25,29 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.visualization.internal
 
-package org.hisp.dhis.android.core.arch.d2.internal;
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.visualization.VisualizationCategoryDimensionLinkSamples
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.core.visualization.VisualizationCategoryDimensionLink
+import org.hisp.dhis.android.core.visualization.VisualizationCategoryDimensionLinkTableInfo
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.category.internal.CategoryInternalModule;
-import org.hisp.dhis.android.core.user.internal.UserInternalModule;
-import org.hisp.dhis.android.core.visualization.internal.VisualizationInternalModule;
+@RunWith(D2JunitRunner::class)
+class VisualizationCategoryDimensionLinkStoreIntegrationShould :
+    LinkStoreAbstractIntegrationShould<VisualizationCategoryDimensionLink>(
+        VisualizationCategoryDimensionLinkStore.create(TestDatabaseAdapterFactory.get()),
+        VisualizationCategoryDimensionLinkTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get()
+    ) {
+    override fun addMasterUid(): String {
+        return VisualizationCategoryDimensionLinkSamples.visualizationCategoryDimensionLinkSamples().visualization()
+    }
 
-import javax.inject.Inject;
+    override fun buildObject(): VisualizationCategoryDimensionLink {
+        return VisualizationCategoryDimensionLinkSamples.visualizationCategoryDimensionLinkSamples()
+    }
 
-import dagger.Reusable;
-
-@Reusable
-public final class D2InternalModules {
-    public final CategoryInternalModule category;
-    public final VisualizationInternalModule visualization;
-    public final UserInternalModule user;
-
-    @Inject
-    public D2InternalModules(CategoryInternalModule category,
-                             VisualizationInternalModule visualization,
-                             UserInternalModule user) {
-        this.category = category;
-        this.visualization = visualization;
-        this.user = user;
+    override fun buildObjectWithOtherMasterUid(): VisualizationCategoryDimensionLink {
+        return VisualizationCategoryDimensionLinkSamples.visualizationCategoryDimensionLinkSamples().toBuilder()
+            .visualization("visualization_uid_2")
+            .build()
     }
 }

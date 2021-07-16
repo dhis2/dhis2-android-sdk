@@ -25,45 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
+import org.hisp.dhis.android.core.common.ObjectWithUid
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
-
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 106;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+internal class ObjectWithUidListColumnAdapter : JSONObjectListColumnAdapter<ObjectWithUid>() {
+    override fun getObjectClass(): Class<List<ObjectWithUid>> {
+        return ArrayList<ObjectWithUid>().javaClass
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
+    override fun serialize(o: List<ObjectWithUid>?): String? = ObjectWithUidListColumnAdapter.serialize(o)
+
+    companion object {
+        fun serialize(o: List<ObjectWithUid>?): String? {
+            return o?.let {
+                ObjectMapperFactory.objectMapper().writeValueAsString(it)
+            }
         }
-
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
     }
 }

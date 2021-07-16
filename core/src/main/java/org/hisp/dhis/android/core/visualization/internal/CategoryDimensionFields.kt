@@ -7,8 +7,8 @@
  *  Redistributions of source code must retain the above copyright notice, this
  *  list of conditions and the following disclaimer.
  *
- *  Redistributions in binary form must reproduce the above copyright notice,
- *  this list of conditions and the following disclaimer in the documentation
+ *  Redistributions in binary form must reproduce the above copyright notice),
+                fh.field<String>(*  this list of conditions and the following disclaimer in the documentation
  *  and/or other materials provided with the distribution.
  *  Neither the name of the HISP project nor the names of its contributors may
  *  be used to endorse or promote products derived from this software without
@@ -25,29 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.visualization.internal
 
-package org.hisp.dhis.android.core.arch.d2.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.visualization.CategoryDimension
 
-import org.hisp.dhis.android.core.category.internal.CategoryInternalModule;
-import org.hisp.dhis.android.core.user.internal.UserInternalModule;
-import org.hisp.dhis.android.core.visualization.internal.VisualizationInternalModule;
+internal object CategoryDimensionFields {
+    internal const val CATEGORY = "category"
+    internal const val CATEGORY_OPTIONS = "categoryOptions"
+    private val fh = FieldsHelper<CategoryDimension>()
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-
-@Reusable
-public final class D2InternalModules {
-    public final CategoryInternalModule category;
-    public final VisualizationInternalModule visualization;
-    public final UserInternalModule user;
-
-    @Inject
-    public D2InternalModules(CategoryInternalModule category,
-                             VisualizationInternalModule visualization,
-                             UserInternalModule user) {
-        this.category = category;
-        this.visualization = visualization;
-        this.user = user;
-    }
+    val allFields: Fields<CategoryDimension> =
+        Fields.builder<CategoryDimension>()
+            .fields(
+                fh.nestedFieldWithUid(CATEGORY),
+                fh.nestedFieldWithUid(CATEGORY_OPTIONS)
+            )
+            .build()
 }

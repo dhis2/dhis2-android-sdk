@@ -26,44 +26,39 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.visualization.internal;
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall;
+import org.hisp.dhis.android.core.visualization.Visualization;
+import org.hisp.dhis.android.core.visualization.VisualizationModule;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
+import retrofit2.Retrofit;
 
-class BaseDatabaseOpenHelper {
+@Module(includes = {
+        DataDimensionItemEntityDIModule.class,
+        VisualizationEntityDIModule.class,
+        VisualizationCategoryDimensionEntityDIModule.class
+})
+public final class VisualizationPackageDIModule {
 
-    static final int VERSION = 106;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    @Provides
+    @Reusable
+    UidsCall<Visualization> visualizationCall(VisualizationCall impl) {
+        return impl;
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
-        databaseAdapter.enableWriteAheadLogging();
+    @Provides
+    @Reusable
+    VisualizationService visualizationService(Retrofit retrofit) {
+        return retrofit.create(VisualizationService.class);
     }
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    @Provides
+    @Reusable
+    VisualizationModule module(VisualizationModuleImpl impl) {
+        return impl;
     }
 }

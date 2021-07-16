@@ -53,6 +53,7 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
 import org.hisp.dhis.android.core.user.UserModule;
 import org.hisp.dhis.android.core.validation.ValidationModule;
+import org.hisp.dhis.android.core.visualization.VisualizationModule;
 
 import javax.inject.Inject;
 
@@ -86,6 +87,7 @@ public final class D2Modules {
     public final TrackedEntityModule trackedEntity;
     public final UserModule user;
     public final ValidationModule validation;
+    public final VisualizationModule visualization;
     public final SmsModule sms;
 
     @Inject
@@ -113,6 +115,7 @@ public final class D2Modules {
                      TrackedEntityModule trackedEntity,
                      UserModule user,
                      ValidationModule validation,
+                     VisualizationModule visualization,
                      SmsModule sms) {
         this.analytics = analytics;
         this.category = category;
@@ -138,6 +141,7 @@ public final class D2Modules {
         this.trackedEntity = trackedEntity;
         this.user = user;
         this.validation = validation;
+        this.visualization = visualization;
         this.sms = sms;
     }
 }

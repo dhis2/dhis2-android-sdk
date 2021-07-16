@@ -122,8 +122,8 @@ public abstract class NewTrackerImporterEnrollment extends BaseDeletableDataObje
     public abstract EnrollmentStatus status();
 
     @Nullable
-    @JsonIgnore()
-    public abstract String trackedEntityInstance();
+    @JsonProperty()
+    public abstract String trackedEntity();
 
     @Nullable
     @JsonProperty()
@@ -192,7 +192,7 @@ public abstract class NewTrackerImporterEnrollment extends BaseDeletableDataObje
 
         public abstract Builder status(EnrollmentStatus status);
 
-        public abstract Builder trackedEntityInstance(String trackedEntityInstance);
+        public abstract Builder trackedEntity(String trackedEntityInstance);
 
         public abstract Builder geometry(Geometry geometry);
 

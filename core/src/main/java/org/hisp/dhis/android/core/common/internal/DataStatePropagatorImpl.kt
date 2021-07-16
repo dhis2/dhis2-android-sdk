@@ -231,7 +231,11 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
         }
     }
 
-    override fun refreshAggregatedSyncStatesCausedBy(enrollmentUids: List<String>, eventUids: List<String>) {
+    override fun refreshAggregatedSyncStatesCausedBy(
+        trackedEntityInstanceUids: List<String>,
+        enrollmentUids: List<String>,
+        eventUids: List<String>
+    ) {
         val enrollmentsFromEvents = eventStore.selectByUids(eventUids).mapNotNull { it.enrollment() }
 
         val enrollments = enrollmentStore.selectByUids(enrollmentUids + enrollmentsFromEvents)
@@ -239,8 +243,8 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
             refreshEnrollmentAggregatedSyncState(it.uid())
         }
 
-        val trackedEntityInstanceUids = enrollments.mapNotNull { it.trackedEntityInstance() }
-        trackedEntityInstanceUids.forEach {
+        val teiUids = trackedEntityInstanceUids + enrollments.mapNotNull { it.trackedEntityInstance() }
+        teiUids.forEach {
             refreshTrackedEntityInstanceAggregatedSyncState(it)
         }
     }

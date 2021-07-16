@@ -100,7 +100,7 @@ class NewTrackerImporterTrackedEntityPostPayloadGeneratorTaskShould {
     ): NewTrackerImporterEnrollment {
         return NewTrackerImporterEnrollment.builder()
             .uid(uidGenerator.generate())
-            .trackedEntityInstance(teiUid)
+            .trackedEntity(teiUid)
             .syncState(synState)
             .aggregatedSyncState(State.TO_UPDATE)
             .deleted(deleted)

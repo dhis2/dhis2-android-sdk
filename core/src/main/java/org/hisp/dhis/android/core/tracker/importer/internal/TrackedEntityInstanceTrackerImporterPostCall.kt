@@ -109,8 +109,8 @@ internal class TrackedEntityInstanceTrackerImporterPostCall @Inject internal con
             .jobUid(jobUid)
             .lastUpdated(Date())
 
-        val enrollments = payload.trackedEntities.flatMap { it.enrollments()!! } + payload.enrollments
-        val events = enrollments.flatMap { it.events()!! } + payload.events
+        val enrollments = payload.trackedEntities.flatMap { it.enrollments() ?: emptyList() } + payload.enrollments
+        val events = enrollments.flatMap { it.events() ?: emptyList() } + payload.events
 
         return generateTypeObjects(builder, TrackerImporterObjectTypes.TRACKED_ENTITY, payload.trackedEntities) +
             generateTypeObjects(builder, TrackerImporterObjectTypes.ENROLLMENT, enrollments) +

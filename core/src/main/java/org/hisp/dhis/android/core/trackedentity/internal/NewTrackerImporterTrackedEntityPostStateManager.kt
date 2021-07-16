@@ -53,8 +53,8 @@ internal class NewTrackerImporterTrackedEntityPostStateManager @Inject internal 
         val eventMap = mutableMapOf<State, MutableList<String>>()
 
         val trackedEntities = payload.trackedEntities
-        val enrollments = trackedEntities.flatMap { it.enrollments()!! } + payload.enrollments
-        val events = enrollments.flatMap { it.events()!! } + payload.events
+        val enrollments = trackedEntities.flatMap { it.enrollments() ?: emptyList() } + payload.enrollments
+        val events = enrollments.flatMap { it.events() ?: emptyList() } + payload.events
 
         trackedEntities.forEach { h.addState(teiMap, it, forcedState) }
         enrollments.forEach { h.addState(enrollmentMap, it, forcedState) }

@@ -56,5 +56,9 @@ internal interface DataStatePropagator {
 
     fun refreshEnrollmentAggregatedSyncState(enrollmentUid: String)
 
-    fun refreshAggregatedSyncStatesCausedBy(enrollmentUids: List<String>, eventUids: List<String>)
+    fun refreshAggregatedSyncStatesCausedBy(
+        trackedEntityInstanceUids: List<String>,
+        enrollmentUids: List<String>,
+        eventUids: List<String>
+    )
 }

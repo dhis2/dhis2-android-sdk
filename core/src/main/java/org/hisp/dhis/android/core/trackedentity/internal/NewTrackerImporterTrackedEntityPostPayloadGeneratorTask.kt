@@ -50,7 +50,6 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGeneratorTask @Inject i
         val wrapper = NewTrackerImporterPayloadWrapper()
 
         val partitioned = trackedEntities
-            .filter { it.syncState() != State.SYNCED }
             .map { trackedEntityTransformer.transform(it) }
             .map { getTrackedEntity(it) }
             .partition { it.deleted()!! }
@@ -60,10 +59,11 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGeneratorTask @Inject i
         }
 
         partitioned.second.forEach { entity ->
-            wrapper.updated.trackedEntities.add(entity)
+            if (entity.syncState() != State.SYNCED) {
+                wrapper.updated.trackedEntities.add(entity)
+            }
 
             val partitionedEnrollments = getEnrollments(entity.uid())
-                .filter { it.syncState() != State.SYNCED }
                 .partition { it.deleted()!! }
 
             partitionedEnrollments.first.forEach {
@@ -71,7 +71,9 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGeneratorTask @Inject i
             }
 
             partitionedEnrollments.second.forEach { enrollment ->
-                wrapper.updated.enrollments.add(enrollment)
+                if (enrollment.syncState() != State.SYNCED) {
+                    wrapper.updated.enrollments.add(enrollment)
+                }
 
                 val partitionedEvents = getEvents(enrollment.uid())
                     .filter { it.syncState() != State.SYNCED }

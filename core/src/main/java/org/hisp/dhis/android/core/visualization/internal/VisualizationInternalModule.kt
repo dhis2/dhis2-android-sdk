@@ -29,9 +29,9 @@ package org.hisp.dhis.android.core.visualization.internal
 
 import androidx.annotation.VisibleForTesting
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.visualization.Visualization
-import javax.inject.Inject
 
 @Reusable
 internal class VisualizationInternalModule @Inject internal constructor(

@@ -28,11 +28,11 @@
 package org.hisp.dhis.android.core.visualization.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.visualization.VisualizationCategoryDimensionLinkTableInfo
 import org.hisp.dhis.android.core.visualization.VisualizationTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
-import javax.inject.Inject
 
 @Reusable
 class VisualizationModuleWiper @Inject internal constructor(private val tableWiper: TableWiper) : ModuleWiper {

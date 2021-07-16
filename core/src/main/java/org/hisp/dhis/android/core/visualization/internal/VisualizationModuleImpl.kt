@@ -28,9 +28,9 @@
 package org.hisp.dhis.android.core.visualization.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.visualization.VisualizationCollectionRepository
 import org.hisp.dhis.android.core.visualization.VisualizationModule
-import javax.inject.Inject
 
 @Reusable
 internal class VisualizationModuleImpl @Inject internal constructor(

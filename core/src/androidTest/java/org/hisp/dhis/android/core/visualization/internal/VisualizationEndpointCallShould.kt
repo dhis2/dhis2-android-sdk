@@ -30,13 +30,13 @@ package org.hisp.dhis.android.core.visualization.internal
 import com.google.common.collect.Lists
 import com.google.common.truth.Truth
 import io.reactivex.Single
+import java.util.*
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.util.*
 
 @RunWith(D2JunitRunner::class)
 class VisualizationEndpointCallShould : BaseMockIntegrationTestEmptyEnqueable() {

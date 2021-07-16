@@ -29,11 +29,11 @@ package org.hisp.dhis.android.core.visualization.internal
 
 import dagger.Reusable
 import io.reactivex.Single
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.visualization.Visualization
-import javax.inject.Inject
 
 @Reusable
 internal class VisualizationCall @Inject constructor(

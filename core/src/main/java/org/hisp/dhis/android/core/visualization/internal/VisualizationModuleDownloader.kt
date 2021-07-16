@@ -29,10 +29,10 @@ package org.hisp.dhis.android.core.visualization.internal
 
 import dagger.Reusable
 import io.reactivex.Single
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.arch.modules.internal.MetadataModuleByUidDownloader
 import org.hisp.dhis.android.core.visualization.Visualization
-import javax.inject.Inject
 
 @Reusable
 class VisualizationModuleDownloader @Inject internal constructor(

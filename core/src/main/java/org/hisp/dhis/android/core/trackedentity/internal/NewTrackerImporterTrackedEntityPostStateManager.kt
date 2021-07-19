@@ -32,7 +32,6 @@ import javax.inject.Inject
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.internal.EventStore
-import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntity
 
 @Reusable
 internal class NewTrackerImporterTrackedEntityPostStateManager @Inject internal constructor(

@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
@@ -43,7 +44,6 @@ import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityAttributeValueTransformer
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityDataValueTransformer
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import javax.inject.Inject
 
 @Reusable
 internal class NewTrackerImporterTrackedEntityPostPayloadGenerator @Inject internal constructor(

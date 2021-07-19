@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.visualization.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
@@ -44,6 +45,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.Matchers.any;
@@ -55,6 +57,12 @@ public class VisualizationHandlerShould {
 
     @Mock
     private IdentifiableObjectStore<Visualization> visualizationStore;
+
+    @Mock
+    private LinkStore<DataDimensionItem> dataDimensionItemStore;
+
+    @Mock
+    private LinkStore<VisualizationCategoryDimensionLink> visualizationCategoryDimensionLinkStore;
 
     @Mock
     private LinkHandler<ObjectWithUid, VisualizationCategoryDimensionLink> visualizationCategoryDimensionLinkHandler;
@@ -83,11 +91,16 @@ public class VisualizationHandlerShould {
     // object to test
     private VisualizationHandler visualizationHandler;
 
+    public VisualizationHandlerShould() {
+    }
+
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.openMocks(this);
         visualizationHandler = new VisualizationHandler(
                 visualizationStore,
+                visualizationCategoryDimensionLinkStore,
+                dataDimensionItemStore,
                 visualizationCategoryDimensionLinkHandler,
                 dataDimensionItemHandler);
 
@@ -109,7 +122,16 @@ public class VisualizationHandlerShould {
     @Test
     public void extend_identifiable_sync_handler_impl() {
         IdentifiableHandlerImpl<Visualization> genericHandler = new VisualizationHandler
-                (visualizationStore, visualizationCategoryDimensionLinkHandler, dataDimensionItemHandler);
+                (visualizationStore, visualizationCategoryDimensionLinkStore, dataDimensionItemStore,
+                        visualizationCategoryDimensionLinkHandler, dataDimensionItemHandler);
+    }
+
+    @Test
+    public void call_stores_to_delete_before_collection_handled() {
+        visualizationHandler.handleMany(Collections.singletonList(visualization));
+        verify(visualizationStore).delete();
+        verify(visualizationCategoryDimensionLinkStore).delete();
+        verify(dataDimensionItemStore).delete();
     }
 
     @Test

@@ -33,6 +33,8 @@ import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.CoreColumns
 
 object DataDimensionItemTableInfo {
+
+    @JvmField
     val TABLE_INFO: TableInfo = object : TableInfo() {
         override fun name(): String {
             return "DataDimensionItem"

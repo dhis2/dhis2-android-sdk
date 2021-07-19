@@ -31,16 +31,19 @@ import dagger.Reusable
 import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
-import org.hisp.dhis.android.core.arch.modules.internal.MetadataModuleByUidDownloader
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.modules.internal.TypedModuleDownloader
+import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualization
 import org.hisp.dhis.android.core.visualization.Visualization
 
 @Reusable
 class VisualizationModuleDownloader @Inject internal constructor(
-    private val visualizationCall: UidsCall<Visualization>
+    private val visualizationCall: UidsCall<Visualization>,
+    private val analyticsDhisVisualizationStore: ObjectWithoutUidStore<AnalyticsDhisVisualization>
 ) :
-    MetadataModuleByUidDownloader<List<Visualization>> {
+    TypedModuleDownloader<List<Visualization>> {
 
-    override fun downloadMetadata(visualizationUids: Set<String>): Single<List<Visualization>> {
-        return visualizationCall.download(visualizationUids)
+    override fun downloadMetadata(): Single<List<Visualization>> {
+        return visualizationCall.download(analyticsDhisVisualizationStore.selectAll().map { it.uid() }.toSet())
     }
 }

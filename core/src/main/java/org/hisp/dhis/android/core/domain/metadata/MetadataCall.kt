@@ -139,10 +139,7 @@ class MetadataCall @Inject internal constructor(
                     categoryDownloader.downloadMetadata().toSingle {
                         progressManager.increaseProgress(Category::class.java, false)
                     },
-                    visualizationDownloader.downloadMetadata(
-                        // TODO Add visualization uids to download
-                        setOf("visualization_uid_example")
-                    ).map {
+                    visualizationDownloader.downloadMetadata().map {
                         progressManager.increaseProgress(Visualization::class.java, false)
                     }
                 ).toObservable()

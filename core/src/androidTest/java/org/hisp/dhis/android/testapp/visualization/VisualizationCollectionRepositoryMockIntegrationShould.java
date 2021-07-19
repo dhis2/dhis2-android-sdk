@@ -125,7 +125,7 @@ public class VisualizationCollectionRepositoryMockIntegrationShould extends Base
     public void include_data_dimension_item_as_children() {
         Visualization visualization = d2.visualizationModule().visualizations()
                 .withDataDimensionItems().one().blockingGet();
-        assertThat(visualization.dataDimensionItems().get(0).dataDimensionItemType()).isEqualTo(DataDimensionItemType.DATA_ELEMENT);
-        assertThat(visualization.dataDimensionItems().get(0).dataDimensionItem()).isEqualTo("cYeuwXTCPkU");
+        assertThat(visualization.dataDimensionItems().get(0).dataDimensionItemType()).isEqualTo(DataDimensionItemType.INDICATOR);
+        assertThat(visualization.dataDimensionItems().get(0).dataDimensionItem()).isEqualTo("Uvn6LCg7dVU");
     }
 }

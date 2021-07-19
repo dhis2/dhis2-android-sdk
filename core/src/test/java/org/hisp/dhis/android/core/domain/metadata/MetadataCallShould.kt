@@ -100,7 +100,7 @@ class MetadataCallShould : BaseCallShould() {
         whenever(dataSetDownloader.downloadMetadata(any())).thenReturn(
             Single.just(emptyList())
         )
-        whenever(visualizationDownloader.downloadMetadata(any())).thenReturn(
+        whenever(visualizationDownloader.downloadMetadata()).thenReturn(
             Single.just(emptyList())
         )
         whenever(constantDownloader.downloadMetadata()).thenReturn(Single.just(emptyList()))
@@ -173,7 +173,7 @@ class MetadataCallShould : BaseCallShould() {
 
     @Test
     fun fail_when_visualization_download_call_fail() {
-        whenever(visualizationDownloader.downloadMetadata(any())).thenReturn(Single.error(d2Error))
+        whenever(visualizationDownloader.downloadMetadata()).thenReturn(Single.error(d2Error))
         downloadAndAssertError()
     }
 

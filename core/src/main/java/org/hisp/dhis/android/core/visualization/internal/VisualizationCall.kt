@@ -33,12 +33,15 @@ import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCall
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.systeminfo.DHISVersion
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.visualization.Visualization
 
 @Reusable
 internal class VisualizationCall @Inject constructor(
     private val handler: Handler<Visualization>,
     private val service: VisualizationService,
+    private val dhis2VersionManager: DHISVersionManager,
     private val apiDownloader: APIDownloader
 ) : UidsCall<Visualization> {
 
@@ -47,16 +50,20 @@ internal class VisualizationCall @Inject constructor(
     }
 
     override fun download(uids: Set<String>): Single<List<Visualization>> {
-        return apiDownloader.downloadPartitioned(
-            uids,
-            MAX_UID_LIST_SIZE,
-            handler
-        ) { partitionUids: Set<String> ->
-            service.getVisualizations(
-                VisualizationFields.allFields,
-                VisualizationFields.uid.`in`(partitionUids),
-                paging = false
-            )
+        return if (dhis2VersionManager.isGreaterOrEqualThan(DHISVersion.V2_34)) {
+            apiDownloader.downloadPartitioned(
+                uids,
+                MAX_UID_LIST_SIZE,
+                handler
+            ) { partitionUids: Set<String> ->
+                service.getVisualizations(
+                    VisualizationFields.allFields,
+                    VisualizationFields.uid.`in`(partitionUids),
+                    paging = false
+                )
+            }
+        } else {
+            Single.just(listOf())
         }
     }
 }

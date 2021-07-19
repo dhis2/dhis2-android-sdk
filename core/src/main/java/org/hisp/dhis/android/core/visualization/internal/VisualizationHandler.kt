@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.visualization.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
@@ -38,7 +39,6 @@ import org.hisp.dhis.android.core.visualization.CategoryDimension
 import org.hisp.dhis.android.core.visualization.DataDimensionItem
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.VisualizationCategoryDimensionLink
-import javax.inject.Inject
 
 @Reusable
 internal class VisualizationHandler @Inject constructor(

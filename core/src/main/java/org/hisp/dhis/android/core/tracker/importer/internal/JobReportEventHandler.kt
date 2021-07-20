@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
@@ -44,6 +45,7 @@ internal class JobReportEventHandler @Inject internal constructor(
     private val noteStore: IdentifiableObjectStore<Note>,
     private val conflictStore: TrackerImportConflictStore,
     private val eventStore: EventStore,
+    private val enrollmentStore: EnrollmentStore,
     private val conflictHelper: TrackerConflictHelper
 ) : JobReportTypeHandler() {
 
@@ -66,10 +68,17 @@ internal class JobReportEventHandler @Inject internal constructor(
     }
 
     override fun storeConflict(errorReport: JobValidationError) {
+        val event = eventStore.selectByUid(errorReport.uid)
+        val trackedEntityInstanceUid = event?.enrollment()?.let {
+            enrollmentStore.selectByUid(it)?.trackedEntityInstance()
+        }
         conflictStore.insert(
             conflictHelper.getConflictBuilder(errorReport)
                 .tableReference(EventTableInfo.TABLE_INFO.name())
-                .event(errorReport.uid).build()
+                .trackedEntityInstance(trackedEntityInstanceUid)
+                .enrollment(event?.enrollment())
+                .event(errorReport.uid)
+                .build()
         )
     }
 }

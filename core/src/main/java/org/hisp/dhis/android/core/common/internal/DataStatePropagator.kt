@@ -34,7 +34,8 @@ import org.hisp.dhis.android.core.relationship.RelationshipItem
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 
-interface DataStatePropagator {
+@Suppress("TooManyFunctions")
+internal interface DataStatePropagator {
 
     fun propagateEnrollmentUpdate(enrollment: Enrollment?)
 
@@ -55,4 +56,10 @@ interface DataStatePropagator {
     fun refreshTrackedEntityInstanceAggregatedSyncState(trackedEntityInstanceUid: String)
 
     fun refreshEnrollmentAggregatedSyncState(enrollmentUid: String)
+
+    fun refreshAggregatedSyncStatesCausedBy(
+        trackedEntityInstanceUids: List<String>,
+        enrollmentUids: List<String>,
+        eventUids: List<String>
+    )
 }

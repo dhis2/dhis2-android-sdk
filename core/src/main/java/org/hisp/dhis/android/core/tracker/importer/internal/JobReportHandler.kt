@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.tracker.importer.internal
 import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectTypes.ENROLLMENT
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectTypes.EVENT
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectTypes.TRACKED_ENTITY
@@ -38,14 +39,18 @@ import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjec
 internal class JobReportHandler @Inject internal constructor(
     private val eventHandler: JobReportEventHandler,
     private val enrollmentHandler: JobReportEnrollmentHandler,
-    private val trackedEntityHandler: JobReportTrackedEntityHandler
+    private val trackedEntityHandler: JobReportTrackedEntityHandler,
+    private val dataStatePropagator: DataStatePropagator
 ) {
 
     fun handle(o: JobReport, jobObjects: List<TrackerJobObject>) {
         val jobObjectsMap = jobObjects.groupBy { jo -> Pair(jo.trackerType(), jo.objectUid()) }
+
         handleErrors(o, jobObjectsMap)
         handleSuccesses(o, jobObjectsMap)
         handleNotPresentObjects(o, jobObjects)
+
+        refreshAggregatedSyncStates(jobObjects)
     }
 
     private fun handleErrors(o: JobReport, jobObjectsMap: Map<Pair<String, String>, List<TrackerJobObject>>) {
@@ -107,5 +112,13 @@ internal class JobReportHandler @Inject internal constructor(
         typeReport.objectReports
             .filter { jobObjects.containsKey(Pair(it.trackerType, it.uid)) }
             .forEach { typeHandler.handleSuccess(it.uid) }
+    }
+
+    private fun refreshAggregatedSyncStates(jobObjects: List<TrackerJobObject>) {
+        dataStatePropagator.refreshAggregatedSyncStatesCausedBy(
+            jobObjects.filter { it.trackerType() == TRACKED_ENTITY }.map { it.objectUid() },
+            jobObjects.filter { it.trackerType() == ENROLLMENT }.map { it.objectUid() },
+            jobObjects.filter { it.trackerType() == EVENT }.map { it.objectUid() }
+        )
     }
 }

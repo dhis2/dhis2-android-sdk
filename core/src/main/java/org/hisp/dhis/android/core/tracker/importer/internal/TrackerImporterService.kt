@@ -27,8 +27,7 @@
  */
 package org.hisp.dhis.android.core.tracker.importer.internal
 
-import org.hisp.dhis.android.core.event.internal.NewTrackerImporterEventPayload
-import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterTrackedEntityPayload
+import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayload
 import org.hisp.dhis.android.core.trackedentity.internal.ObjectWithUidWebResponse
 import retrofit2.Call
 import retrofit2.http.*
@@ -41,20 +40,21 @@ internal const val ATOMIC_MODE_OBJECT = "OBJECT"
 
 internal const val IMPORT_STRATEGY = "importStrategy"
 internal const val IMPORT_STRATEGY_CREATE_AND_UPDATE = "CREATE_AND_UPDATE"
+internal const val IMPORT_STRATEGY_DELETE = "DELETE"
 internal const val JOB_ID = "jobId"
 
 internal interface TrackerImporterService {
 
     @POST(TRACKER_URL)
     fun postTrackedEntityInstances(
-        @Body payload: NewTrackerImporterTrackedEntityPayload,
+        @Body payload: NewTrackerImporterPayload,
         @Query(ATOMIC_MODE) atomicMode: String,
         @Query(IMPORT_STRATEGY) importStrategy: String
     ): Call<ObjectWithUidWebResponse>
 
     @POST(TRACKER_URL)
     fun postEvents(
-        @Body events: NewTrackerImporterEventPayload,
+        @Body events: NewTrackerImporterPayload,
         @Query(ATOMIC_MODE) atomicMode: String,
         @Query(IMPORT_STRATEGY) importStrategy: String
     ): Call<ObjectWithUidWebResponse>

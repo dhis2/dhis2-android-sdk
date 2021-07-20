@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
+import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayload
 import org.hisp.dhis.android.core.tracker.importer.internal.*
 import org.hisp.dhis.android.core.tracker.importer.internal.JobQueryCall
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectTypes.EVENT
@@ -58,23 +59,11 @@ internal class EventTrackerImporterPostCall @Inject internal constructor(
     ): Observable<D2Progress> {
         return Observable.defer {
             val eventsToPost = payloadGenerator.getEvents(events)
-            stateManager.markObjectsAs(eventsToPost, State.UPLOADING)
-            Single.fromCallable {
-                val eventPayload = NewTrackerImporterEventPayload(eventsToPost)
-                val res = apiCallExecutor.executeObjectCall(
-                    service.postEvents(
-                        eventPayload, ATOMIC_MODE_OBJECT,
-                        IMPORT_STRATEGY_CREATE_AND_UPDATE
-                    )
-                )
-                val jobId = res.response().uid()
-                jobObjectHandler.handleMany(generateJobObjects(eventsToPost, jobId))
-                jobId
-            }.doOnError {
-                stateManager.markObjectsAs(eventsToPost, DataStateHelper.errorIfOnline(it))
-            }.flatMapObservable {
-                jobQueryCall.queryJob(it)
-            }
+            val partition = eventsToPost.partition { it.deleted()!! }
+            Observable.concat(
+                doPostCall(partition.first, IMPORT_STRATEGY_DELETE),
+                doPostCall(partition.second, IMPORT_STRATEGY_CREATE_AND_UPDATE)
+            )
         }
     }
 
@@ -89,5 +78,30 @@ internal class EventTrackerImporterPostCall @Inject internal constructor(
                 .lastUpdated(lastUpdated)
                 .build()
         }
+    }
+
+    private fun doPostCall(events: List<NewTrackerImporterEvent>, importStrategy: String): Observable<D2Progress> {
+        return if (events.isEmpty()) {
+            Observable.empty<D2Progress>()
+        } else {
+            stateManager.markObjectsAs(events, State.UPLOADING)
+            Single.fromCallable {
+                doPostCallInternal(events, importStrategy)
+            }.doOnError {
+                stateManager.markObjectsAs(events, DataStateHelper.errorIfOnline(it))
+            }.flatMapObservable {
+                jobQueryCall.queryJob(it)
+            }
+        }
+    }
+
+    private fun doPostCallInternal(events: List<NewTrackerImporterEvent>, importStrategy: String): String {
+        val eventPayload = NewTrackerImporterPayload(events = events.toMutableList())
+        val res = apiCallExecutor.executeObjectCall(
+            service.postEvents(eventPayload, ATOMIC_MODE_OBJECT, importStrategy)
+        )
+        val jobId = res.response().uid()
+        jobObjectHandler.handleMany(generateJobObjects(events, jobId))
+        return jobId
     }
 }

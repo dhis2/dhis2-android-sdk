@@ -25,8 +25,9 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.event.internal
+package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
-
-internal data class NewTrackerImporterEventPayload(val events: List<NewTrackerImporterEvent>)
+internal data class NewTrackerImporterPayloadWrapper(
+    val deleted: NewTrackerImporterPayload = NewTrackerImporterPayload(),
+    val updated: NewTrackerImporterPayload = NewTrackerImporterPayload()
+)

@@ -25,38 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.analytics.aggregated
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import org.hisp.dhis.android.core.analytics.aggregated.mock.MockAnalyticsRepository
-import org.hisp.dhis.android.core.analytics.aggregated.mock.MockAnalyticsVisualizationsRepository
+import io.reactivex.Single
+import org.hisp.dhis.android.core.analytics.aggregated.service.AnalyticsVisualizationsService
+import javax.inject.Inject
 
-@Module
-internal class AggregatedEntityDIModule {
+internal class AnalyticsVisualizationsRepositoryImpl @Inject constructor(
+    private val params: AnalyticsVisualizationsRepositoryParams,
+    private val service: AnalyticsVisualizationsService
+) : AnalyticsVisualizationsRepository {
 
-    @Provides
-    @Reusable
-    fun analytics(impl: MockAnalyticsRepository): AnalyticsRepository {
-        return impl
+    override fun withVisualization(visualization: String): AnalyticsVisualizationsRepositoryImpl {
+        return updateParams { params -> params.copy(visualization = visualization) }
     }
 
-    @Provides
-    @Reusable
-    fun visualizations(impl: MockAnalyticsVisualizationsRepository): AnalyticsVisualizationsRepository {
-        return impl
+    override fun evaluate(): Single<GridAnalyticsResponse> {
+        return Single.fromCallable { blockingEvaluate() }
     }
 
-    @Provides
-    @Reusable
-    fun emptyAnalyticsParams(): AnalyticsRepositoryParams {
-        return AnalyticsRepositoryParams(listOf(), listOf())
+    override fun blockingEvaluate(): GridAnalyticsResponse {
+        return service.evaluate(params)
     }
 
-    @Provides
-    @Reusable
-    fun emptyAnalyticsVisualizationsParam(): AnalyticsVisualizationsRepositoryParams {
-        return AnalyticsVisualizationsRepositoryParams(null)
+    private fun updateParams(
+        func: (params: AnalyticsVisualizationsRepositoryParams) -> AnalyticsVisualizationsRepositoryParams
+    ): AnalyticsVisualizationsRepositoryImpl {
+        return AnalyticsVisualizationsRepositoryImpl(func(params), service)
     }
 }

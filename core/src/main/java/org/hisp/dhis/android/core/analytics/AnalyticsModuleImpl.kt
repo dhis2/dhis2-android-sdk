@@ -30,19 +30,19 @@ package org.hisp.dhis.android.core.analytics
 import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepository
-import org.hisp.dhis.android.core.analytics.aggregated.VisualizationsRepository
+import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsVisualizationsRepository
 import org.hisp.dhis.android.core.analytics.linelist.EventLineListRepository
 
 @Reusable
 internal class AnalyticsModuleImpl @Inject constructor(
     private val eventLineListRepository: EventLineListRepository,
     private val analyticsRepository: AnalyticsRepository,
-    private val visualizationsRepository: VisualizationsRepository
+    private val analyticsVisualizationsRepository: AnalyticsVisualizationsRepository
 ) : AnalyticsModule {
 
     override fun eventLineList(): EventLineListRepository = eventLineListRepository
 
     override fun analytics(): AnalyticsRepository = analyticsRepository
 
-    override fun visualizations(): VisualizationsRepository = visualizationsRepository
+    override fun visualizations(): AnalyticsVisualizationsRepository = analyticsVisualizationsRepository
 }

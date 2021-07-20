@@ -26,22 +26,8 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.analytics.aggregated.mock
+package org.hisp.dhis.android.core.analytics.aggregated
 
-import dagger.Reusable
-import io.reactivex.Single
-import javax.inject.Inject
-import org.hisp.dhis.android.core.analytics.aggregated.GridAnalyticsResponse
-import org.hisp.dhis.android.core.analytics.aggregated.VisualizationsRepository
-
-@Reusable
-class MockVisualizationsRepository @Inject constructor() : VisualizationsRepository {
-
-    override fun withVisualization(visualization: String): VisualizationsRepository = TODO()
-
-    override fun evaluate(): Single<GridAnalyticsResponse> {
-        return Single.fromCallable { blockingEvaluate() }
-    }
-
-    override fun blockingEvaluate(): GridAnalyticsResponse = GridAnalyticsResponseSamples.sample1
-}
+internal data class AnalyticsVisualizationsRepositoryParams(
+    val visualization: String?
+)

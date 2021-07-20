@@ -25,38 +25,16 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.analytics.aggregated
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import org.hisp.dhis.android.core.analytics.aggregated.mock.MockAnalyticsRepository
-import org.hisp.dhis.android.core.analytics.aggregated.mock.MockAnalyticsVisualizationsRepository
+import io.reactivex.Single
 
-@Module
-internal class AggregatedEntityDIModule {
+interface AnalyticsVisualizationsRepository {
 
-    @Provides
-    @Reusable
-    fun analytics(impl: MockAnalyticsRepository): AnalyticsRepository {
-        return impl
-    }
+    fun withVisualization(visualization: String): AnalyticsVisualizationsRepository
 
-    @Provides
-    @Reusable
-    fun visualizations(impl: MockAnalyticsVisualizationsRepository): AnalyticsVisualizationsRepository {
-        return impl
-    }
+    fun evaluate(): Single<GridAnalyticsResponse>
 
-    @Provides
-    @Reusable
-    fun emptyAnalyticsParams(): AnalyticsRepositoryParams {
-        return AnalyticsRepositoryParams(listOf(), listOf())
-    }
-
-    @Provides
-    @Reusable
-    fun emptyAnalyticsVisualizationsParam(): AnalyticsVisualizationsRepositoryParams {
-        return AnalyticsVisualizationsRepositoryParams(null)
-    }
+    fun blockingEvaluate(): GridAnalyticsResponse
 }

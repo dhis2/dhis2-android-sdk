@@ -26,44 +26,31 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.visualization;
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.hisp.dhis.android.core.data.visualization.VisualizationSamples;
+import org.junit.Test;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import java.io.IOException;
+import java.text.ParseException;
 
-class BaseDatabaseOpenHelper {
+import static com.google.common.truth.Truth.assertThat;
 
-    static final int VERSION = 106;
+public class VisualizationShould extends BaseObjectShould implements ObjectShould {
 
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    public VisualizationShould() {
+        super("visualization/visualization_simplified.json");
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    @Override
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        Visualization jsonVisualization = objectMapper.readValue(jsonStream, Visualization.class)
+                .toBuilder().id(null).build();
+        Visualization expectedVisualization = VisualizationSamples.INSTANCE.visualization()
+                .toBuilder().id(null).build();
+        assertThat(jsonVisualization).isEqualTo(expectedVisualization);
     }
 }

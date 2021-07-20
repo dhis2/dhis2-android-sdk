@@ -25,56 +25,41 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-package org.hisp.dhis.android.core.datavalue
+import android.content.ContentValues
+import android.database.Cursor
+import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.JsonMappingException
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
-import org.hisp.dhis.android.core.common.CoreColumns
+internal abstract class JSONObjectMapColumnAdapter<P, O> : ColumnTypeAdapter<Map<P, O>> {
+    protected abstract fun getObjectClass(): Class<Map<P, O>>
 
-object DataValueConflictTableInfo {
-
-    @JvmField
-    val TABLE_INFO: TableInfo = object : TableInfo() {
-        override fun name(): String {
-            return "DataValueConflict"
+    override fun fromCursor(cursor: Cursor, columnName: String): Map<P, O> {
+        val columnIndex = cursor.getColumnIndex(columnName)
+        val str = cursor.getString(columnIndex)
+        return try {
+            ObjectMapperFactory.objectMapper().readValue(str, getObjectClass())
+        } catch (e: JsonProcessingException) {
+            hashMapOf()
+        } catch (e: JsonMappingException) {
+            hashMapOf()
+        } catch (e: IllegalArgumentException) {
+            hashMapOf()
+        } catch (e: IllegalStateException) {
+            hashMapOf()
         }
+    }
 
-        override fun columns(): CoreColumns {
-            return Columns()
+    override fun toContentValues(contentValues: ContentValues, columnName: String, o: Map<P, O>?) {
+        try {
+            contentValues.put(columnName, serialize(o))
+        } catch (e: JsonProcessingException) {
+            e.printStackTrace()
         }
     }
 
-    class Columns : CoreColumns() {
-        override fun all(): Array<String> {
-            return CollectionsHelper.appendInNewArray(
-                super.all(),
-                CONFLICT,
-                VALUE,
-                ATTRIBUTE_OPTION_COMBO,
-                CATEGORY_OPTION_COMBO,
-                DATA_ELEMENT,
-                PERIOD,
-                ORG_UNIT,
-                ERROR_CODE,
-                DISPLAY_DESCRIPTION,
-                STATUS,
-                CREATED
-            )
-        }
-
-        companion object {
-            const val CONFLICT = "conflict"
-            const val VALUE = "value"
-            const val ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo"
-            const val CATEGORY_OPTION_COMBO = "categoryOptionCombo"
-            const val DATA_ELEMENT = "dataElement"
-            const val PERIOD = "period"
-            const val ORG_UNIT = "orgUnit"
-            const val ERROR_CODE = "errorCode"
-            const val DISPLAY_DESCRIPTION = "displayDescription"
-            const val STATUS = "status"
-            const val CREATED = "created"
-        }
-    }
+    abstract fun serialize(o: Map<P, O>?): String?
 }

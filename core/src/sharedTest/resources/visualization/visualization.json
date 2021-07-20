@@ -15,7 +15,7 @@
   "hideEmptyRowItems": "NONE",
   "hideLegend": false,
   "showHierarchy": false,
-  "rowTotals": false,
+  "rowTotals": true,
   "rowSubTotals": false,
   "colTotals": false,
   "colSubTotals": false,
@@ -193,17 +193,6 @@
       "id": "vWbkYPRmKyS"
     }
   ],
-  "columns": [
-    {
-      "id": "dx"
-    },
-    {
-      "id": "fMZEcRHuamy"
-    },
-    {
-      "id": "fkAkrdC7eJF"
-    }
-  ],
   "periods": [
     {
       "id": "202102"
@@ -213,6 +202,20 @@
     },
     {
       "id": "2021S2"
+    }
+  ],
+
+
+
+  "columns": [
+    {
+      "id": "dx"
+    },
+    {
+      "id": "fMZEcRHuamy"
+    },
+    {
+      "id": "fkAkrdC7eJF"
     }
   ],
   "filters": [

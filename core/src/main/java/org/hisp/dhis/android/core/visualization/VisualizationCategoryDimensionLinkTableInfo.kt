@@ -26,18 +26,18 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue
+package org.hisp.dhis.android.core.visualization
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.CoreColumns
 
-object DataValueConflictTableInfo {
+object VisualizationCategoryDimensionLinkTableInfo {
 
     @JvmField
     val TABLE_INFO: TableInfo = object : TableInfo() {
         override fun name(): String {
-            return "DataValueConflict"
+            return "VisualizationCategoryDimensionLink"
         }
 
         override fun columns(): CoreColumns {
@@ -49,32 +49,25 @@ object DataValueConflictTableInfo {
         override fun all(): Array<String> {
             return CollectionsHelper.appendInNewArray(
                 super.all(),
-                CONFLICT,
-                VALUE,
-                ATTRIBUTE_OPTION_COMBO,
-                CATEGORY_OPTION_COMBO,
-                DATA_ELEMENT,
-                PERIOD,
-                ORG_UNIT,
-                ERROR_CODE,
-                DISPLAY_DESCRIPTION,
-                STATUS,
-                CREATED
+                VISUALIZATION,
+                CATEGORY,
+                CATEGORY_OPTION
+            )
+        }
+
+        override fun whereUpdate(): Array<String?> {
+            return CollectionsHelper.appendInNewArray(
+                super.all(),
+                VISUALIZATION,
+                CATEGORY,
+                CATEGORY_OPTION
             )
         }
 
         companion object {
-            const val CONFLICT = "conflict"
-            const val VALUE = "value"
-            const val ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo"
-            const val CATEGORY_OPTION_COMBO = "categoryOptionCombo"
-            const val DATA_ELEMENT = "dataElement"
-            const val PERIOD = "period"
-            const val ORG_UNIT = "orgUnit"
-            const val ERROR_CODE = "errorCode"
-            const val DISPLAY_DESCRIPTION = "displayDescription"
-            const val STATUS = "status"
-            const val CREATED = "created"
+            const val VISUALIZATION = "visualization"
+            const val CATEGORY = "category"
+            const val CATEGORY_OPTION = "categoryOption"
         }
     }
 }

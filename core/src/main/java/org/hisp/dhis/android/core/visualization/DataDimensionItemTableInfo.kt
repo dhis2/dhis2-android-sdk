@@ -26,18 +26,18 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue
+package org.hisp.dhis.android.core.visualization
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.CoreColumns
 
-object DataValueConflictTableInfo {
+object DataDimensionItemTableInfo {
 
     @JvmField
     val TABLE_INFO: TableInfo = object : TableInfo() {
         override fun name(): String {
-            return "DataValueConflict"
+            return "DataDimensionItem"
         }
 
         override fun columns(): CoreColumns {
@@ -49,32 +49,46 @@ object DataValueConflictTableInfo {
         override fun all(): Array<String> {
             return CollectionsHelper.appendInNewArray(
                 super.all(),
-                CONFLICT,
-                VALUE,
-                ATTRIBUTE_OPTION_COMBO,
-                CATEGORY_OPTION_COMBO,
+                VISUALIZATION,
+                DATA_DIMENSION_ITEM_TYPE,
+                INDICATOR,
                 DATA_ELEMENT,
-                PERIOD,
-                ORG_UNIT,
-                ERROR_CODE,
-                DISPLAY_DESCRIPTION,
-                STATUS,
-                CREATED
+                DATA_ELEMENT_OPERAND,
+                REPORTING_RATE,
+                PROGRAM_INDICATOR,
+                PROGRAM_DATA_ELEMENT,
+                PROGRAM_ATTRIBUTE,
+                VALIDATION_RULE
+            )
+        }
+
+        override fun whereUpdate(): Array<String?> {
+            return CollectionsHelper.appendInNewArray(
+                super.all(),
+                VISUALIZATION,
+                DATA_DIMENSION_ITEM_TYPE,
+                INDICATOR,
+                DATA_ELEMENT,
+                DATA_ELEMENT_OPERAND,
+                REPORTING_RATE,
+                PROGRAM_INDICATOR,
+                PROGRAM_DATA_ELEMENT,
+                PROGRAM_ATTRIBUTE,
+                VALIDATION_RULE
             )
         }
 
         companion object {
-            const val CONFLICT = "conflict"
-            const val VALUE = "value"
-            const val ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo"
-            const val CATEGORY_OPTION_COMBO = "categoryOptionCombo"
+            const val VISUALIZATION = "visualization"
+            const val DATA_DIMENSION_ITEM_TYPE = "dataDimensionItemType"
+            const val INDICATOR = "indicator"
             const val DATA_ELEMENT = "dataElement"
-            const val PERIOD = "period"
-            const val ORG_UNIT = "orgUnit"
-            const val ERROR_CODE = "errorCode"
-            const val DISPLAY_DESCRIPTION = "displayDescription"
-            const val STATUS = "status"
-            const val CREATED = "created"
+            const val DATA_ELEMENT_OPERAND = "dataElementOperand"
+            const val REPORTING_RATE = "reportingRate"
+            const val PROGRAM_INDICATOR = "programIndicator"
+            const val PROGRAM_DATA_ELEMENT = "programDataElement"
+            const val PROGRAM_ATTRIBUTE = "programAttribute"
+            const val VALIDATION_RULE = "validationRule"
         }
     }
 }

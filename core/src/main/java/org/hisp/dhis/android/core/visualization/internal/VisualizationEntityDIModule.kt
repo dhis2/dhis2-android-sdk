@@ -25,56 +25,45 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.visualization.internal
 
-package org.hisp.dhis.android.core.datavalue
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.visualization.Visualization
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
-import org.hisp.dhis.android.core.common.CoreColumns
+@Module
+internal class VisualizationEntityDIModule : IdentifiableStoreProvider<Visualization> {
 
-object DataValueConflictTableInfo {
-
-    @JvmField
-    val TABLE_INFO: TableInfo = object : TableInfo() {
-        override fun name(): String {
-            return "DataValueConflict"
-        }
-
-        override fun columns(): CoreColumns {
-            return Columns()
-        }
+    @Provides
+    @Reusable
+    override fun store(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<Visualization> {
+        return VisualizationStore.create(databaseAdapter)
     }
 
-    class Columns : CoreColumns() {
-        override fun all(): Array<String> {
-            return CollectionsHelper.appendInNewArray(
-                super.all(),
-                CONFLICT,
-                VALUE,
-                ATTRIBUTE_OPTION_COMBO,
-                CATEGORY_OPTION_COMBO,
-                DATA_ELEMENT,
-                PERIOD,
-                ORG_UNIT,
-                ERROR_CODE,
-                DISPLAY_DESCRIPTION,
-                STATUS,
-                CREATED
-            )
-        }
+    @Provides
+    @Reusable
+    fun handler(impl: VisualizationHandler): Handler<Visualization> {
+        return impl
+    }
 
-        companion object {
-            const val CONFLICT = "conflict"
-            const val VALUE = "value"
-            const val ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo"
-            const val CATEGORY_OPTION_COMBO = "categoryOptionCombo"
-            const val DATA_ELEMENT = "dataElement"
-            const val PERIOD = "period"
-            const val ORG_UNIT = "orgUnit"
-            const val ERROR_CODE = "errorCode"
-            const val DISPLAY_DESCRIPTION = "displayDescription"
-            const val STATUS = "status"
-            const val CREATED = "created"
-        }
+    @Provides
+    @Reusable
+    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<Visualization>> {
+        return mapOf(
+            Pair(
+                VisualizationFields.CATEGORY_DIMENSIONS,
+                VisualizationCategoryDimensionChildrenAppender.create(databaseAdapter)
+            ),
+            Pair(
+                VisualizationFields.DATA_DIMENSION_ITEMS,
+                VisualizationDataDimensionItemChildrenAppender.create(databaseAdapter)
+            )
+        )
     }
 }

@@ -25,56 +25,45 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.visualization.internal
 
-package org.hisp.dhis.android.core.datavalue
+import com.google.common.collect.Lists
+import com.google.common.truth.Truth
+import io.reactivex.Single
+import java.util.*
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.core.visualization.Visualization
+import org.junit.BeforeClass
+import org.junit.Test
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
-import org.hisp.dhis.android.core.common.CoreColumns
+@RunWith(D2JunitRunner::class)
+class VisualizationEndpointCallShould : BaseMockIntegrationTestEmptyEnqueable() {
 
-object DataValueConflictTableInfo {
+    companion object {
+        private lateinit var visualizationsSingle: Single<List<Visualization>>
 
-    @JvmField
-    val TABLE_INFO: TableInfo = object : TableInfo() {
-        override fun name(): String {
-            return "DataValueConflict"
-        }
-
-        override fun columns(): CoreColumns {
-            return Columns()
+        @BeforeClass
+        @JvmStatic
+        @Throws(Exception::class)
+        internal fun setUpClass() {
+            BaseMockIntegrationTestEmptyEnqueable.setUpClass()
+            visualizationsSingle = objects.d2DIComponent.internalModules().visualization.visualizationCall.download(
+                HashSet(
+                    Lists.newArrayList("PYBH8ZaAQnC", "FAFa11yFeFe")
+                )
+            )
+            dhis2MockServer.enqueueMockResponse("visualization/visualizations.json")
+            d2.databaseAdapter().setForeignKeyConstraintsEnabled(false)
         }
     }
 
-    class Columns : CoreColumns() {
-        override fun all(): Array<String> {
-            return CollectionsHelper.appendInNewArray(
-                super.all(),
-                CONFLICT,
-                VALUE,
-                ATTRIBUTE_OPTION_COMBO,
-                CATEGORY_OPTION_COMBO,
-                DATA_ELEMENT,
-                PERIOD,
-                ORG_UNIT,
-                ERROR_CODE,
-                DISPLAY_DESCRIPTION,
-                STATUS,
-                CREATED
-            )
-        }
-
-        companion object {
-            const val CONFLICT = "conflict"
-            const val VALUE = "value"
-            const val ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo"
-            const val CATEGORY_OPTION_COMBO = "categoryOptionCombo"
-            const val DATA_ELEMENT = "dataElement"
-            const val PERIOD = "period"
-            const val ORG_UNIT = "orgUnit"
-            const val ERROR_CODE = "errorCode"
-            const val DISPLAY_DESCRIPTION = "displayDescription"
-            const val STATUS = "status"
-            const val CREATED = "created"
-        }
+    @Test
+    fun download_persist_and_get_visualizations_successfully() {
+        var visualizations = visualizationsSingle.blockingGet()
+        Truth.assertThat(visualizations.isEmpty()).isFalse()
+        visualizations = d2.visualizationModule().visualizations().blockingGet()
+        Truth.assertThat(visualizations.isEmpty()).isFalse()
     }
 }

@@ -28,10 +28,8 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.service
 
-import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepository
+import org.hisp.dhis.android.core.analytics.aggregated.*
 import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsVisualizationsRepositoryParams
-import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
-import org.hisp.dhis.android.core.analytics.aggregated.GridAnalyticsResponse
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.VisualizationCollectionRepository
 import javax.inject.Inject
@@ -49,6 +47,28 @@ internal class AnalyticsVisualizationsService @Inject constructor(
 
         val visualization = getVisualization(params.visualization)
         val dimensionalResponse = getDimensionalResponse(visualization)
+
+        return GridAnalyticsResponse(
+            metadata = dimensionalResponse.metadata,
+            headers = GridHeader(
+                columns = listOf(),
+                rows = listOf()
+            ),
+            dimensions = GridDimension(
+                columns = dimensionalResponse.dimensions.toList(),
+                rows = listOf()
+            ),
+            filters = dimensionalResponse.filters,
+            values = listOf(
+                dimensionalResponse.values.map {
+                    GridResponseValue(
+                        columns = it.dimensions,
+                        rows = listOf(),
+                        value = it.value
+                    )
+                }
+            )
+        )
     }
 
     private fun getVisualization(visualizationId: String): Visualization {

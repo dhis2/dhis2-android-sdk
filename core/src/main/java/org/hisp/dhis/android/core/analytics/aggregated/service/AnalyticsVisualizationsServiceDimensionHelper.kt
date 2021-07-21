@@ -70,7 +70,10 @@ internal class AnalyticsVisualizationsServiceDimensionHelper @Inject constructor
                 DataDimensionItemType.DATA_ELEMENT ->
                     item.dataElement()?.let { DimensionItem.DataItem.DataElementItem(it.uid()) }
                 DataDimensionItemType.DATA_ELEMENT_OPERAND ->
-                    TODO()
+                    item.dataElementOperand()?.let {
+                        val (dataElement, coc) = dataElementOperandRegex.find(it.uid())!!.destructured
+                        DimensionItem.DataItem.DataElementOperandItem(dataElement, coc)
+                    }
                 DataDimensionItemType.PROGRAM_INDICATOR ->
                     item.programIndicator()?.let { DimensionItem.DataItem.ProgramIndicatorItem(it.uid()) }
                 else ->

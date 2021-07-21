@@ -32,10 +32,10 @@ import android.database.Cursor
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.JsonMappingException
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
-import org.hisp.dhis.android.core.common.RelativePeriod
 import java.util.*
 import kotlin.collections.HashMap
+import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
+import org.hisp.dhis.android.core.common.RelativePeriod
 
 internal class RelativePeriodsColumnAdapter : ColumnTypeAdapter<Map<RelativePeriod, Boolean>> {
 

@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
+import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit.*
 import org.hisp.dhis.android.core.visualization.DataDimensionItemType
 import org.hisp.dhis.android.core.visualization.Visualization
-import javax.inject.Inject
 
 internal class AnalyticsVisualizationsServiceDimensionHelper @Inject constructor(
     private val categoryStore: IdentifiableObjectStore<Category>
@@ -47,7 +47,7 @@ internal class AnalyticsVisualizationsServiceDimensionHelper @Inject constructor
 
     fun getDimensionItems(visualization: Visualization, dimensions: List<String>?): List<DimensionItem> {
         return dimensions?.map { dimension ->
-            when(dimension) {
+            when (dimension) {
                 dataDimension -> extractDataDimensionItems(visualization)
                 orgUnitDimension -> extractOrgunitDimensionItems(visualization)
                 periodDimension -> extractPeriodDimensionItems(visualization)
@@ -125,7 +125,6 @@ internal class AnalyticsVisualizationsServiceDimensionHelper @Inject constructor
             categoryDimension?.categoryOptions()?.map {
                 DimensionItem.CategoryItem(uid, it.uid())
             } ?: emptyList()
-
         } else {
             emptyList()
         }

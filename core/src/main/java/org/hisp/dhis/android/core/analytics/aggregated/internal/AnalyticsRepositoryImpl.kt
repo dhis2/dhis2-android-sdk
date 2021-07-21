@@ -29,10 +29,10 @@
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
 import io.reactivex.Single
+import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepository
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
-import javax.inject.Inject
 
 internal class AnalyticsRepositoryImpl @Inject constructor(
     private val params: AnalyticsRepositoryParams,

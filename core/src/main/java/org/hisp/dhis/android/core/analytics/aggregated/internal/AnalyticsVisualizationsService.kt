@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
+import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.*
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.VisualizationCollectionRepository
-import javax.inject.Inject
 
 internal class AnalyticsVisualizationsService @Inject constructor(
     private val analyticsRepository: AnalyticsRepository,
@@ -84,7 +84,7 @@ internal class AnalyticsVisualizationsService @Inject constructor(
 
         val queryDimensions =
             (visualization.rowDimensions() ?: emptyList()) +
-                    (visualization.columnDimensions() ?: emptyList())
+                (visualization.columnDimensions() ?: emptyList())
 
         dimensionHelper.getDimensionItems(
             visualization,

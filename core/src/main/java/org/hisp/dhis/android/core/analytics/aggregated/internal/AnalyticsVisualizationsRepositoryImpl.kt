@@ -29,9 +29,9 @@
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
 import io.reactivex.Single
+import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsVisualizationsRepository
 import org.hisp.dhis.android.core.analytics.aggregated.GridAnalyticsResponse
-import javax.inject.Inject
 
 internal class AnalyticsVisualizationsRepositoryImpl @Inject constructor(
     private val params: AnalyticsVisualizationsRepositoryParams,

@@ -31,8 +31,8 @@ package org.hisp.dhis.android.core.analytics.aggregated.mock
 import dagger.Reusable
 import io.reactivex.Single
 import javax.inject.Inject
-import org.hisp.dhis.android.core.analytics.aggregated.GridAnalyticsResponse
 import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsVisualizationsRepository
+import org.hisp.dhis.android.core.analytics.aggregated.GridAnalyticsResponse
 
 @Reusable
 class MockAnalyticsVisualizationsRepository @Inject constructor() : AnalyticsVisualizationsRepository {

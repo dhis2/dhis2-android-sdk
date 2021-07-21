@@ -26,24 +26,21 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.analytics.aggregated.mock
+package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
-import dagger.Reusable
-import io.reactivex.Single
-import javax.inject.Inject
-import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsVisualizationsRepository
-import org.hisp.dhis.android.core.analytics.aggregated.GridAnalyticsResponse
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.junit.Test
 
-@Reusable
-class MockAnalyticsVisualizationsRepository @Inject constructor() : AnalyticsVisualizationsRepository {
+class AnalyticsVisualizationRepositoryIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
 
-    override fun withVisualization(visualization: String): AnalyticsVisualizationsRepository {
-        return MockAnalyticsVisualizationsRepository()
+    private val visualationUid = "FAFa11yFeFe"
+
+    @Test
+    fun evaluate_visualization() {
+        val result = d2.analyticsModule().visualizations()
+            .withVisualization(visualationUid)
+            .blockingEvaluate()
+
+        // TODO Implement when actual visualization service is used
     }
-
-    override fun evaluate(): Single<GridAnalyticsResponse> {
-        return Single.fromCallable { blockingEvaluate() }
-    }
-
-    override fun blockingEvaluate(): GridAnalyticsResponse = GridAnalyticsResponseSamples.sample1
 }

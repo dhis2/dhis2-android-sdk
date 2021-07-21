@@ -30,10 +30,14 @@ package org.hisp.dhis.android.core.enrollment
 import dagger.Reusable
 import io.reactivex.Single
 import javax.inject.Inject
+import org.hisp.dhis.android.core.event.Event
+import org.hisp.dhis.android.core.event.EventCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRepository
 import org.hisp.dhis.android.core.program.AccessLevel
 import org.hisp.dhis.android.core.program.ProgramCollectionRepository
+import org.hisp.dhis.android.core.program.ProgramStage
+import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCollectionRepository
 
 @Reusable
@@ -41,7 +45,9 @@ class EnrollmentService @Inject constructor(
     private val enrollmentRepository: EnrollmentCollectionRepository,
     private val trackedEntityInstanceRepository: TrackedEntityInstanceCollectionRepository,
     private val programRepository: ProgramCollectionRepository,
-    private val organisationUnitRepository: OrganisationUnitCollectionRepository
+    private val organisationUnitRepository: OrganisationUnitCollectionRepository,
+    private val eventCollectionRepository: EventCollectionRepository,
+    private val programStagesCollectionRepository: ProgramStageCollectionRepository
 ) {
 
     /**
@@ -103,5 +109,32 @@ class EnrollmentService @Inject constructor(
             .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
             .uid(tei.organisationUnit())
             .blockingExists()
+    }
+
+    fun blockingGetAllowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Boolean {
+        val programStages = eventCollectionRepository.byEnrollmentUid().eq(enrollmentUid)
+            .byDeleted().isFalse.get()
+            .toFlowable().flatMapIterable { events: List<Event>? -> events }
+            .map { event: Event -> event.programStage() }
+            .toList()
+            .flatMap { currentProgramStagesUids: List<String?> ->
+                val repository = programStagesCollectionRepository.byProgramUid().eq(
+                    enrollmentRepository.uid(enrollmentUid).blockingGet().program()
+                ).byAccessDataWrite().isTrue
+
+                repository.get().toFlowable()
+                    .flatMapIterable { stages: List<ProgramStage>? -> stages }
+                    .filter { programStage: ProgramStage ->
+                        !currentProgramStagesUids.contains(programStage.uid()) ||
+                            programStage.repeatable()!!
+                    }
+                    .toList()
+            }.blockingGet()
+
+        return programStages.find { !stagesToHide.contains(it.uid()) } != null
+    }
+
+    fun allowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Single<Boolean> {
+        return Single.fromCallable { blockingGetAllowEventCreation(enrollmentUid, stagesToHide) }
     }
 }

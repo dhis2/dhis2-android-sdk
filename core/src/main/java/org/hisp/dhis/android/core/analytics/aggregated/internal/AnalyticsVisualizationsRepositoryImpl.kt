@@ -26,27 +26,33 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.analytics.aggregated.service
+package org.hisp.dhis.android.core.analytics.aggregated.internal
 
-import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
-import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples
-import org.hisp.dhis.android.core.common.RelativePeriod
+import io.reactivex.Single
+import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsVisualizationsRepository
+import org.hisp.dhis.android.core.analytics.aggregated.GridAnalyticsResponse
+import javax.inject.Inject
 
-object AnalyticsServiceHelperSamples {
+internal class AnalyticsVisualizationsRepositoryImpl @Inject constructor(
+    private val params: AnalyticsVisualizationsRepositoryParams,
+    private val service: AnalyticsVisualizationsService
+) : AnalyticsVisualizationsRepository {
 
-    val dataElementItem1 = DimensionItem.DataItem.DataElementItem(AggregatedSamples.dataElement1.uid())
-    val dataElementItem2 = DimensionItem.DataItem.DataElementItem(AggregatedSamples.dataElement2.uid())
-    val programIndicatorItem = DimensionItem.DataItem.ProgramIndicatorItem(AggregatedSamples.programIndicator1.uid())
-    val indicatorItem = DimensionItem.DataItem.IndicatorItem(AggregatedSamples.indicator1.uid())
+    override fun withVisualization(visualization: String): AnalyticsVisualizationsRepositoryImpl {
+        return updateParams { params -> params.copy(visualization = visualization) }
+    }
 
-    val periodAbsolute1 = DimensionItem.PeriodItem.Absolute(AggregatedSamples.period1.periodId()!!)
-    val periodAbsolute2 = DimensionItem.PeriodItem.Absolute(AggregatedSamples.period2.periodId()!!)
-    val periodLast3Days = DimensionItem.PeriodItem.Relative(RelativePeriod.LAST_3_DAYS)
+    override fun evaluate(): Single<GridAnalyticsResponse> {
+        return Single.fromCallable { blockingEvaluate() }
+    }
 
-    val orgunitAbsolute = DimensionItem.OrganisationUnitItem.Absolute(AggregatedSamples.orgunit1.uid())
-    val orgunitLevel3 = DimensionItem.OrganisationUnitItem.Level(3)
+    override fun blockingEvaluate(): GridAnalyticsResponse {
+        return service.evaluate(params)
+    }
 
-    val categoryItem1_1 = DimensionItem.CategoryItem(AggregatedSamples.cc1.uid(), AggregatedSamples.co11.uid())
-    val categoryItem1_2 = DimensionItem.CategoryItem(AggregatedSamples.cc1.uid(), AggregatedSamples.co12.uid())
-    val categoryItem2_1 = DimensionItem.CategoryItem(AggregatedSamples.cc2.uid(), AggregatedSamples.co21.uid())
+    private fun updateParams(
+        func: (params: AnalyticsVisualizationsRepositoryParams) -> AnalyticsVisualizationsRepositoryParams
+    ): AnalyticsVisualizationsRepositoryImpl {
+        return AnalyticsVisualizationsRepositoryImpl(func(params), service)
+    }
 }

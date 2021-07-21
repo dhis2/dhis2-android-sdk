@@ -26,10 +26,9 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.analytics.aggregated.service
+package org.hisp.dhis.android.core.analytics.aggregated.internal
 
 import org.hisp.dhis.android.core.analytics.aggregated.*
-import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsVisualizationsRepositoryParams
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.VisualizationCollectionRepository
 import javax.inject.Inject

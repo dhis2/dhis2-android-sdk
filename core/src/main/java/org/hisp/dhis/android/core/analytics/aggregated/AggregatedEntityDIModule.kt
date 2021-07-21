@@ -32,6 +32,8 @@ import dagger.Provides
 import dagger.Reusable
 import org.hisp.dhis.android.core.analytics.aggregated.mock.MockAnalyticsRepository
 import org.hisp.dhis.android.core.analytics.aggregated.mock.MockAnalyticsVisualizationsRepository
+import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsRepositoryParams
+import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsVisualizationsRepositoryParams
 
 @Module
 internal class AggregatedEntityDIModule {

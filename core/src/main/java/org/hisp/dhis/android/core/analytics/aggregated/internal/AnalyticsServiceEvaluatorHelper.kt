@@ -26,14 +26,14 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.analytics.aggregated.service
+package org.hisp.dhis.android.core.analytics.aggregated.internal
 
 import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionalValue
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
-import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.AnalyticsEvaluator
-import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluator
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.AnalyticsEvaluator
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluator
 
 internal class AnalyticsServiceEvaluatorHelper @Inject constructor(
     private val dataElementEvaluator: DataElementEvaluator

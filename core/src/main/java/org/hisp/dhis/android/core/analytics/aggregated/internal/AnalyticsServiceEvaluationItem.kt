@@ -26,8 +26,12 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.analytics.aggregated
+package org.hisp.dhis.android.core.analytics.aggregated.internal
 
-internal data class AnalyticsVisualizationsRepositoryParams(
-    val visualization: String?
+import org.hisp.dhis.android.core.analytics.aggregated.AbsoluteDimensionItem
+import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
+
+internal data class AnalyticsServiceEvaluationItem(
+    val dimensionItems: List<AbsoluteDimensionItem>,
+    val filters: List<DimensionItem>
 )

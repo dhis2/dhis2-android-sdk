@@ -61,7 +61,6 @@ class EnrollmentServiceShould {
     private val enrollment: Enrollment = mock()
     private val trackedEntityInstance: TrackedEntityInstance = mock()
     private val program: Program = mock()
-    private val organisationUnit: OrganisationUnit = mock()
 
     private val enrollmentRepository: EnrollmentCollectionRepository = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val trackedEntityInstanceRepository: TrackedEntityInstanceCollectionRepository =
@@ -177,7 +176,12 @@ class EnrollmentServiceShould {
         whenever(
             programStageCollectionRepository.byProgramUid().eq(programUid)
         ) doReturn programStageCollectionRepository
-        whenever(programStageCollectionRepository.get()) doReturn Single.just(getProgramStages())
+        whenever(
+            programStageCollectionRepository.byAccessDataWrite().isTrue
+        ) doReturn programStageCollectionRepository
+        whenever(
+            programStageCollectionRepository.get()
+        ) doReturn Single.just(getProgramStages())
 
         whenever(
             eventCollectionRepository.byEnrollmentUid().eq(enrollmentUid)
@@ -187,7 +191,7 @@ class EnrollmentServiceShould {
         ) doReturn eventCollectionRepository
         whenever(eventCollectionRepository.get()) doReturn Single.just(getEventList())
 
-        assertTrue(enrollmentService.allowEventCreation(enrollmentUid, listOf("1")))
+        assertTrue(enrollmentService.blockingGetAllowEventCreation(enrollmentUid, listOf("1")))
     }
 
     @Test
@@ -199,7 +203,12 @@ class EnrollmentServiceShould {
         whenever(
             programStageCollectionRepository.byProgramUid().eq(programUid)
         ) doReturn programStageCollectionRepository
-        whenever(programStageCollectionRepository.get()) doReturn Single.just(getProgramStages())
+        whenever(
+            programStageCollectionRepository.byAccessDataWrite().isTrue
+        ) doReturn programStageCollectionRepository
+        whenever(
+            programStageCollectionRepository.get()
+        ) doReturn Single.just(getProgramStages())
 
         whenever(
             eventCollectionRepository.byEnrollmentUid().eq(enrollmentUid)
@@ -209,7 +218,7 @@ class EnrollmentServiceShould {
         ) doReturn eventCollectionRepository
         whenever(eventCollectionRepository.get()) doReturn Single.just(getEventList())
 
-        assertFalse(enrollmentService.allowEventCreation(enrollmentUid, listOf("1", "2")))
+        assertFalse(enrollmentService.blockingGetAllowEventCreation(enrollmentUid, listOf("1", "2")))
     }
 
     private fun getEventList() = listOf(

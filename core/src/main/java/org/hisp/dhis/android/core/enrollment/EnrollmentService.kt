@@ -111,8 +111,8 @@ class EnrollmentService @Inject constructor(
             .blockingExists()
     }
 
-    fun allowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Boolean {
-        val programStages = eventCollectionRepository.byEnrollmentUid().eq(enrollmentUid ?: "")
+    fun blockingGetAllowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Boolean {
+        val programStages = eventCollectionRepository.byEnrollmentUid().eq(enrollmentUid)
             .byDeleted().isFalse.get()
             .toFlowable().flatMapIterable { events: List<Event>? -> events }
             .map { event: Event -> event.programStage() }
@@ -120,20 +120,21 @@ class EnrollmentService @Inject constructor(
             .flatMap { currentProgramStagesUids: List<String?> ->
                 val repository = programStagesCollectionRepository.byProgramUid().eq(
                     enrollmentRepository.uid(enrollmentUid).blockingGet().program()
-                )
+                ).byAccessDataWrite().isTrue
 
                 repository.get().toFlowable()
                     .flatMapIterable { stages: List<ProgramStage>? -> stages }
                     .filter { programStage: ProgramStage ->
-                        programStage.access().data()
-                            .write() == true && (
-                            !currentProgramStagesUids.contains(programStage.uid()) ||
-                                programStage.repeatable()!!
-                            )
+                        !currentProgramStagesUids.contains(programStage.uid()) ||
+                            programStage.repeatable()!!
                     }
                     .toList()
             }.blockingGet()
 
         return programStages.find { !stagesToHide.contains(it.uid()) } != null
+    }
+
+    fun allowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Single<Boolean> {
+        return Single.fromCallable { blockingGetAllowEventCreation(enrollmentUid, stagesToHide) }
     }
 }

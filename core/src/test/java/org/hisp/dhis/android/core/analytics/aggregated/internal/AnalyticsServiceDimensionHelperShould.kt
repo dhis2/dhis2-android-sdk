@@ -27,17 +27,16 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.analytics.aggregated.service
+package org.hisp.dhis.android.core.analytics.aggregated.internal
 
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import org.hisp.dhis.android.core.analytics.aggregated.AbsoluteDimensionItem
-import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepositoryParams
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
-import org.hisp.dhis.android.core.analytics.aggregated.service.AnalyticsServiceHelperSamples as s
+import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceHelperSamples as s
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
 import org.junit.Test
@@ -97,7 +96,7 @@ class AnalyticsServiceDimensionHelperShould {
             ),
             filters = listOf()
         )
-        val dimensions = setOf(
+        val dimensions = listOf(
             Dimension.Period, Dimension.Data, Dimension.OrganisationUnit,
             Dimension.Category(s.categoryItem1_1.uid)
         )
@@ -127,7 +126,7 @@ class AnalyticsServiceDimensionHelperShould {
             ),
             filters = listOf()
         )
-        val dimensions = setOf(Dimension.Period, Dimension.Data, Dimension.Category(s.categoryItem1_1.uid))
+        val dimensions = listOf(Dimension.Period, Dimension.Data, Dimension.Category(s.categoryItem1_1.uid))
 
         val items = helper.getEvaluationItems(params, dimensions)
 
@@ -155,7 +154,7 @@ class AnalyticsServiceDimensionHelperShould {
             ),
             filters = listOf()
         )
-        val dimensions = setOf(Dimension.Data, Dimension.Period, Dimension.OrganisationUnit)
+        val dimensions = listOf(Dimension.Data, Dimension.Period, Dimension.OrganisationUnit)
 
         val items = helper.getEvaluationItems(params, dimensions)
 
@@ -179,7 +178,7 @@ class AnalyticsServiceDimensionHelperShould {
             ),
             filters = listOf()
         )
-        val dimensions = setOf(Dimension.Data, Dimension.Period, Dimension.OrganisationUnit)
+        val dimensions = listOf(Dimension.Data, Dimension.Period, Dimension.OrganisationUnit)
 
         val items = helper.getEvaluationItems(params, dimensions)
 

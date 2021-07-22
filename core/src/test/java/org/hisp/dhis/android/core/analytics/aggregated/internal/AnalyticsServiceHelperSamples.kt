@@ -26,36 +26,27 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.analytics.aggregated
+package org.hisp.dhis.android.core.analytics.aggregated.internal
 
-import io.reactivex.Single
-import javax.inject.Inject
-import org.hisp.dhis.android.core.analytics.aggregated.service.AnalyticsService
+import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
+import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples
+import org.hisp.dhis.android.core.common.RelativePeriod
 
-internal class AnalyticsRepositoryImpl @Inject constructor(
-    private val params: AnalyticsRepositoryParams,
-    private val analyticsService: AnalyticsService
-) : AnalyticsRepository {
+object AnalyticsServiceHelperSamples {
 
-    override fun withDimension(dimensionItem: DimensionItem): AnalyticsRepositoryImpl {
-        return updateParams { params -> params.copy(dimensions = params.dimensions + dimensionItem) }
-    }
+    val dataElementItem1 = DimensionItem.DataItem.DataElementItem(AggregatedSamples.dataElement1.uid())
+    val dataElementItem2 = DimensionItem.DataItem.DataElementItem(AggregatedSamples.dataElement2.uid())
+    val programIndicatorItem = DimensionItem.DataItem.ProgramIndicatorItem(AggregatedSamples.programIndicator1.uid())
+    val indicatorItem = DimensionItem.DataItem.IndicatorItem(AggregatedSamples.indicator1.uid())
 
-    override fun withFilter(dimensionItem: DimensionItem): AnalyticsRepositoryImpl {
-        return updateParams { params -> params.copy(filters = params.filters + dimensionItem) }
-    }
+    val periodAbsolute1 = DimensionItem.PeriodItem.Absolute(AggregatedSamples.period1.periodId()!!)
+    val periodAbsolute2 = DimensionItem.PeriodItem.Absolute(AggregatedSamples.period2.periodId()!!)
+    val periodLast3Days = DimensionItem.PeriodItem.Relative(RelativePeriod.LAST_3_DAYS)
 
-    override fun evaluate(): Single<DimensionalResponse> {
-        return Single.fromCallable { blockingEvaluate() }
-    }
+    val orgunitAbsolute = DimensionItem.OrganisationUnitItem.Absolute(AggregatedSamples.orgunit1.uid())
+    val orgunitLevel3 = DimensionItem.OrganisationUnitItem.Level(3)
 
-    override fun blockingEvaluate(): DimensionalResponse {
-        return analyticsService.evaluate(params)
-    }
-
-    private fun updateParams(
-        func: (params: AnalyticsRepositoryParams) -> AnalyticsRepositoryParams
-    ): AnalyticsRepositoryImpl {
-        return AnalyticsRepositoryImpl(func(params), analyticsService)
-    }
+    val categoryItem1_1 = DimensionItem.CategoryItem(AggregatedSamples.cc1.uid(), AggregatedSamples.co11.uid())
+    val categoryItem1_2 = DimensionItem.CategoryItem(AggregatedSamples.cc1.uid(), AggregatedSamples.co12.uid())
+    val categoryItem2_1 = DimensionItem.CategoryItem(AggregatedSamples.cc2.uid(), AggregatedSamples.co21.uid())
 }

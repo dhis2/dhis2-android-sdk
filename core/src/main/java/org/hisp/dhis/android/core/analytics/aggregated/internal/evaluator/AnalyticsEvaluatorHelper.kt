@@ -26,7 +26,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.analytics.aggregated.service.evaluator
+package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkTableInfo as cToCcInfo

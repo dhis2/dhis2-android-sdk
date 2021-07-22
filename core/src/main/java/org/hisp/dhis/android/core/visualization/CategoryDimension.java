@@ -28,43 +28,31 @@
 
 package org.hisp.dhis.android.core.visualization;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.ObjectWithUidListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_CategoryDimension.Builder.class)
-public abstract class CategoryDimension implements CoreObject {
+@JsonDeserialize(builder = AutoValue_CategoryDimension.Builder.class)
+public abstract class CategoryDimension {
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid category();
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(ObjectWithUidListColumnAdapter.class)
     public abstract List<ObjectWithUid> categoryOptions();
 
     public static Builder builder() {
-        return new $$AutoValue_CategoryDimension.Builder();
-    }
-
-    public static CategoryDimension create(Cursor cursor) {
-        return AutoValue_CategoryDimension.createFromCursor(cursor);
+        return new AutoValue_CategoryDimension.Builder();
     }
 
     public abstract Builder toBuilder();
@@ -72,8 +60,6 @@ public abstract class CategoryDimension implements CoreObject {
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public static abstract class Builder {
-
-        public abstract Builder id(Long id);
 
         public abstract Builder category(ObjectWithUid category);
 

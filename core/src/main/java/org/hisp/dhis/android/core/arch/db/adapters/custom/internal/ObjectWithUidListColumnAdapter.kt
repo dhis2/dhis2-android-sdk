@@ -27,15 +27,44 @@
  */
 package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
+import android.content.ContentValues
+import android.database.Cursor
+import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.JsonMappingException
+import com.fasterxml.jackson.module.kotlin.readValue
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.ObjectWithUid
 
-internal class ObjectWithUidListColumnAdapter : JSONObjectListColumnAdapter<ObjectWithUid>() {
-    override fun getObjectClass(): Class<List<ObjectWithUid>> {
-        return ArrayList<ObjectWithUid>().javaClass
+internal class ObjectWithUidListColumnAdapter : ColumnTypeAdapter<List<ObjectWithUid>> {
+
+    override fun fromCursor(cursor: Cursor, columnName: String): List<ObjectWithUid> {
+        val columnIndex = cursor.getColumnIndex(columnName)
+        val str = cursor.getString(columnIndex)
+        return try {
+            val list = ObjectMapperFactory.objectMapper().readValue<List<Map<String, Any>>>(str)
+            list.map { ObjectWithUid.create(it[BaseIdentifiableObject.UID].toString()) }
+        } catch (e: JsonProcessingException) {
+            listOf()
+        } catch (e: JsonMappingException) {
+            listOf()
+        } catch (e: IllegalArgumentException) {
+            listOf()
+        } catch (e: IllegalStateException) {
+            listOf()
+        }
     }
 
-    override fun serialize(o: List<ObjectWithUid>?): String? = ObjectWithUidListColumnAdapter.serialize(o)
+    override fun toContentValues(contentValues: ContentValues, columnName: String, o: List<ObjectWithUid>?) {
+        try {
+            contentValues.put(columnName, serialize(o))
+        } catch (e: JsonProcessingException) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun serialize(o: List<ObjectWithUid>?): String? = ObjectWithUidListColumnAdapter.serialize(o)
 
     companion object {
         fun serialize(o: List<ObjectWithUid>?): String? {

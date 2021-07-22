@@ -25,28 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.analytics.aggregated.service.evaluator
+package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
-import org.hisp.dhis.android.core.analytics.aggregated.service.AnalyticsServiceEvaluationItem
-import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.category
-import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.categoryCategoryComboLink
-import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.categoryCategoryOptionLink
-import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.categoryCombo
-import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.categoryOption
-import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.categoryOptionCombo
-import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.categoryOptionComboCategoryOptionLink
-import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.dataElement1
-import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.dataElement2
-import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.dataElementOperand
-import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.orgunitChild1
-import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.orgunitChild2
-import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.orgunitParent
-import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.periodDec
-import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.periodNov
-import org.hisp.dhis.android.core.analytics.aggregated.service.evaluator.DataElementEvaluatorSamples.periodQ4
+import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluatorSamples.category
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluatorSamples.categoryCategoryComboLink
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluatorSamples.categoryCategoryOptionLink
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluatorSamples.categoryCombo
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluatorSamples.categoryOption
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluatorSamples.categoryOptionCombo
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluatorSamples.categoryOptionComboCategoryOptionLink
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluatorSamples.dataElement1
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluatorSamples.dataElement2
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluatorSamples.dataElementOperand
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluatorSamples.orgunitChild1
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluatorSamples.orgunitChild2
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluatorSamples.orgunitParent
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluatorSamples.periodDec
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluatorSamples.periodNov
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluatorSamples.periodQ4
 import org.hisp.dhis.android.core.category.internal.*
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.common.RelativePeriod

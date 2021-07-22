@@ -43,7 +43,7 @@ data class GridHeader(
 
 data class GridHeaderItem(
     val id: String,
-    val width: Int
+    val weight: Int
 )
 
 data class GridDimension(

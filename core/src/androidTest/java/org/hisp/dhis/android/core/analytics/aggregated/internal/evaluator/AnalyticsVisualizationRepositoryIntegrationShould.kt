@@ -25,17 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.analytics
 
-import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepository
-import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsVisualizationsRepository
-import org.hisp.dhis.android.core.analytics.linelist.EventLineListRepository
+package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
-interface AnalyticsModule {
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.junit.Test
 
-    fun eventLineList(): EventLineListRepository
+class AnalyticsVisualizationRepositoryIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
 
-    fun analytics(): AnalyticsRepository
+    private val visualizationUid = "FAFa11yFeFe"
 
-    fun visualizations(): AnalyticsVisualizationsRepository
+    @Test
+    fun evaluate_visualization() {
+        val result = d2.analyticsModule().visualizations()
+            .withVisualization(visualizationUid)
+            .blockingEvaluate()
+
+        assertThat(result.dimensions.columns.size).isEqualTo(1)
+        assertThat(result.dimensions.rows.size).isEqualTo(1)
+        assertThat(result.metadata).isNotEmpty()
+        assertThat(result.values.size).isEqualTo(3)
+    }
 }

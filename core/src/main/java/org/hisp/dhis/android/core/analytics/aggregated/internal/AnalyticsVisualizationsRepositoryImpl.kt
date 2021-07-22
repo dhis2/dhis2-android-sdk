@@ -26,40 +26,33 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.analytics.aggregated.service
+package org.hisp.dhis.android.core.analytics.aggregated.internal
 
+import io.reactivex.Single
 import javax.inject.Inject
-import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepositoryParams
-import org.hisp.dhis.android.core.analytics.aggregated.Dimension
-import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
+import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsVisualizationsRepository
+import org.hisp.dhis.android.core.analytics.aggregated.GridAnalyticsResponse
 
-internal class AnalyticsService @Inject constructor(
-    private val analyticsServiceDimensionHelper: AnalyticsServiceDimensionHelper,
-    private val analyticsServiceMetadataHelper: AnalyticsServiceMetadataHelper,
-    private val analyticsServiceEvaluatorHelper: AnalyticsServiceEvaluatorHelper
-) {
+internal class AnalyticsVisualizationsRepositoryImpl @Inject constructor(
+    private val params: AnalyticsVisualizationsRepositoryParams,
+    private val service: AnalyticsVisualizationsService
+) : AnalyticsVisualizationsRepository {
 
-    fun evaluate(params: AnalyticsRepositoryParams): DimensionalResponse {
-        if (params.dimensions.isEmpty()) {
-            throw AnalyticsException.InvalidArguments("At least one dimension must be specified")
-        }
+    override fun withVisualization(visualization: String): AnalyticsVisualizationsRepositoryImpl {
+        return updateParams { params -> params.copy(visualization = visualization) }
+    }
 
-        if ((params.dimensions + params.filters).none { it.dimension == Dimension.Data }) {
-            throw AnalyticsException.InvalidArguments("At least one data dimension must be specified")
-        }
+    override fun evaluate(): Single<GridAnalyticsResponse> {
+        return Single.fromCallable { blockingEvaluate() }
+    }
 
-        val dimensions = analyticsServiceDimensionHelper.getDimensions(params)
-        val evaluationItems = analyticsServiceDimensionHelper.getEvaluationItems(params, dimensions)
+    override fun blockingEvaluate(): GridAnalyticsResponse {
+        return service.evaluate(params)
+    }
 
-        val metadata = analyticsServiceMetadataHelper.getMetadata(evaluationItems)
-
-        val values = evaluationItems.map { analyticsServiceEvaluatorHelper.evaluate(it, metadata) }
-
-        return DimensionalResponse(
-            metadata = metadata,
-            dimensions = dimensions,
-            filters = params.filters.map { it.id },
-            values = values
-        )
+    private fun updateParams(
+        func: (params: AnalyticsVisualizationsRepositoryParams) -> AnalyticsVisualizationsRepositoryParams
+    ): AnalyticsVisualizationsRepositoryImpl {
+        return AnalyticsVisualizationsRepositoryImpl(func(params), service)
     }
 }

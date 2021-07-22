@@ -26,14 +26,14 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.analytics.aggregated.service.evaluator
+package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
 import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
-import org.hisp.dhis.android.core.analytics.aggregated.service.AnalyticsException
-import org.hisp.dhis.android.core.analytics.aggregated.service.AnalyticsServiceEvaluationItem
+import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsException
+import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.AggregationType

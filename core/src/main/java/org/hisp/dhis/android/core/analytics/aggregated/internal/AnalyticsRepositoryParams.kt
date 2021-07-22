@@ -25,41 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-import android.content.ContentValues
-import android.database.Cursor
-import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.databind.JsonMappingException
-import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
+package org.hisp.dhis.android.core.analytics.aggregated.internal
 
-internal abstract class JSONObjectMapColumnAdapter<P, O> : ColumnTypeAdapter<Map<P, O>> {
-    protected abstract fun getObjectClass(): Class<Map<P, O>>
+import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 
-    override fun fromCursor(cursor: Cursor, columnName: String): Map<P, O> {
-        val columnIndex = cursor.getColumnIndex(columnName)
-        val str = cursor.getString(columnIndex)
-        return try {
-            ObjectMapperFactory.objectMapper().readValue(str, getObjectClass())
-        } catch (e: JsonProcessingException) {
-            hashMapOf()
-        } catch (e: JsonMappingException) {
-            hashMapOf()
-        } catch (e: IllegalArgumentException) {
-            hashMapOf()
-        } catch (e: IllegalStateException) {
-            hashMapOf()
-        }
-    }
-
-    override fun toContentValues(contentValues: ContentValues, columnName: String, o: Map<P, O>?) {
-        try {
-            contentValues.put(columnName, serialize(o))
-        } catch (e: JsonProcessingException) {
-            e.printStackTrace()
-        }
-    }
-
-    abstract fun serialize(o: Map<P, O>?): String?
-}
+internal data class AnalyticsRepositoryParams(
+    val dimensions: List<DimensionItem>,
+    val filters: List<DimensionItem>
+)

@@ -26,13 +26,13 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.analytics.aggregated.service
+package org.hisp.dhis.android.core.analytics.aggregated.internal
 
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
+import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceHelperSamples as s
 import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples
-import org.hisp.dhis.android.core.analytics.aggregated.service.AnalyticsServiceHelperSamples as s
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.CategoryOption

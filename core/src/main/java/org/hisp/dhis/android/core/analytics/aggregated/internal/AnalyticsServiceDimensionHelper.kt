@@ -26,11 +26,10 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.analytics.aggregated.service
+package org.hisp.dhis.android.core.analytics.aggregated.internal
 
 import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.AbsoluteDimensionItem
-import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepositoryParams
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
@@ -40,13 +39,13 @@ internal class AnalyticsServiceDimensionHelper @Inject constructor(
     private val analyticsOrganisationUnitHelper: AnalyticsOrganisationUnitHelper
 ) {
 
-    fun getDimensions(params: AnalyticsRepositoryParams): Set<Dimension> {
-        return params.dimensions.map { it.dimension }.toSet()
+    fun getDimensions(params: AnalyticsRepositoryParams): List<Dimension> {
+        return params.dimensions.map { it.dimension }.distinct()
     }
 
     fun getEvaluationItems(
         params: AnalyticsRepositoryParams,
-        dimensions: Set<Dimension>
+        dimensions: List<Dimension>
     ): List<AnalyticsServiceEvaluationItem> {
         val absoluteDimensionItemList = dimensions.map { dimension ->
             params.dimensions

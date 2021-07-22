@@ -30,21 +30,23 @@ package org.hisp.dhis.android.core.analytics.aggregated
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.analytics.aggregated.mock.MockAnalyticsRepository
-import org.hisp.dhis.android.core.analytics.aggregated.mock.MockVisualizationsRepository
+import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsRepositoryImpl
+import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsRepositoryParams
+import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsVisualizationsRepositoryImpl
+import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsVisualizationsRepositoryParams
 
 @Module
 internal class AggregatedEntityDIModule {
 
     @Provides
     @Reusable
-    fun analytics(impl: MockAnalyticsRepository): AnalyticsRepository {
+    fun analytics(impl: AnalyticsRepositoryImpl): AnalyticsRepository {
         return impl
     }
 
     @Provides
     @Reusable
-    fun visualizations(impl: MockVisualizationsRepository): VisualizationsRepository {
+    fun visualizations(impl: AnalyticsVisualizationsRepositoryImpl): AnalyticsVisualizationsRepository {
         return impl
     }
 
@@ -52,5 +54,11 @@ internal class AggregatedEntityDIModule {
     @Reusable
     fun emptyAnalyticsParams(): AnalyticsRepositoryParams {
         return AnalyticsRepositoryParams(listOf(), listOf())
+    }
+
+    @Provides
+    @Reusable
+    fun emptyAnalyticsVisualizationsParam(): AnalyticsVisualizationsRepositoryParams {
+        return AnalyticsVisualizationsRepositoryParams(null)
     }
 }

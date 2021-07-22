@@ -27,15 +27,44 @@
  */
 package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
+import android.content.ContentValues
+import android.database.Cursor
+import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.JsonMappingException
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
+import java.util.*
+import kotlin.collections.HashMap
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 import org.hisp.dhis.android.core.common.RelativePeriod
 
-internal class RelativePeriodsColumnAdapter : JSONObjectMapColumnAdapter<RelativePeriod, Boolean>() {
-    override fun getObjectClass(): Class<Map<RelativePeriod, Boolean>> {
-        return HashMap<RelativePeriod, Boolean>().javaClass
+internal class RelativePeriodsColumnAdapter : ColumnTypeAdapter<Map<RelativePeriod, Boolean>> {
+
+    override fun fromCursor(cursor: Cursor, columnName: String): Map<RelativePeriod, Boolean> {
+        val columnIndex = cursor.getColumnIndex(columnName)
+        val str = cursor.getString(columnIndex)
+        return try {
+            val map = ObjectMapperFactory.objectMapper().readValue(str, (HashMap<String, Boolean>())::class.java)
+            map.mapKeys { RelativePeriod.valueOf(it.key) }
+        } catch (e: JsonProcessingException) {
+            EnumMap(RelativePeriod::class.java)
+        } catch (e: JsonMappingException) {
+            EnumMap(RelativePeriod::class.java)
+        } catch (e: IllegalArgumentException) {
+            EnumMap(RelativePeriod::class.java)
+        } catch (e: IllegalStateException) {
+            EnumMap(RelativePeriod::class.java)
+        }
     }
 
-    override fun serialize(o: Map<RelativePeriod, Boolean>?): String? = RelativePeriodsColumnAdapter.serialize(o)
+    override fun toContentValues(contentValues: ContentValues, columnName: String, o: Map<RelativePeriod, Boolean>?) {
+        try {
+            contentValues.put(columnName, serialize(o))
+        } catch (e: JsonProcessingException) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun serialize(o: Map<RelativePeriod, Boolean>?): String? = RelativePeriodsColumnAdapter.serialize(o)
 
     companion object {
         fun serialize(o: Map<RelativePeriod, Boolean>?): String? {

@@ -26,8 +26,8 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.analytics.aggregated.service
+package org.hisp.dhis.android.core.analytics.aggregated.internal
 
-sealed class AnalyticsException(message: String) : Throwable(message) {
-    class InvalidArguments(message: String) : AnalyticsException(message)
-}
+internal data class AnalyticsVisualizationsRepositoryParams(
+    val visualization: String?
+)

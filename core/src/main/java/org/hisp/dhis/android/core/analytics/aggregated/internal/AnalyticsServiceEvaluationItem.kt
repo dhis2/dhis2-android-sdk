@@ -26,15 +26,12 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.analytics.aggregated.service.evaluator
+package org.hisp.dhis.android.core.analytics.aggregated.internal
 
-import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
-import org.hisp.dhis.android.core.analytics.aggregated.service.AnalyticsServiceEvaluationItem
+import org.hisp.dhis.android.core.analytics.aggregated.AbsoluteDimensionItem
+import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 
-internal interface AnalyticsEvaluator {
-
-    fun evaluate(
-        evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
-    ): String?
-}
+internal data class AnalyticsServiceEvaluationItem(
+    val dimensionItems: List<AbsoluteDimensionItem>,
+    val filters: List<DimensionItem>
+)

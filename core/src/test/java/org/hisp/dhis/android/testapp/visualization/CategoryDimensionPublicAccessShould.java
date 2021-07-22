@@ -26,26 +26,16 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.testapp.categoryDimension;
+package org.hisp.dhis.android.testapp.visualization;
 
 import org.hisp.dhis.android.core.visualization.CategoryDimension;
-import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
+import org.hisp.dhis.android.testapp.arch.ObjectWithBuilderShould;
 import org.mockito.Mock;
 
-public class CategoryDimensionPublicAccessShould extends BasePublicAccessShould<CategoryDimension> {
+public class CategoryDimensionPublicAccessShould extends ObjectWithBuilderShould {
 
     @Mock
     private CategoryDimension object;
-
-    @Override
-    public CategoryDimension object() {
-        return object;
-    }
-
-    @Override
-    public void has_public_create_method() {
-        CategoryDimension.create(null);
-    }
 
     @Override
     public void has_public_builder_method() {
@@ -54,6 +44,6 @@ public class CategoryDimensionPublicAccessShould extends BasePublicAccessShould<
 
     @Override
     public void has_public_to_builder_method() {
-        object().toBuilder();
+        object.toBuilder();
     }
 }

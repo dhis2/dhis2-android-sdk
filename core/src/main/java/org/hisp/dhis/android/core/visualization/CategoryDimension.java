@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.visualization;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -42,7 +40,7 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = $AutoValue_CategoryDimension.Builder.class)
+@JsonDeserialize(builder = AutoValue_CategoryDimension.Builder.class)
 public abstract class CategoryDimension {
 
     @Nullable
@@ -54,11 +52,7 @@ public abstract class CategoryDimension {
     public abstract List<ObjectWithUid> categoryOptions();
 
     public static Builder builder() {
-        return new $AutoValue_CategoryDimension.Builder();
-    }
-
-    public static CategoryDimension create(Cursor cursor) {
-        return AutoValue_CategoryDimension.createFromCursor(cursor);
+        return new AutoValue_CategoryDimension.Builder();
     }
 
     public abstract Builder toBuilder();

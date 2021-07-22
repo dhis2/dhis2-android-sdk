@@ -64,7 +64,7 @@ internal class AnalyticsVisualizationsService @Inject constructor(
 
         val queryDimensions =
             (visualization.rowDimensions() ?: emptyList()) +
-                    (visualization.columnDimensions() ?: emptyList())
+                (visualization.columnDimensions() ?: emptyList())
 
         dimensionHelper.getDimensionItems(
             visualization,

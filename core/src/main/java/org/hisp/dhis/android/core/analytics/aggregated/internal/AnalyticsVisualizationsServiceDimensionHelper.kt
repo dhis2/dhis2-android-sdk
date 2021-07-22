@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
-import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import javax.inject.Inject
+import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.GridDimension
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
@@ -141,7 +141,7 @@ internal class AnalyticsVisualizationsServiceDimensionHelper @Inject constructor
 
     private fun mapDimensions(dimensionStrs: List<String>?): List<Dimension> {
         return dimensionStrs?.mapNotNull {
-            when(it) {
+            when (it) {
                 dataDimension -> Dimension.Data
                 periodDimension -> Dimension.Period
                 orgUnitDimension -> Dimension.OrganisationUnit

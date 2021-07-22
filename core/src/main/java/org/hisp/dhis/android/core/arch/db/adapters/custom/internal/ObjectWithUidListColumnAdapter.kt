@@ -43,7 +43,7 @@ internal class ObjectWithUidListColumnAdapter : ColumnTypeAdapter<List<ObjectWit
         val columnIndex = cursor.getColumnIndex(columnName)
         val str = cursor.getString(columnIndex)
         return try {
-            val list = ObjectMapperFactory.objectMapper().readValue<List<Map<String,Any>>>(str)
+            val list = ObjectMapperFactory.objectMapper().readValue<List<Map<String, Any>>>(str)
             list.map { ObjectWithUid.create(it[BaseIdentifiableObject.UID].toString()) }
         } catch (e: JsonProcessingException) {
             listOf()

@@ -28,8 +28,10 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
+import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
+import org.hisp.dhis.android.core.analytics.aggregated.GridDimension
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit.*
@@ -127,6 +129,40 @@ internal class AnalyticsVisualizationsServiceDimensionHelper @Inject constructor
             } ?: emptyList()
         } else {
             emptyList()
+        }
+    }
+
+    fun getGridDimensions(visualization: Visualization): GridDimension {
+        val columns = mapDimensions(visualization.columnDimensions())
+        val rows = mapDimensions(visualization.rowDimensions())
+
+        return GridDimension(columns, rows)
+    }
+
+    private fun mapDimensions(dimensionStrs: List<String>?): List<Dimension> {
+        return dimensionStrs?.mapNotNull {
+            when(it) {
+                dataDimension -> Dimension.Data
+                periodDimension -> Dimension.Period
+                orgUnitDimension -> Dimension.OrganisationUnit
+                else -> {
+                    if (uidRegex.matches(it)) {
+                        extractUidDimension(it)
+                    } else {
+                        null
+                    }
+                }
+            }
+        } ?: emptyList()
+    }
+
+    private fun extractUidDimension(uid: String): Dimension? {
+        val category = categoryStore.selectByUid(uid)
+
+        return if (category != null) {
+            Dimension.Category(uid)
+        } else {
+            null
         }
     }
 }

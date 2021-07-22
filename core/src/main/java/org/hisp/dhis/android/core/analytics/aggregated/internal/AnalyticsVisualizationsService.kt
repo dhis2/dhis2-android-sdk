@@ -47,27 +47,7 @@ internal class AnalyticsVisualizationsService @Inject constructor(
         val visualization = getVisualization(params.visualization)
         val dimensionalResponse = getDimensionalResponse(visualization)
 
-        return GridAnalyticsResponse(
-            metadata = dimensionalResponse.metadata,
-            headers = GridHeader(
-                columns = listOf(),
-                rows = listOf()
-            ),
-            dimensions = GridDimension(
-                columns = dimensionalResponse.dimensions.toList(),
-                rows = listOf()
-            ),
-            filters = dimensionalResponse.filters,
-            values = listOf(
-                dimensionalResponse.values.map {
-                    GridResponseValue(
-                        columns = it.dimensions,
-                        rows = listOf(),
-                        value = it.value
-                    )
-                }
-            )
-        )
+        return buildGridResponse(visualization, dimensionalResponse)
     }
 
     private fun getVisualization(visualizationId: String): Visualization {
@@ -84,7 +64,7 @@ internal class AnalyticsVisualizationsService @Inject constructor(
 
         val queryDimensions =
             (visualization.rowDimensions() ?: emptyList()) +
-                (visualization.columnDimensions() ?: emptyList())
+                    (visualization.columnDimensions() ?: emptyList())
 
         dimensionHelper.getDimensionItems(
             visualization,
@@ -101,5 +81,76 @@ internal class AnalyticsVisualizationsService @Inject constructor(
         }
 
         return analyticsRepository.blockingEvaluate()
+    }
+
+    private fun buildGridResponse(
+        visualization: Visualization,
+        dimensionalResponse: DimensionalResponse
+    ): GridAnalyticsResponse {
+
+        val gridDimension = dimensionHelper.getGridDimensions(visualization)
+
+        val rowIndexes = gridDimension.rows.map { dimensionalResponse.dimensions.indexOf(it) }
+
+        val groupedByRow = dimensionalResponse.values.groupBy { value ->
+            rowIndexes.map { rowIndex -> value.dimensions[rowIndex] }
+        }
+
+        val gridValues = groupedByRow.map { (rows, valueList) ->
+            valueList.map { value ->
+                GridResponseValue(
+                    columns = value.dimensions.filterNot { rows.contains(it) },
+                    rows = rows,
+                    value = value.value
+                )
+            }
+        }
+
+        val gridHeader = buildGridHeader(gridValues)
+
+        return GridAnalyticsResponse(
+            metadata = dimensionalResponse.metadata,
+            headers = gridHeader,
+            dimensions = gridDimension,
+            filters = dimensionalResponse.filters,
+            values = gridValues
+        )
+    }
+
+    private fun buildGridHeader(gridValues: List<List<GridResponseValue>>): GridHeader {
+        if (gridValues.isEmpty() || gridValues.first().isEmpty()) {
+            return GridHeader(emptyList(), emptyList())
+        }
+
+        val sampleRow = gridValues.first()
+
+        val columnCount = sampleRow.first().columns.size
+        val columns = (0 until columnCount).map { columnIdx ->
+            val columnValues = sampleRow.map { it.columns[columnIdx] }
+            getGridHeaderItems(columnValues)
+        }
+
+        val sampleColumn = gridValues.map { it.first() }
+
+        val rowCount = sampleColumn.first().rows.size
+        val rows = (0 until rowCount).map { rowIdx ->
+            val rowValues = sampleColumn.map { it.rows[rowIdx] }
+            getGridHeaderItems(rowValues)
+        }
+
+        return GridHeader(columns, rows)
+    }
+
+    private fun getGridHeaderItems(values: List<String>): List<GridHeaderItem> {
+        val groups = mutableListOf<GridHeaderItem>()
+        values.forEach {
+            val last = groups.lastOrNull()
+            if (last?.id == it) {
+                groups[groups.lastIndex] = last.copy(width = last.width + 1)
+            } else {
+                groups.add(GridHeaderItem(it, 1))
+            }
+        }
+        return groups
     }
 }

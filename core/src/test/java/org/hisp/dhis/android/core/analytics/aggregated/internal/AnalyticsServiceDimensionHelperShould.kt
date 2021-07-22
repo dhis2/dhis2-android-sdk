@@ -96,7 +96,7 @@ class AnalyticsServiceDimensionHelperShould {
             ),
             filters = listOf()
         )
-        val dimensions = setOf(
+        val dimensions = listOf(
             Dimension.Period, Dimension.Data, Dimension.OrganisationUnit,
             Dimension.Category(s.categoryItem1_1.uid)
         )
@@ -126,7 +126,7 @@ class AnalyticsServiceDimensionHelperShould {
             ),
             filters = listOf()
         )
-        val dimensions = setOf(Dimension.Period, Dimension.Data, Dimension.Category(s.categoryItem1_1.uid))
+        val dimensions = listOf(Dimension.Period, Dimension.Data, Dimension.Category(s.categoryItem1_1.uid))
 
         val items = helper.getEvaluationItems(params, dimensions)
 
@@ -154,7 +154,7 @@ class AnalyticsServiceDimensionHelperShould {
             ),
             filters = listOf()
         )
-        val dimensions = setOf(Dimension.Data, Dimension.Period, Dimension.OrganisationUnit)
+        val dimensions = listOf(Dimension.Data, Dimension.Period, Dimension.OrganisationUnit)
 
         val items = helper.getEvaluationItems(params, dimensions)
 
@@ -178,7 +178,7 @@ class AnalyticsServiceDimensionHelperShould {
             ),
             filters = listOf()
         )
-        val dimensions = setOf(Dimension.Data, Dimension.Period, Dimension.OrganisationUnit)
+        val dimensions = listOf(Dimension.Data, Dimension.Period, Dimension.OrganisationUnit)
 
         val items = helper.getEvaluationItems(params, dimensions)
 

@@ -39,13 +39,13 @@ internal class AnalyticsServiceDimensionHelper @Inject constructor(
     private val analyticsOrganisationUnitHelper: AnalyticsOrganisationUnitHelper
 ) {
 
-    fun getDimensions(params: AnalyticsRepositoryParams): Set<Dimension> {
-        return params.dimensions.map { it.dimension }.toSet()
+    fun getDimensions(params: AnalyticsRepositoryParams): List<Dimension> {
+        return params.dimensions.map { it.dimension }.distinct()
     }
 
     fun getEvaluationItems(
         params: AnalyticsRepositoryParams,
-        dimensions: Set<Dimension>
+        dimensions: List<Dimension>
     ): List<AnalyticsServiceEvaluationItem> {
         val absoluteDimensionItemList = dimensions.map { dimension ->
             params.dimensions

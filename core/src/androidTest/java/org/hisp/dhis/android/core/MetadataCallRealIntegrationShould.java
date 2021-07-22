@@ -30,10 +30,7 @@ package org.hisp.dhis.android.core;
 
 import android.util.Log;
 
-import org.hisp.dhis.android.core.analytics.aggregated.GridAnalyticsResponse;
-import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.io.IOException;
 
@@ -73,21 +70,12 @@ public class MetadataCallRealIntegrationShould extends BaseRealIntegrationTest {
     //This test is uncommented because technically it is flaky.
     //It depends on a live server to operate and the login is hardcoded here.
     //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
-    @Test
+    //@Test
     public void response_successful_on_sync_meta_data_once() throws Exception {
-        d2.userModule().logIn(username, password, RealServerMother.android_previous1).blockingGet();
+        d2.userModule().logIn(username, password, url).blockingGet();
 
         d2.metadataModule().blockingDownload();
-        d2.aggregatedModule().data().blockingDownload();
-
-        GridAnalyticsResponse response1 = d2.analyticsModule().visualizations()
-                .withVisualization("AfvoZpi4thl")
-                .blockingEvaluate();
-
-        GridAnalyticsResponse response2 = d2.analyticsModule().visualizations()
-                .withVisualization("TXcKIg4LuA3")
-                .blockingEvaluate();
-
+        
 
         //TODO: add additional sync + break point.
         //when debugger stops at the new break point manually change metadata online & resume.

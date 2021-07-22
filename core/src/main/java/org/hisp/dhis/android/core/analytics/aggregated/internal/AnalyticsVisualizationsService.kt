@@ -146,7 +146,7 @@ internal class AnalyticsVisualizationsService @Inject constructor(
         values.forEach {
             val last = groups.lastOrNull()
             if (last?.id == it) {
-                groups[groups.lastIndex] = last.copy(width = last.width + 1)
+                groups[groups.lastIndex] = last.copy(weight = last.weight + 1)
             } else {
                 groups.add(GridHeaderItem(it, 1))
             }

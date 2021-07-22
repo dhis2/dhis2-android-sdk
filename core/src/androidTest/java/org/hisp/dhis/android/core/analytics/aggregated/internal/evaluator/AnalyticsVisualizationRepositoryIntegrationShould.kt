@@ -42,9 +42,9 @@ class AnalyticsVisualizationRepositoryIntegrationShould : BaseMockIntegrationTes
             .withVisualization(visualizationUid)
             .blockingEvaluate()
 
-        assertThat(result.dimensions.columns).hasSize(1)
-        assertThat(result.dimensions.rows).hasSize(1)
+        assertThat(result.dimensions.columns.size).isEqualTo(1)
+        assertThat(result.dimensions.rows.size).isEqualTo(1)
         assertThat(result.metadata).isNotEmpty()
-        assertThat(result.values).hasSize(3)
+        assertThat(result.values.size).isEqualTo(3)
     }
 }

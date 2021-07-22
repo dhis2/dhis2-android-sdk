@@ -28,19 +28,23 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
+import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
 
 class AnalyticsVisualizationRepositoryIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
 
-    private val visualationUid = "FAFa11yFeFe"
+    private val visualizationUid = "FAFa11yFeFe"
 
     @Test
     fun evaluate_visualization() {
         val result = d2.analyticsModule().visualizations()
-            .withVisualization(visualationUid)
+            .withVisualization(visualizationUid)
             .blockingEvaluate()
 
-        // TODO Implement when actual visualization service is used
+        assertThat(result.dimensions.columns).hasSize(1)
+        assertThat(result.dimensions.rows).hasSize(1)
+        assertThat(result.metadata).isNotEmpty()
+        assertThat(result.values).hasSize(3)
     }
 }

@@ -28,14 +28,8 @@
 package org.hisp.dhis.android.core.enrollment.internal
 
 import dagger.Reusable
-import java.util.*
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getSyncState
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper
-import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.enrollment.Enrollment
@@ -48,16 +42,17 @@ import org.hisp.dhis.android.core.imports.internal.BaseImportSummaryHelper.getRe
 import org.hisp.dhis.android.core.imports.internal.EnrollmentImportSummary
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
-import org.hisp.dhis.android.core.note.Note
-import org.hisp.dhis.android.core.note.NoteTableInfo
+import org.hisp.dhis.android.core.tracker.importer.internal.JobReportEnrollmentHandler
+import java.util.*
+import javax.inject.Inject
 
 @Reusable
 internal class EnrollmentImportHandler @Inject constructor(
     private val enrollmentStore: EnrollmentStore,
-    private val noteStore: IdentifiableObjectStore<Note>,
     private val eventImportHandler: EventImportHandler,
     private val trackerImportConflictStore: TrackerImportConflictStore,
     private val trackerImportConflictParser: TrackerImportConflictParser,
+    private val jobReportEnrollmentHandler: JobReportEnrollmentHandler,
     private val dataStatePropagator: DataStatePropagator
 ) {
 
@@ -80,7 +75,7 @@ internal class EnrollmentImportHandler @Inject constructor(
                 }
 
                 if (handleAction !== HandleAction.Delete) {
-                    handleNoteImportSummary(enrollmentUid, syncState)
+                    jobReportEnrollmentHandler.handleEnrollmentNotes(enrollmentUid, syncState)
                     storeEnrollmentImportConflicts(enrollmentImportSummary, teiUid)
 
                     handleEventImportSummaries(enrollmentImportSummary, enrollments, teiUid)
@@ -113,19 +108,6 @@ internal class EnrollmentImportHandler @Inject constructor(
                 enrollmentUid,
                 teiUid
             )
-        }
-    }
-
-    private fun handleNoteImportSummary(enrollmentUid: String, state: State) {
-        val newNoteState = if (state == State.SYNCED) State.SYNCED else State.TO_POST
-        val whereClause = WhereClauseBuilder()
-            .appendInKeyStringValues(
-                DataColumns.SYNC_STATE, EnumHelper.asStringList(State.uploadableStatesIncludingError().toList())
-            )
-            .appendKeyStringValue(NoteTableInfo.Columns.ENROLLMENT, enrollmentUid).build()
-        val notes = noteStore.selectWhere(whereClause)
-        for (note in notes) {
-            noteStore.update(note.toBuilder().syncState(newNoteState).build())
         }
     }
 

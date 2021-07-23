@@ -33,9 +33,12 @@ import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.relationship.RelationshipItem
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
 @Suppress("TooManyFunctions")
 internal interface DataStatePropagator {
+
+    fun propagateTrackedEntityInstanceUpdate(tei: TrackedEntityInstance?)
 
     fun propagateEnrollmentUpdate(enrollment: Enrollment?)
 

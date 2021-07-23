@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.common.internal
 
 import dagger.Reusable
+import java.util.*
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
@@ -42,8 +44,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
-import java.util.*
-import javax.inject.Inject
 
 @Reusable
 @Suppress("TooManyFunctions")
@@ -250,10 +250,10 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
             states.contains(State.ERROR) -> State.ERROR
             states.contains(State.WARNING) -> State.WARNING
             states.contains(State.UPLOADING) ||
-                    states.contains(State.SENT_VIA_SMS) ||
-                    states.contains(State.SYNCED_VIA_SMS) ||
-                    states.contains(State.TO_POST) ||
-                    states.contains(State.TO_UPDATE) -> State.TO_UPDATE
+                states.contains(State.SENT_VIA_SMS) ||
+                states.contains(State.SYNCED_VIA_SMS) ||
+                states.contains(State.TO_POST) ||
+                states.contains(State.TO_UPDATE) -> State.TO_UPDATE
             else -> State.SYNCED
         }
     }

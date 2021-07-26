@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo.Columns;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
@@ -66,6 +67,7 @@ public final class TrackedEntityInstanceCollectionRepository
 
     private final TrackedEntityInstancePostParentCall postCall;
     private final TrackedEntityInstanceStore store;
+    private final DataStatePropagator dataStatePropagator;
     private final JobQueryCall jobQueryCall;
 
     @Inject
@@ -74,14 +76,21 @@ public final class TrackedEntityInstanceCollectionRepository
             final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders,
             final RepositoryScope scope,
             final Transformer<TrackedEntityInstanceCreateProjection, TrackedEntityInstance> transformer,
+            final DataStatePropagator dataStatePropagator,
             final TrackedEntityInstancePostParentCall postCall,
             final JobQueryCall jobQueryCall) {
         super(store, childrenAppenders, scope, transformer, new FilterConnectorFactory<>(scope, s ->
-                new TrackedEntityInstanceCollectionRepository(store, childrenAppenders, s, transformer, postCall,
-                        jobQueryCall)));
+                new TrackedEntityInstanceCollectionRepository(store, childrenAppenders, s, transformer,
+                        dataStatePropagator, postCall, jobQueryCall)));
         this.postCall = postCall;
         this.store = store;
+        this.dataStatePropagator = dataStatePropagator;
         this.jobQueryCall = jobQueryCall;
+    }
+
+    @Override
+    protected void propagateState(TrackedEntityInstance trackedEntityInstance) {
+        dataStatePropagator.propagateTrackedEntityInstanceUpdate(trackedEntityInstance);
     }
 
     @Override
@@ -102,7 +111,8 @@ public final class TrackedEntityInstanceCollectionRepository
     @Override
     public TrackedEntityInstanceObjectRepository uid(String uid) {
         RepositoryScope updatedScope = RepositoryScopeHelper.withUidFilterItem(scope, uid);
-        return new TrackedEntityInstanceObjectRepository(store, uid, childrenAppenders, updatedScope);
+        return new TrackedEntityInstanceObjectRepository(store, uid, childrenAppenders, updatedScope,
+                dataStatePropagator);
     }
 
     public StringFilterConnector<TrackedEntityInstanceCollectionRepository> byUid() {

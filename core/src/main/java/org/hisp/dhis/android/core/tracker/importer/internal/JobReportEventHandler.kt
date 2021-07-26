@@ -31,6 +31,7 @@ import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
@@ -62,9 +63,12 @@ internal class JobReportEventHandler @Inject internal constructor(
     }
 
     override fun handleObject(uid: String, state: State) {
-        eventStore.setSyncState(uid, state)
         conflictStore.deleteEventConflicts(uid)
-        handleEventNotes(uid, state)
+        val handleAction = eventStore.setSyncStateOrDelete(uid, state)
+
+        if (handleAction !== HandleAction.Delete) {
+            handleEventNotes(uid, state)
+        }
     }
 
     override fun storeConflict(errorReport: JobValidationError) {

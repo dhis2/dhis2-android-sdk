@@ -29,21 +29,44 @@ package org.hisp.dhis.android.core.tracker.importer.internal
 
 import dagger.Reusable
 import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
+import org.hisp.dhis.android.core.note.Note
+import org.hisp.dhis.android.core.note.NoteTableInfo
 
 @Reusable
 internal class JobReportEnrollmentHandler @Inject internal constructor(
+    private val noteStore: IdentifiableObjectStore<Note>,
     private val enrollmentStore: EnrollmentStore,
     private val conflictStore: TrackerImportConflictStore,
     private val conflictHelper: TrackerConflictHelper
 ) : JobReportTypeHandler() {
 
+    fun handleEnrollmentNotes(enrollmentUid: String, state: State) {
+        val newNoteState = if (state == State.SYNCED) State.SYNCED else State.TO_POST
+        val whereClause = WhereClauseBuilder()
+            .appendInKeyStringValues(
+                DataColumns.SYNC_STATE, State.uploadableStatesIncludingError().map { it.name }
+            )
+            .appendKeyStringValue(NoteTableInfo.Columns.ENROLLMENT, enrollmentUid).build()
+        for (note in noteStore.selectWhere(whereClause)) {
+            noteStore.update(note.toBuilder().syncState(newNoteState).build())
+        }
+    }
+
     override fun handleObject(uid: String, state: State) {
-        enrollmentStore.setSyncState(uid, state)
         conflictStore.deleteEnrollmentConflicts(uid)
+        val handleAction = enrollmentStore.setSyncStateOrDelete(uid, state)
+
+        if (handleAction !== HandleAction.Delete) {
+            handleEnrollmentNotes(uid, state)
+        }
     }
 
     override fun storeConflict(errorReport: JobValidationError) {

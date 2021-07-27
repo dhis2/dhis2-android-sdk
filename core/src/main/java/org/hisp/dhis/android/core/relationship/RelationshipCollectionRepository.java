@@ -115,7 +115,7 @@ public class RelationshipCollectionRepository
                     .errorCode(D2ErrorCode.CANT_CREATE_EXISTING_OBJECT)
                     .errorDescription("Tried to create already existing Relationship: " + relationship)
                     .build();
-        } else if (from == null || !from.hasTrackedEntityInstance() || to == null || !to.hasTrackedEntityInstance()) {
+        } else if (from == null || to == null || !to.hasTrackedEntityInstance()) {
             throw D2Error
                     .builder()
                     .errorComponent(D2ErrorComponent.SDK)

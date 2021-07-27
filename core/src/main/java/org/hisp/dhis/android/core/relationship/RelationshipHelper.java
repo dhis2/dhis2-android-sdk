@@ -77,6 +77,15 @@ public final class RelationshipHelper {
                 .build();
     }
 
+    public static Relationship eventToTeiRelationship(String fromEventUid, String toTeiUid, String relationshipTypeUid){
+        return Relationship.builder()
+                .uid(new UidGeneratorImpl().generate())
+                .from(RelationshipHelper.eventItem(fromEventUid))
+                .to(RelationshipHelper.teiItem(toTeiUid))
+                .relationshipType(relationshipTypeUid)
+                .build();
+    }
+
     public static boolean areItemsEqual(RelationshipItem a, RelationshipItem b) {
         return equalsConsideringNull(a.event(), b.event())
                 && equalsConsideringNull(a.enrollment(), b.enrollment())

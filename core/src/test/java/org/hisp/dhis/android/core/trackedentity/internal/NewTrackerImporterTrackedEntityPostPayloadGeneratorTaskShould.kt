@@ -141,6 +141,7 @@ class NewTrackerImporterTrackedEntityPostPayloadGeneratorTaskShould {
             .uid(uidGenerator.generate())
             .enrollment(enrollmentUid)
             .syncState(State.TO_UPDATE)
+            .aggregatedSyncState(State.TO_UPDATE)
             .deleted(deleted)
             .build()
     }

@@ -43,6 +43,8 @@ import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
+import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
+import org.hisp.dhis.android.core.relationship.internal.RelationshipStoreImpl
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
@@ -58,6 +60,7 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
     private lateinit var trackedEntityInstanceStore: TrackedEntityInstanceStore
     private lateinit var enrollmentStore: EnrollmentStore
     private lateinit var eventStore: EventStore
+    private lateinit var relationshipStore: RelationshipStore
 
     @Before
     @Throws(IOException::class)
@@ -65,7 +68,9 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
         trackedEntityInstanceStore = TrackedEntityInstanceStoreImpl.create(d2.databaseAdapter())
         enrollmentStore = create(d2.databaseAdapter())
         eventStore = EventStoreImpl.create(d2.databaseAdapter())
-        propagator = DataStatePropagatorImpl(trackedEntityInstanceStore, enrollmentStore, eventStore)
+        relationshipStore = RelationshipStoreImpl.create(d2.databaseAdapter())
+        propagator = DataStatePropagatorImpl(trackedEntityInstanceStore, enrollmentStore,
+            eventStore, relationshipStore)
     }
 
     @Test
@@ -359,6 +364,7 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
         val eventUid = d2.eventModule().events().blockingAdd(sampleEventProjection(enrolmentUid))
 
         eventStore.setSyncState(eventUid, state)
+        eventStore.setAggregatedSyncState(eventUid, state)
 
         return eventUid
     }

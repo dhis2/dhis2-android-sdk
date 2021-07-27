@@ -37,20 +37,25 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EventStatusColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.StateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreCoordinatesColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNoteListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreRelationshipListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreStateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreTrackedEntityDataValueListColumnAdapter;
 import org.hisp.dhis.android.core.arch.helpers.CoordinateHelper;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.Coordinates;
+import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.internal.EventFields;
 import org.hisp.dhis.android.core.note.Note;
 import org.hisp.dhis.android.core.relationship.Relationship;
@@ -161,6 +166,21 @@ public abstract class Event extends BaseDeletableDataObject implements ObjectWit
     @ColumnAdapter(IgnoreRelationshipListColumnAdapter.class)
     abstract List<Relationship> relationships();
 
+    @Nullable
+    @ColumnName(DataColumns.AGGREGATED_SYNC_STATE)
+    @ColumnAdapter(StateColumnAdapter.class)
+    public abstract State aggregatedSyncState();
+
+    /**
+     * @deprecated Use {@link #aggregatedSyncState()} instead.
+     */
+    @Deprecated
+    @Nullable
+    @ColumnAdapter(IgnoreStateColumnAdapter.class)
+    public State state() {
+        return aggregatedSyncState();
+    }
+
     public static Builder builder() {
         return new $$AutoValue_Event.Builder();
     }
@@ -221,6 +241,16 @@ public abstract class Event extends BaseDeletableDataObject implements ObjectWit
         public abstract Builder trackedEntityDataValues(List<TrackedEntityDataValue> trackedEntityDataValues);
 
         public abstract Builder relationships(List<Relationship> relationships);
+
+        public abstract Builder aggregatedSyncState(State aggregatedSyncState);
+
+        /**
+         * @deprecated Use {@link #aggregatedSyncState(State)} and {@link #syncState(State)} instead.
+         */
+        @Deprecated
+        public Builder state(State state) {
+            return aggregatedSyncState(state).syncState(state);
+        }
 
         abstract Event autoBuild();
 

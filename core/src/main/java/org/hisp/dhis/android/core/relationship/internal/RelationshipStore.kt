@@ -25,30 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.relationship.internal
 
-package org.hisp.dhis.android.core.event.internal;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore
+import org.hisp.dhis.android.core.relationship.Relationship
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
+import org.hisp.dhis.android.core.relationship.RelationshipItem
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore;
-import org.hisp.dhis.android.core.event.Event;
+internal interface RelationshipStore : IdentifiableDeletableDataObjectStore<Relationship> {
 
-import java.util.List;
-import java.util.Map;
+    fun getRelationshipsByItem(relationshipItem: RelationshipItem): List<Relationship>
 
-public interface EventStore extends IdentifiableDeletableDataObjectStore<Event> {
-
-    Map<String, List<Event>> queryEventsAttachedToEnrollmentToPost();
-
-    List<Event> querySingleEventsToPost();
-
-    List<Event> querySingleEvents();
-
-    List<Event> queryOrderedForEnrollmentAndProgramStage(String enrollmentUid,
-                                                         String programStageUid,
-                                                         Boolean includeDeleted);
-
-    Integer countEventsForEnrollment(String enrollmentUid, Boolean includeDeleted);
-
-    int countTeisWhereEvents(String whereClause);
-
-    List<String> queryMissingRelationshipsUids();
+    fun getRelationshipsByItem(relationshipItem: RelationshipItem,
+                               type: RelationshipConstraintType?): List<Relationship>
 }

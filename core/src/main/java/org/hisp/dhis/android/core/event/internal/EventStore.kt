@@ -25,15 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.event.internal
 
-package org.hisp.dhis.android.core.relationship.internal;
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.event.Event
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore;
-import org.hisp.dhis.android.core.relationship.Relationship;
-import org.hisp.dhis.android.core.relationship.RelationshipItem;
+internal interface EventStore : IdentifiableDeletableDataObjectStore<Event> {
+    fun queryEventsAttachedToEnrollmentToPost(): Map<String, List<Event>>
 
-import java.util.List;
+    fun querySingleEventsToPost(): List<Event>
 
-public interface RelationshipStore extends IdentifiableDeletableDataObjectStore<Relationship> {
-    List<Relationship> getRelationshipsByItem(RelationshipItem relationshipItem);
+    fun querySingleEvents(): List<Event>
+
+    fun queryOrderedForEnrollmentAndProgramStage(
+        enrollmentUid: String,
+        programStageUid: String,
+        includeDeleted: Boolean
+    ): List<Event>
+
+
+    fun countEventsForEnrollment(enrollmentUid: String, includeDeleted: Boolean): Int
+
+    fun countTeisWhereEvents(whereClause: String): Int
+
+    fun queryMissingRelationshipsUids(): List<String>
+
+    fun setAggregatedSyncState(uid: String, state: State): Int
+
+    fun selectAggregatedSyncStateWhere(whereClause: String): List<State>
 }

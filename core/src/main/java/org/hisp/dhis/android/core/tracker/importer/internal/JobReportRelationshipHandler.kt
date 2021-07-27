@@ -28,20 +28,27 @@
 package org.hisp.dhis.android.core.tracker.importer.internal
 
 import dagger.Reusable
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.relationship.RelationshipHelper
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import javax.inject.Inject
 
 @Reusable
 internal class JobReportRelationshipHandler @Inject internal constructor(
-    private val relationshipStore: RelationshipStore
-) : JobReportTypeHandler() {
+    relationshipStore: RelationshipStore
+) : JobReportTypeHandler(relationshipStore) {
 
-    override fun handleObject(uid: String, state: State) {
-        relationshipStore.setSyncStateOrDelete(uid, state)
+    override fun handleObject(uid: String, state: State): HandleAction {
+        return relationshipStore.setSyncStateOrDelete(uid, state)
     }
 
     override fun storeConflict(errorReport: JobValidationError) {
 
     }
+
+    override fun getRelatedRelationships(uid: String): List<String> {
+        return emptyList()
+    }
+
 }

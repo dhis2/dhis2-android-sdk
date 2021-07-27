@@ -28,22 +28,26 @@
 package org.hisp.dhis.android.core.tracker.importer.internal
 
 import dagger.Reusable
-import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
+import org.hisp.dhis.android.core.relationship.RelationshipHelper
+import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
+import javax.inject.Inject
 
 @Reusable
 internal class JobReportTrackedEntityHandler @Inject internal constructor(
     private val conflictStore: TrackerImportConflictStore,
     private val trackedEntityStore: TrackedEntityInstanceStore,
-    private val conflictHelper: TrackerConflictHelper
-) : JobReportTypeHandler() {
+    private val conflictHelper: TrackerConflictHelper,
+    relationshipStore: RelationshipStore
+) : JobReportTypeHandler(relationshipStore) {
 
-    override fun handleObject(uid: String, state: State) {
+    override fun handleObject(uid: String, state: State): HandleAction {
         conflictStore.deleteTrackedEntityConflicts(uid)
-        trackedEntityStore.setSyncStateOrDelete(uid, state)
+        return trackedEntityStore.setSyncStateOrDelete(uid, state)
     }
 
     override fun storeConflict(errorReport: JobValidationError) {
@@ -52,5 +56,9 @@ internal class JobReportTrackedEntityHandler @Inject internal constructor(
                 .tableReference(TrackedEntityInstanceTableInfo.TABLE_INFO.name())
                 .trackedEntityInstance(errorReport.uid).build()
         )
+    }
+
+    override fun getRelatedRelationships(uid: String): List<String> {
+        return relationshipStore.getRelationshipsByItem(RelationshipHelper.teiItem(uid)).mapNotNull { it.uid() }
     }
 }

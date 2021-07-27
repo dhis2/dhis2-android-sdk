@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
 import org.hisp.dhis.android.core.relationship.RelationshipItem
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStore
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
@@ -54,7 +55,8 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
     private val trackedEntityInstanceStore: TrackedEntityInstanceStore,
     private val enrollmentStore: EnrollmentStore,
     private val eventStore: EventStore,
-    private val relationshipStore: RelationshipStore
+    private val relationshipStore: RelationshipStore,
+    private val relationshipItemStore: RelationshipItemStore
 ) : DataStatePropagator {
 
     override fun propagateTrackedEntityInstanceUpdate(tei: TrackedEntityInstance?) {
@@ -105,11 +107,14 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
     override fun propagateRelationshipUpdate(item: RelationshipItem?) {
         if (item != null) {
             if (item.hasTrackedEntityInstance()) {
-                setTeiSyncState(item.trackedEntityInstance()!!.trackedEntityInstance(), getStateForUpdate)
+                val tei = trackedEntityInstanceStore.selectByUid(item.elementUid())
+                propagateTrackedEntityInstanceUpdate(tei)
             } else if (item.hasEnrollment()) {
-                setEnrollmentSyncState(item.enrollment()!!.enrollment(), getStateForUpdate)
+                val enrollment = enrollmentStore.selectByUid(item.elementUid())
+                propagateEnrollmentUpdate(enrollment)
             } else if (item.hasEvent()) {
-                setEventSyncState(item.event()!!.event(), getStateForUpdate)
+                val event = eventStore.selectByUid(item.elementUid())
+                propagateEventUpdate(event)
             }
         }
     }
@@ -271,8 +276,13 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
     override fun refreshAggregatedSyncStatesCausedBy(
         trackedEntityInstanceUids: List<String>,
         enrollmentUids: List<String>,
-        eventUids: List<String>
+        eventUids: List<String>,
+        relationshipUids: List<String>
     ) {
+        eventUids.forEach {
+            refreshEventAggregatedSyncState(it)
+        }
+
         val enrollmentsFromEvents = eventStore.selectByUids(eventUids).mapNotNull { it.enrollment() }
 
         val enrollments = enrollmentStore.selectByUids(enrollmentUids + enrollmentsFromEvents)
@@ -283,6 +293,15 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
         val teiUids = trackedEntityInstanceUids + enrollments.mapNotNull { it.trackedEntityInstance() }
         teiUids.forEach {
             refreshTrackedEntityInstanceAggregatedSyncState(it)
+        }
+
+        relationshipUids.forEach {
+            val item = relationshipItemStore.getForRelationshipUidAndConstraintType(it, RelationshipConstraintType.FROM)
+            when {
+                item.hasEvent() -> refreshEventAggregatedSyncState(item.elementUid())
+                item.hasEnrollment() -> refreshEnrollmentAggregatedSyncState(item.elementUid())
+                item.hasTrackedEntityInstance() -> refreshTrackedEntityInstanceAggregatedSyncState(item.elementUid())
+            }
         }
     }
 

@@ -117,7 +117,8 @@ internal class JobReportHandler @Inject internal constructor(
         dataStatePropagator.refreshAggregatedSyncStatesCausedBy(
             jobObjects.filter { it.trackerType() == TRACKED_ENTITY }.map { it.objectUid() },
             jobObjects.filter { it.trackerType() == ENROLLMENT }.map { it.objectUid() },
-            jobObjects.filter { it.trackerType() == EVENT }.map { it.objectUid() }
+            jobObjects.filter { it.trackerType() == EVENT }.map { it.objectUid() },
+            jobObjects.filter { it.trackerType() == RELATIONSHIP }.map { it.objectUid() }
         )
     }
 

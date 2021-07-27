@@ -42,7 +42,7 @@ import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayload
 import org.hisp.dhis.android.core.tracker.importer.internal.*
 import org.hisp.dhis.android.core.tracker.importer.internal.JobQueryCall
-import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectTypes.EVENT
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType.EVENT
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterService
 
 @Reusable

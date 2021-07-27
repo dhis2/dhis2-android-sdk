@@ -33,6 +33,8 @@ import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
+import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationship
+import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipItem
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -52,7 +54,8 @@ class NewTrackerImporterTrackedEntityPostPayloadGeneratorTaskShould {
         val wrapper = getTaskFor(
             listOf(syncedTei),
             mapOf(updatedEnrollment.uid()!! to listOf(updatedEvent)),
-            mapOf(syncedTei.uid()!! to listOf(updatedEnrollment))
+            mapOf(syncedTei.uid()!! to listOf(updatedEnrollment)),
+            emptyMap()
         ).generate()
 
         assertThat(wrapper.deleted.isEmpty()).isTrue()
@@ -71,7 +74,8 @@ class NewTrackerImporterTrackedEntityPostPayloadGeneratorTaskShould {
         val wrapper = getTaskFor(
             listOf(syncedTei),
             mapOf(syncedEnrollment.uid()!! to listOf(deletedEvent)),
-            mapOf(syncedTei.uid()!! to listOf(syncedEnrollment))
+            mapOf(syncedTei.uid()!! to listOf(syncedEnrollment)),
+            emptyMap()
         ).generate()
 
         assertThat(wrapper.deleted.trackedEntities).isEmpty()
@@ -79,6 +83,28 @@ class NewTrackerImporterTrackedEntityPostPayloadGeneratorTaskShould {
         assertThat(wrapper.deleted.events).hasSize(1)
 
         assertThat(wrapper.updated.isEmpty()).isTrue()
+    }
+
+    @Test
+    fun should_generate_granular_payload_for_relationships() {
+        val syncedTei = generateTEI()
+        val relationship = generateRelationship(
+            NewTrackerImporterRelationshipItem.builder().trackedEntity(syncedTei.uid()).build()
+        )
+
+        val wrapper = getTaskFor(
+            listOf(syncedTei),
+            emptyMap(),
+            emptyMap(),
+            mapOf(syncedTei.uid() to listOf(relationship))
+        ).generate()
+
+        assertThat(wrapper.deleted.isEmpty()).isTrue()
+
+        assertThat(wrapper.updated.trackedEntities).isEmpty()
+        assertThat(wrapper.updated.enrollments).isEmpty()
+        assertThat(wrapper.updated.events).isEmpty()
+        assertThat(wrapper.updated.relationships).hasSize(1)
     }
 
     private fun generateTEI(
@@ -119,10 +145,22 @@ class NewTrackerImporterTrackedEntityPostPayloadGeneratorTaskShould {
             .build()
     }
 
+    private fun generateRelationship(
+        from: NewTrackerImporterRelationshipItem
+    ): NewTrackerImporterRelationship {
+        return NewTrackerImporterRelationship.builder()
+            .uid(uidGenerator.generate())
+            .from(from)
+            .syncState(State.TO_UPDATE)
+            .deleted(false)
+            .build()
+    }
+
     private fun getTaskFor(
         trackedEntities: List<TrackedEntityInstance>,
         eventMap: Map<String, List<NewTrackerImporterEvent>>,
-        enrollmentMap: Map<String, List<NewTrackerImporterEnrollment>>
+        enrollmentMap: Map<String, List<NewTrackerImporterEnrollment>>,
+        relationshipMap: Map<String, List<NewTrackerImporterRelationship>>
     ): NewTrackerImporterTrackedEntityPostPayloadGeneratorTask {
         return NewTrackerImporterTrackedEntityPostPayloadGeneratorTask(
             trackedEntities,
@@ -130,6 +168,7 @@ class NewTrackerImporterTrackedEntityPostPayloadGeneratorTaskShould {
             eventMap,
             enrollmentMap,
             mapOf(),
+            relationshipMap,
             listOf()
         )
     }

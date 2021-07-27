@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.core.tracker.importer.internal.JobImportCount
 import org.hisp.dhis.android.core.tracker.importer.internal.JobReport
 import org.hisp.dhis.android.core.tracker.importer.internal.JobValidationError
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType
 import org.junit.Test
 
 class JobReportErrorShould : BaseObjectShould("tracker/importer/jobreport-error.json"), ObjectShould {
@@ -55,7 +56,7 @@ class JobReportErrorShould : BaseObjectShould("tracker/importer/jobreport-error.
         assertThat(error).isEqualTo(
             JobValidationError(
                 "PXi7gfVIk1p",
-                "EVENT",
+                TrackerImporterObjectType.EVENT,
                 "E1033",
                 "Event: `PXi7gfVIk1p`, Enrollment value is NULL."
             )

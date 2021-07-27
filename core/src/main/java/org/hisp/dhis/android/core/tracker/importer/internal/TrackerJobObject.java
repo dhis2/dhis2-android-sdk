@@ -38,6 +38,7 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.TrackerImporterObjectTypeColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseObject;
 
 import java.util.Date;
@@ -47,7 +48,8 @@ import java.util.Date;
 public abstract class TrackerJobObject extends BaseObject {
 
     @NonNull
-    public abstract String trackerType();
+    @ColumnAdapter(TrackerImporterObjectTypeColumnAdapter.class)
+    public abstract TrackerImporterObjectType trackerType();
 
     @NonNull
     public abstract String objectUid();
@@ -67,7 +69,7 @@ public abstract class TrackerJobObject extends BaseObject {
 
 
     public static Builder builder() {
-        return new AutoValue_TrackerJobObject.Builder();
+        return new $$AutoValue_TrackerJobObject.Builder();
     }
 
     abstract Builder toBuilder();
@@ -75,7 +77,7 @@ public abstract class TrackerJobObject extends BaseObject {
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseObject.Builder<Builder> {
-        public abstract Builder trackerType(String trackerType);
+        public abstract Builder trackerType(TrackerImporterObjectType trackerType);
 
         public abstract Builder objectUid(String objectUid);
 

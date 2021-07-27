@@ -28,12 +28,13 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
 import org.hisp.dhis.android.core.note.NewTrackerImporterNote
+import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationship
 import org.hisp.dhis.android.core.trackedentity.*
+import javax.inject.Inject
 
 @Reusable
 internal class NewTrackerImporterTrackedEntityPostPayloadGeneratorTask @Inject internal constructor(
@@ -42,6 +43,7 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGeneratorTask @Inject i
     private val eventMap: Map<String, List<NewTrackerImporterEvent>>,
     private val enrollmentMap: Map<String, List<NewTrackerImporterEnrollment>>,
     private val attributeValueMap: Map<String, List<NewTrackerImporterTrackedEntityAttributeValue>>,
+    private val relationshipMap: Map<String, List<NewTrackerImporterRelationship>>,
     private val notes: List<NewTrackerImporterNote>
 ) {
 
@@ -63,6 +65,8 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGeneratorTask @Inject i
                 wrapper.updated.trackedEntities.add(entity)
             }
 
+            addRelationshipsToWrapper(wrapper, relationshipMap[entity.uid()])
+
             val partitionedEnrollments = getEnrollments(entity.uid())
                 .partition { it.deleted()!! }
 
@@ -75,12 +79,21 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGeneratorTask @Inject i
                     wrapper.updated.enrollments.add(enrollment)
                 }
 
+                addRelationshipsToWrapper(wrapper, relationshipMap[enrollment.uid()])
+
                 val partitionedEvents = getEvents(enrollment.uid())
                     .filter { it.syncState() != State.SYNCED }
                     .partition { it.deleted()!! }
 
-                wrapper.deleted.events.addAll(partitionedEvents.first)
-                wrapper.updated.events.addAll(partitionedEvents.second)
+                partitionedEvents.first.forEach {
+                    wrapper.deleted.events.add(it)
+                }
+
+                partitionedEvents.second.forEach { event ->
+                    wrapper.updated.events.add(event)
+
+                    addRelationshipsToWrapper(wrapper, relationshipMap[event.uid()])
+                }
             }
         }
 
@@ -136,5 +149,20 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGeneratorTask @Inject i
                 .notes(notes.filter { it.event() == event.uid() })
             eventBuilder.build()
         } ?: emptyList()
+    }
+
+    private fun addRelationshipsToWrapper(
+        wrapper: NewTrackerImporterPayloadWrapper,
+        relationships: List<NewTrackerImporterRelationship>?
+    ) {
+        val partitionedRelationships = relationships?.partition { it.deleted()!! }
+
+        partitionedRelationships?.first?.let { deleted ->
+            wrapper.deleted.relationships.addAll(deleted)
+        }
+
+        partitionedRelationships?.second?.let { updated ->
+            wrapper.updated.relationships.addAll(updated)
+        }
     }
 }

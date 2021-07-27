@@ -25,20 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal
+package org.hisp.dhis.android.core.arch.db.adapters.enums.internal
 
-import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
-import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
-import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationship
-import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntity
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType
 
-internal data class NewTrackerImporterPayload(
-    val trackedEntities: MutableList<NewTrackerImporterTrackedEntity> = mutableListOf(),
-    val enrollments: MutableList<NewTrackerImporterEnrollment> = mutableListOf(),
-    val events: MutableList<NewTrackerImporterEvent> = mutableListOf(),
-    val relationships: MutableList<NewTrackerImporterRelationship> = mutableListOf()
-) {
-    fun isEmpty(): Boolean {
-        return trackedEntities.isEmpty() && enrollments.isEmpty() && events.isEmpty()
+internal class TrackerImporterObjectTypeColumnAdapter : EnumColumnAdapter<TrackerImporterObjectType>() {
+    override fun getEnumClass(): Class<TrackerImporterObjectType> {
+        return TrackerImporterObjectType::class.java
     }
 }

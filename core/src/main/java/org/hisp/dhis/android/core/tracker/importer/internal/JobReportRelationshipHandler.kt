@@ -27,9 +27,21 @@
  */
 package org.hisp.dhis.android.core.tracker.importer.internal
 
-internal object TrackerImporterObjectTypes {
-    const val EVENT = "EVENT"
-    const val TRACKED_ENTITY = "TRACKED_ENTITY"
-    const val ENROLLMENT = "ENROLLMENT"
-    const val RELATIONSHIP = "RELATIONSHIP"
+import dagger.Reusable
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
+import javax.inject.Inject
+
+@Reusable
+internal class JobReportRelationshipHandler @Inject internal constructor(
+    private val relationshipStore: RelationshipStore
+) : JobReportTypeHandler() {
+
+    override fun handleObject(uid: String, state: State) {
+        relationshipStore.setSyncStateOrDelete(uid, state)
+    }
+
+    override fun storeConflict(errorReport: JobValidationError) {
+
+    }
 }

@@ -31,6 +31,7 @@ import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
+import org.hisp.dhis.android.core.common.internal.DataStateUidHolder
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType.ENROLLMENT
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType.EVENT
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType.RELATIONSHIP
@@ -47,12 +48,13 @@ internal class JobReportHandler @Inject internal constructor(
 
     fun handle(o: JobReport, jobObjects: List<TrackerJobObject>) {
         val jobObjectsMap = jobObjects.groupBy { jo -> Pair(jo.trackerType(), jo.objectUid()) }
+        val relatedUids = getRelatedUids(jobObjects)
 
         handleErrors(o, jobObjectsMap)
         handleSuccesses(o, jobObjectsMap)
         handleNotPresentObjects(o, jobObjects)
 
-        refreshAggregatedSyncStates(jobObjects)
+        dataStatePropagator.refreshAggregatedSyncStates(relatedUids)
     }
 
     private fun handleErrors(
@@ -113,8 +115,8 @@ internal class JobReportHandler @Inject internal constructor(
             .forEach { typeHandler.handleSuccess(it.uid) }
     }
 
-    private fun refreshAggregatedSyncStates(jobObjects: List<TrackerJobObject>) {
-        dataStatePropagator.refreshAggregatedSyncStatesCausedBy(
+    private fun getRelatedUids(jobObjects: List<TrackerJobObject>): DataStateUidHolder {
+        return dataStatePropagator.getRelatedUids(
             jobObjects.filter { it.trackerType() == TRACKED_ENTITY }.map { it.objectUid() },
             jobObjects.filter { it.trackerType() == ENROLLMENT }.map { it.objectUid() },
             jobObjects.filter { it.trackerType() == EVENT }.map { it.objectUid() },

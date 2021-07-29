@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.common.internal
 
 import dagger.Reusable
-import java.util.*
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
@@ -48,6 +46,8 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
+import java.util.*
+import javax.inject.Inject
 
 @Reusable
 @Suppress("TooManyFunctions")
@@ -273,36 +273,46 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
         }
     }
 
-    override fun refreshAggregatedSyncStatesCausedBy(
+    override fun refreshAggregatedSyncStates(uidHolder: DataStateUidHolder) {
+        uidHolder.events.forEach {
+            refreshEventAggregatedSyncState(it)
+        }
+
+        uidHolder.enrollments.forEach {
+            refreshEnrollmentAggregatedSyncState(it)
+        }
+
+        uidHolder.trackedEntities.forEach {
+            refreshTrackedEntityInstanceAggregatedSyncState(it)
+        }
+    }
+
+    override fun getRelatedUids(
         trackedEntityInstanceUids: List<String>,
         enrollmentUids: List<String>,
         eventUids: List<String>,
         relationshipUids: List<String>
-    ) {
-        eventUids.forEach {
-            refreshEventAggregatedSyncState(it)
-        }
-
+    ): DataStateUidHolder {
         val enrollmentsFromEvents = eventStore.selectByUids(eventUids).mapNotNull { it.enrollment() }
 
         val enrollments = enrollmentStore.selectByUids(enrollmentUids + enrollmentsFromEvents)
-        enrollments.forEach {
-            refreshEnrollmentAggregatedSyncState(it.uid())
+
+        val trackedEntitiesFromEnrollments = enrollments.mapNotNull { it.trackedEntityInstance() }
+
+        val relationshipItems = relationshipUids.map {
+            relationshipItemStore.getForRelationshipUidAndConstraintType(it, RelationshipConstraintType.FROM)
         }
 
-        val teiUids = trackedEntityInstanceUids + enrollments.mapNotNull { it.trackedEntityInstance() }
-        teiUids.forEach {
-            refreshTrackedEntityInstanceAggregatedSyncState(it)
-        }
-
-        relationshipUids.forEach {
-            val item = relationshipItemStore.getForRelationshipUidAndConstraintType(it, RelationshipConstraintType.FROM)
-            when {
-                item.hasEvent() -> refreshEventAggregatedSyncState(item.elementUid())
-                item.hasEnrollment() -> refreshEnrollmentAggregatedSyncState(item.elementUid())
-                item.hasTrackedEntityInstance() -> refreshTrackedEntityInstanceAggregatedSyncState(item.elementUid())
-            }
-        }
+        return DataStateUidHolder(
+            events = eventUids +
+                    relationshipItems.filter { it.hasEvent() }.map { it.elementUid() },
+            enrollments = enrollmentUids +
+                    enrollmentsFromEvents +
+                    relationshipItems.filter { it.hasEnrollment() }.map { it.elementUid() },
+            trackedEntities = trackedEntityInstanceUids +
+                    trackedEntitiesFromEnrollments + 
+                    relationshipItems.filter { it.hasTrackedEntityInstance() }.map { it.elementUid() }
+        )
     }
 
     private fun getAggregatedSyncState(states: List<State>): State {

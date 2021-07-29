@@ -39,6 +39,6 @@ internal data class NewTrackerImporterPayload(
     val relationships: MutableList<NewTrackerImporterRelationship> = mutableListOf()
 ) {
     fun isEmpty(): Boolean {
-        return trackedEntities.isEmpty() && enrollments.isEmpty() && events.isEmpty()
+        return trackedEntities.isEmpty() && enrollments.isEmpty() && events.isEmpty() && relationships.isEmpty()
     }
 }

@@ -36,10 +36,6 @@ import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnly
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.event.EventCollectionRepository;
-import org.hisp.dhis.android.core.program.ProgramStage;
-import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeFields;
 
 import java.util.Map;
@@ -52,15 +48,12 @@ import dagger.Reusable;
 public final class RelationshipTypeCollectionRepository
         extends ReadOnlyIdentifiableCollectionRepositoryImpl<RelationshipType, RelationshipTypeCollectionRepository> {
 
-    private EventCollectionRepository eventCollectionRepository;
     @Inject
     RelationshipTypeCollectionRepository(final IdentifiableObjectStore<RelationshipType> store,
-                                         final EventCollectionRepository eventCollectionRepository,
                                          final Map<String, ChildrenAppender<RelationshipType>> childrenAppenders,
                                          final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new RelationshipTypeCollectionRepository(store,eventCollectionRepository, childrenAppenders, s)));
-        this.eventCollectionRepository = eventCollectionRepository;
+                s -> new RelationshipTypeCollectionRepository(store, childrenAppenders, s)));
     }
 
     public RelationshipTypeCollectionRepository byConstraint(@NonNull RelationshipEntityType relationshipEntityType,
@@ -82,19 +75,6 @@ public final class RelationshipTypeCollectionRepository
                         RelationshipConstraintTableInfo.Columns.CONSTRAINT_TYPE, relationshipConstraintType));
     }
 
-    public RelationshipTypeCollectionRepository byConstraint(
-            @NonNull String eventUid
-    ) {
-        Event event = eventCollectionRepository.uid(eventUid).blockingGet();
-        String programStageUid = event.programStage();
-        String programUid = event.program();
-        return cf.subQuery(IdentifiableColumns.UID).inTableWhere(
-                RelationshipConstraintTableInfo.TABLE_INFO.name(),
-                RelationshipConstraintTableInfo.Columns.RELATIONSHIP_TYPE,
-                constraintClauseBuilder(programUid, programStageUid)
-        );
-    }
-
     public RelationshipTypeCollectionRepository withConstraints() {
         return cf.withChild(RelationshipTypeFields.CONSTRAINTS);
     }
@@ -106,17 +86,7 @@ public final class RelationshipTypeCollectionRepository
                         RelationshipConstraintTableInfo.Columns.RELATIONSHIP_ENTITY, relationshipEntityType)
                 .appendKeyStringValue(getRelationshipEntityColumn(relationshipEntityType), relationshipEntityUid);
     }
-
-    private WhereClauseBuilder constraintClauseBuilder(String programUid, String programStageUid) {
-        return new WhereClauseBuilder()
-                .appendComplexQuery(
-                        new WhereClauseBuilder()
-                                .appendOrKeyStringValue(RelationshipConstraintTableInfo.Columns.PROGRAM, programUid)
-                                .appendOrKeyStringValue(RelationshipConstraintTableInfo.Columns.PROGRAM_STAGE, programStageUid)
-                                .build()
-                );
-    }
-
+    
     private String getRelationshipEntityColumn(@NonNull RelationshipEntityType relationshipEntityType) {
         switch (relationshipEntityType) {
             case TRACKED_ENTITY_INSTANCE:

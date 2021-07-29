@@ -28,11 +28,11 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
-import javax.inject.Inject
 
 @Reusable
 internal class NewTrackerImporterTrackedEntityPostStateManager @Inject internal constructor(

@@ -66,7 +66,7 @@ import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Event.Builder.class)
-@SuppressWarnings({"PMD.GodClass"})
+@SuppressWarnings({"PMD.GodClass", "PMD.ExcessivePublicCount", "PMD.ExcessiveImports"})
 public abstract class Event extends BaseDeletableDataObject implements ObjectWithUidInterface {
 
     @Override

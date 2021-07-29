@@ -77,8 +77,10 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
         relationshipStore = RelationshipStoreImpl.create(d2.databaseAdapter())
         relationshipItemStore = RelationshipItemStoreImpl.create(d2.databaseAdapter())
 
-        propagator = DataStatePropagatorImpl(trackedEntityInstanceStore, enrollmentStore,
-            eventStore, relationshipStore, relationshipItemStore)
+        propagator = DataStatePropagatorImpl(
+            trackedEntityInstanceStore, enrollmentStore,
+            eventStore, relationshipStore, relationshipItemStore
+        )
     }
 
     @Test

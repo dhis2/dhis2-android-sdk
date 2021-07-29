@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.event.internal
 
 import android.content.ContentValues
 import android.database.Cursor
+import java.util.*
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
@@ -44,8 +45,8 @@ import org.hisp.dhis.android.core.common.State.Companion.uploadableStates
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventTableInfo
-import java.util.*
 
+@Suppress("TooManyFunctions")
 internal class EventStoreImpl private constructor(
     databaseAdapter: DatabaseAdapter,
     builder: SQLStatementBuilderImpl,
@@ -56,7 +57,9 @@ internal class EventStoreImpl private constructor(
     override fun queryEventsAttachedToEnrollmentToPost(): Map<String, MutableList<Event>> {
         val eventsAttachedToEnrollmentsQuery = WhereClauseBuilder()
             .appendIsNotNullValue(EventTableInfo.Columns.ENROLLMENT)
-            .appendInKeyStringValues(EventTableInfo.Columns.SYNC_STATE, asStringList(*uploadableStates())).build()
+            .appendInKeyStringValues(
+                EventTableInfo.Columns.SYNC_STATE, asStringList(uploadableStates().toList())
+            ).build()
         val eventList = selectWhere(eventsAttachedToEnrollmentsQuery)
         val eventsMap: MutableMap<String, MutableList<Event>> = HashMap()
         for (event in eventList) {
@@ -67,10 +70,10 @@ internal class EventStoreImpl private constructor(
 
     override fun querySingleEventsToPost(): List<Event> {
         val states = CollectionsHelper.commaAndSpaceSeparatedArrayValues(
-            CollectionsHelper.withSingleQuotationMarksArray(asStringList(*uploadableStates()))
+            CollectionsHelper.withSingleQuotationMarksArray(asStringList(uploadableStates().toList()))
         )
         val singleEventsToPostQuery = QUERY_SINGLE_EVENTS +
-                " AND (" + EventTableInfo.Columns.SYNC_STATE + " IN (" + states + "))"
+            " AND (" + EventTableInfo.Columns.SYNC_STATE + " IN (" + states + "))"
         return eventListFromQuery(singleEventsToPostQuery)
     }
 
@@ -79,7 +82,8 @@ internal class EventStoreImpl private constructor(
     }
 
     override fun queryOrderedForEnrollmentAndProgramStage(
-        enrollmentUid: String, programStageUid: String,
+        enrollmentUid: String,
+        programStageUid: String,
         includeDeleted: Boolean
     ): List<Event> {
         val whereClause = WhereClauseBuilder()
@@ -89,8 +93,8 @@ internal class EventStoreImpl private constructor(
             whereClause.appendIsNullOrValue(EventTableInfo.Columns.DELETED, "0")
         }
         val query = "SELECT * FROM " + EventTableInfo.TABLE_INFO.name() + " " +
-                "WHERE " + whereClause.build() +
-                "ORDER BY " + EventTableInfo.Columns.EVENT_DATE + ", " + EventTableInfo.Columns.LAST_UPDATED
+            "WHERE " + whereClause.build() +
+            "ORDER BY " + EventTableInfo.Columns.EVENT_DATE + ", " + EventTableInfo.Columns.LAST_UPDATED
         return eventListFromQuery(query)
     }
 
@@ -101,7 +105,7 @@ internal class EventStoreImpl private constructor(
             whereClause.appendIsNullOrValue(EventTableInfo.Columns.DELETED, "0")
         }
         val query = "SELECT * FROM " + EventTableInfo.TABLE_INFO.name() + " " +
-                "WHERE " + whereClause.build()
+            "WHERE " + whereClause.build()
         val events = eventListFromQuery(query)
         return events.size
     }
@@ -109,11 +113,11 @@ internal class EventStoreImpl private constructor(
     override fun countTeisWhereEvents(whereClause: String): Int {
         val whereStatement = if (whereClause == null) "" else " WHERE $whereClause"
         val query = "SELECT COUNT(DISTINCT a." + EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE + ") " +
-                "FROM " + EnrollmentTableInfo.TABLE_INFO.name() + " a " +
-                "INNER JOIN " +
-                "(SELECT DISTINCT " + EventTableInfo.Columns.ENROLLMENT +
-                " FROM " + EventTableInfo.TABLE_INFO.name() + whereStatement + ") b " +
-                "ON a." + IdentifiableColumns.UID + " = b." + EventTableInfo.Columns.ENROLLMENT
+            "FROM " + EnrollmentTableInfo.TABLE_INFO.name() + " a " +
+            "INNER JOIN " +
+            "(SELECT DISTINCT " + EventTableInfo.Columns.ENROLLMENT +
+            " FROM " + EventTableInfo.TABLE_INFO.name() + whereStatement + ") b " +
+            "ON a." + IdentifiableColumns.UID + " = b." + EventTableInfo.Columns.ENROLLMENT
         return processCount(databaseAdapter.rawQuery(query))
     }
 

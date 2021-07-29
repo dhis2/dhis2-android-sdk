@@ -62,7 +62,7 @@ import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_NewTrackerImporterEvent.Builder.class)
-@SuppressWarnings({"PMD.GodClass"})
+@SuppressWarnings({"PMD.GodClass", "PMD.ExcessivePublicCount"})
 public abstract class NewTrackerImporterEvent extends BaseDeletableDataObject implements ObjectWithUidInterface {
 
     @Override

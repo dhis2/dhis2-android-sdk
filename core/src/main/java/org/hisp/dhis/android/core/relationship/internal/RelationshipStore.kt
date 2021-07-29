@@ -36,6 +36,8 @@ internal interface RelationshipStore : IdentifiableDeletableDataObjectStore<Rela
 
     fun getRelationshipsByItem(relationshipItem: RelationshipItem): List<Relationship>
 
-    fun getRelationshipsByItem(relationshipItem: RelationshipItem,
-                               type: RelationshipConstraintType?): List<Relationship>
+    fun getRelationshipsByItem(
+        relationshipItem: RelationshipItem,
+        type: RelationshipConstraintType?
+    ): List<Relationship>
 }

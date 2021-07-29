@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.relationship.internal
 
 import android.database.Cursor
+import java.util.*
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
@@ -35,7 +36,6 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinde
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStoreImpl
 import org.hisp.dhis.android.core.relationship.*
-import java.util.*
 
 internal class RelationshipStoreImpl private constructor(
     databaseAdapter: DatabaseAdapter,
@@ -44,7 +44,9 @@ internal class RelationshipStoreImpl private constructor(
     databaseAdapter,
     statementBuilder,
     BINDER,
-    { cursor: Cursor -> Relationship.create(cursor) }), RelationshipStore {
+    { cursor: Cursor -> Relationship.create(cursor) }
+),
+    RelationshipStore {
 
     override fun getRelationshipsByItem(relationshipItem: RelationshipItem): List<Relationship> {
         val whereClause = WhereClauseBuilder()
@@ -55,23 +57,25 @@ internal class RelationshipStoreImpl private constructor(
             .build()
 
         val queryStatement = "SELECT DISTINCT Relationship.* " +
-                "FROM (Relationship INNER JOIN RelationshipItem " +
-                "ON Relationship.uid = RelationshipItem.relationship) " +
-                "WHERE " + whereClause + ";"
+            "FROM (Relationship INNER JOIN RelationshipItem " +
+            "ON Relationship.uid = RelationshipItem.relationship) " +
+            "WHERE " + whereClause + ";"
 
         val relationships: MutableList<Relationship> = ArrayList()
         addObjectsToCollection(databaseAdapter.rawQuery(queryStatement), relationships)
         return relationships
     }
 
-    override fun getRelationshipsByItem(relationshipItem: RelationshipItem,
-                               type: RelationshipConstraintType?): List<Relationship> {
+    override fun getRelationshipsByItem(
+        relationshipItem: RelationshipItem,
+        type: RelationshipConstraintType?
+    ): List<Relationship> {
         val relationshipTable = RelationshipTableInfo.TABLE_INFO.name()
         val itemTable = RelationshipItemTableInfo.TABLE_INFO.name()
 
         val builder = WhereClauseBuilder()
             .appendKeyStringValue(
-                "${itemTable}.${relationshipItem.elementType()}",
+                "$itemTable.${relationshipItem.elementType()}",
                 relationshipItem.elementUid()
             )
 
@@ -80,16 +84,16 @@ internal class RelationshipStoreImpl private constructor(
                 builder.build()
             } else {
                 builder.appendKeyStringValue(
-                    "${itemTable}.${RelationshipItemTableInfo.Columns.RELATIONSHIP_ITEM_TYPE}",
+                    "$itemTable.${RelationshipItemTableInfo.Columns.RELATIONSHIP_ITEM_TYPE}",
                     type.name
                 ).build()
             }
 
         val queryStatement = "SELECT DISTINCT $relationshipTable.* " +
-                "FROM ($relationshipTable INNER JOIN $itemTable " +
-                "ON $relationshipTable.${RelationshipTableInfo.Columns.UID} = " +
-                    "$itemTable.${RelationshipItemTableInfo.Columns.RELATIONSHIP}) " +
-                "WHERE " + whereClause + ";"
+            "FROM ($relationshipTable INNER JOIN $itemTable " +
+            "ON $relationshipTable.${RelationshipTableInfo.Columns.UID} = " +
+            "$itemTable.${RelationshipItemTableInfo.Columns.RELATIONSHIP}) " +
+            "WHERE " + whereClause + ";"
 
         val relationships: MutableList<Relationship> = ArrayList()
         addObjectsToCollection(databaseAdapter.rawQuery(queryStatement), relationships)

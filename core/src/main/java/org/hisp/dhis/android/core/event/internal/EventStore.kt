@@ -44,7 +44,6 @@ internal interface EventStore : IdentifiableDeletableDataObjectStore<Event> {
         includeDeleted: Boolean
     ): List<Event>
 
-
     fun countEventsForEnrollment(enrollmentUid: String, includeDeleted: Boolean): Int
 
     fun countTeisWhereEvents(whereClause: String): Int

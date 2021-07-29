@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.tracker.importer.internal
 import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.Single
+import java.util.*
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
@@ -39,8 +41,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayload
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterTrackedEntityPostPayloadGenerator
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterTrackedEntityPostStateManager
-import java.util.*
-import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstanceTrackerImporterPostCall @Inject internal constructor(

@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.common.internal
 
 import dagger.Reusable
+import java.util.*
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
@@ -46,8 +48,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
-import java.util.*
-import javax.inject.Inject
 
 @Reusable
 @Suppress("TooManyFunctions")
@@ -305,13 +305,13 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
 
         return DataStateUidHolder(
             events = eventUids +
-                    relationshipItems.filter { it.hasEvent() }.map { it.elementUid() },
+                relationshipItems.filter { it.hasEvent() }.map { it.elementUid() },
             enrollments = enrollmentUids +
-                    enrollmentsFromEvents +
-                    relationshipItems.filter { it.hasEnrollment() }.map { it.elementUid() },
+                enrollmentsFromEvents +
+                relationshipItems.filter { it.hasEnrollment() }.map { it.elementUid() },
             trackedEntities = trackedEntityInstanceUids +
-                    trackedEntitiesFromEnrollments + 
-                    relationshipItems.filter { it.hasTrackedEntityInstance() }.map { it.elementUid() }
+                trackedEntitiesFromEnrollments +
+                relationshipItems.filter { it.hasTrackedEntityInstance() }.map { it.elementUid() }
         )
     }
 

@@ -27,12 +27,20 @@
  */
 package org.hisp.dhis.android.core.tracker.importer.internal
 
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 
-internal abstract class JobReportTypeHandler {
+internal abstract class JobReportTypeHandler constructor(
+    protected val relationshipStore: RelationshipStore
+) {
 
     fun handleSuccess(uid: String) {
-        handleObject(uid, State.SYNCED)
+        val handleAction = handleObject(uid, State.SYNCED)
+
+        if (handleAction === HandleAction.Delete) {
+            getRelatedRelationships(uid).forEach { relationshipStore.delete(it) }
+        }
     }
 
     fun handleError(errorReport: JobValidationError) {
@@ -40,6 +48,7 @@ internal abstract class JobReportTypeHandler {
         storeConflict(errorReport)
     }
 
-    abstract fun handleObject(uid: String, state: State)
+    abstract fun handleObject(uid: String, state: State): HandleAction
     abstract fun storeConflict(errorReport: JobValidationError)
+    abstract fun getRelatedRelationships(uid: String): List<String>
 }

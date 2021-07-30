@@ -51,6 +51,7 @@ internal class NewTrackerImporterEventTransformer : Transformer<Event, NewTracke
             .attributeOptionCombo(o.attributeOptionCombo())
             .assignedUser(o.assignedUser())
             .syncState(o.syncState())
+            .aggregatedSyncState(o.aggregatedSyncState())
             .build()
     }
 }

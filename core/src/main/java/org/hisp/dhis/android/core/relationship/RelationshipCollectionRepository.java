@@ -107,20 +107,12 @@ public class RelationshipCollectionRepository
     public String blockingAdd(Relationship relationship) throws D2Error {
         Relationship relationshipWithUid;
         RelationshipItem from = relationship.from();
-        RelationshipItem to = relationship.to();
         if (relationshipHandler.doesRelationshipExist(relationship)) {
             throw D2Error
                     .builder()
                     .errorComponent(D2ErrorComponent.SDK)
                     .errorCode(D2ErrorCode.CANT_CREATE_EXISTING_OBJECT)
                     .errorDescription("Tried to create already existing Relationship: " + relationship)
-                    .build();
-        } else if (from == null || !from.hasTrackedEntityInstance() || to == null || !to.hasTrackedEntityInstance()) {
-            throw D2Error
-                    .builder()
-                    .errorComponent(D2ErrorComponent.SDK)
-                    .errorCode(D2ErrorCode.CANT_CREATE_EXISTING_OBJECT)
-                    .errorDescription("Only TEI-TEI relationships creation supported")
                     .build();
         } else {
             if (relationship.uid() == null) {

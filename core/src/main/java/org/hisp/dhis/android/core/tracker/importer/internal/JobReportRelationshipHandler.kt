@@ -25,15 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.tracker.importer.internal
 
-package org.hisp.dhis.android.core.relationship.internal;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore;
-import org.hisp.dhis.android.core.relationship.Relationship;
-import org.hisp.dhis.android.core.relationship.RelationshipItem;
+@Reusable
+internal class JobReportRelationshipHandler @Inject internal constructor(
+    relationshipStore: RelationshipStore
+) : JobReportTypeHandler(relationshipStore) {
 
-import java.util.List;
+    override fun handleObject(uid: String, state: State): HandleAction {
+        return relationshipStore.setSyncStateOrDelete(uid, state)
+    }
 
-public interface RelationshipStore extends IdentifiableDeletableDataObjectStore<Relationship> {
-    List<Relationship> getRelationshipsByItem(RelationshipItem relationshipItem);
+    @Suppress("EmptyFunctionBlock")
+    override fun storeConflict(errorReport: JobValidationError) {
+    }
+
+    override fun getRelatedRelationships(uid: String): List<String> {
+        return emptyList()
+    }
 }

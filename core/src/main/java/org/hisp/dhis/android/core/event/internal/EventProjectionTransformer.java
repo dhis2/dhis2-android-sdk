@@ -46,6 +46,7 @@ final class EventProjectionTransformer implements Transformer<EventCreateProject
 
         return Event.builder()
                 .uid(generatedUid)
+                .aggregatedSyncState(State.TO_POST)
                 .syncState(State.TO_POST)
                 .created(creationDate)
                 .lastUpdated(creationDate)

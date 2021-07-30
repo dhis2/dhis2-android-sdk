@@ -37,17 +37,21 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EventStatusColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.StateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewTackerImporterTrackedEntityDataValueListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewTrackerImporterNoteListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreRelationshipListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
+import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.internal.EventFields;
 import org.hisp.dhis.android.core.note.NewTrackerImporterNote;
 import org.hisp.dhis.android.core.relationship.Relationship;
@@ -58,7 +62,7 @@ import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_NewTrackerImporterEvent.Builder.class)
-@SuppressWarnings({"PMD.GodClass"})
+@SuppressWarnings({"PMD.GodClass", "PMD.ExcessivePublicCount"})
 public abstract class NewTrackerImporterEvent extends BaseDeletableDataObject implements ObjectWithUidInterface {
 
     @Override
@@ -149,6 +153,11 @@ public abstract class NewTrackerImporterEvent extends BaseDeletableDataObject im
     @ColumnAdapter(IgnoreRelationshipListColumnAdapter.class)
     abstract List<Relationship> relationships();
 
+    @Nullable
+    @ColumnName(DataColumns.AGGREGATED_SYNC_STATE)
+    @ColumnAdapter(StateColumnAdapter.class)
+    public abstract State aggregatedSyncState();
+
     public static Builder builder() {
         return new $$AutoValue_NewTrackerImporterEvent.Builder();
     }
@@ -205,6 +214,8 @@ public abstract class NewTrackerImporterEvent extends BaseDeletableDataObject im
                 List<NewTrackerImporterTrackedEntityDataValue> trackedEntityDataValues);
 
         public abstract Builder relationships(List<Relationship> relationships);
+
+        public abstract Builder aggregatedSyncState(State aggregatedSyncState);
 
         public abstract Geometry geometry();
 

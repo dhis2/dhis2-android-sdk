@@ -26,65 +26,73 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.tracker.importer.internal;
+package org.hisp.dhis.android.core.relationship;
 
 import android.database.Cursor;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.TrackerImporterObjectTypeColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseObject;
-
-import java.util.Date;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.RelationshipConstraintTypeColumnAdapter;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_TrackerJobObject.Builder.class)
-public abstract class TrackerJobObject extends BaseObject {
+@JsonDeserialize(builder = AutoValue_NewTrackerImporterRelationshipItem.Builder.class)
+public abstract class NewTrackerImporterRelationshipItem implements CoreObject {
 
-    @NonNull
-    @ColumnAdapter(TrackerImporterObjectTypeColumnAdapter.class)
-    public abstract TrackerImporterObjectType trackerType();
+    @Nullable
+    @JsonIgnore()
+    public abstract String relationship();
 
-    @NonNull
-    public abstract String objectUid();
+    @Nullable
+    @JsonIgnore()
+    @ColumnAdapter(RelationshipConstraintTypeColumnAdapter.class)
+    public abstract RelationshipConstraintType relationshipItemType();
 
-    @NonNull
-    public abstract String jobUid();
+    @Nullable
+    @JsonProperty()
+    public abstract String trackedEntity();
 
-    @NonNull
-    @ColumnAdapter(DbDateColumnAdapter.class)
-    public abstract Date lastUpdated();
+    @Nullable
+    @JsonProperty()
+    public abstract String enrollment();
 
-
-    @NonNull
-    public static TrackerJobObject create(Cursor cursor) {
-        return AutoValue_TrackerJobObject.createFromCursor(cursor);
-    }
-
+    @Nullable
+    @JsonProperty()
+    public abstract String event();
 
     public static Builder builder() {
-        return new $$AutoValue_TrackerJobObject.Builder();
+        return new $$AutoValue_NewTrackerImporterRelationshipItem.Builder();
     }
 
-    abstract Builder toBuilder();
+    public static NewTrackerImporterRelationshipItem create(Cursor cursor) {
+        return $AutoValue_NewTrackerImporterRelationshipItem.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
-        public abstract Builder trackerType(TrackerImporterObjectType trackerType);
+    public abstract static class Builder {
 
-        public abstract Builder objectUid(String objectUid);
+        public abstract Builder id(Long id);
 
-        public abstract Builder jobUid(String jobUid);
+        public abstract Builder relationship(String relationship);
 
-        public abstract Builder lastUpdated(Date lastUpdated);
+        public abstract Builder relationshipItemType(RelationshipConstraintType relationshipItemType);
 
-        public abstract TrackerJobObject build();
+        public abstract Builder trackedEntity(String relationship);
+
+        public abstract Builder enrollment(String relationship);
+
+        public abstract Builder event(String relationship);
+
+        public abstract NewTrackerImporterRelationshipItem build();
     }
 }

@@ -99,6 +99,7 @@ public final class EventObjectRepository
 
         return event.toBuilder()
                 .syncState(state)
+                .aggregatedSyncState(state)
                 .lastUpdated(updateDate)
                 .lastUpdatedAtClient(updateDate);
     }

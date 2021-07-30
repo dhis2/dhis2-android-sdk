@@ -25,11 +25,11 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.tracker.importer.internal
 
-internal object TrackerImporterObjectTypes {
-    const val EVENT = "EVENT"
-    const val TRACKED_ENTITY = "TRACKED_ENTITY"
-    const val ENROLLMENT = "ENROLLMENT"
-    const val RELATIONSHIP = "RELATIONSHIP"
+package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
+
+import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipItem;
+
+public final class IgnoreNewTrackerImporterRelationshipItemAdapter
+        extends IgnoreColumnAdapter<NewTrackerImporterRelationshipItem> {
 }

@@ -32,6 +32,7 @@ data class GridAnalyticsResponse(
     val metadata: Map<String, MetadataItem>,
     val headers: GridHeader,
     val dimensions: GridDimension,
+    val dimensionItems: Map<Dimension, List<DimensionItem>>,
     val filters: List<String>,
     val values: List<List<GridResponseValue>>
 )

@@ -43,7 +43,9 @@ internal class AnalyticsService @Inject constructor(
             throw AnalyticsException.InvalidArguments("At least one dimension must be specified")
         }
 
-        if ((params.dimensions + params.filters).none { it.dimension == Dimension.Data }) {
+        val dimensionItems = params.dimensions + params.filters
+
+        if (dimensionItems.none { it.dimension == Dimension.Data }) {
             throw AnalyticsException.InvalidArguments("At least one data dimension must be specified")
         }
 
@@ -57,6 +59,7 @@ internal class AnalyticsService @Inject constructor(
         return DimensionalResponse(
             metadata = metadata,
             dimensions = dimensions,
+            dimensionItems = dimensionItems.groupBy { it.dimension },
             filters = params.filters.map { it.id },
             values = values
         )

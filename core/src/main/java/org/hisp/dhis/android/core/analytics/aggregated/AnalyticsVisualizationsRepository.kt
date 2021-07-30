@@ -34,6 +34,10 @@ interface AnalyticsVisualizationsRepository {
 
     fun withVisualization(visualization: String): AnalyticsVisualizationsRepository
 
+    fun withPeriods(periods: List<DimensionItem.PeriodItem>): AnalyticsVisualizationsRepository
+
+    fun withOrganisationUnits(orgUnits: List<DimensionItem.OrganisationUnitItem>): AnalyticsVisualizationsRepository
+
     fun evaluate(): Single<GridAnalyticsResponse>
 
     fun blockingEvaluate(): GridAnalyticsResponse

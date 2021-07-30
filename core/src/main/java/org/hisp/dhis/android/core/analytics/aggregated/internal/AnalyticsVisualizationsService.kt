@@ -45,7 +45,7 @@ internal class AnalyticsVisualizationsService @Inject constructor(
         }
 
         val visualization = getVisualization(params.visualization)
-        val dimensionalResponse = getDimensionalResponse(visualization)
+        val dimensionalResponse = getDimensionalResponse(visualization, params)
 
         return buildGridResponse(visualization, dimensionalResponse)
     }
@@ -59,26 +59,46 @@ internal class AnalyticsVisualizationsService @Inject constructor(
             ?: throw AnalyticsException.InvalidArguments("Visualization $visualizationId does not exist")
     }
 
-    private fun getDimensionalResponse(visualization: Visualization): DimensionalResponse {
+    private fun getDimensionalResponse(
+        visualization: Visualization,
+        params: AnalyticsVisualizationsRepositoryParams
+    ): DimensionalResponse {
+
         var analyticsRepository = analyticsRepository
 
         val queryDimensions =
             (visualization.rowDimensions() ?: emptyList()) +
                 (visualization.columnDimensions() ?: emptyList())
 
-        dimensionHelper.getDimensionItems(
-            visualization,
-            queryDimensions
-        ).forEach { item ->
-            analyticsRepository = analyticsRepository.withDimension(item)
+        var queryItems = dimensionHelper.getDimensionItems(visualization, queryDimensions)
+        var filterItems = dimensionHelper.getDimensionItems(visualization, visualization.filterDimensions())
+
+        // Overwrite periods
+        if (!params.periods.isNullOrEmpty()) {
+            if (queryItems.any { it.dimension == Dimension.Period }) {
+                queryItems = queryItems.filterNot { it.dimension == Dimension.Period } + params.periods
+            } else if (filterItems.any { it.dimension == Dimension.Period }) {
+                filterItems = filterItems.filterNot { it.dimension == Dimension.Period } + params.periods
+            } else {
+                filterItems = filterItems + params.periods
+            }
         }
 
-        dimensionHelper.getDimensionItems(
-            visualization,
-            visualization.filterDimensions()
-        ).forEach { item ->
-            analyticsRepository = analyticsRepository.withFilter(item)
+        // Overwrite organisationUnits
+        if (!params.organisationUnits.isNullOrEmpty()) {
+            if (queryItems.any { it.dimension == Dimension.OrganisationUnit }) {
+                queryItems =
+                    queryItems.filterNot { it.dimension == Dimension.OrganisationUnit } + params.organisationUnits
+            } else if (filterItems.any { it.dimension == Dimension.OrganisationUnit }) {
+                filterItems =
+                    filterItems.filterNot { it.dimension == Dimension.OrganisationUnit } + params.organisationUnits
+            } else {
+                filterItems = filterItems + params.organisationUnits
+            }
         }
+
+        queryItems.forEach { analyticsRepository = analyticsRepository.withDimension(it) }
+        filterItems.forEach { analyticsRepository = analyticsRepository.withFilter(it) }
 
         return analyticsRepository.blockingEvaluate()
     }
@@ -112,6 +132,7 @@ internal class AnalyticsVisualizationsService @Inject constructor(
             metadata = dimensionalResponse.metadata,
             headers = gridHeader,
             dimensions = gridDimension,
+            dimensionItems = dimensionalResponse.dimensionItems,
             filters = dimensionalResponse.filters,
             values = gridValues
         )

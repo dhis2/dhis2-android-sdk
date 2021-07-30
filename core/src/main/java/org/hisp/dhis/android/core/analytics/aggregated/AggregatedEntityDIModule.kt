@@ -59,6 +59,6 @@ internal class AggregatedEntityDIModule {
     @Provides
     @Reusable
     fun emptyAnalyticsVisualizationsParam(): AnalyticsVisualizationsRepositoryParams {
-        return AnalyticsVisualizationsRepositoryParams(null)
+        return AnalyticsVisualizationsRepositoryParams(null, null, null)
     }
 }

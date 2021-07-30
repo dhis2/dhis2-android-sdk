@@ -28,10 +28,7 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.mock
 
-import org.hisp.dhis.android.core.analytics.aggregated.Dimension
-import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
-import org.hisp.dhis.android.core.analytics.aggregated.DimensionalValue
-import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
+import org.hisp.dhis.android.core.analytics.aggregated.*
 import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples.cc1
 import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples.co11
 import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples.co12
@@ -56,6 +53,24 @@ object DimensionalResponseSamples {
             orgunit2.uid() to MetadataItem.OrganisationUnitItem(orgunit2)
         ),
         dimensions = listOf(Dimension.Data, Dimension.Category(cc1.uid()), Dimension.Period),
+        dimensionItems = mapOf(
+            Dimension.Data to listOf(
+                DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
+                DimensionItem.DataItem.DataElementItem(dataElement2.uid())
+            ),
+            Dimension.Category(cc1.uid()) to listOf(
+                DimensionItem.CategoryItem(cc1.uid(), co11.uid()),
+                DimensionItem.CategoryItem(cc1.uid(), co12.uid())
+            ),
+            Dimension.Period to listOf(
+                DimensionItem.PeriodItem.Absolute(period1.periodId()!!),
+                DimensionItem.PeriodItem.Absolute(period2.periodId()!!)
+            ),
+            Dimension.OrganisationUnit to listOf(
+                DimensionItem.OrganisationUnitItem.Absolute(orgunit1.uid()),
+                DimensionItem.OrganisationUnitItem.Absolute(orgunit2.uid())
+            )
+        ),
         filters = listOf(orgunit1.uid(), orgunit2.uid()),
         values = listOf(
             DimensionalValue(

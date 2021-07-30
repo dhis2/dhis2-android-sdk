@@ -29,6 +29,9 @@
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
 import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.analytics.aggregated.Dimension
+import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
+import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
 
@@ -44,6 +47,49 @@ class AnalyticsVisualizationRepositoryIntegrationShould : BaseMockIntegrationTes
 
         assertThat(result.dimensions.columns.size).isEqualTo(1)
         assertThat(result.dimensions.rows.size).isEqualTo(1)
+        assertThat(result.dimensionItems[Dimension.Data]!!.size).isEqualTo(1)
+        assertThat(result.dimensionItems[Dimension.OrganisationUnit]!!.size).isEqualTo(1)
+        assertThat(result.dimensionItems[Dimension.Period]!!.size).isEqualTo(3)
+        assertThat(result.metadata).isNotEmpty()
+        assertThat(result.values.size).isEqualTo(3)
+    }
+
+    @Test
+    fun evaluate_visualization_wit_periods() {
+        val result = d2.analyticsModule().visualizations()
+            .withVisualization(visualizationUid)
+            .withPeriods(listOf(DimensionItem.PeriodItem.Absolute("2018")))
+            .blockingEvaluate()
+
+        assertThat(result.dimensions.columns.size).isEqualTo(1)
+        assertThat(result.dimensions.rows.size).isEqualTo(1)
+        assertThat(result.dimensionItems[Dimension.Data]!!.size).isEqualTo(1)
+        assertThat(result.dimensionItems[Dimension.OrganisationUnit]!!.size).isEqualTo(1)
+        assertThat(result.dimensionItems[Dimension.Period]).isEqualTo(listOf(
+            DimensionItem.PeriodItem.Absolute("2018")
+        ))
+        assertThat(result.metadata).isNotEmpty()
+        assertThat(result.values.size).isEqualTo(1)
+    }
+
+    @Test
+    fun evaluate_visualization_wit_organisation_units() {
+        val result = d2.analyticsModule().visualizations()
+            .withVisualization(visualizationUid)
+            .withOrganisationUnits(
+                listOf(
+                    DimensionItem.OrganisationUnitItem.Relative(RelativeOrganisationUnit.USER_ORGUNIT)
+                )
+            )
+            .blockingEvaluate()
+
+        assertThat(result.dimensions.columns.size).isEqualTo(1)
+        assertThat(result.dimensions.rows.size).isEqualTo(1)
+        assertThat(result.dimensionItems[Dimension.Data]!!.size).isEqualTo(1)
+        assertThat(result.dimensionItems[Dimension.OrganisationUnit]).isEqualTo(listOf(
+            DimensionItem.OrganisationUnitItem.Relative(RelativeOrganisationUnit.USER_ORGUNIT)
+        ))
+        assertThat(result.dimensionItems[Dimension.Period]!!.size).isEqualTo(3)
         assertThat(result.metadata).isNotEmpty()
         assertThat(result.values.size).isEqualTo(3)
     }

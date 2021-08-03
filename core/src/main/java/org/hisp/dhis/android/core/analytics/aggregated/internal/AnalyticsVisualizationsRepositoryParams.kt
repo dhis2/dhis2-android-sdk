@@ -28,6 +28,10 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
+import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
+
 internal data class AnalyticsVisualizationsRepositoryParams(
-    val visualization: String?
+    val visualization: String?,
+    val periods: List<DimensionItem.PeriodItem>?,
+    val organisationUnits: List<DimensionItem.OrganisationUnitItem>?
 )

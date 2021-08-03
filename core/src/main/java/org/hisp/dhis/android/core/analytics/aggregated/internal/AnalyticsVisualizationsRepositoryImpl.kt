@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.analytics.aggregated.internal
 import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsVisualizationsRepository
+import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.GridAnalyticsResponse
 
 internal class AnalyticsVisualizationsRepositoryImpl @Inject constructor(
@@ -40,6 +41,16 @@ internal class AnalyticsVisualizationsRepositoryImpl @Inject constructor(
 
     override fun withVisualization(visualization: String): AnalyticsVisualizationsRepositoryImpl {
         return updateParams { params -> params.copy(visualization = visualization) }
+    }
+
+    override fun withPeriods(periods: List<DimensionItem.PeriodItem>): AnalyticsVisualizationsRepository {
+        return updateParams { params -> params.copy(periods = periods) }
+    }
+
+    override fun withOrganisationUnits(
+        orgUnits: List<DimensionItem.OrganisationUnitItem>
+    ): AnalyticsVisualizationsRepository {
+        return updateParams { params -> params.copy(organisationUnits = orgUnits) }
     }
 
     override fun evaluate(): Single<GridAnalyticsResponse> {

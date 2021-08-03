@@ -32,12 +32,23 @@ import dagger.Reusable
 import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsVisualizationsRepository
+import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.GridAnalyticsResponse
 
 @Reusable
 class MockAnalyticsVisualizationsRepository @Inject constructor() : AnalyticsVisualizationsRepository {
 
     override fun withVisualization(visualization: String): AnalyticsVisualizationsRepository {
+        return MockAnalyticsVisualizationsRepository()
+    }
+
+    override fun withPeriods(periods: List<DimensionItem.PeriodItem>): AnalyticsVisualizationsRepository {
+        return MockAnalyticsVisualizationsRepository()
+    }
+
+    override fun withOrganisationUnits(
+        orgUnits: List<DimensionItem.OrganisationUnitItem>
+    ): AnalyticsVisualizationsRepository {
         return MockAnalyticsVisualizationsRepository()
     }
 

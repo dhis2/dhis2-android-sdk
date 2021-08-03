@@ -25,41 +25,38 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.tracker.importer
+package org.hisp.dhis.android.core.relationship
 
-import com.google.common.truth.Truth.assertThat
-import java.io.IOException
-import java.text.ParseException
-import org.hisp.dhis.android.core.Inject
-import org.hisp.dhis.android.core.common.BaseObjectShould
-import org.hisp.dhis.android.core.common.ObjectShould
-import org.hisp.dhis.android.core.tracker.importer.internal.JobImportCount
-import org.hisp.dhis.android.core.tracker.importer.internal.JobReport
-import org.hisp.dhis.android.core.tracker.importer.internal.JobValidationError
-import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType
-import org.junit.Test
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 
-class JobReportErrorShould : BaseObjectShould("tracker/importer/jobreport-error.json"), ObjectShould {
+internal class NewTrackerImporterRelationshipTransformer : Transformer<Relationship, NewTrackerImporterRelationship> {
+    override fun transform(o: Relationship): NewTrackerImporterRelationship {
+        return NewTrackerImporterRelationship.builder()
+            .id(o.id())
+            .uid(o.uid())
+            .relationshipType(o.relationshipType())
+            .relationshipName(o.name())
+            .createdAt(o.created())
+            .updatedAt(o.lastUpdated())
+            .from(getRelationshipItem(o.from()))
+            .to(getRelationshipItem(o.to()))
+            .deleted(o.deleted())
+            .syncState(o.syncState())
+            .build()
+    }
 
-    @Test
-    @Throws(IOException::class, ParseException::class)
-    override fun map_from_json_string() {
-        val objectMapper = Inject.objectMapper()
-        val jobReport = objectMapper.readValue(jsonStream, JobReport::class.java)
+    private fun getRelationshipItem(item: RelationshipItem?): NewTrackerImporterRelationshipItem? {
+        return item?.let {
+            val builder = NewTrackerImporterRelationshipItem.builder()
+                .relationship(item.relationship()?.uid())
+                .relationshipItemType(item.relationshipItemType())
 
-        assertThat(jobReport.status).isEqualTo("ERROR")
-        assertThat(jobReport.stats).isEqualTo(JobImportCount(0, 0, 0, 1, 1))
-
-        assertThat(jobReport.validationReport.errorReports.size).isEqualTo(1)
-
-        val error = jobReport.validationReport.errorReports.first()
-        assertThat(error).isEqualTo(
-            JobValidationError(
-                "PXi7gfVIk1p",
-                TrackerImporterObjectType.EVENT,
-                "E1033",
-                "Event: `PXi7gfVIk1p`, Enrollment value is NULL."
-            )
-        )
+            when {
+                item.hasTrackedEntityInstance() -> builder.trackedEntity(item.elementUid()).build()
+                item.hasEnrollment() -> builder.enrollment(item.elementUid()).build()
+                item.hasEvent() -> builder.event(item.elementUid()).build()
+                else -> null
+            }
+        }
     }
 }

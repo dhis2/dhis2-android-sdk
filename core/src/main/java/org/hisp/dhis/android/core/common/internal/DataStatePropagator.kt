@@ -60,9 +60,14 @@ internal interface DataStatePropagator {
 
     fun refreshEnrollmentAggregatedSyncState(enrollmentUid: String)
 
-    fun refreshAggregatedSyncStatesCausedBy(
+    fun refreshEventAggregatedSyncState(eventUid: String)
+
+    fun refreshAggregatedSyncStates(uidHolder: DataStateUidHolder)
+
+    fun getRelatedUids(
         trackedEntityInstanceUids: List<String>,
         enrollmentUids: List<String>,
-        eventUids: List<String>
-    )
+        eventUids: List<String>,
+        relationshipUids: List<String>
+    ): DataStateUidHolder
 }

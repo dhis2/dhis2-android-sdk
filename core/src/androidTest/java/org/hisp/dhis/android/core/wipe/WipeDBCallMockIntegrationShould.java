@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStoreImp
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore;
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType;
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObject;
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObjectStore;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher;
@@ -95,7 +96,7 @@ public class WipeDBCallMockIntegrationShould extends BaseMockIntegrationTestEmpt
         TrackerJobObjectStore.create(databaseAdapter).insert(
                 TrackerJobObject.builder()
                         .jobUid("uid")
-                        .trackerType("type")
+                        .trackerType(TrackerImporterObjectType.EVENT)
                         .objectUid("oUid")
                         .lastUpdated(new Date())
                         .build()

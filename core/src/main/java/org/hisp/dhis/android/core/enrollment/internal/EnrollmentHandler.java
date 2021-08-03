@@ -122,6 +122,7 @@ final class EnrollmentHandler extends IdentifiableDataHandlerImpl<Enrollment> {
             eventHandler.handleMany(EnrollmentInternalAccessor.accessEvents(enrollment),
                     event -> event.toBuilder()
                             .syncState(State.SYNCED)
+                            .aggregatedSyncState(State.SYNCED)
                             .build(),
                     overwrite);
 

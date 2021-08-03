@@ -95,7 +95,10 @@ internal class JobQueryCall @Inject internal constructor(
     }
 
     private fun downloadAndHandle(jobId: String, jobObjects: List<TrackerJobObject>) {
-        val jobReport = apiCallExecutor.executeObjectCall(service.getJobReport(jobId))
+        val jobReport = apiCallExecutor.executeObjectCallWithErrorCatcher(
+            service.getJobReport(jobId),
+            JobQueryErrorCatcher()
+        )
         trackerJobObjectStore.deleteWhere(byJobIdClause(jobId))
         handler.handle(jobReport, jobObjects)
     }

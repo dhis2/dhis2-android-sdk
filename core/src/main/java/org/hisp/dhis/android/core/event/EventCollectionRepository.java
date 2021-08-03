@@ -96,7 +96,7 @@ public final class EventCollectionRepository
     public Observable<D2Progress> upload() {
         return Observable.concat(
                 jobQueryCall.queryPendingJobs(),
-                Observable.fromCallable(() -> bySyncState().in(State.uploadableStates())
+                Observable.fromCallable(() -> byAggregatedSyncState().in(State.uploadableStates())
                         .byEnrollmentUid().isNull()
                         .blockingGetWithoutChildren())
                         .flatMap(postCall::uploadEvents)
@@ -191,6 +191,10 @@ public final class EventCollectionRepository
 
     public EnumFilterConnector<EventCollectionRepository, State> bySyncState() {
         return cf.enumC(Columns.SYNC_STATE);
+    }
+
+    public EnumFilterConnector<EventCollectionRepository, State> byAggregatedSyncState() {
+        return cf.enumC(Columns.AGGREGATED_SYNC_STATE);
     }
 
     public StringFilterConnector<EventCollectionRepository> byAttributeOptionComboUid() {

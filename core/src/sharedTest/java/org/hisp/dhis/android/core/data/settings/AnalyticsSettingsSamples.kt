@@ -110,6 +110,6 @@ object AnalyticsSettingsSamples {
             .groupUid("123456")
             .scope(AnalyticsDhisVisualizationScope.HOME)
             .timestamp("2021-07-01T02:55:16.8770")
-            .uid("KgC9TdlpjZC")
+            .uid("PYBH8ZaAQnC")
             .build()
 }

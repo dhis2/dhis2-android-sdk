@@ -26,14 +26,10 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship.internal;
+package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore;
-import org.hisp.dhis.android.core.relationship.Relationship;
-import org.hisp.dhis.android.core.relationship.RelationshipItem;
+import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipItem;
 
-import java.util.List;
-
-public interface RelationshipStore extends IdentifiableDeletableDataObjectStore<Relationship> {
-    List<Relationship> getRelationshipsByItem(RelationshipItem relationshipItem);
+public final class IgnoreNewTrackerImporterRelationshipItemAdapter
+        extends IgnoreColumnAdapter<NewTrackerImporterRelationshipItem> {
 }

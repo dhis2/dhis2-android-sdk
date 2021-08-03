@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.relationship.internal.RelationshipDeleteCall
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayload
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterTrackedEntityPostPayloadGenerator
@@ -50,8 +49,7 @@ internal class TrackedEntityInstanceTrackerImporterPostCall @Inject internal con
     private val service: TrackerImporterService,
     private val apiCallExecutor: APICallExecutor,
     private val jobQueryCall: JobQueryCall,
-    private val jobObjectHandler: Handler<TrackerJobObject>,
-    private val relationshipDeleteCall: RelationshipDeleteCall
+    private val jobObjectHandler: Handler<TrackerJobObject>
 ) {
     fun uploadTrackedEntityInstances(
         filteredTrackedEntityInstances: List<TrackedEntityInstance>
@@ -59,10 +57,6 @@ internal class TrackedEntityInstanceTrackerImporterPostCall @Inject internal con
         return Observable.defer {
             val payloadWrapper = payloadGenerator.getTrackedEntities(filteredTrackedEntityInstances)
 
-            // TODO HANDLE DELETIONS
-            // TODO HANDLE RELATIONSHIPS
-            // TODO HANDLE DELETED RELATIONSHIPS
-            //  relationshipDeleteCall.postDeletedRelationships(partition)
             Observable.concat(
                 doPostCall(payloadWrapper.deleted, IMPORT_STRATEGY_DELETE),
                 doPostCall(payloadWrapper.updated, IMPORT_STRATEGY_CREATE_AND_UPDATE)
@@ -112,14 +106,15 @@ internal class TrackedEntityInstanceTrackerImporterPostCall @Inject internal con
         val enrollments = payload.trackedEntities.flatMap { it.enrollments() ?: emptyList() } + payload.enrollments
         val events = enrollments.flatMap { it.events() ?: emptyList() } + payload.events
 
-        return generateTypeObjects(builder, TrackerImporterObjectTypes.TRACKED_ENTITY, payload.trackedEntities) +
-            generateTypeObjects(builder, TrackerImporterObjectTypes.ENROLLMENT, enrollments) +
-            generateTypeObjects(builder, TrackerImporterObjectTypes.EVENT, events)
+        return generateTypeObjects(builder, TrackerImporterObjectType.TRACKED_ENTITY, payload.trackedEntities) +
+            generateTypeObjects(builder, TrackerImporterObjectType.ENROLLMENT, enrollments) +
+            generateTypeObjects(builder, TrackerImporterObjectType.EVENT, events) +
+            generateTypeObjects(builder, TrackerImporterObjectType.RELATIONSHIP, payload.relationships)
     }
 
     private fun generateTypeObjects(
         builder: TrackerJobObject.Builder,
-        objectType: String,
+        objectType: TrackerImporterObjectType,
         objects: List<ObjectWithUidInterface>
     ): List<TrackerJobObject> {
         return objects.map {

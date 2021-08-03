@@ -107,7 +107,6 @@ public class RelationshipCollectionRepository
     public String blockingAdd(Relationship relationship) throws D2Error {
         Relationship relationshipWithUid;
         RelationshipItem from = relationship.from();
-        RelationshipItem to = relationship.to();
         if (relationshipHandler.doesRelationshipExist(relationship)) {
             throw D2Error
                     .builder()

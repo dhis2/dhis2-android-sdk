@@ -39,7 +39,11 @@ import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.note.Note
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
+import org.hisp.dhis.android.core.relationship.RelationshipHelper
 import org.hisp.dhis.android.core.relationship.RelationshipItem
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStore
+import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
@@ -50,7 +54,9 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceSt
 internal class DataStatePropagatorImpl @Inject internal constructor(
     private val trackedEntityInstanceStore: TrackedEntityInstanceStore,
     private val enrollmentStore: EnrollmentStore,
-    private val eventStore: EventStore
+    private val eventStore: EventStore,
+    private val relationshipStore: RelationshipStore,
+    private val relationshipItemStore: RelationshipItemStore
 ) : DataStatePropagator {
 
     override fun propagateTrackedEntityInstanceUpdate(tei: TrackedEntityInstance?) {
@@ -64,20 +70,26 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
         enrollment?.let {
             refreshEnrollmentAggregatedSyncState(it.uid())
             refreshEnrollmentLastUpdated(it.uid())
+
             val tei = trackedEntityInstanceStore.selectByUid(it.trackedEntityInstance()!!)
             propagateTrackedEntityInstanceUpdate(tei)
         }
     }
 
     override fun propagateEventUpdate(event: Event?) {
-        event?.enrollment()?.let { enrollmentUid ->
-            val enrollment = enrollmentStore.selectByUid(enrollmentUid)
-            propagateEnrollmentUpdate(enrollment)
+        event?.let {
+            refreshEventAggregatedSyncState(it.uid())
+            refreshEventLastUpdated(it.uid())
+
+            it.enrollment()?.let { enrollmentUid ->
+                val enrollment = enrollmentStore.selectByUid(enrollmentUid)
+                propagateEnrollmentUpdate(enrollment)
+            }
         }
     }
 
     override fun propagateTrackedEntityDataValueUpdate(dataValue: TrackedEntityDataValue?) {
-        setEventSyncState(dataValue!!.event(), getStateForUpdate)
+        setEventSyncState(dataValue!!.event()!!, getStateForUpdate)
     }
 
     override fun propagateTrackedEntityAttributeUpdate(trackedEntityAttributeValue: TrackedEntityAttributeValue?) {
@@ -88,18 +100,21 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
         if (note!!.noteType() == Note.NoteType.ENROLLMENT_NOTE) {
             setEnrollmentSyncState(note.enrollment()!!, getStateForUpdate)
         } else if (note.noteType() == Note.NoteType.EVENT_NOTE) {
-            setEventSyncState(note.event(), getStateForUpdate)
+            setEventSyncState(note.event()!!, getStateForUpdate)
         }
     }
 
     override fun propagateRelationshipUpdate(item: RelationshipItem?) {
         if (item != null) {
             if (item.hasTrackedEntityInstance()) {
-                setTeiSyncState(item.trackedEntityInstance()!!.trackedEntityInstance(), getStateForUpdate)
+                val tei = trackedEntityInstanceStore.selectByUid(item.elementUid())
+                propagateTrackedEntityInstanceUpdate(tei)
             } else if (item.hasEnrollment()) {
-                setEnrollmentSyncState(item.enrollment()!!.enrollment(), getStateForUpdate)
+                val enrollment = enrollmentStore.selectByUid(item.elementUid())
+                propagateEnrollmentUpdate(enrollment)
             } else if (item.hasEvent()) {
-                setEventSyncState(item.event()!!.event(), getStateForUpdate)
+                val event = eventStore.selectByUid(item.elementUid())
+                propagateEventUpdate(event)
             }
         }
     }
@@ -118,16 +133,21 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
         }
     }
 
-    private fun setEventSyncState(eventUid: String?, getState: (State?) -> State) {
-        eventStore.selectByUid(eventUid!!)?.let { event ->
+    private fun setEventSyncState(eventUid: String, getState: (State?) -> State) {
+        eventStore.selectByUid(eventUid)?.let { event ->
+            eventStore.setSyncState(eventUid, getState(event.syncState()))
+            propagateEventUpdate(event)
+        }
+    }
+
+    private fun refreshEventLastUpdated(eventUid: String) {
+        eventStore.selectByUid(eventUid)?.let { event ->
             val now = Date()
             val updatedEvent = event.toBuilder()
-                .syncState(getState(event.syncState()))
                 .lastUpdated(getMaxDate(event.lastUpdated(), now))
                 .lastUpdatedAtClient(getMaxDate(event.lastUpdatedAtClient(), now))
                 .build()
             eventStore.update(updatedEvent)
-            propagateEventUpdate(updatedEvent)
         }
     }
 
@@ -202,46 +222,97 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
         }
     }
 
-    override fun refreshEnrollmentAggregatedSyncState(enrollmentUid: String) {
-        enrollmentStore.selectByUid(enrollmentUid)?.let { enrollment ->
-            val whereClause = WhereClauseBuilder()
-                .appendKeyStringValue(EventTableInfo.Columns.ENROLLMENT, enrollmentUid)
-                .build()
-            val eventStates = eventStore.selectSyncStateWhere(whereClause)
-
-            val enrollmentAggregatedSyncState = getAggregatedSyncState(eventStates + enrollment.syncState()!!)
-            enrollmentStore.setAggregatedSyncState(enrollmentUid, enrollmentAggregatedSyncState)
-        }
-    }
-
     override fun refreshTrackedEntityInstanceAggregatedSyncState(trackedEntityInstanceUid: String) {
-        trackedEntityInstanceStore.selectByUid(trackedEntityInstanceUid)?.let { trackedEntityInstance ->
+        trackedEntityInstanceStore.selectByUid(trackedEntityInstanceUid)?.let { instance ->
             val whereClause = WhereClauseBuilder()
                 .appendKeyStringValue(EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE, trackedEntityInstanceUid)
                 .build()
             val enrollmentStates = enrollmentStore.selectAggregatedSyncStateWhere(whereClause)
 
-            val teiAggregatedSyncState = getAggregatedSyncState(enrollmentStates + trackedEntityInstance.syncState()!!)
+            val relationships = relationshipStore.getRelationshipsByItem(
+                RelationshipHelper.teiItem(trackedEntityInstanceUid),
+                RelationshipConstraintType.FROM
+            )
+            val relationshipStates = relationships.map { it.syncState()!! }
+
+            val teiAggregatedSyncState =
+                getAggregatedSyncState(enrollmentStates + relationshipStates + instance.syncState()!!)
             trackedEntityInstanceStore.setAggregatedSyncState(trackedEntityInstanceUid, teiAggregatedSyncState)
         }
     }
 
-    override fun refreshAggregatedSyncStatesCausedBy(
+    override fun refreshEnrollmentAggregatedSyncState(enrollmentUid: String) {
+        enrollmentStore.selectByUid(enrollmentUid)?.let { enrollment ->
+            val whereClause = WhereClauseBuilder()
+                .appendKeyStringValue(EventTableInfo.Columns.ENROLLMENT, enrollmentUid)
+                .build()
+            val eventStates = eventStore.selectAggregatedSyncStateWhere(whereClause)
+
+            val relationships = relationshipStore.getRelationshipsByItem(
+                RelationshipHelper.enrollmentItem(enrollmentUid),
+                RelationshipConstraintType.FROM
+            )
+            val relationshipStates = relationships.map { it.syncState()!! }
+
+            val enrollmentAggregatedSyncState =
+                getAggregatedSyncState(eventStates + relationshipStates + enrollment.syncState()!!)
+            enrollmentStore.setAggregatedSyncState(enrollmentUid, enrollmentAggregatedSyncState)
+        }
+    }
+
+    override fun refreshEventAggregatedSyncState(eventUid: String) {
+        eventStore.selectByUid(eventUid)?.let { event ->
+            val relationships = relationshipStore.getRelationshipsByItem(
+                RelationshipHelper.eventItem(eventUid),
+                RelationshipConstraintType.FROM
+            )
+            val relationshipStates = relationships.map { it.syncState()!! }
+
+            val eventAggregatedSyncState = getAggregatedSyncState(relationshipStates + event.syncState()!!)
+            eventStore.setAggregatedSyncState(eventUid, eventAggregatedSyncState)
+        }
+    }
+
+    override fun refreshAggregatedSyncStates(uidHolder: DataStateUidHolder) {
+        uidHolder.events.forEach {
+            refreshEventAggregatedSyncState(it)
+        }
+
+        uidHolder.enrollments.forEach {
+            refreshEnrollmentAggregatedSyncState(it)
+        }
+
+        uidHolder.trackedEntities.forEach {
+            refreshTrackedEntityInstanceAggregatedSyncState(it)
+        }
+    }
+
+    override fun getRelatedUids(
         trackedEntityInstanceUids: List<String>,
         enrollmentUids: List<String>,
-        eventUids: List<String>
-    ) {
+        eventUids: List<String>,
+        relationshipUids: List<String>
+    ): DataStateUidHolder {
         val enrollmentsFromEvents = eventStore.selectByUids(eventUids).mapNotNull { it.enrollment() }
 
         val enrollments = enrollmentStore.selectByUids(enrollmentUids + enrollmentsFromEvents)
-        enrollments.forEach {
-            refreshEnrollmentAggregatedSyncState(it.uid())
+
+        val trackedEntitiesFromEnrollments = enrollments.mapNotNull { it.trackedEntityInstance() }
+
+        val relationshipItems = relationshipUids.map {
+            relationshipItemStore.getForRelationshipUidAndConstraintType(it, RelationshipConstraintType.FROM)
         }
 
-        val teiUids = trackedEntityInstanceUids + enrollments.mapNotNull { it.trackedEntityInstance() }
-        teiUids.forEach {
-            refreshTrackedEntityInstanceAggregatedSyncState(it)
-        }
+        return DataStateUidHolder(
+            events = eventUids +
+                relationshipItems.filter { it.hasEvent() }.map { it.elementUid() },
+            enrollments = enrollmentUids +
+                enrollmentsFromEvents +
+                relationshipItems.filter { it.hasEnrollment() }.map { it.elementUid() },
+            trackedEntities = trackedEntityInstanceUids +
+                trackedEntitiesFromEnrollments +
+                relationshipItems.filter { it.hasTrackedEntityInstance() }.map { it.elementUid() }
+        )
     }
 
     private fun getAggregatedSyncState(states: List<State>): State {

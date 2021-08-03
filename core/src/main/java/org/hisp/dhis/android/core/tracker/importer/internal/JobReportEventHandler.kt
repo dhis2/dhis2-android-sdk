@@ -40,6 +40,8 @@ import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
 import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.note.NoteTableInfo
+import org.hisp.dhis.android.core.relationship.RelationshipHelper
+import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 
 @Reusable
 internal class JobReportEventHandler @Inject internal constructor(
@@ -47,8 +49,9 @@ internal class JobReportEventHandler @Inject internal constructor(
     private val conflictStore: TrackerImportConflictStore,
     private val eventStore: EventStore,
     private val enrollmentStore: EnrollmentStore,
-    private val conflictHelper: TrackerConflictHelper
-) : JobReportTypeHandler() {
+    private val conflictHelper: TrackerConflictHelper,
+    relationshipStore: RelationshipStore
+) : JobReportTypeHandler(relationshipStore) {
 
     fun handleEventNotes(eventUid: String, state: State) {
         val newNoteState = if (state == State.SYNCED) State.SYNCED else State.TO_POST
@@ -62,13 +65,15 @@ internal class JobReportEventHandler @Inject internal constructor(
         }
     }
 
-    override fun handleObject(uid: String, state: State) {
+    override fun handleObject(uid: String, state: State): HandleAction {
         conflictStore.deleteEventConflicts(uid)
         val handleAction = eventStore.setSyncStateOrDelete(uid, state)
 
         if (handleAction !== HandleAction.Delete) {
             handleEventNotes(uid, state)
         }
+
+        return handleAction
     }
 
     override fun storeConflict(errorReport: JobValidationError) {
@@ -84,5 +89,9 @@ internal class JobReportEventHandler @Inject internal constructor(
                 .event(errorReport.uid)
                 .build()
         )
+    }
+
+    override fun getRelatedRelationships(uid: String): List<String> {
+        return relationshipStore.getRelationshipsByItem(RelationshipHelper.eventItem(uid)).mapNotNull { it.uid() }
     }
 }

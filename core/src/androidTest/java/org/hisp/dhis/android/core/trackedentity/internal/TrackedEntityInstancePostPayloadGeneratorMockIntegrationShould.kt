@@ -346,6 +346,7 @@ class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould : BaseMockI
         // Only enrollment1 and event1 are TO_UPDATE
         enrollmentStore.setAggregatedSyncState(enrollment2Id, State.SYNCED)
         enrollmentStore.setSyncState(enrollment2Id, State.SYNCED)
+        eventStore.setAggregatedSyncState(event2Id, State.SYNCED)
         eventStore.setSyncState(event2Id, State.SYNCED)
 
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_empty_events.json")
@@ -379,6 +380,7 @@ class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould : BaseMockI
             .program(program.uid())
             .programStage(programStage!!.uid())
             .syncState(State.TO_UPDATE)
+            .aggregatedSyncState(State.TO_UPDATE)
             .trackedEntityDataValues(listOf(dataValue1))
             .build()
 
@@ -399,6 +401,7 @@ class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould : BaseMockI
             .program(program.uid())
             .programStage(programStage.uid())
             .syncState(State.SYNCED_VIA_SMS)
+            .aggregatedSyncState(State.SYNCED_VIA_SMS)
             .trackedEntityDataValues(listOf(dataValue2))
             .build()
 
@@ -420,6 +423,7 @@ class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould : BaseMockI
             .program(program.uid())
             .programStage(programStage.uid())
             .syncState(State.ERROR)
+            .aggregatedSyncState(State.ERROR)
             .trackedEntityDataValues(listOf(dataValue3))
             .build()
 

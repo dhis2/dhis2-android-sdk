@@ -69,11 +69,14 @@ internal class EventImportHandler @Inject constructor(
                 if (handleAction !== HandleAction.Delete) {
                     jobReportEventHandler.handleEventNotes(eventUid, state)
                     storeEventImportConflicts(eventImportSummary, teiUid, enrollmentUid)
+
+                    dataStatePropagator.refreshEventAggregatedSyncState(eventUid)
                 }
             }
         }
 
         val processedEvents = getReferences(eventImportSummaries)
+
         events.filterNot { processedEvents.contains(it.uid()) }.forEach { event ->
             val state = State.TO_UPDATE
             trackerImportConflictStore.deleteEventConflicts(event.uid())

@@ -39,14 +39,17 @@ import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
 import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.note.NoteTableInfo
+import org.hisp.dhis.android.core.relationship.RelationshipHelper
+import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 
 @Reusable
 internal class JobReportEnrollmentHandler @Inject internal constructor(
     private val noteStore: IdentifiableObjectStore<Note>,
     private val enrollmentStore: EnrollmentStore,
     private val conflictStore: TrackerImportConflictStore,
-    private val conflictHelper: TrackerConflictHelper
-) : JobReportTypeHandler() {
+    private val conflictHelper: TrackerConflictHelper,
+    relationshipStore: RelationshipStore
+) : JobReportTypeHandler(relationshipStore) {
 
     fun handleEnrollmentNotes(enrollmentUid: String, state: State) {
         val newNoteState = if (state == State.SYNCED) State.SYNCED else State.TO_POST
@@ -60,13 +63,15 @@ internal class JobReportEnrollmentHandler @Inject internal constructor(
         }
     }
 
-    override fun handleObject(uid: String, state: State) {
+    override fun handleObject(uid: String, state: State): HandleAction {
         conflictStore.deleteEnrollmentConflicts(uid)
         val handleAction = enrollmentStore.setSyncStateOrDelete(uid, state)
 
         if (handleAction !== HandleAction.Delete) {
             handleEnrollmentNotes(uid, state)
         }
+
+        return handleAction
     }
 
     override fun storeConflict(errorReport: JobValidationError) {
@@ -78,5 +83,9 @@ internal class JobReportEnrollmentHandler @Inject internal constructor(
                 .trackedEntityInstance(enrollment!!.trackedEntityInstance())
                 .build()
         )
+    }
+
+    override fun getRelatedRelationships(uid: String): List<String> {
+        return relationshipStore.getRelationshipsByItem(RelationshipHelper.enrollmentItem(uid)).mapNotNull { it.uid() }
     }
 }

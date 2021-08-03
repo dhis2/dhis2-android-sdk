@@ -42,7 +42,12 @@ import org.hisp.dhis.android.core.event.EventCreateProjection
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl
 import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStore
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStoreImpl
+import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
+import org.hisp.dhis.android.core.relationship.internal.RelationshipStoreImpl
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
@@ -58,6 +63,10 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
     private lateinit var trackedEntityInstanceStore: TrackedEntityInstanceStore
     private lateinit var enrollmentStore: EnrollmentStore
     private lateinit var eventStore: EventStore
+    private lateinit var relationshipStore: RelationshipStore
+    private lateinit var relationshipItemStore: RelationshipItemStore
+
+    private val relationshipType = "WiH6923nMtb"
 
     @Before
     @Throws(IOException::class)
@@ -65,7 +74,13 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
         trackedEntityInstanceStore = TrackedEntityInstanceStoreImpl.create(d2.databaseAdapter())
         enrollmentStore = create(d2.databaseAdapter())
         eventStore = EventStoreImpl.create(d2.databaseAdapter())
-        propagator = DataStatePropagatorImpl(trackedEntityInstanceStore, enrollmentStore, eventStore)
+        relationshipStore = RelationshipStoreImpl.create(d2.databaseAdapter())
+        relationshipItemStore = RelationshipItemStoreImpl.create(d2.databaseAdapter())
+
+        propagator = DataStatePropagatorImpl(
+            trackedEntityInstanceStore, enrollmentStore,
+            eventStore, relationshipStore, relationshipItemStore
+        )
     }
 
     @Test
@@ -199,14 +214,20 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
     @Throws(D2Error::class)
     fun propagate_tei_relationship_update() {
         val teiUid = createTEIWithState(State.SYNCED)
-        val fromItem = RelationshipHelper.teiItem(teiUid)
 
-        propagator.propagateRelationshipUpdate(fromItem)
+        val relationshipUid = d2.relationshipModule().relationships().blockingAdd(
+            Relationship.builder()
+                .relationshipType(relationshipType)
+                .from(RelationshipHelper.teiItem(teiUid))
+                .to(RelationshipHelper.teiItem(teiUid))
+                .build()
+        )
 
-        assertThat(trackedEntityInstanceStore.selectByUid(teiUid)!!.syncState()).isEqualTo(State.TO_UPDATE)
+        assertThat(trackedEntityInstanceStore.selectByUid(teiUid)!!.syncState()).isEqualTo(State.SYNCED)
         assertThat(trackedEntityInstanceStore.selectByUid(teiUid)!!.aggregatedSyncState()).isEqualTo(State.TO_UPDATE)
 
         trackedEntityInstanceStore.delete(teiUid)
+        relationshipStore.delete(relationshipUid)
     }
 
     @Test
@@ -214,16 +235,22 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
     fun propagate_enrollment_relationship_update() {
         val teiUid = createTEIWithState(State.SYNCED)
         val enrollmentUid = createEnrollmentWithState(State.SYNCED, teiUid)
-        val fromItem = RelationshipHelper.enrollmentItem(enrollmentUid)
 
-        propagator.propagateRelationshipUpdate(fromItem)
+        val relationshipUid = d2.relationshipModule().relationships().blockingAdd(
+            Relationship.builder()
+                .relationshipType(relationshipType)
+                .from(RelationshipHelper.enrollmentItem(enrollmentUid))
+                .to(RelationshipHelper.enrollmentItem(enrollmentUid))
+                .build()
+        )
 
         assertThat(trackedEntityInstanceStore.selectByUid(teiUid)!!.syncState()).isEqualTo(State.SYNCED)
         assertThat(trackedEntityInstanceStore.selectByUid(teiUid)!!.aggregatedSyncState()).isEqualTo(State.TO_UPDATE)
-        assertThat(enrollmentStore.selectByUid(enrollmentUid)!!.syncState()).isEqualTo(State.TO_UPDATE)
+        assertThat(enrollmentStore.selectByUid(enrollmentUid)!!.syncState()).isEqualTo(State.SYNCED)
         assertThat(enrollmentStore.selectByUid(enrollmentUid)!!.aggregatedSyncState()).isEqualTo(State.TO_UPDATE)
 
         trackedEntityInstanceStore.delete(teiUid)
+        relationshipStore.delete(relationshipUid)
     }
 
     @Test
@@ -232,17 +259,24 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
         val teiUid = createTEIWithState(State.SYNCED)
         val enrollmentUid = createEnrollmentWithState(State.SYNCED, teiUid)
         val eventUid = createEventWithState(State.SYNCED, enrollmentUid)
-        val fromItem = RelationshipHelper.eventItem(eventUid)
 
-        propagator.propagateRelationshipUpdate(fromItem)
+        val relationshipUid = d2.relationshipModule().relationships().blockingAdd(
+            Relationship.builder()
+                .relationshipType(relationshipType)
+                .from(RelationshipHelper.eventItem(eventUid))
+                .to(RelationshipHelper.eventItem(eventUid))
+                .build()
+        )
 
         assertThat(trackedEntityInstanceStore.selectByUid(teiUid)!!.syncState()).isEqualTo(State.SYNCED)
         assertThat(trackedEntityInstanceStore.selectByUid(teiUid)!!.aggregatedSyncState()).isEqualTo(State.TO_UPDATE)
         assertThat(enrollmentStore.selectByUid(enrollmentUid)!!.syncState()).isEqualTo(State.SYNCED)
         assertThat(enrollmentStore.selectByUid(enrollmentUid)!!.aggregatedSyncState()).isEqualTo(State.TO_UPDATE)
-        assertThat(eventStore.selectByUid(eventUid)!!.syncState()).isEqualTo(State.TO_UPDATE)
+        assertThat(eventStore.selectByUid(eventUid)!!.syncState()).isEqualTo(State.SYNCED)
+        assertThat(eventStore.selectByUid(eventUid)!!.aggregatedSyncState()).isEqualTo(State.TO_UPDATE)
 
         trackedEntityInstanceStore.delete(teiUid)
+        relationshipStore.delete(relationshipUid)
     }
 
     @Throws(D2Error::class)
@@ -359,6 +393,7 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
         val eventUid = d2.eventModule().events().blockingAdd(sampleEventProjection(enrolmentUid))
 
         eventStore.setSyncState(eventUid, state)
+        eventStore.setAggregatedSyncState(eventUid, state)
 
         return eventUid
     }

@@ -25,41 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.tracker.importer
+package org.hisp.dhis.android.core.tracker.importer.internal
 
-import com.google.common.truth.Truth.assertThat
-import java.io.IOException
-import java.text.ParseException
-import org.hisp.dhis.android.core.Inject
-import org.hisp.dhis.android.core.common.BaseObjectShould
-import org.hisp.dhis.android.core.common.ObjectShould
-import org.hisp.dhis.android.core.tracker.importer.internal.JobImportCount
-import org.hisp.dhis.android.core.tracker.importer.internal.JobReport
-import org.hisp.dhis.android.core.tracker.importer.internal.JobValidationError
-import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType
-import org.junit.Test
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 
-class JobReportErrorShould : BaseObjectShould("tracker/importer/jobreport-error.json"), ObjectShould {
+@Reusable
+internal class JobReportRelationshipHandler @Inject internal constructor(
+    relationshipStore: RelationshipStore
+) : JobReportTypeHandler(relationshipStore) {
 
-    @Test
-    @Throws(IOException::class, ParseException::class)
-    override fun map_from_json_string() {
-        val objectMapper = Inject.objectMapper()
-        val jobReport = objectMapper.readValue(jsonStream, JobReport::class.java)
+    override fun handleObject(uid: String, state: State): HandleAction {
+        return relationshipStore.setSyncStateOrDelete(uid, state)
+    }
 
-        assertThat(jobReport.status).isEqualTo("ERROR")
-        assertThat(jobReport.stats).isEqualTo(JobImportCount(0, 0, 0, 1, 1))
+    @Suppress("EmptyFunctionBlock")
+    override fun storeConflict(errorReport: JobValidationError) {
+    }
 
-        assertThat(jobReport.validationReport.errorReports.size).isEqualTo(1)
-
-        val error = jobReport.validationReport.errorReports.first()
-        assertThat(error).isEqualTo(
-            JobValidationError(
-                "PXi7gfVIk1p",
-                TrackerImporterObjectType.EVENT,
-                "E1033",
-                "Event: `PXi7gfVIk1p`, Enrollment value is NULL."
-            )
-        )
+    override fun getRelatedRelationships(uid: String): List<String> {
+        return emptyList()
     }
 }

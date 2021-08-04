@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
+import org.hisp.dhis.android.core.datavalue.calculator.DataValueCalculator;
+
 public interface DataValueModule {
     DataValueCollectionRepository dataValues();
+    DataValueCalculator calculator();
 }

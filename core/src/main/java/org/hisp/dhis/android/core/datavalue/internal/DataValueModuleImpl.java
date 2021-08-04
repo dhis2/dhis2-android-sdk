@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.datavalue.internal;
 
 import org.hisp.dhis.android.core.datavalue.DataValueCollectionRepository;
 import org.hisp.dhis.android.core.datavalue.DataValueModule;
+import org.hisp.dhis.android.core.datavalue.calculator.DataValueCalculator;
 
 import javax.inject.Inject;
 
@@ -39,14 +40,22 @@ import dagger.Reusable;
 public final class DataValueModuleImpl implements DataValueModule {
 
     private final DataValueCollectionRepository dataValues;
+    private final DataValueCalculator calculator;
 
     @Inject
-    DataValueModuleImpl(DataValueCollectionRepository dataValueCollectionRepository) {
+    DataValueModuleImpl(DataValueCollectionRepository dataValueCollectionRepository,
+                        DataValueCalculator calculator) {
         this.dataValues = dataValueCollectionRepository;
+        this.calculator = calculator;
     }
 
     @Override
     public DataValueCollectionRepository dataValues() {
         return dataValues;
+    }
+
+    @Override
+    public DataValueCalculator calculator() {
+        return calculator;
     }
 }

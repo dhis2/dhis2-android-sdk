@@ -26,38 +26,27 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datastore;
+package org.hisp.dhis.android.core.datastore.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithoutUidCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-
-import java.util.Map;
+import org.hisp.dhis.android.core.datastore.LocalDataStoreCollectionRepository;
+import org.hisp.dhis.android.core.datastore.LocalDataStoreModule;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
-public final class LocalDataStoreCollectionRepository
-        extends ReadWriteWithoutUidCollectionRepositoryImpl<KeyValuePair, LocalDataStoreCollectionRepository> {
+public final class LocalDataStoreModuleImpl implements LocalDataStoreModule {
+
+    private final LocalDataStoreCollectionRepository localDataStore;
 
     @Inject
-    LocalDataStoreCollectionRepository(final ObjectWithoutUidStore<KeyValuePair> store,
-                                       final Map<String, ChildrenAppender<KeyValuePair>> childrenAppenders,
-                                       final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new LocalDataStoreCollectionRepository(store, childrenAppenders, s)));
+    LocalDataStoreModuleImpl(LocalDataStoreCollectionRepository localDataStore) {
+        this.localDataStore = localDataStore;
     }
 
-    public StringFilterConnector<LocalDataStoreCollectionRepository> byKey() {
-        return cf.string(LocalDataStoreTableInfo.Columns.KEY);
-    }
-
-    public StringFilterConnector<LocalDataStoreCollectionRepository> byValue() {
-        return cf.string(LocalDataStoreTableInfo.Columns.VALUE);
+    @Override
+    public LocalDataStoreCollectionRepository localDataStore() {
+        return localDataStore;
     }
 }

@@ -28,36 +28,41 @@
 
 package org.hisp.dhis.android.core.datastore;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithoutUidCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import android.database.Cursor;
 
-import java.util.Map;
+import androidx.annotation.Nullable;
 
-import javax.inject.Inject;
+import com.google.auto.value.AutoValue;
 
-import dagger.Reusable;
+import org.hisp.dhis.android.core.common.CoreObject;
 
-@Reusable
-public final class LocalDataStoreCollectionRepository
-        extends ReadWriteWithoutUidCollectionRepositoryImpl<KeyValuePair, LocalDataStoreCollectionRepository> {
+@AutoValue
+public abstract class KeyValuePair implements CoreObject {
 
-    @Inject
-    LocalDataStoreCollectionRepository(final ObjectWithoutUidStore<KeyValuePair> store,
-                                       final Map<String, ChildrenAppender<KeyValuePair>> childrenAppenders,
-                                       final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new LocalDataStoreCollectionRepository(store, childrenAppenders, s)));
+        @Nullable
+    public abstract String key();
+
+    @Nullable
+    public abstract String value();
+
+    public static KeyValuePair create(Cursor cursor) {
+        return $AutoValue_KeyValuePair.createFromCursor(cursor);
     }
 
-    public StringFilterConnector<LocalDataStoreCollectionRepository> byKey() {
-        return cf.string(LocalDataStoreTableInfo.Columns.KEY);
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_KeyValuePair.Builder();
     }
 
-    public StringFilterConnector<LocalDataStoreCollectionRepository> byValue() {
-        return cf.string(LocalDataStoreTableInfo.Columns.VALUE);
+    @AutoValue.Builder
+    public static abstract class Builder {
+        public abstract Builder id(Long id);
+
+        public abstract Builder key(String key);
+
+        public abstract Builder value(String value);
+
+        public abstract KeyValuePair build();
     }
 }

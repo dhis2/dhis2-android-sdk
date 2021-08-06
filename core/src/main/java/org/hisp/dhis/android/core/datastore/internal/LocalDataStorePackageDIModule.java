@@ -26,43 +26,22 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datastore;
+package org.hisp.dhis.android.core.datastore.internal;
 
-import android.database.Cursor;
+import org.hisp.dhis.android.core.datastore.LocalDataStoreModule;
 
-import androidx.annotation.Nullable;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-import com.google.auto.value.AutoValue;
+@Module(includes = {
+        LocalDataStoreEntityDIModule.class
+})
+public final class LocalDataStorePackageDIModule {
 
-import org.hisp.dhis.android.core.common.CoreObject;
-
-@AutoValue
-public abstract class LocalDataStore implements CoreObject {
-
-        @Nullable
-    public abstract String key();
-
-    @Nullable
-    public abstract String value();
-
-    public static LocalDataStore create(Cursor cursor) {
-        return $AutoValue_LocalDataStore.createFromCursor(cursor);
-    }
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_LocalDataStore.Builder();
-    }
-
-    @AutoValue.Builder
-    public static abstract class Builder {
-        public abstract Builder id(Long id);
-
-        public abstract Builder key(String key);
-
-        public abstract Builder value(String value);
-
-        public abstract LocalDataStore build();
+    @Provides
+    @Reusable
+    LocalDataStoreModule module(LocalDataStoreModuleImpl impl) {
+        return impl;
     }
 }

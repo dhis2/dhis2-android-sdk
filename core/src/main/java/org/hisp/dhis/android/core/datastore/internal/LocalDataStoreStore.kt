@@ -33,28 +33,28 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinde
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithoutUidStore
-import org.hisp.dhis.android.core.datastore.LocalDataStore
+import org.hisp.dhis.android.core.datastore.KeyValuePair
 import org.hisp.dhis.android.core.datastore.LocalDataStoreTableInfo
 
 @Suppress("MagicNumber")
 internal object LocalDataStoreStore {
 
-    private val BINDER: StatementBinder<LocalDataStore> = StatementBinder { o, w ->
+    private val BINDER: StatementBinder<KeyValuePair> = StatementBinder { o, w ->
         w.bind(1, o.key())
         w.bind(2, o.value())
     }
 
-    private val WHERE_UPDATE_BINDER = WhereStatementBinder { _: LocalDataStore, _ -> }
-    private val WHERE_DELETE_BINDER = WhereStatementBinder { _: LocalDataStore, _ -> }
+    private val WHERE_UPDATE_BINDER = WhereStatementBinder { _: KeyValuePair, _ -> }
+    private val WHERE_DELETE_BINDER = WhereStatementBinder { _: KeyValuePair, _ -> }
 
     @JvmStatic
-    fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<LocalDataStore> {
+    fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<KeyValuePair> {
         return objectWithoutUidStore(
             databaseAdapter,
             LocalDataStoreTableInfo.TABLE_INFO,
             BINDER,
             WHERE_UPDATE_BINDER,
             WHERE_DELETE_BINDER
-        ) { cursor: Cursor -> LocalDataStore.create(cursor) }
+        ) { cursor: Cursor -> KeyValuePair.create(cursor) }
     }
 }

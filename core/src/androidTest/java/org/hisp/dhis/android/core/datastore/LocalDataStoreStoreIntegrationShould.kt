@@ -27,19 +27,11 @@
  */
 package org.hisp.dhis.android.core.datastore
 
-import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould
-import org.hisp.dhis.android.core.datastore.internal.LocalDataStoreStore.create
-import org.hisp.dhis.android.core.data.datastore.KeyValuePairSamples.keyValuePairSample
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould
-import org.hisp.dhis.android.core.datastore.internal.LocalDataStoreStore
+import org.hisp.dhis.android.core.data.datastore.KeyValuePairSamples.keyValuePairSample
+import org.hisp.dhis.android.core.datastore.internal.LocalDataStoreStore.create
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
-import org.hisp.dhis.android.core.datastore.LocalDataStoreTableInfo
-import org.hisp.dhis.android.core.data.datastore.KeyValuePairSamples
-import org.hisp.dhis.android.core.data.settings.AnalyticsSettingsSamples
-import org.hisp.dhis.android.core.settings.AnalyticsTeiAttribute
-import org.hisp.dhis.android.core.settings.AnalyticsTeiAttributeTableInfo
-import org.hisp.dhis.android.core.settings.internal.AnalyticsTeiAttributeStore
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

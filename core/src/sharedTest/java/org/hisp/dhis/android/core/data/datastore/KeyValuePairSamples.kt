@@ -25,43 +25,16 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.datastore.internal
+package org.hisp.dhis.android.core.data.datastore
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithoutUidStore
 import org.hisp.dhis.android.core.datastore.KeyValuePair
-import org.hisp.dhis.android.core.datastore.LocalDataStoreTableInfo
 
-@Suppress("MagicNumber")
-internal object LocalDataStoreStore {
+object KeyValuePairSamples {
 
-    private val BINDER: StatementBinder<KeyValuePair> = StatementBinder { o, w ->
-        w.bind(1, o.key())
-        w.bind(2, o.value())
-    }
-
-
-    private val WHERE_UPDATE_BINDER = WhereStatementBinder { o: KeyValuePair, w: StatementWrapper ->
-        w.bind(3, o.key())
-    }
-
-    private val WHERE_DELETE_BINDER = WhereStatementBinder { o: KeyValuePair, w: StatementWrapper ->
-        w.bind(1, o.key())
-    }
-
-    @JvmStatic
-    fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<KeyValuePair> {
-        return objectWithoutUidStore(
-            databaseAdapter,
-            LocalDataStoreTableInfo.TABLE_INFO,
-            BINDER,
-            WHERE_UPDATE_BINDER,
-            WHERE_DELETE_BINDER
-        ) { cursor: Cursor -> KeyValuePair.create(cursor) }
-    }
+    val keyValuePairSample: KeyValuePair =
+        KeyValuePair.builder()
+            .id(1L)
+            .key("key1")
+            .value("value1")
+            .build()
 }

@@ -42,13 +42,11 @@ public class LocalDataStoreCollectionRepositoryMockIntegrationShould extends Bas
 
     @Test
     public void find_all() {
-        add_values();
         assertThat(d2.localDataStoreModule().localDataStore().blockingGet().size()).isEqualTo(2);
     }
 
     @Test
     public void filter_by_key() {
-        add_values();
         KeyValuePair pair = d2.localDataStoreModule().localDataStore()
                 .byKey().eq("key1")
                 .one()
@@ -60,7 +58,6 @@ public class LocalDataStoreCollectionRepositoryMockIntegrationShould extends Bas
 
     @Test
     public void filter_by_value() {
-        add_values();
         KeyValuePair pair = d2.localDataStoreModule().localDataStore()
                 .byValue().eq("value2")
                 .one()
@@ -68,23 +65,5 @@ public class LocalDataStoreCollectionRepositoryMockIntegrationShould extends Bas
 
         assertThat(pair.key()).isEqualTo("key2");
         assertThat(pair.value()).isEqualTo("value2");
-    }
-
-    private void add_values() {
-        try {
-            d2.localDataStoreModule().localDataStore().blockingAdd(
-                    KeyValuePair.builder()
-                            .key("key1")
-                            .value("value1")
-                            .build());
-            d2.localDataStoreModule().localDataStore().blockingAdd(
-                    KeyValuePair.builder()
-                            .key("key2")
-                            .value("value2")
-                            .build());
-        } catch (D2Error d2Error) {
-            d2Error.printStackTrace();
-        }
-        assertThat(d2.localDataStoreModule().localDataStore().blockingGet().size()).isEqualTo(2);
     }
 }

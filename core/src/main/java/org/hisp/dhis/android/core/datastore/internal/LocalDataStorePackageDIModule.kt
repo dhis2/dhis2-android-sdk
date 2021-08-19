@@ -25,23 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.datastore.internal
 
-package org.hisp.dhis.android.core.datastore.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.datastore.LocalDataStoreModule
 
-import org.hisp.dhis.android.core.datastore.LocalDataStoreModule;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-
-@Module(includes = {
-        LocalDataStoreEntityDIModule.class
-})
-public final class LocalDataStorePackageDIModule {
-
+@Module(includes = [LocalDataStoreEntityDIModule::class])
+class LocalDataStorePackageDIModule {
     @Provides
     @Reusable
-    LocalDataStoreModule module(LocalDataStoreModuleImpl impl) {
-        return impl;
+    fun module(impl: LocalDataStoreModuleImpl): LocalDataStoreModule {
+        return impl
     }
 }

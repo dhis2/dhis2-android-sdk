@@ -25,28 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.datastore.internal
 
-package org.hisp.dhis.android.core.datastore.internal;
-
-import org.hisp.dhis.android.core.datastore.LocalDataStoreCollectionRepository;
-import org.hisp.dhis.android.core.datastore.LocalDataStoreModule;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import org.hisp.dhis.android.core.datastore.LocalDataStoreCollectionRepository
+import org.hisp.dhis.android.core.datastore.LocalDataStoreModule
+import javax.inject.Inject
 
 @Reusable
-public final class LocalDataStoreModuleImpl implements LocalDataStoreModule {
-
-    private final LocalDataStoreCollectionRepository localDataStore;
-
-    @Inject
-    LocalDataStoreModuleImpl(LocalDataStoreCollectionRepository localDataStore) {
-        this.localDataStore = localDataStore;
-    }
-
-    @Override
-    public LocalDataStoreCollectionRepository localDataStore() {
-        return localDataStore;
+class LocalDataStoreModuleImpl @Inject internal constructor(private val localDataStore: LocalDataStoreCollectionRepository) :
+    LocalDataStoreModule {
+    override fun localDataStore(): LocalDataStoreCollectionRepository {
+        return localDataStore
     }
 }

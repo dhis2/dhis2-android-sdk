@@ -30,42 +30,38 @@ package org.hisp.dhis.android.core.datastore;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithoutUidCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteValueObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadWriteWithValueObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.Map;
 
-import javax.inject.Inject;
+import io.reactivex.Completable;
 
-import dagger.Reusable;
+public final class LocalDataStoreObjectRepository
+        extends ReadWriteWithValueObjectRepositoryImpl<KeyValuePair, LocalDataStoreObjectRepository>
+        implements ReadWriteValueObjectRepository<KeyValuePair> {
 
-@Reusable
-public final class LocalDataStoreCollectionRepository
-        extends ReadWriteWithoutUidCollectionRepositoryImpl<KeyValuePair, LocalDataStoreCollectionRepository> {
+    private final String key;
 
-    private final ObjectWithoutUidStore<KeyValuePair> store;
-
-    @Inject
-    LocalDataStoreCollectionRepository(final ObjectWithoutUidStore<KeyValuePair> store,
-                                       final Map<String, ChildrenAppender<KeyValuePair>> childrenAppenders,
-                                       final RepositoryScope scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new LocalDataStoreCollectionRepository(store, childrenAppenders, s)));
-        this.store = store;
+    LocalDataStoreObjectRepository(
+            final ObjectWithoutUidStore<KeyValuePair> store,
+            final Map<String, ChildrenAppender<KeyValuePair>> childrenAppenders,
+            final RepositoryScope scope,
+            final String key) {
+        super(store, childrenAppenders, scope, s ->
+                new LocalDataStoreObjectRepository(store, childrenAppenders, s, key));
+        this.key = key;
     }
 
-    public LocalDataStoreObjectRepository value(String key) {
-        RepositoryScope updatedScope = byKey().eq(key).scope;
-        return new LocalDataStoreObjectRepository(store, childrenAppenders, updatedScope, key);
+    @Override
+    public Completable set(String value) {
+        return Completable.fromAction(() -> blockingSet(value));
     }
 
-    public StringFilterConnector<LocalDataStoreCollectionRepository> byKey() {
-        return cf.string(LocalDataStoreTableInfo.Columns.KEY);
-    }
-
-    public StringFilterConnector<LocalDataStoreCollectionRepository> byValue() {
-        return cf.string(LocalDataStoreTableInfo.Columns.VALUE);
+    public void blockingSet(String value) throws D2Error {
+        KeyValuePair pair = KeyValuePair.builder().key(key).value(value).build();
+        setObject(pair);
     }
 }

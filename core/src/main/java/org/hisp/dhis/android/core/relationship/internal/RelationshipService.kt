@@ -25,28 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.relationship.internal
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+import retrofit2.http.DELETE
+import org.hisp.dhis.android.core.relationship.internal.RelationshipService
+import org.hisp.dhis.android.core.imports.internal.RelationshipDeleteWebResponse
+import org.hisp.dhis.android.core.imports.internal.RelationshipWebResponse
+import org.hisp.dhis.android.core.relationship.internal.RelationshipPayload
+import retrofit2.Call
+import retrofit2.http.Body
+import retrofit2.http.Path
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
+internal interface RelationshipService {
 
-import java.util.List;
-import java.util.Map;
+    @DELETE("$RELATIONSHIPS/{uid}")
+    fun deleteRelationship(@Path("uid") relationship: String): Call<RelationshipDeleteWebResponse>
 
-import androidx.annotation.NonNull;
+    @DELETE(RELATIONSHIPS)
+    fun postRelationship(@Body payload: RelationshipPayload): Call<RelationshipWebResponse>
 
-public interface TrackedEntityDataValueStore extends ObjectWithoutUidStore<TrackedEntityDataValue> {
-
-    boolean deleteByEventAndNotInDataElements(String eventUid, List<String> dataElementUids);
-
-    boolean deleteByEvent(String eventUid);
-
-    List<TrackedEntityDataValue> queryTrackedEntityDataValuesByEventUid(@NonNull String eventUid);
-
-    Map<String, List<TrackedEntityDataValue>> querySingleEventsTrackedEntityDataValues();
-
-    Map<String, List<TrackedEntityDataValue>> queryTrackerTrackedEntityDataValues();
-
-    Map<String, List<TrackedEntityDataValue>> queryByUploadableEvents();
+    companion object {
+        const val RELATIONSHIPS = "relationships"
+    }
 }

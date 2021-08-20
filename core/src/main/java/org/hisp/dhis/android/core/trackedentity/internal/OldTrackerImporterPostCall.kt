@@ -30,63 +30,88 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.event.Event
+import org.hisp.dhis.android.core.event.internal.EventImportHandler
+import org.hisp.dhis.android.core.event.internal.EventPayload
+import org.hisp.dhis.android.core.event.internal.EventPostStateManager
+import org.hisp.dhis.android.core.event.internal.EventService
+import org.hisp.dhis.android.core.imports.internal.EventWebResponse
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponse
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponseHandler
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.relationship.internal.RelationshipPostCall
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import javax.inject.Inject
 
 @Reusable
-internal class OldTrackedEntityInstancePostCall @Inject internal constructor(
-    private val payloadGenerator29: TrackedEntityInstancePostPayloadGenerator29,
-    private val stateManager: TrackedEntityInstancePostStateManager,
-    private val versionManager: DHISVersionManager,
+internal class OldTrackerImporterPostCall @Inject internal constructor(
+    private val trackerImporterPayloadGenerator: OldTrackerImporterPayloadGenerator,
+    private val trackedEntityInstanceStateManager: TrackedEntityInstancePostStateManager,
+    private val eventPostStateManager: EventPostStateManager,
     private val trackedEntityInstanceService: TrackedEntityInstanceService,
+    private val eventService: EventService,
     private val teiWebResponseHandler: TEIWebResponseHandler,
+    private val eventImportHandler: EventImportHandler,
     private val apiCallExecutor: APICallExecutor,
-    private val relationshipPostCall: RelationshipPostCall,
-    private val oldTrackerImporterPostCall: OldTrackerImporterPostCall
+    private val relationshipPostCall: RelationshipPostCall
 ) {
 
     fun uploadTrackedEntityInstances(
         trackedEntityInstances: List<TrackedEntityInstance>
     ): Observable<D2Progress> {
-        return if (versionManager.is2_29) {
-            uploadTrackedEntityInstances29(trackedEntityInstances)
-        } else {
-            oldTrackerImporterPostCall.uploadTrackedEntityInstances(trackedEntityInstances)
+        val payload = trackerImporterPayloadGenerator.getTrackedEntityInstancePayload(trackedEntityInstances)
+        return uploadPayload(payload)
+    }
+
+    fun uploadEvents(
+        events: List<Event>
+    ): Observable<D2Progress> {
+        val payload = trackerImporterPayloadGenerator.getEventPayload(events)
+        return uploadPayload(payload)
+    }
+
+    private fun uploadPayload(
+        payload: OldTrackerImporterPayload
+    ): Observable<D2Progress> {
+        return Observable.defer {
+            val partitionedRelationships = payload.relationships.partition { it.deleted()!! }
+
+            Observable.concat(
+                relationshipPostCall.deleteRelationships(partitionedRelationships.first),
+                postTrackedEntityInstances(payload.trackedEntityInstances),
+                postEvents(payload.events),
+                relationshipPostCall.postRelationships(partitionedRelationships.second)
+            )
         }
     }
 
-    private fun uploadTrackedEntityInstances29(
-        filteredTrackedEntityInstances: List<TrackedEntityInstance>
+    private fun postTrackedEntityInstances(
+        trackedEntityInstances: List<TrackedEntityInstance>
     ): Observable<D2Progress> {
         return Observable.create { emitter: ObservableEmitter<D2Progress> ->
-            val teiPartitions = payloadGenerator29.getTrackedEntityInstancesPartitions29(filteredTrackedEntityInstances)
-            val progressManager = D2ProgressManager(teiPartitions.size)
+            val progressManager = D2ProgressManager(null)
+            val teiPartitions = trackedEntityInstances.chunked(TrackedEntityInstanceService.DEFAULT_PAGE_SIZE)
+
             for (partition in teiPartitions) {
-                stateManager.setPartitionStates(partition, State.UPLOADING)
-                val thisPartition = relationshipPostCall.postDeletedRelationships29(partition)
                 try {
-                    val trackedEntityInstancePayload = TrackedEntityInstancePayload.create(thisPartition)
+                    trackedEntityInstanceStateManager.setPartitionStates(partition, State.UPLOADING)
+                    val trackedEntityInstancePayload = TrackedEntityInstancePayload.create(partition)
                     val webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
                         trackedEntityInstanceService.postTrackedEntityInstances(
-                            trackedEntityInstancePayload, "CREATE_AND_UPDATE"
+                            trackedEntityInstancePayload, "SYNC"
                         ),
                         @Suppress("MagicNumber")
                         listOf(409),
                         TEIWebResponse::class.java
                     )
-                    teiWebResponseHandler.handleWebResponse(webResponse, thisPartition)
+                    teiWebResponseHandler.handleWebResponse(webResponse, partition)
                     emitter.onNext(progressManager.increaseProgress(TrackedEntityInstance::class.java, false))
                 } catch (e: Exception) {
-                    stateManager.restorePartitionStates(thisPartition)
+                    trackedEntityInstanceStateManager.restorePartitionStates(partition)
                     if (e is D2Error && e.isOffline) {
                         emitter.onError(e)
                         break
@@ -101,6 +126,39 @@ internal class OldTrackedEntityInstancePostCall @Inject internal constructor(
                 }
             }
             emitter.onComplete()
+        }
+    }
+
+    private fun postEvents(
+        events: List<Event>
+    ): Observable<D2Progress> {
+        return Observable.defer {
+            val eventPayload = EventPayload()
+            eventPostStateManager.markObjectsAs(events, State.UPLOADING)
+
+            val progressManager = D2ProgressManager(null)
+
+            eventPayload.events = events
+            val strategy = "SYNC"
+            try {
+                val webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
+                    eventService.postEvents(eventPayload, strategy),
+                    @Suppress("MagicNumber")
+                    listOf(409),
+                    EventWebResponse::class.java
+                )
+                eventImportHandler.handleEventImportSummaries(
+                    eventImportSummaries = webResponse?.response()?.importSummaries(),
+                    events = events,
+                    // TODO Manage tracker events
+                    enrollmentUid = null,
+                    teiUid = null
+                )
+                Observable.just<D2Progress>(progressManager.increaseProgress(Event::class.java, true))
+            } catch (e: Exception) {
+                eventPostStateManager.markObjectsAs(events, State.TO_UPDATE)
+                Observable.error<D2Progress>(e)
+            }
         }
     }
 }

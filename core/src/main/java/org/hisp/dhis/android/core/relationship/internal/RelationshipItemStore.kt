@@ -25,23 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.relationship.internal
 
-package org.hisp.dhis.android.core.relationship.internal;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
+import org.hisp.dhis.android.core.relationship.RelationshipItem
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.relationship.RelationshipConstraintType;
-import org.hisp.dhis.android.core.relationship.RelationshipItem;
+internal interface RelationshipItemStore : ObjectWithoutUidStore<RelationshipItem> {
 
-import java.util.List;
+    fun getRelationshipUidsForItems(from: RelationshipItem, to: RelationshipItem): List<String>
 
-import androidx.annotation.NonNull;
+    fun getForRelationshipUidAndConstraintType(
+        uid: String,
+        constraintType: RelationshipConstraintType
+    ): RelationshipItem
 
-public interface RelationshipItemStore extends ObjectWithoutUidStore<RelationshipItem> {
-    List<String> getRelationshipUidsForItems(@NonNull RelationshipItem from, @NonNull RelationshipItem to);
-
-    RelationshipItem getForRelationshipUidAndConstraintType(
-            @NonNull String uid,
-            @NonNull RelationshipConstraintType constraintType);
-
-    List<String> getRelatedTeiUids(List<String> trackedEntityInstanceUids);
+    fun getRelatedTeiUids(trackedEntityInstanceUids: List<String>): List<String>
 }

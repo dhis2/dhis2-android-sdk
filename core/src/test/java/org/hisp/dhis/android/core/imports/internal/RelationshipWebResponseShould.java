@@ -28,37 +28,36 @@
 
 package org.hisp.dhis.android.core.imports.internal;
 
-import androidx.annotation.NonNull;
+import static com.google.common.truth.Truth.assertThat;
 
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceImportHandler;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.List;
+import org.hisp.dhis.android.core.Inject;
+import org.hisp.dhis.android.core.arch.file.ResourcesFileReader;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-import javax.inject.Inject;
+@RunWith(JUnit4.class)
+public class RelationshipWebResponseShould {
 
-import dagger.Reusable;
+    @Test
+    public void map_from_json_string() throws Exception {
+        ObjectMapper objectMapper = Inject.objectMapper();
 
-@Reusable
-public final class TEIWebResponseHandler {
-    private final TrackedEntityInstanceImportHandler trackedEntityInstanceImportHandler;
+        String responseStr = new ResourcesFileReader().getStringFromFile("imports/relationship_web_response.json");
+        RelationshipWebResponse webResponse = objectMapper.readValue(responseStr, RelationshipWebResponse.class);
 
-    @Inject
-    public TEIWebResponseHandler(@NonNull TrackedEntityInstanceImportHandler trackedEntityInstanceImportHandler) {
-        this.trackedEntityInstanceImportHandler = trackedEntityInstanceImportHandler;
+        assertThat(webResponse.message()).isEqualTo("Import was successful.");
+        assertThat(webResponse.response()).isNotNull();
     }
 
-    public void handleWebResponse(@NonNull TEIWebResponse webResponse,
-                                  @NonNull List<TrackedEntityInstance> instances) {
-        if (webResponse == null || webResponse.response() == null) {
-            return;
-        }
+    @Test
+    public void map_from_json_string_with_errors() throws Exception {
+        ObjectMapper objectMapper = Inject.objectMapper();
 
-        TEIImportSummaries importSummaries = webResponse.response();
-
-        trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
-                importSummaries.importSummaries(), instances
-        );
-
+        String webResponseStr = new ResourcesFileReader().getStringFromFile(
+                "imports/relationship_web_response_with_errors.json");
+        objectMapper.readValue(webResponseStr, RelationshipWebResponse.class);
     }
 }

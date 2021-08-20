@@ -76,6 +76,8 @@ public interface TrackedEntityInstanceService {
     String ASSIGNED_USER_MODE = "assignedUserMode";
     String ORDER = "order";
 
+    Integer DEFAULT_PAGE_SIZE = 20;
+
     @POST(TRACKED_ENTITY_INSTANCES)
     Call<TEIWebResponse> postTrackedEntityInstances(
             @Body TrackedEntityInstancePayload trackedEntityInstances,

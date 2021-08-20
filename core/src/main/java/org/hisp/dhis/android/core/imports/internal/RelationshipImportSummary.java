@@ -25,16 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship.internal;
 
-import org.hisp.dhis.android.core.imports.internal.RelationshipDeleteWebResponse;
+package org.hisp.dhis.android.core.imports.internal;
 
-import retrofit2.Call;
-import retrofit2.http.DELETE;
-import retrofit2.http.Path;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-interface RelationshipService {
+@AutoValue
+@JsonDeserialize(builder = AutoValue_RelationshipImportSummary.Builder.class)
+public abstract class RelationshipImportSummary extends BaseImportSummary {
 
-    @DELETE("relationships/{uid}")
-    Call<RelationshipDeleteWebResponse> deleteRelationship(@Path("uid") String relationship);
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder extends BaseImportSummary.Builder<RelationshipImportSummary.Builder> {
+
+        public abstract RelationshipImportSummary build();
+    }
 }

@@ -26,27 +26,34 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+package org.hisp.dhis.android.core.imports.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
+import androidx.annotation.Nullable;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
 import java.util.List;
-import java.util.Map;
 
-import androidx.annotation.NonNull;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_RelationshipImportSummaries.Builder.class)
+public abstract class RelationshipImportSummaries
+        extends BaseImportSummaries
+        implements ImportSummaries<RelationshipImportSummary> {
 
-public interface TrackedEntityDataValueStore extends ObjectWithoutUidStore<TrackedEntityDataValue> {
+    @Override
+    @Nullable
+    @JsonProperty()
+    public abstract List<RelationshipImportSummary> importSummaries();
 
-    boolean deleteByEventAndNotInDataElements(String eventUid, List<String> dataElementUids);
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder extends BaseImportSummaries.Builder<RelationshipImportSummaries.Builder> {
 
-    boolean deleteByEvent(String eventUid);
+        public abstract Builder importSummaries(List<RelationshipImportSummary> importSummaries);
 
-    List<TrackedEntityDataValue> queryTrackedEntityDataValuesByEventUid(@NonNull String eventUid);
-
-    Map<String, List<TrackedEntityDataValue>> querySingleEventsTrackedEntityDataValues();
-
-    Map<String, List<TrackedEntityDataValue>> queryTrackerTrackedEntityDataValues();
-
-    Map<String, List<TrackedEntityDataValue>> queryByUploadableEvents();
+        public abstract RelationshipImportSummaries build();
+    }
 }

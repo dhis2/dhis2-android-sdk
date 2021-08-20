@@ -26,27 +26,34 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+package org.hisp.dhis.android.core.relationship.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.relationship.Relationship;
 
 import java.util.List;
-import java.util.Map;
 
-import androidx.annotation.NonNull;
+@AutoValue
+public abstract class RelationshipPayload {
 
-public interface TrackedEntityDataValueStore extends ObjectWithoutUidStore<TrackedEntityDataValue> {
+    @JsonProperty()
+    public abstract List<Relationship> relationships();
 
-    boolean deleteByEventAndNotInDataElements(String eventUid, List<String> dataElementUids);
+    public static Builder builder() {
+        return new AutoValue_RelationshipPayload.Builder();
+    }
 
-    boolean deleteByEvent(String eventUid);
+    public static RelationshipPayload create(List<Relationship> relationships) {
+        return builder().relationships(relationships).build();
+    }
 
-    List<TrackedEntityDataValue> queryTrackedEntityDataValuesByEventUid(@NonNull String eventUid);
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract Builder relationships(List<Relationship> relationships);
 
-    Map<String, List<TrackedEntityDataValue>> querySingleEventsTrackedEntityDataValues();
+        public abstract RelationshipPayload build();
+    }
 
-    Map<String, List<TrackedEntityDataValue>> queryTrackerTrackedEntityDataValues();
-
-    Map<String, List<TrackedEntityDataValue>> queryByUploadableEvents();
 }

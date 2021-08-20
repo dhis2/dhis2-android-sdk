@@ -26,27 +26,41 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+package org.hisp.dhis.android.core.imports.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
+import androidx.annotation.Nullable;
 
-import java.util.List;
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-import androidx.annotation.NonNull;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_RelationshipWebResponse.Builder.class)
+public abstract class RelationshipWebResponse extends WebResponse {
 
-public interface TrackedEntityDataValueStore extends ObjectWithoutUidStore<TrackedEntityDataValue> {
+    @Nullable
+    @JsonProperty()
+    public abstract RelationshipImportSummaries response();
 
-    boolean deleteByEventAndNotInDataElements(String eventUid, List<String> dataElementUids);
+    public static Builder builder() {
+        return new AutoValue_RelationshipWebResponse.Builder();
+    }
 
-    boolean deleteByEvent(String eventUid);
+    public static RelationshipWebResponse empty() {
+        return builder()
+                .httpStatus("SUCCESS")
+                .httpStatusCode(200)
+                .message("Emtpy response")
+                .status("OK")
+                .build();
+    }
 
-    List<TrackedEntityDataValue> queryTrackedEntityDataValuesByEventUid(@NonNull String eventUid);
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder extends WebResponse.Builder<Builder> {
+        public abstract Builder response(RelationshipImportSummaries response);
 
-    Map<String, List<TrackedEntityDataValue>> querySingleEventsTrackedEntityDataValues();
-
-    Map<String, List<TrackedEntityDataValue>> queryTrackerTrackedEntityDataValues();
-
-    Map<String, List<TrackedEntityDataValue>> queryByUploadableEvents();
+        public abstract RelationshipWebResponse build();
+    }
 }

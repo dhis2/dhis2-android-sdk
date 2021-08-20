@@ -26,27 +26,30 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+package org.hisp.dhis.android.core.imports.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
+import static com.google.common.truth.Truth.assertThat;
 
-import java.util.List;
-import java.util.Map;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.core.Inject;
+import org.hisp.dhis.android.core.arch.file.ResourcesFileReader;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-public interface TrackedEntityDataValueStore extends ObjectWithoutUidStore<TrackedEntityDataValue> {
+@RunWith(JUnit4.class)
+public class RelationshipDeleteWebResponseShould {
 
-    boolean deleteByEventAndNotInDataElements(String eventUid, List<String> dataElementUids);
+    @Test
+    public void map_from_json_string() throws Exception {
+        ObjectMapper objectMapper = Inject.objectMapper();
 
-    boolean deleteByEvent(String eventUid);
+        String responseStr = new ResourcesFileReader().getStringFromFile("imports/relationship_delete_web_response.json");
+        RelationshipDeleteWebResponse webResponse = objectMapper.readValue(responseStr,
+                RelationshipDeleteWebResponse.class);
 
-    List<TrackedEntityDataValue> queryTrackedEntityDataValuesByEventUid(@NonNull String eventUid);
-
-    Map<String, List<TrackedEntityDataValue>> querySingleEventsTrackedEntityDataValues();
-
-    Map<String, List<TrackedEntityDataValue>> queryTrackerTrackedEntityDataValues();
-
-    Map<String, List<TrackedEntityDataValue>> queryByUploadableEvents();
+        assertThat(webResponse.message()).isEqualTo("Import was successful.");
+        assertThat(webResponse.response()).isNotNull();
+    }
 }

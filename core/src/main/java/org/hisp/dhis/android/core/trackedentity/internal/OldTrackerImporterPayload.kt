@@ -26,27 +26,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
+import org.hisp.dhis.android.core.event.Event
+import org.hisp.dhis.android.core.relationship.Relationship
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
-import java.util.List;
-import java.util.Map;
+internal data class OldTrackerImporterPayload(
+    val trackedEntityInstances: List<TrackedEntityInstance> = emptyList(),
+    val events: List<Event> = emptyList(),
+    val relationships: List<Relationship> = emptyList()
+) {
+    fun isEmpty(): Boolean = trackedEntityInstances.isEmpty() && events.isEmpty() && relationships.isEmpty()
 
-import androidx.annotation.NonNull;
+    fun isNotEmpty(): Boolean = trackedEntityInstances.isNotEmpty() || events.isNotEmpty() || relationships.isNotEmpty()
 
-public interface TrackedEntityDataValueStore extends ObjectWithoutUidStore<TrackedEntityDataValue> {
-
-    boolean deleteByEventAndNotInDataElements(String eventUid, List<String> dataElementUids);
-
-    boolean deleteByEvent(String eventUid);
-
-    List<TrackedEntityDataValue> queryTrackedEntityDataValuesByEventUid(@NonNull String eventUid);
-
-    Map<String, List<TrackedEntityDataValue>> querySingleEventsTrackedEntityDataValues();
-
-    Map<String, List<TrackedEntityDataValue>> queryTrackerTrackedEntityDataValues();
-
-    Map<String, List<TrackedEntityDataValue>> queryByUploadableEvents();
+    fun concat(other: OldTrackerImporterPayload): OldTrackerImporterPayload {
+        return OldTrackerImporterPayload(
+            trackedEntityInstances = trackedEntityInstances + other.trackedEntityInstances,
+            events = events + other.events,
+            relationships = relationships + other.relationships
+        )
+    }
 }

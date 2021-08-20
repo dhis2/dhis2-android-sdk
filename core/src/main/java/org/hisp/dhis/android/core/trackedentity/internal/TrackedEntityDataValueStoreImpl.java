@@ -144,6 +144,16 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
         return queryTrackedEntityDataValues(queryStatement);
     }
 
+    @Override
+    public Map<String, List<TrackedEntityDataValue>> queryByUploadableEvents() {
+
+        String queryStatement = "SELECT TrackedEntityDataValue.* " +
+                " FROM (TrackedEntityDataValue INNER JOIN Event ON TrackedEntityDataValue.event = Event.uid) " +
+                " WHERE " + eventInUploadableState() + ";";
+
+        return queryTrackedEntityDataValues(queryStatement);
+    }
+
     private Map<String, List<TrackedEntityDataValue>> queryTrackedEntityDataValues(String queryStatement) {
 
         List<TrackedEntityDataValue> dataValueList = new ArrayList<>();

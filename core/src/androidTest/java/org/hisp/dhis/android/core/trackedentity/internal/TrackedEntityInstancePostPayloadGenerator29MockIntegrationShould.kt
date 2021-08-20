@@ -65,7 +65,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
-class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould : BaseMockIntegrationTestMetadataEnqueable() {
+class TrackedEntityInstancePostPayloadGenerator29MockIntegrationShould : BaseMockIntegrationTestMetadataEnqueable() {
 
     private val teiId = "teiId"
     private val enrollment1Id = "enrollment1Id"
@@ -102,7 +102,7 @@ class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould : BaseMockI
     }
 
     private val partitions: List<List<TrackedEntityInstance>>
-        get() = payloadGenerator.getTrackedEntityInstancesPartitions(
+        get() = payloadGenerator29.getTrackedEntityInstancesPartitions29(
             teiStore.queryTrackedEntityInstancesToSync()
         )
 
@@ -216,7 +216,7 @@ class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould : BaseMockI
         storeRelationship("relationship3", tei1, tei5)
         storeRelationship("relationship4", tei5, tei4)
 
-        val partitions = payloadGenerator.getTrackedEntityInstancesPartitions(
+        val partitions = payloadGenerator29.getTrackedEntityInstancesPartitions29(
             d2.trackedEntityModule().trackedEntityInstances().byUid().eq(tei1)
                 .byAggregatedSyncState().`in`(*State.uploadableStates()).blockingGet()
         )
@@ -513,7 +513,7 @@ class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould : BaseMockI
     }
 
     companion object {
-        private lateinit var payloadGenerator: TrackedEntityInstancePostPayloadGenerator
+        private lateinit var payloadGenerator29: TrackedEntityInstancePostPayloadGenerator29
         private lateinit var teiStore: TrackedEntityInstanceStore
         private lateinit var teiDataValueStore: TrackedEntityDataValueStore
         private lateinit var eventStore: EventStore
@@ -524,7 +524,7 @@ class TrackedEntityInstancePostPayloadGeneratorMockIntegrationShould : BaseMockI
         @Throws(Exception::class)
         fun setUp() {
             setUpClass()
-            payloadGenerator = objects.d2DIComponent.trackedEntityInstancePostPayloadGenerator()
+            payloadGenerator29 = objects.d2DIComponent.trackedEntityInstancePostPayloadGenerator()
             teiStore = TrackedEntityInstanceStoreImpl.create(databaseAdapter)
             teiDataValueStore = TrackedEntityDataValueStoreImpl.create(databaseAdapter)
             eventStore = EventStoreImpl.create(databaseAdapter)

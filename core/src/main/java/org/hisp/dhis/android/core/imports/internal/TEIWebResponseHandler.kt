@@ -25,28 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.imports.internal
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+import dagger.Reusable
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceImportHandler
+import javax.inject.Inject
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
+@Reusable
+internal class TEIWebResponseHandler @Inject constructor(
+    private val trackedEntityInstanceImportHandler: TrackedEntityInstanceImportHandler
+) {
 
-import java.util.List;
-import java.util.Map;
-
-import androidx.annotation.NonNull;
-
-public interface TrackedEntityDataValueStore extends ObjectWithoutUidStore<TrackedEntityDataValue> {
-
-    boolean deleteByEventAndNotInDataElements(String eventUid, List<String> dataElementUids);
-
-    boolean deleteByEvent(String eventUid);
-
-    List<TrackedEntityDataValue> queryTrackedEntityDataValuesByEventUid(@NonNull String eventUid);
-
-    Map<String, List<TrackedEntityDataValue>> querySingleEventsTrackedEntityDataValues();
-
-    Map<String, List<TrackedEntityDataValue>> queryTrackerTrackedEntityDataValues();
-
-    Map<String, List<TrackedEntityDataValue>> queryByUploadableEvents();
+    fun handleWebResponse(
+        webResponse: TEIWebResponse?,
+        instances: List<TrackedEntityInstance>
+    ) {
+        webResponse?.response()?.let { response ->
+            trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
+                response.importSummaries(), instances
+            )
+        }
+    }
 }

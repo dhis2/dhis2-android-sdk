@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.common.CoreObject;
 @AutoValue
 public abstract class KeyValuePair implements CoreObject {
 
-        @Nullable
+    @Nullable
     public abstract String key();
 
     @Nullable

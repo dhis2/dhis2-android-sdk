@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.utils.integration.mock;
 
-import static com.google.common.truth.Truth.assertThat;
-
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.imports.TrackerImportConflictSamples;

@@ -30,48 +30,48 @@ package org.hisp.dhis.android.testapp.datastore;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import org.hisp.dhis.android.core.datastore.KeyValuePair;
 import org.hisp.dhis.android.core.datastore.LocalDataStoreObjectRepository;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)
-public class LocalDataStoreCollectionRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
+public class LocalDataStoreObjectRepositoryMockIntegrationShould extends BaseMockIntegrationTestFullDispatcher {
 
     @Test
-    public void find_all() {
-        assertThat(d2.localDataStoreModule().localDataStore().blockingGet().size()).isEqualTo(2);
+    public void update_value() throws D2Error {
+        String value = "new_value";
+
+        LocalDataStoreObjectRepository repository = objectRepository();
+
+        repository.blockingSet(value);
+        assertThat(repository.blockingGet().value()).isEqualTo(value);
+
+        repository.blockingDelete();
+    }
+
+
+    @Test
+    public void delete_value() throws D2Error {
+        LocalDataStoreObjectRepository repository = objectRepository();
+
+        repository.blockingSet("value");
+        assertThat(repository.blockingExists()).isEqualTo(Boolean.TRUE);
+        repository.blockingDelete();
+        assertThat(repository.blockingExists()).isEqualTo(Boolean.FALSE);
     }
 
     @Test
-    public void filter_by_key() {
-        KeyValuePair pair = d2.localDataStoreModule().localDataStore()
-                .byKey().eq("key1")
-                .one()
-                .blockingGet();
-
-        assertThat(pair.key()).isEqualTo("key1");
-        assertThat(pair.value()).isEqualTo("value1");
+    public void return_that_a_value_exists_only_if_it_has_been_created() {
+        assertThat(d2.localDataStoreModule().localDataStore()
+                .value("no_key").blockingExists()).isEqualTo(Boolean.FALSE);
+        assertThat(d2.localDataStoreModule().localDataStore()
+                .value("key1").blockingExists()).isEqualTo(Boolean.TRUE);
     }
 
-    @Test
-    public void filter_by_value() {
-        KeyValuePair pair = d2.localDataStoreModule().localDataStore()
-                .byValue().eq("value2")
-                .one()
-                .blockingGet();
-
-        assertThat(pair.key()).isEqualTo("key2");
-        assertThat(pair.value()).isEqualTo("value2");
-    }
-
-    @Test
-    public void return_object_repository() {
-        LocalDataStoreObjectRepository objectRepository = d2.localDataStoreModule().localDataStore()
-                .value("key1");
-        assertThat(objectRepository.blockingExists()).isEqualTo(Boolean.TRUE);
-        assertThat(objectRepository.blockingGet().value()).isEqualTo("value1");
+    private LocalDataStoreObjectRepository objectRepository() {
+        return d2.localDataStoreModule().localDataStore().value("new_key");
     }
 }

@@ -52,6 +52,7 @@ import javax.inject.Inject
 internal class RelationshipPostCall @Inject internal constructor(
     private val relationshipService: RelationshipService,
     private val relationshipStore: RelationshipStore,
+    private val relationshipImportHandler: RelationshipImportHandler,
     private val dataStatePropagator: DataStatePropagator,
     private val apiCallExecutor: APICallExecutor
 ) {
@@ -83,7 +84,7 @@ internal class RelationshipPostCall @Inject internal constructor(
     fun postRelationships(relationships: List<Relationship>): Observable<D2Progress> {
         val progressManager = D2ProgressManager(null)
 
-        return if(relationships.isEmpty()) {
+        return if (relationships.isEmpty()) {
             Observable.just<D2Progress>(progressManager.increaseProgress(Relationship::class.java, false))
         } else {
             Observable.defer {
@@ -96,7 +97,10 @@ internal class RelationshipPostCall @Inject internal constructor(
                         RelationshipWebResponse::class.java
                     )
 
-                    // TODO Implement handler
+                    relationshipImportHandler.handleRelationshipImportSummaries(
+                        importSummaries = httpResponse.response()?.importSummaries(),
+                        relationships = relationships
+                    )
                     Observable.just<D2Progress>(progressManager.increaseProgress(Relationship::class.java, false))
                 } catch (e: Exception) {
                     Observable.error<D2Progress>(e)

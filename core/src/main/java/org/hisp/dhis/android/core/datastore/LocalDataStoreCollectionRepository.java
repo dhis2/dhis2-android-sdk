@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.datastore;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithoutUidCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
@@ -43,7 +43,7 @@ import dagger.Reusable;
 
 @Reusable
 public final class LocalDataStoreCollectionRepository
-        extends ReadWriteWithoutUidCollectionRepositoryImpl<KeyValuePair, LocalDataStoreCollectionRepository> {
+        extends ReadOnlyCollectionRepositoryImpl<KeyValuePair, LocalDataStoreCollectionRepository> {
 
     private final ObjectWithoutUidStore<KeyValuePair> store;
 

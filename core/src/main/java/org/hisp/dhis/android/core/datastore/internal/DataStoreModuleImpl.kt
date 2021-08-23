@@ -29,8 +29,8 @@ package org.hisp.dhis.android.core.datastore.internal
 
 import dagger.Reusable
 import javax.inject.Inject
-import org.hisp.dhis.android.core.datastore.LocalDataStoreCollectionRepository
 import org.hisp.dhis.android.core.datastore.DataStoreModule
+import org.hisp.dhis.android.core.datastore.LocalDataStoreCollectionRepository
 
 @Reusable
 class DataStoreModuleImpl @Inject internal constructor(

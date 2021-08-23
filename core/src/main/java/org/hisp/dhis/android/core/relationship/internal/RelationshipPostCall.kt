@@ -31,6 +31,8 @@ import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
+import java.net.HttpURLConnection.*
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
@@ -46,8 +48,6 @@ import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerPostStateManager
-import java.lang.Exception
-import javax.inject.Inject
 
 @Reusable
 internal class RelationshipPostCall @Inject internal constructor(
@@ -63,13 +63,14 @@ internal class RelationshipPostCall @Inject internal constructor(
         return Observable.create { emitter: ObservableEmitter<D2Progress> ->
             for (relationship in relationships) {
                 val httpResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
-                    relationshipService.deleteRelationship(relationship.uid()!!), listOf(404),
+                    relationshipService.deleteRelationship(relationship.uid()!!),
+                    listOf(HTTP_NOT_FOUND),
                     RelationshipDeleteWebResponse::class.java
                 )
                 val status = httpResponse.response()?.status()
 
-                if ((httpResponse.httpStatusCode() == 200 && ImportStatus.SUCCESS == status) ||
-                    httpResponse.httpStatusCode() == 404
+                if ((httpResponse.httpStatusCode() == HTTP_OK && ImportStatus.SUCCESS == status) ||
+                    httpResponse.httpStatusCode() == HTTP_NOT_FOUND
                 ) {
                     relationshipStore.delete(relationship.uid()!!)
                 } else {
@@ -83,6 +84,7 @@ internal class RelationshipPostCall @Inject internal constructor(
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     fun postRelationships(relationships: List<Relationship>): Observable<D2Progress> {
         val progressManager = D2ProgressManager(null)
 
@@ -98,7 +100,7 @@ internal class RelationshipPostCall @Inject internal constructor(
                     )
                     val httpResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
                         relationshipService.postRelationship(payload),
-                        listOf(409),
+                        listOf(HTTP_CONFLICT),
                         RelationshipWebResponse::class.java
                     )
 
@@ -142,7 +144,6 @@ internal class RelationshipPostCall @Inject internal constructor(
                 .appendKeyStringValue(CoreColumns.ID, relationship.id()).build()
             relationshipStore.deleteWhereIfExists(whereClause)
             return@fromCallable RelationshipDeleteWebResponse.empty()
-
         }
     }
 }

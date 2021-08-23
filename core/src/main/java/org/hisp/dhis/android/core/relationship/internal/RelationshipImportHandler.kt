@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.relationship.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getSyncState
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
@@ -35,7 +36,6 @@ import org.hisp.dhis.android.core.imports.internal.BaseImportSummaryHelper.getRe
 import org.hisp.dhis.android.core.imports.internal.RelationshipImportSummary
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository
-import javax.inject.Inject
 
 @Reusable class RelationshipImportHandler @Inject internal constructor(
     private val relationshipStore: RelationshipStore,

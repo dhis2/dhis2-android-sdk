@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import com.nhaarman.mockitokotlin2.*
+import java.util.*
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentImportHandler
@@ -43,7 +44,6 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.ArgumentMatchers.anyList
 import org.mockito.ArgumentMatchers.anyString
-import java.util.*
 
 @RunWith(JUnit4::class)
 class TrackedEntityInstanceImportHandlerShould {

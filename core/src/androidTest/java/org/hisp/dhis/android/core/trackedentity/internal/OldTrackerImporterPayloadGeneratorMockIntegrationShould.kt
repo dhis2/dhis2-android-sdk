@@ -156,7 +156,7 @@ class OldTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
         assertThat(payload.relationships.size).isEqualTo(1)
 
         payload.trackedEntityInstances.forEach {
-            when(it.uid()) {
+            when (it.uid()) {
                 fromTei -> assertThat(TrackedEntityInstanceInternalAccessor.accessEnrollments(it)).isEmpty()
                 toTei -> assertThat(TrackedEntityInstanceInternalAccessor.accessEnrollments(it)).isNotEmpty()
                 else -> fail("Unexpected trackedEntityInstance uid: " + it.uid())

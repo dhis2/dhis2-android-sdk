@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.relationship.internal
 
 import android.database.Cursor
+import java.util.*
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
@@ -39,7 +40,6 @@ import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import org.hisp.dhis.android.core.relationship.RelationshipItem
 import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo
-import java.util.*
 
 internal class RelationshipItemStoreImpl private constructor(
     databaseAdapter: DatabaseAdapter,
@@ -50,8 +50,11 @@ internal class RelationshipItemStoreImpl private constructor(
     BINDER,
     WHERE_UPDATE_BINDER,
     WHERE_DELETE_BINDER,
-    { cursor: Cursor -> RelationshipItem.create(cursor) }), RelationshipItemStore {
+    { cursor: Cursor -> RelationshipItem.create(cursor) }
+),
+    RelationshipItemStore {
 
+    @Suppress("NestedBlockDepth")
     override fun getRelationshipUidsForItems(from: RelationshipItem, to: RelationshipItem): List<String> {
         val relationships: MutableList<String> = ArrayList()
 
@@ -113,12 +116,12 @@ internal class RelationshipItemStoreImpl private constructor(
 
     private fun getAllItemsOfSameType(from: RelationshipItem, to: RelationshipItem): Cursor {
         val query = "SELECT " + RelationshipItemTableInfo.Columns.RELATIONSHIP + ", " +
-                "MAX(CASE WHEN " + RelationshipItemTableInfo.Columns.RELATIONSHIP_ITEM_TYPE + " = 'FROM' " +
-                "THEN " + getItemElementColumn(from) + " END) AS fromElementUid, " +
-                "MAX(CASE WHEN " + RelationshipItemTableInfo.Columns.RELATIONSHIP_ITEM_TYPE + " = 'TO' " +
-                "THEN " + getItemElementColumn(to) + " END) AS toElementUid " +
-                "FROM " + RelationshipItemTableInfo.TABLE_INFO.name() +
-                " GROUP BY " + RelationshipItemTableInfo.Columns.RELATIONSHIP
+            "MAX(CASE WHEN " + RelationshipItemTableInfo.Columns.RELATIONSHIP_ITEM_TYPE + " = 'FROM' " +
+            "THEN " + getItemElementColumn(from) + " END) AS fromElementUid, " +
+            "MAX(CASE WHEN " + RelationshipItemTableInfo.Columns.RELATIONSHIP_ITEM_TYPE + " = 'TO' " +
+            "THEN " + getItemElementColumn(to) + " END) AS toElementUid " +
+            "FROM " + RelationshipItemTableInfo.TABLE_INFO.name() +
+            " GROUP BY " + RelationshipItemTableInfo.Columns.RELATIONSHIP
         return databaseAdapter.rawQuery(query)
     }
 

@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.common.DataColumns
@@ -47,9 +48,9 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
-import javax.inject.Inject
 
 @Reusable
+@Suppress("TooManyFunctions")
 internal class OldTrackerImporterPayloadGenerator @Inject internal constructor(
     private val versionManager: DHISVersionManager,
     private val relationshipRepository: RelationshipCollectionRepository,
@@ -126,6 +127,7 @@ internal class OldTrackerImporterPayloadGenerator @Inject internal constructor(
         return accPayload
     }
 
+    @Suppress("NestedBlockDepth")
     private fun getMissingItems(
         payload: OldTrackerImporterPayload,
         extraData: ExtraData
@@ -224,11 +226,13 @@ internal class OldTrackerImporterPayloadGenerator @Inject internal constructor(
             eventMap = eventStore.queryEventsAttachedToEnrollmentToPost(),
             enrollmentMap = enrollmentStore.queryEnrollmentsToPost(),
             attributeValueMap = trackedEntityAttributeValueStore.queryTrackedEntityAttributeValueToPost(),
-            notes = noteStore.selectWhere(WhereClauseBuilder()
-                .appendInKeyStringValues(
-                    DataColumns.SYNC_STATE, State.uploadableStatesIncludingError().map { it.name }
-                )
-                .build()),
+            notes = noteStore.selectWhere(
+                WhereClauseBuilder()
+                    .appendInKeyStringValues(
+                        DataColumns.SYNC_STATE, State.uploadableStatesIncludingError().map { it.name }
+                    )
+                    .build()
+            ),
             relationships = relationshipRepository.bySyncState()
                 .`in`(State.uploadableStatesIncludingError().toList())
                 .withItems()

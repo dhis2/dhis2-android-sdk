@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
@@ -40,7 +41,6 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.relationship.internal.RelationshipPostCall
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import javax.inject.Inject
 
 @Reusable
 internal class OldTrackedEntityInstancePostCall @Inject internal constructor(
@@ -64,6 +64,7 @@ internal class OldTrackedEntityInstancePostCall @Inject internal constructor(
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private fun uploadTrackedEntityInstances29(
         filteredTrackedEntityInstances: List<TrackedEntityInstance>
     ): Observable<D2Progress> {

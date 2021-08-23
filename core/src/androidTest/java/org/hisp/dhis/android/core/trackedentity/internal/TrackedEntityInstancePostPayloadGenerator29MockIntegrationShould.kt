@@ -277,5 +277,4 @@ class TrackedEntityInstancePostPayloadGenerator29MockIntegrationShould : BasePay
         assertThat(eventStore.selectByUid(event1Id)!!.syncState()).isEqualTo(State.TO_UPDATE)
         assertThat(eventStore.selectByUid(event2Id)!!.syncState()).isEqualTo(State.SYNCED)
     }
-
 }

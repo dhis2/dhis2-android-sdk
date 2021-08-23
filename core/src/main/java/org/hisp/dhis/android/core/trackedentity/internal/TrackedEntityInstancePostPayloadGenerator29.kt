@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidsList
@@ -49,9 +50,9 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
-import javax.inject.Inject
 
 @Reusable
+@Suppress("LongParameterList")
 internal class TrackedEntityInstancePostPayloadGenerator29 @Inject internal constructor(
     private val versionManager: DHISVersionManager,
     private val relationshipDHISVersionManager: RelationshipDHISVersionManager,
@@ -91,11 +92,13 @@ internal class TrackedEntityInstancePostPayloadGenerator29 @Inject internal cons
             eventMap = eventStore.queryEventsAttachedToEnrollmentToPost(),
             enrollmentMap = enrollmentStore.queryEnrollmentsToPost(),
             attributeValueMap = trackedEntityAttributeValueStore.queryTrackedEntityAttributeValueToPost(),
-            notes = noteStore.selectWhere(WhereClauseBuilder()
-                .appendInKeyStringValues(
-                    DataColumns.SYNC_STATE, State.uploadableStatesIncludingError().map { it.name }
-                )
-                .build())
+            notes = noteStore.selectWhere(
+                WhereClauseBuilder()
+                    .appendInKeyStringValues(
+                        DataColumns.SYNC_STATE, State.uploadableStatesIncludingError().map { it.name }
+                    )
+                    .build()
+            )
         )
     }
 

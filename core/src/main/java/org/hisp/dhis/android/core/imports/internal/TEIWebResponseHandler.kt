@@ -28,9 +28,9 @@
 package org.hisp.dhis.android.core.imports.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceImportHandler
-import javax.inject.Inject
 
 @Reusable
 internal class TEIWebResponseHandler @Inject constructor(

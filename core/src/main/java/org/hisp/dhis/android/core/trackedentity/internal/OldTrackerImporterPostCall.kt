@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
+import java.net.HttpURLConnection.HTTP_CONFLICT
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
@@ -38,7 +39,6 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventImportHandler
 import org.hisp.dhis.android.core.event.internal.EventPayload
-import org.hisp.dhis.android.core.event.internal.EventPostStateManager
 import org.hisp.dhis.android.core.event.internal.EventService
 import org.hisp.dhis.android.core.imports.internal.EventWebResponse
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponse
@@ -51,7 +51,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 internal class OldTrackerImporterPostCall @Inject internal constructor(
     private val trackerImporterPayloadGenerator: OldTrackerImporterPayloadGenerator,
     private val trackerStateManager: TrackerPostStateManager,
-    private val eventPostStateManager: EventPostStateManager,
     private val trackedEntityInstanceService: TrackedEntityInstanceService,
     private val eventService: EventService,
     private val teiWebResponseHandler: TEIWebResponseHandler,
@@ -89,6 +88,7 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private fun postTrackedEntityInstances(
         trackedEntityInstances: List<TrackedEntityInstance>
     ): Observable<D2Progress> {
@@ -108,7 +108,7 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
                             trackedEntityInstancePayload, "SYNC"
                         ),
                         @Suppress("MagicNumber")
-                        listOf(409),
+                        listOf(HTTP_CONFLICT),
                         TEIWebResponse::class.java
                     )
                     teiWebResponseHandler.handleWebResponse(webResponse, partition)
@@ -132,6 +132,7 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private fun postEvents(
         events: List<Event>
     ): Observable<D2Progress> {
@@ -153,7 +154,7 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
                     val webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
                         eventService.postEvents(eventPayload, strategy),
                         @Suppress("MagicNumber")
-                        listOf(409),
+                        listOf(HTTP_CONFLICT),
                         EventWebResponse::class.java
                     )
                     eventImportHandler.handleEventImportSummaries(

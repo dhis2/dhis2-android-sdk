@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
 import io.reactivex.Observable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
@@ -38,7 +39,6 @@ import org.hisp.dhis.android.core.imports.internal.EventWebResponse
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.internal.OldTrackerImporterPostCall
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerPostStateManager
-import javax.inject.Inject
 
 @Reusable
 internal class OldEventPostCall @Inject internal constructor(
@@ -59,6 +59,7 @@ internal class OldEventPostCall @Inject internal constructor(
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private fun uploadEvents29(
         events: List<Event>
     ): Observable<D2Progress> {

@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.imports.internal.RelationshipWebResponse
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerPostStateManager
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -54,6 +55,7 @@ internal class RelationshipPostCall @Inject internal constructor(
     private val relationshipStore: RelationshipStore,
     private val relationshipImportHandler: RelationshipImportHandler,
     private val dataStatePropagator: DataStatePropagator,
+    private val trackerStateManager: TrackerPostStateManager,
     private val apiCallExecutor: APICallExecutor
 ) {
 
@@ -88,9 +90,12 @@ internal class RelationshipPostCall @Inject internal constructor(
             Observable.just<D2Progress>(progressManager.increaseProgress(Relationship::class.java, false))
         } else {
             Observable.defer {
-                val payload = RelationshipPayload.builder().relationships(relationships).build()
-
                 try {
+                    val payload = RelationshipPayload.builder().relationships(relationships).build()
+                    trackerStateManager.setPayloadStates(
+                        relationships = relationships,
+                        forcedState = State.UPLOADING
+                    )
                     val httpResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
                         relationshipService.postRelationship(payload),
                         listOf(409),
@@ -103,6 +108,8 @@ internal class RelationshipPostCall @Inject internal constructor(
                     )
                     Observable.just<D2Progress>(progressManager.increaseProgress(Relationship::class.java, false))
                 } catch (e: Exception) {
+                    trackerStateManager.restorePayloadStates(relationships = relationships)
+                    relationships.forEach { dataStatePropagator.propagateRelationshipUpdate(it.from()) }
                     Observable.error<D2Progress>(e)
                 }
             }

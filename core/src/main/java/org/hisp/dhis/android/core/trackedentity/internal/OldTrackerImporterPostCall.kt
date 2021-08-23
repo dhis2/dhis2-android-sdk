@@ -50,7 +50,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 @Reusable
 internal class OldTrackerImporterPostCall @Inject internal constructor(
     private val trackerImporterPayloadGenerator: OldTrackerImporterPayloadGenerator,
-    private val trackedEntityInstanceStateManager: TrackedEntityInstancePostStateManager,
+    private val trackerStateManager: TrackerPostStateManager,
     private val eventPostStateManager: EventPostStateManager,
     private val trackedEntityInstanceService: TrackedEntityInstanceService,
     private val eventService: EventService,
@@ -98,7 +98,10 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
 
             for (partition in teiPartitions) {
                 try {
-                    trackedEntityInstanceStateManager.setPartitionStates(partition, State.UPLOADING)
+                    trackerStateManager.setPayloadStates(
+                        trackedEntityInstances = partition,
+                        forcedState = State.UPLOADING
+                    )
                     val trackedEntityInstancePayload = TrackedEntityInstancePayload.create(partition)
                     val webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
                         trackedEntityInstanceService.postTrackedEntityInstances(
@@ -111,7 +114,7 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
                     teiWebResponseHandler.handleWebResponse(webResponse, partition)
                     emitter.onNext(progressManager.increaseProgress(TrackedEntityInstance::class.java, false))
                 } catch (e: Exception) {
-                    trackedEntityInstanceStateManager.restorePartitionStates(partition)
+                    trackerStateManager.restorePayloadStates(partition)
                     if (e is D2Error && e.isOffline) {
                         emitter.onError(e)
                         break
@@ -139,7 +142,10 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
         } else {
             Observable.defer {
                 val eventPayload = EventPayload()
-                eventPostStateManager.markObjectsAs(events, State.UPLOADING)
+                trackerStateManager.setPayloadStates(
+                    events = events,
+                    forcedState = State.UPLOADING
+                )
 
                 eventPayload.events = events
                 val strategy = "SYNC"
@@ -159,7 +165,7 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
                     )
                     Observable.just<D2Progress>(progressManager.increaseProgress(Event::class.java, true))
                 } catch (e: Exception) {
-                    eventPostStateManager.markObjectsAs(events, State.TO_UPDATE)
+                    trackerStateManager.restorePayloadStates(events = events)
                     Observable.error<D2Progress>(e)
                 }
             }

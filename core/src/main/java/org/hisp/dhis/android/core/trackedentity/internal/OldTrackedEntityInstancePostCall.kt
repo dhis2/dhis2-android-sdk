@@ -45,7 +45,7 @@ import javax.inject.Inject
 @Reusable
 internal class OldTrackedEntityInstancePostCall @Inject internal constructor(
     private val payloadGenerator29: TrackedEntityInstancePostPayloadGenerator29,
-    private val stateManager: TrackedEntityInstancePostStateManager,
+    private val stateManager: TrackerPostStateManager,
     private val versionManager: DHISVersionManager,
     private val trackedEntityInstanceService: TrackedEntityInstanceService,
     private val teiWebResponseHandler: TEIWebResponseHandler,
@@ -71,7 +71,10 @@ internal class OldTrackedEntityInstancePostCall @Inject internal constructor(
             val teiPartitions = payloadGenerator29.getTrackedEntityInstancesPartitions29(filteredTrackedEntityInstances)
             val progressManager = D2ProgressManager(teiPartitions.size)
             for (partition in teiPartitions) {
-                stateManager.setPartitionStates(partition, State.UPLOADING)
+                stateManager.setPayloadStates(
+                    trackedEntityInstances = partition,
+                    forcedState = State.UPLOADING
+                )
                 val thisPartition = relationshipPostCall.postDeletedRelationships29(partition)
                 try {
                     val trackedEntityInstancePayload = TrackedEntityInstancePayload.create(thisPartition)
@@ -86,7 +89,7 @@ internal class OldTrackedEntityInstancePostCall @Inject internal constructor(
                     teiWebResponseHandler.handleWebResponse(webResponse, thisPartition)
                     emitter.onNext(progressManager.increaseProgress(TrackedEntityInstance::class.java, false))
                 } catch (e: Exception) {
-                    stateManager.restorePartitionStates(thisPartition)
+                    stateManager.restorePayloadStates(trackedEntityInstances = thisPartition)
                     if (e is D2Error && e.isOffline) {
                         emitter.onError(e)
                         break

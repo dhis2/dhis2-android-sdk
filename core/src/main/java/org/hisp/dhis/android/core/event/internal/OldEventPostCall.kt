@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.event.internal
 
 import dagger.Reusable
 import io.reactivex.Observable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
@@ -38,6 +37,8 @@ import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.imports.internal.EventWebResponse
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.internal.OldTrackerImporterPostCall
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerPostStateManager
+import javax.inject.Inject
 
 @Reusable
 internal class OldEventPostCall @Inject internal constructor(
@@ -46,7 +47,7 @@ internal class OldEventPostCall @Inject internal constructor(
     private val eventService: EventService,
     private val apiCallExecutor: APICallExecutor,
     private val eventImportHandler: EventImportHandler,
-    private val stateManager: EventPostStateManager,
+    private val trackerPostStateManager: TrackerPostStateManager,
     private val oldTrackerImporterPostCall: OldTrackerImporterPostCall
 ) {
 
@@ -64,7 +65,10 @@ internal class OldEventPostCall @Inject internal constructor(
         return Observable.defer {
             val eventPayload = EventPayload()
             val eventsToPost = payloadGenerator.getEvents(events)
-            stateManager.markObjectsAs(eventsToPost, State.UPLOADING)
+            trackerPostStateManager.setPayloadStates(
+                events = eventsToPost,
+                forcedState = State.UPLOADING
+            )
 
             val progressManager = D2ProgressManager(1)
 
@@ -80,7 +84,7 @@ internal class OldEventPostCall @Inject internal constructor(
                 handleWebResponse(webResponse, eventsToPost)
                 Observable.just<D2Progress>(progressManager.increaseProgress(Event::class.java, true))
             } catch (e: Exception) {
-                stateManager.markObjectsAs(eventsToPost, State.TO_UPDATE)
+                trackerPostStateManager.restorePayloadStates(events = eventsToPost)
                 Observable.error<D2Progress>(e)
             }
         }

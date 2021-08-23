@@ -42,12 +42,12 @@ public class LocalDataStoreCollectionRepositoryMockIntegrationShould extends Bas
 
     @Test
     public void find_all() {
-        assertThat(d2.localDataStoreModule().localDataStore().blockingGet().size()).isEqualTo(2);
+        assertThat(d2.dataStoreModule().localDataStore().blockingGet().size()).isEqualTo(2);
     }
 
     @Test
     public void filter_by_key() {
-        KeyValuePair pair = d2.localDataStoreModule().localDataStore()
+        KeyValuePair pair = d2.dataStoreModule().localDataStore()
                 .byKey().eq("key1")
                 .one()
                 .blockingGet();
@@ -58,7 +58,7 @@ public class LocalDataStoreCollectionRepositoryMockIntegrationShould extends Bas
 
     @Test
     public void filter_by_value() {
-        KeyValuePair pair = d2.localDataStoreModule().localDataStore()
+        KeyValuePair pair = d2.dataStoreModule().localDataStore()
                 .byValue().eq("value2")
                 .one()
                 .blockingGet();
@@ -69,7 +69,7 @@ public class LocalDataStoreCollectionRepositoryMockIntegrationShould extends Bas
 
     @Test
     public void return_object_repository() {
-        LocalDataStoreObjectRepository objectRepository = d2.localDataStoreModule().localDataStore()
+        LocalDataStoreObjectRepository objectRepository = d2.dataStoreModule().localDataStore()
                 .value("key1");
         assertThat(objectRepository.blockingExists()).isEqualTo(Boolean.TRUE);
         assertThat(objectRepository.blockingGet().value()).isEqualTo("value1");

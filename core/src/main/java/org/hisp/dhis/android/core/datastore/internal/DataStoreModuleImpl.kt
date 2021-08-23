@@ -27,16 +27,17 @@
  */
 package org.hisp.dhis.android.core.datastore.internal
 
-import dagger.Module
-import dagger.Provides
 import dagger.Reusable
-import org.hisp.dhis.android.core.datastore.LocalDataStoreModule
+import javax.inject.Inject
+import org.hisp.dhis.android.core.datastore.LocalDataStoreCollectionRepository
+import org.hisp.dhis.android.core.datastore.DataStoreModule
 
-@Module(includes = [LocalDataStoreEntityDIModule::class])
-class LocalDataStorePackageDIModule {
-    @Provides
-    @Reusable
-    fun module(impl: LocalDataStoreModuleImpl): LocalDataStoreModule {
-        return impl
+@Reusable
+class DataStoreModuleImpl @Inject internal constructor(
+    private val localDataStore: LocalDataStoreCollectionRepository
+) :
+    DataStoreModule {
+    override fun localDataStore(): LocalDataStoreCollectionRepository {
+        return localDataStore
     }
 }

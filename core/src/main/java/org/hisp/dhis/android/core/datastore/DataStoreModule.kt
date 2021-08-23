@@ -27,6 +27,6 @@
  */
 package org.hisp.dhis.android.core.datastore
 
-interface LocalDataStoreModule {
+interface DataStoreModule {
     fun localDataStore(): LocalDataStoreCollectionRepository
 }

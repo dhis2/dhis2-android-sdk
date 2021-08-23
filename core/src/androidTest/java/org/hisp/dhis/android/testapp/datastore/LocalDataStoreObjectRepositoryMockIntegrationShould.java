@@ -65,13 +65,13 @@ public class LocalDataStoreObjectRepositoryMockIntegrationShould extends BaseMoc
 
     @Test
     public void return_that_a_value_exists_only_if_it_has_been_created() {
-        assertThat(d2.localDataStoreModule().localDataStore()
+        assertThat(d2.dataStoreModule().localDataStore()
                 .value("no_key").blockingExists()).isEqualTo(Boolean.FALSE);
-        assertThat(d2.localDataStoreModule().localDataStore()
+        assertThat(d2.dataStoreModule().localDataStore()
                 .value("key1").blockingExists()).isEqualTo(Boolean.TRUE);
     }
 
     private LocalDataStoreObjectRepository objectRepository() {
-        return d2.localDataStoreModule().localDataStore().value("new_key");
+        return d2.dataStoreModule().localDataStore().value("new_key");
     }
 }

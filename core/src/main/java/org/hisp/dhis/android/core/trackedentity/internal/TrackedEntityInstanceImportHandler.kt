@@ -49,7 +49,8 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
 
-@Reusable class TrackedEntityInstanceImportHandler @Inject internal constructor(
+@Reusable
+internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
     private val trackedEntityInstanceStore: TrackedEntityInstanceStore,
     private val enrollmentImportHandler: EnrollmentImportHandler,
     private val trackerImportConflictStore: TrackerImportConflictStore,

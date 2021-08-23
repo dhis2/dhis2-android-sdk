@@ -28,18 +28,18 @@
 
 package org.hisp.dhis.android.testapp.sms;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import org.hisp.dhis.android.core.sms.domain.interactor.ConfigCase;
 import org.hisp.dhis.android.core.sms.domain.interactor.QrCodeCase;
 import org.hisp.dhis.android.core.sms.domain.interactor.SmsSubmitCase;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTest;
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static com.google.common.truth.Truth.assertThat;
-
 @RunWith(D2JunitRunner.class)
-public class SmsModuleMockIntegrationShould extends BaseMockIntegrationTest {
+public class SmsModuleMockIntegrationShould extends BaseMockIntegrationTestEmptyEnqueable {
 
     @Test
     public void access_submit_case() {

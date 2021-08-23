@@ -132,32 +132,36 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
     private fun postEvents(
         events: List<Event>
     ): Observable<D2Progress> {
-        return Observable.defer {
-            val eventPayload = EventPayload()
-            eventPostStateManager.markObjectsAs(events, State.UPLOADING)
+        val progressManager = D2ProgressManager(null)
 
-            val progressManager = D2ProgressManager(null)
+        return if (events.isEmpty()) {
+            Observable.just<D2Progress>(progressManager.increaseProgress(Event::class.java, true))
+        } else {
+            Observable.defer {
+                val eventPayload = EventPayload()
+                eventPostStateManager.markObjectsAs(events, State.UPLOADING)
 
-            eventPayload.events = events
-            val strategy = "SYNC"
-            try {
-                val webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
-                    eventService.postEvents(eventPayload, strategy),
-                    @Suppress("MagicNumber")
-                    listOf(409),
-                    EventWebResponse::class.java
-                )
-                eventImportHandler.handleEventImportSummaries(
-                    eventImportSummaries = webResponse?.response()?.importSummaries(),
-                    events = events,
-                    // TODO Manage tracker events
-                    enrollmentUid = null,
-                    teiUid = null
-                )
-                Observable.just<D2Progress>(progressManager.increaseProgress(Event::class.java, true))
-            } catch (e: Exception) {
-                eventPostStateManager.markObjectsAs(events, State.TO_UPDATE)
-                Observable.error<D2Progress>(e)
+                eventPayload.events = events
+                val strategy = "SYNC"
+                try {
+                    val webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
+                        eventService.postEvents(eventPayload, strategy),
+                        @Suppress("MagicNumber")
+                        listOf(409),
+                        EventWebResponse::class.java
+                    )
+                    eventImportHandler.handleEventImportSummaries(
+                        eventImportSummaries = webResponse?.response()?.importSummaries(),
+                        events = events,
+                        // TODO Manage tracker events
+                        enrollmentUid = null,
+                        teiUid = null
+                    )
+                    Observable.just<D2Progress>(progressManager.increaseProgress(Event::class.java, true))
+                } catch (e: Exception) {
+                    eventPostStateManager.markObjectsAs(events, State.TO_UPDATE)
+                    Observable.error<D2Progress>(e)
+                }
             }
         }
     }

@@ -166,14 +166,16 @@ internal class OldTrackerImporterPayloadGenerator @Inject internal constructor(
             }
         }
 
-        val trackedEntityInstances = trackedEntityInstanceStore.selectByUids(missingTeis.toList())
+        val trackedEntityInstances = trackedEntityInstanceStore.selectByUids(missingTeis.toList()).map {
+            getTrackedEntityInstance(it, extraData)
+        }
         val events = eventStore.selectByUids(missingEvents.toList())
 
         return OldTrackerImporterPayload(
             trackedEntityInstances = trackedEntityInstances,
             events = events
         ).run {
-            copy(relationships = extractRelationships(payload, extraData))
+            copy(relationships = extractRelationships(this, extraData))
         }
     }
 
@@ -189,7 +191,7 @@ internal class OldTrackerImporterPayloadGenerator @Inject internal constructor(
 
     private fun isMissingEnrollment(uid: String, payload: OldTrackerImporterPayload): Boolean {
         val enrollments = payload.trackedEntityInstances.flatMap {
-            TrackedEntityInstanceInternalAccessor.accessEnrollments(it)
+            TrackedEntityInstanceInternalAccessor.accessEnrollments(it) ?: emptyList()
         }
         val isIncludeInPayload = enrollments.map { it.uid() }.contains(uid)
         val isPendingToSync: Boolean by lazy {
@@ -202,10 +204,11 @@ internal class OldTrackerImporterPayloadGenerator @Inject internal constructor(
 
     private fun isMissingEvent(uid: String, payload: OldTrackerImporterPayload): Boolean {
         val events = payload.trackedEntityInstances.flatMap {
-            TrackedEntityInstanceInternalAccessor.accessEnrollments(it)
+            TrackedEntityInstanceInternalAccessor.accessEnrollments(it) ?: emptyList()
         }.flatMap {
-            EnrollmentInternalAccessor.accessEvents(it)
-        }
+            EnrollmentInternalAccessor.accessEvents(it) ?: emptyList()
+        } + payload.events
+
         val isIncludedInPayload = events.map { it.uid() }.contains(uid)
         val isPendingToSync: Boolean by lazy {
             val event = eventStore.selectByUid(uid)
@@ -242,13 +245,17 @@ internal class OldTrackerImporterPayloadGenerator @Inject internal constructor(
         }
 
         val enrollments = payload.trackedEntityInstances.flatMap {
-            TrackedEntityInstanceInternalAccessor.accessEnrollments(it)
+            TrackedEntityInstanceInternalAccessor.accessEnrollments(it) ?: emptyList()
         }
+
         val enrollmentItems = enrollments.map {
             RelationshipHelper.enrollmentItem(it.uid())
         }
 
-        val events = enrollments.flatMap { EnrollmentInternalAccessor.accessEvents(it) } + payload.events
+        val events = enrollments.flatMap {
+            EnrollmentInternalAccessor.accessEvents(it) ?: emptyList()
+        } + payload.events
+
         val eventItems = events.map {
             RelationshipHelper.eventItem(it.uid())
         }

@@ -89,6 +89,7 @@ import org.hisp.dhis.android.core.sms.internal.SmsDIModule;
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoPackageDIModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityPackageDIModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
+import org.hisp.dhis.android.core.trackedentity.internal.OldTrackerImporterPayloadGenerator;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostPayloadGenerator29;
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterPackageDIModule;
 import org.hisp.dhis.android.core.user.internal.UserPackageDIModule;
@@ -182,6 +183,8 @@ public interface D2DIComponent {
     Handler<TrackedEntityType> trackedEntityTypeHandler();
     @VisibleForTesting
     TrackedEntityInstancePostPayloadGenerator29 trackedEntityInstancePostPayloadGenerator();
+    @VisibleForTesting
+    OldTrackerImporterPayloadGenerator oldTrackerImporterPayloadGenerator();
     @VisibleForTesting
     EventPostPayloadGenerator eventPostPayloadGenerator();
     @VisibleForTesting

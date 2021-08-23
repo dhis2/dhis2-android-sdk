@@ -81,21 +81,26 @@ internal class RelationshipPostCall @Inject internal constructor(
     }
 
     fun postRelationships(relationships: List<Relationship>): Observable<D2Progress> {
-        return Observable.defer {
-            val progressManager = D2ProgressManager(null)
-            val payload = RelationshipPayload.builder().relationships(relationships).build()
+        val progressManager = D2ProgressManager(null)
 
-            try {
-                val httpResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
-                    relationshipService.postRelationship(payload),
-                    listOf(409),
-                    RelationshipWebResponse::class.java
-                )
+        return if(relationships.isEmpty()) {
+            Observable.just<D2Progress>(progressManager.increaseProgress(Relationship::class.java, false))
+        } else {
+            Observable.defer {
+                val payload = RelationshipPayload.builder().relationships(relationships).build()
 
-                // TODO Implement handler
-                Observable.just<D2Progress>(progressManager.increaseProgress(Relationship::class.java, false))
-            } catch (e: Exception) {
-                Observable.error<D2Progress>(e)
+                try {
+                    val httpResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
+                        relationshipService.postRelationship(payload),
+                        listOf(409),
+                        RelationshipWebResponse::class.java
+                    )
+
+                    // TODO Implement handler
+                    Observable.just<D2Progress>(progressManager.increaseProgress(Relationship::class.java, false))
+                } catch (e: Exception) {
+                    Observable.error<D2Progress>(e)
+                }
             }
         }
     }

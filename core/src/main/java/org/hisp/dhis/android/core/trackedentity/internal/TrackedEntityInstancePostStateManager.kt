@@ -63,13 +63,13 @@ internal class TrackedEntityInstancePostStateManager @Inject internal constructo
 
         for (instance in partition) {
             h.addState(teiMap, instance, forcedState)
-            for (enrollment in TrackedEntityInstanceInternalAccessor.accessEnrollments(instance)) {
+            TrackedEntityInstanceInternalAccessor.accessEnrollments(instance)?.forEach { enrollment ->
                 h.addState(enrollmentMap, enrollment, forcedState)
                 for (event in EnrollmentInternalAccessor.accessEvents(enrollment)) {
                     h.addState(eventMap, event, forcedState)
                 }
             }
-            for (r in TrackedEntityInstanceInternalAccessor.accessRelationships(instance)) {
+            TrackedEntityInstanceInternalAccessor.accessRelationships(instance)?.forEach { r ->
                 if (versionManager.is2_29) {
                     val whereClause = WhereClauseBuilder().appendKeyStringValue(CoreColumns.ID, r.id()).build()
                     val dbRelationship = relationshipStore.selectOneWhere(whereClause)

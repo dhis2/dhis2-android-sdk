@@ -38,11 +38,36 @@
     {
       "created": "2013-09-19T15:17:41.000",
       "lastUpdated": "2014-04-14T13:53:20.166",
-      "name": "Mother-Child",
+      "name": "Mother-Child_b-to-a_(Person-Person)",
       "id": "V2kkHafqs8G",
-      "displayName": "Mother-Child",
-      "bIsToA": "Child",
-      "aIsToB": "Mother"
+      "displayName": "Mother-Child_b-to-a_(Person-Person)",
+      "access": {
+        "read": true,
+        "update": true,
+        "externalize": false,
+        "delete": true,
+        "write": true,
+        "manage": true,
+        "data": {
+          "read": true,
+          "write": false
+        }
+      },
+      "fromConstraint": {
+        "relationshipEntity": "TRACKED_ENTITY_INSTANCE",
+        "trackedEntityType": {
+          "id": "nEenWmSyUEp"
+        },
+        "program": {
+          "id": "lxAQ7Zs9VYR"
+        }
+      },
+      "toConstraint": {
+        "relationshipEntity": "PROGRAM_STAGE_INSTANCE",
+        "program": {
+          "id": "lxAQ7Zs9VYR"
+        }
+      }
     },
     {
       "created": "2014-04-14T13:53:38.659",

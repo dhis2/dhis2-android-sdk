@@ -36,7 +36,14 @@ import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnly
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
+import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.event.internal.EventStore;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCollectionRepositoryHelper;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeFields;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
 
 import java.util.Map;
 
@@ -48,12 +55,23 @@ import dagger.Reusable;
 public final class RelationshipTypeCollectionRepository
         extends ReadOnlyIdentifiableCollectionRepositoryImpl<RelationshipType, RelationshipTypeCollectionRepository> {
 
+    private final TrackedEntityInstanceStore teiStore;
+    private final EnrollmentStore enrollmentStore;
+    private final EventStore eventStore;
+
     @Inject
     RelationshipTypeCollectionRepository(final IdentifiableObjectStore<RelationshipType> store,
+                                         final TrackedEntityInstanceStore teiStore,
+                                         final EnrollmentStore enrollmentStore,
+                                         final EventStore eventStore,
                                          final Map<String, ChildrenAppender<RelationshipType>> childrenAppenders,
                                          final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                s -> new RelationshipTypeCollectionRepository(store, childrenAppenders, s)));
+                s -> new RelationshipTypeCollectionRepository(store, teiStore, enrollmentStore, eventStore,
+                        childrenAppenders, s)));
+        this.teiStore = teiStore;
+        this.enrollmentStore = enrollmentStore;
+        this.eventStore = eventStore;
     }
 
     public RelationshipTypeCollectionRepository byConstraint(@NonNull RelationshipEntityType relationshipEntityType,
@@ -71,8 +89,39 @@ public final class RelationshipTypeCollectionRepository
         return cf.subQuery(IdentifiableColumns.UID).inTableWhere(
                 RelationshipConstraintTableInfo.TABLE_INFO.name(),
                 RelationshipConstraintTableInfo.Columns.RELATIONSHIP_TYPE,
-                constraintClauseBuilder(relationshipEntityType, relationshipEntityUid).appendKeyStringValue(
-                        RelationshipConstraintTableInfo.Columns.CONSTRAINT_TYPE, relationshipConstraintType));
+                constraintClauseBuilder(relationshipEntityType, relationshipEntityUid)
+                        .appendKeyStringValue(
+                                RelationshipConstraintTableInfo.Columns.CONSTRAINT_TYPE,
+                                relationshipConstraintType
+                        )
+        );
+    }
+
+    public RelationshipTypeCollectionRepository byEventAvailability(@NonNull String eventUid) {
+        Event event = eventStore.selectByUid(eventUid);
+        return cf.subQuery(IdentifiableColumns.UID).inTableWhere(
+                RelationshipConstraintTableInfo.TABLE_INFO.name(),
+                RelationshipConstraintTableInfo.Columns.RELATIONSHIP_TYPE,
+                RelationshipTypeCollectionRepositoryHelper.availabilityEventQuery(event)
+        );
+    }
+
+    public RelationshipTypeCollectionRepository byTrackedEntityInstanceAvailability(@NonNull String teiUid) {
+        TrackedEntityInstance trackedEntityInstance = teiStore.selectByUid(teiUid);
+        return cf.subQuery(IdentifiableColumns.UID).inTableWhere(
+                RelationshipConstraintTableInfo.TABLE_INFO.name(),
+                RelationshipConstraintTableInfo.Columns.RELATIONSHIP_TYPE,
+                RelationshipTypeCollectionRepositoryHelper.availabilityTeiQuery(trackedEntityInstance)
+        );
+    }
+
+    public RelationshipTypeCollectionRepository byEnrollmentAvailability(@NonNull String enrollmentUid) {
+        Enrollment enrollment = enrollmentStore.selectByUid(enrollmentUid);
+        return cf.subQuery(IdentifiableColumns.UID).inTableWhere(
+                RelationshipConstraintTableInfo.TABLE_INFO.name(),
+                RelationshipConstraintTableInfo.Columns.RELATIONSHIP_TYPE,
+                RelationshipTypeCollectionRepositoryHelper.availabilityEnrollmentQuery(enrollment)
+        );
     }
 
     public RelationshipTypeCollectionRepository withConstraints() {
@@ -86,7 +135,7 @@ public final class RelationshipTypeCollectionRepository
                         RelationshipConstraintTableInfo.Columns.RELATIONSHIP_ENTITY, relationshipEntityType)
                 .appendKeyStringValue(getRelationshipEntityColumn(relationshipEntityType), relationshipEntityUid);
     }
-    
+
     private String getRelationshipEntityColumn(@NonNull RelationshipEntityType relationshipEntityType) {
         switch (relationshipEntityType) {
             case TRACKED_ENTITY_INSTANCE:

@@ -58,7 +58,6 @@ import org.junit.After
 import org.junit.BeforeClass
 import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner::class)
 open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadataEnqueable() {
 
     protected val teiId = "teiId"

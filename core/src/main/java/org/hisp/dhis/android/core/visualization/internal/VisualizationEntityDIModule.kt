@@ -30,12 +30,15 @@ package org.hisp.dhis.android.core.visualization.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
+import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
+import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.visualization.Visualization
+import org.hisp.dhis.android.core.visualization.VisualizationTableInfo
 
 @Module
 internal class VisualizationEntityDIModule : IdentifiableStoreProvider<Visualization> {
@@ -50,6 +53,12 @@ internal class VisualizationEntityDIModule : IdentifiableStoreProvider<Visualiza
     @Reusable
     fun handler(impl: VisualizationHandler): Handler<Visualization> {
         return impl
+    }
+
+    @Provides
+    @Reusable
+    fun collectionCleaner(databaseAdapter: DatabaseAdapter): CollectionCleaner<Visualization> {
+        return CollectionCleanerImpl(VisualizationTableInfo.TABLE_INFO.name(), databaseAdapter)
     }
 
     @Provides

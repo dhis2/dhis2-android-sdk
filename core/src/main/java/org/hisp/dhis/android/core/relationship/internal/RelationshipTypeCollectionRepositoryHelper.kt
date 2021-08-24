@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintTableInfo.Columns
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import org.hisp.dhis.android.core.relationship.RelationshipEntityType
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
@@ -40,18 +41,22 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 object RelationshipTypeCollectionRepositoryHelper {
 
     @JvmStatic
-    fun availabilityTeiQuery(tei: TrackedEntityInstance?): WhereClauseBuilder {
-        return tei?.let {
-            WhereClauseBuilder()
-                .appendKeyStringValue(Columns.RELATIONSHIP_ENTITY, RelationshipEntityType.TRACKED_ENTITY_INSTANCE)
-                .appendComplexQuery(
+    fun availabilityTeiQuery(tei: TrackedEntityInstance?, type: RelationshipConstraintType?): WhereClauseBuilder {
+        return WhereClauseBuilder().apply {
+            tei?.let {
+                if (type != null) {
+                    appendKeyStringValue(Columns.CONSTRAINT_TYPE, type.name)
+                }
+                appendKeyStringValue(Columns.RELATIONSHIP_ENTITY, RelationshipEntityType.TRACKED_ENTITY_INSTANCE)
+                appendComplexQuery(
                     WhereClauseBuilder()
                         .appendKeyStringValue(Columns.TRACKED_ENTITY_TYPE, it.trackedEntityType())
                         .appendComplexQuery(
                             appendOptionalEnrollmentInProgram(tei)
                         ).build()
                 )
-        } ?: WhereClauseBuilder()
+            }
+        }
     }
 
     private fun appendOptionalEnrollmentInProgram(tei: TrackedEntityInstance): String {
@@ -66,25 +71,33 @@ object RelationshipTypeCollectionRepositoryHelper {
     }
 
     @JvmStatic
-    fun availabilityEnrollmentQuery(enrollment: Enrollment?): WhereClauseBuilder {
-        return enrollment?.let {
-            WhereClauseBuilder()
-                .appendKeyStringValue(Columns.RELATIONSHIP_ENTITY, RelationshipEntityType.PROGRAM_INSTANCE)
-                .appendKeyStringValue(Columns.PROGRAM, enrollment.program())
-        } ?: WhereClauseBuilder()
+    fun availabilityEnrollmentQuery(enrollment: Enrollment?, type: RelationshipConstraintType?): WhereClauseBuilder {
+        return WhereClauseBuilder().apply {
+            enrollment?.let {
+                if (type != null) {
+                    appendKeyStringValue(Columns.CONSTRAINT_TYPE, type.name)
+                }
+                appendKeyStringValue(Columns.RELATIONSHIP_ENTITY, RelationshipEntityType.PROGRAM_INSTANCE)
+                appendKeyStringValue(Columns.PROGRAM, enrollment.program())
+            }
+        }
     }
 
     @JvmStatic
-    fun availabilityEventQuery(event: Event?): WhereClauseBuilder {
-        return event?.let {
-            WhereClauseBuilder()
-                .appendKeyStringValue(Columns.RELATIONSHIP_ENTITY, RelationshipEntityType.PROGRAM_STAGE_INSTANCE)
-                .appendComplexQuery(
+    fun availabilityEventQuery(event: Event?, type: RelationshipConstraintType?): WhereClauseBuilder {
+        return WhereClauseBuilder().apply {
+            event?.let {
+                if (type != null) {
+                    appendKeyStringValue(Columns.CONSTRAINT_TYPE, type.name)
+                }
+                appendKeyStringValue(Columns.RELATIONSHIP_ENTITY, RelationshipEntityType.PROGRAM_STAGE_INSTANCE)
+                appendComplexQuery(
                     WhereClauseBuilder()
                         .appendOrKeyStringValue(Columns.PROGRAM, it.program())
                         .appendOrKeyStringValue(Columns.PROGRAM_STAGE, it.programStage())
                         .build()
                 )
-        } ?: WhereClauseBuilder()
+            }
+        }
     }
 }

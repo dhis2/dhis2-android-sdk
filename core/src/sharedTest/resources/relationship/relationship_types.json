@@ -22,13 +22,13 @@
           "write": false
         }
       },
-      "toConstraint": {
+      "fromConstraint": {
         "relationshipEntity": "PROGRAM_INSTANCE",
         "program": {
           "id": "lxAQ7Zs9VYR"
         }
       },
-      "fromConstraint": {
+      "toConstraint": {
         "relationshipEntity": "TRACKED_ENTITY_INSTANCE",
         "trackedEntityType": {
           "id": "nEenWmSyUEp"

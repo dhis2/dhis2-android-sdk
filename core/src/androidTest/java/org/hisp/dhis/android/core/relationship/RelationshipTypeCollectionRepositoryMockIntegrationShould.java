@@ -75,6 +75,16 @@ public class RelationshipTypeCollectionRepositoryMockIntegrationShould extends B
     }
 
     @Test
+    public void by_tracked_entity_instance_with_constraint_type() {
+        List<RelationshipType> relationshipTypes =
+                d2.relationshipModule().relationshipTypes()
+                        .byTrackedEntityInstanceAvailability("nWrB0TfWlvh", RelationshipConstraintType.FROM)
+                        .blockingGet();
+
+        assertThat(relationshipTypes.size()).isEqualTo(1);
+    }
+
+    @Test
     public void by_enrollment() {
         List<RelationshipType> relationshipTypes =
                 d2.relationshipModule().relationshipTypes()

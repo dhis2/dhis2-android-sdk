@@ -102,11 +102,15 @@ public class RelationshipSamples {
     }
 
     public static Relationship get230(String uid, String fromUid, String toUid) {
+        return get230(uid, RelationshipHelper.teiItem(fromUid), RelationshipHelper.teiItem(toUid));
+    }
+
+    public static Relationship get230(String uid, RelationshipItem from, RelationshipItem to) {
         return commonBuilder
                 .uid(uid)
                 .relationshipType(TYPE)
-                .from(RelationshipHelper.teiItem(fromUid))
-                .to(RelationshipHelper.teiItem(toUid))
+                .from(from)
+                .to(to)
                 .build();
     }
 

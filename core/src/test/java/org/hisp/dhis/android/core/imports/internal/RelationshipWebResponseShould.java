@@ -26,22 +26,38 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship.internal;
+package org.hisp.dhis.android.core.imports.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.relationship.RelationshipConstraintType;
-import org.hisp.dhis.android.core.relationship.RelationshipItem;
+import static com.google.common.truth.Truth.assertThat;
 
-import java.util.List;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.core.Inject;
+import org.hisp.dhis.android.core.arch.file.ResourcesFileReader;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-public interface RelationshipItemStore extends ObjectWithoutUidStore<RelationshipItem> {
-    List<String> getRelationshipUidsForItems(@NonNull RelationshipItem from, @NonNull RelationshipItem to);
+@RunWith(JUnit4.class)
+public class RelationshipWebResponseShould {
 
-    RelationshipItem getForRelationshipUidAndConstraintType(
-            @NonNull String uid,
-            @NonNull RelationshipConstraintType constraintType);
+    @Test
+    public void map_from_json_string() throws Exception {
+        ObjectMapper objectMapper = Inject.objectMapper();
 
-    List<String> getRelatedTeiUids(List<String> trackedEntityInstanceUids);
+        String responseStr = new ResourcesFileReader().getStringFromFile("imports/relationship_web_response.json");
+        RelationshipWebResponse webResponse = objectMapper.readValue(responseStr, RelationshipWebResponse.class);
+
+        assertThat(webResponse.message()).isEqualTo("Import was successful.");
+        assertThat(webResponse.response()).isNotNull();
+    }
+
+    @Test
+    public void map_from_json_string_with_errors() throws Exception {
+        ObjectMapper objectMapper = Inject.objectMapper();
+
+        String webResponseStr = new ResourcesFileReader().getStringFromFile(
+                "imports/relationship_web_response_with_errors.json");
+        objectMapper.readValue(webResponseStr, RelationshipWebResponse.class);
+    }
 }

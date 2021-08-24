@@ -37,6 +37,8 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.imports.internal.EventWebResponse
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.android.core.trackedentity.internal.OldTrackerImporterPostCall
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerPostStateManager
 
 @Reusable
 internal class OldEventPostCall @Inject internal constructor(
@@ -45,20 +47,34 @@ internal class OldEventPostCall @Inject internal constructor(
     private val eventService: EventService,
     private val apiCallExecutor: APICallExecutor,
     private val eventImportHandler: EventImportHandler,
-    private val stateManager: EventPostStateManager
+    private val trackerPostStateManager: TrackerPostStateManager,
+    private val oldTrackerImporterPostCall: OldTrackerImporterPostCall
 ) {
 
+    fun uploadEvents(events: List<Event>): Observable<D2Progress> {
+        return if (versionManager.is2_29) {
+            uploadEvents29(events)
+        } else {
+            oldTrackerImporterPostCall.uploadEvents(events)
+        }
+    }
+
     @Suppress("TooGenericExceptionCaught")
-    fun uploadEvents(filteredEvents: List<Event>): Observable<D2Progress> {
+    private fun uploadEvents29(
+        events: List<Event>
+    ): Observable<D2Progress> {
         return Observable.defer {
             val eventPayload = EventPayload()
-            val eventsToPost = payloadGenerator.getEvents(filteredEvents)
-            stateManager.markObjectsAs(eventsToPost, State.UPLOADING)
+            val eventsToPost = payloadGenerator.getEvents(events)
+            trackerPostStateManager.setPayloadStates(
+                events = eventsToPost,
+                forcedState = State.UPLOADING
+            )
 
             val progressManager = D2ProgressManager(1)
 
             eventPayload.events = eventsToPost
-            val strategy = if (versionManager.is2_29) "CREATE_AND_UPDATE" else "SYNC"
+            val strategy = "CREATE_AND_UPDATE"
             try {
                 val webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
                     eventService.postEvents(eventPayload, strategy),
@@ -69,18 +85,15 @@ internal class OldEventPostCall @Inject internal constructor(
                 handleWebResponse(webResponse, eventsToPost)
                 Observable.just<D2Progress>(progressManager.increaseProgress(Event::class.java, true))
             } catch (e: Exception) {
-                stateManager.markObjectsAs(eventsToPost, State.TO_UPDATE)
+                trackerPostStateManager.restorePayloadStates(events = eventsToPost)
                 Observable.error<D2Progress>(e)
             }
         }
     }
 
     private fun handleWebResponse(webResponse: EventWebResponse?, events: List<Event>) {
-        if (webResponse?.response() == null) {
-            return
-        }
         eventImportHandler.handleEventImportSummaries(
-            webResponse.response()!!.importSummaries(),
+            webResponse?.response()?.importSummaries(),
             events,
             null,
             null

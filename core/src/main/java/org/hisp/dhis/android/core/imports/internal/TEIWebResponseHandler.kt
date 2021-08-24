@@ -25,16 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship.internal;
+package org.hisp.dhis.android.core.imports.internal
 
-import org.hisp.dhis.android.core.imports.internal.RelationshipDeleteWebResponse;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceImportHandler
 
-import retrofit2.Call;
-import retrofit2.http.DELETE;
-import retrofit2.http.Path;
+@Reusable
+internal class TEIWebResponseHandler @Inject constructor(
+    private val trackedEntityInstanceImportHandler: TrackedEntityInstanceImportHandler
+) {
 
-interface RelationshipService {
-
-    @DELETE("relationships/{uid}")
-    Call<RelationshipDeleteWebResponse> deleteRelationship(@Path("uid") String relationship);
+    fun handleWebResponse(
+        webResponse: TEIWebResponse?,
+        instances: List<TrackedEntityInstance>
+    ) {
+        webResponse?.response()?.let { response ->
+            trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
+                response.importSummaries(), instances
+            )
+        }
+    }
 }

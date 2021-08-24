@@ -1,0 +1,43 @@
+{
+  "httpStatus": "OK",
+  "httpStatusCode": 200,
+  "status": "OK",
+  "message": "Import was successful.",
+  "response": {
+    "responseType": "ImportSummaries",
+    "status": "SUCCESS",
+    "imported": 2,
+    "updated": 0,
+    "deleted": 0,
+    "ignored": 0,
+    "importSummaries": [
+      {
+        "responseType": "ImportSummary",
+        "status": "SUCCESS",
+        "importCount": {
+          "imported": 1,
+          "updated": 0,
+          "ignored": 0,
+          "deleted": 0
+        },
+        "conflicts": [],
+        "reference": "wOhCbIpmVCp",
+        "href": "https://play.dhis2.org/2.36.3/api/relationships/wOhCbIpmVCp"
+      },
+      {
+        "responseType": "ImportSummary",
+        "status": "SUCCESS",
+        "importCount": {
+          "imported": 1,
+          "updated": 0,
+          "ignored": 0,
+          "deleted": 0
+        },
+        "conflicts": [],
+        "reference": "EdG77xZE29R",
+        "href": "https://play.dhis2.org/2.36.3/api/relationships/EdG77xZE29R"
+      }
+    ],
+    "total": 2
+  }
+}

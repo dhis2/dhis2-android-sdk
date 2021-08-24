@@ -1,0 +1,19 @@
+{
+  "httpStatus": "OK",
+  "httpStatusCode": 200,
+  "status": "OK",
+  "message": "Import was successful.",
+  "response": {
+    "responseType": "ImportSummary",
+    "status": "SUCCESS",
+    "description": "Deletion of relationship wOhCbIpmVCp was successful",
+    "importCount": {
+      "imported": 0,
+      "updated": 0,
+      "ignored": 0,
+      "deleted": 1
+    },
+    "conflicts": [],
+    "reference": "wOhCbIpmVCp"
+  }
+}

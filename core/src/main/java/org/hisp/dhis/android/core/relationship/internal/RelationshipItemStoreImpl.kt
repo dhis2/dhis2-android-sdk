@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.relationship.internal
 
 import android.database.Cursor
-import java.util.*
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
@@ -40,6 +39,7 @@ import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import org.hisp.dhis.android.core.relationship.RelationshipItem
 import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo
+import java.util.*
 
 internal class RelationshipItemStoreImpl private constructor(
     databaseAdapter: DatabaseAdapter,
@@ -114,23 +114,31 @@ internal class RelationshipItemStoreImpl private constructor(
         return relatedRelationshipItems.map { it.trackedEntityInstance()!!.trackedEntityInstance() }
     }
 
-    private fun getAllItemsOfSameType(from: RelationshipItem, to: RelationshipItem): Cursor {
-        val query = "SELECT " + RelationshipItemTableInfo.Columns.RELATIONSHIP + ", " +
-            "MAX(CASE WHEN " + RelationshipItemTableInfo.Columns.RELATIONSHIP_ITEM_TYPE + " = 'FROM' " +
-            "THEN " + getItemElementColumn(from) + " END) AS fromElementUid, " +
-            "MAX(CASE WHEN " + RelationshipItemTableInfo.Columns.RELATIONSHIP_ITEM_TYPE + " = 'TO' " +
-            "THEN " + getItemElementColumn(to) + " END) AS toElementUid " +
-            "FROM " + RelationshipItemTableInfo.TABLE_INFO.name() +
-            " GROUP BY " + RelationshipItemTableInfo.Columns.RELATIONSHIP
-        return databaseAdapter.rawQuery(query)
+    override fun getByItem(item: RelationshipItem): List<RelationshipItem> {
+        val clauseBuilder = WhereClauseBuilder().apply {
+            appendKeyStringValue(item.elementType(), item.elementUid())
+
+            item.relationshipItemType()?.let {
+                appendKeyStringValue(RelationshipItemTableInfo.Columns.RELATIONSHIP_ITEM_TYPE, it.name)
+            }
+
+            item.relationship()?.let {
+                appendKeyStringValue(RelationshipItemTableInfo.Columns.RELATIONSHIP, it.uid())
+            }
+        }
+
+        return selectWhere(clauseBuilder.build())
     }
 
-    private fun getItemElementColumn(item: RelationshipItem): String {
-        return when {
-            item.hasTrackedEntityInstance() -> RelationshipItemTableInfo.Columns.TRACKED_ENTITY_INSTANCE
-            item.hasEnrollment() -> RelationshipItemTableInfo.Columns.ENROLLMENT
-            else -> RelationshipItemTableInfo.Columns.EVENT
-        }
+    private fun getAllItemsOfSameType(from: RelationshipItem, to: RelationshipItem): Cursor {
+        val query = "SELECT " + RelationshipItemTableInfo.Columns.RELATIONSHIP + ", " +
+                "MAX(CASE WHEN " + RelationshipItemTableInfo.Columns.RELATIONSHIP_ITEM_TYPE + " = 'FROM' " +
+                "THEN " + from.elementType() + " END) AS fromElementUid, " +
+                "MAX(CASE WHEN " + RelationshipItemTableInfo.Columns.RELATIONSHIP_ITEM_TYPE + " = 'TO' " +
+                "THEN " + to.elementType() + " END) AS toElementUid " +
+                "FROM " + RelationshipItemTableInfo.TABLE_INFO.name() +
+                " GROUP BY " + RelationshipItemTableInfo.Columns.RELATIONSHIP
+        return databaseAdapter.rawQuery(query)
     }
 
     companion object {

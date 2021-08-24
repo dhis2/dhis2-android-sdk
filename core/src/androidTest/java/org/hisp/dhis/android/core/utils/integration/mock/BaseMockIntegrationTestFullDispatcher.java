@@ -29,8 +29,11 @@
 package org.hisp.dhis.android.core.utils.integration.mock;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.imports.TrackerImportConflictSamples;
 import org.hisp.dhis.android.core.data.maintenance.D2ErrorSamples;
+import org.hisp.dhis.android.core.datastore.KeyValuePair;
+import org.hisp.dhis.android.core.datastore.internal.LocalDataStoreStore;
 import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore;
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStoreImpl;
@@ -61,6 +64,7 @@ public abstract class BaseMockIntegrationTestFullDispatcher extends BaseMockInte
             downloadAggregatedData();
             storeSomeD2Errors();
             storeSomeConflicts();
+            storeSomeKeyValuesInLocalDataStore();
         }
     }
 
@@ -128,5 +132,17 @@ public abstract class BaseMockIntegrationTestFullDispatcher extends BaseMockInte
                 .status(ImportStatus.ERROR)
                 .build()
         );
+    }
+
+    private static void storeSomeKeyValuesInLocalDataStore() {
+        ObjectWithoutUidStore<KeyValuePair> dataStore = LocalDataStoreStore.create(databaseAdapter);
+        dataStore.insert(KeyValuePair.builder()
+                .key("key1")
+                .value("value1")
+                .build());
+        dataStore.insert(KeyValuePair.builder()
+                .key("key2")
+                .value("value2")
+                .build());
     }
 }

@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.category.CategoryModule;
 import org.hisp.dhis.android.core.constant.ConstantModule;
 import org.hisp.dhis.android.core.dataelement.DataElementModule;
 import org.hisp.dhis.android.core.dataset.DataSetModule;
+import org.hisp.dhis.android.core.datastore.DataStoreModule;
 import org.hisp.dhis.android.core.datavalue.DataValueModule;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
 import org.hisp.dhis.android.core.event.EventModule;
@@ -76,6 +77,7 @@ public final class D2Modules {
     public final ImportModule importModule;
     public final IndicatorModule indicator;
     public final LegendSetModule legendSet;
+    public final DataStoreModule dataStore;
     public final MaintenanceModule maintenance;
     public final NoteModule note;
     public final ProgramModule program;
@@ -104,6 +106,7 @@ public final class D2Modules {
                      ImportModule importModule,
                      IndicatorModule indicator,
                      LegendSetModule legendSet,
+                     DataStoreModule dataStore,
                      MaintenanceModule maintenance,
                      NoteModule note,
                      ProgramModule program,
@@ -130,6 +133,7 @@ public final class D2Modules {
         this.importModule = importModule;
         this.indicator = indicator;
         this.legendSet = legendSet;
+        this.dataStore = dataStore;
         this.maintenance = maintenance;
         this.note = note;
         this.program = program;

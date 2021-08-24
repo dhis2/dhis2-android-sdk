@@ -25,45 +25,42 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.datastore.internal
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+import android.database.Cursor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithoutUidStore
+import org.hisp.dhis.android.core.datastore.KeyValuePair
+import org.hisp.dhis.android.core.datastore.LocalDataStoreTableInfo
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+@Suppress("MagicNumber")
+internal object LocalDataStoreStore {
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 108;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    private val BINDER: StatementBinder<KeyValuePair> = StatementBinder { o, w ->
+        w.bind(1, o.key())
+        w.bind(2, o.value())
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
-        databaseAdapter.enableWriteAheadLogging();
+    private val WHERE_UPDATE_BINDER = WhereStatementBinder { o: KeyValuePair, w: StatementWrapper ->
+        w.bind(3, o.key())
     }
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
+    private val WHERE_DELETE_BINDER = WhereStatementBinder { o: KeyValuePair, w: StatementWrapper ->
+        w.bind(1, o.key())
     }
 
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    @JvmStatic
+    fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<KeyValuePair> {
+        return objectWithoutUidStore(
+            databaseAdapter,
+            LocalDataStoreTableInfo.TABLE_INFO,
+            BINDER,
+            WHERE_UPDATE_BINDER,
+            WHERE_DELETE_BINDER
+        ) { cursor: Cursor -> KeyValuePair.create(cursor) }
     }
 }

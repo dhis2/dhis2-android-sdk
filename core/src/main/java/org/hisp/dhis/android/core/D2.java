@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.category.CategoryModule;
 import org.hisp.dhis.android.core.constant.ConstantModule;
 import org.hisp.dhis.android.core.dataelement.DataElementModule;
 import org.hisp.dhis.android.core.dataset.DataSetModule;
+import org.hisp.dhis.android.core.datastore.DataStoreModule;
 import org.hisp.dhis.android.core.datavalue.DataValueModule;
 import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
@@ -170,6 +171,10 @@ public final class D2 {
 
     public LegendSetModule legendSetModule() {
         return this.modules.legendSet;
+    }
+
+    public DataStoreModule dataStoreModule() {
+        return this.modules.dataStore;
     }
 
     public MaintenanceModule maintenanceModule() {

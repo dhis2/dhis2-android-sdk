@@ -25,45 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.datastore.internal
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.datastore.KeyValuePair
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+@Module
+internal class LocalDataStoreEntityDIModule {
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 108;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    @Provides
+    @Reusable
+    fun store(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<KeyValuePair> {
+        return LocalDataStoreStore.create(databaseAdapter)
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    @Provides
+    @Reusable
+    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<KeyValuePair>> {
+        return emptyMap()
     }
 }

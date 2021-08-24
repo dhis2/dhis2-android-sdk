@@ -26,44 +26,42 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.datastore;
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteValueObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadWriteWithValueObjectRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import java.util.Map;
 
-class BaseDatabaseOpenHelper {
+import io.reactivex.Completable;
 
-    static final int VERSION = 108;
+public final class LocalDataStoreObjectRepository
+        extends ReadWriteWithValueObjectRepositoryImpl<KeyValuePair, LocalDataStoreObjectRepository>
+        implements ReadWriteValueObjectRepository<KeyValuePair> {
 
-    private final AssetManager assetManager;
-    private final int targetVersion;
+    private final String key;
 
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    LocalDataStoreObjectRepository(
+            final ObjectWithoutUidStore<KeyValuePair> store,
+            final Map<String, ChildrenAppender<KeyValuePair>> childrenAppenders,
+            final RepositoryScope scope,
+            final String key) {
+        super(store, childrenAppenders, scope, s ->
+                new LocalDataStoreObjectRepository(store, childrenAppenders, s, key));
+        this.key = key;
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
-        databaseAdapter.enableWriteAheadLogging();
+    @Override
+    public Completable set(String value) {
+        return Completable.fromAction(() -> blockingSet(value));
     }
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    public void blockingSet(String value) throws D2Error {
+        KeyValuePair pair = KeyValuePair.builder().key(key).value(value).build();
+        setObject(pair);
     }
 }

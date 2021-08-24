@@ -26,44 +26,43 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.datastore;
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+import android.database.Cursor;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import androidx.annotation.Nullable;
 
-class BaseDatabaseOpenHelper {
+import com.google.auto.value.AutoValue;
 
-    static final int VERSION = 108;
+import org.hisp.dhis.android.core.common.CoreObject;
 
-    private final AssetManager assetManager;
-    private final int targetVersion;
+@AutoValue
+public abstract class KeyValuePair implements CoreObject {
 
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+    @Nullable
+    public abstract String key();
+
+    @Nullable
+    public abstract String value();
+
+    public static KeyValuePair create(Cursor cursor) {
+        return $AutoValue_KeyValuePair.createFromCursor(cursor);
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
+    public abstract Builder toBuilder();
 
-        databaseAdapter.enableWriteAheadLogging();
+    public static Builder builder() {
+        return new AutoValue_KeyValuePair.Builder();
     }
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
+    @AutoValue.Builder
+    public static abstract class Builder {
+        public abstract Builder id(Long id);
 
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
+        public abstract Builder key(String key);
 
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+        public abstract Builder value(String value);
+
+        public abstract KeyValuePair build();
     }
 }

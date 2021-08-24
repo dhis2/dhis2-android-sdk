@@ -29,6 +29,8 @@
 package org.hisp.dhis.android.core.wipe;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAssert;
+import org.hisp.dhis.android.core.datastore.KeyValuePair;
+import org.hisp.dhis.android.core.datastore.internal.LocalDataStoreStore;
 import org.hisp.dhis.android.core.datavalue.DataValueConflict;
 import org.hisp.dhis.android.core.datavalue.internal.DataValueConflictStore;
 import org.hisp.dhis.android.core.fileresource.FileResource;
@@ -102,5 +104,17 @@ public class WipeDBCallMockIntegrationShould extends BaseMockIntegrationTestEmpt
                         .build()
         );
         DataValueConflictStore.create(databaseAdapter).insert(DataValueConflict.builder().build());
+        LocalDataStoreStore.create(databaseAdapter).insert(
+                KeyValuePair.builder()
+                        .key("key1")
+                        .value("value1")
+                        .build()
+        );
+        LocalDataStoreStore.create(databaseAdapter).insert(
+                KeyValuePair.builder()
+                        .key("key2")
+                        .value("value2")
+                        .build()
+        );
     }
 }

@@ -127,7 +127,7 @@ public class VisualizationHandlerShould {
     @Test
     public void extend_identifiable_sync_handler_impl() {
         IdentifiableHandlerImpl<Visualization> genericHandler = new VisualizationHandler
-                (visualizationStore, visualizationCategoryDimensionLinkStore, dataDimensionItemStore,
+                (visualizationStore, visualizationCollectionCleaner, visualizationCategoryDimensionLinkStore, dataDimensionItemStore,
                         visualizationCategoryDimensionLinkHandler, dataDimensionItemHandler);
     }
 

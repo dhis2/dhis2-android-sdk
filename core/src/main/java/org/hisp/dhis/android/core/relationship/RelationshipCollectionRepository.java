@@ -106,7 +106,6 @@ public class RelationshipCollectionRepository
     @Override
     public String blockingAdd(Relationship relationship) throws D2Error {
         Relationship relationshipWithUid;
-        RelationshipItem from = relationship.from();
         if (relationshipHandler.doesRelationshipExist(relationship)) {
             throw D2Error
                     .builder()
@@ -114,7 +113,15 @@ public class RelationshipCollectionRepository
                     .errorCode(D2ErrorCode.CANT_CREATE_EXISTING_OBJECT)
                     .errorDescription("Tried to create already existing Relationship: " + relationship)
                     .build();
+        } else if (relationship.from() == null || relationship.to() == null) {
+            throw D2Error
+                    .builder()
+                    .errorComponent(D2ErrorComponent.SDK)
+                    .errorCode(D2ErrorCode.CANT_CREATE_EXISTING_OBJECT)
+                    .errorDescription("Relationship is missing either 'from' or 'to' component.")
+                    .build();
         } else {
+            RelationshipItem from = relationship.from();
             if (relationship.uid() == null) {
                 String generatedUid = new UidGeneratorImpl().generate();
                 relationshipWithUid = relationship.toBuilder().uid(generatedUid).build();

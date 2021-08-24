@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.visualization.internal;
 
+import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
@@ -57,6 +58,9 @@ public class VisualizationHandlerShould {
 
     @Mock
     private IdentifiableObjectStore<Visualization> visualizationStore;
+
+    @Mock
+    private CollectionCleaner<Visualization> visualizationCollectionCleaner;
 
     @Mock
     private LinkStore<DataDimensionItem> dataDimensionItemStore;
@@ -99,6 +103,7 @@ public class VisualizationHandlerShould {
         MockitoAnnotations.openMocks(this);
         visualizationHandler = new VisualizationHandler(
                 visualizationStore,
+                visualizationCollectionCleaner,
                 visualizationCategoryDimensionLinkStore,
                 dataDimensionItemStore,
                 visualizationCategoryDimensionLinkHandler,

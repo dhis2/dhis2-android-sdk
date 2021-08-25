@@ -50,6 +50,16 @@ public class RelationshipTypeCollectionRepositoryMockIntegrationShould extends B
     }
 
     @Test
+    public void filter_by_bidirectional() {
+        List<RelationshipType> relationshipTypes =
+                d2.relationshipModule().relationshipTypes()
+                        .byBidirectional().eq(true)
+                        .blockingGet();
+
+        assertThat(relationshipTypes.size()).isEqualTo(1);
+    }
+
+    @Test
     public void find_with_constraints() {
         List<RelationshipType> relationshipTypes =
                 d2.relationshipModule().relationshipTypes()

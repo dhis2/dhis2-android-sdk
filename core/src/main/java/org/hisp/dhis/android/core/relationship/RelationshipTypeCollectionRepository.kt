@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.IdentifiableColumns
@@ -41,6 +42,7 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCollecti
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCollectionRepositoryHelper.availabilityEventQuery
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCollectionRepositoryHelper.availabilityTeiQuery
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeFields
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import javax.inject.Inject
 
@@ -50,6 +52,7 @@ class RelationshipTypeCollectionRepository @Inject internal constructor(
     private val teiStore: TrackedEntityInstanceStore,
     private val enrollmentStore: EnrollmentStore,
     private val eventStore: EventStore,
+    private val dhisVersionManager: DHISVersionManager,
     childrenAppenders: MutableMap<String, ChildrenAppender<RelationshipType>>,
     scope: RepositoryScope
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<RelationshipType, RelationshipTypeCollectionRepository>(store,
@@ -58,10 +61,14 @@ class RelationshipTypeCollectionRepository @Inject internal constructor(
     FilterConnectorFactory<RelationshipTypeCollectionRepository>(scope) { s: RepositoryScope ->
         RelationshipTypeCollectionRepository(
             store, teiStore, enrollmentStore, eventStore,
-            childrenAppenders, s
+            dhisVersionManager, childrenAppenders, s
         )
     }
 ) {
+    fun byBidirectional(): BooleanFilterConnector<RelationshipTypeCollectionRepository> {
+        return cf.bool(RelationshipTypeTableInfo.Columns.BIDIRECTIONAL);
+    }
+
     fun byConstraint(
         relationshipEntityType: RelationshipEntityType,
         relationshipEntityUid: String
@@ -90,29 +97,39 @@ class RelationshipTypeCollectionRepository @Inject internal constructor(
     }
 
     @JvmOverloads
-    fun byEventAvailability(
-        eventUid: String,
-        type: RelationshipConstraintType? = null
-    ): RelationshipTypeCollectionRepository {
-        val event = eventStore.selectByUid(eventUid)
-        return cf.subQuery(IdentifiableColumns.UID).inTableWhere(
-            RelationshipConstraintTableInfo.TABLE_INFO.name(),
-            RelationshipConstraintTableInfo.Columns.RELATIONSHIP_TYPE,
-            availabilityEventQuery(event, type)
-        )
-    }
-
-    @JvmOverloads
     fun byTrackedEntityInstanceAvailability(
         teiUid: String,
         type: RelationshipConstraintType? = null
     ): RelationshipTypeCollectionRepository {
-        val trackedEntityInstance = teiStore.selectByUid(teiUid)
-        return cf.subQuery(IdentifiableColumns.UID).inTableWhere(
-            RelationshipConstraintTableInfo.TABLE_INFO.name(),
-            RelationshipConstraintTableInfo.Columns.RELATIONSHIP_TYPE,
-            availabilityTeiQuery(trackedEntityInstance, type)
-        )
+        return if (dhisVersionManager.is2_29) {
+            // All relationships are allowed for TEIs in 2.29
+            this
+        } else {
+            val trackedEntityInstance = teiStore.selectByUid(teiUid)
+            cf.subQuery(IdentifiableColumns.UID).inTableWhere(
+                RelationshipConstraintTableInfo.TABLE_INFO.name(),
+                RelationshipConstraintTableInfo.Columns.RELATIONSHIP_TYPE,
+                availabilityTeiQuery(trackedEntityInstance, type)
+            )
+        }
+    }
+
+    @JvmOverloads
+    fun byEventAvailability(
+        eventUid: String,
+        type: RelationshipConstraintType? = null
+    ): RelationshipTypeCollectionRepository {
+        return if (dhisVersionManager.is2_29) {
+            // Event relationships are not supported in 2.29
+            cf.string(IdentifiableColumns.UID).`in`(emptyList())
+        } else {
+            val event = eventStore.selectByUid(eventUid)
+            cf.subQuery(IdentifiableColumns.UID).inTableWhere(
+                RelationshipConstraintTableInfo.TABLE_INFO.name(),
+                RelationshipConstraintTableInfo.Columns.RELATIONSHIP_TYPE,
+                availabilityEventQuery(event, type)
+            )
+        }
     }
 
     @JvmOverloads
@@ -120,12 +137,17 @@ class RelationshipTypeCollectionRepository @Inject internal constructor(
         enrollmentUid: String,
         type: RelationshipConstraintType? = null
     ): RelationshipTypeCollectionRepository {
-        val enrollment = enrollmentStore.selectByUid(enrollmentUid)
-        return cf.subQuery(IdentifiableColumns.UID).inTableWhere(
-            RelationshipConstraintTableInfo.TABLE_INFO.name(),
-            RelationshipConstraintTableInfo.Columns.RELATIONSHIP_TYPE,
-            availabilityEnrollmentQuery(enrollment, type)
-        )
+        return if (dhisVersionManager.is2_29) {
+            // Enrollment relationships are not supported in 2.29
+            cf.string(IdentifiableColumns.UID).`in`(emptyList())
+        } else {
+            val enrollment = enrollmentStore.selectByUid(enrollmentUid)
+            cf.subQuery(IdentifiableColumns.UID).inTableWhere(
+                RelationshipConstraintTableInfo.TABLE_INFO.name(),
+                RelationshipConstraintTableInfo.Columns.RELATIONSHIP_TYPE,
+                availabilityEnrollmentQuery(enrollment, type)
+            )
+        }
     }
 
     fun withConstraints(): RelationshipTypeCollectionRepository {
@@ -145,9 +167,12 @@ class RelationshipTypeCollectionRepository @Inject internal constructor(
 
     private fun getRelationshipEntityColumn(relationshipEntityType: RelationshipEntityType): String {
         return when (relationshipEntityType) {
-            RelationshipEntityType.TRACKED_ENTITY_INSTANCE -> RelationshipConstraintTableInfo.Columns.TRACKED_ENTITY_TYPE
-            RelationshipEntityType.PROGRAM_INSTANCE -> RelationshipConstraintTableInfo.Columns.PROGRAM
-            RelationshipEntityType.PROGRAM_STAGE_INSTANCE -> RelationshipConstraintTableInfo.Columns.PROGRAM_STAGE
+            RelationshipEntityType.TRACKED_ENTITY_INSTANCE ->
+                RelationshipConstraintTableInfo.Columns.TRACKED_ENTITY_TYPE
+            RelationshipEntityType.PROGRAM_INSTANCE ->
+                RelationshipConstraintTableInfo.Columns.PROGRAM
+            RelationshipEntityType.PROGRAM_STAGE_INSTANCE ->
+                RelationshipConstraintTableInfo.Columns.PROGRAM_STAGE
         }
     }
 }

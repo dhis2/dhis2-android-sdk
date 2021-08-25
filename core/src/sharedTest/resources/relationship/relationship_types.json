@@ -40,6 +40,7 @@
       "lastUpdated": "2014-04-14T13:53:20.166",
       "name": "Mother-Child_b-to-a_(Person-Person)",
       "id": "V2kkHafqs8G",
+      "bidirectional": false,
       "displayName": "Mother-Child_b-to-a_(Person-Person)",
       "access": {
         "read": true,

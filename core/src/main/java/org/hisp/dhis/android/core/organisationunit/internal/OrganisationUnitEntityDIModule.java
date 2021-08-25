@@ -28,11 +28,14 @@
 
 package org.hisp.dhis.android.core.organisationunit.internal;
 
+import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.di.internal.IdentifiableStoreProvider;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -55,6 +58,12 @@ public final class OrganisationUnitEntityDIModule implements IdentifiableStorePr
     @Reusable
     public OrganisationUnitHandler handler(DatabaseAdapter databaseAdapter) {
         return OrganisationUnitHandlerImpl.create(databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    public CollectionCleaner<OrganisationUnit> collectionCleaner(DatabaseAdapter databaseAdapter) {
+        return new CollectionCleanerImpl<>(OrganisationUnitTableInfo.TABLE_INFO.name(), databaseAdapter);
     }
 
     @Provides

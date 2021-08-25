@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.organisationunit.internal;
 
 import android.content.ContentValues;
 
+import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
+import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
@@ -37,6 +39,7 @@ import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
 import org.hisp.dhis.android.core.dataset.DataSetTableInfo;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserInternalAccessor;
@@ -104,10 +107,13 @@ public class OrganisationUnitCallMockIntegrationShould extends BaseMockIntegrati
         OrganisationUnitHandler organisationUnitHandler =
                 OrganisationUnitHandlerImpl.create(databaseAdapter);
 
+        CollectionCleaner<OrganisationUnit> organisationUnitCollectionCleaner =
+                new CollectionCleanerImpl<>(OrganisationUnitTableInfo.TABLE_INFO.name(), databaseAdapter);
+
         OrganisationUnitDisplayPathTransformer pathTransformer = new OrganisationUnitDisplayPathTransformer();
 
         organisationUnitCall = new OrganisationUnitCall(organisationUnitService,
-                organisationUnitHandler, pathTransformer)
+                organisationUnitHandler, pathTransformer, organisationUnitCollectionCleaner)
                 .download(user);
     }
 

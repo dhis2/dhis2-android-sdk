@@ -32,17 +32,24 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.Event
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintTableInfo
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintTableInfo.Columns
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import org.hisp.dhis.android.core.relationship.RelationshipEntityType
+import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintType.FROM
 
 
 object RelationshipTypeCollectionRepositoryHelper {
 
     @JvmStatic
-    fun availabilityTeiQuery(tei: TrackedEntityInstance?, type: RelationshipConstraintType?): WhereClauseBuilder {
-        return WhereClauseBuilder().apply {
+    fun availableForTrackedEntityInstanceRawQuery(tei: TrackedEntityInstance?): String {
+        return availableForItemRawQuery(tei, availabilityTeiQuery)
+    }
+
+    private val availabilityTeiQuery = {tei: TrackedEntityInstance?, type: RelationshipConstraintType? ->
+        val whereClause = WhereClauseBuilder().apply {
             tei?.let {
                 if (type != null) {
                     appendKeyStringValue(Columns.CONSTRAINT_TYPE, type.name)
@@ -57,6 +64,8 @@ object RelationshipTypeCollectionRepositoryHelper {
                 )
             }
         }
+
+        relationshipTypeInConstraint(whereClause.build())
     }
 
     private fun appendOptionalEnrollmentInProgram(tei: TrackedEntityInstance): String {
@@ -71,8 +80,12 @@ object RelationshipTypeCollectionRepositoryHelper {
     }
 
     @JvmStatic
-    fun availabilityEnrollmentQuery(enrollment: Enrollment?, type: RelationshipConstraintType?): WhereClauseBuilder {
-        return WhereClauseBuilder().apply {
+    fun availableForEnrollmentRawQuery(enrollment: Enrollment?): String {
+        return availableForItemRawQuery(enrollment, availableForEnrollment)
+    }
+
+    private val availableForEnrollment = { enrollment: Enrollment?, type: RelationshipConstraintType? ->
+        val whereClause = WhereClauseBuilder().apply {
             enrollment?.let {
                 if (type != null) {
                     appendKeyStringValue(Columns.CONSTRAINT_TYPE, type.name)
@@ -81,11 +94,17 @@ object RelationshipTypeCollectionRepositoryHelper {
                 appendKeyStringValue(Columns.PROGRAM, enrollment.program())
             }
         }
+
+        relationshipTypeInConstraint(whereClause.build())
     }
 
     @JvmStatic
-    fun availabilityEventQuery(event: Event?, type: RelationshipConstraintType?): WhereClauseBuilder {
-        return WhereClauseBuilder().apply {
+    fun availableForEventRawQuery(event: Event?): String {
+        return availableForItemRawQuery(event, availableForEvent)
+    }
+
+    private val availableForEvent = { event: Event?, type: RelationshipConstraintType? ->
+        val whereClause = WhereClauseBuilder().apply {
             event?.let {
                 if (type != null) {
                     appendKeyStringValue(Columns.CONSTRAINT_TYPE, type.name)
@@ -99,5 +118,22 @@ object RelationshipTypeCollectionRepositoryHelper {
                 )
             }
         }
+
+        relationshipTypeInConstraint(whereClause.build())
+    }
+
+    private fun <T> availableForItemRawQuery(t: T?, availableForItem: (T, RelationshipConstraintType?) -> String): String {
+        return t?.let {
+            "SELECT DISTINCT ${RelationshipTypeTableInfo.Columns.UID} " +
+                    "FROM ${RelationshipTypeTableInfo.TABLE_INFO.name()} " +
+                    "WHERE ${RelationshipTypeTableInfo.Columns.UID} IN (${availableForItem(it, FROM)}) " +
+                    "OR (${RelationshipTypeTableInfo.Columns.BIDIRECTIONAL} = 1 " +
+                    "AND ${RelationshipTypeTableInfo.Columns.UID} IN (${availableForItem(it, null)})) "
+        } ?: ""
+    }
+
+    private fun relationshipTypeInConstraint(whereClause: String): String {
+        return "SELECT ${Columns.RELATIONSHIP_TYPE} FROM ${RelationshipConstraintTableInfo.TABLE_INFO.name()} " +
+                "WHERE $whereClause"
     }
 }

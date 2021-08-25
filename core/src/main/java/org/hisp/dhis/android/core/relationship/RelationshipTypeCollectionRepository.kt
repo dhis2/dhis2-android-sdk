@@ -35,12 +35,13 @@ import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnly
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.internal.EventStore
-import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCollectionRepositoryHelper.availabilityEnrollmentQuery
-import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCollectionRepositoryHelper.availabilityEventQuery
-import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCollectionRepositoryHelper.availabilityTeiQuery
+import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCollectionRepositoryHelper.availableForEnrollmentRawQuery
+import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCollectionRepositoryHelper.availableForEventRawQuery
+import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCollectionRepositoryHelper.availableForTrackedEntityInstanceRawQuery
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeFields
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
@@ -96,56 +97,41 @@ class RelationshipTypeCollectionRepository @Inject internal constructor(
         )
     }
 
-    @JvmOverloads
-    fun byTrackedEntityInstanceAvailability(
-        teiUid: String,
-        type: RelationshipConstraintType? = null
-    ): RelationshipTypeCollectionRepository {
+    fun byTrackedEntityInstanceAvailability(trackedEntityInstanceUid: String): RelationshipTypeCollectionRepository {
         return if (dhisVersionManager.is2_29) {
             // All relationships are allowed for TEIs in 2.29
             this
         } else {
-            val trackedEntityInstance = teiStore.selectByUid(teiUid)
-            cf.subQuery(IdentifiableColumns.UID).inTableWhere(
-                RelationshipConstraintTableInfo.TABLE_INFO.name(),
-                RelationshipConstraintTableInfo.Columns.RELATIONSHIP_TYPE,
-                availabilityTeiQuery(trackedEntityInstance, type)
+            val trackedEntityInstance = teiStore.selectByUid(trackedEntityInstanceUid)
+            cf.subQuery(IdentifiableColumns.UID).rawSubQuery(
+                FilterItemOperator.IN,
+                availableForTrackedEntityInstanceRawQuery(trackedEntityInstance)
             )
         }
     }
 
-    @JvmOverloads
-    fun byEventAvailability(
-        eventUid: String,
-        type: RelationshipConstraintType? = null
-    ): RelationshipTypeCollectionRepository {
-        return if (dhisVersionManager.is2_29) {
-            // Event relationships are not supported in 2.29
-            cf.string(IdentifiableColumns.UID).`in`(emptyList())
-        } else {
-            val event = eventStore.selectByUid(eventUid)
-            cf.subQuery(IdentifiableColumns.UID).inTableWhere(
-                RelationshipConstraintTableInfo.TABLE_INFO.name(),
-                RelationshipConstraintTableInfo.Columns.RELATIONSHIP_TYPE,
-                availabilityEventQuery(event, type)
-            )
-        }
-    }
-
-    @JvmOverloads
-    fun byEnrollmentAvailability(
-        enrollmentUid: String,
-        type: RelationshipConstraintType? = null
-    ): RelationshipTypeCollectionRepository {
+    fun byEnrollmentAvailability(enrollmentUid: String): RelationshipTypeCollectionRepository {
         return if (dhisVersionManager.is2_29) {
             // Enrollment relationships are not supported in 2.29
             cf.string(IdentifiableColumns.UID).`in`(emptyList())
         } else {
             val enrollment = enrollmentStore.selectByUid(enrollmentUid)
-            cf.subQuery(IdentifiableColumns.UID).inTableWhere(
-                RelationshipConstraintTableInfo.TABLE_INFO.name(),
-                RelationshipConstraintTableInfo.Columns.RELATIONSHIP_TYPE,
-                availabilityEnrollmentQuery(enrollment, type)
+            cf.subQuery(IdentifiableColumns.UID).rawSubQuery(
+                FilterItemOperator.IN,
+                availableForEnrollmentRawQuery(enrollment)
+            )
+        }
+    }
+
+    fun byEventAvailability(eventUid: String): RelationshipTypeCollectionRepository {
+        return if (dhisVersionManager.is2_29) {
+            // Event relationships are not supported in 2.29
+            cf.string(IdentifiableColumns.UID).`in`(emptyList())
+        } else {
+            val event = eventStore.selectByUid(eventUid)
+            cf.subQuery(IdentifiableColumns.UID).rawSubQuery(
+                FilterItemOperator.IN,
+                availableForEventRawQuery(event)
             )
         }
     }

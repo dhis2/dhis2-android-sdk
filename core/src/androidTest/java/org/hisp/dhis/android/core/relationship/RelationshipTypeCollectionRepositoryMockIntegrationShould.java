@@ -78,7 +78,7 @@ public class RelationshipTypeCollectionRepositoryMockIntegrationShould extends B
     public void by_tracked_entity_instance() {
         List<RelationshipType> relationshipTypes =
                 d2.relationshipModule().relationshipTypes()
-                        .byTrackedEntityInstanceAvailability("nWrB0TfWlvh")
+                        .byAvailableForTrackedEntityInstance("nWrB0TfWlvh")
                         .blockingGet();
 
         assertThat(relationshipTypes.size()).isEqualTo(2);
@@ -88,7 +88,7 @@ public class RelationshipTypeCollectionRepositoryMockIntegrationShould extends B
     public void by_enrollment() {
         List<RelationshipType> relationshipTypes =
                 d2.relationshipModule().relationshipTypes()
-                        .byEnrollmentAvailability("enroll1")
+                        .byAvailableForEnrollment("enroll1")
                         .blockingGet();
 
         assertThat(relationshipTypes.size()).isEqualTo(1);
@@ -98,7 +98,7 @@ public class RelationshipTypeCollectionRepositoryMockIntegrationShould extends B
     public void by_event() {
         List<RelationshipType> relationshipTypes =
                 d2.relationshipModule().relationshipTypes()
-                        .byEventAvailability("single1")
+                        .byAvailableForEvent("single1")
                         .blockingGet();
 
         assertThat(relationshipTypes.size()).isEqualTo(1);

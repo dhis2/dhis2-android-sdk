@@ -71,34 +71,32 @@ class RelationshipTypeCollectionRepository @Inject internal constructor(
         return cf.bool(RelationshipTypeTableInfo.Columns.BIDIRECTIONAL)
     }
 
-    fun byConstraint(
-        relationshipEntityType: RelationshipEntityType,
-        relationshipEntityUid: String
-    ): RelationshipTypeCollectionRepository {
-        return cf.subQuery(IdentifiableColumns.UID).inTableWhere(
-            RelationshipConstraintTableInfo.TABLE_INFO.name(),
-            RelationshipConstraintTableInfo.Columns.RELATIONSHIP_TYPE,
-            constraintClauseBuilder(relationshipEntityType, relationshipEntityUid)
-        )
-    }
-
+    @JvmOverloads
     fun byConstraint(
         relationshipEntityType: RelationshipEntityType,
         relationshipEntityUid: String,
-        relationshipConstraintType: RelationshipConstraintType
+        relationshipConstraintType: RelationshipConstraintType? = null
     ): RelationshipTypeCollectionRepository {
         return cf.subQuery(IdentifiableColumns.UID).inTableWhere(
             RelationshipConstraintTableInfo.TABLE_INFO.name(),
             RelationshipConstraintTableInfo.Columns.RELATIONSHIP_TYPE,
-            constraintClauseBuilder(relationshipEntityType, relationshipEntityUid)
-                .appendKeyStringValue(
-                    RelationshipConstraintTableInfo.Columns.CONSTRAINT_TYPE,
-                    relationshipConstraintType
-                )
+            constraintClauseBuilder(relationshipEntityType, relationshipEntityUid).apply {
+                if (relationshipConstraintType != null) {
+                    appendKeyStringValue(
+                        RelationshipConstraintTableInfo.Columns.CONSTRAINT_TYPE,
+                        relationshipConstraintType
+                    )
+                }
+            }
         )
     }
 
-    fun byTrackedEntityInstanceAvailability(trackedEntityInstanceUid: String): RelationshipTypeCollectionRepository {
+    /**
+     * Filter RelationshipTypes by those that meets the requirements for this trackedEntityInstance:
+     * - the TEI might be assigned to the FROM component
+     * - or the TEI might be assigned to the TO component and the RelationshipType is bidirectional
+     */
+    fun byAvailableForTrackedEntityInstance(trackedEntityInstanceUid: String): RelationshipTypeCollectionRepository {
         return if (dhisVersionManager.is2_29) {
             // All relationships are allowed for TEIs in 2.29
             this
@@ -111,7 +109,12 @@ class RelationshipTypeCollectionRepository @Inject internal constructor(
         }
     }
 
-    fun byEnrollmentAvailability(enrollmentUid: String): RelationshipTypeCollectionRepository {
+    /**
+     * Filter RelationshipTypes by those that meets the requirements for this enrollment:
+     * - the enrollment might be assigned to the FROM component
+     * - or the enrollment might be assigned to the TO component and the RelationshipType is bidirectional
+     */
+    fun byAvailableForEnrollment(enrollmentUid: String): RelationshipTypeCollectionRepository {
         return if (dhisVersionManager.is2_29) {
             // Enrollment relationships are not supported in 2.29
             cf.string(IdentifiableColumns.UID).`in`(emptyList())
@@ -124,7 +127,12 @@ class RelationshipTypeCollectionRepository @Inject internal constructor(
         }
     }
 
-    fun byEventAvailability(eventUid: String): RelationshipTypeCollectionRepository {
+    /**
+     * Filter RelationshipTypes by those that meets the requirements for this event:
+     * - the event might be assigned to the FROM component
+     * - or the event might be assigned to the TO component and the RelationshipType is bidirectional
+     */
+    fun byAvailableForEvent(eventUid: String): RelationshipTypeCollectionRepository {
         return if (dhisVersionManager.is2_29) {
             // Event relationships are not supported in 2.29
             cf.string(IdentifiableColumns.UID).`in`(emptyList())

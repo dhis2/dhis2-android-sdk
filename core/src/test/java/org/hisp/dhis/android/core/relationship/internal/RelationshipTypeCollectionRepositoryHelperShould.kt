@@ -31,8 +31,6 @@ import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -58,26 +56,27 @@ class RelationshipTypeCollectionRepositoryHelperShould {
 
         assertThat(rawQuery).isEqualTo(
             "SELECT DISTINCT uid FROM RelationshipType " +
-                    "WHERE uid IN " +
-                    "(" +
-                    "SELECT relationshipType FROM RelationshipConstraint " +
-                    "WHERE constraintType = 'FROM' " +
-                    "AND relationshipEntity = 'TRACKED_ENTITY_INSTANCE' " +
-                    "AND trackedEntityType = '$teiTypeUid' " +
-                    "AND (program IS NULL " +
-                    "OR program IN (SELECT program FROM Enrollment WHERE trackedEntityInstance == '$teiUid'))" +
-                    ") " +
-                    "OR " +
-                    "(" +
-                    "bidirectional = 1 " +
-                    "AND uid IN " +
-                    "(" +
-                    "SELECT relationshipType FROM RelationshipConstraint " +
-                    "WHERE relationshipEntity = 'TRACKED_ENTITY_INSTANCE' " +
-                    "AND trackedEntityType = '$teiTypeUid' " +
-                    "AND (program IS NULL " +
-                    "OR program IN (SELECT program FROM Enrollment WHERE trackedEntityInstance == '$teiUid'))" +
-                    ")" +
-                    ")")
+                "WHERE uid IN " +
+                "(" +
+                "SELECT relationshipType FROM RelationshipConstraint " +
+                "WHERE constraintType = 'FROM' " +
+                "AND relationshipEntity = 'TRACKED_ENTITY_INSTANCE' " +
+                "AND trackedEntityType = '$teiTypeUid' " +
+                "AND (program IS NULL " +
+                "OR program IN (SELECT program FROM Enrollment WHERE trackedEntityInstance == '$teiUid'))" +
+                ") " +
+                "OR " +
+                "(" +
+                "bidirectional = 1 " +
+                "AND uid IN " +
+                "(" +
+                "SELECT relationshipType FROM RelationshipConstraint " +
+                "WHERE relationshipEntity = 'TRACKED_ENTITY_INSTANCE' " +
+                "AND trackedEntityType = '$teiTypeUid' " +
+                "AND (program IS NULL " +
+                "OR program IN (SELECT program FROM Enrollment WHERE trackedEntityInstance == '$teiUid'))" +
+                ")" +
+                ")"
+        )
     }
 }

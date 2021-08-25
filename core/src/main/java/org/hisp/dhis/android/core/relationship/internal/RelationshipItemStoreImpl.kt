@@ -114,23 +114,31 @@ internal class RelationshipItemStoreImpl private constructor(
         return relatedRelationshipItems.map { it.trackedEntityInstance()!!.trackedEntityInstance() }
     }
 
+    override fun getByItem(item: RelationshipItem): List<RelationshipItem> {
+        val clauseBuilder = WhereClauseBuilder().apply {
+            appendKeyStringValue(item.elementType(), item.elementUid())
+
+            item.relationshipItemType()?.let {
+                appendKeyStringValue(RelationshipItemTableInfo.Columns.RELATIONSHIP_ITEM_TYPE, it.name)
+            }
+
+            item.relationship()?.let {
+                appendKeyStringValue(RelationshipItemTableInfo.Columns.RELATIONSHIP, it.uid())
+            }
+        }
+
+        return selectWhere(clauseBuilder.build())
+    }
+
     private fun getAllItemsOfSameType(from: RelationshipItem, to: RelationshipItem): Cursor {
         val query = "SELECT " + RelationshipItemTableInfo.Columns.RELATIONSHIP + ", " +
             "MAX(CASE WHEN " + RelationshipItemTableInfo.Columns.RELATIONSHIP_ITEM_TYPE + " = 'FROM' " +
-            "THEN " + getItemElementColumn(from) + " END) AS fromElementUid, " +
+            "THEN " + from.elementType() + " END) AS fromElementUid, " +
             "MAX(CASE WHEN " + RelationshipItemTableInfo.Columns.RELATIONSHIP_ITEM_TYPE + " = 'TO' " +
-            "THEN " + getItemElementColumn(to) + " END) AS toElementUid " +
+            "THEN " + to.elementType() + " END) AS toElementUid " +
             "FROM " + RelationshipItemTableInfo.TABLE_INFO.name() +
             " GROUP BY " + RelationshipItemTableInfo.Columns.RELATIONSHIP
         return databaseAdapter.rawQuery(query)
-    }
-
-    private fun getItemElementColumn(item: RelationshipItem): String {
-        return when {
-            item.hasTrackedEntityInstance() -> RelationshipItemTableInfo.Columns.TRACKED_ENTITY_INSTANCE
-            item.hasEnrollment() -> RelationshipItemTableInfo.Columns.ENROLLMENT
-            else -> RelationshipItemTableInfo.Columns.EVENT
-        }
     }
 
     companion object {

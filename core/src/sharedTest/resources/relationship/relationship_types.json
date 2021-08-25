@@ -22,13 +22,13 @@
           "write": false
         }
       },
-      "toConstraint": {
+      "fromConstraint": {
         "relationshipEntity": "PROGRAM_INSTANCE",
         "program": {
           "id": "lxAQ7Zs9VYR"
         }
       },
-      "fromConstraint": {
+      "toConstraint": {
         "relationshipEntity": "TRACKED_ENTITY_INSTANCE",
         "trackedEntityType": {
           "id": "nEenWmSyUEp"
@@ -38,20 +38,72 @@
     {
       "created": "2013-09-19T15:17:41.000",
       "lastUpdated": "2014-04-14T13:53:20.166",
-      "name": "Mother-Child",
+      "name": "Mother-Child_b-to-a_(Person-Person)",
       "id": "V2kkHafqs8G",
-      "displayName": "Mother-Child",
-      "bIsToA": "Child",
-      "aIsToB": "Mother"
+      "bidirectional": false,
+      "displayName": "Mother-Child_b-to-a_(Person-Person)",
+      "access": {
+        "read": true,
+        "update": true,
+        "externalize": false,
+        "delete": true,
+        "write": true,
+        "manage": true,
+        "data": {
+          "read": true,
+          "write": false
+        }
+      },
+      "fromConstraint": {
+        "relationshipEntity": "TRACKED_ENTITY_INSTANCE",
+        "trackedEntityType": {
+          "id": "nEenWmSyUEp"
+        },
+        "program": {
+          "id": "lxAQ7Zs9VYR"
+        }
+      },
+      "toConstraint": {
+        "relationshipEntity": "PROGRAM_STAGE_INSTANCE",
+        "program": {
+          "id": "lxAQ7Zs9VYR"
+        }
+      }
     },
     {
-      "created": "2014-04-14T13:53:38.659",
-      "lastUpdated": "2014-04-14T13:53:41.066",
+      "created": "2013-09-19T15:17:41.000",
+      "lastUpdated": "2014-04-14T13:53:20.166",
       "name": "Sibling",
       "id": "o51cUNONthg",
+      "bidirectional": false,
       "displayName": "Sibling",
-      "bIsToA": "Sibling",
-      "aIsToB": "Sibling"
+      "access": {
+        "read": true,
+        "update": true,
+        "externalize": false,
+        "delete": true,
+        "write": true,
+        "manage": true,
+        "data": {
+          "read": true,
+          "write": false
+        }
+      },
+      "fromConstraint": {
+        "relationshipEntity": "PROGRAM_STAGE_INSTANCE",
+        "program": {
+          "id": "lxAQ7Zs9VYR"
+        }
+      },
+      "toConstraint": {
+        "relationshipEntity": "TRACKED_ENTITY_INSTANCE",
+        "trackedEntityType": {
+          "id": "nEenWmSyUEp"
+        },
+        "program": {
+          "id": "lxAQ7Zs9VYR"
+        }
+      }
     },
     {
       "created": "2014-04-14T13:53:38.659",

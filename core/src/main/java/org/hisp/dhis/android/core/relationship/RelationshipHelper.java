@@ -69,11 +69,76 @@ public final class RelationshipHelper {
     }
 
     public static Relationship teiToTeiRelationship(String fromUid, String toUid, String relationshipTypeUid) {
+        return relationship(
+                RelationshipHelper.teiItem(fromUid),
+                RelationshipHelper.teiItem(toUid),
+                relationshipTypeUid);
+    }
+
+    public static Relationship teiToEnrollmentRelationship(String fromUid, String toUid, String relationshipTypeUid) {
+        return relationship(
+                RelationshipHelper.teiItem(fromUid),
+                RelationshipHelper.enrollmentItem(toUid),
+                relationshipTypeUid);
+    }
+
+    public static Relationship teiToEventRelationship(String fromUid, String toUid, String relationshipTypeUid) {
+        return relationship(
+                RelationshipHelper.teiItem(fromUid),
+                RelationshipHelper.eventItem(toUid),
+                relationshipTypeUid);
+    }
+
+    public static Relationship enrollmentToTeiRelationship(String fromUid, String toUid, String relationshipTypeUid) {
+        return relationship(
+                RelationshipHelper.enrollmentItem(fromUid),
+                RelationshipHelper.teiItem(toUid),
+                relationshipTypeUid);
+    }
+
+    public static Relationship enrollmentToEnrollmentRelationship(String fromUid,
+                                                                  String toUid,
+                                                                  String relationshipTypeUid) {
+        return relationship(
+                RelationshipHelper.enrollmentItem(fromUid),
+                RelationshipHelper.enrollmentItem(toUid),
+                relationshipTypeUid);
+    }
+
+    public static Relationship enrollmentToEventRelationship(String fromUid, String toUid, String relationshipTypeUid) {
+        return relationship(
+                RelationshipHelper.enrollmentItem(fromUid),
+                RelationshipHelper.eventItem(toUid),
+                relationshipTypeUid);
+    }
+
+    public static Relationship eventToTeiRelationship(String fromUid, String toUid, String relationshipTypeUid) {
+        return relationship(
+                RelationshipHelper.eventItem(fromUid),
+                RelationshipHelper.teiItem(toUid),
+                relationshipTypeUid);
+    }
+
+    public static Relationship eventToEnrollmentRelationship(String fromUid, String toUid, String relationshipTypeUid) {
+        return relationship(
+                RelationshipHelper.eventItem(fromUid),
+                RelationshipHelper.enrollmentItem(toUid),
+                relationshipTypeUid);
+    }
+
+    public static Relationship eventToEventRelationship(String fromUid, String toUid, String relationshipTypeUid) {
+        return relationship(
+                RelationshipHelper.eventItem(fromUid),
+                RelationshipHelper.eventItem(toUid),
+                relationshipTypeUid);
+    }
+
+    public static Relationship relationship(RelationshipItem from, RelationshipItem to, String type) {
         return Relationship.builder()
                 .uid(new UidGeneratorImpl().generate())
-                .from(RelationshipHelper.teiItem(fromUid))
-                .to(RelationshipHelper.teiItem(toUid))
-                .relationshipType(relationshipTypeUid)
+                .from(from)
+                .to(to)
+                .relationshipType(type)
                 .build();
     }
 

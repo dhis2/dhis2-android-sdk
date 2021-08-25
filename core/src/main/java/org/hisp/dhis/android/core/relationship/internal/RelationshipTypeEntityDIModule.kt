@@ -25,43 +25,39 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.relationship.internal
 
-package org.hisp.dhis.android.core.relationship.internal;
-
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.relationship.RelationshipType;
-
-import java.util.Collections;
-import java.util.Map;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import java.util.*
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.relationship.RelationshipType
 
 @Module
-public final class RelationshipTypeEntityDIModule {
+internal class RelationshipTypeEntityDIModule {
 
     @Provides
     @Reusable
-    IdentifiableObjectStore<RelationshipType> store(DatabaseAdapter databaseAdapter) {
-        return RelationshipTypeStore.create(databaseAdapter);
+    fun store(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<RelationshipType> {
+        return RelationshipTypeStore.create(databaseAdapter)
     }
 
     @Provides
     @Reusable
-    Handler<RelationshipType> handler(RelationshipTypeHandler impl) {
-        return impl;
+    fun handler(impl: RelationshipTypeHandler): Handler<RelationshipType> {
+        return impl
     }
 
     @Provides
     @Reusable
-    Map<String, ChildrenAppender<RelationshipType>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        ChildrenAppender<RelationshipType> childrenAppender = new RelationshipConstraintChildrenAppender(
-                RelationshipConstraintStore.create(databaseAdapter)
-        );
-        return Collections.singletonMap(RelationshipTypeFields.CONSTRAINTS, childrenAppender);
+    fun childrenAppenders(databaseAdapter: DatabaseAdapter): MutableMap<String, ChildrenAppender<RelationshipType>> {
+        val childrenAppender: ChildrenAppender<RelationshipType> = RelationshipConstraintChildrenAppender(
+            RelationshipConstraintStore.create(databaseAdapter)
+        )
+        return Collections.singletonMap(RelationshipTypeFields.CONSTRAINTS, childrenAppender)
     }
 }

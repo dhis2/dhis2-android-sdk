@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.organisationunit.internal;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
@@ -121,11 +120,6 @@ class OrganisationUnitHandlerImpl extends IdentifiableHandlerImpl<OrganisationUn
         addOrganisationUnitDataSetLink(organisationUnit);
         organisationUnitGroupHandler.handleMany(organisationUnit.organisationUnitGroups());
         addOrganisationUnitOrganisationUnitGroupLink(organisationUnit);
-    }
-
-    @Override
-    protected void afterCollectionHandled(@Nullable Collection<OrganisationUnit> organisationUnits) {
-        super.afterCollectionHandled(organisationUnits);
     }
 
     private void addOrganisationUnitProgramLink(@NonNull OrganisationUnit organisationUnit) {

@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.visualization.internal
 
 import dagger.Reusable
 import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
@@ -43,6 +44,7 @@ import org.hisp.dhis.android.core.visualization.VisualizationCategoryDimensionLi
 @Reusable
 internal class VisualizationHandler @Inject constructor(
     store: IdentifiableObjectStore<Visualization>,
+    private val visualizationCollectionCleaner: CollectionCleaner<Visualization>,
     private val visualizationCategoryDimensionLinkStore: LinkStore<VisualizationCategoryDimensionLink>,
     private val dataDimensionItemStore: LinkStore<DataDimensionItem>,
     private val visualizationCategoryDimensionLinkHandler:
@@ -53,7 +55,6 @@ internal class VisualizationHandler @Inject constructor(
     override fun beforeCollectionHandled(
         oCollection: Collection<Visualization>
     ): Collection<Visualization> {
-        store.delete()
         visualizationCategoryDimensionLinkStore.delete()
         dataDimensionItemStore.delete()
         return oCollection
@@ -77,5 +78,9 @@ internal class VisualizationHandler @Inject constructor(
         dataDimensionItemHandler.handleMany(o.uid(), o.dataDimensionItems()) {
             it.toBuilder().visualization(o.uid()).build()
         }
+    }
+
+    override fun afterCollectionHandled(oCollection: Collection<Visualization>?) {
+        visualizationCollectionCleaner.deleteNotPresent(oCollection)
     }
 }

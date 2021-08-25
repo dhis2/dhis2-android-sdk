@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.visualization.internal;
 
+import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
@@ -52,11 +53,16 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.google.common.collect.Lists;
+
 @RunWith(JUnit4.class)
 public class VisualizationHandlerShould {
 
     @Mock
     private IdentifiableObjectStore<Visualization> visualizationStore;
+
+    @Mock
+    private CollectionCleaner<Visualization> visualizationCollectionCleaner;
 
     @Mock
     private LinkStore<DataDimensionItem> dataDimensionItemStore;
@@ -80,9 +86,6 @@ public class VisualizationHandlerShould {
     private ObjectWithUid category;
 
     @Mock
-    private ObjectWithUid categoryOption;
-
-    @Mock
     private Visualization visualization;
 
     @Mock
@@ -99,6 +102,7 @@ public class VisualizationHandlerShould {
         MockitoAnnotations.openMocks(this);
         visualizationHandler = new VisualizationHandler(
                 visualizationStore,
+                visualizationCollectionCleaner,
                 visualizationCategoryDimensionLinkStore,
                 dataDimensionItemStore,
                 visualizationCategoryDimensionLinkHandler,
@@ -122,27 +126,32 @@ public class VisualizationHandlerShould {
     @Test
     public void extend_identifiable_sync_handler_impl() {
         IdentifiableHandlerImpl<Visualization> genericHandler = new VisualizationHandler
-                (visualizationStore, visualizationCategoryDimensionLinkStore, dataDimensionItemStore,
+                (visualizationStore, visualizationCollectionCleaner, visualizationCategoryDimensionLinkStore, dataDimensionItemStore,
                         visualizationCategoryDimensionLinkHandler, dataDimensionItemHandler);
     }
 
     @Test
     public void call_stores_to_delete_before_collection_handled() {
         visualizationHandler.handleMany(Collections.singletonList(visualization));
-        verify(visualizationStore).delete();
         verify(visualizationCategoryDimensionLinkStore).delete();
         verify(dataDimensionItemStore).delete();
     }
 
     @Test
     public void call_data_dimension_items_handler() {
-        visualizationHandler.handle(visualization);
+        visualizationHandler.handleMany(Collections.singletonList(visualization));
         verify(dataDimensionItemHandler).handleMany(any(), any(), any());
     }
 
     @Test
     public void call_category_dimensions_link_handler() {
-        visualizationHandler.handle(visualization);
+        visualizationHandler.handleMany(Collections.singletonList(visualization));
         verify(visualizationCategoryDimensionLinkHandler).handleMany(any(), any(), any());
+    }
+
+    @Test
+    public void call_collection_cleaner() {
+        visualizationHandler.handleMany(Collections.singletonList(visualization));
+        verify(visualizationCollectionCleaner).deleteNotPresent(any());
     }
 }

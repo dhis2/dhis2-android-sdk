@@ -155,4 +155,3 @@ public class VisualizationHandlerShould {
         verify(visualizationCollectionCleaner).deleteNotPresent(any());
     }
 }
-0

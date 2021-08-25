@@ -35,11 +35,10 @@ import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintTableInfo
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintTableInfo.Columns
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintType.FROM
 import org.hisp.dhis.android.core.relationship.RelationshipEntityType
 import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.relationship.RelationshipConstraintType.FROM
-
 
 object RelationshipTypeCollectionRepositoryHelper {
 
@@ -48,20 +47,15 @@ object RelationshipTypeCollectionRepositoryHelper {
         return availableForItemRawQuery(tei, availabilityTeiQuery)
     }
 
-    private val availabilityTeiQuery = {tei: TrackedEntityInstance?, type: RelationshipConstraintType? ->
+    private val availabilityTeiQuery = { tei: TrackedEntityInstance?, type: RelationshipConstraintType? ->
         val whereClause = WhereClauseBuilder().apply {
             tei?.let {
                 if (type != null) {
                     appendKeyStringValue(Columns.CONSTRAINT_TYPE, type.name)
                 }
                 appendKeyStringValue(Columns.RELATIONSHIP_ENTITY, RelationshipEntityType.TRACKED_ENTITY_INSTANCE)
-                appendComplexQuery(
-                    WhereClauseBuilder()
-                        .appendKeyStringValue(Columns.TRACKED_ENTITY_TYPE, it.trackedEntityType())
-                        .appendComplexQuery(
-                            appendOptionalEnrollmentInProgram(tei)
-                        ).build()
-                )
+                appendKeyStringValue(Columns.TRACKED_ENTITY_TYPE, it.trackedEntityType())
+                appendComplexQuery(appendOptionalEnrollmentInProgram(tei))
             }
         }
 
@@ -74,7 +68,7 @@ object RelationshipTypeCollectionRepositoryHelper {
             .appendOrInSubQuery(
                 Columns.PROGRAM,
                 "SELECT ${EnrollmentTableInfo.Columns.PROGRAM} FROM ${EnrollmentTableInfo.TABLE_INFO.name()}" +
-                        " WHERE ${EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE} == '${tei.uid()}'"
+                    " WHERE ${EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE} == '${tei.uid()}'"
             )
             .build()
     }
@@ -122,18 +116,21 @@ object RelationshipTypeCollectionRepositoryHelper {
         relationshipTypeInConstraint(whereClause.build())
     }
 
-    private fun <T> availableForItemRawQuery(t: T?, availableForItem: (T, RelationshipConstraintType?) -> String): String {
+    private fun <T> availableForItemRawQuery(
+        t: T?,
+        availableForItem: (T, RelationshipConstraintType?) -> String
+    ): String {
         return t?.let {
             "SELECT DISTINCT ${RelationshipTypeTableInfo.Columns.UID} " +
-                    "FROM ${RelationshipTypeTableInfo.TABLE_INFO.name()} " +
-                    "WHERE ${RelationshipTypeTableInfo.Columns.UID} IN (${availableForItem(it, FROM)}) " +
-                    "OR (${RelationshipTypeTableInfo.Columns.BIDIRECTIONAL} = 1 " +
-                    "AND ${RelationshipTypeTableInfo.Columns.UID} IN (${availableForItem(it, null)})) "
+                "FROM ${RelationshipTypeTableInfo.TABLE_INFO.name()} " +
+                "WHERE ${RelationshipTypeTableInfo.Columns.UID} IN (${availableForItem(it, FROM)}) " +
+                "OR (${RelationshipTypeTableInfo.Columns.BIDIRECTIONAL} = 1 " +
+                "AND ${RelationshipTypeTableInfo.Columns.UID} IN (${availableForItem(it, null)}))"
         } ?: ""
     }
 
     private fun relationshipTypeInConstraint(whereClause: String): String {
         return "SELECT ${Columns.RELATIONSHIP_TYPE} FROM ${RelationshipConstraintTableInfo.TABLE_INFO.name()} " +
-                "WHERE $whereClause"
+            "WHERE $whereClause"
     }
 }

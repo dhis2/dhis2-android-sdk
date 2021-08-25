@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.relationship
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
@@ -45,7 +46,6 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCollecti
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeFields
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
-import javax.inject.Inject
 
 @Reusable
 class RelationshipTypeCollectionRepository @Inject internal constructor(
@@ -56,7 +56,8 @@ class RelationshipTypeCollectionRepository @Inject internal constructor(
     private val dhisVersionManager: DHISVersionManager,
     childrenAppenders: MutableMap<String, ChildrenAppender<RelationshipType>>,
     scope: RepositoryScope
-) : ReadOnlyIdentifiableCollectionRepositoryImpl<RelationshipType, RelationshipTypeCollectionRepository>(store,
+) : ReadOnlyIdentifiableCollectionRepositoryImpl<RelationshipType, RelationshipTypeCollectionRepository>(
+    store,
     childrenAppenders,
     scope,
     FilterConnectorFactory<RelationshipTypeCollectionRepository>(scope) { s: RepositoryScope ->
@@ -67,7 +68,7 @@ class RelationshipTypeCollectionRepository @Inject internal constructor(
     }
 ) {
     fun byBidirectional(): BooleanFilterConnector<RelationshipTypeCollectionRepository> {
-        return cf.bool(RelationshipTypeTableInfo.Columns.BIDIRECTIONAL);
+        return cf.bool(RelationshipTypeTableInfo.Columns.BIDIRECTIONAL)
     }
 
     fun byConstraint(

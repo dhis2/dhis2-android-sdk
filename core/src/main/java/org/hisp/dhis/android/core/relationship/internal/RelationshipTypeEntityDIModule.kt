@@ -30,17 +30,12 @@ package org.hisp.dhis.android.core.relationship.internal
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
+import java.util.*
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.relationship.RelationshipType
-import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeStore
-import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeHandler
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.relationship.internal.RelationshipConstraintChildrenAppender
-import org.hisp.dhis.android.core.relationship.internal.RelationshipConstraintStore
-import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeFields
-import java.util.*
+import org.hisp.dhis.android.core.relationship.RelationshipType
 
 @Module
 internal class RelationshipTypeEntityDIModule {

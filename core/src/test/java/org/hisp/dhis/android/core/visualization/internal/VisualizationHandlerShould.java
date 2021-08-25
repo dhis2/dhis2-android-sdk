@@ -53,6 +53,8 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.google.common.collect.Lists;
+
 @RunWith(JUnit4.class)
 public class VisualizationHandlerShould {
 
@@ -82,9 +84,6 @@ public class VisualizationHandlerShould {
 
     @Mock
     private ObjectWithUid category;
-
-    @Mock
-    private ObjectWithUid categoryOption;
 
     @Mock
     private Visualization visualization;
@@ -134,20 +133,26 @@ public class VisualizationHandlerShould {
     @Test
     public void call_stores_to_delete_before_collection_handled() {
         visualizationHandler.handleMany(Collections.singletonList(visualization));
-        verify(visualizationStore).delete();
         verify(visualizationCategoryDimensionLinkStore).delete();
         verify(dataDimensionItemStore).delete();
     }
 
     @Test
     public void call_data_dimension_items_handler() {
-        visualizationHandler.handle(visualization);
+        visualizationHandler.handleMany(Collections.singletonList(visualization));
         verify(dataDimensionItemHandler).handleMany(any(), any(), any());
     }
 
     @Test
     public void call_category_dimensions_link_handler() {
-        visualizationHandler.handle(visualization);
+        visualizationHandler.handleMany(Collections.singletonList(visualization));
         verify(visualizationCategoryDimensionLinkHandler).handleMany(any(), any(), any());
     }
+
+    @Test
+    public void call_collection_cleaner() {
+        visualizationHandler.handleMany(Collections.singletonList(visualization));
+        verify(visualizationCollectionCleaner).deleteNotPresent(any());
+    }
 }
+0

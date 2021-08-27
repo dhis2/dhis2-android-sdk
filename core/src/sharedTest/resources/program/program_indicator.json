@@ -57,6 +57,7 @@
       "analyticsPeriodBoundaryType": "AFTER_START_OF_REPORTING_PERIOD",
       "boundaryTarget": "ENROLLMENT_DATE",
       "offsetPeriods": 2
+    }
   ],
   "translations": [],
   "programIndicatorGroups": [],

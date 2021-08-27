@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.common.AggregationType;
+import org.hisp.dhis.android.core.common.AnalyticsType;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.hisp.dhis.android.core.common.ObjectShould;
@@ -64,5 +65,12 @@ public class ProgramIndicatorShould extends BaseObjectShould implements ObjectSh
         assertThat(programIndicator.filter()).isNull();
         assertThat(programIndicator.decimals()).isNull();
         assertThat(programIndicator.aggregationType()).isEqualTo(AggregationType.AVERAGE);
+        assertThat(programIndicator.analyticsType()).isEqualTo(AnalyticsType.EVENT);
+
+        assertThat(programIndicator.analyticsPeriodBoundaries().size()).isEqualTo(5);
+        assertThat(programIndicator.analyticsPeriodBoundaries().get(0).boundaryTarget()).isEqualTo("Custom boundary");
+        assertThat(programIndicator.analyticsPeriodBoundaries().get(1).boundaryTarget()).isEqualTo("INCIDENT_DATE");
+        assertThat(programIndicator.analyticsPeriodBoundaries().get(0).analyticsPeriodBoundaryType()).isEqualTo(AnalyticsPeriodBoundaryType.AFTER_END_OF_REPORTING_PERIOD);
+        assertThat(programIndicator.analyticsPeriodBoundaries().get(1).offsetPeriods()).isEqualTo(-3);
     }
 }

@@ -97,9 +97,9 @@ internal class EnrollmentStoreImpl private constructor(
             .appendInSubQuery(
                 EnrollmentTableInfo.Columns.PROGRAM,
                 "SELECT ${ProgramTrackedEntityAttributeTableInfo.Columns.PROGRAM} " +
-                        "FROM ${ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name()} " +
-                        "WHERE ${ProgramTrackedEntityAttributeTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} = " +
-                        "'$attributeUid'"
+                    "FROM ${ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name()} " +
+                    "WHERE ${ProgramTrackedEntityAttributeTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} = " +
+                    "'$attributeUid'"
             ).build()
 
         return selectWhere(whereClause)

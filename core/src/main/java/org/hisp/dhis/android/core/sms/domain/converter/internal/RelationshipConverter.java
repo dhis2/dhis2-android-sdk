@@ -66,8 +66,7 @@ public class RelationshipConverter extends Converter<Relationship> {
 
     @Override
     public Completable updateSubmissionState(State state) {
-        // there is no submission state update for RelationShip
-        return Completable.complete();
+        return getLocalDbRepository().updateRelationshipSubmissionState(relationshipUid, state);
     }
 
     @Override

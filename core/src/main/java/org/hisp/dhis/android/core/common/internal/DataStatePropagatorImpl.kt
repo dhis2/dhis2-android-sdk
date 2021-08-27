@@ -332,10 +332,10 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
             states.contains(State.ERROR) -> State.ERROR
             states.contains(State.WARNING) -> State.WARNING
             states.contains(State.UPLOADING) ||
-                states.contains(State.SENT_VIA_SMS) ||
-                states.contains(State.SYNCED_VIA_SMS) ||
                 states.contains(State.TO_POST) ||
                 states.contains(State.TO_UPDATE) -> State.TO_UPDATE
+            states.contains(State.SENT_VIA_SMS) -> State.SENT_VIA_SMS
+            states.contains(State.SYNCED_VIA_SMS) -> State.SYNCED_VIA_SMS
             else -> State.SYNCED
         }
     }

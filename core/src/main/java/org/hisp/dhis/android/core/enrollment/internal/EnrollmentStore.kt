@@ -40,4 +40,6 @@ internal interface EnrollmentStore : IdentifiableDeletableDataObjectStore<Enroll
     fun setAggregatedSyncState(uid: String, state: State): Int
 
     fun selectAggregatedSyncStateWhere(whereClause: String): List<State>
+
+    fun selectByTrackedEntityInstanceAndAttribute(teiUid: String, attributeUid: String): List<Enrollment>
 }

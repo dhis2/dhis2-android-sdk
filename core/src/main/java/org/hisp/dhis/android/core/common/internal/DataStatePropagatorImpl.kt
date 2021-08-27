@@ -93,7 +93,18 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
     }
 
     override fun propagateTrackedEntityAttributeUpdate(trackedEntityAttributeValue: TrackedEntityAttributeValue?) {
-        setTeiSyncState(trackedEntityAttributeValue!!.trackedEntityInstance(), getStateForUpdate)
+        trackedEntityAttributeValue!!.trackedEntityInstance()?.let { trackedEntityInstanceUid ->
+            val enrollments = enrollmentStore.selectByTrackedEntityInstanceAndAttribute(
+                trackedEntityInstanceUid,
+                trackedEntityAttributeValue.trackedEntityAttribute()!!
+            )
+            enrollments.forEach {
+                enrollmentStore.setSyncState(it.uid(), getStateForUpdate(it.syncState()))
+                refreshEnrollmentAggregatedSyncState(it.uid())
+                refreshEnrollmentLastUpdated(it.uid())
+            }
+            setTeiSyncState(trackedEntityInstanceUid, getStateForUpdate)
+        }
     }
 
     override fun propagateNoteCreation(note: Note?) {

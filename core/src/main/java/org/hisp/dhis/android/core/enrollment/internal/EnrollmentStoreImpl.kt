@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.EventTableInfo
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo
 
 internal class EnrollmentStoreImpl private constructor(
     databaseAdapter: DatabaseAdapter,
@@ -85,6 +86,23 @@ internal class EnrollmentStoreImpl private constructor(
         val statesStr = selectStringColumnsWhereClause(DataColumns.AGGREGATED_SYNC_STATE, whereClause)
 
         return statesStr.map { State.valueOf(it) }
+    }
+
+    override fun selectByTrackedEntityInstanceAndAttribute(
+        teiUid: String,
+        attributeUid: String
+    ): List<Enrollment> {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE, teiUid)
+            .appendInSubQuery(
+                EnrollmentTableInfo.Columns.PROGRAM,
+                "SELECT ${ProgramTrackedEntityAttributeTableInfo.Columns.PROGRAM} " +
+                        "FROM ${ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name()} " +
+                        "WHERE ${ProgramTrackedEntityAttributeTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} = " +
+                        "'$attributeUid'"
+            ).build()
+
+        return selectWhere(whereClause)
     }
 
     companion object {

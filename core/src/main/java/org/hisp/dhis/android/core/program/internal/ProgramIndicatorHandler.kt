@@ -25,42 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program.internal;
+package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
-import org.hisp.dhis.android.core.legendset.LegendSet;
-import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLink;
-import org.hisp.dhis.android.core.program.ProgramIndicator;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
+import org.hisp.dhis.android.core.legendset.LegendSet
+import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLink
+import org.hisp.dhis.android.core.program.ProgramIndicator
 
 @Reusable
-final class ProgramIndicatorHandler extends IdentifiableHandlerImpl<ProgramIndicator> {
-    private final Handler<LegendSet> legendSetHandler;
-    private final LinkHandler<LegendSet, ProgramIndicatorLegendSetLink> programIndicatorLegendSetLinkHandler;
+internal class ProgramIndicatorHandler @Inject constructor(
+    programIndicatorStore: IdentifiableObjectStore<ProgramIndicator>,
+    private val legendSetHandler: Handler<LegendSet>,
+    private val programIndicatorLegendSetLinkHandler: LinkHandler<LegendSet, ProgramIndicatorLegendSetLink>
+) : IdentifiableHandlerImpl<ProgramIndicator>(programIndicatorStore) {
 
-    @Inject
-    ProgramIndicatorHandler(IdentifiableObjectStore<ProgramIndicator> programIndicatorStore,
-                            Handler<LegendSet> legendSetHandler,
-                            LinkHandler<LegendSet, ProgramIndicatorLegendSetLink>
-                                    programIndicatorLegendSetLinkHandler) {
-        super(programIndicatorStore);
-        this.legendSetHandler = legendSetHandler;
-        this.programIndicatorLegendSetLinkHandler = programIndicatorLegendSetLinkHandler;
-    }
-
-    @Override
-    protected void afterObjectHandled(ProgramIndicator programIndicator, HandleAction action) {
-        legendSetHandler.handleMany(programIndicator.legendSets());
-
-        programIndicatorLegendSetLinkHandler.handleMany(programIndicator.uid(), programIndicator.legendSets(),
-                legendSet -> ProgramIndicatorLegendSetLink.builder()
-                        .programIndicator(programIndicator.uid()).legendSet(legendSet.uid()).build());
+    override fun afterObjectHandled(o: ProgramIndicator, action: HandleAction) {
+        legendSetHandler.handleMany(o.legendSets())
+        programIndicatorLegendSetLinkHandler.handleMany(
+            o.uid(), o.legendSets()
+        ) { legendSet: LegendSet ->
+            ProgramIndicatorLegendSetLink.builder()
+                .programIndicator(o.uid()).legendSet(legendSet.uid()).build()
+        }
     }
 }

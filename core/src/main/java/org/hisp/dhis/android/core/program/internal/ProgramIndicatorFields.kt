@@ -25,41 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.internal
 
-package org.hisp.dhis.android.core.program.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.program.ProgramIndicator
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.program.ProgramIndicatorTableInfo
+import org.hisp.dhis.android.core.common.AggregationType
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.legendset.LegendSet
+import org.hisp.dhis.android.core.legendset.internal.LegendSetFields
 
-import org.hisp.dhis.android.core.arch.api.fields.internal.Fields;
-import org.hisp.dhis.android.core.arch.api.fields.internal.Property;
-import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper;
-import org.hisp.dhis.android.core.common.AggregationType;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.legendset.LegendSet;
-import org.hisp.dhis.android.core.legendset.internal.LegendSetFields;
-import org.hisp.dhis.android.core.program.ProgramIndicator;
-import org.hisp.dhis.android.core.program.ProgramIndicatorTableInfo.Columns;
-
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.UID;
-
-public final class ProgramIndicatorFields {
-    public static final String LEGEND_SETS = "legendSets";
-
-    private static final FieldsHelper<ProgramIndicator> fh = new FieldsHelper<>();
-
-    static final Property<ProgramIndicator, Boolean> uid = fh.field(UID);
-
-    public static final Fields<ProgramIndicator> allFields = Fields.<ProgramIndicator>builder()
-            .fields(fh.getNameableFields())
-            .fields(
-                    fh.<Boolean>field(Columns.DISPLAY_IN_FORM),
-                    fh.<String>field(Columns.EXPRESSION),
-                    fh.<String>field(Columns.DIMENSION_ITEM),
-                    fh.<String>field(Columns.FILTER),
-                    fh.<Integer>field(Columns.DECIMALS),
-                    fh.<AggregationType>field(Columns.AGGREGATION_TYPE),
-                    fh.<ObjectWithUid>nestedField(Columns.PROGRAM).with(ObjectWithUid.uid),
-                    fh.<LegendSet>nestedField(LEGEND_SETS).with(LegendSetFields.allFields)
-            ).build();
-
-    private ProgramIndicatorFields() {
-    }
+object ProgramIndicatorFields {
+    const val LEGEND_SETS = "legendSets"
+    private val fh = FieldsHelper<ProgramIndicator>()
+    val uid = fh.field<Boolean>(BaseIdentifiableObject.UID)
+    @JvmField
+    val allFields = Fields.builder<ProgramIndicator>()
+        .fields(fh.getNameableFields())
+        .fields(
+            fh.field<Boolean>(ProgramIndicatorTableInfo.Columns.DISPLAY_IN_FORM),
+            fh.field<String>(ProgramIndicatorTableInfo.Columns.EXPRESSION),
+            fh.field<String>(ProgramIndicatorTableInfo.Columns.DIMENSION_ITEM),
+            fh.field<String>(ProgramIndicatorTableInfo.Columns.FILTER),
+            fh.field<Int>(ProgramIndicatorTableInfo.Columns.DECIMALS),
+            fh.field<AggregationType>(ProgramIndicatorTableInfo.Columns.AGGREGATION_TYPE),
+            fh.nestedField<ObjectWithUid>(ProgramIndicatorTableInfo.Columns.PROGRAM).with(ObjectWithUid.uid),
+            fh.nestedField<LegendSet>(LEGEND_SETS).with(LegendSetFields.allFields)
+        ).build()
 }

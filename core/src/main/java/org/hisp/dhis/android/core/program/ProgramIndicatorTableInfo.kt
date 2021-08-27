@@ -25,52 +25,49 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program
 
-package org.hisp.dhis.android.core.program;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
+import org.hisp.dhis.android.core.common.CoreColumns
+import org.hisp.dhis.android.core.common.NameableColumns
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.CoreColumns;
-import org.hisp.dhis.android.core.common.NameableColumns;
+object ProgramIndicatorTableInfo {
+    @JvmField
+    val TABLE_INFO: TableInfo = object : TableInfo() {
+        override fun name(): String {
+            return "ProgramIndicator"
+        }
 
-public final class ProgramIndicatorTableInfo {
-
-    private ProgramIndicatorTableInfo() {
+        override fun columns(): CoreColumns {
+            return Columns()
+        }
     }
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
-
-        @Override
-        public String name() {
-            return "ProgramIndicator";
+    class Columns : NameableColumns() {
+        override fun all(): Array<String> {
+            return CollectionsHelper.appendInNewArray(
+                super.all(),
+                DISPLAY_IN_FORM,
+                EXPRESSION,
+                DIMENSION_ITEM,
+                FILTER,
+                DECIMALS,
+                AGGREGATION_TYPE,
+                PROGRAM,
+                ANALYTICS_TYPE
+            )
         }
 
-        @Override
-        public CoreColumns columns() {
-            return new Columns();
-        }
-    };
-
-    public static class Columns extends NameableColumns {
-        public static final String DISPLAY_IN_FORM = "displayInForm";
-        public static final String EXPRESSION = "expression";
-        public static final String DIMENSION_ITEM = "dimensionItem";
-        public static final String FILTER = "filter";
-        public static final String DECIMALS = "decimals";
-        public static final String AGGREGATION_TYPE = "aggregationType";
-        public static final String PROGRAM = "program";
-
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(),
-                    DISPLAY_IN_FORM,
-                    EXPRESSION,
-                    DIMENSION_ITEM,
-                    FILTER,
-                    DECIMALS,
-                    AGGREGATION_TYPE,
-                    PROGRAM
-            );
+        companion object {
+            const val DISPLAY_IN_FORM = "displayInForm"
+            const val EXPRESSION = "expression"
+            const val DIMENSION_ITEM = "dimensionItem"
+            const val FILTER = "filter"
+            const val DECIMALS = "decimals"
+            const val AGGREGATION_TYPE = "aggregationType"
+            const val PROGRAM = "program"
+            const val ANALYTICS_TYPE = "analyticsType"
         }
     }
 }

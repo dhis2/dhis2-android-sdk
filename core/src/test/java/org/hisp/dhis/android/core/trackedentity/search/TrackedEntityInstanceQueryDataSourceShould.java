@@ -89,6 +89,9 @@ public class TrackedEntityInstanceQueryDataSourceShould {
     @Mock
     private ItemKeyedDataSource.LoadInitialCallback<TrackedEntityInstance> initialCallback;
 
+    @Mock
+    private TrackedEntityInstance trackedEntityInstance;
+
     private final CalendarProvider calendarProvider = CalendarProviderFactory.getCalendarProvider();
 
     private final DateFilterPeriodHelper periodHelper =
@@ -198,7 +201,7 @@ public class TrackedEntityInstanceQueryDataSourceShould {
         verifyNoMoreInteractions(store);
         verify(onlineCallFactory).getCall(argThat(new QueryPageUserModeMatcher(1, 4, AssignedUserMode.ANY)));
 
-        dataSource.loadAfter(new ItemKeyedDataSource.LoadParams<>(null, 2), initialCallback);
+        dataSource.loadAfter(new ItemKeyedDataSource.LoadParams<>(trackedEntityInstance, 2), initialCallback);
 
         verify(onlineCallFactory).getCall(argThat(new QueryPageUserModeMatcher(3, 2, AssignedUserMode.ANY)));
         verifyNoMoreInteractions(onlineCallFactory);

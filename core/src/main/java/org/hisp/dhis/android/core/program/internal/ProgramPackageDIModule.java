@@ -41,6 +41,7 @@ import dagger.Reusable;
 import retrofit2.Retrofit;
 
 @Module(includes = {
+        AnalyticsPeriodBoundaryEntityDIModule.class,
         ProgramEntityDIModule.class,
         ProgramIndicatorEngineEntityDIModule.class,
         ProgramIndicatorEntityDIModule.class,

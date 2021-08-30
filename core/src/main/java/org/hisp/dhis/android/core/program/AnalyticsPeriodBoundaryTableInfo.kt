@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.program
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.CoreColumns
-import org.hisp.dhis.android.core.common.NameableColumns
 
 object AnalyticsPeriodBoundaryTableInfo {
     @JvmField
@@ -52,6 +51,16 @@ object AnalyticsPeriodBoundaryTableInfo {
                 BOUNDARY_TARGET,
                 ANALYTICS_PERIOD_BOUNDARY_TYPE,
                 OFFSET_PERIODS,
+                OFFSET_PERIOD_TYPE
+            )
+        }
+
+        override fun whereUpdate(): Array<String> {
+            return CollectionsHelper.appendInNewArray(
+                super.all(),
+                PROGRAM_INDICATOR,
+                BOUNDARY_TARGET,
+                ANALYTICS_PERIOD_BOUNDARY_TYPE,
                 OFFSET_PERIOD_TYPE
             )
         }

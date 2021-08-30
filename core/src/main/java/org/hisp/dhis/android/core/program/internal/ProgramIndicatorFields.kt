@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.legendset.internal.LegendSetFields
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
 
 object ProgramIndicatorFields {
-    private const val ANALYTICS_PERIOD_BOUNDARIES = "analyticsPeriodBoundaries"
+    const val ANALYTICS_PERIOD_BOUNDARIES = "analyticsPeriodBoundaries"
     const val LEGEND_SETS = "legendSets"
     private val fh = FieldsHelper<ProgramIndicator>()
     val uid = fh.field<Boolean>(BaseIdentifiableObject.UID)

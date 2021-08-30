@@ -40,7 +40,7 @@ public class D2CountIfCondition
     protected boolean countIf(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor, String value) {
         String expression = value + trimQuotes(ctx.stringLiteral().getText());
 
-        String result = visitor.getProgramIndicatorExecutor().getProgramIndicatorValue(expression);
+        String result = visitor.getProgramIndicatorExecutor().getProgramIndicatorExpressionValue(expression);
 
        return "true".equals(result);
     }

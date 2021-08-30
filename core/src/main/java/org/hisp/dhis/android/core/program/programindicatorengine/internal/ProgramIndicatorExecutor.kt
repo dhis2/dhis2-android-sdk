@@ -48,10 +48,10 @@ internal class ProgramIndicatorExecutor constructor(
     fun getProgramIndicatorValue(programIndicator: ProgramIndicator): String? {
         val visitor = newVisitor(ParserUtils.ITEM_EVALUATE)
         return if (getFilterValue(programIndicator, visitor)) {
-                getProgramIndicatorExpressionValue(programIndicator.expression(), visitor)
-            } else {
-                null
-            }
+            getProgramIndicatorExpressionValue(programIndicator.expression(), visitor)
+        } else {
+            null
+        }
     }
 
     fun getProgramIndicatorExpressionValue(expression: String?): String? {
@@ -77,14 +77,14 @@ internal class ProgramIndicatorExecutor constructor(
         val filter = programIndicator.filter()
 
         return filter.isNullOrBlank() ||
-                try {
-                    val result = CommonParser.visit(filter, visitor)
-                    AntlrParserUtils.castBoolean(result)
-                } catch (e: IllegalArgumentException) {
-                    false
-                } catch (e: ParserExceptionWithoutContext) {
-                    false
-                }
+            try {
+                val result = CommonParser.visit(filter, visitor)
+                AntlrParserUtils.castBoolean(result)
+            } catch (e: IllegalArgumentException) {
+                false
+            } catch (e: ParserExceptionWithoutContext) {
+                false
+            }
     }
 
     fun getValueCount(expression: String): Int {

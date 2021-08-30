@@ -27,37 +27,32 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
+import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.singleParentChildStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
 import org.hisp.dhis.android.core.program.ProgramIndicator
-import org.hisp.dhis.android.core.program.internal.ProgramIndicatorStore.create
+import org.hisp.dhis.android.core.program.internal.AnalyticsPeriodBoundaryStore.Companion.CHILD_PROJECTION
 
-@Module
-internal class ProgramIndicatorEntityDIModule {
-    @Provides
-    @Reusable
-    fun store(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<ProgramIndicator> {
-        return create(databaseAdapter)
+internal class ProgramIndicatorAnalyticsPeriodBoundaryChildrenAppender private
+constructor(private val childStore: SingleParentChildStore<ProgramIndicator, AnalyticsPeriodBoundary>) :
+    ChildrenAppender<ProgramIndicator>() {
+    override fun appendChildren(programIndicator: ProgramIndicator): ProgramIndicator {
+        return programIndicator.apply {
+            toBuilder().analyticsPeriodBoundaries(childStore.getChildren(this)).build()
+        }
     }
 
-    @Provides
-    @Reusable
-    fun handler(impl: ProgramIndicatorHandler): Handler<ProgramIndicator> {
-        return impl
-    }
-
-    @Provides
-    @Reusable
-    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<ProgramIndicator>> {
-        return mapOf(
-            ProgramIndicatorFields.LEGEND_SETS to ProgramIndicatorLegendSetChildrenAppender.create(databaseAdapter),
-            ProgramIndicatorFields.ANALYTICS_PERIOD_BOUNDARIES to
-                    ProgramIndicatorAnalyticsPeriodBoundaryChildrenAppender.create(databaseAdapter)
-        )
+    companion object {
+        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<ProgramIndicator> {
+            return ProgramIndicatorAnalyticsPeriodBoundaryChildrenAppender(
+                singleParentChildStore(
+                    databaseAdapter,
+                    CHILD_PROJECTION
+                ) { cursor: Cursor -> AnalyticsPeriodBoundary.create(cursor) }
+            )
+        }
     }
 }

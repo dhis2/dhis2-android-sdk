@@ -35,8 +35,10 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapp
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryTableInfo
+import org.hisp.dhis.android.core.program.ProgramIndicatorTableInfo
 
 @Suppress("MagicNumber")
 internal class AnalyticsPeriodBoundaryStore private constructor(
@@ -53,6 +55,10 @@ internal class AnalyticsPeriodBoundaryStore private constructor(
     whereDeleteBinder,
     { cursor: Cursor -> AnalyticsPeriodBoundary.create(cursor) }) {
     companion object {
+        val CHILD_PROJECTION = SingleParentChildProjection(
+            AnalyticsPeriodBoundaryTableInfo.TABLE_INFO, AnalyticsPeriodBoundaryTableInfo.Columns.PROGRAM_INDICATOR
+        )
+
         private val BINDER = StatementBinder { o: AnalyticsPeriodBoundary, w: StatementWrapper ->
             w.bind(1, o.programIndicator())
             w.bind(2, o.boundaryTarget())

@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.antlr.AntlrParserUtils
+import org.hisp.dhis.antlr.ParserExceptionWithoutContext
 
 internal class ProgramIndicatorExecutor constructor(
     private val constantMap: Map<String, Constant>,
@@ -80,7 +81,9 @@ internal class ProgramIndicatorExecutor constructor(
                     val result = CommonParser.visit(filter, visitor)
                     AntlrParserUtils.castBoolean(result)
                 } catch (e: IllegalArgumentException) {
-                    true
+                    false
+                } catch (e: ParserExceptionWithoutContext) {
+                    false
                 }
     }
 

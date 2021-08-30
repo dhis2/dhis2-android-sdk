@@ -132,6 +132,8 @@ class ProgramIndicatorExecutorShould {
         whenever(trackedEntityAttributeStore.selectByUid(attributeUid2)) doReturn attribute2
         whenever(attribute1.valueType()) doReturn ValueType.NUMBER
         whenever(attribute2.valueType()) doReturn ValueType.NUMBER
+
+        whenever(programIndicator.filter()) doReturn null
     }
 
     @Test
@@ -366,11 +368,68 @@ class ProgramIndicatorExecutorShould {
         assertThat(result).isEqualTo("1")
     }
 
+    @Test
+    fun evaluate_empty_filter() {
+        setExpression("4")
+        setFilter("")
+
+        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
+        assertThat(result).isEqualTo("4")
+    }
+
+    @Test
+    fun evaluate_invalid_filter() {
+        setExpression("4")
+        setFilter("1")
+
+        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
+        assertThat(result).isNull()
+    }
+
+    @Test
+    fun evaluate_false_filter() {
+        setExpression(de(programStage1, dataElementUid1))
+        setFilter("${de(programStage1, dataElementUid1)} > 10")
+        whenever(dataValue1.value()) doReturn "5.3"
+
+        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
+        assertThat(result).isNull()
+    }
+
+    @Test
+    fun evaluate_true_filter() {
+        setExpression(de(programStage1, dataElementUid1))
+        setFilter("${de(programStage1, dataElementUid1)} < 10")
+        whenever(dataValue1.value()) doReturn "5.3"
+
+        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
+        assertThat(result).isEqualTo("5.3")
+    }
+
+    @Test
+    fun evaluate_value_count_filter() {
+        setExpression("${de(programStage1, dataElementUid1)} + ${de(programStage2, dataElementUid2)}")
+        whenever(dataValue1.value()) doReturn "4.5"
+        whenever(dataValue2_2.value()) doReturn "1.9"
+
+        setFilter("${`var`("value_count")} > 1")
+        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
+        assertThat(result).isEqualTo("6.4")
+
+        setFilter("${`var`("value_count")} > 2")
+        val result2 = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
+        assertThat(result2).isNull()
+    }
+
     // -------------------------------------------------------------------------
     // Supportive methods
     // -------------------------------------------------------------------------
     private fun setExpression(expression: String) {
         whenever(programIndicator.expression()) doReturn expression
+    }
+
+    private fun setFilter(filter: String) {
+        whenever(programIndicator.filter()) doReturn filter
     }
 
     private fun de(programStageUid: String, dataElementUid: String): String {

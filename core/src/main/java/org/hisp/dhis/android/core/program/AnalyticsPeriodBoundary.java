@@ -69,6 +69,11 @@ public abstract class AnalyticsPeriodBoundary implements CoreObject {
     @ColumnAdapter(PeriodTypeColumnAdapter.class)
     public abstract PeriodType offsetPeriodType();
 
+    @Nullable
+    public BoundaryTargetType boundaryTargetType() {
+        return BoundaryTargetType.Companion.getType(boundaryTarget());
+    }
+
     public static AnalyticsPeriodBoundary create(Cursor cursor) {
         return $AutoValue_AnalyticsPeriodBoundary.createFromCursor(cursor);
     }

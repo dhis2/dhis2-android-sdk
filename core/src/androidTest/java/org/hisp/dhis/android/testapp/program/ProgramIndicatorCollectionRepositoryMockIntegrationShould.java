@@ -153,7 +153,7 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends B
     public void include_analytics_period_boundaries_as_children() {
         ProgramIndicator programIndicators = d2.programModule().programIndicators()
                 .withAnalyticsPeriodBoundaries().one().blockingGet();
-        assertThat(programIndicators.analyticsPeriodBoundaries().size()).isEqualTo(5);
+        assertThat(programIndicators.analyticsPeriodBoundaries().size()).isEqualTo(3);
         assertThat(programIndicators.analyticsPeriodBoundaries().get(0).offsetPeriodType()).
                 isEqualTo(PeriodType.SixMonthly);
         assertThat(programIndicators.analyticsPeriodBoundaries().get(1).analyticsPeriodBoundaryType())

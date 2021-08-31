@@ -40,9 +40,7 @@ internal class ProgramIndicatorAnalyticsPeriodBoundaryChildrenAppender private
 constructor(private val childStore: SingleParentChildStore<ProgramIndicator, AnalyticsPeriodBoundary>) :
     ChildrenAppender<ProgramIndicator>() {
     override fun appendChildren(programIndicator: ProgramIndicator): ProgramIndicator {
-        return programIndicator.apply {
-            toBuilder().analyticsPeriodBoundaries(childStore.getChildren(this)).build()
-        }
+        return programIndicator.toBuilder().analyticsPeriodBoundaries(childStore.getChildren(programIndicator)).build()
     }
 
     companion object {

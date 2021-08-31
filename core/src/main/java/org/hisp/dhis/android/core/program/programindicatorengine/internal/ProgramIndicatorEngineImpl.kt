@@ -115,7 +115,7 @@ internal class ProgramIndicatorEngineImpl @Inject constructor(
             trackedEntityAttributeStore
         )
 
-        return executor.getProgramIndicatorValue(context.programIndicator().expression())
+        return executor.getProgramIndicatorValue(context.programIndicator())
     }
 
     private val constantMap: Map<String, Constant>

@@ -25,52 +25,49 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program
 
-package org.hisp.dhis.android.core.program;
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.common.AggregationType
+import org.hisp.dhis.android.core.common.AnalyticsType
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.ObjectShould
+import org.junit.Test
 
-import org.hisp.dhis.android.core.common.AggregationType;
-import org.hisp.dhis.android.core.common.AnalyticsType;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.text.ParseException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public class ProgramIndicatorShould extends BaseObjectShould implements ObjectShould {
-
-    public ProgramIndicatorShould() {
-        super("program/program_indicator.json");
-    }
+class ProgramIndicatorShould : BaseObjectShould("program/program_indicator.json"), ObjectShould {
 
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        ProgramIndicator programIndicator = objectMapper.readValue(jsonStream, ProgramIndicator.class);
+    override fun map_from_json_string() {
+        val programIndicator = objectMapper.readValue(jsonStream, ProgramIndicator::class.java)
+        Truth.assertThat(programIndicator.created()).isEqualTo(
+            BaseIdentifiableObject.DATE_FORMAT.parse("2015-09-21T23:35:50.945")
+        )
+        Truth.assertThat(programIndicator.lastUpdated()).isEqualTo(
+            BaseIdentifiableObject.DATE_FORMAT.parse("2015-09-21T23:47:57.820")
+        )
+        Truth.assertThat(programIndicator.uid()).isEqualTo("GSae40Fyppf")
+        Truth.assertThat(programIndicator.name()).isEqualTo("Age at visit")
+        Truth.assertThat(programIndicator.displayName()).isEqualTo("Age at visit")
+        Truth.assertThat(programIndicator.displayInForm()).isTrue()
+        Truth.assertThat(programIndicator.expression()).isEqualTo("d2:yearsBetween(A{iESIqZ0R0R0},V{event_date})")
+        Truth.assertThat(programIndicator.dimensionItem()).isEqualTo("GSae40Fyppf")
+        Truth.assertThat(programIndicator.filter()).isNull()
+        Truth.assertThat(programIndicator.decimals()).isNull()
+        Truth.assertThat(programIndicator.aggregationType()).isEqualTo(AggregationType.AVERAGE)
+        Truth.assertThat(programIndicator.analyticsType()).isEqualTo(AnalyticsType.EVENT)
+        Truth.assertThat(programIndicator.analyticsPeriodBoundaries()!!.size).isEqualTo(5)
+        Truth.assertThat(programIndicator.analyticsPeriodBoundaries()!![0].boundaryTarget())
+            .isEqualTo("Custom boundary")
+        Truth.assertThat(programIndicator.analyticsPeriodBoundaries()!![1].boundaryTarget()).isEqualTo("INCIDENT_DATE")
 
-        assertThat(programIndicator.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2015-09-21T23:35:50.945"));
-        assertThat(programIndicator.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2015-09-21T23:47:57.820"));
-        assertThat(programIndicator.uid()).isEqualTo("GSae40Fyppf");
+        Truth.assertThat(programIndicator.analyticsPeriodBoundaries()!![0].boundaryTargetType())
+            .isEqualTo(BoundaryTargetType.Custom("Custom boundary"))
+        Truth.assertThat(programIndicator.analyticsPeriodBoundaries()!![1].boundaryTargetType())
+            .isEqualTo(BoundaryTargetType.IncidentDate)
 
-        assertThat(programIndicator.name()).isEqualTo("Age at visit");
-        assertThat(programIndicator.displayName()).isEqualTo("Age at visit");
-
-        assertThat(programIndicator.displayInForm()).isTrue();
-        assertThat(programIndicator.expression()).isEqualTo("d2:yearsBetween(A{iESIqZ0R0R0},V{event_date})");
-        assertThat(programIndicator.dimensionItem()).isEqualTo("GSae40Fyppf");
-        assertThat(programIndicator.filter()).isNull();
-        assertThat(programIndicator.decimals()).isNull();
-        assertThat(programIndicator.aggregationType()).isEqualTo(AggregationType.AVERAGE);
-        assertThat(programIndicator.analyticsType()).isEqualTo(AnalyticsType.EVENT);
-
-        assertThat(programIndicator.analyticsPeriodBoundaries().size()).isEqualTo(5);
-        assertThat(programIndicator.analyticsPeriodBoundaries().get(0).boundaryTarget()).isEqualTo("Custom boundary");
-        assertThat(programIndicator.analyticsPeriodBoundaries().get(1).boundaryTarget()).isEqualTo("INCIDENT_DATE");
-        assertThat(programIndicator.analyticsPeriodBoundaries().get(0).analyticsPeriodBoundaryType()).isEqualTo(AnalyticsPeriodBoundaryType.AFTER_END_OF_REPORTING_PERIOD);
-        assertThat(programIndicator.analyticsPeriodBoundaries().get(1).offsetPeriods()).isEqualTo(-3);
+        Truth.assertThat(programIndicator.analyticsPeriodBoundaries()!![0].analyticsPeriodBoundaryType())
+            .isEqualTo(AnalyticsPeriodBoundaryType.AFTER_END_OF_REPORTING_PERIOD)
+        Truth.assertThat(programIndicator.analyticsPeriodBoundaries()!![1].offsetPeriods()).isEqualTo(-3)
     }
 }

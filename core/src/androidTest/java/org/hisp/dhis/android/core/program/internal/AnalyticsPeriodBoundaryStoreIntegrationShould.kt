@@ -27,14 +27,13 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.program.internal.AnalyticsPeriodBoundaryStore.Companion.create
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould
-import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
-import org.hisp.dhis.android.core.program.internal.AnalyticsPeriodBoundaryStore
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
-import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryTableInfo
 import org.hisp.dhis.android.core.data.program.AnalyticsPeriodBoundarySamples
+import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
+import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryTableInfo
+import org.hisp.dhis.android.core.program.internal.AnalyticsPeriodBoundaryStore.Companion.create
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

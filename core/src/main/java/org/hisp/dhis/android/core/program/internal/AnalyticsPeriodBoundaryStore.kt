@@ -38,7 +38,6 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreI
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryTableInfo
-import org.hisp.dhis.android.core.program.ProgramIndicatorTableInfo
 
 @Suppress("MagicNumber")
 internal class AnalyticsPeriodBoundaryStore private constructor(
@@ -53,7 +52,8 @@ internal class AnalyticsPeriodBoundaryStore private constructor(
     binder,
     whereUpdateBinder,
     whereDeleteBinder,
-    { cursor: Cursor -> AnalyticsPeriodBoundary.create(cursor) }) {
+    { cursor: Cursor -> AnalyticsPeriodBoundary.create(cursor) }
+) {
     companion object {
         val CHILD_PROJECTION = SingleParentChildProjection(
             AnalyticsPeriodBoundaryTableInfo.TABLE_INFO, AnalyticsPeriodBoundaryTableInfo.Columns.PROGRAM_INDICATOR

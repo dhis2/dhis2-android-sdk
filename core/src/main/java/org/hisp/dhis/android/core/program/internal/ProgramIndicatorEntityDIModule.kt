@@ -57,7 +57,7 @@ internal class ProgramIndicatorEntityDIModule {
         return mapOf(
             ProgramIndicatorFields.LEGEND_SETS to ProgramIndicatorLegendSetChildrenAppender.create(databaseAdapter),
             ProgramIndicatorFields.ANALYTICS_PERIOD_BOUNDARIES to
-                    ProgramIndicatorAnalyticsPeriodBoundaryChildrenAppender.create(databaseAdapter)
+                ProgramIndicatorAnalyticsPeriodBoundaryChildrenAppender.create(databaseAdapter)
         )
     }
 }

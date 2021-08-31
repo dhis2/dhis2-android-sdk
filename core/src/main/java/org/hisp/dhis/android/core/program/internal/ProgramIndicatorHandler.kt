@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.program.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
@@ -37,7 +38,6 @@ import org.hisp.dhis.android.core.legendset.LegendSet
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLink
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
 import org.hisp.dhis.android.core.program.ProgramIndicator
-import javax.inject.Inject
 
 @Reusable
 internal class ProgramIndicatorHandler @Inject constructor(

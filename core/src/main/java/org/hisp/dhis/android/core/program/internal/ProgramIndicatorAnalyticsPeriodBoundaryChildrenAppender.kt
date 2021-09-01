@@ -27,29 +27,32 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.singleParentChildStore
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
+import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryTableInfo
 import org.hisp.dhis.android.core.program.ProgramIndicator
-import org.hisp.dhis.android.core.program.internal.AnalyticsPeriodBoundaryStore.Companion.CHILD_PROJECTION
 
 internal class ProgramIndicatorAnalyticsPeriodBoundaryChildrenAppender private
-constructor(private val childStore: SingleParentChildStore<ProgramIndicator, AnalyticsPeriodBoundary>) :
+constructor(private val childStore: LinkStore<AnalyticsPeriodBoundary>) :
     ChildrenAppender<ProgramIndicator>() {
     override fun appendChildren(programIndicator: ProgramIndicator): ProgramIndicator {
-        return programIndicator.toBuilder().analyticsPeriodBoundaries(childStore.getChildren(programIndicator)).build()
+        return programIndicator.toBuilder().analyticsPeriodBoundaries(getChildren(programIndicator)).build()
+    }
+
+    private fun getChildren(o: ProgramIndicator): List<AnalyticsPeriodBoundary> {
+        val whereClause = WhereClauseBuilder().apply {
+            appendKeyStringValue(AnalyticsPeriodBoundaryTableInfo.Columns.PROGRAM_INDICATOR, o.uid())
+        }.build()
+        return this.childStore.selectWhere(whereClause)
     }
 
     companion object {
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<ProgramIndicator> {
             return ProgramIndicatorAnalyticsPeriodBoundaryChildrenAppender(
-                singleParentChildStore(
-                    databaseAdapter,
-                    CHILD_PROJECTION
-                ) { cursor: Cursor -> AnalyticsPeriodBoundary.create(cursor) }
+                AnalyticsPeriodBoundaryStore.create(databaseAdapter)
             )
         }
     }

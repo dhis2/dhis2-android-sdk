@@ -55,16 +55,6 @@ object AnalyticsPeriodBoundaryTableInfo {
             )
         }
 
-        override fun whereUpdate(): Array<String> {
-            return CollectionsHelper.appendInNewArray(
-                super.all(),
-                PROGRAM_INDICATOR,
-                BOUNDARY_TARGET,
-                ANALYTICS_PERIOD_BOUNDARY_TYPE,
-                OFFSET_PERIOD_TYPE
-            )
-        }
-
         companion object {
             const val PROGRAM_INDICATOR = "programIndicator"
             const val BOUNDARY_TARGET = "boundaryTarget"

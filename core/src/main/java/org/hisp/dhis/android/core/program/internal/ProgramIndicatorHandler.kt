@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.program.internal
 import dagger.Reusable
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
@@ -44,7 +45,7 @@ internal class ProgramIndicatorHandler @Inject constructor(
     programIndicatorStore: IdentifiableObjectStore<ProgramIndicator>,
     private val legendSetHandler: Handler<LegendSet>,
     private val programIndicatorLegendSetLinkHandler: LinkHandler<LegendSet, ProgramIndicatorLegendSetLink>,
-    private val analyticsPeriodBoundaryHandler: Handler<AnalyticsPeriodBoundary>
+    private val analyticsPeriodBoundaryHandler: LinkHandler<AnalyticsPeriodBoundary, AnalyticsPeriodBoundary>
 ) : IdentifiableHandlerImpl<ProgramIndicator>(programIndicatorStore) {
 
     override fun afterObjectHandled(o: ProgramIndicator, action: HandleAction) {
@@ -55,8 +56,8 @@ internal class ProgramIndicatorHandler @Inject constructor(
             ProgramIndicatorLegendSetLink.builder()
                 .programIndicator(o.uid()).legendSet(legendSet.uid()).build()
         }
-        analyticsPeriodBoundaryHandler.handleMany(
-            o.analyticsPeriodBoundaries()?.map { it.toBuilder().programIndicator(o.uid()).build() }
-        )
+        analyticsPeriodBoundaryHandler.handleMany(o.uid(), o.analyticsPeriodBoundaries() ?: emptyList()) { b ->
+            b.toBuilder().programIndicator(o.uid()).build()
+        }
     }
 }

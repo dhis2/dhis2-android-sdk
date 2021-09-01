@@ -28,28 +28,28 @@
 
 package org.hisp.dhis.android.core.program.internal;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl;
-import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary;
-
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
+
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl;
+import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary;
 
 @Module
 public final class AnalyticsPeriodBoundaryEntityDIModule {
 
     @Provides
     @Reusable
-    public ObjectWithoutUidStore<AnalyticsPeriodBoundary> store(DatabaseAdapter databaseAdapter) {
+    public LinkStore<AnalyticsPeriodBoundary> store(DatabaseAdapter databaseAdapter) {
         return AnalyticsPeriodBoundaryStore.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    Handler<AnalyticsPeriodBoundary> handler(ObjectWithoutUidStore<AnalyticsPeriodBoundary> store) {
-        return new ObjectWithoutUidHandlerImpl<>(store);
+    LinkHandler<AnalyticsPeriodBoundary, AnalyticsPeriodBoundary> handler(LinkStore<AnalyticsPeriodBoundary> store) {
+        return new LinkHandlerImpl<>(store);
     }
 }

@@ -29,66 +29,31 @@ package org.hisp.dhis.android.core.program.internal
 
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryTableInfo
 
 @Suppress("MagicNumber")
-internal class AnalyticsPeriodBoundaryStore private constructor(
-    databaseAdapter: DatabaseAdapter,
-    builder: SQLStatementBuilderImpl,
-    binder: StatementBinder<AnalyticsPeriodBoundary>,
-    whereUpdateBinder: WhereStatementBinder<AnalyticsPeriodBoundary>,
-    whereDeleteBinder: WhereStatementBinder<AnalyticsPeriodBoundary>
-) : ObjectWithoutUidStoreImpl<AnalyticsPeriodBoundary>(
-    databaseAdapter,
-    builder,
-    binder,
-    whereUpdateBinder,
-    whereDeleteBinder,
-    { cursor: Cursor -> AnalyticsPeriodBoundary.create(cursor) }
-) {
-    companion object {
-        val CHILD_PROJECTION = SingleParentChildProjection(
-            AnalyticsPeriodBoundaryTableInfo.TABLE_INFO, AnalyticsPeriodBoundaryTableInfo.Columns.PROGRAM_INDICATOR
-        )
+internal object AnalyticsPeriodBoundaryStore {
 
-        private val BINDER = StatementBinder { o: AnalyticsPeriodBoundary, w: StatementWrapper ->
-            w.bind(1, o.programIndicator())
-            w.bind(2, o.boundaryTarget())
-            w.bind(3, o.analyticsPeriodBoundaryType())
-            w.bind(4, o.offsetPeriods())
-            w.bind(5, o.offsetPeriodType())
-        }
-        private val WHERE_UPDATE_BINDER = WhereStatementBinder { o: AnalyticsPeriodBoundary, w: StatementWrapper ->
-            w.bind(6, o.programIndicator())
-            w.bind(7, o.boundaryTarget())
-            w.bind(8, o.analyticsPeriodBoundaryType())
-            w.bind(9, o.offsetPeriodType())
-        }
-        private val WHERE_DELETE_BINDER = WhereStatementBinder { o: AnalyticsPeriodBoundary, w: StatementWrapper ->
-            w.bind(1, o.programIndicator())
-            w.bind(2, o.boundaryTarget())
-            w.bind(3, o.analyticsPeriodBoundaryType())
-            w.bind(4, o.offsetPeriodType())
-        }
+    private val BINDER = StatementBinder { o: AnalyticsPeriodBoundary, w: StatementWrapper ->
+        w.bind(1, o.programIndicator())
+        w.bind(2, o.boundaryTarget())
+        w.bind(3, o.analyticsPeriodBoundaryType())
+        w.bind(4, o.offsetPeriods())
+        w.bind(5, o.offsetPeriodType())
+    }
 
-        @JvmStatic
-        fun create(databaseAdapter: DatabaseAdapter): ObjectWithoutUidStore<AnalyticsPeriodBoundary> {
-            val statementBuilder = SQLStatementBuilderImpl(AnalyticsPeriodBoundaryTableInfo.TABLE_INFO)
-            return AnalyticsPeriodBoundaryStore(
-                databaseAdapter,
-                statementBuilder,
-                BINDER,
-                WHERE_UPDATE_BINDER,
-                WHERE_DELETE_BINDER
-            )
-        }
+    @JvmStatic
+    fun create(databaseAdapter: DatabaseAdapter): LinkStore<AnalyticsPeriodBoundary> {
+        return StoreFactory.linkStore(
+            databaseAdapter,
+            AnalyticsPeriodBoundaryTableInfo.TABLE_INFO,
+            AnalyticsPeriodBoundaryTableInfo.Columns.PROGRAM_INDICATOR,
+            BINDER
+        ) { cursor: Cursor -> AnalyticsPeriodBoundary.create(cursor) }
     }
 }

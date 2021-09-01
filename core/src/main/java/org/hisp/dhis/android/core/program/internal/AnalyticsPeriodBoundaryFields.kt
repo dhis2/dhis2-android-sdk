@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryTableInfo
 object AnalyticsPeriodBoundaryFields {
     private val fh = FieldsHelper<AnalyticsPeriodBoundary>()
     val allFields: Fields<AnalyticsPeriodBoundary> = Fields.builder<AnalyticsPeriodBoundary>()
-        .fields(fh.getIdentifiableFields())
         .fields(
             fh.field<String>(AnalyticsPeriodBoundaryTableInfo.Columns.BOUNDARY_TARGET),
             fh.field<String>(AnalyticsPeriodBoundaryTableInfo.Columns.ANALYTICS_PERIOD_BOUNDARY_TYPE),

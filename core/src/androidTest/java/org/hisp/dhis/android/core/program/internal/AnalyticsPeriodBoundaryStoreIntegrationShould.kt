@@ -27,29 +27,32 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.program.AnalyticsPeriodBoundarySamples
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryTableInfo
-import org.hisp.dhis.android.core.program.internal.AnalyticsPeriodBoundaryStore.Companion.create
+import org.hisp.dhis.android.core.program.internal.AnalyticsPeriodBoundaryStore.create
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 internal class AnalyticsPeriodBoundaryStoreIntegrationShould :
-    ObjectWithoutUidStoreAbstractIntegrationShould<AnalyticsPeriodBoundary>(
+    LinkStoreAbstractIntegrationShould<AnalyticsPeriodBoundary>(
         create(TestDatabaseAdapterFactory.get()), AnalyticsPeriodBoundaryTableInfo.TABLE_INFO,
         TestDatabaseAdapterFactory.get()
     ) {
     override fun buildObject(): AnalyticsPeriodBoundary {
         return AnalyticsPeriodBoundarySamples.getAnalyticsPeriodBoundary()
     }
-
-    override fun buildObjectToUpdate(): AnalyticsPeriodBoundary {
+    override fun buildObjectWithOtherMasterUid(): AnalyticsPeriodBoundary {
         return AnalyticsPeriodBoundarySamples.getAnalyticsPeriodBoundary()
             .toBuilder()
-            .offsetPeriods(8)
+            .programIndicator("other_program_indicator")
             .build()
+    }
+
+    override fun addMasterUid(): String {
+        return "program_indicator"
     }
 }

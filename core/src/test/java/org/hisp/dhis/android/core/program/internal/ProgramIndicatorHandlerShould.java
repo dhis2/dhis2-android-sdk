@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.program.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
@@ -43,7 +45,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.Matchers.any;
@@ -65,7 +66,7 @@ public class ProgramIndicatorHandlerShould {
     private LinkHandler<LegendSet, ProgramIndicatorLegendSetLink> programIndicatorLegendSetLinkHandler;
 
     @Mock
-    private Handler<AnalyticsPeriodBoundary> analyticsPeriodBoundaryHandler;
+    private LinkHandler<AnalyticsPeriodBoundary, AnalyticsPeriodBoundary> analyticsPeriodBoundaryHandler;
 
     @Mock
     private Handler<LegendSet> legendSetHandler;
@@ -78,6 +79,9 @@ public class ProgramIndicatorHandlerShould {
 
     @Mock
     private AnalyticsPeriodBoundary analyticsPeriodBoundary;
+
+    @Mock
+    private AnalyticsPeriodBoundary.Builder analyticsPeriodBoundaryBuilder;
 
     @Mock
     private ObjectWithUid program;
@@ -110,6 +114,10 @@ public class ProgramIndicatorHandlerShould {
         when(programIndicator.program()).thenReturn(program);
         when(programIndicator.legendSets()).thenReturn(legendSets);
         when(programIndicator.analyticsPeriodBoundaries()).thenReturn(Lists.newArrayList(analyticsPeriodBoundary));
+        when(analyticsPeriodBoundary.toBuilder()).thenReturn(analyticsPeriodBoundaryBuilder);
+        when(analyticsPeriodBoundaryBuilder.programIndicator(any())).thenReturn(analyticsPeriodBoundaryBuilder);
+        when(analyticsPeriodBoundaryBuilder.build()).thenReturn(analyticsPeriodBoundary);
+        when(programIndicatorStore.updateOrInsert(any())).thenReturn(HandleAction.Insert);
     }
 
     @Test
@@ -152,8 +160,8 @@ public class ProgramIndicatorHandlerShould {
     }
 
     @Test
-    public void call_program_indicator_analytics_period_boundary_handler() {
+    public void call_program_indicator_analytics_period_boundary_handler_and_store() {
         programIndicatorHandler.handleMany(programIndicators);
-        verify(analyticsPeriodBoundaryHandler).handleMany(any());
+        verify(analyticsPeriodBoundaryHandler).handleMany(any(), any(), any());
     }
 }

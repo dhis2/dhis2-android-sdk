@@ -103,6 +103,9 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
+
+        buildConfigField("long", "VERSION_CODE", "${defaultConfig.versionCode}")
+        buildConfigField("String", "VERSION_NAME", "\"${defaultConfig.versionName}\"")
     }
 
     compileOptions {
@@ -131,14 +134,6 @@ android {
         debug {
             // a fix for the debugger not being able to find local scope variables
             testCoverageEnabled = false
-
-            buildConfigField("long", "VERSION_CODE", "${defaultConfig.versionCode}")
-            buildConfigField("String","VERSION_NAME","\"${defaultConfig.versionName}\"")
-        }
-
-        release {
-            buildConfigField("long", "VERSION_CODE", "${defaultConfig.versionCode}")
-            buildConfigField("String","VERSION_NAME","\"${defaultConfig.versionName}\"")
         }
     }
 
@@ -244,7 +239,7 @@ dependencies {
     }
     debugImplementation "com.facebook.flipper:flipper:${libraries.flipper}"
     debugImplementation "com.facebook.soloader:soloader:${libraries.soloader}"
-    debugImplementation ("com.facebook.flipper:flipper-network-plugin:${libraries.flipper}") {
+    debugImplementation("com.facebook.flipper:flipper-network-plugin:${libraries.flipper}") {
         exclude group: 'com.squareup.okhttp3'
     }
 

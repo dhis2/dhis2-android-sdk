@@ -185,6 +185,10 @@ public class RelationshipCollectionRepository
             RelationshipItem relatedItem = this.relationshipItemStore
                     .getForRelationshipUidAndConstraintType(relationship.uid(), relatedType);
 
+            if (relatedItem == null) {
+                continue;
+            }
+
             RelationshipItem from, to;
             if (iterationItem.relationshipItemType() == FROM) {
                 from = iterationItem;

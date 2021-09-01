@@ -310,7 +310,7 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
 
         val trackedEntitiesFromEnrollments = enrollments.mapNotNull { it.trackedEntityInstance() }
 
-        val relationshipItems = relationshipUids.map {
+        val relationshipItems = relationshipUids.mapNotNull {
             relationshipItemStore.getForRelationshipUidAndConstraintType(it, RelationshipConstraintType.FROM)
         }
 

@@ -41,6 +41,8 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.Analyt
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.AnalyticsEvaluatorHelper.getReportingPeriods
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.AggregationType
+import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.program.ProgramIndicator
@@ -49,6 +51,7 @@ import java.lang.NumberFormatException
 
 internal class ProgramIndicatorEvaluator @Inject constructor(
     private val eventStore: EventStore,
+    private val enrollmentStore: EnrollmentStore,
     private val programIndicatorEngine: ProgramIndicatorEngine
 ) : AnalyticsEvaluator {
 
@@ -62,7 +65,7 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
         // TODO
         val values: List<String?> = when ("EVENT") {
             "EVENT" -> evaluateEventProgramIndicator(programIndicator, evaluationItem, metadata)
-            "ENROLLMENT" -> TODO()
+            "ENROLLMENT" -> evaluateEnrollmentProgramIndicator(programIndicator, evaluationItem, metadata)
             else -> TODO()
         }
 
@@ -127,6 +130,53 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
         }.build()
 
         return eventStore.selectUidsWhere(whereClause)
+    }
+
+    private fun evaluateEnrollmentProgramIndicator(
+        programIndicator: ProgramIndicator,
+        evaluationItem: AnalyticsServiceEvaluationItem,
+        metadata: Map<String, MetadataItem>
+    ): List<String?> {
+        return getFilteredEnrollmentUids(programIndicator, evaluationItem, metadata).map {
+            programIndicatorEngine.getEnrollmentProgramIndicatorValue(it, programIndicator.uid())
+        }
+    }
+
+    private fun getFilteredEnrollmentUids(
+        programIndicator: ProgramIndicator,
+        evaluationItem: AnalyticsServiceEvaluationItem,
+        metadata: Map<String, MetadataItem>
+    ): List<String> {
+        val items = getItemsByDimension(evaluationItem)
+
+        val whereClause = WhereClauseBuilder().apply {
+            items.entries.forEach { entry ->
+                when (entry.key) {
+                    is Dimension.Period -> {
+                        val reportingPeriods = getReportingPeriods(entry.value, metadata)
+                        appendComplexQuery(WhereClauseBuilder().apply {
+                            reportingPeriods.forEach { period ->
+                                appendOrComplexQuery(
+                                    getPeriodWhereClause(
+                                        columnStart = EnrollmentTableInfo.Columns.ENROLLMENT_DATE,
+                                        columnEnd = EnrollmentTableInfo.Columns.ENROLLMENT_DATE,
+                                        period = period
+                                    )
+                                )
+                            }
+                        }.build())
+                    }
+                    is Dimension.OrganisationUnit ->
+                        appendOrgunitWhereClause(EnrollmentTableInfo.Columns.ORGANISATION_UNIT, entry.value, this, metadata)
+                    is Dimension.Category -> TODO()
+                    else -> {
+                    }
+                }
+            }
+            appendKeyNumberValue(EnrollmentTableInfo.Columns.DELETED, 0)
+        }.build()
+
+        return enrollmentStore.selectUidsWhere(whereClause)
     }
 
     private fun aggregateValues(aggregationType: AggregationType?, values: List<String?>): String? {

@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.android.testapp.program;
 
+import org.hisp.dhis.android.core.common.AnalyticsType;
+import org.hisp.dhis.android.core.period.PeriodType;
+import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryType;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
@@ -117,6 +120,17 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends B
     }
 
     @Test
+    public void filter_by_analytics_type() {
+        List<ProgramIndicator> indicators =
+                d2.programModule().programIndicators()
+                        .byAnalyticsType()
+                        .eq(AnalyticsType.EVENT)
+                        .blockingGet();
+
+        assertThat(indicators.size()).isEqualTo(1);
+    }
+
+    @Test
     public void filter_by_program() {
         List<ProgramIndicator> indicators =
                 d2.programModule().programIndicators()
@@ -133,5 +147,16 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends B
                 .withLegendSets().one().blockingGet();
         assertThat(programIndicators.legendSets().size()).isEqualTo(1);
         assertThat(programIndicators.legendSets().get(0).name()).isEqualTo("Age 15y interval");
+    }
+
+    @Test
+    public void include_analytics_period_boundaries_as_children() {
+        ProgramIndicator programIndicators = d2.programModule().programIndicators()
+                .withAnalyticsPeriodBoundaries().one().blockingGet();
+        assertThat(programIndicators.analyticsPeriodBoundaries().size()).isEqualTo(3);
+        assertThat(programIndicators.analyticsPeriodBoundaries().get(0).offsetPeriodType()).
+                isEqualTo(PeriodType.SixMonthly);
+        assertThat(programIndicators.analyticsPeriodBoundaries().get(1).analyticsPeriodBoundaryType())
+                .isEqualTo(AnalyticsPeriodBoundaryType.BEFORE_START_OF_REPORTING_PERIOD);
     }
 }

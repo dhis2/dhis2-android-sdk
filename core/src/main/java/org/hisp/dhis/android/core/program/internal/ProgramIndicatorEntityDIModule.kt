@@ -25,45 +25,39 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.internal
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.program.ProgramIndicator
+import org.hisp.dhis.android.core.program.internal.ProgramIndicatorStore.create
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
-
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 109;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+@Module
+internal class ProgramIndicatorEntityDIModule {
+    @Provides
+    @Reusable
+    fun store(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<ProgramIndicator> {
+        return create(databaseAdapter)
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
-        databaseAdapter.enableWriteAheadLogging();
+    @Provides
+    @Reusable
+    fun handler(impl: ProgramIndicatorHandler): Handler<ProgramIndicator> {
+        return impl
     }
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    @Provides
+    @Reusable
+    fun childrenAppenders(databaseAdapter: DatabaseAdapter): Map<String, ChildrenAppender<ProgramIndicator>> {
+        return mapOf(
+            ProgramIndicatorFields.LEGEND_SETS to ProgramIndicatorLegendSetChildrenAppender.create(databaseAdapter),
+            ProgramIndicatorFields.ANALYTICS_PERIOD_BOUNDARIES to
+                ProgramIndicatorAnalyticsPeriodBoundaryChildrenAppender.create(databaseAdapter)
+        )
     }
 }

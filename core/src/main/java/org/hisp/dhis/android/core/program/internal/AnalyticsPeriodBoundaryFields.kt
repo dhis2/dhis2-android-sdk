@@ -25,45 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.internal
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
+import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
+import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
+import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryTableInfo
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
-
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 109;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
-    }
-
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
-    }
+object AnalyticsPeriodBoundaryFields {
+    private val fh = FieldsHelper<AnalyticsPeriodBoundary>()
+    val allFields: Fields<AnalyticsPeriodBoundary> = Fields.builder<AnalyticsPeriodBoundary>()
+        .fields(
+            fh.field<String>(AnalyticsPeriodBoundaryTableInfo.Columns.BOUNDARY_TARGET),
+            fh.field<String>(AnalyticsPeriodBoundaryTableInfo.Columns.ANALYTICS_PERIOD_BOUNDARY_TYPE),
+            fh.field<Int>(AnalyticsPeriodBoundaryTableInfo.Columns.OFFSET_PERIODS),
+            fh.field<String>(AnalyticsPeriodBoundaryTableInfo.Columns.OFFSET_PERIOD_TYPE)
+        ).build()
 }

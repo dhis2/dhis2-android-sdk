@@ -25,45 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.internal
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
+import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryTableInfo
+import org.hisp.dhis.android.core.program.ProgramIndicator
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
-
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 109;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
+internal class ProgramIndicatorAnalyticsPeriodBoundaryChildrenAppender private
+constructor(private val childStore: LinkStore<AnalyticsPeriodBoundary>) :
+    ChildrenAppender<ProgramIndicator>() {
+    override fun appendChildren(programIndicator: ProgramIndicator): ProgramIndicator {
+        return programIndicator.toBuilder().analyticsPeriodBoundaries(getChildren(programIndicator)).build()
     }
 
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
+    private fun getChildren(o: ProgramIndicator): List<AnalyticsPeriodBoundary> {
+        val whereClause = WhereClauseBuilder().apply {
+            appendKeyStringValue(AnalyticsPeriodBoundaryTableInfo.Columns.PROGRAM_INDICATOR, o.uid())
+        }.build()
+        return this.childStore.selectWhere(whereClause)
+    }
+
+    companion object {
+        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<ProgramIndicator> {
+            return ProgramIndicatorAnalyticsPeriodBoundaryChildrenAppender(
+                AnalyticsPeriodBoundaryStore.create(databaseAdapter)
+            )
         }
-
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
     }
 }

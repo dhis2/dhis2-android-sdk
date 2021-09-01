@@ -25,45 +25,49 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.common.CoreColumns
+import org.hisp.dhis.android.core.common.NameableColumns
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
-
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 109;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
-    }
-
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
+object ProgramIndicatorTableInfo {
+    @JvmField
+    val TABLE_INFO: TableInfo = object : TableInfo() {
+        override fun name(): String {
+            return "ProgramIndicator"
         }
 
-        databaseAdapter.enableWriteAheadLogging();
+        override fun columns(): CoreColumns {
+            return Columns()
+        }
     }
 
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
+    class Columns : NameableColumns() {
+        override fun all(): Array<String> {
+            return CollectionsHelper.appendInNewArray(
+                super.all(),
+                DISPLAY_IN_FORM,
+                EXPRESSION,
+                DIMENSION_ITEM,
+                FILTER,
+                DECIMALS,
+                AGGREGATION_TYPE,
+                PROGRAM,
+                ANALYTICS_TYPE
+            )
+        }
 
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+        companion object {
+            const val DISPLAY_IN_FORM = "displayInForm"
+            const val EXPRESSION = "expression"
+            const val DIMENSION_ITEM = "dimensionItem"
+            const val FILTER = "filter"
+            const val DECIMALS = "decimals"
+            const val AGGREGATION_TYPE = "aggregationType"
+            const val PROGRAM = "program"
+            const val ANALYTICS_TYPE = "analyticsType"
+        }
     }
 }

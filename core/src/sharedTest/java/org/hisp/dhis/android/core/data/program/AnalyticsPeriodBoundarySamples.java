@@ -26,44 +26,22 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+package org.hisp.dhis.android.core.data.program;
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Build;
+import org.hisp.dhis.android.core.period.PeriodType;
+import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary;
+import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryType;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+public class AnalyticsPeriodBoundarySamples {
 
-class BaseDatabaseOpenHelper {
-
-    static final int VERSION = 109;
-
-    private final AssetManager assetManager;
-    private final int targetVersion;
-
-    BaseDatabaseOpenHelper(Context context, int targetVersion) {
-        this.assetManager = context.getAssets();
-        this.targetVersion = targetVersion;
-    }
-
-    void onOpen(DatabaseAdapter databaseAdapter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            databaseAdapter.setForeignKeyConstraintsEnabled(true);
-        }
-
-        databaseAdapter.enableWriteAheadLogging();
-    }
-
-    void onCreate(DatabaseAdapter databaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion);
-    }
-
-    void onUpgrade(DatabaseAdapter databaseAdapter, int oldVersion, int newVersion) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion);
-    }
-
-    private DatabaseMigrationExecutor executor(DatabaseAdapter databaseAdapter) {
-        return new DatabaseMigrationExecutor(databaseAdapter, assetManager);
+    public static AnalyticsPeriodBoundary getAnalyticsPeriodBoundary() {
+        return AnalyticsPeriodBoundary.builder()
+                .id(1L)
+                .programIndicator("program_indicator")
+                .boundaryTarget("Custom boundary")
+                .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.AFTER_END_OF_REPORTING_PERIOD)
+                .offsetPeriods(2)
+                .offsetPeriodType(PeriodType.Daily)
+                .build();
     }
 }

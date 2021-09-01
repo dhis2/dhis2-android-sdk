@@ -26,51 +26,30 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program.internal;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.CoreColumns;
-import org.hisp.dhis.android.core.common.NameableColumns;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-public final class ProgramIndicatorTableInfo {
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl;
+import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary;
 
-    private ProgramIndicatorTableInfo() {
+@Module
+public final class AnalyticsPeriodBoundaryEntityDIModule {
+
+    @Provides
+    @Reusable
+    public LinkStore<AnalyticsPeriodBoundary> store(DatabaseAdapter databaseAdapter) {
+        return AnalyticsPeriodBoundaryStore.create(databaseAdapter);
     }
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
-
-        @Override
-        public String name() {
-            return "ProgramIndicator";
-        }
-
-        @Override
-        public CoreColumns columns() {
-            return new Columns();
-        }
-    };
-
-    public static class Columns extends NameableColumns {
-        public static final String DISPLAY_IN_FORM = "displayInForm";
-        public static final String EXPRESSION = "expression";
-        public static final String DIMENSION_ITEM = "dimensionItem";
-        public static final String FILTER = "filter";
-        public static final String DECIMALS = "decimals";
-        public static final String AGGREGATION_TYPE = "aggregationType";
-        public static final String PROGRAM = "program";
-
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(),
-                    DISPLAY_IN_FORM,
-                    EXPRESSION,
-                    DIMENSION_ITEM,
-                    FILTER,
-                    DECIMALS,
-                    AGGREGATION_TYPE,
-                    PROGRAM
-            );
-        }
+    @Provides
+    @Reusable
+    LinkHandler<AnalyticsPeriodBoundary, AnalyticsPeriodBoundary> handler(LinkStore<AnalyticsPeriodBoundary> store) {
+        return new LinkHandlerImpl<>(store);
     }
 }

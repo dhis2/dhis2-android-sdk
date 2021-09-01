@@ -26,40 +26,12 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program.internal;
+package org.hisp.dhis.android.core.arch.db.adapters.ignore.internal;
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.program.ProgramIndicator;
+import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary;
 
-import java.util.Collections;
-import java.util.Map;
+import java.util.List;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-
-@Module
-public final class ProgramIndicatorEntityDIModule {
-
-    @Provides
-    @Reusable
-    public IdentifiableObjectStore<ProgramIndicator> store(DatabaseAdapter databaseAdapter) {
-        return ProgramIndicatorStore.create(databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    public Handler<ProgramIndicator> handler(ProgramIndicatorHandler impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<ProgramIndicator>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return Collections.singletonMap(ProgramIndicatorFields.LEGEND_SETS,
-                ProgramIndicatorLegendSetChildrenAppender.create(databaseAdapter));
-    }
+public final class IgnoreAnalyticsPeriodBoundaryListColumnAdapter
+        extends IgnoreColumnAdapter<List<AnalyticsPeriodBoundary>> {
 }

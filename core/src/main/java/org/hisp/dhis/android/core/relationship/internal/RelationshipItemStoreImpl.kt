@@ -77,12 +77,12 @@ internal class RelationshipItemStoreImpl private constructor(
     override fun getForRelationshipUidAndConstraintType(
         uid: String,
         constraintType: RelationshipConstraintType
-    ): RelationshipItem {
+    ): RelationshipItem? {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(RelationshipItemTableInfo.Columns.RELATIONSHIP, uid)
             .appendKeyStringValue(RelationshipItemTableInfo.Columns.RELATIONSHIP_ITEM_TYPE, constraintType)
             .build()
-        return selectOneWhere(whereClause)!!
+        return selectOneWhere(whereClause)
     }
 
     override fun getRelatedTeiUids(trackedEntityInstanceUids: List<String>): List<String> {

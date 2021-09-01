@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.Analyt
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.AnalyticsEvaluatorHelper.getReportingPeriods
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.AggregationType
+import org.hisp.dhis.android.core.common.AnalyticsType
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.EventTableInfo
@@ -62,11 +63,11 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
 
         val programIndicator = getProgramIndicator(evaluationItem, metadata)
 
-        // TODO
-        val values: List<String?> = when ("EVENT") {
-            "EVENT" -> evaluateEventProgramIndicator(programIndicator, evaluationItem, metadata)
-            "ENROLLMENT" -> evaluateEnrollmentProgramIndicator(programIndicator, evaluationItem, metadata)
-            else -> TODO()
+        val values: List<String?> = when (programIndicator.analyticsType()) {
+            AnalyticsType.EVENT ->
+                evaluateEventProgramIndicator(programIndicator, evaluationItem, metadata)
+            AnalyticsType.ENROLLMENT, null ->
+                evaluateEnrollmentProgramIndicator(programIndicator, evaluationItem, metadata)
         }
 
         return aggregateValues(programIndicator.aggregationType(), values)

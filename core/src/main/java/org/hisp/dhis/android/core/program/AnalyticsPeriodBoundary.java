@@ -71,7 +71,7 @@ public abstract class AnalyticsPeriodBoundary implements CoreObject {
 
     @Nullable
     public BoundaryTargetType boundaryTargetType() {
-        return BoundaryTargetType.Companion.getType(boundaryTarget());
+        return BoundaryTargetType.getType(boundaryTarget());
     }
 
     public static AnalyticsPeriodBoundary create(Cursor cursor) {

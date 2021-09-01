@@ -36,6 +36,7 @@ sealed class BoundaryTargetType {
     data class Custom(val customBoundaryTarget: String) : BoundaryTargetType()
 
     companion object {
+        @JvmStatic
         fun getType(boundaryTarget: String?): BoundaryTargetType {
             return when (boundaryTarget) {
                 "EVENT_DATE" -> EventDate

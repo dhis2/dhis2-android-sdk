@@ -34,12 +34,12 @@ import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
-import org.hisp.dhis.android.core.period.Period
-import org.hisp.dhis.android.core.period.PeriodTableInfo
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkTableInfo as cToCcInfo
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLinkTableInfo as cocToCoInfo
 import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo as cocInfo
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
+import org.hisp.dhis.android.core.period.Period
+import org.hisp.dhis.android.core.period.PeriodTableInfo
 
 internal object AnalyticsEvaluatorHelper {
 
@@ -102,8 +102,8 @@ internal object AnalyticsEvaluatorHelper {
     fun getInPeriodsClause(periods: List<Period>): String {
         return "SELECT ${PeriodTableInfo.Columns.PERIOD_ID} " +
             "FROM ${PeriodTableInfo.TABLE_INFO.name()} " +
-            "WHERE ${periods.joinToString(" OR ") { 
-                "(${getPeriodWhereClause(PeriodTableInfo.Columns.START_DATE, PeriodTableInfo.Columns.END_DATE, it)})" 
+            "WHERE ${periods.joinToString(" OR ") {
+                "(${getPeriodWhereClause(PeriodTableInfo.Columns.START_DATE, PeriodTableInfo.Columns.END_DATE, it)})"
             }}"
     }
 

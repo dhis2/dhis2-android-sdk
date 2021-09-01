@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
+import java.lang.NumberFormatException
 import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
@@ -47,7 +48,6 @@ import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicatorEngine
-import java.lang.NumberFormatException
 
 internal class ProgramIndicatorEvaluator @Inject constructor(
     private val eventStore: EventStore,
@@ -106,17 +106,19 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
                 when (entry.key) {
                     is Dimension.Period -> {
                         val reportingPeriods = getReportingPeriods(entry.value, metadata)
-                        appendComplexQuery(WhereClauseBuilder().apply {
-                            reportingPeriods.forEach { period ->
-                                appendOrComplexQuery(
-                                    getPeriodWhereClause(
-                                        columnStart = EventTableInfo.Columns.EVENT_DATE,
-                                        columnEnd = EventTableInfo.Columns.EVENT_DATE,
-                                        period = period
+                        appendComplexQuery(
+                            WhereClauseBuilder().apply {
+                                reportingPeriods.forEach { period ->
+                                    appendOrComplexQuery(
+                                        getPeriodWhereClause(
+                                            columnStart = EventTableInfo.Columns.EVENT_DATE,
+                                            columnEnd = EventTableInfo.Columns.EVENT_DATE,
+                                            period = period
+                                        )
                                     )
-                                )
-                            }
-                        }.build())
+                                }
+                            }.build()
+                        )
                     }
                     is Dimension.OrganisationUnit ->
                         appendOrgunitWhereClause(EventTableInfo.Columns.ORGANISATION_UNIT, entry.value, this, metadata)
@@ -154,20 +156,25 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
                 when (entry.key) {
                     is Dimension.Period -> {
                         val reportingPeriods = getReportingPeriods(entry.value, metadata)
-                        appendComplexQuery(WhereClauseBuilder().apply {
-                            reportingPeriods.forEach { period ->
-                                appendOrComplexQuery(
-                                    getPeriodWhereClause(
-                                        columnStart = EnrollmentTableInfo.Columns.ENROLLMENT_DATE,
-                                        columnEnd = EnrollmentTableInfo.Columns.ENROLLMENT_DATE,
-                                        period = period
+                        appendComplexQuery(
+                            WhereClauseBuilder().apply {
+                                reportingPeriods.forEach { period ->
+                                    appendOrComplexQuery(
+                                        getPeriodWhereClause(
+                                            columnStart = EnrollmentTableInfo.Columns.ENROLLMENT_DATE,
+                                            columnEnd = EnrollmentTableInfo.Columns.ENROLLMENT_DATE,
+                                            period = period
+                                        )
                                     )
-                                )
-                            }
-                        }.build())
+                                }
+                            }.build()
+                        )
                     }
                     is Dimension.OrganisationUnit ->
-                        appendOrgunitWhereClause(EnrollmentTableInfo.Columns.ORGANISATION_UNIT, entry.value, this, metadata)
+                        appendOrgunitWhereClause(
+                            EnrollmentTableInfo.Columns.ORGANISATION_UNIT,
+                            entry.value, this, metadata
+                        )
                     is Dimension.Category -> TODO()
                     else -> {
                     }
@@ -202,5 +209,4 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
             return null
         }
     }
-
 }

@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
+import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
@@ -38,7 +39,6 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
-import javax.inject.Inject
 
 internal class DataElementEvaluator @Inject constructor(
     private val databaseAdapter: DatabaseAdapter
@@ -74,8 +74,8 @@ internal class DataElementEvaluator @Inject constructor(
 
         val sqlQuery =
             "SELECT $aggregator(${DataValueTableInfo.Columns.VALUE}) " +
-                    "FROM ${DataValueTableInfo.TABLE_INFO.name()} " +
-                    "WHERE $whereClause"
+                "FROM ${DataValueTableInfo.TABLE_INFO.name()} " +
+                "WHERE $whereClause"
 
         return databaseAdapter.rawQuery(sqlQuery)?.use { c ->
             c.moveToFirst()
@@ -105,7 +105,7 @@ internal class DataElementEvaluator @Inject constructor(
                     else ->
                         throw AnalyticsException.InvalidArguments(
                             "Invalid arguments: unexpected " +
-                                    "dataItem ${item.javaClass.name} in DataElement Evaluator."
+                                "dataItem ${item.javaClass.name} in DataElement Evaluator."
                         )
                 }
             }.build()
@@ -176,7 +176,7 @@ internal class DataElementEvaluator @Inject constructor(
                         }
                     else -> throw AnalyticsException.InvalidArguments(
                         "Invalid arguments: dimension is not " +
-                                "dataelement or operand."
+                            "dataelement or operand."
                     )
                 }
                 getDataElementAggregator(aggregationType)

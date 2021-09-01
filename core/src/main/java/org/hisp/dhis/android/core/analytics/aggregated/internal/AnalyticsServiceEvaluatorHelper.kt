@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
+import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionalValue
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.AnalyticsEvaluator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.ProgramIndicatorEvaluator
-import javax.inject.Inject
 
 internal class AnalyticsServiceEvaluatorHelper @Inject constructor(
     private val dataElementEvaluator: DataElementEvaluator,

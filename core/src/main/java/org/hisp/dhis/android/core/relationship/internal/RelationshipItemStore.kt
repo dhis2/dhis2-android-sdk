@@ -38,7 +38,7 @@ internal interface RelationshipItemStore : ObjectWithoutUidStore<RelationshipIte
     fun getForRelationshipUidAndConstraintType(
         uid: String,
         constraintType: RelationshipConstraintType
-    ): RelationshipItem
+    ): RelationshipItem?
 
     fun getRelatedTeiUids(trackedEntityInstanceUids: List<String>): List<String>
 

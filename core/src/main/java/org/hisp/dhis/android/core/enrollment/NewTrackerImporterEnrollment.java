@@ -79,12 +79,12 @@ public abstract class NewTrackerImporterEnrollment extends BaseDeletableDataObje
     public abstract Date updatedAt();
 
     @Nullable
-    @JsonIgnore()
+    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date createdAtClient();
 
     @Nullable
-    @JsonIgnore()
+    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date updatedAtClient();
 

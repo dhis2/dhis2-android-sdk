@@ -84,12 +84,12 @@ public abstract class Enrollment extends BaseDeletableDataObject implements Obje
     public abstract Date lastUpdated();
 
     @Nullable
-    @JsonIgnore()
+    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date createdAtClient();
 
     @Nullable
-    @JsonIgnore()
+    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdatedAtClient();
 

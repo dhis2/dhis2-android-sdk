@@ -65,7 +65,7 @@ internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegra
     private val helper = BaseTrackerDataIntegrationHelper(databaseAdapter)
 
     @Test
-    fun should_aggregate_value_in_hierarchy() {
+    fun should_aggregate_data_from_multiple_teis() {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
@@ -83,11 +83,20 @@ internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegra
         helper.insertTrackedEntityDataValue(event1, dataElement1.uid(), "10")
         helper.insertTrackedEntityDataValue(event2, dataElement1.uid(), "20")
 
-        val programIndicator = setProgramIndicator(
+        val valueSum = evaluateIndicator(setProgramIndicator(
             expression = de(programStage1.uid(), dataElement1.uid())
-        )
+        ))
+        assertThat(valueSum).isEqualTo("30.0")
 
-        val evaluationItem = AnalyticsServiceEvaluationItem(
+        val valueAvg = evaluateIndicator(setProgramIndicator(
+            expression = de(programStage1.uid(), dataElement1.uid()),
+            aggregationType = AggregationType.AVERAGE
+        ))
+        assertThat(valueAvg).isEqualTo("15.0")
+    }
+
+    private fun evaluateIndicator(programIndicator: ProgramIndicator): String? {
+        val evaluationItemSum = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
                 DimensionItem.DataItem.ProgramIndicatorItem(programIndicator.uid())
             ),
@@ -97,12 +106,10 @@ internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegra
             )
         )
 
-        val value = programIndicatorEvaluator.evaluate(
-            evaluationItem,
+        return programIndicatorEvaluator.evaluate(
+            evaluationItemSum,
             metadata + (programIndicator.uid() to MetadataItem.ProgramIndicatorItem(programIndicator))
         )
-
-        assertThat(value).isEqualTo("30.0")
     }
 
     private fun setProgramIndicator(

@@ -29,6 +29,9 @@ package org.hisp.dhis.android.core.program.programindicatorengine
 
 import androidx.test.runner.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.*
 import org.hisp.dhis.android.core.category.CategoryCombo
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo
 import org.hisp.dhis.android.core.category.internal.CreateCategoryComboUtils
@@ -48,17 +51,12 @@ import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerData
 import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerDataIntegrationHelper.Companion.today
 import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerDataIntegrationHelper.Companion.twoDaysBefore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher
 import org.junit.*
 import org.junit.runner.RunWith
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.*
 
 @RunWith(AndroidJUnit4::class)
 class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() {
@@ -319,8 +317,10 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         eventDate: Date? = null,
         lastUpdated: Date? = null
     ) {
-        helper.createEvent(eventUid, programUid, programStageUid, enrollmentUid, orgunitUid,
-            deleted, eventDate, lastUpdated)
+        helper.createEvent(
+            eventUid, programUid, programStageUid, enrollmentUid, orgunitUid,
+            deleted, eventDate, lastUpdated
+        )
     }
 
     private fun createSingleEvent(
@@ -330,8 +330,10 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         eventDate: Date? = null,
         lastUpdated: Date? = null
     ) {
-        helper.createEvent(eventUid, programUid, programStageUid, null, orgunitUid,
-            deleted, eventDate, lastUpdated)
+        helper.createEvent(
+            eventUid, programUid, programStageUid, null, orgunitUid,
+            deleted, eventDate, lastUpdated
+        )
     }
 
     private fun setProgramIndicatorExpression(expression: String) {

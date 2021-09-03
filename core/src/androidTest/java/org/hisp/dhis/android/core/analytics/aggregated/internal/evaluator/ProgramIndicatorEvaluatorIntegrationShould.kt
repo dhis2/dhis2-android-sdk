@@ -70,28 +70,36 @@ internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegra
         val enrollment1 = generator.generate()
         helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
         val event1 = generator.generate()
-        helper.createTrackerEvent(event1, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
-            eventDate = firstNovember)
+        helper.createTrackerEvent(
+            event1, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
+            eventDate = firstNovember
+        )
 
         helper.createTrackedEntity(trackedEntity2.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment2 = generator.generate()
         helper.createEnrollment(trackedEntity2.uid(), enrollment2, program.uid(), orgunitChild1.uid())
         val event2 = generator.generate()
-        helper.createTrackerEvent(event2, enrollment2, program.uid(), programStage1.uid(), orgunitChild1.uid(),
-            eventDate = firstNovember)
+        helper.createTrackerEvent(
+            event2, enrollment2, program.uid(), programStage1.uid(), orgunitChild1.uid(),
+            eventDate = firstNovember
+        )
 
         helper.insertTrackedEntityDataValue(event1, dataElement1.uid(), "10")
         helper.insertTrackedEntityDataValue(event2, dataElement1.uid(), "20")
 
-        val valueSum = evaluateIndicator(setProgramIndicator(
-            expression = de(programStage1.uid(), dataElement1.uid())
-        ))
+        val valueSum = evaluateIndicator(
+            setProgramIndicator(
+                expression = de(programStage1.uid(), dataElement1.uid())
+            )
+        )
         assertThat(valueSum).isEqualTo("30.0")
 
-        val valueAvg = evaluateIndicator(setProgramIndicator(
-            expression = de(programStage1.uid(), dataElement1.uid()),
-            aggregationType = AggregationType.AVERAGE
-        ))
+        val valueAvg = evaluateIndicator(
+            setProgramIndicator(
+                expression = de(programStage1.uid(), dataElement1.uid()),
+                aggregationType = AggregationType.AVERAGE
+            )
+        )
         assertThat(valueAvg).isEqualTo("15.0")
     }
 

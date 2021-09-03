@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.program.programindicatorengine
 
+import java.util.*
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.ObjectWithUid
@@ -42,7 +43,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStoreImpl
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl
-import java.util.*
 
 open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: DatabaseAdapter) {
 
@@ -63,7 +63,8 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         enrollmentUid: String,
         programUid: String,
         orgunitUid: String,
-        enrollmentDate: Date? = null, incidentDate: Date? = null
+        enrollmentDate: Date? = null,
+        incidentDate: Date? = null
     ) {
         val enrollment = Enrollment.builder().uid(enrollmentUid).organisationUnit(orgunitUid).program(programUid)
             .enrollmentDate(enrollmentDate).incidentDate(incidentDate).trackedEntityInstance(teiUid).build()

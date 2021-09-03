@@ -31,6 +31,7 @@ import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
 import org.hisp.dhis.android.core.category.*
 import org.hisp.dhis.android.core.common.AggregationType
+import org.hisp.dhis.android.core.common.FormType
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.dataelement.DataElement
@@ -38,8 +39,13 @@ import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodType
+import org.hisp.dhis.android.core.program.Program
+import org.hisp.dhis.android.core.program.ProgramIndicator
+import org.hisp.dhis.android.core.program.ProgramStage
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 
-object DataElementEvaluatorSamples {
+object BaseEvaluatorSamples {
 
     val generator = UidGeneratorImpl()
 
@@ -144,6 +150,40 @@ object DataElementEvaluatorSamples {
         .periodId("2019Q4")
         .periodType(PeriodType.Quarterly)
         .startDate(DateUtils.DATE_FORMAT.parse("2019-10-01T00:00:00.000"))
-        .endDate(DateUtils.DATE_FORMAT.parse("2021-12-31T23:59:59.999"))
+        .endDate(DateUtils.DATE_FORMAT.parse("2019-12-31T23:59:59.999"))
         .build()
+
+    val trackedEntityType: TrackedEntityType = TrackedEntityType.builder()
+        .uid(generator.generate())
+        .build()
+
+    val program: Program = Program.builder()
+        .uid(generator.generate())
+        .trackedEntityType(trackedEntityType)
+        .categoryCombo(ObjectWithUid.create(categoryCombo.uid()))
+        .build()
+
+    val programStage1: ProgramStage = ProgramStage.builder()
+        .uid(generator.generate())
+        .program(ObjectWithUid.create(program.uid()))
+        .formType(FormType.DEFAULT)
+        .build()
+
+    val programStage2: ProgramStage = ProgramStage.builder()
+        .uid(generator.generate())
+        .program(ObjectWithUid.create(program.uid()))
+        .formType(FormType.DEFAULT)
+        .build()
+
+    val trackedEntity1: TrackedEntityInstance = TrackedEntityInstance.builder()
+        .uid(generator.generate())
+        .trackedEntityType(trackedEntityType.uid())
+        .build()
+
+    val trackedEntity2: TrackedEntityInstance = TrackedEntityInstance.builder()
+        .uid(generator.generate())
+        .trackedEntityType(trackedEntityType.uid())
+        .build()
+
+    val firstNovember = DateUtils.DATE_FORMAT.parse("2019-11-01T00:00:00.000")
 }

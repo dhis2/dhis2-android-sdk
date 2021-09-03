@@ -33,6 +33,9 @@ import com.google.common.base.Joiner;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.apache.commons.lang3.Validate;
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluator;
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.ProgramIndicatorEvaluator;
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.IndicatorContext;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 import org.hisp.dhis.android.core.constant.Constant;
@@ -137,6 +140,10 @@ public class CommonExpressionVisitor
     private ProgramIndicatorContext programIndicatorContext;
 
     private ProgramIndicatorExecutor programIndicatorExecutor;
+
+    // Analytic indicator
+
+    private IndicatorContext indicatorContext;
 
 
     // -------------------------------------------------------------------------
@@ -330,6 +337,10 @@ public class CommonExpressionVisitor
         return programIndicatorExecutor;
     }
 
+    public IndicatorContext getIndicatorContext() {
+        return indicatorContext;
+    }
+
     // -------------------------------------------------------------------------
     // Builder
     // -------------------------------------------------------------------------
@@ -389,6 +400,11 @@ public class CommonExpressionVisitor
             return this;
         }
 
+        public Builder withIndicatorContext(IndicatorContext indicatorContext) {
+            this.visitor.indicatorContext = indicatorContext;
+            return this;
+        }
+
         private CommonExpressionVisitor validateCommonProperties() {
             Validate.notNull(this.visitor.constantMap, missingProperty("constantMap"));
             Validate.notNull(this.visitor.itemMap, missingProperty("itemMap"));
@@ -408,6 +424,12 @@ public class CommonExpressionVisitor
             Validate.notNull(this.visitor.programIndicatorContext, missingProperty("programIndicatorContext"));
             Validate.notNull(this.visitor.programIndicatorExecutor, missingProperty("programIndicatorExecutor"));
             Validate.notNull(this.visitor.attributeStore, missingProperty("trackedEntityAttributeStore"));
+
+            return validateCommonProperties();
+        }
+
+        public CommonExpressionVisitor buildForAnalyticsIndicator() {
+            Validate.notNull(this.visitor.indicatorContext, missingProperty("indicatorContext"));
 
             return validateCommonProperties();
         }

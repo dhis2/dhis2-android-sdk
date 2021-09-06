@@ -28,6 +28,14 @@
 
 package org.hisp.dhis.android.core.parser.internal.service;
 
+import static org.hisp.dhis.android.core.parser.internal.expression.ParserUtils.COMMON_EXPRESSION_ITEMS;
+import static org.hisp.dhis.android.core.parser.internal.expression.ParserUtils.ITEM_EVALUATE;
+import static org.hisp.dhis.android.core.parser.internal.expression.ParserUtils.ITEM_GET_DESCRIPTIONS;
+import static org.hisp.dhis.android.core.parser.internal.expression.ParserUtils.ITEM_GET_IDS;
+import static org.hisp.dhis.android.core.parser.internal.expression.ParserUtils.ITEM_REGENERATE;
+import static org.hisp.dhis.android.core.validation.MissingValueStrategy.NEVER_SKIP;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.HASH_BRACE;
+
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
@@ -39,7 +47,6 @@ import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVis
 import org.hisp.dhis.android.core.parser.internal.expression.CommonParser;
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItemMethod;
-import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils;
 import org.hisp.dhis.android.core.parser.internal.expression.literal.RegenerateLiteral;
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimItemDataElementAndOperand;
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemId;
@@ -53,14 +60,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Inject;
-
-import static org.hisp.dhis.android.core.parser.internal.expression.ParserUtils.COMMON_EXPRESSION_ITEMS;
-import static org.hisp.dhis.android.core.parser.internal.expression.ParserUtils.ITEM_EVALUATE;
-import static org.hisp.dhis.android.core.parser.internal.expression.ParserUtils.ITEM_GET_DESCRIPTIONS;
-import static org.hisp.dhis.android.core.parser.internal.expression.ParserUtils.ITEM_GET_IDS;
-import static org.hisp.dhis.android.core.parser.internal.expression.ParserUtils.ITEM_REGENERATE;
-import static org.hisp.dhis.android.core.validation.MissingValueStrategy.NEVER_SKIP;
-import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.HASH_BRACE;
 
 @SuppressWarnings({
         "PMD.TooManyStaticImports",

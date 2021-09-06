@@ -28,15 +28,10 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine
 
-import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.dataitem.DataElementItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.dataitem.ProgramIndicatorItem
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.dataitem.ProgramItemAttribute
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.dataitem.ProgramItemPsEventdate
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.dataitem.ProgramItemStageElement
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.function.*
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.variable.ProgramVariableItem
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser
 
 /*

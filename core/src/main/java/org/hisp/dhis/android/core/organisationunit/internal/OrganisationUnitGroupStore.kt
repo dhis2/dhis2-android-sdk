@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroupTableInfo
 
+@Suppress("MagicNumber")
 internal object OrganisationUnitGroupStore {
 
     private val BINDER: StatementBinder<OrganisationUnitGroup> =

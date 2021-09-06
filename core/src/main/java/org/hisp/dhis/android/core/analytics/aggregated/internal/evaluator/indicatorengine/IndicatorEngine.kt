@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine
 
+import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
@@ -46,7 +47,6 @@ import org.hisp.dhis.android.core.parser.internal.service.ExpressionService
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
-import javax.inject.Inject
 
 internal class IndicatorEngine @Inject constructor(
     private val indicatorTypeStore: IdentifiableObjectStore<IndicatorType>,
@@ -59,9 +59,11 @@ internal class IndicatorEngine @Inject constructor(
     private val expressionService: ExpressionService
 ) {
 
-    fun evaluateIndicator(indicator: Indicator,
-                          contextEvaluationItem: AnalyticsServiceEvaluationItem,
-                          contextMetadata: Map<String, MetadataItem>): String? {
+    fun evaluateIndicator(
+        indicator: Indicator,
+        contextEvaluationItem: AnalyticsServiceEvaluationItem,
+        contextMetadata: Map<String, MetadataItem>
+    ): String? {
 
         val indicatorContext = IndicatorContext(
             dataElementStore = dataElementStore,
@@ -109,8 +111,10 @@ internal class IndicatorEngine @Inject constructor(
             return mapByUid(constants)
         }
 
-    private fun getDays(contextEvaluationItem: AnalyticsServiceEvaluationItem,
-                        contextMetadata: Map<String, MetadataItem>): Int? {
+    private fun getDays(
+        contextEvaluationItem: AnalyticsServiceEvaluationItem,
+        contextMetadata: Map<String, MetadataItem>
+    ): Int? {
         val periods = (contextEvaluationItem.dimensionItems + contextEvaluationItem.filters)
             .map { it as DimensionItem }
             .mapNotNull { item ->

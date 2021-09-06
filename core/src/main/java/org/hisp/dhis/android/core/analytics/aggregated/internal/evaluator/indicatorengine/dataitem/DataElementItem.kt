@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
+@Suppress("ReturnCount")
 class DataElementItem : ExpressionItem {
 
     override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
@@ -53,7 +54,7 @@ class DataElementItem : ExpressionItem {
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(dataItem),
             filters = visitor.indicatorContext.evaluationItem.filters +
-                    visitor.indicatorContext.evaluationItem.dimensionItems.map { it as DimensionItem }
+                visitor.indicatorContext.evaluationItem.dimensionItems.map { it as DimensionItem }
         )
 
         val metadataEntry = when {

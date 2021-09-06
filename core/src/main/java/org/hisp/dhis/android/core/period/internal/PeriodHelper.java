@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.period.PeriodType;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

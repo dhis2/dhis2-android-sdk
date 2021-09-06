@@ -91,20 +91,7 @@ internal class IndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegrationSho
 
         val indicator = createIndicator(numerator = "${de(dataElement1.uid())} + ${de(dataElement2.uid())}")
 
-        val evaluationItem = AnalyticsServiceEvaluationItem(
-            dimensionItems = listOf(
-                DimensionItem.DataItem.IndicatorItem(indicator.uid()),
-                DimensionItem.PeriodItem.Absolute(periodDec.periodId()!!)
-            ),
-            filters = listOf(
-                DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid())
-            )
-        )
-
-        val value = indicatorEvaluator.evaluate(
-            evaluationItem,
-            metadata + (indicator.uid() to MetadataItem.IndicatorItem(indicator))
-        )
+        val value = evaluateForThisMonth(indicator)
 
         assertThat(value).isEqualTo("5.0")
     }
@@ -118,28 +105,51 @@ internal class IndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegrationSho
             denominator = "[days]"
         )
 
+        val value = evaluateForThisMonth(indicator)
+
+        assertThat(value).isEqualTo("2.0")
+    }
+
+    @Test
+    fun should_round_using_decimals_property() {
+        createDataValue("10", dataElementUid = dataElement1.uid())
+        createDataValue("3", dataElementUid = dataElement2.uid())
+
+        val indicator = createIndicator(
+            numerator = de(dataElement1.uid()),
+            denominator = de(dataElement2.uid()),
+            decimals = 4
+        )
+
+        val value = evaluateForThisMonth(indicator)
+
+        assertThat(value).isEqualTo("3.3333")
+    }
+
+    private fun evaluateForThisMonth(
+        indicator: Indicator,
+        relativePeriod: RelativePeriod = RelativePeriod.THIS_MONTH
+    ): String? {
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
                 DimensionItem.DataItem.IndicatorItem(indicator.uid()),
                 DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid())
             ),
             filters = listOf(
-                DimensionItem.PeriodItem.Relative(RelativePeriod.THIS_MONTH)
+                DimensionItem.PeriodItem.Relative(relativePeriod)
             )
         )
 
-        val value = indicatorEvaluator.evaluate(
+        return indicatorEvaluator.evaluate(
             evaluationItem,
             metadata + (indicator.uid() to MetadataItem.IndicatorItem(indicator))
         )
-
-        assertThat(value).isEqualTo("2.0")
     }
-
 
     private fun createIndicator(
         numerator: String? = "1",
         denominator: String? = "1",
+        decimals: Int? = null,
         factor: Int? = 1
     ): Indicator {
         val indicatorType = IndicatorType.builder()
@@ -150,6 +160,7 @@ internal class IndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegrationSho
             .uid(generator.generate())
             .displayName("Indicator")
             .indicatorType(ObjectWithUid.create(indicatorType.uid()))
+            .decimals(decimals)
             .numerator(numerator)
             .denominator(denominator)
             .build()

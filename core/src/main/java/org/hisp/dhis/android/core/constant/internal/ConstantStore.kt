@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWit
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.constant.ConstantTableInfo
 
+@Suppress("MagicNumber")
 internal object ConstantStore {
     private val BINDER: StatementBinder<Constant> = object : IdentifiableStatementBinder<Constant>() {
         override fun bindToStatement(o: Constant, w: StatementWrapper) {

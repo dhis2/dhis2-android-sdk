@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.core.parser.internal.expression;
 
+import static org.hisp.dhis.android.core.parser.internal.expression.ParserUtils.DOUBLE_VALUE_IF_NULL;
+
 import com.google.common.base.Joiner;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.apache.commons.lang3.Validate;
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluator;
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.ProgramIndicatorEvaluator;
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.IndicatorContext;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.category.CategoryOptionCombo;
@@ -55,8 +55,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import static org.hisp.dhis.android.core.parser.internal.expression.ParserUtils.DOUBLE_VALUE_IF_NULL;
 
 @SuppressWarnings({"PMD.TooManyFields"})
 public class CommonExpressionVisitor

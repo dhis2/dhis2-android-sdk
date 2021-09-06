@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine
 
+import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluator
@@ -42,6 +43,8 @@ import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVis
 import org.hisp.dhis.android.core.parser.internal.expression.CommonParser
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 import org.hisp.dhis.android.core.parser.internal.service.ExpressionService
+import org.hisp.dhis.android.core.period.Period
+import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
 import javax.inject.Inject
 
@@ -76,7 +79,9 @@ internal class IndicatorEngine @Inject constructor(
 
         val visitor = newVisitor(indicatorContext)
 
-        // TODO Set days
+        getDays(contextEvaluationItem, contextMetadata)?.let {
+            visitor.days = it.toDouble()
+        }
 
         val numerator = evaluate(indicator.numerator()!!, visitor)
         val denominator = evaluate(indicator.denominator()!!, visitor)
@@ -103,6 +108,36 @@ internal class IndicatorEngine @Inject constructor(
             val constants = constantStore.selectAll()
             return mapByUid(constants)
         }
+
+    private fun getDays(contextEvaluationItem: AnalyticsServiceEvaluationItem,
+                        contextMetadata: Map<String, MetadataItem>): Int? {
+        val periods = (contextEvaluationItem.dimensionItems + contextEvaluationItem.filters)
+            .map { it as DimensionItem }
+            .mapNotNull { item ->
+                when (item) {
+                    is DimensionItem.PeriodItem.Absolute -> {
+                        contextMetadata[item.periodId]?.let {
+                            listOf((it as MetadataItem.PeriodItem).item)
+                        }
+                    }
+                    is DimensionItem.PeriodItem.Relative -> {
+                        contextMetadata[item.relative.name]?.let {
+                            (it as MetadataItem.RelativePeriodItem).periods
+                        }
+                    }
+                    else -> null
+                }
+            }.flatten()
+
+        val start = periods.mapNotNull { it.startDate() }.minBy { it.time }
+        val end = periods.mapNotNull { it.endDate() }.maxBy { it.time }
+
+        return if (start != null && end != null) {
+            return PeriodHelper.getDays(Period.builder().startDate(start).endDate(end).build())
+        } else {
+            null
+        }
+    }
 
     private fun newVisitor(indicatorContext: IndicatorContext): CommonExpressionVisitor {
         return CommonExpressionVisitor.newBuilder()

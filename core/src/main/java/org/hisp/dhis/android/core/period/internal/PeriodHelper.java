@@ -66,7 +66,7 @@ public class PeriodHelper {
 
     public static Integer getDays(Period period) {
         long diff = period.endDate().getTime() - period.startDate().getTime();
-        return (int) TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+        return (int) Math.ceil(diff / (1000.0 * 60.0 * 60.0 * 24.0));
     }
 
     /**

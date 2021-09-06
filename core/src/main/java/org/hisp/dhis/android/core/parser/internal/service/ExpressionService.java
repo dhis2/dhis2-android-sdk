@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVis
 import org.hisp.dhis.android.core.parser.internal.expression.CommonParser;
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItemMethod;
+import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils;
 import org.hisp.dhis.android.core.parser.internal.expression.literal.RegenerateLiteral;
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimItemDataElementAndOperand;
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemId;
@@ -199,7 +200,11 @@ public class ExpressionService {
                 }
         }
 
-        return value;
+        if (value instanceof Double && Double.isNaN((double) value)) {
+            return null;
+        } else {
+            return value;
+        }
     }
 
     public String regenerateExpression(String expression,

@@ -53,6 +53,8 @@ import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
+import org.hisp.dhis.android.core.indicator.internal.IndicatorStore
+import org.hisp.dhis.android.core.indicator.internal.IndicatorTypeStore
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.period.internal.PeriodStoreImpl
 import org.hisp.dhis.android.core.program.internal.ProgramStageStore
@@ -82,6 +84,9 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
     protected val trackedEntityTypeStore = TrackedEntityTypeStore.create(databaseAdapter)
     protected val programStore = ProgramStore.create(databaseAdapter)
     protected val programStageStore = ProgramStageStore.create(databaseAdapter)
+
+    protected val indicatorTypeStore = IndicatorTypeStore.create(databaseAdapter)
+    protected val indicatorStore = IndicatorStore.create(databaseAdapter)
 
     protected val metadata: Map<String, MetadataItem> = mapOf(
         orgunitParent.uid() to MetadataItem.OrganisationUnitItem(orgunitParent),
@@ -154,5 +159,7 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
         trackedEntityTypeStore.delete()
         programStageStore.delete()
         programStore.delete()
+        indicatorTypeStore.delete()
+        indicatorStore.delete()
     }
 }

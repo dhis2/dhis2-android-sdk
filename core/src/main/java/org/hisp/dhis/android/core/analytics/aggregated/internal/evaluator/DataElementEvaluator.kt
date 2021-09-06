@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.AnalyticsEvaluatorHelper.getItemsByDimension
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.AggregationType
@@ -43,25 +44,31 @@ internal class DataElementEvaluator @Inject constructor(
     private val databaseAdapter: DatabaseAdapter
 ) : AnalyticsEvaluator {
 
+    companion object {
+        private const val Sum = "SUM"
+        private const val Avg = "AVG"
+        private const val Count = "COUNT"
+        private const val Max = "MAX"
+        private const val Min = "MIN"
+    }
+
     override fun evaluate(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>
     ): String? {
-        val items = (evaluationItem.dimensionItems + evaluationItem.filters)
-            .map { it as DimensionItem }
-            .groupBy { it.dimension }
+        val items = getItemsByDimension(evaluationItem)
 
-        val whereClause =
-            items.entries.fold(WhereClauseBuilder()) { builder, entry ->
+        val whereClause = WhereClauseBuilder().apply {
+            items.entries.forEach { entry ->
                 when (entry.key) {
-                    is Dimension.Data -> appendDataWhereClause(entry.value, builder)
-                    is Dimension.Period -> appendPeriodWhereClause(entry.value, builder, metadata)
-                    is Dimension.OrganisationUnit -> appendOrgunitWhereClause(entry.value, builder, metadata)
-                    is Dimension.Category -> appendCategoryWhereClause(entry.value, builder)
+                    is Dimension.Data -> appendDataWhereClause(entry.value, this)
+                    is Dimension.Period -> appendPeriodWhereClause(entry.value, this, metadata)
+                    is Dimension.OrganisationUnit -> appendOrgunitWhereClause(entry.value, this, metadata)
+                    is Dimension.Category -> appendCategoryWhereClause(entry.value, this)
                 }
             }
-                .appendKeyNumberValue(DataValueTableInfo.Columns.DELETED, 0)
-                .build()
+            appendKeyNumberValue(DataValueTableInfo.Columns.DELETED, 0)
+        }.build()
 
         val aggregator = getAggregator(evaluationItem, metadata)
 
@@ -111,27 +118,12 @@ internal class DataElementEvaluator @Inject constructor(
         builder: WhereClauseBuilder,
         metadata: Map<String, MetadataItem>
     ): WhereClauseBuilder {
-        val innerClause = items.map { it as DimensionItem.PeriodItem }
-            .foldRight(WhereClauseBuilder()) { item, innerBuilder ->
-                when (item) {
-                    is DimensionItem.PeriodItem.Absolute -> {
-                        val periodItem = metadata[item.periodId] as MetadataItem.PeriodItem
-                        innerBuilder.appendOrInSubQuery(
-                            DataValueTableInfo.Columns.PERIOD,
-                            AnalyticsEvaluatorHelper.getInPeriodClause(periodItem.item)
-                        )
-                    }
-                    is DimensionItem.PeriodItem.Relative -> {
-                        val relativeItem = metadata[item.id] as MetadataItem.RelativePeriodItem
-                        innerBuilder.appendOrInSubQuery(
-                            DataValueTableInfo.Columns.PERIOD,
-                            AnalyticsEvaluatorHelper.getInPeriodsClause(relativeItem.periods)
-                        )
-                    }
-                }
-            }.build()
+        val reportingPeriods = AnalyticsEvaluatorHelper.getReportingPeriods(items, metadata)
 
-        return builder.appendComplexQuery(innerClause)
+        return builder.appendInSubQuery(
+            DataValueTableInfo.Columns.PERIOD,
+            AnalyticsEvaluatorHelper.getInPeriodsClause(reportingPeriods)
+        )
     }
 
     private fun appendOrgunitWhereClause(
@@ -139,48 +131,23 @@ internal class DataElementEvaluator @Inject constructor(
         builder: WhereClauseBuilder,
         metadata: Map<String, MetadataItem>
     ): WhereClauseBuilder {
-        val innerClause = items.map { it as DimensionItem.OrganisationUnitItem }
-            .foldRight(WhereClauseBuilder()) { item, innerBuilder ->
-                when (item) {
-                    is DimensionItem.OrganisationUnitItem.Absolute ->
-                        innerBuilder.appendOrInSubQuery(
-                            DataValueTableInfo.Columns.ORGANISATION_UNIT,
-                            AnalyticsEvaluatorHelper.getOrgunitClause(item.uid)
-                        )
-                    is DimensionItem.OrganisationUnitItem.Level ->
-                        innerBuilder.appendOrInSubQuery(
-                            DataValueTableInfo.Columns.ORGANISATION_UNIT,
-                            AnalyticsEvaluatorHelper.getLevelOrgunitClause(item.level)
-                        )
-                    is DimensionItem.OrganisationUnitItem.Relative -> {
-                        val metadataItem = metadata[item.id] as MetadataItem.OrganisationUnitRelativeItem
-                        val orgunits = metadataItem.organisationUnits.map { it.uid() }
-
-                        innerBuilder.appendOrInSubQuery(
-                            DataValueTableInfo.Columns.ORGANISATION_UNIT,
-                            AnalyticsEvaluatorHelper.getOrgunitListClause(orgunits)
-                        )
-                    }
-                    is DimensionItem.OrganisationUnitItem.Group -> TODO()
-                }
-            }.build()
-
-        return builder.appendComplexQuery(innerClause)
+        return AnalyticsEvaluatorHelper.appendOrgunitWhereClause(
+            columnName = DataValueTableInfo.Columns.ORGANISATION_UNIT,
+            items = items,
+            builder = builder,
+            metadata = metadata
+        )
     }
 
     private fun appendCategoryWhereClause(
         items: List<DimensionItem>,
         builder: WhereClauseBuilder
     ): WhereClauseBuilder {
-        val innerClause = items.map { it as DimensionItem.CategoryItem }
-            .foldRight(WhereClauseBuilder()) { item, innerBuilder ->
-                innerBuilder.appendOrInSubQuery(
-                    DataValueTableInfo.Columns.CATEGORY_OPTION_COMBO,
-                    AnalyticsEvaluatorHelper.getCategoryOptionClause(item.uid, item.categoryOption)
-                )
-            }.build()
-
-        return builder.appendComplexQuery(innerClause)
+        return AnalyticsEvaluatorHelper.appendCategoryWhereClause(
+            columnName = DataValueTableInfo.Columns.CATEGORY_OPTION_COMBO,
+            items = items,
+            builder = builder
+        )
     }
 
     @Suppress("ThrowsCount")
@@ -212,9 +179,20 @@ internal class DataElementEvaluator @Inject constructor(
                             "dataelement or operand."
                     )
                 }
-                AnalyticsEvaluatorHelper.getDataElementAggregator(aggregationType)
+                getDataElementAggregator(aggregationType)
             }
-            else -> AnalyticsEvaluatorHelper.getDataElementAggregator(AggregationType.SUM.name)
+            else -> getDataElementAggregator(AggregationType.SUM.name)
+        }
+    }
+
+    private fun getDataElementAggregator(aggregationType: String?): String {
+        return when (aggregationType?.let { AggregationType.valueOf(it) } ?: AggregationType.SUM) {
+            AggregationType.SUM -> Sum
+            AggregationType.AVERAGE -> Avg
+            AggregationType.COUNT -> Count
+            AggregationType.MAX -> Max
+            AggregationType.MIN -> Min
+            else -> Sum
         }
     }
 }

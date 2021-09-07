@@ -25,36 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.period.internal
 
-package org.hisp.dhis.android.core.organisationunit.internal;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.period.Period
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroupTableInfo;
+@RunWith(JUnit4::class)
+class PeriodHelperShould {
 
-import androidx.annotation.NonNull;
+    @Test
+    fun `Should return number of days in period`() {
+        val january = Period.builder()
+            .startDate(DateUtils.DATE_FORMAT.parse("2019-01-01T00:00:00.000"))
+            .endDate(DateUtils.DATE_FORMAT.parse("2019-01-31T23:59:59.000"))
+            .build()
 
-final class OrganisationUnitGroupStore {
-
-    private OrganisationUnitGroupStore() {}
-
-    private static StatementBinder<OrganisationUnitGroup> BINDER
-            = new IdentifiableStatementBinder<OrganisationUnitGroup>() {
-        @Override
-        public void bindToStatement(@NonNull OrganisationUnitGroup organisationUnitGroup, @NonNull StatementWrapper w) {
-            super.bindToStatement(organisationUnitGroup, w);
-            w.bind(7, organisationUnitGroup.shortName());
-            w.bind(8, organisationUnitGroup.displayShortName());
-        }
-    };
-
-    public static IdentifiableObjectStore<OrganisationUnitGroup> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(
-                databaseAdapter, OrganisationUnitGroupTableInfo.TABLE_INFO, BINDER, OrganisationUnitGroup::create);
+        assertThat(PeriodHelper.getDays(january)).isEqualTo(31)
     }
 }

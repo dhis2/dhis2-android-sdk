@@ -25,34 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.organisationunit.internal
 
-package org.hisp.dhis.android.core.constant.internal;
+import android.database.Cursor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithUidStore
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroupTableInfo
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.constant.Constant;
-import org.hisp.dhis.android.core.constant.ConstantTableInfo;
+@Suppress("MagicNumber")
+internal object OrganisationUnitGroupStore {
 
-import androidx.annotation.NonNull;
-
-final class ConstantStore {
-
-    private ConstantStore() {
-    }
-
-    private static StatementBinder<Constant> BINDER = new IdentifiableStatementBinder<Constant>() {
-        @Override
-        public void bindToStatement(@NonNull Constant o, @NonNull StatementWrapper w) {
-            super.bindToStatement(o, w);
-            w.bind(7, o.value());
+    private val BINDER: StatementBinder<OrganisationUnitGroup> =
+        object : IdentifiableStatementBinder<OrganisationUnitGroup>() {
+            override fun bindToStatement(organisationUnitGroup: OrganisationUnitGroup, w: StatementWrapper) {
+                super.bindToStatement(organisationUnitGroup, w)
+                w.bind(7, organisationUnitGroup.shortName())
+                w.bind(8, organisationUnitGroup.displayShortName())
+            }
         }
-    };
 
-    public static IdentifiableObjectStore<Constant> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, ConstantTableInfo.TABLE_INFO, BINDER, Constant::create);
+    @JvmStatic
+    fun create(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<OrganisationUnitGroup> {
+        return objectWithUidStore(
+            databaseAdapter, OrganisationUnitGroupTableInfo.TABLE_INFO, BINDER
+        ) { cursor: Cursor -> OrganisationUnitGroup.create(cursor) }
     }
 }

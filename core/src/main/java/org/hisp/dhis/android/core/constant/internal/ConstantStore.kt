@@ -25,43 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.indicator.datasetindicatorengine
+package org.hisp.dhis.android.core.constant.internal
 
-import dagger.Reusable
-import javax.inject.Inject
+import android.database.Cursor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithUidStore
 import org.hisp.dhis.android.core.constant.Constant
-import org.hisp.dhis.android.core.indicator.Indicator
-import org.hisp.dhis.android.core.indicator.IndicatorType
-import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
-import org.hisp.dhis.android.core.parser.internal.service.ExpressionService
-import org.hisp.dhis.android.core.parser.internal.service.dataobject.DimensionalItemObject
-import org.hisp.dhis.android.core.validation.MissingValueStrategy
+import org.hisp.dhis.android.core.constant.ConstantTableInfo
 
-@Reusable
-internal class DataSetIndicatorEvaluator @Inject constructor(private val expressionService: ExpressionService) {
+@Suppress("MagicNumber")
+internal object ConstantStore {
+    private val BINDER: StatementBinder<Constant> = object : IdentifiableStatementBinder<Constant>() {
+        override fun bindToStatement(o: Constant, w: StatementWrapper) {
+            super.bindToStatement(o, w)
+            w.bind(7, o.value())
+        }
+    }
 
-    @Suppress("LongParameterList")
-    fun evaluate(
-        indicator: Indicator,
-        indicatorType: IndicatorType,
-        valueMap: Map<DimensionalItemObject, Double>,
-        constantMap: Map<String, Constant>,
-        orgUnitCountMap: Map<String, Int>,
-        days: Int
-    ): Double {
-        val numerator = expressionService.getExpressionValue(
-            indicator.numerator(), valueMap, constantMap,
-            orgUnitCountMap, days, MissingValueStrategy.NEVER_SKIP
-        ) as Double
-
-        val denominator = expressionService.getExpressionValue(
-            indicator.denominator(), valueMap, constantMap,
-            orgUnitCountMap, days, MissingValueStrategy.NEVER_SKIP
-        ) as Double
-
-        val formula = "$numerator * ${indicatorType.factor() ?: 1} / $denominator"
-        val value = (expressionService.getExpressionValue(formula) ?: 0.0) as Double
-
-        return ParserUtils.getRounded(value, indicator.decimals() ?: 2)
+    @JvmStatic
+    fun create(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<Constant> {
+        return objectWithUidStore(
+            databaseAdapter,
+            ConstantTableInfo.TABLE_INFO,
+            BINDER
+        ) { cursor: Cursor -> Constant.create(cursor) }
     }
 }

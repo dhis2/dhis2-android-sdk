@@ -34,12 +34,10 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataEl
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.ProgramIndicatorEvaluator
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.dataelement.DataElement
-import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
 
 internal data class IndicatorContext(
     val dataElementStore: IdentifiableObjectStore<DataElement>,
-    val dataElementOperandStore: IdentifiableObjectStore<DataElementOperand>,
     val programIndicatorRepository: ProgramIndicatorCollectionRepository,
     val dataElementEvaluator: DataElementEvaluator,
     val programIndicatorEvaluator: ProgramIndicatorEvaluator,

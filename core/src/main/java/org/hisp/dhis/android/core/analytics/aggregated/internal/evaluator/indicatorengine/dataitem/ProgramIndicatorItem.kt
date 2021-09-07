@@ -60,6 +60,6 @@ class ProgramIndicatorItem : ExpressionItem {
         return visitor.indicatorContext.dataElementEvaluator.evaluate(
             evaluationItem = evaluationItem,
             metadata = visitor.indicatorContext.contextMetadata + metadataEntry
-        )
+        ) ?: ParserUtils.DOUBLE_VALUE_IF_NULL
     }
 }

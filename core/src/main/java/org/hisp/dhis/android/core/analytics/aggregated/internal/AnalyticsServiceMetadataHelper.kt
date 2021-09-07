@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
-import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.CategoryOption
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.core.indicator.Indicator
@@ -45,13 +45,13 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevelTableInf
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.hisp.dhis.android.core.program.ProgramIndicator
+import javax.inject.Inject
 
 @Suppress("LongParameterList")
 internal class AnalyticsServiceMetadataHelper @Inject constructor(
     private val categoryStore: IdentifiableObjectStore<Category>,
     private val categoryOptionStore: IdentifiableObjectStore<CategoryOption>,
     private val dataElementStore: IdentifiableObjectStore<DataElement>,
-    private val dataElementOperandStore: IdentifiableObjectStore<DataElementOperand>,
     private val indicatorStore: IdentifiableObjectStore<Indicator>,
     private val organisationUnitStore: IdentifiableObjectStore<OrganisationUnit>,
     private val organisationUnitGroupStore: IdentifiableObjectStore<OrganisationUnitGroup>,
@@ -95,9 +95,14 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
                         dataElementStore.selectByUid(item.uid)!!
                             .let { dataElement -> MetadataItem.DataElementItem(dataElement) }
                     // TODO Build a meaningful name for DataElementOperand
-                    is DimensionItem.DataItem.DataElementOperandItem ->
-                        dataElementOperandStore.selectByUid(item.id)!!
-                            .let { dataElementOperand -> MetadataItem.DataElementOperandItem(dataElementOperand) }
+                    is DimensionItem.DataItem.DataElementOperandItem -> {
+                        val dataElementOperand = DataElementOperand.builder()
+                            .uid("${item.dataElement}.${item.categoryOptionCombo}")
+                            .dataElement(ObjectWithUid.create(item.dataElement))
+                            .categoryOptionCombo(ObjectWithUid.create(item.categoryOptionCombo))
+                            .build()
+                        MetadataItem.DataElementOperandItem(dataElementOperand)
+                    }
                     is DimensionItem.DataItem.IndicatorItem ->
                         indicatorStore.selectByUid(item.uid)!!
                             .let { indicator -> MetadataItem.IndicatorItem(indicator) }

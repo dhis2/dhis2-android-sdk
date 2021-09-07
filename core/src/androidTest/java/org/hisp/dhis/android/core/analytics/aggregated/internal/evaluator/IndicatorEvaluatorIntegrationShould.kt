@@ -42,7 +42,6 @@ import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStoreImpl
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.constant.internal.ConstantStore
-import org.hisp.dhis.android.core.dataelement.internal.DataElementOperandStore
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl
@@ -74,7 +73,6 @@ internal class IndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegrationSho
     private val indicatorEngine = IndicatorEngine(
         indicatorTypeStore,
         DataElementStore.create(databaseAdapter),
-        DataElementOperandStore.create(databaseAdapter),
         d2.programModule().programIndicators(),
         dataElementEvaluator,
         programIndicatorEvaluator,

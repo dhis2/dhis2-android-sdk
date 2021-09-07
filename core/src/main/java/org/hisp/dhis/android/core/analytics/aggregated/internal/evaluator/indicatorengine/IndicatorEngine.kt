@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine
 
-import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
@@ -37,7 +36,6 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.mapByUid
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.dataelement.DataElement
-import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.indicator.IndicatorType
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
@@ -47,11 +45,11 @@ import org.hisp.dhis.android.core.parser.internal.service.ExpressionService
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
+import javax.inject.Inject
 
 internal class IndicatorEngine @Inject constructor(
     private val indicatorTypeStore: IdentifiableObjectStore<IndicatorType>,
     private val dataElementStore: IdentifiableObjectStore<DataElement>,
-    private val dataElementOperandStore: IdentifiableObjectStore<DataElementOperand>,
     private val programIndicatorRepository: ProgramIndicatorCollectionRepository,
     private val dataElementEvaluator: DataElementEvaluator,
     private val programIndicatorEvaluator: ProgramIndicatorEvaluator,
@@ -67,7 +65,6 @@ internal class IndicatorEngine @Inject constructor(
 
         val indicatorContext = IndicatorContext(
             dataElementStore = dataElementStore,
-            dataElementOperandStore = dataElementOperandStore,
             programIndicatorRepository = programIndicatorRepository,
             dataElementEvaluator = dataElementEvaluator,
             programIndicatorEvaluator = programIndicatorEvaluator,
@@ -90,11 +87,13 @@ internal class IndicatorEngine @Inject constructor(
 
         return if (numerator != null && denominator != null) {
             val formula = "$numerator * ${indicatorType?.factor() ?: 1} / $denominator"
-            val value = expressionService.getExpressionValue(formula).toString()
-            if (ParserUtils.isNumeric(value)) {
-                ParserUtils.getRounded(value.toDouble(), indicator.decimals() ?: 2).toString()
-            } else {
-                value
+            expressionService.getExpressionValue(formula)?.let {
+                val valueStr = it.toString()
+                if (ParserUtils.isNumeric(valueStr)) {
+                    ParserUtils.getRounded(valueStr.toDouble(), indicator.decimals() ?: 2).toString()
+                } else {
+                    valueStr
+                }
             }
         } else {
             null

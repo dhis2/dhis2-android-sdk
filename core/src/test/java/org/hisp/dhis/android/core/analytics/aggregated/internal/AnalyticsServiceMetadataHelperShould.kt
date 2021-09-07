@@ -31,13 +31,11 @@ package org.hisp.dhis.android.core.analytics.aggregated.internal
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceHelperSamples as s
 import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.dataelement.DataElement
-import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
@@ -48,6 +46,7 @@ import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceHelperSamples as s
 
 @RunWith(JUnit4::class)
 class AnalyticsServiceMetadataHelperShould {
@@ -55,7 +54,6 @@ class AnalyticsServiceMetadataHelperShould {
     private val categoryStore: IdentifiableObjectStore<Category> = mock()
     private val categoryOptionStore: IdentifiableObjectStore<CategoryOption> = mock()
     private val dataElementStore: IdentifiableObjectStore<DataElement> = mock()
-    private val dataElementOperandStore: IdentifiableObjectStore<DataElementOperand> = mock()
     private val indicatorStore: IdentifiableObjectStore<Indicator> = mock()
     private val organisationUnitStore: IdentifiableObjectStore<OrganisationUnit> = mock()
     private val organisationUnitGroupStore: IdentifiableObjectStore<OrganisationUnitGroup> = mock()
@@ -69,7 +67,6 @@ class AnalyticsServiceMetadataHelperShould {
         categoryStore,
         categoryOptionStore,
         dataElementStore,
-        dataElementOperandStore,
         indicatorStore,
         organisationUnitStore,
         organisationUnitGroupStore,

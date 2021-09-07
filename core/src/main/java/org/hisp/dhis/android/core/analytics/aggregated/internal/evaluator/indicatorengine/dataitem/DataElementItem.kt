@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indic
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
@@ -60,9 +62,11 @@ class DataElementItem : ExpressionItem {
         val metadataEntry = when {
             categoryOptionComboUid != null -> {
                 val dataElementOperandId = "$dataElementUid.$categoryOptionComboUid"
-                val dataElementOperand =
-                    visitor.indicatorContext.dataElementOperandStore.selectByUid(dataElementOperandId)
-                        ?: return ParserUtils.DOUBLE_VALUE_IF_NULL
+                val dataElementOperand = DataElementOperand.builder()
+                    .uid(dataElementOperandId)
+                    .dataElement(ObjectWithUid.create(dataElementUid))
+                    .categoryOptionCombo(ObjectWithUid.create(categoryOptionComboUid))
+                    .build()
 
                 dataElementOperandId to MetadataItem.DataElementOperandItem(dataElementOperand)
             }
@@ -78,6 +82,6 @@ class DataElementItem : ExpressionItem {
         return visitor.indicatorContext.dataElementEvaluator.evaluate(
             evaluationItem = evaluationItem,
             metadata = visitor.indicatorContext.contextMetadata + metadataEntry
-        )
+        ) ?: ParserUtils.DOUBLE_VALUE_IF_NULL
     }
 }

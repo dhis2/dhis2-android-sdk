@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.analytics.linelist
 
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.dataelement.DataElementCollectionRepository
 import org.hisp.dhis.android.core.event.EventCollectionRepository
@@ -38,6 +37,7 @@ import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
 import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
 import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicatorEngine
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueCollectionRepository
+import javax.inject.Inject
 
 internal class EventLineListServiceImpl @Inject constructor(
     private val eventRepository: EventCollectionRepository,
@@ -59,10 +59,6 @@ internal class EventLineListServiceImpl @Inject constructor(
             .byProgramStageUid().eq(params.programStage)
             .orderByTimeline(RepositoryScope.OrderByDirection.ASC)
             .byDeleted().isFalse
-
-        if (params.organisationUnits.isNotEmpty()) {
-            repoBuilder = repoBuilder.byOrganisationUnitUid().`in`(params.organisationUnits)
-        }
 
         if (params.trackedEntityInstance != null) {
             repoBuilder = repoBuilder.byTrackedEntityInstanceUids(listOf(params.trackedEntityInstance))

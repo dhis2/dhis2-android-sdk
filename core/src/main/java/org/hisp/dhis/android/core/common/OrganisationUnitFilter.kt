@@ -25,25 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.analytics.linelist
 
-import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope
-import org.hisp.dhis.android.core.common.DateFilterPeriod
-import org.hisp.dhis.android.core.common.OrganisationUnitFilter
+package org.hisp.dhis.android.core.common
 
-internal data class EventLineListParams(
-    val programStage: String? = null,
-    val dataElements: List<LineListItem> = listOf(),
-    val programIndicators: List<LineListItem> = listOf(),
-
-    val trackedEntityInstance: String? = null,
-
-    val periods: List<DateFilterPeriod> = listOf(),
-
-    val organisationUnits: List<OrganisationUnitFilter> = listOf()
-) : BaseScope
-
-internal data class LineListItem(
-    val uid: String,
-    val legendSet: String? = null
+internal data class OrganisationUnitFilter(
+    val organisationUnitUid: String?,
+    val relativeOrganisationUnit: RelativeOrganisationUnit?
 )

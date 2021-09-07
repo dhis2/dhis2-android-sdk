@@ -74,10 +74,24 @@ public final class OrganisationUnitFilterConnector<R extends BaseRepository> {
      * @param orgunitUids list of uids organisation units to compare
      * @return the new repository
      */
-    public R in(@NonNull String ...orgunitUids) {
+    public R in(@NonNull String...orgunitUids) {
         List<OrganisationUnitFilter> filters = new ArrayList<>();
         for (String uid : orgunitUids) {
             filters.add(new OrganisationUnitFilter(uid, null));
+        }
+        return repositoryFactory.updated(filters);
+    }
+
+    /**
+     * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+     * The in filter checks if the given field is included in the list provided.
+     * @param relatives list of relative organisation units to compare
+     * @return the new repository
+     */
+    public R in(@NonNull RelativeOrganisationUnit...relatives) {
+        List<OrganisationUnitFilter> filters = new ArrayList<>();
+        for (RelativeOrganisationUnit relative : relatives) {
+            filters.add(new OrganisationUnitFilter(null, relative));
         }
         return repositoryFactory.updated(filters);
     }

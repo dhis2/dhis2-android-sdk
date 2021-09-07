@@ -48,12 +48,12 @@ interface EventLineListRepository : BaseRepository {
     /**
      * Restrict the events to the given periods.
      */
-    fun byPeriods(): PeriodsFilterConnector<EventLineListRepository>
+    fun byEventDate(): PeriodsFilterConnector<EventLineListRepository>
 
     /**
      * Restrict the events to the given organisation units.
      */
-    fun byOrganisationUnits(): OrganisationUnitFilterConnector<EventLineListRepository>
+    fun byOrganisationUnit(): OrganisationUnitFilterConnector<EventLineListRepository>
 
     /**
      * Include the given data element in the response. This method does not replace the list of

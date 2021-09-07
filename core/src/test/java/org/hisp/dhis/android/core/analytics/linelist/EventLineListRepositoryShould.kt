@@ -31,6 +31,9 @@ import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
+import org.hisp.dhis.android.core.common.DatePeriodType
+import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
+import org.hisp.dhis.android.core.common.RelativePeriod
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -90,5 +93,27 @@ class EventLineListRepositoryShould {
 
         verify(eventLineListService).evaluate(paramsCaptor.capture())
         assertThat(paramsCaptor.firstValue.trackedEntityInstance).isEqualTo("tracked_entity_instance_uid")
+    }
+
+    @Test
+    fun `Call service with event dates`() {
+        repository
+            .byEventDate().inPeriods(RelativePeriod.LAST_3_MONTHS)
+            .blockingEvaluate()
+
+        verify(eventLineListService).evaluate(paramsCaptor.capture())
+        assertThat(paramsCaptor.firstValue.eventDates?.first()?.period()).isEqualTo(RelativePeriod.LAST_3_MONTHS)
+        assertThat(paramsCaptor.firstValue.eventDates?.first()?.type()).isEqualTo(DatePeriodType.RELATIVE)
+    }
+
+    @Test
+    fun `Call service with organisation units`() {
+        repository
+            .byOrganisationUnit().`in`(RelativeOrganisationUnit.USER_ORGUNIT)
+            .blockingEvaluate()
+
+        verify(eventLineListService).evaluate(paramsCaptor.capture())
+        assertThat(paramsCaptor.firstValue.organisationUnits?.first()?.relativeOrganisationUnit)
+            .isEqualTo(RelativeOrganisationUnit.USER_ORGUNIT)
     }
 }

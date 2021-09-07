@@ -38,9 +38,9 @@ internal data class EventLineListParams(
 
     val trackedEntityInstance: String? = null,
 
-    val periods: List<DateFilterPeriod> = listOf(),
+    val eventDates: List<DateFilterPeriod>? = null,
 
-    val organisationUnits: List<OrganisationUnitFilter> = listOf()
+    val organisationUnits: List<OrganisationUnitFilter>? = null
 ) : BaseScope
 
 internal data class LineListItem(

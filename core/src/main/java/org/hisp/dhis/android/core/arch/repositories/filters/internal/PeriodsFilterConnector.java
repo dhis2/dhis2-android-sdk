@@ -78,7 +78,7 @@ public final class PeriodsFilterConnector<R extends BaseRepository> {
      * @param datePeriods date period to compare with the target field
      * @return the new repository
      */
-    public R inDatePeriods(@NonNull DatePeriod ...datePeriods) {
+    public R inDatePeriods(@NonNull DatePeriod...datePeriods) {
         List<DateFilterPeriod> filters = new ArrayList<>();
         for (DatePeriod period : datePeriods) {
             filters.add(DateFilterPeriod.builder()
@@ -93,19 +93,13 @@ public final class PeriodsFilterConnector<R extends BaseRepository> {
      * @param periods periods to compare with the target field
      * @return the new repository
      */
-    public R inPeriods(@NonNull Period ...periods) {
+    public R inPeriods(@NonNull Period...periods) {
         List<DateFilterPeriod> filters = new ArrayList<>();
         for (Period period : periods) {
             filters.add(DateFilterPeriod.builder()
                     .startDate(period.startDate()).endDate(period.endDate()).type(DatePeriodType.ABSOLUTE).build());
         }
         return repositoryFactory.updated(filters);
-    }
-
-    private R inPeriod(@NonNull Date startDate, @NonNull Date endDate) {
-        DateFilterPeriod filter = DateFilterPeriod.builder()
-                .startDate(startDate).endDate(endDate).type(DatePeriodType.ABSOLUTE).build();
-        return repositoryFactory.updated(Collections.singletonList(filter));
     }
 
     /**
@@ -115,7 +109,7 @@ public final class PeriodsFilterConnector<R extends BaseRepository> {
      * @param relativePeriods relative periods to compare with the target field
      * @return the new repository
      */
-    public R inPeriods(@NonNull RelativePeriod ...relativePeriods) {
+    public R inPeriods(@NonNull RelativePeriod...relativePeriods) {
         List<DateFilterPeriod> filters = new ArrayList<>();
         for (RelativePeriod relative : relativePeriods) {
             filters.add(DateFilterPeriod.builder().period(relative).type(DatePeriodType.RELATIVE).build());

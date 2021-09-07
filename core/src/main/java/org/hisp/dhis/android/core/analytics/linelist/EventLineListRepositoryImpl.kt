@@ -58,13 +58,13 @@ internal class EventLineListRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun byPeriods(): PeriodsFilterConnector<EventLineListRepository> {
+    override fun byEventDate(): PeriodsFilterConnector<EventLineListRepository> {
         return connectorFactory.periodsConnector { periods ->
-            eventLineListParams.copy(periods = periods)
+            eventLineListParams.copy(eventDates = periods)
         }
     }
 
-    override fun byOrganisationUnits(): OrganisationUnitFilterConnector<EventLineListRepository> {
+    override fun byOrganisationUnit(): OrganisationUnitFilterConnector<EventLineListRepository> {
         return connectorFactory.organisationUnitConnector { organisationUnits ->
             eventLineListParams.copy(organisationUnits = organisationUnits)
         }

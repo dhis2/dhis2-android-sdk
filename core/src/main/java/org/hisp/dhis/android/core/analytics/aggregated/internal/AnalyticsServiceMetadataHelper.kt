@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
+import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
@@ -45,7 +46,6 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevelTableInf
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.hisp.dhis.android.core.program.ProgramIndicator
-import javax.inject.Inject
 
 @Suppress("LongParameterList")
 internal class AnalyticsServiceMetadataHelper @Inject constructor(
@@ -79,80 +79,91 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
             .map { it as DimensionItem }
             .forEach { item ->
                 if (!metadata.containsKey(item.id)) {
-                    val metadataItems = getMetadataItems(item).map { it.id to it }.toMap()
-                    metadata += metadataItems
+                    val metadataItems = when (item) {
+                        is DimensionItem.DataItem -> getDataItems(item)
+                        is DimensionItem.PeriodItem -> getPeriodItems(item)
+                        is DimensionItem.OrganisationUnitItem -> getOrganisationUnitItems(item)
+                        is DimensionItem.CategoryItem -> getCategoryItems(item)
+                    }
+                    val metadataItemsMap = metadataItems.map { it.id to it }.toMap()
+
+                    metadata += metadataItemsMap
                 }
             }
 
         return metadata
     }
 
-    private fun getMetadataItems(item: DimensionItem): List<MetadataItem> {
-        return when (item) {
-            is DimensionItem.DataItem -> listOf(
-                when (item) {
-                    is DimensionItem.DataItem.DataElementItem ->
-                        dataElementStore.selectByUid(item.uid)!!
-                            .let { dataElement -> MetadataItem.DataElementItem(dataElement) }
-                    // TODO Build a meaningful name for DataElementOperand
-                    is DimensionItem.DataItem.DataElementOperandItem -> {
-                        val dataElementOperand = DataElementOperand.builder()
-                            .uid("${item.dataElement}.${item.categoryOptionCombo}")
-                            .dataElement(ObjectWithUid.create(item.dataElement))
-                            .categoryOptionCombo(ObjectWithUid.create(item.categoryOptionCombo))
-                            .build()
-                        MetadataItem.DataElementOperandItem(dataElementOperand)
-                    }
-                    is DimensionItem.DataItem.IndicatorItem ->
-                        indicatorStore.selectByUid(item.uid)!!
-                            .let { indicator -> MetadataItem.IndicatorItem(indicator) }
-                    is DimensionItem.DataItem.ProgramIndicatorItem ->
-                        programIndicatorStore.selectByUid(item.uid)!!
-                            .let { programIndicator -> MetadataItem.ProgramIndicatorItem(programIndicator) }
+    private fun getDataItems(item: DimensionItem.DataItem): List<MetadataItem> {
+        return listOf(
+            when (item) {
+                is DimensionItem.DataItem.DataElementItem ->
+                    dataElementStore.selectByUid(item.uid)!!
+                        .let { dataElement -> MetadataItem.DataElementItem(dataElement) }
+                // TODO Build a meaningful name for DataElementOperand
+                is DimensionItem.DataItem.DataElementOperandItem -> {
+                    val dataElementOperand = DataElementOperand.builder()
+                        .uid("${item.dataElement}.${item.categoryOptionCombo}")
+                        .dataElement(ObjectWithUid.create(item.dataElement))
+                        .categoryOptionCombo(ObjectWithUid.create(item.categoryOptionCombo))
+                        .build()
+                    MetadataItem.DataElementOperandItem(dataElementOperand)
                 }
-            )
+                is DimensionItem.DataItem.IndicatorItem ->
+                    indicatorStore.selectByUid(item.uid)!!
+                        .let { indicator -> MetadataItem.IndicatorItem(indicator) }
+                is DimensionItem.DataItem.ProgramIndicatorItem ->
+                    programIndicatorStore.selectByUid(item.uid)!!
+                        .let { programIndicator -> MetadataItem.ProgramIndicatorItem(programIndicator) }
+            }
+        )
+    }
 
-            is DimensionItem.PeriodItem -> listOf(
-                when (item) {
-                    is DimensionItem.PeriodItem.Absolute -> {
-                        val period = periodHelper.blockingGetPeriodForPeriodId(item.periodId)
-                        MetadataItem.PeriodItem(period)
-                    }
-                    is DimensionItem.PeriodItem.Relative -> {
-                        val periods = parentPeriodGenerator.generateRelativePeriods(item.relative)
-                        MetadataItem.RelativePeriodItem(item.relative, periods)
-                    }
+    private fun getPeriodItems(item: DimensionItem.PeriodItem): List<MetadataItem> {
+        return listOf(
+            when (item) {
+                is DimensionItem.PeriodItem.Absolute -> {
+                    val period = periodHelper.blockingGetPeriodForPeriodId(item.periodId)
+                    MetadataItem.PeriodItem(period)
                 }
-            )
-
-            is DimensionItem.OrganisationUnitItem -> listOf(
-                when (item) {
-                    is DimensionItem.OrganisationUnitItem.Absolute ->
-                        organisationUnitStore.selectByUid(item.uid)!!
-                            .let { organisationUnit -> MetadataItem.OrganisationUnitItem(organisationUnit) }
-                    is DimensionItem.OrganisationUnitItem.Relative -> {
-                        val orgunitUids = analyticsOrganisationUnitHelper.getRelativeOrganisationUnits(item.relative)
-                        MetadataItem.OrganisationUnitRelativeItem(item.relative, orgunitUids)
-                    }
-                    is DimensionItem.OrganisationUnitItem.Level -> {
-                        val levelClauseBuilder = WhereClauseBuilder()
-                            .appendKeyNumberValue(OrganisationUnitLevelTableInfo.Columns.LEVEL, item.level)
-                            .build()
-                        organisationUnitLevelStore.selectOneWhere(levelClauseBuilder)!!
-                            .let { level -> MetadataItem.OrganisationUnitLevelItem(level) }
-                    }
-                    is DimensionItem.OrganisationUnitItem.Group ->
-                        organisationUnitGroupStore.selectByUid(item.uid)!!
-                            .let { group -> MetadataItem.OrganisationUnitGroupItem(group) }
+                is DimensionItem.PeriodItem.Relative -> {
+                    val periods = parentPeriodGenerator.generateRelativePeriods(item.relative)
+                    MetadataItem.RelativePeriodItem(item.relative, periods)
                 }
-            )
+            }
+        )
+    }
 
-            is DimensionItem.CategoryItem -> listOf(
-                categoryStore.selectByUid(item.uid)!!
-                    .let { category -> MetadataItem.CategoryItem(category) },
-                categoryOptionStore.selectByUid(item.categoryOption)!!
-                    .let { categoryOption -> MetadataItem.CategoryOptionItem(categoryOption) }
-            )
-        }
+    private fun getOrganisationUnitItems(item: DimensionItem.OrganisationUnitItem): List<MetadataItem> {
+        return listOf(
+            when (item) {
+                is DimensionItem.OrganisationUnitItem.Absolute ->
+                    organisationUnitStore.selectByUid(item.uid)!!
+                        .let { organisationUnit -> MetadataItem.OrganisationUnitItem(organisationUnit) }
+                is DimensionItem.OrganisationUnitItem.Relative -> {
+                    val orgunitUids = analyticsOrganisationUnitHelper.getRelativeOrganisationUnits(item.relative)
+                    MetadataItem.OrganisationUnitRelativeItem(item.relative, orgunitUids)
+                }
+                is DimensionItem.OrganisationUnitItem.Level -> {
+                    val levelClauseBuilder = WhereClauseBuilder()
+                        .appendKeyNumberValue(OrganisationUnitLevelTableInfo.Columns.LEVEL, item.level)
+                        .build()
+                    organisationUnitLevelStore.selectOneWhere(levelClauseBuilder)!!
+                        .let { level -> MetadataItem.OrganisationUnitLevelItem(level) }
+                }
+                is DimensionItem.OrganisationUnitItem.Group ->
+                    organisationUnitGroupStore.selectByUid(item.uid)!!
+                        .let { group -> MetadataItem.OrganisationUnitGroupItem(group) }
+            }
+        )
+    }
+
+    private fun getCategoryItems(item: DimensionItem.CategoryItem): List<MetadataItem> {
+        return listOf(
+            categoryStore.selectByUid(item.uid)!!
+                .let { category -> MetadataItem.CategoryItem(category) },
+            categoryOptionStore.selectByUid(item.categoryOption)!!
+                .let { categoryOption -> MetadataItem.CategoryOptionItem(categoryOption) }
+        )
     }
 }

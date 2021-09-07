@@ -255,6 +255,7 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
             val syncedObjectUidsWhereClause2 = WhereClauseBuilder()
                 .appendInKeyStringValues(IdentifiableColumns.UID, storedObjectUids)
                 .appendInKeyStringValues(DataColumns.SYNC_STATE, states)
+                .appendInKeyStringValues(DataColumns.AGGREGATED_SYNC_STATE, states)
                 .build()
             return store.selectUidsWhere(syncedObjectUidsWhereClause2)
         }

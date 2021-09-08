@@ -108,7 +108,7 @@ public class EnrollmentImportHandlerShould {
 
     @Test
     public void do_nothing_when_passing_null_arguments() throws Exception {
-        enrollmentImportHandler.handleEnrollmentImportSummary(null, enrollments, "tei_uid");
+        enrollmentImportHandler.handleEnrollmentImportSummary(null, enrollments);
 
         verify(enrollmentStore, never()).setSyncStateOrDelete(anyString(), any(State.class));
     }
@@ -118,8 +118,7 @@ public class EnrollmentImportHandlerShould {
         when(importSummary.status()).thenReturn(ImportStatus.SUCCESS);
         when(importSummary.reference()).thenReturn("test_enrollment_uid");
 
-        enrollmentImportHandler.handleEnrollmentImportSummary(Collections.singletonList(importSummary),
-                enrollments, "test_tei_uid");
+        enrollmentImportHandler.handleEnrollmentImportSummary(Collections.singletonList(importSummary), enrollments);
 
         verify(enrollmentStore, times(1)).setSyncStateOrDelete("test_enrollment_uid", State.SYNCED);
     }
@@ -129,8 +128,7 @@ public class EnrollmentImportHandlerShould {
         when(importSummary.status()).thenReturn(ImportStatus.ERROR);
         when(importSummary.reference()).thenReturn("test_enrollment_uid");
 
-        enrollmentImportHandler.handleEnrollmentImportSummary(Collections.singletonList(importSummary),
-                enrollments,"test_tei_uid");
+        enrollmentImportHandler.handleEnrollmentImportSummary(Collections.singletonList(importSummary), enrollments);
 
         verify(enrollmentStore, times(1)).setSyncStateOrDelete("test_enrollment_uid", State.ERROR);
     }
@@ -145,8 +143,7 @@ public class EnrollmentImportHandlerShould {
         when(importEvent.importSummaries()).thenReturn(eventSummaries);
 
 
-        enrollmentImportHandler.handleEnrollmentImportSummary(Collections.singletonList(importSummary),
-                enrollments, "test_tei_uid");
+        enrollmentImportHandler.handleEnrollmentImportSummary(Collections.singletonList(importSummary), enrollments);
 
         verify(enrollmentStore, times(1)).setSyncStateOrDelete("test_enrollment_uid", State.SYNCED);
         verify(eventImportHandler, times(1)).handleEventImportSummaries(
@@ -163,8 +160,7 @@ public class EnrollmentImportHandlerShould {
         enrollments.add(enrollment);
         when(enrollment.uid()).thenReturn("missing_enrollment_uid");
 
-        enrollmentImportHandler.handleEnrollmentImportSummary(Collections.singletonList(importSummary),
-                enrollments, "test_tei_uid");
+        enrollmentImportHandler.handleEnrollmentImportSummary(Collections.singletonList(importSummary), enrollments);
 
         verify(enrollmentStore, times(1)).setSyncStateOrDelete("test_enrollment_uid", State.SYNCED);
         verify(enrollmentStore, times(1)).setSyncStateOrDelete("missing_enrollment_uid", State.TO_UPDATE);

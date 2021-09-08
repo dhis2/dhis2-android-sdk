@@ -99,8 +99,7 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
             val teiUid = teiImportSummary.reference()!!
             enrollmentImportHandler.handleEnrollmentImportSummary(
                 importSummaries,
-                getEnrollments(teiUid, instances),
-                teiUid
+                getEnrollments(teiUid, instances)
             )
         }
     }

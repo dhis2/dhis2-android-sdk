@@ -58,12 +58,12 @@ internal class EnrollmentImportHandler @Inject constructor(
 
     fun handleEnrollmentImportSummary(
         enrollmentImportSummaries: List<EnrollmentImportSummary?>?,
-        enrollments: List<Enrollment>,
-        teiUid: String
+        enrollments: List<Enrollment>
     ) {
 
         enrollmentImportSummaries?.filterNotNull()?.forEach { enrollmentImportSummary ->
             enrollmentImportSummary.reference()?.let { enrollmentUid ->
+                val teiUid = enrollments.find { it.uid() == enrollmentUid }!!.trackedEntityInstance()!!
 
                 val syncState = getSyncState(enrollmentImportSummary.status())
                 trackerImportConflictStore.deleteEnrollmentConflicts(enrollmentUid)
@@ -92,7 +92,9 @@ internal class EnrollmentImportHandler @Inject constructor(
             dataStatePropagator.resetUploadingEventStates(enrollment.uid())
         }
 
-        dataStatePropagator.refreshTrackedEntityInstanceAggregatedSyncState(teiUid)
+        enrollments.mapNotNull { it.trackedEntityInstance() }.distinct().forEach {
+            dataStatePropagator.refreshTrackedEntityInstanceAggregatedSyncState(it)
+        }
     }
 
     private fun handleEventImportSummaries(

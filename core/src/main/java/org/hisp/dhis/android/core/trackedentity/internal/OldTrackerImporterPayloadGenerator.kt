@@ -109,7 +109,7 @@ internal class OldTrackerImporterPayloadGenerator @Inject internal constructor(
     ): OldTrackerImporterPayload {
         return payload
             .run { addRelationships(this, extraData) }
-            .run { pruneNonAccessibleData(this) }
+            .run { pruneNonWritableData(this) }
     }
 
     private fun addRelationships(
@@ -333,7 +333,7 @@ internal class OldTrackerImporterPayloadGenerator @Inject internal constructor(
             .map { noteTransformer.transform(it) }
     }
 
-    private fun pruneNonAccessibleData(payload: OldTrackerImporterPayload): OldTrackerImporterPayload {
+    private fun pruneNonWritableData(payload: OldTrackerImporterPayload): OldTrackerImporterPayload {
         val TETIds = payload.trackedEntityInstances.mapNotNull { it.trackedEntityType() }
         val programIds = payload.trackedEntityInstances.flatMap {
             TrackedEntityInstanceInternalAccessor.accessEnrollments(it).mapNotNull { e -> e.program() }
@@ -345,10 +345,10 @@ internal class OldTrackerImporterPayloadGenerator @Inject internal constructor(
         val pendingEvents = mutableListOf<Event>()
         val prunedTrackedEntityInstances = payload.trackedEntityInstances.mapNotNull { tei ->
             val enrollments = TrackedEntityInstanceInternalAccessor.accessEnrollments(tei)
-            val hasDataAccess = TETAccessMap[tei.trackedEntityType()]?.data()?.write() == true &&
+            val hasDataWrite = TETAccessMap[tei.trackedEntityType()]?.data()?.write() == true &&
                     enrollments.all { programAccessMap[it.program()]?.data()?.write() == true }
 
-            if (hasDataAccess) {
+            if (hasDataWrite) {
                 tei
             } else if (tei.syncState() == State.SYNCED && enrollments.all { it.syncState() == State.SYNCED }) {
                 val events = enrollments.flatMap { EnrollmentInternalAccessor.accessEvents(it) }.filterNotNull()

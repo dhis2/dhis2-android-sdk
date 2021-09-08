@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getSyncStat
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.imports.TrackerImportConflict
@@ -46,6 +47,7 @@ import org.hisp.dhis.android.core.tracker.importer.internal.JobReportEventHandle
 @Reusable
 internal class EventImportHandler @Inject constructor(
     private val eventStore: EventStore,
+    private val enrollmentStore: EnrollmentStore,
     private val trackerImportConflictStore: TrackerImportConflictStore,
     private val trackerImportConflictParser: TrackerImportConflictParser,
     private val jobReportEventHandler: JobReportEventHandler,
@@ -54,12 +56,11 @@ internal class EventImportHandler @Inject constructor(
 
     fun handleEventImportSummaries(
         eventImportSummaries: List<EventImportSummary?>?,
-        events: List<Event>,
-        enrollmentUid: String?,
-        teiUid: String?
+        events: List<Event>
     ) {
         eventImportSummaries?.filterNotNull()?.forEach { eventImportSummary ->
             eventImportSummary.reference()?.let { eventUid ->
+                val enrollmentUid = events.find { it.uid() == eventUid }?.enrollment()
 
                 val state = getSyncState(eventImportSummary.status())
                 trackerImportConflictStore.deleteEventConflicts(eventUid)
@@ -68,7 +69,7 @@ internal class EventImportHandler @Inject constructor(
 
                 if (handleAction !== HandleAction.Delete) {
                     jobReportEventHandler.handleEventNotes(eventUid, state)
-                    storeEventImportConflicts(eventImportSummary, teiUid, enrollmentUid)
+                    storeEventImportConflicts(eventImportSummary, enrollmentUid)
 
                     dataStatePropagator.refreshEventAggregatedSyncState(eventUid)
                 }
@@ -83,21 +84,20 @@ internal class EventImportHandler @Inject constructor(
             eventStore.setSyncStateOrDelete(event.uid(), state)
         }
 
-        enrollmentUid?.let {
+        events.mapNotNull { it.enrollment() }.distinct().forEach {
             dataStatePropagator.refreshEnrollmentAggregatedSyncState(it)
         }
     }
 
     private fun storeEventImportConflicts(
         importSummary: EventImportSummary,
-        teiUid: String?,
         enrollmentUid: String?
     ) {
         val trackerImportConflicts: MutableList<TrackerImportConflict> = ArrayList()
 
         if (importSummary.description() != null) {
             trackerImportConflicts.add(
-                getConflictBuilder(teiUid, enrollmentUid, importSummary)
+                getConflictBuilder(enrollmentUid, importSummary)
                     .conflict(importSummary.description())
                     .displayDescription(importSummary.description())
                     .value(importSummary.reference())
@@ -108,7 +108,7 @@ internal class EventImportHandler @Inject constructor(
         importSummary.conflicts()?.forEach { importConflict ->
             trackerImportConflicts.add(
                 trackerImportConflictParser
-                    .getEventConflict(importConflict, getConflictBuilder(teiUid, enrollmentUid, importSummary))
+                    .getEventConflict(importConflict, getConflictBuilder(enrollmentUid, importSummary))
             )
         }
 
@@ -116,10 +116,13 @@ internal class EventImportHandler @Inject constructor(
     }
 
     private fun getConflictBuilder(
-        trackedEntityInstanceUid: String?,
         enrollmentUid: String?,
         eventImportSummary: EventImportSummary
     ): TrackerImportConflict.Builder {
+        val trackedEntityInstanceUid = enrollmentUid?.let {
+            enrollmentStore.selectByUid(it)?.trackedEntityInstance()
+        }
+
         return TrackerImportConflict.builder()
             .trackedEntityInstance(trackedEntityInstanceUid)
             .enrollment(enrollmentUid)

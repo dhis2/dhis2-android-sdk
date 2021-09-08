@@ -78,7 +78,7 @@ internal class EnrollmentImportHandler @Inject constructor(
                     jobReportEnrollmentHandler.handleEnrollmentNotes(enrollmentUid, syncState)
                     storeEnrollmentImportConflicts(enrollmentImportSummary, teiUid)
 
-                    handleEventImportSummaries(enrollmentImportSummary, enrollments, teiUid)
+                    handleEventImportSummaries(enrollmentImportSummary, enrollments)
                 }
             }
         }
@@ -97,16 +97,13 @@ internal class EnrollmentImportHandler @Inject constructor(
 
     private fun handleEventImportSummaries(
         enrollmentImportSummary: EnrollmentImportSummary,
-        enrollments: List<Enrollment>,
-        teiUid: String
+        enrollments: List<Enrollment>
     ) {
         enrollmentImportSummary.events()?.importSummaries()?.let { importSummaries ->
             val enrollmentUid = enrollmentImportSummary.reference()!!
             eventImportHandler.handleEventImportSummaries(
                 importSummaries,
-                getEvents(enrollmentUid, enrollments),
-                enrollmentUid,
-                teiUid
+                getEvents(enrollmentUid, enrollments)
             )
         }
     }

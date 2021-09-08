@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.common.DataColumns
@@ -45,10 +46,9 @@ import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.*
-import javax.inject.Inject
 
 @Reusable
-@Suppress("TooManyFunctions")
+@Suppress("TooManyFunctions", "LongParameterList")
 internal class OldTrackerImporterPayloadGenerator @Inject internal constructor(
     private val versionManager: DHISVersionManager,
     private val relationshipRepository: RelationshipCollectionRepository,
@@ -334,19 +334,19 @@ internal class OldTrackerImporterPayloadGenerator @Inject internal constructor(
     }
 
     private fun pruneNonWritableData(payload: OldTrackerImporterPayload): OldTrackerImporterPayload {
-        val TETIds = payload.trackedEntityInstances.mapNotNull { it.trackedEntityType() }
+        val typeIds = payload.trackedEntityInstances.mapNotNull { it.trackedEntityType() }
         val programIds = payload.trackedEntityInstances.flatMap {
             TrackedEntityInstanceInternalAccessor.accessEnrollments(it).mapNotNull { e -> e.program() }
         }
 
-        val TETAccessMap = TETIds.map { it to trackedEntityTypeStore.selectByUid(it)?.access() }.toMap()
+        val typeAccessMap = typeIds.map { it to trackedEntityTypeStore.selectByUid(it)?.access() }.toMap()
         val programAccessMap = programIds.map { it to programStore.selectByUid(it)?.access() }.toMap()
 
         val pendingEvents = mutableListOf<Event>()
         val prunedTrackedEntityInstances = payload.trackedEntityInstances.mapNotNull { tei ->
             val enrollments = TrackedEntityInstanceInternalAccessor.accessEnrollments(tei)
-            val hasDataWrite = TETAccessMap[tei.trackedEntityType()]?.data()?.write() == true &&
-                    enrollments.all { programAccessMap[it.program()]?.data()?.write() == true }
+            val hasDataWrite = typeAccessMap[tei.trackedEntityType()]?.data()?.write() == true &&
+                enrollments.all { programAccessMap[it.program()]?.data()?.write() == true }
 
             if (hasDataWrite) {
                 tei

@@ -44,7 +44,6 @@ import org.hisp.dhis.android.core.event.internal.EventStoreImpl
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleanerImpl
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore.create
-import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.internal.ProgramStageStore
 import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface

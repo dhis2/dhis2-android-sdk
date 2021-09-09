@@ -60,8 +60,7 @@ class EventService @Inject constructor(
     fun blockingHasDataWriteAccess(eventUid: String): Boolean {
         val event = eventRepository.uid(eventUid).blockingGet() ?: return false
 
-        return programRepository.uid(event.program()).blockingGet()?.access()?.data()?.write() ?: false &&
-            programStageRepository.uid(event.programStage()).blockingGet()?.access()?.data()?.write() ?: false
+        return programStageRepository.uid(event.programStage()).blockingGet()?.access()?.data()?.write() ?: false
     }
 
     /**

@@ -84,8 +84,15 @@ internal class EventImportHandler @Inject constructor(
             eventStore.setSyncStateOrDelete(event.uid(), state)
         }
 
-        events.mapNotNull { it.enrollment() }.distinct().forEach {
+        val enrollmentUids = events.mapNotNull { it.enrollment() }.distinct()
+        val teiUids = enrollmentUids.mapNotNull { enrollmentStore.selectByUid(it)?.trackedEntityInstance() }.distinct()
+
+        enrollmentUids.forEach {
             dataStatePropagator.refreshEnrollmentAggregatedSyncState(it)
+        }
+
+        teiUids.forEach {
+            dataStatePropagator.refreshTrackedEntityInstanceAggregatedSyncState(it)
         }
     }
 

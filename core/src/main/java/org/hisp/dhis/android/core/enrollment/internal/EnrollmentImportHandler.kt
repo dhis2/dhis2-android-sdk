@@ -92,7 +92,9 @@ internal class EnrollmentImportHandler @Inject constructor(
             dataStatePropagator.resetUploadingEventStates(enrollment.uid())
         }
 
-        enrollments.mapNotNull { it.trackedEntityInstance() }.distinct().forEach {
+        val teiUids = enrollments.mapNotNull { it.trackedEntityInstance() }.distinct()
+
+        teiUids.forEach {
             dataStatePropagator.refreshTrackedEntityInstanceAggregatedSyncState(it)
         }
     }

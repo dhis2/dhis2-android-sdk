@@ -345,9 +345,20 @@ public class LogInCallUnitShould extends BaseCallShould {
     }
 
     @Test
+    public void throw_original_d2_error_if_no_previous_database_offline() throws Exception {
+        whenAPICall().thenThrow(d2Error);
+
+        when(authenticatedUserStore.selectFirst()).thenReturn(null);
+
+        TestObserver<User> testObserver = logInSingle.test();
+        assertD2Error(testObserver, d2Error.errorCode());
+    }
+
+    @Test
     public void throw_d2_error_if_no_previous_authenticated_user_offline() throws Exception {
         whenAPICall().thenThrow(d2Error);
 
+        when(multiUserDatabaseManager.loadExistingKeepingEncryption(baseEndpointWithAPI, USERNAME)).thenReturn(true);
         when(authenticatedUserStore.selectFirst()).thenReturn(null);
 
         TestObserver<User> testObserver = logInSingle.test();

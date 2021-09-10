@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.analytics.linelist
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.OrganisationUnitFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.PeriodsFilterConnector
 
 interface EventLineListRepository : BaseRepository {
 
@@ -42,6 +44,16 @@ interface EventLineListRepository : BaseRepository {
      * Restrict the events to the given program stage. This parameter is mandatory.
      */
     fun byProgramStage(): EqFilterConnector<EventLineListRepository, String>
+
+    /**
+     * Restrict the events to the given periods.
+     */
+    fun byEventDate(): PeriodsFilterConnector<EventLineListRepository>
+
+    /**
+     * Restrict the events to the given organisation units.
+     */
+    fun byOrganisationUnit(): OrganisationUnitFilterConnector<EventLineListRepository>
 
     /**
      * Include the given data element in the response. This method does not replace the list of

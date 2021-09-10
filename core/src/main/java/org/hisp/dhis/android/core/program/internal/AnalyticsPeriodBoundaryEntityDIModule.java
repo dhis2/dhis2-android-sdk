@@ -26,35 +26,30 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.organisationunit.internal;
+package org.hisp.dhis.android.core.program.internal;
+
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroupTableInfo;
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler;
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl;
+import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary;
 
-import androidx.annotation.NonNull;
+@Module
+public final class AnalyticsPeriodBoundaryEntityDIModule {
 
-final class OrganisationUnitGroupStore {
+    @Provides
+    @Reusable
+    public LinkStore<AnalyticsPeriodBoundary> store(DatabaseAdapter databaseAdapter) {
+        return AnalyticsPeriodBoundaryStore.create(databaseAdapter);
+    }
 
-    private OrganisationUnitGroupStore() {}
-
-    private static StatementBinder<OrganisationUnitGroup> BINDER
-            = new IdentifiableStatementBinder<OrganisationUnitGroup>() {
-        @Override
-        public void bindToStatement(@NonNull OrganisationUnitGroup organisationUnitGroup, @NonNull StatementWrapper w) {
-            super.bindToStatement(organisationUnitGroup, w);
-            w.bind(7, organisationUnitGroup.shortName());
-            w.bind(8, organisationUnitGroup.displayShortName());
-        }
-    };
-
-    public static IdentifiableObjectStore<OrganisationUnitGroup> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(
-                databaseAdapter, OrganisationUnitGroupTableInfo.TABLE_INFO, BINDER, OrganisationUnitGroup::create);
+    @Provides
+    @Reusable
+    LinkHandler<AnalyticsPeriodBoundary, AnalyticsPeriodBoundary> handler(LinkStore<AnalyticsPeriodBoundary> store) {
+        return new LinkHandlerImpl<>(store);
     }
 }

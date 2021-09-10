@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.dataelement.DataElement
-import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
@@ -55,7 +54,6 @@ class AnalyticsServiceMetadataHelperShould {
     private val categoryStore: IdentifiableObjectStore<Category> = mock()
     private val categoryOptionStore: IdentifiableObjectStore<CategoryOption> = mock()
     private val dataElementStore: IdentifiableObjectStore<DataElement> = mock()
-    private val dataElementOperandStore: IdentifiableObjectStore<DataElementOperand> = mock()
     private val indicatorStore: IdentifiableObjectStore<Indicator> = mock()
     private val organisationUnitStore: IdentifiableObjectStore<OrganisationUnit> = mock()
     private val organisationUnitGroupStore: IdentifiableObjectStore<OrganisationUnitGroup> = mock()
@@ -69,7 +67,6 @@ class AnalyticsServiceMetadataHelperShould {
         categoryStore,
         categoryOptionStore,
         dataElementStore,
-        dataElementOperandStore,
         indicatorStore,
         organisationUnitStore,
         organisationUnitGroupStore,

@@ -132,33 +132,36 @@ class ProgramIndicatorExecutorShould {
         whenever(trackedEntityAttributeStore.selectByUid(attributeUid2)) doReturn attribute2
         whenever(attribute1.valueType()) doReturn ValueType.NUMBER
         whenever(attribute2.valueType()) doReturn ValueType.NUMBER
+
+        whenever(programIndicator.filter()) doReturn null
     }
 
     @Test
     fun evaluate_constants() {
+        setExpression(cons(constantUid1))
         whenever(constant.value()) doReturn 5.3
 
-        val result = programIndicatorExecutor.getProgramIndicatorValue(cons(constantUid1))
+        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
         assertThat(result).isEqualTo("5.3")
     }
 
     @Test
     fun evaluate_tracked_entity_attribute_value() {
-        val expression = "${att(attributeUid1)} - ${att(attributeUid2)}"
+        setExpression("${att(attributeUid1)} - ${att(attributeUid2)}")
         whenever(attributeValue1.value()) doReturn "7.8"
         whenever(attributeValue2.value()) doReturn "2.5"
 
-        val result = programIndicatorExecutor.getProgramIndicatorValue(expression)
+        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
         assertThat(result).isEqualTo("5.3")
     }
 
     @Test
     fun evaluate_data_elements_in_stage() {
-        val expression = "${de(programStage1, dataElementUid1)} + ${de(programStage2, dataElementUid2)}"
+        setExpression("${de(programStage1, dataElementUid1)} + ${de(programStage2, dataElementUid2)}")
         whenever(dataValue1.value()) doReturn "4.5"
         whenever(dataValue2_2.value()) doReturn "20.6"
 
-        val resultLast = programIndicatorExecutor.getProgramIndicatorValue(expression)
+        val resultLast = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
         assertThat(resultLast).isEqualTo("25.1")
     }
 
@@ -171,7 +174,7 @@ class ProgramIndicatorExecutorShould {
         whenever(dataValue1.value()) doReturn "4.5"
         whenever(dataValue2_2.value()) doReturn "1.9"
 
-        val resultNone = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression())
+        val resultNone = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
         assertThat(resultNone).isEqualTo("3.2")
     }
 
@@ -184,7 +187,7 @@ class ProgramIndicatorExecutorShould {
         whenever(dataValue1.value()) doReturn "7.5"
         whenever(dataValue2_2.value()) doReturn "-1.5"
 
-        val resultNone = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression())
+        val resultNone = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
         assertThat(resultNone).isEqualTo("6")
     }
 
@@ -193,7 +196,7 @@ class ProgramIndicatorExecutorShould {
         setExpression("${de(programStage1, dataElementUid1)} / ${`var`("event_count")}")
         whenever(dataValue1.value()) doReturn "10"
 
-        val resultNone = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression())
+        val resultNone = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
         assertThat(resultNone).isEqualTo("3.33")
     }
 
@@ -204,7 +207,7 @@ class ProgramIndicatorExecutorShould {
         whenever(enrollment.enrollmentDate()) doReturn BaseIdentifiableObject.parseDate("2020-05-01T00:00:00.000")
         whenever(enrollment.incidentDate()) doReturn BaseIdentifiableObject.parseDate("2020-05-05T00:00:00.000")
 
-        val resultNone = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression())
+        val resultNone = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
         assertThat(resultNone).isEqualTo("4")
     }
 
@@ -214,7 +217,7 @@ class ProgramIndicatorExecutorShould {
         whenever(dataValue2_1.value()) doReturn "1.5"
         whenever(dataValue2_2.value()) doReturn "20.5"
 
-        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression())
+        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
         assertThat(result).isEqualTo("2")
     }
 
@@ -224,7 +227,7 @@ class ProgramIndicatorExecutorShould {
         whenever(dataValue2_1.value()) doReturn "1.5"
         whenever(dataValue2_2.value()) doReturn "20.5"
 
-        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression())
+        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
         assertThat(result).isEqualTo("1")
     }
 
@@ -234,7 +237,7 @@ class ProgramIndicatorExecutorShould {
         whenever(dataValue2_1.value()) doReturn "1.5"
         whenever(dataValue2_2.value()) doReturn "20.5"
 
-        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression())
+        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
         assertThat(result).isEqualTo("1")
     }
 
@@ -244,7 +247,7 @@ class ProgramIndicatorExecutorShould {
         whenever(dataValue2_1.value()) doReturn "positive"
         whenever(dataValue2_2.value()) doReturn "negative"
 
-        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression())
+        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
         assertThat(result).isEqualTo("1")
     }
 
@@ -253,23 +256,23 @@ class ProgramIndicatorExecutorShould {
         setExpression("d2:hasValue(${att(attributeUid1)})")
 
         whenever(attributeValue1.value()) doReturn null
-        val resultNull = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression())
+        val resultNull = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
         assertThat(resultNull).isEqualTo("false")
 
         whenever(attributeValue1.value()) doReturn "3.4"
-        val resultNonNull = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression())
+        val resultNonNull = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
         assertThat(resultNonNull).isEqualTo("true")
     }
 
     @Test
     fun evaluate_d2_has_data_value() {
         setExpression("d2:hasValue(${de(programStage1, dataElementUid2)})")
-        val resultNull = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression())
+        val resultNull = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
         assertThat(resultNull).isEqualTo("false")
 
         setExpression("d2:hasValue(${de(programStage1, dataElementUid1)})")
         whenever(dataValue1.value()) doReturn "value"
-        val resultNonNull = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression())
+        val resultNonNull = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
         assertThat(resultNonNull).isEqualTo("true")
     }
 
@@ -278,11 +281,11 @@ class ProgramIndicatorExecutorShould {
         setExpression("d2:condition('${de(programStage1, dataElementUid1)} < 10', 150, 50)")
 
         whenever(dataValue1.value()) doReturn "8"
-        val resultTrue = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression())
+        val resultTrue = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
         assertThat(resultTrue).isEqualTo("150")
 
         whenever(dataValue1.value()) doReturn "15"
-        val resultFalse = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression())
+        val resultFalse = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
         assertThat(resultFalse).isEqualTo("50")
     }
 
@@ -294,7 +297,7 @@ class ProgramIndicatorExecutorShould {
         whenever(attributeValue1.value()) doReturn "true"
         whenever(attribute1.valueType()) doReturn ValueType.BOOLEAN
 
-        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression())
+        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
         assertThat(result).isEqualTo("2")
     }
 
@@ -303,7 +306,7 @@ class ProgramIndicatorExecutorShould {
         setExpression(de(programStage1, dataElementUid1))
         whenever(dataValue1.value()) doReturn "value"
 
-        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression())
+        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
         assertThat(result).isEqualTo("value")
     }
 
@@ -312,7 +315,7 @@ class ProgramIndicatorExecutorShould {
         setExpression(`var`("enrollment_status"))
         whenever(enrollment.status()) doReturn EnrollmentStatus.COMPLETED
 
-        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression())
+        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
         assertThat(result).isEqualTo("COMPLETED")
     }
 
@@ -322,7 +325,7 @@ class ProgramIndicatorExecutorShould {
         setExpression(`var`("enrollment_date"))
         whenever(enrollment.enrollmentDate()) doReturn BaseIdentifiableObject.parseDate("2020-01-05T00:00:00.000")
 
-        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression())
+        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
         assertThat(result).isEqualTo("2020-01-05")
     }
 
@@ -332,7 +335,7 @@ class ProgramIndicatorExecutorShould {
         setExpression(`var`("completed_date"))
         whenever(enrollment.completedDate()) doReturn BaseIdentifiableObject.parseDate("2020-01-02T00:00:00.000")
 
-        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression())
+        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
         assertThat(result).isEqualTo("2020-01-02")
     }
 
@@ -343,7 +346,7 @@ class ProgramIndicatorExecutorShould {
         whenever(enrollment.enrollmentDate()) doReturn BaseIdentifiableObject.parseDate("2020-01-02T00:00:00.000")
         whenever(event2_2.eventDate()) doReturn BaseIdentifiableObject.parseDate("2020-01-05T00:00:00.000")
 
-        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression())
+        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
         assertThat(result).isEqualTo("3")
     }
 
@@ -352,7 +355,7 @@ class ProgramIndicatorExecutorShould {
         setExpression("${de(programStage1, dataElementUid1)} + ${de(programStage3, dataElementUid1)}")
         whenever(dataValue1.value()) doReturn "5.3"
 
-        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression())
+        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
         assertThat(result).isEqualTo("5.3")
     }
 
@@ -361,8 +364,61 @@ class ProgramIndicatorExecutorShould {
     fun evaluate_tei_count() {
         setExpression(`var`("tei_count"))
 
-        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator.expression())
+        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
         assertThat(result).isEqualTo("1")
+    }
+
+    @Test
+    fun evaluate_empty_filter() {
+        setExpression("4")
+        setFilter("")
+
+        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
+        assertThat(result).isEqualTo("4")
+    }
+
+    @Test
+    fun evaluate_invalid_filter() {
+        setExpression("4")
+        setFilter("1")
+
+        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
+        assertThat(result).isNull()
+    }
+
+    @Test
+    fun evaluate_false_filter() {
+        setExpression(de(programStage1, dataElementUid1))
+        setFilter("${de(programStage1, dataElementUid1)} > 10")
+        whenever(dataValue1.value()) doReturn "5.3"
+
+        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
+        assertThat(result).isNull()
+    }
+
+    @Test
+    fun evaluate_true_filter() {
+        setExpression(de(programStage1, dataElementUid1))
+        setFilter("${de(programStage1, dataElementUid1)} < 10")
+        whenever(dataValue1.value()) doReturn "5.3"
+
+        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
+        assertThat(result).isEqualTo("5.3")
+    }
+
+    @Test
+    fun evaluate_value_count_filter() {
+        setExpression("${de(programStage1, dataElementUid1)} + ${de(programStage2, dataElementUid2)}")
+        whenever(dataValue1.value()) doReturn "4.5"
+        whenever(dataValue2_2.value()) doReturn "1.9"
+
+        setFilter("${`var`("value_count")} > 1")
+        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
+        assertThat(result).isEqualTo("6.4")
+
+        setFilter("${`var`("value_count")} > 2")
+        val result2 = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
+        assertThat(result2).isNull()
     }
 
     // -------------------------------------------------------------------------
@@ -370,6 +426,10 @@ class ProgramIndicatorExecutorShould {
     // -------------------------------------------------------------------------
     private fun setExpression(expression: String) {
         whenever(programIndicator.expression()) doReturn expression
+    }
+
+    private fun setFilter(filter: String) {
+        whenever(programIndicator.filter()) doReturn filter
     }
 
     private fun de(programStageUid: String, dataElementUid: String): String {

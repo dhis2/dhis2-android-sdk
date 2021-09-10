@@ -25,52 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.period.internal
 
-package org.hisp.dhis.android.core.program;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.period.Period
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.CoreColumns;
-import org.hisp.dhis.android.core.common.NameableColumns;
+@RunWith(JUnit4::class)
+class PeriodHelperShould {
 
-public final class ProgramIndicatorTableInfo {
+    @Test
+    fun `Should return number of days in period`() {
+        val january = Period.builder()
+            .startDate(DateUtils.DATE_FORMAT.parse("2019-01-01T00:00:00.000"))
+            .endDate(DateUtils.DATE_FORMAT.parse("2019-01-31T23:59:59.000"))
+            .build()
 
-    private ProgramIndicatorTableInfo() {
-    }
-
-    public static final TableInfo TABLE_INFO = new TableInfo() {
-
-        @Override
-        public String name() {
-            return "ProgramIndicator";
-        }
-
-        @Override
-        public CoreColumns columns() {
-            return new Columns();
-        }
-    };
-
-    public static class Columns extends NameableColumns {
-        public static final String DISPLAY_IN_FORM = "displayInForm";
-        public static final String EXPRESSION = "expression";
-        public static final String DIMENSION_ITEM = "dimensionItem";
-        public static final String FILTER = "filter";
-        public static final String DECIMALS = "decimals";
-        public static final String AGGREGATION_TYPE = "aggregationType";
-        public static final String PROGRAM = "program";
-
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(),
-                    DISPLAY_IN_FORM,
-                    EXPRESSION,
-                    DIMENSION_ITEM,
-                    FILTER,
-                    DECIMALS,
-                    AGGREGATION_TYPE,
-                    PROGRAM
-            );
-        }
+        assertThat(PeriodHelper.getDays(january)).isEqualTo(31)
     }
 }

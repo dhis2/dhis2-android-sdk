@@ -44,7 +44,7 @@ public class D2Condition
         String valueIfTrue = visitor.castStringVisit(ctx.expr(0));
         String valueIfFalse = visitor.castStringVisit(ctx.expr(1));
 
-        String testResult = visitor.getProgramIndicatorExecutor().getProgramIndicatorValue(testExpression);
+        String testResult = visitor.getProgramIndicatorExecutor().getProgramIndicatorExpressionValue(testExpression);
 
         if ("true".equals(testResult)) {
             return valueIfTrue;

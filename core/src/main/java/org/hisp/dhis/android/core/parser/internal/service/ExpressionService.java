@@ -28,6 +28,14 @@
 
 package org.hisp.dhis.android.core.parser.internal.service;
 
+import static org.hisp.dhis.android.core.parser.internal.expression.ParserUtils.COMMON_EXPRESSION_ITEMS;
+import static org.hisp.dhis.android.core.parser.internal.expression.ParserUtils.ITEM_EVALUATE;
+import static org.hisp.dhis.android.core.parser.internal.expression.ParserUtils.ITEM_GET_DESCRIPTIONS;
+import static org.hisp.dhis.android.core.parser.internal.expression.ParserUtils.ITEM_GET_IDS;
+import static org.hisp.dhis.android.core.parser.internal.expression.ParserUtils.ITEM_REGENERATE;
+import static org.hisp.dhis.android.core.validation.MissingValueStrategy.NEVER_SKIP;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.HASH_BRACE;
+
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
@@ -52,14 +60,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Inject;
-
-import static org.hisp.dhis.android.core.parser.internal.expression.ParserUtils.COMMON_EXPRESSION_ITEMS;
-import static org.hisp.dhis.android.core.parser.internal.expression.ParserUtils.ITEM_EVALUATE;
-import static org.hisp.dhis.android.core.parser.internal.expression.ParserUtils.ITEM_GET_DESCRIPTIONS;
-import static org.hisp.dhis.android.core.parser.internal.expression.ParserUtils.ITEM_GET_IDS;
-import static org.hisp.dhis.android.core.parser.internal.expression.ParserUtils.ITEM_REGENERATE;
-import static org.hisp.dhis.android.core.validation.MissingValueStrategy.NEVER_SKIP;
-import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.HASH_BRACE;
 
 @SuppressWarnings({
         "PMD.TooManyStaticImports",
@@ -199,7 +199,11 @@ public class ExpressionService {
                 }
         }
 
-        return value;
+        if (value instanceof Double && Double.isNaN((double) value)) {
+            return null;
+        } else {
+            return value;
+        }
     }
 
     public String regenerateExpression(String expression,

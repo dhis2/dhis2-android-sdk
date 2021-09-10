@@ -34,9 +34,13 @@ import org.hisp.dhis.android.core.analytics.aggregated.DimensionalValue
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.AnalyticsEvaluator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluator
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.IndicatorEvaluator
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.ProgramIndicatorEvaluator
 
 internal class AnalyticsServiceEvaluatorHelper @Inject constructor(
-    private val dataElementEvaluator: DataElementEvaluator
+    private val dataElementEvaluator: DataElementEvaluator,
+    private val programIndicatorEvaluator: ProgramIndicatorEvaluator,
+    private val indicatorEvaluator: IndicatorEvaluator
 ) {
 
     fun evaluate(
@@ -86,8 +90,8 @@ internal class AnalyticsServiceEvaluatorHelper @Inject constructor(
         return when (item) {
             is DimensionItem.DataItem.DataElementItem -> dataElementEvaluator
             is DimensionItem.DataItem.DataElementOperandItem -> dataElementEvaluator
-            is DimensionItem.DataItem.ProgramIndicatorItem -> TODO()
-            is DimensionItem.DataItem.IndicatorItem -> TODO()
+            is DimensionItem.DataItem.ProgramIndicatorItem -> programIndicatorEvaluator
+            is DimensionItem.DataItem.IndicatorItem -> indicatorEvaluator
         }
     }
 }

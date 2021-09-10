@@ -29,125 +29,29 @@ package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
-import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluatorSamples.category
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluatorSamples.categoryCategoryComboLink
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluatorSamples.categoryCategoryOptionLink
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluatorSamples.categoryCombo
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluatorSamples.categoryOption
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluatorSamples.categoryOptionCombo
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluatorSamples.categoryOptionComboCategoryOptionLink
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluatorSamples.dataElement1
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluatorSamples.dataElement2
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluatorSamples.dataElementOperand
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluatorSamples.orgunitChild1
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluatorSamples.orgunitChild2
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluatorSamples.orgunitParent
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluatorSamples.periodDec
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluatorSamples.periodNov
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluatorSamples.periodQ4
-import org.hisp.dhis.android.core.category.internal.*
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.category
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOption
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOptionCombo
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement1
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement2
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild1
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild2
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitParent
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.periodDec
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.periodNov
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.periodQ4
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.common.RelativePeriod
-import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.datavalue.DataValue
-import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
-import org.hisp.dhis.android.core.period.internal.PeriodStoreImpl
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
-import org.junit.After
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
-class DataElementEvaluatorIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() {
+internal class DataElementEvaluatorIntegrationShould : BaseEvaluatorIntegrationShould() {
 
     private val dataElementEvaluator = DataElementEvaluator(databaseAdapter)
-
-    // Stores
-    private val dataValueStore = DataValueStore.create(databaseAdapter)
-    private val categoryStore = CategoryStore.create(databaseAdapter)
-    private val categoryOptionStore = CategoryOptionStore.create(databaseAdapter)
-    private val categoryCategoryOptionStore = CategoryCategoryOptionLinkStore.create(databaseAdapter)
-    private val categoryComboStore = CategoryComboStore.create(databaseAdapter)
-    private val categoryOptionComboStore = CategoryOptionComboStoreImpl.create(databaseAdapter)
-    private val categoryCategoryComboLinkStore = CategoryCategoryComboLinkStore.create(databaseAdapter)
-    private val categoryOptionComboCategoryOptionLinkStore = CategoryOptionComboCategoryOptionLinkStore.create(
-        databaseAdapter
-    )
-    private val dataElementStore = DataElementStore.create(databaseAdapter)
-    private val organisationUnitStore = OrganisationUnitStore.create(databaseAdapter)
-    private val periodStore = PeriodStoreImpl.create(databaseAdapter)
-
-    val metadata: Map<String, MetadataItem> = mapOf(
-        orgunitParent.uid() to MetadataItem.OrganisationUnitItem(orgunitParent),
-        orgunitChild1.uid() to MetadataItem.OrganisationUnitItem(orgunitChild1),
-        orgunitChild2.uid() to MetadataItem.OrganisationUnitItem(orgunitChild2),
-        dataElement1.uid() to MetadataItem.DataElementItem(dataElement1),
-        dataElement2.uid() to MetadataItem.DataElementItem(dataElement2),
-        dataElementOperand.uid()!! to MetadataItem.DataElementOperandItem(dataElementOperand),
-        periodNov.periodId()!! to MetadataItem.PeriodItem(periodNov),
-        periodDec.periodId()!! to MetadataItem.PeriodItem(periodDec),
-        periodQ4.periodId()!! to MetadataItem.PeriodItem(periodQ4),
-        RelativeOrganisationUnit.USER_ORGUNIT.name to MetadataItem.OrganisationUnitRelativeItem(
-            RelativeOrganisationUnit.USER_ORGUNIT,
-            listOf(orgunitParent)
-        ),
-        RelativeOrganisationUnit.USER_ORGUNIT_CHILDREN.name to MetadataItem.OrganisationUnitRelativeItem(
-            RelativeOrganisationUnit.USER_ORGUNIT_CHILDREN,
-            listOf(orgunitChild1, orgunitChild2)
-        ),
-        RelativePeriod.THIS_MONTH.name to MetadataItem.RelativePeriodItem(
-            RelativePeriod.THIS_MONTH,
-            listOf(periodDec)
-        ),
-        RelativePeriod.LAST_MONTH.name to MetadataItem.RelativePeriodItem(
-            RelativePeriod.LAST_MONTH,
-            listOf(periodNov)
-        )
-    )
-
-    @Before
-    fun setUp() {
-        setUpClass()
-
-        organisationUnitStore.insert(orgunitParent)
-        organisationUnitStore.insert(orgunitChild1)
-        organisationUnitStore.insert(orgunitChild2)
-
-        categoryStore.insert(category)
-        categoryOptionStore.insert(categoryOption)
-        categoryCategoryOptionStore.insert(categoryCategoryOptionLink)
-        categoryComboStore.insert(categoryCombo)
-        categoryOptionComboStore.insert(categoryOptionCombo)
-        categoryCategoryComboLinkStore.insert(categoryCategoryComboLink)
-        categoryOptionComboCategoryOptionLinkStore.insert(categoryOptionComboCategoryOptionLink)
-
-        dataElementStore.insert(dataElement1)
-        dataElementStore.insert(dataElement2)
-
-        periodStore.insert(periodNov)
-        periodStore.insert(periodDec)
-        periodStore.insert(periodQ4)
-    }
-
-    @After
-    fun tearDown() {
-        organisationUnitStore.delete()
-        categoryStore.delete()
-        categoryOptionStore.delete()
-        categoryCategoryOptionStore.delete()
-        categoryComboStore.delete()
-        categoryOptionComboStore.delete()
-        categoryCategoryComboLinkStore.delete()
-        categoryOptionComboCategoryOptionLinkStore.delete()
-        dataElementStore.delete()
-        periodStore.delete()
-        dataValueStore.delete()
-    }
 
     @Test
     fun should_aggregate_value_in_hierarchy() {

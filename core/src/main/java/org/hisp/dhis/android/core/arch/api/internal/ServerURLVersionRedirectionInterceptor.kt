@@ -37,14 +37,21 @@ internal class ServerURLVersionRedirectionInterceptor : Interceptor {
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
-        val response = chain.proceed(request)
-        if (response.isRedirect) {
+        var response = chain.proceed(request)
+
+        var redirects = 0
+        while (response.isRedirect && redirects <= MaxRedirects) {
             val location = response.header(LOCATION_KEY)
             ServerURLWrapper.setServerUrl(location)
             response.close()
             val redirectReq = DynamicServerURLInterceptor.transformRequest(request)
-            return chain.proceed(redirectReq)
+            response = chain.proceed(redirectReq)
+            redirects++
         }
         return response
+    }
+
+    companion object {
+        const val MaxRedirects = 20
     }
 }

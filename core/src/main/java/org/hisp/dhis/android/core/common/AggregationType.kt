@@ -25,10 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.common;
+import com.fasterxml.jackson.annotation.JsonEnumDefaultValue
 
-public enum AggregationType {
-    SUM, AVERAGE, AVERAGE_SUM_ORG_UNIT, LAST, LAST_AVERAGE_ORG_UNIT, COUNT,
-    STDDEV, VARIANCE, MIN, MAX, NONE, CUSTOM, DEFAULT
+enum class AggregationType {
+    SUM,
+    AVERAGE,
+    AVERAGE_SUM_ORG_UNIT,
+    LAST,
+    LAST_AVERAGE_ORG_UNIT,
+    LAST_IN_PERIOD,
+    LAST_IN_PERIOD_AVERAGE_ORG_UNIT,
+    FIRST,
+    FIRST_AVERAGE_ORG_UNIT,
+    COUNT,
+    STDDEV,
+    VARIANCE,
+    MIN,
+    MAX,
+    NONE,
+    CUSTOM,
+
+    @JsonEnumDefaultValue
+    DEFAULT
 }

@@ -94,7 +94,7 @@ public abstract class DataSetCompleteRegistration extends BaseDeletableDataObjec
     public abstract static class Builder extends BaseDeletableDataObject.Builder<DataSetCompleteRegistration.Builder> {
 
         public Builder() {
-            state(State.SYNCED);
+            syncState(State.SYNCED);
         }
 
         public abstract Builder period(@NonNull String period);

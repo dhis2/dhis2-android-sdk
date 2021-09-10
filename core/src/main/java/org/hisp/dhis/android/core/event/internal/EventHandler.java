@@ -140,12 +140,12 @@ final class EventHandler extends IdentifiableDataHandlerImpl<Event> {
 
     @Override
     protected Event addRelationshipState(Event o) {
-        return o.toBuilder().state(State.RELATIONSHIP).build();
+        return o.toBuilder().aggregatedSyncState(State.RELATIONSHIP).syncState(State.RELATIONSHIP).build();
     }
 
     @Override
     protected Event addSyncedState(Event o) {
-        return o.toBuilder().state(State.SYNCED).build();
+        return o.toBuilder().aggregatedSyncState(State.SYNCED).syncState(State.SYNCED).build();
     }
 
     @Override

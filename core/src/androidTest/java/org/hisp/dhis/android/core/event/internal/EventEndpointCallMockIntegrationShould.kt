@@ -83,7 +83,9 @@ class EventEndpointCallMockIntegrationShould : BaseMockIntegrationTestMetadataEn
         assertThat(events.size).isEqualTo(1)
         EventStoreImpl.create(d2.databaseAdapter()).update(
             event.toBuilder()
-                .state(state).status(EventStatus.SKIPPED).build()
+                .syncState(state)
+                .aggregatedSyncState(state)
+                .status(EventStatus.SKIPPED).build()
         )
 
         enqueue("event/events_1.json")

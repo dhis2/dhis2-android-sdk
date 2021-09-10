@@ -116,7 +116,7 @@ class FileResourceCallFactory {
         }
 
         handler.handleMany(fileResources, fileResource -> fileResource.toBuilder()
-                .state(State.SYNCED)
+                .syncState(State.SYNCED)
                 .build());
     }
 
@@ -146,7 +146,7 @@ class FileResourceCallFactory {
         }
 
         handler.handleMany(fileResources, fileResource -> fileResource.toBuilder()
-                .state(State.SYNCED)
+                .syncState(State.SYNCED)
                 .build());
     }
 }

@@ -42,11 +42,13 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo.Columns;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceParentPostCall;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostParentCall;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
+import org.hisp.dhis.android.core.tracker.importer.internal.JobQueryCall;
 
 import java.util.List;
 import java.util.Map;
@@ -63,8 +65,10 @@ public final class TrackedEntityInstanceCollectionRepository
         implements ReadWriteWithUploadWithUidCollectionRepository
         <TrackedEntityInstance, TrackedEntityInstanceCreateProjection> {
 
-    private final TrackedEntityInstanceParentPostCall postCall;
+    private final TrackedEntityInstancePostParentCall postCall;
     private final TrackedEntityInstanceStore store;
+    private final DataStatePropagator dataStatePropagator;
+    private final JobQueryCall jobQueryCall;
 
     @Inject
     TrackedEntityInstanceCollectionRepository(
@@ -72,18 +76,31 @@ public final class TrackedEntityInstanceCollectionRepository
             final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders,
             final RepositoryScope scope,
             final Transformer<TrackedEntityInstanceCreateProjection, TrackedEntityInstance> transformer,
-            final TrackedEntityInstanceParentPostCall postCall) {
+            final DataStatePropagator dataStatePropagator,
+            final TrackedEntityInstancePostParentCall postCall,
+            final JobQueryCall jobQueryCall) {
         super(store, childrenAppenders, scope, transformer, new FilterConnectorFactory<>(scope, s ->
-                new TrackedEntityInstanceCollectionRepository(store, childrenAppenders, s, transformer, postCall)));
+                new TrackedEntityInstanceCollectionRepository(store, childrenAppenders, s, transformer,
+                        dataStatePropagator, postCall, jobQueryCall)));
         this.postCall = postCall;
         this.store = store;
+        this.dataStatePropagator = dataStatePropagator;
+        this.jobQueryCall = jobQueryCall;
+    }
+
+    @Override
+    protected void propagateState(TrackedEntityInstance trackedEntityInstance) {
+        dataStatePropagator.propagateTrackedEntityInstanceUpdate(trackedEntityInstance);
     }
 
     @Override
     public Observable<D2Progress> upload() {
-        return Observable.fromCallable(() ->
-                byState().in(State.uploadableStates()).blockingGetWithoutChildren()
-        ).flatMap(postCall::uploadTrackedEntityInstances);
+        return Observable.concat(
+                jobQueryCall.queryPendingJobs(),
+                Observable.fromCallable(() ->
+                        byAggregatedSyncState().in(State.uploadableStates()).blockingGetWithoutChildren()
+                ).flatMap(postCall::uploadTrackedEntityInstances)
+        );
     }
 
     @Override
@@ -94,7 +111,8 @@ public final class TrackedEntityInstanceCollectionRepository
     @Override
     public TrackedEntityInstanceObjectRepository uid(String uid) {
         RepositoryScope updatedScope = RepositoryScopeHelper.withUidFilterItem(scope, uid);
-        return new TrackedEntityInstanceObjectRepository(store, uid, childrenAppenders, updatedScope);
+        return new TrackedEntityInstanceObjectRepository(store, uid, childrenAppenders, updatedScope,
+                dataStatePropagator);
     }
 
     public StringFilterConnector<TrackedEntityInstanceCollectionRepository> byUid() {
@@ -133,8 +151,20 @@ public final class TrackedEntityInstanceCollectionRepository
         return cf.string(Columns.GEOMETRY_COORDINATES);
     }
 
+    /**
+     * @deprecated Use {@link #byAggregatedSyncState()} instead.
+     */
+    @Deprecated
     public EnumFilterConnector<TrackedEntityInstanceCollectionRepository, State> byState() {
-        return cf.enumC(Columns.STATE);
+        return byAggregatedSyncState();
+    }
+
+    public EnumFilterConnector<TrackedEntityInstanceCollectionRepository, State> bySyncState() {
+        return cf.enumC(Columns.SYNC_STATE);
+    }
+
+    public EnumFilterConnector<TrackedEntityInstanceCollectionRepository, State> byAggregatedSyncState() {
+        return cf.enumC(Columns.AGGREGATED_SYNC_STATE);
     }
 
     public BooleanFilterConnector<TrackedEntityInstanceCollectionRepository> byDeleted() {

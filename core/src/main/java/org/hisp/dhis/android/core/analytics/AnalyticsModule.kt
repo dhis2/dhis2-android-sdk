@@ -27,9 +27,15 @@
  */
 package org.hisp.dhis.android.core.analytics
 
+import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepository
+import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsVisualizationsRepository
 import org.hisp.dhis.android.core.analytics.linelist.EventLineListRepository
 
 interface AnalyticsModule {
 
     fun eventLineList(): EventLineListRepository
+
+    fun analytics(): AnalyticsRepository
+
+    fun visualizations(): AnalyticsVisualizationsRepository
 }

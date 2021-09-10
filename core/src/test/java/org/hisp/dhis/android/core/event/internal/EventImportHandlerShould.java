@@ -28,17 +28,16 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.imports.ImportStatus;
-import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 import org.hisp.dhis.android.core.imports.internal.EventImportSummary;
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser;
-import org.hisp.dhis.android.core.note.Note;
+import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
+import org.hisp.dhis.android.core.tracker.importer.internal.JobReportEventHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -66,16 +65,13 @@ public class EventImportHandlerShould {
     private EventStore eventStore;
 
     @Mock
-    private EnrollmentStore enrollmentStore;
+    private TrackerImportConflictStore trackerImportConflictStore;
 
     @Mock
-    private IdentifiableObjectStore<Note> noteStore;
+    private JobReportEventHandler jobReportEventHandler;
 
     @Mock
-    private TrackedEntityInstanceStore trackedEntityInstanceStore;
-
-    @Mock
-    private ObjectStore<TrackerImportConflict> trackerImportConflictStore;
+    private DataStatePropagator dataStatePropagator;
 
     @Mock
     private TrackerImportConflictParser trackerImportConflictParser;
@@ -94,15 +90,15 @@ public class EventImportHandlerShould {
 
         when(importSummary.status()).thenReturn(ImportStatus.SUCCESS);
 
-        eventImportHandler = new EventImportHandler(eventStore, enrollmentStore, noteStore, trackedEntityInstanceStore,
-                trackerImportConflictStore, trackerImportConflictParser);
+        eventImportHandler = new EventImportHandler(eventStore, trackerImportConflictStore,
+                trackerImportConflictParser, jobReportEventHandler, dataStatePropagator);
     }
 
     @Test
     public void do_nothing_when_passing_null_argument() {
         eventImportHandler.handleEventImportSummaries(null, events, null, null);
 
-        verify(eventStore, never()).setStateOrDelete(anyString(), any(State.class));
+        verify(eventStore, never()).setSyncStateOrDelete(anyString(), any(State.class));
     }
 
     @Test
@@ -113,7 +109,7 @@ public class EventImportHandlerShould {
         eventImportHandler.handleEventImportSummaries(Collections.singletonList(importSummary), events,
                 "test_enrollment_uid", "test_tei_uid");
 
-        verify(eventStore, times(1)).setStateOrDelete("test_event_uid", State.SYNCED);
+        verify(eventStore, times(1)).setSyncStateOrDelete("test_event_uid", State.SYNCED);
     }
 
     @Test
@@ -124,7 +120,7 @@ public class EventImportHandlerShould {
         eventImportHandler.handleEventImportSummaries(Collections.singletonList(importSummary), events,
                 "test_enrollment_uid", "test_tei_uid");
 
-        verify(eventStore, times(1)).setStateOrDelete("test_event_uid", State.ERROR);
+        verify(eventStore, times(1)).setSyncStateOrDelete("test_event_uid", State.ERROR);
     }
 
     @Test
@@ -139,7 +135,7 @@ public class EventImportHandlerShould {
         eventImportHandler.handleEventImportSummaries(Collections.singletonList(importSummary), events,
                 "test_enrollment_uid", "test_tei_uid");
 
-        verify(eventStore, times(1)).setStateOrDelete("test_event_uid", State.SYNCED);
-        verify(eventStore, times(1)).setStateOrDelete("missing_event_uid", State.TO_UPDATE);
+        verify(eventStore, times(1)).setSyncStateOrDelete("test_event_uid", State.SYNCED);
+        verify(eventStore, times(1)).setSyncStateOrDelete("missing_event_uid", State.TO_UPDATE);
     }
 }

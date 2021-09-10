@@ -1,0 +1,174 @@
+{
+  "visualizations": [
+    {
+      "id": "PYBH8ZaAQnC",
+      "name": "Android SDK Visualization sample",
+      "displayName": "Android SDK Visualization sample",
+      "description": "Sample visualization for the Android SDK",
+      "displayDescription": "Sample visualization for the Android SDK",
+      "displayFormName": "Android SDK Visualization sample",
+      "lastUpdated": "2021-06-16T14:26:50.195",
+      "created": "2021-06-16T14:26:50.195",
+      "type": "PIVOT_TABLE",
+      "hideTitle": false,
+      "hideSubtitle": false,
+      "hideEmptyColumns": false,
+      "hideEmptyRows": false,
+      "hideEmptyRowItems": "AFTER_LAST",
+      "hideLegend": false,
+      "showHierarchy": false,
+      "rowTotals": true,
+      "rowSubTotals": false,
+      "colTotals": false,
+      "colSubTotals": false,
+      "showDimensionLabels": false,
+      "percentStackedValues": false,
+      "noSpaceBetweenColumns": false,
+      "skipRounding": false,
+      "displayDensity": "NORMAL",
+      "digitGroupSeparator": "COMMA",
+      "relativePeriods": {
+        "thisYear": false,
+        "last12Months": true
+      },
+      "categoryDimensions": [
+        {
+          "category": {
+            "id": "KfdsGBcoiCa"
+          },
+          "categoryOptions": [
+            {
+              "id": "TNYQzTHdoxL"
+            },
+            {
+              "id": "TXGfLxZlInA"
+            },
+            {
+              "id": "uZUnebiT5DI"
+            }
+          ]
+        }
+      ],
+      "filterDimensions": [
+        "ou"
+      ],
+      "rowDimensions": [
+        "pe"
+      ],
+      "columnDimensions": [
+        "dx",
+        "fMZEcRHuamy",
+        "fkAkrdC7eJF"
+      ],
+      "dataDimensionItems": [
+        {
+          "dataDimensionItemType": "INDICATOR",
+          "indicator": {
+            "id": "Uvn6LCg7dVU"
+          }
+        },
+        {
+          "dataDimensionItemType": "DATA_ELEMENT",
+          "dataElement": {
+            "id": "cYeuwXTCPkU"
+          }
+        }
+      ],
+      "organisationUnitLevels": [
+        3
+      ],
+      "userOrganisationUnit": false,
+      "userOrganisationUnitChildren": false,
+      "userOrganisationUnitGrandChildren": false,
+      "organisationUnits": [
+        {
+          "id": "YuQRtpLP10I"
+        },
+        {
+          "id": "vWbkYPRmKyS"
+        }
+      ],
+      "periods": [
+        {
+          "id": "202102"
+        },
+        {
+          "id": "202103"
+        },
+        {
+          "id": "2021S2"
+        }
+      ]
+    },
+    {
+      "id": "FAFa11yFeFe",
+      "name": "Android SDK Visualization sample 2",
+      "displayName": "Android SDK Visualization sample 2",
+      "description": "Sample visualization for the Android SDK 2",
+      "displayDescription": "Sample visualization for the Android SDK 2",
+      "displayFormName": "Android SDK Visualization sample 2",
+      "lastUpdated": "2021-06-16T14:26:50.195",
+      "created": "2021-06-16T14:26:50.195",
+      "type": "COLUMN",
+      "hideTitle": true,
+      "hideSubtitle": false,
+      "hideEmptyColumns": false,
+      "hideEmptyRows": false,
+      "hideEmptyRowItems": "NONE",
+      "hideLegend": false,
+      "showHierarchy": false,
+      "rowTotals": true,
+      "rowSubTotals": false,
+      "colTotals": false,
+      "colSubTotals": false,
+      "showDimensionLabels": false,
+      "percentStackedValues": false,
+      "noSpaceBetweenColumns": false,
+      "skipRounding": false,
+      "displayDensity": "NORMAL",
+      "digitGroupSeparator": "COMMA",
+      "relativePeriods": {
+      },
+      "categoryDimensions": [
+      ],
+      "filterDimensions": [
+        "ou"
+      ],
+      "rowDimensions": [
+        "pe"
+      ],
+      "columnDimensions": [
+        "dx"
+      ],
+      "dataDimensionItems": [
+        {
+          "dataDimensionItemType": "DATA_ELEMENT",
+          "dataElement": {
+            "id": "g9eOBujte1U"
+          }
+        }
+      ],
+      "organisationUnitLevels": [
+      ],
+      "userOrganisationUnit": false,
+      "userOrganisationUnitChildren": false,
+      "userOrganisationUnitGrandChildren": false,
+      "organisationUnits": [
+        {
+          "id": "DiszpKrYNg8"
+        }
+      ],
+      "periods": [
+        {
+          "id": "2016"
+        },
+        {
+          "id": "2017"
+        },
+        {
+          "id": "2018"
+        }
+      ]
+    }
+  ]
+}

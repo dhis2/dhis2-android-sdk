@@ -137,7 +137,7 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
 
     private fun relationshipTransformer(): (O) -> O {
         return { o: O ->
-            val currentState = store.getState(o.uid())
+            val currentState = store.getSyncState(o.uid())
             if (currentState == State.RELATIONSHIP || currentState == null) {
                 addRelationshipState(o)
             } else {
@@ -161,7 +161,7 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
             relationships
         ) { relationship: Relationship ->
             relationship.toBuilder()
-                .state(State.SYNCED)
+                .syncState(State.SYNCED)
                 .deleted(false)
                 .build()!!
         }
@@ -254,7 +254,8 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
         if (storedObjectUids.isNotEmpty()) {
             val syncedObjectUidsWhereClause2 = WhereClauseBuilder()
                 .appendInKeyStringValues(IdentifiableColumns.UID, storedObjectUids)
-                .appendInKeyStringValues(DataColumns.STATE, states)
+                .appendInKeyStringValues(DataColumns.SYNC_STATE, states)
+                .appendInKeyStringValues(DataColumns.AGGREGATED_SYNC_STATE, states)
                 .build()
             return store.selectUidsWhere(syncedObjectUidsWhereClause2)
         }

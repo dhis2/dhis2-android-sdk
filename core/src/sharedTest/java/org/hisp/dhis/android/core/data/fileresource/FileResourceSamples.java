@@ -43,7 +43,7 @@ public class FileResourceSamples {
                 .uid("file_resource_uid")
                 .created(getDate("2014-08-20T12:28:56.409"))
                 .lastUpdated(getDate("2015-10-14T13:36:53.063"))
-                .state(State.TO_POST)
+                .syncState(State.TO_POST)
                 .contentLength(1024L)
                 .contentType("image/*")
                 .path("path")

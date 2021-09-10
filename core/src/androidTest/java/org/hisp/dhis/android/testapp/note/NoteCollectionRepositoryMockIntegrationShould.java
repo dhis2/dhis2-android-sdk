@@ -1,19 +1,19 @@
 /*
  *  Copyright (c) 2004-2021, University of Oslo
  *  All rights reserved.
- *
+ *  
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions are met:
  *  Redistributions of source code must retain the above copyright notice, this
  *  list of conditions and the following disclaimer.
- *
+ *  
  *  Redistributions in binary form must reproduce the above copyright notice,
  *  this list of conditions and the following disclaimer in the documentation
  *  and/or other materials provided with the distribution.
  *  Neither the name of the HISP project nor the names of its contributors may
  *  be used to endorse or promote products derived from this software without
  *  specific prior written permission.
- *
+ *  
  *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.testapp.note;
 
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.note.Note;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
@@ -85,6 +86,12 @@ public class NoteCollectionRepositoryMockIntegrationShould extends BaseMockInteg
     @Test
     public void filter_by_stored_by() {
         List<Note> notes = d2.noteModule().notes().byStoredBy().eq("android").blockingGet();
+        assertThat(notes.size()).isEqualTo(10);
+    }
+
+    @Test
+    public void filter_by_state() {
+        List<Note> notes = d2.noteModule().notes().bySyncState().eq(State.SYNCED).blockingGet();
         assertThat(notes.size()).isEqualTo(10);
     }
 

@@ -1,19 +1,19 @@
 /*
  *  Copyright (c) 2004-2021, University of Oslo
  *  All rights reserved.
- *
+ *  
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions are met:
  *  Redistributions of source code must retain the above copyright notice, this
  *  list of conditions and the following disclaimer.
- *
+ *  
  *  Redistributions in binary form must reproduce the above copyright notice,
  *  this list of conditions and the following disclaimer in the documentation
  *  and/or other materials provided with the distribution.
  *  Neither the name of the HISP project nor the names of its contributors may
  *  be used to endorse or promote products derived from this software without
  *  specific prior written permission.
- *
+ *  
  *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -84,7 +84,7 @@ public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockInte
 
         repository.blockingSet("value");
         assertThat(repository.blockingExists()).isEqualTo(Boolean.TRUE);
-        assertThat(repository.blockingGet().state()).isEqualTo(State.TO_POST);
+        assertThat(repository.blockingGet().syncState()).isEqualTo(State.TO_POST);
         repository.blockingDelete();
         assertThat(repository.blockingExists()).isEqualTo(Boolean.FALSE);
     }
@@ -96,11 +96,11 @@ public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockInte
         repository.blockingSet("value");
         DataValueStore.create(databaseAdapter).setState(repository.blockingGet(), State.ERROR);
         assertThat(repository.blockingExists()).isEqualTo(Boolean.TRUE);
-        assertThat(repository.blockingGet().state()).isEqualTo(State.ERROR);
+        assertThat(repository.blockingGet().syncState()).isEqualTo(State.ERROR);
         repository.blockingDelete();
         assertThat(repository.blockingExists()).isEqualTo(Boolean.TRUE);
         assertThat(repository.blockingGet().deleted()).isEqualTo(Boolean.TRUE);
-        assertThat(repository.blockingGet().state()).isEqualTo(State.TO_UPDATE);
+        assertThat(repository.blockingGet().syncState()).isEqualTo(State.TO_UPDATE);
     }
 
     @Test
@@ -111,12 +111,12 @@ public class DataValueObjectRepositoryMockIntegrationShould extends BaseMockInte
         DataValueStore.create(databaseAdapter).setState(repository.blockingGet(), State.TO_UPDATE);
 
         repository.blockingDelete();
-        assertThat(repository.blockingGet().state()).isEqualTo(State.TO_UPDATE);
         assertThat(repository.blockingGet().deleted()).isEqualTo(Boolean.TRUE);
+        assertThat(repository.blockingGet().syncState()).isEqualTo(State.TO_UPDATE);
 
         repository.blockingSet("new_value");
-        assertThat(repository.blockingGet().state()).isEqualTo(State.TO_UPDATE);
         assertThat(repository.blockingGet().deleted()).isEqualTo(Boolean.FALSE);
+        assertThat(repository.blockingGet().syncState()).isEqualTo(State.TO_UPDATE);
     }
 
     @Test

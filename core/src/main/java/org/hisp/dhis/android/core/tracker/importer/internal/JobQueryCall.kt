@@ -34,64 +34,76 @@ import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.common.StorableObjectWithUid
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 
+internal const val ATTEMPTS_AFTER_UPLOAD = 3
+internal const val ATTEMPTS_WHEN_QUERYING = 1
 @Reusable
 internal class JobQueryCall @Inject internal constructor(
     private val service: TrackerImporterService,
     private val apiCallExecutor: APICallExecutor,
-    private val trackerJobStore: IdentifiableObjectStore<StorableObjectWithUid>
+    private val trackerJobObjectStore: ObjectWithoutUidStore<TrackerJobObject>,
+    private val handler: JobReportHandler
 ) {
-
-    fun storeJob(jobId: String) {
-        trackerJobStore.insert(StorableObjectWithUid.create(jobId))
-    }
 
     fun queryPendingJobs(): Observable<D2Progress> {
         return Observable.just(true)
             .flatMapIterable {
-                val pendingJobs = trackerJobStore.selectAll()
-                pendingJobs.withIndex().map { ij -> Pair(ij.value, ij.index == pendingJobs.size - 1) }
+                val pendingJobs = trackerJobObjectStore.selectAll()
+                    .sortedBy { it.lastUpdated() }
+                    .groupBy { it.jobUid() }
+                    .toList()
+
+                pendingJobs.withIndex().map {
+                    Triple(it.value.first, it.value.second, it.index == pendingJobs.size - 1)
+                }
             }
-            .flatMap { jobWithIsLast -> queryJob(jobWithIsLast.first.uid(), jobWithIsLast.second) }
+            .flatMap { queryJobInternal(it.first, it.second, it.third, ATTEMPTS_WHEN_QUERYING) }
     }
 
     fun queryJob(jobId: String): Observable<D2Progress> {
-        return queryJob(jobId, true)
+        val jobObjects = trackerJobObjectStore.selectWhere(byJobIdClause(jobId))
+        return queryJobInternal(jobId, jobObjects, true, ATTEMPTS_AFTER_UPLOAD)
     }
 
-    private fun queryJob(jobId: String, isLastJob: Boolean): Observable<D2Progress> {
+    private fun queryJobInternal(
+        jobId: String,
+        jobObjects: List<TrackerJobObject>,
+        isLastJob: Boolean,
+        attempts: Int
+    ): Observable<D2Progress> {
         val progressManager = D2ProgressManager(null)
         @Suppress("MagicNumber")
         return Observable.interval(0, 5, TimeUnit.SECONDS)
             .map {
-                apiCallExecutor.executeObjectCall(service.getJob(jobId))
-            }
-            .map { it.any { ji -> ji.completed } }
-            .takeUntil { it }
-            .doOnNext {
-                if (it) {
-                    val jobReport = apiCallExecutor.executeObjectCall(service.getJobReport(jobId))
-                    trackerJobStore.delete(jobId)
-                    println(jobReport)
-                    // TODO manage status
+                try {
+                    downloadAndHandle(jobId, jobObjects)
+                    true
+                } catch (_: Throwable) {
+                    false
                 }
             }
-            .take(3)
+            .takeUntil { it }
+            .take(attempts.toLong())
             .map {
                 progressManager.increaseProgress(
                     JobReport::class.java,
                     it && isLastJob
                 )
             }
-            .onErrorResumeNext { _: Throwable ->
-                return@onErrorResumeNext Observable.just(
-                    progressManager.increaseProgress(
-                        JobReport::class.java,
-                        false
-                    )
-                )
-            }
     }
+
+    private fun downloadAndHandle(jobId: String, jobObjects: List<TrackerJobObject>) {
+        val jobReport = apiCallExecutor.executeObjectCallWithErrorCatcher(
+            service.getJobReport(jobId),
+            JobQueryErrorCatcher()
+        )
+        trackerJobObjectStore.deleteWhere(byJobIdClause(jobId))
+        handler.handle(jobReport, jobObjects)
+    }
+
+    private fun byJobIdClause(jobId: String) = WhereClauseBuilder()
+        .appendKeyStringValue(TrackerJobObjectTableInfo.Columns.JOB_UID, jobId)
+        .build()
 }

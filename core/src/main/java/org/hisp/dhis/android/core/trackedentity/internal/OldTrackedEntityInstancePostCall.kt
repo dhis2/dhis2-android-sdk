@@ -34,39 +34,54 @@ import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
+import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponse
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponseHandler
 import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.relationship.internal.RelationshipDeleteCall
+import org.hisp.dhis.android.core.relationship.internal.RelationshipPostCall
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
 @Reusable
 internal class OldTrackedEntityInstancePostCall @Inject internal constructor(
-    private val payloadGenerator: TrackedEntityInstancePostPayloadGenerator,
-    private val stateManager: TrackedEntityInstancePostStateManager,
+    private val payloadGenerator29: TrackedEntityInstancePostPayloadGenerator29,
+    private val stateManager: TrackerPostStateManager,
     private val versionManager: DHISVersionManager,
     private val trackedEntityInstanceService: TrackedEntityInstanceService,
     private val teiWebResponseHandler: TEIWebResponseHandler,
     private val apiCallExecutor: APICallExecutor,
-    private val relationshipDeleteCall: RelationshipDeleteCall
+    private val relationshipPostCall: RelationshipPostCall,
+    private val oldTrackerImporterPostCall: OldTrackerImporterPostCall
 ) {
 
-    @Suppress("TooGenericExceptionCaught")
     fun uploadTrackedEntityInstances(
+        trackedEntityInstances: List<TrackedEntityInstance>
+    ): Observable<D2Progress> {
+        return if (versionManager.is2_29) {
+            uploadTrackedEntityInstances29(trackedEntityInstances)
+        } else {
+            oldTrackerImporterPostCall.uploadTrackedEntityInstances(trackedEntityInstances)
+        }
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    private fun uploadTrackedEntityInstances29(
         filteredTrackedEntityInstances: List<TrackedEntityInstance>
     ): Observable<D2Progress> {
         return Observable.create { emitter: ObservableEmitter<D2Progress> ->
-            val strategy = if (versionManager.is2_29) "CREATE_AND_UPDATE" else "SYNC"
-            val teiPartitions = payloadGenerator.getTrackedEntityInstancesPartitions(filteredTrackedEntityInstances)
+            val teiPartitions = payloadGenerator29.getTrackedEntityInstancesPartitions29(filteredTrackedEntityInstances)
             val progressManager = D2ProgressManager(teiPartitions.size)
             for (partition in teiPartitions) {
-                val thisPartition = relationshipDeleteCall.postDeletedRelationships(partition)
-                val trackedEntityInstancePayload = TrackedEntityInstancePayload.create(thisPartition)
+                stateManager.setPayloadStates(
+                    trackedEntityInstances = partition,
+                    forcedState = State.UPLOADING
+                )
+                val thisPartition = relationshipPostCall.postDeletedRelationships29(partition)
                 try {
+                    val trackedEntityInstancePayload = TrackedEntityInstancePayload.create(thisPartition)
                     val webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
                         trackedEntityInstanceService.postTrackedEntityInstances(
-                            trackedEntityInstancePayload, strategy
+                            trackedEntityInstancePayload, "CREATE_AND_UPDATE"
                         ),
                         @Suppress("MagicNumber")
                         listOf(409),
@@ -75,8 +90,7 @@ internal class OldTrackedEntityInstancePostCall @Inject internal constructor(
                     teiWebResponseHandler.handleWebResponse(webResponse, thisPartition)
                     emitter.onNext(progressManager.increaseProgress(TrackedEntityInstance::class.java, false))
                 } catch (e: Exception) {
-                    stateManager.restorePartitionStates(thisPartition)
-
+                    stateManager.restorePayloadStates(trackedEntityInstances = thisPartition)
                     if (e is D2Error && e.isOffline) {
                         emitter.onError(e)
                         break

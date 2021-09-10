@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.organisationunit.internal;
 import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload;
+import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleaner;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.user.User;
@@ -57,15 +58,18 @@ class OrganisationUnitCall {
     private final OrganisationUnitService organisationUnitService;
     private final OrganisationUnitHandler handler;
     private final OrganisationUnitDisplayPathTransformer pathTransformer;
+    private final CollectionCleaner<OrganisationUnit> collectionCleaner;
 
     @Inject
     OrganisationUnitCall(@NonNull OrganisationUnitService organisationUnitService,
                          @NonNull OrganisationUnitHandler handler,
-                         @NonNull OrganisationUnitDisplayPathTransformer pathTransformer) {
+                         @NonNull OrganisationUnitDisplayPathTransformer pathTransformer,
+                         @NonNull CollectionCleaner<OrganisationUnit> collectionCleaner) {
 
         this.organisationUnitService = organisationUnitService;
         this.handler = handler;
         this.pathTransformer = pathTransformer;
+        this.collectionCleaner = collectionCleaner;
     }
 
     public Single<List<OrganisationUnit>> download(final User user) {
@@ -77,6 +81,7 @@ class OrganisationUnitCall {
             return downloadSearchOrgUnits(rootSearchOrgUnits, user).flatMap(searchOrgUnits ->
                     downloadDataCaptureOrgUnits(rootSearchOrgUnits, searchOrgUnits, user).map(dataCaptureOrgUnits -> {
                         searchOrgUnits.addAll(dataCaptureOrgUnits);
+                        collectionCleaner.deleteNotPresent(searchOrgUnits);
                         return searchOrgUnits;
                     }));
         });

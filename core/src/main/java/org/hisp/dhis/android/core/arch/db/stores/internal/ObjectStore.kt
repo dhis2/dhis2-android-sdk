@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.arch.db.stores.internal
 
+import android.content.ContentValues
+
 internal interface ObjectStore<O> : ReadableStore<O> {
     @Throws(RuntimeException::class)
     fun selectStringColumnsWhereClause(column: String, clause: String): List<String>
@@ -39,6 +41,8 @@ internal interface ObjectStore<O> : ReadableStore<O> {
     fun delete(): Int
     fun deleteById(o: O): Boolean
     fun deleteWhere(clause: String): Boolean
+
+    fun updateWhere(updates: ContentValues, whereClause: String): Int
 
     @Throws(RuntimeException::class)
     fun deleteWhereIfExists(whereClause: String)

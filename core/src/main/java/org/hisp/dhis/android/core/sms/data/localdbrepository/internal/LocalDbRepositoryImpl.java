@@ -32,9 +32,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationTableInfo;
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationStore;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
@@ -45,6 +45,9 @@ import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventModule;
 import org.hisp.dhis.android.core.event.internal.EventStore;
 import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintType;
+import org.hisp.dhis.android.core.relationship.RelationshipItem;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStore;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore;
 import org.hisp.dhis.android.core.sms.domain.model.internal.SMSDataValueSet;
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository;
@@ -68,7 +71,7 @@ import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
-@SuppressWarnings("PMD.ExcessiveImports")
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields"})
 public class LocalDbRepositoryImpl implements LocalDbRepository {
     private final Context context;
     private final AuthenticatedUserObjectRepository userRepository;
@@ -89,9 +92,11 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     private final MetadataIdsStore metadataIdsStore;
     private final OngoingSubmissionsStore ongoingSubmissionsStore;
     private final RelationshipStore relationshipStore;
+    private final RelationshipItemStore relationshipItemStore;
     private final DataSetsStore dataSetsStore;
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
     private final DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore;
+    private final DataStatePropagator dataStatePropagator;
 
     @Inject
     LocalDbRepositoryImpl(Context ctx,
@@ -103,9 +108,11 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
                           EventStore eventStore,
                           EnrollmentStore enrollmentStore,
                           RelationshipStore relationshipStore,
+                          RelationshipItemStore relationshipItemStore,
                           DataSetsStore dataSetsStore,
                           TrackedEntityInstanceStore trackedEntityInstanceStore,
-                          DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore) {
+                          DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore,
+                          DataStatePropagator dataStatePropagator) {
         this.context = ctx;
         this.userRepository = userRepository;
         this.trackedEntityModule = trackedEntityModule;
@@ -115,9 +122,11 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
         this.eventStore = eventStore;
         this.enrollmentStore = enrollmentStore;
         this.relationshipStore = relationshipStore;
+        this.relationshipItemStore = relationshipItemStore;
         this.dataSetsStore = dataSetsStore;
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
         this.dataSetCompleteRegistrationStore = dataSetCompleteRegistrationStore;
+        this.dataStatePropagator = dataStatePropagator;
         metadataIdsStore = new MetadataIdsStore(context);
         ongoingSubmissionsStore = new OngoingSubmissionsStore(context);
     }
@@ -257,7 +266,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     private Single<List<Event>> getEventsForEnrollment(String enrollmentUid) {
         return eventModule.events()
                 .byEnrollmentUid().eq(enrollmentUid)
-                .byState().in(State.uploadableStates())
+                .bySyncState().in(State.uploadableStates())
                 .withTrackedEntityDataValues()
                 .get()
                 .flatMapObservable(Observable::fromIterable)
@@ -267,21 +276,41 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
 
     @Override
     public Completable updateEventSubmissionState(String eventUid, State state) {
-        return Completable.fromAction(() -> eventStore.setState(eventUid, state));
+        return Completable.fromAction(() -> {
+            eventStore.setSyncState(eventUid, state);
+            Event event = eventStore.selectByUid(eventUid);
+            dataStatePropagator.propagateEventUpdate(event);
+        });
     }
 
     @Override
     public Completable updateEnrollmentSubmissionState(TrackedEntityInstance tei, State state) {
         return Completable.fromAction(() -> {
             Enrollment enrollment = TrackedEntityInstanceInternalAccessor.accessEnrollments(tei).get(0);
-            enrollmentStore.setState(enrollment.uid(), state);
-            trackedEntityInstanceStore.setState(enrollment.trackedEntityInstance(), state);
-
             List<Event> events = EnrollmentInternalAccessor.accessEvents(enrollment);
+
             if (events != null && !events.isEmpty()) {
-                List<String> eventUids = UidsHelper.getUidsList(events);
-                eventStore.setState(eventUids, state);
+                for (Event event : events) {
+                    eventStore.setSyncState(event.uid(), state);
+                    dataStatePropagator.propagateEventUpdate(event);
+                }
             }
+
+            enrollmentStore.setSyncState(enrollment.uid(), state);
+            dataStatePropagator.propagateEnrollmentUpdate(enrollment);
+
+            trackedEntityInstanceStore.setSyncState(enrollment.trackedEntityInstance(), state);
+            dataStatePropagator.propagateTrackedEntityInstanceUpdate(tei);
+        });
+    }
+
+    @Override
+    public Completable updateRelationshipSubmissionState(String relationshipUid, State state) {
+        return Completable.fromAction(() -> {
+            relationshipStore.setSyncState(relationshipUid, state);
+            RelationshipItem fromItem = relationshipItemStore
+                    .getForRelationshipUidAndConstraintType(relationshipUid, RelationshipConstraintType.FROM);
+            dataStatePropagator.propagateRelationshipUpdate(fromItem);
         });
     }
 

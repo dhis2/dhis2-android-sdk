@@ -45,7 +45,7 @@ object DataValueSamples {
 
         return DataValue.builder()
             .id(1L)
-            .state(State.TO_POST)
+            .syncState(State.TO_POST)
             .deleted(false)
             .dataElement(dataElement)
             .period(period)

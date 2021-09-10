@@ -63,7 +63,7 @@ public class Dhis2MockServer {
     private static final String PROGRAM_SETTINGS_JSON = "settings/program_settings.json";
     private static final String SYNCHRONIZATION_SETTTINGS_JSON = "settings/synchronization_settings.json";
     private static final String APPEARANCE_SETTINGS_JSON = "settings/appearance_settings.json";
-    private static final String ANALYTICS_SETTINGS_JSON = "settings/analytics_settings.json";
+    private static final String ANALYTICS_SETTINGS_JSON = "settings/analytics_settings_v2.json";
     private static final String USER_SETTINGS_JSON = "settings/user_settings.json";
     private static final String PROGRAMS_JSON = "program/programs.json";
     private static final String PROGRAM_STAGES_JSON = "program/program_stages.json";
@@ -86,6 +86,7 @@ public class Dhis2MockServer {
     private static final String CATEGORY_COMBOS_JSON = "category/category_combos.json";
     private static final String CATEGORIES_JSON = "category/categories.json";
     private static final String CATEGORY_OPTIONS_JSON = "category/category_options.json";
+    private static final String VISUALIZATIONS_JSON = "visualization/visualizations.json";
     private static final String ORGANISATION_UNIT_LEVELS_JSON = "organisationunit/organisation_unit_levels.json";
     private static final String CONSTANTS_JSON = "constant/constants.json";
     private static final String USER_JSON = "user/user.json";
@@ -229,6 +230,8 @@ public class Dhis2MockServer {
                     return createMockResponse(CATEGORIES_JSON);
                 } else if (path.startsWith("/api/categoryOptions?")) {
                     return createMockResponse(CATEGORY_OPTIONS_JSON);
+                } else if (path.startsWith("/api/visualizations?")) {
+                    return createMockResponse(VISUALIZATIONS_JSON);
                 } else if (path.startsWith("/api/organisationUnits?")) {
                     return createMockResponse(ORGANISATION_UNITS_JSON);
                 } else if (path.startsWith("/api/organisationUnitLevels?")) {
@@ -306,6 +309,7 @@ public class Dhis2MockServer {
         enqueueMockResponse(CATEGORY_COMBOS_JSON);
         enqueueMockResponse(CATEGORIES_JSON);
         enqueueMockResponse(CATEGORY_OPTIONS_JSON);
+        enqueueMockResponse(VISUALIZATIONS_JSON);
     }
 
     @NonNull

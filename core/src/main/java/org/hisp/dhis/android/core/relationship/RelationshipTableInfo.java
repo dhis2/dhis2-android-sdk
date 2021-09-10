@@ -67,7 +67,7 @@ public final class RelationshipTableInfo {
                     CREATED,
                     LAST_UPDATED,
                     RELATIONSHIP_TYPE,
-                    STATE,
+                    SYNC_STATE,
                     DELETED
             );
         }

@@ -57,8 +57,8 @@ internal open class IdentifiableDeletableDataObjectStoreImpl<O>(
         if (setStateIfUploadingStatement == null) {
             val whereUid = " WHERE " + IdentifiableColumns.UID + " =?"
             val setState = "UPDATE " + tableName + " SET " +
-                DataColumns.STATE + " =?" + whereUid
-            val setStateIfUploading = setState + " AND " + DataColumns.STATE + EQ + "'" + State.UPLOADING + "'"
+                DataColumns.SYNC_STATE + " =?" + whereUid
+            val setStateIfUploading = setState + " AND " + DataColumns.SYNC_STATE + EQ + "'" + State.UPLOADING + "'"
             setStateIfUploadingStatement = databaseAdapter.compileStatement(setStateIfUploading)
             val setDeleted = "UPDATE " + tableName + " SET " +
                 DeletableDataColumns.DELETED + " = 1" + whereUid
@@ -81,13 +81,13 @@ internal open class IdentifiableDeletableDataObjectStoreImpl<O>(
         }
     }
 
-    override fun setStateOrDelete(uid: String, state: State): HandleAction {
+    override fun setSyncStateOrDelete(uid: String, state: State): HandleAction {
         var deleted = false
         if (state == State.SYNCED) {
             val whereClause = WhereClauseBuilder()
                 .appendKeyStringValue(IdentifiableColumns.UID, uid)
                 .appendKeyNumberValue(DeletableDataColumns.DELETED, 1)
-                .appendKeyStringValue(DataColumns.STATE, State.UPLOADING)
+                .appendKeyStringValue(DataColumns.SYNC_STATE, State.UPLOADING)
                 .build()
             deleted = deleteWhere(whereClause)
         }
@@ -115,5 +115,10 @@ internal open class IdentifiableDeletableDataObjectStoreImpl<O>(
         val updatedRow = databaseAdapter.executeUpdateDelete(setDeletedStatement)
         setDeletedStatement!!.clearBindings()
         return updatedRow
+    }
+
+    override fun selectSyncStateWhere(where: String): List<State> {
+        val statesStr = selectStringColumnsWhereClause(DataColumns.SYNC_STATE, where)
+        return statesStr.map { State.valueOf(it) }
     }
 }

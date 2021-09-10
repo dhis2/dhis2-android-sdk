@@ -71,7 +71,7 @@ public class CreateEventUtils {
         event.put(Columns.EVENT_DATE, DATE);
         event.put(Columns.COMPLETE_DATE, DATE);
         event.put(Columns.DUE_DATE, DATE);
-        event.put(Columns.STATE, State.TO_POST.name());
+        event.put(Columns.SYNC_STATE, State.TO_POST.name());
         return event;
     }
 }

@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.category.CategoryModule;
 import org.hisp.dhis.android.core.constant.ConstantModule;
 import org.hisp.dhis.android.core.dataelement.DataElementModule;
 import org.hisp.dhis.android.core.dataset.DataSetModule;
+import org.hisp.dhis.android.core.datastore.DataStoreModule;
 import org.hisp.dhis.android.core.datavalue.DataValueModule;
 import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
@@ -61,6 +62,7 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
 import org.hisp.dhis.android.core.user.UserModule;
 import org.hisp.dhis.android.core.validation.ValidationModule;
+import org.hisp.dhis.android.core.visualization.VisualizationModule;
 import org.hisp.dhis.android.core.wipe.internal.WipeModule;
 
 import retrofit2.Retrofit;
@@ -171,6 +173,10 @@ public final class D2 {
         return this.modules.legendSet;
     }
 
+    public DataStoreModule dataStoreModule() {
+        return this.modules.dataStore;
+    }
+
     public MaintenanceModule maintenanceModule() {
         return this.modules.maintenance;
     }
@@ -197,6 +203,10 @@ public final class D2 {
 
     public ValidationModule validationModule() {
         return modules.validation;
+    }
+
+    public VisualizationModule visualizationModule() {
+        return modules.visualization;
     }
 
     public WipeModule wipeModule() {

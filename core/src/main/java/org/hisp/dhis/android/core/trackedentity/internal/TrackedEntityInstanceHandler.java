@@ -105,7 +105,8 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
                     TrackedEntityInstanceInternalAccessor.accessEnrollments(trackedEntityInstance);
             if (enrollments != null) {
                 enrollmentHandler.handleMany(enrollments, enrollment -> enrollment.toBuilder()
-                                .state(State.SYNCED)
+                                .syncState(State.SYNCED)
+                                .aggregatedSyncState(State.SYNCED)
                                 .build(),
                         overwrite);
             }
@@ -122,12 +123,12 @@ final class TrackedEntityInstanceHandler extends IdentifiableDataHandlerImpl<Tra
 
     @Override
     protected TrackedEntityInstance addRelationshipState(TrackedEntityInstance o) {
-        return o.toBuilder().state(State.RELATIONSHIP).build();
+        return o.toBuilder().aggregatedSyncState(State.RELATIONSHIP).syncState(State.RELATIONSHIP).build();
     }
 
     @Override
     protected TrackedEntityInstance addSyncedState(TrackedEntityInstance o) {
-        return o.toBuilder().state(State.SYNCED).build();
+        return o.toBuilder().aggregatedSyncState(State.SYNCED).syncState(State.SYNCED).build();
     }
 
     @Override

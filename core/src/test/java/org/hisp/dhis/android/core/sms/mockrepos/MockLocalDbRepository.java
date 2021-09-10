@@ -160,6 +160,11 @@ public class MockLocalDbRepository implements LocalDbRepository {
     }
 
     @Override
+    public Completable updateRelationshipSubmissionState(String relationshipUid, State state) {
+        return Completable.complete();
+    }
+
+    @Override
     public Completable setMetadataDownloadConfig(WebApiRepository.GetMetadataIdsConfig metadataIdsConfig) {
         return Completable.fromAction(() -> this.metadataIdsConfig = metadataIdsConfig);
     }

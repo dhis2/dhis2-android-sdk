@@ -28,8 +28,8 @@ class DataValuePostCallMockIntegrationShould : BaseMockIntegrationTestMetadataEn
         d2.dataValueModule().dataValues().blockingUpload()
 
         // Then all data set should be properly synced
-        val warnings = d2.dataValueModule().dataValues().byState().eq(State.SYNCED).blockingGet()
-        assertThat(warnings.size).isEqualTo(2)
+        val synced = d2.dataValueModule().dataValues().bySyncState().eq(State.SYNCED).blockingGet()
+        assertThat(synced.size).isEqualTo(2)
     }
 
     @Test
@@ -42,7 +42,7 @@ class DataValuePostCallMockIntegrationShould : BaseMockIntegrationTestMetadataEn
         d2.dataValueModule().dataValues().blockingUpload()
 
         // Then one data set should marked as WARNING
-        val warnings = d2.dataValueModule().dataValues().byState().eq(State.WARNING).blockingGet()
+        val warnings = d2.dataValueModule().dataValues().bySyncState().eq(State.WARNING).blockingGet()
         assertThat(warnings.size).isEqualTo(1)
     }
 
@@ -56,7 +56,7 @@ class DataValuePostCallMockIntegrationShould : BaseMockIntegrationTestMetadataEn
         d2.dataValueModule().dataValues().blockingUpload()
 
         // Then all data values should be marked as WARNING
-        val warnings = d2.dataValueModule().dataValues().byState().eq(State.WARNING).blockingGet()
+        val warnings = d2.dataValueModule().dataValues().bySyncState().eq(State.WARNING).blockingGet()
         assertThat(warnings.size).isEqualTo(2)
     }
 

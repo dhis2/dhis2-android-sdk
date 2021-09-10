@@ -33,7 +33,7 @@ import android.database.Cursor;
 
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.arch.helpers.DateUtils;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -49,7 +49,7 @@ public final class DbDateColumnAdapter implements ColumnTypeAdapter<Date> {
         Date date = null;
         if (sourceDate != null) {
             try {
-                date = BaseIdentifiableObject.DATE_FORMAT.parse(sourceDate);
+                date = DateUtils.DATE_FORMAT.parse(sourceDate);
             } catch (ParseException parseException) {
                 // wrap checked exception into unchecked
                 throw new RuntimeException(parseException);
@@ -62,7 +62,7 @@ public final class DbDateColumnAdapter implements ColumnTypeAdapter<Date> {
     @Override
     public void toContentValues(ContentValues contentValues, String columnName, Date date) {
         if (date != null) {
-            contentValues.put(columnName, BaseIdentifiableObject.DATE_FORMAT.format(date));
+            contentValues.put(columnName, DateUtils.DATE_FORMAT.format(date));
         }
     }
 }

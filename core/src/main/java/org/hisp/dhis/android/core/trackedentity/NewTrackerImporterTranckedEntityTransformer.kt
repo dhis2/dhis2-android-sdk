@@ -43,7 +43,8 @@ internal class NewTrackerImporterTranckedEntityTransformer :
             .organisationUnit(o.organisationUnit())
             .trackedEntityType(o.trackedEntityType())
             .geometry(o.geometry())
-            .state(o.state())
+            .syncState(o.syncState())
+            .aggregatedSyncState(o.aggregatedSyncState())
             .build()
     }
 }

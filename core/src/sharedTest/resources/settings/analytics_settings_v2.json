@@ -1,0 +1,124 @@
+{
+  "tei": [
+    {
+      "uid": "fqEx2avRp1L",
+      "data": {
+        "dataElements": [
+          "dBwrot7S420.sWoqcoByYmD",
+          "dBwrot7S421.Ok9OQpitjQr"
+        ]
+      },
+      "name": "Height evolution",
+      "type": "LINE",
+      "period": "Monthly",
+      "program": "IpHINAT79UW",
+      "programStage": "dBwrot7S420",
+      "shortName": "H. evolution"
+    },
+    {
+      "uid": "XQUhloISaQJ",
+      "data": {
+        "indicators": [
+          "dBwrot7S420.GSae40Fyppf"
+        ],
+        "attributes": [
+          "cejWyOfXge6"
+        ]
+      },
+      "name": "Weight gain",
+      "type": "BAR",
+      "period": "Weekly",
+      "program": "lxAQ7Zs9VYR",
+      "shortName": "W. gain"
+    },
+    {
+      "WHONutrition": {
+        "chartType": "WFH",
+        "gender": {
+          "attribute": "cejWyOfXge6",
+          "values": {
+            "female": "female",
+            "male": "male"
+          }
+        },
+        "x": {
+          "dataElements": [
+            "dBwrot7S420.sWoqcoByYmD"
+          ]
+        },
+        "y": {
+          "indicators": [
+            "GSae40Fyppf"
+          ]
+        }
+      },
+      "name": "Who chart",
+      "program": "IpHINAT79UW",
+      "programStage": "dBwrot7S420",
+      "shortName": "Who chart",
+      "type": "WHO_NUTRITION",
+      "uid": "yEdtdG7ql9K"
+    }
+  ],
+  "lastUpdated": "2021-06-02T04:30:16.877Z",
+  "dhisVisualizations": {
+    "home": [
+      {
+        "id": "12345678910",
+        "name": "Ejemplo",
+        "visualizations": [
+          {
+            "id": "FAFa11yFeFe",
+            "timestamp": "2021-07-01T03:01:16.8770"
+          },
+          {
+            "id": "PYBH8ZaAQnC",
+            "timestamp": "2021-07-01T03:02:16.8770"
+          }
+        ]
+      },
+      {
+        "id": "12345678911",
+        "name": "Otro ejemplo",
+        "visualizations": [
+          {
+            "id": "PYBH8ZaAQnC",
+            "timestamp": "2021-07-01T03:04:16.8770"
+          }
+        ]
+      }
+    ],
+    "dataSet": {
+      "BfMAe6Itzgt": [
+        {
+          "id": "0000000001",
+          "name": "default",
+          "visualizations": [
+            {
+              "id": "FAFa11yFeFe",
+              "timestamp": "2021-07-01T02:55:16.8770"
+            }
+          ]
+        }
+      ]
+    },
+    "program": {
+      "IpHINAT79UW": [
+        {
+          "id": "0000000001",
+          "name": "default",
+          "visualizations": [
+            {
+              "id": "PYBH8ZaAQnC",
+              "timestamp": "2021-07-01T02:55:16.8770"
+            },
+            {
+              "id": "PYBH8ZaAQnC",
+              "timestamp": "2021-07-01T02:55:16.8770"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

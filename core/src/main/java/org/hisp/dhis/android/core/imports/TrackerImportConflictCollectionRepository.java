@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.imports;
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
@@ -36,6 +35,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterC
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore;
 
 import java.util.Map;
 
@@ -49,7 +49,7 @@ public final class TrackerImportConflictCollectionRepository
 
     @Inject
     TrackerImportConflictCollectionRepository(
-            final ObjectStore<TrackerImportConflict> store,
+            final TrackerImportConflictStore store,
             final Map<String, ChildrenAppender<TrackerImportConflict>> childrenAppenders,
             final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,

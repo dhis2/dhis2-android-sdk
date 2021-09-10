@@ -61,7 +61,7 @@ public class CreateEnrollmentUtils {
         enrollment.put(Columns.FOLLOW_UP, FOLLOW_UP);
         enrollment.put(Columns.GEOMETRY_TYPE, GEOMETRY_TYPE.getFeatureType());
         enrollment.put(Columns.GEOMETRY_COORDINATES, GEOMETRY_COORDINATES);
-        enrollment.put(Columns.STATE, STATE.name());
+        enrollment.put(Columns.SYNC_STATE, STATE.name());
         enrollment.put(Columns.CREATED, DATE);
         enrollment.put(Columns.LAST_UPDATED, DATE);
 

@@ -52,7 +52,7 @@ final class DataSetCompleteRegistrationStoreImpl extends
                 w.bind(4, dataSetCompleteRegistration.attributeOptionCombo());
                 w.bind(5, dataSetCompleteRegistration.date());
                 w.bind(6, dataSetCompleteRegistration.storedBy());
-                w.bind(7, dataSetCompleteRegistration.state());
+                w.bind(7, dataSetCompleteRegistration.syncState());
                 w.bind(8, dataSetCompleteRegistration.deleted());
             };
 
@@ -94,7 +94,7 @@ final class DataSetCompleteRegistrationStoreImpl extends
     @Override
     public void setState(DataSetCompleteRegistration dataSetCompleteRegistration, State newState) {
         DataSetCompleteRegistration updatedDataSetCompleteRegistration
-                = dataSetCompleteRegistration.toBuilder().state(newState).build();
+                = dataSetCompleteRegistration.toBuilder().syncState(newState).build();
 
         updateWhere(updatedDataSetCompleteRegistration);
     }
@@ -123,7 +123,7 @@ final class DataSetCompleteRegistrationStoreImpl extends
                 "%" + rootOrgunitUid + "%");
         whereClause.appendInSubQuery(DataSetCompleteRegistrationTableInfo.Columns.ORGANISATION_UNIT, subQuery);
 
-        whereClause.appendKeyStringValue(DataSetCompleteRegistrationTableInfo.Columns.STATE, State.SYNCED);
+        whereClause.appendKeyStringValue(DataSetCompleteRegistrationTableInfo.Columns.SYNC_STATE, State.SYNCED);
 
         return deleteWhere(whereClause.build());
     }
@@ -137,7 +137,7 @@ final class DataSetCompleteRegistrationStoreImpl extends
                         dscr.organisationUnit())
                 .appendKeyStringValue(DataSetCompleteRegistrationTableInfo.Columns.ATTRIBUTE_OPTION_COMBO,
                         dscr.attributeOptionCombo())
-                .appendKeyStringValue(DataSetCompleteRegistrationTableInfo.Columns.STATE, State.UPLOADING)
+                .appendKeyStringValue(DataSetCompleteRegistrationTableInfo.Columns.SYNC_STATE, State.UPLOADING)
                 .build();
         return selectWhere(whereClause).size() > 0;
     }

@@ -30,12 +30,19 @@ package org.hisp.dhis.android.core.enrollment
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
+import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper
+import org.hisp.dhis.android.core.common.Access
+import org.hisp.dhis.android.core.common.DataAccess
+import org.hisp.dhis.android.core.event.Event
+import org.hisp.dhis.android.core.event.EventCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRepository
 import org.hisp.dhis.android.core.program.AccessLevel
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramCollectionRepository
+import org.hisp.dhis.android.core.program.ProgramStage
+import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCollectionRepository
 import org.junit.Assert.assertFalse
@@ -54,7 +61,6 @@ class EnrollmentServiceShould {
     private val enrollment: Enrollment = mock()
     private val trackedEntityInstance: TrackedEntityInstance = mock()
     private val program: Program = mock()
-    private val organisationUnit: OrganisationUnit = mock()
 
     private val enrollmentRepository: EnrollmentCollectionRepository = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val trackedEntityInstanceRepository: TrackedEntityInstanceCollectionRepository =
@@ -62,10 +68,18 @@ class EnrollmentServiceShould {
     private val programRepository: ProgramCollectionRepository = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val organisationUnitRepository: OrganisationUnitCollectionRepository =
         mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
+    private val eventCollectionRepository: EventCollectionRepository =
+        mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
+    private val programStageCollectionRepository: ProgramStageCollectionRepository =
+        mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
 
     private val enrollmentService = EnrollmentService(
-        enrollmentRepository, trackedEntityInstanceRepository,
-        programRepository, organisationUnitRepository
+        enrollmentRepository,
+        trackedEntityInstanceRepository,
+        programRepository,
+        organisationUnitRepository,
+        eventCollectionRepository,
+        programStageCollectionRepository
     )
 
     @Before
@@ -152,4 +166,82 @@ class EnrollmentServiceShould {
         val access = enrollmentService.blockingGetEnrollmentAccess(trackedEntityInstanceUid, programUid)
         assert(access == EnrollmentAccess.PROTECTED_PROGRAM_DENIED)
     }
+
+    @Test
+    fun `Enrollment has any events that allows events creation`() {
+
+        whenever(enrollmentRepository.uid(enrollmentUid).blockingGet()) doReturn enrollment
+        whenever(enrollment.program()) doReturn programUid
+
+        whenever(
+            programStageCollectionRepository.byProgramUid().eq(programUid)
+        ) doReturn programStageCollectionRepository
+        whenever(
+            programStageCollectionRepository.byAccessDataWrite().isTrue
+        ) doReturn programStageCollectionRepository
+        whenever(
+            programStageCollectionRepository.get()
+        ) doReturn Single.just(getProgramStages())
+
+        whenever(
+            eventCollectionRepository.byEnrollmentUid().eq(enrollmentUid)
+        ) doReturn eventCollectionRepository
+        whenever(
+            eventCollectionRepository.byDeleted().isFalse
+        ) doReturn eventCollectionRepository
+        whenever(eventCollectionRepository.get()) doReturn Single.just(getEventList())
+
+        assertTrue(enrollmentService.blockingGetAllowEventCreation(enrollmentUid, listOf("1")))
+    }
+
+    @Test
+    fun `Enrollment has not any events that allows events creation`() {
+
+        whenever(enrollmentRepository.uid(enrollmentUid).blockingGet()) doReturn enrollment
+        whenever(enrollment.program()) doReturn programUid
+
+        whenever(
+            programStageCollectionRepository.byProgramUid().eq(programUid)
+        ) doReturn programStageCollectionRepository
+        whenever(
+            programStageCollectionRepository.byAccessDataWrite().isTrue
+        ) doReturn programStageCollectionRepository
+        whenever(
+            programStageCollectionRepository.get()
+        ) doReturn Single.just(getProgramStages())
+
+        whenever(
+            eventCollectionRepository.byEnrollmentUid().eq(enrollmentUid)
+        ) doReturn eventCollectionRepository
+        whenever(
+            eventCollectionRepository.byDeleted().isFalse
+        ) doReturn eventCollectionRepository
+        whenever(eventCollectionRepository.get()) doReturn Single.just(getEventList())
+
+        assertFalse(enrollmentService.blockingGetAllowEventCreation(enrollmentUid, listOf("1", "2")))
+    }
+
+    private fun getEventList() = listOf(
+        Event.builder()
+            .uid("eventUid1")
+            .programStage("1")
+            .build(),
+        Event.builder()
+            .uid("eventUid2")
+            .programStage("2")
+            .build()
+    )
+
+    private fun getProgramStages() = listOf(
+        ProgramStage.builder()
+            .access(Access.create(true, true, DataAccess.create(true, true)))
+            .uid("1")
+            .repeatable(true)
+            .build(),
+        ProgramStage.builder()
+            .access(Access.create(true, true, DataAccess.create(true, true)))
+            .uid("2")
+            .repeatable(true)
+            .build()
+    )
 }

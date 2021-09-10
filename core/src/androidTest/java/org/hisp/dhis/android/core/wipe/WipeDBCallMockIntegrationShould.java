@@ -28,18 +28,25 @@
 
 package org.hisp.dhis.android.core.wipe;
 
-import org.hisp.dhis.android.core.common.StorableObjectWithUid;
 import org.hisp.dhis.android.core.data.database.DatabaseAssert;
+import org.hisp.dhis.android.core.datastore.KeyValuePair;
+import org.hisp.dhis.android.core.datastore.internal.LocalDataStoreStore;
+import org.hisp.dhis.android.core.datavalue.DataValueConflict;
+import org.hisp.dhis.android.core.datavalue.internal.DataValueConflictStore;
 import org.hisp.dhis.android.core.fileresource.FileResource;
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceStoreImpl;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
-import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore;
+import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStoreImpl;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore;
-import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobStore;
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType;
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObject;
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObjectStore;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher;
 import org.junit.Test;
+
+import java.util.Date;
 
 public class WipeDBCallMockIntegrationShould extends BaseMockIntegrationTestEmptyDispatcher {
 
@@ -85,9 +92,29 @@ public class WipeDBCallMockIntegrationShould extends BaseMockIntegrationTestEmpt
                 .errorDescription("Sample error")
                 .build());
 
-        TrackerImportConflictStore.create(databaseAdapter).insert(TrackerImportConflict.builder().build());
+        TrackerImportConflictStoreImpl.create(databaseAdapter).insert(TrackerImportConflict.builder().build());
 
         FileResourceStoreImpl.create(databaseAdapter).insert(FileResource.builder().uid("uid").build());
-        TrackerJobStore.create(databaseAdapter).insert(StorableObjectWithUid.create("uid"));
+        TrackerJobObjectStore.create(databaseAdapter).insert(
+                TrackerJobObject.builder()
+                        .jobUid("uid")
+                        .trackerType(TrackerImporterObjectType.EVENT)
+                        .objectUid("oUid")
+                        .lastUpdated(new Date())
+                        .build()
+        );
+        DataValueConflictStore.create(databaseAdapter).insert(DataValueConflict.builder().build());
+        LocalDataStoreStore.create(databaseAdapter).insert(
+                KeyValuePair.builder()
+                        .key("key1")
+                        .value("value1")
+                        .build()
+        );
+        LocalDataStoreStore.create(databaseAdapter).insert(
+                KeyValuePair.builder()
+                        .key("key2")
+                        .value("value2")
+                        .build()
+        );
     }
 }

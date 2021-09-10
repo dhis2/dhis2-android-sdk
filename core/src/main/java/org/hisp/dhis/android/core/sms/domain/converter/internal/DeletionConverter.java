@@ -40,13 +40,13 @@ import io.reactivex.Completable;
 import io.reactivex.Single;
 
 public class DeletionConverter extends Converter<String> {
-    private final String uid;
+    private final String eventUid;
 
     public DeletionConverter(LocalDbRepository localDbRepository,
                              DHISVersionManager dhisVersionManager,
-                             String uid) {
+                             String eventUid) {
         super(localDbRepository, dhisVersionManager);
-        this.uid = uid;
+        this.eventUid = eventUid;
     }
 
     @Override
@@ -62,12 +62,11 @@ public class DeletionConverter extends Converter<String> {
 
     @Override
     public Completable updateSubmissionState(State state) {
-        // there is no submission state update for deletion
-        return Completable.complete();
+        return getLocalDbRepository().updateEventSubmissionState(eventUid, state).onErrorComplete();
     }
 
     @Override
     Single<String> readItemFromDb() {
-        return Single.just(uid);
+        return Single.just(eventUid);
     }
 }

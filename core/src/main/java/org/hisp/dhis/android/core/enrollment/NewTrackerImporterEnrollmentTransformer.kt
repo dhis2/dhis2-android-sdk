@@ -46,9 +46,10 @@ internal class NewTrackerImporterEnrollmentTransformer : Transformer<Enrollment,
             .completedAt(o.completedDate())
             .followUp(o.followUp())
             .status(o.status())
-            .trackedEntityInstance(o.trackedEntityInstance())
+            .trackedEntity(o.trackedEntityInstance())
             .geometry(o.geometry())
-            .state(o.state())
+            .syncState(o.syncState())
+            .aggregatedSyncState(o.aggregatedSyncState())
             .build()
     }
 }

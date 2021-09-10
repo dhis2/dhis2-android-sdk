@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SinglePare
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.event.EventTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo;
 
@@ -129,7 +130,7 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
     private String eventInUploadableState() {
         String states = CollectionsHelper.commaAndSpaceSeparatedArrayValues(
                 CollectionsHelper.withSingleQuotationMarksArray(EnumHelper.asStringList(State.uploadableStates())));
-        return "(Event.state IN (" + states + "))";
+        return "(Event." + EventTableInfo.Columns.SYNC_STATE + " IN (" + states + "))";
     }
 
     @Override
@@ -139,6 +140,16 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
                 " FROM (TrackedEntityDataValue INNER JOIN Event ON TrackedEntityDataValue.event = Event.uid) " +
                 " WHERE Event.enrollment IS NOT NULL " +
                 "AND " + eventInUploadableState() + ";";
+
+        return queryTrackedEntityDataValues(queryStatement);
+    }
+
+    @Override
+    public Map<String, List<TrackedEntityDataValue>> queryByUploadableEvents() {
+
+        String queryStatement = "SELECT TrackedEntityDataValue.* " +
+                " FROM (TrackedEntityDataValue INNER JOIN Event ON TrackedEntityDataValue.event = Event.uid) " +
+                " WHERE " + eventInUploadableState() + ";";
 
         return queryTrackedEntityDataValues(queryStatement);
     }

@@ -43,15 +43,19 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EnrollmentStatusColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.StateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreCoordinatesColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreEventListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNoteListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreRelationshipListColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreStateColumnAdapter;
 import org.hisp.dhis.android.core.arch.helpers.CoordinateHelper;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.Coordinates;
+import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.note.Note;
@@ -61,6 +65,7 @@ import java.util.Date;
 import java.util.List;
 
 @AutoValue
+@SuppressWarnings("PMD.ExcessiveImports")
 @JsonDeserialize(builder = AutoValue_Enrollment.Builder.class)
 public abstract class Enrollment extends BaseDeletableDataObject implements ObjectWithUidInterface {
 
@@ -79,12 +84,12 @@ public abstract class Enrollment extends BaseDeletableDataObject implements Obje
     public abstract Date lastUpdated();
 
     @Nullable
-    @JsonIgnore()
+    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date createdAtClient();
 
     @Nullable
-    @JsonIgnore()
+    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdatedAtClient();
 
@@ -154,6 +159,21 @@ public abstract class Enrollment extends BaseDeletableDataObject implements Obje
     @ColumnAdapter(IgnoreRelationshipListColumnAdapter.class)
     abstract List<Relationship> relationships();
 
+    @Nullable
+    @ColumnName(DataColumns.AGGREGATED_SYNC_STATE)
+    @ColumnAdapter(StateColumnAdapter.class)
+    public abstract State aggregatedSyncState();
+
+    /**
+     * @deprecated Use {@link #aggregatedSyncState()} instead.
+     */
+    @Deprecated
+    @Nullable
+    @ColumnAdapter(IgnoreStateColumnAdapter.class)
+    public State state() {
+        return aggregatedSyncState();
+    }
+
     public static Builder builder() {
         return new $$AutoValue_Enrollment.Builder();
     }
@@ -210,6 +230,16 @@ public abstract class Enrollment extends BaseDeletableDataObject implements Obje
         public abstract Builder notes(List<Note> notes);
 
         public abstract Builder relationships(List<Relationship> relationships);
+
+        public abstract Builder aggregatedSyncState(State aggregatedSyncState);
+
+        /**
+         * @deprecated Use {@link #aggregatedSyncState(State)} and {@link #syncState(State)} instead.
+         */
+        @Deprecated
+        public Builder state(State state) {
+            return aggregatedSyncState(state).syncState(state);
+        }
 
         abstract Enrollment autoBuild();
 

@@ -134,6 +134,19 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
         assertThatEventPushedIsDownloaded(pushedEvent);
     }
 
+    //@Test
+    public void pull_events_delete_with_repository_and_post() throws Exception {
+        downloadMetadata();
+
+        d2.eventModule().eventDownloader().limit(10).blockingDownload();
+
+        String uid = d2.eventModule().events().one().blockingGet().uid();
+
+        d2.eventModule().events().uid(uid).blockingDelete();
+
+        d2.eventModule().events().blockingUpload();
+    }
+
     // commented out since it is a flaky test that works against a real server.
     //@Test
     public void pull_two_events_with_correct_category_combo_after_be_pushed() throws Exception {
@@ -160,7 +173,7 @@ public class EventPostCallRealIntegrationShould extends BaseRealIntegrationTest 
         eventStore.insert(Event.builder().uid(eventUid).created(new Date()).lastUpdated(new Date())
                 .status(EventStatus.ACTIVE).program(programUid)
                 .programStage(programStageUid).organisationUnit(orgUnitUid).eventDate(new Date())
-                .completedDate(new Date()).dueDate(new Date()).state(State.TO_POST)
+                .completedDate(new Date()).dueDate(new Date()).syncState(State.TO_POST)
                 .attributeOptionCombo(attributeOptionCombo).build());
 
         TrackedEntityDataValue trackedEntityDataValue = TrackedEntityDataValue.builder()

@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.category.CategoryModule;
 import org.hisp.dhis.android.core.constant.ConstantModule;
 import org.hisp.dhis.android.core.dataelement.DataElementModule;
 import org.hisp.dhis.android.core.dataset.DataSetModule;
+import org.hisp.dhis.android.core.datastore.DataStoreModule;
 import org.hisp.dhis.android.core.datavalue.DataValueModule;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
 import org.hisp.dhis.android.core.event.EventModule;
@@ -53,6 +54,7 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
 import org.hisp.dhis.android.core.user.UserModule;
 import org.hisp.dhis.android.core.validation.ValidationModule;
+import org.hisp.dhis.android.core.visualization.VisualizationModule;
 
 import javax.inject.Inject;
 
@@ -75,6 +77,7 @@ public final class D2Modules {
     public final ImportModule importModule;
     public final IndicatorModule indicator;
     public final LegendSetModule legendSet;
+    public final DataStoreModule dataStore;
     public final MaintenanceModule maintenance;
     public final NoteModule note;
     public final ProgramModule program;
@@ -86,6 +89,7 @@ public final class D2Modules {
     public final TrackedEntityModule trackedEntity;
     public final UserModule user;
     public final ValidationModule validation;
+    public final VisualizationModule visualization;
     public final SmsModule sms;
 
     @Inject
@@ -102,6 +106,7 @@ public final class D2Modules {
                      ImportModule importModule,
                      IndicatorModule indicator,
                      LegendSetModule legendSet,
+                     DataStoreModule dataStore,
                      MaintenanceModule maintenance,
                      NoteModule note,
                      ProgramModule program,
@@ -113,6 +118,7 @@ public final class D2Modules {
                      TrackedEntityModule trackedEntity,
                      UserModule user,
                      ValidationModule validation,
+                     VisualizationModule visualization,
                      SmsModule sms) {
         this.analytics = analytics;
         this.category = category;
@@ -127,6 +133,7 @@ public final class D2Modules {
         this.importModule = importModule;
         this.indicator = indicator;
         this.legendSet = legendSet;
+        this.dataStore = dataStore;
         this.maintenance = maintenance;
         this.note = note;
         this.program = program;
@@ -138,6 +145,7 @@ public final class D2Modules {
         this.trackedEntity = trackedEntity;
         this.user = user;
         this.validation = validation;
+        this.visualization = visualization;
         this.sms = sms;
     }
 }

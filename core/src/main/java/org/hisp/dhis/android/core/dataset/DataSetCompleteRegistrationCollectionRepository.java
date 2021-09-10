@@ -99,7 +99,7 @@ public final class DataSetCompleteRegistrationCollectionRepository
     @Override
     public Observable<D2Progress> upload() {
         return Observable.fromCallable(() ->
-                byState().in(State.uploadableStatesIncludingError()).blockingGetWithoutChildren()
+                bySyncState().in(State.uploadableStatesIncludingError()).blockingGetWithoutChildren()
         ).flatMap(postCall::uploadDataSetCompleteRegistrations);
     }
 
@@ -137,8 +137,18 @@ public final class DataSetCompleteRegistrationCollectionRepository
         return cf.bool(Columns.DELETED);
     }
 
+    /**
+     * @deprecated Use {@link #bySyncState()} instead.
+     *
+     * @return
+     */
+    @Deprecated
     public EnumFilterConnector<DataSetCompleteRegistrationCollectionRepository, State> byState() {
-        return cf.enumC(Columns.STATE);
+        return bySyncState();
+    }
+
+    public EnumFilterConnector<DataSetCompleteRegistrationCollectionRepository, State> bySyncState() {
+        return cf.enumC(Columns.SYNC_STATE);
     }
 
 }

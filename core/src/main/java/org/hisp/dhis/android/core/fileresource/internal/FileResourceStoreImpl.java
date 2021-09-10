@@ -49,7 +49,7 @@ public final class FileResourceStoreImpl extends IdentifiableDataObjectStoreImpl
         w.bind(5, o.contentType());
         w.bind(6, o.contentLength());
         w.bind(7, o.path());
-        w.bind(8, o.state());
+        w.bind(8, o.syncState());
     };
 
     private FileResourceStoreImpl(DatabaseAdapter databaseAdapter,

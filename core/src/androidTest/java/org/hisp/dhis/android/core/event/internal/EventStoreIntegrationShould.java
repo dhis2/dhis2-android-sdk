@@ -61,7 +61,8 @@ public class EventStoreIntegrationShould extends IdentifiableDataObjectStoreAbst
     @Override
     protected Event buildObjectWithToDeleteState() {
         return EventSamples.get().toBuilder()
-                .state(State.TO_UPDATE)
+                .syncState(State.TO_UPDATE)
+                .aggregatedSyncState(State.TO_UPDATE)
                 .deleted(true)
                 .build();
     }
@@ -69,7 +70,8 @@ public class EventStoreIntegrationShould extends IdentifiableDataObjectStoreAbst
     @Override
     protected Event buildObjectWithSyncedState() {
         return EventSamples.get().toBuilder()
-                .state(State.SYNCED)
+                .syncState(State.SYNCED)
+                .aggregatedSyncState(State.SYNCED)
                 .build();
     }
 }

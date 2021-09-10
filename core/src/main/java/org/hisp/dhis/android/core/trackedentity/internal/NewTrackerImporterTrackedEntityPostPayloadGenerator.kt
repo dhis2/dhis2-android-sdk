@@ -34,16 +34,19 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollmentTransformer
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
-import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
 import org.hisp.dhis.android.core.event.NewTrackerImporterEventTransformer
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.note.NewTrackerImporterNote
 import org.hisp.dhis.android.core.note.NewTrackerImporterNoteTransformer
 import org.hisp.dhis.android.core.note.Note
-import org.hisp.dhis.android.core.trackedentity.*
+import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationship
+import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipTransformer
+import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository
+import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityAttributeValueTransformer
+import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityDataValueTransformer
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
 @Reusable
 internal class NewTrackerImporterTrackedEntityPostPayloadGenerator @Inject internal constructor(
@@ -52,12 +55,12 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGenerator @Inject inter
     private val trackedEntityDataValueStore: TrackedEntityDataValueStore,
     private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore,
     private val noteStore: IdentifiableObjectStore<Note>,
-    private val stateManager: NewTrackerImporterTrackedEntityPostStateManager
+    private val relationshipRepository: RelationshipCollectionRepository
 ) {
 
     fun getTrackedEntities(
         filteredTrackedEntityInstances: List<TrackedEntityInstance>
-    ): List<NewTrackerImporterTrackedEntity> {
+    ): NewTrackerImporterPayloadWrapper {
         val dataValueMap = transformMap(
             trackedEntityDataValueStore.queryTrackerTrackedEntityDataValues(),
             NewTrackerImporterTrackedEntityDataValueTransformer()
@@ -75,77 +78,47 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGenerator @Inject inter
             NewTrackerImporterTrackedEntityAttributeValueTransformer()
         )
         val notes = getNotes()
+        val relationships = getRelationships()
 
-        val trackedEntityTransformer = NewTrackerImporterTranckedEntityTransformer()
-
-        val trackedEntitiesToSync = filteredTrackedEntityInstances.map {
-            addTrackedEntityChildren(
-                trackedEntityTransformer.transform(it),
-                dataValueMap,
-                eventMap,
-                enrollmentMap,
-                attributeValueMap,
-                notes
-            )
-        }
-
-        stateManager.setStates(trackedEntitiesToSync, State.UPLOADING)
-        return trackedEntitiesToSync
+        return NewTrackerImporterTrackedEntityPostPayloadGeneratorTask(
+            filteredTrackedEntityInstances,
+            dataValueMap,
+            eventMap,
+            enrollmentMap,
+            attributeValueMap,
+            relationships,
+            notes
+        ).generate()
     }
 
     private fun getNotes(): List<NewTrackerImporterNote> {
         val whereNotesClause = WhereClauseBuilder()
             .appendInKeyStringValues(
-                DataColumns.STATE, State.uploadableStatesIncludingError().map { it.name }
+                DataColumns.SYNC_STATE, State.uploadableStatesIncludingError().map { it.name }
             )
             .build()
         val notesTransformer = NewTrackerImporterNoteTransformer()
         return noteStore.selectWhere(whereNotesClause).map { notesTransformer.transform(it) }
     }
 
+    private fun getRelationships(): Map<String, List<NewTrackerImporterRelationship>> {
+        val relationships = relationshipRepository.bySyncState()
+            .`in`(State.uploadableStatesIncludingError().toList())
+            .withItems()
+            .blockingGet()
+
+        val relationshipsTransformer = NewTrackerImporterRelationshipTransformer()
+        return relationships
+            .filter { it.from()?.elementUid() != null }
+            .groupBy({ it.from()?.elementUid()!! }, { relationshipsTransformer.transform(it) })
+    }
+
     private fun <A, B> transformMap(
-        map: MutableMap<String, MutableList<A>>,
+        map: Map<String, List<A>>,
         transformer: Transformer<A, B>
     ): Map<String, List<B>> {
-        return map.mapValues {
-            v ->
+        return map.mapValues { v ->
             v.value.map { transformer.transform(it) }
         }
-    }
-
-    @Suppress("LongParameterList")
-    private fun addTrackedEntityChildren(
-        trackedEntity: NewTrackerImporterTrackedEntity,
-        dataValueMap: Map<String, List<NewTrackerImporterTrackedEntityDataValue>>,
-        eventMap: Map<String, List<NewTrackerImporterEvent>>,
-        enrollmentMap: Map<String, List<NewTrackerImporterEnrollment>>,
-        attributeValueMap: Map<String, List<NewTrackerImporterTrackedEntityAttributeValue>>,
-        notes: List<NewTrackerImporterNote>
-    ): NewTrackerImporterTrackedEntity {
-        return trackedEntity.toBuilder()
-            .enrollments(getEnrollments(dataValueMap, eventMap, enrollmentMap, notes, trackedEntity.uid()))
-            .trackedEntityAttributeValues(attributeValueMap[trackedEntity.uid()] ?: emptyList())
-            .build()
-    }
-
-    private fun getEnrollments(
-        dataValueMap: Map<String, List<NewTrackerImporterTrackedEntityDataValue>>,
-        eventMap: Map<String, List<NewTrackerImporterEvent>>,
-        enrollmentMap: Map<String, List<NewTrackerImporterEnrollment>>,
-        notes: List<NewTrackerImporterNote>,
-        trackedEntityInstanceUid: String
-    ): List<NewTrackerImporterEnrollment> {
-        return enrollmentMap[trackedEntityInstanceUid]?.map { enrollment ->
-            val events = eventMap[enrollment.uid()]?.map { event ->
-                val eventBuilder = event.toBuilder()
-                    .trackedEntityDataValues(dataValueMap[event.uid()])
-                    .notes(notes.filter { it.event() == event.uid() })
-                eventBuilder.build()
-            } ?: emptyList()
-            NewTrackerImporterEnrollment.builder()
-                .events(events)
-                .notes(notes.filter { it.enrollment() == enrollment.uid() })
-                .build()
-        } ?: emptyList()
     }
 }

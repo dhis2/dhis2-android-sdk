@@ -28,7 +28,20 @@
 package org.hisp.dhis.android.core.data.settings
 
 import org.hisp.dhis.android.core.period.PeriodType
-import org.hisp.dhis.android.core.settings.*
+import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualization
+import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationScope
+import org.hisp.dhis.android.core.settings.AnalyticsTeiAttribute
+import org.hisp.dhis.android.core.settings.AnalyticsTeiData
+import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
+import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicator
+import org.hisp.dhis.android.core.settings.AnalyticsTeiSetting
+import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionData
+import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionGender
+import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionGenderValues
+import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionItem
+import org.hisp.dhis.android.core.settings.ChartType
+import org.hisp.dhis.android.core.settings.WHONutritionChartType
+import org.hisp.dhis.android.core.settings.WHONutritionComponent
 
 object AnalyticsSettingsSamples {
 
@@ -88,5 +101,15 @@ object AnalyticsSettingsSamples {
             )
             .x(AnalyticsTeiWHONutritionItem.builder().build())
             .y(AnalyticsTeiWHONutritionItem.builder().build())
+            .build()
+
+    val analyticsDhisVisualization: AnalyticsDhisVisualization =
+        AnalyticsDhisVisualization.builder()
+            .id(1L)
+            .groupName("Otro grupo")
+            .groupUid("123456")
+            .scope(AnalyticsDhisVisualizationScope.HOME)
+            .timestamp("2021-07-01T02:55:16.8770")
+            .uid("PYBH8ZaAQnC")
             .build()
 }

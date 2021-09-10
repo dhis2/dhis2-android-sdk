@@ -74,6 +74,7 @@ public enum DHISVersion {
     }
 
     public static String[] allowedVersionsAsStr() {
-        return new String[]{V2_29_STR, V2_30_STR, V2_31_STR, V2_32_STR, V2_33_STR, V2_34_STR, V2_35_STR, V2_36_STR};
+        return new String[]{V2_29_STR, V2_30_STR, V2_31_STR, V2_32_STR, V2_33_STR, V2_34_STR, V2_35_STR,
+                V2_36_STR};
     }
 }

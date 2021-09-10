@@ -67,7 +67,7 @@ abstract class RelationshipOrphanCleanerImpl<O extends ObjectWithUidInterface, R
 
         int count = 0;
         for (Relationship existingRelationship : existingRelationships) {
-            if (isSynced(existingRelationship.state()) &&
+            if (isSynced(existingRelationship.syncState()) &&
                     !isInRelationshipList(existingRelationship, relationships(relationships))) {
                 relationshipStore.delete(existingRelationship.uid());
                 count++;

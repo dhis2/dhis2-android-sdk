@@ -1,0 +1,321 @@
+{
+  "id": "PYBH8ZaAQnC",
+  "name": "Android SDK Visualization sample",
+  "displayName": "Android SDK Visualization sample",
+  "description": "Sample visualization for the Android SDK",
+  "displayDescription": "Sample visualization for the Android SDK",
+  "displayFormName": "Android SDK Visualization sample",
+  "lastUpdated": "2021-06-16T14:26:50.195",
+  "created": "2021-06-16T14:26:50.195",
+  "type": "PIVOT_TABLE",
+  "hideTitle": false,
+  "hideSubtitle": false,
+  "hideEmptyColumns": false,
+  "hideEmptyRows": false,
+  "hideEmptyRowItems": "NONE",
+  "hideLegend": false,
+  "showHierarchy": false,
+  "rowTotals": true,
+  "rowSubTotals": false,
+  "colTotals": false,
+  "colSubTotals": false,
+  "showDimensionLabels": false,
+  "percentStackedValues": false,
+  "noSpaceBetweenColumns": false,
+  "skipRounding": false,
+  "displayDensity": "NORMAL",
+  "digitGroupSeparator": "COMMA",
+  "relativePeriods": {
+    "thisYear": false,
+    "quartersLastYear": false,
+    "last30Days": false,
+    "last52Weeks": false,
+    "thisWeek": false,
+    "last90Days": false,
+    "last60Days": false,
+    "lastMonth": false,
+    "last14Days": false,
+    "biMonthsThisYear": false,
+    "monthsThisYear": false,
+    "last2SixMonths": false,
+    "yesterday": false,
+    "thisQuarter": false,
+    "last12Months": true,
+    "last5FinancialYears": false,
+    "thisSixMonth": false,
+    "lastQuarter": false,
+    "thisFinancialYear": false,
+    "last4Weeks": false,
+    "last3Months": false,
+    "thisDay": false,
+    "thisMonth": false,
+    "last5Years": false,
+    "last6BiMonths": false,
+    "last4BiWeeks": false,
+    "lastFinancialYear": false,
+    "lastBiWeek": false,
+    "weeksThisYear": false,
+    "last6Months": false,
+    "last3Days": false,
+    "quartersThisYear": false,
+    "monthsLastYear": false,
+    "lastWeek": false,
+    "last7Days": false,
+    "last180Days": false,
+    "thisBimonth": false,
+    "lastBimonth": false,
+    "lastSixMonth": false,
+    "thisBiWeek": false,
+    "lastYear": false,
+    "last12Weeks": false,
+    "last4Quarters": false
+  },
+  "categoryDimensions": [
+    {
+      "category": {
+        "id": "fMZEcRHuamy"
+      },
+      "categoryOptions": [
+        {
+          "id": "qkPbeWaFsnU"
+        },
+        {
+          "id": "wbrDrL2aYEc"
+        }
+      ]
+    },
+    {
+      "category": {
+        "id": "fkAkrdC7eJF"
+      },
+      "categoryOptions": [
+        {
+          "id": "FbLZS3ueWbQ"
+        },
+        {
+          "id": "rEq3Hkd3XXH"
+        },
+        {
+          "id": "ZZxYuoTCcDd"
+        },
+        {
+          "id": "dUm5jaCTPBb"
+        }
+      ]
+    }
+  ],
+  "filterDimensions": [
+    "ou"
+  ],
+  "rowDimensions": [
+    "pe"
+  ],
+  "columnDimensions": [
+    "dx",
+    "fMZEcRHuamy",
+    "fkAkrdC7eJF"
+  ],
+  "dataDimensionItems": [
+    {
+      "dataDimensionItemType": "INDICATOR",
+      "indicator": {
+        "id": "Uvn6LCg7dVU"
+      }
+    },
+    {
+      "dataDimensionItemType": "DATA_ELEMENT",
+      "dataElement": {
+        "id": "cYeuwXTCPkU"
+      }
+    },
+    {
+      "dataDimensionItemType": "DATA_ELEMENT_OPERAND",
+      "dataElementOperand": {
+        "lastUpdated": "2021-06-16T14:27:07.790",
+        "id": "Jtf34kNZhzP.pq2XI5kz2BY",
+        "created": "2021-06-16T14:27:07.790",
+        "name": "ANC 3rd visit Fixed",
+        "shortName": "ANC 3rd visit Fixed",
+        "aggregationType": "SUM",
+        "displayName": "ANC 3rd visit Fixed",
+        "displayShortName": "ANC 3rd visit Fixed",
+        "externalAccess": false,
+        "periodOffset": 0,
+        "dimensionItem": "Jtf34kNZhzP.pq2XI5kz2BY",
+        "sharing": {
+          "external": false,
+          "users": {},
+          "userGroups": {}
+        },
+        "displayFormName": "ANC 3rd visit Fixed",
+        "favorite": false,
+        "dimensionItemType": "DATA_ELEMENT_OPERAND",
+        "access": {
+          "read": true,
+          "update": true,
+          "externalize": false,
+          "delete": true,
+          "write": true,
+          "manage": true
+        },
+        "categoryOptionCombo": {
+          "id": "pq2XI5kz2BY"
+        },
+        "dataElement": {
+          "id": "Jtf34kNZhzP"
+        },
+        "favorites": [],
+        "translations": [],
+        "userGroupAccesses": [],
+        "attributeValues": [],
+        "userAccesses": [],
+        "legendSets": []
+      }
+    },
+    {
+      "dataDimensionItemType": "PROGRAM_INDICATOR",
+      "programIndicator": {
+        "id": "p2Zxg0wcPQ3"
+      }
+    }
+  ],
+  "organisationUnitLevels": [
+    3
+  ],
+  "userOrganisationUnit": false,
+  "userOrganisationUnitChildren": false,
+  "userOrganisationUnitGrandChildren": false,
+  "organisationUnits": [
+    {
+      "id": "YuQRtpLP10I"
+    },
+    {
+      "id": "vWbkYPRmKyS"
+    }
+  ],
+  "periods": [
+    {
+      "id": "202102"
+    },
+    {
+      "id": "202103"
+    },
+    {
+      "id": "2021S2"
+    }
+  ],
+
+
+
+  "columns": [
+    {
+      "id": "dx"
+    },
+    {
+      "id": "fMZEcRHuamy"
+    },
+    {
+      "id": "fkAkrdC7eJF"
+    }
+  ],
+  "filters": [
+    {
+      "id": "ou"
+    }
+  ],
+  "rows": [
+    {
+      "id": "pe"
+    }
+  ],
+
+
+
+  "yearlySeries": [],
+  "reportingParams": {
+    "parentOrganisationUnit": false,
+    "reportingPeriod": false,
+    "organisationUnit": false,
+    "grandParentOrganisationUnit": false
+  },
+  "completedOnly": false,
+  "cumulativeValues": false,
+  "regression": false,
+  "regressionType": "NONE",
+  "numberType": "VALUE",
+  "aggregationType": "DEFAULT",
+
+
+
+
+  "legend": {
+    "hidden": false
+  },
+  "legendDisplayStrategy": "FIXED",
+  "legendDisplayStyle": "FILL",
+  "fontSize": "NORMAL",
+  "favorite": false,
+  "sortOrder": 0,
+  "topLimit": 0,
+  "colorSet": "DEFAULT",
+  "showData": true,
+  "externalAccess": false,
+  "fontStyle": {},
+  "parentGraphMap": {
+    "YuQRtpLP10I": "ImspTQPwCqd/O6uvpzGd5pu",
+    "vWbkYPRmKyS": "ImspTQPwCqd/O6uvpzGd5pu"
+  },
+  "sharing": {
+    "owner": "xE7jOejl9FI",
+    "external": false,
+    "users": {},
+    "userGroups": {},
+    "public": "--------"
+  },
+  "publicAccess": "--------",
+  "access": {
+    "read": true,
+    "update": true,
+    "externalize": true,
+    "delete": true,
+    "write": true,
+    "manage": true
+  },
+  "lastUpdatedBy": {
+    "displayName": "John Traore",
+    "name": "John Traore",
+    "id": "xE7jOejl9FI",
+    "username": "admin"
+  },
+  "createdBy": {
+    "displayName": "John Traore",
+    "name": "John Traore",
+    "id": "xE7jOejl9FI",
+    "username": "admin"
+  },
+  "user": {
+    "displayName": "John Traore",
+    "name": "John Traore",
+    "id": "xE7jOejl9FI",
+    "username": "admin"
+  },
+  "dataElementGroupSetDimensions": [],
+  "axes": [],
+  "attributeDimensions": [],
+  "translations": [],
+  "interpretations": [],
+  "userGroupAccesses": [],
+  "subscribers": [],
+  "optionalAxes": [],
+  "series": [],
+  "attributeValues": [],
+  "itemOrganisationUnitGroups": [],
+  "dataElementDimensions": [],
+  "programIndicatorDimensions": [],
+  "userAccesses": [],
+  "favorites": [],
+  "subscribed": false,
+  "categoryOptionGroupSetDimensions": [],
+  "organisationUnitGroupSetDimensions": [],
+  "href": "https://play.dhis2.org/2.36.0/api/visualizations/PYBH8ZaAQnC"
+}

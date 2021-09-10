@@ -94,11 +94,12 @@ public final class EventObjectRepository
     private Event.Builder updateBuilder() {
         Event event = blockingGetWithoutChildren();
         Date updateDate = new Date();
-        State state = event.state();
+        State state = event.syncState();
         state = state == State.TO_POST ? state : State.TO_UPDATE;
 
         return event.toBuilder()
-                .state(state)
+                .syncState(state)
+                .aggregatedSyncState(state)
                 .lastUpdated(updateDate)
                 .lastUpdatedAtClient(updateDate);
     }

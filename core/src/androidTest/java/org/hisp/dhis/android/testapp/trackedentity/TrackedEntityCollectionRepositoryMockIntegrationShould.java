@@ -1,19 +1,19 @@
 /*
  *  Copyright (c) 2004-2021, University of Oslo
  *  All rights reserved.
- *
+ *  
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions are met:
  *  Redistributions of source code must retain the above copyright notice, this
  *  list of conditions and the following disclaimer.
- *
+ *  
  *  Redistributions in binary form must reproduce the above copyright notice,
  *  this list of conditions and the following disclaimer in the documentation
  *  and/or other materials provided with the distribution.
  *  Neither the name of the HISP project nor the names of its contributors may
  *  be used to endorse or promote products derived from this software without
  *  specific prior written permission.
- *
+ *  
  *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -148,13 +148,23 @@ public class TrackedEntityCollectionRepositoryMockIntegrationShould extends Base
     }
 
     @Test
-    public void filter_by_state() {
+    public void filter_by_aggregated_sync_state() {
         List<TrackedEntityInstance> trackedEntityInstances =
                 d2.trackedEntityModule().trackedEntityInstances()
-                        .byState().eq(State.SYNCED)
+                        .byAggregatedSyncState().eq(State.SYNCED)
                         .blockingGet();
 
         // TODO set to assertThat(trackedEntityInstances.size()).isEqualTo(2); after moving write tests to another db
+        assertThat(trackedEntityInstances.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_sync_state() {
+        List<TrackedEntityInstance> trackedEntityInstances =
+                d2.trackedEntityModule().trackedEntityInstances()
+                        .bySyncState().eq(State.SYNCED)
+                        .blockingGet();
+
         assertThat(trackedEntityInstances.size()).isEqualTo(1);
     }
 

@@ -32,20 +32,23 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.StateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewTrackerImporterEnrollmentListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNewTrackerImporterTrackedEntityAttributeValueListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
+import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields;
 
@@ -58,7 +61,7 @@ public abstract class NewTrackerImporterTrackedEntity extends BaseDeletableDataO
         implements ObjectWithUidInterface {
 
     @Override
-    @JsonProperty()
+    @JsonProperty("trackedEntity")
     public abstract String uid();
 
     @Nullable
@@ -72,12 +75,12 @@ public abstract class NewTrackerImporterTrackedEntity extends BaseDeletableDataO
     public abstract Date updatedAt();
 
     @Nullable
-    @JsonIgnore()
+    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date createdAtClient();
 
     @Nullable
-    @JsonIgnore()
+    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date updatedAtClient();
 
@@ -93,6 +96,11 @@ public abstract class NewTrackerImporterTrackedEntity extends BaseDeletableDataO
     @JsonProperty()
     @ColumnAdapter(DbGeometryColumnAdapter.class)
     public abstract Geometry geometry();
+
+    @Nullable
+    @ColumnName(DataColumns.AGGREGATED_SYNC_STATE)
+    @ColumnAdapter(StateColumnAdapter.class)
+    public abstract State aggregatedSyncState();
 
     @Nullable
     @JsonProperty(TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES)
@@ -119,7 +127,7 @@ public abstract class NewTrackerImporterTrackedEntity extends BaseDeletableDataO
     public abstract static class Builder extends BaseDeletableDataObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
-        @JsonProperty()
+        @JsonProperty("trackedEntity")
         public abstract Builder uid(String uid);
 
         public abstract Builder createdAt(Date created);
@@ -136,6 +144,8 @@ public abstract class NewTrackerImporterTrackedEntity extends BaseDeletableDataO
         public abstract Builder trackedEntityType(String trackedEntityType);
 
         public abstract Builder geometry(Geometry geometry);
+
+        public abstract Builder aggregatedSyncState(State state);
 
         @JsonProperty(TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES)
         public abstract Builder trackedEntityAttributeValues(

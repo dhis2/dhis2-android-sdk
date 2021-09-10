@@ -125,8 +125,8 @@ public class TrackedEntityDataValueStoreIntegrationShould
     @Test
     public void select_single_events_data_values() {
         EventStore eventStore = EventStoreImpl.create(TestDatabaseAdapterFactory.get());
-        eventStore.insert(EventSamples.get().toBuilder().uid("event_1").enrollment(null).state(State.TO_POST).build());
-        eventStore.insert(EventSamples.get().toBuilder().uid("event_2").state(State.TO_POST).build());
+        eventStore.insert(EventSamples.get().toBuilder().uid("event_1").enrollment(null).syncState(State.TO_POST).build());
+        eventStore.insert(EventSamples.get().toBuilder().uid("event_2").syncState(State.TO_POST).build());
         assertThat(eventStore.count()).isEqualTo(2);
 
         store.insert(TrackedEntityDataValueSamples.get()
@@ -150,17 +150,18 @@ public class TrackedEntityDataValueStoreIntegrationShould
         TrackedEntityInstanceStore trackedEntityInstanceStore = TrackedEntityInstanceStoreImpl
                 .create(TestDatabaseAdapterFactory.get());
         TrackedEntityInstance trackedEntityInstance = TrackedEntityInstance.builder().uid("tei_uid")
-                .organisationUnit("organisation_unit_uid").trackedEntityType("tei_type").state(State.TO_POST).build();
+                .organisationUnit("organisation_unit_uid").trackedEntityType("tei_type").syncState(State.TO_POST).build();
         trackedEntityInstanceStore.insert(trackedEntityInstance);
 
         EnrollmentStore enrollmentStore = EnrollmentStoreImpl.create(TestDatabaseAdapterFactory.get());
         Enrollment enrollment = Enrollment.builder().uid("enrollment").organisationUnit("organisation_unit")
-                .program("program").trackedEntityInstance("tei_uid").state(State.TO_POST).build();
+                .program("program").trackedEntityInstance("tei_uid")
+                .aggregatedSyncState(State.TO_POST).syncState(State.TO_POST).build();
         enrollmentStore.insert(enrollment);
 
         EventStore eventStore = EventStoreImpl.create(TestDatabaseAdapterFactory.get());
-        eventStore.insert(EventSamples.get().toBuilder().uid("event_1").state(State.TO_POST).build());
-        eventStore.insert(EventSamples.get().toBuilder().uid("event_2").enrollment(null).state(State.TO_POST).build());
+        eventStore.insert(EventSamples.get().toBuilder().uid("event_1").syncState(State.TO_POST).build());
+        eventStore.insert(EventSamples.get().toBuilder().uid("event_2").enrollment(null).syncState(State.TO_POST).build());
 
         assertThat(eventStore.count()).isEqualTo(2);
 

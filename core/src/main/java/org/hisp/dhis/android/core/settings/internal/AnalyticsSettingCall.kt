@@ -35,12 +35,14 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualization
 import org.hisp.dhis.android.core.settings.AnalyticsSettings
 import org.hisp.dhis.android.core.settings.AnalyticsTeiSetting
 
 @Reusable
 internal class AnalyticsSettingCall @Inject constructor(
     private val analyticsTeiSettingHandler: Handler<AnalyticsTeiSetting>,
+    private val analyticsDhisVisualizationsSettingHandler: Handler<AnalyticsDhisVisualization>,
     private val settingAppService: SettingAppService,
     private val apiCallExecutor: RxAPICallExecutor,
     private val appVersionManager: SettingsAppInfoManager
@@ -68,5 +70,11 @@ internal class AnalyticsSettingCall @Inject constructor(
     override fun process(item: AnalyticsSettings?) {
         val analyticsTeiSettingList = item?.tei() ?: emptyList()
         analyticsTeiSettingHandler.handleMany(analyticsTeiSettingList)
+
+        val analyticsDhisVisualizations: List<AnalyticsDhisVisualization> = item?. let {
+            SettingsAppHelper.getAnalyticsDhisVisualizations(it)
+        } ?: emptyList()
+
+        analyticsDhisVisualizationsSettingHandler.handleMany(analyticsDhisVisualizations)
     }
 }

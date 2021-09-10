@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepo
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
 import org.hisp.dhis.android.core.note.NoteTableInfo.Columns;
 
@@ -93,6 +94,10 @@ public final class NoteCollectionRepository
 
     public StringFilterConnector<NoteCollectionRepository> byStoredDate() {
         return cf.string(Columns.STORED_DATE);
+    }
+
+    public EnumFilterConnector<NoteCollectionRepository, State> bySyncState() {
+        return cf.enumC(Columns.SYNC_STATE);
     }
 
     @Override

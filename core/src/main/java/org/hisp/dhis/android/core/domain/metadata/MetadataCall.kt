@@ -60,6 +60,8 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfo
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.UserModuleDownloader
+import org.hisp.dhis.android.core.visualization.Visualization
+import org.hisp.dhis.android.core.visualization.internal.VisualizationModuleDownloader
 
 @Suppress("LongParameterList")
 @Reusable
@@ -72,6 +74,7 @@ class MetadataCall @Inject internal constructor(
     private val programDownloader: ProgramModuleDownloader,
     private val organisationUnitModuleDownloader: OrganisationUnitModuleDownloader,
     private val dataSetDownloader: DataSetModuleDownloader,
+    private val visualizationDownloader: VisualizationModuleDownloader,
     private val constantModuleDownloader: ConstantModuleDownloader,
     private val smsModule: SmsModule,
     private val databaseAdapter: DatabaseAdapter,
@@ -135,6 +138,9 @@ class MetadataCall @Inject internal constructor(
                     },
                     categoryDownloader.downloadMetadata().toSingle {
                         progressManager.increaseProgress(Category::class.java, false)
+                    },
+                    visualizationDownloader.downloadMetadata().map {
+                        progressManager.increaseProgress(Visualization::class.java, false)
                     }
                 ).toObservable()
             }

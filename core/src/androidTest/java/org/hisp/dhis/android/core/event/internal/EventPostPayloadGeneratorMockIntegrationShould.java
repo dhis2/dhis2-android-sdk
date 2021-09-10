@@ -110,9 +110,12 @@ public class EventPostPayloadGeneratorMockIntegrationShould extends BaseMockInte
         d2.eventModule().events().blockingUpload();
         assertThat(d2.importModule().trackerImportConflicts().blockingCount()).isEqualTo(3);
 
-        eventStore.setState(event1Id, State.TO_POST);
-        eventStore.setState(event2Id, State.TO_POST);
-        eventStore.setState(event3Id, State.TO_POST);
+        eventStore.setSyncState(event1Id, State.TO_POST);
+        eventStore.setSyncState(event2Id, State.TO_POST);
+        eventStore.setSyncState(event3Id, State.TO_POST);
+        eventStore.setAggregatedSyncState(event1Id, State.TO_POST);
+        eventStore.setAggregatedSyncState(event2Id, State.TO_POST);
+        eventStore.setAggregatedSyncState(event3Id, State.TO_POST);
 
         dhis2MockServer.enqueueMockResponse("imports/web_response_with_event_import_conflicts2.json");
         d2.eventModule().events().blockingUpload();
@@ -149,7 +152,7 @@ public class EventPostPayloadGeneratorMockIntegrationShould extends BaseMockInte
 
         List<Event> events = payloadGenerator.getEvents(
                 d2.eventModule().events().byProgramUid().eq(program.uid())
-                .byState().in(State.uploadableStates()).blockingGet());
+                .bySyncState().in(State.uploadableStates()).blockingGet());
 
         assertThat(events.size()).isEqualTo(3);
         assertThat(UidsHelper.getUidsList(events).containsAll(Lists.newArrayList(event1, event2, event3)))
@@ -189,7 +192,8 @@ public class EventPostPayloadGeneratorMockIntegrationShould extends BaseMockInte
                 .organisationUnit(orgUnit.uid())
                 .program(program.uid())
                 .programStage(programStage.uid())
-                .state(State.TO_POST)
+                .syncState(State.TO_POST)
+                .aggregatedSyncState(State.TO_POST)
                 .trackedEntityDataValues(Collections.singletonList(dataValue1))
                 .build();
 
@@ -200,7 +204,8 @@ public class EventPostPayloadGeneratorMockIntegrationShould extends BaseMockInte
                 .organisationUnit(orgUnit.uid())
                 .program(program.uid())
                 .programStage(programStage.uid())
-                .state(State.TO_POST)
+                .syncState(State.TO_POST)
+                .aggregatedSyncState(State.TO_POST)
                 .trackedEntityDataValues(Collections.singletonList(dataValue2))
                 .build();
 
@@ -211,7 +216,8 @@ public class EventPostPayloadGeneratorMockIntegrationShould extends BaseMockInte
                 .organisationUnit(orgUnit.uid())
                 .program(program.uid())
                 .programStage(programStage.uid())
-                .state(State.TO_POST)
+                .syncState(State.TO_POST)
+                .aggregatedSyncState(State.TO_POST)
                 .trackedEntityDataValues(Collections.singletonList(dataValue3))
                 .build();
 
@@ -222,7 +228,8 @@ public class EventPostPayloadGeneratorMockIntegrationShould extends BaseMockInte
                 .organisationUnit(orgUnit.uid())
                 .program(program.uid())
                 .programStage(programStage.uid())
-                .state(State.ERROR)
+                .syncState(State.ERROR)
+                .aggregatedSyncState(State.ERROR)
                 .trackedEntityDataValues(Collections.singletonList(dataValue4))
                 .build();
 
@@ -250,7 +257,8 @@ public class EventPostPayloadGeneratorMockIntegrationShould extends BaseMockInte
                         .organisationUnit(orgUnit.uid())
                         .program(program.uid())
                         .programStage(programStage.uid())
-                        .state(state)
+                        .syncState(state)
+                        .aggregatedSyncState(state)
                         .deleted(deleted)
                         .build());
     }

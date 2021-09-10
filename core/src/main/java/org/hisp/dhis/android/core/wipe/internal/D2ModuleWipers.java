@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.common.internal.CommonModuleWiper;
 import org.hisp.dhis.android.core.constant.internal.ConstantModuleWiper;
 import org.hisp.dhis.android.core.dataelement.internal.DataElementModuleWiper;
 import org.hisp.dhis.android.core.dataset.internal.DataSetModuleWiper;
+import org.hisp.dhis.android.core.datastore.internal.LocalDataStoreModuleWiper;
 import org.hisp.dhis.android.core.datavalue.internal.DataValueModuleWiper;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentModuleWiper;
 import org.hisp.dhis.android.core.event.internal.EventModuleWiper;
@@ -55,6 +56,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityModuleWipe
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobModuleWiper;
 import org.hisp.dhis.android.core.user.internal.UserModuleWiper;
 import org.hisp.dhis.android.core.validation.internal.ValidationModuleWiper;
+import org.hisp.dhis.android.core.visualization.internal.VisualizationModuleWiper;
 
 import java.util.Arrays;
 import java.util.List;
@@ -84,6 +86,7 @@ final class D2ModuleWipers {
             ImportModuleWiper importModule,
             IndicatorModuleWiper indicator,
             LegendSetModuleWiper legendSet,
+            LocalDataStoreModuleWiper localDataStore,
             MaintenanceModuleWiper maintenance,
 
             OptionModuleWiper option,
@@ -99,7 +102,8 @@ final class D2ModuleWipers {
             UserModuleWiper user,
             TrackedEntityModuleWiper trackedEntity,
             AttributeModuleWiper attribute,
-            TrackerJobModuleWiper trackerJob) {
+            TrackerJobModuleWiper trackerJob,
+            VisualizationModuleWiper visualization) {
 
         this.wipers = Arrays.asList(
                 category,
@@ -116,6 +120,7 @@ final class D2ModuleWipers {
                 importModule,
                 indicator,
                 legendSet,
+                localDataStore,
                 maintenance,
 
                 option,
@@ -131,6 +136,7 @@ final class D2ModuleWipers {
                 user,
                 trackedEntity,
                 attribute,
-                trackerJob);
+                trackerJob,
+                visualization);
     }
 }

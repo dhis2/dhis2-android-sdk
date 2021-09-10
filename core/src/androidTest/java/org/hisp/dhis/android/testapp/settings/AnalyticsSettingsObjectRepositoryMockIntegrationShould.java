@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.testapp.settings;
 
+import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationsGroup;
 import org.hisp.dhis.android.core.settings.AnalyticsSettings;
 import org.hisp.dhis.android.core.settings.AnalyticsTeiSetting;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
@@ -56,12 +57,20 @@ public class AnalyticsSettingsObjectRepositoryMockIntegrationShould extends Base
                 assertThat(teiSetting.data().indicators().size()).isEqualTo(1);
                 assertThat(teiSetting.data().attributes().size()).isEqualTo(1);
                 assertThat(teiSetting.whoNutritionData()).isNull();
-            } else if("yEdtdG7ql9K".equals(teiSetting.uid())) {
+            } else if ("yEdtdG7ql9K".equals(teiSetting.uid())) {
                 assertThat(teiSetting.data()).isNull();
                 assertThat(teiSetting.whoNutritionData().x().dataElements().size()).isEqualTo(1);
                 assertThat(teiSetting.whoNutritionData().x().indicators().size()).isEqualTo(0);
                 assertThat(teiSetting.whoNutritionData().y().dataElements().size()).isEqualTo(0);
                 assertThat(teiSetting.whoNutritionData().y().indicators().size()).isEqualTo(1);
+            }
+        }
+
+        for (AnalyticsDhisVisualizationsGroup analyticsDhisVisualizationsGroup : analyticsSettings.dhisVisualizations().home()) {
+            if (analyticsDhisVisualizationsGroup.id().equals("12345678910")) {
+                assertThat(analyticsDhisVisualizationsGroup.visualizations().size()).isEqualTo(2);
+            } else if (analyticsDhisVisualizationsGroup.id().equals("12345678911")) {
+                assertThat(analyticsDhisVisualizationsGroup.visualizations().size()).isEqualTo(1);
             }
         }
     }

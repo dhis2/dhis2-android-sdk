@@ -27,15 +27,19 @@
  */
 package org.hisp.dhis.android.core.relationship;
 
+import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.isDeleted;
+import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.FROM;
+import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.TO;
+
 import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreWithState;
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUidCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseReadOnlyWithUidCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
@@ -53,7 +57,6 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStore;
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -61,11 +64,6 @@ import javax.inject.Inject;
 
 import dagger.Reusable;
 import io.reactivex.Single;
-
-import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.isDeleted;
-import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.FROM;
-import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.TO;
-import static org.hisp.dhis.android.core.relationship.RelationshipHelper.areItemsEqual;
 
 @Reusable
 @SuppressWarnings("PMD.ExcessiveImports")
@@ -105,8 +103,6 @@ public class RelationshipCollectionRepository
     @Override
     public String blockingAdd(Relationship relationship) throws D2Error {
         Relationship relationshipWithUid;
-        RelationshipItem from = relationship.from();
-        RelationshipItem to = relationship.to();
         if (relationshipHandler.doesRelationshipExist(relationship)) {
             throw D2Error
                     .builder()
@@ -114,14 +110,15 @@ public class RelationshipCollectionRepository
                     .errorCode(D2ErrorCode.CANT_CREATE_EXISTING_OBJECT)
                     .errorDescription("Tried to create already existing Relationship: " + relationship)
                     .build();
-        } else if (from == null || !from.hasTrackedEntityInstance() || to == null || !to.hasTrackedEntityInstance()) {
+        } else if (relationship.from() == null || relationship.to() == null) {
             throw D2Error
                     .builder()
                     .errorComponent(D2ErrorComponent.SDK)
                     .errorCode(D2ErrorCode.CANT_CREATE_EXISTING_OBJECT)
-                    .errorDescription("Only TEI-TEI relationships creation supported")
+                    .errorDescription("Relationship is missing either 'from' or 'to' component.")
                     .build();
         } else {
+            RelationshipItem from = relationship.from();
             if (relationship.uid() == null) {
                 String generatedUid = new UidGeneratorImpl().generate();
                 relationshipWithUid = relationship.toBuilder().uid(generatedUid).build();
@@ -130,11 +127,11 @@ public class RelationshipCollectionRepository
             }
 
             StoreWithState fromStore = storeSelector.getElementStore(from);
-            State fromState = fromStore.getState(from.elementUid());
+            State fromState = fromStore.getSyncState(from.elementUid());
 
             if (isUpdatableState(fromState)) {
                 relationshipHandler.handle(relationshipWithUid, r -> r.toBuilder()
-                        .state(State.TO_POST)
+                        .syncState(State.TO_POST)
                         .deleted(false)
                         .build());
                 dataStatePropagator.propagateRelationshipUpdate(from);
@@ -168,64 +165,46 @@ public class RelationshipCollectionRepository
 
     public List<Relationship> getByItem(@NonNull RelationshipItem searchItem, Boolean includeDeleted) {
 
-        // TODO Create query to avoid retrieving the whole table
-        List<RelationshipItem> relationshipItems = this.relationshipItemStore.selectAll();
-
-        List<Relationship> allRelationshipsFromDb = this.store.selectAll();
-
         List<Relationship> relationships = new ArrayList<>();
 
+        List<RelationshipItem> relationshipItems = this.relationshipItemStore.getByItem(searchItem);
+
         for (RelationshipItem iterationItem : relationshipItems) {
-            if (areItemsEqual(searchItem, iterationItem)) {
-                Relationship relationshipFromDb =
-                        UidsHelper.findByUid(allRelationshipsFromDb, iterationItem.relationship().uid());
+            Relationship relationship = this.store.selectByUid(iterationItem.relationship().uid());
 
-                if (relationshipFromDb == null) {
-                    continue;
-                }
-
-                if (!includeDeleted && isDeleted(relationshipFromDb)) {
-                    continue;
-                }
-
-                RelationshipConstraintType itemType = iterationItem.relationshipItemType();
-
-                RelationshipItem relatedItem = findRelatedTEI(relationshipItems,
-                        iterationItem.relationship().uid(), itemType == FROM ? TO : FROM);
-
-                if (relatedItem == null) {
-                    continue;
-                }
-
-                RelationshipItem from, to;
-                if (itemType == FROM) {
-                    from = iterationItem;
-                    to = relatedItem;
-                } else {
-                    from = relatedItem;
-                    to = iterationItem;
-                }
-
-                Relationship relationship = relationshipFromDb.toBuilder()
-                        .from(from)
-                        .to(to)
-                        .build();
-
-                relationships.add(relationship);
+            if (relationship == null) {
+                continue;
             }
+
+            if (!includeDeleted && isDeleted(relationship)) {
+                continue;
+            }
+
+            RelationshipConstraintType relatedType = iterationItem.relationshipItemType() == FROM ? TO : FROM;
+
+            RelationshipItem relatedItem = this.relationshipItemStore
+                    .getForRelationshipUidAndConstraintType(relationship.uid(), relatedType);
+
+            if (relatedItem == null) {
+                continue;
+            }
+
+            RelationshipItem from, to;
+            if (iterationItem.relationshipItemType() == FROM) {
+                from = iterationItem;
+                to = relatedItem;
+            } else {
+                from = relatedItem;
+                to = iterationItem;
+            }
+
+            relationships.add(relationship.toBuilder()
+                    .from(from)
+                    .to(to)
+                    .build());
         }
 
         return relationships;
-    }
-
-    private RelationshipItem findRelatedTEI(Collection<RelationshipItem> items, String relationshipUid,
-                                            RelationshipConstraintType type) {
-        for (RelationshipItem item : items) {
-            if (relationshipUid.equals(item.relationship().uid()) && item.relationshipItemType() == type) {
-                return item;
-            }
-        }
-        return null;
     }
 
     public StringFilterConnector<RelationshipCollectionRepository> byUid() {
@@ -246,6 +225,10 @@ public class RelationshipCollectionRepository
 
     public StringFilterConnector<RelationshipCollectionRepository> byRelationshipType() {
         return cf.string(RelationshipTableInfo.Columns.RELATIONSHIP_TYPE);
+    }
+
+    public EnumFilterConnector<RelationshipCollectionRepository, State> bySyncState() {
+        return cf.enumC(RelationshipTableInfo.Columns.SYNC_STATE);
     }
 
     public RelationshipCollectionRepository withItems() {

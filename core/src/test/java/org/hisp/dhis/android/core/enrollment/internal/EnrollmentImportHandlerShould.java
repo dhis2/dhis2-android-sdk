@@ -29,19 +29,18 @@
 package org.hisp.dhis.android.core.enrollment.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.event.internal.EventImportHandler;
 import org.hisp.dhis.android.core.imports.ImportStatus;
-import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 import org.hisp.dhis.android.core.imports.internal.EnrollmentImportSummary;
 import org.hisp.dhis.android.core.imports.internal.EventImportSummaries;
 import org.hisp.dhis.android.core.imports.internal.EventImportSummary;
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser;
+import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore;
 import org.hisp.dhis.android.core.note.Note;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
+import org.hisp.dhis.android.core.tracker.importer.internal.JobReportEnrollmentHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -69,12 +68,6 @@ public class EnrollmentImportHandlerShould {
     private EnrollmentStore enrollmentStore;
 
     @Mock
-    private TrackedEntityInstanceStore trackedEntityInstanceStore;
-
-    @Mock
-    private IdentifiableObjectStore<Note> noteStore;
-
-    @Mock
     private EventImportHandler eventImportHandler;
 
     @Mock
@@ -87,10 +80,13 @@ public class EnrollmentImportHandlerShould {
     private EnrollmentImportSummary importSummary;
 
     @Mock
-    private ObjectStore<TrackerImportConflict> trackerImportConflictStore;
+    private TrackerImportConflictStore trackerImportConflictStore;
 
     @Mock
     private TrackerImportConflictParser trackerImportConflictParser;
+
+    @Mock
+    private JobReportEnrollmentHandler jobReportEnrollmentHandler;
 
     @Mock
     private DataStatePropagator dataStatePropagator;
@@ -107,15 +103,16 @@ public class EnrollmentImportHandlerShould {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        enrollmentImportHandler = new EnrollmentImportHandler(enrollmentStore, trackedEntityInstanceStore, noteStore,
-                eventImportHandler, trackerImportConflictStore, trackerImportConflictParser, dataStatePropagator);
+        enrollmentImportHandler = new EnrollmentImportHandler(enrollmentStore, eventImportHandler,
+                trackerImportConflictStore, trackerImportConflictParser,
+                jobReportEnrollmentHandler, dataStatePropagator);
     }
 
     @Test
-    public void do_nothing_when_passing_null_arguments() {
-        enrollmentImportHandler.handleEnrollmentImportSummary(null, enrollments, null);
+    public void do_nothing_when_passing_null_arguments() throws Exception {
+        enrollmentImportHandler.handleEnrollmentImportSummary(null, enrollments, "tei_uid");
 
-        verify(enrollmentStore, never()).setStateOrDelete(anyString(), any(State.class));
+        verify(enrollmentStore, never()).setSyncStateOrDelete(anyString(), any(State.class));
     }
 
     @Test
@@ -126,7 +123,7 @@ public class EnrollmentImportHandlerShould {
         enrollmentImportHandler.handleEnrollmentImportSummary(Collections.singletonList(importSummary),
                 enrollments, "test_tei_uid");
 
-        verify(enrollmentStore, times(1)).setStateOrDelete("test_enrollment_uid", State.SYNCED);
+        verify(enrollmentStore, times(1)).setSyncStateOrDelete("test_enrollment_uid", State.SYNCED);
     }
 
     @Test
@@ -137,7 +134,7 @@ public class EnrollmentImportHandlerShould {
         enrollmentImportHandler.handleEnrollmentImportSummary(Collections.singletonList(importSummary),
                 enrollments,"test_tei_uid");
 
-        verify(enrollmentStore, times(1)).setStateOrDelete("test_enrollment_uid", State.ERROR);
+        verify(enrollmentStore, times(1)).setSyncStateOrDelete("test_enrollment_uid", State.ERROR);
     }
 
     @Test
@@ -153,7 +150,7 @@ public class EnrollmentImportHandlerShould {
         enrollmentImportHandler.handleEnrollmentImportSummary(Collections.singletonList(importSummary),
                 enrollments, "test_tei_uid");
 
-        verify(enrollmentStore, times(1)).setStateOrDelete("test_enrollment_uid", State.SYNCED);
+        verify(enrollmentStore, times(1)).setSyncStateOrDelete("test_enrollment_uid", State.SYNCED);
         verify(eventImportHandler, times(1)).handleEventImportSummaries(
                 eq(eventSummaries), anyList(), anyString(), anyString()
         );
@@ -171,7 +168,7 @@ public class EnrollmentImportHandlerShould {
         enrollmentImportHandler.handleEnrollmentImportSummary(Collections.singletonList(importSummary),
                 enrollments, "test_tei_uid");
 
-        verify(enrollmentStore, times(1)).setStateOrDelete("test_enrollment_uid", State.SYNCED);
-        verify(enrollmentStore, times(1)).setStateOrDelete("missing_enrollment_uid", State.TO_UPDATE);
+        verify(enrollmentStore, times(1)).setSyncStateOrDelete("test_enrollment_uid", State.SYNCED);
+        verify(enrollmentStore, times(1)).setSyncStateOrDelete("missing_enrollment_uid", State.TO_UPDATE);
     }
 }

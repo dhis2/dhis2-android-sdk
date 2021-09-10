@@ -64,7 +64,8 @@ public class EventSamples {
                 .completedDate(getDate("2014-08-20T12:28:56.409"))
                 .dueDate(getDate("2014-08-20T12:28:56.409"))
                 .attributeOptionCombo(attributeOptionCombo)
-                .state(State.TO_POST)
+                .syncState(State.TO_POST)
+                .aggregatedSyncState(State.TO_POST)
                 .deleted(false)
                 .build();
     }

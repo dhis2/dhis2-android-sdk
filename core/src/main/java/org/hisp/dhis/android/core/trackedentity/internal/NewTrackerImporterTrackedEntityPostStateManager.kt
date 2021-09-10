@@ -32,38 +32,40 @@ import javax.inject.Inject
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.internal.EventStore
-import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntity
+import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 
 @Reusable
 internal class NewTrackerImporterTrackedEntityPostStateManager @Inject internal constructor(
     private val trackedEntityInstanceStore: TrackedEntityInstanceStore,
     private val enrollmentStore: EnrollmentStore,
     private val eventStore: EventStore,
+    private val relationshipStore: RelationshipStore,
     private val h: StatePersistorHelper
 ) {
 
-    fun restoreStates(trackedEntities: List<NewTrackerImporterTrackedEntity>) {
-        setStates(trackedEntities, null)
+    fun restoreStates(payload: NewTrackerImporterPayload) {
+        setStates(payload, null)
     }
 
-    @Suppress("NestedBlockDepth")
-    fun setStates(trackedEntities: List<NewTrackerImporterTrackedEntity>, forcedState: State?) {
+    fun setStates(payload: NewTrackerImporterPayload, forcedState: State?) {
         val teiMap = mutableMapOf<State, MutableList<String>>()
         val enrollmentMap = mutableMapOf<State, MutableList<String>>()
         val eventMap = mutableMapOf<State, MutableList<String>>()
+        val relationshipMap = mutableMapOf<State, MutableList<String>>()
 
-        for (trackedEntity in trackedEntities) {
-            h.addState(teiMap, trackedEntity, forcedState)
-            for (enrollment in trackedEntity.enrollments()!!) {
-                h.addState(enrollmentMap, enrollment, forcedState)
-                for (event in enrollment.events()!!) {
-                    h.addState(eventMap, event, forcedState)
-                }
-            }
-        }
+        val trackedEntities = payload.trackedEntities
+        val enrollments = trackedEntities.flatMap { it.enrollments() ?: emptyList() } + payload.enrollments
+        val events = enrollments.flatMap { it.events() ?: emptyList() } + payload.events
+        val relationships = payload.relationships
+
+        trackedEntities.forEach { h.addState(teiMap, it, forcedState) }
+        enrollments.forEach { h.addState(enrollmentMap, it, forcedState) }
+        events.forEach { h.addState(eventMap, it, forcedState) }
+        relationships.forEach { h.addState(relationshipMap, it, forcedState) }
 
         h.persistStates(teiMap, trackedEntityInstanceStore)
         h.persistStates(enrollmentMap, enrollmentStore)
         h.persistStates(eventMap, eventStore)
+        h.persistStates(relationshipMap, relationshipStore)
     }
 }

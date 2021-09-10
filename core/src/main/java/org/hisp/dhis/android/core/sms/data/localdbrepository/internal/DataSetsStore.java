@@ -72,7 +72,7 @@ class DataSetsStore {
                     .byAttributeOptionComboUid().eq(attributeOptionComboUid);
 
             List<DataValue> dataValues = baseDataValuesRepo
-                    .byState().in(Arrays.asList(State.uploadableStates()))
+                    .bySyncState().in(Arrays.asList(State.uploadableStates()))
                     .blockingGet();
 
             // TODO Workaround to prevent empty lists. Not supported in compression library

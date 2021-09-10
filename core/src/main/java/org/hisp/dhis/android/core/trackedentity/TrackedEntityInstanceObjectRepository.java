@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.Unit;
+import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
@@ -46,12 +47,16 @@ import java.util.Map;
 public final class TrackedEntityInstanceObjectRepository
         extends ReadWriteWithUidDataObjectRepositoryImpl<TrackedEntityInstance, TrackedEntityInstanceObjectRepository> {
 
+    private final DataStatePropagator dataStatePropagator;
+
     TrackedEntityInstanceObjectRepository(final TrackedEntityInstanceStore store,
                                           final String uid,
                                           final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders,
-                                          final RepositoryScope scope) {
+                                          final RepositoryScope scope,
+                                          final DataStatePropagator dataStatePropagator) {
         super(store, childrenAppenders, scope,
-                s -> new TrackedEntityInstanceObjectRepository(store, uid, childrenAppenders, s));
+                s -> new TrackedEntityInstanceObjectRepository(store, uid, childrenAppenders, s, dataStatePropagator));
+        this.dataStatePropagator = dataStatePropagator;
     }
 
     public Unit setOrganisationUnitUid(String organisationUnitUid) throws D2Error {
@@ -65,7 +70,7 @@ public final class TrackedEntityInstanceObjectRepository
 
     private TrackedEntityInstance.Builder updateBuilder() throws D2Error {
         TrackedEntityInstance trackedEntityInstance = blockingGetWithoutChildren();
-        State state = trackedEntityInstance.state();
+        State state = trackedEntityInstance.aggregatedSyncState();
         if (state == State.RELATIONSHIP) {
             throw D2Error
                     .builder()
@@ -78,8 +83,14 @@ public final class TrackedEntityInstanceObjectRepository
         state = state == State.TO_POST ? state : State.TO_UPDATE;
 
         return trackedEntityInstance.toBuilder()
-                .state(state)
+                .syncState(state)
+                .aggregatedSyncState(state)
                 .lastUpdated(updateDate)
                 .lastUpdatedAtClient(updateDate);
+    }
+
+    @Override
+    protected void propagateState(TrackedEntityInstance trackedEntityInstance) {
+        dataStatePropagator.propagateTrackedEntityInstanceUpdate(trackedEntityInstance);
     }
 }

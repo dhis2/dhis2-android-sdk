@@ -41,7 +41,7 @@ internal object StoreUtils {
      * @return the state from the ImportStatus
      */
     @JvmStatic
-    fun getState(importStatus: ImportStatus): State {
+    fun getSyncState(importStatus: ImportStatus): State {
         return when (importStatus) {
             ImportStatus.ERROR -> State.ERROR
             ImportStatus.SUCCESS -> State.SYNCED

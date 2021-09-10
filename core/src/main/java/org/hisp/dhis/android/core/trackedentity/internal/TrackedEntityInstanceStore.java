@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.trackedentity.internal;
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
 import java.util.List;
@@ -42,4 +43,6 @@ public interface TrackedEntityInstanceStore extends IdentifiableDeletableDataObj
     List<String> querySyncedTrackedEntityInstanceUids();
 
     List<String> queryMissingRelationshipsUids();
+
+    int setAggregatedSyncState(String uid, State state);
 }

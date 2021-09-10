@@ -51,6 +51,7 @@ import org.hisp.dhis.android.core.sms.domain.interactor.ConfigCase
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.UserModuleDownloader
+import org.hisp.dhis.android.core.visualization.internal.VisualizationModuleDownloader
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -69,6 +70,7 @@ class MetadataCallShould : BaseCallShould() {
     private val programDownloader: ProgramModuleDownloader = mock()
     private val organisationUnitDownloader: OrganisationUnitModuleDownloader = mock()
     private val dataSetDownloader: DataSetModuleDownloader = mock()
+    private val visualizationDownloader: VisualizationModuleDownloader = mock()
     private val constantDownloader: ConstantModuleDownloader = mock()
     private val smsModule: SmsModule = mock()
     private val configCase: ConfigCase = mock()
@@ -98,6 +100,9 @@ class MetadataCallShould : BaseCallShould() {
         whenever(dataSetDownloader.downloadMetadata(any())).thenReturn(
             Single.just(emptyList())
         )
+        whenever(visualizationDownloader.downloadMetadata()).thenReturn(
+            Single.just(emptyList())
+        )
         whenever(constantDownloader.downloadMetadata()).thenReturn(Single.just(emptyList()))
         whenever(categoryDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(smsModule.configCase()).thenReturn(configCase)
@@ -121,6 +126,7 @@ class MetadataCallShould : BaseCallShould() {
             programDownloader,
             organisationUnitDownloader,
             dataSetDownloader,
+            visualizationDownloader,
             constantDownloader,
             smsModule,
             databaseAdapter,
@@ -162,6 +168,12 @@ class MetadataCallShould : BaseCallShould() {
     @Test
     fun fail_when_category_download_call_fail() {
         whenever(categoryDownloader.downloadMetadata()).thenReturn(Completable.error(d2Error))
+        downloadAndAssertError()
+    }
+
+    @Test
+    fun fail_when_visualization_download_call_fail() {
+        whenever(visualizationDownloader.downloadMetadata()).thenReturn(Single.error(d2Error))
         downloadAndAssertError()
     }
 

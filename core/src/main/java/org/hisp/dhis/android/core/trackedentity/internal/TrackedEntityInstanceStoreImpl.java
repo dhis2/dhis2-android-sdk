@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
+import android.content.ContentValues;
+
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl;
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
@@ -35,6 +37,7 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinde
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStoreImpl;
 import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper;
 import org.hisp.dhis.android.core.common.DataColumns;
+import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo;
@@ -55,8 +58,9 @@ public final class TrackedEntityInstanceStoreImpl
         w.bind(7, o.trackedEntityType());
         w.bind(8, o.geometry() == null ? null : o.geometry().type());
         w.bind(9, o.geometry() == null ? null : o.geometry().coordinates());
-        w.bind(10, o.state());
-        w.bind(11, o.deleted());
+        w.bind(10, o.syncState());
+        w.bind(11, o.aggregatedSyncState());
+        w.bind(12, o.deleted());
     };
 
     public TrackedEntityInstanceStoreImpl(DatabaseAdapter databaseAdapter,
@@ -66,8 +70,9 @@ public final class TrackedEntityInstanceStoreImpl
 
     @Override
     public List<TrackedEntityInstance> queryTrackedEntityInstancesToSync() {
+        List<String> uploadableStatesString = EnumHelper.asStringList(State.uploadableStates());
         String whereToSyncClause = new WhereClauseBuilder()
-                .appendInKeyStringValues(DataColumns.STATE, EnumHelper.asStringList(State.uploadableStates()))
+                .appendInKeyStringValues(DataColumns.AGGREGATED_SYNC_STATE, uploadableStatesString)
                 .build();
 
         return selectWhere(whereToSyncClause);
@@ -76,7 +81,7 @@ public final class TrackedEntityInstanceStoreImpl
     @Override
     public List<TrackedEntityInstance> queryTrackedEntityInstancesToPost() {
         String whereToPostClause = new WhereClauseBuilder()
-                .appendKeyStringValue(DataColumns.STATE, State.TO_POST.name())
+                .appendKeyStringValue(DataColumns.AGGREGATED_SYNC_STATE, State.TO_POST.name())
                 .build();
 
         return selectWhere(whereToPostClause);
@@ -85,7 +90,7 @@ public final class TrackedEntityInstanceStoreImpl
     @Override
     public List<String> querySyncedTrackedEntityInstanceUids() {
         String whereSyncedClause = new WhereClauseBuilder()
-                .appendKeyStringValue(DataColumns.STATE, State.SYNCED)
+                .appendKeyStringValue(DataColumns.AGGREGATED_SYNC_STATE, State.SYNCED)
                 .build();
 
         return selectUidsWhere(whereSyncedClause);
@@ -94,11 +99,22 @@ public final class TrackedEntityInstanceStoreImpl
     @Override
     public List<String> queryMissingRelationshipsUids() {
         String whereRelationshipsClause = new WhereClauseBuilder()
-                .appendKeyStringValue(DataColumns.STATE, State.RELATIONSHIP)
+                .appendKeyStringValue(DataColumns.AGGREGATED_SYNC_STATE, State.RELATIONSHIP)
                 .appendIsNullValue(TrackedEntityInstanceTableInfo.Columns.ORGANISATION_UNIT)
                 .build();
 
         return selectUidsWhere(whereRelationshipsClause);
+    }
+
+    @Override
+    public int setAggregatedSyncState(String uid, State state) {
+        ContentValues updates = new ContentValues();
+        updates.put(DataColumns.AGGREGATED_SYNC_STATE, state.toString());
+        String whereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(IdentifiableColumns.UID, uid)
+                .build();
+
+        return updateWhere(updates, whereClause);
     }
 
     public static TrackedEntityInstanceStore create(DatabaseAdapter databaseAdapter) {

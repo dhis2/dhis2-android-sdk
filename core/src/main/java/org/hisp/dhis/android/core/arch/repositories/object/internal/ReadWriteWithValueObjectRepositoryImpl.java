@@ -60,7 +60,7 @@ public class ReadWriteWithValueObjectRepositoryImpl<M extends CoreObject, R exte
 
     /**
      * Removes the object in scope in an asynchronous way. It removes the value in the database and propagates
-     * the changes to modify the {@link DataObject#state()} of the parent, so it's updated in the server in
+     * the changes to modify the {@link DataObject#syncState()} of the parent, so it's updated in the server in
      * the next upload.
      * It returns a {@code Completable} that completes as soon as the object is deleted in the database.
      * The {@code Completable} fails if the object doesn't exist.
@@ -73,7 +73,7 @@ public class ReadWriteWithValueObjectRepositoryImpl<M extends CoreObject, R exte
 
     /**
      * Removes the object in scope in a synchronous way. It removes the value in the database and propagates
-     * the changes to modify the {@link DataObject#state()} of the parent, so it's updated in the server in
+     * the changes to modify the {@link DataObject#syncState()} of the parent, so it's updated in the server in
      * the next upload.
      * It blocks the thread and finishes as soon as the object is deleted in the database.
      *
@@ -89,7 +89,7 @@ public class ReadWriteWithValueObjectRepositoryImpl<M extends CoreObject, R exte
 
     /**
      * Removes the object in scope in an asynchronous way. It removes the value in the database and propagates
-     * the changes to modify the {@link DataObject#state()} of the parent, so it's updated in the server in
+     * the changes to modify the {@link DataObject#syncState()} of the parent, so it's updated in the server in
      * the next upload.
      * It returns a {@code Completable} that completes as soon as the object is deleted in the database.
      * Unlike {@link #delete()}, it doesn't throw an exception if the object doesn't exist.
@@ -103,7 +103,7 @@ public class ReadWriteWithValueObjectRepositoryImpl<M extends CoreObject, R exte
 
     /**
      * Removes the object in scope in a synchronous way. It removes the value in the database and propagates
-     * the changes to modify the {@link DataObject#state()} of the parent, so it's updated in the server in
+     * the changes to modify the {@link DataObject#syncState()} of the parent, so it's updated in the server in
      * the next upload.
      * Unlike {@link #blockingDelete()}, it doesn't throw an exception if the object doesn't exist.
      * It blocks the thread and finishes as soon as the object is deleted in the database.

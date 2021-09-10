@@ -30,10 +30,12 @@ package org.hisp.dhis.android.core.analytics
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
+import org.hisp.dhis.android.core.analytics.aggregated.AggregatedEntityDIModule
 import org.hisp.dhis.android.core.analytics.linelist.LineListEntityDIModule
 
 @Module(
     includes = [
+        AggregatedEntityDIModule::class,
         LineListEntityDIModule::class
     ]
 )

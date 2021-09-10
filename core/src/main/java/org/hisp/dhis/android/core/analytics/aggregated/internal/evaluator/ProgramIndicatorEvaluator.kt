@@ -192,6 +192,7 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
             val floatValues = values.mapNotNull { it?.toFloatOrNull() }
 
             return when (aggregationType ?: AggregationType.NONE) {
+                AggregationType.SUM -> floatValues.sum()
                 AggregationType.MAX -> floatValues.max()
                 AggregationType.MIN -> floatValues.min()
                 AggregationType.AVERAGE,
@@ -199,12 +200,7 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
                 AggregationType.COUNT -> floatValues.size.toFloat()
                 AggregationType.LAST,
                 AggregationType.LAST_AVERAGE_ORG_UNIT -> floatValues.lastOrNull()
-                AggregationType.SUM,
-                AggregationType.VARIANCE,
-                AggregationType.CUSTOM,
-                AggregationType.STDDEV,
-                AggregationType.DEFAULT,
-                AggregationType.NONE -> floatValues.sum()
+                else -> floatValues.sum()
             }.toString()
         } catch (e: NumberFormatException) {
             return null

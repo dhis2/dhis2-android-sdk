@@ -43,7 +43,7 @@ internal class EventPostParentCall @Inject internal constructor(
         return if (events.isEmpty()) {
             Observable.empty<D2Progress>()
         } else {
-            oldCall.uploadEvents(events)
+            trackerImporterCall.uploadEvents(events)
         }
     }
 }

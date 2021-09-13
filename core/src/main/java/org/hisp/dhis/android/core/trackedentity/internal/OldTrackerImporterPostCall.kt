@@ -159,10 +159,7 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
                     )
                     eventImportHandler.handleEventImportSummaries(
                         eventImportSummaries = webResponse?.response()?.importSummaries(),
-                        events = events,
-                        // TODO Manage tracker events
-                        enrollmentUid = null,
-                        teiUid = null
+                        events = events
                     )
                     Observable.just<D2Progress>(progressManager.increaseProgress(Event::class.java, true))
                 } catch (e: Exception) {

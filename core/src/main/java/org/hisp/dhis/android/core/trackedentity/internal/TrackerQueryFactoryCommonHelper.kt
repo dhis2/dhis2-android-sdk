@@ -142,14 +142,7 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
             return params.limit()!!
         }
         if (params.limit() != null && isGlobal(params)) {
-            return if (programSettings != null) {
-                if (programUid != null && programSettings.specificSettings().keys.contains(programUid)) {
-                    return specificProgramLimit(programSettings, programUid, downloadExtractor)
-                }
-                globalProgramHomogeneousLimit(params, programs, programSettings, downloadExtractor)
-            } else {
-                if (programs.isNotEmpty()) params.limit()!!.div(programs.toList().size) else 0
-            }
+            getGlobalLimit(params, programs, programSettings, programUid, downloadExtractor)
         }
         if (programUid != null && programSettings != null &&
             programSettings.specificSettings().keys.contains(programUid)
@@ -188,6 +181,23 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
     ): Int {
         val specificSetting = programSettings.specificSettings()[programUid]
         return downloadExtractor.invoke(specificSetting) ?: ProgramDataDownloadParams.DEFAULT_LIMIT
+    }
+
+    private fun getGlobalLimit(
+        params: ProgramDataDownloadParams,
+        programs: List<String>,
+        programSettings: ProgramSettings?,
+        programUid: String?,
+        downloadExtractor: (ProgramSetting?) -> Int?
+    ): Int {
+        return if (programSettings != null) {
+            if (programUid != null && programSettings.specificSettings().keys.contains(programUid)) {
+                return specificProgramLimit(programSettings, programUid, downloadExtractor)
+            }
+            globalProgramHomogeneousLimit(params, programs, programSettings, downloadExtractor)
+        } else {
+            if (programs.isNotEmpty()) params.limit()!!.div(programs.toList().size) else 0
+        }
     }
 
     private fun globalProgramHomogeneousLimit(

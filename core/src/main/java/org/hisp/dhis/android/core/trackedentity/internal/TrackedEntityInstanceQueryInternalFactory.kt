@@ -47,6 +47,15 @@ internal class TrackedEntityInstanceQueryInternalFactory constructor(
         }
     }
 
+    override fun queryGlobalAndHomogeneously(
+        programs: List<String>,
+        programUid: String?
+    ): List<TeiQuery> {
+        return queryInternal(programs, programUid) {
+            commonHelper.getCaptureOrgUnitUids()
+        }
+    }
+
     override fun queryPerProgram(
         programUid: String?
     ): List<TeiQuery> {
@@ -60,7 +69,7 @@ internal class TrackedEntityInstanceQueryInternalFactory constructor(
         programUid: String?,
         orgUnitByLimitExtractor: () -> List<String>
     ): List<TeiQuery> {
-        val limit = commonHelper.getLimit(params, programSettings, programUid) { it?.teiDownload() }
+        val limit = commonHelper.getLimit(params, programs, programSettings, programUid) { it?.teiDownload() }
         if (limit == 0 || programs.isEmpty()) {
             return emptyList()
         }

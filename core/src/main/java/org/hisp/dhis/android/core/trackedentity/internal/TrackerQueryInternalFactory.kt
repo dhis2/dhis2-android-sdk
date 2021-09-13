@@ -41,6 +41,11 @@ internal abstract class TrackerQueryInternalFactory<T>(
         programs: List<String>
     ): List<T>
 
+    abstract fun queryGlobalAndHomogeneously(
+        programs: List<String>,
+        programUid: String?
+    ): List<T>
+
     abstract fun queryPerProgram(
         programUid: String?
     ): List<T>

@@ -56,12 +56,21 @@ internal class EventQueryBundleInternalFactory constructor(
         }
     }
 
+    override fun queryGlobalAndHomogeneously(
+        programs: List<String>,
+        programUid: String?
+    ): List<EventQueryBundle> {
+        return queryInternal(programs, programUid) {
+            commonHelper.getCaptureOrgUnitUids()
+        }
+    }
+
     private fun queryInternal(
         programs: List<String>,
         programUid: String?,
         orgUnitByLimitExtractor: () -> List<String>
     ): List<EventQueryBundle> {
-        val limit = commonHelper.getLimit(params, programSettings, programUid) { it?.eventsDownload() }
+        val limit = commonHelper.getLimit(params, programs, programSettings, programUid) { it?.eventsDownload() }
         if (limit == 0 || programs.isEmpty()) {
             return emptyList()
         }

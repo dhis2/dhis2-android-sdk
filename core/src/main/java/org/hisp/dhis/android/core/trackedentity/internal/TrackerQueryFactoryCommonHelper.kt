@@ -116,11 +116,12 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
 
     fun getLimit(
         params: ProgramDataDownloadParams,
+        programs: List<String>,
         programSettings: ProgramSettings?,
         programUid: String?,
         downloadExtractor: (ProgramSetting?) -> Int?
     ): Int {
-        val configLimit = getConfigLimit(params, programSettings, programUid, downloadExtractor)
+        val configLimit = getConfigLimit(params, programs, programSettings, programUid, downloadExtractor)
 
         return if (params.uids().isNullOrEmpty()) {
             configLimit
@@ -132,19 +133,28 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
     @Suppress("ReturnCount")
     private fun getConfigLimit(
         params: ProgramDataDownloadParams,
+        programs: List<String>,
         programSettings: ProgramSettings?,
         programUid: String?,
         downloadExtractor: (ProgramSetting?) -> Int?
     ): Int {
-        if (params.limit() != null && isGlobalOrUserDefinedProgram(params, programUid)) {
+        if (params.limit() != null && isUserDefinedProgram(params, programUid)) {
             return params.limit()!!
         }
-        if (programUid != null && programSettings != null) {
-            val specificSetting = programSettings.specificSettings()[programUid]
-            val download = downloadExtractor.invoke(specificSetting)
-            if (download != null) {
-                return download
+        if (params.limit() != null && isGlobal(params)) {
+            return if (programSettings != null) {
+                if (programUid != null && programSettings.specificSettings().keys.contains(programUid)) {
+                    return specificProgramLimit(programSettings, programUid, downloadExtractor)
+                }
+                globalProgramHomogeneousLimit(params, programs, programSettings, downloadExtractor)
+            } else {
+                if (programs.isNotEmpty()) params.limit()!!.div(programs.toList().size) else 0
             }
+        }
+        if (programUid != null && programSettings != null &&
+            programSettings.specificSettings().keys.contains(programUid)
+        ) {
+            specificProgramLimit(programSettings, programUid, downloadExtractor)
         }
         if (params.limit() != null && params.limitByProgram() == true) {
             return params.limit()!!
@@ -160,7 +170,37 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
     }
 
     fun isGlobalOrUserDefinedProgram(params: ProgramDataDownloadParams, programUid: String?): Boolean {
-        return programUid == null || programUid == params.program()
+        return isGlobal(params) || isUserDefinedProgram(params, programUid)
+    }
+
+    private fun isUserDefinedProgram(params: ProgramDataDownloadParams, programUid: String?): Boolean {
+        return programUid == params.program()
+    }
+
+    private fun isGlobal(params: ProgramDataDownloadParams): Boolean {
+        return params.limitByProgram() != true
+    }
+
+    private fun specificProgramLimit(
+        programSettings: ProgramSettings,
+        programUid: String,
+        downloadExtractor: (ProgramSetting?) -> Int?
+    ): Int {
+        val specificSetting = programSettings.specificSettings()[programUid]
+        return downloadExtractor.invoke(specificSetting) ?: ProgramDataDownloadParams.DEFAULT_LIMIT
+    }
+
+    private fun globalProgramHomogeneousLimit(
+        params: ProgramDataDownloadParams,
+        programs: List<String>,
+        programSettings: ProgramSettings,
+        downloadExtractor: (ProgramSetting?) -> Int?
+    ): Int {
+        val globalPrograms = programs.toList() - programSettings.specificSettings().keys
+        val numberOfTEIsToDownloadGlobally = params.limit()!! - programSettings.specificSettings()
+            .map { downloadExtractor.invoke(it.value) }.filterNotNull().sum()
+        return if (globalPrograms.isNotEmpty() && numberOfTEIsToDownloadGlobally > 0)
+            numberOfTEIsToDownloadGlobally.div(globalPrograms.size) else 0
     }
 
     @Suppress("ReturnCount")

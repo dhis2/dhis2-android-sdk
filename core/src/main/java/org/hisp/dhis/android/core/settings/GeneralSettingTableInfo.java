@@ -58,6 +58,7 @@ public final class GeneralSettingTableInfo {
         public static final String SMS_RESULT_SENDER = "smsResultSender";
         public static final String MATOMO_ID = "matomoID";
         public static final String MATOMO_URL = "matomoURL";
+        public static final String ALLOW_SCREEN_CAPTURE = "allowScreenCapture";
 
         @Override
         public String[] all() {
@@ -68,7 +69,8 @@ public final class GeneralSettingTableInfo {
                     SMS_GATEWAY,
                     SMS_RESULT_SENDER,
                     MATOMO_ID,
-                    MATOMO_URL
+                    MATOMO_URL,
+                    ALLOW_SCREEN_CAPTURE
             );
         }
     }

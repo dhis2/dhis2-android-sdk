@@ -44,6 +44,7 @@ class AnalyticsVisualizationRepositoryIntegrationShould : BaseMockIntegrationTes
         val result = d2.analyticsModule().visualizations()
             .withVisualization(visualizationUid)
             .blockingEvaluate()
+            .getOrThrow()
 
         assertThat(result.dimensions.columns.size).isEqualTo(1)
         assertThat(result.dimensions.rows.size).isEqualTo(1)
@@ -60,6 +61,7 @@ class AnalyticsVisualizationRepositoryIntegrationShould : BaseMockIntegrationTes
             .withVisualization(visualizationUid)
             .withPeriods(listOf(DimensionItem.PeriodItem.Absolute("2018")))
             .blockingEvaluate()
+            .getOrThrow()
 
         assertThat(result.dimensions.columns.size).isEqualTo(1)
         assertThat(result.dimensions.rows.size).isEqualTo(1)
@@ -84,6 +86,7 @@ class AnalyticsVisualizationRepositoryIntegrationShould : BaseMockIntegrationTes
                 )
             )
             .blockingEvaluate()
+            .getOrThrow()
 
         assertThat(result.dimensions.columns.size).isEqualTo(1)
         assertThat(result.dimensions.rows.size).isEqualTo(1)

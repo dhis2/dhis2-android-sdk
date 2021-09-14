@@ -100,4 +100,13 @@ class AnalyticsVisualizationRepositoryIntegrationShould : BaseMockIntegrationTes
         assertThat(result.metadata).isNotEmpty()
         assertThat(result.values.size).isEqualTo(3)
     }
+
+    @Test
+    fun evaluate_invalid_visualization() {
+        val result = d2.analyticsModule().visualizations()
+            .withVisualization("invalid_visualization_uid")
+            .blockingEvaluate()
+
+        assertThat(result.succeeded).isFalse()
+    }
 }

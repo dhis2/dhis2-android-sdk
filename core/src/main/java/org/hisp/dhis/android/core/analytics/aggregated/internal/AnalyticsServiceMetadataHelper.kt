@@ -94,6 +94,7 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
         return metadata
     }
 
+    @SuppressWarnings("ThrowsCount")
     private fun getDataItems(item: DimensionItem.DataItem): List<MetadataItem> {
         return listOf(
             when (item) {
@@ -140,6 +141,7 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
         )
     }
 
+    @SuppressWarnings("ThrowsCount")
     private fun getOrganisationUnitItems(item: DimensionItem.OrganisationUnitItem): List<MetadataItem> {
         return listOf(
             when (item) {
@@ -175,7 +177,6 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
             categoryStore.selectByUid(item.uid)
                 ?.let { category -> MetadataItem.CategoryItem(category) }
                 ?: throw AnalyticsException.InvalidCategory(item.uid),
-
 
             categoryOptionStore.selectByUid(item.categoryOption)
                 ?.let { categoryOption -> MetadataItem.CategoryOptionItem(categoryOption) }

@@ -58,13 +58,15 @@ internal class AnalyticsService @Inject constructor(
 
             val values = evaluationItems.map { analyticsServiceEvaluatorHelper.evaluate(it, metadata) }
 
-            Result.Success(DimensionalResponse(
-                metadata = metadata,
-                dimensions = dimensions,
-                dimensionItems = dimensionItems.groupBy { it.dimension },
-                filters = params.filters.map { it.id },
-                values = values
-            ))
+            Result.Success(
+                DimensionalResponse(
+                    metadata = metadata,
+                    dimensions = dimensions,
+                    dimensionItems = dimensionItems.groupBy { it.dimension },
+                    filters = params.filters.map { it.id },
+                    values = values
+                )
+            )
         } catch (e: AnalyticsException) {
             Result.Failure(e)
         }

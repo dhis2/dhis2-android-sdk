@@ -49,7 +49,7 @@ internal class AnalyticsVisualizationsService @Inject constructor(
             if (visualization == null) {
                 Result.Failure(AnalyticsException.InvalidVisualization(params.visualization))
             } else {
-                when(val response = getDimensionalResponse(visualization, params)) {
+                when (val response = getDimensionalResponse(visualization, params)) {
                     is Result.Success -> {
                         val gridResponse = buildGridResponse(visualization, response.value)
                         Result.Success(gridResponse)

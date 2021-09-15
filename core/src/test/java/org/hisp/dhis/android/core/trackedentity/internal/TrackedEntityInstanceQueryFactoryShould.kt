@@ -110,7 +110,8 @@ class TrackedEntityInstanceQueryFactoryShould {
     fun get_enrollment_date_value_if_defined() {
         val params = ProgramDataDownloadParams.builder().build()
 
-        val settings = ProgramSetting.builder().uid(p1).teiDownload(4).enrollmentDateDownload(DownloadPeriod.LAST_3_MONTHS).build()
+        val settings = ProgramSetting.builder().uid(p1).teiDownload(4)
+            .enrollmentDateDownload(DownloadPeriod.LAST_3_MONTHS).build()
         whenever(programSettings.specificSettings()).thenReturn(mapOf(p1 to settings))
 
         val queries = queryFactory!!.getQueries(params)

@@ -96,28 +96,27 @@ class TrackedEntityInstanceQueryFactoryShould {
     }
 
     @Test
-    fun create_a_single_bundle_when_global() {
+    fun create_a_single_bundle_per_program_when_global() {
         val params = ProgramDataDownloadParams.builder().build()
         val queries = queryFactory!!.getQueries(params)
-        assertThat(queries.size).isEqualTo(1)
+        assertThat(queries.size).isEqualTo(3)
         val query = queries[0]
         assertThat(query.orgUnits()).isEqualTo(rootOrgUnits)
         assertThat(query.commonParams().ouMode).isEqualTo(OrganisationUnitMode.DESCENDANTS)
-        assertThat(query.commonParams().program).isNull()
+        assertThat(query.commonParams().program).isNotNull()
     }
 
     @Test
     fun get_enrollment_date_value_if_defined() {
         val params = ProgramDataDownloadParams.builder().build()
 
-        val settings = ProgramSetting.builder().uid(p1).enrollmentDateDownload(DownloadPeriod.LAST_3_MONTHS).build()
+        val settings = ProgramSetting.builder().uid(p1).teiDownload(4).enrollmentDateDownload(DownloadPeriod.LAST_3_MONTHS).build()
         whenever(programSettings.specificSettings()).thenReturn(mapOf(p1 to settings))
 
         val queries = queryFactory!!.getQueries(params)
-        assertThat(queries.size).isEqualTo(2)
+        assertThat(queries.size).isEqualTo(3)
         for (query in queries) {
-            if (query.commonParams().program != null) {
-                assertThat(query.commonParams().program).isEqualTo(p1)
+            if (query.commonParams().program == p1) {
                 assertThat(query.commonParams().startDate).isNotNull()
             }
         }
@@ -142,13 +141,12 @@ class TrackedEntityInstanceQueryFactoryShould {
         whenever(programSettings.specificSettings()).thenReturn(mapOf(p1 to settings))
 
         val queries = queryFactory!!.getQueries(params)
-        assertThat(queries.size).isEqualTo(2)
+        assertThat(queries.size).isEqualTo(3)
         for (query in queries) {
-            if (query.commonParams().program != null) {
-                assertThat(query.commonParams().program).isEqualTo(p1)
+            if (query.commonParams().program == p1) {
                 assertThat(query.commonParams().limit).isEqualTo(100)
             } else {
-                assertThat(query.commonParams().limit).isEqualTo(5000)
+                assertThat(query.commonParams().limit).isEqualTo(2450) // (5000 - 100) / 2 = 2450
             }
         }
     }

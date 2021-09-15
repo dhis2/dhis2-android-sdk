@@ -134,7 +134,8 @@ class EventQueryBundleFactoryShould {
 
     @Test
     fun get_event_date_if_defined() {
-        val settings = ProgramSetting.builder().uid(p1).eventDateDownload(DownloadPeriod.LAST_3_MONTHS).build()
+        val settings = ProgramSetting.builder().uid(p1).eventsDownload(5)
+            .eventDateDownload(DownloadPeriod.LAST_3_MONTHS).build()
         whenever(programSettings.specificSettings()).thenReturn(mapOf(p1 to settings))
 
         val bundles = bundleFactory!!.getQueries(params)

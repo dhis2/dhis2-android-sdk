@@ -30,4 +30,13 @@ package org.hisp.dhis.android.core.analytics.aggregated.internal
 
 sealed class AnalyticsException(message: String) : Throwable(message) {
     class InvalidArguments(message: String) : AnalyticsException(message)
+    class InvalidVisualization(val uid: String) : AnalyticsException("Missing Visualization $uid")
+    class InvalidDataElement(val uid: String) : AnalyticsException("Missing DataElement $uid")
+    class InvalidProgramIndicator(val uid: String) : AnalyticsException("Missing ProgramIndicator $uid")
+    class InvalidIndicator(val uid: String) : AnalyticsException("Missing Indicator $uid")
+    class InvalidOrganisationUnit(val uid: String) : AnalyticsException("Missing organisation unit $uid")
+    class InvalidOrganisationUnitGroup(val uid: String) : AnalyticsException("Missing organisation unit group $uid")
+    class InvalidOrganisationUnitLevel(val id: String) : AnalyticsException("Missing organisation unit level $id")
+    class InvalidCategory(val uid: String) : AnalyticsException("Missing category $uid")
+    class InvalidCategoryOption(val uid: String) : AnalyticsException("Missing category option $uid")
 }

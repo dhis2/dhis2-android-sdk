@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.tracker
 
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import javax.inject.Inject
 
 internal class TrackerPostParentCallHelper @Inject constructor(
     private val dhisVersionManager: DHISVersionManager,
@@ -40,7 +40,7 @@ internal class TrackerPostParentCallHelper @Inject constructor(
 ) {
 
     fun useNewTrackerImporter(): Boolean {
-        return dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_37) &&
-                synchronizationSettingStore.selectFirst()?.trackerImporterVersion() == TrackerImporterVersion.V2
+        return dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_36) &&
+            synchronizationSettingStore.selectFirst()?.trackerImporterVersion() == TrackerImporterVersion.V2
     }
 }

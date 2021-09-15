@@ -142,12 +142,12 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
             return params.limit()!!
         }
         if (params.limit() != null && isGlobal(params)) {
-            getGlobalLimit(params, programs, programSettings, programUid, downloadExtractor)
+            return getGlobalLimit(params, programs, programSettings, programUid, downloadExtractor)
         }
         if (programUid != null && programSettings != null &&
             programSettings.specificSettings().keys.contains(programUid)
         ) {
-            specificProgramLimit(programSettings, programUid, downloadExtractor)
+            return specificProgramLimit(programSettings, programUid, downloadExtractor)
         }
         if (params.limit() != null && params.limitByProgram() == true) {
             return params.limit()!!
@@ -180,7 +180,7 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
         downloadExtractor: (ProgramSetting?) -> Int?
     ): Int {
         val specificSetting = programSettings.specificSettings()[programUid]
-        return downloadExtractor.invoke(specificSetting) ?: ProgramDataDownloadParams.DEFAULT_LIMIT
+        return downloadExtractor.invoke(specificSetting) ?: 0
     }
 
     private fun getGlobalLimit(

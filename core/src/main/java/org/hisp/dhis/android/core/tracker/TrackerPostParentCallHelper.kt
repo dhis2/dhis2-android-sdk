@@ -41,6 +41,6 @@ internal class TrackerPostParentCallHelper @Inject constructor(
 
     fun useNewTrackerImporter(): Boolean {
         return dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_37) &&
-                synchronizationSettingStore.selectFirst()?.newTrackerImporter() == true
+                synchronizationSettingStore.selectFirst()?.trackerImporterVersion() == TrackerImporterVersion.V2
     }
 }

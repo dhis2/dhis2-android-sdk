@@ -25,30 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.adapters.enums.internal
 
-package org.hisp.dhis.android.core.data.settings;
+import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
 
-import org.hisp.dhis.android.core.settings.DataSetSettings;
-import org.hisp.dhis.android.core.settings.DataSyncPeriod;
-import org.hisp.dhis.android.core.settings.MetadataSyncPeriod;
-import org.hisp.dhis.android.core.settings.ProgramSettings;
-import org.hisp.dhis.android.core.settings.SynchronizationSettings;
-import org.hisp.dhis.android.core.tracker.TrackerImporterVersion;
-
-public class SynchronizationSettingsSamples {
-
-    public static SynchronizationSettings getSynchronizationSettings() {
-        return SynchronizationSettings.builder()
-                .id(1L)
-                .dataSync(DataSyncPeriod.EVERY_24_HOURS)
-                .metadataSync(MetadataSyncPeriod.EVERY_12_HOURS)
-                .trackerImporterVersion(TrackerImporterVersion.V2)
-                .programSettings(ProgramSettings.builder()
-                        .globalSettings(ProgramSettingSamples.getProgramSetting())
-                        .build())
-                .dataSetSettings(DataSetSettings.builder()
-                        .globalSettings(DataSetSettingSamples.getDataSetSetting())
-                        .build())
-                .build();
+internal class TrackerImporterVersionColumnAdapter : EnumColumnAdapter<TrackerImporterVersion>() {
+    override fun getEnumClass(): Class<TrackerImporterVersion> {
+        return TrackerImporterVersion::class.java
     }
 }

@@ -26,29 +26,12 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.settings;
+package org.hisp.dhis.android.core.tracker
 
-import org.hisp.dhis.android.core.settings.DataSetSettings;
-import org.hisp.dhis.android.core.settings.DataSyncPeriod;
-import org.hisp.dhis.android.core.settings.MetadataSyncPeriod;
-import org.hisp.dhis.android.core.settings.ProgramSettings;
-import org.hisp.dhis.android.core.settings.SynchronizationSettings;
-import org.hisp.dhis.android.core.tracker.TrackerImporterVersion;
+import com.fasterxml.jackson.annotation.JsonEnumDefaultValue
 
-public class SynchronizationSettingsSamples {
-
-    public static SynchronizationSettings getSynchronizationSettings() {
-        return SynchronizationSettings.builder()
-                .id(1L)
-                .dataSync(DataSyncPeriod.EVERY_24_HOURS)
-                .metadataSync(MetadataSyncPeriod.EVERY_12_HOURS)
-                .trackerImporterVersion(TrackerImporterVersion.V2)
-                .programSettings(ProgramSettings.builder()
-                        .globalSettings(ProgramSettingSamples.getProgramSetting())
-                        .build())
-                .dataSetSettings(DataSetSettings.builder()
-                        .globalSettings(DataSetSettingSamples.getDataSetSetting())
-                        .build())
-                .build();
-    }
+enum class TrackerImporterVersion {
+    @JsonEnumDefaultValue
+    V1,
+    V2
 }

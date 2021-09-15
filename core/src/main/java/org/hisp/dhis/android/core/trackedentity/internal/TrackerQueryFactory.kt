@@ -64,13 +64,13 @@ internal abstract class TrackerQueryFactory<T, S : TrackerBaseSync> constructor(
                     specificSettings
                         .filterKeys { programs.contains(it) }
                         .flatMap { internalFactory.queryPerProgram(it.key) } +
-                            if (programType == ProgramType.WITH_REGISTRATION) {
-                                globalPrograms.flatMap {
-                                    internalFactory.queryGlobalAndHomogeneously(globalPrograms, it)
-                                }
-                            } else {
-                                internalFactory.queryGlobal(globalPrograms)
+                        if (programType == ProgramType.WITH_REGISTRATION) {
+                            globalPrograms.flatMap {
+                                internalFactory.queryGlobalAndHomogeneously(globalPrograms, it)
                             }
+                        } else {
+                            internalFactory.queryGlobal(globalPrograms)
+                        }
                 }
             }
         } else {

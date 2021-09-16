@@ -25,21 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.programindicatorengine.internal.variable
 
-package org.hisp.dhis.android.core.program.programindicatorengine.internal.variable;
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
+import java.util.*
 
-import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
+internal class VCurrentDate : ExpressionItem {
 
-public class VEnrollmentCount
-        implements ExpressionItem {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        return ParserUtils.getMediumDateString(Date())
+    }
 
-    @Override
-    public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
-        Enrollment enrollment = visitor.getProgramIndicatorContext().enrollment();
-
-        return enrollment == null ? String.valueOf(0) : String.valueOf(1);
+    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        return "date('now')"
     }
 }

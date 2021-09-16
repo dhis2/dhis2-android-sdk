@@ -44,14 +44,6 @@ internal class DataElementEvaluator @Inject constructor(
     private val databaseAdapter: DatabaseAdapter
 ) : AnalyticsEvaluator {
 
-    companion object {
-        private const val Sum = "SUM"
-        private const val Avg = "AVG"
-        private const val Count = "COUNT"
-        private const val Max = "MAX"
-        private const val Min = "MIN"
-    }
-
     override fun evaluate(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>
@@ -74,8 +66,8 @@ internal class DataElementEvaluator @Inject constructor(
 
         val sqlQuery =
             "SELECT $aggregator(${DataValueTableInfo.Columns.VALUE}) " +
-                "FROM ${DataValueTableInfo.TABLE_INFO.name()} " +
-                "WHERE $whereClause"
+                    "FROM ${DataValueTableInfo.TABLE_INFO.name()} " +
+                    "WHERE $whereClause"
 
         return databaseAdapter.rawQuery(sqlQuery)?.use { c ->
             c.moveToFirst()
@@ -105,7 +97,7 @@ internal class DataElementEvaluator @Inject constructor(
                     else ->
                         throw AnalyticsException.InvalidArguments(
                             "Invalid arguments: unexpected " +
-                                "dataItem ${item.javaClass.name} in DataElement Evaluator."
+                                    "dataItem ${item.javaClass.name} in DataElement Evaluator."
                         )
                 }
             }.build()
@@ -176,7 +168,7 @@ internal class DataElementEvaluator @Inject constructor(
                         }
                     else -> throw AnalyticsException.InvalidArguments(
                         "Invalid arguments: dimension is not " +
-                            "dataelement or operand."
+                                "dataelement or operand."
                     )
                 }
                 getDataElementAggregator(aggregationType)
@@ -186,13 +178,7 @@ internal class DataElementEvaluator @Inject constructor(
     }
 
     private fun getDataElementAggregator(aggregationType: String?): String {
-        return when (aggregationType?.let { AggregationType.valueOf(it) } ?: AggregationType.SUM) {
-            AggregationType.SUM -> Sum
-            AggregationType.AVERAGE -> Avg
-            AggregationType.COUNT -> Count
-            AggregationType.MAX -> Max
-            AggregationType.MIN -> Min
-            else -> Sum
-        }
+        return aggregationType?.let { AggregationType.valueOf(it).sql }
+            ?: AggregationType.SUM.sql!!
     }
 }

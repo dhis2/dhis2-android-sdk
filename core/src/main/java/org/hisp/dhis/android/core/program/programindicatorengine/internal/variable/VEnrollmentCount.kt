@@ -25,25 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.programindicatorengine.internal.variable
 
-package org.hisp.dhis.android.core.program.programindicatorengine.internal.function;
+import org.hisp.dhis.android.core.common.AnalyticsType
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.core.event.EventTableInfo
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.enrollment
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.event
 
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
-import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils;
-import org.joda.time.DateTime;
+internal class VEnrollmentCount : ExpressionItem {
 
-import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        val enrollment = visitor.programIndicatorContext.enrollment
 
-public class D2AddDays
-        implements ExpressionItem {
+        return if (enrollment == null) 0.toString() else 1.toString()
+    }
 
-    @Override
-    public Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor) {
-        String dateStr = visitor.castStringVisit(ctx.expr(0));
-        String days =  visitor.castStringVisit(ctx.expr(1));
+    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        val enrollmentSelector = when (visitor.programIndicatorSQLContext.programIndicator.analyticsType()) {
+            AnalyticsType.EVENT ->
+                "$event.${EventTableInfo.Columns.ENROLLMENT}"
+            AnalyticsType.ENROLLMENT, null ->
+                "$enrollment.${EnrollmentTableInfo.Columns.UID}"
+        }
 
-        DateTime date = new DateTime(dateStr);
-        return ParserUtils.getMediumDateString(date.plusDays((int) Double.parseDouble(days)).toDate());
+        return "DISTINCT $enrollmentSelector"
     }
 }

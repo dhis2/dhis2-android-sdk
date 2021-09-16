@@ -43,7 +43,7 @@ public class ProgramItemPsEventdate
     public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
         String programStageUid = ctx.uid0.getText();
 
-        List<Event> eventList = visitor.getProgramIndicatorContext().events().get(programStageUid);
+        List<Event> eventList = visitor.getProgramIndicatorContext().getEvents().get(programStageUid);
 
         if (eventList == null) {
             return null;

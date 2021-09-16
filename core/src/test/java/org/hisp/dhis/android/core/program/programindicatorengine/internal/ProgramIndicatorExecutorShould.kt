@@ -120,10 +120,10 @@ class ProgramIndicatorExecutorShould {
         whenever(dataValue1.dataElement()) doReturn dataElementUid1
         whenever(dataValue2_1.dataElement()) doReturn dataElementUid2
         whenever(dataValue2_2.dataElement()) doReturn dataElementUid2
-        whenever(programIndicatorContext.programIndicator()) doReturn programIndicator
-        whenever(programIndicatorContext.enrollment()) doReturn enrollment
-        whenever(programIndicatorContext.attributeValues()) doReturn attributeValueMap
-        whenever(programIndicatorContext.events()) doReturn eventsMap
+        whenever(programIndicatorContext.programIndicator) doReturn programIndicator
+        whenever(programIndicatorContext.enrollment) doReturn enrollment
+        whenever(programIndicatorContext.attributeValues) doReturn attributeValueMap
+        whenever(programIndicatorContext.events) doReturn eventsMap
         whenever(dataElementStore.selectByUid(dataElementUid1)) doReturn dataElement1
         whenever(dataElementStore.selectByUid(dataElementUid2)) doReturn dataElement2
         whenever(dataElement1.valueType()) doReturn ValueType.NUMBER

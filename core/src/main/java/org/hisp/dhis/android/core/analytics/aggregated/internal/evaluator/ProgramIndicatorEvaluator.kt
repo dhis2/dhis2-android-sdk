@@ -28,27 +28,15 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
-import java.lang.NumberFormatException
-import javax.inject.Inject
-import org.hisp.dhis.android.core.analytics.aggregated.Dimension
-import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
-import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.AnalyticsEvaluatorHelper.appendCategoryWhereClause
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.AnalyticsEvaluatorHelper.appendOrgunitWhereClause
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.AnalyticsEvaluatorHelper.getItemsByDimension
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.AnalyticsEvaluatorHelper.getPeriodWhereClause
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.AnalyticsEvaluatorHelper.getReportingPeriods
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.AnalyticsType
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
-import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicatorEngine
+import javax.inject.Inject
 
 internal class ProgramIndicatorEvaluator @Inject constructor(
     private val eventStore: EventStore,
@@ -61,7 +49,7 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
         metadata: Map<String, MetadataItem>
     ): String? {
 
-        val programIndicator = getProgramIndicator(evaluationItem, metadata)
+        val programIndicator = ProgramIndicatorEvaluatorHelper.getProgramIndicator(evaluationItem, metadata)
 
         val values: List<String?> = when (programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
@@ -71,18 +59,6 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
         }
 
         return aggregateValues(programIndicator.aggregationType(), values)
-    }
-
-    private fun getProgramIndicator(
-        evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
-    ): ProgramIndicator {
-        val programIndicatorItem = (evaluationItem.dimensionItems + evaluationItem.filters)
-            .map { it as DimensionItem }
-            .find { it is DimensionItem.DataItem.ProgramIndicatorItem }
-            ?: throw AnalyticsException.InvalidArguments("Invalid arguments: no program indicator dimension provided.")
-
-        return (metadata[programIndicatorItem.id] as MetadataItem.ProgramIndicatorItem).item
     }
 
     private fun evaluateEventProgramIndicator(
@@ -100,37 +76,8 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>
     ): List<String> {
-        val items = getItemsByDimension(evaluationItem)
-
-        val whereClause = WhereClauseBuilder().apply {
-            items.entries.forEach { entry ->
-                when (entry.key) {
-                    is Dimension.Period -> {
-                        val reportingPeriods = getReportingPeriods(entry.value, metadata)
-                        appendComplexQuery(
-                            WhereClauseBuilder().apply {
-                                reportingPeriods.forEach { period ->
-                                    appendOrComplexQuery(
-                                        getPeriodWhereClause(
-                                            columnStart = EventTableInfo.Columns.EVENT_DATE,
-                                            columnEnd = EventTableInfo.Columns.EVENT_DATE,
-                                            period = period
-                                        )
-                                    )
-                                }
-                            }.build()
-                        )
-                    }
-                    is Dimension.OrganisationUnit ->
-                        appendOrgunitWhereClause(EventTableInfo.Columns.ORGANISATION_UNIT, entry.value, this, metadata)
-                    is Dimension.Category ->
-                        appendCategoryWhereClause(EventTableInfo.Columns.ATTRIBUTE_OPTION_COMBO, entry.value, this)
-                    else -> {
-                    }
-                }
-            }
-            appendKeyNumberValue(EventTableInfo.Columns.DELETED, 0)
-        }.build()
+        val whereClause = ProgramIndicatorEvaluatorHelper
+            .getEventWhereClause(programIndicator, evaluationItem, metadata)
 
         return eventStore.selectUidsWhere(whereClause)
     }
@@ -150,39 +97,8 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>
     ): List<String> {
-        val items = getItemsByDimension(evaluationItem)
-
-        val whereClause = WhereClauseBuilder().apply {
-            items.entries.forEach { entry ->
-                when (entry.key) {
-                    is Dimension.Period -> {
-                        val reportingPeriods = getReportingPeriods(entry.value, metadata)
-                        appendComplexQuery(
-                            WhereClauseBuilder().apply {
-                                reportingPeriods.forEach { period ->
-                                    appendOrComplexQuery(
-                                        getPeriodWhereClause(
-                                            columnStart = EnrollmentTableInfo.Columns.ENROLLMENT_DATE,
-                                            columnEnd = EnrollmentTableInfo.Columns.ENROLLMENT_DATE,
-                                            period = period
-                                        )
-                                    )
-                                }
-                            }.build()
-                        )
-                    }
-                    is Dimension.OrganisationUnit ->
-                        appendOrgunitWhereClause(
-                            EnrollmentTableInfo.Columns.ORGANISATION_UNIT,
-                            entry.value, this, metadata
-                        )
-                    is Dimension.Category -> TODO()
-                    else -> {
-                    }
-                }
-            }
-            appendKeyNumberValue(EnrollmentTableInfo.Columns.DELETED, 0)
-        }.build()
+        val whereClause =
+            ProgramIndicatorEvaluatorHelper.getEnrollmentWhereClause(programIndicator, evaluationItem, metadata)
 
         return enrollmentStore.selectUidsWhere(whereClause)
     }

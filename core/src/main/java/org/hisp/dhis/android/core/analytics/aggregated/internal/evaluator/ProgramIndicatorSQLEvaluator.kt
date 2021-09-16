@@ -26,15 +26,31 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program.programindicatorengine.internal.function;
+package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
-import org.joda.time.DateTime;
+import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
+import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
+import org.hisp.dhis.android.core.common.AnalyticsType
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLExecutor
+import javax.inject.Inject
 
-public class D2WeeksBetween
-        extends ProgramBetweenDatesFunction {
+internal class ProgramIndicatorSQLEvaluator @Inject constructor(
+    private val programIndicatorSQLExecutor: ProgramIndicatorSQLExecutor
+) : AnalyticsEvaluator {
 
-    @Override
-    public Object evaluate(DateTime startDate, DateTime endDate) {
-        return String.valueOf((endDate.getMillis() - startDate.getMillis()) / (86400000 * 7));
+    override fun evaluate(
+        evaluationItem: AnalyticsServiceEvaluationItem,
+        metadata: Map<String, MetadataItem>
+    ): String? {
+        val programIndicator = ProgramIndicatorEvaluatorHelper.getProgramIndicator(evaluationItem, metadata)
+
+        val contextWhereClause = when (programIndicator.analyticsType()) {
+            AnalyticsType.EVENT ->
+                ProgramIndicatorEvaluatorHelper.getEventWhereClause(programIndicator, evaluationItem, metadata)
+            AnalyticsType.ENROLLMENT, null ->
+                ProgramIndicatorEvaluatorHelper.getEnrollmentWhereClause(programIndicator, evaluationItem, metadata)
+        }
+
+        return programIndicatorSQLExecutor.getProgramIndicatorValue(programIndicator, contextWhereClause)
     }
 }

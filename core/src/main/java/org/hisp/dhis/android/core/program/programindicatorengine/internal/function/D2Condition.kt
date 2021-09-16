@@ -25,19 +25,39 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.programindicatorengine.internal.function
 
-package org.hisp.dhis.android.core.program.programindicatorengine.internal.function;
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.expression.CommonParser
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
+import org.hisp.dhis.antlr.AntlrParserUtils
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
+internal class D2Condition : ExpressionItem {
 
-public class D2CountIfValue
-        extends ProgramCountFunction {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        val testExpression = AntlrParserUtils.trimQuotes(ctx.stringLiteral().text)
 
-    @Override
-    protected boolean countIf(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor, String value) {
-        String valueToCompare = visitor.castStringVisit(ctx.expr(0));
+        val valueIfTrue = visitor.castStringVisit(ctx.expr(0))
+        val valueIfFalse = visitor.castStringVisit(ctx.expr(1))
 
-        return valueToCompare.equals(value);
+        val testResult = visitor.programIndicatorExecutor.getProgramIndicatorExpressionValue(testExpression)
+
+        return if ("true" == testResult) {
+            valueIfTrue
+        } else {
+            valueIfFalse
+        }
+    }
+
+    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        val testExpression = AntlrParserUtils.trimQuotes(ctx.stringLiteral().text)
+
+        val testSql = CommonParser.visit(testExpression, visitor)
+
+        val valueIfTrue = visitor.castStringVisit(ctx.expr(0))
+        val valueIfFalse = visitor.castStringVisit(ctx.expr(1))
+
+        return "CASE WHEN ($testSql) THEN $valueIfTrue ELSE $valueIfFalse END"
     }
 }

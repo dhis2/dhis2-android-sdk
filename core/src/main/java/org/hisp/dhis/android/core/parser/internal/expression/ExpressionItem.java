@@ -170,7 +170,7 @@ public interface ExpressionItem
      * @return the generated SQL (as a String) for the function
      */
     default Object getSql(ExprContext ctx, CommonExpressionVisitor visitor) {
-        throw new ParserExceptionWithoutContext("getSql not implemnted for " + ctx.getText());
+        throw new ParserExceptionWithoutContext("getSql not implemented for " + ctx.getText());
     }
 
     default Object regenerate(ExprContext ctx, CommonExpressionVisitor visitor) {

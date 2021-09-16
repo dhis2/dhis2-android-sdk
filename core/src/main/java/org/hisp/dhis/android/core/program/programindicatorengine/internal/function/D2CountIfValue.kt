@@ -25,22 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.programindicatorengine.internal.function
 
-package org.hisp.dhis.android.core.program.programindicatorengine.internal.variable;
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
-import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
+internal class D2CountIfValue : ProgramCountFunction() {
 
-public class VEnrollmentDate
-        implements ExpressionItem {
+    override fun countIf(ctx: ExprContext, visitor: CommonExpressionVisitor, value: String?): Boolean {
+        val valueToCompare = visitor.castStringVisit(ctx.expr(0))
+        return valueToCompare == value
+    }
 
-    @Override
-    public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
-        Enrollment enrollment = visitor.getProgramIndicatorContext().enrollment();
-
-        return enrollment == null ? null : ParserUtils.getMediumDateString(enrollment.enrollmentDate());
+    override fun getConditionalSql(ctx: ExprContext, visitor: CommonExpressionVisitor): String {
+        return " = '${visitor.castStringVisit(ctx.expr(0))}'"
     }
 }

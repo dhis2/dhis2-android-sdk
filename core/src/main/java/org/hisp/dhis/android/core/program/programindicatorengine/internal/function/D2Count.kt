@@ -25,16 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.programindicatorengine.internal.function
 
-package org.hisp.dhis.android.core.program.programindicatorengine.internal.function;
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-import org.joda.time.DateTime;
+internal class D2Count : ProgramCountFunction() {
 
-public class D2MinutesBetween
-        extends ProgramBetweenDatesFunction {
+    override fun countIf(ctx: ExprContext, visitor: CommonExpressionVisitor, value: String?): Boolean {
+        return true
+    }
 
-    @Override
-    public Object evaluate(DateTime startDate, DateTime endDate) {
-        return String.valueOf((endDate.getMillis() - startDate.getMillis()) / 60000);
+    override fun getConditionalSql(ctx: ExprContext, visitor: CommonExpressionVisitor): String {
+        return "IS NOT NULL"
     }
 }

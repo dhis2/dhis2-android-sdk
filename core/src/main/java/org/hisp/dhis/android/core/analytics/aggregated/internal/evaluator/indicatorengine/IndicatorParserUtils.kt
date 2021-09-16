@@ -67,7 +67,6 @@ internal object IndicatorParserUtils {
     val INDICATOR_EXPRESSION_ITEMS = ParserUtils.COMMON_EXPRESSION_ITEMS +
         mapOf(
             ExpressionParser.D2_CEIL to D2Ceil(),
-            ExpressionParser.D2_CEIL to D2Ceil(),
             ExpressionParser.D2_CONCATENATE to D2Concatenate(),
             ExpressionParser.D2_FLOOR to D2Floor(),
             ExpressionParser.D2_LEFT to D2Left(),

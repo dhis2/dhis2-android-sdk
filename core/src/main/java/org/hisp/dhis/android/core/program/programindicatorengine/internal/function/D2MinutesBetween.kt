@@ -25,29 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.programindicatorengine.internal.function
 
-package org.hisp.dhis.android.core.program.programindicatorengine.internal.variable;
+import org.joda.time.DateTime
 
-import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils;
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramExpressionItem;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
+internal class D2MinutesBetween : ProgramBetweenDatesFunction() {
 
-public class VCreationDate
-        extends ProgramExpressionItem {
+    override fun evaluate(startDate: DateTime, endDate: DateTime): Any {
+        return ((endDate.millis - startDate.millis) / 60000).toString()
+    }
 
-    @Override
-    public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
-        Enrollment enrollment = visitor.getProgramIndicatorContext().enrollment();
-
-        if (enrollment == null) {
-            Event singleEvent = getSingleEvent(visitor);
-
-            return singleEvent == null ? null : ParserUtils.getMediumDateString(singleEvent.created());
-        } else {
-            return ParserUtils.getMediumDateString(enrollment.created());
-        }
+    override fun getSql(startExpression: String, endExpression: String): Any {
+        return "CAST((julianday($endExpression) - julianday($startExpression)) * 24 * 60 AS INTEGER)"
     }
 }

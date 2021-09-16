@@ -25,31 +25,16 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.programindicatorengine.internal
 
-package org.hisp.dhis.android.core.program.programindicatorengine.internal.function;
+import org.hisp.dhis.android.core.enrollment.Enrollment
+import org.hisp.dhis.android.core.event.Event
+import org.hisp.dhis.android.core.program.ProgramIndicator
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
-
-import static org.hisp.dhis.antlr.AntlrParserUtils.trimQuotes;
-
-public class D2Condition
-        implements ExpressionItem {
-
-    @Override
-    public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
-        String testExpression = trimQuotes(ctx.stringLiteral().getText());
-
-        String valueIfTrue = visitor.castStringVisit(ctx.expr(0));
-        String valueIfFalse = visitor.castStringVisit(ctx.expr(1));
-
-        String testResult = visitor.getProgramIndicatorExecutor().getProgramIndicatorExpressionValue(testExpression);
-
-        if ("true".equals(testResult)) {
-            return valueIfTrue;
-        } else {
-            return valueIfFalse;
-        }
-    }
-}
+internal data class ProgramIndicatorContext(
+    val programIndicator: ProgramIndicator,
+    val enrollment: Enrollment? = null,
+    val attributeValues: Map<String, TrackedEntityAttributeValue> = mapOf(),
+    val events: Map<String, List<Event>> = mapOf()
+)

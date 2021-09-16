@@ -25,55 +25,49 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.programindicatorengine.internal.function
 
-package org.hisp.dhis.android.core.program.programindicatorengine.internal.dataitem;
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.expression.CommonParser
+import org.hisp.dhis.antlr.AntlrParserUtils.trimQuotes
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramExpressionItem;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
-import org.hisp.dhis.antlr.ParserExceptionWithoutContext;
+internal class D2CountIfCondition : ProgramCountFunction() {
 
-import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
+    override fun countIf(ctx: ExprContext, visitor: CommonExpressionVisitor, value: String?): Boolean {
+        val expression = value + trimQuotes(ctx.stringLiteral().text)
+        val result = visitor.programIndicatorExecutor.getProgramIndicatorExpressionValue(expression)
 
-public class ProgramItemAttribute
-        extends ProgramExpressionItem {
-
-    @Override
-    public Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor) {
-        String attributeUid = getProgramAttributeId(ctx);
-
-        TrackedEntityAttributeValue attributeValue =
-                visitor.getProgramIndicatorContext().attributeValues().get(attributeUid);
-
-        TrackedEntityAttribute attribute = visitor.getTrackedEntityAttributeStore().selectByUid(attributeUid);
-
-        String value = attributeValue == null ? null : attributeValue.value();
-
-        Object handledValue = visitor.handleNulls(value);
-        String strValue = handledValue == null ? null : handledValue.toString();
-
-        return formatValue(strValue, attribute.valueType());
+        return "true" == result
     }
 
+    override fun getConditionalSql(ctx: ExprContext, visitor: CommonExpressionVisitor): String {
+        val conditionExpression = getAuxConditionExpression(ctx)
+
+        val conditionSql = CommonParser.visit(conditionExpression, visitor)
+
+        return extractConditionExpression(conditionSql.toString())
+    }
 
     // -------------------------------------------------------------------------
     // Supportive methods
     // -------------------------------------------------------------------------
 
+    // -------------------------------------------------------------------------
+    // Supportive methods
+    // -------------------------------------------------------------------------
     /**
-     * Makes sure that the parsed A{...} has a syntax that could be used
-     * be used in an program expression for A{attributeUid}
+     * Gets a complete expression that is used to test a condition (e.g. "<5")
+     * by putting a "0" in front to get a complete expression (e.g., "0<5").
      *
-     * @param ctx the item context
-     * @return the attribute UID.
+     * @param ctx the expression context
+     * @return the complete expression
      */
-    private String getProgramAttributeId(ExprContext ctx) {
-        if (ctx.uid1 != null) {
-            throw new ParserExceptionWithoutContext(
-                    "Program attribute must have one UID: " + ctx.getText());
-        }
+    private fun getAuxConditionExpression(ctx: ExprContext): String {
+        return "0.0" + trimQuotes(ctx.stringLiteral().text)
+    }
 
-        return ctx.uid0.getText();
+    private fun extractConditionExpression(expression: String): String {
+        return expression.substring(3)
     }
 }

@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.category
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryCategoryComboLink
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryCategoryOptionLink
@@ -35,8 +36,10 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOption
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOptionCombo
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOptionComboCategoryOptionLink
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.constant1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement2
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement3
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElementOperand
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild2
@@ -51,6 +54,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.category.internal.*
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.common.RelativePeriod
+import org.hisp.dhis.android.core.constant.internal.ConstantStore
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
 import org.hisp.dhis.android.core.indicator.internal.IndicatorStore
@@ -59,6 +63,7 @@ import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStor
 import org.hisp.dhis.android.core.period.internal.PeriodStoreImpl
 import org.hisp.dhis.android.core.program.internal.ProgramStageStore
 import org.hisp.dhis.android.core.program.internal.ProgramStore
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher
 import org.junit.After
@@ -82,11 +87,14 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
     protected val periodStore = PeriodStoreImpl.create(databaseAdapter)
 
     protected val trackedEntityTypeStore = TrackedEntityTypeStore.create(databaseAdapter)
+    protected val trackedEntityAttributeStore = TrackedEntityAttributeStore.create(databaseAdapter)
     protected val programStore = ProgramStore.create(databaseAdapter)
     protected val programStageStore = ProgramStageStore.create(databaseAdapter)
 
     protected val indicatorTypeStore = IndicatorTypeStore.create(databaseAdapter)
     protected val indicatorStore = IndicatorStore.create(databaseAdapter)
+
+    protected val constantStore = ConstantStore.create(databaseAdapter)
 
     protected val metadata: Map<String, MetadataItem> = mapOf(
         orgunitParent.uid() to MetadataItem.OrganisationUnitItem(orgunitParent),
@@ -132,15 +140,19 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
 
         dataElementStore.insert(dataElement1)
         dataElementStore.insert(dataElement2)
+        dataElementStore.insert(dataElement3)
 
         periodStore.insert(periodNov)
         periodStore.insert(periodDec)
         periodStore.insert(periodQ4)
 
         trackedEntityTypeStore.insert(trackedEntityType)
+        trackedEntityAttributeStore.insert(attribute1)
         programStore.insert(program)
         programStageStore.insert(programStage1)
         programStageStore.insert(programStage2)
+
+        constantStore.insert(constant1)
     }
 
     @After
@@ -157,9 +169,11 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
         periodStore.delete()
         dataValueStore.delete()
         trackedEntityTypeStore.delete()
+        trackedEntityAttributeStore.delete()
         programStageStore.delete()
         programStore.delete()
         indicatorTypeStore.delete()
         indicatorStore.delete()
+        constantStore.delete()
     }
 }

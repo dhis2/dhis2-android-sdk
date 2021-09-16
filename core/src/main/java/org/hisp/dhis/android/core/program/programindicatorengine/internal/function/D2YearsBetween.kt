@@ -25,22 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.programindicatorengine.internal.function
 
-package org.hisp.dhis.android.core.program.programindicatorengine.internal.variable;
+import org.joda.time.DateTime
+import org.joda.time.Years
 
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils;
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramExpressionItem;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
+internal class D2YearsBetween : ProgramBetweenDatesFunction() {
 
-public class VDueDate
-        extends ProgramExpressionItem {
+    override fun evaluate(startDate: DateTime, endDate: DateTime): Any {
+        return Years.yearsBetween(startDate, endDate).years.toString()
+    }
 
-    @Override
-    public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
-        Event singleEvent = getSingleEvent(visitor);
-
-        return singleEvent == null ? null : ParserUtils.getMediumDateString(singleEvent.dueDate());
+    override fun getSql(startExpression: String, endExpression: String): Any {
+        return "strftime('%Y', $endExpression) - strftime('%Y', $startExpression)"
     }
 }

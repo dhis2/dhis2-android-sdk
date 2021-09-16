@@ -25,50 +25,41 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.programindicatorengine.internal.function
 
-package org.hisp.dhis.android.core.program.programindicatorengine.internal;
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
+import org.joda.time.DateTime
 
-import androidx.annotation.Nullable;
+internal abstract class ProgramBetweenDatesFunction : ExpressionItem {
 
-import com.google.auto.value.AutoValue;
+    abstract fun evaluate(startDate: DateTime, endDate: DateTime): Any
 
-import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.program.ProgramIndicator;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
+    abstract fun getSql(startExpression: String, endExpression: String): Any
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        val start = visitor.castStringVisit(ctx.expr(0))
+        val end = visitor.castStringVisit(ctx.expr(1))
 
-@AutoValue
-public abstract class ProgramIndicatorContext {
+        if (start.isNullOrEmpty() || end.isNullOrEmpty()) {
+            return 0.toString()
+        }
 
-    public abstract ProgramIndicator programIndicator();
+        val startDate = DateTime(start)
+        val endDate = DateTime(end)
 
-    @Nullable
-    public abstract Enrollment enrollment();
-
-    public abstract Map<String, TrackedEntityAttributeValue> attributeValues();
-
-    public abstract Map<String, List<Event>> events();
-
-    public static Builder builder() {
-        return new AutoValue_ProgramIndicatorContext.Builder()
-                .attributeValues(Collections.emptyMap())
-                .events(Collections.emptyMap());
+        return evaluate(startDate, endDate)
     }
 
-    @AutoValue.Builder
-    public static abstract class Builder {
-        public abstract Builder programIndicator(ProgramIndicator programIndicator);
+    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        val start = visitor.castStringVisit(ctx.expr(0))
+        val end = visitor.castStringVisit(ctx.expr(1))
 
-        public abstract Builder enrollment(Enrollment enrollment);
+        if (start.isNullOrEmpty() || end.isNullOrEmpty()) {
+            return 0.toString()
+        }
 
-        public abstract Builder attributeValues(Map<String, TrackedEntityAttributeValue> attributeValues);
-
-        public abstract Builder events(Map<String, List<Event>> events);
-
-        public abstract ProgramIndicatorContext build();
+        return getSql(start, end)
     }
 }

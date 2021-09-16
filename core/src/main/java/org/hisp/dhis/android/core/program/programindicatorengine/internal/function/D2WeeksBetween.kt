@@ -25,22 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.programindicatorengine.internal.function
 
-package org.hisp.dhis.android.core.program.programindicatorengine.internal.variable;
+import org.joda.time.DateTime
 
-import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
-import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
+internal class D2WeeksBetween : ProgramBetweenDatesFunction() {
 
-public class VIncidentDate
-        implements ExpressionItem {
+    override fun evaluate(startDate: DateTime, endDate: DateTime): Any {
+        return ((endDate.millis - startDate.millis) / (86400000 * 7)).toString()
+    }
 
-    @Override
-    public Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor) {
-        Enrollment enrollment = visitor.getProgramIndicatorContext().enrollment();
-
-        return enrollment == null ? null : ParserUtils.getMediumDateString(enrollment.incidentDate());
+    override fun getSql(startExpression: String, endExpression: String): Any {
+        return "CAST((julianday($endExpression) - julianday($startExpression)) / 7 AS INTEGER)"
     }
 }

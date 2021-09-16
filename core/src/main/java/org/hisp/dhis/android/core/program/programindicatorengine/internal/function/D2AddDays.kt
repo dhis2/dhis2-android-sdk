@@ -25,28 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.programindicatorengine.internal.function
 
-package org.hisp.dhis.android.core.program.programindicatorengine.internal.variable;
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
+import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
+import org.joda.time.DateTime
 
-import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils;
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramExpressionItem;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
+internal class D2AddDays : ExpressionItem {
 
-public class VCompletedDate extends ProgramExpressionItem {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        val dateStr = visitor.castStringVisit(ctx.expr(0))
+        val days = visitor.castStringVisit(ctx.expr(1))
+        val date = DateTime(dateStr)
 
-    @Override
-    public Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor) {
-        Enrollment enrollment = visitor.getProgramIndicatorContext().enrollment();
+        return ParserUtils.getMediumDateString(date.plusDays(days.toDouble().toInt()).toDate())
+    }
 
-        if (enrollment == null) {
-            Event singleEvent = getSingleEvent(visitor);
+    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        val dateExpression = visitor.castStringVisit(ctx.expr(0))
+        val days = visitor.castStringVisit(ctx.expr(1))
 
-            return singleEvent == null ? null : ParserUtils.getMediumDateString(singleEvent.completedDate());
-        } else {
-            return ParserUtils.getMediumDateString(enrollment.completedDate());
-        }
+        return "date($dateExpression, '$days days')"
     }
 }

@@ -25,28 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.programindicatorengine.internal.variable
 
-package org.hisp.dhis.android.core.program.programindicatorengine.internal.variable;
+import org.hisp.dhis.android.core.common.AnalyticsType
+import org.hisp.dhis.android.core.event.EventTableInfo
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramExpressionItem
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.event
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
+internal class VDueDate : ProgramExpressionItem() {
 
-import java.util.List;
-import java.util.Map;
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+        val singleEvent = getSingleEvent(visitor)
 
-public class VEventCount
-        implements ExpressionItem {
+        return if (singleEvent == null) null else ParserUtils.getMediumDateString(singleEvent.dueDate())
+    }
 
-    @Override
-    public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
-        int count = 0;
-
-        for (Map.Entry<String, List<Event>> entry : visitor.getProgramIndicatorContext().events().entrySet()) {
-            count += entry.getValue().size();
+    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        return when (visitor.programIndicatorSQLContext.programIndicator.analyticsType()) {
+            AnalyticsType.EVENT ->
+                "$event.${EventTableInfo.Columns.DUE_DATE}"
+            AnalyticsType.ENROLLMENT, null ->
+                ProgramIndicatorSQLUtils.getEventColumnForEnrollmentWhereClause(
+                    column = EventTableInfo.Columns.DUE_DATE
+                )
         }
-
-        return String.valueOf(count);
     }
 }

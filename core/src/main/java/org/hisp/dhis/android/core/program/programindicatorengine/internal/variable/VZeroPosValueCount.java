@@ -38,7 +38,7 @@ public class VZeroPosValueCount
     @Override
     public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
 
-        String expression = visitor.getProgramIndicatorContext().programIndicator().expression();
+        String expression = visitor.getProgramIndicatorContext().getProgramIndicator().expression();
 
         return String.valueOf(visitor.getProgramIndicatorExecutor().getZeroPosValueCount(expression));
     }

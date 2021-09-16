@@ -25,17 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.programindicatorengine.internal
 
-package org.hisp.dhis.android.core.program.programindicatorengine.internal.function;
+import org.hisp.dhis.android.core.program.ProgramIndicator
 
-import org.joda.time.DateTime;
-import org.joda.time.Months;
-
-public class D2MonthsBetween
-        extends ProgramBetweenDatesFunction {
-
-    @Override
-    public Object evaluate(DateTime startDate, DateTime endDate) {
-        return String.valueOf(Months.monthsBetween(startDate, endDate).getMonths());
-    }
-}
+internal data class ProgramIndicatorSQLContext(
+    val programIndicator: ProgramIndicator
+)

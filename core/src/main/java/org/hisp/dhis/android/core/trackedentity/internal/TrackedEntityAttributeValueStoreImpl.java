@@ -60,11 +60,12 @@ public final class TrackedEntityAttributeValueStoreImpl
         w.bind(3, o.lastUpdated());
         w.bind(4, o.trackedEntityAttribute());
         w.bind(5, o.trackedEntityInstance());
+        w.bind(6, o.deleted());
     };
 
     private static final WhereStatementBinder<TrackedEntityAttributeValue> WHERE_UPDATE_BINDER = (o, w) -> {
-        w.bind(6, o.trackedEntityAttribute());
-        w.bind(7, o.trackedEntityInstance());
+        w.bind(7, o.trackedEntityAttribute());
+        w.bind(8, o.trackedEntityInstance());
     };
 
 
@@ -145,7 +146,8 @@ public final class TrackedEntityAttributeValueStoreImpl
                     new ArrayList<>());
         }
 
-        valueMap.get(trackedEntityAttributeValue.trackedEntityInstance()).add(trackedEntityAttributeValue);
+        valueMap.get(trackedEntityAttributeValue.trackedEntityInstance()).add(trackedEntityAttributeValue.deleted() ?
+                        trackedEntityAttributeValue.toBuilder().value("").build() : trackedEntityAttributeValue);
     }
 
     public static TrackedEntityAttributeValueStore create(DatabaseAdapter databaseAdapter) {

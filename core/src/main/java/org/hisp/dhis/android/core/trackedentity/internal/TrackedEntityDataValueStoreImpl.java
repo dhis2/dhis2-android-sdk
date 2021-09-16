@@ -64,11 +64,12 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
         w.bind(5, o.storedBy());
         w.bind(6, o.value());
         w.bind(7, o.providedElsewhere());
+        w.bind(8, o.deleted());
     };
 
     private static final WhereStatementBinder<TrackedEntityDataValue> WHERE_UPDATE_BINDER = (o, w) -> {
-        w.bind(8, o.event());
-        w.bind(9, o.dataElement());
+        w.bind(9, o.event());
+        w.bind(10, o.dataElement());
     };
 
     private static final WhereStatementBinder<TrackedEntityDataValue> WHERE_DELETE_BINDER = (o, w) -> {
@@ -174,7 +175,8 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
             dataValuesMap.put(dataValue.event(), new ArrayList<>());
         }
 
-        dataValuesMap.get(dataValue.event()).add(dataValue);
+        dataValuesMap.get(dataValue.event()).add(dataValue.deleted() ?
+                dataValue.toBuilder().value("").build() : dataValue);
     }
 
     public static TrackedEntityDataValueStore create(DatabaseAdapter databaseAdapter) {

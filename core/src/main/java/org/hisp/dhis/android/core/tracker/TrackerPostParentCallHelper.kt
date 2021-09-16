@@ -25,32 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal
 
-import dagger.Reusable
-import io.reactivex.Observable
+package org.hisp.dhis.android.core.tracker
+
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.tracker.TrackerPostParentCallHelper
-import org.hisp.dhis.android.core.tracker.importer.internal.TrackedEntityInstanceTrackerImporterPostCall
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.settings.SynchronizationSettings
+import org.hisp.dhis.android.core.systeminfo.DHISVersion
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 
-@Reusable
-internal class TrackedEntityInstancePostParentCall @Inject internal constructor(
-    private val oldCall: OldTrackedEntityInstancePostCall,
-    private val trackerImporterCall: TrackedEntityInstanceTrackerImporterPostCall,
-    private val trackerParentCallHelperHelper: TrackerPostParentCallHelper
+internal class TrackerPostParentCallHelper @Inject constructor(
+    private val dhisVersionManager: DHISVersionManager,
+    private val synchronizationSettingStore: ObjectWithoutUidStore<SynchronizationSettings>
 ) {
 
-    fun uploadTrackedEntityInstances(trackedEntityInstances: List<TrackedEntityInstance>): Observable<D2Progress> {
-        return if (trackedEntityInstances.isEmpty()) {
-            Observable.empty<D2Progress>()
-        } else {
-            if (trackerParentCallHelperHelper.useNewTrackerImporter()) {
-                trackerImporterCall.uploadTrackedEntityInstances(trackedEntityInstances)
-            } else {
-                oldCall.uploadTrackedEntityInstances(trackedEntityInstances)
-            }
-        }
+    fun useNewTrackerImporter(): Boolean {
+        return dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_36) &&
+            synchronizationSettingStore.selectFirst()?.trackerImporterVersion() == TrackerImporterVersion.V2
     }
 }

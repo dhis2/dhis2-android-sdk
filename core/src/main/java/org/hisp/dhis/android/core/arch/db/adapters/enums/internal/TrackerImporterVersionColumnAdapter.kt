@@ -25,32 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal
+package org.hisp.dhis.android.core.arch.db.adapters.enums.internal
 
-import dagger.Reusable
-import io.reactivex.Observable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.tracker.TrackerPostParentCallHelper
-import org.hisp.dhis.android.core.tracker.importer.internal.TrackedEntityInstanceTrackerImporterPostCall
+import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
 
-@Reusable
-internal class TrackedEntityInstancePostParentCall @Inject internal constructor(
-    private val oldCall: OldTrackedEntityInstancePostCall,
-    private val trackerImporterCall: TrackedEntityInstanceTrackerImporterPostCall,
-    private val trackerParentCallHelperHelper: TrackerPostParentCallHelper
-) {
-
-    fun uploadTrackedEntityInstances(trackedEntityInstances: List<TrackedEntityInstance>): Observable<D2Progress> {
-        return if (trackedEntityInstances.isEmpty()) {
-            Observable.empty<D2Progress>()
-        } else {
-            if (trackerParentCallHelperHelper.useNewTrackerImporter()) {
-                trackerImporterCall.uploadTrackedEntityInstances(trackedEntityInstances)
-            } else {
-                oldCall.uploadTrackedEntityInstances(trackedEntityInstances)
-            }
-        }
+internal class TrackerImporterVersionColumnAdapter : EnumColumnAdapter<TrackerImporterVersion>() {
+    override fun getEnumClass(): Class<TrackerImporterVersion> {
+        return TrackerImporterVersion::class.java
     }
 }

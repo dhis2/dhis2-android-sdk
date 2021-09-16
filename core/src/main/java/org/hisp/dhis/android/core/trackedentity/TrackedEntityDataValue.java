@@ -40,13 +40,13 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.common.BaseDeletableObject;
 
 import java.util.Date;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_TrackedEntityDataValue.Builder.class)
-public abstract class TrackedEntityDataValue implements CoreObject {
+public abstract class TrackedEntityDataValue extends BaseDeletableObject {
 
     @Nullable
     @JsonIgnore()
@@ -90,7 +90,7 @@ public abstract class TrackedEntityDataValue implements CoreObject {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
+    public abstract static class Builder extends BaseDeletableObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
         public abstract Builder event(String event);

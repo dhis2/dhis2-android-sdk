@@ -75,9 +75,10 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
         val selectExpression = CommonParser.visit(programIndicator.expression(), visitor)
 
         // TODO Include more cases that are expected to be evaluated as "1"
-        val filterExpression = programIndicator.filter()?.let {
-            CommonParser.visit(programIndicator.filter(), visitor)
-        } ?: "1"
+        val filterExpression = when (programIndicator.filter()?.trim()) {
+            "true", "", null -> "1"
+            else -> CommonParser.visit(programIndicator.filter(), visitor)
+        }
 
         val sqlQuery = "SELECT $agg($selectExpression) " +
                 "FROM $targetTable " +

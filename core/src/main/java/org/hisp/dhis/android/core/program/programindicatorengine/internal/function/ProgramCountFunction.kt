@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.program.programindicatorengine.internal.datait
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
 import org.hisp.dhis.antlr.ParserExceptionWithoutContext
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
-import java.lang.IllegalArgumentException
 
 internal abstract class ProgramCountFunction : ProgramExpressionItem() {
 

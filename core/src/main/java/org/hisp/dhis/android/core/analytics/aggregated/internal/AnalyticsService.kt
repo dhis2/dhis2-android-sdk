@@ -28,10 +28,12 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
+import android.database.sqlite.SQLiteException
 import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
 import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.antlr.ParserExceptionWithoutContext
 
 internal class AnalyticsService @Inject constructor(
     private val analyticsServiceDimensionHelper: AnalyticsServiceDimensionHelper,
@@ -69,6 +71,12 @@ internal class AnalyticsService @Inject constructor(
             )
         } catch (e: AnalyticsException) {
             Result.Failure(e)
+        } catch (e: ParserExceptionWithoutContext) {
+            Result.Failure(AnalyticsException.ParserException(e.message ?: "Unknown"))
+        } catch (e: IllegalArgumentException) {
+            Result.Failure(AnalyticsException.InvalidArguments(e.message ?: "Unknown"))
+        } catch (e: SQLiteException) {
+            Result.Failure(AnalyticsException.SQLException(e.message ?: "Unknown"))
         }
     }
 }

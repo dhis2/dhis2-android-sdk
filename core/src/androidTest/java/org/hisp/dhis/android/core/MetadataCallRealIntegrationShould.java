@@ -30,7 +30,15 @@ package org.hisp.dhis.android.core;
 
 import android.util.Log;
 
+import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem;
+import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse;
+import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsException;
+import org.hisp.dhis.android.core.arch.helpers.Result;
+import org.hisp.dhis.android.core.common.RelativeOrganisationUnit;
+import org.hisp.dhis.android.core.common.RelativePeriod;
+import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
 
@@ -70,12 +78,33 @@ public class MetadataCallRealIntegrationShould extends BaseRealIntegrationTest {
     //This test is uncommented because technically it is flaky.
     //It depends on a live server to operate and the login is hardcoded here.
     //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
-    //@Test
+    @Test
     public void response_successful_on_sync_meta_data_once() throws Exception {
-        d2.userModule().logIn(username, password, url).blockingGet();
+        d2.userModule().logIn("android", "Android123", RealServerMother.url2_36).blockingGet();
 
-        d2.metadataModule().blockingDownload();
-        
+        //d2.metadataModule().blockingDownload();
+        //d2.trackedEntityModule().trackedEntityInstanceDownloader().blockingDownload();
+        //d2.eventModule().eventDownloader().blockingDownload();
+
+        long start = System.currentTimeMillis();
+        Result<DimensionalResponse, AnalyticsException> result = d2.analyticsModule().analytics()
+                .withFilter(new DimensionItem.DataItem.ProgramIndicatorItem("thzF9GFgkIc"))
+                .withDimension(new DimensionItem.PeriodItem.Relative(RelativePeriod.LAST_12_MONTHS))
+                .withDimension(new DimensionItem.OrganisationUnitItem.OrganisationUnitItem.Relative(RelativeOrganisationUnit.USER_ORGUNIT))
+                .blockingEvaluate();
+
+        long end1 = System.currentTimeMillis();
+
+        Result<DimensionalResponse, AnalyticsException> result2 = d2.analyticsModule().analytics()
+                .withDimension(new DimensionItem.DataItem.ProgramIndicatorItem("thzF9GFgkIc"))
+                .withDimension(new DimensionItem.PeriodItem.Relative(RelativePeriod.LAST_12_MONTHS))
+                .withFilter(new DimensionItem.OrganisationUnitItem.OrganisationUnitItem.Relative(RelativeOrganisationUnit.USER_ORGUNIT))
+                .blockingEvaluate();
+
+        long end2 = System.currentTimeMillis();
+
+        Log.i("ANALYTICS", "First result " + result.getSucceeded() + ": " + (end1 - start));
+        Log.i("ANALYTICS", "Second result " + result2.getSucceeded() + ": " + (end2 - end1));
 
         //TODO: add additional sync + break point.
         //when debugger stops at the new break point manually change metadata online & resume.

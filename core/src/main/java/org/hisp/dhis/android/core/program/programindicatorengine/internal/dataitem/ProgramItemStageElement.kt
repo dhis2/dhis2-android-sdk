@@ -29,8 +29,13 @@ package org.hisp.dhis.android.core.program.programindicatorengine.internal.datai
 
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemId
+import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemType
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramExpressionItem
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorParserUtils.assumeStageElementSyntax
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.getColumnValueCast
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.getDataValueEventWhereClause
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.getDefaultValue
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.getProgramStageExistsClause
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
@@ -39,6 +44,8 @@ import java.util.*
 
 internal class ProgramItemStageElement : ProgramExpressionItem() {
     override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+        assumeStageElementSyntax(ctx)
+
         val stageId = ctx.uid0.text
         val dataElementId = ctx.uid1.text
 
@@ -75,16 +82,46 @@ internal class ProgramItemStageElement : ProgramExpressionItem() {
     }
 
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        assumeStageElementSyntax(ctx)
+
         val programStageId = ctx.uid0.text
         val dataElementId = ctx.uid1.text
 
         // TODO Manage null and boolean values
 
-        return "(SELECT ${TrackedEntityDataValueTableInfo.Columns.VALUE} " +
-                "FROM ${TrackedEntityDataValueTableInfo.TABLE_INFO.name()} " +
-                "WHERE ${TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT} = '$dataElementId' " +
-                "AND ${getProgramStageExistsClause(programStageId)} " +
-                "AND ${getDataValueEventWhereClause(visitor.programIndicatorSQLContext.programIndicator)} " +
-                ")"
+        val dataElement = visitor.dataElementStore.selectByUid(dataElementId)
+            ?: throw IllegalArgumentException("DataElement $dataElementId does not exist.")
+
+        val valueCastExpression = getColumnValueCast(
+            TrackedEntityDataValueTableInfo.Columns.VALUE,
+            dataElement.valueType()
+        )
+
+        val selectExpression =
+            "(SELECT $valueCastExpression " +
+                    "FROM ${TrackedEntityDataValueTableInfo.TABLE_INFO.name()} " +
+                    "WHERE ${TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT} = '$dataElementId' " +
+                    "AND ${getProgramStageExistsClause(programStageId)} " +
+                    "AND ${getDataValueEventWhereClause(visitor.programIndicatorSQLContext.programIndicator)} " +
+                    ")"
+
+        return if (visitor.replaceNulls) {
+            "(COALESCE($selectExpression, ${getDefaultValue(dataElement.valueType())}))"
+        } else {
+            selectExpression
+        }
+    }
+
+    override fun getItemId(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        val stageId = ctx.uid0.text
+        val dataElementId = ctx.uid1.text
+
+        return visitor.itemIds.add(
+            DimensionalItemId.builder()
+                .dimensionalItemType(DimensionalItemType.TRACKED_ENTITY_DATA_VALUE)
+                .id0(stageId)
+                .id1(dataElementId)
+                .build()
+        )
     }
 }

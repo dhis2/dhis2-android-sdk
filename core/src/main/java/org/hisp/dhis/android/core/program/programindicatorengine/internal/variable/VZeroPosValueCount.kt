@@ -25,28 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.programindicatorengine.internal.variable
 
-package org.hisp.dhis.android.core.program.programindicatorengine.internal.function;
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
+internal class VZeroPosValueCount : ExpressionItem {
 
-import java.util.ArrayList;
-import java.util.List;
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        val expression = visitor.programIndicatorContext.programIndicator.expression()
+        return visitor.programIndicatorExecutor.getZeroPosValueCount(expression!!).toString()
+    }
 
-public class D2Zpvc
-        implements ExpressionItem {
+    override fun count(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+        return null
+    }
 
-    @Override
-    public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
-        List<Double> list = new ArrayList<>();
-        for (ExpressionParser.ExprContext expr : ctx.expr()) {
-            double value = Double.parseDouble(visitor.castStringVisit(expr));
-            if (value >= 0) {
-                list.add(value);
-            }
-        }
-        return String.valueOf(list.size());
+    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        return ProgramIndicatorSQLUtils.valueCountExpression(
+            itemIds = visitor.itemIds,
+            programIndicator = visitor.programIndicatorSQLContext.programIndicator,
+            conditionalValueExpression = " >= 0"
+        )
     }
 }

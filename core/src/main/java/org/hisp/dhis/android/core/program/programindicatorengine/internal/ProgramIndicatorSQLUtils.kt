@@ -28,18 +28,25 @@
 package org.hisp.dhis.android.core.program.programindicatorengine.internal
 
 import org.hisp.dhis.android.core.common.AnalyticsType
+import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.EventTableInfo
+import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemId
+import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemType
 import org.hisp.dhis.android.core.program.ProgramIndicator
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
 
 internal object ProgramIndicatorSQLUtils {
     const val event = "event"
     const val enrollment = "enrollment"
 
-    fun getEventColumnForEnrollmentWhereClause(column: String): String {
+    fun getEventColumnForEnrollmentWhereClause(column: String, programStageId: String? = null): String {
         return "(SELECT $column FROM ${EventTableInfo.TABLE_INFO.name()} " +
                 "WHERE ${EventTableInfo.Columns.ENROLLMENT} = $enrollment.${EnrollmentTableInfo.Columns.UID} " +
+                (programStageId?.let {
+                    "AND ${EventTableInfo.Columns.PROGRAM_STAGE} = '$it' "
+                } ?: "") +
                 "ORDER BY ${EventTableInfo.Columns.EVENT_DATE} LIMIT 1)"
     }
 
@@ -58,5 +65,90 @@ internal object ProgramIndicatorSQLUtils {
         }
 
         return "${TrackedEntityDataValueTableInfo.Columns.EVENT} = $eventUidSubQuery"
+    }
+
+    fun getAttributeValueTEIWhereClause(programIndicator: ProgramIndicator): String {
+        val enrollmentSelector = getEnrollmentWhereClause(programIndicator)
+
+        return "${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE} IN (" +
+                "SELECT ${EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE} " +
+                "FROM ${EnrollmentTableInfo.TABLE_INFO.name()} " +
+                "WHERE ${EnrollmentTableInfo.Columns.UID} = $enrollmentSelector " +
+                ")"
+    }
+
+    fun getEnrollmentWhereClause(programIndicator: ProgramIndicator): String {
+        return when (programIndicator.analyticsType()) {
+            AnalyticsType.EVENT -> "$event.${EventTableInfo.Columns.ENROLLMENT}"
+            AnalyticsType.ENROLLMENT, null -> "$enrollment.${EnrollmentTableInfo.Columns.UID}"
+        }
+    }
+
+    fun getColumnValueCast(
+        column: String,
+        valueType: ValueType?
+    ): String {
+        return if (valueType?.isNumeric == true)
+            "CAST(${column} AS NUMERIC)"
+        else
+            column
+    }
+
+    fun getDefaultValue(
+        valueType: ValueType?
+    ): String {
+        return if (valueType?.isNumeric == true || valueType?.isBoolean == true)
+            "CAST(0 AS NUMERIC)"
+        else
+            ""
+    }
+
+    fun valueCountExpression(
+        itemIds: Set<DimensionalItemId>,
+        programIndicator: ProgramIndicator,
+        conditionalValueExpression: String? = null
+    ): String {
+        val stageElementItems = itemIds.filter {
+            it.dimensionalItemType() == DimensionalItemType.TRACKED_ENTITY_DATA_VALUE
+        }
+        val attributeItems = itemIds.filter {
+            it.dimensionalItemType() == DimensionalItemType.TRACKED_ENTITY_ATTRIBUTE
+        }
+
+        val stageElementsSql = if (!stageElementItems.isNullOrEmpty()) {
+            val stageElementWhereClause = stageElementItems.joinToString(" OR ") {
+                "(${getProgramStageExistsClause(it.id0())} " +
+                        "AND " +
+                        "${TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT} = '${it.id1()}')"
+            }
+
+            "SELECT COUNT(*) " +
+                    "FROM ${TrackedEntityDataValueTableInfo.TABLE_INFO.name()} " +
+                    "WHERE ${getDataValueEventWhereClause(programIndicator)} " +
+                    "AND ${TrackedEntityDataValueTableInfo.Columns.VALUE} IS NOT NULL " +
+                    "AND ($stageElementWhereClause) " +
+                    (conditionalValueExpression?.let {
+                        "AND CAST(${TrackedEntityAttributeValueTableInfo.Columns.VALUE} AS NUMERIC) $it"
+                    } ?: "")
+        } else {
+            "0"
+        }
+
+        val attributesSql = if (!attributeItems.isNullOrEmpty()) {
+            val attributesWhereClause = "${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} IN " +
+                    "(${attributeItems.joinToString(",") { "'${it.id0()}'" }})"
+
+            "SELECT COUNT(*) " +
+                    "FROM ${TrackedEntityAttributeValueTableInfo.TABLE_INFO.name()} " +
+                    "WHERE $attributesWhereClause " +
+                    "AND ${getAttributeValueTEIWhereClause(programIndicator)} " +
+                    (conditionalValueExpression?.let {
+                        "AND CAST(${TrackedEntityAttributeValueTableInfo.Columns.VALUE} AS NUMERIC) $it"
+                    } ?: "")
+        } else {
+            "0"
+        }
+
+        return "(($stageElementsSql) + ($attributesSql))"
     }
 }

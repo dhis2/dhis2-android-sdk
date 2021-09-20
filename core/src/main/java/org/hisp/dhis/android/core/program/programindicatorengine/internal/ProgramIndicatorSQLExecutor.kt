@@ -45,12 +45,15 @@ import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.enrollment
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.event
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
+import org.hisp.dhis.antlr.Parser
 import javax.inject.Inject
 
 @Reusable
 internal class ProgramIndicatorSQLExecutor @Inject constructor(
     private val constantStore: IdentifiableObjectStore<Constant>,
     private val dataElementStore: IdentifiableObjectStore<DataElement>,
+    private val trackedEntityAttributeStore: IdentifiableObjectStore<TrackedEntityAttribute>,
     private val databaseAdapter: DatabaseAdapter
 ) {
 
@@ -58,6 +61,11 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
         programIndicator: ProgramIndicator,
         contextWhereClause: String? = null
     ): String? {
+
+        if (programIndicator.expression() == null) {
+            throw IllegalArgumentException("Program Indicator ${programIndicator.uid()} has empty expression.")
+        }
+
         val targetTable = when (programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
                 "${EventTableInfo.TABLE_INFO.name()} as $event"
@@ -69,15 +77,19 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
             programIndicator = programIndicator
         )
 
-        val visitor = newVisitor(ParserUtils.ITEM_GET_SQL, context)
+        val collector = ProgramIndicatorItemIdsCollector()
+        Parser.listen(programIndicator.expression(), collector)
+
+        val sqlVisitor = newVisitor(ParserUtils.ITEM_GET_SQL, context)
+        sqlVisitor.itemIds = collector.itemIds.toSet()
 
         val agg = programIndicator.aggregationType()?.sql ?: AggregationType.SUM.sql!!
-        val selectExpression = CommonParser.visit(programIndicator.expression(), visitor)
+        val selectExpression = CommonParser.visit(programIndicator.expression(), sqlVisitor)
 
         // TODO Include more cases that are expected to be evaluated as "1"
         val filterExpression = when (programIndicator.filter()?.trim()) {
             "true", "", null -> "1"
-            else -> CommonParser.visit(programIndicator.filter(), visitor)
+            else -> CommonParser.visit(programIndicator.filter(), sqlVisitor)
         }
 
         val sqlQuery = "SELECT $agg($selectExpression) " +
@@ -107,6 +119,7 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
             .withConstantMap(constantMap())
             .withProgramIndicatorSQLContext(context)
             .withDataElementStore(dataElementStore)
+            .withTrackedEntityAttributeStore(trackedEntityAttributeStore)
             .buildForProgramSQLIndicator()
     }
 }

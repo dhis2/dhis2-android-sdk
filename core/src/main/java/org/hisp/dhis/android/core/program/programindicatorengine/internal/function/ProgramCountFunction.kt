@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.program.programindicatorengine.internal.funct
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramExpressionItem
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.getDataValueEventWhereClause
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.getColumnValueCast
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.getProgramStageExistsClause
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.dataitem.ProgramItemStageElement
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
@@ -66,11 +67,10 @@ internal abstract class ProgramCountFunction : ProgramExpressionItem() {
         val dataElement = visitor.dataElementStore.selectByUid(dataElementId)
             ?: throw IllegalArgumentException("DataElement $dataElementId does not exist.")
 
-        val valueCastExpression =
-            if (dataElement.valueType()?.isNumeric == true)
-                "CAST(${TrackedEntityDataValueTableInfo.Columns.VALUE} AS NUMERIC)"
-            else
-                TrackedEntityDataValueTableInfo.Columns.VALUE
+        val valueCastExpression = getColumnValueCast(
+            TrackedEntityDataValueTableInfo.Columns.VALUE,
+            dataElement.valueType()
+        )
 
         val conditionalSql = getConditionalSql(ctx, visitor)
 

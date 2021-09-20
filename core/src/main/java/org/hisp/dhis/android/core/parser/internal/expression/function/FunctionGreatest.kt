@@ -25,23 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.parser.internal.expression.function
 
-package org.hisp.dhis.android.core.parser.internal.expression.function;
-
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
-
-import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 /**
- * Function isNull
+ * Function greatest
  *
  * @author Jim Grace
  */
-public class FunctionIsNull
-        implements ExpressionItem {
-    @Override
-    public Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor) {
-        return visitor.visitAllowingNulls(ctx.expr(0)) == null;
+internal class FunctionGreatest : FunctionGreatestOrLeast() {
+
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+        return greatestOrLeast(ctx.expr(), visitor, 1.0)
+    }
+
+    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        return "MAX(" +
+                ctx.expr().joinToString(", ") {
+                    "COALESCE(${visitor.visitAllowingNulls(it)}, ${Int.MIN_VALUE})"
+                } +
+                ")"
     }
 }

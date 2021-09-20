@@ -25,62 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.programindicatorengine.internal.function
 
-package org.hisp.dhis.android.core.parser.internal.expression.function;
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
+internal class D2Oizp : ExpressionItem {
 
-import static org.hisp.dhis.antlr.AntlrParserUtils.castClass;
-import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
-
-/**
- * Function if
- * <pre>
- *
- * In-memory Logic:
- *
- *     arg0   returns
- *     ----   -------
- *     true   arg1
- *     false  arg2
- *     null   null
- *
- * SQL logic (CASE WHEN arg0 THEN arg1 ELSE arg2 END):
- *
- *     arg0   returns
- *     ----   -------
- *     true   arg1
- *     false  arg2
- *     null   arg2
- * </pre>
- *
- * @author Jim Grace
- */
-public class FunctionIf
-        implements ExpressionItem {
-    @Override
-    public Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor) {
-        Boolean arg0 = visitor.castBooleanVisit(ctx.expr(0));
-
-        return arg0 == null
-                ? null
-                : arg0
-                ? visitor.visit(ctx.expr(1))
-                : visitor.visit(ctx.expr(2));
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        val value = visitor.castStringVisit(ctx.expr(0)).toDouble()
+        return (if (value >= 0) 1 else 0).toString()
     }
 
-    @Override
-    public Object evaluateAllPaths(ExprContext ctx, CommonExpressionVisitor visitor) {
-        Boolean arg0 = visitor.castBooleanVisit(ctx.expr(0));
-        Object arg1 = visitor.visit(ctx.expr(1));
-        Object arg2 = visitor.visit(ctx.expr(2));
-
-        if (arg1 != null) {
-            castClass(arg1.getClass(), arg2);
-        }
-
-        return arg0 != null && arg0 ? arg1 : arg2;
+    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        return "COALESCE(CASE WHEN ${visitor.visitAllowingNulls(ctx.expr(0))} >= 0 THEN 1 ELSE 0 END, 0)"
     }
-
 }

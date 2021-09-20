@@ -25,20 +25,40 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.parser.internal.expression.function
 
-package org.hisp.dhis.android.core.program.programindicatorengine.internal.function;
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
+import org.hisp.dhis.antlr.AntlrParserUtils.castString
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
+/**
+ * Function firstNonNull
+ *
+ * @author Jim Grace
+ */
+internal class FunctionFirstNonNull : ExpressionItem {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+        for (c in ctx.expr()) {
+            val value = visitor.visitAllowingNulls(c)
+            if (value != null) {
+                return value
+            }
+        }
+        return null
+    }
 
-public class D2Oizp
-        implements ExpressionItem {
+    override fun evaluateAllPaths(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+        for (c in ctx.expr()) {
+            val value = visitor.visitAllowingNulls(c)
+            if (value != null) {
+                return value
+            }
+        }
+        return null
+    }
 
-    @Override
-    public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
-        double value = Double.parseDouble(visitor.castStringVisit(ctx.expr(0)));
-
-        return value >= 0 ? String.valueOf(1) : String.valueOf(0);
+    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        return "COALESCE(${ctx.expr().joinToString(", ") { castString(visitor.visitAllowingNulls(it)) }})"
     }
 }

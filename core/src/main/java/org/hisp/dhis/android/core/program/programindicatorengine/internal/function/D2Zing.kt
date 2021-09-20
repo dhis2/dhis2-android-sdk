@@ -25,22 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.programindicatorengine.internal.function
 
-package org.hisp.dhis.android.core.program.programindicatorengine.internal.function;
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
+internal class D2Zing : ExpressionItem {
 
-public class D2Zing
-        implements ExpressionItem {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        val argument = visitor.castStringVisit(ctx.expr(0))
+        val value = argument.toDouble()
 
-    @Override
-    public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
-        String argument = visitor.castStringVisit(ctx.expr(0));
+        return if (value < 0) 0.toString() else argument
+    }
 
-        double value = Double.parseDouble(argument);
-
-        return value < 0 ? String.valueOf(0) : argument;
+    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        val argument = visitor.visitAllowingNulls(ctx.expr(0))
+        return "COALESCE(CASE WHEN $argument < 0 THEN 0 ELSE $argument END, 0)"
     }
 }

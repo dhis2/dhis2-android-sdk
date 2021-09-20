@@ -25,23 +25,13 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.parser.internal.service.dataitem
 
-package org.hisp.dhis.android.core.parser.internal.expression.function;
-
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
-
-import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
-
-/**
- * Function isNull
- *
- * @author Jim Grace
- */
-public class FunctionIsNotNull
-        implements ExpressionItem {
-    @Override
-    public Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor) {
-        return visitor.visitAllowingNulls(ctx.expr(0)) != null;
-    }
+internal enum class DimensionalItemType {
+    CONSTANT,
+    DATA_ELEMENT,
+    DATA_ELEMENT_OPERAND,
+    ORGANISATION_UNIT_GROUP,
+    TRACKED_ENTITY_ATTRIBUTE,
+    TRACKED_ENTITY_DATA_VALUE
 }

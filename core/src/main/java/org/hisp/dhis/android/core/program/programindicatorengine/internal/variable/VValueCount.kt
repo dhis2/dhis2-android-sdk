@@ -25,12 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.programindicatorengine.internal.variable
 
-package org.hisp.dhis.android.core.parser.internal.service.dataitem;
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-public enum DimensionalItemType {
-    CONSTANT,
-    DATA_ELEMENT,
-    DATA_ELEMENT_OPERAND,
-    ORGANISATION_UNIT_GROUP
+internal class VValueCount : ExpressionItem {
+
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        val expression = visitor.programIndicatorContext.programIndicator.expression()
+        return visitor.programIndicatorExecutor.getValueCount(expression!!).toString()
+    }
+
+    override fun count(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+        return null
+    }
+
+    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        return ProgramIndicatorSQLUtils.valueCountExpression(
+            itemIds = visitor.itemIds,
+            programIndicator = visitor.programIndicatorSQLContext.programIndicator
+        )
+    }
 }

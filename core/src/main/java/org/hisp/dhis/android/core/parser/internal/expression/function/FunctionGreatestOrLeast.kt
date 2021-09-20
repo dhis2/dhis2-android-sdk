@@ -25,22 +25,38 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.parser.internal.expression.function
 
-package org.hisp.dhis.android.core.parser.internal.expression.function;
-
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-
-import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
+import org.hisp.dhis.antlr.AntlrExpressionVisitor
 
 /**
- * Function greatest
+ * Abstract function for greatest or least
  *
  * @author Jim Grace
  */
-public class FunctionGreatest
-        extends FunctionGreatestOrLeast {
-    @Override
-    public Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor) {
-        return greatestOrLeast(ctx.expr(), visitor, 1.0);
+abstract class FunctionGreatestOrLeast : ExpressionItem {
+
+    /**
+     * Returns the greatest or least value.
+     *
+     * @param contexts      the expr contexts.
+     * @param greatestLeast 1.0 for greatest, -1.0 for least.
+     * @return the greatest or least value.
+     */
+    protected fun greatestOrLeast(
+        contexts: List<ExprContext?>,
+        visitor: AntlrExpressionVisitor,
+        greatestLeast: Double
+    ): Double? {
+        var returnVal: Double? = null
+        for (c in contexts) {
+            val value = visitor.castDoubleVisit(c)
+            if (returnVal == null || value != null && (value - returnVal) * greatestLeast > 0) {
+                returnVal = value
+            }
+        }
+        return returnVal
     }
 }

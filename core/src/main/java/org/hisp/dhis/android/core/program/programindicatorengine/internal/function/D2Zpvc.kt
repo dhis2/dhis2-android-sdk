@@ -25,42 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.programindicatorengine.internal.function
 
-package org.hisp.dhis.android.core.parser.internal.expression.function;
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
+internal class D2Zpvc : ExpressionItem {
 
-import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
-
-/**
- * Function firstNonNull
- *
- * @author Jim Grace
- */
-public class FunctionFirstNonNull
-        implements ExpressionItem {
-    @Override
-    public Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor) {
-        for (ExprContext c : ctx.expr()) {
-            Object value = visitor.visitAllowingNulls(c);
-
-            if (value != null) {
-                return value;
-            }
-        }
-        return null;
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        return ctx.expr()
+            .map { visitor.castStringVisit(it).toDouble() }
+            .count { it >= 0 }
     }
 
-    @Override
-    public Object evaluateAllPaths(ExprContext ctx, CommonExpressionVisitor visitor) {
-        for (ExprContext c : ctx.expr()) {
-            Object value = visitor.visitAllowingNulls(c);
-
-            if (value != null) {
-                return value;
-            }
-        }
-        return null;
+    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        return "NULLIF(CAST((" +
+                ctx.expr().joinToString(" + ") {
+                    "CASE WHEN CAST((${visitor.visitAllowingNulls(it)}) AS NUMERIC) >= 0 THEN 1 ELSE 0 END"
+                } +
+                ") AS NUMERIC), 0)"
     }
 }

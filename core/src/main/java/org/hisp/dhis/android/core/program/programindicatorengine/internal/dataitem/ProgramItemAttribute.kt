@@ -27,21 +27,23 @@
  */
 package org.hisp.dhis.android.core.program.programindicatorengine.internal.dataitem
 
-import org.hisp.dhis.android.core.common.AnalyticsType
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
-import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemId
+import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemType
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramExpressionItem
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.enrollment
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.event
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorParserUtils.assumeProgramAttributeSyntax
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.getAttributeValueTEIWhereClause
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.getColumnValueCast
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.getDefaultValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
-import org.hisp.dhis.antlr.ParserExceptionWithoutContext
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 internal class ProgramItemAttribute : ProgramExpressionItem() {
 
     override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
-        val attributeUid = getProgramAttributeId(ctx)
+        assumeProgramAttributeSyntax(ctx)
+
+        val attributeUid = ctx.uid0.text
 
         val attributeValue = visitor.programIndicatorContext.attributeValues[attributeUid]
         val attribute = visitor.trackedEntityAttributeStore.selectByUid(attributeUid)
@@ -54,40 +56,40 @@ internal class ProgramItemAttribute : ProgramExpressionItem() {
     }
 
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
-        val attributeUid = getProgramAttributeId(ctx)
+        assumeProgramAttributeSyntax(ctx)
+
+        val attributeUid = ctx.uid0.text
 
         // TODO Manage null and boolean values
 
-        val enrollmentSelector = when (visitor.programIndicatorSQLContext.programIndicator.analyticsType()) {
-            AnalyticsType.EVENT -> "$event.${EventTableInfo.Columns.ENROLLMENT}"
-            AnalyticsType.ENROLLMENT, null -> "$enrollment.${EnrollmentTableInfo.Columns.UID}"
-        }
+        val attribute = visitor.trackedEntityAttributeStore.selectByUid(attributeUid)
+            ?: throw IllegalArgumentException("Attribute $attributeUid does not exist.")
 
-        return "(SELECT ${TrackedEntityAttributeValueTableInfo.Columns.VALUE} " +
-                "FROM ${TrackedEntityAttributeValueTableInfo.TABLE_INFO.name()} " +
-                "WHERE ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} = '$attributeUid' " +
-                "AND ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE} IN (" +
-                "SELECT ${EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE} " +
-                "FROM ${EnrollmentTableInfo.TABLE_INFO.name()} " +
-                "WHERE ${EnrollmentTableInfo.Columns.UID} = $enrollmentSelector" +
-                ")" +
-                ")"
+        val valueCastExpression = getColumnValueCast(
+            TrackedEntityAttributeValueTableInfo.Columns.VALUE,
+            attribute.valueType()
+        )
+
+        val selectExpression =
+            "(SELECT $valueCastExpression " +
+                    "FROM ${TrackedEntityAttributeValueTableInfo.TABLE_INFO.name()} " +
+                    "WHERE ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} = '$attributeUid' " +
+                    "AND ${getAttributeValueTEIWhereClause(visitor.programIndicatorSQLContext.programIndicator)} " +
+                    ")"
+
+        return if (visitor.replaceNulls) {
+            "(COALESCE($selectExpression, ${getDefaultValue(attribute.valueType())}))"
+        } else {
+            selectExpression
+        }
     }
 
-    // -------------------------------------------------------------------------
-    // Supportive methods
-    // -------------------------------------------------------------------------
-    /**
-     * Makes sure that the parsed A{...} has a syntax that could be used
-     * be used in an program expression for A{attributeUid}
-     *
-     * @param ctx the item context
-     * @return the attribute UID.
-     */
-    private fun getProgramAttributeId(ctx: ExprContext): String {
-        if (ctx.uid1 != null) {
-            throw ParserExceptionWithoutContext("Program attribute must have one UID: ${ctx.text}")
-        }
-        return ctx.uid0.text
+    override fun getItemId(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        return visitor.itemIds.add(
+            DimensionalItemId.builder()
+                .dimensionalItemType(DimensionalItemType.TRACKED_ENTITY_ATTRIBUTE)
+                .id0(ctx.uid0.text)
+                .build()
+        )
     }
 }

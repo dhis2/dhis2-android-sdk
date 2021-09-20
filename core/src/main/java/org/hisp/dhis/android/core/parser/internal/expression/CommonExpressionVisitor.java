@@ -262,6 +262,14 @@ public class CommonExpressionVisitor
     // Getters and setters
     // -------------------------------------------------------------------------
 
+    public void setReplaceNulls(boolean replaceNulls) {
+        this.replaceNulls = replaceNulls;
+    }
+
+    public boolean getReplaceNulls() {
+        return this.replaceNulls;
+    }
+
     public IdentifiableObjectStore<DataElement> getDataElementStore() {
         return dataElementStore;
     }
@@ -441,6 +449,7 @@ public class CommonExpressionVisitor
         public CommonExpressionVisitor buildForProgramSQLIndicator() {
             Validate.notNull(this.visitor.programIndicatorSQLContext, missingProperty("programIndicatorSQLContext"));
             Validate.notNull(this.visitor.dataElementStore, missingProperty("dataElementStore"));
+            Validate.notNull(this.visitor.attributeStore, missingProperty("trackedEntityAttributeStore"));
 
             return validateCommonProperties();
         }

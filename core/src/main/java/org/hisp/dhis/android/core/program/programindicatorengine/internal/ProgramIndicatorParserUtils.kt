@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.program.programindicatorengine.internal.datait
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.dataitem.ProgramItemStageElement
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.function.*
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.variable.ProgramVariableItem
+import org.hisp.dhis.antlr.ParserExceptionWithoutContext
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser
 
 /*
@@ -117,5 +118,17 @@ internal object ProgramIndicatorParserUtils {
     @JvmStatic
     fun wrap(input: String?): String {
         return input ?: ""
+    }
+
+    fun assumeStageElementSyntax(ctx: ExpressionParser.ExprContext) {
+        if (ctx.uid0 == null || ctx.uid1 == null || ctx.uid2 != null || ctx.wild2 != null) {
+            throw ParserExceptionWithoutContext("Invalid program stage / Data element syntax: ${ctx.text}")
+        }
+    }
+
+    fun assumeProgramAttributeSyntax(ctx: ExpressionParser.ExprContext) {
+        if (ctx.uid0 == null || ctx.uid1 != null) {
+            throw ParserExceptionWithoutContext("Program attribute must have one UID: ${ctx.text}")
+        }
     }
 }

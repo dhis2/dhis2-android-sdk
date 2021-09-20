@@ -25,31 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.parser.internal.expression.function
 
-package org.hisp.dhis.android.core.program.programindicatorengine.internal.dataitem;
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
+import org.hisp.dhis.antlr.AntlrParserUtils.castString
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils;
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramExpressionItem;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
+/**
+ * Function isNull
+ *
+ * @author Jim Grace
+ */
+internal class FunctionIsNotNull : ExpressionItem {
 
-import java.util.List;
-
-public class ProgramItemPsEventdate
-        extends ProgramExpressionItem {
-
-    @Override
-    public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
-        String programStageUid = ctx.uid0.getText();
-
-        List<Event> eventList = visitor.getProgramIndicatorContext().getEvents().get(programStageUid);
-
-        if (eventList == null) {
-            return null;
-        } else {
-            return ParserUtils.getMediumDateString(eventList.get(eventList.size() - 1).eventDate());
-        }
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        return visitor.visitAllowingNulls(ctx.expr(0)) != null
     }
 
+    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        return castString(visitor.visitAllowingNulls(ctx.expr(0))) + " IS NOT NULL"
+    }
 }

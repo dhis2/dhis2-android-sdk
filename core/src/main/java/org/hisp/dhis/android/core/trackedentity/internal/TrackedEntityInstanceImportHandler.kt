@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import java.util.*
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getSyncState
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
@@ -48,6 +46,8 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
+import java.util.*
+import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
@@ -58,7 +58,8 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
     private val relationshipStore: RelationshipStore,
     private val dataStatePropagator: DataStatePropagator,
     private val relationshipDHISVersionManager: RelationshipDHISVersionManager,
-    private val relationshipRepository: RelationshipCollectionRepository
+    private val relationshipRepository: RelationshipCollectionRepository,
+    private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore
 ) {
 
     fun handleTrackedEntityInstanceImportSummaries(
@@ -78,6 +79,7 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
                     setRelationshipsState(teiUid, State.TO_UPDATE)
                 } else {
                     setRelationshipsState(teiUid, State.SYNCED)
+                    trackedEntityAttributeValueStore.removeDeletedAttributeValuesByInstance(teiUid)
                 }
 
                 if (handleAction !== HandleAction.Delete) {
@@ -126,6 +128,16 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
     }
 
     private fun setRelationshipsState(trackedEntityInstanceUid: String?, state: State) {
+        val dbRelationships =
+            relationshipRepository.getByItem(RelationshipHelper.teiItem(trackedEntityInstanceUid), true)
+        val ownedRelationships = relationshipDHISVersionManager
+            .getOwnedRelationships(dbRelationships, trackedEntityInstanceUid)
+        for (relationship in ownedRelationships) {
+            relationshipStore.setSyncStateOrDelete(relationship.uid()!!, state)
+        }
+    }
+
+    private fun deleteRemovedTrackedEntityDataAndAttributeValues(trackedEntityInstanceUid: String?, state: State) {
         val dbRelationships =
             relationshipRepository.getByItem(RelationshipHelper.teiItem(trackedEntityInstanceUid), true)
         val ownedRelationships = relationshipDHISVersionManager

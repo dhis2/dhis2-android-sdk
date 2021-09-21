@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.imports.internal.BaseImportSummaryHelper.getRe
 import org.hisp.dhis.android.core.imports.internal.EventImportSummary
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
 import org.hisp.dhis.android.core.tracker.importer.internal.JobReportEventHandler
 
 @Reusable
@@ -51,7 +52,8 @@ internal class EventImportHandler @Inject constructor(
     private val trackerImportConflictStore: TrackerImportConflictStore,
     private val trackerImportConflictParser: TrackerImportConflictParser,
     private val jobReportEventHandler: JobReportEventHandler,
-    private val dataStatePropagator: DataStatePropagator
+    private val dataStatePropagator: DataStatePropagator,
+    private val trackedEntityDataValueStore: TrackedEntityDataValueStore
 ) {
 
     fun handleEventImportSummaries(
@@ -72,6 +74,10 @@ internal class EventImportHandler @Inject constructor(
                     storeEventImportConflicts(eventImportSummary, enrollmentUid)
 
                     dataStatePropagator.refreshEventAggregatedSyncState(eventUid)
+
+                    if (state == State.SYNCED) {
+                        trackedEntityDataValueStore.removeDeletedDataValuesByEvent(eventUid)
+                    }
                 }
             }
         }

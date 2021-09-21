@@ -26,39 +26,21 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.analytics.aggregated.internal
+package org.hisp.dhis.android.core.tracker
 
-import io.reactivex.Single
 import javax.inject.Inject
-import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepository
-import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
-import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
-import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.settings.SynchronizationSettings
+import org.hisp.dhis.android.core.systeminfo.DHISVersion
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 
-internal class AnalyticsRepositoryImpl @Inject constructor(
-    private val params: AnalyticsRepositoryParams,
-    private val analyticsService: AnalyticsService
-) : AnalyticsRepository {
+internal class TrackerPostParentCallHelper @Inject constructor(
+    private val dhisVersionManager: DHISVersionManager,
+    private val synchronizationSettingStore: ObjectWithoutUidStore<SynchronizationSettings>
+) {
 
-    override fun withDimension(dimensionItem: DimensionItem): AnalyticsRepositoryImpl {
-        return updateParams { params -> params.copy(dimensions = params.dimensions + dimensionItem) }
-    }
-
-    override fun withFilter(dimensionItem: DimensionItem): AnalyticsRepositoryImpl {
-        return updateParams { params -> params.copy(filters = params.filters + dimensionItem) }
-    }
-
-    override fun evaluate(): Single<Result<DimensionalResponse, AnalyticsException>> {
-        return Single.fromCallable { blockingEvaluate() }
-    }
-
-    override fun blockingEvaluate(): Result<DimensionalResponse, AnalyticsException> {
-        return analyticsService.evaluate(params)
-    }
-
-    private fun updateParams(
-        func: (params: AnalyticsRepositoryParams) -> AnalyticsRepositoryParams
-    ): AnalyticsRepositoryImpl {
-        return AnalyticsRepositoryImpl(func(params), analyticsService)
+    fun useNewTrackerImporter(): Boolean {
+        return dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_36) &&
+            synchronizationSettingStore.selectFirst()?.trackerImporterVersion() == TrackerImporterVersion.V2
     }
 }

@@ -41,6 +41,27 @@ sealed class Result<out S, out F : Throwable> {
         }
     }
 
+    fun getOrThrow(): S {
+        return when (this) {
+            is Success -> value
+            is Failure -> throw failure
+        }
+    }
+
+    fun getOrNull(): S? {
+        return when (this) {
+            is Success -> value
+            is Failure -> null
+        }
+    }
+
+    fun <T> map(transform: (value: S) -> T): Result<T, F> {
+        return when (this) {
+            is Success -> Success(transform(value))
+            is Failure -> Failure(failure)
+        }
+    }
+
     override fun toString(): String {
         return when (this) {
             is Success -> "Success[value=$value]"

@@ -44,6 +44,7 @@ class AnalyticsVisualizationRepositoryIntegrationShould : BaseMockIntegrationTes
         val result = d2.analyticsModule().visualizations()
             .withVisualization(visualizationUid)
             .blockingEvaluate()
+            .getOrThrow()
 
         assertThat(result.dimensions.columns.size).isEqualTo(1)
         assertThat(result.dimensions.rows.size).isEqualTo(1)
@@ -60,6 +61,7 @@ class AnalyticsVisualizationRepositoryIntegrationShould : BaseMockIntegrationTes
             .withVisualization(visualizationUid)
             .withPeriods(listOf(DimensionItem.PeriodItem.Absolute("2018")))
             .blockingEvaluate()
+            .getOrThrow()
 
         assertThat(result.dimensions.columns.size).isEqualTo(1)
         assertThat(result.dimensions.rows.size).isEqualTo(1)
@@ -84,6 +86,7 @@ class AnalyticsVisualizationRepositoryIntegrationShould : BaseMockIntegrationTes
                 )
             )
             .blockingEvaluate()
+            .getOrThrow()
 
         assertThat(result.dimensions.columns.size).isEqualTo(1)
         assertThat(result.dimensions.rows.size).isEqualTo(1)
@@ -96,5 +99,14 @@ class AnalyticsVisualizationRepositoryIntegrationShould : BaseMockIntegrationTes
         assertThat(result.dimensionItems[Dimension.Period]!!.size).isEqualTo(3)
         assertThat(result.metadata).isNotEmpty()
         assertThat(result.values.size).isEqualTo(3)
+    }
+
+    @Test
+    fun evaluate_invalid_visualization() {
+        val result = d2.analyticsModule().visualizations()
+            .withVisualization("invalid_visualization_uid")
+            .blockingEvaluate()
+
+        assertThat(result.succeeded).isFalse()
     }
 }

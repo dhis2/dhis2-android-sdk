@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indic
 
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
+import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
@@ -45,7 +46,7 @@ class ProgramIndicatorItem : ExpressionItem {
                 .withAnalyticsPeriodBoundaries()
                 .uid(it)
                 .blockingGet()
-        } ?: return ParserUtils.DOUBLE_VALUE_IF_NULL
+        } ?: throw AnalyticsException.InvalidProgramIndicator(programIndicatorId)
 
         val dataItem = DimensionItem.DataItem.ProgramIndicatorItem(programIndicator.uid())
 

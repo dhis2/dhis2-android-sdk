@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.analytics.aggregated.internal
 import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
+import org.hisp.dhis.android.core.arch.helpers.Result
 
 internal class AnalyticsService @Inject constructor(
     private val analyticsServiceDimensionHelper: AnalyticsServiceDimensionHelper,
@@ -38,30 +39,36 @@ internal class AnalyticsService @Inject constructor(
     private val analyticsServiceEvaluatorHelper: AnalyticsServiceEvaluatorHelper
 ) {
 
-    fun evaluate(params: AnalyticsRepositoryParams): DimensionalResponse {
-        if (params.dimensions.isEmpty()) {
-            throw AnalyticsException.InvalidArguments("At least one dimension must be specified")
+    fun evaluate(params: AnalyticsRepositoryParams): Result<DimensionalResponse, AnalyticsException> {
+        return try {
+            if (params.dimensions.isEmpty()) {
+                throw AnalyticsException.InvalidArguments("At least one dimension must be specified")
+            }
+
+            val dimensionItems = params.dimensions + params.filters
+
+            if (dimensionItems.none { it.dimension == Dimension.Data }) {
+                throw AnalyticsException.InvalidArguments("At least one data dimension must be specified")
+            }
+
+            val dimensions = analyticsServiceDimensionHelper.getDimensions(params)
+            val evaluationItems = analyticsServiceDimensionHelper.getEvaluationItems(params, dimensions)
+
+            val metadata = analyticsServiceMetadataHelper.getMetadata(evaluationItems)
+
+            val values = evaluationItems.map { analyticsServiceEvaluatorHelper.evaluate(it, metadata) }
+
+            Result.Success(
+                DimensionalResponse(
+                    metadata = metadata,
+                    dimensions = dimensions,
+                    dimensionItems = dimensionItems.groupBy { it.dimension },
+                    filters = params.filters.map { it.id },
+                    values = values
+                )
+            )
+        } catch (e: AnalyticsException) {
+            Result.Failure(e)
         }
-
-        val dimensionItems = params.dimensions + params.filters
-
-        if (dimensionItems.none { it.dimension == Dimension.Data }) {
-            throw AnalyticsException.InvalidArguments("At least one data dimension must be specified")
-        }
-
-        val dimensions = analyticsServiceDimensionHelper.getDimensions(params)
-        val evaluationItems = analyticsServiceDimensionHelper.getEvaluationItems(params, dimensions)
-
-        val metadata = analyticsServiceMetadataHelper.getMetadata(evaluationItems)
-
-        val values = evaluationItems.map { analyticsServiceEvaluatorHelper.evaluate(it, metadata) }
-
-        return DimensionalResponse(
-            metadata = metadata,
-            dimensions = dimensions,
-            dimensionItems = dimensionItems.groupBy { it.dimension },
-            filters = params.filters.map { it.id },
-            values = values
-        )
     }
 }

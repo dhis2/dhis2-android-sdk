@@ -94,12 +94,15 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
         return metadata
     }
 
+    @SuppressWarnings("ThrowsCount")
     private fun getDataItems(item: DimensionItem.DataItem): List<MetadataItem> {
         return listOf(
             when (item) {
                 is DimensionItem.DataItem.DataElementItem ->
-                    dataElementStore.selectByUid(item.uid)!!
-                        .let { dataElement -> MetadataItem.DataElementItem(dataElement) }
+                    dataElementStore.selectByUid(item.uid)
+                        ?.let { dataElement -> MetadataItem.DataElementItem(dataElement) }
+                        ?: throw AnalyticsException.InvalidDataElement(item.uid)
+
                 // TODO Build a meaningful name for DataElementOperand
                 is DimensionItem.DataItem.DataElementOperandItem -> {
                     val dataElementOperand = DataElementOperand.builder()
@@ -109,12 +112,16 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
                         .build()
                     MetadataItem.DataElementOperandItem(dataElementOperand)
                 }
+
                 is DimensionItem.DataItem.IndicatorItem ->
-                    indicatorStore.selectByUid(item.uid)!!
-                        .let { indicator -> MetadataItem.IndicatorItem(indicator) }
+                    indicatorStore.selectByUid(item.uid)
+                        ?.let { indicator -> MetadataItem.IndicatorItem(indicator) }
+                        ?: throw AnalyticsException.InvalidIndicator(item.uid)
+
                 is DimensionItem.DataItem.ProgramIndicatorItem ->
-                    programIndicatorStore.selectByUid(item.uid)!!
-                        .let { programIndicator -> MetadataItem.ProgramIndicatorItem(programIndicator) }
+                    programIndicatorStore.selectByUid(item.uid)
+                        ?.let { programIndicator -> MetadataItem.ProgramIndicatorItem(programIndicator) }
+                        ?: throw AnalyticsException.InvalidProgramIndicator(item.uid)
             }
         )
     }
@@ -134,36 +141,46 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
         )
     }
 
+    @SuppressWarnings("ThrowsCount")
     private fun getOrganisationUnitItems(item: DimensionItem.OrganisationUnitItem): List<MetadataItem> {
         return listOf(
             when (item) {
                 is DimensionItem.OrganisationUnitItem.Absolute ->
-                    organisationUnitStore.selectByUid(item.uid)!!
-                        .let { organisationUnit -> MetadataItem.OrganisationUnitItem(organisationUnit) }
+                    organisationUnitStore.selectByUid(item.uid)
+                        ?.let { organisationUnit -> MetadataItem.OrganisationUnitItem(organisationUnit) }
+                        ?: throw AnalyticsException.InvalidOrganisationUnit(item.uid)
+
                 is DimensionItem.OrganisationUnitItem.Relative -> {
                     val orgunitUids = analyticsOrganisationUnitHelper.getRelativeOrganisationUnits(item.relative)
                     MetadataItem.OrganisationUnitRelativeItem(item.relative, orgunitUids)
                 }
+
                 is DimensionItem.OrganisationUnitItem.Level -> {
                     val levelClauseBuilder = WhereClauseBuilder()
                         .appendKeyNumberValue(OrganisationUnitLevelTableInfo.Columns.LEVEL, item.level)
                         .build()
-                    organisationUnitLevelStore.selectOneWhere(levelClauseBuilder)!!
-                        .let { level -> MetadataItem.OrganisationUnitLevelItem(level) }
+                    organisationUnitLevelStore.selectOneWhere(levelClauseBuilder)
+                        ?.let { level -> MetadataItem.OrganisationUnitLevelItem(level) }
+                        ?: throw AnalyticsException.InvalidOrganisationUnitLevel(item.level.toString())
                 }
+
                 is DimensionItem.OrganisationUnitItem.Group ->
-                    organisationUnitGroupStore.selectByUid(item.uid)!!
-                        .let { group -> MetadataItem.OrganisationUnitGroupItem(group) }
+                    organisationUnitGroupStore.selectByUid(item.uid)
+                        ?.let { group -> MetadataItem.OrganisationUnitGroupItem(group) }
+                        ?: throw AnalyticsException.InvalidOrganisationUnitGroup(item.uid)
             }
         )
     }
 
     private fun getCategoryItems(item: DimensionItem.CategoryItem): List<MetadataItem> {
         return listOf(
-            categoryStore.selectByUid(item.uid)!!
-                .let { category -> MetadataItem.CategoryItem(category) },
-            categoryOptionStore.selectByUid(item.categoryOption)!!
-                .let { categoryOption -> MetadataItem.CategoryOptionItem(categoryOption) }
+            categoryStore.selectByUid(item.uid)
+                ?.let { category -> MetadataItem.CategoryItem(category) }
+                ?: throw AnalyticsException.InvalidCategory(item.uid),
+
+            categoryOptionStore.selectByUid(item.categoryOption)
+                ?.let { categoryOption -> MetadataItem.CategoryOptionItem(categoryOption) }
+                ?: throw AnalyticsException.InvalidCategoryOption(item.categoryOption)
         )
     }
 }

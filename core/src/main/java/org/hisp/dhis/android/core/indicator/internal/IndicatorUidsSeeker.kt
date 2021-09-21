@@ -28,17 +28,13 @@
 package org.hisp.dhis.android.core.indicator.internal
 
 import dagger.Reusable
+import java.util.*
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.program.ProgramTableInfo
-import org.hisp.dhis.android.core.dataset.DataSetTableInfo
-import org.hisp.dhis.android.core.dataelement.DataElementTableInfo
-import org.hisp.dhis.android.core.dataset.DataSetElementLinkTableInfo
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.MultipleTableQueryBuilder
 import org.hisp.dhis.android.core.dataset.SectionIndicatorLinkTableInfo
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkTableInfo
 import org.hisp.dhis.android.core.visualization.DataDimensionItemTableInfo
-import java.util.*
-import javax.inject.Inject
 
 @Reusable
 internal class IndicatorUidsSeeker @Inject constructor(private val databaseAdapter: DatabaseAdapter) {

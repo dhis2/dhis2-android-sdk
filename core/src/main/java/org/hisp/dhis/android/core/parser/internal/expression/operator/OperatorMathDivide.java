@@ -43,8 +43,8 @@ public class OperatorMathDivide
         implements ExpressionItem {
 
     @Override
-    public Object getSql(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor ) {
-        return visitor.castStringVisit( ctx.expr( 0 ) )
-                + " / " + visitor.castStringVisit( ctx.expr( 1 ) );
+    public Object getSql(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
+        return visitor.castStringVisit(ctx.expr(0))
+                + " / " + visitor.castStringVisit(ctx.expr(1));
     }
 }

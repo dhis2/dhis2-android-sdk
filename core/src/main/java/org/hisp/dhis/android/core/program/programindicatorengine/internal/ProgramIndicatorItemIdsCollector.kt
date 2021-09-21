@@ -64,10 +64,11 @@ internal class ProgramIndicatorItemIdsCollector : ExpressionBaseListener() {
 
                     val attributeId = ctx.uid0.text
 
-                    itemIds.add(DimensionalItemId.builder()
-                        .dimensionalItemType(DimensionalItemType.TRACKED_ENTITY_ATTRIBUTE)
-                        .id0(attributeId)
-                        .build()
+                    itemIds.add(
+                        DimensionalItemId.builder()
+                            .dimensionalItemType(DimensionalItemType.TRACKED_ENTITY_ATTRIBUTE)
+                            .id0(attributeId)
+                            .build()
                     )
                 }
             }

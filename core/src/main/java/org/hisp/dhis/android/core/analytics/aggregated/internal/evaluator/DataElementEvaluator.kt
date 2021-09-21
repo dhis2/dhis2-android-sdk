@@ -66,8 +66,8 @@ internal class DataElementEvaluator @Inject constructor(
 
         val sqlQuery =
             "SELECT $aggregator(${DataValueTableInfo.Columns.VALUE}) " +
-                    "FROM ${DataValueTableInfo.TABLE_INFO.name()} " +
-                    "WHERE $whereClause"
+                "FROM ${DataValueTableInfo.TABLE_INFO.name()} " +
+                "WHERE $whereClause"
 
         return databaseAdapter.rawQuery(sqlQuery)?.use { c ->
             c.moveToFirst()
@@ -97,7 +97,7 @@ internal class DataElementEvaluator @Inject constructor(
                     else ->
                         throw AnalyticsException.InvalidArguments(
                             "Invalid arguments: unexpected " +
-                                    "dataItem ${item.javaClass.name} in DataElement Evaluator."
+                                "dataItem ${item.javaClass.name} in DataElement Evaluator."
                         )
                 }
             }.build()
@@ -168,7 +168,7 @@ internal class DataElementEvaluator @Inject constructor(
                         }
                     else -> throw AnalyticsException.InvalidArguments(
                         "Invalid arguments: dimension is not " +
-                                "dataelement or operand."
+                            "dataelement or operand."
                     )
                 }
                 getDataElementAggregator(aggregationType)

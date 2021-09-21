@@ -64,10 +64,14 @@ internal class D2CountIfCondition : ProgramCountFunction() {
      * @return the complete expression
      */
     private fun getAuxConditionExpression(ctx: ExprContext): String {
-        return "0.0" + trimQuotes(ctx.stringLiteral().text)
+        return AuxExpression + trimQuotes(ctx.stringLiteral().text)
     }
 
     private fun extractConditionExpression(expression: String): String {
-        return expression.substring(3)
+        return expression.substring(AuxExpression.length)
+    }
+
+    private companion object {
+        const val AuxExpression = "0.0"
     }
 }

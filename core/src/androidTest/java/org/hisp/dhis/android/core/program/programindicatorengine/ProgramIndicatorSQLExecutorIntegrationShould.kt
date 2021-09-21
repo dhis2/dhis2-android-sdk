@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement2
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement3
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement4
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.firstNovember
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.generator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild1
@@ -159,7 +160,6 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseEvaluatorInteg
                 )
             )
         ).isEqualTo("0")
-
 
         helper.insertTrackedEntityAttributeValue(trackedEntity1.uid(), attribute1.uid(), "8")
 
@@ -345,13 +345,12 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseEvaluatorInteg
             programIndicatorEvaluator.getProgramIndicatorValue(
                 setProgramIndicator(
                     expression = "d2:monthsBetween(${`var`("enrollment_date")}, " +
-                            "PS_EVENTDATE:${programStage2.uid()})",
+                        "PS_EVENTDATE:${programStage2.uid()})",
                     analyticsType = AnalyticsType.ENROLLMENT,
                     aggregationType = AggregationType.SUM
                 )
             )
         ).isEqualTo("13")
-
     }
 
     @Test
@@ -435,7 +434,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseEvaluatorInteg
             programIndicatorEvaluator.getProgramIndicatorValue(
                 setProgramIndicator(
                     expression = "d2:countIfCondition(${de(programStage1.uid(), dataElement1.uid())}, " +
-                            "'< ${de(programStage1.uid(), dataElement2.uid())}')",
+                        "'< ${de(programStage1.uid(), dataElement2.uid())}')",
                     analyticsType = AnalyticsType.EVENT,
                     aggregationType = AggregationType.SUM
                 )
@@ -445,7 +444,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseEvaluatorInteg
         assertThat(
             programIndicatorEvaluator.getProgramIndicatorValue(
                 setProgramIndicator(
-                    expression = "d2:countIfValue(${de(programStage1.uid(), dataElement1.uid())}, '10')",
+                    expression = "d2:countIfValue(${de(programStage1.uid(), dataElement1.uid())}, 10)",
                     analyticsType = AnalyticsType.EVENT,
                     aggregationType = AggregationType.SUM
                 )
@@ -516,7 +515,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseEvaluatorInteg
             programIndicatorEvaluator.getProgramIndicatorValue(
                 setProgramIndicator(
                     expression = "firstNonNull(${de(programStage1.uid(), dataElement1.uid())}, " +
-                            "${de(programStage1.uid(), dataElement2.uid())})",
+                        "${de(programStage1.uid(), dataElement2.uid())})",
                     analyticsType = AnalyticsType.EVENT,
                     aggregationType = AggregationType.SUM
                 )
@@ -594,7 +593,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseEvaluatorInteg
         helper.insertTrackedEntityDataValue(event1, dataElement1.uid(), "-3")
 
         val expression = "${de(programStage1.uid(), dataElement1.uid())} + " +
-                "${de(programStage1.uid(), dataElement2.uid())} + ${att(attribute1.uid())}"
+            "${de(programStage1.uid(), dataElement2.uid())} + ${att(attribute1.uid())}"
 
         assertThat(
             programIndicatorEvaluator.getProgramIndicatorValue(
@@ -696,7 +695,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseEvaluatorInteg
             programIndicatorEvaluator.getProgramIndicatorValue(
                 setProgramIndicator(
                     expression = "d2:zpvc(${de(programStage1.uid(), dataElement1.uid())}, " +
-                            "${de(programStage1.uid(), dataElement2.uid())}, ${att(attribute1.uid())})",
+                        "${de(programStage1.uid(), dataElement2.uid())}, ${att(attribute1.uid())})",
                     analyticsType = AnalyticsType.EVENT,
                     aggregationType = AggregationType.SUM
                 )
@@ -764,6 +763,62 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseEvaluatorInteg
                 )
             )
         ).isEqualTo("3")
+    }
+
+    @Test
+    fun should_evaluate_string_comparison() {
+        helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
+        val enrollment1 = generator.generate()
+        helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
+        val event1 = generator.generate()
+        helper.createTrackerEvent(event1, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid())
+
+        helper.insertTrackedEntityDataValue(event1, dataElement3.uid(), "POSITIVE")
+
+        assertThat(
+            programIndicatorEvaluator.getProgramIndicatorValue(
+                setProgramIndicator(
+                    expression = `var`("tei_count"),
+                    filter = "${de(programStage1.uid(), dataElement3.uid())} == 'POSITIVE'",
+                    analyticsType = AnalyticsType.EVENT,
+                    aggregationType = AggregationType.COUNT
+                )
+            )
+        ).isEqualTo("1")
+    }
+
+    @Test
+    fun should_evaluate_boolean_comparison() {
+        helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
+        val enrollment1 = generator.generate()
+        helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
+        val event1 = generator.generate()
+        helper.createTrackerEvent(event1, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid())
+
+        helper.insertTrackedEntityDataValue(event1, dataElement1.uid(), "2")
+        helper.insertTrackedEntityDataValue(event1, dataElement4.uid(), "true")
+
+        assertThat(
+            programIndicatorEvaluator.getProgramIndicatorValue(
+                setProgramIndicator(
+                    expression = `var`("event_count"),
+                    filter = "${de(programStage1.uid(), dataElement4.uid())} == true",
+                    analyticsType = AnalyticsType.EVENT,
+                    aggregationType = AggregationType.COUNT
+                )
+            )
+        ).isEqualTo("1")
+
+        assertThat(
+            programIndicatorEvaluator.getProgramIndicatorValue(
+                setProgramIndicator(
+                    expression = `var`("event_count"),
+                    filter = "(${de(programStage1.uid(), dataElement1.uid())} > 0) == true",
+                    analyticsType = AnalyticsType.EVENT,
+                    aggregationType = AggregationType.COUNT
+                )
+            )
+        ).isEqualTo("1")
     }
 
     private fun setProgramIndicator(

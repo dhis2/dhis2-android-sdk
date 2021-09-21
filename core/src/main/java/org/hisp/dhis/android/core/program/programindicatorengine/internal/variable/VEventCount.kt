@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.enrollment
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.event
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
@@ -40,7 +39,7 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 internal class VEventCount : ExpressionItem {
 
     override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
-        return visitor.programIndicatorContext.events.values.map { it.size }.sum()
+        return visitor.programIndicatorContext.events.values.map { it.size }.sum().toString()
     }
 
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
@@ -50,9 +49,9 @@ internal class VEventCount : ExpressionItem {
             AnalyticsType.ENROLLMENT, null ->
                 // This case is not supported in DHIS2
                 "(SELECT ${EventTableInfo.Columns.UID} " +
-                        "FROM ${EventTableInfo.TABLE_INFO.name()} " +
-                        "WHERE ${EventTableInfo.Columns.ENROLLMENT} = $enrollment.${EnrollmentTableInfo.Columns.UID}" +
-                        ")"
+                    "FROM ${EventTableInfo.TABLE_INFO.name()} " +
+                    "WHERE ${EventTableInfo.Columns.ENROLLMENT} = $enrollment.${EnrollmentTableInfo.Columns.UID}" +
+                    ")"
         }
 
         return "DISTINCT $eventSelector"

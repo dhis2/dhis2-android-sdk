@@ -27,12 +27,9 @@
  */
 package org.hisp.dhis.android.core.program.programindicatorengine.internal.function
 
-import org.hisp.dhis.android.core.common.AnalyticsType
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
-import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramExpressionItem
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.getDataValueEventWhereClause
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.getEnrollmentWhereClause
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.getProgramStageExistsClause
@@ -91,14 +88,14 @@ internal class D2HasValue : ProgramExpressionItem() {
         val enrollmentSelector = getEnrollmentWhereClause(visitor.programIndicatorSQLContext.programIndicator)
 
         return "EXISTS(SELECT 1 " +
-                "FROM ${TrackedEntityAttributeValueTableInfo.TABLE_INFO.name()} " +
-                "WHERE ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} = '$attributeUid' " +
-                "AND ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE} IN (" +
-                "SELECT ${EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE} " +
-                "FROM ${EnrollmentTableInfo.TABLE_INFO.name()} " +
-                "WHERE ${EnrollmentTableInfo.Columns.UID} = $enrollmentSelector " +
-                ")" +
-                ")"
+            "FROM ${TrackedEntityAttributeValueTableInfo.TABLE_INFO.name()} " +
+            "WHERE ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} = '$attributeUid' " +
+            "AND ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE} IN (" +
+            "SELECT ${EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE} " +
+            "FROM ${EnrollmentTableInfo.TABLE_INFO.name()} " +
+            "WHERE ${EnrollmentTableInfo.Columns.UID} = $enrollmentSelector " +
+            ")" +
+            ")"
     }
 
     private fun hasProgramItemStageElementSQL(ctx: ExprContext, visitor: CommonExpressionVisitor): String {
@@ -106,11 +103,11 @@ internal class D2HasValue : ProgramExpressionItem() {
         val dataElementUid = ctx.uid1.text
 
         return "EXISTS(SELECT 1  " +
-                "FROM ${TrackedEntityDataValueTableInfo.TABLE_INFO.name()} " +
-                "WHERE ${TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT} = '$dataElementUid' " +
-                "AND ${getProgramStageExistsClause(programStageUid)} " +
-                "AND ${getDataValueEventWhereClause(visitor.programIndicatorSQLContext.programIndicator)} " +
-                "AND ${TrackedEntityDataValueTableInfo.Columns.VALUE} IS NOT NULL " +
-                ")"
+            "FROM ${TrackedEntityDataValueTableInfo.TABLE_INFO.name()} " +
+            "WHERE ${TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT} = '$dataElementUid' " +
+            "AND ${getProgramStageExistsClause(programStageUid)} " +
+            "AND ${getDataValueEventWhereClause(visitor.programIndicatorSQLContext.programIndicator)} " +
+            "AND ${TrackedEntityDataValueTableInfo.Columns.VALUE} IS NOT NULL " +
+            ")"
     }
 }

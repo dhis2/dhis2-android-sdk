@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.program.programindicatorengine.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper
@@ -45,9 +46,9 @@ import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.enrollment
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.event
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.literal.ProgramIndicatorSQLLiteral
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.antlr.Parser
-import javax.inject.Inject
 
 @Reusable
 internal class ProgramIndicatorSQLExecutor @Inject constructor(
@@ -82,6 +83,7 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
 
         val sqlVisitor = newVisitor(ParserUtils.ITEM_GET_SQL, context)
         sqlVisitor.itemIds = collector.itemIds.toSet()
+        sqlVisitor.setExpressionLiteral(ProgramIndicatorSQLLiteral())
 
         val agg = programIndicator.aggregationType()?.sql ?: AggregationType.SUM.sql!!
         val selectExpression = CommonParser.visit(programIndicator.expression(), sqlVisitor)
@@ -93,10 +95,10 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
         }
 
         val sqlQuery = "SELECT $agg($selectExpression) " +
-                "FROM $targetTable " +
-                "WHERE (${DeletableDataColumns.DELETED} = 0 OR ${DeletableDataColumns.DELETED} IS NULL) " +
-                "AND $filterExpression " +
-                (contextWhereClause?.let { "AND $it" } ?: "")
+            "FROM $targetTable " +
+            "WHERE (${DeletableDataColumns.DELETED} = 0 OR ${DeletableDataColumns.DELETED} IS NULL) " +
+            "AND $filterExpression " +
+            (contextWhereClause?.let { "AND $it" } ?: "")
 
         return databaseAdapter.rawQuery(sqlQuery)?.use { c ->
             c.moveToFirst()

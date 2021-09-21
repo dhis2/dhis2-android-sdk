@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.program.programindicatorengine.internal.dataitem
 
+import java.util.*
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemId
@@ -40,7 +41,6 @@ import org.hisp.dhis.android.core.program.programindicatorengine.internal.Progra
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
-import java.util.*
 
 internal class ProgramItemStageElement : ProgramExpressionItem() {
     override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
@@ -97,13 +97,12 @@ internal class ProgramItemStageElement : ProgramExpressionItem() {
             dataElement.valueType()
         )
 
-        val selectExpression =
-            "(SELECT $valueCastExpression " +
-                    "FROM ${TrackedEntityDataValueTableInfo.TABLE_INFO.name()} " +
-                    "WHERE ${TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT} = '$dataElementId' " +
-                    "AND ${getProgramStageExistsClause(programStageId)} " +
-                    "AND ${getDataValueEventWhereClause(visitor.programIndicatorSQLContext.programIndicator)} " +
-                    ")"
+        val selectExpression = "(SELECT $valueCastExpression " +
+            "FROM ${TrackedEntityDataValueTableInfo.TABLE_INFO.name()} " +
+            "WHERE ${TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT} = '$dataElementId' " +
+            "AND ${getProgramStageExistsClause(programStageId)} " +
+            "AND ${getDataValueEventWhereClause(visitor.programIndicatorSQLContext.programIndicator)} " +
+            ")"
 
         return if (visitor.replaceNulls) {
             "(COALESCE($selectExpression, ${getDefaultValue(dataElement.valueType())}))"

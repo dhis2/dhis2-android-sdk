@@ -36,12 +36,12 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 internal class ProgramVariableItem : ProgramExpressionItem() {
 
-    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
         val programVariable = getProgramVariable(ctx)
         return programVariable.evaluate(ctx, visitor)
     }
 
-    override fun count(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+    override fun count(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
         val programVariable = getProgramVariable(ctx)
         return programVariable.count(ctx, visitor)
     }

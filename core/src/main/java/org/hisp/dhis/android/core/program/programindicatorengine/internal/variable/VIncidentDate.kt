@@ -49,9 +49,9 @@ internal class VIncidentDate : ExpressionItem {
         return when (visitor.programIndicatorSQLContext.programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
                 "(SELECT ${EnrollmentTableInfo.Columns.INCIDENT_DATE} " +
-                        "FROM ${EnrollmentTableInfo.TABLE_INFO.name()} " +
-                        "WHERE ${EnrollmentTableInfo.Columns.UID} = $event.${EventTableInfo.Columns.ENROLLMENT}" +
-                        ")"
+                    "FROM ${EnrollmentTableInfo.TABLE_INFO.name()} " +
+                    "WHERE ${EnrollmentTableInfo.Columns.UID} = $event.${EventTableInfo.Columns.ENROLLMENT}" +
+                    ")"
             AnalyticsType.ENROLLMENT, null ->
                 "$enrollment.${EnrollmentTableInfo.Columns.INCIDENT_DATE}"
         }

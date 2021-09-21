@@ -43,9 +43,9 @@ internal class FunctionLeast : FunctionGreatestOrLeast() {
 
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
         return "MIN(" +
-                ctx.expr().joinToString(", ")  {
-                    "COALESCE(${visitor.visitAllowingNulls(it)}, ${Int.MAX_VALUE})"
-                } +
-                ")"
+            ctx.expr().joinToString(", ") {
+                "COALESCE(${visitor.visitAllowingNulls(it)}, ${Int.MAX_VALUE})"
+            } +
+            ")"
     }
 }

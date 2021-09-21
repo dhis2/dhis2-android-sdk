@@ -135,6 +135,14 @@ object BaseEvaluatorSamples {
         .categoryCombo(ObjectWithUid.fromIdentifiable(categoryCombo))
         .build()
 
+    val dataElement4 = DataElement.builder()
+        .uid(generator.generate())
+        .displayName("Data element 4")
+        .valueType(ValueType.BOOLEAN)
+        .aggregationType(AggregationType.AVERAGE.name)
+        .categoryCombo(ObjectWithUid.fromIdentifiable(categoryCombo))
+        .build()
+
     val dataElementOperand = DataElementOperand.builder()
         .uid("${dataElement1.uid()}.${categoryOptionCombo.uid()}")
         .dataElement(ObjectWithUid.create(dataElement1.uid()))

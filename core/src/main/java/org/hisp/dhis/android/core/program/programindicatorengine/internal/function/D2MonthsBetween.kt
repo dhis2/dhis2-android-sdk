@@ -38,6 +38,6 @@ internal class D2MonthsBetween : ProgramBetweenDatesFunction() {
 
     override fun getSql(startExpression: String, endExpression: String): Any {
         return "(strftime('%m', $endExpression) + 12 * strftime('%Y', $endExpression)) - " +
-                "(strftime('%m', $startExpression) + 12 * strftime('%Y', $startExpression))"
+            "(strftime('%m', $startExpression) + 12 * strftime('%Y', $startExpression))"
     }
 }

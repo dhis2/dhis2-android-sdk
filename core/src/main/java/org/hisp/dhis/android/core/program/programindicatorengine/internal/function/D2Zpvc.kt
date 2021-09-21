@@ -37,13 +37,14 @@ internal class D2Zpvc : ExpressionItem {
         return ctx.expr()
             .map { visitor.castStringVisit(it).toDouble() }
             .count { it >= 0 }
+            .toString()
     }
 
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
         return "NULLIF(CAST((" +
-                ctx.expr().joinToString(" + ") {
-                    "CASE WHEN CAST((${visitor.visitAllowingNulls(it)}) AS NUMERIC) >= 0 THEN 1 ELSE 0 END"
-                } +
-                ") AS NUMERIC), 0)"
+            ctx.expr().joinToString(" + ") {
+                "CASE WHEN CAST((${visitor.visitAllowingNulls(it)}) AS NUMERIC) >= 0 THEN 1 ELSE 0 END"
+            } +
+            ") AS NUMERIC), 0)"
     }
 }

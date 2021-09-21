@@ -74,12 +74,12 @@ internal object ProgramIndicatorParserUtils {
         ExpressionParser.D2_COUNT_IF_VALUE to D2CountIfValue(),
         ExpressionParser.D2_DAYS_BETWEEN to D2DaysBetween(),
         ExpressionParser.D2_HAS_VALUE to D2HasValue(),
-        //TODO D2_MAX_VALUE
+        // TODO D2_MAX_VALUE
         ExpressionParser.D2_MINUTES_BETWEEN to D2MinutesBetween(),
-        //TODO D2_MIN_VALUE
+        // TODO D2_MIN_VALUE
         ExpressionParser.D2_MONTHS_BETWEEN to D2MonthsBetween(),
         ExpressionParser.D2_OIZP to D2Oizp(),
-        //TODO RELATIONSHIP_COUNT
+        // TODO RELATIONSHIP_COUNT
         ExpressionParser.D2_WEEKS_BETWEEN to D2WeeksBetween(),
         ExpressionParser.D2_YEARS_BETWEEN to D2YearsBetween(),
         ExpressionParser.D2_ZING to D2Zing(),
@@ -94,32 +94,33 @@ internal object ProgramIndicatorParserUtils {
     @JvmField
     val PROGRAM_INDICATOR_EXPRESSION_ITEMS =
         ParserUtils.COMMON_EXPRESSION_ITEMS +
-                COMMON_PROGRAM_INDICATORS_EXPRESSION_ITEMS +
-                mapOf(
-                    ExpressionParser.D2_ADD_DAYS to D2AddDays(),
-                    ExpressionParser.D2_CEIL to D2Ceil(),
-                    ExpressionParser.D2_CONCATENATE to D2Concatenate(),
-                    ExpressionParser.D2_FLOOR to D2Floor(),
-                    ExpressionParser.D2_LEFT to D2Left(),
-                    ExpressionParser.D2_LENGTH to D2Length(),
-                    ExpressionParser.D2_MODULUS to D2Modulus(),
-                    ExpressionParser.D2_RIGHT to D2Right(),
-                    ExpressionParser.D2_ROUND to D2Round(),
-                    ExpressionParser.D2_SPLIT to D2Split(),
-                    ExpressionParser.D2_SUBSTRING to D2Substring(),
-                    ExpressionParser.D2_VALIDATE_PATTERN to D2ValidatePattern()
-                )
+            COMMON_PROGRAM_INDICATORS_EXPRESSION_ITEMS +
+            mapOf(
+                ExpressionParser.D2_ADD_DAYS to D2AddDays(),
+                ExpressionParser.D2_CEIL to D2Ceil(),
+                ExpressionParser.D2_CONCATENATE to D2Concatenate(),
+                ExpressionParser.D2_FLOOR to D2Floor(),
+                ExpressionParser.D2_LEFT to D2Left(),
+                ExpressionParser.D2_LENGTH to D2Length(),
+                ExpressionParser.D2_MODULUS to D2Modulus(),
+                ExpressionParser.D2_RIGHT to D2Right(),
+                ExpressionParser.D2_ROUND to D2Round(),
+                ExpressionParser.D2_SPLIT to D2Split(),
+                ExpressionParser.D2_SUBSTRING to D2Substring(),
+                ExpressionParser.D2_VALIDATE_PATTERN to D2ValidatePattern()
+            )
 
     @JvmField
     val PROGRAM_INDICATOR_SQL_EXPRESSION_ITEMS =
         ParserUtils.COMMON_EXPRESSION_ITEMS +
-                COMMON_PROGRAM_INDICATORS_EXPRESSION_ITEMS
+            COMMON_PROGRAM_INDICATORS_EXPRESSION_ITEMS
 
     @JvmStatic
     fun wrap(input: String?): String {
         return input ?: ""
     }
 
+    @SuppressWarnings("ComplexCondition")
     fun assumeStageElementSyntax(ctx: ExpressionParser.ExprContext) {
         if (ctx.uid0 == null || ctx.uid1 == null || ctx.uid2 != null || ctx.wild2 != null) {
             throw ParserExceptionWithoutContext("Invalid program stage / Data element syntax: ${ctx.text}")

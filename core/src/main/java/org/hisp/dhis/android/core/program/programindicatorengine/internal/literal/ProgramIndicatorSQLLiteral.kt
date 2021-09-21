@@ -25,13 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.parser.internal.service.dataitem
+package org.hisp.dhis.android.core.program.programindicatorengine.internal.literal
 
-internal enum class DimensionalItemType {
-    CONSTANT,
-    DATA_ELEMENT,
-    DATA_ELEMENT_OPERAND,
-    ORGANISATION_UNIT_GROUP,
-    TRACKED_ENTITY_ATTRIBUTE,
-    TRACKED_ENTITY_DATA_VALUE
+import org.hisp.dhis.antlr.AntlrExprLiteral
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.*
+
+/**
+ * Gets typed literal values from an ANTLR parse tree for use internally.
+ */
+internal class ProgramIndicatorSQLLiteral : AntlrExprLiteral {
+    override fun getNumericLiteral(ctx: NumericLiteralContext): Any {
+        return ctx.text
+    }
+
+    override fun getStringLiteral(ctx: StringLiteralContext): Any {
+        return ctx.text
+    }
+
+    override fun getBooleanLiteral(ctx: BooleanLiteralContext): Any {
+        return when (ctx.text) {
+            "true" -> "1"
+            else -> "0"
+        }
+    }
 }

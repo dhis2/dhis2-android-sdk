@@ -32,10 +32,14 @@ import org.joda.time.DateTime
 internal class D2MinutesBetween : ProgramBetweenDatesFunction() {
 
     override fun evaluate(startDate: DateTime, endDate: DateTime): Any {
-        return ((endDate.millis - startDate.millis) / 60000).toString()
+        return ((endDate.millis - startDate.millis) / MillisInAMinute).toString()
     }
 
     override fun getSql(startExpression: String, endExpression: String): Any {
         return "CAST((julianday($endExpression) - julianday($startExpression)) * 24 * 60 AS INTEGER)"
+    }
+
+    private companion object {
+        const val MillisInAMinute = 60 * 1000
     }
 }

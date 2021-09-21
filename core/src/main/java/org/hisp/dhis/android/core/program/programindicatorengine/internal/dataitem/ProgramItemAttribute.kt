@@ -70,12 +70,11 @@ internal class ProgramItemAttribute : ProgramExpressionItem() {
             attribute.valueType()
         )
 
-        val selectExpression =
-            "(SELECT $valueCastExpression " +
-                    "FROM ${TrackedEntityAttributeValueTableInfo.TABLE_INFO.name()} " +
-                    "WHERE ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} = '$attributeUid' " +
-                    "AND ${getAttributeValueTEIWhereClause(visitor.programIndicatorSQLContext.programIndicator)} " +
-                    ")"
+        val selectExpression = "(SELECT $valueCastExpression " +
+            "FROM ${TrackedEntityAttributeValueTableInfo.TABLE_INFO.name()} " +
+            "WHERE ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} = '$attributeUid' " +
+            "AND ${getAttributeValueTEIWhereClause(visitor.programIndicatorSQLContext.programIndicator)} " +
+            ")"
 
         return if (visitor.replaceNulls) {
             "(COALESCE($selectExpression, ${getDefaultValue(attribute.valueType())}))"

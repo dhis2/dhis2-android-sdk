@@ -38,6 +38,6 @@ internal class D2CountIfValue : ProgramCountFunction() {
     }
 
     override fun getConditionalSql(ctx: ExprContext, visitor: CommonExpressionVisitor): String {
-        return " = '${visitor.castStringVisit(ctx.expr(0))}'"
+        return " = ${visitor.castStringVisit(ctx.expr(0))}"
     }
 }

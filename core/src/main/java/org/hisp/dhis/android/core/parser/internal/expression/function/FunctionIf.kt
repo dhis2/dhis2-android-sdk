@@ -84,7 +84,7 @@ internal class FunctionIf : ExpressionItem {
 
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
         return "CASE WHEN ${visitor.castStringVisit(ctx.expr(0))} " +
-                "THEN ${visitor.castStringVisit(ctx.expr(1))} " +
-                "ELSE ${visitor.castStringVisit(ctx.expr(2))} END"
+            "THEN ${visitor.castStringVisit(ctx.expr(1))} " +
+            "ELSE ${visitor.castStringVisit(ctx.expr(2))} END"
     }
 }

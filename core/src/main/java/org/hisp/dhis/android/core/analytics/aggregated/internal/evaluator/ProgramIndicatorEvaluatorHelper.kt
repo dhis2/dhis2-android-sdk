@@ -65,8 +65,8 @@ internal object ProgramIndicatorEvaluatorHelper {
             appendInSubQuery(
                 EventTableInfo.Columns.PROGRAM_STAGE,
                 "SELECT ${ProgramStageTableInfo.Columns.UID} " +
-                        "FROM ${ProgramStageTableInfo.TABLE_INFO.name()} " +
-                        "WHERE ${ProgramStageTableInfo.Columns.PROGRAM} = '${programIndicator.program()?.uid()}'"
+                    "FROM ${ProgramStageTableInfo.TABLE_INFO.name()} " +
+                    "WHERE ${ProgramStageTableInfo.Columns.PROGRAM} = '${programIndicator.program()?.uid()}'"
             )
 
             items.entries.forEach { entry ->

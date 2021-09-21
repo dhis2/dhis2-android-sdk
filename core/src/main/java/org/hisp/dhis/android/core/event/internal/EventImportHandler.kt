@@ -70,14 +70,7 @@ internal class EventImportHandler @Inject constructor(
                 val handleAction = eventStore.setSyncStateOrDelete(eventUid, state)
 
                 if (handleAction !== HandleAction.Delete) {
-                    jobReportEventHandler.handleEventNotes(eventUid, state)
-                    storeEventImportConflicts(eventImportSummary, enrollmentUid)
-
-                    dataStatePropagator.refreshEventAggregatedSyncState(eventUid)
-
-                    if (state == State.SYNCED) {
-                        trackedEntityDataValueStore.removeDeletedDataValuesByEvent(eventUid)
-                    }
+                    handleIfNotDeleted(eventUid, state, eventImportSummary, enrollmentUid)
                 }
             }
         }
@@ -99,6 +92,22 @@ internal class EventImportHandler @Inject constructor(
 
         teiUids.forEach {
             dataStatePropagator.refreshTrackedEntityInstanceAggregatedSyncState(it)
+        }
+    }
+
+    private fun handleIfNotDeleted(
+        eventUid: String,
+        state: State,
+        eventImportSummary: EventImportSummary,
+        enrollmentUid: String?
+    ) {
+        jobReportEventHandler.handleEventNotes(eventUid, state)
+        storeEventImportConflicts(eventImportSummary, enrollmentUid)
+
+        dataStatePropagator.refreshEventAggregatedSyncState(eventUid)
+
+        if (state == State.SYNCED) {
+            trackedEntityDataValueStore.removeDeletedDataValuesByEvent(eventUid)
         }
     }
 

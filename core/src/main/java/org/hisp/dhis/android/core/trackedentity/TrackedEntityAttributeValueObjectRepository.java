@@ -34,8 +34,6 @@ import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadWriteWit
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
 import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
-import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore;
 
 import java.util.Date;

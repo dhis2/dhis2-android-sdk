@@ -34,6 +34,8 @@ import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadWriteWit
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore;
 
 import java.util.Date;
@@ -69,8 +71,18 @@ public final class TrackedEntityAttributeValueObjectRepository extends ReadWrite
     }
 
     public void blockingSet(String value) throws D2Error {
-        TrackedEntityAttributeValue objectWithValue = setBuilder().value(value).build();
-        setObject(objectWithValue);
+        setObject(setBuilder().value(value).deleted(value == null).build());
+    }
+
+    @Override
+    protected void delete(TrackedEntityAttributeValue trackedEntityAttributeValue) throws D2Error {
+        blockingSet(null);
+    }
+
+    @Override
+    public boolean blockingExists() {
+        TrackedEntityAttributeValue value = blockingGetWithoutChildren();
+        return value == null ? Boolean.FALSE : value.deleted() != Boolean.TRUE;
     }
 
     private TrackedEntityAttributeValue.Builder setBuilder() {

@@ -49,6 +49,7 @@ public class TrackedEntityAttributeValueSamples {
                 .lastUpdated(getDate("2015-10-14T13:36:53.063"))
                 .trackedEntityAttribute(trackedEntityAttribute)
                 .trackedEntityInstance(trackedEntityInstance)
+                .deleted(false)
                 .build();
     }
 

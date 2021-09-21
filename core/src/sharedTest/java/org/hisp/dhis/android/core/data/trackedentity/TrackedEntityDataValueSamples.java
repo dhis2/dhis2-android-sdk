@@ -50,6 +50,7 @@ public class TrackedEntityDataValueSamples {
                 .storedBy("username")
                 .value(value)
                 .providedElsewhere(Boolean.TRUE)
+                .deleted(false)
                 .build();
     }
 

@@ -47,6 +47,8 @@ import org.hisp.dhis.android.core.constant.internal.ConstantModuleDownloader
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.dataset.internal.DataSetModuleDownloader
 import org.hisp.dhis.android.core.domain.metadata.internal.MetadataHelper
+import org.hisp.dhis.android.core.indicator.Indicator
+import org.hisp.dhis.android.core.indicator.internal.IndicatorModuleDownloader
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationTableInfo
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader
@@ -76,6 +78,7 @@ class MetadataCall @Inject internal constructor(
     private val dataSetDownloader: DataSetModuleDownloader,
     private val visualizationDownloader: VisualizationModuleDownloader,
     private val constantModuleDownloader: ConstantModuleDownloader,
+    private val indicatorModuleDownloader: IndicatorModuleDownloader,
     private val smsModule: SmsModule,
     private val databaseAdapter: DatabaseAdapter,
     private val generalSettingCall: GeneralSettingCall,
@@ -84,7 +87,7 @@ class MetadataCall @Inject internal constructor(
 ) {
 
     companion object {
-        const val CALLS_COUNT = 9
+        const val CALLS_COUNT = 11
     }
 
     fun download(): Observable<D2Progress> {
@@ -141,6 +144,9 @@ class MetadataCall @Inject internal constructor(
                     },
                     visualizationDownloader.downloadMetadata().map {
                         progressManager.increaseProgress(Visualization::class.java, false)
+                    },
+                    indicatorModuleDownloader.downloadMetadata().toSingle {
+                        progressManager.increaseProgress(Indicator::class.java, false)
                     }
                 ).toObservable()
             }

@@ -25,47 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataset.internal;
+package org.hisp.dhis.android.core.indicator.internal
 
-import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.dataset.DataSetElement;
+import dagger.Reusable
+import io.reactivex.Completable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallFactory
+import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloader
+import org.hisp.dhis.android.core.indicator.Indicator
+import org.hisp.dhis.android.core.indicator.IndicatorType
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+@Reusable
+class IndicatorModuleDownloader @Inject internal constructor(
+    private val indicatorCallFactory: UidsCallFactory<Indicator>,
+    private val indicatorTypeCallFactory: UidsCallFactory<IndicatorType>,
+    private val indicatorUidsSeeker: IndicatorUidsSeeker
+) : UntypedModuleDownloader {
 
-final class DataSetParentUidsHelper {
+    override fun downloadMetadata(): Completable {
+        return Completable.fromCallable {
+            val indicatorUids = indicatorUidsSeeker.seekUids()
 
-    private DataSetParentUidsHelper() {
-    }
+            if (!indicatorUids.isNullOrEmpty()) {
+                val indicators = indicatorCallFactory.create(indicatorUids).call()
 
-    static Set<String> getDataElementUids(List<DataSet> dataSets) {
-        Set<String> uids = new HashSet<>();
-        for (DataSet dataSet : dataSets) {
-            List<DataSetElement> dataSetElements = dataSet.dataSetElements();
-            assert dataSetElements != null;
-            for (DataSetElement dataSetElement : dataSetElements) {
-                uids.add(dataSetElement.dataElement().uid());
+                val typeUids = indicators.mapNotNull { it.indicatorType()?.uid() }.toSet()
+
+                indicatorTypeCallFactory.create(typeUids).call()
             }
         }
-        return uids;
-    }
-
-    static Set<String> getAssignedOptionSetUids(List<DataElement> dataElements) {
-
-        Set<String> dataElementUids = new HashSet<>();
-
-        if (dataElements != null) {
-
-            for (DataElement dataElement : dataElements) {
-                String optionSetUid = dataElement.optionSetUid();
-
-                dataElementUids.add(optionSetUid);
-            }
-
-            dataElementUids.remove(null);
-        }
-        return dataElementUids;
     }
 }

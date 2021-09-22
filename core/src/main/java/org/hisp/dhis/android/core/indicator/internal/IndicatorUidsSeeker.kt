@@ -25,47 +25,41 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataset.internal;
+package org.hisp.dhis.android.core.indicator.internal
 
-import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.dataset.DataSetElement;
+import dagger.Reusable
+import java.util.*
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.MultipleTableQueryBuilder
+import org.hisp.dhis.android.core.dataset.SectionIndicatorLinkTableInfo
+import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkTableInfo
+import org.hisp.dhis.android.core.visualization.DataDimensionItemTableInfo
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+@Reusable
+internal class IndicatorUidsSeeker @Inject constructor(private val databaseAdapter: DatabaseAdapter) {
 
-final class DataSetParentUidsHelper {
+    fun seekUids(): Set<String> {
+        val tableNames = Arrays.asList(
+            DataSetIndicatorLinkTableInfo.TABLE_INFO.name(),
+            SectionIndicatorLinkTableInfo.TABLE_INFO.name(),
+            DataDimensionItemTableInfo.TABLE_INFO.name()
+        )
+        val query = MultipleTableQueryBuilder()
+            .generateQuery(DataSetIndicatorLinkTableInfo.Columns.INDICATOR, tableNames).build()
 
-    private DataSetParentUidsHelper() {
-    }
+        val cursor = databaseAdapter.rawQuery(query)
 
-    static Set<String> getDataElementUids(List<DataSet> dataSets) {
-        Set<String> uids = new HashSet<>();
-        for (DataSet dataSet : dataSets) {
-            List<DataSetElement> dataSetElements = dataSet.dataSetElements();
-            assert dataSetElements != null;
-            for (DataSetElement dataSetElement : dataSetElements) {
-                uids.add(dataSetElement.dataElement().uid());
+        val indicators: MutableSet<String> = HashSet()
+        cursor.use { cursor ->
+            if (cursor.count > 0) {
+                cursor.moveToFirst()
+                do {
+                    indicators.add(cursor.getString(0))
+                } while (cursor.moveToNext())
             }
         }
-        return uids;
-    }
 
-    static Set<String> getAssignedOptionSetUids(List<DataElement> dataElements) {
-
-        Set<String> dataElementUids = new HashSet<>();
-
-        if (dataElements != null) {
-
-            for (DataElement dataElement : dataElements) {
-                String optionSetUid = dataElement.optionSetUid();
-
-                dataElementUids.add(optionSetUid);
-            }
-
-            dataElementUids.remove(null);
-        }
-        return dataElementUids;
+        return indicators
     }
 }

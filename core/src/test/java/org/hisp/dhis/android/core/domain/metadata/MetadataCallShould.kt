@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.common.BaseCallShould
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
 import org.hisp.dhis.android.core.constant.internal.ConstantModuleDownloader
 import org.hisp.dhis.android.core.dataset.internal.DataSetModuleDownloader
+import org.hisp.dhis.android.core.indicator.internal.IndicatorModuleDownloader
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationTableInfo
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader
@@ -72,6 +73,7 @@ class MetadataCallShould : BaseCallShould() {
     private val dataSetDownloader: DataSetModuleDownloader = mock()
     private val visualizationDownloader: VisualizationModuleDownloader = mock()
     private val constantDownloader: ConstantModuleDownloader = mock()
+    private val indicatorDownloader: IndicatorModuleDownloader = mock()
     private val smsModule: SmsModule = mock()
     private val configCase: ConfigCase = mock()
     private val generalSettingCall: GeneralSettingCall = mock()
@@ -104,6 +106,7 @@ class MetadataCallShould : BaseCallShould() {
             Single.just(emptyList())
         )
         whenever(constantDownloader.downloadMetadata()).thenReturn(Single.just(emptyList()))
+        whenever(indicatorDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(categoryDownloader.downloadMetadata()).thenReturn(Completable.complete())
         whenever(smsModule.configCase()).thenReturn(configCase)
         whenever(configCase.refreshMetadataIdsCallable()).thenReturn(Completable.complete())
@@ -128,6 +131,7 @@ class MetadataCallShould : BaseCallShould() {
             dataSetDownloader,
             visualizationDownloader,
             constantDownloader,
+            indicatorDownloader,
             smsModule,
             databaseAdapter,
             generalSettingCall,

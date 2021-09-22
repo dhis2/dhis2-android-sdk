@@ -35,10 +35,12 @@ import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 
 @Reusable
 internal class JobReportTrackedEntityHandler @Inject internal constructor(
+    private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore,
     private val conflictStore: TrackerImportConflictStore,
     private val trackedEntityStore: TrackedEntityInstanceStore,
     private val conflictHelper: TrackerConflictHelper,
@@ -47,7 +49,12 @@ internal class JobReportTrackedEntityHandler @Inject internal constructor(
 
     override fun handleObject(uid: String, state: State): HandleAction {
         conflictStore.deleteTrackedEntityConflicts(uid)
-        return trackedEntityStore.setSyncStateOrDelete(uid, state)
+        val handleAction = trackedEntityStore.setSyncStateOrDelete(uid, state)
+
+        if (state == State.SYNCED && (handleAction == HandleAction.Update || handleAction == HandleAction.Insert)) {
+            trackedEntityAttributeValueStore.removeDeletedAttributeValuesByInstance(uid)
+        }
+        return handleAction
     }
 
     override fun storeConflict(errorReport: JobValidationError) {

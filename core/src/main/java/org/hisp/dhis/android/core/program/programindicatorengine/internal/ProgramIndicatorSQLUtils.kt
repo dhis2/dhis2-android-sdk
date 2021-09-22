@@ -38,8 +38,8 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTable
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
 
 internal object ProgramIndicatorSQLUtils {
-    const val event = "event"
-    const val enrollment = "enrollment"
+    const val event = "eventAlias"
+    const val enrollment = "enrollmentAlias"
 
     fun getEventColumnForEnrollmentWhereClause(column: String, programStageId: String? = null): String {
         return "(SELECT $column FROM ${EventTableInfo.TABLE_INFO.name()} " +
@@ -52,21 +52,15 @@ internal object ProgramIndicatorSQLUtils {
             "ORDER BY ${EventTableInfo.Columns.EVENT_DATE} LIMIT 1)"
     }
 
-    fun getProgramStageExistsClause(programStageId: String): String {
-        return "EXISTS(SELECT 1 FROM ${EventTableInfo.TABLE_INFO.name()} " +
-            "WHERE ${TrackedEntityDataValueTableInfo.Columns.EVENT} = ${EventTableInfo.Columns.UID} " +
-            "AND ${EventTableInfo.Columns.PROGRAM_STAGE} = '$programStageId')"
-    }
-
     fun getDataValueEventWhereClause(programIndicator: ProgramIndicator): String {
-        val eventUidSubQuery = when (programIndicator.analyticsType()) {
+        return when (programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
-                EventTableInfo.Columns.UID
+                "${EventTableInfo.TABLE_INFO.name()}.${EventTableInfo.Columns.UID} = " +
+                    "$event.${EventTableInfo.Columns.UID}"
             AnalyticsType.ENROLLMENT, null ->
-                getEventColumnForEnrollmentWhereClause(column = EventTableInfo.Columns.UID)
+                "${EventTableInfo.TABLE_INFO.name()}.${EventTableInfo.Columns.ENROLLMENT} = " +
+                    "$enrollment.${EventTableInfo.Columns.UID}"
         }
-
-        return "${TrackedEntityDataValueTableInfo.Columns.EVENT} = $eventUidSubQuery"
     }
 
     fun getAttributeValueTEIWhereClause(programIndicator: ProgramIndicator): String {
@@ -123,19 +117,21 @@ internal object ProgramIndicatorSQLUtils {
 
         val stageElementsSql = if (!stageElementItems.isNullOrEmpty()) {
             val stageElementWhereClause = stageElementItems.joinToString(" OR ") {
-                "(${getProgramStageExistsClause(it.id0())} " +
+                "(${EventTableInfo.Columns.PROGRAM_STAGE} = '${it.id0()}' " +
                     "AND " +
                     "${TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT} = '${it.id1()}')"
             }
 
             "SELECT COUNT(*) " +
                 "FROM ${TrackedEntityDataValueTableInfo.TABLE_INFO.name()} " +
-                "WHERE ${getDataValueEventWhereClause(programIndicator)} " +
+                "INNER JOIN ${EventTableInfo.TABLE_INFO.name()} " +
+                "ON ${TrackedEntityDataValueTableInfo.Columns.EVENT} = ${EventTableInfo.Columns.UID} " +
+                "WHERE ($stageElementWhereClause) " +
+                "AND ${getDataValueEventWhereClause(programIndicator)} " +
                 "AND ${TrackedEntityDataValueTableInfo.Columns.VALUE} IS NOT NULL " +
-                "AND ($stageElementWhereClause) " +
                 (
                     conditionalValueExpression?.let {
-                        "AND CAST(${TrackedEntityAttributeValueTableInfo.Columns.VALUE} AS NUMERIC) $it"
+                        "AND CAST(${TrackedEntityDataValueTableInfo.Columns.VALUE} AS NUMERIC) $it"
                     } ?: ""
                     )
         } else {

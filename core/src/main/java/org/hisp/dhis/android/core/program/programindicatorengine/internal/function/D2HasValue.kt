@@ -28,11 +28,11 @@
 package org.hisp.dhis.android.core.program.programindicatorengine.internal.function
 
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramExpressionItem
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.getDataValueEventWhereClause
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.getEnrollmentWhereClause
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.getProgramStageExistsClause
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.dataitem.ProgramItemAttribute
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.dataitem.ProgramItemStageElement
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
@@ -102,12 +102,15 @@ internal class D2HasValue : ProgramExpressionItem() {
         val programStageUid = ctx.uid0.text
         val dataElementUid = ctx.uid1.text
 
-        return "EXISTS(SELECT 1  " +
+        return "EXISTS(SELECT 1 " +
             "FROM ${TrackedEntityDataValueTableInfo.TABLE_INFO.name()} " +
+            "INNER JOIN ${EventTableInfo.TABLE_INFO.name()} " +
+            "ON ${TrackedEntityDataValueTableInfo.Columns.EVENT} = ${EventTableInfo.Columns.UID} " +
             "WHERE ${TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT} = '$dataElementUid' " +
-            "AND ${getProgramStageExistsClause(programStageUid)} " +
+            "AND ${EventTableInfo.Columns.PROGRAM_STAGE} = '$programStageUid' " +
             "AND ${getDataValueEventWhereClause(visitor.programIndicatorSQLContext.programIndicator)} " +
             "AND ${TrackedEntityDataValueTableInfo.Columns.VALUE} IS NOT NULL " +
+            "ORDER BY ${EventTableInfo.Columns.EVENT_DATE} DESC LIMIT 1" +
             ")"
     }
 }

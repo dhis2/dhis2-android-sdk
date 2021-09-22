@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.program.programindicatorengine.internal.function
 
+import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramExpressionItem
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.getColumnValueCast
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.getDataValueEventWhereClause
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.getProgramStageExistsClause
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.dataitem.ProgramItemStageElement
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
 import org.hisp.dhis.antlr.ParserExceptionWithoutContext
@@ -76,8 +76,10 @@ internal abstract class ProgramCountFunction : ProgramExpressionItem() {
 
         return "(SELECT COUNT() " +
             "FROM ${TrackedEntityDataValueTableInfo.TABLE_INFO.name()} " +
+            "INNER JOIN ${EventTableInfo.TABLE_INFO.name()} " +
+            "ON ${TrackedEntityDataValueTableInfo.Columns.EVENT} = ${EventTableInfo.Columns.UID} " +
             "WHERE ${TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT} = '$dataElementId' " +
-            "AND ${getProgramStageExistsClause(programStageId)} " +
+            "AND ${EventTableInfo.Columns.PROGRAM_STAGE} = '$programStageId' " +
             "AND ${getDataValueEventWhereClause(visitor.programIndicatorSQLContext.programIndicator)} " +
             "AND ${TrackedEntityDataValueTableInfo.Columns.VALUE} IS NOT NULL " +
             "AND $valueCastExpression $conditionalSql " +

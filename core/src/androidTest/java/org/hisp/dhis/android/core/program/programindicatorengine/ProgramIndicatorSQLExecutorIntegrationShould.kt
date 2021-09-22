@@ -35,13 +35,14 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement2
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement3
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement4
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.firstNovember
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.firstNovember2019
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.generator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.program
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.programStage1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.programStage2
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.secondDecember2020
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.secondNovember2019
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntity1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntity2
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntityType
@@ -81,7 +82,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseEvaluatorInteg
         val event1 = generator.generate()
         helper.createTrackerEvent(
             event1, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
-            eventDate = firstNovember
+            eventDate = firstNovember2019
         )
 
         helper.createTrackedEntity(trackedEntity2.uid(), orgunitChild1.uid(), trackedEntityType.uid())
@@ -90,7 +91,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseEvaluatorInteg
         val event2 = generator.generate()
         helper.createTrackerEvent(
             event2, enrollment2, program.uid(), programStage1.uid(), orgunitChild1.uid(),
-            eventDate = firstNovember
+            eventDate = firstNovember2019
         )
 
         helper.insertTrackedEntityDataValue(event1, dataElement1.uid(), "10")
@@ -140,7 +141,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseEvaluatorInteg
         val event1 = generator.generate()
         helper.createTrackerEvent(
             event1, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
-            eventDate = firstNovember
+            eventDate = firstNovember2019
         )
 
         assertThat(
@@ -264,7 +265,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseEvaluatorInteg
         val enrollment1 = generator.generate()
         helper.createEnrollment(
             trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid(),
-            enrollmentDate = firstNovember
+            enrollmentDate = firstNovember2019
         )
         helper.createTrackerEvent(
             generator.generate(), enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
@@ -330,11 +331,11 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseEvaluatorInteg
         val enrollment1 = generator.generate()
         helper.createEnrollment(
             trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid(),
-            enrollmentDate = firstNovember
+            enrollmentDate = firstNovember2019
         )
         helper.createTrackerEvent(
             generator.generate(), enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
-            eventDate = firstNovember
+            eventDate = firstNovember2019
         )
         helper.createTrackerEvent(
             generator.generate(), enrollment1, program.uid(), programStage2.uid(), orgunitChild1.uid(),
@@ -819,6 +820,53 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseEvaluatorInteg
                 )
             )
         ).isEqualTo("1")
+    }
+
+    @Test
+    fun should_evaluate_most_recent_existing_value_for_enrollment_analytics() {
+        helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
+        val enrollment1 = generator.generate()
+        helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
+        val event1 = generator.generate()
+        helper.createTrackerEvent(
+            event1,
+            enrollment1,
+            program.uid(),
+            programStage1.uid(),
+            orgunitChild1.uid(),
+            eventDate = firstNovember2019
+        )
+        val event2 = generator.generate()
+        helper.createTrackerEvent(
+            event2,
+            enrollment1,
+            program.uid(),
+            programStage1.uid(),
+            orgunitChild1.uid(),
+            eventDate = secondNovember2019
+        )
+        val event3 = generator.generate()
+        helper.createTrackerEvent(
+            event3,
+            enrollment1,
+            program.uid(),
+            programStage1.uid(),
+            orgunitChild1.uid(),
+            eventDate = secondDecember2020
+        )
+
+        helper.insertTrackedEntityDataValue(event1, dataElement1.uid(), "1")
+        helper.insertTrackedEntityDataValue(event2, dataElement1.uid(), "2")
+
+        assertThat(
+            programIndicatorEvaluator.getProgramIndicatorValue(
+                setProgramIndicator(
+                    expression = de(programStage1.uid(), dataElement1.uid()),
+                    analyticsType = AnalyticsType.ENROLLMENT,
+                    aggregationType = AggregationType.SUM
+                )
+            )
+        ).isEqualTo("2")
     }
 
     private fun setProgramIndicator(

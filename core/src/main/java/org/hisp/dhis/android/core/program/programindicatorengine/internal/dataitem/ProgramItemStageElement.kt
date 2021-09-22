@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.program.programindicatorengine.internal.datai
 
 import java.util.*
 import org.hisp.dhis.android.core.event.Event
+import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemId
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemType
@@ -37,7 +38,6 @@ import org.hisp.dhis.android.core.program.programindicatorengine.internal.Progra
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.getColumnValueCast
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.getDataValueEventWhereClause
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.getDefaultValue
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.getProgramStageExistsClause
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
@@ -99,9 +99,13 @@ internal class ProgramItemStageElement : ProgramExpressionItem() {
 
         val selectExpression = "(SELECT $valueCastExpression " +
             "FROM ${TrackedEntityDataValueTableInfo.TABLE_INFO.name()} " +
+            "INNER JOIN ${EventTableInfo.TABLE_INFO.name()} " +
+            "ON ${TrackedEntityDataValueTableInfo.Columns.EVENT} = ${EventTableInfo.Columns.UID} " +
             "WHERE ${TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT} = '$dataElementId' " +
-            "AND ${getProgramStageExistsClause(programStageId)} " +
+            "AND ${EventTableInfo.Columns.PROGRAM_STAGE} = '$programStageId' " +
             "AND ${getDataValueEventWhereClause(visitor.programIndicatorSQLContext.programIndicator)} " +
+            "AND ${TrackedEntityDataValueTableInfo.Columns.VALUE} IS NOT NULL " +
+            "ORDER BY ${EventTableInfo.Columns.EVENT_DATE} DESC LIMIT 1" +
             ")"
 
         return if (visitor.replaceNulls) {

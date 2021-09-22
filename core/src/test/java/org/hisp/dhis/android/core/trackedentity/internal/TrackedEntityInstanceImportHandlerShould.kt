@@ -69,6 +69,8 @@ class TrackedEntityInstanceImportHandlerShould {
 
     private val relationshipCollectionRepository: RelationshipCollectionRepository = mock()
 
+    private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore = mock()
+
     private val trackedEntityInstance: TrackedEntityInstance = mock()
 
     private val instances: List<TrackedEntityInstance> = ArrayList()
@@ -82,7 +84,7 @@ class TrackedEntityInstanceImportHandlerShould {
         trackedEntityInstanceImportHandler = TrackedEntityInstanceImportHandler(
             trackedEntityInstanceStore, enrollmentImportHandler,
             trackerImportConflictStore, trackerImportConflictParser, relationshipStore, dataStatePropagator,
-            relationshipDHISVersionManager, relationshipCollectionRepository
+            relationshipDHISVersionManager, relationshipCollectionRepository, trackedEntityAttributeValueStore
         )
     }
 

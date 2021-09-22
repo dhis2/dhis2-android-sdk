@@ -44,6 +44,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemId;
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorContext;
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorExecutor;
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLContext;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.antlr.AntlrExpressionVisitor;
 import org.hisp.dhis.antlr.ParserExceptionWithoutContext;
@@ -138,6 +139,8 @@ public class CommonExpressionVisitor
     private ProgramIndicatorContext programIndicatorContext;
 
     private ProgramIndicatorExecutor programIndicatorExecutor;
+
+    private ProgramIndicatorSQLContext programIndicatorSQLContext;
 
     // Analytic indicator
 
@@ -259,6 +262,14 @@ public class CommonExpressionVisitor
     // Getters and setters
     // -------------------------------------------------------------------------
 
+    public void setReplaceNulls(boolean replaceNulls) {
+        this.replaceNulls = replaceNulls;
+    }
+
+    public boolean getReplaceNulls() {
+        return this.replaceNulls;
+    }
+
     public IdentifiableObjectStore<DataElement> getDataElementStore() {
         return dataElementStore;
     }
@@ -335,6 +346,10 @@ public class CommonExpressionVisitor
         return programIndicatorExecutor;
     }
 
+    public ProgramIndicatorSQLContext getProgramIndicatorSQLContext() {
+        return programIndicatorSQLContext;
+    }
+
     public IndicatorContext getIndicatorContext() {
         return indicatorContext;
     }
@@ -398,6 +413,11 @@ public class CommonExpressionVisitor
             return this;
         }
 
+        public Builder withProgramIndicatorSQLContext(ProgramIndicatorSQLContext programIndicatorSQLContext) {
+            this.visitor.programIndicatorSQLContext = programIndicatorSQLContext;
+            return this;
+        }
+
         public Builder withIndicatorContext(IndicatorContext indicatorContext) {
             this.visitor.indicatorContext = indicatorContext;
             return this;
@@ -421,6 +441,14 @@ public class CommonExpressionVisitor
         public CommonExpressionVisitor buildForProgramIndicator() {
             Validate.notNull(this.visitor.programIndicatorContext, missingProperty("programIndicatorContext"));
             Validate.notNull(this.visitor.programIndicatorExecutor, missingProperty("programIndicatorExecutor"));
+            Validate.notNull(this.visitor.attributeStore, missingProperty("trackedEntityAttributeStore"));
+
+            return validateCommonProperties();
+        }
+
+        public CommonExpressionVisitor buildForProgramSQLIndicator() {
+            Validate.notNull(this.visitor.programIndicatorSQLContext, missingProperty("programIndicatorSQLContext"));
+            Validate.notNull(this.visitor.dataElementStore, missingProperty("dataElementStore"));
             Validate.notNull(this.visitor.attributeStore, missingProperty("trackedEntityAttributeStore"));
 
             return validateCommonProperties();

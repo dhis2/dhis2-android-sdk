@@ -158,16 +158,20 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
             .event(eventUid)
             .dataElement(dataElementUid)
             .value(value).build()
-        TrackedEntityDataValueStoreImpl.create(databaseAdapter).insert(trackedEntityDataValue)
+        TrackedEntityDataValueStoreImpl.create(databaseAdapter).updateOrInsertWhere(trackedEntityDataValue)
     }
 
     fun insertTrackedEntityAttributeValue(teiUid: String, attributeUid: String, value: String) {
         val trackedEntityAttributeValue = TrackedEntityAttributeValue.builder()
             .value(value).trackedEntityAttribute(attributeUid).trackedEntityInstance(teiUid).build()
-        TrackedEntityAttributeValueStoreImpl.create(databaseAdapter).insert(trackedEntityAttributeValue)
+        TrackedEntityAttributeValueStoreImpl.create(databaseAdapter).updateOrInsertWhere(trackedEntityAttributeValue)
     }
 
     companion object {
+        fun cons(constantUid: String): String {
+            return "C{$constantUid}"
+        }
+
         fun de(programStageUid: String, dataElementUid: String): String {
             return "#{$programStageUid.$dataElementUid}"
         }

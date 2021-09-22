@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.FormType
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.ValueType
+import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
@@ -41,6 +42,7 @@ import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramStage
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 
@@ -125,10 +127,32 @@ object BaseEvaluatorSamples {
         .categoryCombo(ObjectWithUid.fromIdentifiable(categoryCombo))
         .build()
 
+    val dataElement3 = DataElement.builder()
+        .uid(generator.generate())
+        .displayName("Data element 3")
+        .valueType(ValueType.TEXT)
+        .aggregationType(AggregationType.AVERAGE.name)
+        .categoryCombo(ObjectWithUid.fromIdentifiable(categoryCombo))
+        .build()
+
+    val dataElement4 = DataElement.builder()
+        .uid(generator.generate())
+        .displayName("Data element 4")
+        .valueType(ValueType.BOOLEAN)
+        .aggregationType(AggregationType.AVERAGE.name)
+        .categoryCombo(ObjectWithUid.fromIdentifiable(categoryCombo))
+        .build()
+
     val dataElementOperand = DataElementOperand.builder()
         .uid("${dataElement1.uid()}.${categoryOptionCombo.uid()}")
         .dataElement(ObjectWithUid.create(dataElement1.uid()))
         .categoryOptionCombo(ObjectWithUid.create(categoryOptionCombo.uid()))
+        .build()
+
+    val attribute1 = TrackedEntityAttribute.builder()
+        .uid(generator.generate())
+        .displayName("Attribute 1")
+        .valueType(ValueType.INTEGER)
         .build()
 
     val periodNov: Period = Period.builder()
@@ -184,5 +208,15 @@ object BaseEvaluatorSamples {
         .trackedEntityType(trackedEntityType.uid())
         .build()
 
-    val firstNovember = DateUtils.DATE_FORMAT.parse("2019-11-01T00:00:00.000")
+    val firstNovember2019 = DateUtils.DATE_FORMAT.parse("2019-11-01T00:00:00.000")
+
+    val secondNovember2019 = DateUtils.DATE_FORMAT.parse("2019-11-02T00:00:00.000")
+
+    val secondDecember2020 = DateUtils.DATE_FORMAT.parse("2020-12-02T00:00:00.000")
+
+    val constant1 = Constant.builder()
+        .uid(generator.generate())
+        .displayName("Five")
+        .value(5.0)
+        .build()
 }

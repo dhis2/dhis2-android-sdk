@@ -28,8 +28,10 @@
 
 package org.hisp.dhis.android.core.parser.internal.expression.operator;
 
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
 import org.hisp.dhis.antlr.operator.AntlrOperatorGroupingParentheses;
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
 
 /**
  * Operator to group using parentheses
@@ -39,4 +41,9 @@ import org.hisp.dhis.antlr.operator.AntlrOperatorGroupingParentheses;
 public class OperatorGroupingParentheses
         extends AntlrOperatorGroupingParentheses
         implements ExpressionItem {
+
+    @Override
+    public Object getSql(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
+        return "(" + visitor.castStringVisit(ctx.expr(0)) + ")";
+    }
 }

@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement1
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.firstNovember
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.firstNovember2019
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.generator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.program
@@ -72,7 +72,7 @@ internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegra
         val event1 = generator.generate()
         helper.createTrackerEvent(
             event1, enrollment1, program.uid(), programStage1.uid(), orgunitChild1.uid(),
-            eventDate = firstNovember
+            eventDate = firstNovember2019
         )
 
         helper.createTrackedEntity(trackedEntity2.uid(), orgunitChild1.uid(), trackedEntityType.uid())
@@ -81,7 +81,7 @@ internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegra
         val event2 = generator.generate()
         helper.createTrackerEvent(
             event2, enrollment2, program.uid(), programStage1.uid(), orgunitChild1.uid(),
-            eventDate = firstNovember
+            eventDate = firstNovember2019
         )
 
         helper.insertTrackedEntityDataValue(event1, dataElement1.uid(), "10")

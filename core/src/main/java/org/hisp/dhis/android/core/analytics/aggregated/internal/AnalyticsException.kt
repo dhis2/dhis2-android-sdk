@@ -39,4 +39,6 @@ sealed class AnalyticsException(message: String) : Throwable(message) {
     class InvalidOrganisationUnitLevel(val id: String) : AnalyticsException("Missing organisation unit level $id")
     class InvalidCategory(val uid: String) : AnalyticsException("Missing category $uid")
     class InvalidCategoryOption(val uid: String) : AnalyticsException("Missing category option $uid")
+    class SQLException(message: String) : AnalyticsException(message)
+    class ParserException(message: String) : AnalyticsException(message)
 }

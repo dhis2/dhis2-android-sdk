@@ -97,4 +97,8 @@ public final class TrackedEntityDataValueCollectionRepository
     public BooleanFilterConnector<TrackedEntityDataValueCollectionRepository> byProvidedElsewhere() {
         return cf.bool(Columns.PROVIDED_ELSEWHERE);
     }
+
+    public BooleanFilterConnector<TrackedEntityDataValueCollectionRepository> byDeleted() {
+        return cf.bool(Columns.VALUE);
+    }
 }

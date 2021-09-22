@@ -60,12 +60,11 @@ public final class TrackedEntityAttributeValueStoreImpl
         w.bind(3, o.lastUpdated());
         w.bind(4, o.trackedEntityAttribute());
         w.bind(5, o.trackedEntityInstance());
-        w.bind(6, o.deleted());
     };
 
     private static final WhereStatementBinder<TrackedEntityAttributeValue> WHERE_UPDATE_BINDER = (o, w) -> {
-        w.bind(7, o.trackedEntityAttribute());
-        w.bind(8, o.trackedEntityInstance());
+        w.bind(6, o.trackedEntityAttribute());
+        w.bind(7, o.trackedEntityInstance());
     };
 
 
@@ -137,7 +136,7 @@ public final class TrackedEntityAttributeValueStoreImpl
         String deleteWhereQuery = new WhereClauseBuilder()
                 .appendKeyStringValue(TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
                         trackedEntityInstanceUid)
-                .appendKeyStringValue(TrackedEntityAttributeValueTableInfo.Columns.DELETED, 1)
+                .appendIsNullValue(TrackedEntityAttributeValueTableInfo.Columns.VALUE)
                 .build();
 
         deleteWhere(deleteWhereQuery);

@@ -69,7 +69,7 @@ public final class TrackedEntityAttributeValueObjectRepository extends ReadWrite
     }
 
     public void blockingSet(String value) throws D2Error {
-        setObject(setBuilder().value(value).deleted(value == null).build());
+        setObject(setBuilder().value(value).build());
     }
 
     @Override

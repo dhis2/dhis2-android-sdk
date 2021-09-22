@@ -65,12 +65,11 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
         w.bind(5, o.storedBy());
         w.bind(6, o.value());
         w.bind(7, o.providedElsewhere());
-        w.bind(8, o.deleted());
     };
 
     private static final WhereStatementBinder<TrackedEntityDataValue> WHERE_UPDATE_BINDER = (o, w) -> {
-        w.bind(9, o.event());
-        w.bind(10, o.dataElement());
+        w.bind(8, o.event());
+        w.bind(9, o.dataElement());
     };
 
     private static final WhereStatementBinder<TrackedEntityDataValue> WHERE_DELETE_BINDER = (o, w) -> {
@@ -133,7 +132,7 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
     public void removeDeletedDataValuesByEvent(@NonNull String eventUid) {
         String deleteWhereQuery = new WhereClauseBuilder()
                 .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.EVENT, eventUid)
-                .appendKeyStringValue(TrackedEntityAttributeValueTableInfo.Columns.DELETED, 1)
+                .appendIsNullValue(TrackedEntityAttributeValueTableInfo.Columns.VALUE)
                 .build();
 
         deleteWhere(deleteWhereQuery);

@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.DeletableColumns;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
 public final class TrackedEntityDataValueTableInfo {
 
@@ -50,7 +50,7 @@ public final class TrackedEntityDataValueTableInfo {
         }
     };
 
-    public static class Columns extends DeletableColumns {
+    public static class Columns extends CoreColumns {
         public static final String EVENT = "event";
         public final static String DATA_ELEMENT = "dataElement";
         public final static String STORED_BY = "storedBy";
@@ -68,8 +68,7 @@ public final class TrackedEntityDataValueTableInfo {
                     DATA_ELEMENT,
                     STORED_BY,
                     VALUE,
-                    PROVIDED_ELSEWHERE,
-                    DELETED
+                    PROVIDED_ELSEWHERE
             );
         }
 

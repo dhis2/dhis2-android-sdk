@@ -29,6 +29,9 @@
 package org.hisp.dhis.android.testapp.trackedentity;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueObjectRepository;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueObjectRepository;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
@@ -107,6 +110,29 @@ public class TrackedEntityDataValueCollectionRepositoryMockIntegrationShould ext
                 .byProvidedElsewhere().eq(true)
                 .blockingGet();
         assertThat(trackedEntityDataValues.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void filter_by_deleted() throws D2Error {
+        TrackedEntityDataValueObjectRepository repository = d2.trackedEntityModule().trackedEntityDataValues()
+                .value("single1", "g9eOBujte1U");
+
+        TrackedEntityDataValue value = repository.blockingGet();
+
+        List<TrackedEntityDataValue> trackedEntityDataValues =
+                d2.trackedEntityModule().trackedEntityDataValues()
+                        .byDeleted().isDeleted()
+                        .blockingGet();
+        assertThat(trackedEntityDataValues.size()).isEqualTo(0);
+
+        repository.blockingDelete();
+
+        trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues()
+                .byDeleted().isDeleted()
+                .blockingGet();
+        assertThat(trackedEntityDataValues.size()).isEqualTo(1);
+
+        repository.blockingSet(value.value());
     }
 
     @Test

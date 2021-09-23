@@ -101,6 +101,7 @@ object AggregatedSamples {
         .displayName("Njandama")
         .build()
 
+    @SuppressWarnings("MagicNumber")
     val level3 = OrganisationUnitLevel.builder()
         .uid("VVkwUWGNpNR")
         .displayName("Level 3")

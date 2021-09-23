@@ -28,15 +28,13 @@
 package org.hisp.dhis.android.core.organisationunit.internal
 
 import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkStore
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLink
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkStore
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLink
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitOrganisationUnitGroupLinkStore
 
 @Suppress("MagicNumber")
 internal object OrganisationUnitOrganisationUnitGroupLinkStore {

@@ -34,6 +34,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
@@ -106,6 +107,7 @@ public class EnrollmentImportHandlerShould {
 
         when(enrollment.trackedEntityInstance()).thenReturn("tei_uid");
         when(enrollment.uid()).thenReturn(enrollmentUid);
+        when(enrollmentStore.setSyncStateOrDelete(enrollmentUid, State.SYNCED)).thenReturn(HandleAction.Update);
 
         enrollments = Collections.singletonList(enrollment);
     }

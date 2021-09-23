@@ -110,14 +110,14 @@ public class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShoul
 
         List<TrackedEntityAttributeValue> trackedEntityAttributeValues =
                 d2.trackedEntityModule().trackedEntityAttributeValues()
-                        .byDeleted().isDeleted()
+                        .byDeleted().isTrue()
                         .blockingGet();
         assertThat(trackedEntityAttributeValues.size()).isEqualTo(0);
 
         repository.blockingDelete();
 
         trackedEntityAttributeValues = d2.trackedEntityModule().trackedEntityAttributeValues()
-                        .byDeleted().isDeleted()
+                        .byDeleted().isTrue()
                         .blockingGet();
         assertThat(trackedEntityAttributeValues.size()).isEqualTo(1);
 

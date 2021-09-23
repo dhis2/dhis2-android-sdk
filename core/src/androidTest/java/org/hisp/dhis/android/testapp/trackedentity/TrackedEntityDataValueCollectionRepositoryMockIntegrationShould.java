@@ -119,14 +119,14 @@ public class TrackedEntityDataValueCollectionRepositoryMockIntegrationShould ext
 
         List<TrackedEntityDataValue> trackedEntityDataValues =
                 d2.trackedEntityModule().trackedEntityDataValues()
-                        .byDeleted().isDeleted()
+                        .byDeleted().isTrue()
                         .blockingGet();
         assertThat(trackedEntityDataValues.size()).isEqualTo(0);
 
         repository.blockingDelete();
 
         trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues()
-                .byDeleted().isDeleted()
+                .byDeleted().isTrue()
                 .blockingGet();
         assertThat(trackedEntityDataValues.size()).isEqualTo(1);
 

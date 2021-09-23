@@ -42,20 +42,20 @@ public final class DeletedFilterConnector<R extends BaseRepository> extends Base
 
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The isNotDeleted filter checks if the given field has a value distinct of null.
+     * The isFalse filter checks if the given field has a value distinct of null.
      * @return the new repository
      */
-    public R isNotDeleted() {
+    public R isFalse() {
         return isNotNull();
     }
 
 
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The isDeleted filter checks if the given field has a null value.
+     * The isTrue filter checks if the given field has a null value.
      * @return the new repository
      */
-    public R isDeleted() {
+    public R isTrue() {
         return isNull();
     }
 

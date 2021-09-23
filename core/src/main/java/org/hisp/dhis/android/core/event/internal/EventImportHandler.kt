@@ -69,7 +69,9 @@ internal class EventImportHandler @Inject constructor(
 
                 val handleAction = eventStore.setSyncStateOrDelete(eventUid, state)
 
-                if (handleAction !== HandleAction.Delete) {
+                if (state == State.SYNCED &&
+                    (handleAction == HandleAction.Update || handleAction == HandleAction.Insert)
+                ) {
                     handleIfNotDeleted(eventUid, state, eventImportSummary, enrollmentUid)
                 }
             }

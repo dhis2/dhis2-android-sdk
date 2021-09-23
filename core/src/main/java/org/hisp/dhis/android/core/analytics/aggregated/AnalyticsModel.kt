@@ -53,11 +53,19 @@ sealed class MetadataItem(val id: String, val displayName: String) {
     class CategoryOptionGroupSetItem(uid: String, displayName: String) : MetadataItem(uid, displayName)
 
     class OrganisationUnitItem(val item: OrganisationUnit) : MetadataItem(item.uid(), item.displayName()!!)
-    class OrganisationUnitLevelItem(val item: OrganisationUnitLevel) : MetadataItem(item.uid(), item.displayName()!!)
-    class OrganisationUnitGroupItem(val item: OrganisationUnitGroup) : MetadataItem(item.uid(), item.displayName()!!)
+    class OrganisationUnitLevelItem(
+        val item: OrganisationUnitLevel,
+        val organisationUnitUids: List<String>
+    ) : MetadataItem(item.uid(), item.displayName()!!)
+
+    class OrganisationUnitGroupItem(
+        val item: OrganisationUnitGroup,
+        val organisationUnitUids: List<String>
+    ) : MetadataItem(item.uid(), item.displayName()!!)
+
     class OrganisationUnitRelativeItem(
         val item: RelativeOrganisationUnit,
-        val organisationUnits: List<OrganisationUnit>
+        val organisationUnitUids: List<String>
     ) : MetadataItem(item.name, item.name)
 
     class PeriodItem(val item: Period) : MetadataItem(item.periodId()!!, item.periodId()!!)
@@ -89,7 +97,7 @@ sealed class DimensionItem(val dimension: Dimension, val id: String) {
     sealed class OrganisationUnitItem(id: String) : DimensionItem(Dimension.OrganisationUnit, id) {
         data class Absolute(val uid: String) : OrganisationUnitItem(uid), AbsoluteDimensionItem
         data class Relative(val relative: RelativeOrganisationUnit) : OrganisationUnitItem(relative.name)
-        data class Level(val level: Int) : OrganisationUnitItem(level.toString())
+        data class Level(val uid: String) : OrganisationUnitItem(uid)
         data class Group(val uid: String) : OrganisationUnitItem(uid)
     }
 

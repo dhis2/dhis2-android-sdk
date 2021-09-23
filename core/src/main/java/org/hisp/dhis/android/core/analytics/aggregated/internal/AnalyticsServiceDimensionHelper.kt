@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
-import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.AbsoluteDimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
+import javax.inject.Inject
 
 internal class AnalyticsServiceDimensionHelper @Inject constructor(
     private val periodGenerator: ParentPeriodGenerator,
@@ -85,10 +85,13 @@ internal class AnalyticsServiceDimensionHelper @Inject constructor(
                             DimensionItem.OrganisationUnitItem.Absolute(it)
                         }
                     is DimensionItem.OrganisationUnitItem.Level ->
-                        analyticsOrganisationUnitHelper.getOrganisationUnitUidsByLevel(item.level).map {
+                        analyticsOrganisationUnitHelper.getOrganisationUnitUidsByLevelUid(item.uid).map {
                             DimensionItem.OrganisationUnitItem.Absolute(it)
                         }
-                    is DimensionItem.OrganisationUnitItem.Group -> TODO()
+                    is DimensionItem.OrganisationUnitItem.Group ->
+                        analyticsOrganisationUnitHelper.getOrganisationUnitUidsByGroup(item.uid).map {
+                            DimensionItem.OrganisationUnitItem.Absolute(it)
+                        }
                 }
             is DimensionItem.CategoryItem -> listOf(item)
         }

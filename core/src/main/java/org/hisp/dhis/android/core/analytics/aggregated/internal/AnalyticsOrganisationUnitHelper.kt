@@ -28,24 +28,20 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
+import org.hisp.dhis.android.core.organisationunit.*
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
+import javax.inject.Inject
 
 internal class AnalyticsOrganisationUnitHelper @Inject constructor(
     private val userOrganisationUnitStore: UserOrganisationUnitLinkStore,
-    private val organisationUnitStore: IdentifiableObjectStore<OrganisationUnit>
+    private val organisationUnitStore: IdentifiableObjectStore<OrganisationUnit>,
+    private val organisationUnitLevelStore: IdentifiableObjectStore<OrganisationUnitLevel>,
+    private val organisationUnitOrganisationUnitGroupLinkStore: LinkStore<OrganisationUnitOrganisationUnitGroupLink>
 ) {
-
-    fun getRelativeOrganisationUnits(relative: RelativeOrganisationUnit): List<OrganisationUnit> {
-        val orgunitUids = getRelativeOrganisationUnitUids(relative)
-
-        return organisationUnitStore.selectByUids(orgunitUids)
-    }
 
     fun getRelativeOrganisationUnitUids(relative: RelativeOrganisationUnit): List<String> {
         val userOrganisationUnits = userOrganisationUnitStore.queryRootCaptureOrganisationUnitUids()
@@ -66,6 +62,25 @@ internal class AnalyticsOrganisationUnitHelper @Inject constructor(
             .build()
 
         return organisationUnitStore.selectUidsWhere(whereClause)
+    }
+
+    fun getOrganisationUnitUidsByLevelUid(levelUid: String): List<String> {
+        val level = organisationUnitLevelStore.selectByUid(levelUid)
+
+        return getOrganisationUnitUidsByLevel(level?.level()!!)
+    }
+
+    fun getOrganisationUnitUidsByGroup(groupUid: String): List<String> {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(
+                OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT_GROUP,
+                groupUid
+            ).build()
+
+        return organisationUnitOrganisationUnitGroupLinkStore.selectStringColumnsWhereClause(
+            OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT,
+            whereClause
+        ).distinct()
     }
 
     private fun queryChildrenOrganisationUnitUids(parentUids: List<String>): List<String> {

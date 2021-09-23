@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.analytics.aggregated.internal
 import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.CategoryOption
@@ -42,7 +41,6 @@ import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevelTableInfo
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.hisp.dhis.android.core.program.ProgramIndicator
@@ -151,23 +149,22 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
                         ?: throw AnalyticsException.InvalidOrganisationUnit(item.uid)
 
                 is DimensionItem.OrganisationUnitItem.Relative -> {
-                    val orgunitUids = analyticsOrganisationUnitHelper.getRelativeOrganisationUnits(item.relative)
-                    MetadataItem.OrganisationUnitRelativeItem(item.relative, orgunitUids)
+                    val ouUids = analyticsOrganisationUnitHelper.getRelativeOrganisationUnitUids(item.relative)
+                    MetadataItem.OrganisationUnitRelativeItem(item.relative, ouUids)
                 }
 
                 is DimensionItem.OrganisationUnitItem.Level -> {
-                    val levelClauseBuilder = WhereClauseBuilder()
-                        .appendKeyNumberValue(OrganisationUnitLevelTableInfo.Columns.LEVEL, item.level)
-                        .build()
-                    organisationUnitLevelStore.selectOneWhere(levelClauseBuilder)
-                        ?.let { level -> MetadataItem.OrganisationUnitLevelItem(level) }
-                        ?: throw AnalyticsException.InvalidOrganisationUnitLevel(item.level.toString())
+                    organisationUnitLevelStore.selectByUid(item.uid)?.let { level ->
+                        val ouUids = analyticsOrganisationUnitHelper.getOrganisationUnitUidsByLevel(level.level()!!)
+                        MetadataItem.OrganisationUnitLevelItem(level, ouUids)
+                    } ?: throw AnalyticsException.InvalidOrganisationUnitLevel(item.uid)
                 }
 
                 is DimensionItem.OrganisationUnitItem.Group ->
-                    organisationUnitGroupStore.selectByUid(item.uid)
-                        ?.let { group -> MetadataItem.OrganisationUnitGroupItem(group) }
-                        ?: throw AnalyticsException.InvalidOrganisationUnitGroup(item.uid)
+                    organisationUnitGroupStore.selectByUid(item.uid)?.let { group ->
+                        val ouUids = analyticsOrganisationUnitHelper.getOrganisationUnitUidsByGroup(item.uid)
+                        MetadataItem.OrganisationUnitGroupItem(group, ouUids)
+                    } ?: throw AnalyticsException.InvalidOrganisationUnitGroup(item.uid)
             }
         )
     }

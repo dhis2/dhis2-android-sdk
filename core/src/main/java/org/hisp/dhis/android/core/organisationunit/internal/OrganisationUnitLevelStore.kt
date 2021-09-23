@@ -25,36 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.organisationunit.internal
 
-package org.hisp.dhis.android.core.organisationunit.internal;
+import android.database.Cursor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithUidStore
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevelTableInfo
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevelTableInfo;
+@Suppress("MagicNumber")
+internal object OrganisationUnitLevelStore {
 
-import androidx.annotation.NonNull;
-
-final class OrganisationUnitLevelStore {
-
-    private OrganisationUnitLevelStore() {}
-
-    private static StatementBinder<OrganisationUnitLevel> BINDER
-            = new IdentifiableStatementBinder<OrganisationUnitLevel>() {
-        @Override
-        public void bindToStatement(@NonNull OrganisationUnitLevel organisationUnitLevel,
-                                    @NonNull StatementWrapper w) {
-            super.bindToStatement(organisationUnitLevel, w);
-            w.bind(7, organisationUnitLevel.level());
+    private val BINDER: StatementBinder<OrganisationUnitLevel> =
+        object : IdentifiableStatementBinder<OrganisationUnitLevel>() {
+            override fun bindToStatement(
+                organisationUnitLevel: OrganisationUnitLevel,
+                w: StatementWrapper
+            ) {
+                super.bindToStatement(organisationUnitLevel, w)
+                w.bind(7, organisationUnitLevel.level())
+            }
         }
-    };
 
-    public static IdentifiableObjectStore<OrganisationUnitLevel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(
-                databaseAdapter, OrganisationUnitLevelTableInfo.TABLE_INFO, BINDER, OrganisationUnitLevel::create);
+    @JvmStatic
+    fun create(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<OrganisationUnitLevel> {
+        return objectWithUidStore(
+            databaseAdapter, OrganisationUnitLevelTableInfo.TABLE_INFO, BINDER
+        ) { cursor: Cursor -> OrganisationUnitLevel.create(cursor) }
     }
 }

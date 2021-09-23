@@ -47,6 +47,7 @@ import org.hisp.dhis.android.core.visualization.Visualization
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.ArgumentMatchers.anyString
 
 @RunWith(JUnit4::class)
 class AnalyticsVisualizationsServiceDimensionHelperShould {
@@ -55,6 +56,7 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
     private val organisationUnitLevelStore: IdentifiableObjectStore<OrganisationUnitLevel> = mock()
     private val category: Category = mock()
     private val visualization: Visualization = mock()
+    private val orgUnitLevel: OrganisationUnitLevel = mock()
 
     private val uid1 = "GMpWZUg2QUf"
     private val uid2 = "AC6H8zCDb3B"
@@ -158,20 +160,22 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
             ObjectWithUid.create(uid1),
             ObjectWithUid.create(uid2)
         )
-        val orgunitLevels = listOf(1, 3)
+        val orgunitLevels = listOf(1)
 
         whenever(visualization.organisationUnits()) doReturn orgunitItems
         whenever(visualization.organisationUnitLevels()) doReturn orgunitLevels
+        whenever(organisationUnitLevelStore.selectOneWhere(anyString())) doReturn orgUnitLevel
+        whenever(orgUnitLevel.uid()) doReturn uid3
 
         val dimensionItems = helper.getDimensionItems(visualization, listOf("ou"))
 
-        assertThat(dimensionItems).hasSize(4)
+        assertThat(dimensionItems).hasSize(3)
 
         val absolute = dimensionItems.filterIsInstance<DimensionItem.OrganisationUnitItem.Absolute>()
         assertThat(absolute.map { it.uid }).containsExactly(uid1, uid2)
 
         val levels = dimensionItems.filterIsInstance<DimensionItem.OrganisationUnitItem.Level>()
-        assertThat(levels.map { it.uid }).containsExactlyElementsIn(orgunitLevels)
+        assertThat(levels.map { it.uid }).containsExactly(uid3)
     }
 
     @Test

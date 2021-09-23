@@ -82,11 +82,13 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
                     trackedEntityAttributeValueStore.removeDeletedAttributeValuesByInstance(teiUid)
                 }
 
+                if (handleAction !== HandleAction.Delete) {
+                    storeTEIImportConflicts(teiImportSummary)
+                }
+
                 if (state == State.SYNCED &&
                     (handleAction == HandleAction.Update || handleAction == HandleAction.Insert)
                 ) {
-                    storeTEIImportConflicts(teiImportSummary)
-
                     handleEnrollmentImportSummaries(teiImportSummary, instances)
                 }
             }

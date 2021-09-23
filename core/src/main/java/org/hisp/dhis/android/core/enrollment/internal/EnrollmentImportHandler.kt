@@ -74,12 +74,14 @@ internal class EnrollmentImportHandler @Inject constructor(
                     dataStatePropagator.resetUploadingEventStates(enrollmentUid)
                 }
 
+                if (handleAction !== HandleAction.Delete) {
+                    storeEnrollmentImportConflicts(enrollmentImportSummary, teiUid)
+                }
+
                 if (syncState == State.SYNCED &&
                     (handleAction == HandleAction.Update || handleAction == HandleAction.Insert)
                 ) {
                     jobReportEnrollmentHandler.handleEnrollmentNotes(enrollmentUid, syncState)
-                    storeEnrollmentImportConflicts(enrollmentImportSummary, teiUid)
-
                     handleEventImportSummaries(enrollmentImportSummary, enrollments)
                 }
             }

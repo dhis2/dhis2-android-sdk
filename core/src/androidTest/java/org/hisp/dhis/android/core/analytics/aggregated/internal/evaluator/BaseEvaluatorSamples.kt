@@ -38,6 +38,8 @@ import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.program.Program
@@ -56,6 +58,7 @@ object BaseEvaluatorSamples {
             .uid(uid)
             .displayName("Child 1")
             .path("/$uid")
+            .level(1)
             .build()
     }
 
@@ -66,6 +69,7 @@ object BaseEvaluatorSamples {
             .displayName("Child 1")
             .parent(ObjectWithUid.create(orgunitParent.uid()))
             .path("/${orgunitParent.uid()}/$uid")
+            .level(2)
             .build()
     }
 
@@ -76,8 +80,26 @@ object BaseEvaluatorSamples {
             .displayName("Child 2")
             .parent(ObjectWithUid.create(orgunitParent.uid()))
             .path("/${orgunitParent.uid()}/$uid")
+            .level(2)
             .build()
     }
+
+    val level1: OrganisationUnitLevel = OrganisationUnitLevel.builder()
+        .uid(generator.generate())
+        .displayName("Level 1")
+        .level(1)
+        .build()
+
+    val level2: OrganisationUnitLevel = OrganisationUnitLevel.builder()
+        .uid(generator.generate())
+        .displayName("Level 2")
+        .level(2)
+        .build()
+
+    val organisationUnitGroup = OrganisationUnitGroup.builder()
+        .uid(generator.generate())
+        .displayName("Group 1")
+        .build()
 
     val category: Category = Category.builder()
         .uid(generator.generate())

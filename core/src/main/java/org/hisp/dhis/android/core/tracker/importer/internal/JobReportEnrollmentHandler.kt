@@ -67,7 +67,7 @@ internal class JobReportEnrollmentHandler @Inject internal constructor(
         conflictStore.deleteEnrollmentConflicts(uid)
         val handleAction = enrollmentStore.setSyncStateOrDelete(uid, state)
 
-        if (handleAction !== HandleAction.Delete) {
+        if (state == State.SYNCED && (handleAction == HandleAction.Update || handleAction == HandleAction.Insert)) {
             handleEnrollmentNotes(uid, state)
         }
 

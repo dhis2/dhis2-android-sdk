@@ -71,6 +71,33 @@ public class TrackedEntityAttributeValueObjectRepositoryMockIntegrationShould
                 .value("cejWyOfXge6", "nWrB0TfWlvh").blockingExists()).isEqualTo(Boolean.TRUE);
     }
 
+    @Test
+    public void mark_a_value_as_deleted_using_the_delete_method() throws D2Error {
+        TrackedEntityAttributeValueObjectRepository repository = objectRepository();
+
+        repository.blockingSet("value");
+        repository.blockingDelete();
+        assertValueIsDeleted(repository);
+    }
+
+    @Test
+    public void mark_a_value_as_deleted_when_setting_a_null() throws D2Error {
+        TrackedEntityAttributeValueObjectRepository repository = objectRepository();
+
+        repository.blockingSet("value");
+        repository.blockingSet(null);
+        assertValueIsDeleted(repository);
+    }
+
+    private void assertValueIsDeleted(TrackedEntityAttributeValueObjectRepository objectRepository) throws D2Error {
+        assertThat(objectRepository.blockingExists()).isEqualTo(false);
+        assertThat(objectRepository.blockingGet().value()).isEqualTo(null);
+        assertThat(objectRepository.blockingGet().deleted()).isEqualTo(true);
+        objectRepository.blockingSet("1");
+        assertThat(objectRepository.blockingGet().deleted()).isEqualTo(false);
+        objectRepository.blockingSet(null);
+    }
+
     private TrackedEntityAttributeValueObjectRepository objectRepository() {
         return d2.trackedEntityModule().trackedEntityAttributeValues()
                 .value("aejWyOfXge6", "nWrB0TfWlvh");

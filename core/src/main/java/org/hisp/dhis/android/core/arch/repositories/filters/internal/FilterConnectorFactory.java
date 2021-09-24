@@ -70,6 +70,10 @@ public class FilterConnectorFactory<R extends BaseRepository> {
         return new IntegerFilterConnector<>(repositoryFactory, scope, key);
     }
 
+    public DeletedFilterConnector<R> deleted(String key) {
+        return new DeletedFilterConnector<>(repositoryFactory, scope, key);
+    }
+
     public LongFilterConnector<R> longC(String key) {
         return new LongFilterConnector<>(repositoryFactory, scope, key);
     }

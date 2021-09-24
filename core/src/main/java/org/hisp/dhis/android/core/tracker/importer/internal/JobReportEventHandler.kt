@@ -42,9 +42,11 @@ import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.note.NoteTableInfo
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
 
 @Reusable
 internal class JobReportEventHandler @Inject internal constructor(
+    private val trackedEntityDataValueStore: TrackedEntityDataValueStore,
     private val noteStore: IdentifiableObjectStore<Note>,
     private val conflictStore: TrackerImportConflictStore,
     private val eventStore: EventStore,
@@ -69,8 +71,9 @@ internal class JobReportEventHandler @Inject internal constructor(
         conflictStore.deleteEventConflicts(uid)
         val handleAction = eventStore.setSyncStateOrDelete(uid, state)
 
-        if (handleAction !== HandleAction.Delete) {
+        if (state == State.SYNCED && (handleAction == HandleAction.Update || handleAction == HandleAction.Insert)) {
             handleEventNotes(uid, state)
+            trackedEntityDataValueStore.removeDeletedDataValuesByEvent(uid)
         }
 
         return handleAction

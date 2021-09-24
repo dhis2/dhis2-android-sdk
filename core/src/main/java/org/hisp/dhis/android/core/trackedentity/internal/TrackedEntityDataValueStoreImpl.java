@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.EventTableInfo;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo;
 
@@ -125,6 +126,16 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
                 "AND " + eventInUploadableState() + ";";
 
         return queryTrackedEntityDataValues(queryStatement);
+    }
+
+    @Override
+    public void removeDeletedDataValuesByEvent(@NonNull String eventUid) {
+        String deleteWhereQuery = new WhereClauseBuilder()
+                .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.EVENT, eventUid)
+                .appendIsNullValue(TrackedEntityAttributeValueTableInfo.Columns.VALUE)
+                .build();
+
+        deleteWhere(deleteWhereQuery);
     }
 
     private String eventInUploadableState() {

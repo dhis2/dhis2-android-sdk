@@ -75,10 +75,15 @@ internal class EnrollmentImportHandler @Inject constructor(
                 }
 
                 if (handleAction !== HandleAction.Delete) {
-                    jobReportEnrollmentHandler.handleEnrollmentNotes(enrollmentUid, syncState)
                     storeEnrollmentImportConflicts(enrollmentImportSummary, teiUid)
-
                     handleEventImportSummaries(enrollmentImportSummary, enrollments)
+                    dataStatePropagator.refreshEnrollmentAggregatedSyncState(enrollmentUid)
+                }
+
+                if (syncState == State.SYNCED &&
+                    (handleAction == HandleAction.Update || handleAction == HandleAction.Insert)
+                ) {
+                    jobReportEnrollmentHandler.handleEnrollmentNotes(enrollmentUid, syncState)
                 }
             }
         }

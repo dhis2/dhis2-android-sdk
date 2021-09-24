@@ -69,8 +69,18 @@ public final class TrackedEntityDataValueObjectRepository
     }
 
     public void blockingSet(String value) throws D2Error {
-        TrackedEntityDataValue objectWithValue = setBuilder().value(value).build();
-        setObject(objectWithValue);
+        setObject(setBuilder().value(value).build());
+    }
+
+    @Override
+    protected void delete(TrackedEntityDataValue trackedEntityDataValue) throws D2Error {
+        blockingSet(null);
+    }
+
+    @Override
+    public boolean blockingExists() {
+        TrackedEntityDataValue value = blockingGetWithoutChildren();
+        return value == null ? Boolean.FALSE : value.deleted() != Boolean.TRUE;
     }
 
     private TrackedEntityDataValue.Builder setBuilder() {

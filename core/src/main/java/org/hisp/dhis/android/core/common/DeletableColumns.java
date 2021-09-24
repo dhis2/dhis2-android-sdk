@@ -25,8 +25,9 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.handlers.internal
 
-internal enum class HandleAction {
-    Insert, Update, Delete, NoAction
+package org.hisp.dhis.android.core.common;
+
+public class DeletableColumns extends CoreColumns {
+    public static final String DELETED = "deleted";
 }

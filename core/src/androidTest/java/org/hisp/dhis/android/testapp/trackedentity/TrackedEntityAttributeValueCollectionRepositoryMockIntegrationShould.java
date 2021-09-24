@@ -28,7 +28,10 @@
 
 package org.hisp.dhis.android.testapp.trackedentity;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueObjectRepository;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
@@ -39,8 +42,6 @@ import org.junit.runner.RunWith;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(D2JunitRunner.class)
 public class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShould
@@ -98,6 +99,29 @@ public class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShoul
                         .byTrackedEntityInstance().eq("nWrB0TfWlvh")
                         .blockingGet();
         assertThat(trackedEntityAttributeValues.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void filter_by_deleted() throws D2Error {
+        TrackedEntityAttributeValueObjectRepository repository = d2.trackedEntityModule().trackedEntityAttributeValues()
+                .value("cejWyOfXge6", "nWrB0TfWlvh");
+
+        TrackedEntityAttributeValue value = repository.blockingGet();
+
+        List<TrackedEntityAttributeValue> trackedEntityAttributeValues =
+                d2.trackedEntityModule().trackedEntityAttributeValues()
+                        .byDeleted().isTrue()
+                        .blockingGet();
+        assertThat(trackedEntityAttributeValues.size()).isEqualTo(0);
+
+        repository.blockingDelete();
+
+        trackedEntityAttributeValues = d2.trackedEntityModule().trackedEntityAttributeValues()
+                        .byDeleted().isTrue()
+                        .blockingGet();
+        assertThat(trackedEntityAttributeValues.size()).isEqualTo(1);
+
+        repository.blockingSet(value.value());
     }
 
     @Test

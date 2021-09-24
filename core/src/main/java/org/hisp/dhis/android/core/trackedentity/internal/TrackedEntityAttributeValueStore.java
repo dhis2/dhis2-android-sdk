@@ -44,4 +44,6 @@ public interface TrackedEntityAttributeValueStore extends ObjectWithoutUidStore<
 
     void deleteByInstanceAndNotInAttributes(@NonNull String trackedEntityInstanceUid,
                                             @NonNull List<String> trackedEntityAttributeUids);
+
+    void removeDeletedAttributeValuesByInstance(@NonNull String trackedEntityInstanceUid);
 }

@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
+import org.hisp.dhis.android.core.program.ProgramIndicator
+
 sealed class AnalyticsException(message: String) : Throwable(message) {
     class InvalidArguments(message: String) : AnalyticsException(message)
     class InvalidVisualization(val uid: String) : AnalyticsException("Missing Visualization $uid")
@@ -39,6 +41,12 @@ sealed class AnalyticsException(message: String) : Throwable(message) {
     class InvalidOrganisationUnitLevel(val id: String) : AnalyticsException("Missing organisation unit level $id")
     class InvalidCategory(val uid: String) : AnalyticsException("Missing category $uid")
     class InvalidCategoryOption(val uid: String) : AnalyticsException("Missing category option $uid")
+    class ProgramIndicatorCustomBoundaries(val programIndicator: ProgramIndicator) :
+        AnalyticsException(
+            "Custom boundaries are not supported for program indicators: " +
+                "${programIndicator.displayName()} (${programIndicator.uid()})"
+        )
+
     class SQLException(message: String) : AnalyticsException(message)
     class ParserException(message: String) : AnalyticsException(message)
 }

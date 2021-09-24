@@ -43,7 +43,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
-import org.hisp.dhis.android.core.program.ProgramIndicator
+import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
 
 @Suppress("LongParameterList")
 internal class AnalyticsServiceMetadataHelper @Inject constructor(
@@ -54,7 +54,7 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
     private val organisationUnitStore: IdentifiableObjectStore<OrganisationUnit>,
     private val organisationUnitGroupStore: IdentifiableObjectStore<OrganisationUnitGroup>,
     private val organisationUnitLevelStore: IdentifiableObjectStore<OrganisationUnitLevel>,
-    private val programIndicatorStore: IdentifiableObjectStore<ProgramIndicator>,
+    private val programIndicatorRepository: ProgramIndicatorCollectionRepository,
     private val analyticsOrganisationUnitHelper: AnalyticsOrganisationUnitHelper,
     private val parentPeriodGenerator: ParentPeriodGenerator,
     private val periodHelper: PeriodHelper
@@ -117,7 +117,7 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
                         ?: throw AnalyticsException.InvalidIndicator(item.uid)
 
                 is DimensionItem.DataItem.ProgramIndicatorItem ->
-                    programIndicatorStore.selectByUid(item.uid)
+                    programIndicatorRepository.withAnalyticsPeriodBoundaries().uid(item.uid).blockingGet()
                         ?.let { programIndicator -> MetadataItem.ProgramIndicatorItem(programIndicator) }
                         ?: throw AnalyticsException.InvalidProgramIndicator(item.uid)
             }

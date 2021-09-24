@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
+import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
@@ -43,7 +44,6 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
-import javax.inject.Inject
 
 @Suppress("LongParameterList")
 internal class AnalyticsServiceMetadataHelper @Inject constructor(

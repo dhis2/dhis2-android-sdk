@@ -62,16 +62,18 @@ internal object ProgramIndicatorEvaluatorHelper {
     private fun hasDefaultBoundaries(programIndicator: ProgramIndicator): Boolean {
         return programIndicator.analyticsPeriodBoundaries()?.let { boundaries ->
             boundaries.size == 2 &&
-                    (hasDefaultTargetBoundaries(
+                (
+                    hasDefaultTargetBoundaries(
                         programIndicator,
                         AnalyticsType.EVENT,
                         BoundaryTargetType.EventDate
                     ) ||
-                            hasDefaultTargetBoundaries(
-                                programIndicator,
-                                AnalyticsType.ENROLLMENT,
-                                BoundaryTargetType.EnrollmentDate
-                            ))
+                        hasDefaultTargetBoundaries(
+                            programIndicator,
+                            AnalyticsType.ENROLLMENT,
+                            BoundaryTargetType.EnrollmentDate
+                        )
+                    )
         } ?: false
     }
 
@@ -83,13 +85,13 @@ internal object ProgramIndicatorEvaluatorHelper {
         val hasStartBoundary by lazy {
             programIndicator.analyticsPeriodBoundaries()!!.any {
                 it.boundaryTargetType() == targetType &&
-                        it.analyticsPeriodBoundaryType() == AnalyticsPeriodBoundaryType.AFTER_START_OF_REPORTING_PERIOD
+                    it.analyticsPeriodBoundaryType() == AnalyticsPeriodBoundaryType.AFTER_START_OF_REPORTING_PERIOD
             }
         }
         val hasEndBoundary by lazy {
             programIndicator.analyticsPeriodBoundaries()!!.any {
                 it.boundaryTargetType() == targetType &&
-                        it.analyticsPeriodBoundaryType() == AnalyticsPeriodBoundaryType.BEFORE_END_OF_REPORTING_PERIOD
+                    it.analyticsPeriodBoundaryType() == AnalyticsPeriodBoundaryType.BEFORE_END_OF_REPORTING_PERIOD
             }
         }
 
@@ -108,8 +110,8 @@ internal object ProgramIndicatorEvaluatorHelper {
             appendInSubQuery(
                 EventTableInfo.Columns.PROGRAM_STAGE,
                 "SELECT ${ProgramStageTableInfo.Columns.UID} " +
-                        "FROM ${ProgramStageTableInfo.TABLE_INFO.name()} " +
-                        "WHERE ${ProgramStageTableInfo.Columns.PROGRAM} = '${programIndicator.program()?.uid()}'"
+                    "FROM ${ProgramStageTableInfo.TABLE_INFO.name()} " +
+                    "WHERE ${ProgramStageTableInfo.Columns.PROGRAM} = '${programIndicator.program()?.uid()}'"
             )
 
             items.entries.forEach { entry ->

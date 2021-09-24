@@ -46,6 +46,8 @@ import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl
+import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
+import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryType
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerDataIntegrationHelper
 import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerDataIntegrationHelper.Companion.de
@@ -126,6 +128,23 @@ internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegra
         analyticsType: AnalyticsType? = AnalyticsType.EVENT,
         aggregationType: AggregationType? = AggregationType.SUM
     ): ProgramIndicator {
+        val boundaryTarget = if (analyticsType == AnalyticsType.EVENT) {
+            "EVENT_DATE"
+        } else {
+            "ENROLLMENT_DATE"
+        }
+
+        val boundaries = listOf(
+            AnalyticsPeriodBoundary.builder()
+                .boundaryTarget(boundaryTarget)
+                .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.AFTER_START_OF_REPORTING_PERIOD)
+                .build(),
+            AnalyticsPeriodBoundary.builder()
+                .boundaryTarget(boundaryTarget)
+                .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.BEFORE_END_OF_REPORTING_PERIOD)
+                .build()
+        )
+
         val programIndicator = ProgramIndicator.builder()
             .uid(generator.generate())
             .displayName("Program indicator")
@@ -134,6 +153,7 @@ internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegra
             .analyticsType(analyticsType)
             .expression(expression)
             .filter(filter)
+            .analyticsPeriodBoundaries(boundaries)
             .build()
 
         helper.setProgramIndicator(programIndicator)

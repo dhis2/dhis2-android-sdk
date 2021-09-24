@@ -34,10 +34,10 @@ import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.common.AnalyticsType
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.EventTableInfo
-import org.hisp.dhis.android.core.program.ProgramIndicator
-import org.hisp.dhis.android.core.program.ProgramStageTableInfo
+import org.hisp.dhis.android.core.program.*
 
 internal object ProgramIndicatorEvaluatorHelper {
 
@@ -50,7 +50,50 @@ internal object ProgramIndicatorEvaluatorHelper {
             .find { it is DimensionItem.DataItem.ProgramIndicatorItem }
             ?: throw AnalyticsException.InvalidArguments("Invalid arguments: no program indicator dimension provided.")
 
-        return (metadata[programIndicatorItem.id] as MetadataItem.ProgramIndicatorItem).item
+        val programIndicator = (metadata[programIndicatorItem.id] as MetadataItem.ProgramIndicatorItem).item
+
+        if (!hasDefaultBoundaries(programIndicator)) {
+            throw AnalyticsException.ProgramIndicatorCustomBoundaries(programIndicator)
+        }
+
+        return programIndicator
+    }
+
+    private fun hasDefaultBoundaries(programIndicator: ProgramIndicator): Boolean {
+        return programIndicator.analyticsPeriodBoundaries()?.let { boundaries ->
+            boundaries.size == 2 &&
+                    (hasDefaultTargetBoundaries(
+                        programIndicator,
+                        AnalyticsType.EVENT,
+                        BoundaryTargetType.EventDate
+                    ) ||
+                            hasDefaultTargetBoundaries(
+                                programIndicator,
+                                AnalyticsType.ENROLLMENT,
+                                BoundaryTargetType.EnrollmentDate
+                            ))
+        } ?: false
+    }
+
+    private fun hasDefaultTargetBoundaries(
+        programIndicator: ProgramIndicator,
+        type: AnalyticsType,
+        targetType: BoundaryTargetType
+    ): Boolean {
+        val hasStartBoundary by lazy {
+            programIndicator.analyticsPeriodBoundaries()!!.any {
+                it.boundaryTargetType() == targetType &&
+                        it.analyticsPeriodBoundaryType() == AnalyticsPeriodBoundaryType.AFTER_START_OF_REPORTING_PERIOD
+            }
+        }
+        val hasEndBoundary by lazy {
+            programIndicator.analyticsPeriodBoundaries()!!.any {
+                it.boundaryTargetType() == targetType &&
+                        it.analyticsPeriodBoundaryType() == AnalyticsPeriodBoundaryType.BEFORE_END_OF_REPORTING_PERIOD
+            }
+        }
+
+        return programIndicator.analyticsType() == type && hasStartBoundary && hasEndBoundary
     }
 
     fun getEventWhereClause(
@@ -65,8 +108,8 @@ internal object ProgramIndicatorEvaluatorHelper {
             appendInSubQuery(
                 EventTableInfo.Columns.PROGRAM_STAGE,
                 "SELECT ${ProgramStageTableInfo.Columns.UID} " +
-                    "FROM ${ProgramStageTableInfo.TABLE_INFO.name()} " +
-                    "WHERE ${ProgramStageTableInfo.Columns.PROGRAM} = '${programIndicator.program()?.uid()}'"
+                        "FROM ${ProgramStageTableInfo.TABLE_INFO.name()} " +
+                        "WHERE ${ProgramStageTableInfo.Columns.PROGRAM} = '${programIndicator.program()?.uid()}'"
             )
 
             items.entries.forEach { entry ->

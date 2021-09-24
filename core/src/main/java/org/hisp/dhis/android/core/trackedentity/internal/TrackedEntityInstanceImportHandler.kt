@@ -79,17 +79,18 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
                     setRelationshipsState(teiUid, State.TO_UPDATE)
                 } else {
                     setRelationshipsState(teiUid, State.SYNCED)
-                    trackedEntityAttributeValueStore.removeDeletedAttributeValuesByInstance(teiUid)
                 }
 
                 if (handleAction !== HandleAction.Delete) {
                     storeTEIImportConflicts(teiImportSummary)
+                    handleEnrollmentImportSummaries(teiImportSummary, instances)
+                    dataStatePropagator.refreshTrackedEntityInstanceAggregatedSyncState(teiUid)
                 }
 
                 if (state == State.SYNCED &&
                     (handleAction == HandleAction.Update || handleAction == HandleAction.Insert)
                 ) {
-                    handleEnrollmentImportSummaries(teiImportSummary, instances)
+                    trackedEntityAttributeValueStore.removeDeletedAttributeValuesByInstance(teiUid)
                 }
             }
         }
@@ -132,16 +133,6 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
     }
 
     private fun setRelationshipsState(trackedEntityInstanceUid: String?, state: State) {
-        val dbRelationships =
-            relationshipRepository.getByItem(RelationshipHelper.teiItem(trackedEntityInstanceUid), true)
-        val ownedRelationships = relationshipDHISVersionManager
-            .getOwnedRelationships(dbRelationships, trackedEntityInstanceUid)
-        for (relationship in ownedRelationships) {
-            relationshipStore.setSyncStateOrDelete(relationship.uid()!!, state)
-        }
-    }
-
-    private fun deleteRemovedTrackedEntityDataAndAttributeValues(trackedEntityInstanceUid: String?, state: State) {
         val dbRelationships =
             relationshipRepository.getByItem(RelationshipHelper.teiItem(trackedEntityInstanceUid), true)
         val ownedRelationships = relationshipDHISVersionManager

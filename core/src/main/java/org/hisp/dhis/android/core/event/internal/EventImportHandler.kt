@@ -71,12 +71,13 @@ internal class EventImportHandler @Inject constructor(
 
                 if (handleAction !== HandleAction.Delete) {
                     storeEventImportConflicts(eventImportSummary, enrollmentUid)
+                    dataStatePropagator.refreshEventAggregatedSyncState(eventUid)
                 }
 
                 if (state == State.SYNCED &&
                     (handleAction == HandleAction.Update || handleAction == HandleAction.Insert)
                 ) {
-                    handleIfNotDeleted(eventUid, state)
+                    handleIfSynced(eventUid, state)
                 }
             }
         }
@@ -101,12 +102,11 @@ internal class EventImportHandler @Inject constructor(
         }
     }
 
-    private fun handleIfNotDeleted(
+    private fun handleIfSynced(
         eventUid: String,
         state: State
     ) {
         jobReportEventHandler.handleEventNotes(eventUid, state)
-        dataStatePropagator.refreshEventAggregatedSyncState(eventUid)
         trackedEntityDataValueStore.removeDeletedDataValuesByEvent(eventUid)
     }
 

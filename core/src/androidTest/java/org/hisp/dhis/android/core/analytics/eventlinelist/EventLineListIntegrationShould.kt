@@ -52,6 +52,8 @@ import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitOrganisationUnitGroupLinkStore
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory
@@ -84,6 +86,8 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
     private val dataElementStore = DataElementStore.create(databaseAdapter)
     private val organisationUnitStore = OrganisationUnitStore.create(databaseAdapter)
     private val userOrganisationUnitStore = UserOrganisationUnitLinkStoreImpl.create(databaseAdapter)
+    private val organisationUnitGroupLinkStore = OrganisationUnitOrganisationUnitGroupLinkStore.create(databaseAdapter)
+    private val organisationUnitLevelStore = OrganisationUnitLevelStore.create(databaseAdapter)
     private val trackedEntityInstanceStore = TrackedEntityInstanceStoreImpl.create(databaseAdapter)
     private val eventStore = EventStoreImpl.create(databaseAdapter)
     private val trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl.create(databaseAdapter)
@@ -95,7 +99,9 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         DateFilterPeriodHelper(calendarProvider, ParentPeriodGeneratorImpl.create(calendarProvider))
     private val organisationUnitHelper = AnalyticsOrganisationUnitHelper(
         userOrganisationUnitStore,
-        organisationUnitStore
+        organisationUnitStore,
+        organisationUnitLevelStore,
+        organisationUnitGroupLinkStore
     )
 
     private val eventLineListService: EventLineListService = EventLineListServiceImpl(

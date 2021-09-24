@@ -25,30 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.organisationunit.internal
 
-package org.hisp.dhis.android.core.organisationunit.internal;
+import android.database.Cursor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithUidStore
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevelTableInfo
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore;
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLink;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo;
+@Suppress("MagicNumber")
+internal object OrganisationUnitLevelStore {
 
-final class OrganisationUnitOrganisationUnitGroupLinkStore {
+    private val BINDER: StatementBinder<OrganisationUnitLevel> =
+        object : IdentifiableStatementBinder<OrganisationUnitLevel>() {
+            override fun bindToStatement(
+                organisationUnitLevel: OrganisationUnitLevel,
+                w: StatementWrapper
+            ) {
+                super.bindToStatement(organisationUnitLevel, w)
+                w.bind(7, organisationUnitLevel.level())
+            }
+        }
 
-    private static final StatementBinder<OrganisationUnitOrganisationUnitGroupLink> BINDER = (o, w) -> {
-        w.bind(1, o.organisationUnit());
-        w.bind(2, o.organisationUnitGroup());
-    };
-
-    private OrganisationUnitOrganisationUnitGroupLinkStore() {}
-
-    public static LinkStore<OrganisationUnitOrganisationUnitGroupLink> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkStore(databaseAdapter,
-                OrganisationUnitOrganisationUnitGroupLinkTableInfo.TABLE_INFO,
-                OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT,
-                BINDER,
-                OrganisationUnitOrganisationUnitGroupLink::create);
+    @JvmStatic
+    fun create(databaseAdapter: DatabaseAdapter): IdentifiableObjectStore<OrganisationUnitLevel> {
+        return objectWithUidStore(
+            databaseAdapter, OrganisationUnitLevelTableInfo.TABLE_INFO, BINDER
+        ) { cursor: Cursor -> OrganisationUnitLevel.create(cursor) }
     }
 }

@@ -42,6 +42,9 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement3
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement4
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElementOperand
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.level1
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.level2
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.organisationUnitGroup
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild2
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitParent
@@ -60,6 +63,8 @@ import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
 import org.hisp.dhis.android.core.indicator.internal.IndicatorStore
 import org.hisp.dhis.android.core.indicator.internal.IndicatorTypeStore
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitGroupStore
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.period.internal.PeriodStoreImpl
 import org.hisp.dhis.android.core.program.internal.ProgramStageStore
@@ -85,6 +90,8 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
     )
     protected val dataElementStore = DataElementStore.create(databaseAdapter)
     protected val organisationUnitStore = OrganisationUnitStore.create(databaseAdapter)
+    protected val organisationUnitLevelStore = OrganisationUnitLevelStore.create(databaseAdapter)
+    protected val organisationUnitGroupStore = OrganisationUnitGroupStore.create(databaseAdapter)
     protected val periodStore = PeriodStoreImpl.create(databaseAdapter)
 
     protected val trackedEntityTypeStore = TrackedEntityTypeStore.create(databaseAdapter)
@@ -101,6 +108,15 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
         orgunitParent.uid() to MetadataItem.OrganisationUnitItem(orgunitParent),
         orgunitChild1.uid() to MetadataItem.OrganisationUnitItem(orgunitChild1),
         orgunitChild2.uid() to MetadataItem.OrganisationUnitItem(orgunitChild2),
+        level1.uid() to MetadataItem.OrganisationUnitLevelItem(level1, listOf(orgunitParent.uid())),
+        level2.uid() to MetadataItem.OrganisationUnitLevelItem(
+            level2,
+            listOf(orgunitChild1.uid(), orgunitChild2.uid())
+        ),
+        organisationUnitGroup.uid() to MetadataItem.OrganisationUnitGroupItem(
+            organisationUnitGroup,
+            listOf(orgunitParent.uid())
+        ),
         dataElement1.uid() to MetadataItem.DataElementItem(dataElement1),
         dataElement2.uid() to MetadataItem.DataElementItem(dataElement2),
         dataElementOperand.uid()!! to MetadataItem.DataElementOperandItem(dataElementOperand),
@@ -109,11 +125,11 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
         periodQ4.periodId()!! to MetadataItem.PeriodItem(periodQ4),
         RelativeOrganisationUnit.USER_ORGUNIT.name to MetadataItem.OrganisationUnitRelativeItem(
             RelativeOrganisationUnit.USER_ORGUNIT,
-            listOf(orgunitParent)
+            listOf(orgunitParent.uid())
         ),
         RelativeOrganisationUnit.USER_ORGUNIT_CHILDREN.name to MetadataItem.OrganisationUnitRelativeItem(
             RelativeOrganisationUnit.USER_ORGUNIT_CHILDREN,
-            listOf(orgunitChild1, orgunitChild2)
+            listOf(orgunitChild1.uid(), orgunitChild2.uid())
         ),
         RelativePeriod.THIS_MONTH.name to MetadataItem.RelativePeriodItem(
             RelativePeriod.THIS_MONTH,
@@ -127,9 +143,14 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
 
     @Before
     fun setUpBase() {
+        organisationUnitLevelStore.insert(level1)
+        organisationUnitLevelStore.insert(level2)
+
         organisationUnitStore.insert(orgunitParent)
         organisationUnitStore.insert(orgunitChild1)
         organisationUnitStore.insert(orgunitChild2)
+
+        organisationUnitGroupStore.insert(organisationUnitGroup)
 
         categoryStore.insert(category)
         categoryOptionStore.insert(categoryOption)
@@ -159,7 +180,9 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
 
     @After
     fun tearDown() {
+        organisationUnitLevelStore.delete()
         organisationUnitStore.delete()
+        organisationUnitGroupStore.delete()
         categoryStore.delete()
         categoryOptionStore.delete()
         categoryCategoryOptionStore.delete()

@@ -41,6 +41,15 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodTableInfo
 
+/**
+ * This class includes some SQL helpers to build the where clause. Dimensions might include several items, like for
+ * example a Period dimension might include January, February and March. It is important to join the inner clauses
+ * using an OR operator in order to include all the element that match any element in the dimension. For example, this
+ * query should result in something like:
+ * - ... AND (period = January OR period = February OR period = March)...
+ *
+ * This logic applies for all the dimensions.
+ */
 internal object AnalyticsEvaluatorHelper {
 
     fun getItemsByDimension(evaluationItem: AnalyticsServiceEvaluationItem): Map<Dimension, List<DimensionItem>> {
@@ -58,20 +67,21 @@ internal object AnalyticsEvaluatorHelper {
         val innerClause = WhereClauseBuilder().apply {
             items.map { i ->
                 when (val item = i as DimensionItem.OrganisationUnitItem) {
-                    is DimensionItem.OrganisationUnitItem.Absolute ->
+                    is DimensionItem.OrganisationUnitItem.Absolute -> {
                         appendOrInSubQuery(columnName, getOrgunitClause(item.uid))
-
-                    is DimensionItem.OrganisationUnitItem.Level ->
-                        appendOrInSubQuery(columnName, getLevelOrgunitClause(item.level))
-
+                    }
+                    is DimensionItem.OrganisationUnitItem.Level -> {
+                        val metadataItem = metadata[item.id] as MetadataItem.OrganisationUnitLevelItem
+                        appendOrInSubQuery(columnName, getOrgunitListClause(metadataItem.organisationUnitUids))
+                    }
                     is DimensionItem.OrganisationUnitItem.Relative -> {
                         val metadataItem = metadata[item.id] as MetadataItem.OrganisationUnitRelativeItem
-                        val orgunits = metadataItem.organisationUnits.map { it.uid() }
-
-                        appendOrInSubQuery(columnName, getOrgunitListClause(orgunits))
+                        appendOrInSubQuery(columnName, getOrgunitListClause(metadataItem.organisationUnitUids))
                     }
-
-                    is DimensionItem.OrganisationUnitItem.Group -> TODO()
+                    is DimensionItem.OrganisationUnitItem.Group -> {
+                        val metadataItem = metadata[item.id] as MetadataItem.OrganisationUnitGroupItem
+                        appendOrInSubQuery(columnName, getOrgunitListClause(metadataItem.organisationUnitUids))
+                    }
                 }
             }
         }.build()
@@ -118,13 +128,6 @@ internal object AnalyticsEvaluatorHelper {
             "FROM ${OrganisationUnitTableInfo.TABLE_INFO.name()} " +
             "WHERE " +
             "${OrganisationUnitTableInfo.Columns.PATH} LIKE '%$orgunitUid%'"
-    }
-
-    private fun getLevelOrgunitClause(level: Int): String {
-        return "SELECT ${OrganisationUnitTableInfo.Columns.UID} " +
-            "FROM ${OrganisationUnitTableInfo.TABLE_INFO.name()} " +
-            "WHERE " +
-            "${OrganisationUnitTableInfo.Columns.LEVEL} = $level"
     }
 
     private fun getOrgunitListClause(orgunitUids: List<String>): String {

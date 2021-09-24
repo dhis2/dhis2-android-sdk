@@ -35,6 +35,8 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOptionCombo
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement2
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.level1
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.organisationUnitGroup
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild2
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitParent
@@ -247,6 +249,46 @@ internal class DataElementEvaluatorIntegrationShould : BaseEvaluatorIntegrationS
             filters = listOf(
                 DimensionItem.OrganisationUnitItem.Relative(RelativeOrganisationUnit.USER_ORGUNIT_CHILDREN),
                 DimensionItem.PeriodItem.Relative(RelativePeriod.THIS_MONTH)
+            )
+        )
+
+        val value = dataElementEvaluator.evaluate(evaluationItem, metadata)
+
+        assertThat(value).isEqualTo("5")
+    }
+
+    @Test
+    fun should_use_organisation_unit_levels() {
+        createDataValue("2", orgunitUid = orgunitChild1.uid(), periodId = periodNov.periodId()!!)
+        createDataValue("3", orgunitUid = orgunitChild2.uid(), periodId = periodNov.periodId()!!)
+
+        val evaluationItem = AnalyticsServiceEvaluationItem(
+            dimensionItems = listOf(
+                DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
+                DimensionItem.PeriodItem.Absolute(periodNov.periodId()!!)
+            ),
+            filters = listOf(
+                DimensionItem.OrganisationUnitItem.Level(level1.uid())
+            )
+        )
+
+        val value = dataElementEvaluator.evaluate(evaluationItem, metadata)
+
+        assertThat(value).isEqualTo("5")
+    }
+
+    @Test
+    fun should_use_organisation_unit_groups() {
+        createDataValue("2", orgunitUid = orgunitChild1.uid(), periodId = periodNov.periodId()!!)
+        createDataValue("3", orgunitUid = orgunitChild2.uid(), periodId = periodNov.periodId()!!)
+
+        val evaluationItem = AnalyticsServiceEvaluationItem(
+            dimensionItems = listOf(
+                DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
+                DimensionItem.PeriodItem.Absolute(periodNov.periodId()!!)
+            ),
+            filters = listOf(
+                DimensionItem.OrganisationUnitItem.Group(organisationUnitGroup.uid())
             )
         )
 

@@ -185,8 +185,7 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
             dataValuesMap.put(dataValue.event(), new ArrayList<>());
         }
 
-        dataValuesMap.get(dataValue.event()).add(dataValue.deleted()  == Boolean.TRUE ?
-                dataValue.toBuilder().value("").build() : dataValue);
+        dataValuesMap.get(dataValue.event()).add(dataValue);
     }
 
     public static TrackedEntityDataValueStore create(DatabaseAdapter databaseAdapter) {

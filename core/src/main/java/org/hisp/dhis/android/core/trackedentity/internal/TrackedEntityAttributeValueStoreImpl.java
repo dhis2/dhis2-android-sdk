@@ -156,9 +156,7 @@ public final class TrackedEntityAttributeValueStoreImpl
                     new ArrayList<>());
         }
 
-        valueMap.get(trackedEntityAttributeValue.trackedEntityInstance()).add(
-                trackedEntityAttributeValue.deleted() == Boolean.TRUE ?
-                        trackedEntityAttributeValue.toBuilder().value("").build() : trackedEntityAttributeValue);
+        valueMap.get(trackedEntityAttributeValue.trackedEntityInstance()).add(trackedEntityAttributeValue);
     }
 
     public static TrackedEntityAttributeValueStore create(DatabaseAdapter databaseAdapter) {

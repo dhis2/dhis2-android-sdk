@@ -48,7 +48,7 @@ internal class EventPostParentCall @Inject internal constructor(
             if (trackerParentCallHelperHelper.useNewTrackerImporter()) {
                 trackerImporterCall.uploadEvents(events)
             } else {
-                oldCall.uploadEvents(events)
+                trackerImporterCall.uploadEvents(events)
             }
         }
     }

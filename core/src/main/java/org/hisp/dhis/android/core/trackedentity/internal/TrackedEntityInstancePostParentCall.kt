@@ -49,7 +49,7 @@ internal class TrackedEntityInstancePostParentCall @Inject internal constructor(
             if (trackerParentCallHelperHelper.useNewTrackerImporter()) {
                 trackerImporterCall.uploadTrackedEntityInstances(trackedEntityInstances)
             } else {
-                oldCall.uploadTrackedEntityInstances(trackedEntityInstances)
+                trackerImporterCall.uploadTrackedEntityInstances(trackedEntityInstances)
             }
         }
     }

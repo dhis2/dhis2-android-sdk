@@ -27,12 +27,11 @@
  */
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine
 
-import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluator
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.ProgramIndicatorEvaluator
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.ProgramIndicatorSQLEvaluator
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.mapByUid
 import org.hisp.dhis.android.core.constant.Constant
@@ -46,13 +45,14 @@ import org.hisp.dhis.android.core.parser.internal.service.ExpressionService
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
+import javax.inject.Inject
 
 internal class IndicatorEngine @Inject constructor(
     private val indicatorTypeStore: IdentifiableObjectStore<IndicatorType>,
     private val dataElementStore: IdentifiableObjectStore<DataElement>,
     private val programIndicatorRepository: ProgramIndicatorCollectionRepository,
     private val dataElementEvaluator: DataElementEvaluator,
-    private val programIndicatorEvaluator: ProgramIndicatorEvaluator,
+    private val programIndicatorEvaluator: ProgramIndicatorSQLEvaluator,
     private val constantStore: IdentifiableObjectStore<Constant>,
     private val expressionService: ExpressionService
 ) {

@@ -29,29 +29,17 @@ package org.hisp.dhis.android.core.visualization.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
-import org.hisp.dhis.android.core.visualization.*
+import org.hisp.dhis.android.core.visualization.DataDimensionItemProgramAttribute
 
-internal object DataDimensionItemFields {
-    internal const val CATEGORY = "category"
-    internal const val CATEGORY_OPTIONS = "categoryOptions"
-    private val fh = FieldsHelper<DataDimensionItem>()
+internal object DataDimensionItemProgramAttributeFields {
+    internal const val DIMENSION_ITEM = "dimensionItem"
 
-    val allFields: Fields<DataDimensionItem> =
-        Fields.builder<DataDimensionItem>()
+    private val fh = FieldsHelper<DataDimensionItemProgramAttribute>()
+
+    val allFields: Fields<DataDimensionItemProgramAttribute> =
+        Fields.builder<DataDimensionItemProgramAttribute>()
             .fields(
-                fh.field<DataDimensionItemType>(DataDimensionItemTableInfo.Columns.DATA_DIMENSION_ITEM_TYPE),
-                fh.nestedFieldWithUid(DataDimensionItemTableInfo.Columns.INDICATOR),
-                fh.nestedFieldWithUid(DataDimensionItemTableInfo.Columns.DATA_ELEMENT),
-                fh.nestedFieldWithUid(DataDimensionItemTableInfo.Columns.DATA_ELEMENT_OPERAND),
-                fh.nestedFieldWithUid(DataDimensionItemTableInfo.Columns.REPORTING_RATE),
-                fh.nestedFieldWithUid(DataDimensionItemTableInfo.Columns.PROGRAM_INDICATOR),
-                fh.nestedField<DataDimensionItemProgramDataElement>(
-                    DataDimensionItemTableInfo.Columns.PROGRAM_DATA_ELEMENT
-                ).with(DataDimensionItemProgramDataElementFields.allFields),
-                fh.nestedField<DataDimensionItemProgramAttribute>(
-                    DataDimensionItemTableInfo.Columns.PROGRAM_ATTRIBUTE
-                ).with(DataDimensionItemProgramAttributeFields.allFields),
-                fh.nestedFieldWithUid(DataDimensionItemTableInfo.Columns.VALIDATION_RULE)
+                fh.field<DataDimensionItemProgramAttribute>(DIMENSION_ITEM)
             )
             .build()
 }

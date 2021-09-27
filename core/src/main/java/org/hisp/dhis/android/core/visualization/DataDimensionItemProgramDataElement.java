@@ -41,29 +41,28 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-
-import java.util.Collections;
+import org.hisp.dhis.android.core.visualization.internal.DataDimensionItemProgramDataElementFields;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_DataDimensionItemProgramDataElement.Builder.class)
 public abstract class DataDimensionItemProgramDataElement implements ObjectWithUidInterface {
 
     @Nullable
-    @JsonProperty("dimensionItem")
+    @JsonProperty(DataDimensionItemProgramDataElementFields.DIMENSION_ITEM)
     public abstract String uid();
 
     @Nullable
     @JsonIgnore()
     @ColumnAdapter(IgnoreObjectWithUidColumnAdapter.class)
     public ObjectWithUid program() {
-        return uid() != null ? getTokenAt(0) : null;
+        return uid() == null ? null : getTokenAt(0);
     }
 
     @Nullable
     @JsonIgnore()
     @ColumnAdapter(IgnoreObjectWithUidColumnAdapter.class)
     public ObjectWithUid dataElement() {
-        return uid() != null ? getTokenAt(1) : null;
+        return uid() == null ? null : getTokenAt(1);
     }
 
     public static Builder builder() {
@@ -73,16 +72,16 @@ public abstract class DataDimensionItemProgramDataElement implements ObjectWithU
     public abstract Builder toBuilder();
 
     private ObjectWithUid getTokenAt(int position) {
-        String[] tokens = uid() != null ? uid().split("\\.") : ArrayUtils.EMPTY_STRING_ARRAY;
+        String[] tokens = uid() == null ? ArrayUtils.EMPTY_STRING_ARRAY : uid().split("\\.");
         String uid = tokens.length > position ? tokens[position] : null;
-        return uid != null ? ObjectWithUid.create(uid) : null;
+        return uid == null ? null : ObjectWithUid.create(uid);
     }
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public static abstract class Builder {
 
-        @JsonProperty("dimensionItem")
+        @JsonProperty(DataDimensionItemProgramDataElementFields.DIMENSION_ITEM)
         public abstract Builder uid(String uid);
 
         public abstract DataDimensionItemProgramDataElement build();

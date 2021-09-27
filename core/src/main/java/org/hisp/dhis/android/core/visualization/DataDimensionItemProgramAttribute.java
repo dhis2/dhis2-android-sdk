@@ -41,27 +41,28 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.visualization.internal.DataDimensionItemProgramAttributeFields;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_DataDimensionItemProgramAttribute.Builder.class)
 public abstract class DataDimensionItemProgramAttribute implements ObjectWithUidInterface {
 
     @Nullable
-    @JsonProperty("dimensionItem")
+    @JsonProperty(DataDimensionItemProgramAttributeFields.DIMENSION_ITEM)
     public abstract String uid();
 
     @Nullable
     @JsonIgnore()
     @ColumnAdapter(IgnoreObjectWithUidColumnAdapter.class)
     public ObjectWithUid program() {
-        return uid() != null ? getTokenAt(0) : null;
+        return uid() == null ? null : getTokenAt(0);
     }
 
     @Nullable
     @JsonIgnore()
     @ColumnAdapter(IgnoreObjectWithUidColumnAdapter.class)
     public ObjectWithUid attribute() {
-        return uid() != null ? getTokenAt(1) : null;
+        return uid() == null ? null : getTokenAt(1);
     }
 
     public static Builder builder() {
@@ -71,16 +72,16 @@ public abstract class DataDimensionItemProgramAttribute implements ObjectWithUid
     public abstract Builder toBuilder();
 
     private ObjectWithUid getTokenAt(int position) {
-        String[] tokens = uid() != null ? uid().split("\\.") : ArrayUtils.EMPTY_STRING_ARRAY;
+        String[] tokens = uid() == null ? ArrayUtils.EMPTY_STRING_ARRAY : uid().split("\\.");
         String uid = tokens.length > position ? tokens[position] : null;
-        return uid != null ? ObjectWithUid.create(uid) : null;
+        return uid == null ? null : ObjectWithUid.create(uid);
     }
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public static abstract class Builder {
 
-        @JsonProperty("dimensionItem")
+        @JsonProperty(DataDimensionItemProgramAttributeFields.DIMENSION_ITEM)
         public abstract Builder uid(String uid);
 
         public abstract DataDimensionItemProgramAttribute build();

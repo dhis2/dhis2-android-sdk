@@ -25,37 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.data.visualization
+package org.hisp.dhis.android.core.visualization.internal
 
-import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.visualization.DataDimensionItemSamples
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.hisp.dhis.android.core.visualization.DataDimensionItem
-import org.hisp.dhis.android.core.visualization.DataDimensionItemProgramAttribute
-import org.hisp.dhis.android.core.visualization.DataDimensionItemProgramDataElement
-import org.hisp.dhis.android.core.visualization.DataDimensionItemType
+import org.hisp.dhis.android.core.visualization.DataDimensionItemTableInfo
+import org.junit.runner.RunWith
 
-object DataDimensionItemSamples {
+@RunWith(D2JunitRunner::class)
+class DataDimensionItemProgramDataElementStoreIntegrationShould :
+    LinkStoreAbstractIntegrationShould<DataDimensionItem>(
+        DataDimensionItemStore.create(TestDatabaseAdapterFactory.get()),
+        DataDimensionItemTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get()
+    ) {
+    override fun addMasterUid(): String {
+        return "visualization_uid"
+    }
 
-    fun dataDimensionItem(): DataDimensionItem =
-        DataDimensionItem.builder()
-            .id(1L)
-            .visualization("visualization_uid")
-            .dataDimensionItemType(DataDimensionItemType.DATA_ELEMENT)
-            .dataElement(ObjectWithUid.create("data_element_uid"))
+    override fun buildObject(): DataDimensionItem {
+        return DataDimensionItemSamples.dataDimensionItemProgramDataElement()
+    }
+
+    override fun buildObjectWithOtherMasterUid(): DataDimensionItem {
+        return DataDimensionItemSamples.dataDimensionItemProgramDataElement().toBuilder()
+            .visualization("visualization_uid_2")
             .build()
-
-    fun dataDimensionItemProgramDataElement(): DataDimensionItem =
-        DataDimensionItem.builder()
-            .id(1L)
-            .visualization("visualization_uid")
-            .dataDimensionItemType(DataDimensionItemType.PROGRAM_DATA_ELEMENT)
-            .programDataElement(DataDimensionItemProgramDataElement.builder().uid("program.data_element").build())
-            .build()
-
-    fun dataDimensionItemAttribute(): DataDimensionItem =
-        DataDimensionItem.builder()
-            .id(1L)
-            .visualization("visualization_uid")
-            .dataDimensionItemType(DataDimensionItemType.PROGRAM_DATA_ELEMENT)
-            .programAttribute(DataDimensionItemProgramAttribute.builder().uid("program.data_element").build())
-            .build()
+    }
 }

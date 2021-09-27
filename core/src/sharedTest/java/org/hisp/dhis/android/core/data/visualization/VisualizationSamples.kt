@@ -32,11 +32,12 @@ import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils
 import org.hisp.dhis.android.core.visualization.*
 
-object VisualizationSamples {
+internal object VisualizationSamples {
 
     private const val DATE_STR = "2021-06-16T14:26:50.195"
     private val DATE = FillPropertiesTestUtils.parseDate(DATE_STR)
 
+    @JvmStatic
     fun visualization(): Visualization = Visualization.builder()
         .id(1L)
         .uid("PYBH8ZaAQnC")

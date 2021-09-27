@@ -25,37 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.data.visualization
 
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.visualization.DataDimensionItem
-import org.hisp.dhis.android.core.visualization.DataDimensionItemProgramAttribute
-import org.hisp.dhis.android.core.visualization.DataDimensionItemProgramDataElement
-import org.hisp.dhis.android.core.visualization.DataDimensionItemType
+package org.hisp.dhis.android.core.visualization;
 
-object DataDimensionItemSamples {
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.hisp.dhis.android.core.data.visualization.VisualizationSamples;
+import org.junit.Test;
 
-    fun dataDimensionItem(): DataDimensionItem =
-        DataDimensionItem.builder()
-            .id(1L)
-            .visualization("visualization_uid")
-            .dataDimensionItemType(DataDimensionItemType.DATA_ELEMENT)
-            .dataElement(ObjectWithUid.create("data_element_uid"))
-            .build()
+import java.io.IOException;
+import java.text.ParseException;
 
-    fun dataDimensionItemProgramDataElement(): DataDimensionItem =
-        DataDimensionItem.builder()
-            .id(1L)
-            .visualization("visualization_uid")
-            .dataDimensionItemType(DataDimensionItemType.PROGRAM_DATA_ELEMENT)
-            .programDataElement(DataDimensionItemProgramDataElement.builder().uid("program.data_element").build())
-            .build()
+import static com.google.common.truth.Truth.assertThat;
 
-    fun dataDimensionItemAttribute(): DataDimensionItem =
-        DataDimensionItem.builder()
-            .id(1L)
-            .visualization("visualization_uid")
-            .dataDimensionItemType(DataDimensionItemType.PROGRAM_DATA_ELEMENT)
-            .programAttribute(DataDimensionItemProgramAttribute.builder().uid("program.data_element").build())
-            .build()
+public class VisualizationSimplifiedShould extends BaseObjectShould implements ObjectShould {
+
+    public VisualizationSimplifiedShould() {
+        super("visualization/visualization_simplified.json");
+    }
+
+    @Override
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        Visualization jsonVisualization = objectMapper.readValue(jsonStream, Visualization.class)
+                .toBuilder().id(null).build();
+        Visualization expectedVisualization = VisualizationSamples.visualization()
+                .toBuilder().id(null).build();
+        assertThat(jsonVisualization).isEqualTo(expectedVisualization);
+    }
 }

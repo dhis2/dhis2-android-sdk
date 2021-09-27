@@ -177,6 +177,77 @@
       "programIndicator": {
         "id": "p2Zxg0wcPQ3"
       }
+    },
+    {
+      "dataDimensionItemType": "PROGRAM_DATA_ELEMENT",
+      "programDataElement": {
+        "name": "Antenatal care visit WHOMCH Smoking",
+        "shortName": "Antenatal care Smoking",
+        "aggregationType": "SUM",
+        "displayName": "Antenatal care visit WHOMCH Smoking",
+        "displayShortName": "Antenatal care Smoking",
+        "externalAccess": false,
+        "periodOffset": 0,
+        "valueType": "BOOLEAN",
+        "dimensionItem": "lxAQ7Zs9VYR.sWoqcoByYmD",
+        "displayFormName": "Antenatal care visit WHOMCH Smoking",
+        "favorite": false,
+        "dimensionItemType": "PROGRAM_DATA_ELEMENT",
+        "access": {
+          "read": true,
+          "update": true,
+          "externalize": true,
+          "delete": true,
+          "write": true,
+          "manage": true
+        },
+        "program": {
+          "id": "lxAQ7Zs9VYR"
+        },
+        "dataElement": {
+          "id": "sWoqcoByYmD"
+        },
+        "favorites": [],
+        "translations": [],
+        "userGroupAccesses": [],
+        "attributeValues": [],
+        "userAccesses": [],
+        "legendSets": []
+      }
+    },
+    {
+      "dataDimensionItemType": "PROGRAM_ATTRIBUTE",
+      "programAttribute": {
+        "name": "XX TEST TRACKER PROGRAM Is dead",
+        "aggregationType": "NONE",
+        "displayName": "XX TEST TRACKER PROGRAM Is dead",
+        "externalAccess": false,
+        "periodOffset": 0,
+        "dimensionItem": "U5KybNCtA3E.iggSfNDnsCw",
+        "displayFormName": "XX TEST TRACKER PROGRAM Is dead",
+        "favorite": false,
+        "dimensionItemType": "PROGRAM_ATTRIBUTE",
+        "access": {
+          "read": true,
+          "update": true,
+          "externalize": true,
+          "delete": true,
+          "write": true,
+          "manage": true
+        },
+        "program": {
+          "id": "U5KybNCtA3E"
+        },
+        "attribute": {
+          "id": "iggSfNDnsCw"
+        },
+        "favorites": [],
+        "translations": [],
+        "userGroupAccesses": [],
+        "attributeValues": [],
+        "userAccesses": [],
+        "legendSets": []
+      }
     }
   ],
   "organisationUnitLevels": [
@@ -204,9 +275,6 @@
       "id": "2021S2"
     }
   ],
-
-
-
   "columns": [
     {
       "id": "dx"
@@ -228,9 +296,6 @@
       "id": "pe"
     }
   ],
-
-
-
   "yearlySeries": [],
   "reportingParams": {
     "parentOrganisationUnit": false,
@@ -244,10 +309,6 @@
   "regressionType": "NONE",
   "numberType": "VALUE",
   "aggregationType": "DEFAULT",
-
-
-
-
   "legend": {
     "hidden": false
   },

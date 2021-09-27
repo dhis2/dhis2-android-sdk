@@ -44,12 +44,12 @@ import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.constant.internal.ConstantStore
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.datavalue.DataValue
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl
-import org.hisp.dhis.android.core.event.internal.EventStoreImpl
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.indicator.IndicatorType
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitGroupStore
 import org.hisp.dhis.android.core.parser.internal.service.ExpressionService
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLExecutor
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -58,10 +58,14 @@ import org.junit.runner.RunWith
 internal class IndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegrationShould() {
 
     private val dataElementEvaluator = DataElementEvaluator(databaseAdapter)
-    private val programIndicatorEvaluator = ProgramIndicatorEvaluator(
-        EventStoreImpl.create(databaseAdapter),
-        EnrollmentStoreImpl.create(databaseAdapter),
-        d2.programModule().programIndicatorEngine()
+    private val programIndicatorExecutor = ProgramIndicatorSQLExecutor(
+        ConstantStore.create(databaseAdapter),
+        DataElementStore.create(databaseAdapter),
+        TrackedEntityAttributeStore.create(databaseAdapter),
+        databaseAdapter
+    )
+    private val programIndicatorEvaluator = ProgramIndicatorSQLEvaluator(
+        programIndicatorExecutor
     )
 
     private val expressionService = ExpressionService(

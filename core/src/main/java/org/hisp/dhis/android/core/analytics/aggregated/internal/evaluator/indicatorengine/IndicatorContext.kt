@@ -30,8 +30,7 @@ package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indic
 
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluator
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.ProgramIndicatorEvaluator
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.AnalyticsEvaluator
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
@@ -39,8 +38,8 @@ import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
 internal data class IndicatorContext(
     val dataElementStore: IdentifiableObjectStore<DataElement>,
     val programIndicatorRepository: ProgramIndicatorCollectionRepository,
-    val dataElementEvaluator: DataElementEvaluator,
-    val programIndicatorEvaluator: ProgramIndicatorEvaluator,
+    val dataElementEvaluator: AnalyticsEvaluator,
+    val programIndicatorEvaluator: AnalyticsEvaluator,
     val evaluationItem: AnalyticsServiceEvaluationItem,
     val contextMetadata: Map<String, MetadataItem>
 )

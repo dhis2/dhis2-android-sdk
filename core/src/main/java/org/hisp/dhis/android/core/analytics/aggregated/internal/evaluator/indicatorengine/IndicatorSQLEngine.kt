@@ -68,9 +68,10 @@ internal class IndicatorSQLEngine @Inject constructor(
         }
     }
 
-    fun getSql(indicator: Indicator,
-               contextEvaluationItem: AnalyticsServiceEvaluationItem,
-               contextMetadata: Map<String, MetadataItem>
+    fun getSql(
+        indicator: Indicator,
+        contextEvaluationItem: AnalyticsServiceEvaluationItem,
+        contextMetadata: Map<String, MetadataItem>
     ): String {
         val indicatorContext = IndicatorContext(
             dataElementStore = dataElementStore,

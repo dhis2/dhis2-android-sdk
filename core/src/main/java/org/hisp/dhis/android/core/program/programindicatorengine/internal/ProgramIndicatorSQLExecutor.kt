@@ -106,10 +106,10 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
         }
 
         return "SELECT $agg($selectExpression) " +
-                "FROM $targetTable " +
-                "WHERE (${DeletableDataColumns.DELETED} = 0 OR ${DeletableDataColumns.DELETED} IS NULL) " +
-                "AND $filterExpression " +
-                (contextWhereClause?.let { "AND $it" } ?: "")
+            "FROM $targetTable " +
+            "WHERE (${DeletableDataColumns.DELETED} = 0 OR ${DeletableDataColumns.DELETED} IS NULL) " +
+            "AND $filterExpression " +
+            (contextWhereClause?.let { "AND $it" } ?: "")
     }
 
     private fun constantMap(): Map<String, Constant> {

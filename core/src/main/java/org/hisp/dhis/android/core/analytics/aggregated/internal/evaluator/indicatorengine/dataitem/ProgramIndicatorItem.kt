@@ -81,7 +81,7 @@ internal class ProgramIndicatorItem : ExpressionItem {
         return AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(dataItem),
             filters = visitor.indicatorContext.evaluationItem.filters +
-                    visitor.indicatorContext.evaluationItem.dimensionItems.map { it as DimensionItem }
+                visitor.indicatorContext.evaluationItem.dimensionItems.map { it as DimensionItem }
         )
     }
 

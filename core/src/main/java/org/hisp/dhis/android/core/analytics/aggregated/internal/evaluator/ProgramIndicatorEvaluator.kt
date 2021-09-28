@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
 import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
+import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.AnalyticsType
@@ -37,7 +38,6 @@ import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicatorEngine
-import java.lang.RuntimeException
 
 internal class ProgramIndicatorEvaluator @Inject constructor(
     private val eventStore: EventStore,
@@ -66,7 +66,7 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>
     ): String? {
-        throw RuntimeException("Method getSql not implemented for ProgramIndicatorEvaluator")
+        throw AnalyticsException.SQLException("Method getSql not implemented for ProgramIndicatorEvaluator")
     }
 
     private fun evaluateEventProgramIndicator(

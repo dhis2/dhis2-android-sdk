@@ -82,7 +82,7 @@ internal class DataElementItem : ExpressionItem {
             AnalyticsServiceEvaluationItem(
                 dimensionItems = listOf(dataItem),
                 filters = visitor.indicatorContext.evaluationItem.filters +
-                        visitor.indicatorContext.evaluationItem.dimensionItems.map { it as DimensionItem }
+                    visitor.indicatorContext.evaluationItem.dimensionItems.map { it as DimensionItem }
             )
         }
     }
@@ -91,7 +91,7 @@ internal class DataElementItem : ExpressionItem {
         evaluationItem: AnalyticsServiceEvaluationItem,
         visitor: CommonExpressionVisitor
     ): Pair<String, MetadataItem>? {
-        return when(val dataItem = evaluationItem.dimensionItems.first()) {
+        return when (val dataItem = evaluationItem.dimensionItems.first()) {
             is DimensionItem.DataItem.DataElementOperandItem -> {
                 val dataElementOperandId = dataItem.id
                 val dataElementOperand = DataElementOperand.builder()

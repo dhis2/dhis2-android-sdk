@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
+import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.IndicatorSQLEngine
-import javax.inject.Inject
 
 internal class IndicatorSQLEvaluator @Inject constructor(
     private val indicatorEngine: IndicatorSQLEngine

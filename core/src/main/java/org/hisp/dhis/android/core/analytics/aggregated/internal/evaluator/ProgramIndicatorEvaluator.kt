@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicatorEngine
+import java.lang.RuntimeException
 
 internal class ProgramIndicatorEvaluator @Inject constructor(
     private val eventStore: EventStore,
@@ -59,6 +60,13 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
         }
 
         return aggregateValues(programIndicator.aggregationType(), values)
+    }
+
+    override fun getSql(
+        evaluationItem: AnalyticsServiceEvaluationItem,
+        metadata: Map<String, MetadataItem>
+    ): String? {
+        throw RuntimeException("Method getSql not implemented for ProgramIndicatorEvaluator")
     }
 
     private fun evaluateEventProgramIndicator(

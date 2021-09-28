@@ -62,7 +62,18 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
         programIndicator: ProgramIndicator,
         contextWhereClause: String? = null
     ): String? {
+        val sqlQuery = getProgramIndicatorSQL(programIndicator, contextWhereClause)
 
+        return databaseAdapter.rawQuery(sqlQuery)?.use { c ->
+            c.moveToFirst()
+            c.getString(0)
+        }
+    }
+
+    fun getProgramIndicatorSQL(
+        programIndicator: ProgramIndicator,
+        contextWhereClause: String? = null
+    ): String {
         if (programIndicator.expression() == null) {
             throw IllegalArgumentException("Program Indicator ${programIndicator.uid()} has empty expression.")
         }
@@ -94,16 +105,11 @@ internal class ProgramIndicatorSQLExecutor @Inject constructor(
             else -> CommonParser.visit(programIndicator.filter(), sqlVisitor)
         }
 
-        val sqlQuery = "SELECT $agg($selectExpression) " +
-            "FROM $targetTable " +
-            "WHERE (${DeletableDataColumns.DELETED} = 0 OR ${DeletableDataColumns.DELETED} IS NULL) " +
-            "AND $filterExpression " +
-            (contextWhereClause?.let { "AND $it" } ?: "")
-
-        return databaseAdapter.rawQuery(sqlQuery)?.use { c ->
-            c.moveToFirst()
-            c.getString(0)
-        }
+        return "SELECT $agg($selectExpression) " +
+                "FROM $targetTable " +
+                "WHERE (${DeletableDataColumns.DELETED} = 0 OR ${DeletableDataColumns.DELETED} IS NULL) " +
+                "AND $filterExpression " +
+                (contextWhereClause?.let { "AND $it" } ?: "")
     }
 
     private fun constantMap(): Map<String, Constant> {

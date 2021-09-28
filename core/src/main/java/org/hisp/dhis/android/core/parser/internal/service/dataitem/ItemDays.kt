@@ -25,40 +25,38 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.parser.internal.service.dataitem
 
-package org.hisp.dhis.android.core.parser.internal.service.dataitem;
-
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
-
-import static org.hisp.dhis.android.core.parser.internal.expression.ParserUtils.DOUBLE_VALUE_IF_NULL;
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 
 /**
  * Parsed expression item as handled by the expression service.
- * <p/>
+ *
+ *
  * When getting item id and org unit group, just return default values
  * (because not every item implements these, only those that need to.)
  *
  * @author Jim Grace
  */
-public class ItemDays implements ExpressionItem {
+internal class ItemDays : ExpressionItem {
 
-    @Override
-    public Object getDescription(ExprContext ctx, CommonExpressionVisitor visitor) {
-        visitor.getItemDescriptions().put(ctx.getText(), "[Number of days]");
-
-        return DOUBLE_VALUE_IF_NULL;
+    override fun getDescription(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        visitor.itemDescriptions[ctx.text] = "[Number of days]"
+        return ParserUtils.DOUBLE_VALUE_IF_NULL
     }
 
-    @Override
-    public Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor) {
-        return visitor.getDays();
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        return visitor.days
     }
 
-    @Override
-    public final Object regenerate(ExprContext ctx, CommonExpressionVisitor visitor) {
-        return visitor.getDays().toString();
+    override fun regenerate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        return visitor.days.toString()
     }
 
+    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        return visitor.days?.toString() ?: ParserUtils.DOUBLE_VALUE_IF_NULL
+    }
 }

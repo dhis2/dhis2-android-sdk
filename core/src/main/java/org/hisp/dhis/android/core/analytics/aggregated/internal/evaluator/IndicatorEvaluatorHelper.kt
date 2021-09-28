@@ -25,21 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
+import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
+import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
+import org.hisp.dhis.android.core.indicator.Indicator
 
-internal interface AnalyticsEvaluator {
+internal object IndicatorEvaluatorHelper {
 
-    fun evaluate(
+    fun getIndicator(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>
-    ): String?
+    ): Indicator {
+        val indicatorItem = (evaluationItem.dimensionItems + evaluationItem.filters)
+            .map { it as DimensionItem }
+            .find { it is DimensionItem.DataItem.IndicatorItem }
+            ?: throw AnalyticsException.InvalidArguments("Invalid arguments: no indicator dimension provided.")
 
-    fun getSql(
+        return (metadata[indicatorItem.id] as MetadataItem.IndicatorItem).item
+    }
+
+    fun getContextEvaluationItem(
         evaluationItem: AnalyticsServiceEvaluationItem,
-        metadata: Map<String, MetadataItem>
-    ): String?
+        indicator: Indicator
+    ): AnalyticsServiceEvaluationItem {
+        return AnalyticsServiceEvaluationItem(
+            dimensionItems = evaluationItem.dimensionItems.filter { (it as DimensionItem).id != indicator.uid() },
+            filters = evaluationItem.filters.filter { it.id != indicator.uid() }
+        )
+    }
 }

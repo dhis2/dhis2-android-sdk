@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementSQLEvaluator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.ProgramIndicatorSQLEvaluator
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.mapByUid
 import org.hisp.dhis.android.core.constant.Constant
@@ -41,17 +42,16 @@ import org.hisp.dhis.android.core.indicator.IndicatorType
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.expression.CommonParser
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
-import org.hisp.dhis.android.core.parser.internal.service.ExpressionService
 import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
 
-internal class IndicatorEngine @Inject constructor(
+internal class IndicatorSQLEngine @Inject constructor(
     private val indicatorTypeStore: IdentifiableObjectStore<IndicatorType>,
     private val dataElementStore: IdentifiableObjectStore<DataElement>,
     private val programIndicatorRepository: ProgramIndicatorCollectionRepository,
     private val dataElementEvaluator: DataElementSQLEvaluator,
     private val programIndicatorEvaluator: ProgramIndicatorSQLEvaluator,
     private val constantStore: IdentifiableObjectStore<Constant>,
-    private val expressionService: ExpressionService
+    private val databaseAdapter: DatabaseAdapter
 ) {
 
     fun evaluateIndicator(
@@ -59,6 +59,19 @@ internal class IndicatorEngine @Inject constructor(
         contextEvaluationItem: AnalyticsServiceEvaluationItem,
         contextMetadata: Map<String, MetadataItem>
     ): String? {
+        val sqlQuery = getSql(indicator, contextEvaluationItem, contextMetadata)
+
+        return databaseAdapter.rawQuery(sqlQuery)?.use { c ->
+            c.moveToFirst()
+            val valueStr = c.getString(0)
+            IndicatorParserUtils.roundValue(valueStr, indicator.decimals())
+        }
+    }
+
+    fun getSql(indicator: Indicator,
+               contextEvaluationItem: AnalyticsServiceEvaluationItem,
+               contextMetadata: Map<String, MetadataItem>
+    ): String {
         val indicatorContext = IndicatorContext(
             dataElementStore = dataElementStore,
             programIndicatorRepository = programIndicatorRepository,
@@ -80,16 +93,9 @@ internal class IndicatorEngine @Inject constructor(
 
         val numerator = evaluate(indicator.numerator()!!, visitor)
         val denominator = evaluate(indicator.denominator()!!, visitor)
+        val factor = indicatorType?.factor() ?: 1
 
-        return if (numerator != null && denominator != null) {
-            val formula = "${indicatorType?.factor() ?: 1} * $numerator / $denominator"
-            expressionService.getExpressionValue(formula)?.let {
-                val valueStr = it.toString()
-                IndicatorParserUtils.roundValue(valueStr, indicator.decimals())
-            }
-        } else {
-            null
-        }
+        return "SELECT $factor * ($numerator) / ($denominator)"
     }
 
     private fun evaluate(expression: String, visitor: CommonExpressionVisitor): Any? {
@@ -105,7 +111,7 @@ internal class IndicatorEngine @Inject constructor(
     private fun newVisitor(indicatorContext: IndicatorContext): CommonExpressionVisitor {
         return CommonExpressionVisitor.newBuilder()
             .withItemMap(IndicatorParserUtils.INDICATOR_EXPRESSION_ITEMS)
-            .withItemMethod(ParserUtils.ITEM_EVALUATE)
+            .withItemMethod(ParserUtils.ITEM_GET_SQL)
             .withConstantMap(constantMap)
             .withIndicatorContext(indicatorContext)
             .buildForAnalyticsIndicator()

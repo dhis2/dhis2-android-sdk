@@ -43,14 +43,32 @@ internal class ProgramIndicatorSQLEvaluator @Inject constructor(
         metadata: Map<String, MetadataItem>
     ): String? {
         val programIndicator = ProgramIndicatorEvaluatorHelper.getProgramIndicator(evaluationItem, metadata)
+        val contextWhereClause = getContextWhereClause(evaluationItem, metadata)
 
-        val contextWhereClause = when (programIndicator.analyticsType()) {
+        return programIndicatorSQLExecutor.getProgramIndicatorValue(programIndicator, contextWhereClause)
+    }
+
+    override fun getSql(
+        evaluationItem: AnalyticsServiceEvaluationItem,
+        metadata: Map<String, MetadataItem>
+    ): String {
+        val programIndicator = ProgramIndicatorEvaluatorHelper.getProgramIndicator(evaluationItem, metadata)
+        val contextWhereClause = getContextWhereClause(evaluationItem, metadata)
+
+        return programIndicatorSQLExecutor.getProgramIndicatorSQL(programIndicator, contextWhereClause)
+    }
+
+    private fun getContextWhereClause(
+        evaluationItem: AnalyticsServiceEvaluationItem,
+        metadata: Map<String, MetadataItem>
+    ): String {
+        val programIndicator = ProgramIndicatorEvaluatorHelper.getProgramIndicator(evaluationItem, metadata)
+
+        return when (programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
                 ProgramIndicatorEvaluatorHelper.getEventWhereClause(programIndicator, evaluationItem, metadata)
             AnalyticsType.ENROLLMENT, null ->
                 ProgramIndicatorEvaluatorHelper.getEnrollmentWhereClause(programIndicator, evaluationItem, metadata)
         }
-
-        return programIndicatorSQLExecutor.getProgramIndicatorValue(programIndicator, contextWhereClause)
     }
 }

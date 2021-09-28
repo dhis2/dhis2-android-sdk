@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
 
-internal class DataElementEvaluator @Inject constructor(
+internal class DataElementSQLEvaluator @Inject constructor(
     private val databaseAdapter: DatabaseAdapter
 ) : AnalyticsEvaluator {
 
@@ -48,6 +48,18 @@ internal class DataElementEvaluator @Inject constructor(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>
     ): String? {
+        val sqlQuery = getSql(evaluationItem, metadata)
+
+        return databaseAdapter.rawQuery(sqlQuery)?.use { c ->
+            c.moveToFirst()
+            c.getString(0)
+        }
+    }
+
+    override fun getSql(
+        evaluationItem: AnalyticsServiceEvaluationItem,
+        metadata: Map<String, MetadataItem>
+    ): String {
         val items = getItemsByDimension(evaluationItem)
 
         val whereClause = WhereClauseBuilder().apply {
@@ -64,15 +76,9 @@ internal class DataElementEvaluator @Inject constructor(
 
         val aggregator = getAggregator(evaluationItem, metadata)
 
-        val sqlQuery =
-            "SELECT $aggregator(${DataValueTableInfo.Columns.VALUE}) " +
+        return "SELECT $aggregator(${DataValueTableInfo.Columns.VALUE}) " +
                 "FROM ${DataValueTableInfo.TABLE_INFO.name()} " +
                 "WHERE $whereClause"
-
-        return databaseAdapter.rawQuery(sqlQuery)?.use { c ->
-            c.moveToFirst()
-            c.getString(0)
-        }
     }
 
     private fun appendDataWhereClause(
@@ -97,7 +103,7 @@ internal class DataElementEvaluator @Inject constructor(
                     else ->
                         throw AnalyticsException.InvalidArguments(
                             "Invalid arguments: unexpected " +
-                                "dataItem ${item.javaClass.name} in DataElement Evaluator."
+                                    "dataItem ${item.javaClass.name} in DataElement Evaluator."
                         )
                 }
             }.build()
@@ -168,7 +174,7 @@ internal class DataElementEvaluator @Inject constructor(
                         }
                     else -> throw AnalyticsException.InvalidArguments(
                         "Invalid arguments: dimension is not " +
-                            "dataelement or operand."
+                                "dataelement or operand."
                     )
                 }
                 getDataElementAggregator(aggregationType)

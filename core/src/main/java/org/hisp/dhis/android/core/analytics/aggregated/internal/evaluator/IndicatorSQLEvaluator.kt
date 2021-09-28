@@ -25,21 +25,42 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.IndicatorSQLEngine
+import javax.inject.Inject
 
-internal interface AnalyticsEvaluator {
+internal class IndicatorSQLEvaluator @Inject constructor(
+    private val indicatorEngine: IndicatorSQLEngine
+) : AnalyticsEvaluator {
 
-    fun evaluate(
+    override fun evaluate(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>
-    ): String?
+    ): String? {
+        val indicator = IndicatorEvaluatorHelper.getIndicator(evaluationItem, metadata)
+        val contextEvaluationItem = IndicatorEvaluatorHelper.getContextEvaluationItem(evaluationItem, indicator)
 
-    fun getSql(
+        return indicatorEngine.evaluateIndicator(
+            indicator = indicator,
+            contextEvaluationItem = contextEvaluationItem,
+            contextMetadata = metadata
+        )
+    }
+
+    override fun getSql(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>
-    ): String?
+    ): String {
+        val indicator = IndicatorEvaluatorHelper.getIndicator(evaluationItem, metadata)
+        val contextEvaluationItem = IndicatorEvaluatorHelper.getContextEvaluationItem(evaluationItem, indicator)
+
+        return indicatorEngine.getSql(
+            indicator = indicator,
+            contextEvaluationItem = contextEvaluationItem,
+            contextMetadata = metadata
+        )
+    }
 }

@@ -136,8 +136,16 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
         programUid: String?,
         downloadExtractor: (ProgramSetting?) -> Int?
     ): Int {
-        if (params.limit() != null && isGlobalOrUserDefinedProgram(params, programUid)) {
-            return params.limit()!!
+        if (params.limit() != null) {
+            when {
+                isGlobal(programUid) && programSettings != null -> {
+                    val specificEvents =  programSettings.specificSettings().map { settings ->
+                        downloadExtractor.invoke(settings.value) }.filterNotNull().sum()
+                    val download = params.limit()!! - specificEvents
+                    return if (download > 0) download else 0
+                }
+                isUserDefinedProgram(params, programUid) -> return params.limit()!!
+            }
         }
         if (programUid != null && programSettings != null) {
             val specificSetting = programSettings.specificSettings()[programUid]
@@ -159,8 +167,12 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
         return ProgramDataDownloadParams.DEFAULT_LIMIT
     }
 
-    fun isGlobalOrUserDefinedProgram(params: ProgramDataDownloadParams, programUid: String?): Boolean {
-        return programUid == null || programUid == params.program()
+    fun isGlobal(programUid: String?): Boolean {
+        return programUid == null
+    }
+
+    fun isUserDefinedProgram(params: ProgramDataDownloadParams, programUid: String?): Boolean {
+        return programUid == params.program()
     }
 
     @Suppress("ReturnCount")

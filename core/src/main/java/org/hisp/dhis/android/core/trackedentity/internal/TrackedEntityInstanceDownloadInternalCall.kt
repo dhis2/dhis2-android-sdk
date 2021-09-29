@@ -78,7 +78,7 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
     private fun getTrackedEntityInstancesWithPaging(
         baseQuery: TeiQuery
     ): Observable<List<TrackedEntityInstance>> {
-        val pagingList = ApiPagingEngine.getPaginationList(baseQuery.pageSize(), baseQuery.commonParams().limit)
+        val pagingList = ApiPagingEngine.getPaginationList(baseQuery.pageSize(), baseQuery.commonParams().limit, 0)
         val allOkay = BooleanWrapper(true)
         return Observable
             .fromIterable(pagingList)

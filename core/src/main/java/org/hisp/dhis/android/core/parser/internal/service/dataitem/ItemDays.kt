@@ -25,41 +25,38 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.parser.internal.service.dataitem
 
-package org.hisp.dhis.android.core.analytics.aggregated.internal
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
+import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-import io.reactivex.Single
-import javax.inject.Inject
-import org.hisp.dhis.android.core.analytics.AnalyticsException
-import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepository
-import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
-import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
-import org.hisp.dhis.android.core.arch.helpers.Result
+/**
+ * Parsed expression item as handled by the expression service.
+ *
+ *
+ * When getting item id and org unit group, just return default values
+ * (because not every item implements these, only those that need to.)
+ *
+ * @author Jim Grace
+ */
+internal class ItemDays : ExpressionItem {
 
-internal class AnalyticsRepositoryImpl @Inject constructor(
-    private val params: AnalyticsRepositoryParams,
-    private val analyticsService: AnalyticsService
-) : AnalyticsRepository {
-
-    override fun withDimension(dimensionItem: DimensionItem): AnalyticsRepositoryImpl {
-        return updateParams { params -> params.copy(dimensions = params.dimensions + dimensionItem) }
+    override fun getDescription(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        visitor.itemDescriptions[ctx.text] = "[Number of days]"
+        return ParserUtils.DOUBLE_VALUE_IF_NULL
     }
 
-    override fun withFilter(dimensionItem: DimensionItem): AnalyticsRepositoryImpl {
-        return updateParams { params -> params.copy(filters = params.filters + dimensionItem) }
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+        return visitor.days
     }
 
-    override fun evaluate(): Single<Result<DimensionalResponse, AnalyticsException>> {
-        return Single.fromCallable { blockingEvaluate() }
+    override fun regenerate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+        return visitor.days?.toString()
     }
 
-    override fun blockingEvaluate(): Result<DimensionalResponse, AnalyticsException> {
-        return analyticsService.evaluate(params)
-    }
-
-    private fun updateParams(
-        func: (params: AnalyticsRepositoryParams) -> AnalyticsRepositoryParams
-    ): AnalyticsRepositoryImpl {
-        return AnalyticsRepositoryImpl(func(params), analyticsService)
+    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        return visitor.days?.toString() ?: ParserUtils.DOUBLE_VALUE_IF_NULL
     }
 }

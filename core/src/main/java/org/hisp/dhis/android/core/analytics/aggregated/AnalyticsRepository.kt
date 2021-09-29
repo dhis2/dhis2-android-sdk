@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.analytics.aggregated
 
 import io.reactivex.Single
-import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsException
+import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.arch.helpers.Result
 
 interface AnalyticsRepository {

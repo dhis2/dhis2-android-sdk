@@ -28,9 +28,14 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine
 
+import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
+import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
+import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.dataitem.DataElementItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.dataitem.ProgramIndicatorItem
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
+import org.hisp.dhis.android.core.period.Period
+import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.function.*
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser
 
@@ -95,4 +100,44 @@ internal object IndicatorParserUtils {
             ExpressionParser.HASH_BRACE to DataElementItem(),
             ExpressionParser.I_BRACE to ProgramIndicatorItem()
         )
+
+    fun getDays(
+        contextEvaluationItem: AnalyticsServiceEvaluationItem,
+        contextMetadata: Map<String, MetadataItem>
+    ): Int? {
+        val periods = (contextEvaluationItem.dimensionItems + contextEvaluationItem.filters)
+            .map { it as DimensionItem }
+            .mapNotNull { item ->
+                when (item) {
+                    is DimensionItem.PeriodItem.Absolute -> {
+                        contextMetadata[item.periodId]?.let {
+                            listOf((it as MetadataItem.PeriodItem).item)
+                        }
+                    }
+                    is DimensionItem.PeriodItem.Relative -> {
+                        contextMetadata[item.relative.name]?.let {
+                            (it as MetadataItem.RelativePeriodItem).periods
+                        }
+                    }
+                    else -> null
+                }
+            }.flatten()
+
+        val start = periods.mapNotNull { it.startDate() }.minBy { it.time }
+        val end = periods.mapNotNull { it.endDate() }.maxBy { it.time }
+
+        return if (start != null && end != null) {
+            return PeriodHelper.getDays(Period.builder().startDate(start).endDate(end).build())
+        } else {
+            null
+        }
+    }
+
+    fun roundValue(valueStr: String?, decimals: Int?): String? {
+        return if (valueStr != null && ParserUtils.isNumeric(valueStr)) {
+            ParserUtils.getRounded(valueStr.toDouble(), decimals ?: 2).toString()
+        } else {
+            valueStr
+        }
+    }
 }

@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
 import javax.inject.Inject
+import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.*
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.visualization.Visualization

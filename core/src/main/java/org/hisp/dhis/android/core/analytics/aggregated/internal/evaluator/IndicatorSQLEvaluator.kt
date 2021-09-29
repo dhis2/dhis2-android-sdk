@@ -25,40 +25,42 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
-package org.hisp.dhis.android.core.parser.internal.service.dataitem;
+import javax.inject.Inject
+import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
+import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.IndicatorSQLEngine
 
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
+internal class IndicatorSQLEvaluator @Inject constructor(
+    private val indicatorEngine: IndicatorSQLEngine
+) : AnalyticsEvaluator {
 
-import static org.hisp.dhis.android.core.parser.internal.expression.ParserUtils.DOUBLE_VALUE_IF_NULL;
+    override fun evaluate(
+        evaluationItem: AnalyticsServiceEvaluationItem,
+        metadata: Map<String, MetadataItem>
+    ): String? {
+        val indicator = IndicatorEvaluatorHelper.getIndicator(evaluationItem, metadata)
+        val contextEvaluationItem = IndicatorEvaluatorHelper.getContextEvaluationItem(evaluationItem, indicator)
 
-/**
- * Parsed expression item as handled by the expression service.
- * <p/>
- * When getting item id and org unit group, just return default values
- * (because not every item implements these, only those that need to.)
- *
- * @author Jim Grace
- */
-public class ItemDays implements ExpressionItem {
-
-    @Override
-    public Object getDescription(ExprContext ctx, CommonExpressionVisitor visitor) {
-        visitor.getItemDescriptions().put(ctx.getText(), "[Number of days]");
-
-        return DOUBLE_VALUE_IF_NULL;
+        return indicatorEngine.evaluateIndicator(
+            indicator = indicator,
+            contextEvaluationItem = contextEvaluationItem,
+            contextMetadata = metadata
+        )
     }
 
-    @Override
-    public Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor) {
-        return visitor.getDays();
-    }
+    override fun getSql(
+        evaluationItem: AnalyticsServiceEvaluationItem,
+        metadata: Map<String, MetadataItem>
+    ): String {
+        val indicator = IndicatorEvaluatorHelper.getIndicator(evaluationItem, metadata)
+        val contextEvaluationItem = IndicatorEvaluatorHelper.getContextEvaluationItem(evaluationItem, indicator)
 
-    @Override
-    public final Object regenerate(ExprContext ctx, CommonExpressionVisitor visitor) {
-        return visitor.getDays().toString();
+        return indicatorEngine.getSql(
+            indicator = indicator,
+            contextEvaluationItem = contextEvaluationItem,
+            contextMetadata = metadata
+        )
     }
-
 }

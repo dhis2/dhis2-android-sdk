@@ -51,9 +51,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
-internal class DataElementEvaluatorIntegrationShould : BaseEvaluatorIntegrationShould() {
+internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrationShould() {
 
-    private val dataElementEvaluator = DataElementEvaluator(databaseAdapter)
+    private val dataElementEvaluator = DataElementSQLEvaluator(databaseAdapter)
 
     @Test
     fun should_aggregate_value_in_hierarchy() {

@@ -25,41 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
-package org.hisp.dhis.android.core.analytics.aggregated.internal
-
-import io.reactivex.Single
-import javax.inject.Inject
 import org.hisp.dhis.android.core.analytics.AnalyticsException
-import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepository
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
-import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
-import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
+import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
+import org.hisp.dhis.android.core.indicator.Indicator
 
-internal class AnalyticsRepositoryImpl @Inject constructor(
-    private val params: AnalyticsRepositoryParams,
-    private val analyticsService: AnalyticsService
-) : AnalyticsRepository {
+internal object IndicatorEvaluatorHelper {
 
-    override fun withDimension(dimensionItem: DimensionItem): AnalyticsRepositoryImpl {
-        return updateParams { params -> params.copy(dimensions = params.dimensions + dimensionItem) }
+    fun getIndicator(
+        evaluationItem: AnalyticsServiceEvaluationItem,
+        metadata: Map<String, MetadataItem>
+    ): Indicator {
+        val indicatorItem = (evaluationItem.dimensionItems + evaluationItem.filters)
+            .map { it as DimensionItem }
+            .find { it is DimensionItem.DataItem.IndicatorItem }
+            ?: throw AnalyticsException.InvalidArguments("Invalid arguments: no indicator dimension provided.")
+
+        return (metadata[indicatorItem.id] as MetadataItem.IndicatorItem).item
     }
 
-    override fun withFilter(dimensionItem: DimensionItem): AnalyticsRepositoryImpl {
-        return updateParams { params -> params.copy(filters = params.filters + dimensionItem) }
-    }
-
-    override fun evaluate(): Single<Result<DimensionalResponse, AnalyticsException>> {
-        return Single.fromCallable { blockingEvaluate() }
-    }
-
-    override fun blockingEvaluate(): Result<DimensionalResponse, AnalyticsException> {
-        return analyticsService.evaluate(params)
-    }
-
-    private fun updateParams(
-        func: (params: AnalyticsRepositoryParams) -> AnalyticsRepositoryParams
-    ): AnalyticsRepositoryImpl {
-        return AnalyticsRepositoryImpl(func(params), analyticsService)
+    fun getContextEvaluationItem(
+        evaluationItem: AnalyticsServiceEvaluationItem,
+        indicator: Indicator
+    ): AnalyticsServiceEvaluationItem {
+        return AnalyticsServiceEvaluationItem(
+            dimensionItems = evaluationItem.dimensionItems.filter { (it as DimensionItem).id != indicator.uid() },
+            filters = evaluationItem.filters.filter { it.id != indicator.uid() }
+        )
     }
 }

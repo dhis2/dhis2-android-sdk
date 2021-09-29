@@ -29,10 +29,10 @@
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
 import javax.inject.Inject
+import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
-import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.AnalyticsEvaluatorHelper.getItemsByDimension
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
 
-internal class DataElementEvaluator @Inject constructor(
+internal class DataElementSQLEvaluator @Inject constructor(
     private val databaseAdapter: DatabaseAdapter
 ) : AnalyticsEvaluator {
 
@@ -48,6 +48,18 @@ internal class DataElementEvaluator @Inject constructor(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>
     ): String? {
+        val sqlQuery = getSql(evaluationItem, metadata)
+
+        return databaseAdapter.rawQuery(sqlQuery)?.use { c ->
+            c.moveToFirst()
+            c.getString(0)
+        }
+    }
+
+    override fun getSql(
+        evaluationItem: AnalyticsServiceEvaluationItem,
+        metadata: Map<String, MetadataItem>
+    ): String {
         val items = getItemsByDimension(evaluationItem)
 
         val whereClause = WhereClauseBuilder().apply {
@@ -64,15 +76,9 @@ internal class DataElementEvaluator @Inject constructor(
 
         val aggregator = getAggregator(evaluationItem, metadata)
 
-        val sqlQuery =
-            "SELECT $aggregator(${DataValueTableInfo.Columns.VALUE}) " +
-                "FROM ${DataValueTableInfo.TABLE_INFO.name()} " +
-                "WHERE $whereClause"
-
-        return databaseAdapter.rawQuery(sqlQuery)?.use { c ->
-            c.moveToFirst()
-            c.getString(0)
-        }
+        return "SELECT $aggregator(${DataValueTableInfo.Columns.VALUE}) " +
+            "FROM ${DataValueTableInfo.TABLE_INFO.name()} " +
+            "WHERE $whereClause"
     }
 
     private fun appendDataWhereClause(

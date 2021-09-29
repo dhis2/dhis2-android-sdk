@@ -27,19 +27,16 @@
  */
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.IndicatorEngine
-import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStoreImpl
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.IndicatorSQLEngine
 import org.hisp.dhis.android.core.constant.internal.ConstantStore
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitGroupStore
-import org.hisp.dhis.android.core.parser.internal.service.ExpressionService
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLExecutor
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
-internal class IndicatorEvaluatorIntegrationShould : IndicatorEvaluatorIntegrationBaseShould() {
+internal class IndicatorSQLEvaluatorIntegrationShould : IndicatorEvaluatorIntegrationBaseShould() {
 
     private val dataElementEvaluator = DataElementSQLEvaluator(databaseAdapter)
     private val programIndicatorExecutor = ProgramIndicatorSQLExecutor(
@@ -52,21 +49,15 @@ internal class IndicatorEvaluatorIntegrationShould : IndicatorEvaluatorIntegrati
         programIndicatorExecutor
     )
 
-    private val expressionService = ExpressionService(
-        DataElementStore.create(databaseAdapter),
-        CategoryOptionComboStoreImpl.create(databaseAdapter),
-        OrganisationUnitGroupStore.create(databaseAdapter)
-    )
-
-    private val indicatorEngine = IndicatorEngine(
+    private val indicatorEngine = IndicatorSQLEngine(
         indicatorTypeStore,
         DataElementStore.create(databaseAdapter),
         d2.programModule().programIndicators(),
         dataElementEvaluator,
         programIndicatorEvaluator,
         ConstantStore.create(databaseAdapter),
-        expressionService
+        databaseAdapter
     )
 
-    override val indicatorEvaluator = IndicatorEvaluator(indicatorEngine)
+    override val indicatorEvaluator = IndicatorSQLEvaluator(indicatorEngine)
 }

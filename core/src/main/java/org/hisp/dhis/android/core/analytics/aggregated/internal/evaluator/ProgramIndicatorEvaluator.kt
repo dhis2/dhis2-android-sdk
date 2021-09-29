@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
 import javax.inject.Inject
+import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.common.AggregationType
@@ -59,6 +60,13 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
         }
 
         return aggregateValues(programIndicator.aggregationType(), values)
+    }
+
+    override fun getSql(
+        evaluationItem: AnalyticsServiceEvaluationItem,
+        metadata: Map<String, MetadataItem>
+    ): String? {
+        throw AnalyticsException.SQLException("Method getSql not implemented for ProgramIndicatorEvaluator")
     }
 
     private fun evaluateEventProgramIndicator(

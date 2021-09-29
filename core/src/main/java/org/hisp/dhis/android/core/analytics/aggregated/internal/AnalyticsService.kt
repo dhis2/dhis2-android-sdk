@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.analytics.aggregated.internal
 
 import android.database.sqlite.SQLiteException
 import javax.inject.Inject
+import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
 import org.hisp.dhis.android.core.arch.helpers.Result

@@ -48,12 +48,12 @@ internal class ItemDays : ExpressionItem {
         return ParserUtils.DOUBLE_VALUE_IF_NULL
     }
 
-    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
         return visitor.days
     }
 
-    override fun regenerate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
-        return visitor.days.toString()
+    override fun regenerate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+        return visitor.days?.toString()
     }
 
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {

@@ -37,13 +37,17 @@ import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualization
 import org.hisp.dhis.android.core.visualization.Visualization
 
 @Reusable
-class VisualizationModuleDownloader @Inject internal constructor(
+internal class VisualizationModuleDownloader @Inject internal constructor(
     private val visualizationCall: UidsCall<Visualization>,
     private val analyticsDhisVisualizationStore: ObjectWithoutUidStore<AnalyticsDhisVisualization>
 ) :
     TypedModuleDownloader<List<Visualization>> {
 
     override fun downloadMetadata(): Single<List<Visualization>> {
-        return visualizationCall.download(analyticsDhisVisualizationStore.selectAll().map { it.uid() }.toSet())
+        return Single.fromCallable {
+            analyticsDhisVisualizationStore.selectAll().map { it.uid() }.toSet()
+        }.flatMap {
+            visualizationCall.download(it)
+        }
     }
 }

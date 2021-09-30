@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.CategoryOption
+import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
@@ -50,6 +51,7 @@ import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
 internal class AnalyticsServiceMetadataHelper @Inject constructor(
     private val categoryStore: IdentifiableObjectStore<Category>,
     private val categoryOptionStore: IdentifiableObjectStore<CategoryOption>,
+    private val categoryOptionComboStore: CategoryOptionComboStore,
     private val dataElementStore: IdentifiableObjectStore<DataElement>,
     private val indicatorStore: IdentifiableObjectStore<Indicator>,
     private val organisationUnitStore: IdentifiableObjectStore<OrganisationUnit>,
@@ -102,14 +104,23 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
                         ?.let { dataElement -> MetadataItem.DataElementItem(dataElement) }
                         ?: throw AnalyticsException.InvalidDataElement(item.uid)
 
-                // TODO Build a meaningful name for DataElementOperand
                 is DimensionItem.DataItem.DataElementOperandItem -> {
+                    val dataElement = dataElementStore.selectByUid(item.dataElement)
+                    val coc = categoryOptionComboStore.selectByUid(item.categoryOptionCombo)
+                    if (dataElement == null || coc == null) {
+                        throw AnalyticsException.InvalidDataElementOperand(item.id)
+                    }
                     val dataElementOperand = DataElementOperand.builder()
                         .uid("${item.dataElement}.${item.categoryOptionCombo}")
                         .dataElement(ObjectWithUid.create(item.dataElement))
                         .categoryOptionCombo(ObjectWithUid.create(item.categoryOptionCombo))
                         .build()
-                    MetadataItem.DataElementOperandItem(dataElementOperand)
+
+                    MetadataItem.DataElementOperandItem(
+                        dataElementOperand,
+                        dataElement.displayName()!!,
+                        coc.displayName()!!
+                    )
                 }
 
                 is DimensionItem.DataItem.IndicatorItem ->

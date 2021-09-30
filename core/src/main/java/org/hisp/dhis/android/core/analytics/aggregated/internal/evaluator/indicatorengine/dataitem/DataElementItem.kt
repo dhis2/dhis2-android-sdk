@@ -82,7 +82,7 @@ internal class DataElementItem : ExpressionItem {
             AnalyticsServiceEvaluationItem(
                 dimensionItems = listOf(dataItem),
                 filters = visitor.indicatorContext.evaluationItem.filters +
-                    visitor.indicatorContext.evaluationItem.dimensionItems.map { it as DimensionItem }
+                        visitor.indicatorContext.evaluationItem.dimensionItems.map { it as DimensionItem }
             )
         }
     }
@@ -93,6 +93,13 @@ internal class DataElementItem : ExpressionItem {
     ): Pair<String, MetadataItem>? {
         return when (val dataItem = evaluationItem.dimensionItems.first()) {
             is DimensionItem.DataItem.DataElementOperandItem -> {
+                val dataElement = visitor.indicatorContext.dataElementStore.selectByUid(dataItem.dataElement)
+                val coc = visitor.indicatorContext.categoryOptionComboStore.selectByUid(dataItem.categoryOptionCombo)
+
+                if (dataElement == null || coc == null) {
+                    throw AnalyticsException.InvalidDataElementOperand(dataItem.id)
+                }
+
                 val dataElementOperandId = dataItem.id
                 val dataElementOperand = DataElementOperand.builder()
                     .uid(dataItem.id)
@@ -100,7 +107,11 @@ internal class DataElementItem : ExpressionItem {
                     .categoryOptionCombo(ObjectWithUid.create(dataItem.categoryOptionCombo))
                     .build()
 
-                dataElementOperandId to MetadataItem.DataElementOperandItem(dataElementOperand)
+                dataElementOperandId to MetadataItem.DataElementOperandItem(
+                    dataElementOperand,
+                    dataElement.displayName()!!,
+                    coc.displayName()!!
+                )
             }
             is DimensionItem.DataItem.DataElementItem -> {
                 val dataElement =

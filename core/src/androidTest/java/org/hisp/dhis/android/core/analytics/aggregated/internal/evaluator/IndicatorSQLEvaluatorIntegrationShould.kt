@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.IndicatorSQLEngine
+import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStoreImpl
 import org.hisp.dhis.android.core.constant.internal.ConstantStore
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLExecutor
@@ -52,6 +53,7 @@ internal class IndicatorSQLEvaluatorIntegrationShould : IndicatorEvaluatorIntegr
     private val indicatorEngine = IndicatorSQLEngine(
         indicatorTypeStore,
         DataElementStore.create(databaseAdapter),
+        CategoryOptionComboStoreImpl.create(databaseAdapter),
         d2.programModule().programIndicators(),
         dataElementEvaluator,
         programIndicatorEvaluator,

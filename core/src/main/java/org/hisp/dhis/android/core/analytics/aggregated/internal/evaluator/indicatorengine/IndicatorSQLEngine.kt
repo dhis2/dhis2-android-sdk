@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.Progra
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.mapByUid
+import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.indicator.Indicator
@@ -47,6 +48,7 @@ import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
 internal class IndicatorSQLEngine @Inject constructor(
     private val indicatorTypeStore: IdentifiableObjectStore<IndicatorType>,
     private val dataElementStore: IdentifiableObjectStore<DataElement>,
+    private val categoryOptionComboStore: CategoryOptionComboStore,
     private val programIndicatorRepository: ProgramIndicatorCollectionRepository,
     private val dataElementEvaluator: DataElementSQLEvaluator,
     private val programIndicatorEvaluator: ProgramIndicatorSQLEvaluator,
@@ -75,6 +77,7 @@ internal class IndicatorSQLEngine @Inject constructor(
     ): String {
         val indicatorContext = IndicatorContext(
             dataElementStore = dataElementStore,
+            categoryOptionComboStore = categoryOptionComboStore,
             programIndicatorRepository = programIndicatorRepository,
             dataElementEvaluator = dataElementEvaluator,
             programIndicatorEvaluator = programIndicatorEvaluator,

@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
 
 internal data class IndicatorContext(
     val dataElementStore: IdentifiableObjectStore<DataElement>,
-    val categoryOptionComboStore: CategoryOptionComboStore
+    val categoryOptionComboStore: CategoryOptionComboStore,
     val programIndicatorRepository: ProgramIndicatorCollectionRepository,
     val dataElementEvaluator: AnalyticsEvaluator,
     val programIndicatorEvaluator: AnalyticsEvaluator,

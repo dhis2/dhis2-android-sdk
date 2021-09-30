@@ -82,7 +82,7 @@ internal class DataElementItem : ExpressionItem {
             AnalyticsServiceEvaluationItem(
                 dimensionItems = listOf(dataItem),
                 filters = visitor.indicatorContext.evaluationItem.filters +
-                        visitor.indicatorContext.evaluationItem.dimensionItems.map { it as DimensionItem }
+                    visitor.indicatorContext.evaluationItem.dimensionItems.map { it as DimensionItem }
             )
         }
     }
@@ -110,7 +110,7 @@ internal class DataElementItem : ExpressionItem {
                 dataElementOperandId to MetadataItem.DataElementOperandItem(
                     dataElementOperand,
                     dataElement.displayName()!!,
-                    coc.displayName()!!
+                    coc.displayName()
                 )
             }
             is DimensionItem.DataItem.DataElementItem -> {

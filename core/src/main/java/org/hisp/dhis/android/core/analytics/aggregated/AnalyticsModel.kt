@@ -43,7 +43,7 @@ import org.hisp.dhis.android.core.program.ProgramIndicator
 
 sealed class MetadataItem(val id: String, val displayName: String) {
     class DataElementItem(val item: DataElement) : MetadataItem(item.uid(), item.displayName()!!)
-    class DataElementOperandItem(val item: DataElementOperand, dataElementName: String, cocName: String) :
+    class DataElementOperandItem(val item: DataElementOperand, dataElementName: String, cocName: String?) :
         MetadataItem(item.uid()!!, "$dataElementName $cocName")
 
     class IndicatorItem(val item: Indicator) : MetadataItem(item.uid(), item.displayName()!!)

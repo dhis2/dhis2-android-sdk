@@ -122,7 +122,7 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
         dataElementOperand.uid()!! to MetadataItem.DataElementOperandItem(
             dataElementOperand,
             dataElement1.displayName()!!,
-            categoryOptionCombo.displayName()!!
+            categoryOptionCombo.displayName()
         ),
         periodNov.periodId()!! to MetadataItem.PeriodItem(periodNov),
         periodDec.periodId()!! to MetadataItem.PeriodItem(periodDec),

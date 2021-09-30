@@ -120,6 +120,7 @@ object BaseEvaluatorSamples {
 
     val categoryOptionCombo: CategoryOptionCombo = CategoryOptionCombo.builder()
         .uid(generator.generate())
+        .displayName("Coc")
         .categoryCombo(ObjectWithUid.fromIdentifiable(categoryCombo))
         .build()
 

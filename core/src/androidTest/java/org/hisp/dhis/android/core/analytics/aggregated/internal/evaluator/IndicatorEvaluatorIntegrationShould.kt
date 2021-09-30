@@ -61,6 +61,7 @@ internal class IndicatorEvaluatorIntegrationShould : IndicatorEvaluatorIntegrati
     private val indicatorEngine = IndicatorEngine(
         indicatorTypeStore,
         DataElementStore.create(databaseAdapter),
+        CategoryOptionComboStoreImpl.create(databaseAdapter),
         d2.programModule().programIndicators(),
         dataElementEvaluator,
         programIndicatorEvaluator,

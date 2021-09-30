@@ -119,7 +119,7 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
                     MetadataItem.DataElementOperandItem(
                         dataElementOperand,
                         dataElement.displayName()!!,
-                        coc.displayName()!!
+                        coc.displayName()
                     )
                 }
 

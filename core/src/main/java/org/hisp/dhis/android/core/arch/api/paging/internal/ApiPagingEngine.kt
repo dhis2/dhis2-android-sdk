@@ -27,9 +27,8 @@
  */
 package org.hisp.dhis.android.core.arch.api.paging.internal
 
-import java.lang.IllegalArgumentException
-import java.lang.IllegalStateException
-import java.util.ArrayList
+import kotlin.IllegalArgumentException
+import kotlin.IllegalStateException
 import kotlin.math.ceil
 import kotlin.math.floor
 
@@ -41,37 +40,41 @@ object ApiPagingEngine {
             "Argument is negative. ItemsCount: $requiredItemsCount, CurrentPageSize: $currentPageSize."
         }
         val numberOfCallsDone: Double = itemsSkippedCount.toDouble() / currentPageSize
+        val numberOfFullCallsDone: Int = floor(numberOfCallsDone).toInt()
         val numberOfCalls = ceil((requiredItemsCount + itemsSkippedCount).toDouble() / currentPageSize).toInt()
-        val pagingList: MutableList<Paging> = ArrayList()
+        val pagingList: MutableList<Paging> = mutableListOf()
 
         if (floor(numberOfCallsDone) != numberOfCallsDone) {
-            pagingList.add(
-                calculateFirstPagination(currentPageSize, floor(numberOfCallsDone).toInt(), itemsSkippedCount)
+            pagingList.add(calculateFirstPagination(
+                currentPageSize, numberOfFullCallsDone, requiredItemsCount, itemsSkippedCount)
             )
         }
 
-        for (call in ceil(numberOfCallsDone).toInt() + 1 until numberOfCalls) {
+        for (call in numberOfFullCallsDone + pagingList.size + 1 until numberOfCalls) {
             pagingList.add(
-                Paging.create(
-                    call, currentPageSize, 0, 0, false
-                )
+                Paging.create(call, currentPageSize, 0, 0, false)
             )
         }
-        pagingList.add(calculateLastPagination(
-            currentPageSize, requiredItemsCount + itemsSkippedCount, numberOfCalls))
+
+        if (numberOfFullCallsDone + pagingList.size + 1 == numberOfCalls) {
+            pagingList.add(calculateLastPagination(
+                currentPageSize, requiredItemsCount + itemsSkippedCount, numberOfCalls))
+        }
+
         return pagingList
     }
 
     @JvmStatic
     @Throws(IllegalStateException::class)
-    fun calculateFirstPagination(currentPageSize: Int,
+    fun calculateFirstPagination(maxPageSize: Int,
                                  numberOfFullCallsDone: Int,
+                                 requiredItemsCount: Int,
                                  itemsSkippedCount: Int): Paging {
 
-        val upperLimit = (numberOfFullCallsDone + 1) * currentPageSize
-        val itemsToRequest = upperLimit - itemsSkippedCount
+        val upperLimit = minOf(itemsSkippedCount + requiredItemsCount, (numberOfFullCallsDone + 1) * maxPageSize)
+        val minimumPageSize = upperLimit - itemsSkippedCount
 
-        for (pageSize in itemsToRequest..currentPageSize) {
+        for (pageSize in minimumPageSize..maxPageSize) {
             val page = ceil(upperLimit.toDouble() / pageSize).toInt()
             val previousItemsToSkipCount = itemsSkippedCount - (page - 1) * pageSize
             val posteriorItemsToSkipCount = page * pageSize - upperLimit

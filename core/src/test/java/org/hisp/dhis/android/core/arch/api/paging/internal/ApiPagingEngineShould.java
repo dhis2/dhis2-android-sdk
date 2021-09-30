@@ -74,29 +74,41 @@ public class ApiPagingEngineShould {
         List<Paging> expectedPagingList = new ArrayList<>(Arrays.asList(paging1, paging2, lastPaging));
 
         assertThat(expectedPagingList).isEqualTo(calculatedPagingList);
+
+        calculatedPagingList = ApiPagingEngine.getPaginationList(50, 4, 7);
+        paging1 = Paging.create(2,6,1, 1, false);
+
+        expectedPagingList = new ArrayList<>(Collections.singletonList(paging1));
+
+        assertThat(expectedPagingList).isEqualTo(calculatedPagingList);
     }
 
     @Test
     public void calculate_first_pagination() throws IllegalArgumentException, IllegalStateException {
         Paging calculatedPaging = ApiPagingEngine.calculateFirstPagination(
-                50, 1, 87);
+                50, 1, 13, 87);
         assertThat(calculatedPaging).isEqualTo(Paging.create(
                 6,17, 2, 2, false));
 
         calculatedPaging = ApiPagingEngine.calculateFirstPagination(
-                50, 1, 90);
+                50, 1, 10, 90);
         assertThat(calculatedPaging).isEqualTo(Paging.create(
                 10,10, 0, 0, false));
 
         calculatedPaging = ApiPagingEngine.calculateFirstPagination(
-                20, 10, 217);
+                20, 10, 3, 217);
         assertThat(calculatedPaging).isEqualTo(Paging.create(
                 55,4, 1, 0, false));
 
         calculatedPaging = ApiPagingEngine.calculateFirstPagination(
-                50, 0, 0);
+                50, 0, 50, 0);
         assertThat(calculatedPaging).isEqualTo(Paging.create(
                 1,50, 0, 0, false));
+
+        calculatedPaging = ApiPagingEngine.calculateFirstPagination(
+                50, 0, 4, 7);
+        assertThat(calculatedPaging).isEqualTo(Paging.create(
+                2,6, 1, 1, false));
     }
 
     @Test

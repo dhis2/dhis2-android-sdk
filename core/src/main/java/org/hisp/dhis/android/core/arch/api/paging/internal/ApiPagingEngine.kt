@@ -45,8 +45,10 @@ object ApiPagingEngine {
         val pagingList: MutableList<Paging> = mutableListOf()
 
         if (floor(numberOfCallsDone) != numberOfCallsDone) {
-            pagingList.add(calculateFirstPagination(
-                currentPageSize, numberOfFullCallsDone, requiredItemsCount, itemsSkippedCount)
+            pagingList.add(
+                calculateFirstPagination(
+                    currentPageSize, numberOfFullCallsDone, requiredItemsCount, itemsSkippedCount
+                )
             )
         }
 
@@ -57,8 +59,11 @@ object ApiPagingEngine {
         }
 
         if (numberOfFullCallsDone + pagingList.size + 1 == numberOfCalls) {
-            pagingList.add(calculateLastPagination(
-                currentPageSize, requiredItemsCount + itemsSkippedCount, numberOfCalls))
+            pagingList.add(
+                calculateLastPagination(
+                    currentPageSize, requiredItemsCount + itemsSkippedCount, numberOfCalls
+                )
+            )
         }
 
         return pagingList
@@ -66,10 +71,12 @@ object ApiPagingEngine {
 
     @JvmStatic
     @Throws(IllegalStateException::class)
-    fun calculateFirstPagination(maxPageSize: Int,
-                                 numberOfFullCallsDone: Int,
-                                 requiredItemsCount: Int,
-                                 itemsSkippedCount: Int): Paging {
+    fun calculateFirstPagination(
+        maxPageSize: Int,
+        numberOfFullCallsDone: Int,
+        requiredItemsCount: Int,
+        itemsSkippedCount: Int
+    ): Paging {
 
         val upperLimit = minOf(itemsSkippedCount + requiredItemsCount, (numberOfFullCallsDone + 1) * maxPageSize)
         val minimumPageSize = upperLimit - itemsSkippedCount
@@ -84,7 +91,8 @@ object ApiPagingEngine {
                     pageSize,
                     previousItemsToSkipCount,
                     posteriorItemsToSkipCount,
-                    false)
+                    false
+                )
             }
         }
         throw IllegalStateException("Paging couldn't be calculated.")
@@ -96,8 +104,10 @@ object ApiPagingEngine {
         val requestedItems = (numberOfCalls - 1) * currentPageSize
         val itemsToRequest = requiredItemsCount - requestedItems
         for (pageSize in itemsToRequest..currentPageSize) {
-            for (page in floor(requiredItemsCount.toDouble() / pageSize).toInt()
-                    ..floor(requestedItems.toDouble() / pageSize).toInt() + 1) {
+            for (
+                page in floor(requiredItemsCount.toDouble() / pageSize)
+                    .toInt()..floor(requestedItems.toDouble() / pageSize).toInt() + 1
+            ) {
                 val previousItemsToSkipCount = requestedItems - pageSize * (page - 1)
                 val posteriorItemsToSkipCount = pageSize * page - requiredItemsCount
                 if (previousItemsToSkipCount >= 0 && posteriorItemsToSkipCount >= 0) {

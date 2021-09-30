@@ -89,7 +89,8 @@ internal class TrackedEntityInstanceQueryInternalFactory constructor(
         programUid: String?
     ): EnrollmentStatus? {
         if (params.programStatus() != null &&
-            (commonHelper.isGlobal(programUid) || commonHelper.isUserDefinedProgram(params, programUid))) {
+            (commonHelper.isGlobal(programUid) || commonHelper.isUserDefinedProgram(params, programUid))
+        ) {
             return enrollmentScopeToProgramStatus(params.programStatus())
         }
         if (programUid != null && programSettings != null) {

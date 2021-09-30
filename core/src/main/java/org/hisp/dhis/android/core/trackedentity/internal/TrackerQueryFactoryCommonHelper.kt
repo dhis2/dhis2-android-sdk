@@ -139,8 +139,9 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
         if (params.limit() != null) {
             when {
                 isGlobal(programUid) && programSettings != null -> {
-                    val specificEvents =  programSettings.specificSettings().map { settings ->
-                        downloadExtractor.invoke(settings.value) }.filterNotNull().sum()
+                    val specificEvents = programSettings.specificSettings().map { settings ->
+                        downloadExtractor.invoke(settings.value)
+                    }.filterNotNull().sum()
                     val download = params.limit()!! - specificEvents
                     return if (download > 0) download else 0
                 }

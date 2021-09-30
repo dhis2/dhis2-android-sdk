@@ -78,9 +78,9 @@ class EventDownloadCall @Inject internal constructor(
                 val bundleOrgUnitPrograms = mutableMapOf<String?, MutableList<EventsByProgramCount>>()
                 bundle.orgUnits().forEach { orgUnit ->
                     bundleOrgUnitPrograms[orgUnit] = bundle.commonParams().programs
-                    .map { EventsByProgramCount(it, 0) }
-                    .ifEmpty { emptyList() }
-                    .toMutableList()
+                        .map { EventsByProgramCount(it, 0) }
+                        .ifEmpty { emptyList() }
+                        .toMutableList()
                 }
                 val orgUnitsBundleToDownload = bundle.orgUnits().toMutableList()
 
@@ -135,11 +135,13 @@ class EventDownloadCall @Inject internal constructor(
                         }
 
                         bundleOrgUnitPrograms[orgUnitUid] = bundleOrgUnitPrograms[orgUnitUid]!!.filter {
-                            !emptyOrCorruptedPrograms.contains(it.program) }.toMutableList()
+                            !emptyOrCorruptedPrograms.contains(it.program)
+                        }.toMutableList()
                     }
                 } while (params.limitByProgram() != true &&
                     eventsCount < bundle.commonParams().limit &&
-                    orgUnitsBundleToDownload.isNotEmpty())
+                    orgUnitsBundleToDownload.isNotEmpty()
+                )
 
                 if (params.uids().isEmpty()) {
                     lastUpdatedManager.update(bundle)
@@ -156,7 +158,7 @@ class EventDownloadCall @Inject internal constructor(
         downloadedEvents: Int
     ): EventsWithPagingResult {
 
-        var result = EventsWithPagingResult(0 , successfulSync = true, emptyProgram = false)
+        var result = EventsWithPagingResult(0, successfulSync = true, emptyProgram = false)
 
         try {
             result = getEventsWithPaging(eventQueryBuilder, combinationLimit, downloadedEvents)

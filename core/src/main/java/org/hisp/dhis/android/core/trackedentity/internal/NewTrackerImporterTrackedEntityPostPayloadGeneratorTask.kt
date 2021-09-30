@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
 import org.hisp.dhis.android.core.note.NewTrackerImporterNote
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute
 import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationship
 import org.hisp.dhis.android.core.trackedentity.*
 
@@ -44,7 +45,8 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGeneratorTask @Inject i
     private val enrollmentMap: Map<String, List<NewTrackerImporterEnrollment>>,
     private val attributeValueMap: Map<String, List<NewTrackerImporterTrackedEntityAttributeValue>>,
     private val relationshipMap: Map<String, List<NewTrackerImporterRelationship>>,
-    private val notes: List<NewTrackerImporterNote>
+    private val notes: List<NewTrackerImporterNote>,
+    private val programAttributeMap: Map<String, List<ProgramTrackedEntityAttribute>>
 ) {
 
     fun generate(): NewTrackerImporterPayloadWrapper {
@@ -133,8 +135,18 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGeneratorTask @Inject i
     private fun getEnrollments(
         trackedEntityInstanceUid: String
     ): List<NewTrackerImporterEnrollment> {
+        val teiAttributes = attributeValueMap[trackedEntityInstanceUid] ?: emptyList()
+
         return enrollmentMap[trackedEntityInstanceUid]?.map { enrollment ->
+            val programAttributeUids = programAttributeMap[enrollment.program()]?.mapNotNull {
+                it.trackedEntityAttribute()?.uid()
+            } ?: emptyList()
+            val enrollmentAttributeValues = teiAttributes.filter {
+                programAttributeUids.contains(it.trackedEntityAttribute())
+            }
+
             enrollment.toBuilder()
+                .attributes(enrollmentAttributeValues)
                 .notes(notes.filter { it.enrollment() == enrollment.uid() })
                 .build()
         } ?: emptyList()

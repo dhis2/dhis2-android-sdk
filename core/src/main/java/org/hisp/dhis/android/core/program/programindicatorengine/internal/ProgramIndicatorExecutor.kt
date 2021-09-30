@@ -79,7 +79,9 @@ internal class ProgramIndicatorExecutor constructor(
         return filter.isNullOrBlank() ||
             try {
                 val result = CommonParser.visit(filter, visitor)
-                AntlrParserUtils.castBoolean(result)
+                result?.let {
+                    AntlrParserUtils.castBoolean(result)
+                } ?: false
             } catch (e: IllegalArgumentException) {
                 false
             } catch (e: ParserExceptionWithoutContext) {

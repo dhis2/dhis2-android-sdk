@@ -119,7 +119,11 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
         ),
         dataElement1.uid() to MetadataItem.DataElementItem(dataElement1),
         dataElement2.uid() to MetadataItem.DataElementItem(dataElement2),
-        dataElementOperand.uid()!! to MetadataItem.DataElementOperandItem(dataElementOperand),
+        dataElementOperand.uid()!! to MetadataItem.DataElementOperandItem(
+            dataElementOperand,
+            dataElement1.displayName()!!,
+            categoryOptionCombo.displayName()!!
+        ),
         periodNov.periodId()!! to MetadataItem.PeriodItem(periodNov),
         periodDec.periodId()!! to MetadataItem.PeriodItem(periodDec),
         periodQ4.periodId()!! to MetadataItem.PeriodItem(periodQ4),

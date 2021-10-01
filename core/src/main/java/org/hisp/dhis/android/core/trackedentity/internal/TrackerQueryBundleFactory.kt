@@ -29,22 +29,24 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
 import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.resource.internal.ResourceHandler
+import org.hisp.dhis.android.core.program.ProgramType
+import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
+import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
+import org.hisp.dhis.android.core.settings.ProgramSettings
+import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository
 
 @Reusable
-internal class TrackedEntityInstanceLastUpdatedManager @Inject constructor(
-    store: ObjectWithoutUidStore<TrackedEntityInstanceSync>,
-    private val resourceHandler: ResourceHandler
-) : TrackerSyncLastUpdatedManager<TrackedEntityInstanceSync>(store) {
-
-    fun update(trackerQuery: TrackerQueryBundle) {
-        val sync = TrackedEntityInstanceSync.builder()
-            .program(trackerQuery.commonParams().program)
-            .organisationUnitIdsHash(trackerQuery.orgUnits().toSet().hashCode())
-            .downloadLimit(trackerQuery.commonParams().limit)
-            .lastUpdated(resourceHandler.serverDate)
-            .build()
-        super.update(sync)
+internal class TrackerQueryBundleFactory @Inject constructor(
+    programStore: ProgramStoreInterface,
+    programSettingsObjectRepository: ProgramSettingsObjectRepository,
+    lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager,
+    commonHelper: TrackerQueryFactoryCommonHelper
+) : TrackerQueryFactory<TrackerQueryBundle, TrackedEntityInstanceSync>(
+    programStore, programSettingsObjectRepository, lastUpdatedManager,
+    commonHelper,
+    ProgramType.WITH_REGISTRATION,
+    { params: ProgramDataDownloadParams,
+        programSettings: ProgramSettings? ->
+        TrackerQueryBundleInternalFactory(commonHelper, params, programSettings)
     }
-}
+)

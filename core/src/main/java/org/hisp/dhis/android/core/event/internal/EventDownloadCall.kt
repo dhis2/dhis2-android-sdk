@@ -69,7 +69,7 @@ class EventDownloadCall @Inject internal constructor(
 
         return Observable.create { emitter ->
             var successfulSync = true
-            val bundles = eventQueryBundleFactory.getQueries(params)
+            val bundles: List<EventQueryBundle> = eventQueryBundleFactory.getQueries(params)
 
             for (bundle in bundles) {
 

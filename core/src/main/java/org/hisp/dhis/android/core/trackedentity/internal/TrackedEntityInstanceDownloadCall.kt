@@ -62,7 +62,7 @@ internal class TrackedEntityInstanceDownloadCall @Inject constructor(
                 val relatives = RelationshipItemRelatives()
                 return@defer Observable.concat(
                     systemInfoModuleDownloader.downloadWithProgressManager(progressManager),
-                    internalCall.downloadTeis(progressManager, params, relatives),
+                    internalCall.downloadTeis(params, progressManager, relatives),
                     downloadRelationships(progressManager, relatives)
                 )
             }

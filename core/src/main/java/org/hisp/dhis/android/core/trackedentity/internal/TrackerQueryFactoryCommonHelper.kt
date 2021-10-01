@@ -51,7 +51,7 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
     private val organisationUnitProgramLinkStore: LinkStore<OrganisationUnitProgramLink>
 ) {
 
-    fun getRootCaptureOrgUnitUids(): List<String> {
+    private fun getRootCaptureOrgUnitUids(): List<String> {
         return userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids()
     }
 
@@ -138,24 +138,29 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
     ): Int {
         if (params.limit() != null) {
             when {
-                isGlobal(programUid) && programSettings != null -> {
-                    val specificEvents = programSettings.specificSettings().map { settings ->
-                        downloadExtractor.invoke(settings.value)
-                    }.filterNotNull().sum()
+                isGlobal(params, programUid) -> {
+                    val specificEvents = programSettings?.specificSettings()?.map { settings ->
+                        val scope = settings.value.settingDownload()
+                        val hasLimitByOrgUnit = if (scope != null) scope == LimitScope.PER_ORG_UNIT else false
+                        val orgUnits = getOrganisationUnits(params, hasLimitByOrgUnit) {
+                            getLinkedCaptureOrgUnitUids(settings.value.uid())
+                        }.second
+                        downloadExtractor.invoke(settings.value)?.times(orgUnits.size)
+                    }?.filterNotNull()?.sum() ?: 0
                     val download = params.limit()!! - specificEvents
                     return if (download > 0) download else 0
                 }
                 isUserDefinedProgram(params, programUid) -> return params.limit()!!
             }
         }
-        if (programUid != null && programSettings != null) {
+        if (!isGlobal(params, programUid) && programSettings != null) {
             val specificSetting = programSettings.specificSettings()[programUid]
             val download = downloadExtractor.invoke(specificSetting)
             if (download != null) {
                 return download
             }
         }
-        if (params.limit() != null && params.limitByProgram() == true) {
+        if (params.limit() != null && params.limitByProgram() == true || params.limitByOrgunit() == true) {
             return params.limit()!!
         }
         if (programSettings != null) {
@@ -168,8 +173,8 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
         return ProgramDataDownloadParams.DEFAULT_LIMIT
     }
 
-    fun isGlobal(programUid: String?): Boolean {
-        return programUid == null
+    fun isGlobal(params: ProgramDataDownloadParams, programUid: String?): Boolean {
+        return programUid == null && params.limitByOrgunit() != true && params.limitByProgram() != true
     }
 
     fun isUserDefinedProgram(params: ProgramDataDownloadParams, programUid: String?): Boolean {

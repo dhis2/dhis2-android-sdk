@@ -72,7 +72,7 @@ class TrackedEntityInstanceQueryFactoryShould {
     )
 
     // Object to test
-    private var queryFactory: TrackedEntityInstanceQueryFactory? = null
+    private var queryFactory: TrackerQueryBundleFactory? = null
     @Before
     @Throws(Exception::class)
     fun setUp() {
@@ -90,7 +90,7 @@ class TrackedEntityInstanceQueryFactoryShould {
         val commonHelper = TrackerQueryFactoryCommonHelper(
             userOrganisationUnitLinkStore, organisationUnitProgramLinkLinkStore
         )
-        queryFactory = TrackedEntityInstanceQueryFactory(
+        queryFactory = TrackerQueryBundleFactory(
             programStore, programSettingsObjectRepository, lastUpdatedManager, commonHelper
         )
     }

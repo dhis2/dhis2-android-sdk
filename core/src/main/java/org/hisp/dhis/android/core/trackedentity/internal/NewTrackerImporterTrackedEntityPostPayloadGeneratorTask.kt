@@ -44,7 +44,9 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGeneratorTask @Inject i
     private val enrollmentMap: Map<String, List<NewTrackerImporterEnrollment>>,
     private val attributeValueMap: Map<String, List<NewTrackerImporterTrackedEntityAttributeValue>>,
     private val relationshipMap: Map<String, List<NewTrackerImporterRelationship>>,
-    private val notes: List<NewTrackerImporterNote>
+    private val notes: List<NewTrackerImporterNote>,
+    private val programAttributeMap: Map<String, List<String>>,
+    private val tetAttributeMap: Map<String, List<String>>
 ) {
 
     fun generate(): NewTrackerImporterPayloadWrapper {
@@ -111,8 +113,14 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGeneratorTask @Inject i
     private fun getTrackedEntity(
         trackedEntity: NewTrackerImporterTrackedEntity
     ): NewTrackerImporterTrackedEntity {
+        val teiAttributes = attributeValueMap[trackedEntity.uid()] ?: emptyList()
+        val typeAttributes = tetAttributeMap[trackedEntity.trackedEntityType()] ?: emptyList()
+        val teiTypeAttributes = teiAttributes.filter {
+            typeAttributes.contains(it.trackedEntityAttribute())
+        }
+
         return trackedEntity.toBuilder()
-            .trackedEntityAttributeValues(attributeValueMap[trackedEntity.uid()] ?: emptyList())
+            .trackedEntityAttributeValues(teiTypeAttributes)
             .build()
     }
 
@@ -133,8 +141,16 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGeneratorTask @Inject i
     private fun getEnrollments(
         trackedEntityInstanceUid: String
     ): List<NewTrackerImporterEnrollment> {
+        val teiAttributes = attributeValueMap[trackedEntityInstanceUid] ?: emptyList()
+
         return enrollmentMap[trackedEntityInstanceUid]?.map { enrollment ->
+            val programAttributeUids = programAttributeMap[enrollment.program()] ?: emptyList()
+            val enrollmentAttributeValues = teiAttributes.filter {
+                programAttributeUids.contains(it.trackedEntityAttribute())
+            }
+
             enrollment.toBuilder()
+                .attributes(enrollmentAttributeValues)
                 .notes(notes.filter { it.enrollment() == enrollment.uid() })
                 .build()
         } ?: emptyList()

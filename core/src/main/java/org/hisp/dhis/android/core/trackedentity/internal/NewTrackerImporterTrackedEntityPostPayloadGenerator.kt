@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import dagger.Reusable
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
@@ -47,6 +48,7 @@ import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityAttributeValueTransformer
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityDataValueTransformer
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute
 import javax.inject.Inject
 
 @Reusable
@@ -57,7 +59,8 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGenerator @Inject inter
     private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore,
     private val noteStore: IdentifiableObjectStore<Note>,
     private val relationshipRepository: RelationshipCollectionRepository,
-    private val programTrackedEntityAttributeStore: IdentifiableObjectStore<ProgramTrackedEntityAttribute>
+    private val programTrackedEntityAttributeStore: IdentifiableObjectStore<ProgramTrackedEntityAttribute>,
+    private val trackedEntityTypeAttributeStore: LinkStore<TrackedEntityTypeAttribute>
 ) {
 
     fun getTrackedEntities(
@@ -82,6 +85,7 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGenerator @Inject inter
         val notes = getNotes()
         val relationships = getRelationships()
         val programAttributes = getProgramAttributesMap()
+        val tetAttributes = getTrackedEntityTypeAttributeMap()
 
         return NewTrackerImporterTrackedEntityPostPayloadGeneratorTask(
             filteredTrackedEntityInstances,
@@ -91,7 +95,8 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGenerator @Inject inter
             attributeValueMap,
             relationships,
             notes,
-            programAttributes
+            programAttributes,
+            tetAttributes
         ).generate()
     }
 
@@ -117,10 +122,18 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGenerator @Inject inter
             .groupBy({ it.from()?.elementUid()!! }, { relationshipsTransformer.transform(it) })
     }
 
-    private fun getProgramAttributesMap(): Map<String, List<ProgramTrackedEntityAttribute>> {
+    private fun getProgramAttributesMap(): Map<String, List<String>> {
         return programTrackedEntityAttributeStore.selectAll()
             .filter { it.program()?.uid() != null }
             .groupBy { it.program()?.uid()!! }
+            .mapValues { it.value.mapNotNull { a -> a.trackedEntityAttribute()?.uid() } }
+    }
+
+    private fun getTrackedEntityTypeAttributeMap(): Map<String, List<String>> {
+        return trackedEntityTypeAttributeStore.selectAll()
+            .filter { it.trackedEntityType()?.uid() != null }
+            .groupBy { it.trackedEntityType()?.uid()!! }
+            .mapValues { it.value.mapNotNull { a -> a.trackedEntityAttribute()?.uid() } }
     }
 
     private fun <A, B> transformMap(

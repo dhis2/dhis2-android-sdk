@@ -171,6 +171,7 @@ class NewTrackerImporterTrackedEntityPostPayloadGeneratorTaskShould {
             mapOf(),
             relationshipMap,
             listOf(),
+            mapOf(),
             mapOf()
         )
     }

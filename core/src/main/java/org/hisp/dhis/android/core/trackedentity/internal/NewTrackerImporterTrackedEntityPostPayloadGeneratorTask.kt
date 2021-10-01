@@ -28,14 +28,13 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
-import javax.inject.Inject
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
 import org.hisp.dhis.android.core.note.NewTrackerImporterNote
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute
 import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationship
 import org.hisp.dhis.android.core.trackedentity.*
+import javax.inject.Inject
 
 @Reusable
 internal class NewTrackerImporterTrackedEntityPostPayloadGeneratorTask @Inject internal constructor(
@@ -46,7 +45,8 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGeneratorTask @Inject i
     private val attributeValueMap: Map<String, List<NewTrackerImporterTrackedEntityAttributeValue>>,
     private val relationshipMap: Map<String, List<NewTrackerImporterRelationship>>,
     private val notes: List<NewTrackerImporterNote>,
-    private val programAttributeMap: Map<String, List<ProgramTrackedEntityAttribute>>
+    private val programAttributeMap: Map<String, List<String>>,
+    private val tetAttributeMap: Map<String, List<String>>
 ) {
 
     fun generate(): NewTrackerImporterPayloadWrapper {
@@ -113,8 +113,14 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGeneratorTask @Inject i
     private fun getTrackedEntity(
         trackedEntity: NewTrackerImporterTrackedEntity
     ): NewTrackerImporterTrackedEntity {
+        val teiAttributes = attributeValueMap[trackedEntity.uid()] ?: emptyList()
+        val typeAttributes = tetAttributeMap[trackedEntity.trackedEntityType()] ?: emptyList()
+        val teiTypeAttributes = teiAttributes.filter {
+            typeAttributes.contains(it.trackedEntityAttribute())
+        }
+
         return trackedEntity.toBuilder()
-            .trackedEntityAttributeValues(attributeValueMap[trackedEntity.uid()] ?: emptyList())
+            .trackedEntityAttributeValues(teiTypeAttributes)
             .build()
     }
 
@@ -138,9 +144,7 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGeneratorTask @Inject i
         val teiAttributes = attributeValueMap[trackedEntityInstanceUid] ?: emptyList()
 
         return enrollmentMap[trackedEntityInstanceUid]?.map { enrollment ->
-            val programAttributeUids = programAttributeMap[enrollment.program()]?.mapNotNull {
-                it.trackedEntityAttribute()?.uid()
-            } ?: emptyList()
+            val programAttributeUids = programAttributeMap[enrollment.program()] ?: emptyList()
             val enrollmentAttributeValues = teiAttributes.filter {
                 programAttributeUids.contains(it.trackedEntityAttribute())
             }

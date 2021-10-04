@@ -117,10 +117,11 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
     fun getLimit(
         params: ProgramDataDownloadParams,
         programSettings: ProgramSettings?,
+        specificSettingScope: LimitScope,
         programUid: String?,
         downloadExtractor: (ProgramSetting?) -> Int?
     ): Int {
-        val configLimit = getConfigLimit(params, programSettings, programUid, downloadExtractor)
+        val configLimit = getConfigLimit(params, programSettings, specificSettingScope, programUid, downloadExtractor)
 
         return if (params.uids().isNullOrEmpty()) {
             configLimit
@@ -133,6 +134,7 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
     private fun getConfigLimit(
         params: ProgramDataDownloadParams,
         programSettings: ProgramSettings?,
+        specificSettingScope: LimitScope,
         programUid: String?,
         downloadExtractor: (ProgramSetting?) -> Int?
     ): Int {
@@ -141,7 +143,7 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
                 isGlobal(params, programUid) -> {
                     val specificEvents = programSettings?.specificSettings()?.map { settings ->
                         val scope = settings.value.settingDownload()
-                        val hasLimitByOrgUnit = if (scope != null) scope == LimitScope.PER_ORG_UNIT else false
+                        val hasLimitByOrgUnit = if (scope != null) scope == specificSettingScope else false
                         val orgUnits = getOrganisationUnits(params, hasLimitByOrgUnit) {
                             getLinkedCaptureOrgUnitUids(settings.value.uid())
                         }.second

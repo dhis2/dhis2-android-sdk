@@ -60,7 +60,7 @@ internal class TrackerQueryBundleInternalFactory constructor(
         programUid: String?,
         orgUnitByLimitExtractor: () -> List<String>
     ): List<TrackerQueryBundle> {
-        val limit = commonHelper.getLimit(params, programSettings, programUid) { it?.teiDownload() }
+        val limit = commonHelper.getLimit(params, programSettings, specificSettingScope, programUid) { it?.teiDownload() }
         if (limit == 0 || programs.isEmpty()) {
             return emptyList()
         }

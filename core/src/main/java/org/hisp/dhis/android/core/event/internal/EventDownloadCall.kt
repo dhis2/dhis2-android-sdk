@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceDownloadInternalCall
 
 @Reusable
 class EventDownloadCall @Inject internal constructor(
@@ -76,28 +77,33 @@ class EventDownloadCall @Inject internal constructor(
                 var eventsCount = 0
 
                 val bundleOrgUnitPrograms = mutableMapOf<String?, MutableList<EventsByProgramCount>>()
-                bundle.orgUnits().forEach { orgUnit ->
-                    bundleOrgUnitPrograms[orgUnit] = bundle.commonParams().programs
-                        .map { EventsByProgramCount(it, 0) }
-                        .ifEmpty { emptyList() }
-                        .toMutableList()
-                }
+                bundle.orgUnits()
+                    .ifEmpty { listOf(null) }
+                    .forEach { orgUnit ->
+                        bundleOrgUnitPrograms[orgUnit] = when (orgUnit) {
+                            null -> listOf(EventsByProgramCount(null, 0))
+                            else -> bundle.commonParams().programs
+                                .map { EventsByProgramCount(it, 0) }
+                        }.toMutableList()
+                    }
                 val orgUnitsBundleToDownload = bundle.orgUnits().toMutableList()
 
                 do {
                     for (orgUnitUid in bundleOrgUnitPrograms.keys) {
                         val bundlePrograms: MutableList<EventsByProgramCount> = bundleOrgUnitPrograms[orgUnitUid]!!
-                        val emptyOrCorruptedPrograms = emptyList<String>().toMutableList()
+                        val emptyOrCorruptedPrograms = emptyList<String?>().toMutableList()
 
                         if (bundlePrograms.size <= 0) {
                             orgUnitsBundleToDownload -= orgUnitUid
                             break
                         }
 
-                        val bundleLimit: Int = if (params.limitByProgram() != true) {
-                            (bundle.commonParams().limit - eventsCount)
+                        val bundleLimit: Int = when {
+                            params.uids().isNotEmpty() -> params.uids().size
+                            params.limitByProgram() != true -> (bundle.commonParams().limit - eventsCount)
                                 .div(bundleOrgUnitPrograms.keys.size * bundlePrograms.size)
-                        } else bundle.commonParams().limit - eventsCount
+                            else -> bundle.commonParams().limit - eventsCount
+                        }
 
                         if (eventsCount >= bundle.commonParams().limit || bundleLimit <= 0) {
                             orgUnitsBundleToDownload -= orgUnitUid
@@ -229,5 +235,5 @@ class EventDownloadCall @Inject internal constructor(
 
     private class EventsWithPagingResult(var eventCount: Int, var successfulSync: Boolean, var emptyProgram: Boolean)
 
-    private class EventsByProgramCount(val program: String, var eventCount: Int)
+    private class EventsByProgramCount(val program: String?, var eventCount: Int)
 }

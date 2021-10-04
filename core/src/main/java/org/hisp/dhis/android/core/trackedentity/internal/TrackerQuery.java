@@ -25,27 +25,58 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal
 
-import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.program.ProgramType
-import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
-import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
-import org.hisp.dhis.android.core.settings.ProgramSettings
-import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository
+package org.hisp.dhis.android.core.trackedentity.internal;
 
-@Reusable
-internal class TrackedEntityInstanceQueryFactory @Inject constructor(
-    programStore: ProgramStoreInterface,
-    programSettingsObjectRepository: ProgramSettingsObjectRepository,
-    lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager,
-    commonHelper: TrackerQueryFactoryCommonHelper
-) : TrackerQueryFactory<TeiQuery, TrackedEntityInstanceSync>(
-    programStore, programSettingsObjectRepository,
-    lastUpdatedManager, commonHelper,
-    ProgramType.WITH_REGISTRATION,
-    { params: ProgramDataDownloadParams, programSettings: ProgramSettings? ->
-        TrackedEntityInstanceQueryInternalFactory(commonHelper, params, programSettings)
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
+
+import java.util.Collection;
+import java.util.Collections;
+
+@AutoValue
+abstract class TrackerQuery extends BaseQuery {
+
+    @NonNull
+    abstract TrackerQueryCommonParams commonParams();
+
+    @Nullable
+    abstract String orgUnit();
+
+    @NonNull
+    abstract Collection<String> uids();
+
+    @Nullable
+    abstract EnrollmentStatus programStatus();
+
+    @Nullable
+    abstract String lastUpdatedStr();
+
+    static Builder builder() {
+        return new AutoValue_TrackerQuery.Builder()
+                .page(1)
+                .pageSize(DEFAULT_PAGE_SIZE)
+                .paging(true)
+                .uids(Collections.emptyList());
     }
-)
+
+    @AutoValue.Builder
+    abstract static class Builder extends BaseQuery.Builder<Builder> {
+        abstract Builder commonParams(TrackerQueryCommonParams commonParams);
+
+        abstract Builder orgUnit(String orgUnit);
+
+        abstract Builder uids(Collection<String> uIds);
+
+        abstract Builder lastUpdatedStr(String lastUpdatedStr);
+
+        abstract Builder programStatus(EnrollmentStatus programStatus);
+
+        abstract TrackerQuery build();
+    }
+}

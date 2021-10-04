@@ -25,26 +25,42 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal
 
-import dagger.Reusable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.resource.internal.ResourceHandler
+package org.hisp.dhis.android.core.trackedentity.internal;
 
-@Reusable
-internal class TrackedEntityInstanceLastUpdatedManager @Inject constructor(
-    store: ObjectWithoutUidStore<TrackedEntityInstanceSync>,
-    private val resourceHandler: ResourceHandler
-) : TrackerSyncLastUpdatedManager<TrackedEntityInstanceSync>(store) {
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-    fun update(trackerQuery: TrackerQueryBundle) {
-        val sync = TrackedEntityInstanceSync.builder()
-            .program(trackerQuery.commonParams().program)
-            .organisationUnitIdsHash(trackerQuery.orgUnits().toSet().hashCode())
-            .downloadLimit(trackerQuery.commonParams().limit)
-            .lastUpdated(resourceHandler.serverDate)
-            .build()
-        super.update(sync)
+import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
+
+import java.util.List;
+
+@AutoValue
+abstract class TrackerQueryBundle {
+
+    @NonNull
+    abstract TrackerQueryCommonParams commonParams();
+
+    @NonNull
+    abstract List<String> orgUnits();
+
+    @Nullable
+    abstract EnrollmentStatus programStatus();
+
+    static Builder builder() {
+        return new AutoValue_TrackerQueryBundle.Builder();
+    }
+
+    @AutoValue.Builder
+    abstract static class Builder {
+        abstract Builder commonParams(TrackerQueryCommonParams commonParams);
+
+        abstract Builder orgUnits(List<String> orgUnits);
+
+        abstract Builder programStatus(EnrollmentStatus programStatus);
+
+        abstract TrackerQueryBundle build();
     }
 }

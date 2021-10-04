@@ -25,56 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.program.ProgramType
+import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
+import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
+import org.hisp.dhis.android.core.settings.ProgramSettings
+import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
-import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
-
-import java.util.Collection;
-import java.util.Collections;
-
-@AutoValue
-abstract class TeiQuery extends BaseQuery {
-
-    @NonNull
-    abstract TrackerQueryCommonParams commonParams();
-
-    @NonNull
-    abstract Collection<String> orgUnits();
-
-    @NonNull
-    abstract Collection<String> uids();
-
-    @Nullable
-    abstract EnrollmentStatus programStatus();
-
-    static Builder builder() {
-        return new AutoValue_TeiQuery.Builder()
-                .page(1)
-                .pageSize(DEFAULT_PAGE_SIZE)
-                .paging(true)
-                .orgUnits(Collections.emptyList())
-                .uids(Collections.emptyList());
+@Reusable
+internal class TrackerQueryBundleFactory @Inject constructor(
+    programStore: ProgramStoreInterface,
+    programSettingsObjectRepository: ProgramSettingsObjectRepository,
+    lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager,
+    commonHelper: TrackerQueryFactoryCommonHelper
+) : TrackerQueryFactory<TrackerQueryBundle, TrackedEntityInstanceSync>(
+    programStore, programSettingsObjectRepository, lastUpdatedManager,
+    commonHelper,
+    ProgramType.WITH_REGISTRATION,
+    { params: ProgramDataDownloadParams,
+        programSettings: ProgramSettings? ->
+        TrackerQueryBundleInternalFactory(commonHelper, params, programSettings)
     }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    abstract static class Builder extends BaseQuery.Builder<Builder> {
-        abstract Builder commonParams(TrackerQueryCommonParams commonParams);
-
-        abstract Builder orgUnits(Collection<String> orgUnits);
-
-        abstract Builder uids(Collection<String> uIds);
-
-        abstract Builder programStatus(EnrollmentStatus programStatus);
-
-        abstract TeiQuery build();
-    }
-}
+)

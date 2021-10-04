@@ -33,15 +33,15 @@ import org.hisp.dhis.android.core.settings.EnrollmentScope
 import org.hisp.dhis.android.core.settings.LimitScope
 import org.hisp.dhis.android.core.settings.ProgramSettings
 
-internal class TrackedEntityInstanceQueryInternalFactory constructor(
+internal class TrackerQueryBundleInternalFactory constructor(
     private val commonHelper: TrackerQueryFactoryCommonHelper,
     params: ProgramDataDownloadParams,
     programSettings: ProgramSettings?
-) : TrackerQueryInternalFactory<TeiQuery>(params, programSettings, LimitScope.PER_ORG_UNIT) {
+) : TrackerQueryInternalFactory<TrackerQueryBundle>(params, programSettings, LimitScope.PER_ORG_UNIT) {
 
     override fun queryGlobal(
         programs: List<String>
-    ): List<TeiQuery> {
+    ): List<TrackerQueryBundle> {
         return queryInternal(programs, null) {
             commonHelper.getCaptureOrgUnitUids()
         }
@@ -49,7 +49,7 @@ internal class TrackedEntityInstanceQueryInternalFactory constructor(
 
     override fun queryPerProgram(
         programUid: String?
-    ): List<TeiQuery> {
+    ): List<TrackerQueryBundle> {
         return queryInternal(listOf(programUid!!), programUid) {
             commonHelper.getLinkedCaptureOrgUnitUids(programUid)
         }
@@ -59,8 +59,10 @@ internal class TrackedEntityInstanceQueryInternalFactory constructor(
         programs: List<String>,
         programUid: String?,
         orgUnitByLimitExtractor: () -> List<String>
-    ): List<TeiQuery> {
-        val limit = commonHelper.getLimit(params, programSettings, programUid) { it?.teiDownload() }
+    ): List<TrackerQueryBundle> {
+        val limit = commonHelper.getLimit(
+            params, programSettings, specificSettingScope, programUid
+        ) { it?.teiDownload() }
         if (limit == 0 || programs.isEmpty()) {
             return emptyList()
         }
@@ -71,10 +73,9 @@ internal class TrackedEntityInstanceQueryInternalFactory constructor(
 
         val programStatus = getProgramStatus(params, programSettings, programUid)
 
-        val builder = TeiQuery.builder()
+        val builder = TrackerQueryBundle.builder()
             .commonParams(commonParams)
             .programStatus(programStatus)
-            .uids(params.uids())
 
         return commonHelper.divideByOrgUnits(
             commonParams.orgUnitsBeforeDivision,
@@ -88,7 +89,9 @@ internal class TrackedEntityInstanceQueryInternalFactory constructor(
         programSettings: ProgramSettings?,
         programUid: String?
     ): EnrollmentStatus? {
-        if (params.programStatus() != null && commonHelper.isGlobalOrUserDefinedProgram(params, programUid)) {
+        if (params.programStatus() != null &&
+            (commonHelper.isGlobal(params, programUid) || commonHelper.isUserDefinedProgram(params, programUid))
+        ) {
             return enrollmentScopeToProgramStatus(params.programStatus())
         }
         if (programUid != null && programSettings != null) {

@@ -68,86 +68,32 @@ class EventDownloadCall @Inject internal constructor(
     ): Observable<D2Progress> {
 
         return Observable.create { emitter ->
-            var successfulSync = true
+            val iterables = BundleIterables(
+                0, true, 0, mutableMapOf(), mutableListOf(), mutableListOf(), mutableListOf()
+            )
             val bundles: List<EventQueryBundle> = eventQueryBundleFactory.getQueries(params)
 
             for (bundle in bundles) {
-
-                var eventsCount = 0
-
-                val bundleOrgUnitPrograms = mutableMapOf<String?, MutableList<EventsByProgramCount>>()
+                iterables.eventsCount = 0
+                iterables.bundleOrgUnitPrograms = mutableMapOf()
+                iterables.orgUnitsBundleToDownload = bundle.orgUnits().toMutableList()
                 bundle.orgUnits()
                     .ifEmpty { listOf(null) }
                     .forEach { orgUnit ->
-                        bundleOrgUnitPrograms[orgUnit] = when (orgUnit) {
+                        iterables.bundleOrgUnitPrograms[orgUnit] = when (orgUnit) {
                             null -> listOf(EventsByProgramCount(null, 0))
                             else ->
                                 bundle.commonParams().programs
                                     .map { EventsByProgramCount(it, 0) }
                         }.toMutableList()
                     }
-                val orgUnitsBundleToDownload = bundle.orgUnits().toMutableList()
 
                 do {
-                    for (orgUnitUid in bundleOrgUnitPrograms.keys) {
-                        val bundlePrograms: MutableList<EventsByProgramCount> = bundleOrgUnitPrograms[orgUnitUid]!!
-                        val emptyOrCorruptedPrograms = emptyList<String?>().toMutableList()
-
-                        if (bundlePrograms.size <= 0) {
-                            orgUnitsBundleToDownload -= orgUnitUid
-                            break
-                        }
-
-                        val bundleLimit: Int = when {
-                            params.uids().isNotEmpty() -> params.uids().size
-                            params.limitByProgram() != true ->
-                                (bundle.commonParams().limit - eventsCount)
-                                    .div(bundleOrgUnitPrograms.keys.size * bundlePrograms.size)
-                            else -> bundle.commonParams().limit - eventsCount
-                        }
-
-                        if (eventsCount >= bundle.commonParams().limit || bundleLimit <= 0) {
-                            orgUnitsBundleToDownload -= orgUnitUid
-                            break
-                        }
-
-                        for (bundleProgram in bundlePrograms) {
-                            if (eventsCount >= bundle.commonParams().limit) {
-                                break
-                            }
-                            val eventQueryBuilder = EventQuery.builder()
-                                .commonParams(
-                                    bundle.commonParams().copy(
-                                        program = bundleProgram.program,
-                                        limit = bundleLimit
-                                    )
-                                )
-                                .lastUpdatedStr(lastUpdatedManager.getLastUpdatedStr(bundle.commonParams()))
-                                .orgUnit(orgUnitUid)
-                                .uids(params.uids())
-
-                            val result = getEventsForOrgUnitProgramCombination(
-                                eventQueryBuilder,
-                                bundleLimit,
-                                bundleProgram.eventCount
-                            )
-
-                            eventsCount += result.eventCount
-                            bundleProgram.eventCount += result.eventCount
-                            successfulSync = successfulSync && result.successfulSync
-
-                            if (result.emptyProgram || !result.successfulSync) {
-                                emptyOrCorruptedPrograms += bundleProgram.program
-                            }
-                        }
-
-                        bundleOrgUnitPrograms[orgUnitUid] = bundleOrgUnitPrograms[orgUnitUid]!!.filter {
-                            !emptyOrCorruptedPrograms.contains(it.program)
-                        }.toMutableList()
-                    }
-                } while (params.limitByProgram() != true &&
-                    eventsCount < bundle.commonParams().limit &&
-                    orgUnitsBundleToDownload.isNotEmpty()
+                    iterateBundle(bundle, params, iterables)
+                } while (
+                    params.limitByProgram() != true &&
+                    iterables.eventsCount < bundle.commonParams().limit &&
+                    iterables.orgUnitsBundleToDownload.isNotEmpty()
                 )
 
                 if (params.uids().isEmpty()) {
@@ -156,6 +102,82 @@ class EventDownloadCall @Inject internal constructor(
             }
             emitter.onNext(progressManager.increaseProgress(Event::class.java, true))
             emitter.onComplete()
+        }
+    }
+
+    private fun iterateBundle(
+        bundle: EventQueryBundle,
+        params: ProgramDataDownloadParams,
+        iterables: BundleIterables
+    ) {
+        for (orgUnitUid in iterables.bundleOrgUnitPrograms.keys) {
+            iterables.bundlePrograms = iterables.bundleOrgUnitPrograms[orgUnitUid]!!
+            iterables.emptyOrCorruptedPrograms = emptyList<String?>().toMutableList()
+            iterables.bundleLimit = getBundleLimit(bundle, params, iterables)
+
+            if (iterables.eventsCount >= bundle.commonParams().limit || iterables.bundleLimit <= 0) {
+                iterables.orgUnitsBundleToDownload = (iterables.orgUnitsBundleToDownload - orgUnitUid).toMutableList()
+                break
+            }
+
+            iterateBundleProgram(orgUnitUid, bundle, params, iterables)
+
+            iterables.bundleOrgUnitPrograms[orgUnitUid] = iterables.bundleOrgUnitPrograms[orgUnitUid]!!.filter {
+                !iterables.emptyOrCorruptedPrograms.contains(it.program)
+            }.toMutableList()
+        }
+    }
+
+    private fun iterateBundleProgram(
+        orgUnitUid: String?,
+        bundle: EventQueryBundle,
+        params: ProgramDataDownloadParams,
+        iterables: BundleIterables
+    ) {
+        for (bundleProgram in iterables.bundlePrograms) {
+            if (iterables.eventsCount >= bundle.commonParams().limit) {
+                break
+            }
+            val eventQueryBuilder = EventQuery.builder()
+                .commonParams(
+                    bundle.commonParams().copy(
+                        program = bundleProgram.program,
+                        limit = iterables.bundleLimit
+                    )
+                )
+                .lastUpdatedStr(lastUpdatedManager.getLastUpdatedStr(bundle.commonParams()))
+                .orgUnit(orgUnitUid)
+                .uids(params.uids())
+
+            val result = getEventsForOrgUnitProgramCombination(
+                eventQueryBuilder,
+                iterables.bundleLimit,
+                bundleProgram.eventCount
+            )
+
+            iterables.eventsCount += result.eventCount
+            bundleProgram.eventCount += result.eventCount
+            iterables.successfulSync = iterables.successfulSync && result.successfulSync
+
+            if (result.emptyProgram || !result.successfulSync) {
+                iterables.emptyOrCorruptedPrograms = (iterables.emptyOrCorruptedPrograms + bundleProgram.program)
+                    .toMutableList()
+            }
+        }
+    }
+
+    private fun getBundleLimit(
+        bundle: EventQueryBundle,
+        params: ProgramDataDownloadParams,
+        iterables: BundleIterables
+    ): Int {
+        return when {
+            params.uids().isNotEmpty() -> params.uids().size
+            params.limitByProgram() != true && iterables.bundlePrograms.isNotEmpty() ->
+                (bundle.commonParams().limit - iterables.eventsCount)
+                    .div(iterables.bundleOrgUnitPrograms.keys.size * iterables.bundlePrograms.size)
+            params.limitByProgram() != true && iterables.bundlePrograms.isEmpty() -> 0
+            else -> bundle.commonParams().limit - iterables.eventsCount
         }
     }
 
@@ -237,4 +259,14 @@ class EventDownloadCall @Inject internal constructor(
     private class EventsWithPagingResult(var eventCount: Int, var successfulSync: Boolean, var emptyProgram: Boolean)
 
     private class EventsByProgramCount(val program: String?, var eventCount: Int)
+
+    private class BundleIterables(
+        var eventsCount: Int,
+        var successfulSync: Boolean,
+        var bundleLimit: Int,
+        var bundleOrgUnitPrograms: MutableMap<String?, MutableList<EventsByProgramCount>>,
+        var orgUnitsBundleToDownload: MutableList<String?>,
+        var bundlePrograms: MutableList<EventsByProgramCount>,
+        var emptyOrCorruptedPrograms: MutableList<String?>
+    )
 }

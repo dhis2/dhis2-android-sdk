@@ -141,15 +141,9 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
         if (params.limit() != null) {
             when {
                 isGlobal(params, programUid) -> {
-                    val specificEvents = programSettings?.specificSettings()?.map { settings ->
-                        val scope = settings.value.settingDownload()
-                        val hasLimitByOrgUnit = if (scope != null) scope == specificSettingScope else false
-                        val orgUnits = getOrganisationUnits(params, hasLimitByOrgUnit) {
-                            getLinkedCaptureOrgUnitUids(settings.value.uid())
-                        }.second
-                        downloadExtractor.invoke(settings.value)?.times(orgUnits.size)
-                    }?.filterNotNull()?.sum() ?: 0
-                    val download = params.limit()!! - specificEvents
+                    val download = params.limit()!! - specificEvents(
+                        params, programSettings, specificSettingScope, downloadExtractor
+                    )
                     return if (download > 0) download else 0
                 }
                 isUserDefinedProgram(params, programUid) -> return params.limit()!!
@@ -173,6 +167,22 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
             }
         }
         return ProgramDataDownloadParams.DEFAULT_LIMIT
+    }
+
+    private fun specificEvents(
+        params: ProgramDataDownloadParams,
+        programSettings: ProgramSettings?,
+        specificSettingScope: LimitScope,
+        downloadExtractor: (ProgramSetting?) -> Int?
+    ): Int {
+        return programSettings?.specificSettings()?.map { settings ->
+            val scope = settings.value.settingDownload()
+            val hasLimitByOrgUnit = if (scope != null) scope == specificSettingScope else false
+            val orgUnits = getOrganisationUnits(params, hasLimitByOrgUnit) {
+                getLinkedCaptureOrgUnitUids(settings.value.uid())
+            }.second
+            downloadExtractor.invoke(settings.value)?.times(orgUnits.size)
+        }?.filterNotNull()?.sum() ?: 0
     }
 
     fun isGlobal(params: ProgramDataDownloadParams, programUid: String?): Boolean {

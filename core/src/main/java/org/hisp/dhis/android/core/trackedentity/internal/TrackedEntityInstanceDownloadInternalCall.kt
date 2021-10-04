@@ -58,88 +58,30 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
     ): Observable<D2Progress> {
 
         return Observable.create { emitter ->
-            var successfulSync = true
+            val iterables = BundleIterables(
+                0, true, 0, mutableMapOf(), mutableListOf(), mutableListOf(), mutableListOf()
+            )
             val bundles: List<TrackerQueryBundle> = queryFactory.getQueries(params)
 
             for (bundle in bundles) {
-
-                var teisCount = 0
-
-                val bundleOrgUnitPrograms = mutableMapOf<String?, MutableList<TEIsByProgramCount>>()
+                iterables.teisCount = 0
+                iterables.bundleOrgUnitPrograms = mutableMapOf()
+                iterables.orgUnitsBundleToDownload = bundle.orgUnits().toMutableList()
                 bundle.orgUnits()
                     .ifEmpty { listOf(null) }
                     .forEach { orgUnit ->
-                        bundleOrgUnitPrograms[orgUnit] = when (orgUnit) {
+                        iterables.bundleOrgUnitPrograms[orgUnit] = when (orgUnit) {
                             null -> listOf(TEIsByProgramCount(null, 0))
                             else ->
                                 bundle.commonParams().programs
                                     .map { TEIsByProgramCount(it, 0) }
                         }.toMutableList()
                     }
-                val orgUnitsBundleToDownload = bundle.orgUnits().toMutableList()
-
                 do {
-                    for (orgUnitUid in bundleOrgUnitPrograms.keys) {
-                        val bundlePrograms: MutableList<TEIsByProgramCount> = bundleOrgUnitPrograms[orgUnitUid]!!
-                        val emptyOrCorruptedPrograms = emptyList<String?>().toMutableList()
-
-                        if (bundlePrograms.size <= 0) {
-                            orgUnitsBundleToDownload -= orgUnitUid
-                            break
-                        }
-
-                        val bundleLimit: Int = when {
-                            params.uids().isNotEmpty() -> params.uids().size
-                            params.limitByProgram() != true ->
-                                (bundle.commonParams().limit - teisCount)
-                                    .div(bundleOrgUnitPrograms.keys.size * bundlePrograms.size)
-                            else -> bundle.commonParams().limit - teisCount
-                        }
-
-                        if (teisCount >= bundle.commonParams().limit || bundleLimit <= 0) {
-                            orgUnitsBundleToDownload -= orgUnitUid
-                            break
-                        }
-
-                        for (bundleProgram in bundlePrograms) {
-                            if (teisCount >= bundle.commonParams().limit) {
-                                break
-                            }
-                            val trackerQueryBuilder = TrackerQuery.builder()
-                                .commonParams(
-                                    bundle.commonParams().copy(
-                                        program = bundleProgram.program,
-                                        limit = bundleLimit
-                                    )
-                                )
-                                .lastUpdatedStr(lastUpdatedManager.getLastUpdatedStr(bundle.commonParams()))
-                                .orgUnit(orgUnitUid)
-                                .uids(params.uids())
-
-                            val result = getTEIsForOrgUnitProgramCombination(
-                                trackerQueryBuilder,
-                                bundleLimit,
-                                bundleProgram.teiCount,
-                                params.overwrite(),
-                                relatives
-                            )
-
-                            teisCount += result.teiCount
-                            bundleProgram.teiCount += result.teiCount
-                            successfulSync = successfulSync && result.successfulSync
-
-                            if (result.emptyProgram || !result.successfulSync) {
-                                emptyOrCorruptedPrograms += bundleProgram.program
-                            }
-                        }
-
-                        bundleOrgUnitPrograms[orgUnitUid] = bundleOrgUnitPrograms[orgUnitUid]!!.filter {
-                            !emptyOrCorruptedPrograms.contains(it.program)
-                        }.toMutableList()
-                    }
+                    iterateBundle(bundle, params, iterables, relatives)
                 } while (params.limitByProgram() != true &&
-                    teisCount < bundle.commonParams().limit &&
-                    orgUnitsBundleToDownload.isNotEmpty()
+                    iterables.teisCount < bundle.commonParams().limit &&
+                    iterables.orgUnitsBundleToDownload.isNotEmpty()
                 )
 
                 if (params.uids().isEmpty()) {
@@ -151,6 +93,86 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
         }
     }
 
+    private fun iterateBundle(
+        bundle: TrackerQueryBundle,
+        params: ProgramDataDownloadParams,
+        iterables: BundleIterables,
+        relatives: RelationshipItemRelatives
+    ) {
+        for (orgUnitUid in iterables.bundleOrgUnitPrograms.keys) {
+            iterables.bundlePrograms = iterables.bundleOrgUnitPrograms[orgUnitUid]!!
+            iterables.emptyOrCorruptedPrograms = emptyList<String?>().toMutableList()
+            iterables.bundleLimit = getBundleLimit(bundle, params, iterables)
+
+            if (iterables.teisCount >= bundle.commonParams().limit || iterables.bundleLimit <= 0) {
+                iterables.orgUnitsBundleToDownload = (iterables.orgUnitsBundleToDownload - orgUnitUid).toMutableList()
+                break
+            }
+
+            iterateBundleProgram(orgUnitUid, bundle, params, iterables, relatives)
+
+            iterables.bundleOrgUnitPrograms[orgUnitUid] = iterables.bundleOrgUnitPrograms[orgUnitUid]!!.filter {
+                !iterables.emptyOrCorruptedPrograms.contains(it.program)
+            }.toMutableList()
+        }
+    }
+
+    private fun iterateBundleProgram(
+        orgUnitUid: String?,
+        bundle: TrackerQueryBundle,
+        params: ProgramDataDownloadParams,
+        iterables: BundleIterables,
+        relatives: RelationshipItemRelatives
+    ) {
+        for (bundleProgram in iterables.bundlePrograms) {
+            if (iterables.teisCount >= bundle.commonParams().limit) {
+                break
+            }
+            val trackerQueryBuilder = TrackerQuery.builder()
+                .commonParams(
+                    bundle.commonParams().copy(
+                        program = bundleProgram.program,
+                        limit = iterables.bundleLimit
+                    )
+                )
+                .lastUpdatedStr(lastUpdatedManager.getLastUpdatedStr(bundle.commonParams()))
+                .orgUnit(orgUnitUid)
+                .uids(params.uids())
+
+            val result = getTEIsForOrgUnitProgramCombination(
+                trackerQueryBuilder,
+                iterables.bundleLimit,
+                bundleProgram.teiCount,
+                params.overwrite(),
+                relatives
+            )
+
+            iterables.teisCount += result.teiCount
+            bundleProgram.teiCount += result.teiCount
+            iterables.successfulSync = iterables.successfulSync && result.successfulSync
+
+            if (result.emptyProgram || !result.successfulSync) {
+                iterables.emptyOrCorruptedPrograms = (iterables.emptyOrCorruptedPrograms + bundleProgram.program)
+                    .toMutableList()
+            }
+        }
+    }
+
+    private fun getBundleLimit(
+        bundle: TrackerQueryBundle,
+        params: ProgramDataDownloadParams,
+        iterables: BundleIterables
+    ): Int {
+        return when {
+            params.uids().isNotEmpty() -> params.uids().size
+            params.limitByProgram() != true && iterables.bundlePrograms.isNotEmpty() ->
+                (bundle.commonParams().limit - iterables.teisCount)
+                    .div(iterables.bundleOrgUnitPrograms.keys.size * iterables.bundlePrograms.size)
+            params.limitByProgram() != true && iterables.bundlePrograms.isEmpty() -> 0
+            else -> bundle.commonParams().limit - iterables.teisCount
+        }
+    }
+
     private fun getTEIsForOrgUnitProgramCombination(
         trackerQueryBuilder: TrackerQuery.Builder,
         combinationLimit: Int,
@@ -158,7 +180,6 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
         overwrite: Boolean,
         relatives: RelationshipItemRelatives
     ): TEIsWithPagingResult {
-
         var result = TEIsWithPagingResult(0, successfulSync = true, emptyProgram = false)
 
         try {
@@ -234,4 +255,14 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
     private class TEIsWithPagingResult(var teiCount: Int, var successfulSync: Boolean, var emptyProgram: Boolean)
 
     private class TEIsByProgramCount(val program: String?, var teiCount: Int)
+
+    private class BundleIterables(
+        var teisCount: Int,
+        var successfulSync: Boolean,
+        var bundleLimit: Int,
+        var bundleOrgUnitPrograms: MutableMap<String?, MutableList<TEIsByProgramCount>>,
+        var orgUnitsBundleToDownload: MutableList<String?>,
+        var bundlePrograms: MutableList<TEIsByProgramCount>,
+        var emptyOrCorruptedPrograms: MutableList<String?>
+    )
 }

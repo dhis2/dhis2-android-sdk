@@ -148,7 +148,7 @@ class TrackedEntityInstanceQueryFactoryShould {
                 assertThat(query.commonParams().program).isEqualTo(p1)
                 assertThat(query.commonParams().limit).isEqualTo(100)
             } else {
-                assertThat(query.commonParams().limit).isEqualTo(4900)
+                assertThat(query.commonParams().limit).isEqualTo(4800)
             }
         }
     }

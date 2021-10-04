@@ -41,7 +41,6 @@ import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceDownloadInternalCall
 
 @Reusable
 class EventDownloadCall @Inject internal constructor(
@@ -82,8 +81,9 @@ class EventDownloadCall @Inject internal constructor(
                     .forEach { orgUnit ->
                         bundleOrgUnitPrograms[orgUnit] = when (orgUnit) {
                             null -> listOf(EventsByProgramCount(null, 0))
-                            else -> bundle.commonParams().programs
-                                .map { EventsByProgramCount(it, 0) }
+                            else ->
+                                bundle.commonParams().programs
+                                    .map { EventsByProgramCount(it, 0) }
                         }.toMutableList()
                     }
                 val orgUnitsBundleToDownload = bundle.orgUnits().toMutableList()
@@ -100,8 +100,9 @@ class EventDownloadCall @Inject internal constructor(
 
                         val bundleLimit: Int = when {
                             params.uids().isNotEmpty() -> params.uids().size
-                            params.limitByProgram() != true -> (bundle.commonParams().limit - eventsCount)
-                                .div(bundleOrgUnitPrograms.keys.size * bundlePrograms.size)
+                            params.limitByProgram() != true ->
+                                (bundle.commonParams().limit - eventsCount)
+                                    .div(bundleOrgUnitPrograms.keys.size * bundlePrograms.size)
                             else -> bundle.commonParams().limit - eventsCount
                         }
 

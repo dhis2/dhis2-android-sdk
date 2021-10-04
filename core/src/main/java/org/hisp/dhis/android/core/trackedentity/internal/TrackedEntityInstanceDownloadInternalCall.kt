@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.arch.api.paging.internal.ApiPagingEngine
 import org.hisp.dhis.android.core.arch.api.paging.internal.Paging
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
-import org.hisp.dhis.android.core.event.internal.EventDownloadCall
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
@@ -72,8 +71,9 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
                     .forEach { orgUnit ->
                         bundleOrgUnitPrograms[orgUnit] = when (orgUnit) {
                             null -> listOf(TEIsByProgramCount(null, 0))
-                            else -> bundle.commonParams().programs
-                                .map { TEIsByProgramCount(it, 0) }
+                            else ->
+                                bundle.commonParams().programs
+                                    .map { TEIsByProgramCount(it, 0) }
                         }.toMutableList()
                     }
                 val orgUnitsBundleToDownload = bundle.orgUnits().toMutableList()
@@ -90,8 +90,9 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
 
                         val bundleLimit: Int = when {
                             params.uids().isNotEmpty() -> params.uids().size
-                            params.limitByProgram() != true -> (bundle.commonParams().limit - teisCount)
-                                .div(bundleOrgUnitPrograms.keys.size * bundlePrograms.size)
+                            params.limitByProgram() != true ->
+                                (bundle.commonParams().limit - teisCount)
+                                    .div(bundleOrgUnitPrograms.keys.size * bundlePrograms.size)
                             else -> bundle.commonParams().limit - teisCount
                         }
 

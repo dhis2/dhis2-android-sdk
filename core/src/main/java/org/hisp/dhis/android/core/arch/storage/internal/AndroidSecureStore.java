@@ -184,7 +184,7 @@ public final class AndroidSecureStore implements SecureStore {
                 | UnrecoverableEntryException | InvalidKeyException | NoSuchPaddingException
                 | IllegalBlockSizeException | BadPaddingException e) {
             deleteKeyStoreEntry(ks, ALIAS);
-            String valueToDisplay = value == null ? "null" : value  ;
+            String valueToDisplay = value == null ? "null" : value;
             String errorMessage = String.format(
                     "Couldn't get value from AndroidSecureStore for key: %s and value: %s",
                     key,

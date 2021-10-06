@@ -48,7 +48,7 @@ internal class AnalyticsOrganisationUnitHelper @Inject constructor(
 
         return when (relative) {
             RelativeOrganisationUnit.USER_ORGUNIT ->
-                userOrganisationUnits
+                userOrganisationUnitStore.queryOrganisationUnitUidsByScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH)
             RelativeOrganisationUnit.USER_ORGUNIT_CHILDREN ->
                 queryChildrenOrganisationUnitUids(userOrganisationUnits)
             RelativeOrganisationUnit.USER_ORGUNIT_GRANDCHILDREN ->

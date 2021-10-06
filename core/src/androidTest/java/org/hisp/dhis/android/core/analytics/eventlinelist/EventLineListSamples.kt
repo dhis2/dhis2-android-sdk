@@ -100,6 +100,13 @@ object EventLineListSamples {
         .user(UserSamples.getUser().uid())
         .build()
 
+    val userOrganisationUnitSearch: UserOrganisationUnitLink = UserOrganisationUnitLink.builder()
+        .organisationUnit(organisationUnit1.uid())
+        .organisationUnitScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH.name)
+        .root(true)
+        .user(UserSamples.getUser().uid())
+        .build()
+
     val trackedEntityInstance: TrackedEntityInstance = TrackedEntityInstance.builder()
         .uid(generator.generate())
         .organisationUnit(organisationUnit1.uid())

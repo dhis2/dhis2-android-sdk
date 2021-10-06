@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.analytics.eventlinelist.EventLineListSamples.p
 import org.hisp.dhis.android.core.analytics.eventlinelist.EventLineListSamples.trackedEntityInstance
 import org.hisp.dhis.android.core.analytics.eventlinelist.EventLineListSamples.trackedEntityType
 import org.hisp.dhis.android.core.analytics.eventlinelist.EventLineListSamples.userOrganisationUnit
+import org.hisp.dhis.android.core.analytics.eventlinelist.EventLineListSamples.userOrganisationUnitSearch
 import org.hisp.dhis.android.core.analytics.linelist.EventLineListParams
 import org.hisp.dhis.android.core.analytics.linelist.EventLineListService
 import org.hisp.dhis.android.core.analytics.linelist.EventLineListServiceImpl
@@ -135,6 +136,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
 
         organisationUnitStore.insert(organisationUnit1)
         userOrganisationUnitStore.insert(userOrganisationUnit)
+        userOrganisationUnitStore.insert(userOrganisationUnitSearch)
 
         createTei()
         createEnrollment()

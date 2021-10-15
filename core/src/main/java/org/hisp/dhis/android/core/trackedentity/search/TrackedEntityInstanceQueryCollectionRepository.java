@@ -31,6 +31,7 @@ import androidx.lifecycle.LiveData;
 import androidx.paging.DataSource;
 import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
+import androidx.paging.PagingSource;
 
 import org.hisp.dhis.android.core.arch.cache.internal.D2Cache;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
@@ -506,6 +507,11 @@ public final class TrackedEntityInstanceQueryCollectionRepository
 
     public DataSource<TrackedEntityInstance, TrackedEntityInstance> getDataSource() {
         return new TrackedEntityInstanceQueryDataSource(store, onlineCallFactory, scope,
+                childrenAppenders, onlineCache, onlineHelper, localQueryHelper);
+    }
+
+    public PagingSource<TrackedEntityInstance, TrackedEntityInstance> getPagingSource() {
+        return new TrackedEntityInstanceQueryPagingSourceFetcher(store, onlineCallFactory, scope,
                 childrenAppenders, onlineCache, onlineHelper, localQueryHelper);
     }
 

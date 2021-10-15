@@ -50,7 +50,7 @@ ext {
     libraries = [
             // android
             annotation      : '1.1.0',
-            paging          : '2.1.2',
+            paging          : '3.0.1',
 
             // java
             apacheCommons   : "3.3.7",
@@ -161,7 +161,7 @@ dependencies {
 
     // AndroidX
     api "androidx.annotation:annotation:${libraries.annotation}"
-    api "androidx.paging:paging-runtime:${libraries.paging}"
+    api "androidx.paging:paging-runtime-ktx:${libraries.paging}"
 
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"

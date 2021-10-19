@@ -76,6 +76,7 @@ public enum D2ErrorCode {
     TOO_MANY_ORG_UNITS,
     @Deprecated
     TOO_MANY_PERIODS,
+    TOO_MANY_REQUESTS,
     UNEXPECTED,
     UNKNOWN_HOST,
     URL_NOT_FOUND,

@@ -42,7 +42,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService;
 
 import java.text.ParseException;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -106,12 +105,6 @@ class TrackedEntityInstanceQueryCallFactory {
                     .errorDescription("Search Grid mapping exception")
                     .originalException(pe)
                     .build();
-        } catch (D2Error d2Error) {
-            if (d2Error.errorCode().equals(D2ErrorCode.MAX_TEI_COUNT_REACHED)) {
-                throw d2Error;
-            } else {
-                return Collections.emptyList();
-            }
         }
     }
 

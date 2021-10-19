@@ -149,17 +149,23 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
         verifyNoMoreInteractions(service);
     }
 
-    @Test(expected = D2Error.class)
+    @Test()
     public void throw_D2CallException_when_service_call_returns_failed_response() throws Exception {
         when(apiCallExecutor.executeObjectCallWithErrorCatcher(eq(searchGridCall), any())).thenThrow(d2Error);
         when(d2Error.errorCode()).thenReturn(D2ErrorCode.MAX_TEI_COUNT_REACHED);
 
-        call.call();
+        try {
+            call.call();
+            fail("D2Error was expected but was not thrown");
+        } catch (D2Error d2e) {
+            assertThat(d2e.errorCode() == D2ErrorCode.MAX_TEI_COUNT_REACHED).isTrue();
+        }
     }
 
     @Test()
     public void throw_too_many_org_units_exception_when_request_was_too_long() throws Exception {
-        when(apiCallExecutor.executeObjectCall(searchGridCall)).thenThrow(d2Error);
+        when(apiCallExecutor.executeObjectCallWithErrorCatcher(eq(searchGridCall), any())).thenThrow(d2Error);
+        when(d2Error.errorCode()).thenReturn(D2ErrorCode.TOO_MANY_ORG_UNITS);
         when(d2Error.httpErrorCode()).thenReturn(HttpsURLConnection.HTTP_REQ_TOO_LONG);
 
         try {

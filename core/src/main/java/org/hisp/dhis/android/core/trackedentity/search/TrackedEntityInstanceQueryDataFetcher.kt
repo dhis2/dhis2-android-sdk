@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 
-class TrackedEntityInstanceQueryDataFetcher internal constructor(
+internal class TrackedEntityInstanceQueryDataFetcher constructor(
     private val store: TrackedEntityInstanceStore,
     private val onlineCallFactory: TrackedEntityInstanceQueryCallFactory,
     private val scope: TrackedEntityInstanceQueryRepositoryScope,

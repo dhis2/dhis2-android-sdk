@@ -43,7 +43,8 @@ internal class TrackedEntityInstanceQueryDataSourceResult constructor(
     onlineCache: D2Cache<TrackedEntityInstanceQueryOnline, List<Result<TrackedEntityInstance, D2Error>>>,
     onlineHelper: TrackedEntityInstanceQueryOnlineHelper,
     localQueryHelper: TrackedEntityInstanceLocalQueryHelper
-) : PageKeyedDataSource<TrackedEntityInstance, Result<TrackedEntityInstance, D2Error>>() {
+) : PageKeyedDataSource<
+    TrackedEntityInstance, Result<@JvmSuppressWildcards TrackedEntityInstance, @JvmSuppressWildcards D2Error>>() {
 
     private val dataFetcher = TrackedEntityInstanceQueryDataFetcher(
         store, onlineCallFactory, scope, childrenAppenders,

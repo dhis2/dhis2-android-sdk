@@ -55,7 +55,6 @@ import org.hisp.dhis.android.core.common.DateFilterPeriod;
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
-import org.hisp.dhis.android.core.event.EventEditableStatus;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
@@ -511,7 +510,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
                 childrenAppenders, onlineCache, onlineHelper, localQueryHelper);
     }
 
-    public TrackedEntityInstanceQueryDataSourceResult getResultDataSource() {
+    public DataSource<TrackedEntityInstance, Result<TrackedEntityInstance, D2Error>> getResultDataSource() {
         return new TrackedEntityInstanceQueryDataSourceResult(store, onlineCallFactory, scope,
                 childrenAppenders, onlineCache, onlineHelper, localQueryHelper);
     }

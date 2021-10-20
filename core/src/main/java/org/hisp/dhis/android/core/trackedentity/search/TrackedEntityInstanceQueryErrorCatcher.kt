@@ -29,19 +29,20 @@ package org.hisp.dhis.android.core.trackedentity.search
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.JsonMappingException
+import java.io.IOException
+import javax.net.ssl.HttpsURLConnection
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import retrofit2.Response
-import java.io.IOException
-import javax.net.ssl.HttpsURLConnection
 
 internal class TrackedEntityInstanceQueryErrorCatcher : APICallErrorCatcher {
     override fun mustBeStored(): Boolean {
         return false
     }
 
+    @SuppressWarnings("MagicNumber")
     override fun catchError(response: Response<*>): D2ErrorCode? {
         return when {
             response.code() == HttpsURLConnection.HTTP_REQ_TOO_LONG ->

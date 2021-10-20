@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search
 
+import java.util.*
 import org.hisp.dhis.android.core.arch.cache.internal.D2Cache
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
@@ -37,7 +38,6 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
-import java.util.*
 
 class TrackedEntityInstanceQueryDataFetcher internal constructor(
     private val store: TrackedEntityInstanceStore,
@@ -108,37 +108,45 @@ class TrackedEntityInstanceQueryDataFetcher internal constructor(
 
         do {
             for (baseOnlineQuery in baseOnlineQueries) {
-                val status = onlineQueryStatusMap[baseOnlineQuery]!!
-                if (status.isExhausted) {
-                    continue
-                }
-                val page = status.requestedItems / requestLoadSize + 1
-                val onlineQuery = baseOnlineQuery.toBuilder()
-                    .page(page)
-                    .pageSize(requestLoadSize)
-                    .paging(true).build()
-                val queryInstances = queryOnline(onlineQuery)
-
-                if (queryInstances.all { it.succeeded }) {
-                    status.requestedItems += requestLoadSize
-                    status.isExhausted = queryInstances.size < requestLoadSize
-
-                    val succeededInstances = queryInstances.map { it as Result.Success }
-
-                    succeededInstances.forEach {
-                        val teiUid = it.value.uid()
-                        if (!returnedUidsOffline.contains(teiUid) && !returnedUidsOnline.contains(teiUid)) {
-                            result.add(it)
-                            returnedUidsOnline.add(teiUid)
-                        }
-                    }
-                } else {
-                    result.addAll(queryInstances)
-                }
+                val queryResult = getOnlineQueryResults(baseOnlineQuery, requestLoadSize)
+                result.addAll(queryResult)
             }
         } while (result.all { it.succeeded } && result.size < requestLoadSize && !areAllOnlineQueriesExhausted())
 
         return result
+    }
+
+    private fun getOnlineQueryResults(
+        baseOnlineQuery: TrackedEntityInstanceQueryOnline,
+        requestLoadSize: Int
+    ): List<Result<TrackedEntityInstance, D2Error>> {
+        val status = onlineQueryStatusMap[baseOnlineQuery]!!
+        if (status.isExhausted) {
+            return emptyList()
+        }
+
+        val page = (status.requestedItems / requestLoadSize) + 1
+        val onlineQuery = baseOnlineQuery.toBuilder()
+            .page(page)
+            .pageSize(requestLoadSize)
+            .paging(true).build()
+        val queryInstances = queryOnline(onlineQuery)
+
+        return if (queryInstances.all { it.succeeded }) {
+            status.requestedItems += requestLoadSize
+            status.isExhausted = queryInstances.size < requestLoadSize
+
+            val succeededInstances = queryInstances.map { it as Result.Success }
+
+            succeededInstances
+                .filter {
+                    !returnedUidsOffline.contains(it.value.uid()) && !returnedUidsOnline.contains(it.value.uid())
+                }.onEach {
+                    returnedUidsOnline.add(it.value.uid())
+                }
+        } else {
+            queryInstances
+        }
     }
 
     private fun queryOnline(
@@ -152,8 +160,6 @@ class TrackedEntityInstanceQueryDataFetcher internal constructor(
                 .also { onlineCache[onlineQuery] = it }
         } catch (e: D2Error) {
             listOf(Result.Failure(e))
-        } catch (e: Exception) {
-            emptyList()
         }
     }
 

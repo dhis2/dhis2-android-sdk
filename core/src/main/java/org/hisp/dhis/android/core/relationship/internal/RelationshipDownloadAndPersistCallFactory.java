@@ -76,6 +76,8 @@ public final class RelationshipDownloadAndPersistCallFactory {
     private final EventService eventService;
     private final EventPersistenceCallFactory eventPersistenceCallFactory;
 
+    private final String ouMode = OrganisationUnitMode.ACCESSIBLE.name();
+
     @Inject
     RelationshipDownloadAndPersistCallFactory(
             @NonNull RelationshipStore relationshipStore,
@@ -110,7 +112,8 @@ public final class RelationshipDownloadAndPersistCallFactory {
 
             if (!eventRelationships.isEmpty()) {
                 for (String uid : eventRelationships) {
-                    Single<Payload<Event>> single = eventService.getEventSingle(uid, EventFields.asRelationshipFields)
+                    Single<Payload<Event>> single = eventService
+                            .getEventSingle(uid, EventFields.asRelationshipFields, ouMode)
                             .onErrorResumeNext((err) -> {
                                 failedEvents.add(uid);
                                 return Single.error(err);

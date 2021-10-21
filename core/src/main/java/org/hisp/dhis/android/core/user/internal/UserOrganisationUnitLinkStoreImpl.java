@@ -48,6 +48,7 @@ public final class UserOrganisationUnitLinkStoreImpl extends LinkStoreImpl<UserO
         w.bind(2, o.organisationUnit());
         w.bind(3, o.organisationUnitScope());
         w.bind(4, o.root());
+        w.bind(5, o.userAssigned());
     };
 
     private UserOrganisationUnitLinkStoreImpl(DatabaseAdapter databaseAdapter,
@@ -71,9 +72,9 @@ public final class UserOrganisationUnitLinkStoreImpl extends LinkStoreImpl<UserO
     @Override
     public List<String> queryRootCaptureOrganisationUnitUids() throws RuntimeException {
         return selectStringColumnsWhereClause(Columns.ORGANISATION_UNIT,
-                        Columns.ROOT + " = 1 " + "AND "
-                                + Columns.ORGANISATION_UNIT_SCOPE + " = '"
-                                + OrganisationUnit.Scope.SCOPE_DATA_CAPTURE + "'");
+                Columns.ROOT + " = 1 " + "AND "
+                        + Columns.ORGANISATION_UNIT_SCOPE + " = '"
+                        + OrganisationUnit.Scope.SCOPE_DATA_CAPTURE + "'");
     }
 
     @Override
@@ -83,5 +84,16 @@ public final class UserOrganisationUnitLinkStoreImpl extends LinkStoreImpl<UserO
                         Columns.ORGANISATION_UNIT_SCOPE,
                         scope.name()
                 ).build());
+    }
+
+    @Override
+    public List<String> queryAssignedOrganisationUnitUidsByScope(OrganisationUnit.Scope scope) {
+        return selectStringColumnsWhereClause(Columns.ORGANISATION_UNIT,
+                new WhereClauseBuilder()
+                        .appendKeyNumberValue(Columns.USER_ASSIGNED, 1)
+                        .appendKeyStringValue(
+                                Columns.ORGANISATION_UNIT_SCOPE,
+                                scope.name()
+                        ).build());
     }
 }

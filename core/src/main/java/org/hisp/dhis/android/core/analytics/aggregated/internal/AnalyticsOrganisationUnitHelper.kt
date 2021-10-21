@@ -32,6 +32,7 @@ import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.*
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
@@ -44,9 +45,10 @@ internal class AnalyticsOrganisationUnitHelper @Inject constructor(
 ) {
 
     fun getRelativeOrganisationUnitUids(relative: RelativeOrganisationUnit): List<String> {
-        val userOrganisationUnits = userOrganisationUnitStore.queryRootCaptureOrganisationUnitUids()
+        val userOrganisationUnits =
+            userOrganisationUnitStore.queryAssignedOrganisationUnitUidsByScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
 
-        return when (relative) {
+        val relativeOrganisationUnitsUids = when (relative) {
             RelativeOrganisationUnit.USER_ORGUNIT ->
                 userOrganisationUnits
             RelativeOrganisationUnit.USER_ORGUNIT_CHILDREN ->
@@ -54,6 +56,17 @@ internal class AnalyticsOrganisationUnitHelper @Inject constructor(
             RelativeOrganisationUnit.USER_ORGUNIT_GRANDCHILDREN ->
                 queryGrandChildrenOrganisationUnitUids(userOrganisationUnits)
         }
+
+        val whereClause = WhereClauseBuilder()
+            .appendInKeyStringValues(
+                OrganisationUnitGroupTableInfo.Columns.UID,
+                relativeOrganisationUnitsUids
+            ).build()
+
+        return organisationUnitStore.selectUidsWhere(
+            whereClause,
+            "${OrganisationUnitGroupTableInfo.Columns.NAME} ${RepositoryScope.OrderByDirection.ASC}"
+        )
     }
 
     fun getOrganisationUnitUidsByLevel(level: Int): List<String> {

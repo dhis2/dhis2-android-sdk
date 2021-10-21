@@ -29,10 +29,10 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
 import io.reactivex.Completable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import javax.inject.Inject
 
 @Reusable
 internal class TrackedEntityInstancePersistenceCallFactory @Inject constructor(
@@ -42,7 +42,9 @@ internal class TrackedEntityInstancePersistenceCallFactory @Inject constructor(
 ) {
     fun persistTEIs(
         trackedEntityInstances: List<TrackedEntityInstance>,
-        isFullUpdate: Boolean, overwrite: Boolean, relatives: RelationshipItemRelatives
+        isFullUpdate: Boolean,
+        overwrite: Boolean,
+        relatives: RelationshipItemRelatives
     ): Completable {
         return persistTEIsInternal(trackedEntityInstances, false, isFullUpdate, overwrite, relatives)
     }
@@ -59,7 +61,9 @@ internal class TrackedEntityInstancePersistenceCallFactory @Inject constructor(
 
     private fun persistTEIsInternal(
         trackedEntityInstances: List<TrackedEntityInstance>,
-        asRelationship: Boolean, isFullUpdate: Boolean, overwrite: Boolean,
+        asRelationship: Boolean,
+        isFullUpdate: Boolean,
+        overwrite: Boolean,
         relatives: RelationshipItemRelatives?
     ): Completable {
         return Completable.defer {

@@ -29,13 +29,13 @@ package org.hisp.dhis.android.core.user.internal
 
 import android.util.Log
 import dagger.Reusable
+import java.util.concurrent.Callable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.user.User
-import java.util.concurrent.Callable
-import javax.inject.Inject
 
 @Reusable
 internal class UserCall @Inject constructor(
@@ -55,9 +55,11 @@ internal class UserCall @Inject constructor(
         try {
             userHandler.handle(user)
             transaction.setSuccessful()
-        } catch (constraintException: Exception) {
+        } catch (constraintException: net.sqlcipher.SQLException) {
             // TODO review
-            //constraintException.printStackTrace();
+            Log.d("CAll", "call: constraintException")
+        } catch (constraintException: android.database.SQLException) {
+            // TODO review
             Log.d("CAll", "call: constraintException")
         } finally {
             transaction.end()

@@ -97,6 +97,7 @@ object EventLineListSamples {
         .organisationUnit(organisationUnit1.uid())
         .organisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE.name)
         .root(true)
+        .userAssigned(true)
         .user(UserSamples.getUser().uid())
         .build()
 

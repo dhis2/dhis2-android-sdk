@@ -40,6 +40,7 @@ public class UserOrganisationUnitLinkSamples {
                 .organisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE.name())
                 .organisationUnit("organisation_unit")
                 .root(true)
+                .userAssigned(true)
                 .build();
     }
 }

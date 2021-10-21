@@ -45,8 +45,8 @@ internal class AnalyticsOrganisationUnitHelper @Inject constructor(
 ) {
 
     fun getRelativeOrganisationUnitUids(relative: RelativeOrganisationUnit): List<String> {
-        val userOrganisationUnits =
-            userOrganisationUnitStore.queryAssignedOrganisationUnitUidsByScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
+        val userOrganisationUnits = userOrganisationUnitStore
+            .queryAssignedOrganisationUnitUidsByScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
 
         val relativeOrganisationUnitsUids = when (relative) {
             RelativeOrganisationUnit.USER_ORGUNIT ->

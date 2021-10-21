@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.imports.internal.EventImportSummary;
 import org.hisp.dhis.android.core.imports.internal.EventWebResponse;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.junit.Assert;
 import org.junit.Before;
 
@@ -61,6 +62,7 @@ public abstract class EventAPIRealShould extends BaseRealIntegrationTest {
     // API version dependant parameters
     private String serverUrl;
     private String strategy;
+    private String ouMode = OrganisationUnitMode.ACCESSIBLE.name();
 
     private D2 d2;
     private APICallExecutor apiCallExecutor;
@@ -109,8 +111,8 @@ public abstract class EventAPIRealShould extends BaseRealIntegrationTest {
         }
 
         // Check server status
-        Event serverValidEvent1 = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent1.uid(), EventFields.allFields));
-        Event serverValidEvent2 = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent2.uid(), EventFields.allFields));
+        Event serverValidEvent1 = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent1.uid(), EventFields.allFields, ouMode));
+        Event serverValidEvent2 = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent2.uid(), EventFields.allFields, ouMode));
 
         assertThat(serverValidEvent1).isNotNull();
         assertThat(serverValidEvent2).isNotNull();
@@ -142,12 +144,12 @@ public abstract class EventAPIRealShould extends BaseRealIntegrationTest {
         }
 
         // Check server status
-        Event serverValidEvent = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent.uid(), EventFields.allFields));
+        Event serverValidEvent = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent.uid(), EventFields.allFields, ouMode));
 
         assertThat(serverValidEvent).isNotNull();
 
         try {
-            apiCallExecutor.executeObjectCall(eventService.getEvent(invalidEvent.uid(), EventFields.allFields));
+            apiCallExecutor.executeObjectCall(eventService.getEvent(invalidEvent.uid(), EventFields.allFields, ouMode));
             Assert.fail("Should not reach that line");
         } catch (D2Error e) {
             assertThat(e.httpErrorCode()).isEqualTo(404);
@@ -180,12 +182,12 @@ public abstract class EventAPIRealShould extends BaseRealIntegrationTest {
         }
 
         // Check server status
-        Event serverValidEvent = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent.uid(), EventFields.allFields));
+        Event serverValidEvent = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent.uid(), EventFields.allFields, ouMode));
 
         assertThat(serverValidEvent).isNotNull();
 
         try {
-            apiCallExecutor.executeObjectCall(eventService.getEvent(invalidEvent.uid(), EventFields.allFields));
+            apiCallExecutor.executeObjectCall(eventService.getEvent(invalidEvent.uid(), EventFields.allFields, ouMode));
             Assert.fail("Should not reach that line");
         } catch (D2Error e) {
             assertThat(e.httpErrorCode()).isEqualTo(404);
@@ -218,8 +220,8 @@ public abstract class EventAPIRealShould extends BaseRealIntegrationTest {
         }
 
         // Check server status
-        Event serverValidEvent1 = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent1.uid(), EventFields.allFields));
-        Event serverValidEvent2 = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent2.uid(), EventFields.allFields));
+        Event serverValidEvent1 = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent1.uid(), EventFields.allFields, ouMode));
+        Event serverValidEvent2 = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent2.uid(), EventFields.allFields, ouMode));
 
         assertThat(serverValidEvent1).isNotNull();
         assertThat(serverValidEvent2).isNotNull();
@@ -251,12 +253,12 @@ public abstract class EventAPIRealShould extends BaseRealIntegrationTest {
         }
 
         // Check server status
-        Event serverValidEvent = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent.uid(), EventFields.allFields));
+        Event serverValidEvent = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent.uid(), EventFields.allFields, ouMode));
 
         assertThat(serverValidEvent).isNotNull();
 
         try {
-            apiCallExecutor.executeObjectCall(eventService.getEvent(invalidEvent.uid(), EventFields.allFields));
+            apiCallExecutor.executeObjectCall(eventService.getEvent(invalidEvent.uid(), EventFields.allFields, ouMode));
             Assert.fail("Should not reach that line");
         } catch (D2Error e) {
             assertThat(e.httpErrorCode()).isEqualTo(404);
@@ -290,9 +292,9 @@ public abstract class EventAPIRealShould extends BaseRealIntegrationTest {
 
         // Check server status
         Event serverValidEvent = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent.uid(),
-                EventFields.allFields));
+                EventFields.allFields, ouMode));
         Event serverInvalidEvent = apiCallExecutor.executeObjectCall(eventService.getEvent(invalidEvent.uid(),
-                EventFields.allFields));
+                EventFields.allFields, ouMode));
 
         assertThat(serverValidEvent).isNotNull();
         assertThat(serverValidEvent.trackedEntityDataValues().size()).isEqualTo(2);

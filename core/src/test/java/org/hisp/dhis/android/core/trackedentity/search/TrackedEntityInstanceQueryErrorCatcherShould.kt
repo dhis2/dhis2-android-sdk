@@ -85,7 +85,7 @@ class TrackedEntityInstanceQueryErrorCatcherShould {
             "status": "ERROR",
             "message": "At least 1 attributes should be mentioned in the search criteria."
             }"""
-        
+
         val response = Response.error<Any>(409, ResponseBody.create(null, responseError))
         assertThat(catcher.catchError(response)).isEqualTo(D2ErrorCode.MIN_SEARCH_ATTRIBUTES_REQUIRED)
     }

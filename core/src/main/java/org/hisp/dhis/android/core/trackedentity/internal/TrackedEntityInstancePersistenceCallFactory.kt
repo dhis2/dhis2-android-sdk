@@ -25,49 +25,52 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.event.internal
+package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
 import io.reactivex.Completable
-import javax.inject.Inject
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler
-import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import javax.inject.Inject
 
 @Reusable
-internal class EventPersistenceCallFactory @Inject constructor(
-    private val eventHandler: IdentifiableDataHandler<Event>,
-    private val organisationUnitStore: IdentifiableObjectStore<OrganisationUnit>,
+internal class TrackedEntityInstancePersistenceCallFactory @Inject constructor(
+    private val trackedEntityInstanceHandler: TrackedEntityInstanceHandler,
+    private val uidsHelper: TrackedEntityInstanceUidHelper,
     private val organisationUnitDownloader: OrganisationUnitModuleDownloader
 ) {
-    fun persistEvents(events: Collection<Event>, relatives: RelationshipItemRelatives?): Completable {
-        return persistEventsInternal(events, false, relatives)
+    fun persistTEIs(
+        trackedEntityInstances: List<TrackedEntityInstance>,
+        isFullUpdate: Boolean, overwrite: Boolean, relatives: RelationshipItemRelatives
+    ): Completable {
+        return persistTEIsInternal(trackedEntityInstances, false, isFullUpdate, overwrite, relatives)
     }
 
-    fun persistAsRelationships(events: List<Event>): Completable {
-        return persistEventsInternal(events, true, null)
+    fun persistRelationships(trackedEntityInstances: List<TrackedEntityInstance>): Completable {
+        return persistTEIsInternal(
+            trackedEntityInstances,
+            asRelationship = true,
+            isFullUpdate = false,
+            overwrite = false,
+            relatives = null
+        )
     }
 
-    private fun persistEventsInternal(
-        events: Collection<Event>,
-        asRelationship: Boolean,
+    private fun persistTEIsInternal(
+        trackedEntityInstances: List<TrackedEntityInstance>,
+        asRelationship: Boolean, isFullUpdate: Boolean, overwrite: Boolean,
         relatives: RelationshipItemRelatives?
     ): Completable {
         return Completable.defer {
-            eventHandler.handleMany(events, asRelationship, false, false, relatives)
-            if (hasMissingOrganisationUnitUids(events)) {
+            trackedEntityInstanceHandler.handleMany(
+                trackedEntityInstances, asRelationship, isFullUpdate, overwrite, relatives
+            )
+            if (uidsHelper.hasMissingOrganisationUnitUids(trackedEntityInstances)) {
                 organisationUnitDownloader.refreshOrganisationUnits()
             } else {
                 Completable.complete()
             }
         }
-    }
-
-    private fun hasMissingOrganisationUnitUids(events: Collection<Event>): Boolean {
-        val uids = events.mapNotNull { it.organisationUnit() }.toSet()
-        return (uids - organisationUnitStore.selectUids()).isNotEmpty()
     }
 }

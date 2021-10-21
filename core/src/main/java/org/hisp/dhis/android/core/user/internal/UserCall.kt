@@ -25,58 +25,43 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user.internal;
+package org.hisp.dhis.android.core.user.internal
 
-
-import android.util.Log;
-
-import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor;
-import org.hisp.dhis.android.core.arch.call.internal.GenericCallData;
-import org.hisp.dhis.android.core.arch.db.access.Transaction;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.user.User;
-
-import java.util.concurrent.Callable;
-
-import javax.inject.Inject;
-
-import dagger.Reusable;
+import android.util.Log
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
+import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.user.User
+import java.util.concurrent.Callable
+import javax.inject.Inject
 
 @Reusable
-final class UserCall implements Callable<User> {
-    private final GenericCallData genericCallData;
-    private final APICallExecutor apiCallExecutor;
-    private final UserService userService;
-    private final Handler<User> userHandler;
+internal class UserCall @Inject constructor(
+    private val genericCallData: GenericCallData,
+    private val apiCallExecutor: APICallExecutor,
+    private val userService: UserService,
+    private val userHandler: Handler<User>
+) : Callable<User> {
 
-    @Inject
-    UserCall(GenericCallData genericCallData,
-             APICallExecutor apiCallExecutor,
-             UserService userService,
-             Handler<User> userHandler) {
-        this.genericCallData = genericCallData;
-        this.apiCallExecutor = apiCallExecutor;
-        this.userService = userService;
-        this.userHandler = userHandler;
-    }
+    @Throws(D2Error::class)
+    override fun call(): User {
+        val user = apiCallExecutor.executeObjectCall(
+            userService.getUser(UserFields.allFieldsWithOrgUnit)
+        )
 
-    @Override
-    public User call() throws D2Error {
-
-        User user = apiCallExecutor.executeObjectCall(userService.getUser(UserFields.allFieldsWithOrgUnit));
-        Transaction transaction = genericCallData.databaseAdapter().beginNewTransaction();
+        val transaction = genericCallData.databaseAdapter().beginNewTransaction()
         try {
-            userHandler.handle(user);
-
-            transaction.setSuccessful();
-        } catch (Exception constraintException) {
+            userHandler.handle(user)
+            transaction.setSuccessful()
+        } catch (constraintException: Exception) {
             // TODO review
             //constraintException.printStackTrace();
-            Log.d("CAll", "call: constraintException");
+            Log.d("CAll", "call: constraintException")
         } finally {
-            transaction.end();
+            transaction.end()
         }
-        return user;
+        return user
     }
 }

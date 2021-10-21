@@ -52,14 +52,14 @@ public class TrackedEntityInstanceQueryErrorCatcherShould {
     }
 
     @Test
-    public void return_too_many_orgunits() throws Exception {
+    public void return_too_many_orgunits() {
         Response response = Response.error(HttpsURLConnection.HTTP_REQ_TOO_LONG, ResponseBody.create(null, ""));
 
         assertThat(catcher.catchError(response)).isEqualTo(D2ErrorCode.TOO_MANY_ORG_UNITS);
     }
 
     @Test
-    public void return_max_tei_reached() throws Exception {
+    public void return_max_tei_reached() {
         String responseError = "{\n" +
                 "  \"httpStatus\": \"Conflict\",\n" +
                 "  \"httpStatusCode\": 409,\n" +
@@ -69,5 +69,33 @@ public class TrackedEntityInstanceQueryErrorCatcherShould {
         Response response = Response.error(409, ResponseBody.create(null, responseError));
 
         assertThat(catcher.catchError(response)).isEqualTo(D2ErrorCode.MAX_TEI_COUNT_REACHED);
+    }
+
+    @Test
+    public void return_orgunit_not_in_search_scope() {
+        String responseError = "{\n" +
+                "  \"httpStatus\": \"Conflict\",\n" +
+                "  \"httpStatusCode\": 409,\n" +
+                "  \"status\": \"ERROR\",\n" +
+                "  \"message\": \"Organisation unit is not part of the search scope: O6uvpzGd5pu\"\n" +
+                "}";
+
+        Response response = Response.error(409, ResponseBody.create(null, responseError));
+
+        assertThat(catcher.catchError(response)).isEqualTo(D2ErrorCode.ORGUNIT_NOT_IN_SEARCH_SCOPE);
+    }
+
+    @Test
+    public void return_min_search_attributes_required() {
+        String responseError = "{\n" +
+                "  \"httpStatus\": \"Conflict\",\n" +
+                "  \"httpStatusCode\": 409,\n" +
+                "  \"status\": \"ERROR\",\n" +
+                "  \"message\": \"At least 1 attributes should be mentioned in the search criteria.\"\n" +
+                "}";
+
+        Response response = Response.error(409, ResponseBody.create(null, responseError));
+
+        assertThat(catcher.catchError(response)).isEqualTo(D2ErrorCode.MIN_SEARCH_ATTRIBUTES_REQUIRED);
     }
 }

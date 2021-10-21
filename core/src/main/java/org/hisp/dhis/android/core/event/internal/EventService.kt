@@ -30,9 +30,9 @@ package org.hisp.dhis.android.core.event.internal
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.api.filters.internal.Which
-import org.hisp.dhis.android.core.imports.internal.EventWebResponse
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.event.Event
+import org.hisp.dhis.android.core.imports.internal.EventWebResponse
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -41,6 +41,7 @@ internal interface EventService {
     @POST(EVENTS)
     fun postEvents(@Body events: EventPayload, @Query(STRATEGY) strategy: String): Call<EventWebResponse>
 
+    @SuppressWarnings("LongParameterList")
     @GET(EVENTS)
     fun getEvents(
         @Query(ORG_UNIT) orgUnit: String?,

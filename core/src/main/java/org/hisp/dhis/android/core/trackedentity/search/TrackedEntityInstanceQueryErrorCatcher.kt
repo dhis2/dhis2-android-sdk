@@ -62,19 +62,29 @@ internal class TrackedEntityInstanceQueryErrorCatcher : APICallErrorCatcher {
                 response.errorBody()!!.string(),
                 HttpMessageResponse::class.java
             )
-            if (parsed.httpStatusCode() == HttpsURLConnection.HTTP_CONFLICT &&
-                parsed.message() == "maxteicountreached"
-            ) {
-                D2ErrorCode.MAX_TEI_COUNT_REACHED
+            if (parsed.httpStatusCode() == HttpsURLConnection.HTTP_CONFLICT) {
+                when {
+                    parsed.message() == "maxteicountreached" -> D2ErrorCode.MAX_TEI_COUNT_REACHED
+                    OutOfSearchScope.containsMatchIn(parsed.message()) -> D2ErrorCode.ORGUNIT_NOT_IN_SEARCH_SCOPE
+                    MinSearchAttributes.containsMatchIn(parsed.message()) -> D2ErrorCode.MIN_SEARCH_ATTRIBUTES_REQUIRED
+                    else -> DefaultErrorCode
+                }
             } else {
-                D2ErrorCode.API_RESPONSE_PROCESS_ERROR
+                DefaultErrorCode
             }
         } catch (e: IOException) {
-            D2ErrorCode.API_RESPONSE_PROCESS_ERROR
+            DefaultErrorCode
         } catch (e: JsonProcessingException) {
-            D2ErrorCode.API_RESPONSE_PROCESS_ERROR
+            DefaultErrorCode
         } catch (e: JsonMappingException) {
-            D2ErrorCode.API_RESPONSE_PROCESS_ERROR
+            DefaultErrorCode
         }
+    }
+
+    companion object {
+        val DefaultErrorCode = D2ErrorCode.API_RESPONSE_PROCESS_ERROR
+
+        val OutOfSearchScope = Regex("Organisation unit is not part of the search scope")
+        val MinSearchAttributes = Regex("At least \\d+ attributes should be mentioned in the search criteria")
     }
 }

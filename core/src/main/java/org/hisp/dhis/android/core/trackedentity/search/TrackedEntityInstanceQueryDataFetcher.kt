@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search
 
-import java.util.*
+import kotlin.collections.HashSet
 import org.hisp.dhis.android.core.arch.cache.internal.D2Cache
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenSelection
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode
 import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
@@ -53,6 +54,7 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
 
     private var returnedUidsOffline: MutableSet<String> = HashSet()
     private var returnedUidsOnline: MutableSet<String> = HashSet()
+    private var returnedErrorCodes: MutableSet<D2ErrorCode> = HashSet()
     private var isExhaustedOffline = false
 
     init {
@@ -64,6 +66,7 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
     fun refresh() {
         returnedUidsOffline = HashSet()
         returnedUidsOnline = HashSet()
+        returnedErrorCodes = HashSet()
     }
 
     fun loadPages(requestedLoadSize: Int): List<Result<TrackedEntityInstance, D2Error>> {
@@ -132,21 +135,29 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
             .paging(true).build()
         val queryInstances = queryOnline(onlineQuery)
 
-        return if (queryInstances.all { it.succeeded }) {
-            status.requestedItems += requestLoadSize
-            status.isExhausted = queryInstances.size < requestLoadSize
+        status.requestedItems += requestLoadSize
 
-            val succeededInstances = queryInstances.map { it as Result.Success }
-
-            succeededInstances
-                .filter {
-                    !returnedUidsOffline.contains(it.value.uid()) && !returnedUidsOnline.contains(it.value.uid())
-                }.onEach {
-                    returnedUidsOnline.add(it.value.uid())
-                }
-        } else {
-            queryInstances
+        if (queryInstances.size < requestLoadSize) {
+            status.isExhausted = true
         }
+
+        return queryInstances
+            .filter {
+                when (it) {
+                    is Result.Success ->
+                        !returnedUidsOffline.contains(it.value.uid()) && !returnedUidsOnline.contains(it.value.uid())
+                    is Result.Failure ->
+                        !returnedErrorCodes.contains(it.failure.errorCode())
+                }
+            }.onEach {
+                when (it) {
+                    is Result.Success -> returnedUidsOnline.add(it.value.uid())
+                    is Result.Failure -> {
+                        status.isExhausted = true
+                        returnedErrorCodes.add(it.failure.errorCode())
+                    }
+                }
+            }
     }
 
     private fun queryOnline(

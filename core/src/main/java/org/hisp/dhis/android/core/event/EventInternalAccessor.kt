@@ -25,24 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.event
 
-package org.hisp.dhis.android.core.event;
+import org.hisp.dhis.android.core.relationship.Relationship
 
-import org.hisp.dhis.android.core.relationship.Relationship;
+internal object EventInternalAccessor {
 
-import java.util.List;
-
-public final class EventInternalAccessor {
-
-    private EventInternalAccessor() {
+    @JvmStatic
+    fun accessRelationships(event: Event): List<Relationship>? {
+        return event.relationships()
     }
 
-    public static List<Relationship> accessRelationships(Event event) {
-        return event.relationships();
+    fun insertRelationships(
+        builder: Event.Builder,
+        relationships: List<Relationship>
+    ): Event.Builder {
+        return builder.relationships(relationships)
     }
 
-    public static Event.Builder insertRelationships(Event.Builder builder,
-                                                    List<Relationship> relationships) {
-        return builder.relationships(relationships);
+    fun accessTrackedEntityInstance(event: Event): String? {
+        return event.trackedEntityInstance()
+    }
+
+    fun insertTrackedEntityInstance(
+        builder: Event.Builder,
+        trackedEntityInstance: String
+    ): Event.Builder {
+        return builder.trackedEntityInstance(trackedEntityInstance)
     }
 }

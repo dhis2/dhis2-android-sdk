@@ -172,6 +172,7 @@ public abstract class Event extends BaseDeletableDataObject implements ObjectWit
     public abstract State aggregatedSyncState();
 
     @Nullable
+    @JsonProperty()
     @ColumnAdapter(IgnoreStringColumnAdapter.class)
     abstract String trackedEntityInstance();
 

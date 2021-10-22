@@ -59,13 +59,13 @@ internal class AnalyticsOrganisationUnitHelper @Inject constructor(
 
         val whereClause = WhereClauseBuilder()
             .appendInKeyStringValues(
-                OrganisationUnitGroupTableInfo.Columns.UID,
+                OrganisationUnitTableInfo.Columns.UID,
                 relativeOrganisationUnitsUids
             ).build()
 
         return organisationUnitStore.selectUidsWhere(
             whereClause,
-            "${OrganisationUnitGroupTableInfo.Columns.NAME} ${RepositoryScope.OrderByDirection.ASC}"
+            "${OrganisationUnitTableInfo.Columns.NAME} ${RepositoryScope.OrderByDirection.ASC}"
         )
     }
 

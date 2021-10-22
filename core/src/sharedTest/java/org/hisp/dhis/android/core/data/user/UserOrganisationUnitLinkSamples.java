@@ -43,4 +43,26 @@ public class UserOrganisationUnitLinkSamples {
                 .userAssigned(true)
                 .build();
     }
+
+    public static UserOrganisationUnitLink getAssignedUserOrganisationUnitLink(OrganisationUnit.Scope scope) {
+        return UserOrganisationUnitLink.builder()
+                .id(2L)
+                .user("user")
+                .organisationUnitScope(scope.name())
+                .organisationUnit("organisation_unit_child_1")
+                .root(false)
+                .userAssigned(true)
+                .build();
+    }
+
+    public static UserOrganisationUnitLink getUnassignedUserOrganisationUnitLink(OrganisationUnit.Scope scope) {
+        return UserOrganisationUnitLink.builder()
+                .id(2L)
+                .user("user")
+                .organisationUnitScope(scope.name())
+                .organisationUnit("organisation_unit_child_2")
+                .root(false)
+                .userAssigned(false)
+                .build();
+    }
 }

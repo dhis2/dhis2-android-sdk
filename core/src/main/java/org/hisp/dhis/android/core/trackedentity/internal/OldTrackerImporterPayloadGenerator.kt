@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.Event
+import org.hisp.dhis.android.core.event.EventInternalAccessor
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.note.internal.NoteToPostTransformer
@@ -351,7 +352,9 @@ internal class OldTrackerImporterPayloadGenerator @Inject internal constructor(
             if (hasDataWrite) {
                 tei
             } else if (tei.syncState() == State.SYNCED && enrollments.all { it.syncState() == State.SYNCED }) {
-                val events = enrollments.flatMap { EnrollmentInternalAccessor.accessEvents(it) }.filterNotNull()
+                val events = enrollments
+                    .flatMap { EnrollmentInternalAccessor.accessEvents(it) }
+                    .mapNotNull { EventInternalAccessor.insertTrackedEntityInstance(it.toBuilder(), tei.uid()).build() }
                 pendingEvents.addAll(events)
                 null
             } else {

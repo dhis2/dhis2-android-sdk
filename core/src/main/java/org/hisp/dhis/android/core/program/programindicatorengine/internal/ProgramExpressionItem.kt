@@ -50,13 +50,10 @@ abstract class ProgramExpressionItem : ExpressionItem {
         }
     }
 
-    protected fun getSingleEvent(visitor: CommonExpressionVisitor): Event? {
-        val enrollment = visitor.programIndicatorContext.enrollment
+    protected fun getLatestEvent(visitor: CommonExpressionVisitor): Event? {
         val events = visitor.programIndicatorContext.events
 
-        return if (enrollment == null && events.size == 1 && events.values.first().size == 1) {
-            events.values.first().first()
-        } else null
+        return events.values.flatten().sortedByDescending { it.eventDate() }.firstOrNull()
     }
 
     protected fun formatValue(value: String?, valueType: ValueType?): String? {

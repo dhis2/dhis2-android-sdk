@@ -49,7 +49,7 @@ internal object ProgramIndicatorSQLUtils {
                     "AND ${EventTableInfo.Columns.PROGRAM_STAGE} = '$it' "
                 } ?: ""
                 ) +
-            "ORDER BY ${EventTableInfo.Columns.EVENT_DATE} LIMIT 1)"
+            "ORDER BY ${EventTableInfo.Columns.EVENT_DATE} DESC LIMIT 1)"
     }
 
     fun getDataValueEventWhereClause(programIndicator: ProgramIndicator): String {

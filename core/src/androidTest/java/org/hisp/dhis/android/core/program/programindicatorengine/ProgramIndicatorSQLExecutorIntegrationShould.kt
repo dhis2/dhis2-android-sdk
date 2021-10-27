@@ -588,13 +588,23 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseEvaluatorInteg
     fun should_evaluate_status_variables() {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
-        helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid(), status = EnrollmentStatus.COMPLETED)
+        helper.createEnrollment(
+            trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid(),
+            status = EnrollmentStatus.COMPLETED
+        )
         val enrollment2 = generator.generate()
-        helper.createEnrollment(trackedEntity1.uid(), enrollment2, program.uid(), orgunitChild1.uid(), status = EnrollmentStatus.ACTIVE)
-        helper.createTrackerEvent(generator.generate(), enrollment1, program.uid(), programStage1.uid(),
-            orgunitChild1.uid(), status = EventStatus.COMPLETED)
-        helper.createTrackerEvent(generator.generate(), enrollment1, program.uid(), programStage2.uid(),
-            orgunitChild1.uid(), status = EventStatus.ACTIVE)
+        helper.createEnrollment(
+            trackedEntity1.uid(), enrollment2, program.uid(), orgunitChild1.uid(),
+            status = EnrollmentStatus.ACTIVE
+        )
+        helper.createTrackerEvent(
+            generator.generate(), enrollment1, program.uid(), programStage1.uid(),
+            orgunitChild1.uid(), status = EventStatus.COMPLETED
+        )
+        helper.createTrackerEvent(
+            generator.generate(), enrollment1, program.uid(), programStage2.uid(),
+            orgunitChild1.uid(), status = EventStatus.ACTIVE
+        )
 
         assertThat(
             programIndicatorEvaluator.getProgramIndicatorValue(

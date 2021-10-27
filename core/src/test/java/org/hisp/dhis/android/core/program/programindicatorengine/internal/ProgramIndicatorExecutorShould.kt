@@ -359,11 +359,10 @@ class ProgramIndicatorExecutorShould {
     fun evaluate_ps_event_status() {
         setExpression(`var`("event_status"))
         whenever(event1.eventDate()) doReturn DateUtils.DATE_FORMAT.parse("2020-01-01T00:00:00.000")
-        whenever(event1.status()) doReturn EventStatus.COMPLETED
         whenever(event2_1.eventDate()) doReturn DateUtils.DATE_FORMAT.parse("2020-01-02T00:00:00.000")
-        whenever(event2_1.status()) doReturn EventStatus.ACTIVE
         whenever(event2_2.eventDate()) doReturn null
-        whenever(event2_2.status()) doReturn EventStatus.COMPLETED
+
+        whenever(event2_1.status()) doReturn EventStatus.ACTIVE
 
         val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
         assertThat(result).isEqualTo("ACTIVE")

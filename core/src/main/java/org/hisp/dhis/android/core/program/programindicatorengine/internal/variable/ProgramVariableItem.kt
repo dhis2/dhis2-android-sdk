@@ -63,6 +63,7 @@ internal class ProgramVariableItem : ProgramExpressionItem() {
         private val PROGRAM_VARIABLES = mapOf(
             ExpressionParser.V_ENROLLMENT_DATE to VEnrollmentDate(),
             ExpressionParser.V_INCIDENT_DATE to VIncidentDate(),
+            ExpressionParser.V_EXECUTION_DATE to VEventDate(),
             ExpressionParser.V_EVENT_DATE to VEventDate(),
             ExpressionParser.V_DUE_DATE to VDueDate(),
             ExpressionParser.V_CURRENT_DATE to VCurrentDate(),

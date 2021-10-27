@@ -70,6 +70,8 @@ internal class ProgramIndicatorExecutor constructor(
             }
         } catch (e: IllegalArgumentException) {
             null
+        } catch (e: ParserExceptionWithoutContext) {
+            null
         }
     }
 

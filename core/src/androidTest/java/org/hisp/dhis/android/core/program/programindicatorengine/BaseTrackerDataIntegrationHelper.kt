@@ -32,8 +32,10 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.enrollment.Enrollment
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl
 import org.hisp.dhis.android.core.event.Event
+import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorStore
@@ -64,10 +66,12 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         programUid: String,
         orgunitUid: String,
         enrollmentDate: Date? = null,
-        incidentDate: Date? = null
+        incidentDate: Date? = null,
+        status: EnrollmentStatus? = EnrollmentStatus.ACTIVE
     ) {
         val enrollment = Enrollment.builder().uid(enrollmentUid).organisationUnit(orgunitUid).program(programUid)
-            .enrollmentDate(enrollmentDate).incidentDate(incidentDate).trackedEntityInstance(teiUid).build()
+            .enrollmentDate(enrollmentDate).incidentDate(incidentDate).trackedEntityInstance(teiUid)
+            .status(status).build()
         EnrollmentStoreImpl.create(databaseAdapter).insert(enrollment)
     }
 
@@ -79,11 +83,12 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         orgunitUid: String,
         deleted: Boolean = false,
         eventDate: Date?,
-        lastUpdated: Date? = null
+        lastUpdated: Date? = null,
+        status: EventStatus? = EventStatus.ACTIVE
     ) {
         val event = Event.builder().uid(eventUid).enrollment(enrollmentUid).lastUpdated(lastUpdated)
             .program(programUid).programStage(programStageUid).organisationUnit(orgunitUid)
-            .eventDate(eventDate).deleted(deleted).build()
+            .eventDate(eventDate).deleted(deleted).status(status).build()
         EventStoreImpl.create(databaseAdapter).insert(event)
     }
 
@@ -95,7 +100,8 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         orgunitUid: String,
         deleted: Boolean = false,
         eventDate: Date? = null,
-        lastUpdated: Date? = null
+        lastUpdated: Date? = null,
+        status: EventStatus? = EventStatus.ACTIVE
     ) {
         createEvent(
             eventUid = eventUid,
@@ -105,7 +111,8 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
             orgunitUid = orgunitUid,
             deleted = deleted,
             eventDate = eventDate,
-            lastUpdated = lastUpdated
+            lastUpdated = lastUpdated,
+            status = status
         )
     }
 
@@ -116,7 +123,8 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         orgunitUid: String,
         deleted: Boolean = false,
         eventDate: Date? = null,
-        lastUpdated: Date? = null
+        lastUpdated: Date? = null,
+        status: EventStatus? = EventStatus.ACTIVE
     ) {
         createEvent(
             eventUid = eventUid,
@@ -126,7 +134,8 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
             orgunitUid = orgunitUid,
             deleted = deleted,
             eventDate = eventDate,
-            lastUpdated = lastUpdated
+            lastUpdated = lastUpdated,
+            status = status
         )
     }
 

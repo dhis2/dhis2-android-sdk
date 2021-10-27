@@ -51,6 +51,8 @@ import org.hisp.dhis.android.core.common.AnalyticsType
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.constant.internal.ConstantStore
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
+import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerDataIntegrationHelper.Companion.`var`
 import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerDataIntegrationHelper.Companion.att
@@ -580,6 +582,41 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseEvaluatorInteg
                 )
             )
         ).isEqualTo("2")
+    }
+
+    @Test
+    fun should_evaluate_status_variables() {
+        helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
+        val enrollment1 = generator.generate()
+        helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid(), status = EnrollmentStatus.COMPLETED)
+        val enrollment2 = generator.generate()
+        helper.createEnrollment(trackedEntity1.uid(), enrollment2, program.uid(), orgunitChild1.uid(), status = EnrollmentStatus.ACTIVE)
+        helper.createTrackerEvent(generator.generate(), enrollment1, program.uid(), programStage1.uid(),
+            orgunitChild1.uid(), status = EventStatus.COMPLETED)
+        helper.createTrackerEvent(generator.generate(), enrollment1, program.uid(), programStage2.uid(),
+            orgunitChild1.uid(), status = EventStatus.ACTIVE)
+
+        assertThat(
+            programIndicatorEvaluator.getProgramIndicatorValue(
+                setProgramIndicator(
+                    expression = `var`("enrollment_count"),
+                    filter = "${`var`("enrollment_status")} == 'COMPLETED'",
+                    analyticsType = AnalyticsType.ENROLLMENT,
+                    aggregationType = AggregationType.COUNT
+                )
+            )
+        ).isEqualTo("1")
+
+        assertThat(
+            programIndicatorEvaluator.getProgramIndicatorValue(
+                setProgramIndicator(
+                    expression = `var`("event_count"),
+                    filter = "${`var`("event_status")} == 'COMPLETED'",
+                    analyticsType = AnalyticsType.EVENT,
+                    aggregationType = AggregationType.COUNT
+                )
+            )
+        ).isEqualTo("1")
     }
 
     @Test

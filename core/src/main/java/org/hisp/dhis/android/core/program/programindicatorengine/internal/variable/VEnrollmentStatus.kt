@@ -41,7 +41,7 @@ internal class VEnrollmentStatus : ExpressionItem {
     override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
         val enrollment = visitor.programIndicatorContext.enrollment
 
-        return if (enrollment == null) null else if (enrollment.status() == null) null else enrollment.status()!!.name
+        return enrollment?.status()?.name
     }
 
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {

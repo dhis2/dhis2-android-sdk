@@ -28,33 +28,27 @@
 package org.hisp.dhis.android.core.program.programindicatorengine.internal.variable
 
 import org.hisp.dhis.android.core.common.AnalyticsType
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
-import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramExpressionItem
-import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.enrollment
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.event
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-internal class VCompletedDate : ProgramExpressionItem() {
+internal class VEventStatus : ProgramExpressionItem() {
 
     override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
-        val enrollment = visitor.programIndicatorContext.enrollment
-
-        return if (enrollment == null) {
-            val singleEvent = getLatestEvent(visitor)
-            if (singleEvent == null) null else ParserUtils.getMediumDateString(singleEvent.completedDate())
-        } else {
-            ParserUtils.getMediumDateString(enrollment.completedDate())
-        }
+        return getLatestEvent(visitor)?.status()?.name
     }
 
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
         return when (visitor.programIndicatorSQLContext.programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
-                "$event.${EnrollmentTableInfo.Columns.COMPLETED_DATE}"
+                "$event.${EventTableInfo.Columns.STATUS}"
             AnalyticsType.ENROLLMENT, null ->
-                "$enrollment.${EnrollmentTableInfo.Columns.COMPLETED_DATE}"
+                ProgramIndicatorSQLUtils.getEventColumnForEnrollmentWhereClause(
+                    column = EventTableInfo.Columns.STATUS
+                )
         }
     }
 }

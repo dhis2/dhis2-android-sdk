@@ -29,7 +29,6 @@
 plugins {
     id "com.android.library"
     id "kotlin-android"
-    id "kotlin-android-extensions"
     id "kotlin-kapt"
     id "io.gitlab.arturbosch.detekt" version "1.10.0"
     id "org.jetbrains.dokka" version "1.4.30" apply false
@@ -41,7 +40,7 @@ apply from: project.file("plugins/android-pmd.gradle")
 ext {
     configuration = [
             buildToolsVersion: "29.0.3",
-            minSdkVersion    : 19,
+            minSdkVersion    : 21,
             targetSdkVersion : 29,
             versionCode      : 250,
             versionName      : "1.5.0"
@@ -59,7 +58,7 @@ ext {
             autoValueCursor : "2.0.1",
             retrofit        : "2.6.4",
             okHttp          : "3.12.0",
-            dagger          : "2.28.3",
+            dagger          : "2.39.1",
             rxJava          : "2.2.9",
             rxAndroid       : "2.1.1",
             sqlCipher       : "4.4.0",
@@ -104,6 +103,9 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
+
+        buildConfigField("long", "VERSION_CODE", "${defaultConfig.versionCode}")
+        buildConfigField("String","VERSION_NAME","\"${defaultConfig.versionName}\"")
     }
 
     compileOptions {

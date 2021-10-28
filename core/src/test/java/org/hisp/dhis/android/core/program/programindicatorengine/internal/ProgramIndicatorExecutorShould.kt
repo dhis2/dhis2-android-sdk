@@ -33,13 +33,14 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import java.text.ParseException
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.Event
+import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
@@ -49,6 +50,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
 
+/**
+ * Unit test for in-memory program indicator executor.
+ */
 @RunWith(MockitoJUnitRunner::class)
 class ProgramIndicatorExecutorShould {
     private val programStage1 = "p2adVnEmIei"
@@ -204,8 +208,8 @@ class ProgramIndicatorExecutorShould {
     @Throws(ParseException::class)
     fun evaluate_enrollment_dates() {
         setExpression("d2:daysBetween(${`var`("enrollment_date")}, ${`var`("incident_date")})")
-        whenever(enrollment.enrollmentDate()) doReturn BaseIdentifiableObject.parseDate("2020-05-01T00:00:00.000")
-        whenever(enrollment.incidentDate()) doReturn BaseIdentifiableObject.parseDate("2020-05-05T00:00:00.000")
+        whenever(enrollment.enrollmentDate()) doReturn DateUtils.DATE_FORMAT.parse("2020-05-01T00:00:00.000")
+        whenever(enrollment.incidentDate()) doReturn DateUtils.DATE_FORMAT.parse("2020-05-05T00:00:00.000")
 
         val resultNone = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
         assertThat(resultNone).isEqualTo("4")
@@ -323,7 +327,7 @@ class ProgramIndicatorExecutorShould {
     @Throws(ParseException::class)
     fun evaluate_enrollment_date() {
         setExpression(`var`("enrollment_date"))
-        whenever(enrollment.enrollmentDate()) doReturn BaseIdentifiableObject.parseDate("2020-01-05T00:00:00.000")
+        whenever(enrollment.enrollmentDate()) doReturn DateUtils.DATE_FORMAT.parse("2020-01-05T00:00:00.000")
 
         val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
         assertThat(result).isEqualTo("2020-01-05")
@@ -333,7 +337,7 @@ class ProgramIndicatorExecutorShould {
     @Throws(ParseException::class)
     fun evaluate_completed_date() {
         setExpression(`var`("completed_date"))
-        whenever(enrollment.completedDate()) doReturn BaseIdentifiableObject.parseDate("2020-01-02T00:00:00.000")
+        whenever(enrollment.completedDate()) doReturn DateUtils.DATE_FORMAT.parse("2020-01-02T00:00:00.000")
 
         val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
         assertThat(result).isEqualTo("2020-01-02")
@@ -343,11 +347,25 @@ class ProgramIndicatorExecutorShould {
     @Throws(ParseException::class)
     fun evaluate_ps_event_date() {
         setExpression("d2:daysBetween(${`var`("enrollment_date")}, PS_EVENTDATE:$programStage2)")
-        whenever(enrollment.enrollmentDate()) doReturn BaseIdentifiableObject.parseDate("2020-01-02T00:00:00.000")
-        whenever(event2_2.eventDate()) doReturn BaseIdentifiableObject.parseDate("2020-01-05T00:00:00.000")
+        whenever(enrollment.enrollmentDate()) doReturn DateUtils.DATE_FORMAT.parse("2020-01-02T00:00:00.000")
+        whenever(event2_2.eventDate()) doReturn DateUtils.DATE_FORMAT.parse("2020-01-05T00:00:00.000")
 
         val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
         assertThat(result).isEqualTo("3")
+    }
+
+    @Test
+    @Throws(ParseException::class)
+    fun evaluate_ps_event_status() {
+        setExpression(`var`("event_status"))
+        whenever(event1.eventDate()) doReturn DateUtils.DATE_FORMAT.parse("2020-01-01T00:00:00.000")
+        whenever(event2_1.eventDate()) doReturn DateUtils.DATE_FORMAT.parse("2020-01-02T00:00:00.000")
+        whenever(event2_2.eventDate()) doReturn null
+
+        whenever(event2_1.status()) doReturn EventStatus.ACTIVE
+
+        val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
+        assertThat(result).isEqualTo("ACTIVE")
     }
 
     @Test

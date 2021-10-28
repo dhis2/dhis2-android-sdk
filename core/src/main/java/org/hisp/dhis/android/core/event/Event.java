@@ -47,6 +47,7 @@ import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreCoordin
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNoteListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreRelationshipListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreStateColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreStringColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreTrackedEntityDataValueListColumnAdapter;
 import org.hisp.dhis.android.core.arch.helpers.CoordinateHelper;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
@@ -170,6 +171,11 @@ public abstract class Event extends BaseDeletableDataObject implements ObjectWit
     @ColumnAdapter(StateColumnAdapter.class)
     public abstract State aggregatedSyncState();
 
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(IgnoreStringColumnAdapter.class)
+    abstract String trackedEntityInstance();
+
     /**
      * @deprecated Use {@link #aggregatedSyncState()} instead.
      */
@@ -242,6 +248,8 @@ public abstract class Event extends BaseDeletableDataObject implements ObjectWit
         public abstract Builder relationships(List<Relationship> relationships);
 
         public abstract Builder aggregatedSyncState(State aggregatedSyncState);
+
+        abstract Builder trackedEntityInstance(String trackedEntityInstance);
 
         /**
          * @deprecated Use {@link #aggregatedSyncState(State)} and {@link #syncState(State)} instead.

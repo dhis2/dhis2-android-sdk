@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.settings;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
@@ -54,6 +55,7 @@ public abstract class AnalyticsTeiWHONutritionItem {
     public abstract static class Builder {
         public abstract Builder dataElements(List<AnalyticsTeiDataElement> dataElements);
 
+        @JsonAlias("programIndicators")
         public abstract Builder indicators(List<AnalyticsTeiIndicator> indicators);
 
 

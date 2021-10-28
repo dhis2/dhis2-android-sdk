@@ -39,4 +39,6 @@ public interface UserOrganisationUnitLinkStore extends LinkStore<UserOrganisatio
     List<String> queryRootCaptureOrganisationUnitUids() throws RuntimeException;
 
     List<String> queryOrganisationUnitUidsByScope(OrganisationUnit.Scope scope);
+
+    List<String> queryAssignedOrganisationUnitUidsByScope(OrganisationUnit.Scope scope);
 }

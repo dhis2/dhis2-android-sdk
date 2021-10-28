@@ -39,7 +39,7 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 internal class VDueDate : ProgramExpressionItem() {
 
     override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
-        val singleEvent = getSingleEvent(visitor)
+        val singleEvent = getLatestEvent(visitor)
 
         return if (singleEvent == null) null else ParserUtils.getMediumDateString(singleEvent.dueDate())
     }

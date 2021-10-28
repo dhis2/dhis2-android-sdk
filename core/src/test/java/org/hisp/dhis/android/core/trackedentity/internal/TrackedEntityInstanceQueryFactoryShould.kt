@@ -72,7 +72,7 @@ class TrackedEntityInstanceQueryFactoryShould {
     )
 
     // Object to test
-    private var queryFactory: TrackedEntityInstanceQueryFactory? = null
+    private var queryFactory: TrackerQueryBundleFactory? = null
     @Before
     @Throws(Exception::class)
     fun setUp() {
@@ -90,7 +90,7 @@ class TrackedEntityInstanceQueryFactoryShould {
         val commonHelper = TrackerQueryFactoryCommonHelper(
             userOrganisationUnitLinkStore, organisationUnitProgramLinkLinkStore
         )
-        queryFactory = TrackedEntityInstanceQueryFactory(
+        queryFactory = TrackerQueryBundleFactory(
             programStore, programSettingsObjectRepository, lastUpdatedManager, commonHelper
         )
     }
@@ -148,7 +148,7 @@ class TrackedEntityInstanceQueryFactoryShould {
                 assertThat(query.commonParams().program).isEqualTo(p1)
                 assertThat(query.commonParams().limit).isEqualTo(100)
             } else {
-                assertThat(query.commonParams().limit).isEqualTo(5000)
+                assertThat(query.commonParams().limit).isEqualTo(4800)
             }
         }
     }

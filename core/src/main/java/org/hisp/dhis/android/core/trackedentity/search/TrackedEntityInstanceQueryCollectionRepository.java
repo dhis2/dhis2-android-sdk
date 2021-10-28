@@ -34,6 +34,7 @@ import androidx.paging.PagedList;
 
 import org.hisp.dhis.android.core.arch.cache.internal.D2Cache;
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
+import org.hisp.dhis.android.core.arch.helpers.Result;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor;
@@ -92,7 +93,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
 
     private final TrackedEntityInstanceQueryRepositoryScope scope;
 
-    private final D2Cache<TrackedEntityInstanceQueryOnline, List<TrackedEntityInstance>> onlineCache;
+    private final D2Cache<TrackedEntityInstanceQueryOnline, List<Result<TrackedEntityInstance, D2Error>>> onlineCache;
     private final TrackedEntityInstanceQueryOnlineHelper onlineHelper;
     private final TrackedEntityInstanceLocalQueryHelper localQueryHelper;
 
@@ -104,7 +105,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
             final TrackedEntityInstanceQueryRepositoryScope scope,
             final DHISVersionManager versionManager,
             final TrackedEntityInstanceFilterCollectionRepository filtersRepository,
-            final D2Cache<TrackedEntityInstanceQueryOnline, List<TrackedEntityInstance>> onlineCache,
+            final D2Cache<TrackedEntityInstanceQueryOnline, List<Result<TrackedEntityInstance, D2Error>>> onlineCache,
             final TrackedEntityInstanceQueryOnlineHelper onlineHelper,
             final TrackedEntityInstanceLocalQueryHelper localQueryHelper) {
         this.store = store;
@@ -509,6 +510,11 @@ public final class TrackedEntityInstanceQueryCollectionRepository
                 childrenAppenders, onlineCache, onlineHelper, localQueryHelper);
     }
 
+    public DataSource<TrackedEntityInstance, Result<TrackedEntityInstance, D2Error>> getResultDataSource() {
+        return new TrackedEntityInstanceQueryDataSourceResult(store, onlineCallFactory, scope,
+                childrenAppenders, onlineCache, onlineHelper, localQueryHelper);
+    }
+
     public TrackedEntityInstanceQueryRepositoryScope getScope() {
         return scope;
     }
@@ -541,7 +547,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
                 }
                 return instances;
             } catch (D2Error e) {
-                return Collections.emptyList();
+                throw new RuntimeException(e);
             } catch (Exception e) {
                 return Collections.emptyList();
             }

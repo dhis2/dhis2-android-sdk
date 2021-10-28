@@ -25,56 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.event
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+import org.hisp.dhis.android.core.relationship.Relationship
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+internal object EventInternalAccessor {
 
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery;
-import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
-
-import java.util.Collection;
-import java.util.Collections;
-
-@AutoValue
-abstract class TeiQuery extends BaseQuery {
-
-    @NonNull
-    abstract TrackerQueryCommonParams commonParams();
-
-    @NonNull
-    abstract Collection<String> orgUnits();
-
-    @NonNull
-    abstract Collection<String> uids();
-
-    @Nullable
-    abstract EnrollmentStatus programStatus();
-
-    static Builder builder() {
-        return new AutoValue_TeiQuery.Builder()
-                .page(1)
-                .pageSize(DEFAULT_PAGE_SIZE)
-                .paging(true)
-                .orgUnits(Collections.emptyList())
-                .uids(Collections.emptyList());
+    @JvmStatic
+    fun accessRelationships(event: Event): List<Relationship>? {
+        return event.relationships()
     }
 
-    public abstract Builder toBuilder();
+    fun insertRelationships(
+        builder: Event.Builder,
+        relationships: List<Relationship>
+    ): Event.Builder {
+        return builder.relationships(relationships)
+    }
 
-    @AutoValue.Builder
-    abstract static class Builder extends BaseQuery.Builder<Builder> {
-        abstract Builder commonParams(TrackerQueryCommonParams commonParams);
+    fun accessTrackedEntityInstance(event: Event): String? {
+        return event.trackedEntityInstance()
+    }
 
-        abstract Builder orgUnits(Collection<String> orgUnits);
-
-        abstract Builder uids(Collection<String> uIds);
-
-        abstract Builder programStatus(EnrollmentStatus programStatus);
-
-        abstract TeiQuery build();
+    fun insertTrackedEntityInstance(
+        builder: Event.Builder,
+        trackedEntityInstance: String
+    ): Event.Builder {
+        return builder.trackedEntityInstance(trackedEntityInstance)
     }
 }

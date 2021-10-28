@@ -25,24 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.event;
+import dagger.Reusable
+import javax.inject.Inject
+import org.hisp.dhis.android.core.program.ProgramType
+import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
+import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
+import org.hisp.dhis.android.core.settings.ProgramSettings
+import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository
 
-import org.hisp.dhis.android.core.relationship.Relationship;
-
-import java.util.List;
-
-public final class EventInternalAccessor {
-
-    private EventInternalAccessor() {
+@Reusable
+internal class TrackerQueryBundleFactory @Inject constructor(
+    programStore: ProgramStoreInterface,
+    programSettingsObjectRepository: ProgramSettingsObjectRepository,
+    lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager,
+    commonHelper: TrackerQueryFactoryCommonHelper
+) : TrackerQueryFactory<TrackerQueryBundle, TrackedEntityInstanceSync>(
+    programStore, programSettingsObjectRepository, lastUpdatedManager,
+    commonHelper,
+    ProgramType.WITH_REGISTRATION,
+    { params: ProgramDataDownloadParams,
+        programSettings: ProgramSettings? ->
+        TrackerQueryBundleInternalFactory(commonHelper, params, programSettings)
     }
-
-    public static List<Relationship> accessRelationships(Event event) {
-        return event.relationships();
-    }
-
-    public static Event.Builder insertRelationships(Event.Builder builder,
-                                                    List<Relationship> relationships) {
-        return builder.relationships(relationships);
-    }
-}
+)

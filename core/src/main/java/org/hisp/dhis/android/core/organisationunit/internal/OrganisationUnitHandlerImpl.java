@@ -157,7 +157,8 @@ class OrganisationUnitHandlerImpl extends IdentifiableHandlerImpl<OrganisationUn
 
     private void addUserOrganisationUnitLink(@NonNull OrganisationUnit organisationUnit) {
         UserOrganisationUnitLink.Builder builder = UserOrganisationUnitLink.builder()
-                .organisationUnitScope(scope.name()).user(user.uid());
+                .organisationUnitScope(scope.name())
+                .user(user.uid());
 
         // TODO MasterUid set to "" to avoid cleaning link table. Orgunits are paged, so the whole orguntit list is
         //  not available in the handler. Maybe the store should not be a linkStore.
@@ -165,6 +166,7 @@ class OrganisationUnitHandlerImpl extends IdentifiableHandlerImpl<OrganisationUn
                 orgUnit -> builder
                         .organisationUnit(orgUnit.uid())
                         .root(UserOrganisationUnitLinkHelper.isRoot(scope, user, orgUnit))
+                        .userAssigned(UserOrganisationUnitLinkHelper.userIsAssigned(scope, user, orgUnit))
                         .build()
         );
     }

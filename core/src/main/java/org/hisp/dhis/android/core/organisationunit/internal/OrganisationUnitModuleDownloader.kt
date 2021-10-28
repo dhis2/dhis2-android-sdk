@@ -25,14 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.organisationunit.internal
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+import dagger.Reusable
+import io.reactivex.Completable
+import io.reactivex.Single
+import javax.inject.Inject
+import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
+import org.hisp.dhis.android.core.user.User
+import org.hisp.dhis.android.core.user.internal.UserCall
 
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+@Reusable
+internal class OrganisationUnitModuleDownloader @Inject constructor(
+    private val organisationUnitCall: OrganisationUnitCall,
+    private val userCall: UserCall,
+    private val organisationUnitLevelEndpointCall: OrganisationUnitLevelEndpointCall,
+    private val rxCallExecutor: RxAPICallExecutor
+) {
+    fun downloadMetadata(user: User?): Single<List<OrganisationUnit>> {
+        return organisationUnitLevelEndpointCall.download()
+            .flatMap { level: List<OrganisationUnitLevel> -> organisationUnitCall.download(user) }
+    }
 
-import java.util.Collection;
-import java.util.Set;
-
-interface TrackedEntityInstanceUidHelper {
-    Set<String> getMissingOrganisationUnitUids(Collection<TrackedEntityInstance> trackedEntityInstances);
+    fun refreshOrganisationUnits(): Completable {
+        return rxCallExecutor.wrapCompletableTransactionally(
+            Single
+                .fromCallable { userCall.call() }
+                .flatMapCompletable { user -> downloadMetadata(user).ignoreElement() },
+            cleanForeignKeys = true
+        )
+    }
 }

@@ -18,7 +18,7 @@
     {
       "uid": "XQUhloISaQJ",
       "data": {
-        "indicators": [
+        "programIndicators": [
           "dBwrot7S420.GSae40Fyppf"
         ],
         "attributes": [
@@ -47,7 +47,7 @@
           ]
         },
         "y": {
-          "indicators": [
+          "programIndicators": [
             "GSae40Fyppf"
           ]
         }

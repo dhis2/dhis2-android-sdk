@@ -41,6 +41,8 @@ import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
+import kotlin.math.ceil
+import kotlin.math.roundToInt
 
 @Reusable
 class EventDownloadCall @Inject internal constructor(
@@ -69,7 +71,7 @@ class EventDownloadCall @Inject internal constructor(
 
         return Observable.create { emitter ->
             val iterables = BundleIterables(
-                0, true, 0, mutableMapOf(), mutableListOf(), mutableListOf(), mutableListOf()
+                0, true, 0, mutableMapOf(), mutableListOf(), mutableListOf()
             )
             val bundles: List<EventQueryBundle> = eventQueryBundleFactory.getQueries(params)
 
@@ -110,14 +112,18 @@ class EventDownloadCall @Inject internal constructor(
         params: ProgramDataDownloadParams,
         iterables: BundleIterables
     ) {
-        for (orgUnitUid in iterables.bundleOrgUnitPrograms.keys) {
-            iterables.bundlePrograms = iterables.bundleOrgUnitPrograms[orgUnitUid]!!
-            iterables.emptyOrCorruptedPrograms = emptyList<String?>().toMutableList()
-            iterables.bundleLimit = getBundleLimit(bundle, params, iterables)
+        val limitPerCombo = getBundleLimit(bundle, params, iterables)
 
-            if (iterables.eventsCount >= bundle.commonParams().limit || iterables.bundleLimit <= 0) {
+        for (orgUnitUid in iterables.bundleOrgUnitPrograms.keys) {
+            iterables.emptyOrCorruptedPrograms = emptyList<String?>().toMutableList()
+            val orgunitPrograms = iterables.bundleOrgUnitPrograms[orgUnitUid]
+
+            val pendingEvents = bundle.commonParams().limit - iterables.eventsCount
+            iterables.bundleLimit = min(limitPerCombo, pendingEvents)
+
+            if (iterables.bundleLimit <= 0 || orgunitPrograms.isNullOrEmpty()) {
                 iterables.orgUnitsBundleToDownload = (iterables.orgUnitsBundleToDownload - orgUnitUid).toMutableList()
-                break
+                continue
             }
 
             iterateBundleProgram(orgUnitUid, bundle, params, iterables)
@@ -134,7 +140,7 @@ class EventDownloadCall @Inject internal constructor(
         params: ProgramDataDownloadParams,
         iterables: BundleIterables
     ) {
-        for (bundleProgram in iterables.bundlePrograms) {
+        for (bundleProgram in iterables.bundleOrgUnitPrograms[orgUnitUid]!!) {
             if (iterables.eventsCount >= bundle.commonParams().limit) {
                 break
             }
@@ -173,10 +179,13 @@ class EventDownloadCall @Inject internal constructor(
     ): Int {
         return when {
             params.uids().isNotEmpty() -> params.uids().size
-            params.limitByProgram() != true && iterables.bundlePrograms.isNotEmpty() ->
-                (bundle.commonParams().limit - iterables.eventsCount)
-                    .div(iterables.bundleOrgUnitPrograms.keys.size * iterables.bundlePrograms.size)
-            params.limitByProgram() != true && iterables.bundlePrograms.isEmpty() -> 0
+            params.limitByProgram() != true -> {
+                val numOfCombinations = iterables.bundleOrgUnitPrograms.values.map { it.size }.sum()
+                val pendingEvents = bundle.commonParams().limit - iterables.eventsCount
+
+                if (numOfCombinations == 0) 0
+                else ceil(pendingEvents.toDouble() / numOfCombinations.toDouble()).roundToInt()
+            }
             else -> bundle.commonParams().limit - iterables.eventsCount
         }
     }
@@ -266,7 +275,6 @@ class EventDownloadCall @Inject internal constructor(
         var bundleLimit: Int,
         var bundleOrgUnitPrograms: MutableMap<String?, MutableList<EventsByProgramCount>>,
         var orgUnitsBundleToDownload: MutableList<String?>,
-        var bundlePrograms: MutableList<EventsByProgramCount>,
         var emptyOrCorruptedPrograms: MutableList<String?>
     )
 }

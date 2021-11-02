@@ -156,7 +156,7 @@ internal class TrackerQueryFactoryCommonHelper @Inject constructor(
                 return download
             }
         }
-        if (params.limit() != null && params.limitByProgram() == true || params.limitByOrgunit() == true) {
+        if (params.limit() != null && (params.limitByProgram() == true || params.limitByOrgunit() == true)) {
             return params.limit()!!
         }
         if (programSettings != null) {

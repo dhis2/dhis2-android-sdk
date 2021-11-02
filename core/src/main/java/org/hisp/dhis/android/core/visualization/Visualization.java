@@ -75,6 +75,22 @@ public abstract class Visualization extends BaseIdentifiableObject implements Co
 
     @Nullable
     @JsonProperty()
+    public abstract String title();
+
+    @Nullable
+    @JsonProperty()
+    public abstract String displayTitle();
+
+    @Nullable
+    @JsonProperty()
+    public abstract String subtitle();
+
+    @Nullable
+    @JsonProperty()
+    public abstract String displaySubtitle();
+
+    @Nullable
+    @JsonProperty()
     @ColumnAdapter(VisualizationTypeColumnAdapter.class)
     public abstract VisualizationType type();
 
@@ -227,6 +243,14 @@ public abstract class Visualization extends BaseIdentifiableObject implements Co
         public abstract Builder displayDescription(String displayDescription);
 
         public abstract Builder displayFormName(String displayFormName);
+
+        public abstract Builder title(String title);
+
+        public abstract Builder displayTitle(String displayTitle);
+
+        public abstract Builder subtitle(String subtitle);
+
+        public abstract Builder displaySubtitle(String displaySubtitle);
 
         public abstract Builder type(VisualizationType type);
 

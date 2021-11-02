@@ -53,6 +53,10 @@ object VisualizationTableInfo {
                 DESCRIPTION,
                 DISPLAY_DESCRIPTION,
                 DISPLAY_FORM_NAME,
+                TITLE,
+                DISPLAY_TITLE,
+                SUBTITLE,
+                DISPLAY_SUBTITLE,
                 TYPE,
                 HIDE_TITLE,
                 HIDE_SUBTITLE,
@@ -88,6 +92,10 @@ object VisualizationTableInfo {
             const val DESCRIPTION = "description"
             const val DISPLAY_DESCRIPTION = "displayDescription"
             const val DISPLAY_FORM_NAME = "displayFormName"
+            const val TITLE = "title"
+            const val DISPLAY_TITLE = "displayTitle"
+            const val SUBTITLE = "subtitle"
+            const val DISPLAY_SUBTITLE = "displaySubtitle"
             const val TYPE = "type"
             const val HIDE_TITLE = "hideTitle"
             const val HIDE_SUBTITLE = "hideSubtitle"

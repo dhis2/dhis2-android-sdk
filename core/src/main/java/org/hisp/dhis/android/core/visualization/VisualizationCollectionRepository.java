@@ -69,6 +69,22 @@ public final class VisualizationCollectionRepository
         return cf.string(Columns.DISPLAY_FORM_NAME);
     }
 
+    public StringFilterConnector<VisualizationCollectionRepository> byTitle() {
+        return cf.string(Columns.TITLE);
+    }
+
+    public StringFilterConnector<VisualizationCollectionRepository> byDisplayTitle() {
+        return cf.string(Columns.DISPLAY_TITLE);
+    }
+
+    public StringFilterConnector<VisualizationCollectionRepository> bySubtitle() {
+        return cf.string(Columns.SUBTITLE);
+    }
+
+    public StringFilterConnector<VisualizationCollectionRepository> byDisplaySubtitle() {
+        return cf.string(Columns.DISPLAY_SUBTITLE);
+    }
+
     public EnumFilterConnector<VisualizationCollectionRepository, VisualizationType> byType() {
         return cf.enumC(Columns.TYPE);
     }

@@ -31,7 +31,9 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import dagger.Reusable
 import io.reactivex.Observable
 import javax.inject.Inject
+import kotlin.math.ceil
 import kotlin.math.min
+import kotlin.math.roundToInt
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.paging.internal.ApiPagingEngine
 import org.hisp.dhis.android.core.arch.api.paging.internal.Paging
@@ -59,7 +61,7 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
 
         return Observable.create { emitter ->
             val iterables = BundleIterables(
-                0, true, 0, mutableMapOf(), mutableListOf(), mutableListOf(), mutableListOf()
+                0, true, 0, mutableMapOf(), mutableListOf(), mutableListOf()
             )
             val bundles: List<TrackerQueryBundle> = queryFactory.getQueries(params)
 
@@ -99,14 +101,18 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
         iterables: BundleIterables,
         relatives: RelationshipItemRelatives
     ) {
-        for (orgUnitUid in iterables.bundleOrgUnitPrograms.keys) {
-            iterables.bundlePrograms = iterables.bundleOrgUnitPrograms[orgUnitUid]!!
-            iterables.emptyOrCorruptedPrograms = emptyList<String?>().toMutableList()
-            iterables.bundleLimit = getBundleLimit(bundle, params, iterables)
+        val limitPerCombo = getBundleLimit(bundle, params, iterables)
 
-            if (iterables.teisCount >= bundle.commonParams().limit || iterables.bundleLimit <= 0) {
+        for (orgUnitUid in iterables.bundleOrgUnitPrograms.keys) {
+            iterables.emptyOrCorruptedPrograms = emptyList<String?>().toMutableList()
+            val orgunitPrograms = iterables.bundleOrgUnitPrograms[orgUnitUid]
+
+            val pendingTeis = bundle.commonParams().limit - iterables.teisCount
+            iterables.bundleLimit = min(limitPerCombo, pendingTeis)
+
+            if (iterables.bundleLimit <= 0 || orgunitPrograms.isNullOrEmpty()) {
                 iterables.orgUnitsBundleToDownload = (iterables.orgUnitsBundleToDownload - orgUnitUid).toMutableList()
-                break
+                continue
             }
 
             iterateBundleProgram(orgUnitUid, bundle, params, iterables, relatives)
@@ -124,7 +130,7 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
         iterables: BundleIterables,
         relatives: RelationshipItemRelatives
     ) {
-        for (bundleProgram in iterables.bundlePrograms) {
+        for (bundleProgram in iterables.bundleOrgUnitPrograms[orgUnitUid]!!) {
             if (iterables.teisCount >= bundle.commonParams().limit) {
                 break
             }
@@ -165,10 +171,13 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
     ): Int {
         return when {
             params.uids().isNotEmpty() -> params.uids().size
-            params.limitByProgram() != true && iterables.bundlePrograms.isNotEmpty() ->
-                (bundle.commonParams().limit - iterables.teisCount)
-                    .div(iterables.bundleOrgUnitPrograms.keys.size * iterables.bundlePrograms.size)
-            params.limitByProgram() != true && iterables.bundlePrograms.isEmpty() -> 0
+            params.limitByProgram() != true -> {
+                val numOfCombinations = iterables.bundleOrgUnitPrograms.values.map { it.size }.sum()
+                val pendingTeis = bundle.commonParams().limit - iterables.teisCount
+
+                if (numOfCombinations == 0) 0
+                else ceil(pendingTeis.toDouble() / numOfCombinations.toDouble()).roundToInt()
+            }
             else -> bundle.commonParams().limit - iterables.teisCount
         }
     }
@@ -262,7 +271,6 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
         var bundleLimit: Int,
         var bundleOrgUnitPrograms: MutableMap<String?, MutableList<TEIsByProgramCount>>,
         var orgUnitsBundleToDownload: MutableList<String?>,
-        var bundlePrograms: MutableList<TEIsByProgramCount>,
         var emptyOrCorruptedPrograms: MutableList<String?>
     )
 }

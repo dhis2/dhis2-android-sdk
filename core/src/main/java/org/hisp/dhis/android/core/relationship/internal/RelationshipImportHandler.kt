@@ -54,7 +54,14 @@ import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository
 
                 val state = getSyncState(importSummary.status())
 
-                relationshipStore.setSyncStateOrDelete(relationshipUid, state)
+                val handledState =
+                    if (state == State.ERROR || state == State.WARNING) {
+                        State.TO_UPDATE
+                    } else {
+                        state
+                    }
+
+                relationshipStore.setSyncStateOrDelete(relationshipUid, handledState)
                 dataStatePropagator.propagateRelationshipUpdate(relationship?.from())
             }
         }

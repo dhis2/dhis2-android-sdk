@@ -54,18 +54,15 @@ internal class EventStoreImpl private constructor(
     objectFactory: Function1<Cursor, Event>
 ) : IdentifiableDeletableDataObjectStoreImpl<Event>(databaseAdapter, builder, binder, objectFactory), EventStore {
 
-    override fun queryEventsAttachedToEnrollmentToPost(): Map<String, MutableList<Event>> {
+    override fun queryEventsAttachedToEnrollmentToPost(): Map<String, List<Event>> {
         val eventsAttachedToEnrollmentsQuery = WhereClauseBuilder()
             .appendIsNotNullValue(EventTableInfo.Columns.ENROLLMENT)
             .appendInKeyStringValues(
-                EventTableInfo.Columns.SYNC_STATE, asStringList(uploadableStates().toList())
+                EventTableInfo.Columns.AGGREGATED_SYNC_STATE, asStringList(uploadableStates().toList())
             ).build()
         val eventList = selectWhere(eventsAttachedToEnrollmentsQuery)
-        val eventsMap: MutableMap<String, MutableList<Event>> = HashMap()
-        for (event in eventList) {
-            addEventsToMap(eventsMap, event)
-        }
-        return eventsMap
+
+        return eventList.filter { it.enrollment() != null }.groupBy { it.enrollment()!! }
     }
 
     override fun querySingleEventsToPost(): List<Event> {
@@ -150,15 +147,6 @@ internal class EventStoreImpl private constructor(
         val cursor = databaseAdapter.rawQuery(query)
         addObjectsToCollection(cursor, eventList)
         return eventList
-    }
-
-    private fun addEventsToMap(eventsMap: MutableMap<String, MutableList<Event>>, event: Event) {
-        event.enrollment()?.let { enrollmentUid ->
-            if (eventsMap[enrollmentUid] == null) {
-                eventsMap[enrollmentUid] = ArrayList()
-            }
-            eventsMap[enrollmentUid]!!.add(event)
-        }
     }
 
     companion object {

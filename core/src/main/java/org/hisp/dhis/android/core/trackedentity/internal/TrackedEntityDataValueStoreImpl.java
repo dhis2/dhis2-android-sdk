@@ -141,7 +141,7 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
     private String eventInUploadableState() {
         String states = CollectionsHelper.commaAndSpaceSeparatedArrayValues(
                 CollectionsHelper.withSingleQuotationMarksArray(EnumHelper.asStringList(State.uploadableStates())));
-        return "(Event." + EventTableInfo.Columns.SYNC_STATE + " IN (" + states + "))";
+        return "(Event." + EventTableInfo.Columns.AGGREGATED_SYNC_STATE + " IN (" + states + "))";
     }
 
     @Override

@@ -106,6 +106,8 @@ The visualization analtyics engine offers handy methods to evaluate Visualizatio
 1. To translate a Visualization object into a query to Analtyics engine.
 2. To return a formatted result following the rows, columns and filters defined in the Visualization.
 
+In order to use the Visualization objects, they must be set in the "Analytics" section of the Android Settings webapp. Currently, it is not possible to download on-demand visualizations from the server, just to downloaded through the Android Settings webapp.
+
 As an example, let's suppose we have a Visualization with the following parameters:
 
 - Visualization ("SwtkWZFhrFQ").

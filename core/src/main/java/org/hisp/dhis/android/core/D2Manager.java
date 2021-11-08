@@ -145,7 +145,7 @@ public final class D2Manager {
     }
 
     @VisibleForTesting
-    static void setTestMode(boolean testMode) {
+    public static void setTestMode(boolean testMode) {
         isTestMode = testMode;
     }
 

@@ -39,7 +39,14 @@ internal class JobReportRelationshipHandler @Inject internal constructor(
 ) : JobReportTypeHandler(relationshipStore) {
 
     override fun handleObject(uid: String, state: State): HandleAction {
-        return relationshipStore.setSyncStateOrDelete(uid, state)
+        val handledState =
+            if (state == State.ERROR || state == State.WARNING) {
+                State.TO_UPDATE
+            } else {
+                state
+            }
+
+        return relationshipStore.setSyncStateOrDelete(uid, handledState)
     }
 
     @Suppress("EmptyFunctionBlock")

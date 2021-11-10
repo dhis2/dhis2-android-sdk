@@ -26,36 +26,38 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import static org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationsHelperKt.generateGroups;
+import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationScope.DATA_SET
+import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationScope.HOME
+import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationScope.PROGRAM
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
-import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl;
-import org.hisp.dhis.android.core.settings.internal.AnalyticsSettingCall;
+fun generateGroups(
+    analyticsDhisVisualizations: List<AnalyticsDhisVisualization>
+): AnalyticsDhisVisualizationsSetting {
 
-import javax.inject.Inject;
+    val visualizationsByScope: Map<AnalyticsDhisVisualizationScope?, List<AnalyticsDhisVisualization>> =
+        analyticsDhisVisualizations.groupBy { it.scope() }
 
-import dagger.Reusable;
-
-@Reusable
-public class AnalyticsDhisVisualizationsSettingObjectRepository
-        extends ReadOnlyAnyObjectWithDownloadRepositoryImpl<AnalyticsDhisVisualizationsSetting>
-        implements ReadOnlyWithDownloadObjectRepository<AnalyticsDhisVisualizationsSetting> {
-
-    private final ObjectWithoutUidStore<AnalyticsDhisVisualization> analyticsDhisVisualizationStore;
-
-    @Inject
-    public AnalyticsDhisVisualizationsSettingObjectRepository(
-            ObjectWithoutUidStore<AnalyticsDhisVisualization> analyticsDhisVisualizationStore,
-            AnalyticsSettingCall analyticsSettingCall) {
-        super(analyticsSettingCall);
-        this.analyticsDhisVisualizationStore = analyticsDhisVisualizationStore;
-    }
-
-    @Override
-    public AnalyticsDhisVisualizationsSetting blockingGet() {
-        return generateGroups(analyticsDhisVisualizationStore.selectAll());
-    }
+    return AnalyticsDhisVisualizationsSetting
+        .builder()
+        .home(generateGroupList(visualizationsByScope[HOME]))
+        .program(generateScopeGroups(visualizationsByScope[PROGRAM]))
+        .dataSet(generateScopeGroups(visualizationsByScope[DATA_SET]))
+        .build()
 }
+
+private fun generateGroupList(analyticsDhisVisualizations: List<AnalyticsDhisVisualization>?) =
+    analyticsDhisVisualizations?.groupBy { it.groupUid() }?.map {
+        AnalyticsDhisVisualizationsGroup
+            .builder()
+            .id(it.key)
+            .name(it.value.first().groupName())
+            .visualizations(it.value)
+            .build()
+    } ?: emptyList()
+
+private fun generateScopeGroups(analyticsDhisVisualizations: List<AnalyticsDhisVisualization>?) =
+    analyticsDhisVisualizations?.groupBy { it.scopeUid() }?.mapValues {
+        generateGroupList(it.value)
+    } ?: emptyMap()

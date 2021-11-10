@@ -45,7 +45,6 @@ import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDownloadAndPersistCallFactory
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
 @Reusable
 class EventDownloadCall @Inject internal constructor(
@@ -61,7 +60,7 @@ class EventDownloadCall @Inject internal constructor(
 
     fun downloadSingleEvents(params: ProgramDataDownloadParams): Observable<D2Progress> {
         val observable = Observable.defer {
-            val progressManager = D2ProgressManager(3)
+            val progressManager = D2ProgressManager(null)
             val relatives = RelationshipItemRelatives()
             return@defer Observable.concat(
                 systemInfoModuleDownloader.downloadWithProgressManager(progressManager),

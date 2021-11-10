@@ -64,6 +64,7 @@ import io.reactivex.Completable;
 import io.reactivex.Single;
 
 @Reusable
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.CouplingBetweenObjects"})
 public final class RelationshipDownloadAndPersistCallFactory {
 
     private final RelationshipStore relationshipStore;

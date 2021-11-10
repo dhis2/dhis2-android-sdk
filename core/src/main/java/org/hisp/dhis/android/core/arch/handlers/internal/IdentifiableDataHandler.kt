@@ -33,9 +33,6 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 
 internal interface IdentifiableDataHandler<O> where O : DeletableDataObject, O : ObjectWithUidInterface {
     @JvmSuppressWildcards
-    fun handleMany(oCollection: Collection<O>?, transformer: (O) -> O, overwrite: Boolean)
-
-    @JvmSuppressWildcards
     fun handleMany(
         oCollection: Collection<O>?,
         asRelationship: Boolean,

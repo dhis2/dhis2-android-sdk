@@ -225,13 +225,8 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
 
             val teisToPersist = getTEIsToPersist(paging, pageTEIs)
 
-            apiCallExecutor.run {
-                val isFullUpdate = baseQuery.commonParams().program == null
-                wrapCompletableTransactionally(
-                    persistenceCallFactory.persistTEIs(teisToPersist, isFullUpdate, overwrite, relatives), true
-                )
-                    .blockingGet()
-            }
+            val isFullUpdate = baseQuery.commonParams().program == null
+            persistenceCallFactory.persistTEIs(teisToPersist, isFullUpdate, overwrite, relatives).blockingAwait()
 
             downloadedTEIsForCombination += teisToPersist.size
 

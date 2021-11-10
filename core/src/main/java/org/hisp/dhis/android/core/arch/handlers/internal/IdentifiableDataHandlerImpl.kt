@@ -96,18 +96,6 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
     }
 
     @JvmSuppressWildcards
-    override fun handleMany(oCollection: Collection<O>?, transformer: (O) -> O, overwrite: Boolean) {
-        if (oCollection != null) {
-            val preHandledCollection = beforeCollectionHandled(oCollection, overwrite, false)
-            val oTransformedCollection: MutableList<O> = ArrayList(oCollection.size)
-            for (o in preHandledCollection) {
-                handle(o, transformer, oTransformedCollection, overwrite)
-            }
-            afterCollectionHandled(oTransformedCollection, overwrite)
-        }
-    }
-
-    @JvmSuppressWildcards
     override fun handleMany(
         oCollection: Collection<O>?,
         asRelationship: Boolean,

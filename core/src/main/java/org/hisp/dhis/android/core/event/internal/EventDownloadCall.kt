@@ -42,6 +42,8 @@ import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
+import org.hisp.dhis.android.core.relationship.internal.RelationshipDownloadAndPersistCallFactory
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
 
 @Reusable
@@ -52,21 +54,28 @@ class EventDownloadCall @Inject internal constructor(
     private val eventQueryBundleFactory: EventQueryBundleFactory,
     private val endpointCallFactory: EventEndpointCallFactory,
     private val persistenceCallFactory: EventPersistenceCallFactory,
+    private val relationshipDownloadAndPersistCallFactory: RelationshipDownloadAndPersistCallFactory,
     private val lastUpdatedManager: EventLastUpdatedManager
 ) {
 
     fun downloadSingleEvents(params: ProgramDataDownloadParams): Observable<D2Progress> {
+        val observable = Observable.defer {
+            val progressManager = D2ProgressManager(null)
+            val relatives = RelationshipItemRelatives()
+            return@defer Observable.concat(
+                systemInfoModuleDownloader.downloadWithProgressManager(progressManager),
+                downloadEventsInternal(params, progressManager, relatives),
+                downloadRelationships(progressManager, relatives)
+            )
+        }
 
-        val progressManager = D2ProgressManager(2)
-        return Observable.merge(
-            systemInfoModuleDownloader.downloadWithProgressManager(progressManager),
-            downloadEventsInternal(params, progressManager)
-        )
+        return rxCallExecutor.wrapObservableTransactionally(observable, true)
     }
 
     private fun downloadEventsInternal(
         params: ProgramDataDownloadParams,
-        progressManager: D2ProgressManager
+        progressManager: D2ProgressManager,
+        relatives: RelationshipItemRelatives
     ): Observable<D2Progress> {
 
         return Observable.create { emitter ->
@@ -91,7 +100,7 @@ class EventDownloadCall @Inject internal constructor(
                     }
 
                 do {
-                    iterateBundle(bundle, params, iterables)
+                    iterateBundle(bundle, params, iterables, relatives)
                 } while (
                     params.limitByProgram() != true &&
                     iterables.eventsCount < bundle.commonParams().limit &&
@@ -102,7 +111,7 @@ class EventDownloadCall @Inject internal constructor(
                     lastUpdatedManager.update(bundle)
                 }
             }
-            emitter.onNext(progressManager.increaseProgress(Event::class.java, true))
+            emitter.onNext(progressManager.increaseProgress(Event::class.java, false))
             emitter.onComplete()
         }
     }
@@ -110,7 +119,8 @@ class EventDownloadCall @Inject internal constructor(
     private fun iterateBundle(
         bundle: EventQueryBundle,
         params: ProgramDataDownloadParams,
-        iterables: BundleIterables
+        iterables: BundleIterables,
+        relatives: RelationshipItemRelatives
     ) {
         val limitPerCombo = getBundleLimit(bundle, params, iterables)
 
@@ -126,7 +136,7 @@ class EventDownloadCall @Inject internal constructor(
                 continue
             }
 
-            iterateBundleProgram(orgUnitUid, bundle, params, iterables)
+            iterateBundleProgram(orgUnitUid, bundle, params, iterables, relatives)
 
             iterables.bundleOrgUnitPrograms[orgUnitUid] = iterables.bundleOrgUnitPrograms[orgUnitUid]!!.filter {
                 !iterables.emptyOrCorruptedPrograms.contains(it.program)
@@ -138,7 +148,8 @@ class EventDownloadCall @Inject internal constructor(
         orgUnitUid: String?,
         bundle: EventQueryBundle,
         params: ProgramDataDownloadParams,
-        iterables: BundleIterables
+        iterables: BundleIterables,
+        relatives: RelationshipItemRelatives
     ) {
         for (bundleProgram in iterables.bundleOrgUnitPrograms[orgUnitUid]!!) {
             if (iterables.eventsCount >= bundle.commonParams().limit) {
@@ -158,7 +169,8 @@ class EventDownloadCall @Inject internal constructor(
             val result = getEventsForOrgUnitProgramCombination(
                 eventQueryBuilder,
                 iterables.bundleLimit,
-                bundleProgram.eventCount
+                bundleProgram.eventCount,
+                relatives
             )
 
             iterables.eventsCount += result.eventCount
@@ -193,13 +205,14 @@ class EventDownloadCall @Inject internal constructor(
     private fun getEventsForOrgUnitProgramCombination(
         eventQueryBuilder: EventQuery.Builder,
         combinationLimit: Int,
-        downloadedEvents: Int
+        downloadedEvents: Int,
+        relatives: RelationshipItemRelatives
     ): EventsWithPagingResult {
 
         var result = EventsWithPagingResult(0, successfulSync = true, emptyProgram = false)
 
         try {
-            result = getEventsWithPaging(eventQueryBuilder, combinationLimit, downloadedEvents)
+            result = getEventsWithPaging(eventQueryBuilder, combinationLimit, downloadedEvents, relatives)
         } catch (ignored: D2Error) {
             result.successfulSync = false
         }
@@ -211,7 +224,8 @@ class EventDownloadCall @Inject internal constructor(
     private fun getEventsWithPaging(
         eventQueryBuilder: EventQuery.Builder,
         combinationLimit: Int,
-        downloadedEvents: Int
+        downloadedEvents: Int,
+        relatives: RelationshipItemRelatives
     ): EventsWithPagingResult {
 
         var downloadedEventsForCombination = 0
@@ -230,12 +244,7 @@ class EventDownloadCall @Inject internal constructor(
 
             val eventsToPersist = getEventsToPersist(paging, pageEvents)
 
-            rxCallExecutor.run {
-                wrapCompletableTransactionally(
-                    persistenceCallFactory.persistEvents(eventsToPersist, null), true
-                )
-                    .blockingGet()
-            }
+            persistenceCallFactory.persistEvents(eventsToPersist, relatives).blockingAwait()
 
             downloadedEventsForCombination += eventsToPersist.size
 
@@ -263,6 +272,19 @@ class EventDownloadCall @Inject internal constructor(
 
     private fun fullPage(paging: Paging): Boolean {
         return paging.isLastPage || paging.previousItemsToSkipCount() > 0 || paging.posteriorItemsToSkipCount() > 0
+    }
+
+    private fun downloadRelationships(
+        progressManager: D2ProgressManager,
+        relatives: RelationshipItemRelatives
+    ): Observable<D2Progress> {
+        return relationshipDownloadAndPersistCallFactory.downloadAndPersist(relatives).andThen(
+            Observable.just(
+                progressManager.increaseProgress(
+                    Event::class.java, true
+                )
+            )
+        )
     }
 
     private class EventsWithPagingResult(var eventCount: Int, var successfulSync: Boolean, var emptyProgram: Boolean)

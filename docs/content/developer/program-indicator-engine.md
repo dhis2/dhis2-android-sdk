@@ -18,6 +18,9 @@ d2.programModule()
     .getEventProgramIndicatorValue(<event-uid>, <program-indicator-uid>);
 ```
 
+If the evaluation of the "filter" component returns false, the result is null.
+
+
 Table: Compatibility
 
 | Type                      | Element               | Web       | Android SDK   |

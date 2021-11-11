@@ -444,12 +444,12 @@ ProgramIndicator analytic boundaries are not supported at the moment. ProgramInd
 |**Variables:**             |AnalyticsPeriodEnd     | Yes       | No            |
 |                           |AnalyticsPeriodStart   | Yes       | No            |
 |                           |CreationDate           | Yes       | Yes           |
-|                           |CurrentDate            | Yes       | Yes           |
+|                           |CurrentDate       searchrepo     | Yes       | Yes           |
 |                           |CompletedDate          | Yes       | Yes           |
 |                           |DueDate                | Yes       | Yes           |
 |                           |EnrollmentCount        | Yes       | Yes           |
 |                           |EnrollmentDate         | Yes       | Yes           |
-|                           |EnrollmentStatus       | Yes       | Yes           |
+|                           |EnrollmentStatus  searchrepo     | Yes       | Yes           |
 |                           |EventStatus            | Yes       | Yes           |
 |                           |EventCount             | Yes       | Yes           |
 |                           |ExecutionDate          | Yes       | Yes           |

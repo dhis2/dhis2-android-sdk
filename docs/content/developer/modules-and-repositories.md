@@ -130,6 +130,7 @@ System modules:
 - maintenanceModule
 - systemInfoModule
 - settingModule
+- dataStoreModule
 - wipeModule
 
 Big block modules:

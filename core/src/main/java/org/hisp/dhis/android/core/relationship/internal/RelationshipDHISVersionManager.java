@@ -57,12 +57,12 @@ public class RelationshipDHISVersionManager {
         this.versionManager = versionManager;
     }
 
-    public List<Relationship> getOwnedRelationships(List<Relationship> relationships, String teiUid) {
+    public List<Relationship> getOwnedRelationships(Collection<Relationship> relationships, String teiUid) {
         List<Relationship> ownedRelationships = new ArrayList<>();
         for (Relationship relationship : relationships) {
             RelationshipItem fromTei = relationship.from();
-            if (versionManager.is2_29() || fromTei != null && fromTei.trackedEntityInstance() != null &&
-                    fromTei.trackedEntityInstance().trackedEntityInstance().equals(teiUid)) {
+            if (versionManager.is2_29() ||
+                    (fromTei != null && fromTei.elementUid() != null && fromTei.elementUid().equals(teiUid))) {
                 ownedRelationships.add(relationship);
             }
         }

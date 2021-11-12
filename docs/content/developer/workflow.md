@@ -400,7 +400,15 @@ d2.trackedEntityModule().reservedValueManager().getValue("attributeUid", "orguni
 
 ### Tracker data: relationships
 
-Currently the SDK has partial support for relationships. Relationship from TEI to TEI are fully supported. Other kind of relationships (TEI-event, event-event,...) are downloaded and can be accessed, but they cannot be created or modified. 
+The SDK supports all types of relationships. They are downloaded when syncing and can be accessed and created or modified. 
+
+
+|                    | TEI        | Enrollment   | Event      |
+|--------------------|:----------:|:------------:|:----------:|
+| **TEI**            | X          | X            | X          |
+| **Enrollment**     | X          | X            | X          |
+| **Event**          | X          | X            | X          |
+_Supported relationships_
 
 Relationships are accessed by using the relationships module.
 
@@ -412,7 +420,23 @@ d2.relationshipModule().relationships().getByItem(
 )
 ```
 
-In the same module you can create new relationships using this method:
+Query relationships associated to an enrollment.
+
+```java
+d2.relationshipModule().relationships().getByItem(
+    RelationshipHelper.enrollmentItem("enrollmentUid")
+)
+```
+
+Or query relationships associated to an event.
+
+```java
+d2.relationshipModule().relationships().getByItem(
+    RelationshipHelper.eventItem("eventUid")
+)
+```
+
+In the same module you can create new relationships of any type using the `RelationshipHelper` to model the relationship and adding them later to the relationship collection repository:
 
 ```java
 Relationship relationship = RelationshipHelper.teiToTeiRelationship("fromTEIUid", "toTEIUid", "relationshipTypeUid");

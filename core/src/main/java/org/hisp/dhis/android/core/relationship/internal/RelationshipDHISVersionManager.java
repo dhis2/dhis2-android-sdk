@@ -62,7 +62,7 @@ public class RelationshipDHISVersionManager {
         for (Relationship relationship : relationships) {
             RelationshipItem fromItem = relationship.from();
             if (versionManager.is2_29() ||
-                    (fromItem != null && fromItem.elementUid() != null && fromItem.elementUid().equals(elementUid))) {
+                    fromItem != null && fromItem.elementUid() != null && fromItem.elementUid().equals(elementUid)) {
                 ownedRelationships.add(relationship);
             }
         }

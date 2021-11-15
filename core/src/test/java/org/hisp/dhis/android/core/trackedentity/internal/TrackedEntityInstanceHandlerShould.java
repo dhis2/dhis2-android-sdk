@@ -228,6 +228,8 @@ public class TrackedEntityInstanceHandlerShould {
     @Test
     public void invoke_relationship_handler_with_relationship_from_version_manager() {
         when(relationshipVersionManager.getRelativeTei(relationship229Compatible, TEI_UID)).thenReturn(relative);
+        when(relationshipVersionManager.getOwnedRelationships(Collections.singletonList(relationship), TEI_UID))
+                .thenReturn(Collections.singletonList(relationship));
         when(relative.toBuilder()).thenReturn(relativeBuilder);
         when(relativeBuilder.syncState(any(State.class))).thenReturn(relativeBuilder);
         when(relativeBuilder.aggregatedSyncState(any(State.class))).thenReturn(relativeBuilder);

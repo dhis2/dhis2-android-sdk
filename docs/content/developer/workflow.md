@@ -39,6 +39,61 @@ Calling module or repository methods before a successful login or after a logout
 
 Logout method removes user credentials, so a new login is required before any interaction with the server. Metadata and data is preserved so a user is able to logout/login without losing any information.
 
+## Login with OpenID
+
+The SDK includes support for OpenID. To perform a login using OpenID an OpenIDConnectConfig is required:
+
+```java
+OpenIDConnectConfig openIdConfig = new OpenIDConnectConfig(clientId, redirectUri, discoveryUri, authorizationUrl, tokenUrl);
+```
+
+It is mandatory to either provide a discoveryUri or both authorizationUrl and tokenUrl.
+
+This configuration can be used to perform a login.
+
+```java
+d2.userModule().openIdHandler().logIn(openIdConfig)
+```
+
+This call returns an IntentWithRequestCode which in an android app allows starting a the OpenID login screen from the configuration provider.
+
+```java
+startActivityForResult(intentWithRequestCode.getIntent(), intentWithRequestCode.getRequestCode());
+```
+
+Upon a successful login, the returned intent data can be used alongside the server url to start the sync.
+
+```java
+d2.userModule().openIdHandler().handleLogInResponse(serverUrl, data, requestCode);
+```
+
+It is mandatory to include the following activity in the application Manifest file:
+
+```xml
+<activity   android:name="net.openid.appauth.RedirectUriReceiverActivity"
+            android:exported="true"
+            tools:node="replace">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="<your redirect url scheme>" />
+            </intent-filter>
+</activity>
+```
+
+In order to configure all parameters check the following OpenID providers guidelines the server implements:
+
+|OpenID Providers|
+|----------------|
+|[Google](https://github.com/openid/AppAuth-Android/blob/master/app/README-Google.md)          |
+|[GitHub](https://docs.github.com/en/developers/apps/authorizing-oauth-apps)          |
+|[ID-porten](https://docs.digdir.no/oidc_protocol_authorize.html)       |
+|[OKTA](https://github.com/openid/AppAuth-Android/blob/master/app/README-Okta.md)            |
+|[KeyCloak](https://www.keycloak.org/docs/latest/authorization_services/index.html#_service_authorization_api)        |
+|[Azure AD](https://docs.microsoft.com/es-es/azure/active-directory-b2c/signin-appauth-android?tabs=app-reg-ga)        |
+|[WS02](https://medium.com/@maduranga.siriwardena/configuring-appauth-android-with-wso2-identity-server-8d378835c10a)            |
+
 ## Metadata synchronization { #android_sdk_metadata_synchronization }
 
 Metadata synchronization is usually the first step after login. It fetches and persists the metadata needed by the current user. To launch metadata synchronization we must execute:

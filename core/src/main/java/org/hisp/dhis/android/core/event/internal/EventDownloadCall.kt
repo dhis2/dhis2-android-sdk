@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDownloadAndPersistCallFactory
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
+import kotlin.math.max
 
 @Reusable
 class EventDownloadCall @Inject internal constructor(
@@ -99,12 +100,15 @@ class EventDownloadCall @Inject internal constructor(
                         }.toMutableList()
                     }
 
+                var iterationCount = 0
                 do {
                     iterateBundle(bundle, params, iterables, relatives)
+                    iterationCount++
                 } while (
                     params.limitByProgram() != true &&
                     iterables.eventsCount < bundle.commonParams().limit &&
-                    iterables.orgUnitsBundleToDownload.isNotEmpty()
+                    iterables.orgUnitsBundleToDownload.isNotEmpty() &&
+                    iterationCount < max(bundle.commonParams().limit * BUNDLE_SECURITY_FACTOR, BUNDLE_ITERATION_LIMIT)
                 )
 
                 if (params.uids().isEmpty()) {
@@ -299,4 +303,9 @@ class EventDownloadCall @Inject internal constructor(
         var orgUnitsBundleToDownload: MutableList<String?>,
         var emptyOrCorruptedPrograms: MutableList<String?>
     )
+
+    companion object {
+        const val BUNDLE_ITERATION_LIMIT = 1000
+        const val BUNDLE_SECURITY_FACTOR = 2
+    }
 }

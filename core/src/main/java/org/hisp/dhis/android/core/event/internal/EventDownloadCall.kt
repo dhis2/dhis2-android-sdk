@@ -31,6 +31,7 @@ import dagger.Reusable
 import io.reactivex.Observable
 import javax.inject.Inject
 import kotlin.math.ceil
+import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
@@ -99,13 +100,11 @@ class EventDownloadCall @Inject internal constructor(
                         }.toMutableList()
                     }
 
+                var iterationCount = 0
                 do {
                     iterateBundle(bundle, params, iterables, relatives)
-                } while (
-                    params.limitByProgram() != true &&
-                    iterables.eventsCount < bundle.commonParams().limit &&
-                    iterables.orgUnitsBundleToDownload.isNotEmpty()
-                )
+                    iterationCount++
+                } while (iterationNotFinished(bundle, params, iterables, iterationCount))
 
                 if (params.uids().isEmpty()) {
                     lastUpdatedManager.update(bundle)
@@ -114,6 +113,18 @@ class EventDownloadCall @Inject internal constructor(
             emitter.onNext(progressManager.increaseProgress(Event::class.java, false))
             emitter.onComplete()
         }
+    }
+
+    private fun iterationNotFinished(
+        bundle: EventQueryBundle,
+        params: ProgramDataDownloadParams,
+        iterables: BundleIterables,
+        iterationCount: Int
+    ): Boolean {
+        return params.limitByProgram() != true &&
+            iterables.eventsCount < bundle.commonParams().limit &&
+            iterables.orgUnitsBundleToDownload.isNotEmpty() &&
+            iterationCount < max(bundle.commonParams().limit * BUNDLE_SECURITY_FACTOR, BUNDLE_ITERATION_LIMIT)
     }
 
     private fun iterateBundle(
@@ -259,7 +270,7 @@ class EventDownloadCall @Inject internal constructor(
 
     private fun getEventsToPersist(paging: Paging, pageEvents: List<Event>): List<Event> {
 
-        return if (fullPage(paging) && pageEvents.size > paging.previousItemsToSkipCount()) {
+        return if (paging.isFullPage && pageEvents.size > paging.previousItemsToSkipCount()) {
             val toIndex = min(
                 pageEvents.size,
                 paging.pageSize() - paging.posteriorItemsToSkipCount()
@@ -268,10 +279,6 @@ class EventDownloadCall @Inject internal constructor(
         } else {
             pageEvents
         }
-    }
-
-    private fun fullPage(paging: Paging): Boolean {
-        return paging.isLastPage || paging.previousItemsToSkipCount() > 0 || paging.posteriorItemsToSkipCount() > 0
     }
 
     private fun downloadRelationships(
@@ -299,4 +306,9 @@ class EventDownloadCall @Inject internal constructor(
         var orgUnitsBundleToDownload: MutableList<String?>,
         var emptyOrCorruptedPrograms: MutableList<String?>
     )
+
+    companion object {
+        const val BUNDLE_ITERATION_LIMIT = 1000
+        const val BUNDLE_SECURITY_FACTOR = 2
+    }
 }

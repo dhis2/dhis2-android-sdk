@@ -39,7 +39,7 @@ Calling module or repository methods before a successful login or after a logout
 
 Logout method removes user credentials, so a new login is required before any interaction with the server. Metadata and data is preserved so a user is able to logout/login without losing any information.
 
-## Login with OpenID
+## Login with OpenID { #android_sdk_login_open_id }
 
 The SDK includes support for OpenID. To perform a login using OpenID an OpenIDConnectConfig is required:
 
@@ -55,7 +55,7 @@ This configuration can be used to perform a login.
 d2.userModule().openIdHandler().logIn(openIdConfig)
 ```
 
-This call returns an IntentWithRequestCode which in an android app allows starting a the OpenID login screen from the configuration provider.
+This call returns an IntentWithRequestCode which in an android app allows starting the OpenID login screen from the configuration provider.
 
 ```java
 startActivityForResult(intentWithRequestCode.getIntent(), intentWithRequestCode.getRequestCode());

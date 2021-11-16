@@ -120,6 +120,7 @@ The SDK include some helpers in the package `org.hisp.dhis.android.core.arch.hel
 - `FileResizeHelper`, `FileResourceDirectoryHelper`: file resource manipulation.
 - `UidsHelper`: common operations to collections of objects with uid.
 - `UserHelper`: operations related to user authentication.
+- `ValueType`: list of different value types and their validators.
 
 ## Module list { #android_sdk_module_list }
 
@@ -129,6 +130,7 @@ System modules:
 - maintenanceModule
 - systemInfoModule
 - settingModule
+- dataStoreModule
 - wipeModule
 
 Big block modules:

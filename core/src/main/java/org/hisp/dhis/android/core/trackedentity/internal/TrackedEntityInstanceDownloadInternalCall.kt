@@ -32,6 +32,7 @@ import dagger.Reusable
 import io.reactivex.Observable
 import javax.inject.Inject
 import kotlin.math.ceil
+import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
@@ -43,7 +44,6 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import kotlin.math.max
 
 @Reusable
 internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
@@ -84,12 +84,7 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
                 do {
                     iterateBundle(bundle, params, iterables, relatives)
                     iterationCount++
-                } while (
-                    params.limitByProgram() != true &&
-                    iterables.teisCount < bundle.commonParams().limit &&
-                    iterables.orgUnitsBundleToDownload.isNotEmpty() &&
-                    iterationCount < max(bundle.commonParams().limit * BUNDLE_SECURITY_FACTOR, BUNDLE_ITERATION_LIMIT)
-                )
+                } while (iterationNotFinished(bundle, params, iterables, iterationCount))
 
                 if (params.uids().isEmpty()) {
                     lastUpdatedManager.update(bundle)
@@ -98,6 +93,18 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
             emitter.onNext(progressManager.increaseProgress(TrackedEntityInstance::class.java, true))
             emitter.onComplete()
         }
+    }
+
+    private fun iterationNotFinished(
+        bundle: TrackerQueryBundle,
+        params: ProgramDataDownloadParams,
+        iterables: BundleIterables,
+        iterationCount: Int
+    ): Boolean {
+        return params.limitByProgram() != true &&
+            iterables.teisCount < bundle.commonParams().limit &&
+            iterables.orgUnitsBundleToDownload.isNotEmpty() &&
+            iterationCount < max(bundle.commonParams().limit * BUNDLE_SECURITY_FACTOR, BUNDLE_ITERATION_LIMIT)
     }
 
     private fun iterateBundle(
@@ -246,7 +253,7 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
 
     private fun getTEIsToPersist(paging: Paging, pageTEIs: List<TrackedEntityInstance>): List<TrackedEntityInstance> {
 
-        return if (fullPage(paging) && pageTEIs.size > paging.previousItemsToSkipCount()) {
+        return if (paging.isFullPage && pageTEIs.size > paging.previousItemsToSkipCount()) {
             val toIndex = min(
                 pageTEIs.size,
                 paging.pageSize() - paging.posteriorItemsToSkipCount()
@@ -255,10 +262,6 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
         } else {
             pageTEIs
         }
-    }
-
-    private fun fullPage(paging: Paging): Boolean {
-        return paging.isLastPage || paging.previousItemsToSkipCount() > 0 || paging.posteriorItemsToSkipCount() > 0
     }
 
     private class TEIsWithPagingResult(var teiCount: Int, var successfulSync: Boolean, var emptyProgram: Boolean)

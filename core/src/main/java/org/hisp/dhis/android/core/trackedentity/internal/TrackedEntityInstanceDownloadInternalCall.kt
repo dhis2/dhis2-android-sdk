@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import kotlin.math.max
 
 @Reusable
 internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
@@ -79,11 +80,15 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
                                     .map { TEIsByProgramCount(it, 0) }
                         }.toMutableList()
                     }
+                var iterationCount = 0
                 do {
                     iterateBundle(bundle, params, iterables, relatives)
-                } while (params.limitByProgram() != true &&
+                    iterationCount++
+                } while (
+                    params.limitByProgram() != true &&
                     iterables.teisCount < bundle.commonParams().limit &&
-                    iterables.orgUnitsBundleToDownload.isNotEmpty()
+                    iterables.orgUnitsBundleToDownload.isNotEmpty() &&
+                    iterationCount < max(bundle.commonParams().limit * BUNDLE_SECURITY_FACTOR, BUNDLE_ITERATION_LIMIT)
                 )
 
                 if (params.uids().isEmpty()) {
@@ -268,4 +273,9 @@ internal class TrackedEntityInstanceDownloadInternalCall @Inject constructor(
         var orgUnitsBundleToDownload: MutableList<String?>,
         var emptyOrCorruptedPrograms: MutableList<String?>
     )
+
+    companion object {
+        const val BUNDLE_ITERATION_LIMIT = 1000
+        const val BUNDLE_SECURITY_FACTOR = 2
+    }
 }

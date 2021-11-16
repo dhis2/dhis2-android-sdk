@@ -186,7 +186,7 @@ d2.trackedEntityModule().trackedEntityInstanceDownloader()
     .download()
 ```
 
-Additionally, if you want the images associated to `Image` data values available to be downloaded in the device, you must download them. See [*Dealing with FileResources*](#dealing-with-fileresources) section for more details.
+Additionally, if you want the images associated to `Image` data values available to be downloaded in the device, you must download them. See [*Dealing with FileResources*](#android_sdk_file_resources) section for more details.
 
 ### Tracker data search
 
@@ -350,7 +350,17 @@ For example, writing a TrackedEntityDataValue would be like:
 d2.trackedEntityModule().trackedEntityDataValues().value(eventUid, dataElementid).set(“5”);
 ```
 
-Data values of type `Image` involve an additional step to create/update/read the associated file resource. More details in the [*Dealing with FileResources*](#dealing-with-fileresources) section below.
+Data values of type `Image` involve an additional step to create/update/read the associated file resource. More details in the [*Dealing with FileResources*](#android_sdk_file_resources) section below.
+
+#### Write events in read-only TEIs
+
+It is important to pay special attention to user's data access to the TEIs, enrollments and events. The SDK modify the status of the data when any *write* method is executed in order to upload it to the server in the next synchronization. If a user has no write data access to a particular element, the app should prevent the edition of this element.
+
+The restrictions that must be followed by the app are these ones:
+
+- **TrackedEntityInstances:** the user must have write data access to the **TrackedEntityType**.
+- **Enrollemnts:** the user must have write data access to **both the TrackedEntityType and the Program** (this additional restriction is imposed by the SDK).
+- **Events:** the user must have write data access to the **ProgramStage**.
 
 ### Tracker data upload
 
@@ -365,6 +375,14 @@ d2.( trackedEntityModule() | eventModule() )
 Data whose state is `ERROR` or `WARNING` cannot be uploaded. It is required to solve the conflicts before attempting a new upload: this means to do a modification in the problematic data, which forces their state back to `TO_UPDATE`.
 
 As of version 2.37, a new tracker importer was introduced (`/api/tracker` endpoint). The default tracker importer is still the legacy one (`/api/trackedEntityInstances`), but you can opt-in to use this new tracker importer by using the Android Settings webapp (see [Synchronization](#android_sdk_synchronization_settings)). This is internal to the SDK; the API exposed to the app does not change.
+
+File resources must be uploaded in a different post call before tracker data upload. The query to post file resources is:
+
+```java
+d2.fileResourceModule().fileResources().upload();
+```
+
+More information about file resources in the section [*Dealing with FileResources*](#android_sdk_file_resources).
 
 #### Tracker conflicts
 

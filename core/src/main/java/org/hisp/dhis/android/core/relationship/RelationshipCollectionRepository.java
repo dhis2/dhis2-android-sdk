@@ -134,7 +134,7 @@ public class RelationshipCollectionRepository
                         .syncState(State.TO_POST)
                         .deleted(false)
                         .build());
-                dataStatePropagator.propagateRelationshipUpdate(from);
+                dataStatePropagator.propagateRelationshipUpdate(relationship);
             } else {
                 throw D2Error
                         .builder()

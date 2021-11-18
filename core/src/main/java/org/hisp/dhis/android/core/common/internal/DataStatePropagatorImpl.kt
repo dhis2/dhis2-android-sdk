@@ -115,7 +115,21 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
         }
     }
 
-    override fun propagateRelationshipUpdate(item: RelationshipItem?) {
+    override fun propagateRelationshipUpdate(relationship: Relationship?) {
+        if (relationship != null) {
+            val bidirectional = relationship.relationshipType()?.let {
+                relationshipTypeStore.selectByUid(it)?.bidirectional()
+            } ?: false
+
+            propagateRelationshipUpdate(relationship.from())
+
+            if (bidirectional) {
+                propagateRelationshipUpdate(relationship.to())
+            }
+        }
+    }
+
+    private fun propagateRelationshipUpdate(item: RelationshipItem?) {
         if (item != null) {
             if (item.hasTrackedEntityInstance()) {
                 val tei = trackedEntityInstanceStore.selectByUid(item.elementUid())

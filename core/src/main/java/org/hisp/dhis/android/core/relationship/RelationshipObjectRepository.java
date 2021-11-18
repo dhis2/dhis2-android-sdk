@@ -56,13 +56,13 @@ final class RelationshipObjectRepository
 
     @Override
     protected void propagateState(Relationship relationship) {
-        RelationshipItem fromItem = relationship.from();
-        if (fromItem == null) {
+        if (relationship.from() == null || relationship.to() == null) {
             Relationship withChildren = ChildrenAppenderExecutor.appendInObject(relationship, childrenAppenders,
                     new ChildrenSelection(Collections.singleton(
                             RelationshipFields.ITEMS)));
-            fromItem = withChildren.from();
+            dataStatePropagator.propagateRelationshipUpdate(withChildren);
+        } else {
+            dataStatePropagator.propagateRelationshipUpdate(relationship);
         }
-        dataStatePropagator.propagateRelationshipUpdate(fromItem);
     }
 }

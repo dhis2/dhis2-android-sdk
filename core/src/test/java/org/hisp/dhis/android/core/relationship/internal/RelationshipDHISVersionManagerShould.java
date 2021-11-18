@@ -28,9 +28,11 @@
 
 package org.hisp.dhis.android.core.relationship.internal;
 
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.relationship.RelationshipSamples;
 import org.hisp.dhis.android.core.relationship.BaseRelationship;
 import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,18 +45,27 @@ import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.NAME;
 import static org.mockito.Mockito.when;
 
+import java.util.Collection;
+import java.util.Collections;
+
 
 public class RelationshipDHISVersionManagerShould extends RelationshipSamples {
 
     @Mock
     private DHISVersionManager versionManager;
 
+    @Mock
+    private IdentifiableObjectStore<RelationshipType> relationshipTypeStore;
+
+    @Mock
+    private RelationshipType relationshipType;
+
     private RelationshipDHISVersionManager relationshipDHISVersionManager;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        relationshipDHISVersionManager = new RelationshipDHISVersionManager(versionManager);
+        relationshipDHISVersionManager = new RelationshipDHISVersionManager(versionManager, relationshipTypeStore);
     }
 
     private void assertCommonFields(BaseRelationship relationship) {
@@ -138,5 +149,49 @@ public class RelationshipDHISVersionManagerShould extends RelationshipSamples {
         when(versionManager.is2_29()).thenReturn(true);
         Relationship229Compatible compatible = relationshipDHISVersionManager.to229Compatible(get230(), TO_UID);
         assertThat(compatible.relative().uid()).isEqualTo(FROM_UID);
+    }
+
+    @Test
+    public void get_owned_relationships_in_2_29() {
+        when(versionManager.is2_29()).thenReturn(true);
+
+        Collection<Relationship> relationships = Collections.singletonList(get230());
+
+        Collection<Relationship> ownedRelationships =
+                relationshipDHISVersionManager.getOwnedRelationships(relationships, TO_UID);
+
+        assertThat(ownedRelationships.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void get_owned_relationships_in_bidirectional() {
+        when(versionManager.is2_29()).thenReturn(false);
+        when(relationshipTypeStore.selectByUid(TYPE)).thenReturn(relationshipType);
+        when(relationshipType.bidirectional()).thenReturn(true);
+
+        Collection<Relationship> relationships = Collections.singletonList(get230());
+
+        Collection<Relationship> ownedRelationships =
+                relationshipDHISVersionManager.getOwnedRelationships(relationships, TO_UID);
+
+        assertThat(ownedRelationships.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void get_owned_relationships_in_non_bidirectional() {
+        when(versionManager.is2_29()).thenReturn(false);
+        when(relationshipTypeStore.selectByUid(TYPE)).thenReturn(relationshipType);
+        when(relationshipType.bidirectional()).thenReturn(false);
+
+        Collection<Relationship> relationships = Collections.singletonList(get230());
+
+        Collection<Relationship> ownedToRelationships =
+                relationshipDHISVersionManager.getOwnedRelationships(relationships, TO_UID);
+
+        Collection<Relationship> ownedFromRelationships =
+                relationshipDHISVersionManager.getOwnedRelationships(relationships, FROM_UID);
+
+        assertThat(ownedToRelationships).isEmpty();
+        assertThat(ownedFromRelationships.size()).isEqualTo(1);
     }
 }

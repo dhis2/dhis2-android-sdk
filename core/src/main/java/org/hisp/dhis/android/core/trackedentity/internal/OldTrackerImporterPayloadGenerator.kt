@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
+import org.hisp.dhis.android.core.relationship.RelationshipType
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.*
 
@@ -60,6 +61,7 @@ internal class OldTrackerImporterPayloadGenerator @Inject internal constructor(
     private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore,
     private val noteStore: IdentifiableObjectStore<Note>,
     private val trackedEntityTypeStore: IdentifiableObjectStore<TrackedEntityType>,
+    private val relationshipTypeStore: IdentifiableObjectStore<RelationshipType>,
     private val programStore: ProgramStoreInterface
 ) {
 
@@ -144,7 +146,7 @@ internal class OldTrackerImporterPayloadGenerator @Inject internal constructor(
         payload: OldTrackerImporterPayload,
         extraData: ExtraData
     ): OldTrackerImporterPayload {
-        val relatedItems = payload.relationships.map { it.to() }
+        val relatedItems = payload.relationships.flatMap { listOf(it.from(), it.to()) }
 
         val missingItems = relatedItems.filterNotNull().filter { item ->
             when {
@@ -183,7 +185,9 @@ internal class OldTrackerImporterPayloadGenerator @Inject internal constructor(
         val trackedEntityInstances = trackedEntityInstanceStore.selectByUids(missingTeis.toList()).map {
             getTrackedEntityInstance(it, extraData)
         }
-        val events = eventStore.selectByUids(missingEvents.toList())
+        val events = eventStore.selectByUids(missingEvents.toList()).map {
+            getEvent(it, extraData)
+        }
 
         return OldTrackerImporterPayload(
             trackedEntityInstances = trackedEntityInstances,
@@ -197,7 +201,7 @@ internal class OldTrackerImporterPayloadGenerator @Inject internal constructor(
         val isIncludeInPayload = payload.trackedEntityInstances.map { it.uid() }.contains(uid)
         val isPendingToSync: Boolean by lazy {
             val dbTei = trackedEntityInstanceStore.selectByUid(uid)
-            State.uploadableStates().contains(dbTei?.syncState())
+            State.uploadableStates().contains(dbTei?.aggregatedSyncState())
         }
 
         return !isIncludeInPayload && isPendingToSync
@@ -210,7 +214,7 @@ internal class OldTrackerImporterPayloadGenerator @Inject internal constructor(
         val isIncludeInPayload = enrollments.map { it.uid() }.contains(uid)
         val isPendingToSync: Boolean by lazy {
             val enrollment = enrollmentStore.selectByUid(uid)
-            State.uploadableStates().contains(enrollment?.syncState())
+            State.uploadableStates().contains(enrollment?.aggregatedSyncState())
         }
 
         return !isIncludeInPayload && isPendingToSync
@@ -226,7 +230,7 @@ internal class OldTrackerImporterPayloadGenerator @Inject internal constructor(
         val isIncludedInPayload = events.map { it.uid() }.contains(uid)
         val isPendingToSync: Boolean by lazy {
             val event = eventStore.selectByUid(uid)
-            State.uploadableStates().contains(event?.syncState())
+            State.uploadableStates().contains(event?.aggregatedSyncState())
         }
 
         return !isIncludedInPayload && isPendingToSync
@@ -279,7 +283,14 @@ internal class OldTrackerImporterPayloadGenerator @Inject internal constructor(
         val items = teiItems + enrollmentItems + eventItems
 
         return extraData.relationships.filter {
-            items.any { item -> RelationshipHelper.areItemsEqual(it.from(), item) }
+            items.any { item ->
+                val bidirectional = it.relationshipType()?.let { type ->
+                    relationshipTypeStore.selectByUid(type)?.bidirectional()
+                } ?: false
+
+                RelationshipHelper.areItemsEqual(it.from(), item) ||
+                        bidirectional && RelationshipHelper.areItemsEqual(it.to(), item)
+            }
         }
     }
 

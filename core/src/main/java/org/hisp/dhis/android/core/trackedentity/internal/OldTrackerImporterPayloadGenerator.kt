@@ -289,7 +289,7 @@ internal class OldTrackerImporterPayloadGenerator @Inject internal constructor(
                 } ?: false
 
                 RelationshipHelper.areItemsEqual(it.from(), item) ||
-                        bidirectional && RelationshipHelper.areItemsEqual(it.to(), item)
+                    bidirectional && RelationshipHelper.areItemsEqual(it.to(), item)
             }
         }
     }

@@ -75,11 +75,11 @@ public class RelationshipDHISVersionManager {
     }
 
     private boolean isBidirectional(Relationship relationship) {
-        if (relationship.relationshipType() != null) {
+        if (relationship.relationshipType() == null) {
+            return false;
+        } else {
             RelationshipType relationshipType = relationshipTypeStore.selectByUid(relationship.relationshipType());
             return relationshipType != null && relationshipType.bidirectional();
-        } else {
-            return false;
         }
     }
 

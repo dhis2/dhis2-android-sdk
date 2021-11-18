@@ -50,7 +50,7 @@ internal data class OldTrackerImporterPayload(
         )
     }
 
-    private fun <I: ObjectWithUidInterface> concat(aList: List<I>, bList: List<I>): List<I> {
+    private fun <I : ObjectWithUidInterface> concat(aList: List<I>, bList: List<I>): List<I> {
         val aListIds = aList.mapNotNull { it.uid() }
         val filteredBList = bList.filter { !aListIds.contains(it.uid()) }
 

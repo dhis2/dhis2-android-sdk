@@ -78,7 +78,7 @@ internal class RelationshipPostCall @Inject internal constructor(
                     // The relationship is marked as error, but there is no handling in the TEI. The TEI is being posted
                     relationshipStore.setSyncState(relationship.uid()!!, State.ERROR)
                 }
-                dataStatePropagator.propagateRelationshipUpdate(relationship.from())
+                dataStatePropagator.propagateRelationshipUpdate(relationship)
             }
             emitter.onComplete()
         }
@@ -111,7 +111,7 @@ internal class RelationshipPostCall @Inject internal constructor(
                     Observable.just<D2Progress>(progressManager.increaseProgress(Relationship::class.java, false))
                 } catch (e: Exception) {
                     trackerStateManager.restorePayloadStates(relationships = relationships)
-                    relationships.forEach { dataStatePropagator.propagateRelationshipUpdate(it.from()) }
+                    relationships.forEach { dataStatePropagator.propagateRelationshipUpdate(it) }
                     Observable.error<D2Progress>(e)
                 }
             }

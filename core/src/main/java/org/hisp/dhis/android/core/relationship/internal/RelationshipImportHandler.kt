@@ -62,7 +62,7 @@ import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository
                     }
 
                 relationshipStore.setSyncStateOrDelete(relationshipUid, handledState)
-                dataStatePropagator.propagateRelationshipUpdate(relationship?.from())
+                dataStatePropagator.propagateRelationshipUpdate(relationship)
             }
         }
 
@@ -77,7 +77,7 @@ import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository
 
         relationships.filterNot { processedRelationships.contains(it.uid()) }.forEach { relationship ->
             relationshipStore.setSyncStateOrDelete(relationship.uid()!!, State.TO_UPDATE)
-            dataStatePropagator.propagateRelationshipUpdate(relationship.from())
+            dataStatePropagator.propagateRelationshipUpdate(relationship)
         }
     }
 }

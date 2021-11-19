@@ -32,6 +32,7 @@ import com.google.common.truth.Truth.assertThat
 import java.io.IOException
 import java.text.ParseException
 import java.util.*
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
@@ -44,10 +45,8 @@ import org.hisp.dhis.android.core.event.internal.EventStoreImpl
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
-import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStore
-import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStoreImpl
-import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
-import org.hisp.dhis.android.core.relationship.internal.RelationshipStoreImpl
+import org.hisp.dhis.android.core.relationship.RelationshipType
+import org.hisp.dhis.android.core.relationship.internal.*
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
@@ -65,6 +64,7 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
     private lateinit var eventStore: EventStore
     private lateinit var relationshipStore: RelationshipStore
     private lateinit var relationshipItemStore: RelationshipItemStore
+    private lateinit var relationshipTypeStore: IdentifiableObjectStore<RelationshipType>
 
     private val relationshipType = "WiH6923nMtb"
 
@@ -76,10 +76,11 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
         eventStore = EventStoreImpl.create(d2.databaseAdapter())
         relationshipStore = RelationshipStoreImpl.create(d2.databaseAdapter())
         relationshipItemStore = RelationshipItemStoreImpl.create(d2.databaseAdapter())
+        relationshipTypeStore = RelationshipTypeStore.create(d2.databaseAdapter())
 
         propagator = DataStatePropagatorImpl(
             trackedEntityInstanceStore, enrollmentStore,
-            eventStore, relationshipStore, relationshipItemStore
+            eventStore, relationshipStore, relationshipItemStore, relationshipTypeStore
         )
     }
 

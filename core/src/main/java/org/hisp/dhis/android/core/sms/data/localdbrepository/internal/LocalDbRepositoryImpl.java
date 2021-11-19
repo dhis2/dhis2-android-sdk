@@ -308,9 +308,19 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     public Completable updateRelationshipSubmissionState(String relationshipUid, State state) {
         return Completable.fromAction(() -> {
             relationshipStore.setSyncState(relationshipUid, state);
+            Relationship relationship = relationshipStore.selectByUid(relationshipUid);
             RelationshipItem fromItem = relationshipItemStore
                     .getForRelationshipUidAndConstraintType(relationshipUid, RelationshipConstraintType.FROM);
-            dataStatePropagator.propagateRelationshipUpdate(fromItem);
+            RelationshipItem toItem = relationshipItemStore
+                    .getForRelationshipUidAndConstraintType(relationshipUid, RelationshipConstraintType.TO);
+
+            if (relationship != null) {
+                dataStatePropagator.propagateRelationshipUpdate(relationship.toBuilder()
+                        .from(fromItem)
+                        .to(toItem)
+                        .build()
+                );
+            }
         });
     }
 

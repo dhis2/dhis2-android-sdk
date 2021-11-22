@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.trackedentity;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.DeletedFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
@@ -89,5 +90,9 @@ public final class TrackedEntityAttributeValueCollectionRepository extends ReadO
 
     public StringFilterConnector<TrackedEntityAttributeValueCollectionRepository> byTrackedEntityInstance() {
         return cf.string(Columns.TRACKED_ENTITY_INSTANCE);
+    }
+
+    public DeletedFilterConnector<TrackedEntityAttributeValueCollectionRepository> byDeleted() {
+        return cf.deleted(Columns.VALUE);
     }
 }

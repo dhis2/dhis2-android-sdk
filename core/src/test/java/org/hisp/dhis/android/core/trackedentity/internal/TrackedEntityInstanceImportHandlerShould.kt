@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import com.nhaarman.mockitokotlin2.*
 import java.util.*
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentImportHandler
@@ -69,6 +70,8 @@ class TrackedEntityInstanceImportHandlerShould {
 
     private val relationshipCollectionRepository: RelationshipCollectionRepository = mock()
 
+    private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore = mock()
+
     private val trackedEntityInstance: TrackedEntityInstance = mock()
 
     private val instances: List<TrackedEntityInstance> = ArrayList()
@@ -82,8 +85,10 @@ class TrackedEntityInstanceImportHandlerShould {
         trackedEntityInstanceImportHandler = TrackedEntityInstanceImportHandler(
             trackedEntityInstanceStore, enrollmentImportHandler,
             trackerImportConflictStore, trackerImportConflictParser, relationshipStore, dataStatePropagator,
-            relationshipDHISVersionManager, relationshipCollectionRepository
+            relationshipDHISVersionManager, relationshipCollectionRepository, trackedEntityAttributeValueStore
         )
+
+        whenever(trackedEntityInstanceStore.setSyncStateOrDelete(any(), any())).doReturn(HandleAction.Update)
     }
 
     @Test
@@ -137,7 +142,7 @@ class TrackedEntityInstanceImportHandlerShould {
         verify(trackedEntityInstanceStore, times(1))
             .setSyncStateOrDelete("test_tei_uid", State.SYNCED)
         verify(enrollmentImportHandler, times(1)).handleEnrollmentImportSummary(
-            eq(enrollmentSummaries), anyList(), anyString()
+            eq(enrollmentSummaries), anyList()
         )
     }
 

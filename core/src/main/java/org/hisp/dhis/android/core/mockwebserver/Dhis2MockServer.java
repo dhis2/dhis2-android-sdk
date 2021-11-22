@@ -301,8 +301,6 @@ public class Dhis2MockServer {
         enqueueMockResponse(OPTION_GROUPS_JSON);
         enqueueMockResponse(DATA_SETS_JSON);
         enqueueMockResponse(DATA_ELEMENTS_JSON);
-        enqueueMockResponse(INDICATORS_JSON);
-        enqueueMockResponse(INDICATOR_TYPES_JSON);
         enqueueMockResponse(VALIDATION_RULE_UIDS_JSON);
         enqueueMockResponse(VALIDATION_RULE_UIDS_JSON);
         enqueueMockResponse(VALIDATION_RULES_JSON);
@@ -310,6 +308,8 @@ public class Dhis2MockServer {
         enqueueMockResponse(CATEGORIES_JSON);
         enqueueMockResponse(CATEGORY_OPTIONS_JSON);
         enqueueMockResponse(VISUALIZATIONS_JSON);
+        enqueueMockResponse(INDICATORS_JSON);
+        enqueueMockResponse(INDICATOR_TYPES_JSON);
     }
 
     @NonNull

@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.settings;
 
+import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum HomeFilter {
@@ -42,4 +43,7 @@ public enum HomeFilter {
 
     @JsonProperty("assignedToMe")
     ASSIGNED_TO_ME,
+
+    @JsonEnumDefaultValue
+    UNKNOWN
 }

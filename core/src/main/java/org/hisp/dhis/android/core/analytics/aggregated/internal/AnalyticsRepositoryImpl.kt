@@ -30,9 +30,11 @@ package org.hisp.dhis.android.core.analytics.aggregated.internal
 
 import io.reactivex.Single
 import javax.inject.Inject
+import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepository
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
+import org.hisp.dhis.android.core.arch.helpers.Result
 
 internal class AnalyticsRepositoryImpl @Inject constructor(
     private val params: AnalyticsRepositoryParams,
@@ -47,11 +49,11 @@ internal class AnalyticsRepositoryImpl @Inject constructor(
         return updateParams { params -> params.copy(filters = params.filters + dimensionItem) }
     }
 
-    override fun evaluate(): Single<DimensionalResponse> {
+    override fun evaluate(): Single<Result<DimensionalResponse, AnalyticsException>> {
         return Single.fromCallable { blockingEvaluate() }
     }
 
-    override fun blockingEvaluate(): DimensionalResponse {
+    override fun blockingEvaluate(): Result<DimensionalResponse, AnalyticsException> {
         return analyticsService.evaluate(params)
     }
 

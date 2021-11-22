@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.settings.DataSyncPeriod;
 import org.hisp.dhis.android.core.settings.MetadataSyncPeriod;
 import org.hisp.dhis.android.core.settings.ProgramSettings;
 import org.hisp.dhis.android.core.settings.SynchronizationSettings;
+import org.hisp.dhis.android.core.tracker.TrackerImporterVersion;
 
 public class SynchronizationSettingsSamples {
 
@@ -41,7 +42,7 @@ public class SynchronizationSettingsSamples {
                 .id(1L)
                 .dataSync(DataSyncPeriod.EVERY_24_HOURS)
                 .metadataSync(MetadataSyncPeriod.EVERY_12_HOURS)
-                .newTrackerImporter(false)
+                .trackerImporterVersion(TrackerImporterVersion.V2)
                 .programSettings(ProgramSettings.builder()
                         .globalSettings(ProgramSettingSamples.getProgramSetting())
                         .build())

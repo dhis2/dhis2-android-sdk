@@ -34,8 +34,10 @@ import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVis
 import org.hisp.dhis.android.core.parser.internal.expression.CommonParser
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItemMethod
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
+import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.antlr.AntlrParserUtils
+import org.hisp.dhis.antlr.ParserExceptionWithoutContext
 
 internal class ProgramIndicatorExecutor constructor(
     private val constantMap: Map<String, Constant>,
@@ -43,8 +45,21 @@ internal class ProgramIndicatorExecutor constructor(
     private val dataElementStore: IdentifiableObjectStore<DataElement>,
     private val trackedEntityAttributeStore: IdentifiableObjectStore<TrackedEntityAttribute>
 ) {
-    fun getProgramIndicatorValue(expression: String?): String? {
+    fun getProgramIndicatorValue(programIndicator: ProgramIndicator): String? {
         val visitor = newVisitor(ParserUtils.ITEM_EVALUATE)
+        return if (getFilterValue(programIndicator, visitor)) {
+            getProgramIndicatorExpressionValue(programIndicator.expression(), visitor)
+        } else {
+            null
+        }
+    }
+
+    fun getProgramIndicatorExpressionValue(expression: String?): String? {
+        val visitor = newVisitor(ParserUtils.ITEM_EVALUATE)
+        return getProgramIndicatorExpressionValue(expression, visitor)
+    }
+
+    private fun getProgramIndicatorExpressionValue(expression: String?, visitor: CommonExpressionVisitor): String? {
         return try {
             val result = CommonParser.visit(expression, visitor)
             val resultStr = AntlrParserUtils.castString(result)
@@ -55,7 +70,25 @@ internal class ProgramIndicatorExecutor constructor(
             }
         } catch (e: IllegalArgumentException) {
             null
+        } catch (e: ParserExceptionWithoutContext) {
+            null
         }
+    }
+
+    private fun getFilterValue(programIndicator: ProgramIndicator, visitor: CommonExpressionVisitor): Boolean {
+        val filter = programIndicator.filter()
+
+        return filter.isNullOrBlank() ||
+            try {
+                val result = CommonParser.visit(filter, visitor)
+                result?.let {
+                    AntlrParserUtils.castBoolean(result)
+                } ?: false
+            } catch (e: IllegalArgumentException) {
+                false
+            } catch (e: ParserExceptionWithoutContext) {
+                false
+            }
     }
 
     fun getValueCount(expression: String): Int {

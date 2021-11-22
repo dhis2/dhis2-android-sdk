@@ -29,6 +29,8 @@
 package org.hisp.dhis.android.core.analytics.aggregated
 
 import io.reactivex.Single
+import org.hisp.dhis.android.core.analytics.AnalyticsException
+import org.hisp.dhis.android.core.arch.helpers.Result
 
 interface AnalyticsVisualizationsRepository {
 
@@ -38,7 +40,7 @@ interface AnalyticsVisualizationsRepository {
 
     fun withOrganisationUnits(orgUnits: List<DimensionItem.OrganisationUnitItem>): AnalyticsVisualizationsRepository
 
-    fun evaluate(): Single<GridAnalyticsResponse>
+    fun evaluate(): Single<Result<GridAnalyticsResponse, AnalyticsException>>
 
-    fun blockingEvaluate(): GridAnalyticsResponse
+    fun blockingEvaluate(): Result<GridAnalyticsResponse, AnalyticsException>
 }

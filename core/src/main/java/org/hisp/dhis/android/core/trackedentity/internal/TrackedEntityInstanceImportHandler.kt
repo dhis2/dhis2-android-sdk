@@ -58,7 +58,8 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
     private val relationshipStore: RelationshipStore,
     private val dataStatePropagator: DataStatePropagator,
     private val relationshipDHISVersionManager: RelationshipDHISVersionManager,
-    private val relationshipRepository: RelationshipCollectionRepository
+    private val relationshipRepository: RelationshipCollectionRepository,
+    private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore
 ) {
 
     fun handleTrackedEntityInstanceImportSummaries(
@@ -82,8 +83,14 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
 
                 if (handleAction !== HandleAction.Delete) {
                     storeTEIImportConflicts(teiImportSummary)
-
                     handleEnrollmentImportSummaries(teiImportSummary, instances)
+                    dataStatePropagator.refreshTrackedEntityInstanceAggregatedSyncState(teiUid)
+                }
+
+                if (state == State.SYNCED &&
+                    (handleAction == HandleAction.Update || handleAction == HandleAction.Insert)
+                ) {
+                    trackedEntityAttributeValueStore.removeDeletedAttributeValuesByInstance(teiUid)
                 }
             }
         }
@@ -99,8 +106,7 @@ internal class TrackedEntityInstanceImportHandler @Inject internal constructor(
             val teiUid = teiImportSummary.reference()!!
             enrollmentImportHandler.handleEnrollmentImportSummary(
                 importSummaries,
-                getEnrollments(teiUid, instances),
-                teiUid
+                getEnrollments(teiUid, instances)
             )
         }
     }

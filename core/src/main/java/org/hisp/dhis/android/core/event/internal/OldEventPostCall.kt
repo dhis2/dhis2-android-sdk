@@ -94,9 +94,7 @@ internal class OldEventPostCall @Inject internal constructor(
     private fun handleWebResponse(webResponse: EventWebResponse?, events: List<Event>) {
         eventImportHandler.handleEventImportSummaries(
             webResponse?.response()?.importSummaries(),
-            events,
-            null,
-            null
+            events
         )
     }
 }

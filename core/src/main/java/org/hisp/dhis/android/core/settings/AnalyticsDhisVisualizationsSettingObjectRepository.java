@@ -28,17 +28,12 @@
 
 package org.hisp.dhis.android.core.settings;
 
+import static org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationsHelperKt.generateGroups;
+
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.object.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl;
 import org.hisp.dhis.android.core.settings.internal.AnalyticsSettingCall;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -61,120 +56,6 @@ public class AnalyticsDhisVisualizationsSettingObjectRepository
 
     @Override
     public AnalyticsDhisVisualizationsSetting blockingGet() {
-        List<AnalyticsDhisVisualization> analyticsDhisVisualizations = analyticsDhisVisualizationStore.selectAll();
-
-        if (analyticsDhisVisualizations.isEmpty()) {
-            return null;
-        }
-
-        AnalyticsDhisVisualizationsSetting.Builder analyticsDhisVisualizationsSettingBuilder =
-                AnalyticsDhisVisualizationsSetting.builder();
-        List<AnalyticsDhisVisualizationsGroup> home = new ArrayList<>();
-        Map<String, List<AnalyticsDhisVisualizationsGroup>> program = new HashMap<>();
-        Map<String, List<AnalyticsDhisVisualizationsGroup>> dataSet = new HashMap<>();
-
-        for (AnalyticsDhisVisualization analyticsDhisVisualization : analyticsDhisVisualizations) {
-            AnalyticsDhisVisualizationsGroup group;
-            switch (Objects.requireNonNull(analyticsDhisVisualization.scope())) {
-                case HOME:
-                    group = getGroup(analyticsDhisVisualization.groupUid(), home);
-
-                    if (group == null) {
-                        group = createGroup(analyticsDhisVisualization);
-                        home.add(group);
-                    } else {
-                        AnalyticsDhisVisualizationsGroup updatedGroup = updateGroup(group, analyticsDhisVisualization);
-                        home.remove(group);
-                        home.add(updatedGroup);
-                    }
-                    break;
-                case PROGRAM:
-                    group = getGroup(
-                            analyticsDhisVisualization.groupUid(),
-                            program.get(analyticsDhisVisualization.scopeUid())
-                    );
-
-                    if (group == null) {
-                        group = createGroup(analyticsDhisVisualization);
-                        program.put(
-                                analyticsDhisVisualization.scopeUid(),
-                                createGroupList(group)
-                        );
-                    } else {
-                        AnalyticsDhisVisualizationsGroup updatedGroup = updateGroup(group, analyticsDhisVisualization);
-                        Objects.requireNonNull(program.get(analyticsDhisVisualization.scopeUid())).remove(group);
-                        Objects.requireNonNull(program.get(analyticsDhisVisualization.scopeUid())).add(updatedGroup);
-                    }
-
-                    break;
-                case DATA_SET:
-                    group = getGroup(
-                            analyticsDhisVisualization.groupUid(),
-                            dataSet.get(analyticsDhisVisualization.scopeUid())
-                    );
-
-                    if (group == null) {
-                        group = createGroup(analyticsDhisVisualization);
-                        dataSet.put(
-                                analyticsDhisVisualization.scopeUid(),
-                                createGroupList(group)
-                        );
-                    } else {
-                        AnalyticsDhisVisualizationsGroup updatedGroup = updateGroup(group, analyticsDhisVisualization);
-                        Objects.requireNonNull(dataSet.get(analyticsDhisVisualization.scopeUid())).remove(group);
-                        Objects.requireNonNull(dataSet.get(analyticsDhisVisualization.scopeUid())).add(updatedGroup);
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        return analyticsDhisVisualizationsSettingBuilder
-                .home(home)
-                .program(program)
-                .dataSet(dataSet)
-                .build();
-    }
-
-    private AnalyticsDhisVisualizationsGroup getGroup(
-            String groupUid,
-            List<AnalyticsDhisVisualizationsGroup> groupList
-    ) {
-        if (groupList != null) {
-            for (AnalyticsDhisVisualizationsGroup group : groupList) {
-                if (group.id().equals(groupUid)) {
-                    return group;
-                }
-            }
-        }
-
-        return null;
-    }
-
-    private AnalyticsDhisVisualizationsGroup createGroup(AnalyticsDhisVisualization analyticsDhisVisualization) {
-        return AnalyticsDhisVisualizationsGroup
-                .builder()
-                .id(analyticsDhisVisualization.groupUid())
-                .name(analyticsDhisVisualization.groupName())
-                .visualizations(new ArrayList<>(Arrays.asList(analyticsDhisVisualization)))
-                .build();
-    }
-
-    private AnalyticsDhisVisualizationsGroup updateGroup(
-            AnalyticsDhisVisualizationsGroup oldGroup,
-            AnalyticsDhisVisualization analyticsDhisVisualization
-    ) {
-        List<AnalyticsDhisVisualization> updatedVisualizations =
-                new ArrayList<>(oldGroup.visualizations());
-        updatedVisualizations.add(analyticsDhisVisualization);
-        return oldGroup
-                .toBuilder()
-                .visualizations(updatedVisualizations)
-                .build();
-    }
-
-    private List<AnalyticsDhisVisualizationsGroup> createGroupList(AnalyticsDhisVisualizationsGroup group) {
-        return new ArrayList<>(Arrays.asList(group));
+        return generateGroups(analyticsDhisVisualizationStore.selectAll());
     }
 }

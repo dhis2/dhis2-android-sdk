@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDownloadAndPersistCallFactory
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
@@ -47,7 +46,6 @@ internal class TrackedEntityInstanceDownloadCall @Inject constructor(
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
     private val systemInfoModuleDownloader: SystemInfoModuleDownloader,
     private val relationshipDownloadAndPersistCallFactory: RelationshipDownloadAndPersistCallFactory,
-    private val versionManager: DHISVersionManager,
     private val internalCall: TrackedEntityInstanceDownloadInternalCall
 ) {
 
@@ -62,7 +60,7 @@ internal class TrackedEntityInstanceDownloadCall @Inject constructor(
                 val relatives = RelationshipItemRelatives()
                 return@defer Observable.concat(
                     systemInfoModuleDownloader.downloadWithProgressManager(progressManager),
-                    internalCall.downloadTeis(progressManager, params, relatives),
+                    internalCall.downloadTeis(params, progressManager, relatives),
                     downloadRelationships(progressManager, relatives)
                 )
             }
@@ -74,17 +72,12 @@ internal class TrackedEntityInstanceDownloadCall @Inject constructor(
         progressManager: D2ProgressManager,
         relatives: RelationshipItemRelatives
     ): Observable<D2Progress> {
-        return Observable.defer {
-            val completable =
-                if (versionManager.is2_29) Completable.complete()
-                else relationshipDownloadAndPersistCallFactory.downloadAndPersist(relatives)
-            completable.andThen(
-                Observable.just(
-                    progressManager.increaseProgress(
-                        TrackedEntityInstance::class.java, true
-                    )
+        return relationshipDownloadAndPersistCallFactory.downloadAndPersist(relatives).andThen(
+            Observable.just(
+                progressManager.increaseProgress(
+                    TrackedEntityInstance::class.java, true
                 )
             )
-        }
+        )
     }
 }

@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.helpers.AccessHelper
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
@@ -201,5 +202,30 @@ class OldTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
         assertThat(payload.trackedEntityInstances.size).isEqualTo(1)
         assertThat(payload.events.size).isEqualTo(0)
         assertThat(payload.relationships.size).isEqualTo(1)
+    }
+
+    @Test
+    fun build_payload_with_non_accessible_adta() {
+        storeTrackerData()
+        val previousTrackedEntityType = trackedEntityTypeStore.selectFirst()!!
+        val previousProgram = programStore.selectFirst()!!
+
+        val noWriteAccess = AccessHelper.createForDataWrite(false)
+        trackedEntityTypeStore.update(previousTrackedEntityType.toBuilder().access(noWriteAccess).build())
+        programStore.update(previousProgram.toBuilder().access(noWriteAccess).build())
+
+        teiStore.setSyncState(teiId, State.SYNCED)
+        enrollmentStore.setSyncState(listOf(enrollment1Id, enrollment2Id, enrollment3Id), State.SYNCED)
+
+        val instance = teiStore.selectByUid(teiId)!!
+
+        val payload = oldTrackerPayloadGenerator.getTrackedEntityInstancePayload(listOf(instance))
+
+        assertThat(payload.trackedEntityInstances).isEmpty()
+        assertThat(payload.events.size).isEqualTo(2)
+        assertThat(payload.relationships).isEmpty()
+
+        trackedEntityTypeStore.update(previousTrackedEntityType)
+        programStore.update(previousProgram)
     }
 }

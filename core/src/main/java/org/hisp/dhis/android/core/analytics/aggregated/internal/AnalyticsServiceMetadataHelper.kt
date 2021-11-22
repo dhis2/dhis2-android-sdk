@@ -29,34 +29,35 @@
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
 import javax.inject.Inject
+import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.CategoryOption
+import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevelTableInfo
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
-import org.hisp.dhis.android.core.program.ProgramIndicator
+import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
 
 @Suppress("LongParameterList")
 internal class AnalyticsServiceMetadataHelper @Inject constructor(
     private val categoryStore: IdentifiableObjectStore<Category>,
     private val categoryOptionStore: IdentifiableObjectStore<CategoryOption>,
+    private val categoryOptionComboStore: CategoryOptionComboStore,
     private val dataElementStore: IdentifiableObjectStore<DataElement>,
-    private val dataElementOperandStore: IdentifiableObjectStore<DataElementOperand>,
     private val indicatorStore: IdentifiableObjectStore<Indicator>,
     private val organisationUnitStore: IdentifiableObjectStore<OrganisationUnit>,
     private val organisationUnitGroupStore: IdentifiableObjectStore<OrganisationUnitGroup>,
     private val organisationUnitLevelStore: IdentifiableObjectStore<OrganisationUnitLevel>,
-    private val programIndicatorStore: IdentifiableObjectStore<ProgramIndicator>,
+    private val programIndicatorRepository: ProgramIndicatorCollectionRepository,
     private val analyticsOrganisationUnitHelper: AnalyticsOrganisationUnitHelper,
     private val parentPeriodGenerator: ParentPeriodGenerator,
     private val periodHelper: PeriodHelper
@@ -79,75 +80,116 @@ internal class AnalyticsServiceMetadataHelper @Inject constructor(
             .map { it as DimensionItem }
             .forEach { item ->
                 if (!metadata.containsKey(item.id)) {
-                    val metadataItems = getMetadataItems(item).map { it.id to it }.toMap()
-                    metadata += metadataItems
+                    val metadataItems = when (item) {
+                        is DimensionItem.DataItem -> getDataItems(item)
+                        is DimensionItem.PeriodItem -> getPeriodItems(item)
+                        is DimensionItem.OrganisationUnitItem -> getOrganisationUnitItems(item)
+                        is DimensionItem.CategoryItem -> getCategoryItems(item)
+                    }
+                    val metadataItemsMap = metadataItems.map { it.id to it }.toMap()
+
+                    metadata += metadataItemsMap
                 }
             }
 
         return metadata
     }
 
-    private fun getMetadataItems(item: DimensionItem): List<MetadataItem> {
-        return when (item) {
-            is DimensionItem.DataItem -> listOf(
-                when (item) {
-                    is DimensionItem.DataItem.DataElementItem ->
-                        dataElementStore.selectByUid(item.uid)!!
-                            .let { dataElement -> MetadataItem.DataElementItem(dataElement) }
-                    // TODO Build a meaningful name for DataElementOperand
-                    is DimensionItem.DataItem.DataElementOperandItem ->
-                        dataElementOperandStore.selectByUid(item.id)!!
-                            .let { dataElementOperand -> MetadataItem.DataElementOperandItem(dataElementOperand) }
-                    is DimensionItem.DataItem.IndicatorItem ->
-                        indicatorStore.selectByUid(item.uid)!!
-                            .let { indicator -> MetadataItem.IndicatorItem(indicator) }
-                    is DimensionItem.DataItem.ProgramIndicatorItem ->
-                        programIndicatorStore.selectByUid(item.uid)!!
-                            .let { programIndicator -> MetadataItem.ProgramIndicatorItem(programIndicator) }
-                }
-            )
+    @SuppressWarnings("ThrowsCount")
+    private fun getDataItems(item: DimensionItem.DataItem): List<MetadataItem> {
+        return listOf(
+            when (item) {
+                is DimensionItem.DataItem.DataElementItem ->
+                    dataElementStore.selectByUid(item.uid)
+                        ?.let { dataElement -> MetadataItem.DataElementItem(dataElement) }
+                        ?: throw AnalyticsException.InvalidDataElement(item.uid)
 
-            is DimensionItem.PeriodItem -> listOf(
-                when (item) {
-                    is DimensionItem.PeriodItem.Absolute -> {
-                        val period = periodHelper.blockingGetPeriodForPeriodId(item.periodId)
-                        MetadataItem.PeriodItem(period)
+                is DimensionItem.DataItem.DataElementOperandItem -> {
+                    val dataElement = dataElementStore.selectByUid(item.dataElement)
+                    val coc = categoryOptionComboStore.selectByUid(item.categoryOptionCombo)
+                    if (dataElement == null || coc == null) {
+                        throw AnalyticsException.InvalidDataElementOperand(item.id)
                     }
-                    is DimensionItem.PeriodItem.Relative -> {
-                        val periods = parentPeriodGenerator.generateRelativePeriods(item.relative)
-                        MetadataItem.RelativePeriodItem(item.relative, periods)
-                    }
-                }
-            )
+                    val dataElementOperand = DataElementOperand.builder()
+                        .uid("${item.dataElement}.${item.categoryOptionCombo}")
+                        .dataElement(ObjectWithUid.create(item.dataElement))
+                        .categoryOptionCombo(ObjectWithUid.create(item.categoryOptionCombo))
+                        .build()
 
-            is DimensionItem.OrganisationUnitItem -> listOf(
-                when (item) {
-                    is DimensionItem.OrganisationUnitItem.Absolute ->
-                        organisationUnitStore.selectByUid(item.uid)!!
-                            .let { organisationUnit -> MetadataItem.OrganisationUnitItem(organisationUnit) }
-                    is DimensionItem.OrganisationUnitItem.Relative -> {
-                        val orgunitUids = analyticsOrganisationUnitHelper.getRelativeOrganisationUnits(item.relative)
-                        MetadataItem.OrganisationUnitRelativeItem(item.relative, orgunitUids)
-                    }
-                    is DimensionItem.OrganisationUnitItem.Level -> {
-                        val levelClauseBuilder = WhereClauseBuilder()
-                            .appendKeyNumberValue(OrganisationUnitLevelTableInfo.Columns.LEVEL, item.level)
-                            .build()
-                        organisationUnitLevelStore.selectOneWhere(levelClauseBuilder)!!
-                            .let { level -> MetadataItem.OrganisationUnitLevelItem(level) }
-                    }
-                    is DimensionItem.OrganisationUnitItem.Group ->
-                        organisationUnitGroupStore.selectByUid(item.uid)!!
-                            .let { group -> MetadataItem.OrganisationUnitGroupItem(group) }
+                    MetadataItem.DataElementOperandItem(
+                        dataElementOperand,
+                        dataElement.displayName()!!,
+                        coc.displayName()
+                    )
                 }
-            )
 
-            is DimensionItem.CategoryItem -> listOf(
-                categoryStore.selectByUid(item.uid)!!
-                    .let { category -> MetadataItem.CategoryItem(category) },
-                categoryOptionStore.selectByUid(item.categoryOption)!!
-                    .let { categoryOption -> MetadataItem.CategoryOptionItem(categoryOption) }
-            )
-        }
+                is DimensionItem.DataItem.IndicatorItem ->
+                    indicatorStore.selectByUid(item.uid)
+                        ?.let { indicator -> MetadataItem.IndicatorItem(indicator) }
+                        ?: throw AnalyticsException.InvalidIndicator(item.uid)
+
+                is DimensionItem.DataItem.ProgramIndicatorItem ->
+                    programIndicatorRepository.withAnalyticsPeriodBoundaries().uid(item.uid).blockingGet()
+                        ?.let { programIndicator -> MetadataItem.ProgramIndicatorItem(programIndicator) }
+                        ?: throw AnalyticsException.InvalidProgramIndicator(item.uid)
+            }
+        )
+    }
+
+    private fun getPeriodItems(item: DimensionItem.PeriodItem): List<MetadataItem> {
+        return listOf(
+            when (item) {
+                is DimensionItem.PeriodItem.Absolute -> {
+                    val period = periodHelper.blockingGetPeriodForPeriodId(item.periodId)
+                    MetadataItem.PeriodItem(period)
+                }
+                is DimensionItem.PeriodItem.Relative -> {
+                    val periods = parentPeriodGenerator.generateRelativePeriods(item.relative)
+                    MetadataItem.RelativePeriodItem(item.relative, periods)
+                }
+            }
+        )
+    }
+
+    @SuppressWarnings("ThrowsCount")
+    private fun getOrganisationUnitItems(item: DimensionItem.OrganisationUnitItem): List<MetadataItem> {
+        return listOf(
+            when (item) {
+                is DimensionItem.OrganisationUnitItem.Absolute ->
+                    organisationUnitStore.selectByUid(item.uid)
+                        ?.let { organisationUnit -> MetadataItem.OrganisationUnitItem(organisationUnit) }
+                        ?: throw AnalyticsException.InvalidOrganisationUnit(item.uid)
+
+                is DimensionItem.OrganisationUnitItem.Relative -> {
+                    val ouUids = analyticsOrganisationUnitHelper.getRelativeOrganisationUnitUids(item.relative)
+                    MetadataItem.OrganisationUnitRelativeItem(item.relative, ouUids)
+                }
+
+                is DimensionItem.OrganisationUnitItem.Level -> {
+                    organisationUnitLevelStore.selectByUid(item.uid)?.let { level ->
+                        val ouUids = analyticsOrganisationUnitHelper.getOrganisationUnitUidsByLevel(level.level()!!)
+                        MetadataItem.OrganisationUnitLevelItem(level, ouUids)
+                    } ?: throw AnalyticsException.InvalidOrganisationUnitLevel(item.uid)
+                }
+
+                is DimensionItem.OrganisationUnitItem.Group ->
+                    organisationUnitGroupStore.selectByUid(item.uid)?.let { group ->
+                        val ouUids = analyticsOrganisationUnitHelper.getOrganisationUnitUidsByGroup(item.uid)
+                        MetadataItem.OrganisationUnitGroupItem(group, ouUids)
+                    } ?: throw AnalyticsException.InvalidOrganisationUnitGroup(item.uid)
+            }
+        )
+    }
+
+    private fun getCategoryItems(item: DimensionItem.CategoryItem): List<MetadataItem> {
+        return listOf(
+            categoryStore.selectByUid(item.uid)
+                ?.let { category -> MetadataItem.CategoryItem(category) }
+                ?: throw AnalyticsException.InvalidCategory(item.uid),
+
+            categoryOptionStore.selectByUid(item.categoryOption)
+                ?.let { categoryOption -> MetadataItem.CategoryOptionItem(categoryOption) }
+                ?: throw AnalyticsException.InvalidCategoryOption(item.categoryOption)
+        )
     }
 }

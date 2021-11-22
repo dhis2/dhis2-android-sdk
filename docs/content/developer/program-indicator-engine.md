@@ -18,73 +18,99 @@ d2.programModule()
     .getEventProgramIndicatorValue(<event-uid>, <program-indicator-uid>);
 ```
 
-Compatibility table:
+If the evaluation of the "filter" component returns false, the result is null.
 
-| Common functions  | Supported |
-|-------------------|-----------|
-| if                | Yes       |
-| isNull            | Yes       |
-| isNotNull         | Yes       |
-| firstNonNull      | Yes       |
-| greatest          | Yes       |
-| least             | Yes       |
 
-| Function (d2:)(doc)| Supported |
-|--------------------|-----------|
-| addDays           |   Yes     |
-| ceil              |   Yes     |
-| concatenate       |   Yes     |
-| condition         |   Yes     |
-| count             |   Yes     |
-| countIfCondition  |   Yes     |
-| countIfValue      |   Yes     |
-| countIfZeroPos    |   No doc  |
-| daysBetween       |   Yes     |
-| floor             |   Yes     |
-| hasUserRole       |   No doc  |
-| hasValue          |   Yes     |
-| inOrgUnitGroup    |   No doc  |
-| left              |   Yes     |
-| length            |   Yes     |
-| minutesBetween    |   Yes     |
-| modulus           |   Yes     |
-| monthsBetween     |   Yes     |
-| oizp              |   Yes     |
-| relationshipCount |   No      |
-| right             |   Yes     |
-| round             |   Yes     |
-| split             |   Yes     |
-| substring         |   Yes     |
-| validatePatten    |   Yes     |
-| weeksBetween      |   Yes     |
-| yearsBetween      |   Yes     |
-| zing              |   Yes     |
-| zpvc              |   Yes     |
+Table: Compatibility
 
-| Variables (doc)       | Supported |
-|-----------------------|-----------|
-| completed_date        | Yes       |
-| creation_date         | Yes       |
-| current_date          | Yes       |
-| due_date              | Yes       |
-| enrollment_count      | Yes       |
-| enrollment_date       | Yes       |
-| enrollment_status     | Yes       |
-| event_count           | Yes       |
-| event_date            | Yes       |
-| incident_date         | Yes       |
-| organisationunit_count| N/A       |
-| program_stage_id      | No        |
-| program_stage_name    | No        |
-| reporting_period_end  | N/A       |
-| reporting_period_start| N/A       |
-| sync_date             | No        |
-| tei_count             | N/A       |
-| value_count           | Yes       |
-| zero_pos_value_count  | Yes       |
-
-Other components:
-
-| Component             | Supported |
-|-----------------------|-----------|
-| PS_EVENTDATE          | Yes       |
+| Type                      | Element               | Web       | Android SDK   |
+|---------------------------|-----------------------|-----------|---------------|
+|**Mathematical:**          |Parenthesis            | Yes       | Yes           |     
+|                           |Plus (+)               | Yes       | Yes           |
+|                           |Minus (-)              | Yes       | Yes           |
+|                           |Power (^)              | Yes       | Yes           |
+|                           |Multiply (*)           | Yes       | Yes           |
+|                           |Divide (/)             | Yes       | Yes           |
+|                           |Modulus (%)            | Yes       | Yes           |
+|**Logical:**               |NOT                    | Yes       | Yes           |
+|                           |!                      | Yes       | Yes           |
+|                           |AND                    | Yes       | Yes           |
+|                           |&&                     | Yes       | Yes           |
+|                           |OR                     | Yes       | Yes           |
+|                           |&#124;&#124;           | Yes       | Yes           |
+|**Comparison:**            |Equal (==)             | Yes       | Yes           |
+|                           |NotEqual (!=)          | Yes       | Yes           |
+|                           |GT (>)                 | Yes       | Yes           |
+|                           |LT (<)                 | Yes       | Yes           |
+|                           |GE (>=)                | Yes       | Yes           |
+|                           |LE (<=)                | Yes       | Yes           |
+|**Functions:**             |FirstNonNull           | Yes       | Yes           |
+|                           |Greatest               | Yes       | Yes           |
+|                           |If                     | Yes       | Yes           |
+|                           |IsNotNull              | Yes       | Yes           |
+|                           |IsNull                 | Yes       | Yes           |
+|                           |Least                  | Yes       | Yes           |
+|                           |Log                    | Yes       | Yes           |
+|                           |Log10                  | Yes       | Yes           |
+|                           |PeriodOffset           | -         | No            |
+|**D2 functions:**          |D2AddDays              | Yes       | Yes           |
+|                           |D2Ceil                 | Yes       | Yes           |
+|                           |D2Concatenate          | Yes       | Yes           |
+|                           |D2Condition            | Yes       | Yes           |
+|                           |D2Count                | Yes       | Yes           |
+|                           |D2CountIfCondition     | Yes       | Yes           |
+|                           |D2CountIfValue         | Yes       | Yes           |
+|                           |D2DaysBetween          | Yes       | Yes           |
+|                           |D2Floor                | Yes       | Yes           |
+|                           |D2HasValue             | Yes       | Yes           |
+|                           |D2Left                 | Yes       | Yes           |
+|                           |D2Length               | Yes       | Yes           |
+|                           |D2MaxValue             | No        | No            |
+|                           |D2MinutesBetween       | Yes       | Yes           |
+|                           |D2MinValue             | No        | No            |
+|                           |D2Modulus              | Yes       | Yes           |
+|                           |D2MonthsBetween        | Yes       | Yes           |
+|                           |D2Oizp                 | Yes       | Yes           |
+|                           |D2RelationshipCount    | Yes       | Yes           |
+|                           |D2Right                | Yes       | Yes           |
+|                           |D2Round                | Yes       | Yes           |
+|                           |D2Split                | Yes       | Yes           |
+|                           |D2Substring            | Yes       | Yes           |
+|                           |D2ValidatePattern      | Yes       | Yes           |
+|                           |D2WeeksBetween         | Yes       | Yes           |
+|                           |D2YearsBetween         | Yes       | Yes           |
+|                           |D2Zing                 | Yes       | Yes           |
+|                           |D2Zpvc                 | Yes       | Yes           |
+|                           |D2LastEventDate        | Yes       | No            |
+|                           |D2AddControlDigits     | Yes       | No            |
+|                           |D2CheckControlDigits   | Yes       | No            |
+|                           |D2ZScoreWFA            | Yes       | No            |
+|                           |D2ZScoreWFH            | Yes       | No            |
+|                           |D2ZScoreHFA            | Yes       | No            |
+|                           |D2InOrgUnitGroup       | Yes       | No            |
+|                           |D2HasUserRole          | Yes       | No            |
+|**Variables:**             |AnalyticsPeriodEnd     | No        | No            |
+|                           |AnalyticsPeriodStart   | No        | No            |
+|                           |CreationDate           | No        | Yes           |
+|                           |CurrentDate            | Yes       | Yes           |
+|                           |CompletedDate          | No        | Yes           |
+|                           |DueDate                | Yes       | Yes           |
+|                           |EnrollmentCount        | Yes       | Yes           |
+|                           |EnrollmentDate         | Yes       | Yes           |
+|                           |EnrollmentStatus       | No        | Yes           |
+|                           |EventStatus            | Yes       | Yes           |
+|                           |EventCount             | Yes       | Yes           |
+|                           |ExecutionDate          | Yes       | Yes           |
+|                           |EventDate              | Yes       | Yes           |
+|                           |IncidentDate           | Yes       | Yes           |
+|                           |OrgunitCount           | No        | No            |
+|                           |ProgramStageId         | Yes       | No            |
+|                           |ProgramStageName       | Yes       | No            |
+|                           |SyncDate               | No        | No            |
+|                           |TeiCount               | Yes       | Yes           |
+|                           |ValueCount             | Yes       | Yes           |
+|                           |ZeroPosValueCount      | Yes       | Yes           |
+|**Other:**                 |Constant               | Yes       | Yes           |
+|                           |ProgramStageElement    | Yes       | Yes           |
+|                           |ProgramAttribute       | Yes       | Yes           |
+|                           |PS_EVENTDATE           | Yes       | Yes           |

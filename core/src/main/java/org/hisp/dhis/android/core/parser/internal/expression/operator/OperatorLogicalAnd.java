@@ -66,4 +66,10 @@ public class OperatorLogicalAnd
 
         return value0 != null && value0 && value1 != null && value1;
     }
+
+    @Override
+    public Object getSql(ExprContext ctx, CommonExpressionVisitor visitor) {
+        return visitor.castStringVisit(ctx.expr(0))
+                + " and " + visitor.castStringVisit(ctx.expr(1));
+    }
 }

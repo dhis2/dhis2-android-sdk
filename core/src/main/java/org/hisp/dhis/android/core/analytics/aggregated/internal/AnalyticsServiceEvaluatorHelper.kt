@@ -29,14 +29,19 @@
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
 import javax.inject.Inject
+import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionalValue
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.AnalyticsEvaluator
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementEvaluator
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementSQLEvaluator
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.IndicatorEvaluator
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.ProgramIndicatorSQLEvaluator
 
 internal class AnalyticsServiceEvaluatorHelper @Inject constructor(
-    private val dataElementEvaluator: DataElementEvaluator
+    private val dataElementEvaluator: DataElementSQLEvaluator,
+    private val programIndicatorEvaluator: ProgramIndicatorSQLEvaluator,
+    private val indicatorEvaluator: IndicatorEvaluator
 ) {
 
     fun evaluate(
@@ -86,8 +91,8 @@ internal class AnalyticsServiceEvaluatorHelper @Inject constructor(
         return when (item) {
             is DimensionItem.DataItem.DataElementItem -> dataElementEvaluator
             is DimensionItem.DataItem.DataElementOperandItem -> dataElementEvaluator
-            is DimensionItem.DataItem.ProgramIndicatorItem -> TODO()
-            is DimensionItem.DataItem.IndicatorItem -> TODO()
+            is DimensionItem.DataItem.ProgramIndicatorItem -> programIndicatorEvaluator
+            is DimensionItem.DataItem.IndicatorItem -> indicatorEvaluator
         }
     }
 }

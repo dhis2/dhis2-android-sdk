@@ -131,6 +131,17 @@ public final class TrackedEntityAttributeValueStoreImpl
         deleteWhere(deleteWhereQuery);
     }
 
+    @Override
+    public void removeDeletedAttributeValuesByInstance(@NonNull String trackedEntityInstanceUid) {
+        String deleteWhereQuery = new WhereClauseBuilder()
+                .appendKeyStringValue(TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
+                        trackedEntityInstanceUid)
+                .appendIsNullValue(TrackedEntityAttributeValueTableInfo.Columns.VALUE)
+                .build();
+
+        deleteWhere(deleteWhereQuery);
+    }
+
     private List<TrackedEntityAttributeValue> trackedEntityAttributeValueListFromQuery(String query) {
         List<TrackedEntityAttributeValue> trackedEntityAttributeValueList = new ArrayList<>();
         Cursor cursor = getDatabaseAdapter().rawQuery(query);

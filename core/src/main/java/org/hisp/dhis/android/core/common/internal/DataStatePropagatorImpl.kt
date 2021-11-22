@@ -31,6 +31,7 @@ import dagger.Reusable
 import java.util.*
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
@@ -39,9 +40,7 @@ import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.note.Note
-import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
-import org.hisp.dhis.android.core.relationship.RelationshipHelper
-import org.hisp.dhis.android.core.relationship.RelationshipItem
+import org.hisp.dhis.android.core.relationship.*
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStore
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
@@ -56,7 +55,8 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
     private val enrollmentStore: EnrollmentStore,
     private val eventStore: EventStore,
     private val relationshipStore: RelationshipStore,
-    private val relationshipItemStore: RelationshipItemStore
+    private val relationshipItemStore: RelationshipItemStore,
+    private val relationshipTypeStore: IdentifiableObjectStore<RelationshipType>
 ) : DataStatePropagator {
 
     override fun propagateTrackedEntityInstanceUpdate(tei: TrackedEntityInstance?) {
@@ -115,7 +115,21 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
         }
     }
 
-    override fun propagateRelationshipUpdate(item: RelationshipItem?) {
+    override fun propagateRelationshipUpdate(relationship: Relationship?) {
+        if (relationship != null) {
+            val bidirectional = relationship.relationshipType()?.let {
+                relationshipTypeStore.selectByUid(it)?.bidirectional()
+            } ?: false
+
+            propagateRelationshipUpdate(relationship.from())
+
+            if (bidirectional) {
+                propagateRelationshipUpdate(relationship.to())
+            }
+        }
+    }
+
+    private fun propagateRelationshipUpdate(item: RelationshipItem?) {
         if (item != null) {
             if (item.hasTrackedEntityInstance()) {
                 val tei = trackedEntityInstanceStore.selectByUid(item.elementUid())
@@ -240,10 +254,7 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
                 .build()
             val enrollmentStates = enrollmentStore.selectAggregatedSyncStateWhere(whereClause)
 
-            val relationships = relationshipStore.getRelationshipsByItem(
-                RelationshipHelper.teiItem(trackedEntityInstanceUid),
-                RelationshipConstraintType.FROM
-            )
+            val relationships = getRelationshipsByItem(RelationshipHelper.teiItem(trackedEntityInstanceUid))
             val relationshipStates = relationships.map { it.syncState()!! }
 
             val teiAggregatedSyncState =
@@ -259,10 +270,7 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
                 .build()
             val eventStates = eventStore.selectAggregatedSyncStateWhere(whereClause)
 
-            val relationships = relationshipStore.getRelationshipsByItem(
-                RelationshipHelper.enrollmentItem(enrollmentUid),
-                RelationshipConstraintType.FROM
-            )
+            val relationships = getRelationshipsByItem(RelationshipHelper.enrollmentItem(enrollmentUid))
             val relationshipStates = relationships.map { it.syncState()!! }
 
             val enrollmentAggregatedSyncState =
@@ -273,14 +281,26 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
 
     override fun refreshEventAggregatedSyncState(eventUid: String) {
         eventStore.selectByUid(eventUid)?.let { event ->
-            val relationships = relationshipStore.getRelationshipsByItem(
-                RelationshipHelper.eventItem(eventUid),
-                RelationshipConstraintType.FROM
-            )
+            val relationships = getRelationshipsByItem(RelationshipHelper.eventItem(eventUid))
             val relationshipStates = relationships.map { it.syncState()!! }
 
             val eventAggregatedSyncState = getAggregatedSyncState(relationshipStates + event.syncState()!!)
             eventStore.setAggregatedSyncState(eventUid, eventAggregatedSyncState)
+        }
+    }
+
+    private fun getRelationshipsByItem(relationshipItem: RelationshipItem): List<Relationship> {
+        val relationships = relationshipStore.getRelationshipsByItem(relationshipItem)
+
+        return relationships.filter { relationship ->
+            relationship.relationshipType()?.let { type ->
+                val bidirectional = relationshipTypeStore.selectByUid(type)?.bidirectional() ?: false
+                if (bidirectional) {
+                    true
+                } else {
+                    relationship.from()?.elementUid() == relationshipItem.elementUid()
+                }
+            } ?: false
         }
     }
 

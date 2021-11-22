@@ -74,12 +74,12 @@ internal class ProgramIndicatorEngineImpl @Inject constructor(
         val enrollment = enrollmentStore.selectByUid(enrollmentUid)
             ?: throw NoSuchElementException("Enrollment $enrollmentUid does not exist.")
 
-        val programIndicatorContext = ProgramIndicatorContext.builder()
-            .programIndicator(programIndicator)
-            .attributeValues(getAttributeValues(enrollment))
-            .enrollment(enrollment)
-            .events(getEnrollmentEvents(enrollment))
-            .build()
+        val programIndicatorContext = ProgramIndicatorContext(
+            programIndicator = programIndicator,
+            attributeValues = getAttributeValues(enrollment),
+            enrollment = enrollment,
+            events = getEnrollmentEvents(enrollment)
+        )
 
         return evaluateProgramIndicatorContext(programIndicatorContext)
     }
@@ -97,12 +97,12 @@ internal class ProgramIndicatorEngineImpl @Inject constructor(
             enrollmentStore.selectByUid(it)
         }
 
-        val programIndicatorContext = ProgramIndicatorContext.builder()
-            .programIndicator(programIndicator)
-            .attributeValues(getAttributeValues(enrollment))
-            .enrollment(enrollment)
-            .events(mapOf(event.programStage() to listOf(event)))
-            .build()
+        val programIndicatorContext = ProgramIndicatorContext(
+            programIndicator = programIndicator,
+            attributeValues = getAttributeValues(enrollment),
+            enrollment = enrollment,
+            events = mapOf(event.programStage()!! to listOf(event))
+        )
 
         return evaluateProgramIndicatorContext(programIndicatorContext)
     }
@@ -115,7 +115,7 @@ internal class ProgramIndicatorEngineImpl @Inject constructor(
             trackedEntityAttributeStore
         )
 
-        return executor.getProgramIndicatorValue(context.programIndicator().expression())
+        return executor.getProgramIndicatorValue(context.programIndicator)
     }
 
     private val constantMap: Map<String, Constant>

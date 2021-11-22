@@ -33,6 +33,7 @@ import android.database.Cursor;
 import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -40,13 +41,14 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
 
 import java.util.Date;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_TrackedEntityDataValue.Builder.class)
-public abstract class TrackedEntityDataValue implements CoreObject {
+public abstract class TrackedEntityDataValue extends BaseObject implements ObjectWithDeleteInterface {
 
     @Nullable
     @JsonIgnore()
@@ -72,11 +74,17 @@ public abstract class TrackedEntityDataValue implements CoreObject {
 
     @Nullable
     @JsonProperty()
+    @JsonInclude()
     public abstract String value();
 
     @Nullable
     @JsonProperty()
     public abstract Boolean providedElsewhere();
+
+    @Override
+    public Boolean deleted() {
+        return value() == null || value().equals("");
+    }
 
     public static Builder builder() {
         return new $$AutoValue_TrackedEntityDataValue.Builder();

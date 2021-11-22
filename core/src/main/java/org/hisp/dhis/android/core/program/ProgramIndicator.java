@@ -39,9 +39,12 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.AggregationTypeColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.AnalyticsTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
+import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreAnalyticsPeriodBoundaryListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreLegendSetListColumnAdapter;
 import org.hisp.dhis.android.core.common.AggregationType;
+import org.hisp.dhis.android.core.common.AnalyticsType;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
@@ -72,7 +75,6 @@ public abstract class ProgramIndicator extends BaseNameableObject implements Cor
     @Nullable
     @JsonProperty()
     public abstract Integer decimals();
-
     @Nullable
     @JsonProperty()
     @ColumnAdapter(AggregationTypeColumnAdapter.class)
@@ -82,6 +84,16 @@ public abstract class ProgramIndicator extends BaseNameableObject implements Cor
     @JsonProperty()
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid program();
+
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(AnalyticsTypeColumnAdapter.class)
+    public abstract AnalyticsType analyticsType();
+
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(IgnoreAnalyticsPeriodBoundaryListColumnAdapter.class)
+    public abstract List<AnalyticsPeriodBoundary> analyticsPeriodBoundaries();
 
     @Nullable
     @JsonProperty()
@@ -117,6 +129,10 @@ public abstract class ProgramIndicator extends BaseNameableObject implements Cor
         public abstract Builder aggregationType(AggregationType aggregationType);
 
         public abstract Builder program(ObjectWithUid program);
+
+        public abstract Builder analyticsType(AnalyticsType analyticsType);
+
+        public abstract Builder analyticsPeriodBoundaries(List<AnalyticsPeriodBoundary> analyticsPeriodBoundaries);
 
         public abstract Builder legendSets(List<LegendSet> legendSets);
 

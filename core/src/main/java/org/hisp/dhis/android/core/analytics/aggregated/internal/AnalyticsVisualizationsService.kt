@@ -29,7 +29,9 @@
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
 import javax.inject.Inject
+import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.*
+import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.VisualizationCollectionRepository
 
@@ -39,30 +41,38 @@ internal class AnalyticsVisualizationsService @Inject constructor(
     private val dimensionHelper: AnalyticsVisualizationsServiceDimensionHelper
 ) {
 
-    fun evaluate(params: AnalyticsVisualizationsRepositoryParams): GridAnalyticsResponse {
-        if (params.visualization == null) {
-            throw AnalyticsException.InvalidArguments("Null visualization id")
+    fun evaluate(params: AnalyticsVisualizationsRepositoryParams): Result<GridAnalyticsResponse, AnalyticsException> {
+        return if (params.visualization == null) {
+            Result.Failure(AnalyticsException.InvalidArguments("Null visualization id"))
+        } else {
+            val visualization = getVisualization(params.visualization)
+
+            if (visualization == null) {
+                Result.Failure(AnalyticsException.InvalidVisualization(params.visualization))
+            } else {
+                when (val response = getDimensionalResponse(visualization, params)) {
+                    is Result.Success -> {
+                        val gridResponse = buildGridResponse(visualization, response.value)
+                        Result.Success(gridResponse)
+                    }
+                    is Result.Failure -> Result.Failure(response.failure)
+                }
+            }
         }
-
-        val visualization = getVisualization(params.visualization)
-        val dimensionalResponse = getDimensionalResponse(visualization, params)
-
-        return buildGridResponse(visualization, dimensionalResponse)
     }
 
-    private fun getVisualization(visualizationId: String): Visualization {
+    private fun getVisualization(visualizationId: String): Visualization? {
         return visualizationCollectionRepository
             .withCategoryDimensions()
             .withDataDimensionItems()
             .uid(visualizationId)
             .blockingGet()
-            ?: throw AnalyticsException.InvalidArguments("Visualization $visualizationId does not exist")
     }
 
     private fun getDimensionalResponse(
         visualization: Visualization,
         params: AnalyticsVisualizationsRepositoryParams
-    ): DimensionalResponse {
+    ): Result<DimensionalResponse, AnalyticsException> {
 
         var analyticsRepository = analyticsRepository
 

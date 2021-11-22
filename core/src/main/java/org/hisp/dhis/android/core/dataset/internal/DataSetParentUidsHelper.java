@@ -27,11 +27,9 @@
  */
 package org.hisp.dhis.android.core.dataset.internal;
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetElement;
-import org.hisp.dhis.android.core.indicator.Indicator;
 
 import java.util.HashSet;
 import java.util.List;
@@ -49,27 +47,6 @@ final class DataSetParentUidsHelper {
             assert dataSetElements != null;
             for (DataSetElement dataSetElement : dataSetElements) {
                 uids.add(dataSetElement.dataElement().uid());
-            }
-        }
-        return uids;
-    }
-
-    static Set<String> getIndicatorUids(List<DataSet> dataSets) {
-        Set<String> uids = new HashSet<>();
-        for (DataSet dataSet : dataSets) {
-            for (Indicator indicator : dataSet.indicators()) {
-                uids.add(indicator.uid());
-            }
-        }
-        return uids;
-    }
-
-    static Set<String> getIndicatorTypeUids(List<Indicator> indicators) {
-        Set<String> uids = new HashSet<>();
-        for (Indicator indicator : indicators) {
-            ObjectWithUid type = indicator.indicatorType();
-            if (type != null) {
-                uids.add(type.uid());
             }
         }
         return uids;

@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.program.ProgramIndicator
 
@@ -98,5 +99,12 @@ object AggregatedSamples {
     val orgunit2 = OrganisationUnit.builder()
         .uid("g8upMTyEZGZ")
         .displayName("Njandama")
+        .build()
+
+    @SuppressWarnings("MagicNumber")
+    val level3 = OrganisationUnitLevel.builder()
+        .uid("VVkwUWGNpNR")
+        .displayName("Level 3")
+        .level(3)
         .build()
 }

@@ -28,6 +28,13 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator;
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
@@ -36,7 +43,7 @@ import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.hisp.dhis.android.core.imports.internal.EventImportSummary;
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser;
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore;
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.tracker.importer.internal.JobReportEventHandler;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,13 +56,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @RunWith(JUnit4.class)
 public class EventImportHandlerShould {
     @Mock
@@ -63,6 +63,9 @@ public class EventImportHandlerShould {
 
     @Mock
     private EventStore eventStore;
+
+    @Mock
+    private EnrollmentStore enrollmentStore;
 
     @Mock
     private TrackerImportConflictStore trackerImportConflictStore;
@@ -75,6 +78,9 @@ public class EventImportHandlerShould {
 
     @Mock
     private TrackerImportConflictParser trackerImportConflictParser;
+
+    @Mock
+    private TrackedEntityDataValueStore trackedEntityDataValueStore;
 
     private final List<Event> events = new ArrayList<>();
 
@@ -90,13 +96,13 @@ public class EventImportHandlerShould {
 
         when(importSummary.status()).thenReturn(ImportStatus.SUCCESS);
 
-        eventImportHandler = new EventImportHandler(eventStore, trackerImportConflictStore,
-                trackerImportConflictParser, jobReportEventHandler, dataStatePropagator);
+        eventImportHandler = new EventImportHandler(eventStore, enrollmentStore, trackerImportConflictStore,
+                trackerImportConflictParser, jobReportEventHandler, dataStatePropagator, trackedEntityDataValueStore);
     }
 
     @Test
     public void do_nothing_when_passing_null_argument() {
-        eventImportHandler.handleEventImportSummaries(null, events, null, null);
+        eventImportHandler.handleEventImportSummaries(null, events);
 
         verify(eventStore, never()).setSyncStateOrDelete(anyString(), any(State.class));
     }
@@ -106,8 +112,7 @@ public class EventImportHandlerShould {
         when(importSummary.status()).thenReturn(ImportStatus.SUCCESS);
         when(importSummary.reference()).thenReturn("test_event_uid");
 
-        eventImportHandler.handleEventImportSummaries(Collections.singletonList(importSummary), events,
-                "test_enrollment_uid", "test_tei_uid");
+        eventImportHandler.handleEventImportSummaries(Collections.singletonList(importSummary), events);
 
         verify(eventStore, times(1)).setSyncStateOrDelete("test_event_uid", State.SYNCED);
     }
@@ -117,8 +122,7 @@ public class EventImportHandlerShould {
         when(importSummary.status()).thenReturn(ImportStatus.ERROR);
         when(importSummary.reference()).thenReturn("test_event_uid");
 
-        eventImportHandler.handleEventImportSummaries(Collections.singletonList(importSummary), events,
-                "test_enrollment_uid", "test_tei_uid");
+        eventImportHandler.handleEventImportSummaries(Collections.singletonList(importSummary), events);
 
         verify(eventStore, times(1)).setSyncStateOrDelete("test_event_uid", State.ERROR);
     }
@@ -132,8 +136,7 @@ public class EventImportHandlerShould {
         events.add(event);
         when(event.uid()).thenReturn("missing_event_uid");
 
-        eventImportHandler.handleEventImportSummaries(Collections.singletonList(importSummary), events,
-                "test_enrollment_uid", "test_tei_uid");
+        eventImportHandler.handleEventImportSummaries(Collections.singletonList(importSummary), events);
 
         verify(eventStore, times(1)).setSyncStateOrDelete("test_event_uid", State.SYNCED);
         verify(eventStore, times(1)).setSyncStateOrDelete("missing_event_uid", State.TO_UPDATE);

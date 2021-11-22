@@ -37,8 +37,11 @@ import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 
-internal const val ATTEMPTS_AFTER_UPLOAD = 3
+internal const val ATTEMPTS_AFTER_UPLOAD = 90
 internal const val ATTEMPTS_WHEN_QUERYING = 1
+internal const val ATTEMPTS_INITIAL_DELAY = 1L
+internal const val ATTEMPTS_INTERVAL = 2L
+
 @Reusable
 internal class JobQueryCall @Inject internal constructor(
     private val service: TrackerImporterService,
@@ -75,7 +78,7 @@ internal class JobQueryCall @Inject internal constructor(
     ): Observable<D2Progress> {
         val progressManager = D2ProgressManager(null)
         @Suppress("MagicNumber")
-        return Observable.interval(0, 5, TimeUnit.SECONDS)
+        return Observable.interval(ATTEMPTS_INITIAL_DELAY, ATTEMPTS_INTERVAL, TimeUnit.SECONDS)
             .map {
                 try {
                     downloadAndHandle(jobId, jobObjects)

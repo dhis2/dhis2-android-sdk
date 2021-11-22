@@ -28,30 +28,6 @@
 
 package org.hisp.dhis.android.core.enrollment.internal;
 
-import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler;
-import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
-import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor;
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.note.Note;
-import org.hisp.dhis.android.core.note.internal.NoteDHISVersionManager;
-import org.hisp.dhis.android.core.note.internal.NoteUniquenessManager;
-import org.hisp.dhis.android.core.relationship.Relationship;
-import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager;
-import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.util.Collections;
-import java.util.List;
-
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -62,6 +38,32 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler;
+import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor;
+import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.note.Note;
+import org.hisp.dhis.android.core.note.internal.NoteDHISVersionManager;
+import org.hisp.dhis.android.core.note.internal.NoteUniquenessManager;
+import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler;
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import java.util.Collections;
+import java.util.List;
 
 @RunWith(JUnit4.class)
 public class EnrollmentHandlerShould {
@@ -90,6 +92,12 @@ public class EnrollmentHandlerShould {
     private NoteDHISVersionManager noteVersionManager;
 
     @Mock
+    private RelationshipItemRelatives relationshipItemRelatives;
+
+    @Mock
+    private Enrollment.Builder enrollmentBuilder;
+
+    @Mock
     private RelationshipDHISVersionManager relationshipVersionManager;
 
     @Mock
@@ -112,6 +120,11 @@ public class EnrollmentHandlerShould {
         when(enrollment.notes()).thenReturn(Collections.singletonList(note));
         when(note.storedDate()).thenReturn(FillPropertiesTestUtils.LAST_UPDATED_STR);
 
+        when(enrollment.toBuilder()).thenReturn(enrollmentBuilder);
+        when(enrollmentBuilder.syncState(State.SYNCED)).thenReturn(enrollmentBuilder);
+        when(enrollmentBuilder.aggregatedSyncState(State.SYNCED)).thenReturn(enrollmentBuilder);
+        when(enrollmentBuilder.build()).thenReturn(enrollment);
+
         List<String> emptyList = Collections.emptyList();
         when(enrollmentStore.selectUidsWhere(anyString())).thenReturn(emptyList);
 
@@ -122,13 +135,13 @@ public class EnrollmentHandlerShould {
 
     @Test
     public void do_nothing_when_passing_null_argument() {
-        enrollmentHandler.handleMany(null, e -> e, false);
+        enrollmentHandler.handleMany(null, false, false, false, relationshipItemRelatives);
 
         // verify that store or event handler is never called
         verify(enrollmentStore, never()).deleteIfExists(anyString());
         verify(enrollmentStore, never()).updateOrInsert(any(Enrollment.class));
 
-        verify(eventHandler, never()).handleMany(anyCollection(), any(), anyBoolean());
+        verify(eventHandler, never()).handleMany(anyCollection(), anyBoolean(), anyBoolean(), anyBoolean(), any());
         verify(eventCleaner, never()).deleteOrphan(any(Enrollment.class), anyCollection());
         verify(noteHandler, never()).handleMany(anyCollection());
     }
@@ -137,7 +150,7 @@ public class EnrollmentHandlerShould {
     public void invoke_only_delete_when_a_enrollment_is_set_as_deleted() {
         when(enrollment.deleted()).thenReturn(Boolean.TRUE);
 
-        enrollmentHandler.handleMany(Collections.singletonList(enrollment), o -> o, false);
+        enrollmentHandler.handleMany(Collections.singletonList(enrollment), false, false, false, relationshipItemRelatives);
 
         // verify that enrollment store is only invoked with delete
         verify(enrollmentStore, times(1)).deleteIfExists(anyString());
@@ -146,7 +159,7 @@ public class EnrollmentHandlerShould {
         verify(enrollmentStore, never()).updateOrInsert(any(Enrollment.class));
 
         // event handler should not be invoked
-        verify(eventHandler, never()).handleMany(anyCollection(), any(), anyBoolean());
+        verify(eventHandler, never()).handleMany(anyCollection(), anyBoolean(), anyBoolean(), anyBoolean(), any());
         verify(eventCleaner, times(1)).deleteOrphan(any(Enrollment.class), anyCollection());
         verify(noteHandler, never()).handleMany(anyCollection());
     }
@@ -156,7 +169,8 @@ public class EnrollmentHandlerShould {
         when(enrollment.deleted()).thenReturn(Boolean.FALSE);
         when(enrollmentStore.updateOrInsert(any(Enrollment.class))).thenReturn(HandleAction.Update);
 
-        enrollmentHandler.handleMany(Collections.singletonList(enrollment), o -> o, false);
+        enrollmentHandler.handleMany(Collections.singletonList(enrollment),
+                false, false, false, relationshipItemRelatives);
 
         // verify that enrollment store is only invoked with update
         verify(enrollmentStore, times(1)).updateOrInsert(any(Enrollment.class));
@@ -164,7 +178,7 @@ public class EnrollmentHandlerShould {
         verify(enrollmentStore, never()).deleteIfExists(anyString());
 
         // event handler should be invoked once
-        verify(eventHandler, times(1)).handleMany(anyList(), any(), eq(false));
+        verify(eventHandler, times(1)).handleMany(anyList(), eq(false), eq(false), eq(false), any());
         verify(eventCleaner, times(1)).deleteOrphan(any(Enrollment.class), anyCollection());
         verify(noteHandler, times(1)).handleMany(anyCollection());
     }

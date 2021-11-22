@@ -31,9 +31,11 @@ package org.hisp.dhis.android.core.analytics.aggregated.mock
 import dagger.Reusable
 import io.reactivex.Single
 import javax.inject.Inject
+import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepository
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
+import org.hisp.dhis.android.core.arch.helpers.Result
 
 @Reusable
 class MockAnalyticsRepository @Inject constructor() : AnalyticsRepository {
@@ -42,9 +44,10 @@ class MockAnalyticsRepository @Inject constructor() : AnalyticsRepository {
 
     override fun withFilter(dimensionItem: DimensionItem): AnalyticsRepository = this
 
-    override fun evaluate(): Single<DimensionalResponse> {
+    override fun evaluate(): Single<Result<DimensionalResponse, AnalyticsException>> {
         return Single.fromCallable { blockingEvaluate() }
     }
 
-    override fun blockingEvaluate(): DimensionalResponse = DimensionalResponseSamples.sample1
+    override fun blockingEvaluate(): Result<DimensionalResponse, AnalyticsException> =
+        Result.Success(DimensionalResponseSamples.sample1)
 }

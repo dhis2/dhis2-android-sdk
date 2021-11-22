@@ -94,19 +94,19 @@ internal open class IdentifiableDeletableDataObjectStoreImpl<O>(
         return if (deleted) {
             HandleAction.Delete
         } else {
-            setStateIfUploading(uid, state)
-            HandleAction.Update
+            if (setStateIfUploading(uid, state) == 0) HandleAction.NoAction else HandleAction.Update
         }
     }
 
-    private fun setStateIfUploading(uid: String, state: State) {
+    private fun setStateIfUploading(uid: String, state: State): Int {
         compileStatements()
         setStateIfUploadingStatement!!.bind(1, state)
 
         // bind the where argument
         setStateIfUploadingStatement!!.bind(2, uid)
-        databaseAdapter.executeUpdateDelete(setStateIfUploadingStatement)
+        val affectedRows = databaseAdapter.executeUpdateDelete(setStateIfUploadingStatement)
         setStateIfUploadingStatement!!.clearBindings()
+        return affectedRows
     }
 
     override fun setDeleted(uid: String): Int {

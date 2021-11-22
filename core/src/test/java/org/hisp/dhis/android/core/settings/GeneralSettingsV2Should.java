@@ -59,5 +59,6 @@ public class GeneralSettingsV2Should extends BaseObjectShould implements ObjectS
         assertThat(generalSettings.numberSmsConfirmation()).isEqualTo("+9456498778");
         assertThat(generalSettings.matomoID()).isEqualTo(123);
         assertThat(generalSettings.matomoURL()).isEqualTo("https://www.matomo.org");
+        assertThat(generalSettings.allowScreenCapture()).isTrue();
     }
 }

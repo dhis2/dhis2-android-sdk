@@ -30,9 +30,11 @@ package org.hisp.dhis.android.core.analytics.aggregated.internal
 
 import io.reactivex.Single
 import javax.inject.Inject
+import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsVisualizationsRepository
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.GridAnalyticsResponse
+import org.hisp.dhis.android.core.arch.helpers.Result
 
 internal class AnalyticsVisualizationsRepositoryImpl @Inject constructor(
     private val params: AnalyticsVisualizationsRepositoryParams,
@@ -53,11 +55,11 @@ internal class AnalyticsVisualizationsRepositoryImpl @Inject constructor(
         return updateParams { params -> params.copy(organisationUnits = orgUnits) }
     }
 
-    override fun evaluate(): Single<GridAnalyticsResponse> {
+    override fun evaluate(): Single<Result<GridAnalyticsResponse, AnalyticsException>> {
         return Single.fromCallable { blockingEvaluate() }
     }
 
-    override fun blockingEvaluate(): GridAnalyticsResponse {
+    override fun blockingEvaluate(): Result<GridAnalyticsResponse, AnalyticsException> {
         return service.evaluate(params)
     }
 

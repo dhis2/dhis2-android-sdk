@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.core.parser.internal.expression;
 
+import static org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor.DEFAULT_DOUBLE_VALUE;
+import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
+
 import org.hisp.dhis.antlr.AntlrExprItem;
 import org.hisp.dhis.antlr.AntlrExpressionVisitor;
 import org.hisp.dhis.antlr.ParserException;
 import org.hisp.dhis.antlr.ParserExceptionWithoutContext;
-
-import static org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor.DEFAULT_DOUBLE_VALUE;
-import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
 
 /**
  * A parsed item from an ANTLR expression, as processed in the backend.
@@ -170,7 +170,7 @@ public interface ExpressionItem
      * @return the generated SQL (as a String) for the function
      */
     default Object getSql(ExprContext ctx, CommonExpressionVisitor visitor) {
-        throw new ParserExceptionWithoutContext("getSql not implemnted for " + ctx.getText());
+        throw new ParserExceptionWithoutContext("getSql not implemented for " + ctx.getText());
     }
 
     default Object regenerate(ExprContext ctx, CommonExpressionVisitor visitor) {
@@ -180,9 +180,9 @@ public interface ExpressionItem
     /**
      * Method used to evaluate count variables where some items should behave differently.
      *
-     * @param ctx       the expression context
-     * @param visitor   the tree visitor
-     * @return          value to be returned during a count action
+     * @param ctx     the expression context
+     * @param visitor the tree visitor
+     * @return value to be returned during a count action
      */
     default Object count(ExprContext ctx, CommonExpressionVisitor visitor) {
         return evaluate(ctx, visitor);

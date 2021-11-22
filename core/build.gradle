@@ -43,8 +43,8 @@ ext {
             buildToolsVersion: "29.0.3",
             minSdkVersion    : 19,
             targetSdkVersion : 29,
-            versionCode      : 243,
-            versionName      : "1.4.3"
+            versionCode      : 250,
+            versionName      : "1.5.0"
     ]
 
     libraries = [
@@ -66,7 +66,7 @@ ext {
             jexl            : "2.1.1",
             jodaTime        : "2.10.6",
             smsCompression  : "0.2.0",
-            expressionParser: "1.0.15",
+            expressionParser: "1.0.18",
 
             // test dependencies
             coreTesting     : "1.1.1",

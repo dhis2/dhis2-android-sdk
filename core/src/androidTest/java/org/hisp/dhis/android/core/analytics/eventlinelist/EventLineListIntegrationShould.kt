@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.analytics.eventlinelist
 
 import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsOrganisationUnitHelper
 import org.hisp.dhis.android.core.analytics.eventlinelist.EventLineListSamples.categoryCombo
 import org.hisp.dhis.android.core.analytics.eventlinelist.EventLineListSamples.categoryOptionCombo
 import org.hisp.dhis.android.core.analytics.eventlinelist.EventLineListSamples.dataElement1
@@ -39,19 +40,24 @@ import org.hisp.dhis.android.core.analytics.eventlinelist.EventLineListSamples.p
 import org.hisp.dhis.android.core.analytics.eventlinelist.EventLineListSamples.program1Stage2
 import org.hisp.dhis.android.core.analytics.eventlinelist.EventLineListSamples.trackedEntityInstance
 import org.hisp.dhis.android.core.analytics.eventlinelist.EventLineListSamples.trackedEntityType
+import org.hisp.dhis.android.core.analytics.eventlinelist.EventLineListSamples.userOrganisationUnit
 import org.hisp.dhis.android.core.analytics.linelist.EventLineListParams
 import org.hisp.dhis.android.core.analytics.linelist.EventLineListService
 import org.hisp.dhis.android.core.analytics.linelist.EventLineListServiceImpl
 import org.hisp.dhis.android.core.analytics.linelist.LineListItem
 import org.hisp.dhis.android.core.category.internal.CategoryComboStore
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStoreImpl
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.common.*
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitOrganisationUnitGroupLinkStore
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.period.PeriodType
+import org.hisp.dhis.android.core.period.internal.CalendarProviderFactory
+import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorStore
 import org.hisp.dhis.android.core.program.internal.ProgramStageStore
@@ -60,6 +66,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStore
+import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.After
@@ -70,17 +77,6 @@ import org.junit.runner.RunWith
 @RunWith(D2JunitRunner::class)
 class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() {
 
-    private val eventLineListService: EventLineListService = EventLineListServiceImpl(
-        eventRepository = d2.eventModule().events(),
-        dataValueRepository = d2.trackedEntityModule().trackedEntityDataValues(),
-        dataElementRepository = d2.dataElementModule().dataElements(),
-        programIndicatorRepository = d2.programModule().programIndicators(),
-        organisationUnitRepository = d2.organisationUnitModule().organisationUnits(),
-        programStageRepository = d2.programModule().programStages(),
-        programIndicatorEngine = d2.programModule().programIndicatorEngine(),
-        periodHelper = d2.periodModule().periodHelper()
-    )
-
     // Stores
     private val trackedEntityTypeStore = TrackedEntityTypeStore.create(databaseAdapter)
     private val categoryComboStore = CategoryComboStore.create(databaseAdapter)
@@ -89,11 +85,37 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
     private val programStageStore = ProgramStageStore.create(databaseAdapter)
     private val dataElementStore = DataElementStore.create(databaseAdapter)
     private val organisationUnitStore = OrganisationUnitStore.create(databaseAdapter)
+    private val userOrganisationUnitStore = UserOrganisationUnitLinkStoreImpl.create(databaseAdapter)
+    private val organisationUnitGroupLinkStore = OrganisationUnitOrganisationUnitGroupLinkStore.create(databaseAdapter)
+    private val organisationUnitLevelStore = OrganisationUnitLevelStore.create(databaseAdapter)
     private val trackedEntityInstanceStore = TrackedEntityInstanceStoreImpl.create(databaseAdapter)
     private val eventStore = EventStoreImpl.create(databaseAdapter)
     private val trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl.create(databaseAdapter)
     private val programIndicatorStore = ProgramIndicatorStore.create(databaseAdapter)
     private val enrollmentStore = EnrollmentStoreImpl.create(databaseAdapter)
+
+    private val calendarProvider = CalendarProviderFactory.createFixed()
+    private val dateFilterPeriodHelper =
+        DateFilterPeriodHelper(calendarProvider, ParentPeriodGeneratorImpl.create(calendarProvider))
+    private val organisationUnitHelper = AnalyticsOrganisationUnitHelper(
+        userOrganisationUnitStore,
+        organisationUnitStore,
+        organisationUnitLevelStore,
+        organisationUnitGroupLinkStore
+    )
+
+    private val eventLineListService: EventLineListService = EventLineListServiceImpl(
+        eventRepository = d2.eventModule().events(),
+        dataValueRepository = d2.trackedEntityModule().trackedEntityDataValues(),
+        dataElementRepository = d2.dataElementModule().dataElements(),
+        programIndicatorRepository = d2.programModule().programIndicators(),
+        organisationUnitRepository = d2.organisationUnitModule().organisationUnits(),
+        programStageRepository = d2.programModule().programStages(),
+        programIndicatorEngine = d2.programModule().programIndicatorEngine(),
+        periodHelper = d2.periodModule().periodHelper(),
+        dateFilterPeriodHelper = dateFilterPeriodHelper,
+        organisationUnitHelper = organisationUnitHelper
+    )
 
     @Before
     fun setUp() {
@@ -112,6 +134,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         dataElementStore.insert(dataElement2)
 
         organisationUnitStore.insert(organisationUnit1)
+        userOrganisationUnitStore.insert(userOrganisationUnit)
 
         createTei()
         createEnrollment()
@@ -126,6 +149,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         programStageStore.delete()
         dataElementStore.delete()
         organisationUnitStore.delete()
+        userOrganisationUnitStore.delete()
         trackedEntityInstanceStore.delete()
         eventStore.delete()
         trackedEntityDataValueStore.delete()
@@ -333,6 +357,45 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
                 event2.uid() -> assertThat(it.period.periodId()).isEqualTo("20200902")
             }
         }
+    }
+
+    @Test
+    fun should_evaluate_relative_periods() {
+        val event1 = createEvent(program1Stage2.uid(), "2019-12-01T00:00:00.000")
+        val event2 = createEvent(program1Stage2.uid(), "2019-06-02T00:00:00.000")
+        val event3 = createEvent(program1Stage2.uid(), "2019-05-03T00:00:00.000")
+
+        val eventListParams = EventLineListParams(
+            programStage = program1Stage2.uid(),
+            trackedEntityInstance = trackedEntityInstance.uid(),
+            eventDates = listOf(
+                DateFilterPeriod.builder()
+                    .period(RelativePeriod.THIS_MONTH)
+                    .type(DatePeriodType.RELATIVE)
+                    .build()
+            )
+        )
+
+        val result = eventLineListService.evaluate(eventListParams)
+
+        assertThat(result.size).isEqualTo(1)
+        assertThat(result.first().uid).isEqualTo(event1.uid())
+    }
+
+    @Test
+    fun should_evaluate_relative_organisationUnits() {
+        val event1 = createEvent(program1Stage2.uid(), "2019-12-01T00:00:00.000")
+
+        val eventListParams = EventLineListParams(
+            programStage = program1Stage2.uid(),
+            trackedEntityInstance = trackedEntityInstance.uid(),
+            organisationUnits = listOf(OrganisationUnitFilter(null, RelativeOrganisationUnit.USER_ORGUNIT))
+        )
+
+        val result = eventLineListService.evaluate(eventListParams)
+
+        assertThat(result.size).isEqualTo(1)
+        assertThat(result.first().uid).isEqualTo(event1.uid())
     }
 
     private fun createTei() {

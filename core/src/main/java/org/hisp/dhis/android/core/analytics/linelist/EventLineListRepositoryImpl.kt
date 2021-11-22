@@ -31,6 +31,8 @@ import dagger.Reusable
 import io.reactivex.Single
 import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.OrganisationUnitFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.PeriodsFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ScopedFilterConnectorFactory
 
 @Reusable
@@ -53,6 +55,18 @@ internal class EventLineListRepositoryImpl @Inject constructor(
     override fun byProgramStage(): EqFilterConnector<EventLineListRepository, String> {
         return connectorFactory.eqConnector { programStageId ->
             eventLineListParams.copy(programStage = programStageId)
+        }
+    }
+
+    override fun byEventDate(): PeriodsFilterConnector<EventLineListRepository> {
+        return connectorFactory.periodsConnector { periods ->
+            eventLineListParams.copy(eventDates = periods)
+        }
+    }
+
+    override fun byOrganisationUnit(): OrganisationUnitFilterConnector<EventLineListRepository> {
+        return connectorFactory.organisationUnitConnector { organisationUnits ->
+            eventLineListParams.copy(organisationUnits = organisationUnits)
         }
     }
 

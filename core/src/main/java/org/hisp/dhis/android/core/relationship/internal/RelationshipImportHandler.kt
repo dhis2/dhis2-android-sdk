@@ -54,8 +54,15 @@ import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository
 
                 val state = getSyncState(importSummary.status())
 
-                relationshipStore.setSyncStateOrDelete(relationshipUid, state)
-                dataStatePropagator.propagateRelationshipUpdate(relationship?.from())
+                val handledState =
+                    if (state == State.ERROR || state == State.WARNING) {
+                        State.TO_UPDATE
+                    } else {
+                        state
+                    }
+
+                relationshipStore.setSyncStateOrDelete(relationshipUid, handledState)
+                dataStatePropagator.propagateRelationshipUpdate(relationship)
             }
         }
 
@@ -70,7 +77,7 @@ import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository
 
         relationships.filterNot { processedRelationships.contains(it.uid()) }.forEach { relationship ->
             relationshipStore.setSyncStateOrDelete(relationship.uid()!!, State.TO_UPDATE)
-            dataStatePropagator.propagateRelationshipUpdate(relationship.from())
+            dataStatePropagator.propagateRelationshipUpdate(relationship)
         }
     }
 }

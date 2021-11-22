@@ -29,9 +29,7 @@ package org.hisp.dhis.android.core.visualization.internal
 
 import org.hisp.dhis.android.core.arch.api.fields.internal.Fields
 import org.hisp.dhis.android.core.arch.fields.internal.FieldsHelper
-import org.hisp.dhis.android.core.visualization.DataDimensionItem
-import org.hisp.dhis.android.core.visualization.DataDimensionItemTableInfo
-import org.hisp.dhis.android.core.visualization.DataDimensionItemType
+import org.hisp.dhis.android.core.visualization.*
 
 internal object DataDimensionItemFields {
     internal const val CATEGORY = "category"
@@ -47,8 +45,12 @@ internal object DataDimensionItemFields {
                 fh.nestedFieldWithUid(DataDimensionItemTableInfo.Columns.DATA_ELEMENT_OPERAND),
                 fh.nestedFieldWithUid(DataDimensionItemTableInfo.Columns.REPORTING_RATE),
                 fh.nestedFieldWithUid(DataDimensionItemTableInfo.Columns.PROGRAM_INDICATOR),
-                fh.nestedFieldWithUid(DataDimensionItemTableInfo.Columns.PROGRAM_DATA_ELEMENT),
-                fh.nestedFieldWithUid(DataDimensionItemTableInfo.Columns.PROGRAM_ATTRIBUTE),
+                fh.nestedField<DataDimensionItemProgramDataElement>(
+                    DataDimensionItemTableInfo.Columns.PROGRAM_DATA_ELEMENT
+                ).with(DataDimensionItemProgramDataElementFields.allFields),
+                fh.nestedField<DataDimensionItemProgramAttribute>(
+                    DataDimensionItemTableInfo.Columns.PROGRAM_ATTRIBUTE
+                ).with(DataDimensionItemProgramAttributeFields.allFields),
                 fh.nestedFieldWithUid(DataDimensionItemTableInfo.Columns.VALIDATION_RULE)
             )
             .build()

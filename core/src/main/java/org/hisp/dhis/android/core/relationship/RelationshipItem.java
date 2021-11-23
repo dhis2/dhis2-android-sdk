@@ -94,8 +94,10 @@ public abstract class RelationshipItem implements CoreObject {
             return trackedEntityInstance().trackedEntityInstance();
         } else if (hasEnrollment()) {
             return enrollment().enrollment();
-        } else {
+        } else if (hasEvent()) {
             return event().event();
+        } else {
+            return null;
         }
     }
 

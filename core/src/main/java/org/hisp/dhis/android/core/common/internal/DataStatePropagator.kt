@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.common.internal
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.note.Note
-import org.hisp.dhis.android.core.relationship.RelationshipItem
+import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
@@ -50,7 +50,7 @@ internal interface DataStatePropagator {
 
     fun propagateNoteCreation(note: Note?)
 
-    fun propagateRelationshipUpdate(item: RelationshipItem?)
+    fun propagateRelationshipUpdate(relationship: Relationship?)
 
     fun resetUploadingEnrollmentAndEventStates(trackedEntityInstanceUid: String?)
 

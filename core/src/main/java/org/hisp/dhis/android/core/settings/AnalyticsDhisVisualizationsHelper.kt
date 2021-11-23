@@ -25,19 +25,39 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.handlers.internal
 
-import org.hisp.dhis.android.core.common.DeletableDataObject
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface
-import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
+package org.hisp.dhis.android.core.settings
 
-internal interface IdentifiableDataHandler<O> where O : DeletableDataObject, O : ObjectWithUidInterface {
-    @JvmSuppressWildcards
-    fun handleMany(
-        oCollection: Collection<O>?,
-        asRelationship: Boolean,
-        isFullUpdate: Boolean,
-        overwrite: Boolean,
-        relatives: RelationshipItemRelatives?
-    )
+import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationScope.DATA_SET
+import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationScope.HOME
+import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationScope.PROGRAM
+
+fun generateGroups(
+    analyticsDhisVisualizations: List<AnalyticsDhisVisualization>
+): AnalyticsDhisVisualizationsSetting {
+
+    val visualizationsByScope: Map<AnalyticsDhisVisualizationScope?, List<AnalyticsDhisVisualization>> =
+        analyticsDhisVisualizations.groupBy { it.scope() }
+
+    return AnalyticsDhisVisualizationsSetting
+        .builder()
+        .home(generateGroupList(visualizationsByScope[HOME]))
+        .program(generateScopeGroups(visualizationsByScope[PROGRAM]))
+        .dataSet(generateScopeGroups(visualizationsByScope[DATA_SET]))
+        .build()
 }
+
+private fun generateGroupList(analyticsDhisVisualizations: List<AnalyticsDhisVisualization>?) =
+    analyticsDhisVisualizations?.groupBy { it.groupUid() }?.map {
+        AnalyticsDhisVisualizationsGroup
+            .builder()
+            .id(it.key)
+            .name(it.value.first().groupName())
+            .visualizations(it.value)
+            .build()
+    } ?: emptyList()
+
+private fun generateScopeGroups(analyticsDhisVisualizations: List<AnalyticsDhisVisualization>?) =
+    analyticsDhisVisualizations?.groupBy { it.scopeUid() }?.mapValues {
+        generateGroupList(it.value)
+    } ?: emptyMap()

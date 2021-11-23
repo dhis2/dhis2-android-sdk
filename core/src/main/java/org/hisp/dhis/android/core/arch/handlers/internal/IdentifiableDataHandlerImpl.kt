@@ -96,18 +96,6 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
     }
 
     @JvmSuppressWildcards
-    override fun handleMany(oCollection: Collection<O>?, transformer: (O) -> O, overwrite: Boolean) {
-        if (oCollection != null) {
-            val preHandledCollection = beforeCollectionHandled(oCollection, overwrite, false)
-            val oTransformedCollection: MutableList<O> = ArrayList(oCollection.size)
-            for (o in preHandledCollection) {
-                handle(o, transformer, oTransformedCollection, overwrite)
-            }
-            afterCollectionHandled(oTransformedCollection, overwrite)
-        }
-    }
-
-    @JvmSuppressWildcards
     override fun handleMany(
         oCollection: Collection<O>?,
         asRelationship: Boolean,
@@ -152,13 +140,15 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
         parent: ObjectWithUidInterface,
         relatives: RelationshipItemRelatives?
     ) {
+        val ownedRelationships = relationshipVersionManager.getOwnedRelationships(relationships, parent.uid())
+
         if (relatives != null) {
             relationshipVersionManager.saveRelativesIfNotExist(
-                relationships, parent.uid(), relatives, relationshipHandler
+                ownedRelationships, parent.uid(), relatives, relationshipHandler
             )
         }
         relationshipHandler.handleMany(
-            relationships
+            ownedRelationships
         ) { relationship: Relationship ->
             relationship.toBuilder()
                 .syncState(State.SYNCED)

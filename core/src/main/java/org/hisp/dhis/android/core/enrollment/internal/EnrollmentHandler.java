@@ -120,11 +120,7 @@ final class EnrollmentHandler extends IdentifiableDataHandlerImpl<Enrollment> {
                                       RelationshipItemRelatives relatives) {
         if (action != HandleAction.Delete) {
             eventHandler.handleMany(EnrollmentInternalAccessor.accessEvents(enrollment),
-                    event -> event.toBuilder()
-                            .syncState(State.SYNCED)
-                            .aggregatedSyncState(State.SYNCED)
-                            .build(),
-                    overwrite);
+                    false, false, overwrite, relatives);
 
             Collection<Note> notes = new ArrayList<>();
             if (enrollment.notes() != null) {

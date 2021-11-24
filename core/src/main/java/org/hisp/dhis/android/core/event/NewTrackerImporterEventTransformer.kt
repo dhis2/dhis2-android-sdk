@@ -54,12 +54,16 @@ internal object NewTrackerImporterEventTransformer : Transformer<Event, NewTrack
             .assignedUser(o.assignedUser())
             .syncState(o.syncState())
             .aggregatedSyncState(o.aggregatedSyncState())
-            .trackedEntityDataValues(o.trackedEntityDataValues()?.map {
-                NewTrackerImporterTrackedEntityDataValueTransformer.transform(it)
-            })
-            .notes(o.notes()?.map {
-                NewTrackerImporterNoteTransformer.transform(it)
-            })
+            .trackedEntityDataValues(
+                o.trackedEntityDataValues()?.map {
+                    NewTrackerImporterTrackedEntityDataValueTransformer.transform(it)
+                }
+            )
+            .notes(
+                o.notes()?.map {
+                    NewTrackerImporterNoteTransformer.transform(it)
+                }
+            )
             .build()
     }
 }

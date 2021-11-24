@@ -27,11 +27,22 @@
  */
 package org.hisp.dhis.android.core.enrollment
 
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.note.NewTrackerImporterNoteTransformer
+import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityAttributeValueTransformer
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 
-internal object NewTrackerImporterEnrollmentTransformer : Transformer<Enrollment, NewTrackerImporterEnrollment> {
-    override fun transform(o: Enrollment): NewTrackerImporterEnrollment {
+internal object NewTrackerImporterEnrollmentTransformer {
+    fun transform(
+        o: Enrollment,
+        teiAttributes: List<TrackedEntityAttributeValue>?,
+        programAttributeMap: Map<String, List<String>>
+    ): NewTrackerImporterEnrollment {
+        val programAttributeUids = programAttributeMap[o.program()] ?: emptyList()
+        val enrollmentAttributeValues = teiAttributes
+            ?.filter { programAttributeUids.contains(it.trackedEntityAttribute()) }
+            ?.map { NewTrackerImporterTrackedEntityAttributeValueTransformer.transform(it) }
+            ?: emptyList()
+
         return NewTrackerImporterEnrollment.builder()
             .id(o.id())
             .uid(o.uid())
@@ -51,9 +62,12 @@ internal object NewTrackerImporterEnrollmentTransformer : Transformer<Enrollment
             .geometry(o.geometry())
             .syncState(o.syncState())
             .aggregatedSyncState(o.aggregatedSyncState())
-            .notes(o.notes()?.map {
-                NewTrackerImporterNoteTransformer.transform(it)
-            })
+            .notes(
+                o.notes()?.map {
+                    NewTrackerImporterNoteTransformer.transform(it)
+                }
+            )
+            .attributes(enrollmentAttributeValues)
             .build()
     }
 }

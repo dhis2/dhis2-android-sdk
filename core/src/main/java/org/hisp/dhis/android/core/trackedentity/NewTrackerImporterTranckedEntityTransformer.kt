@@ -27,11 +27,17 @@
  */
 package org.hisp.dhis.android.core.trackedentity
 
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
+internal object NewTrackerImporterTranckedEntityTransformer {
+    fun transform(
+        o: TrackedEntityInstance,
+        tetAttributeMap: Map<String, List<String>>
+    ): NewTrackerImporterTrackedEntity {
+        val teiAttributes = o.trackedEntityAttributeValues() ?: emptyList()
+        val typeAttributes = tetAttributeMap[o.trackedEntityType()] ?: emptyList()
+        val teiTypeAttributes = teiAttributes
+            .filter { typeAttributes.contains(it.trackedEntityAttribute()) }
+            .map { NewTrackerImporterTrackedEntityAttributeValueTransformer.transform(it) }
 
-internal object NewTrackerImporterTranckedEntityTransformer :
-    Transformer<TrackedEntityInstance, NewTrackerImporterTrackedEntity> {
-    override fun transform(o: TrackedEntityInstance): NewTrackerImporterTrackedEntity {
         return NewTrackerImporterTrackedEntity.builder()
             .id(o.id())
             .uid(o.uid())
@@ -45,6 +51,7 @@ internal object NewTrackerImporterTranckedEntityTransformer :
             .geometry(o.geometry())
             .syncState(o.syncState())
             .aggregatedSyncState(o.aggregatedSyncState())
+            .trackedEntityAttributeValues(teiTypeAttributes)
             .build()
     }
 }

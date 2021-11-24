@@ -28,23 +28,23 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import dagger.Reusable
+import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor.accessEvents
-import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollmentTransformer
 import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
 import org.hisp.dhis.android.core.event.NewTrackerImporterEventTransformer
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute
-import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationship
 import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipTransformer
 import org.hisp.dhis.android.core.relationship.Relationship
-import org.hisp.dhis.android.core.trackedentity.*
+import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTranckedEntityTransformer
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor.accessEnrollments
-import javax.inject.Inject
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute
 
 @Reusable
 internal class NewTrackerImporterTrackedEntityPostPayloadGenerator @Inject internal constructor(
@@ -104,7 +104,9 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGenerator @Inject inter
         tetAttributeMap: Map<String, List<String>>
     ) {
         if (instance.syncState() != State.SYNCED) {
-            transformTrackedEntity(instance, tetAttributeMap).let {
+            val transformed = NewTrackerImporterTranckedEntityTransformer.transform(instance, tetAttributeMap)
+
+            transformed.let {
                 when (it.deleted()) {
                     true -> wrapper.deleted.trackedEntities.add(it)
                     else -> wrapper.updated.trackedEntities.add(it)
@@ -120,7 +122,10 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGenerator @Inject inter
         programAttributeMap: Map<String, List<String>>
     ) {
         if (enrollment.syncState() != State.SYNCED) {
-            transformEnrollment(enrollment, attributes, programAttributeMap).let {
+            val transformed =
+                NewTrackerImporterEnrollmentTransformer.transform(enrollment, attributes, programAttributeMap)
+
+            transformed.let {
                 when (it.deleted()) {
                     true -> wrapper.deleted.enrollments.add(it)
                     else -> wrapper.updated.enrollments.add(it)
@@ -134,7 +139,9 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGenerator @Inject inter
         event: Event
     ) {
         if (event.syncState() != State.SYNCED) {
-            transformEvent(event).let {
+            val transformed = NewTrackerImporterEventTransformer.transform(event)
+
+            transformed.let {
                 when (it.deleted()) {
                     true -> wrapper.deleted.events.add(it)
                     else -> wrapper.updated.events.add(it)
@@ -147,59 +154,14 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGenerator @Inject inter
         wrapper: NewTrackerImporterPayloadWrapper,
         relationship: Relationship
     ) {
-        transformRelationship(relationship).let {
+        val transformed = NewTrackerImporterRelationshipTransformer.transform(relationship)
+
+        transformed.let {
             when (it.deleted()) {
                 true -> wrapper.deleted.relationships.add(it)
                 else -> wrapper.updated.relationships.add(it)
             }
         }
-    }
-
-    private fun transformTrackedEntity(
-        instance: TrackedEntityInstance,
-        tetAttributeMap: Map<String, List<String>>
-    ): NewTrackerImporterTrackedEntity {
-        val transformed = NewTrackerImporterTranckedEntityTransformer.transform(instance)
-
-        val teiAttributes = instance.trackedEntityAttributeValues() ?: emptyList()
-        val typeAttributes = tetAttributeMap[instance.trackedEntityType()] ?: emptyList()
-        val teiTypeAttributes = teiAttributes
-            .filter { typeAttributes.contains(it.trackedEntityAttribute()) }
-            .map { NewTrackerImporterTrackedEntityAttributeValueTransformer.transform(it) }
-
-        return transformed.toBuilder()
-            .trackedEntityAttributeValues(teiTypeAttributes)
-            .build()
-    }
-
-    private fun transformEnrollment(
-        enrollment: Enrollment,
-        teiAttributes: List<TrackedEntityAttributeValue>?,
-        programAttributeMap: Map<String, List<String>>
-    ): NewTrackerImporterEnrollment {
-        val transformed = NewTrackerImporterEnrollmentTransformer.transform(enrollment)
-
-        val programAttributeUids = programAttributeMap[enrollment.program()] ?: emptyList()
-        val enrollmentAttributeValues = teiAttributes
-            ?.filter { programAttributeUids.contains(it.trackedEntityAttribute()) }
-            ?.map { NewTrackerImporterTrackedEntityAttributeValueTransformer.transform(it) }
-            ?: emptyList()
-
-        return transformed.toBuilder()
-            .attributes(enrollmentAttributeValues)
-            .build()
-    }
-
-    private fun transformEvent(
-        event: Event
-    ): NewTrackerImporterEvent {
-        return NewTrackerImporterEventTransformer.transform(event)
-    }
-
-    private fun transformRelationship(
-        relationship: Relationship
-    ): NewTrackerImporterRelationship {
-        return NewTrackerImporterRelationshipTransformer.transform(relationship)
     }
 
     private fun getProgramAttributesMap(): Map<String, List<String>> {

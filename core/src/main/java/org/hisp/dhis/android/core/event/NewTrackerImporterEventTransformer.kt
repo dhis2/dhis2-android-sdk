@@ -28,8 +28,10 @@
 package org.hisp.dhis.android.core.event
 
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
+import org.hisp.dhis.android.core.note.NewTrackerImporterNoteTransformer
+import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityDataValueTransformer
 
-internal class NewTrackerImporterEventTransformer : Transformer<Event, NewTrackerImporterEvent> {
+internal object NewTrackerImporterEventTransformer : Transformer<Event, NewTrackerImporterEvent> {
     override fun transform(o: Event): NewTrackerImporterEvent {
         return NewTrackerImporterEvent.builder()
             .id(o.id())
@@ -52,6 +54,12 @@ internal class NewTrackerImporterEventTransformer : Transformer<Event, NewTracke
             .assignedUser(o.assignedUser())
             .syncState(o.syncState())
             .aggregatedSyncState(o.aggregatedSyncState())
+            .trackedEntityDataValues(o.trackedEntityDataValues()?.map {
+                NewTrackerImporterTrackedEntityDataValueTransformer.transform(it)
+            })
+            .notes(o.notes()?.map {
+                NewTrackerImporterNoteTransformer.transform(it)
+            })
             .build()
     }
 }

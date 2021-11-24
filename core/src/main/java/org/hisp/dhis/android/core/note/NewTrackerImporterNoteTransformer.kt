@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.note
 
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 
-internal class NewTrackerImporterNoteTransformer : Transformer<Note, NewTrackerImporterNote> {
+internal object NewTrackerImporterNoteTransformer : Transformer<Note, NewTrackerImporterNote> {
     override fun transform(o: Note): NewTrackerImporterNote {
         return NewTrackerImporterNote.builder()
             .id(o.id())

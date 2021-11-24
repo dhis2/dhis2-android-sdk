@@ -28,8 +28,9 @@
 package org.hisp.dhis.android.core.enrollment
 
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
+import org.hisp.dhis.android.core.note.NewTrackerImporterNoteTransformer
 
-internal class NewTrackerImporterEnrollmentTransformer : Transformer<Enrollment, NewTrackerImporterEnrollment> {
+internal object NewTrackerImporterEnrollmentTransformer : Transformer<Enrollment, NewTrackerImporterEnrollment> {
     override fun transform(o: Enrollment): NewTrackerImporterEnrollment {
         return NewTrackerImporterEnrollment.builder()
             .id(o.id())
@@ -50,6 +51,9 @@ internal class NewTrackerImporterEnrollmentTransformer : Transformer<Enrollment,
             .geometry(o.geometry())
             .syncState(o.syncState())
             .aggregatedSyncState(o.aggregatedSyncState())
+            .notes(o.notes()?.map {
+                NewTrackerImporterNoteTransformer.transform(it)
+            })
             .build()
     }
 }

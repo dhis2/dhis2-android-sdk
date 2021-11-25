@@ -85,6 +85,13 @@ internal class RelationshipItemStoreImpl private constructor(
         return selectOneWhere(whereClause)
     }
 
+    override fun getForRelationshipUid(relationshipUid: String): List<RelationshipItem> {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(RelationshipItemTableInfo.Columns.RELATIONSHIP, relationshipUid)
+            .build()
+        return selectWhere(whereClause)
+    }
+
     override fun getRelatedTeiUids(trackedEntityInstanceUids: List<String>): List<String> {
         val whereFromClause = WhereClauseBuilder()
             .appendInKeyStringValues(

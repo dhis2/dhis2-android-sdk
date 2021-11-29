@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.relationship
 
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 
-internal class NewTrackerImporterRelationshipTransformer : Transformer<Relationship, NewTrackerImporterRelationship> {
+internal object NewTrackerImporterRelationshipTransformer : Transformer<Relationship, NewTrackerImporterRelationship> {
     override fun transform(o: Relationship): NewTrackerImporterRelationship {
         return NewTrackerImporterRelationship.builder()
             .id(o.id())

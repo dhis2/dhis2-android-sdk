@@ -93,6 +93,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.hisp.dhis.android.core.trackedentity.internal.OldTrackerImporterPayloadGenerator;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostPayloadGenerator29;
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterPackageDIModule;
+import org.hisp.dhis.android.core.tracker.importer.internal.interpreters.InterpreterSelector;
 import org.hisp.dhis.android.core.user.internal.UserPackageDIModule;
 import org.hisp.dhis.android.core.validation.internal.ValidationPackageDIModule;
 import org.hisp.dhis.android.core.visualization.internal.VisualizationPackageDIModule;
@@ -193,6 +194,8 @@ public interface D2DIComponent {
     IdentifiableObjectStore<CategoryOption> categoryOptionStore();
     @VisibleForTesting
     PeriodHandler periodHandler();
+    @VisibleForTesting
+    InterpreterSelector interpreterSelector();
 
     @Component.Builder
     interface Builder {

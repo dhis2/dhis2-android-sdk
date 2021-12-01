@@ -27,22 +27,36 @@
  */
 package org.hisp.dhis.android.core.tracker.importer.internal
 
+import android.content.Context
 import dagger.Reusable
-import java.util.Date
-import javax.inject.Inject
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.TrackerImportConflict
+import org.hisp.dhis.android.core.tracker.importer.internal.interpreters.InterpreterSelector
+import java.util.*
+import javax.inject.Inject
 
 @Reusable
-internal class TrackerConflictHelper @Inject internal constructor() {
+internal class TrackerConflictHelper @Inject constructor(val context: Context,
+                                                         val interpreterSelector: InterpreterSelector) {
 
     fun getConflictBuilder(errorReport: JobValidationError): TrackerImportConflict.Builder {
         return TrackerImportConflict.builder()
             .conflict(errorReport.message)
-            .displayDescription(errorReport.message)
+            .displayDescription(displayDescription(errorReport))
             .value(errorReport.uid)
             .errorCode(errorReport.errorCode)
             .status(ImportStatus.ERROR)
             .created(Date())
+    }
+
+    private fun displayDescription(errorReport: JobValidationError): String {
+        return try {
+            val error = ImporterError.valueOf(errorReport.errorCode)
+            val interpreter = interpreterSelector.getInterpreter(error)
+            return context.getString(interpreter.unformattedDescription)
+                .format(*interpreter.companions(errorReport).toTypedArray())
+        } catch (e: Exception) {
+            errorReport.message
+        }
     }
 }

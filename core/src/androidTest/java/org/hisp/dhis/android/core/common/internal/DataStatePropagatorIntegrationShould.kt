@@ -234,6 +234,9 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
                 trackedEntityInstanceStore.selectByUid(teiUid)!!.aggregatedSyncState()
             ).isEqualTo(State.TO_UPDATE)
 
+            val toTeiState = if (bidirectional) State.TO_UPDATE else State.SYNCED
+            assertThat(trackedEntityInstanceStore.selectByUid(toTeiUid)!!.aggregatedSyncState()).isEqualTo(toTeiState)
+
             trackedEntityInstanceStore.delete(teiUid)
             trackedEntityInstanceStore.delete(toTeiUid)
             relationshipStore.delete(relationshipUid)
@@ -266,6 +269,9 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
             ).isEqualTo(State.TO_UPDATE)
             assertThat(enrollmentStore.selectByUid(enrollmentUid)!!.syncState()).isEqualTo(State.SYNCED)
             assertThat(enrollmentStore.selectByUid(enrollmentUid)!!.aggregatedSyncState()).isEqualTo(State.TO_UPDATE)
+
+            val toTeiState = if (bidirectional) State.TO_UPDATE else State.SYNCED
+            assertThat(trackedEntityInstanceStore.selectByUid(toTeiUid)!!.aggregatedSyncState()).isEqualTo(toTeiState)
 
             trackedEntityInstanceStore.delete(teiUid)
             trackedEntityInstanceStore.delete(toTeiUid)

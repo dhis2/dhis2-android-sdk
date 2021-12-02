@@ -301,10 +301,8 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
             assertThat(eventStore.selectByUid(eventUid)!!.syncState()).isEqualTo(State.SYNCED)
             assertThat(eventStore.selectByUid(eventUid)!!.aggregatedSyncState()).isEqualTo(State.TO_UPDATE)
 
-            assertThat(trackedEntityInstanceStore.selectByUid(teiUid)!!.syncState()).isEqualTo(State.SYNCED)
-
             val toTeiState = if (bidirectional) State.TO_UPDATE else State.SYNCED
-            assertThat(trackedEntityInstanceStore.selectByUid(teiUid)!!.aggregatedSyncState()).isEqualTo(toTeiState)
+            assertThat(trackedEntityInstanceStore.selectByUid(toTeiUid)!!.aggregatedSyncState()).isEqualTo(toTeiState)
 
             trackedEntityInstanceStore.delete(teiUid)
             trackedEntityInstanceStore.delete(toTeiUid)

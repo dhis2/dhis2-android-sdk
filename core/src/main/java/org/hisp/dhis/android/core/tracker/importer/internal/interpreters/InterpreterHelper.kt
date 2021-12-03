@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.program.ProgramStage
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import javax.inject.Inject
 
@@ -43,7 +44,8 @@ internal class InterpreterHelper @Inject internal constructor(
     private val enrollmentStore: EnrollmentStore,
     private val eventStore: EventStore,
     private val programStageStore: IdentifiableObjectStore<ProgramStage>,
-    private val organisationUnitStore: IdentifiableObjectStore<OrganisationUnit>
+    private val organisationUnitStore: IdentifiableObjectStore<OrganisationUnit>,
+    private val trackedEntityTypeStore: IdentifiableObjectStore<TrackedEntityType>
 ) {
 
     fun programStageName(eventUid: String): String {
@@ -52,6 +54,10 @@ internal class InterpreterHelper @Inject internal constructor(
 
     fun organisationUnitUid(orgUnitUid: String): String {
         return organisationUnitStore.selectByUid(orgUnitUid)!!.displayName()!!
+    }
+
+    fun trackedEntityTypeUid(trackedEntityTypeUid: String): String {
+        return trackedEntityTypeStore.selectByUid(trackedEntityTypeUid)!!.displayName()!!
     }
 
     fun parseIdentifiableUid(classAndUid: String): String {

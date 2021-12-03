@@ -28,34 +28,16 @@
 
 package org.hisp.dhis.android.core.tracker.importer.internal.interpreters
 
-import dagger.Reusable
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
-import org.hisp.dhis.android.core.event.internal.EventStore
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import org.hisp.dhis.android.core.program.ProgramStage
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
-import javax.inject.Inject
+import org.hisp.dhis.android.R
+import org.hisp.dhis.android.core.tracker.importer.internal.JobValidationError
 
-@Reusable
-internal class InterpreterHelper @Inject internal constructor(
-    private val teiStore: TrackedEntityInstanceStore,
-    private val enrollmentStore: EnrollmentStore,
-    private val eventStore: EventStore,
-    private val programStageStore: IdentifiableObjectStore<ProgramStage>,
-    private val organisationUnitStore: IdentifiableObjectStore<OrganisationUnit>
-) {
-
-    fun programStageName(eventUid: String): String {
-        return programStageStore.selectByUid(eventStore.selectByUid(eventUid)!!.programStage()!!)!!.displayName()!!
-    }
-
-    fun organisationUnitUid(orgUnitUid: String): String {
-        return organisationUnitStore.selectByUid(orgUnitUid)!!.displayName()!!
-    }
-
-    fun parseIdentifiableUid(classAndUid: String): String {
-        val classAndUidRegex = Regex("(.*?) [(](\\w{11})[)]")
-        return classAndUidRegex.find(classAndUid)!!.groupValues.last()
+internal class E1000Interpreter internal constructor(
+    private val interpreterHelper: InterpreterHelper, override val regex: Regex
+) : ErrorCodeInterpreter {
+    // User: `User (DXyJmlo9rge)`, has no write access to OrganisationUnit: `OrganisationUnit (DiszpKrYNg8)`.
+    override val unformattedDescription = R.string.E1000
+    override fun companions(error: JobValidationError): List<String> {
+        val organisationUnitUid = interpreterHelper.parseIdentifiableUid(regex.find(error.message)!!.groupValues.last())
+        return listOf(interpreterHelper.organisationUnitUid(organisationUnitUid))
     }
 }

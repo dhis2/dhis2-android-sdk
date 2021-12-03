@@ -301,7 +301,9 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
             )
 
             assertThat(trackedEntityInstanceStore.selectByUid(teiUid)!!.syncState()).isEqualTo(State.SYNCED)
-            assertThat(trackedEntityInstanceStore.selectByUid(teiUid)!!.aggregatedSyncState()).isEqualTo(State.TO_UPDATE)
+            assertThat(
+                trackedEntityInstanceStore.selectByUid(teiUid)!!.aggregatedSyncState()
+            ).isEqualTo(State.TO_UPDATE)
             assertThat(enrollmentStore.selectByUid(enrollmentUid)!!.syncState()).isEqualTo(State.SYNCED)
             assertThat(enrollmentStore.selectByUid(enrollmentUid)!!.aggregatedSyncState()).isEqualTo(State.TO_UPDATE)
             assertThat(eventStore.selectByUid(eventUid)!!.syncState()).isEqualTo(State.SYNCED)

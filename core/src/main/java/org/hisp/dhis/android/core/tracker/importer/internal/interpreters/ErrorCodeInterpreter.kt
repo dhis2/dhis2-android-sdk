@@ -31,6 +31,10 @@ package org.hisp.dhis.android.core.tracker.importer.internal.interpreters
 import org.hisp.dhis.android.core.tracker.importer.internal.JobValidationError
 
 internal interface ErrorCodeInterpreter {
+    val regex: Regex
     val unformattedDescription: Int
     fun companions(error: JobValidationError): List<String>
+    fun match(error: JobValidationError): List<String> {
+        return listOf("sf", "sf")
+    }
 }

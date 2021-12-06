@@ -62,7 +62,8 @@ class TrackerConflictHelperShould {
 
     @Test
     fun `Should return the error message display description when passing a wrong ErrorCode`() {
-        val trackerImportConflict = TrackerConflictHelper(context, selector).getConflictBuilder(wrongCodeErrorReport).build()
+        val trackerImportConflict = TrackerConflictHelper(context, selector)
+            .getConflictBuilder(wrongCodeErrorReport).build()
         assertThat(trackerImportConflict.displayDescription())
             .isEqualTo("Event: `PXi7gfVIk1p`, Enrollment value is NULL.")
     }

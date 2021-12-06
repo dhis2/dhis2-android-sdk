@@ -32,6 +32,7 @@
     <string name="E1001">You do not have access to the type %s</string>
     <string name="E1002">The %s already exist. (%s: %s)</string>
     <string name="E1003">%s is outside your search scope</string>
-    <string name="E1005">The %s type could not be found.</string>
+    <string name="E1005">The %s type could not be found</string>
+    <string name="E1006">The attribute %s does not exist</string>
     <string name="E1032">The %s event was not found in the server. (Event: %s)</string>
 </resources>

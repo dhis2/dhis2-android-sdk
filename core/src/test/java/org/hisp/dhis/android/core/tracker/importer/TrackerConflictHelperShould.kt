@@ -67,7 +67,6 @@ class TrackerConflictHelperShould {
             .isEqualTo("Event: `PXi7gfVIk1p`, Enrollment value is NULL.")
     }
 
-
     companion object {
         private val errorReport = JobValidationError(
             "PXi7gfVIk1p",

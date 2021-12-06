@@ -29,15 +29,17 @@ package org.hisp.dhis.android.core.tracker.importer.internal
 
 import android.content.Context
 import dagger.Reusable
+import java.util.*
+import javax.inject.Inject
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.TrackerImportConflict
 import org.hisp.dhis.android.core.tracker.importer.internal.interpreters.InterpreterSelector
-import java.util.*
-import javax.inject.Inject
 
 @Reusable
-internal class TrackerConflictHelper @Inject constructor(val context: Context,
-                                                         val interpreterSelector: InterpreterSelector) {
+internal class TrackerConflictHelper @Inject constructor(
+    val context: Context,
+    val interpreterSelector: InterpreterSelector
+) {
 
     fun getConflictBuilder(errorReport: JobValidationError): TrackerImportConflict.Builder {
         return TrackerImportConflict.builder()

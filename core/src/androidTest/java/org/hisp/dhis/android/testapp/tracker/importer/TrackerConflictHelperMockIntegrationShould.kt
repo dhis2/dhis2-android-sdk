@@ -49,7 +49,7 @@ class TrackerConflictHelperMockIntegrationShould : BaseMockIntegrationTestFullDi
         assertThat(trackerImportConflict.displayDescription())
             .isEqualTo(
                 "The Antenatal care visit - Program rules demo event was not found in the server." +
-                        " (Event: event1)"
+                    " (Event: event1)"
             )
     }
 

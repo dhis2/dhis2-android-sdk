@@ -30,5 +30,6 @@
     <!-- Tracker import errors -->
     <string name="E1000">You do not have access to %s</string>
     <string name="E1001">You do not have access to the type %s</string>
+    <string name="E1002">The %s already exist. (%s: %s)</string>
     <string name="E1032">The %s event was not found in the server. (Event: %s)</string>
 </resources>

@@ -50,7 +50,7 @@ class TrackerConflictHelperShould {
     @Before
     fun setUp() {
         whenever(context.getString(any())) doReturn "The %s event was not found in the server. (Event: %s)"
-        whenever(interpreterHelper.programStageName(any())) doReturn "Antenatal care visiting"
+        whenever(interpreterHelper.programStageDisplayName(any())) doReturn "Antenatal care visiting"
     }
 
     @Test

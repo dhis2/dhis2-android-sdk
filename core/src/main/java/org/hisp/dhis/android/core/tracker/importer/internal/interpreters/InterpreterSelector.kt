@@ -40,8 +40,8 @@ internal class InterpreterSelector @Inject internal constructor(
         return when (error) {
             ImporterError.E1000 -> E1000Interpreter(interpreterHelper, error.regex)
             ImporterError.E1001 -> E1001Interpreter(interpreterHelper, error.regex)
+            ImporterError.E1003 -> E1002Interpreter(interpreterHelper, error.regex)
             ImporterError.E1002 -> TODO()
-            ImporterError.E1003 -> TODO()
             ImporterError.E1005 -> TODO()
             ImporterError.E1006 -> TODO()
             ImporterError.E1007 -> TODO()

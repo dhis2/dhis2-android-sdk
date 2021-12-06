@@ -32,7 +32,8 @@ import org.hisp.dhis.android.R
 import org.hisp.dhis.android.core.tracker.importer.internal.JobValidationError
 
 internal class E1000Interpreter internal constructor(
-    private val interpreterHelper: InterpreterHelper, override val regex: Regex
+    private val interpreterHelper: InterpreterHelper,
+    override val regex: Regex
 ) : ErrorCodeInterpreter {
     // User: `User (DXyJmlo9rge)`, has no write access to OrganisationUnit: `OrganisationUnit (DiszpKrYNg8)`.
     override val unformattedDescription = R.string.E1000

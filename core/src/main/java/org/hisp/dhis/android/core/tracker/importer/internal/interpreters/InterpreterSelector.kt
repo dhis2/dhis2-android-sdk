@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.tracker.importer.internal.interpreters
 
 import dagger.Reusable
-import org.hisp.dhis.android.core.tracker.importer.internal.ImporterError
 import javax.inject.Inject
+import org.hisp.dhis.android.core.tracker.importer.internal.ImporterError
 
 @Reusable
 internal class InterpreterSelector @Inject internal constructor(
@@ -41,7 +41,7 @@ internal class InterpreterSelector @Inject internal constructor(
             ImporterError.E1000 -> E1000Interpreter(interpreterHelper, error.regex)
             ImporterError.E1001 -> E1001Interpreter(interpreterHelper, error.regex)
             ImporterError.E1003 -> E1002Interpreter(interpreterHelper, error.regex)
-            ImporterError.E1002 -> TODO()
+            ImporterError.E1002 -> E1003Interpreter(interpreterHelper, error.regex)
             ImporterError.E1005 -> TODO()
             ImporterError.E1006 -> TODO()
             ImporterError.E1007 -> TODO()

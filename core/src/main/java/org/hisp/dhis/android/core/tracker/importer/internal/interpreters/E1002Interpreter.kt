@@ -31,12 +31,15 @@ package org.hisp.dhis.android.core.tracker.importer.internal.interpreters
 import org.hisp.dhis.android.R
 import org.hisp.dhis.android.core.tracker.importer.internal.JobValidationError
 
-internal class E1001Interpreter internal constructor(
+internal class E1002Interpreter internal constructor(
     private val interpreterHelper: InterpreterHelper, override val regex: Regex
 ) : ErrorCodeInterpreter {
-    override val unformattedDescription = R.string.E1001
+    override val unformattedDescription = R.string.E1002
     override fun companions(error: JobValidationError): List<String> {
-        val trackedEntityType = interpreterHelper.parseIdentifiableUid(regex.find(error.message)!!.groupValues.last())
-        return listOf(interpreterHelper.trackedEntityTypeDisplayName(trackedEntityType))
+        val trackedEntityInstanceUid = interpreterHelper.parseIdentifiableUid(
+            regex.find(error.message)!!.groupValues.last())
+        val trackedEntityTypeDisplayName = interpreterHelper.trackedEntityTypeDisplayName(
+            interpreterHelper.trackedEntityInstance(trackedEntityInstanceUid).trackedEntityType()!!)
+        return listOf(trackedEntityTypeDisplayName, trackedEntityTypeDisplayName, trackedEntityInstanceUid)
     }
 }

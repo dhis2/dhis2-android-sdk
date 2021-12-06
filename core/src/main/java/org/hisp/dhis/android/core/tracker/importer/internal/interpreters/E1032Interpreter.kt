@@ -36,6 +36,6 @@ internal class E1032Interpreter internal constructor(
 ) : ErrorCodeInterpreter {
     override val unformattedDescription = R.string.E1032
     override fun companions(error: JobValidationError): List<String> {
-        return listOf(interpreterHelper.programStageName(error.uid), error.uid)
+        return listOf(interpreterHelper.programStageDisplayName(error.uid), error.uid)
     }
 }

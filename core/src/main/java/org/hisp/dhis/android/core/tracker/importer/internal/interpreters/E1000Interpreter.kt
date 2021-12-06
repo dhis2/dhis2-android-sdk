@@ -38,6 +38,6 @@ internal class E1000Interpreter internal constructor(
     override val unformattedDescription = R.string.E1000
     override fun companions(error: JobValidationError): List<String> {
         val organisationUnitUid = interpreterHelper.parseIdentifiableUid(regex.find(error.message)!!.groupValues.last())
-        return listOf(interpreterHelper.organisationUnitUid(organisationUnitUid))
+        return listOf(interpreterHelper.organisationUnitDisplayName(organisationUnitUid))
     }
 }

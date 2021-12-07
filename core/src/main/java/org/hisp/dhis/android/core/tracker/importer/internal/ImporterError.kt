@@ -93,11 +93,20 @@ internal enum class ImporterError(val regex: Regex) {
     E1083(Regex("User: `(.*)`, is not authorized to modify completed events.")),
     E1084(Regex("File resource: `(.*)`, reference could not be found.")),
     E1085(Regex("Attribute: `(.*)`, value does not match value type: `(.*)`.")),
-    E1086(Regex("Event: `(.*)`, has a program: `(.*)`, that is a registration but its ProgramStage is not valid or missing.")),
+    E1086(
+        Regex(
+            "Event: `(.*)`, has a program: `(.*)`, that is a registration but its ProgramStage is not " +
+                "valid or missing."
+        )
+    ),
     E1087(Regex("Event: `(.*)`, could not find DataElement: `(.*)`, linked to a data value.")),
     E1088(Regex("Event: `(.*)`, program: `(.*)`, and ProgramStage: `(.*)`, could not be found.")),
     E1089(Regex("Event: `(.*)`, references a Program Stage `(.*)` that does not belong to Program `(.*)`.")),
-    E1090(Regex("Attribute: `(.*)`, is mandatory in tracked entity type `(.*)` but not declared in tracked entity `(.*)`.")),
+    E1090(
+        Regex(
+            "Attribute: `(.*)`, is mandatory in tracked entity type `(.*)` but not declared in tracked entity `(.*)`."
+        )
+    ),
     E1091(Regex("User: `(.*)`, has no data write access to Program: `(.*)`.")),
     E1095(Regex("User: `(.*)`, has no data write access to ProgramStage: `(.*)`.")),
     E1096(Regex("User: `(.*)`, has no data read access to Program: `(.*)`.")),
@@ -106,7 +115,11 @@ internal enum class ImporterError(val regex: Regex) {
     E1102(Regex("User: `(.*)`, does not have access to the tracked entity: `(.*)`, Program: `(.*)`, combination.")),
     E1103(Regex("User: `(.*)`, is lacking 'F_ENROLLMENT_CASCADE_DELETE' authority to delete Enrollment : `(.*)`.")),
     E1104(Regex("User: `(.*)`, has no data read access to program: `(.*)`, TrackedEntityType: `(.*)`.")),
-    E1112(Regex("Attribute value: `(.*)`, is set to confidential but system is not properly configured to encrypt data.")),
+    E1112(
+        Regex(
+            "Attribute value: `(.*)`, is set to confidential but system is not properly configured to encrypt data."
+        )
+    ),
     E1113(Regex("Enrollment: `(.*)`, is already deleted and cannot be modified.")),
     E1114(Regex("TrackedEntity: `(.*)`, is already deleted and cannot be modified.")),
     E1115(Regex("Could not find CategoryOptionCombo: `(.*)`.")),
@@ -154,7 +167,11 @@ internal enum class ImporterError(val regex: Regex) {
 
     /* Relationship */
     E4000(Regex("Relationship: `(.*)` cannot link to itself")),
-    E4001(Regex("Relationship Item `(.*)` for Relationship `(.*)` is invalid: an Item can link only one Tracker entity.")),
+    E4001(
+        Regex(
+            "Relationship Item `(.*)` for Relationship `(.*)` is invalid: an Item can link only one Tracker entity."
+        )
+    ),
     E4003(Regex("There are duplicated relationships.")),
     E4004(Regex("Missing required relationship property: 'relationshipType'.")),
     E4005(Regex("RelationShip: `(.*)`, do not exist.")),
@@ -163,10 +180,18 @@ internal enum class ImporterError(val regex: Regex) {
     E4008(Regex("Missing required relationship property: 'to'.")),
     E4009(Regex("Relationship Type `(.*)` is not valid.")),
     E4010(Regex("Relationship Type `(.*)` constraint requires a (.*) but a (.*) was found.")),
-    E4011(Regex("Relationship: `(.*)` cannot be persisted because (.*) (.*) referenced by this relationship is not valid.")),
+    E4011(
+        Regex(
+            "Relationship: `(.*)` cannot be persisted because (.*) (.*) referenced by this relationship is not valid."
+        )
+    ),
     E4012(Regex("Could not find `(.*)`: `(.*)`, linked to Relationship.")),
     E4013(Regex("Relationship Type `(.*)` constraint is missing (.*).")),
-    E4014(Regex("Relationship Type `(.*)` constraint requires a Tracked Entity having type `(.*)` but `(.*)` was found.")),
+    E4014(
+        Regex(
+            "Relationship Type `(.*)` constraint requires a Tracked Entity having type `(.*)` but `(.*)` was found."
+        )
+    ),
     E4015(Regex("Relationship: `(.*)`, already exists.")),
     E9999(Regex("N/A")),
 }

@@ -35,5 +35,6 @@
     <string name="E1005">The %s type could not be found</string>
     <string name="E1006">The attribute %s does not exist</string>
     <string name="E1007">The attribute does not match the value type `%s`. (Error: %s)</string>
+    <string name="E1009">The file has already been assigned. (File: %s)</string>
     <string name="E1032">The %s event was not found in the server. (Event: %s)</string>
 </resources>

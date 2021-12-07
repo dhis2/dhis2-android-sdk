@@ -193,5 +193,5 @@ internal enum class ImporterError(val regex: Regex) {
         )
     ),
     E4015(Regex("Relationship: `(.*)`, already exists.")),
-    E9999(Regex("N/A")),
+    E9999(Regex("N/A"))
 }

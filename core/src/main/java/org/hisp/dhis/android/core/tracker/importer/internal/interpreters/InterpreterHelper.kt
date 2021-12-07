@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.program.ProgramStage
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
@@ -43,12 +44,11 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceSt
 @Reusable
 internal class InterpreterHelper @Inject internal constructor(
     private val teiStore: TrackedEntityInstanceStore,
-    private val enrollmentStore: EnrollmentStore,
     private val eventStore: EventStore,
     private val programStageStore: IdentifiableObjectStore<ProgramStage>,
     private val organisationUnitStore: IdentifiableObjectStore<OrganisationUnit>,
     private val trackedEntityTypeStore: IdentifiableObjectStore<TrackedEntityType>,
-    private val attributeStore: IdentifiableObjectStore<Attribute>
+    private val trackedEntityAttributeStore: IdentifiableObjectStore<TrackedEntityAttribute>
 ) {
 
     fun trackedEntityInstance(teiUid: String): TrackedEntityInstance {
@@ -67,8 +67,8 @@ internal class InterpreterHelper @Inject internal constructor(
         return trackedEntityTypeStore.selectByUid(trackedEntityTypeUid)!!.displayName()!!
     }
 
-    fun attributeDisplayName(attributeUid: String): String {
-        return attributeStore.selectByUid(attributeUid)!!.displayName()!!
+    fun trackedEntityAttributeStoreDisplayName(attributeUid: String): String {
+        return trackedEntityAttributeStore.selectByUid(attributeUid)!!.displayName()!!
     }
 
     fun parseIdentifiableUid(classAndUid: String): String {

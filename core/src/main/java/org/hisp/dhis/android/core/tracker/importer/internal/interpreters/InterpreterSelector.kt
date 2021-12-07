@@ -44,7 +44,7 @@ internal class InterpreterSelector @Inject internal constructor(
             ImporterError.E1003 -> E1003Interpreter(interpreterHelper, error.regex)
             ImporterError.E1005 -> E1005Interpreter(interpreterHelper, error.regex)
             ImporterError.E1006 -> E1006Interpreter(interpreterHelper, error.regex)
-            ImporterError.E1007 -> TODO()
+            ImporterError.E1007 -> E1007Interpreter(interpreterHelper, error.regex)
             ImporterError.E1008 -> TODO()
             ImporterError.E1009 -> TODO()
             ImporterError.E1010 -> TODO()

@@ -53,8 +53,12 @@ internal class InterpreterHelper @Inject internal constructor(
         return teiStore.selectByUid(teiUid)!!
     }
 
-    fun programStageDisplayName(eventUid: String): String {
-        return programStageStore.selectByUid(eventStore.selectByUid(eventUid)!!.programStage()!!)!!.displayName()!!
+    fun programStageUid(eventUid: String): String {
+        return eventStore.selectByUid(eventUid)!!.programStage()!!
+    }
+
+    fun programStageDisplayName(programStageUid: String): String {
+        return programStageStore.selectByUid(programStageUid)!!.displayName()!!
     }
 
     fun organisationUnitDisplayName(orgUnitUid: String): String {

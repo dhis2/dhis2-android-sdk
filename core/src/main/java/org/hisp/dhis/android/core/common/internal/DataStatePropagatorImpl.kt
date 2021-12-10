@@ -298,7 +298,9 @@ internal class DataStatePropagatorImpl @Inject internal constructor(
                 if (bidirectional) {
                     true
                 } else {
-                    relationship.from()?.elementUid() == relationshipItem.elementUid()
+                    val fromItem = relationshipItemStore
+                        .getForRelationshipUidAndConstraintType(relationship.uid()!!, RelationshipConstraintType.FROM)
+                    fromItem?.elementUid() == relationshipItem.elementUid()
                 }
             } ?: false
         }

@@ -38,5 +38,6 @@
     <string name="E1008">The program stage %s has no reference to a program. Check the program stage configuration</string>
     <string name="E1009">The file has already been assigned. (File: %s)</string>
     <string name="E1032">The %s event was not found in the server. (Event: %s)</string>
+    <string name="E1063">The %s was not found in the server. (%s: %s)</string>
     <string name="E1081">The enrollment was not found in the server. (Enrollment: %s)</string>
 </resources>

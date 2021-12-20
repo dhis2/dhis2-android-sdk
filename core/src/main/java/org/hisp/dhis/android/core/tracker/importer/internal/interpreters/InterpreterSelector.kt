@@ -79,7 +79,7 @@ internal class InterpreterSelector @Inject internal constructor(
             ImporterError.E1063 -> E1063Interpreter(interpreterHelper, error.regex)
             ImporterError.E1064 -> E1064Interpreter(interpreterHelper, error.regex)
             ImporterError.E1068 -> TODO()
-            ImporterError.E1069 -> TODO()
+            ImporterError.E1069 -> E1069Interpreter(interpreterHelper, error.regex)
             ImporterError.E1070 -> TODO()
             ImporterError.E1074 -> TODO()
             ImporterError.E1075 -> TODO()

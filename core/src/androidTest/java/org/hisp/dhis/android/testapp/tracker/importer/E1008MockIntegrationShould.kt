@@ -34,6 +34,8 @@ import org.junit.runner.RunWith
 @RunWith(D2JunitRunner::class)
 internal class E1008MockIntegrationShould : BaseTrackerConflictMockIntegrationShould() {
     override val importerError = ImporterError.E1008
-    override val errorMessage = "Program stage `dBwrot7S420` has no reference to a program. Check the program stage configuration"
-    override val expectedDescription = "The program stage Antenatal care visit - Program rules demo has no reference to a program. Check the program stage configuration"
+    override val errorMessage = "Program stage `dBwrot7S420` has no reference to a program. Check the " +
+        "program stage configuration"
+    override val expectedDescription = "The program stage Antenatal care visit - Program rules demo has " +
+        "no reference to a program. Check the program stage configuration"
 }

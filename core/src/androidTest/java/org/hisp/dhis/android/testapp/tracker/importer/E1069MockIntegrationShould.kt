@@ -32,9 +32,11 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
-internal class E1064MockIntegrationShould : BaseTrackerConflictMockIntegrationShould() {
-    override val importerError = ImporterError.E1064
-    override val errorMessage = "Non-unique attribute value `854-2454` for attribute `cejWyOfXge6`"
-    override val expectedDescription = "The attribute value `854-2454` for the `TB number` attribute is not unique. " +
-        "(Attribute: cejWyOfXge6)"
+internal class E1069MockIntegrationShould : BaseTrackerConflictMockIntegrationShould() {
+    override val importerError = ImporterError.E1069
+    override val errorUid: String
+        get() = "enroll1"
+    override val errorMessage = "Could not find Program: `lxAQ7Zs9VYR`, linked to Enrollment."
+    override val expectedDescription = "The program Antenatal care visit linked to the enrollment was not found " +
+        "in the server. (Program: lxAQ7Zs9VYR, Enrollment: enroll1)"
 }

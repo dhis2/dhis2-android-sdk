@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.program.ProgramStage
+import org.hisp.dhis.android.core.program.internal.ProgramStoreInterface
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
@@ -43,6 +44,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceSt
 internal class InterpreterHelper @Inject internal constructor(
     private val teiStore: TrackedEntityInstanceStore,
     private val eventStore: EventStore,
+    private val programStore: ProgramStoreInterface,
     private val programStageStore: IdentifiableObjectStore<ProgramStage>,
     private val organisationUnitStore: IdentifiableObjectStore<OrganisationUnit>,
     private val trackedEntityTypeStore: IdentifiableObjectStore<TrackedEntityType>,
@@ -55,6 +57,10 @@ internal class InterpreterHelper @Inject internal constructor(
 
     fun programStageUid(eventUid: String): String {
         return eventStore.selectByUid(eventUid)!!.programStage()!!
+    }
+
+    fun programDisplayName(programUid: String): String {
+        return programStore.selectByUid(programUid)!!.displayName()!!
     }
 
     fun programStageDisplayName(programStageUid: String): String {

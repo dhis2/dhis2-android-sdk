@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.dataelement.internal.DataElementFields;
 import org.hisp.dhis.android.core.indicator.Indicator;
 
 import java.util.Collections;
@@ -43,26 +42,25 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class IndicatorEntityDIModule {
+public final class IndicatorEntityDIModule implements IdentifiableEntityDIModule<Indicator> {
 
+    @Override
     @Provides
     @Reusable
     public IdentifiableObjectStore<Indicator> store(DatabaseAdapter databaseAdapter) {
         return IndicatorStore.create(databaseAdapter);
     }
 
+    @Override
     @Provides
     @Reusable
-    public Handler<Indicator> handler(IndicatorHandler handler) {
-        return handler;
+    public Handler<Indicator> handler(IdentifiableObjectStore<Indicator> store) {
+        return new IdentifiableHandlerImpl<>(store);
     }
 
     @Provides
     @Reusable
-    Map<String, ChildrenAppender<Indicator>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return Collections.singletonMap(
-            IndicatorFields.LEGEND_SETS,
-            IndicatorLegendSetChildrenAppender.Companion.create(databaseAdapter)
-        );
+    Map<String, ChildrenAppender<Indicator>> childrenAppenders() {
+        return Collections.emptyMap();
     }
 }

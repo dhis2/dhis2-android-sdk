@@ -47,6 +47,8 @@ internal class IndicatorHandler @Inject constructor(
 ) : IdentifiableHandlerImpl<Indicator>(indicatorStore) {
 
     override fun afterObjectHandled(indicator: Indicator, action: HandleAction) {
+        super.afterObjectHandled(indicator, action)
+
         if (indicator.legendSets() != null) {
             legendSetHandler.handleMany(indicator.legendSets())
 

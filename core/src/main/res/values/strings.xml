@@ -42,4 +42,5 @@
     <string name="E1064">The attribute value `%s` for the `%s` attribute is not unique. (Attribute: %s)</string>
     <string name="E1069">The program %s linked to the enrollment was not found in the server. (Program: %s, Enrollment: %s)</string>
     <string name="E1081">The enrollment was not found in the server. (Enrollment: %s)</string>
+    <string name="E1084">The file reference was not found in the server. (File resource: %s)</string>
 </resources>

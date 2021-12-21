@@ -106,10 +106,11 @@ object AnalyticsSettingsSamples {
     val analyticsDhisVisualization: AnalyticsDhisVisualization =
         AnalyticsDhisVisualization.builder()
             .id(1L)
-            .groupName("Otro grupo")
+            .groupName("Other group")
             .groupUid("123456")
             .scope(AnalyticsDhisVisualizationScope.HOME)
             .timestamp("2021-07-01T02:55:16.8770")
             .uid("PYBH8ZaAQnC")
+            .name("Sample name")
             .build()
 }

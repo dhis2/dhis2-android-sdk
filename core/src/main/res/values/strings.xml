@@ -43,4 +43,5 @@
     <string name="E1069">The program %s linked to the enrollment was not found in the server. (Program: %s, Enrollment: %s)</string>
     <string name="E1081">The enrollment was not found in the server. (Enrollment: %s)</string>
     <string name="E1084">The file reference was not found in the server. (File resource: %s)</string>
+    <string name="E1100">You do not have the authority to delete the %s. (%s: %s)</string>
 </resources>

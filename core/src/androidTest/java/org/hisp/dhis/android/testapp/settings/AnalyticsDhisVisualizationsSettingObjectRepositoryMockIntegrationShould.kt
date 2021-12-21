@@ -25,31 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.testapp.settings
 
-package org.hisp.dhis.android.testapp.settings;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.Test
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationsSetting;
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(D2JunitRunner.class)
-public class AnalyticsDhisVisualizationsSettingObjectRepositoryMockIntegrationShould
-        extends BaseMockIntegrationTestFullDispatcher {
+@RunWith(D2JunitRunner::class)
+class AnalyticsDhisVisualizationsSettingObjectRepositoryMockIntegrationShould :
+    BaseMockIntegrationTestFullDispatcher() {
 
     @Test
-    public void find_analytics_settings() {
-        AnalyticsDhisVisualizationsSetting analyticsDhisVisualizationsSetting = d2
-                .settingModule()
-                .analyticsSetting()
-                .visualizationsSettings()
-                .blockingGet();
+    fun find_analytics_settings() {
+        val analyticsDhisVisualizationsSetting = d2
+            .settingModule()
+            .analyticsSetting()
+            .visualizationsSettings()
+            .blockingGet()
 
-        assertThat(analyticsDhisVisualizationsSetting.home().size()).isEqualTo(2);
-        assertThat(analyticsDhisVisualizationsSetting.program().size()).isEqualTo(1);
-        assertThat(analyticsDhisVisualizationsSetting.dataSet().size()).isEqualTo(1);
+        assertThat(analyticsDhisVisualizationsSetting.home().size).isEqualTo(2)
+        assertThat(analyticsDhisVisualizationsSetting.home().first().visualizations().first().name()).isNotEmpty()
+
+        assertThat(analyticsDhisVisualizationsSetting.program().size).isEqualTo(1)
+        assertThat(analyticsDhisVisualizationsSetting.dataSet().size).isEqualTo(1)
     }
 }

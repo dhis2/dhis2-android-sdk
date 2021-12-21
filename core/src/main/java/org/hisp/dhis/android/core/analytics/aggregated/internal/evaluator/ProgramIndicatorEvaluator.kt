@@ -117,8 +117,8 @@ internal class ProgramIndicatorEvaluator @Inject constructor(
 
             return when (aggregationType ?: AggregationType.NONE) {
                 AggregationType.SUM -> floatValues.sum()
-                AggregationType.MAX -> floatValues.max()
-                AggregationType.MIN -> floatValues.min()
+                AggregationType.MAX -> floatValues.maxOrNull()
+                AggregationType.MIN -> floatValues.minOrNull()
                 AggregationType.AVERAGE,
                 AggregationType.AVERAGE_SUM_ORG_UNIT -> floatValues.average().toFloat()
                 AggregationType.COUNT -> floatValues.size.toFloat()

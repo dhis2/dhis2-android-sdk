@@ -32,11 +32,11 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
-internal class E1100MockIntegrationShould : BaseTrackerConflictMockIntegrationShould() {
-    override val importerError = ImporterError.E1100
+internal class E1103MockIntegrationShould : BaseTrackerConflictMockIntegrationShould() {
+    override val importerError = ImporterError.E1103
     override val errorUid: String
-        get() = "nWrB0TfWlvh"
-    override val errorMessage = "User: `User (DXyJmlo9rge)`, is lacking 'F_TEI_CASCADE_DELETE' authority to " +
-        "delete TrackedEntityInstance: `TrackedEntityInstance (nWrB0TfWlvh)`."
-    override val expectedDescription = "You do not have the authority to delete the Person. (Person: nWrB0TfWlvh)"
+        get() = "enroll1"
+    override val errorMessage = "User: `User (DXyJmlo9rge)`, is lacking 'F_ENROLLMENT_CASCADE_DELETE' authority " +
+        "to delete Enrollment : `enroll1`."
+    override val expectedDescription = "You do not have the authority to delete the enrollment. (Enrollment: enroll1)"
 }

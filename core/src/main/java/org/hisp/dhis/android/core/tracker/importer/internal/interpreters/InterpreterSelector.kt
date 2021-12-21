@@ -103,7 +103,7 @@ internal class InterpreterSelector @Inject internal constructor(
             ImporterError.E1099 -> TODO()
             ImporterError.E1100 -> E1100Interpreter(interpreterHelper, error.regex)
             ImporterError.E1102 -> TODO()
-            ImporterError.E1103 -> TODO()
+            ImporterError.E1103 -> E1103Interpreter(interpreterHelper, error.regex)
             ImporterError.E1104 -> TODO()
             ImporterError.E1112 -> TODO()
             ImporterError.E1113 -> TODO()

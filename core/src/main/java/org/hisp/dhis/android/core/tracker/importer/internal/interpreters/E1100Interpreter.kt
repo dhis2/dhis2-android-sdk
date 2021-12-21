@@ -37,10 +37,9 @@ internal class E1100Interpreter internal constructor(
 ) : ErrorCodeInterpreter {
     override val unformattedDescription = R.string.E1100
     override fun companions(error: JobValidationError): List<String> {
-        val teiUid = interpreterHelper.parseIdentifiableUid(regex.find(error.message)!!.groupValues.last())
         val trackedEntityTypeDisplayName = interpreterHelper.trackedEntityTypeDisplayName(
-            interpreterHelper.trackedEntityInstance(teiUid).trackedEntityType()!!
+            interpreterHelper.trackedEntityInstance(error.uid).trackedEntityType()!!
         )
-        return listOf(trackedEntityTypeDisplayName, trackedEntityTypeDisplayName, teiUid)
+        return listOf(trackedEntityTypeDisplayName, trackedEntityTypeDisplayName, error.uid)
     }
 }

@@ -50,6 +50,7 @@ class TrackerConflictHelperShould {
     @Before
     fun setUp() {
         whenever(context.getString(any())) doReturn "The %s event was not found in the server. (Event: %s)"
+        whenever(interpreterHelper.programStageUid(any())) doReturn "programStageUid"
         whenever(interpreterHelper.programStageDisplayName(any())) doReturn "Antenatal care visiting"
     }
 
@@ -65,7 +66,7 @@ class TrackerConflictHelperShould {
         val trackerImportConflict = TrackerConflictHelper(context, selector)
             .getConflictBuilder(wrongCodeErrorReport).build()
         assertThat(trackerImportConflict.displayDescription())
-            .isEqualTo("Event: `PXi7gfVIk1p`, Enrollment value is NULL.")
+            .isEqualTo("Event: `PXi7gfVIk1p`, do not exist.")
     }
 
     companion object {
@@ -73,7 +74,7 @@ class TrackerConflictHelperShould {
             "PXi7gfVIk1p",
             TrackerImporterObjectType.EVENT,
             "E1032",
-            "Event: `PXi7gfVIk1p`, Enrollment value is NULL."
+            "Event: `PXi7gfVIk1p`, do not exist."
         )
         private val wrongCodeErrorReport = errorReport.copy(errorCode = "WrongCode")
     }

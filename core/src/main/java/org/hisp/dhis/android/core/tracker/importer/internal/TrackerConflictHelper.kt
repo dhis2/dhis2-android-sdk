@@ -51,13 +51,12 @@ internal class TrackerConflictHelper @Inject constructor(
             .created(Date())
     }
 
-    @Suppress("TooGenericExceptionCaught", "SpreadOperator")
+    @Suppress("TooGenericExceptionCaught")
     private fun displayDescription(errorReport: JobValidationError): String {
         return try {
             val error = ImporterError.valueOf(errorReport.errorCode)
             val interpreter = interpreterSelector.getInterpreter(error)
-            return context.getString(interpreter.unformattedDescription)
-                .format(*interpreter.companions(errorReport).toTypedArray())
+            return interpreter.displayDescription(context, errorReport)
         } catch (e: Exception) {
             errorReport.message
         }

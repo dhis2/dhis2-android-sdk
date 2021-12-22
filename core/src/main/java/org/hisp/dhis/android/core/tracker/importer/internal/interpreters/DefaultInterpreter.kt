@@ -31,13 +31,12 @@ package org.hisp.dhis.android.core.tracker.importer.internal.interpreters
 import android.content.Context
 import org.hisp.dhis.android.core.tracker.importer.internal.JobValidationError
 
-internal interface ErrorCodeInterpreter {
-    val regex: Regex
-    val unformattedDescription: Int
-    fun companions(error: JobValidationError): List<String> = emptyList()
-
-    @Suppress("SpreadOperator")
-    fun displayDescription(context: Context, error: JobValidationError): String {
-        return context.getString(unformattedDescription).format(*companions(error).toTypedArray())
+internal class DefaultInterpreter internal constructor(
+    private val interpreterHelper: InterpreterHelper,
+    override val regex: Regex
+) : ErrorCodeInterpreter {
+    override val unformattedDescription = 0
+    override fun displayDescription(context: Context, error: JobValidationError): String {
+        return error.message
     }
 }

@@ -55,7 +55,7 @@ internal class InterpreterSelector @Inject internal constructor(
             ImporterError.E1084 -> E1084Interpreter(interpreterHelper, error.regex)
             ImporterError.E1100 -> E1100Interpreter(interpreterHelper, error.regex)
             ImporterError.E1103 -> E1103Interpreter(interpreterHelper, error.regex)
-            else -> TODO("Add missing interpreters")
+            else -> DefaultInterpreter(interpreterHelper, error.regex)
         }
     }
 }

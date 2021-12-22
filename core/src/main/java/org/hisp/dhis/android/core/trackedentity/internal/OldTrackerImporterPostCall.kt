@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventImportHandler
 import org.hisp.dhis.android.core.event.internal.EventPayload
 import org.hisp.dhis.android.core.event.internal.EventService
+import org.hisp.dhis.android.core.fileresource.internal.FileResourcePostCall
 import org.hisp.dhis.android.core.imports.internal.EventWebResponse
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponse
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponseHandler
@@ -56,7 +57,8 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
     private val teiWebResponseHandler: TEIWebResponseHandler,
     private val eventImportHandler: EventImportHandler,
     private val apiCallExecutor: APICallExecutor,
-    private val relationshipPostCall: RelationshipPostCall
+    private val relationshipPostCall: RelationshipPostCall,
+    private val fileResourcePostCall: FileResourcePostCall
 ) {
 
     fun uploadTrackedEntityInstances(
@@ -94,7 +96,10 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
     ): Observable<D2Progress> {
         return Observable.create { emitter: ObservableEmitter<D2Progress> ->
             val progressManager = D2ProgressManager(null)
-            val teiPartitions = trackedEntityInstances.chunked(TrackedEntityInstanceService.DEFAULT_PAGE_SIZE)
+            val teiPartitions = trackedEntityInstances
+                .chunked(TrackedEntityInstanceService.DEFAULT_PAGE_SIZE)
+                .map { partition -> fileResourcePostCall.uploadTrackedEntityFileResources(partition).blockingGet() }
+                .filter { it.isNotEmpty() }
 
             for (partition in teiPartitions) {
                 try {
@@ -142,28 +147,31 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
             Observable.just<D2Progress>(progressManager.increaseProgress(Event::class.java, true))
         } else {
             Observable.defer {
-                val eventPayload = EventPayload()
+                val validEvents = fileResourcePostCall.uploadEventsFileResources(events).blockingGet()
+
+                val payload = EventPayload()
+                payload.events = validEvents
+
                 trackerStateManager.setPayloadStates(
-                    events = events,
+                    events = payload.events,
                     forcedState = State.UPLOADING
                 )
 
-                eventPayload.events = events
                 val strategy = "SYNC"
                 try {
                     val webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
-                        eventService.postEvents(eventPayload, strategy),
+                        eventService.postEvents(payload, strategy),
                         @Suppress("MagicNumber")
                         listOf(HTTP_CONFLICT),
                         EventWebResponse::class.java
                     )
                     eventImportHandler.handleEventImportSummaries(
                         eventImportSummaries = webResponse?.response()?.importSummaries(),
-                        events = events
+                        events = payload.events
                     )
                     Observable.just<D2Progress>(progressManager.increaseProgress(Event::class.java, true))
                 } catch (e: Exception) {
-                    trackerStateManager.restorePayloadStates(events = events)
+                    trackerStateManager.restorePayloadStates(events = payload.events)
                     Observable.error<D2Progress>(e)
                 }
             }

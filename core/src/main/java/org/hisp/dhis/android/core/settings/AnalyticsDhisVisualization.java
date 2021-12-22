@@ -67,6 +67,9 @@ public abstract class AnalyticsDhisVisualization implements CoreObject, ObjectWi
     public abstract String uid();
 
     @Nullable
+    public abstract String name();
+
+    @Nullable
     public abstract String timestamp();
 
     public static AnalyticsDhisVisualization create(Cursor cursor) {
@@ -95,6 +98,8 @@ public abstract class AnalyticsDhisVisualization implements CoreObject, ObjectWi
 
         @JsonProperty(UID)
         public abstract Builder uid(String uid);
+
+        public abstract Builder name(String name);
 
         @JsonProperty("timestamp")
         public abstract Builder timestamp(String timestamp);

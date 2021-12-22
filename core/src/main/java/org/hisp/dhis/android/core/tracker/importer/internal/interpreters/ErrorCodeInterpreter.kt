@@ -34,7 +34,4 @@ internal interface ErrorCodeInterpreter {
     val regex: Regex
     val unformattedDescription: Int
     fun companions(error: JobValidationError): List<String>
-    fun match(error: JobValidationError): List<String> {
-        return listOf("sf", "sf")
-    }
 }

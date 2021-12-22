@@ -35,7 +35,6 @@ internal class E1007Interpreter internal constructor(
     private val interpreterHelper: InterpreterHelper,
     override val regex: Regex
 ) : ErrorCodeInterpreter {
-    // Error validating attribute value type: `NUMBER`; Error: `Value 'home' is not a valid numeric type for attribute qDQUHqdAXkT `.
     override val unformattedDescription = R.string.E1007
     override fun companions(error: JobValidationError): List<String> {
         val groupValues = regex.find(error.message)!!.groupValues

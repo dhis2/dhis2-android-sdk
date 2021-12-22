@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.tracker.importer.internal.interpreters.Interpr
 @Reusable
 internal class TrackerConflictHelper @Inject constructor(
     val context: Context,
-    val interpreterSelector: InterpreterSelector
+    private val interpreterSelector: InterpreterSelector
 ) {
 
     fun getConflictBuilder(errorReport: JobValidationError): TrackerImportConflict.Builder {
@@ -51,6 +51,7 @@ internal class TrackerConflictHelper @Inject constructor(
             .created(Date())
     }
 
+    @Suppress("TooGenericExceptionCaught", "SpreadOperator")
     private fun displayDescription(errorReport: JobValidationError): String {
         return try {
             val error = ImporterError.valueOf(errorReport.errorCode)

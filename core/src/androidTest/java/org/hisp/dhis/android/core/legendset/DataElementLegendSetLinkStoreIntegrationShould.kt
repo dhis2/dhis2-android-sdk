@@ -25,41 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.legendset
 
-package org.hisp.dhis.android.core.legendset;
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.legendset.DataElementLegendSetLinkSamples
+import org.hisp.dhis.android.core.legendset.internal.DataElementLegendSetLinkStore
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.legendset.DataElementLegendSetLinkSamples;
-import org.hisp.dhis.android.core.data.legendset.ProgramIndicatorLegendSetLinkSamples;
-import org.hisp.dhis.android.core.legendset.internal.DataElementLegendSetLinkStore;
-import org.hisp.dhis.android.core.legendset.internal.ProgramIndicatorLegendSetLinkStore;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class DataElementLegendSetLinkStoreIntegrationShould
-        extends LinkStoreAbstractIntegrationShould<DataElementLegendSetLink> {
-
-    public DataElementLegendSetLinkStoreIntegrationShould() {
-        super(DataElementLegendSetLinkStore.create(TestDatabaseAdapterFactory.get()),
-                DataElementLegendSetLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+class DataElementLegendSetLinkStoreIntegrationShould :
+    LinkStoreAbstractIntegrationShould<DataElementLegendSetLink>(
+        DataElementLegendSetLinkStore.create(TestDatabaseAdapterFactory.get()),
+        DataElementLegendSetLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+    ) {
+    override fun addMasterUid(): String {
+        return DataElementLegendSetLinkSamples.getDataElementLegendSetLink().dataElement()!!
     }
 
-    @Override
-    protected String addMasterUid() {
-        return DataElementLegendSetLinkSamples.getDataElementLegendSetLink().dataElement();
+    override fun buildObject(): DataElementLegendSetLink {
+        return DataElementLegendSetLinkSamples.getDataElementLegendSetLink()
     }
 
-    @Override
-    protected DataElementLegendSetLink buildObject() {
-        return DataElementLegendSetLinkSamples.getDataElementLegendSetLink();
-    }
-
-    @Override
-    protected DataElementLegendSetLink buildObjectWithOtherMasterUid() {
+    override fun buildObjectWithOtherMasterUid(): DataElementLegendSetLink {
         return buildObject().toBuilder()
-                .dataElement("new_data_element")
-                .build();
+            .dataElement("new_data_element")
+            .build()
     }
 }

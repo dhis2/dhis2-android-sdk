@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import dagger.Reusable
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
-import java.net.HttpURLConnection.HTTP_CONFLICT
-import javax.inject.Inject
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
@@ -40,13 +38,14 @@ import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventImportHandler
 import org.hisp.dhis.android.core.event.internal.EventPayload
 import org.hisp.dhis.android.core.event.internal.EventService
-import org.hisp.dhis.android.core.fileresource.internal.FileResourcePostCall
 import org.hisp.dhis.android.core.imports.internal.EventWebResponse
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponse
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponseHandler
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.relationship.internal.RelationshipPostCall
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import java.net.HttpURLConnection.HTTP_CONFLICT
+import javax.inject.Inject
 
 @Reusable
 internal class OldTrackerImporterPostCall @Inject internal constructor(
@@ -58,7 +57,7 @@ internal class OldTrackerImporterPostCall @Inject internal constructor(
     private val eventImportHandler: EventImportHandler,
     private val apiCallExecutor: APICallExecutor,
     private val relationshipPostCall: RelationshipPostCall,
-    private val fileResourcePostCall: FileResourcePostCall
+    private val fileResourcePostCall: OldTrackerImporterFileResourcesPostCall
 ) {
 
     fun uploadTrackedEntityInstances(

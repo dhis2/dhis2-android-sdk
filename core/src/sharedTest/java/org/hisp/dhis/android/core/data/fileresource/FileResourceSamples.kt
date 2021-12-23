@@ -25,35 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.data.fileresource
 
-package org.hisp.dhis.android.core.fileresource.internal;
+import org.hisp.dhis.android.core.fileresource.FileResource
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.common.State
+import java.text.ParseException
+import java.util.*
 
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.fileresource.FileResourceSamples;
-import org.hisp.dhis.android.core.fileresource.FileResource;
-import org.hisp.dhis.android.core.fileresource.FileResourceTableInfo;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class FileResourceStoreIntegrationShould
-        extends IdentifiableObjectStoreAbstractIntegrationShould<FileResource> {
-
-    public FileResourceStoreIntegrationShould() {
-        super(FileResourceStoreImpl.create(TestDatabaseAdapterFactory.get()),
-                FileResourceTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+object FileResourceSamples {
+    fun get(): FileResource {
+        return FileResource.builder()
+            .id(1L)
+            .uid("file_resource_uid")
+            .created(getDate("2014-08-20T12:28:56.409")!!)
+            .lastUpdated(getDate("2015-10-14T13:36:53.063")!!)
+            .syncState(State.TO_POST)
+            .contentLength(1024L)
+            .contentType("image/*")
+            .path("path")
+            .build()
     }
 
-    @Override
-    protected FileResource buildObject() {
-        return FileResourceSamples.get();
-    }
-
-    @Override
-    protected FileResource buildObjectToUpdate() {
-        return FileResourceSamples.get().toBuilder()
-                .name("new_name")
-                .build();
+    private fun getDate(dateStr: String): Date? {
+        return try {
+            BaseIdentifiableObject.DATE_FORMAT.parse(dateStr)
+        } catch (e: ParseException) {
+            e.printStackTrace()
+            null
+        }
     }
 }

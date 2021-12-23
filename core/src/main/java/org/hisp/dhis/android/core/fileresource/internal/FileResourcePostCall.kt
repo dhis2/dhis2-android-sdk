@@ -32,7 +32,6 @@ import android.util.Log
 import android.webkit.MimeTypeMap
 import dagger.Reusable
 import io.reactivex.Observable
-import io.reactivex.Single
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -41,19 +40,12 @@ import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerWithTransformer
-import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper
 import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
-import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
-import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
 import java.io.File
@@ -74,106 +66,13 @@ internal class FileResourcePostCall @Inject constructor(
         return Observable.empty<D2Progress>()
     }
 
-    fun uploadTrackedEntityFileResources(
-        trackedEntityInstances: List<TrackedEntityInstance>
-    ): Single<List<TrackedEntityInstance>> {
-        return Single.create { emitter ->
-            val fileResources = getPendingFileResources()
-
-            if (fileResources.isEmpty()) {
-                emitter.onSuccess(trackedEntityInstances)
-            } else {
-                val successfulTeis = trackedEntityInstances.mapNotNull {
-                    catchErrorToNull { uploadTrackedEntityInstance(it, fileResources) }
-                }
-                emitter.onSuccess(successfulTeis)
-            }
-        }
-    }
-
-    fun uploadEventsFileResources(
-        events: List<Event>
-    ): Single<List<Event>> {
-        return Single.create { emitter ->
-            val fileResources = getPendingFileResources()
-
-            if (fileResources.isEmpty()) {
-                emitter.onSuccess(events)
-            } else {
-                val successfulEvents = events.mapNotNull {
-                    catchErrorToNull { uploadEvent(it, fileResources) }
-                }
-                emitter.onSuccess(successfulEvents)
-            }
-        }
-    }
-
-    private fun uploadTrackedEntityInstance(
-        trackedEntityInstance: TrackedEntityInstance,
-        fileResources: List<FileResource>
-    ): TrackedEntityInstance? {
-        val updatedAttributes = trackedEntityInstance.trackedEntityAttributeValues()?.map { attributeValue ->
-            fileResources.find { it.uid() == attributeValue.value() }?.let { fileResource ->
-                val newUid = uploadFileResource(fileResource)
-                attributeValue.toBuilder().value(newUid).build()
-            } ?: attributeValue
-        }
-
-        val updatedEnrollments = TrackedEntityInstanceInternalAccessor.accessEnrollments(trackedEntityInstance)
-            .map { uploadEnrollment(it, fileResources) }
-
-        return TrackedEntityInstanceInternalAccessor
-            .insertEnrollments(trackedEntityInstance.toBuilder(), updatedEnrollments)
-            .trackedEntityAttributeValues(updatedAttributes)
-            .build()
-    }
-
-    private fun uploadEnrollment(
-        enrollment: Enrollment,
-        fileResources: List<FileResource>
-    ): Enrollment {
-        val updatedEvents = EnrollmentInternalAccessor.accessEvents(enrollment)
-            .map { uploadEvent(it, fileResources) }
-
-        return EnrollmentInternalAccessor
-            .insertEvents(enrollment.toBuilder(), updatedEvents)
-            .build()
-    }
-
-    private fun uploadEvent(
-        event: Event,
-        fileResources: List<FileResource>
-    ): Event {
-        val updatedDataValues = event.trackedEntityDataValues()?.map { dataValue ->
-            // TODO Filter by value type
-            fileResources.find { it.uid() == dataValue.value() }?.let { fileResource ->
-                val newUid = uploadFileResource(fileResource)
-                dataValue.toBuilder().value(newUid).build()
-            } ?: dataValue
-        }
-
-        return event.toBuilder()
-            .trackedEntityDataValues(updatedDataValues)
-            .build()
-    }
-
-    private fun uploadFileResource(fileResource: FileResource): String {
+    fun uploadFileResource(fileResource: FileResource): String {
         val file = getRelatedFile(fileResource)
         val filePart = getFilePart(file)
 
         val responseBody = apiCallExecutor.executeObjectCall(fileResourceService.uploadFile(filePart))
 
         return handleResponse(responseBody.string(), fileResource, file)
-    }
-
-    private fun getPendingFileResources(): List<FileResource> {
-        val query = WhereClauseBuilder()
-            .appendInKeyStringValues(
-                DataColumns.SYNC_STATE,
-                EnumHelper.asStringList(State.uploadableStatesIncludingError().toList())
-            ).build()
-
-        return fileResourceStore.selectWhere(query)
     }
 
     @Throws(D2Error::class)
@@ -260,17 +159,5 @@ internal class FileResourcePostCall @Inject constructor(
                 .path(file.absolutePath)
                 .build()
         )
-    }
-
-    private fun <T> catchErrorToNull(f: () -> T): T? {
-        return try {
-            f()
-        } catch (e: java.lang.RuntimeException) {
-            null
-        } catch (e: RuntimeException) {
-            null
-        } catch (e: D2Error) {
-            null
-        }
     }
 }

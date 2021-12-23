@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBui
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper
 import org.hisp.dhis.android.core.common.*
 
 internal open class IdentifiableDataObjectStoreImpl<O>(
@@ -113,5 +114,15 @@ internal open class IdentifiableDataObjectStoreImpl<O>(
         val count = cursor.count
         cursor.close()
         return count > 0
+    }
+
+    override fun getUploadableSyncStatesIncludingError(): List<O> {
+        val whereClause = WhereClauseBuilder()
+            .appendInKeyStringValues(
+                DataColumns.SYNC_STATE,
+                EnumHelper.asStringList(State.uploadableStatesIncludingError().toList())
+            ).build()
+
+        return selectWhere(whereClause)
     }
 }

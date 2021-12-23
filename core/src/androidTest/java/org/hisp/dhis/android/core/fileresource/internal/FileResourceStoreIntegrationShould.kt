@@ -25,37 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.fileresource.internal
 
-package org.hisp.dhis.android.core.data.fileresource;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.fileresource.FileResource
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.fileresource.FileResourceTableInfo
+import org.hisp.dhis.android.core.data.fileresource.FileResourceSamples
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.fileresource.FileResource;
-
-import java.text.ParseException;
-import java.util.Date;
-
-public class FileResourceSamples {
-
-    public static FileResource get() {
-        return FileResource.builder()
-                .id(1L)
-                .uid("file_resource_uid")
-                .created(getDate("2014-08-20T12:28:56.409"))
-                .lastUpdated(getDate("2015-10-14T13:36:53.063"))
-                .syncState(State.TO_POST)
-                .contentLength(1024L)
-                .contentType("image/*")
-                .path("path")
-                .build();
+@RunWith(D2JunitRunner::class)
+class FileResourceStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<FileResource>(
+    FileResourceStoreImpl.create(TestDatabaseAdapterFactory.get()),
+    FileResourceTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
+) {
+    override fun buildObject(): FileResource {
+        return FileResourceSamples.get()
     }
 
-    private static Date getDate(String dateStr) {
-        try {
-            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
+    override fun buildObjectToUpdate(): FileResource {
+        return FileResourceSamples.get().toBuilder()
+            .name("new_name")
+            .build()
     }
 }

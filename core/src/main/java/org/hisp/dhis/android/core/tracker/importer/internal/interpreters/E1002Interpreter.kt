@@ -25,40 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.tracker.importer.internal
 
-import android.content.Context
-import dagger.Reusable
-import java.util.*
-import javax.inject.Inject
-import org.hisp.dhis.android.core.imports.ImportStatus
-import org.hisp.dhis.android.core.imports.TrackerImportConflict
-import org.hisp.dhis.android.core.tracker.importer.internal.interpreters.InterpreterSelector
+package org.hisp.dhis.android.core.tracker.importer.internal.interpreters
 
-@Reusable
-internal class TrackerConflictHelper @Inject constructor(
-    val context: Context,
-    private val interpreterSelector: InterpreterSelector
-) {
+import org.hisp.dhis.android.R
+import org.hisp.dhis.android.core.tracker.importer.internal.JobValidationError
 
-    fun getConflictBuilder(errorReport: JobValidationError): TrackerImportConflict.Builder {
-        return TrackerImportConflict.builder()
-            .conflict(errorReport.message)
-            .displayDescription(displayDescription(errorReport))
-            .value(errorReport.uid)
-            .errorCode(errorReport.errorCode)
-            .status(ImportStatus.ERROR)
-            .created(Date())
-    }
-
-    @Suppress("TooGenericExceptionCaught")
-    private fun displayDescription(errorReport: JobValidationError): String {
-        return try {
-            val error = ImporterError.valueOf(errorReport.errorCode)
-            val interpreter = interpreterSelector.getInterpreter(error)
-            return interpreter.displayDescription(context, errorReport)
-        } catch (e: Exception) {
-            errorReport.message
-        }
+internal class E1002Interpreter internal constructor(
+    private val interpreterHelper: InterpreterHelper,
+    override val regex: Regex
+) : ErrorCodeInterpreter {
+    override val unformattedDescription = R.string.E1002
+    override fun companions(error: JobValidationError): List<String> {
+        val trackedEntityInstanceUid = interpreterHelper.parseIdentifiableUid(
+            regex.find(error.message)!!.groupValues.last()
+        )
+        val trackedEntityTypeDisplayName = interpreterHelper.trackedEntityTypeDisplayName(
+            interpreterHelper.trackedEntityInstance(trackedEntityInstanceUid).trackedEntityType()!!
+        )
+        return listOf(trackedEntityTypeDisplayName, trackedEntityTypeDisplayName, trackedEntityInstanceUid)
     }
 }

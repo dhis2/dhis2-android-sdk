@@ -25,40 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.tracker.importer.internal
+
+package org.hisp.dhis.android.core.tracker.importer.internal.interpreters
 
 import android.content.Context
-import dagger.Reusable
-import java.util.*
-import javax.inject.Inject
-import org.hisp.dhis.android.core.imports.ImportStatus
-import org.hisp.dhis.android.core.imports.TrackerImportConflict
-import org.hisp.dhis.android.core.tracker.importer.internal.interpreters.InterpreterSelector
+import org.hisp.dhis.android.core.tracker.importer.internal.JobValidationError
 
-@Reusable
-internal class TrackerConflictHelper @Inject constructor(
-    val context: Context,
-    private val interpreterSelector: InterpreterSelector
-) {
+internal interface ErrorCodeInterpreter {
+    val regex: Regex
+    val unformattedDescription: Int
+    fun companions(error: JobValidationError): List<String> = emptyList()
 
-    fun getConflictBuilder(errorReport: JobValidationError): TrackerImportConflict.Builder {
-        return TrackerImportConflict.builder()
-            .conflict(errorReport.message)
-            .displayDescription(displayDescription(errorReport))
-            .value(errorReport.uid)
-            .errorCode(errorReport.errorCode)
-            .status(ImportStatus.ERROR)
-            .created(Date())
-    }
-
-    @Suppress("TooGenericExceptionCaught")
-    private fun displayDescription(errorReport: JobValidationError): String {
-        return try {
-            val error = ImporterError.valueOf(errorReport.errorCode)
-            val interpreter = interpreterSelector.getInterpreter(error)
-            return interpreter.displayDescription(context, errorReport)
-        } catch (e: Exception) {
-            errorReport.message
-        }
+    @Suppress("SpreadOperator")
+    fun displayDescription(context: Context, error: JobValidationError): String {
+        return context.getString(unformattedDescription).format(*companions(error).toTypedArray())
     }
 }

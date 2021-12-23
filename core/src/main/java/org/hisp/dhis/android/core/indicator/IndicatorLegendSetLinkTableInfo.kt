@@ -42,8 +42,8 @@ class IndicatorLegendSetLinkTableInfo {
                 return "IndicatorLegendSetLink"
             }
 
-            override fun columns(): DataSetIndicatorLinkTableInfo.Columns {
-                return DataSetIndicatorLinkTableInfo.Columns()
+            override fun columns(): Columns {
+                return Columns()
             }
         }
 
@@ -69,7 +69,7 @@ class IndicatorLegendSetLinkTableInfo {
         }
 
         companion object {
-            const val LEGEND_SET = "legendSets"
+            const val LEGEND_SET = "legendSet"
             const val INDICATOR = "indicator"
         }
     }

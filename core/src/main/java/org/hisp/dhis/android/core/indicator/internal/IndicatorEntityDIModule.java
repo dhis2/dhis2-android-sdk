@@ -61,7 +61,7 @@ public final class IndicatorEntityDIModule {
     @Reusable
     Map<String, ChildrenAppender<Indicator>> childrenAppenders(DatabaseAdapter databaseAdapter) {
         return Collections.singletonMap(
-            DataElementFields.LEGEND_SETS,
+            IndicatorFields.LEGEND_SETS,
             IndicatorLegendSetChildrenAppender.Companion.create(databaseAdapter)
         );
     }

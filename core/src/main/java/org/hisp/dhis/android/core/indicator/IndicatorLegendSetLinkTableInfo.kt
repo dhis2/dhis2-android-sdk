@@ -60,12 +60,12 @@ class IndicatorLegendSetLinkTableInfo {
         override fun all(): Array<String> {
             return CollectionsHelper.appendInNewArray(
                 super.all(),
-                LEGEND_SET, INDICATOR
+                INDICATOR, LEGEND_SET
             )
         }
 
         override fun whereUpdate(): Array<String> {
-            return arrayOf(LEGEND_SET, INDICATOR)
+            return arrayOf(INDICATOR, LEGEND_SET)
         }
 
         companion object {

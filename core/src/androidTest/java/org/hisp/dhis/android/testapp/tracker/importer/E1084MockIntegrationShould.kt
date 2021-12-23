@@ -1,19 +1,19 @@
 /*
  *  Copyright (c) 2004-2021, University of Oslo
  *  All rights reserved.
- *
+ *  
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions are met:
  *  Redistributions of source code must retain the above copyright notice, this
  *  list of conditions and the following disclaimer.
- *
+ *  
  *  Redistributions in binary form must reproduce the above copyright notice,
  *  this list of conditions and the following disclaimer in the documentation
  *  and/or other materials provided with the distribution.
  *  Neither the name of the HISP project nor the names of its contributors may
  *  be used to endorse or promote products derived from this software without
  *  specific prior written permission.
- *
+ *  
  *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -25,40 +25,15 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.tracker.importer.internal
+package org.hisp.dhis.android.testapp.tracker.importer
 
-import android.content.Context
-import dagger.Reusable
-import java.util.*
-import javax.inject.Inject
-import org.hisp.dhis.android.core.imports.ImportStatus
-import org.hisp.dhis.android.core.imports.TrackerImportConflict
-import org.hisp.dhis.android.core.tracker.importer.internal.interpreters.InterpreterSelector
+import org.hisp.dhis.android.core.tracker.importer.internal.ImporterError
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-@Reusable
-internal class TrackerConflictHelper @Inject constructor(
-    val context: Context,
-    private val interpreterSelector: InterpreterSelector
-) {
-
-    fun getConflictBuilder(errorReport: JobValidationError): TrackerImportConflict.Builder {
-        return TrackerImportConflict.builder()
-            .conflict(errorReport.message)
-            .displayDescription(displayDescription(errorReport))
-            .value(errorReport.uid)
-            .errorCode(errorReport.errorCode)
-            .status(ImportStatus.ERROR)
-            .created(Date())
-    }
-
-    @Suppress("TooGenericExceptionCaught")
-    private fun displayDescription(errorReport: JobValidationError): String {
-        return try {
-            val error = ImporterError.valueOf(errorReport.errorCode)
-            val interpreter = interpreterSelector.getInterpreter(error)
-            return interpreter.displayDescription(context, errorReport)
-        } catch (e: Exception) {
-            errorReport.message
-        }
-    }
+@RunWith(D2JunitRunner::class)
+internal class E1084MockIntegrationShould : BaseTrackerConflictMockIntegrationShould() {
+    override val importerError = ImporterError.E1084
+    override val errorMessage = "File resource: `fileUid`, reference could not be found."
+    override val expectedDescription = "The file reference was not found in the server. (File resource: fileUid)"
 }

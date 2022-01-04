@@ -44,6 +44,7 @@ import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectM
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.systeminfo.internal.PingCall
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
@@ -60,13 +61,23 @@ internal class FileResourcePostCall @Inject constructor(
     private val trackedEntityDataValueStore: TrackedEntityDataValueStore,
     private val fileResourceStore: IdentifiableDataObjectStore<FileResource>,
     private val fileResourceHandler: HandlerWithTransformer<FileResource>,
+    private val pingCall: PingCall,
     private val context: Context
 ) {
+
+    private var alreadyPinged = false
+
     fun uploadFileResources(filteredFileResources: List<FileResource>): Observable<D2Progress> {
         return Observable.empty<D2Progress>()
     }
 
     fun uploadFileResource(fileResource: FileResource): String {
+        // Workaround for ANDROSDK-1452 (see comments restricted to Contributors).
+        if (!alreadyPinged) {
+            pingCall.getCompletable(true).blockingAwait()
+            alreadyPinged = true
+        }
+
         val file = getRelatedFile(fileResource)
         val filePart = getFilePart(file)
 

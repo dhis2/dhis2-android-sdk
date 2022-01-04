@@ -25,38 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.systeminfo.internal
 
-package org.hisp.dhis.android.core.systeminfo.internal;
+import dagger.Reusable
+import io.reactivex.Completable
+import org.hisp.dhis.android.core.arch.api.executors.internal.RxAPICallExecutor
+import org.hisp.dhis.android.core.arch.call.internal.CompletableProvider
+import javax.inject.Inject
 
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
+@Reusable
+class PingCall @Inject internal constructor(
+    private val pingService: PingService,
+    private val apiCallExecutor: RxAPICallExecutor
+) : CompletableProvider {
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
-
-@Module(includes = {
-        PingEntityDIModule.class,
-        SystemInfoEntityDIModule.class
-})
-public final class SystemInfoPackageDIModule {
-
-    @Provides
-    @Reusable
-    SystemInfoService service(Retrofit retrofit) {
-        return retrofit.create(SystemInfoService.class);
-    }
-
-    @Provides
-    @Reusable
-    SystemInfoModule systemInfoModule(SystemInfoModuleImpl impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    DHISVersionManager versionManager(DHISVersionManagerImpl impl) {
-        return impl;
+    override fun getCompletable(storeError: Boolean): Completable {
+        return apiCallExecutor.wrapCompletableTransactionally(pingService.getPing(), storeError)
     }
 }

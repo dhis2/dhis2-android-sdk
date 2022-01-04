@@ -25,38 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.systeminfo.internal
 
-package org.hisp.dhis.android.core.systeminfo.internal;
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import retrofit2.Retrofit
 
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
-
-@Module(includes = {
-        PingEntityDIModule.class,
-        SystemInfoEntityDIModule.class
-})
-public final class SystemInfoPackageDIModule {
+@Module
+internal class PingEntityDIModule {
 
     @Provides
     @Reusable
-    SystemInfoService service(Retrofit retrofit) {
-        return retrofit.create(SystemInfoService.class);
-    }
-
-    @Provides
-    @Reusable
-    SystemInfoModule systemInfoModule(SystemInfoModuleImpl impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    DHISVersionManager versionManager(DHISVersionManagerImpl impl) {
-        return impl;
+    fun service(retrofit: Retrofit): PingService {
+        return retrofit.create(PingService::class.java)
     }
 }

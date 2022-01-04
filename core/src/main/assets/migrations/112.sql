@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Add title and subtitle to visualizations (ANDROSDK-1453)
 
 ALTER TABLE Visualization ADD COLUMN title TEXT;

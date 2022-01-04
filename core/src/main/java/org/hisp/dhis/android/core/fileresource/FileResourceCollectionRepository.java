@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObject
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer;
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadWithUidCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUidCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector;
@@ -67,7 +67,7 @@ import static org.hisp.dhis.android.core.fileresource.FileResourceTableInfo.Colu
 @SuppressWarnings("PMD.ExcessiveImports")
 public final class FileResourceCollectionRepository
         extends ReadWriteWithUidCollectionRepositoryImpl<FileResource, File, FileResourceCollectionRepository>
-        implements ReadWriteWithUploadWithUidCollectionRepository<FileResource, File> {
+        implements ReadWriteWithUidCollectionRepository<FileResource, File> {
 
     private final FileResourcePostCall postCall;
     private final IdentifiableDataObjectStore<FileResource> store;
@@ -89,14 +89,23 @@ public final class FileResourceCollectionRepository
         this.context = context;
     }
 
-    @Override
+    /**
+     * @deprecated FileResources are automatically uploaded when the parent object is uploaded. There is no need to
+     * manually upload the fileResources. Actually, it is risky to upload the fileResources independently: if the
+     * parent objects are not uploaded within two hours, the server will remove the orphan fileResources.
+     * @return Progress
+     */
+    @Deprecated
     public Observable<D2Progress> upload() {
         return Observable.fromCallable(() -> bySyncState().in(State.uploadableStates())
                 .blockingGetWithoutChildren())
                 .flatMap(postCall::uploadFileResources);
     }
 
-    @Override
+    /**
+     * @deprecated Check {@link #upload()}.
+     */
+    @Deprecated
     public void blockingUpload() {
         upload().blockingSubscribe();
     }

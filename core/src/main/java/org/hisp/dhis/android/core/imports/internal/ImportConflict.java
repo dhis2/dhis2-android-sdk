@@ -28,12 +28,14 @@
 
 package org.hisp.dhis.android.core.imports.internal;
 
+import androidx.annotation.NonNull;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.google.auto.value.AutoValue;
 
-import androidx.annotation.NonNull;
+import java.util.List;
 
 @AutoValue
 @JsonRootName("conflicts")
@@ -49,11 +51,26 @@ public abstract class ImportConflict {
     @JsonProperty(VALUE)
     public abstract String value();
 
+    @NonNull
+    @JsonProperty()
+    public abstract String errorCode();
+
+    @NonNull
+    @JsonProperty()
+    public abstract String property();
+
+    @NonNull
+    @JsonProperty()
+    public abstract List<Integer> indexes();
+
+
     @JsonCreator
     public static ImportConflict create(
             @JsonProperty(OBJECT) String object,
-            @JsonProperty(VALUE) String value) {
-        return new AutoValue_ImportConflict(object, value);
+            @JsonProperty(OBJECT) String value,
+            @JsonProperty() String errorCode,
+            @JsonProperty() String property,
+            @JsonProperty() List<Integer> indexes) {
+        return new AutoValue_ImportConflict(object, value, errorCode, property, indexes);
     }
-
 }

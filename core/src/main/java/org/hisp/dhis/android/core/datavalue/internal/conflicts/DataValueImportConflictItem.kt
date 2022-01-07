@@ -58,6 +58,7 @@ internal interface DataValueImportConflictItem {
             .period(dataValue.period())
             .status(ImportStatus.WARNING)
             .displayDescription(displayDescription)
+            .errorCode(conflict.errorCode())
             .created(Date())
     }
 }

@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.imports.internal;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -51,18 +52,24 @@ public abstract class ImportConflict {
     @JsonProperty(VALUE)
     public abstract String value();
 
-    @NonNull
+    @Nullable
     @JsonProperty()
     public abstract String errorCode();
 
-    @NonNull
+    @Nullable
     @JsonProperty()
     public abstract String property();
 
-    @NonNull
+    @Nullable
     @JsonProperty()
     public abstract List<Integer> indexes();
 
+    @JsonCreator
+    public static ImportConflict create(
+            @JsonProperty(OBJECT) String object,
+            @JsonProperty(OBJECT) String value) {
+        return new AutoValue_ImportConflict(object, value, null, null, null);
+    }
 
     @JsonCreator
     public static ImportConflict create(

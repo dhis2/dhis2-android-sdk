@@ -26,35 +26,38 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.testapp.legendset;
+package org.hisp.dhis.android.core.indicator.internal
 
-import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLink;
-import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
-import org.mockito.Mock;
+import dagger.Reusable
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
+import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
+import org.hisp.dhis.android.core.indicator.Indicator
+import org.hisp.dhis.android.core.legendset.IndicatorLegendSetLink
+import org.hisp.dhis.android.core.legendset.LegendSet
+import javax.inject.Inject
 
-public class ProgramIndicatorLegendSetLinkPublicAccessShould
-        extends BasePublicAccessShould<ProgramIndicatorLegendSetLink> {
+@Reusable
+internal class IndicatorHandler @Inject constructor(
+    indicatorStore: IdentifiableObjectStore<Indicator>,
+    private val legendSetHandler: Handler<LegendSet>,
+    private val indicatorLegendSetLinkHandler: LinkHandler<LegendSet, IndicatorLegendSetLink>
+) : IdentifiableHandlerImpl<Indicator>(indicatorStore) {
 
-    @Mock
-    private ProgramIndicatorLegendSetLink object;
+    override fun afterObjectHandled(indicator: Indicator, action: HandleAction) {
+        super.afterObjectHandled(indicator, action)
 
-    @Override
-    public ProgramIndicatorLegendSetLink object() {
-        return object;
-    }
+        if (indicator.legendSets() != null) {
+            legendSetHandler.handleMany(indicator.legendSets())
 
-    @Override
-    public void has_public_create_method() {
-        ProgramIndicatorLegendSetLink.create(null);
-    }
-
-    @Override
-    public void has_public_builder_method() {
-        ProgramIndicatorLegendSetLink.builder();
-    }
-
-    @Override
-    public void has_public_to_builder_method() {
-        object().toBuilder();
+            indicatorLegendSetLinkHandler.handleMany(indicator.uid(), indicator.legendSets()) { legendSet ->
+                IndicatorLegendSetLink.builder()
+                    .indicator(indicator.uid())
+                    .legendSet(legendSet.uid())
+                    .build()
+            }
+        }
     }
 }

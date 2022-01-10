@@ -26,24 +26,35 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset.internal;
+package org.hisp.dhis.android.testapp.legendset;
 
-import org.hisp.dhis.android.core.legendset.LegendSetModule;
+import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLink;
+import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
+import org.mockito.Mock;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+public class ProgramIndicatorLegendSetLinkTableInfoPublicAccessShould
+        extends BasePublicAccessShould<ProgramIndicatorLegendSetLink> {
 
-@Module(includes = {
-        LegendEntityDIModule.class,
-        LegendSetEntityDIModule.class,
-        IndicatorLegendSetEntityDIModule.class
-})
-public final class LegendPackageDIModule {
+    @Mock
+    private ProgramIndicatorLegendSetLink object;
 
-    @Provides
-    @Reusable
-    LegendSetModule module(LegendSetModuleImpl impl) {
-        return impl;
+    @Override
+    public ProgramIndicatorLegendSetLink object() {
+        return object;
+    }
+
+    @Override
+    public void has_public_create_method() {
+        ProgramIndicatorLegendSetLink.create(null);
+    }
+
+    @Override
+    public void has_public_builder_method() {
+        ProgramIndicatorLegendSetLink.builder();
+    }
+
+    @Override
+    public void has_public_to_builder_method() {
+        object().toBuilder();
     }
 }

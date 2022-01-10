@@ -26,24 +26,38 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset.internal;
+package org.hisp.dhis.android.core.indicator.internal
 
-import org.hisp.dhis.android.core.legendset.LegendSetModule;
+import android.database.Cursor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkChildStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.indicator.Indicator
+import org.hisp.dhis.android.core.indicator.IndicatorLegendSetLinkTableInfo
+import org.hisp.dhis.android.core.legendset.LegendSet
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+internal class IndicatorLegendSetChildrenAppender(
+    private val linkChildStore: LinkChildStore<Indicator, LegendSet>
+) : ChildrenAppender<Indicator>() {
 
-@Module(includes = {
-        LegendEntityDIModule.class,
-        LegendSetEntityDIModule.class,
-        IndicatorLegendSetEntityDIModule.class
-})
-public final class LegendPackageDIModule {
+    override fun appendChildren(indicator: Indicator): Indicator {
+        val builder = indicator.toBuilder()
+        builder.legendSets(linkChildStore.getChildren(indicator))
+        return builder.build()
+    }
 
-    @Provides
-    @Reusable
-    LegendSetModule module(LegendSetModuleImpl impl) {
-        return impl;
+    companion object {
+        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<Indicator> {
+            return IndicatorLegendSetChildrenAppender(
+                StoreFactory.linkChildStore(
+                    databaseAdapter,
+                    IndicatorLegendSetLinkTableInfo.TABLE_INFO,
+                    IndicatorLegendSetLinkTableInfo.CHILD_PROJECTION
+                ) { cursor: Cursor? ->
+                    LegendSet.create(cursor)
+                }
+            )
+        }
     }
 }

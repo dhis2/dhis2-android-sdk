@@ -26,24 +26,38 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset.internal;
+package org.hisp.dhis.android.core.legendset;
 
-import org.hisp.dhis.android.core.legendset.LegendSetModule;
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.legendset.ProgramIndicatorLegendSetLinkSamples;
+import org.hisp.dhis.android.core.legendset.internal.ProgramIndicatorLegendSetLinkStore;
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.junit.runner.RunWith;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+@RunWith(D2JunitRunner.class)
+public class ProgramIndicatorLegendSetLinkTableInfoStoreIntegrationShould
+        extends LinkStoreAbstractIntegrationShould<ProgramIndicatorLegendSetLink> {
 
-@Module(includes = {
-        LegendEntityDIModule.class,
-        LegendSetEntityDIModule.class,
-        IndicatorLegendSetEntityDIModule.class
-})
-public final class LegendPackageDIModule {
+    public ProgramIndicatorLegendSetLinkTableInfoStoreIntegrationShould() {
+        super(ProgramIndicatorLegendSetLinkStore.create(TestDatabaseAdapterFactory.get()),
+                ProgramIndicatorLegendSetLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+    }
 
-    @Provides
-    @Reusable
-    LegendSetModule module(LegendSetModuleImpl impl) {
-        return impl;
+    @Override
+    protected String addMasterUid() {
+        return ProgramIndicatorLegendSetLinkSamples.getProgramIndicatorLegendSetLink().programIndicator();
+    }
+
+    @Override
+    protected ProgramIndicatorLegendSetLink buildObject() {
+        return ProgramIndicatorLegendSetLinkSamples.getProgramIndicatorLegendSetLink();
+    }
+
+    @Override
+    protected ProgramIndicatorLegendSetLink buildObjectWithOtherMasterUid() {
+        return buildObject().toBuilder()
+                .programIndicator("new_program_indicator")
+                .build();
     }
 }

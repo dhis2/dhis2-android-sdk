@@ -26,38 +26,33 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset;
+package org.hisp.dhis.android.core.legendset.internal
 
-import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.legendset.ProgramIndicatorLegendSetLinkSamples;
-import org.hisp.dhis.android.core.legendset.internal.ProgramIndicatorLegendSetLinkStore;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.runner.RunWith;
+import android.database.Cursor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkStore
+import org.hisp.dhis.android.core.indicator.IndicatorLegendSetLinkTableInfo
+import org.hisp.dhis.android.core.legendset.IndicatorLegendSetLink
 
-@RunWith(D2JunitRunner.class)
-public class ProgramIndicatorLegendSetLinkStoreIntegrationShould
-        extends LinkStoreAbstractIntegrationShould<ProgramIndicatorLegendSetLink> {
+internal class IndicatorLegendSetLinkStore private constructor() {
 
-    public ProgramIndicatorLegendSetLinkStoreIntegrationShould() {
-        super(ProgramIndicatorLegendSetLinkStore.create(TestDatabaseAdapterFactory.get()),
-                ProgramIndicatorLegendSetLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
-    }
+    companion object {
+        private val BINDER = StatementBinder { o: IndicatorLegendSetLink, w: StatementWrapper ->
+            w.bind(1, o.indicator())
+            w.bind(2, o.legendSet())
+        }
 
-    @Override
-    protected String addMasterUid() {
-        return ProgramIndicatorLegendSetLinkSamples.getProgramIndicatorLegendSetLink().programIndicator();
-    }
-
-    @Override
-    protected ProgramIndicatorLegendSetLink buildObject() {
-        return ProgramIndicatorLegendSetLinkSamples.getProgramIndicatorLegendSetLink();
-    }
-
-    @Override
-    protected ProgramIndicatorLegendSetLink buildObjectWithOtherMasterUid() {
-        return buildObject().toBuilder()
-                .programIndicator("new_program_indicator")
-                .build();
+        fun create(databaseAdapter: DatabaseAdapter?): LinkStore<IndicatorLegendSetLink> {
+            return linkStore(
+                databaseAdapter!!, IndicatorLegendSetLinkTableInfo.TABLE_INFO,
+                IndicatorLegendSetLinkTableInfo.Columns.INDICATOR,
+                BINDER
+            ) { cursor: Cursor? ->
+                IndicatorLegendSetLink.create(cursor)
+            }
+        }
     }
 }

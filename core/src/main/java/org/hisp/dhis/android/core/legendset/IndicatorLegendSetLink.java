@@ -26,24 +26,43 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset.internal;
+package org.hisp.dhis.android.core.legendset;
 
-import org.hisp.dhis.android.core.legendset.LegendSetModule;
+import android.database.Cursor;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import androidx.annotation.Nullable;
 
-@Module(includes = {
-        LegendEntityDIModule.class,
-        LegendSetEntityDIModule.class,
-        IndicatorLegendSetEntityDIModule.class
-})
-public final class LegendPackageDIModule {
+import com.google.auto.value.AutoValue;
 
-    @Provides
-    @Reusable
-    LegendSetModule module(LegendSetModuleImpl impl) {
-        return impl;
+import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.CoreObject;
+
+@AutoValue
+public abstract class IndicatorLegendSetLink implements CoreObject {
+    @Nullable
+    public abstract String indicator();
+
+    @Nullable
+    public abstract String legendSet();
+
+    public static IndicatorLegendSetLink create(Cursor cursor) {
+        return AutoValue_IndicatorLegendSetLink.createFromCursor(cursor);
+    }
+
+    public static Builder builder() {
+        return new $$AutoValue_IndicatorLegendSetLink.Builder();
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseObject.Builder<Builder> {
+        public abstract Builder id(Long id);
+
+        public abstract Builder indicator(String indicator);
+
+        public abstract Builder legendSet(String legendSet);
+
+        public abstract IndicatorLegendSetLink build();
     }
 }
